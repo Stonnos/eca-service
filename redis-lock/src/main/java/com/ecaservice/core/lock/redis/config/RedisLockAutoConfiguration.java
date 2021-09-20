@@ -1,5 +1,6 @@
 package com.ecaservice.core.lock.redis.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +12,7 @@ import org.springframework.integration.redis.util.RedisLockRegistry;
  *
  * @author Roman Batygin
  */
+@Slf4j
 @Configuration
 @EnableConfigurationProperties(RedisLockProperties.class)
 public class RedisLockAutoConfiguration {
@@ -25,7 +27,9 @@ public class RedisLockAutoConfiguration {
     @Bean
     public RedisLockRegistry redisLockRegistry(final RedisConnectionFactory redisConnectionFactory,
                                                final RedisLockProperties redisLockProperties) {
-        return new RedisLockRegistry(redisConnectionFactory, redisLockProperties.getRegistryKey(),
+        var redisLockRegistry = new RedisLockRegistry(redisConnectionFactory, redisLockProperties.getRegistryKey(),
                 redisLockProperties.getExpireAfter());
+        log.info("Redis lock registry [{}] has been initialized", redisLockProperties.getRegistryKey());
+        return redisLockRegistry;
     }
 }
