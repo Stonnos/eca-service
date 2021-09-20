@@ -25,6 +25,14 @@ public interface TemplateMapper {
     EmailTemplateDto map(TemplateEntity templateEntity);
 
     /**
+     * Maps email templates entities to dto list.
+     *
+     * @param templates - email templates
+     * @return email templates dto list
+     */
+    List<EmailTemplateDto> mapTemplates(List<TemplateEntity> templates);
+
+    /**
      * Maps email template parameter to dto model.
      *
      * @param templateParameterEntity - email template parameter
