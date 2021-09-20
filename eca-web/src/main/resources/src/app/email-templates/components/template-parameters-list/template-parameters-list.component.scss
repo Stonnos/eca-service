@@ -1,0 +1,12 @@
+.template-parameters-table::ng-deep {
+
+  .ui-table {
+    margin-top: 5px;
+  }
+
+  .ui-table-tbody > tr > td {
+    &:first-child {
+      font-weight: bold;
+    }
+  }
+}

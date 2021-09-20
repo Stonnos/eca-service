@@ -133,3 +133,9 @@ export class EmailTemplateFields {
   public static readonly SUBJECT: string = "subject";
   public static readonly CREATED: string = "created";
 }
+
+export class EmailTemplateParameterFields {
+  public static readonly PARAMETER_NAME: string = "parameterName";
+  public static readonly DESCRIPTION: string = "description";
+  public static readonly CREATED: string = "created";
+}
