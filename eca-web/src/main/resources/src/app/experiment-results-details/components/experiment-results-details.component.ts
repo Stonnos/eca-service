@@ -75,7 +75,7 @@ export class ExperimentResultsDetailsComponent implements OnInit, FieldLink {
 
   public onLink(field: string): void {
     if (field == ExperimentFields.REQUEST_ID) {
-      this.router.navigate([RouterPaths.EXPERIMENT_DETAILS_URL, this.experimentResultsDetailsDto.experimentDto.requestId]);
+      this.router.navigate([RouterPaths.EXPERIMENT_DETAILS_URL, this.experimentResultsDetailsDto.experimentDto.id]);
     } else {
       this.messageService.add({severity: 'error', summary: 'Ошибка', detail: `Can't handle ${field} as link`});
     }
