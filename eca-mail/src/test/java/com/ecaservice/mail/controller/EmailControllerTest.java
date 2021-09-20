@@ -12,6 +12,7 @@ import com.ecaservice.mail.model.Email;
 import com.ecaservice.mail.model.EmailStatus;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -33,6 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @EnableGlobalExceptionHandler
 @WebMvcTest(controllers = EmailController.class)
+@AutoConfigureMockMvc(addFilters = false)
 @Import(EmailRequestMapperImpl.class)
 class EmailControllerTest {
 
