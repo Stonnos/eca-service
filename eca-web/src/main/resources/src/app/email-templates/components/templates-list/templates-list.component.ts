@@ -22,6 +22,7 @@ export class TemplatesListComponent extends BaseListComponent<EmailTemplateDto> 
                      private emailTemplatesService: EmailTemplatesService) {
     super(injector.get(MessageService), injector.get(FieldService));
     this.defaultSortField = EmailTemplateFields.CREATED;
+    this.linkColumns = [EmailTemplateFields.CODE];
     this.initColumns();
   }
 
