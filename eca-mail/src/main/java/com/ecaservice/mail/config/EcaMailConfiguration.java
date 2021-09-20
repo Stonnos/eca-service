@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
- * Notification service configuration.
+ * Eca mail configuration.
  *
  * @author Roman Batygin
  */
@@ -21,5 +21,5 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableGlobalExceptionHandler
 @EnableConfigurationProperties(MailConfig.class)
 @Import(FilterExceptionHandler.class)
-public class NotificationConfiguration {
+public class EcaMailConfiguration {
 }
