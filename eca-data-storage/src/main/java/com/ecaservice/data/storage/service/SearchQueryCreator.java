@@ -20,9 +20,13 @@ public class SearchQueryCreator {
 
     private static final String LIKE_FORMAT = "%{0}%";
     private static final String WHERE_PART = " where";
-    private static final String LIKE_OR = " %s like ? or";
-    private static final String LIKE = " %s like ?";
-    private static final String LIMIT_OFFSET = " limit %d offset %d";
+    private static final String LIKE_OR_PART = " %s like ? or";
+    private static final String LIKE_PART = " %s like ?";
+    private static final String LIMIT_OFFSET_PART = " limit %d offset %d";
+    private static final String SELECT_PART = "select * from %s";
+    private static final String ORDER_BY_PART = " order by %s %s";
+    private static final String DESC = "desc";
+    private static final String ASC = "asc";
 
     private final TableMetaDataProvider tableMetaDataProvider;
 
@@ -35,12 +39,16 @@ public class SearchQueryCreator {
      */
     public SqlPreparedQuery buildSqlQuery(String tableName, PageRequestDto pageRequestDto) {
         var sqlPreparedQueryBuilder = SqlPreparedQuery.builder();
-        StringBuilder queryString = new StringBuilder(String.format("select * from %s", tableName));
+        StringBuilder queryString = new StringBuilder(String.format(SELECT_PART, tableName));
         if (StringUtils.isNotBlank(pageRequestDto.getSearchQuery())) {
             appendSearchQuery(tableName, pageRequestDto.getSearchQuery(), sqlPreparedQueryBuilder, queryString);
         }
+        if (StringUtils.isNotBlank(pageRequestDto.getSortField())) {
+            String sortMode = pageRequestDto.isAscending() ? ASC : DESC;
+            queryString.append(String.format(ORDER_BY_PART, pageRequestDto.getSortField(), sortMode));
+        }
         int offset = pageRequestDto.getPage() * pageRequestDto.getSize();
-        queryString.append(String.format(LIMIT_OFFSET, pageRequestDto.getPage(), offset));
+        queryString.append(String.format(LIMIT_OFFSET_PART, pageRequestDto.getPage(), offset));
         return sqlPreparedQueryBuilder
                 .query(queryString.toString())
                 .build();
@@ -56,11 +64,11 @@ public class SearchQueryCreator {
         int lastColumnIndex = columns.size() - 1;
         IntStream.range(0, lastColumnIndex).forEach(i -> {
             var columnModel = columns.get(i);
-            queryString.append(String.format(LIKE_OR, columnModel.getColumnName()));
+            queryString.append(String.format(LIKE_OR_PART, columnModel.getColumnName()));
             args[i] = MessageFormat.format(LIKE_FORMAT, searchQuery);
         });
         var lastColumn = columns.get(lastColumnIndex);
-        queryString.append(String.format(LIKE, lastColumn.getColumnName()));
+        queryString.append(String.format(LIKE_PART, lastColumn.getColumnName()));
         args[lastColumnIndex] = MessageFormat.format(LIKE_FORMAT, searchQuery);
         sqlPreparedQueryBuilder.args(args);
     }
