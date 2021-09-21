@@ -7,9 +7,11 @@ import com.ecaservice.mail.model.RegexEntity;
 import com.ecaservice.mail.model.TemplateEntity;
 import com.ecaservice.mail.model.TemplateParameterEntity;
 import com.ecaservice.notification.dto.EmailRequest;
+import com.ecaservice.web.dto.model.PageRequestDto;
 import lombok.experimental.UtilityClass;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.UUID;
 
 import static com.ecaservice.notification.util.Priority.LOW;
@@ -34,6 +36,8 @@ public class TestHelperUtils {
     private static final String TEMPLATE_DESCRIPTION = "Test template";
     private static final String TEST_REGEX = "testRegex";
     private static final String REGEX_DESCRIPTION = "Test regex";
+    private static final int PAGE = 0;
+    private static final int SIZE = 10;
 
     /**
      * Creates email request.
@@ -97,6 +101,18 @@ public class TestHelperUtils {
     }
 
     /**
+     * Creates template entity.
+     *
+     * @param code - template code
+     * @return template entity
+     */
+    public static TemplateEntity createTemplateEntity(String code) {
+        var templateEntity = createTemplateEntity();
+        templateEntity.setCode(code);
+        return templateEntity;
+    }
+
+    /**
      * Creates template parameter entity.
      *
      * @param name - parameter name
@@ -122,5 +138,14 @@ public class TestHelperUtils {
         regex.setRegex(value);
         regex.setCreated(LocalDateTime.now());
         return regex;
+    }
+
+    /**
+     * Creates page request dto.
+     *
+     * @return page request dto
+     */
+    public static PageRequestDto createPageRequestDto() {
+        return new PageRequestDto(PAGE, SIZE, null, true, null, Collections.emptyList());
     }
 }

@@ -126,3 +126,16 @@ export class AuditLogFields {
   public static readonly MESSAGE: string = "message";
   public static readonly INITIATOR: string = "initiator";
 }
+
+export class EmailTemplateFields {
+  public static readonly CODE: string = "code";
+  public static readonly DESCRIPTION: string = "description";
+  public static readonly SUBJECT: string = "subject";
+  public static readonly CREATED: string = "created";
+}
+
+export class EmailTemplateParameterFields {
+  public static readonly PARAMETER_NAME: string = "parameterName";
+  public static readonly DESCRIPTION: string = "description";
+  public static readonly CREATED: string = "created";
+}

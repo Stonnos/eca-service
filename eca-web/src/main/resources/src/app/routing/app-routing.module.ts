@@ -18,6 +18,7 @@ import { ConfirmChangePasswordComponent } from "../change-password/components/co
 import { AccessDeniedComponent } from "../access-denied/components/access-denied.component";
 import { AuditLogsComponent } from "../audit-logs/components/audit-logs.component";
 import { ConfirmChangeEmailComponent } from "../update-user-email/components/confirm-change-email/confirm-change-email.component";
+import { TemplatesListComponent } from "../email-templates/components/templates-list/templates-list.component";
 
 const routes: Routes = [
   {
@@ -47,6 +48,10 @@ const routes: Routes = [
       {
         path: 'audit-logs',
         component: AuditLogsComponent
+      },
+      {
+        path: 'email-templates',
+        component: TemplatesListComponent
       },
       {
         path: 'classifiers/evaluation-results/:id',

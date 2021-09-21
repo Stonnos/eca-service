@@ -18,6 +18,7 @@
 * serverUrl - url REST API сервера eca-server
 * oauthUrl - url сервера авторизации
 * dsUrl - url модуля eca-data-storage
+* mailUrl - url модуля eca-mail
 * auditLogUrl - url модуля eca-audit-log
 * wsUrl - url сервера веб - сокетов (модуль eca-web-push)
 * clientId - идентификатор клиента

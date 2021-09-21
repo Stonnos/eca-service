@@ -14,4 +14,9 @@ public class ApiExamples {
             "{\"receiver\": \"test@mail.ru\", \"templateCode\": \"NEW_EXPERIMENT\", \"variables\": " +
                     "{\"firstName\": \"Роман\", \"requestId\": \"1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c\", " +
                     "\"experimentType\": \"KNN\"},\"priority\": 1}";
+
+    /**
+     * Simple page request json
+     */
+    public static final String SIMPLE_PAGE_REQUEST_JSON = "{\"page\":0,\"size\":25}";
 }

@@ -94,6 +94,11 @@ export class DashboardComponent implements OnInit {
         visible: Utils.isSuperAdmin(this.user)
       },
       {
+        label: 'Шаблоны email сообщений',
+        routerLink: ['/dashboard/email-templates'],
+        visible: Utils.isSuperAdmin(this.user)
+      },
+      {
         label: 'Журнал аудита',
         routerLink: ['/dashboard/audit-logs'],
         visible: Utils.isSuperAdmin(this.user)

@@ -2,6 +2,10 @@ package com.ecaservice.mail.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.validation.annotation.Validated;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 /**
  * Email configuration.
@@ -9,6 +13,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @author Roman Batygin
  */
 @Data
+@Validated
 @ConfigurationProperties("mail-config")
 public class MailConfig {
 
@@ -20,16 +25,25 @@ public class MailConfig {
     /**
      * Page size for emails sending
      */
+    @NotNull
     private Integer pageSize;
+
+    /**
+     * Maximum page size for paging requests
+     */
+    @NotNull
+    private Integer maxPageSize;
 
     /**
      * Delay in seconds for sent email job
      */
+    @NotNull
     private Integer delaySeconds;
 
     /**
      * Sender email
      */
+    @NotEmpty
     private String sender;
 
     /**
