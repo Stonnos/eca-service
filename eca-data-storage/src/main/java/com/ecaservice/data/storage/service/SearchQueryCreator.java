@@ -22,6 +22,7 @@ public class SearchQueryCreator {
     private static final String WHERE_PART = " where";
     private static final String LIKE_OR = " %s like ? or";
     private static final String LIKE = " %s like ?";
+    private static final String LIMIT_OFFSET = " limit %d offset %d";
 
     private final TableMetaDataProvider tableMetaDataProvider;
 
@@ -39,7 +40,7 @@ public class SearchQueryCreator {
             appendSearchQuery(tableName, pageRequestDto.getSearchQuery(), sqlPreparedQueryBuilder, queryString);
         }
         int offset = pageRequestDto.getPage() * pageRequestDto.getSize();
-        queryString.append(String.format(" limit %d offset %d", pageRequestDto.getPage(), offset));
+        queryString.append(String.format(LIMIT_OFFSET, pageRequestDto.getPage(), offset));
         return sqlPreparedQueryBuilder
                 .query(queryString.toString())
                 .build();
