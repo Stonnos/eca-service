@@ -55,16 +55,24 @@ public class SearchQueryCreator {
         }
         String sqlCountQuery = String.format(COUNT_QUERY_PART, tableName, queryString.toString());
         if (StringUtils.isNotBlank(pageRequestDto.getSortField())) {
-            String sortMode = pageRequestDto.isAscending() ? ASC : DESC;
-            queryString.append(String.format(ORDER_BY_PART, pageRequestDto.getSortField(), sortMode));
+           appendOrderBy(queryString, pageRequestDto);
         }
-        int offset = pageRequestDto.getPage() * pageRequestDto.getSize();
-        queryString.append(String.format(LIMIT_OFFSET_PART, pageRequestDto.getSize(), offset));
+        appendLimitOffset(queryString, pageRequestDto);
         String sqlQuery = String.format(SELECT_PART, tableName, queryString.toString());
         return sqlPreparedQueryBuilder
                 .query(sqlQuery)
                 .countQuery(sqlCountQuery)
                 .build();
+    }
+
+    private void appendLimitOffset(StringBuilder queryString, PageRequestDto pageRequestDto) {
+        int offset = pageRequestDto.getPage() * pageRequestDto.getSize();
+        queryString.append(String.format(LIMIT_OFFSET_PART, pageRequestDto.getSize(), offset));
+    }
+
+    private void appendOrderBy(StringBuilder queryString, PageRequestDto pageRequestDto) {
+        String sortMode = pageRequestDto.isAscending() ? ASC : DESC;
+        queryString.append(String.format(ORDER_BY_PART, pageRequestDto.getSortField(), sortMode));
     }
 
     private void appendSearchQuery(String tableName,
