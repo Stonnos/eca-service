@@ -21,24 +21,24 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @ExtendWith(MockitoExtension.class)
-class SqlQueryCreatorTest {
+class SearchQueryCreatorTest {
 
     private static final List<ColumnModel> COLUMNS = List.of(
             ColumnModel.builder()
                     .columnName("column1")
-                    .dataType("character varying(255)")
+                    .dataType("character varying")
                     .build(),
             ColumnModel.builder()
                     .columnName("column2")
-                    .dataType("character varying(255)")
+                    .dataType("character varying")
                     .build(),
             ColumnModel.builder()
                     .columnName("column3")
-                    .dataType("character varying(255)")
+                    .dataType("character varying")
                     .build(),
             ColumnModel.builder()
                     .columnName("column4")
-                    .dataType("character varying(255)")
+                    .dataType("character varying")
                     .build()
     );
 

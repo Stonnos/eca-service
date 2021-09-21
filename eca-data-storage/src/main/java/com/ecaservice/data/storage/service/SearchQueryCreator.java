@@ -1,12 +1,16 @@
 package com.ecaservice.data.storage.service;
 
+import com.ecaservice.data.storage.model.ColumnModel;
 import com.ecaservice.data.storage.model.SqlPreparedQuery;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.text.MessageFormat;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
@@ -25,8 +29,14 @@ public class SearchQueryCreator {
     private static final String LIMIT_OFFSET_PART = " limit %d offset %d";
     private static final String SELECT_PART = "select * from %s";
     private static final String ORDER_BY_PART = " order by %s %s";
+    private static final String EQUAL_PART = "%s = ?";
+    private static final String EQUAL_OR_PART = "%s = ? or";
     private static final String DESC = "desc";
     private static final String ASC = "asc";
+    private static final String NUMERIC_TYPE = "numeric";
+    private static final String VARCHAR_TYPE = "character varying";
+
+    private static final List<String> AVAILABLE_SEARCH_COLUMN_TYPES = List.of(NUMERIC_TYPE, VARCHAR_TYPE);
 
     private final TableMetaDataProvider tableMetaDataProvider;
 
@@ -58,18 +68,38 @@ public class SearchQueryCreator {
                                    String searchQuery,
                                    SqlPreparedQuery.SqlPreparedQueryBuilder sqlPreparedQueryBuilder,
                                    StringBuilder queryString) {
-        var columns = tableMetaDataProvider.getTableColumns(tableName);
+        var columns = getTableSearchColumns(tableName);
         Object[] args = new Object[columns.size()];
         queryString.append(WHERE_PART);
         int lastColumnIndex = columns.size() - 1;
         IntStream.range(0, lastColumnIndex).forEach(i -> {
             var columnModel = columns.get(i);
-            queryString.append(String.format(LIKE_OR_PART, columnModel.getColumnName()));
-            args[i] = MessageFormat.format(LIKE_FORMAT, searchQuery);
+            appendSearchPredicate(columnModel, searchQuery, queryString, args, i, false);
         });
         var lastColumn = columns.get(lastColumnIndex);
-        queryString.append(String.format(LIKE_PART, lastColumn.getColumnName()));
-        args[lastColumnIndex] = MessageFormat.format(LIKE_FORMAT, searchQuery);
+        appendSearchPredicate(lastColumn, searchQuery, queryString, args, lastColumnIndex, true);
         sqlPreparedQueryBuilder.args(args);
+    }
+
+    private List<ColumnModel> getTableSearchColumns(String tableName) {
+        return tableMetaDataProvider.getTableColumns(tableName).stream()
+                .filter(columnModel -> AVAILABLE_SEARCH_COLUMN_TYPES.contains(columnModel.getDataType()))
+                .collect(Collectors.toList());
+    }
+
+    private void appendSearchPredicate(ColumnModel columnModel, String searchQuery,
+                                       StringBuilder queryString, Object[] args, int argIndex, boolean lastPredicate) {
+        if (NUMERIC_TYPE.equals(columnModel.getDataType()) && StringUtils.isNumeric(searchQuery)) {
+            String part = lastPredicate ? EQUAL_PART : EQUAL_OR_PART;
+            queryString.append(String.format(part, columnModel.getColumnName()));
+            args[argIndex] = new BigDecimal(searchQuery);
+        } else if (VARCHAR_TYPE.equals(columnModel.getDataType())) {
+            String part = lastPredicate ? LIKE_PART : LIKE_OR_PART;
+            queryString.append(String.format(part, columnModel.getColumnName()));
+            args[argIndex] = MessageFormat.format(LIKE_FORMAT, searchQuery);
+        } else {
+            throw new IllegalStateException(String.format("Can't create search predicate for column [%s] of type [%s]",
+                    columnModel.getColumnName(), columnModel.getDataType()));
+        }
     }
 }

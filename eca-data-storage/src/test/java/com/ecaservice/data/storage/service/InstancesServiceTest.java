@@ -37,7 +37,7 @@ class InstancesServiceTest extends AbstractJpaTest {
     private static final List<ColumnModel> COLUMNS = Collections.singletonList(
             ColumnModel.builder()
                     .columnName("class")
-                    .dataType("varchar(255)")
+                    .dataType("character varying")
                     .build()
     );
 
