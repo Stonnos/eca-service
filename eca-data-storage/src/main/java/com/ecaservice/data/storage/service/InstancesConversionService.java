@@ -12,6 +12,7 @@ import weka.core.Instances;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static com.google.common.collect.Lists.newArrayList;
 
@@ -50,9 +51,8 @@ public class InstancesConversionService {
     }
 
     private List<String> convertInstance(Instance instance) {
-        List<String> values = newArrayList();
-        for (int i = 0; i < instance.numAttributes(); i++) {
-            String value = StringUtils.EMPTY;
+        return IntStream.range(0, instance.numAttributes()).mapToObj(i -> {
+            String value = null;
             if (!instance.isMissing(i)) {
                 Attribute attribute = instance.attribute(i);
                 switch (attribute.type()) {
@@ -69,8 +69,7 @@ public class InstancesConversionService {
                                         attribute.type()));
                 }
             }
-            values.add(value);
-        }
-        return values;
+            return value;
+        }).collect(Collectors.toList());
     }
 }
