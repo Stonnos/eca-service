@@ -32,6 +32,7 @@ public class InstancesConversionService {
      * @return instances data dto
      */
     public InstancesDataDto covert(Instances instances) {
+        log.info("Starting to convert instances [{}]", instances.relationName());
         var attributes = convertAttributes(instances);
         var rows = instances.stream().map(this::convertInstance).collect(Collectors.toList());
         return InstancesDataDto.builder()
