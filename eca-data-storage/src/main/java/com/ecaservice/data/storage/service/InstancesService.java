@@ -1,6 +1,7 @@
 package com.ecaservice.data.storage.service;
 
 import com.ecaservice.data.storage.config.EcaDsConfig;
+import com.ecaservice.web.dto.model.PageRequestDto;
 import eca.data.db.SqlQueryHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,8 @@ public class InstancesService {
     private final TransactionalService transactionalMigrationService;
     private final EcaDsConfig ecaDsConfig;
     private final SqlQueryHelper sqlQueryHelper;
+    private final SearchQueryCreator searchQueryCreator;
+    private final InstancesResultSetExtractor instancesResultSetExtractor;
 
     /**
      * Saves training data into database.
@@ -74,5 +77,21 @@ public class InstancesService {
         log.info("Starting to rename table [{}] with new name [{}]", tableName, newTableName);
         jdbcTemplate.execute(String.format(RENAME_TABLE_QUERY_FORMAT, tableName, newTableName));
         log.info("Table [{}] has been renamed to [{}]", tableName, newTableName);
+    }
+
+    /**
+     * Gets instances with specified page request params.
+     *
+     * @param tableName      - table name
+     * @param pageRequestDto - page request
+     * @return instances model
+     */
+    public Instances getInstances(String tableName, PageRequestDto pageRequestDto) {
+        log.info("Starting to get instances for table [{}], page request [{}]", tableName, pageRequestDto);
+        var sqlPreparedQuery = searchQueryCreator.buildSqlQuery(tableName, pageRequestDto);
+        var instances = jdbcTemplate.query(sqlPreparedQuery.getQuery(), sqlPreparedQuery.getArgs(),
+                instancesResultSetExtractor);
+        log.info("Instances has been fetched for table [{}], page request [{}]", tableName, pageRequestDto);
+        return instances;
     }
 }
