@@ -23,7 +23,7 @@ public class TableMetaDataProvider {
     private static final int DATA_TYPE_INDEX = 2;
 
     private static final String COLUMNS_META_DATA_QUERY =
-            "SELECT column_name, data_type FROM information_schema.columns WHERE schemaname = ? AND tablename = ?";
+            "SELECT column_name, data_type FROM information_schema.columns WHERE table_schema = ? AND table_name = ?";
 
     private final JdbcTemplate jdbcTemplate;
 
