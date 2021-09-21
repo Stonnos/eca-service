@@ -44,4 +44,12 @@ public interface StorageService {
      * @return deleted table name
      */
     String deleteData(long id);
+
+    /**
+     * Gets instances data.
+     *
+     * @param id -  instances id
+     * @return instances data
+     */
+    Instances getData(long id, PageRequestDto pageRequestDto);
 }

@@ -109,6 +109,12 @@ class StorageServiceImplTest extends AbstractJpaTest {
         assertThat(instancesEntityPage.getContent()).hasSize(1);
     }
 
+    @Test
+    void testGetNotExistingData() {
+        createAndSaveInstancesEntity();
+        assertThrows(EntityNotFoundException.class, () -> storageService.getData(ID, null));
+    }
+
     private InstancesEntity createAndSaveInstancesEntity() {
         InstancesEntity instancesEntity = createInstancesEntity();
         instancesEntity.setTableName(TEST_TABLE);

@@ -66,4 +66,9 @@ public class ConcurrentStorageService implements StorageService {
     public String deleteData(long id) {
         return storageService.deleteData(id);
     }
+
+    @Override
+    public Instances getData(long id, PageRequestDto pageRequestDto) {
+        return storageService.getData(id, pageRequestDto);
+    }
 }

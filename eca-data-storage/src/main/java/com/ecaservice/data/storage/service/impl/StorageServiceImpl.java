@@ -87,6 +87,13 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
+    public Instances getData(long id, PageRequestDto pageRequestDto) {
+        log.info("Starting to get instances data with id [{}]", id);
+        InstancesEntity instancesEntity = getById(id);
+        return instancesService.getInstances(instancesEntity.getTableName(), pageRequestDto);
+    }
+
+    @Override
     @Audit(RENAME_INSTANCES)
     @Transactional
     public String renameData(long id, String newName) {
