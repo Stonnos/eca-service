@@ -1,7 +1,7 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { EmailTemplateFields } from "../../../common/util/field-names";
 import { EmailTemplateDto } from "../../../../../../../../target/generated-sources/typescript/eca-web-dto";
-import {BaseDialog} from "../../../common/dialog/base-dialog";
+import { BaseDialog } from "../../../common/dialog/base-dialog";
 
 @Component({
   selector: 'app-template-details',
