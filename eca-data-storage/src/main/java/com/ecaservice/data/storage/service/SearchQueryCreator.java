@@ -19,14 +19,14 @@ import java.util.stream.IntStream;
 public class SearchQueryCreator {
 
     private static final String LIKE_FORMAT = "%{0}%";
-    public static final String WHERE_PART = " where";
+    private static final String WHERE_PART = " where";
     private static final String LIKE_OR = " %s like ? or";
     private static final String LIKE = " %s like ?";
 
     private final TableMetaDataProvider tableMetaDataProvider;
 
     /**
-     * Build sql search query based on page request model.
+     * Builds sql search query based on page request model.
      *
      * @param tableName      - table name
      * @param pageRequestDto - page request
