@@ -5,7 +5,9 @@ import com.ecaservice.data.storage.AbstractJpaTest;
 import com.ecaservice.data.storage.config.StorageTestConfiguration;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.repository.InstancesRepository;
+import com.ecaservice.data.storage.service.InstancesResultSetExtractor;
 import com.ecaservice.data.storage.service.InstancesService;
+import com.ecaservice.data.storage.service.SearchQueryCreator;
 import com.ecaservice.data.storage.service.TableNameService;
 import com.ecaservice.data.storage.service.TransactionalService;
 import com.ecaservice.data.storage.service.UserService;
@@ -52,6 +54,10 @@ class StorageServiceImplTest extends AbstractJpaTest {
     private TableNameService tableNameService;
     @MockBean
     private UserService userService;
+    @MockBean
+    private SearchQueryCreator searchQueryCreator;
+    @MockBean
+    private InstancesResultSetExtractor instancesResultSetExtractor;
 
     @Override
     public void deleteAll() {
