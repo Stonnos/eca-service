@@ -48,7 +48,7 @@ class SqlQueryCreatorTest {
     private static final String SORT_FIELD = "column1";
     private static final String LIKE_FORMAT = "%{0}%";
     public static final String EXPECTED_SQL_QUERY = "select * from table where column1 like ? or column2 like ? or " +
-            "column3 like ? or column4 like ? order by column1 desc limit 0 offset 0";
+            "column3 like ? or column4 like ? order by column1 desc limit 10 offset 0";
 
     @Mock
     private TableMetaDataProvider tableMetaDataProvider;

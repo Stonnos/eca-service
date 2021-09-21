@@ -48,7 +48,7 @@ public class SearchQueryCreator {
             queryString.append(String.format(ORDER_BY_PART, pageRequestDto.getSortField(), sortMode));
         }
         int offset = pageRequestDto.getPage() * pageRequestDto.getSize();
-        queryString.append(String.format(LIMIT_OFFSET_PART, pageRequestDto.getPage(), offset));
+        queryString.append(String.format(LIMIT_OFFSET_PART, pageRequestDto.getSize(), offset));
         return sqlPreparedQueryBuilder
                 .query(queryString.toString())
                 .build();
