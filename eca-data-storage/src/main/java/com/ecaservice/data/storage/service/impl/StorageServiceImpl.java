@@ -12,6 +12,7 @@ import com.ecaservice.data.storage.service.InstancesService;
 import com.ecaservice.data.storage.service.StorageService;
 import com.ecaservice.data.storage.service.TableNameService;
 import com.ecaservice.data.storage.service.UserService;
+import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -87,7 +88,7 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    public Instances getData(long id, PageRequestDto pageRequestDto) {
+    public PageDto<List<String>> getData(long id, PageRequestDto pageRequestDto) {
         log.info("Starting to get instances data with id [{}]", id);
         InstancesEntity instancesEntity = getById(id);
         return instancesService.getInstances(instancesEntity.getTableName(), pageRequestDto);

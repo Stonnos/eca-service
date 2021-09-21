@@ -13,7 +13,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import weka.core.Instances;
 
 import javax.inject.Inject;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -29,7 +28,7 @@ import static org.mockito.Mockito.when;
  */
 @Import({InstancesService.class, TransactionalService.class, SqlQueryHelper.class, EcaDsConfig.class,
         SearchQueryCreator.class, InstancesResultSetExtractor.class, InstancesResultSetConverter.class,
-        InstancesExtractor.class})
+        InstancesExtractor.class, InstancesConversionService.class})
 class InstancesServiceTest extends AbstractJpaTest {
 
     private static final String TABLE_NAME = "test_table";
@@ -42,7 +41,6 @@ class InstancesServiceTest extends AbstractJpaTest {
                     .build()
     );
 
-    private static final int EXPECTED_NUM_ATTRIBUTES = 21;
     private static final String SEARCH_QUERY = "good";
     private static final String TABLE_2_NAME = "table2";
     private static final int PAGE_SIZE = 1000;
@@ -78,9 +76,9 @@ class InstancesServiceTest extends AbstractJpaTest {
         var pageRequest = createPageRequestDto();
         pageRequest.setSearchQuery(SEARCH_QUERY);
         pageRequest.setSize(PAGE_SIZE);
-        var instances = instancesService.getInstances(TABLE_2_NAME, pageRequest);
-        assertThat(instances).isNotNull();
-        assertThat(instances.numAttributes()).isEqualTo(EXPECTED_NUM_ATTRIBUTES);
-        assertThat(instances.numInstances()).isEqualTo(EXPECTED_NUM_INSTANCES);
+        var instancesPage = instancesService.getInstances(TABLE_2_NAME, pageRequest);
+        assertThat(instancesPage).isNotNull();
+        assertThat(instancesPage.getContent()).hasSize(EXPECTED_NUM_INSTANCES);
+        assertThat(instancesPage.getTotalCount()).isEqualTo(instances.numInstances());
     }
 }

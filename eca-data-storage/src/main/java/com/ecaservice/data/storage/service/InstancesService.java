@@ -1,13 +1,17 @@
 package com.ecaservice.data.storage.service;
 
 import com.ecaservice.data.storage.config.EcaDsConfig;
+import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import eca.data.db.SqlQueryHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import weka.core.Instances;
+
+import java.util.List;
 
 /**
  * Instances service.
@@ -21,6 +25,7 @@ public class InstancesService {
 
     private static final String DROP_TABLE_QUERY_FORMAT = "DROP TABLE IF EXISTS %s";
     private static final String RENAME_TABLE_QUERY_FORMAT = "ALTER TABLE IF EXISTS %s RENAME TO %s";
+    private static final String SELECT_COUNT_FORMAT = "SELECT count(*) FROM %s";
 
     private final JdbcTemplate jdbcTemplate;
     private final TransactionalService transactionalMigrationService;
@@ -28,6 +33,7 @@ public class InstancesService {
     private final SqlQueryHelper sqlQueryHelper;
     private final SearchQueryCreator searchQueryCreator;
     private final InstancesResultSetExtractor instancesResultSetExtractor;
+    private final InstancesConversionService instancesConversionService;
 
     /**
      * Saves training data into database.
@@ -80,18 +86,22 @@ public class InstancesService {
     }
 
     /**
-     * Gets instances with specified page request params.
+     * Gets instances page with specified page request params.
      *
      * @param tableName      - table name
      * @param pageRequestDto - page request
-     * @return instances model
+     * @return instances page
      */
-    public Instances getInstances(String tableName, PageRequestDto pageRequestDto) {
+    public PageDto<List<String>> getInstances(String tableName, PageRequestDto pageRequestDto) {
         log.info("Starting to get instances for table [{}], page request [{}]", tableName, pageRequestDto);
         var sqlPreparedQuery = searchQueryCreator.buildSqlQuery(tableName, pageRequestDto);
         var instances = jdbcTemplate.query(sqlPreparedQuery.getQuery(), sqlPreparedQuery.getArgs(),
                 instancesResultSetExtractor);
+        Assert.notNull(instances, String.format("Expected not null instances for table [%s]", tableName));
+        var instancesDataDto = instancesConversionService.covert(instances);
+        Long totalElements = jdbcTemplate.queryForObject(String.format(SELECT_COUNT_FORMAT, tableName), Long.class);
+        Assert.notNull(totalElements, String.format("Expected not null total elements for table [%s]", tableName));
         log.info("Instances has been fetched for table [{}], page request [{}]", tableName, pageRequestDto);
-        return instances;
+        return PageDto.of(instancesDataDto.getRows(), pageRequestDto.getPage(), totalElements);
     }
 }

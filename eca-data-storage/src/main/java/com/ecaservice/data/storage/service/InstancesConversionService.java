@@ -3,18 +3,14 @@ package com.ecaservice.data.storage.service;
 import com.ecaservice.web.dto.model.InstancesDataDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
-import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * Instances conversion service.

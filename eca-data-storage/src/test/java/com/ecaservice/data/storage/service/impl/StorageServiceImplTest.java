@@ -5,6 +5,7 @@ import com.ecaservice.data.storage.AbstractJpaTest;
 import com.ecaservice.data.storage.config.StorageTestConfiguration;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.repository.InstancesRepository;
+import com.ecaservice.data.storage.service.InstancesConversionService;
 import com.ecaservice.data.storage.service.InstancesResultSetExtractor;
 import com.ecaservice.data.storage.service.InstancesService;
 import com.ecaservice.data.storage.service.SearchQueryCreator;
@@ -36,7 +37,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import({StorageServiceImpl.class, InstancesService.class, TransactionalService.class,
-        SqlQueryHelper.class, StorageTestConfiguration.class})
+        SqlQueryHelper.class, StorageTestConfiguration.class, InstancesConversionService.class})
 class StorageServiceImplTest extends AbstractJpaTest {
 
     private static final String TEST_TABLE = "test_table";
