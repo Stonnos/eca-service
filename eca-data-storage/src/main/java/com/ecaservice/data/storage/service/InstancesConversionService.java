@@ -1,6 +1,5 @@
 package com.ecaservice.data.storage.service;
 
-import com.ecaservice.web.dto.model.InstancesDataDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,25 +22,14 @@ import java.util.stream.IntStream;
 public class InstancesConversionService {
 
     /**
-     * Converts instances to instances data dto.
+     * Converts instances to data list.
      *
      * @param instances - instances object
-     * @return instances data dto
+     * @return data list
      */
-    public InstancesDataDto covert(Instances instances) {
+    public List<List<String>> covert(Instances instances) {
         log.info("Starting to convert instances [{}]", instances.relationName());
-        var attributes = convertAttributes(instances);
-        var rows = instances.stream().map(this::convertInstance).collect(Collectors.toList());
-        return InstancesDataDto.builder()
-                .attributes(attributes)
-                .rows(rows)
-                .build();
-    }
-
-    private List<String> convertAttributes(Instances data) {
-        return IntStream.range(0, data.numAttributes())
-                .mapToObj(i -> data.attribute(i).name())
-                .collect(Collectors.toList());
+        return instances.stream().map(this::convertInstance).collect(Collectors.toList());
     }
 
     private List<String> convertInstance(Instance instance) {

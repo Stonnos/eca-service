@@ -98,10 +98,10 @@ public class InstancesService {
         var instances = jdbcTemplate.query(sqlPreparedQuery.getQuery(), sqlPreparedQuery.getArgs(),
                 instancesResultSetExtractor);
         Assert.notNull(instances, String.format("Expected not null instances for table [%s]", tableName));
-        var instancesDataDto = instancesConversionService.covert(instances);
+        var dataList = instancesConversionService.covert(instances);
         Long totalElements = jdbcTemplate.queryForObject(String.format(SELECT_COUNT_FORMAT, tableName), Long.class);
         Assert.notNull(totalElements, String.format("Expected not null total elements for table [%s]", tableName));
         log.info("Instances has been fetched for table [{}], page request [{}]", tableName, pageRequestDto);
-        return PageDto.of(instancesDataDto.getRows(), pageRequestDto.getPage(), totalElements);
+        return PageDto.of(dataList, pageRequestDto.getPage(), totalElements);
     }
 }

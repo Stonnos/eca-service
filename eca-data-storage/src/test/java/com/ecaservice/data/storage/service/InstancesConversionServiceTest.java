@@ -1,17 +1,14 @@
 package com.ecaservice.data.storage.service;
 
-import com.ecaservice.web.dto.model.InstancesDataDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import weka.core.Attribute;
-import weka.core.Instance;
 import weka.core.Instances;
 
 import javax.inject.Inject;
-
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -39,17 +36,16 @@ class InstancesConversionServiceTest {
 
     @Test
     void testInstancesConversion() {
-        var instancesDataDto = instancesConversionService.covert(instances);
-        assertThat(instancesDataDto).isNotNull();
-        assertThat(instancesDataDto.getAttributes()).hasSize(instances.numAttributes());
-        assertThat(instancesDataDto.getRows()).hasSize(instances.numInstances());
-        assertRows(instancesDataDto);
+        var dataList = instancesConversionService.covert(instances);
+        assertThat(dataList).isNotNull();
+        assertThat(dataList).hasSize(instances.numInstances());
+        assertRows(dataList);
     }
 
-    private void assertRows(InstancesDataDto instancesDataDto) {
+    private void assertRows(List<List<String>> dataList) {
         IntStream.range(0, instances.numInstances()).forEach(i -> {
             var expected = instances.instance(i);
-            var actual = instancesDataDto.getRows().get(i);
+            var actual = dataList.get(i);
             IntStream.range(0, instances.numAttributes()).forEach(j -> {
                 if (!expected.isMissing(j)) {
                     Attribute attribute = expected.attribute(j);
