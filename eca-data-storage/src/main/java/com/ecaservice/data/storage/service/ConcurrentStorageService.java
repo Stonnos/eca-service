@@ -73,4 +73,9 @@ public class ConcurrentStorageService implements StorageService {
     public PageDto<List<String>> getData(long id, PageRequestDto pageRequestDto) {
         return storageService.getData(id, pageRequestDto);
     }
+
+    @Override
+    public List<String> getAttributes(long id) {
+        return storageService.getAttributes(id);
+    }
 }

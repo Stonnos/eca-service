@@ -55,4 +55,12 @@ public interface StorageService {
      * @return instances data rows
      */
     PageDto<List<String>> getData(long id, PageRequestDto pageRequestDto);
+
+    /**
+     * Gets instances attributes.
+     *
+     * @param id - instances id
+     * @return instances attributes
+     */
+    List<String> getAttributes(long id);
 }

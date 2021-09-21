@@ -50,6 +50,8 @@ class ConcurrentStorageServiceTest extends AbstractJpaTest {
     @MockBean
     private UserService userService;
     @MockBean
+    private TableMetaDataProvider tableMetaDataProvider;
+    @MockBean
     private SearchQueryCreator searchQueryCreator;
     @MockBean
     private InstancesResultSetExtractor instancesResultSetExtractor;

@@ -22,6 +22,8 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -176,5 +178,24 @@ public class DataStorageController {
             @Valid @RequestBody PageRequestDto pageRequestDto) {
         log.info("Received data page request: {}, instances id [{}]", pageRequestDto, id);
         return storageService.getData(id, pageRequestDto);
+    }
+
+    /**
+     * Gets attributes list for specified instances.
+     *
+     * @param id - instances id
+     * @return attributes list
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @Operation(
+            description = "Gets attributes list for specified instances",
+            summary = "Gets attributes list for specified instances",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+    )
+    @GetMapping(value = "/attributes")
+    public List<String> getAttributes(@Parameter(description = "Instances id", example = "1", required = true)
+                                      @PathVariable Long id) {
+        log.info("Received attributes request for instances [{}]", id);
+        return storageService.getAttributes(id);
     }
 }

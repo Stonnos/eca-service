@@ -9,6 +9,7 @@ import com.ecaservice.data.storage.service.InstancesConversionService;
 import com.ecaservice.data.storage.service.InstancesResultSetExtractor;
 import com.ecaservice.data.storage.service.InstancesService;
 import com.ecaservice.data.storage.service.SearchQueryCreator;
+import com.ecaservice.data.storage.service.TableMetaDataProvider;
 import com.ecaservice.data.storage.service.TableNameService;
 import com.ecaservice.data.storage.service.TransactionalService;
 import com.ecaservice.data.storage.service.UserService;
@@ -57,6 +58,8 @@ class StorageServiceImplTest extends AbstractJpaTest {
     private UserService userService;
     @MockBean
     private SearchQueryCreator searchQueryCreator;
+    @MockBean
+    private TableMetaDataProvider tableMetaDataProvider;
     @MockBean
     private InstancesResultSetExtractor instancesResultSetExtractor;
 
