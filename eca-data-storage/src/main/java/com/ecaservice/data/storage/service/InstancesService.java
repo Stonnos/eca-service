@@ -25,7 +25,6 @@ public class InstancesService {
 
     private static final String DROP_TABLE_QUERY_FORMAT = "DROP TABLE IF EXISTS %s";
     private static final String RENAME_TABLE_QUERY_FORMAT = "ALTER TABLE IF EXISTS %s RENAME TO %s";
-    private static final String SELECT_COUNT_FORMAT = "SELECT count(*) FROM %s";
 
     private final JdbcTemplate jdbcTemplate;
     private final TransactionalService transactionalMigrationService;
@@ -99,7 +98,8 @@ public class InstancesService {
                 instancesResultSetExtractor);
         Assert.notNull(instances, String.format("Expected not null instances for table [%s]", tableName));
         var dataList = instancesConversionService.covert(instances);
-        Long totalElements = jdbcTemplate.queryForObject(String.format(SELECT_COUNT_FORMAT, tableName), Long.class);
+        Long totalElements =
+                jdbcTemplate.queryForObject(sqlPreparedQuery.getCountQuery(), sqlPreparedQuery.getArgs(), Long.class);
         Assert.notNull(totalElements, String.format("Expected not null total elements for table [%s]", tableName));
         log.info("Instances has been fetched for table [{}], page request [{}]", tableName, pageRequestDto);
         return PageDto.of(dataList, pageRequestDto.getPage(), totalElements);

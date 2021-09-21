@@ -18,6 +18,11 @@ public class SqlPreparedQuery {
     private String query;
 
     /**
+     * Sql count query
+     */
+    private String countQuery;
+
+    /**
      * Query args
      */
     private Object[] args;

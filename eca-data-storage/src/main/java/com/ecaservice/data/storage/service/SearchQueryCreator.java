@@ -28,7 +28,7 @@ public class SearchQueryCreator {
     private static final String LIKE_OR_PART = " %s like ? or";
     private static final String LIKE_PART = " %s like ?";
     private static final String LIMIT_OFFSET_PART = " limit %d offset %d";
-    private static final String SELECT_PART = "select * from %s";
+    private static final String SELECT_PART = "select * from %s%s";
     private static final String ORDER_BY_PART = " order by %s %s";
     private static final String EQUAL_PART = " %s = ?";
     private static final String EQUAL_OR_PART = " %s = ? or";
@@ -36,6 +36,7 @@ public class SearchQueryCreator {
     private static final String ASC = "asc";
     private static final String NUMERIC_TYPE = "numeric";
     private static final String VARCHAR_TYPE = "character varying";
+    private static final String COUNT_QUERY_PART = "select count(*) from %s%s";
 
     private final TableMetaDataProvider tableMetaDataProvider;
 
@@ -48,18 +49,21 @@ public class SearchQueryCreator {
      */
     public SqlPreparedQuery buildSqlQuery(String tableName, PageRequestDto pageRequestDto) {
         var sqlPreparedQueryBuilder = SqlPreparedQuery.builder();
-        StringBuilder queryString = new StringBuilder(String.format(SELECT_PART, tableName));
+        StringBuilder queryString = new StringBuilder();
         if (StringUtils.isNotBlank(pageRequestDto.getSearchQuery())) {
             appendSearchQuery(tableName, pageRequestDto.getSearchQuery(), sqlPreparedQueryBuilder, queryString);
         }
+        String sqlCountQuery = String.format(COUNT_QUERY_PART, tableName, queryString.toString());
         if (StringUtils.isNotBlank(pageRequestDto.getSortField())) {
             String sortMode = pageRequestDto.isAscending() ? ASC : DESC;
             queryString.append(String.format(ORDER_BY_PART, pageRequestDto.getSortField(), sortMode));
         }
         int offset = pageRequestDto.getPage() * pageRequestDto.getSize();
         queryString.append(String.format(LIMIT_OFFSET_PART, pageRequestDto.getSize(), offset));
+        String sqlQuery = String.format(SELECT_PART, tableName, queryString.toString());
         return sqlPreparedQueryBuilder
-                .query(queryString.toString())
+                .query(sqlQuery)
+                .countQuery(sqlCountQuery)
                 .build();
     }
 

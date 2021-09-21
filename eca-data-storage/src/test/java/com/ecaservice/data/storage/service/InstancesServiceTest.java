@@ -43,7 +43,7 @@ class InstancesServiceTest extends AbstractJpaTest {
 
     private static final String SEARCH_QUERY = "good";
     private static final String TABLE_2_NAME = "table2";
-    private static final int PAGE_SIZE = 1000;
+    private static final int PAGE_SIZE = 100;
 
     private static final int EXPECTED_NUM_INSTANCES = 700;
 
@@ -78,7 +78,7 @@ class InstancesServiceTest extends AbstractJpaTest {
         pageRequest.setSize(PAGE_SIZE);
         var instancesPage = instancesService.getInstances(TABLE_2_NAME, pageRequest);
         assertThat(instancesPage).isNotNull();
-        assertThat(instancesPage.getContent()).hasSize(EXPECTED_NUM_INSTANCES);
-        assertThat(instancesPage.getTotalCount()).isEqualTo(instances.numInstances());
+        assertThat(instancesPage.getContent()).hasSize(PAGE_SIZE);
+        assertThat(instancesPage.getTotalCount()).isEqualTo(EXPECTED_NUM_INSTANCES);
     }
 }
