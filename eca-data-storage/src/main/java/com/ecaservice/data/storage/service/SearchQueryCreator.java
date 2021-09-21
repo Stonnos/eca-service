@@ -5,6 +5,7 @@ import com.ecaservice.data.storage.model.SqlPreparedQuery;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -29,14 +30,12 @@ public class SearchQueryCreator {
     private static final String LIMIT_OFFSET_PART = " limit %d offset %d";
     private static final String SELECT_PART = "select * from %s";
     private static final String ORDER_BY_PART = " order by %s %s";
-    private static final String EQUAL_PART = "%s = ?";
-    private static final String EQUAL_OR_PART = "%s = ? or";
+    private static final String EQUAL_PART = " %s = ?";
+    private static final String EQUAL_OR_PART = " %s = ? or";
     private static final String DESC = "desc";
     private static final String ASC = "asc";
     private static final String NUMERIC_TYPE = "numeric";
     private static final String VARCHAR_TYPE = "character varying";
-
-    private static final List<String> AVAILABLE_SEARCH_COLUMN_TYPES = List.of(NUMERIC_TYPE, VARCHAR_TYPE);
 
     private final TableMetaDataProvider tableMetaDataProvider;
 
@@ -68,7 +67,7 @@ public class SearchQueryCreator {
                                    String searchQuery,
                                    SqlPreparedQuery.SqlPreparedQueryBuilder sqlPreparedQueryBuilder,
                                    StringBuilder queryString) {
-        var columns = getTableSearchColumns(tableName);
+        var columns = getTableSearchColumns(tableName, searchQuery);
         Object[] args = new Object[columns.size()];
         queryString.append(WHERE_PART);
         int lastColumnIndex = columns.size() - 1;
@@ -81,15 +80,15 @@ public class SearchQueryCreator {
         sqlPreparedQueryBuilder.args(args);
     }
 
-    private List<ColumnModel> getTableSearchColumns(String tableName) {
+    private List<ColumnModel> getTableSearchColumns(String tableName, String searchQuery) {
         return tableMetaDataProvider.getTableColumns(tableName).stream()
-                .filter(columnModel -> AVAILABLE_SEARCH_COLUMN_TYPES.contains(columnModel.getDataType()))
+                .filter(columnModel -> isSearchSupported(columnModel, searchQuery))
                 .collect(Collectors.toList());
     }
 
     private void appendSearchPredicate(ColumnModel columnModel, String searchQuery,
                                        StringBuilder queryString, Object[] args, int argIndex, boolean lastPredicate) {
-        if (NUMERIC_TYPE.equals(columnModel.getDataType()) && StringUtils.isNumeric(searchQuery)) {
+        if (isNumberSearchSupported(columnModel, searchQuery)) {
             String part = lastPredicate ? EQUAL_PART : EQUAL_OR_PART;
             queryString.append(String.format(part, columnModel.getColumnName()));
             args[argIndex] = new BigDecimal(searchQuery);
@@ -101,5 +100,13 @@ public class SearchQueryCreator {
             throw new IllegalStateException(String.format("Can't create search predicate for column [%s] of type [%s]",
                     columnModel.getColumnName(), columnModel.getDataType()));
         }
+    }
+
+    private boolean isSearchSupported(ColumnModel columnModel, String searchQuery) {
+        return isNumberSearchSupported(columnModel, searchQuery) || VARCHAR_TYPE.equals(columnModel.getDataType());
+    }
+
+    private boolean isNumberSearchSupported(ColumnModel columnModel, String searchQuery) {
+        return NUMERIC_TYPE.equals(columnModel.getDataType()) && NumberUtils.isParsable(searchQuery);
     }
 }
