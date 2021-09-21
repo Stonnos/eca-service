@@ -43,11 +43,9 @@ public class InstancesConversionService {
     }
 
     private List<String> convertAttributes(Instances data) {
-        List<String> attributes = new ArrayList<>();
-        for (var enumeration = data.enumerateAttributes(); enumeration.hasMoreElements();) {
-            attributes.add(enumeration.nextElement().name());
-        }
-        return attributes;
+        return IntStream.range(0, data.numAttributes())
+                .mapToObj(i -> data.attribute(i).name())
+                .collect(Collectors.toList());
     }
 
     private List<String> convertInstance(Instance instance) {

@@ -4,6 +4,7 @@ import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import eca.data.file.resource.FileResource;
 import eca.data.file.xls.XLSLoader;
+import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import weka.core.Instances;
 
@@ -43,7 +44,8 @@ public class TestHelperUtils {
      *
      * @return created training data
      */
-    public static Instances loadInstances() throws Exception {
+    @SneakyThrows
+    public static Instances loadInstances() {
         ClassLoader classLoader = ClassLoader.getSystemClassLoader();
         XLSLoader dataLoader = new XLSLoader();
         dataLoader.setSource(new FileResource(new File(classLoader.getResource(DATA_PATH).getFile())));

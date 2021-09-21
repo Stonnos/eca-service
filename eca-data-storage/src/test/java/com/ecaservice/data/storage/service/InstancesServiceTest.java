@@ -60,7 +60,7 @@ class InstancesServiceTest extends AbstractJpaTest {
     private Instances instances;
 
     @Override
-    public void init() throws Exception {
+    public void init() {
         instances = loadInstances();
     }
 

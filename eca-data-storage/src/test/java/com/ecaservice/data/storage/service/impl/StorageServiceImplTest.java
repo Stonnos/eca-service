@@ -65,7 +65,7 @@ class StorageServiceImplTest extends AbstractJpaTest {
     }
 
     @Test
-    void testSaveData() throws Exception {
+    void testSaveData() {
         when(tableNameService.tableExists(TEST_TABLE)).thenReturn(false);
         when(userService.getCurrentUser()).thenReturn(USER_NAME);
         Instances instances = loadInstances();
