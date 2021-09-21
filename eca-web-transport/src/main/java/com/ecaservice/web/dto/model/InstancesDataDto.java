@@ -1,6 +1,7 @@
 package com.ecaservice.web.dto.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
@@ -11,14 +12,15 @@ import java.util.List;
  * @author Roman Batygin
  */
 @Data
+@Builder
 @Schema(description = "Instances data model")
 public class InstancesDataDto {
 
     /**
-     * Columns list
+     * Attributes list
      */
-    @Schema(description = "Columns list")
-    private List<String> columns;
+    @Schema(description = "Attributes list")
+    private List<String> attributes;
 
     /**
      * Data rows
