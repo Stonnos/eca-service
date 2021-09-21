@@ -150,4 +150,31 @@ public class DataStorageController {
     public void delete(@Parameter(description = "Instances id", example = "1", required = true) @RequestParam long id) {
         storageService.deleteData(id);
     }
+
+    /**
+     * Finds data page for specified instances.
+     *
+     * @param id             - instances id
+     * @param pageRequestDto - page request dto
+     * @return response entity
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @Operation(
+            description = "Finds data page for specified instances",
+            summary = "Finds data page for specified instances",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
+                    @Content(examples = {
+                            @ExampleObject(value = SIMPLE_PAGE_REQUEST_JSON)
+                    })
+            })
+    )
+    @PostMapping(value = "/data-page")
+    public PageDto<List<String>> getDataPage(
+            @Parameter(description = "Instances id", example = "1", required = true)
+            @RequestParam long id,
+            @Valid @RequestBody PageRequestDto pageRequestDto) {
+        log.info("Received data page request: {}, instances id [{}]", pageRequestDto, id);
+        return storageService.getData(id, pageRequestDto);
+    }
 }
