@@ -192,7 +192,7 @@ public class DataStorageController {
             summary = "Gets attributes list for specified instances",
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
-    @GetMapping(value = "/attributes")
+    @GetMapping(value = "/attributes/{id}")
     public List<String> getAttributes(@Parameter(description = "Instances id", example = "1", required = true)
                                       @PathVariable Long id) {
         log.info("Received attributes request for instances [{}]", id);

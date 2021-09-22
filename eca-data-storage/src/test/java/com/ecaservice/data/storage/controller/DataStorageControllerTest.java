@@ -36,11 +36,13 @@ import static com.ecaservice.data.storage.TestHelperUtils.createInstancesEntity;
 import static com.ecaservice.data.storage.TestHelperUtils.createPageRequestDto;
 import static com.ecaservice.data.storage.TestHelperUtils.loadInstances;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -56,17 +58,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(InstancesMapperImpl.class)
 class DataStorageControllerTest extends AbstractControllerTest {
 
+    private static final List<String> EXPECTED_ATTRIBUTES = List.of("attr1", "attr2");
+    private static final List<String> VALUES = List.of("val1", "val2");
+
     private static final String BASE_URL = "/instances";
     private static final String SAVE_URL = BASE_URL + "/save";
     private static final String RENAME_URL = BASE_URL + "/rename";
     private static final String DELETE_URL = BASE_URL + "/delete";
     private static final String LIST_URL = BASE_URL + "/list";
+    private static final String ATTRIBUTES_URL = BASE_URL + "/attributes/{id}";
+    private static final String DATA_PAGE_URL = BASE_URL + "/data-page";
 
     private static final String TRAINING_DATA_PARAM = "trainingData";
     private static final String TABLE_NAME = "table";
     private static final String TABLE_NAME_PARAM = "tableName";
 
-    private static final String ERROR_MESSAGE = "Error";
     private static final String ID_PARAM = "id";
     private static final long ID = 1L;
     private static final long TOTAL_ELEMENTS = 1L;
@@ -190,6 +196,47 @@ class DataStorageControllerTest extends AbstractControllerTest {
         when(storageService.getNextPage(any(PageRequestDto.class))).thenReturn(instancesEntityPage);
         mockMvc.perform(post(LIST_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .content(objectMapper.writeValueAsString(createPageRequestDto()))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(objectMapper.writeValueAsString(expected)));
+    }
+
+    @Test
+    void testGetAttributesUnauthorized() throws Exception {
+        mockMvc.perform(get(ATTRIBUTES_URL, ID)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testGetAttributes() throws Exception {
+        when(storageService.getAttributes(ID)).thenReturn(EXPECTED_ATTRIBUTES);
+        mockMvc.perform(get(ATTRIBUTES_URL, ID)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(objectMapper.writeValueAsString(EXPECTED_ATTRIBUTES)));
+    }
+
+    @Test
+    void testGetDataPageUnauthorized() throws Exception {
+        mockMvc.perform(post(DATA_PAGE_URL)
+                .param(ID_PARAM, String.valueOf(ID))
+                .content(objectMapper.writeValueAsString(createPageRequestDto()))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testGetDataPage() throws Exception {
+        var expected = PageDto.of(Collections.singletonList(VALUES), PAGE_NUMBER, TOTAL_ELEMENTS);
+        when(storageService.getData(anyLong(), any(PageRequestDto.class))).thenReturn(expected);
+        mockMvc.perform(post(DATA_PAGE_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .param(ID_PARAM, String.valueOf(ID))
                 .content(objectMapper.writeValueAsString(createPageRequestDto()))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
