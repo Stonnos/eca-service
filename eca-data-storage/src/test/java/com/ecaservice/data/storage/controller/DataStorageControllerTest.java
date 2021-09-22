@@ -68,6 +68,7 @@ class DataStorageControllerTest extends AbstractControllerTest {
     private static final String LIST_URL = BASE_URL + "/list";
     private static final String ATTRIBUTES_URL = BASE_URL + "/attributes/{id}";
     private static final String DATA_PAGE_URL = BASE_URL + "/data-page";
+    private static final String DETAILS_URL = BASE_URL + "/details/{id}";
 
     private static final String TRAINING_DATA_PARAM = "trainingData";
     private static final String TABLE_NAME = "table";
@@ -238,6 +239,26 @@ class DataStorageControllerTest extends AbstractControllerTest {
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(ID_PARAM, String.valueOf(ID))
                 .content(objectMapper.writeValueAsString(createPageRequestDto()))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(objectMapper.writeValueAsString(expected)));
+    }
+
+    @Test
+    void testGetInstancesDetailsUnauthorized() throws Exception {
+        mockMvc.perform(get(DETAILS_URL, ID)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testGetInstancesDetails() throws Exception {
+        var instancesEntity = createInstancesEntity();
+        when(storageService.getById(ID)).thenReturn(instancesEntity);
+        var expected = instancesMapper.map(instancesEntity);
+        mockMvc.perform(get(DETAILS_URL, ID)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
