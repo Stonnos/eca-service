@@ -69,7 +69,7 @@ public class InstancesService {
      *
      * @param tableName - table name
      */
-    @CacheEvict(value = TABLE_COLUMNS_CACHE, key = "#tableName")
+    @CacheEvict(value = TABLE_COLUMNS_CACHE)
     public void deleteInstances(String tableName) {
         log.info("Starting to delete table with name [{}]", tableName);
         jdbcTemplate.execute(String.format(DROP_TABLE_QUERY_FORMAT, tableName));
