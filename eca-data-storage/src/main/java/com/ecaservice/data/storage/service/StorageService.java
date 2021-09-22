@@ -32,6 +32,14 @@ public interface StorageService {
     InstancesEntity saveData(Instances instances, String tableName);
 
     /**
+     * Gets instances by id.
+     *
+     * @param id - instances id
+     * @return instances entity
+     */
+    InstancesEntity getById(long id);
+
+    /**
      * Renames data with specified id.
      *
      * @param id      - instances id

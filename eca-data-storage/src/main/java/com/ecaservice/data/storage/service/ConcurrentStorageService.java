@@ -54,6 +54,11 @@ public class ConcurrentStorageService implements StorageService {
     }
 
     @Override
+    public InstancesEntity getById(long id) {
+        return storageService.getById(id);
+    }
+
+    @Override
     public String renameData(long id, String newTableName) {
         String oldTableName;
         tableNamesMonitorsMap.putIfAbsent(newTableName, new Object());

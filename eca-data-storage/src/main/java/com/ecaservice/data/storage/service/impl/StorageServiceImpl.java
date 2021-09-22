@@ -128,7 +128,8 @@ public class StorageServiceImpl implements StorageService {
         return oldTableName;
     }
 
-    private InstancesEntity getById(long id) {
+    @Override
+    public InstancesEntity getById(long id) {
         return instancesRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(InstancesEntity.class, id));
     }

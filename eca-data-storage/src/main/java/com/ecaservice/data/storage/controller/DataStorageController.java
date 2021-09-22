@@ -118,6 +118,26 @@ public class DataStorageController {
     }
 
     /**
+     * Gets instances details.
+     *
+     * @param id - instances id
+     * @return instances dto
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @Operation(
+            description = "Gets instances details",
+            summary = "Gets instances details",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+    )
+    @GetMapping(value = "/details/{id}")
+    public InstancesDto getInstancesDetails(@Parameter(description = "Instances id", example = "1", required = true)
+                                            @PathVariable Long id) {
+        log.info("Request get instances [{}] details", id);
+        var instancesEntity = storageService.getById(id);
+        return instancesMapper.map(instancesEntity);
+    }
+
+    /**
      * Renames data with specified id.
      *
      * @param id        - instances id
