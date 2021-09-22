@@ -1,0 +1,10 @@
+.instances-table::ng-deep {
+
+  .ui-table-tbody > tr > td {
+    width: 250px;
+  }
+
+  .ui-table-thead > tr > th {
+    width: 250px;
+  }
+}

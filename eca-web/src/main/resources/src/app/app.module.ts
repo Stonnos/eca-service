@@ -40,6 +40,7 @@ import { UpdateUserEmailModule } from "./update-user-email/update-user-email.mod
 import { AccessDeniedModule } from "./access-denied/access-denied.module";
 import { AuditLogsModule } from "./audit-logs/audit-logs.module";
 import { EmailTemplatesModule } from "./email-templates/email-templates.module";
+import { InstancesDetailsModule } from "./instances-details/instances-details.module";
 
 @NgModule({
   declarations: [
@@ -83,7 +84,8 @@ import { EmailTemplatesModule } from "./email-templates/email-templates.module";
     NoopAnimationsModule,
     AccessDeniedModule,
     AuditLogsModule,
-    EmailTemplatesModule
+    EmailTemplatesModule,
+    InstancesDetailsModule
   ],
   providers: [
     CookieService
