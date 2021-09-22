@@ -54,4 +54,29 @@ export class InstancesService {
     formData.append('tableName', newTableName);
     return this.http.put(this.serviceUrl + '/rename', formData, { headers: headers });
   }
+
+  public getInstancesDetails(id: number): Observable<InstancesDto> {
+    const headers = new HttpHeaders({
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    return this.http.get<InstancesDto>(this.serviceUrl + '/details/' + id, { headers: headers });
+  }
+
+  public getAttributes(id: number): Observable<string[]> {
+    const headers = new HttpHeaders({
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    return this.http.get<string[]>(this.serviceUrl + '/attributes/' + id, { headers: headers });
+  }
+
+  public getDataPage(id: number, pageRequest: PageRequestDto): Observable<PageDto<string[]>> {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/json; charset=utf-8',
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    const params: HttpParams = new HttpParams()
+      .set('id', id.toString());
+    const options = { headers: headers, params: params };
+    return this.http.post<PageDto<string[]>>(this.serviceUrl + '/data-page', pageRequest, options);
+  }
 }
