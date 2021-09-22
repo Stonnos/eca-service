@@ -5,11 +5,12 @@ import {
   PageRequestDto,
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { BaseListComponent } from "../../common/lists/base-list.component";
-import { MessageService } from "primeng/api";
+import { ConfirmationService, MessageService } from "primeng/api";
 import { Observable } from "rxjs/internal/Observable";
 import { FieldService } from "../../common/services/field.service";
 import { InstancesService } from "../../instances/services/instances.service";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
+import { CreateEditInstancesModel } from "../../create-edit-instances/model/create-edit-instances.model";
 
 @Component({
   selector: 'app-instances-details',
@@ -22,8 +23,14 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
 
   private instancesDto: InstancesDto;
 
+  public createEditInstancesDialogVisibility: boolean = false;
+
+  public createEditInstancesModel: CreateEditInstancesModel = new CreateEditInstancesModel();
+
   public constructor(private injector: Injector,
                      private instancesService: InstancesService,
+                     private confirmationService: ConfirmationService,
+                     private router: Router,
                      private route: ActivatedRoute) {
     super(injector.get(MessageService), injector.get(FieldService));
     this.id = this.route.snapshot.params.id;
@@ -64,5 +71,43 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
 
   public getColumnValueByIndex(column: number, item: string[]): any {
     return item[column];
+  }
+
+  public onDeleteInstances(): void {
+    this.confirmationService.confirm({
+      message: 'Вы уверены?',
+      acceptLabel: 'Да',
+      rejectLabel: 'Нет',
+      accept: () => {
+        this.deleteInstances();
+      }
+    });
+  }
+
+  public onCreateEditInstancesDialogVisibility(visible): void {
+    this.createEditInstancesDialogVisibility = visible;
+  }
+
+  public renameInstances(): void {
+    this.createEditInstancesModel = new CreateEditInstancesModel(this.id, this.instancesDto.tableName);
+    this.createEditInstancesDialogVisibility = true;
+  }
+
+  public onRenameInstances(event): void {
+    this.getInstancesDetails();
+  }
+
+  private deleteInstances(): void {
+    this.instancesService.deleteInstances(this.id)
+      .subscribe({
+        next: () => {
+          this.messageService.add({ severity: 'success',
+            summary: `Данные ${this.instancesDto.tableName} были успешно удалены`, detail: '' });
+          this.router.navigate(['/dashboard/instances']);
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
   }
 }

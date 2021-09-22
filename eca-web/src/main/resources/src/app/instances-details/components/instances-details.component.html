@@ -4,12 +4,14 @@
       <button pButton
               type="button"
               pTooltip="Редактировать"
+              (click)="renameInstances()"
               class="ui-button-primary round-button ml-2 mt-2 mb-2"
               icon="pi pi-fw pi-pencil">
       </button>
       <button pButton
               type="button"
               pTooltip="Удалить"
+              (click)="onDeleteInstances()"
               class="ui-button-danger round-button ml-2 mt-2 mb-2"
               icon="pi pi-fw pi-trash">
       </button>
@@ -78,3 +80,11 @@
     </ng-template>
   </p-table>
 </div>
+
+<app-create-edit-instances
+  [item]="createEditInstancesModel"
+  [visible]="createEditInstancesDialogVisibility"
+  (visibilityChange)="onCreateEditInstancesDialogVisibility($event)"
+  (renameEvent)="onRenameInstances($event)">
+</app-create-edit-instances>
+
