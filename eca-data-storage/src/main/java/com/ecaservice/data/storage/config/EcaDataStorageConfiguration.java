@@ -13,6 +13,7 @@ import eca.data.db.SqlTypeUtils;
 import eca.data.file.FileDataLoader;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -30,6 +31,7 @@ import static org.springframework.web.context.WebApplicationContext.SCOPE_REQUES
 @Configuration
 @EnableOpenApi
 @Oauth2ResourceServer
+@EnableCaching
 @EntityScan(basePackageClasses = InstancesEntity.class)
 @EnableJpaRepositories(basePackageClasses = InstancesRepository.class)
 @EnableGlobalExceptionHandler
