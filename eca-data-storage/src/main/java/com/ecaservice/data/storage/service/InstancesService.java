@@ -6,12 +6,15 @@ import com.ecaservice.web.dto.model.PageRequestDto;
 import eca.data.db.SqlQueryHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import weka.core.Instances;
 
 import java.util.List;
+
+import static com.ecaservice.data.storage.config.CacheNames.TABLE_COLUMNS_CACHE;
 
 /**
  * Instances service.
@@ -66,6 +69,7 @@ public class InstancesService {
      *
      * @param tableName - table name
      */
+    @CacheEvict(value = TABLE_COLUMNS_CACHE, key = "#tableName")
     public void deleteInstances(String tableName) {
         log.info("Starting to delete table with name [{}]", tableName);
         jdbcTemplate.execute(String.format(DROP_TABLE_QUERY_FORMAT, tableName));
@@ -78,6 +82,7 @@ public class InstancesService {
      * @param tableName    - table name
      * @param newTableName - new table name
      */
+    @CacheEvict(value = TABLE_COLUMNS_CACHE, key = "#tableName")
     public void renameInstances(String tableName, String newTableName) {
         log.info("Starting to rename table [{}] with new name [{}]", tableName, newTableName);
         jdbcTemplate.execute(String.format(RENAME_TABLE_QUERY_FORMAT, tableName, newTableName));

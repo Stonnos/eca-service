@@ -3,10 +3,13 @@ package com.ecaservice.data.storage.service;
 import com.ecaservice.data.storage.model.ColumnModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static com.ecaservice.data.storage.config.CacheNames.TABLE_COLUMNS_CACHE;
 
 /**
  * Database tables meta data provider.
@@ -33,6 +36,7 @@ public class TableMetaDataProvider {
      * @param tableName - table name
      * @return table columns info
      */
+    @Cacheable(TABLE_COLUMNS_CACHE)
     public List<ColumnModel> getTableColumns(String tableName) {
         log.info("Starting to fetch table [{}] meta data", tableName);
         var result = jdbcTemplate.query(COLUMNS_META_DATA_QUERY,
