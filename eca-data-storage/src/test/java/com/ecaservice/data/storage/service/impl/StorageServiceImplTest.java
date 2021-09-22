@@ -4,6 +4,7 @@ import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.data.storage.AbstractJpaTest;
 import com.ecaservice.data.storage.config.StorageTestConfiguration;
 import com.ecaservice.data.storage.entity.InstancesEntity;
+import com.ecaservice.data.storage.model.ColumnModel;
 import com.ecaservice.data.storage.repository.InstancesRepository;
 import com.ecaservice.data.storage.service.InstancesConversionService;
 import com.ecaservice.data.storage.service.InstancesResultSetExtractor;
@@ -24,6 +25,7 @@ import weka.core.Instances;
 
 import javax.inject.Inject;
 import java.util.Collections;
+import java.util.List;
 
 import static com.ecaservice.data.storage.TestHelperUtils.createInstancesEntity;
 import static com.ecaservice.data.storage.TestHelperUtils.loadInstances;
@@ -42,9 +44,17 @@ import static org.mockito.Mockito.when;
 class StorageServiceImplTest extends AbstractJpaTest {
 
     private static final String TEST_TABLE = "test_table";
+    private static final String TEST_TABLE_2 = "test_table_2";
     private static final String NEW_TABLE_NAME = "new_table_name";
     private static final long ID = 2L;
     private static final String USER_NAME = "admin";
+
+    private static final List<ColumnModel> COLUMNS = Collections.singletonList(
+            ColumnModel.builder()
+                    .columnName("class")
+                    .dataType("character varying")
+                    .build()
+    );
 
     @Inject
     private StorageServiceImpl storageService;
@@ -63,6 +73,13 @@ class StorageServiceImplTest extends AbstractJpaTest {
     @MockBean
     private InstancesResultSetExtractor instancesResultSetExtractor;
 
+    private InstancesEntity instancesEntity;
+
+    @Override
+    public void init() {
+        createAndSaveInstancesEntity();
+    }
+
     @Override
     public void deleteAll() {
         instancesRepository.deleteAll();
@@ -70,20 +87,19 @@ class StorageServiceImplTest extends AbstractJpaTest {
 
     @Test
     void testSaveData() {
-        when(tableNameService.tableExists(TEST_TABLE)).thenReturn(false);
+        when(tableNameService.tableExists(TEST_TABLE_2)).thenReturn(false);
         when(userService.getCurrentUser()).thenReturn(USER_NAME);
         Instances instances = loadInstances();
-        InstancesEntity expected = storageService.saveData(instances, TEST_TABLE);
+        InstancesEntity expected = storageService.saveData(instances, TEST_TABLE_2);
         InstancesEntity actual = instancesRepository.findById(expected.getId()).orElse(null);
         assertThat(actual).isNotNull();
-        assertThat(actual.getTableName()).isEqualTo(TEST_TABLE);
+        assertThat(actual.getTableName()).isEqualTo(TEST_TABLE_2);
         assertThat(actual.getCreatedBy()).isEqualTo(USER_NAME);
     }
 
     @Test
     void testRenameData() {
         when(tableNameService.tableExists(TEST_TABLE)).thenReturn(false);
-        InstancesEntity instancesEntity = createAndSaveInstancesEntity();
         storageService.renameData(instancesEntity.getId(), NEW_TABLE_NAME);
         InstancesEntity actual = instancesRepository.findById(instancesEntity.getId()).orElse(null);
         assertThat(actual).isNotNull();
@@ -92,20 +108,17 @@ class StorageServiceImplTest extends AbstractJpaTest {
 
     @Test
     void testDeleteData() {
-        InstancesEntity instancesEntity = createAndSaveInstancesEntity();
         storageService.deleteData(instancesEntity.getId());
         assertThat(instancesRepository.existsById(instancesEntity.getId())).isFalse();
     }
 
     @Test
     void testDeleteNotExistingData() {
-        createAndSaveInstancesEntity();
         assertThrows(EntityNotFoundException.class, () -> storageService.deleteData(ID));
     }
 
     @Test
     void testGetInstancesPage() {
-        createAndSaveInstancesEntity();
         PageRequestDto pageRequestDto =
                 new PageRequestDto(0, 10, CREATED, true, StringUtils.EMPTY, Collections.emptyList());
         Page<InstancesEntity> instancesEntityPage = storageService.getNextPage(pageRequestDto);
@@ -115,13 +128,20 @@ class StorageServiceImplTest extends AbstractJpaTest {
 
     @Test
     void testGetNotExistingData() {
-        createAndSaveInstancesEntity();
         assertThrows(EntityNotFoundException.class, () -> storageService.getData(ID, null));
     }
 
-    private InstancesEntity createAndSaveInstancesEntity() {
-        InstancesEntity instancesEntity = createInstancesEntity();
+    @Test
+    void testGetAttributes() {
+        when(tableMetaDataProvider.getTableColumns(instancesEntity.getTableName()))
+                .thenReturn(COLUMNS);
+        var actual = storageService.getAttributes(instancesEntity.getId());
+        assertThat(actual).hasSameSizeAs(COLUMNS);
+    }
+
+    private void createAndSaveInstancesEntity() {
+        instancesEntity = createInstancesEntity();
         instancesEntity.setTableName(TEST_TABLE);
-        return instancesRepository.save(instancesEntity);
+        instancesRepository.save(instancesEntity);
     }
 }

@@ -38,19 +38,19 @@ class SearchQueryCreatorTest {
                     .build(),
             ColumnModel.builder()
                     .columnName("column4")
-                    .dataType("character varying")
+                    .dataType("numeric")
                     .build()
     );
 
     private static final String TABLE_NAME = "table";
 
-    private static final String SEARCH_TERM = "term";
+    private static final String SEARCH_TERM = "2.35";
     private static final String SORT_FIELD = "column1";
     private static final String LIKE_FORMAT = "%{0}%";
     public static final String EXPECTED_SQL_QUERY = "select * from table where column1 like ? or column2 like ? or " +
-            "column3 like ? or column4 like ? order by column1 desc limit 10 offset 0";
+            "column3 like ? or column4 = ? order by column1 desc limit 10 offset 0";
     public static final String EXPECTED_SQL_COUNT_QUERY = "select count(*) from table where column1 like ? or column2" +
-            " like ? or column3 like ? or column4 like ?";
+            " like ? or column3 like ? or column4 = ?";
 
     @Mock
     private TableMetaDataProvider tableMetaDataProvider;
@@ -74,8 +74,5 @@ class SearchQueryCreatorTest {
         assertThat(preparedSql.getQuery()).isEqualTo(EXPECTED_SQL_QUERY);
         assertThat(preparedSql.getCountQuery()).isEqualTo(EXPECTED_SQL_COUNT_QUERY);
         assertThat(preparedSql.getArgs()).hasSize(COLUMNS.size());
-        for (var arg : preparedSql.getArgs()) {
-            assertThat(arg).isEqualTo(MessageFormat.format(LIKE_FORMAT, SEARCH_TERM));
-        }
     }
 }
