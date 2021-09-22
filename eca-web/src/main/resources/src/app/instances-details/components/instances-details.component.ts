@@ -62,8 +62,7 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
     return this.instancesService.getDataPage(this.id, pageRequest);
   }
 
-  public getColumnValue(column: string, item: string[]): any {
-    const columnIndex = this.columns && this.columns.findIndex(value => value.name == column);
-    return columnIndex && columnIndex >= 0 ? item[columnIndex] : null;
+  public getColumnValueByIndex(column: number, item: string[]): any {
+    return item[column];
   }
 }
