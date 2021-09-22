@@ -13,6 +13,8 @@ import { FieldService } from "../../common/services/field.service";
 import { InstancesService } from "../services/instances.service";
 import { finalize } from "rxjs/internal/operators";
 import { CreateEditInstancesModel } from "../../create-edit-instances/model/create-edit-instances.model";
+import { RouterPaths } from "../../routing/router-paths";
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-instances-list',
@@ -27,9 +29,11 @@ export class InstancesListComponent extends BaseListComponent<InstancesDto> impl
 
   public constructor(private injector: Injector,
                      private confirmationService: ConfirmationService,
-                     private instancesService: InstancesService) {
+                     private instancesService: InstancesService,
+                     private router: Router) {
     super(injector.get(MessageService), injector.get(FieldService));
     this.defaultSortField = InstancesFields.CREATED;
+    this.linkColumns = [InstancesFields.TABLE_NAME];
     this.initColumns();
   }
 
@@ -73,6 +77,14 @@ export class InstancesListComponent extends BaseListComponent<InstancesDto> impl
         this.deleteInstances(item);
       }
     });
+  }
+
+  public onLink(item: InstancesDto, column: string): void {
+    if (column == InstancesFields.TABLE_NAME) {
+      this.router.navigate([RouterPaths.INSTANCES_DETAILS_URL, item.id]);
+    } else {
+      this.messageService.add({severity: 'error', summary: 'Ошибка', detail: `Can't handle ${column} as link`});
+    }
   }
 
   private deleteInstances(item: InstancesDto): void {
