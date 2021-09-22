@@ -28,9 +28,24 @@
     (onLazyLoad)="onLazyLoad($event)">
 
     <ng-template pTemplate="caption">
-
+      <div class="ui-g text-center justify-content-center align-items-center instances-title text-wrap">
+        Данные: {{ instancesDto?.tableName }}
+      </div>
+      <div class="ui-g mt-2 instances-meta-info">
+        <div class="ui-g-3 text-left text-wrap">
+          Число объектов: {{ instancesDto?.numInstances }}
+        </div>
+        <div class="ui-g-3 text-left text-wrap">
+          Число атрибутов: {{ instancesDto?.numAttributes }}
+        </div>
+        <div class="ui-g-3 text-left text-wrap">
+          Пользователь: {{ instancesDto?.createdBy }}
+        </div>
+        <div class="ui-g-3 text-left text-wrap">
+          Дата создания: {{ instancesDto?.created }}
+        </div>
+      </div>
     </ng-template>
-
     <ng-template pTemplate="header">
       <tr>
         <ng-container *ngFor="let column of columns">
