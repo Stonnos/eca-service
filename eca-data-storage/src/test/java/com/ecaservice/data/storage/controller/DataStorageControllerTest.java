@@ -5,6 +5,7 @@ import com.ecaservice.data.storage.exception.TableExistsException;
 import com.ecaservice.data.storage.mapping.InstancesMapper;
 import com.ecaservice.data.storage.mapping.InstancesMapperImpl;
 import com.ecaservice.data.storage.model.MultipartFileResource;
+import com.ecaservice.data.storage.report.InstancesReportService;
 import com.ecaservice.data.storage.repository.InstancesRepository;
 import com.ecaservice.data.storage.service.InstancesLoader;
 import com.ecaservice.data.storage.service.impl.StorageServiceImpl;
@@ -87,6 +88,8 @@ class DataStorageControllerTest extends AbstractControllerTest {
     private InstancesLoader instancesLoader;
     @MockBean
     private JdbcTemplate jdbcTemplate;
+    @MockBean
+    private InstancesReportService instancesReportService;
 
     @Inject
     private InstancesMapper instancesMapper;
