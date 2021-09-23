@@ -47,6 +47,7 @@ eca-ds:
   maxPageSize: 50
   dateFormat: yyyy-MM-dd HH:mm:ss
   batchSize: 100
+  reportsPath: reports-config.json
 
 ## Swagger properties
 open-api:

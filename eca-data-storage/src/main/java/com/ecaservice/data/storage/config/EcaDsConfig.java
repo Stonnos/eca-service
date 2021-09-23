@@ -26,4 +26,9 @@ public class EcaDsConfig {
      * Batch size for data saving
      */
     private Integer batchSize;
+
+    /**
+     * Reports config path
+     */
+    private String reportsPath;
 }

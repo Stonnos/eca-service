@@ -1,0 +1,42 @@
+[
+  {
+    "title": "Microsoft Excel (.xlsx)",
+    "reportType": "XLS",
+    "enabled": true
+  },
+  {
+    "title": "Формат CSV (.csv)",
+    "reportType": "CSV",
+    "enabled": true
+  },
+  {
+    "title": "Формат Arff (.arff)",
+    "reportType": "ARFF",
+    "enabled": true
+  },
+  {
+    "title": "Json формат (.json)",
+    "reportType": "JSON",
+    "enabled": true
+  },
+  {
+    "title": "Xml формат (.xml)",
+    "reportType": "XML",
+    "enabled": true
+  },
+  {
+    "title": "Текстовый формат (.txt)",
+    "reportType": "TXT",
+    "enabled": true
+  },
+  {
+    "title": "Формат данных (.data)",
+    "reportType": "DATA",
+    "enabled": true
+  },
+  {
+    "title": "Microsoft Word (.docx)",
+    "reportType": "DOCX",
+    "enabled": true
+  }
+]
