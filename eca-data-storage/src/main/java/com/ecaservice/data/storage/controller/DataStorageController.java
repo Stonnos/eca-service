@@ -237,7 +237,7 @@ public class DataStorageController {
             summary = "Download instances report with specified type",
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
-    @PostMapping(value = "/download")
+    @GetMapping(value = "/download")
     public void downloadInstancesReport(
             @Parameter(description = "Instances id", example = "1", required = true)
             @RequestParam long id,

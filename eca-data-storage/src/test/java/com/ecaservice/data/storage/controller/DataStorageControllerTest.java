@@ -5,6 +5,7 @@ import com.ecaservice.data.storage.exception.TableExistsException;
 import com.ecaservice.data.storage.mapping.InstancesMapper;
 import com.ecaservice.data.storage.mapping.InstancesMapperImpl;
 import com.ecaservice.data.storage.model.MultipartFileResource;
+import com.ecaservice.data.storage.model.report.ReportType;
 import com.ecaservice.data.storage.report.InstancesReportService;
 import com.ecaservice.data.storage.repository.InstancesRepository;
 import com.ecaservice.data.storage.service.InstancesLoader;
@@ -70,12 +71,14 @@ class DataStorageControllerTest extends AbstractControllerTest {
     private static final String ATTRIBUTES_URL = BASE_URL + "/attributes/{id}";
     private static final String DATA_PAGE_URL = BASE_URL + "/data-page";
     private static final String DETAILS_URL = BASE_URL + "/details/{id}";
+    private static final String DOWNLOAD_REPORT_URL = BASE_URL + "/download";
 
     private static final String TRAINING_DATA_PARAM = "trainingData";
     private static final String TABLE_NAME = "table";
     private static final String TABLE_NAME_PARAM = "tableName";
 
     private static final String ID_PARAM = "id";
+    private static final String REPORT_TYPE_PARAM = "reportType";
     private static final long ID = 1L;
     private static final long TOTAL_ELEMENTS = 1L;
     private static final int PAGE_NUMBER = 0;
@@ -266,5 +269,22 @@ class DataStorageControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(expected)));
+    }
+
+    @Test
+    void testDownloadInstancesReportUnauthorized() throws Exception {
+        mockMvc.perform(get(DOWNLOAD_REPORT_URL)
+                .param(REPORT_TYPE_PARAM, ReportType.XLS.name())
+                .param(ID_PARAM, String.valueOf(ID)))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testDownloadInstancesReportOk() throws Exception {
+        mockMvc.perform(get(DOWNLOAD_REPORT_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .param(REPORT_TYPE_PARAM, ReportType.XLS.name())
+                .param(ID_PARAM, String.valueOf(ID)))
+                .andExpect(status().isOk());
     }
 }
