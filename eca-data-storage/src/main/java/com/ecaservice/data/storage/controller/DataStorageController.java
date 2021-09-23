@@ -3,6 +3,8 @@ package com.ecaservice.data.storage.controller;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.mapping.InstancesMapper;
 import com.ecaservice.data.storage.model.MultipartFileResource;
+import com.ecaservice.data.storage.model.report.ReportType;
+import com.ecaservice.data.storage.report.InstancesReportService;
 import com.ecaservice.data.storage.service.InstancesLoader;
 import com.ecaservice.data.storage.service.StorageService;
 import com.ecaservice.web.dto.model.CreateInstancesResultDto;
@@ -33,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import weka.core.Instances;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -58,6 +61,7 @@ public class DataStorageController {
     private static final int MAX_TABLE_NAME_LENGTH = 30;
 
     private final StorageService storageService;
+    private final InstancesReportService instancesReportService;
     private final InstancesLoader instancesLoader;
     private final InstancesMapper instancesMapper;
 
@@ -217,5 +221,30 @@ public class DataStorageController {
                                       @PathVariable Long id) {
         log.info("Received attributes request for instances [{}]", id);
         return storageService.getAttributes(id);
+    }
+
+    /**
+     * Download instances report with specified type.
+     *
+     * @param id                  - instances id
+     * @param reportType          - report type
+     * @param httpServletResponse - http servlet response
+     * @throws Exception in case of error
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @Operation(
+            description = "Download instances report with specified type",
+            summary = "Download instances report with specified type",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+    )
+    @PostMapping(value = "/download")
+    public void downloadInstancesReport(
+            @Parameter(description = "Instances id", example = "1", required = true)
+            @RequestParam long id,
+            @Parameter(description = "Report type", required = true)
+            @RequestParam ReportType reportType,
+            HttpServletResponse httpServletResponse) throws Exception {
+        log.info("Request to download instances [{}] report [{}]", id, reportType);
+        instancesReportService.generateInstancesReport(id, reportType, httpServletResponse);
     }
 }
