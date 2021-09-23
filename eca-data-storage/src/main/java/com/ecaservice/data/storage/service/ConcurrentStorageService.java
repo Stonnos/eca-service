@@ -80,6 +80,11 @@ public class ConcurrentStorageService implements StorageService {
     }
 
     @Override
+    public Instances getInstances(long id) {
+        return storageService.getInstances(id);
+    }
+
+    @Override
     public List<String> getAttributes(long id) {
         return storageService.getAttributes(id);
     }

@@ -1,16 +1,21 @@
 package com.ecaservice.data.storage.model.report;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 /**
  * Report type enum.
  *
  * @author Roman Batygin
  */
+@Getter
+@RequiredArgsConstructor
 public enum ReportType {
 
     /**
      * Xls report type.
      */
-    XLS {
+    XLS("xlsx") {
         @Override
         public <T> T handle(ReportTypeVisitor<T> reportTypeVisitor) {
             return reportTypeVisitor.visitXls();
@@ -20,7 +25,7 @@ public enum ReportType {
     /**
      * CSV report type.
      */
-    CSV {
+    CSV("csv") {
         @Override
         public <T> T handle(ReportTypeVisitor<T> reportTypeVisitor) {
             return reportTypeVisitor.visitCsv();
@@ -30,7 +35,7 @@ public enum ReportType {
     /**
      * Arff report type.
      */
-    ARFF {
+    ARFF("arff") {
         @Override
         public <T> T handle(ReportTypeVisitor<T> reportTypeVisitor) {
             return reportTypeVisitor.visitArff();
@@ -40,7 +45,7 @@ public enum ReportType {
     /**
      * JSON report type.
      */
-    JSON {
+    JSON("json") {
         @Override
         public <T> T handle(ReportTypeVisitor<T> reportTypeVisitor) {
             return reportTypeVisitor.visitJson();
@@ -50,7 +55,7 @@ public enum ReportType {
     /**
      * XML report type.
      */
-    XML {
+    XML("xml") {
         @Override
         public <T> T handle(ReportTypeVisitor<T> reportTypeVisitor) {
             return reportTypeVisitor.visitXml();
@@ -60,7 +65,7 @@ public enum ReportType {
     /**
      * Txt report type.
      */
-    TXT {
+    TXT("txt") {
         @Override
         public <T> T handle(ReportTypeVisitor<T> reportTypeVisitor) {
             return reportTypeVisitor.visitTxt();
@@ -70,7 +75,7 @@ public enum ReportType {
     /**
      * DATA report type.
      */
-    DATA {
+    DATA("data") {
         @Override
         public <T> T handle(ReportTypeVisitor<T> reportTypeVisitor) {
             return reportTypeVisitor.visitData();
@@ -80,12 +85,17 @@ public enum ReportType {
     /**
      * Docx report type.
      */
-    DOCX {
+    DOCX("docx") {
         @Override
         public <T> T handle(ReportTypeVisitor<T> reportTypeVisitor) {
             return reportTypeVisitor.visitDocx();
         }
     };
+
+    /**
+     * Report extension
+     */
+    private final String extension;
 
     /**
      * Visitor pattern common method.

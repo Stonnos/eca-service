@@ -99,6 +99,13 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
+    public Instances getInstances(long id) {
+        log.info("Starting to get instances with id [{}]", id);
+        InstancesEntity instancesEntity = getById(id);
+        return instancesService.getInstances(instancesEntity.getTableName());
+    }
+
+    @Override
     public List<String> getAttributes(long id) {
         log.info("Gets instances [{}] attributes", id);
         InstancesEntity instancesEntity = getById(id);

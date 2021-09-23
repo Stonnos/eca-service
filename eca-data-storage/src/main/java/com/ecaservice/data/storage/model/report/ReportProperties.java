@@ -21,6 +21,11 @@ public class ReportProperties {
     private ReportType reportType;
 
     /**
+     * Report extension
+     */
+    private String extension;
+
+    /**
      * Is report enabled?
      */
     private Boolean enabled;

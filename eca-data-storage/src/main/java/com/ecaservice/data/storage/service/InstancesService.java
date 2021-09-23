@@ -28,6 +28,7 @@ public class InstancesService {
 
     private static final String DROP_TABLE_QUERY_FORMAT = "DROP TABLE IF EXISTS %s";
     private static final String RENAME_TABLE_QUERY_FORMAT = "ALTER TABLE IF EXISTS %s RENAME TO %s";
+    private static final String SELECT_QUERY = "select * from %s";
 
     private final JdbcTemplate jdbcTemplate;
     private final TransactionalService transactionalMigrationService;
@@ -108,5 +109,18 @@ public class InstancesService {
         Assert.notNull(totalElements, String.format("Expected not null total elements for table [%s]", tableName));
         log.info("Instances has been fetched for table [{}], page request [{}]", tableName, pageRequestDto);
         return PageDto.of(dataList, pageRequestDto.getPage(), totalElements);
+    }
+
+    /**
+     * Gets instances from specified table.
+     *
+     * @param tableName - table name
+     * @return instances object
+     */
+    public Instances getInstances(String tableName) {
+        log.info("Starting to get instances for table [{}]", tableName);
+        var instances = jdbcTemplate.query(String.format(SELECT_QUERY, tableName), instancesResultSetExtractor);
+        log.info("Instances has been fetched for table [{}]", tableName);
+        return instances;
     }
 }
