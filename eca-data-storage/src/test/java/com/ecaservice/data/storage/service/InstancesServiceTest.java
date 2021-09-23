@@ -43,6 +43,7 @@ class InstancesServiceTest extends AbstractJpaTest {
 
     private static final String SEARCH_QUERY = "good";
     private static final String TABLE_2_NAME = "table2";
+    private static final String TABLE_3_NAME = "table3";
     private static final int PAGE_SIZE = 100;
 
     private static final int EXPECTED_NUM_INSTANCES = 700;
@@ -70,7 +71,7 @@ class InstancesServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    void testGetInstances() {
+    void testGetInstancesWithPageParams() {
         instancesService.saveInstances(TABLE_2_NAME, instances);
         when(tableMetaDataProvider.getTableColumns(TABLE_2_NAME)).thenReturn(COLUMNS);
         var pageRequest = createPageRequestDto();
@@ -80,5 +81,14 @@ class InstancesServiceTest extends AbstractJpaTest {
         assertThat(instancesPage).isNotNull();
         assertThat(instancesPage.getContent()).hasSize(PAGE_SIZE);
         assertThat(instancesPage.getTotalCount()).isEqualTo(EXPECTED_NUM_INSTANCES);
+    }
+
+    @Test
+    void testGetInstances() {
+        instancesService.saveInstances(TABLE_3_NAME, instances);
+        var actual = instancesService.getInstances(TABLE_3_NAME);
+        assertThat(actual).isNotNull();
+        assertThat(actual).hasSameSizeAs(instances);
+        assertThat(actual.numAttributes()).isEqualTo(instances.numAttributes());
     }
 }
