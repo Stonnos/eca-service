@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.ecaservice.data.storage.TestHelperUtils.createInstancesEntity;
+import static com.ecaservice.data.storage.TestHelperUtils.createReportProperties;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -26,7 +27,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 class InstancesMapperTest {
 
     private static final long ID = 1L;
-    private static final String TITLE = "title";
 
     @Inject
     private InstancesMapper instancesMapper;
@@ -54,9 +54,7 @@ class InstancesMapperTest {
 
     @Test
     void testMapReportProperties() {
-        var reportProperties = new ReportProperties();
-        reportProperties.setReportType(ReportType.CSV);
-        reportProperties.setTitle(TITLE);
+        var reportProperties = createReportProperties();
         var actual = instancesMapper.mapReportProperties(reportProperties);
         assertThat(actual).isNotNull();
         assertThat(actual.getReportType()).isEqualTo(reportProperties.getReportType().name());

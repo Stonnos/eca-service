@@ -7,6 +7,7 @@ import com.ecaservice.data.storage.mapping.InstancesMapperImpl;
 import com.ecaservice.data.storage.model.MultipartFileResource;
 import com.ecaservice.data.storage.model.report.ReportType;
 import com.ecaservice.data.storage.report.InstancesReportService;
+import com.ecaservice.data.storage.report.ReportsConfigurationService;
 import com.ecaservice.data.storage.repository.InstancesRepository;
 import com.ecaservice.data.storage.service.InstancesLoader;
 import com.ecaservice.data.storage.service.impl.StorageServiceImpl;
@@ -36,6 +37,7 @@ import java.util.List;
 import static com.ecaservice.data.storage.TestHelperUtils.bearerHeader;
 import static com.ecaservice.data.storage.TestHelperUtils.createInstancesEntity;
 import static com.ecaservice.data.storage.TestHelperUtils.createPageRequestDto;
+import static com.ecaservice.data.storage.TestHelperUtils.createReportProperties;
 import static com.ecaservice.data.storage.TestHelperUtils.loadInstances;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -72,6 +74,7 @@ class DataStorageControllerTest extends AbstractControllerTest {
     private static final String DATA_PAGE_URL = BASE_URL + "/data-page";
     private static final String DETAILS_URL = BASE_URL + "/details/{id}";
     private static final String DOWNLOAD_REPORT_URL = BASE_URL + "/download";
+    private static final String REPORTS_INFO_URL = BASE_URL + "/reports-info";
 
     private static final String TRAINING_DATA_PARAM = "trainingData";
     private static final String TABLE_NAME = "table";
@@ -93,6 +96,8 @@ class DataStorageControllerTest extends AbstractControllerTest {
     private JdbcTemplate jdbcTemplate;
     @MockBean
     private InstancesReportService instancesReportService;
+    @MockBean
+    private ReportsConfigurationService reportsConfigurationService;
 
     @Inject
     private InstancesMapper instancesMapper;
@@ -286,5 +291,23 @@ class DataStorageControllerTest extends AbstractControllerTest {
                 .param(REPORT_TYPE_PARAM, ReportType.XLS.name())
                 .param(ID_PARAM, String.valueOf(ID)))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void testGetInstancesReportsInfoUnauthorized() throws Exception {
+        mockMvc.perform(get(REPORTS_INFO_URL))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testGetInstancesReportsInfo() throws Exception {
+        var reportPropertiesList = Collections.singletonList(createReportProperties());
+        var expected = instancesMapper.mapReportPropertiesList(reportPropertiesList);
+        when(reportsConfigurationService.getReportProperties()).thenReturn(reportPropertiesList);
+        mockMvc.perform(get(REPORTS_INFO_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(objectMapper.writeValueAsString(expected)));
     }
 }
