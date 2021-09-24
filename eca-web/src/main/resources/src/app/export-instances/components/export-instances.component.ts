@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { BaseCreateDialogComponent } from "../../common/dialog/base-create-dialog.component";
 import { ExportInstancesModel } from "../model/export-instances.model";
-import { InstancesReportInfoDto } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
+import { InstancesReportModel } from "../model/instances-report.model";
 
 @Component({
   selector: 'app-export-instances',
@@ -11,7 +11,7 @@ import { InstancesReportInfoDto } from "../../../../../../../target/generated-so
 export class ExportInstancesComponent extends BaseCreateDialogComponent<ExportInstancesModel> {
 
   @Input()
-  public reportTypes: InstancesReportInfoDto[] = [];
+  public reportTypes: InstancesReportModel[] = [];
 
   public loading: boolean = false;
 

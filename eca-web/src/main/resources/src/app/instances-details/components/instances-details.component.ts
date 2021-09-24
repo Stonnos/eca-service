@@ -12,6 +12,7 @@ import { InstancesService } from "../../instances/services/instances.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { CreateEditInstancesModel } from "../../create-edit-instances/model/create-edit-instances.model";
 import { ExportInstancesModel } from "../../export-instances/model/export-instances.model";
+import { InstancesReportModel } from "../../export-instances/model/instances-report.model";
 
 @Component({
   selector: 'app-instances-details',
@@ -28,7 +29,7 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
 
   public createEditInstancesModel: CreateEditInstancesModel = new CreateEditInstancesModel();
 
-  public reportTypes: InstancesReportInfoDto[] = [];
+  public reportTypes: InstancesReportModel[] = [];
 
   public exportInstancesDialogVisibility: boolean = false;
 
@@ -77,7 +78,8 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
     this.instancesService.getInstancesReportsInfo()
       .subscribe({
         next: (reportTypes: InstancesReportInfoDto[]) => {
-          this.reportTypes = reportTypes;
+          this.reportTypes = reportTypes
+            .map((reportType: InstancesReportInfoDto) => new InstancesReportModel(reportType.title, reportType.reportType, reportType.fileExtension));
         },
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
