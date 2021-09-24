@@ -15,6 +15,8 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.List;
 
+import static com.google.common.collect.Lists.newArrayList;
+
 /**
  * Report configuration service.
  *
@@ -30,7 +32,7 @@ public class ReportsConfigurationService {
     private final EcaDsConfig ecaDsConfig;
 
     @Getter
-    private List<ReportProperties> reportProperties;
+    private List<ReportProperties> reportProperties = newArrayList();
 
     /**
      * Initialize reports configuration.

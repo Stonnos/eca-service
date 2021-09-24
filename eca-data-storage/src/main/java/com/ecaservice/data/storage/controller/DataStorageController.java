@@ -5,10 +5,12 @@ import com.ecaservice.data.storage.mapping.InstancesMapper;
 import com.ecaservice.data.storage.model.MultipartFileResource;
 import com.ecaservice.data.storage.model.report.ReportType;
 import com.ecaservice.data.storage.report.InstancesReportService;
+import com.ecaservice.data.storage.report.ReportsConfigurationService;
 import com.ecaservice.data.storage.service.InstancesLoader;
 import com.ecaservice.data.storage.service.StorageService;
 import com.ecaservice.web.dto.model.CreateInstancesResultDto;
 import com.ecaservice.web.dto.model.InstancesDto;
+import com.ecaservice.web.dto.model.InstancesReportInfoDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -62,6 +64,7 @@ public class DataStorageController {
 
     private final StorageService storageService;
     private final InstancesReportService instancesReportService;
+    private final ReportsConfigurationService reportsConfigurationService;
     private final InstancesLoader instancesLoader;
     private final InstancesMapper instancesMapper;
 
@@ -221,6 +224,26 @@ public class DataStorageController {
                                       @PathVariable Long id) {
         log.info("Received attributes request for instances [{}]", id);
         return storageService.getAttributes(id);
+    }
+
+    /**
+     * Gets instances reports info.
+     *
+     * @return instances reports info list
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @Operation(
+            description = "Gets instances reports info",
+            summary = "Gets instances reports info",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+    )
+    @GetMapping(value = "/reports-info")
+    public List<InstancesReportInfoDto> getInstancesReportsInfo() {
+        log.info("Request get instances reports info");
+        var reportProperties = reportsConfigurationService.getReportProperties();
+        var instancesReports = instancesMapper.mapReportPropertiesList(reportProperties);
+        log.info("Fetched instances reports: {}", instancesReports);
+        return instancesReports;
     }
 
     /**
