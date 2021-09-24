@@ -1,8 +1,10 @@
 package com.ecaservice.data.storage.report;
 
 import com.ecaservice.data.storage.config.EcaDsConfig;
+import com.ecaservice.data.storage.model.MockHttpServletResponseResource;
 import com.ecaservice.data.storage.model.report.ReportType;
 import com.ecaservice.data.storage.service.StorageService;
+import eca.data.file.FileDataLoader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,12 +16,16 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import weka.core.Attribute;
+import weka.core.Instance;
 import weka.core.Instances;
 
 import javax.inject.Inject;
+import java.util.stream.IntStream;
 
 import static com.ecaservice.data.storage.TestHelperUtils.loadInstances;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.when;
 
 /**
@@ -60,6 +66,38 @@ class InstancesReportServiceTest {
             String expectedContentDisposition = String.format(ATTACHMENT_FORMAT, expectedFileName);
             assertThat(httpServletResponse.getHeader(HttpHeaders.CONTENT_DISPOSITION)).isEqualTo(
                     expectedContentDisposition);
+            assertResponse(expectedFileName, httpServletResponse);
         }
+    }
+
+    private void assertResponse(String expectedFileName, MockHttpServletResponse httpServletResponse) throws Exception {
+        FileDataLoader fileDataLoader = new FileDataLoader();
+        fileDataLoader.setSource(new MockHttpServletResponseResource(expectedFileName, httpServletResponse));
+        Instances actual = fileDataLoader.loadInstances();
+        assertInstances(instances, actual);
+    }
+
+    private void assertInstances(Instances expected, Instances actual) {
+        assertThat(actual).isNotNull();
+        assertThat(actual.numAttributes()).isEqualTo(expected.numAttributes());
+        assertThat(actual.numInstances()).isEqualTo(expected.numInstances());
+        IntStream.range(0, expected.numInstances()).forEach(i -> {
+            Instance expectedInstance = expected.instance(i);
+            Instance actualInstance = actual.instance(i);
+            IntStream.range(0, expectedInstance.numAttributes()).forEach(j -> {
+                Attribute attribute = expectedInstance.attribute(j);
+                switch (attribute.type()) {
+                    case Attribute.NOMINAL:
+                    case Attribute.DATE:
+                        assertThat(actualInstance.stringValue(j)).isEqualTo(expectedInstance.stringValue(j));
+                        break;
+                    case Attribute.NUMERIC:
+                        assertThat(actualInstance.value(j)).isEqualTo(expectedInstance.value(j));
+                        break;
+                    default:
+                        fail("Expected numeric or nominal attribute type!");
+                }
+            });
+        });
     }
 }
