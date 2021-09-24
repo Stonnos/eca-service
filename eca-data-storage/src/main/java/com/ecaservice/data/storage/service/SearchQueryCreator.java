@@ -1,5 +1,6 @@
 package com.ecaservice.data.storage.service;
 
+import com.ecaservice.core.filter.exception.FieldNotFoundException;
 import com.ecaservice.data.storage.model.ColumnModel;
 import com.ecaservice.data.storage.model.SqlPreparedQuery;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -48,6 +49,14 @@ public class SearchQueryCreator {
      * @return sql prepared query
      */
     public SqlPreparedQuery buildSqlQuery(String tableName, PageRequestDto pageRequestDto) {
+        if (!isValidSortField(tableName, pageRequestDto)) {
+            throw new FieldNotFoundException(
+                    String.format("Sort field [%s] doesn't exists", pageRequestDto.getSortField()));
+        }
+        return internalBuildSqlQuery(tableName, pageRequestDto);
+    }
+
+    private SqlPreparedQuery internalBuildSqlQuery(String tableName, PageRequestDto pageRequestDto) {
         var sqlPreparedQueryBuilder = SqlPreparedQuery.builder();
         StringBuilder queryString = new StringBuilder();
         if (StringUtils.isNotBlank(pageRequestDto.getSearchQuery())) {
@@ -55,7 +64,7 @@ public class SearchQueryCreator {
         }
         String sqlCountQuery = String.format(COUNT_QUERY_PART, tableName, queryString.toString());
         if (StringUtils.isNotBlank(pageRequestDto.getSortField())) {
-           appendOrderBy(queryString, pageRequestDto);
+            appendOrderBy(queryString, pageRequestDto);
         }
         appendLimitOffset(queryString, pageRequestDto);
         String sqlQuery = String.format(SELECT_PART, tableName, queryString.toString());
@@ -120,5 +129,15 @@ public class SearchQueryCreator {
 
     private boolean isNumberSearchSupported(ColumnModel columnModel, String searchQuery) {
         return NUMERIC_TYPE.equals(columnModel.getDataType()) && NumberUtils.isParsable(searchQuery);
+    }
+
+    private boolean isValidSortField(String tableName, PageRequestDto pageRequestDto) {
+        if (StringUtils.isBlank(pageRequestDto.getSortField())) {
+            return true;
+        }
+        var columnNames = tableMetaDataProvider.getTableColumns(tableName).stream()
+                .map(ColumnModel::getColumnName)
+                .collect(Collectors.toList());
+        return columnNames.contains(pageRequestDto.getSortField());
     }
 }
