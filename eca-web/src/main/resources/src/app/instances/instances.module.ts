@@ -6,6 +6,7 @@ import { SharedModule } from "../common/shared.module";
 import { InstancesListComponent } from "./components/instances-list.component";
 import { InstancesService } from "./services/instances.service";
 import { CreateEditInstancesModule } from "../create-edit-instances/create-edit-instances.module";
+import { ExportInstancesModule } from "../export-instances/export-instances.module";
 
 @NgModule({
   imports: [
@@ -13,7 +14,8 @@ import { CreateEditInstancesModule } from "../create-edit-instances/create-edit-
     SharedModule,
     FormsModule,
     UiComponentsModule,
-    CreateEditInstancesModule
+    CreateEditInstancesModule,
+    ExportInstancesModule
   ],
   declarations: [
     InstancesListComponent

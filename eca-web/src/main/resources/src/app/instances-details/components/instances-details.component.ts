@@ -1,6 +1,6 @@
 import { Component, Injector } from '@angular/core';
 import {
-  InstancesDto, InstancesReportInfoDto,
+  InstancesDto,
   PageDto,
   PageRequestDto,
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
@@ -11,8 +11,7 @@ import { FieldService } from "../../common/services/field.service";
 import { InstancesService } from "../../instances/services/instances.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { CreateEditInstancesModel } from "../../create-edit-instances/model/create-edit-instances.model";
-import { ExportInstancesModel, ReportValue } from "../../export-instances/model/export-instances.model";
-import { ListModel } from "../../common/model/list.model";
+import { ExportInstancesModel } from "../../export-instances/model/export-instances.model";
 
 @Component({
   selector: 'app-instances-details',
@@ -28,8 +27,6 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
   public createEditInstancesDialogVisibility: boolean = false;
 
   public createEditInstancesModel: CreateEditInstancesModel = new CreateEditInstancesModel();
-
-  public reportTypes: ListModel<ReportValue>[] = [];
 
   public exportInstancesDialogVisibility: boolean = false;
 
@@ -47,7 +44,6 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
   public ngOnInit() {
     this.getInstancesDetails();
     this.getAttributes();
-    this.getReports();
   }
 
   public getInstancesDetails(): void {
@@ -67,22 +63,6 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
       .subscribe({
         next: (attributes: string[]) => {
           this.columns = attributes.map((attr: string) => { return { name: attr, label: attr} });
-        },
-        error: (error) => {
-          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-        }
-      });
-  }
-
-  public getReports(): void {
-    this.instancesService.getInstancesReportsInfo()
-      .subscribe({
-        next: (reportTypes: InstancesReportInfoDto[]) => {
-          this.reportTypes = reportTypes
-            .map((reportType: InstancesReportInfoDto) => {
-              const reportValue = new ReportValue(reportType.reportType, reportType.fileExtension);
-              return new ListModel<ReportValue>(reportType.title, reportValue);
-            });
         },
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });

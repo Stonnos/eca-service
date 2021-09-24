@@ -57,9 +57,15 @@
           </button>
           <button pButton
                   type="button"
-                  class="ui-button-danger round-button"
+                  class="ui-button-danger round-button mr-1"
                   (click)="onDeleteInstances(item)"
                   icon="pi pi-fw pi-trash">
+          </button>
+          <button pButton
+                  type="button"
+                  class="ui-button-success round-button"
+                  (click)="onExportInstances(item)"
+                  icon="pi pi-fw pi-download">
           </button>
         </td>
       </tr>
@@ -81,3 +87,8 @@
   (itemEvent)="onCreateInstances($event)"
   (renameEvent)="onRenameInstances($event)">
 </app-create-edit-instances>
+
+<app-export-instances [visible]="exportInstancesDialogVisibility"
+                      (visibilityChange)="onExportInstancesDialogVisibility($event)"
+                      [item]="exportInstancesModel">
+</app-export-instances>

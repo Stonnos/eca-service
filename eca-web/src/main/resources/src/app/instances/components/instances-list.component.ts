@@ -15,6 +15,7 @@ import { finalize } from "rxjs/internal/operators";
 import { CreateEditInstancesModel } from "../../create-edit-instances/model/create-edit-instances.model";
 import { RouterPaths } from "../../routing/router-paths";
 import { Router } from "@angular/router";
+import { ExportInstancesModel } from "../../export-instances/model/export-instances.model";
 
 @Component({
   selector: 'app-instances-list',
@@ -26,6 +27,10 @@ export class InstancesListComponent extends BaseListComponent<InstancesDto> impl
   public createEditInstancesDialogVisibility: boolean = false;
 
   public createEditInstancesModel: CreateEditInstancesModel = new CreateEditInstancesModel();
+
+  public exportInstancesDialogVisibility: boolean = false;
+
+  public exportInstancesModel: ExportInstancesModel = new ExportInstancesModel();
 
   public constructor(private injector: Injector,
                      private confirmationService: ConfirmationService,
@@ -85,6 +90,15 @@ export class InstancesListComponent extends BaseListComponent<InstancesDto> impl
     } else {
       this.messageService.add({severity: 'error', summary: 'Ошибка', detail: `Can't handle ${column} as link`});
     }
+  }
+
+  public onExportInstances(item: InstancesDto): void {
+    this.exportInstancesModel = new ExportInstancesModel(item.id, item.tableName);
+    this.exportInstancesDialogVisibility = true;
+  }
+
+  public onExportInstancesDialogVisibility(visible): void {
+    this.exportInstancesDialogVisibility = visible;
   }
 
   private deleteInstances(item: InstancesDto): void {
