@@ -41,6 +41,7 @@ import { AccessDeniedModule } from "./access-denied/access-denied.module";
 import { AuditLogsModule } from "./audit-logs/audit-logs.module";
 import { EmailTemplatesModule } from "./email-templates/email-templates.module";
 import { InstancesDetailsModule } from "./instances-details/instances-details.module";
+import { ExportInstancesModule } from "./export-instances/export-instances.module";
 
 @NgModule({
   declarations: [
@@ -85,7 +86,8 @@ import { InstancesDetailsModule } from "./instances-details/instances-details.mo
     AccessDeniedModule,
     AuditLogsModule,
     EmailTemplatesModule,
-    InstancesDetailsModule
+    InstancesDetailsModule,
+    ExportInstancesModule
   ],
   providers: [
     CookieService

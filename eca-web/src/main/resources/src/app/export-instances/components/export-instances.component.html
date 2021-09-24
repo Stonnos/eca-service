@@ -1,0 +1,75 @@
+<p-dialog
+  #dialog
+  [(visible)]="visible"
+  header="Экспорт датасета"
+  [style]="{ width: '650px' }"
+  appendTo="body"
+  [modal]="true"
+  [blockScroll]="false"
+  [draggable]="false"
+  [resizable]="false"
+  (onHide)="hide()">
+
+  <form novalidate class="form d-flex flex-column justify-content-center m-auto" (keydown.enter)="submit()">
+    <div class="ui-g ui-fluid">
+      <div class="ui-g-10 mx-auto mb-3">
+        <label class="text-bold control-label">Тип отчета</label>
+        <p-dropdown
+          required
+          id="reportType"
+          name="reportType"
+          placeholder="Выбрать"
+          [appendTo]="dialog"
+          [options]="reportTypes"
+          optionLabel="title"
+          [(ngModel)]="item.reportType"
+          #reportType="ngModel"
+          [style]="{'width':'100%'}">
+        </p-dropdown>
+        <div class="text-danger error-message" *ngIf="submitted && reportType.invalid">
+          <div *ngIf="reportType?.errors?.required">
+            Выберите тип отчета
+          </div>
+        </div>
+      </div>
+      <div class="ui-g-10 mx-auto mb-5">
+        <label class="text-bold control-label">Название файла</label>
+        <input
+          required
+          pInputText
+          id="fileName"
+          name="fileName"
+          type="text"
+          placeholder="Введите название файла"
+          [(ngModel)]="item.fileName"
+          #fileName="ngModel"
+          [disabled]="loading"
+          maxlength="50"
+          class="form-control d-block w-100">
+        <div class="text-danger error-message" *ngIf="fileName.invalid && (fileName.dirty || fileName.touched || submitted)">
+          <div *ngIf="fileName?.errors?.required">
+            Заполните название файла
+          </div>
+        </div>
+      </div>
+
+      <div class="ui-g-10 mx-auto mt-3">
+        <button
+          pButton
+          type="button"
+          (click)="submit()"
+          [disabled]="!isValid() || loading"
+          class="export-button ml-auto">
+          <span class="export-button-text" *ngIf="!loading">Экспорт</span>
+          <p-progressSpinner
+            *ngIf="loading"
+            class="export-button-progress-spinner"
+            strokeWidth="4"
+            animationDuration=".5s">
+          </p-progressSpinner>
+        </button>
+      </div>
+    </div>
+  </form>
+
+</p-dialog>
