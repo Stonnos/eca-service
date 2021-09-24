@@ -86,4 +86,15 @@ export class InstancesService {
     });
     return this.http.get<InstancesReportInfoDto[]>(this.serviceUrl + '/reports-info', { headers: headers });
   }
+
+  public downloadInstancesReport(id: number, reportType: string): Observable<Blob> {
+    const headers = new HttpHeaders({
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    const params: HttpParams = new HttpParams()
+      .set('id', id.toString())
+      .set('reportType', reportType);
+    const options = { headers: headers, params: params, responseType: 'blob' as 'json' };
+    return this.http.get<Blob>(this.serviceUrl + '/download', options);
+  }
 }

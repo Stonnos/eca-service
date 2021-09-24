@@ -11,8 +11,8 @@ import { FieldService } from "../../common/services/field.service";
 import { InstancesService } from "../../instances/services/instances.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { CreateEditInstancesModel } from "../../create-edit-instances/model/create-edit-instances.model";
-import { ExportInstancesModel } from "../../export-instances/model/export-instances.model";
-import { InstancesReportModel } from "../../export-instances/model/instances-report.model";
+import { ExportInstancesModel, ReportValue } from "../../export-instances/model/export-instances.model";
+import { ListModel } from "../../common/model/list.model";
 
 @Component({
   selector: 'app-instances-details',
@@ -29,7 +29,7 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
 
   public createEditInstancesModel: CreateEditInstancesModel = new CreateEditInstancesModel();
 
-  public reportTypes: InstancesReportModel[] = [];
+  public reportTypes: ListModel<ReportValue>[] = [];
 
   public exportInstancesDialogVisibility: boolean = false;
 
@@ -79,7 +79,10 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
       .subscribe({
         next: (reportTypes: InstancesReportInfoDto[]) => {
           this.reportTypes = reportTypes
-            .map((reportType: InstancesReportInfoDto) => new InstancesReportModel(reportType.title, reportType.reportType, reportType.fileExtension));
+            .map((reportType: InstancesReportInfoDto) => {
+              const reportValue = new ReportValue(reportType.reportType, reportType.fileExtension);
+              return new ListModel<ReportValue>(reportType.title, reportValue);
+            });
         },
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
@@ -107,7 +110,7 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
   }
 
   public onExportInstances(): void {
-    this.exportInstancesModel = new ExportInstancesModel(this.instancesDto.tableName);
+    this.exportInstancesModel = new ExportInstancesModel(this.instancesDto.id, this.instancesDto.tableName);
     this.exportInstancesDialogVisibility = true;
   }
 

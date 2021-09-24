@@ -2,7 +2,7 @@
   #dialog
   [(visible)]="visible"
   header="Экспорт датасета"
-  [style]="{ width: '650px' }"
+  [style]="{ width: '600px' }"
   appendTo="body"
   [modal]="true"
   [blockScroll]="false"
@@ -21,8 +21,9 @@
           placeholder="Выбрать"
           [appendTo]="dialog"
           [options]="reportTypes"
+          [disabled]="loading"
           optionLabel="label"
-          [(ngModel)]="item.reportType"
+          [(ngModel)]="item.reportValue"
           #reportType="ngModel"
           [style]="{'width':'100%'}">
         </p-dropdown>
@@ -57,7 +58,7 @@
           pButton
           type="button"
           (click)="submit()"
-          [disabled]="!isValid() || loading"
+          [disabled]="loading"
           class="export-button ml-auto">
           <span class="export-button-text" *ngIf="!loading">Экспорт</span>
           <p-progressSpinner
