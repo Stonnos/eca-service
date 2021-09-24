@@ -1,5 +1,6 @@
 package com.ecaservice.data.storage.service;
 
+import com.ecaservice.core.filter.exception.FieldNotFoundException;
 import com.ecaservice.data.storage.model.ColumnModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,7 @@ import java.util.List;
 
 import static com.ecaservice.data.storage.TestHelperUtils.createPageRequestDto;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 /**
@@ -51,6 +53,7 @@ class SearchQueryCreatorTest {
             "column3 like ? or column4 = ? order by column1 desc limit 10 offset 0";
     public static final String EXPECTED_SQL_COUNT_QUERY = "select count(*) from table where column1 like ? or column2" +
             " like ? or column3 like ? or column4 = ?";
+    private static final String INVALID_SORT_FIELD = "avc";
 
     @Mock
     private TableMetaDataProvider tableMetaDataProvider;
@@ -75,4 +78,12 @@ class SearchQueryCreatorTest {
         assertThat(preparedSql.getCountQuery()).isEqualTo(EXPECTED_SQL_COUNT_QUERY);
         assertThat(preparedSql.getArgs()).hasSize(COLUMNS.size());
     }
+
+    @Test
+    void testBuildSqlQueryWithInvalidSortField() {
+        var pageRequestDto = createPageRequestDto();
+        pageRequestDto.setSortField(INVALID_SORT_FIELD);
+        assertThrows(FieldNotFoundException.class, () -> searchQueryCreator.buildSqlQuery(TABLE_NAME, pageRequestDto));
+    }
+
 }
