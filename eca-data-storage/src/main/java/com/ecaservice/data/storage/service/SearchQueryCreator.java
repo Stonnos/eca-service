@@ -135,9 +135,8 @@ public class SearchQueryCreator {
         if (StringUtils.isBlank(pageRequestDto.getSortField())) {
             return true;
         }
-        var columnNames = tableMetaDataProvider.getTableColumns(tableName).stream()
-                .map(ColumnModel::getColumnName)
-                .collect(Collectors.toList());
-        return columnNames.contains(pageRequestDto.getSortField());
+        var columns = tableMetaDataProvider.getTableColumns(tableName);
+        return columns.stream()
+                .anyMatch(columnModel -> columnModel.getColumnName().equals(pageRequestDto.getSortField()));
     }
 }
