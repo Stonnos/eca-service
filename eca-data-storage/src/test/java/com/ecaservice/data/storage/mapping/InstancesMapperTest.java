@@ -1,6 +1,8 @@
 package com.ecaservice.data.storage.mapping;
 
 import com.ecaservice.data.storage.entity.InstancesEntity;
+import com.ecaservice.data.storage.model.report.ReportProperties;
+import com.ecaservice.data.storage.model.report.ReportType;
 import com.ecaservice.web.dto.model.InstancesDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,6 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class InstancesMapperTest {
 
     private static final long ID = 1L;
+    private static final String TITLE = "title";
 
     @Inject
     private InstancesMapper instancesMapper;
@@ -47,5 +50,17 @@ class InstancesMapperTest {
         InstancesEntity instancesEntity = createInstancesEntity();
         List<InstancesDto> instancesDtoList = instancesMapper.map(Collections.singletonList(instancesEntity));
         assertThat(instancesDtoList).isNotNull().hasSize(1);
+    }
+
+    @Test
+    void testMapReportProperties() {
+        var reportProperties = new ReportProperties();
+        reportProperties.setReportType(ReportType.CSV);
+        reportProperties.setTitle(TITLE);
+        var actual = instancesMapper.mapReportProperties(reportProperties);
+        assertThat(actual).isNotNull();
+        assertThat(actual.getReportType()).isEqualTo(reportProperties.getReportType().name());
+        assertThat(actual.getFileExtension()).isEqualTo(reportProperties.getReportType().getExtension());
+        assertThat(actual.getTitle()).isEqualTo(reportProperties.getTitle());
     }
 }
