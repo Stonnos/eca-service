@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
   CreateInstancesResultDto,
-  InstancesDto,
+  InstancesDto, InstancesReportInfoDto,
   PageDto,
   PageRequestDto,
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
@@ -78,5 +78,12 @@ export class InstancesService {
       .set('id', id.toString());
     const options = { headers: headers, params: params };
     return this.http.post<PageDto<string[]>>(this.serviceUrl + '/data-page', pageRequest, options);
+  }
+
+  public getInstancesReportsInfo(): Observable<InstancesReportInfoDto[]> {
+    const headers = new HttpHeaders({
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    return this.http.get<InstancesReportInfoDto[]>(this.serviceUrl + '/reports-info', { headers: headers });
   }
 }

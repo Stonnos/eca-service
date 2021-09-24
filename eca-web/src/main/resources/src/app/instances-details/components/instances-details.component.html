@@ -15,6 +15,13 @@
               class="ui-button-danger round-button ml-2 mt-2 mb-2"
               icon="pi pi-fw pi-trash">
       </button>
+      <button pButton
+              type="button"
+              pTooltip="Экспорт в файл"
+              (click)="onExportInstances()"
+              class="ui-button-success round-button ml-2 mt-2 mb-2"
+              icon="pi pi-fw pi-download">
+      </button>
     </div>
     <div class="col-6">
       <app-search-query (search)="onSearch($event)">
@@ -87,4 +94,10 @@
   (visibilityChange)="onCreateEditInstancesDialogVisibility($event)"
   (renameEvent)="onRenameInstances($event)">
 </app-create-edit-instances>
+
+<app-export-instances [visible]="exportInstancesDialogVisibility"
+                      (visibilityChange)="onExportInstancesDialogVisibility($event)"
+                      [reportTypes]="reportTypes"
+                      [item]="exportInstancesModel">
+</app-export-instances>
 

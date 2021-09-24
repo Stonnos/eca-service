@@ -32,7 +32,7 @@
           </div>
         </div>
       </div>
-      <div class="ui-g-10 mx-auto mb-5">
+      <div class="ui-g-10 mx-auto">
         <label class="text-bold control-label">Название файла</label>
         <input
           required
@@ -52,11 +52,11 @@
           </div>
         </div>
       </div>
-
       <div class="ui-g-10 mx-auto mt-3">
         <button
           pButton
           type="button"
+          icon="pi pi-fw pi-download"
           (click)="submit()"
           [disabled]="!isValid() || loading"
           class="export-button ml-auto">

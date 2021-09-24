@@ -1,6 +1,6 @@
 import { Component, Injector } from '@angular/core';
 import {
-  InstancesDto,
+  InstancesDto, InstancesReportInfoDto,
   PageDto,
   PageRequestDto,
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
@@ -11,6 +11,7 @@ import { FieldService } from "../../common/services/field.service";
 import { InstancesService } from "../../instances/services/instances.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { CreateEditInstancesModel } from "../../create-edit-instances/model/create-edit-instances.model";
+import { ExportInstancesModel } from "../../export-instances/model/export-instances.model";
 
 @Component({
   selector: 'app-instances-details',
@@ -27,6 +28,12 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
 
   public createEditInstancesModel: CreateEditInstancesModel = new CreateEditInstancesModel();
 
+  public reportTypes: InstancesReportInfoDto[] = [];
+
+  public exportInstancesDialogVisibility: boolean = false;
+
+  public exportInstancesModel: ExportInstancesModel = new ExportInstancesModel();
+
   public constructor(private injector: Injector,
                      private instancesService: InstancesService,
                      private confirmationService: ConfirmationService,
@@ -39,6 +46,7 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
   public ngOnInit() {
     this.getInstancesDetails();
     this.getAttributes();
+    this.getReports();
   }
 
   public getInstancesDetails(): void {
@@ -65,6 +73,18 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
       });
   }
 
+  public getReports(): void {
+    this.instancesService.getInstancesReportsInfo()
+      .subscribe({
+        next: (reportTypes: InstancesReportInfoDto[]) => {
+          this.reportTypes = reportTypes;
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
+  }
+
   public getNextPageAsObservable(pageRequest: PageRequestDto): Observable<PageDto<string[]>> {
     return this.instancesService.getDataPage(this.id, pageRequest);
   }
@@ -84,8 +104,17 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
     });
   }
 
+  public onExportInstances(): void {
+    this.exportInstancesModel = new ExportInstancesModel(this.instancesDto.tableName);
+    this.exportInstancesDialogVisibility = true;
+  }
+
   public onCreateEditInstancesDialogVisibility(visible): void {
     this.createEditInstancesDialogVisibility = visible;
+  }
+
+  public onExportInstancesDialogVisibility(visible): void {
+    this.exportInstancesDialogVisibility = visible;
   }
 
   public renameInstances(): void {
