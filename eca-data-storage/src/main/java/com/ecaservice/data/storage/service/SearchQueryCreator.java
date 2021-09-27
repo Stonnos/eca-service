@@ -26,8 +26,8 @@ public class SearchQueryCreator {
 
     private static final String LIKE_FORMAT = "%{0}%";
     private static final String WHERE_PART = " where";
-    private static final String LIKE_OR_PART = " %s like ? or";
-    private static final String LIKE_PART = " %s like ?";
+    private static final String LIKE_OR_PART = " lower(%s) like ? or";
+    private static final String LIKE_PART = " lower(%s) like ?";
     private static final String LIMIT_OFFSET_PART = " limit %d offset %d";
     private static final String SELECT_PART = "select * from %s%s";
     private static final String ORDER_BY_PART = " order by %s %s";
@@ -60,7 +60,8 @@ public class SearchQueryCreator {
         var sqlPreparedQueryBuilder = SqlPreparedQuery.builder();
         StringBuilder queryString = new StringBuilder();
         if (StringUtils.isNotBlank(pageRequestDto.getSearchQuery())) {
-            appendSearchQuery(tableName, pageRequestDto.getSearchQuery(), sqlPreparedQueryBuilder, queryString);
+            appendSearchQuery(tableName, pageRequestDto.getSearchQuery().toLowerCase(), sqlPreparedQueryBuilder,
+                    queryString);
         }
         String sqlCountQuery = String.format(COUNT_QUERY_PART, tableName, queryString.toString());
         if (StringUtils.isNotBlank(pageRequestDto.getSortField())) {
