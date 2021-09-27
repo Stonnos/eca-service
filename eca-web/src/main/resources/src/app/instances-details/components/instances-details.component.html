@@ -45,20 +45,32 @@
       <div class="ui-g text-center justify-content-center align-items-center instances-title text-wrap">
         Данные: {{ instancesDto?.tableName }}
       </div>
-      <div class="ui-g mt-2 instances-meta-info">
-        <div class="ui-g-3 text-left text-wrap">
-          Число объектов: {{ instancesDto?.numInstances }}
+        <div class="ui-g ui-fluid">
+          <div class="ui-g-12 ui-md-3 pl-2">
+            <p-panel class="statistics-panel text-center" [showHeader]="false">
+              <p class="attr">Число объектов</p>
+              <p class="value">{{ instancesDto?.numInstances }}</p>
+            </p-panel>
+          </div>
+          <div class="ui-g-12 ui-md-3">
+            <p-panel class="statistics-panel text-center" [showHeader]="false">
+              <p class="attr">Число атрибутов:</p>
+              <p class="value">{{ instancesDto?.numAttributes }}</p>
+            </p-panel>
+          </div>
+          <div class="ui-g-12 ui-md-3">
+            <p-panel class="statistics-panel text-center" [showHeader]="false">
+              <p class="attr">Пользователь:</p>
+              <p class="value">{{ instancesDto?.createdBy }}</p>
+            </p-panel>
+          </div>
+          <div class="ui-g-12 ui-md-3 pr-2">
+            <p-panel class="statistics-panel text-center" [showHeader]="false">
+              <p class="attr"> Дата создания:</p>
+              <p class="value">{{ instancesDto?.created }}</p>
+            </p-panel>
+          </div>
         </div>
-        <div class="ui-g-3 text-left text-wrap">
-          Число атрибутов: {{ instancesDto?.numAttributes }}
-        </div>
-        <div class="ui-g-3 text-left text-wrap">
-          Пользователь: {{ instancesDto?.createdBy }}
-        </div>
-        <div class="ui-g-3 text-left text-wrap">
-          Дата создания: {{ instancesDto?.created }}
-        </div>
-      </div>
     </ng-template>
     <ng-template pTemplate="header">
       <tr>
