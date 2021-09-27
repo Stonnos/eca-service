@@ -5,6 +5,9 @@ import com.ecaservice.data.storage.exception.TableExistsException;
 import com.ecaservice.data.storage.mapping.InstancesMapper;
 import com.ecaservice.data.storage.mapping.InstancesMapperImpl;
 import com.ecaservice.data.storage.model.MultipartFileResource;
+import com.ecaservice.data.storage.model.report.ReportType;
+import com.ecaservice.data.storage.report.InstancesReportService;
+import com.ecaservice.data.storage.report.ReportsConfigurationService;
 import com.ecaservice.data.storage.repository.InstancesRepository;
 import com.ecaservice.data.storage.service.InstancesLoader;
 import com.ecaservice.data.storage.service.impl.StorageServiceImpl;
@@ -34,13 +37,16 @@ import java.util.List;
 import static com.ecaservice.data.storage.TestHelperUtils.bearerHeader;
 import static com.ecaservice.data.storage.TestHelperUtils.createInstancesEntity;
 import static com.ecaservice.data.storage.TestHelperUtils.createPageRequestDto;
+import static com.ecaservice.data.storage.TestHelperUtils.createReportProperties;
 import static com.ecaservice.data.storage.TestHelperUtils.loadInstances;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -56,18 +62,26 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(InstancesMapperImpl.class)
 class DataStorageControllerTest extends AbstractControllerTest {
 
+    private static final List<String> EXPECTED_ATTRIBUTES = List.of("attr1", "attr2");
+    private static final List<String> VALUES = List.of("val1", "val2");
+
     private static final String BASE_URL = "/instances";
     private static final String SAVE_URL = BASE_URL + "/save";
     private static final String RENAME_URL = BASE_URL + "/rename";
     private static final String DELETE_URL = BASE_URL + "/delete";
     private static final String LIST_URL = BASE_URL + "/list";
+    private static final String ATTRIBUTES_URL = BASE_URL + "/attributes/{id}";
+    private static final String DATA_PAGE_URL = BASE_URL + "/data-page";
+    private static final String DETAILS_URL = BASE_URL + "/details/{id}";
+    private static final String DOWNLOAD_REPORT_URL = BASE_URL + "/download";
+    private static final String REPORTS_INFO_URL = BASE_URL + "/reports-info";
 
     private static final String TRAINING_DATA_PARAM = "trainingData";
     private static final String TABLE_NAME = "table";
     private static final String TABLE_NAME_PARAM = "tableName";
 
-    private static final String ERROR_MESSAGE = "Error";
     private static final String ID_PARAM = "id";
+    private static final String REPORT_TYPE_PARAM = "reportType";
     private static final long ID = 1L;
     private static final long TOTAL_ELEMENTS = 1L;
     private static final int PAGE_NUMBER = 0;
@@ -80,6 +94,10 @@ class DataStorageControllerTest extends AbstractControllerTest {
     private InstancesLoader instancesLoader;
     @MockBean
     private JdbcTemplate jdbcTemplate;
+    @MockBean
+    private InstancesReportService instancesReportService;
+    @MockBean
+    private ReportsConfigurationService reportsConfigurationService;
 
     @Inject
     private InstancesMapper instancesMapper;
@@ -192,6 +210,102 @@ class DataStorageControllerTest extends AbstractControllerTest {
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .content(objectMapper.writeValueAsString(createPageRequestDto()))
                 .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(objectMapper.writeValueAsString(expected)));
+    }
+
+    @Test
+    void testGetAttributesUnauthorized() throws Exception {
+        mockMvc.perform(get(ATTRIBUTES_URL, ID)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testGetAttributes() throws Exception {
+        when(storageService.getAttributes(ID)).thenReturn(EXPECTED_ATTRIBUTES);
+        mockMvc.perform(get(ATTRIBUTES_URL, ID)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(objectMapper.writeValueAsString(EXPECTED_ATTRIBUTES)));
+    }
+
+    @Test
+    void testGetDataPageUnauthorized() throws Exception {
+        mockMvc.perform(post(DATA_PAGE_URL)
+                .param(ID_PARAM, String.valueOf(ID))
+                .content(objectMapper.writeValueAsString(createPageRequestDto()))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testGetDataPage() throws Exception {
+        var expected = PageDto.of(Collections.singletonList(VALUES), PAGE_NUMBER, TOTAL_ELEMENTS);
+        when(storageService.getData(anyLong(), any(PageRequestDto.class))).thenReturn(expected);
+        mockMvc.perform(post(DATA_PAGE_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .param(ID_PARAM, String.valueOf(ID))
+                .content(objectMapper.writeValueAsString(createPageRequestDto()))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(objectMapper.writeValueAsString(expected)));
+    }
+
+    @Test
+    void testGetInstancesDetailsUnauthorized() throws Exception {
+        mockMvc.perform(get(DETAILS_URL, ID)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testGetInstancesDetails() throws Exception {
+        var instancesEntity = createInstancesEntity();
+        when(storageService.getById(ID)).thenReturn(instancesEntity);
+        var expected = instancesMapper.map(instancesEntity);
+        mockMvc.perform(get(DETAILS_URL, ID)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(objectMapper.writeValueAsString(expected)));
+    }
+
+    @Test
+    void testDownloadInstancesReportUnauthorized() throws Exception {
+        mockMvc.perform(get(DOWNLOAD_REPORT_URL)
+                .param(REPORT_TYPE_PARAM, ReportType.XLS.name())
+                .param(ID_PARAM, String.valueOf(ID)))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testDownloadInstancesReportOk() throws Exception {
+        mockMvc.perform(get(DOWNLOAD_REPORT_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .param(REPORT_TYPE_PARAM, ReportType.XLS.name())
+                .param(ID_PARAM, String.valueOf(ID)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void testGetInstancesReportsInfoUnauthorized() throws Exception {
+        mockMvc.perform(get(REPORTS_INFO_URL))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testGetInstancesReportsInfo() throws Exception {
+        var reportPropertiesList = Collections.singletonList(createReportProperties());
+        var expected = instancesMapper.mapReportPropertiesList(reportPropertiesList);
+        when(reportsConfigurationService.getReportProperties()).thenReturn(reportPropertiesList);
+        mockMvc.perform(get(REPORTS_INFO_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(expected)));

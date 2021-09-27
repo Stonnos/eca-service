@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
   CreateInstancesResultDto,
-  InstancesDto,
+  InstancesDto, InstancesReportInfoDto,
   PageDto,
   PageRequestDto,
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
@@ -53,5 +53,48 @@ export class InstancesService {
     formData.append('id', id.toString());
     formData.append('tableName', newTableName);
     return this.http.put(this.serviceUrl + '/rename', formData, { headers: headers });
+  }
+
+  public getInstancesDetails(id: number): Observable<InstancesDto> {
+    const headers = new HttpHeaders({
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    return this.http.get<InstancesDto>(this.serviceUrl + '/details/' + id, { headers: headers });
+  }
+
+  public getAttributes(id: number): Observable<string[]> {
+    const headers = new HttpHeaders({
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    return this.http.get<string[]>(this.serviceUrl + '/attributes/' + id, { headers: headers });
+  }
+
+  public getDataPage(id: number, pageRequest: PageRequestDto): Observable<PageDto<string[]>> {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/json; charset=utf-8',
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    const params: HttpParams = new HttpParams()
+      .set('id', id.toString());
+    const options = { headers: headers, params: params };
+    return this.http.post<PageDto<string[]>>(this.serviceUrl + '/data-page', pageRequest, options);
+  }
+
+  public getInstancesReportsInfo(): Observable<InstancesReportInfoDto[]> {
+    const headers = new HttpHeaders({
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    return this.http.get<InstancesReportInfoDto[]>(this.serviceUrl + '/reports-info', { headers: headers });
+  }
+
+  public downloadInstancesReport(id: number, reportType: string): Observable<Blob> {
+    const headers = new HttpHeaders({
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    const params: HttpParams = new HttpParams()
+      .set('id', id.toString())
+      .set('reportType', reportType);
+    const options = { headers: headers, params: params, responseType: 'blob' as 'json' };
+    return this.http.get<Blob>(this.serviceUrl + '/download', options);
   }
 }

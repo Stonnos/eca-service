@@ -27,6 +27,10 @@ spring:
   liquibase:
     contexts: schema,data
     change-log: classpath:db/liquibase-changelog.xml
+  cache:
+    cache-names: table-columns
+    caffeine:
+      spec: maximumSize=100, expireAfterWrite=18000s
   servlet:
     multipart:
       max-file-size: 10MB
@@ -43,6 +47,7 @@ eca-ds:
   maxPageSize: 50
   dateFormat: yyyy-MM-dd HH:mm:ss
   batchSize: 100
+  reportsPath: reports-config.json
 
 ## Swagger properties
 open-api:

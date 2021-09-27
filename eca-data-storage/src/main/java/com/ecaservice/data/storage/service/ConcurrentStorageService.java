@@ -1,6 +1,7 @@
 package com.ecaservice.data.storage.service;
 
 import com.ecaservice.data.storage.entity.InstancesEntity;
+import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import weka.core.Instances;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -52,6 +54,11 @@ public class ConcurrentStorageService implements StorageService {
     }
 
     @Override
+    public InstancesEntity getById(long id) {
+        return storageService.getById(id);
+    }
+
+    @Override
     public String renameData(long id, String newTableName) {
         String oldTableName;
         tableNamesMonitorsMap.putIfAbsent(newTableName, new Object());
@@ -65,5 +72,20 @@ public class ConcurrentStorageService implements StorageService {
     @Override
     public String deleteData(long id) {
         return storageService.deleteData(id);
+    }
+
+    @Override
+    public PageDto<List<String>> getData(long id, PageRequestDto pageRequestDto) {
+        return storageService.getData(id, pageRequestDto);
+    }
+
+    @Override
+    public Instances getInstances(long id) {
+        return storageService.getInstances(id);
+    }
+
+    @Override
+    public List<String> getAttributes(long id) {
+        return storageService.getAttributes(id);
     }
 }

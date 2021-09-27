@@ -1,12 +1,20 @@
 package com.ecaservice.data.storage.service;
 
 import com.ecaservice.data.storage.config.EcaDsConfig;
+import com.ecaservice.web.dto.model.PageDto;
+import com.ecaservice.web.dto.model.PageRequestDto;
 import eca.data.db.SqlQueryHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import weka.core.Instances;
+
+import java.util.List;
+
+import static com.ecaservice.data.storage.config.CacheNames.TABLE_COLUMNS_CACHE;
 
 /**
  * Instances service.
@@ -20,11 +28,15 @@ public class InstancesService {
 
     private static final String DROP_TABLE_QUERY_FORMAT = "DROP TABLE IF EXISTS %s";
     private static final String RENAME_TABLE_QUERY_FORMAT = "ALTER TABLE IF EXISTS %s RENAME TO %s";
+    private static final String SELECT_QUERY = "select * from %s";
 
     private final JdbcTemplate jdbcTemplate;
     private final TransactionalService transactionalMigrationService;
     private final EcaDsConfig ecaDsConfig;
     private final SqlQueryHelper sqlQueryHelper;
+    private final SearchQueryCreator searchQueryCreator;
+    private final InstancesResultSetExtractor instancesResultSetExtractor;
+    private final InstancesConversionService instancesConversionService;
 
     /**
      * Saves training data into database.
@@ -58,6 +70,7 @@ public class InstancesService {
      *
      * @param tableName - table name
      */
+    @CacheEvict(value = TABLE_COLUMNS_CACHE)
     public void deleteInstances(String tableName) {
         log.info("Starting to delete table with name [{}]", tableName);
         jdbcTemplate.execute(String.format(DROP_TABLE_QUERY_FORMAT, tableName));
@@ -70,9 +83,44 @@ public class InstancesService {
      * @param tableName    - table name
      * @param newTableName - new table name
      */
+    @CacheEvict(value = TABLE_COLUMNS_CACHE, key = "#tableName")
     public void renameInstances(String tableName, String newTableName) {
         log.info("Starting to rename table [{}] with new name [{}]", tableName, newTableName);
         jdbcTemplate.execute(String.format(RENAME_TABLE_QUERY_FORMAT, tableName, newTableName));
         log.info("Table [{}] has been renamed to [{}]", tableName, newTableName);
+    }
+
+    /**
+     * Gets instances page with specified page request params.
+     *
+     * @param tableName      - table name
+     * @param pageRequestDto - page request
+     * @return instances page
+     */
+    public PageDto<List<String>> getInstances(String tableName, PageRequestDto pageRequestDto) {
+        log.info("Starting to get instances for table [{}], page request [{}]", tableName, pageRequestDto);
+        var sqlPreparedQuery = searchQueryCreator.buildSqlQuery(tableName, pageRequestDto);
+        var instances = jdbcTemplate.query(sqlPreparedQuery.getQuery(), sqlPreparedQuery.getArgs(),
+                instancesResultSetExtractor);
+        Assert.notNull(instances, String.format("Expected not null instances for table [%s]", tableName));
+        var dataList = instancesConversionService.covert(instances);
+        Long totalElements =
+                jdbcTemplate.queryForObject(sqlPreparedQuery.getCountQuery(), sqlPreparedQuery.getArgs(), Long.class);
+        Assert.notNull(totalElements, String.format("Expected not null total elements for table [%s]", tableName));
+        log.info("Instances has been fetched for table [{}], page request [{}]", tableName, pageRequestDto);
+        return PageDto.of(dataList, pageRequestDto.getPage(), totalElements);
+    }
+
+    /**
+     * Gets instances from specified table.
+     *
+     * @param tableName - table name
+     * @return instances object
+     */
+    public Instances getInstances(String tableName) {
+        log.info("Starting to get instances for table [{}]", tableName);
+        var instances = jdbcTemplate.query(String.format(SELECT_QUERY, tableName), instancesResultSetExtractor);
+        log.info("Instances has been fetched for table [{}]", tableName);
+        return instances;
     }
 }

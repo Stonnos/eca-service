@@ -3,10 +3,14 @@ package com.ecaservice.data.storage.controller;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.mapping.InstancesMapper;
 import com.ecaservice.data.storage.model.MultipartFileResource;
+import com.ecaservice.data.storage.model.report.ReportType;
+import com.ecaservice.data.storage.report.InstancesReportService;
+import com.ecaservice.data.storage.report.ReportsConfigurationService;
 import com.ecaservice.data.storage.service.InstancesLoader;
 import com.ecaservice.data.storage.service.StorageService;
 import com.ecaservice.web.dto.model.CreateInstancesResultDto;
 import com.ecaservice.web.dto.model.InstancesDto;
+import com.ecaservice.web.dto.model.InstancesReportInfoDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,6 +26,8 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,6 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import weka.core.Instances;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -56,6 +63,8 @@ public class DataStorageController {
     private static final int MAX_TABLE_NAME_LENGTH = 30;
 
     private final StorageService storageService;
+    private final InstancesReportService instancesReportService;
+    private final ReportsConfigurationService reportsConfigurationService;
     private final InstancesLoader instancesLoader;
     private final InstancesMapper instancesMapper;
 
@@ -116,6 +125,26 @@ public class DataStorageController {
     }
 
     /**
+     * Gets instances details.
+     *
+     * @param id - instances id
+     * @return instances dto
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @Operation(
+            description = "Gets instances details",
+            summary = "Gets instances details",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+    )
+    @GetMapping(value = "/details/{id}")
+    public InstancesDto getInstancesDetails(@Parameter(description = "Instances id", example = "1", required = true)
+                                            @PathVariable Long id) {
+        log.info("Request get instances [{}] details", id);
+        var instancesEntity = storageService.getById(id);
+        return instancesMapper.map(instancesEntity);
+    }
+
+    /**
      * Renames data with specified id.
      *
      * @param id        - instances id
@@ -149,5 +178,96 @@ public class DataStorageController {
     @DeleteMapping(value = "/delete")
     public void delete(@Parameter(description = "Instances id", example = "1", required = true) @RequestParam long id) {
         storageService.deleteData(id);
+    }
+
+    /**
+     * Finds data page for specified instances.
+     *
+     * @param id             - instances id
+     * @param pageRequestDto - page request dto
+     * @return response entity
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @Operation(
+            description = "Finds data page for specified instances",
+            summary = "Finds data page for specified instances",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
+                    @Content(examples = {
+                            @ExampleObject(value = SIMPLE_PAGE_REQUEST_JSON)
+                    })
+            })
+    )
+    @PostMapping(value = "/data-page")
+    public PageDto<List<String>> getDataPage(
+            @Parameter(description = "Instances id", example = "1", required = true)
+            @RequestParam long id,
+            @Valid @RequestBody PageRequestDto pageRequestDto) {
+        log.info("Received data page request: {}, instances id [{}]", pageRequestDto, id);
+        return storageService.getData(id, pageRequestDto);
+    }
+
+    /**
+     * Gets attributes list for specified instances.
+     *
+     * @param id - instances id
+     * @return attributes list
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @Operation(
+            description = "Gets attributes list for specified instances",
+            summary = "Gets attributes list for specified instances",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+    )
+    @GetMapping(value = "/attributes/{id}")
+    public List<String> getAttributes(@Parameter(description = "Instances id", example = "1", required = true)
+                                      @PathVariable Long id) {
+        log.info("Received attributes request for instances [{}]", id);
+        return storageService.getAttributes(id);
+    }
+
+    /**
+     * Gets instances reports info.
+     *
+     * @return instances reports info list
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @Operation(
+            description = "Gets instances reports info",
+            summary = "Gets instances reports info",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+    )
+    @GetMapping(value = "/reports-info")
+    public List<InstancesReportInfoDto> getInstancesReportsInfo() {
+        log.info("Request get instances reports info");
+        var reportProperties = reportsConfigurationService.getReportProperties();
+        var instancesReports = instancesMapper.mapReportPropertiesList(reportProperties);
+        log.info("Fetched instances reports: {}", instancesReports);
+        return instancesReports;
+    }
+
+    /**
+     * Download instances report with specified type.
+     *
+     * @param id                  - instances id
+     * @param reportType          - report type
+     * @param httpServletResponse - http servlet response
+     * @throws Exception in case of error
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @Operation(
+            description = "Download instances report with specified type",
+            summary = "Download instances report with specified type",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+    )
+    @GetMapping(value = "/download")
+    public void downloadInstancesReport(
+            @Parameter(description = "Instances id", example = "1", required = true)
+            @RequestParam long id,
+            @Parameter(description = "Report type", required = true)
+            @RequestParam ReportType reportType,
+            HttpServletResponse httpServletResponse) throws Exception {
+        log.info("Request to download instances [{}] report [{}]", id, reportType);
+        instancesReportService.generateInstancesReport(id, reportType, httpServletResponse);
     }
 }

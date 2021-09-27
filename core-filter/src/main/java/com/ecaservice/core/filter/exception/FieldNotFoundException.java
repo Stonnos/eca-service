@@ -20,4 +20,13 @@ public class FieldNotFoundException extends ValidationErrorException {
     public FieldNotFoundException(String fieldName, Class<?> clazz) {
         super(ERROR_CODE, String.format("Field [%s] not found for type [%s]", fieldName, clazz.getSimpleName()));
     }
+
+    /**
+     * Constructor with parameters.
+     *
+     * @param errorMessage - error message
+     */
+    public FieldNotFoundException(String errorMessage) {
+        super(ERROR_CODE, errorMessage);
+    }
 }

@@ -1,0 +1,34 @@
+[
+  {
+    "title": "Microsoft Excel (.xlsx)",
+    "reportType": "XLS"
+  },
+  {
+    "title": "Формат CSV (.csv)",
+    "reportType": "CSV"
+  },
+  {
+    "title": "Формат Arff (.arff)",
+    "reportType": "ARFF"
+  },
+  {
+    "title": "Json формат (.json)",
+    "reportType": "JSON"
+  },
+  {
+    "title": "Xml формат (.xml)",
+    "reportType": "XML"
+  },
+  {
+    "title": "Текстовый формат (.txt)",
+    "reportType": "TXT"
+  },
+  {
+    "title": "Формат данных (.data)",
+    "reportType": "DATA"
+  },
+  {
+    "title": "Microsoft Word (.docx)",
+    "reportType": "DOCX"
+  }
+]

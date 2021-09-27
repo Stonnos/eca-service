@@ -1,9 +1,12 @@
 package com.ecaservice.data.storage;
 
 import com.ecaservice.data.storage.entity.InstancesEntity;
+import com.ecaservice.data.storage.model.report.ReportProperties;
+import com.ecaservice.data.storage.model.report.ReportType;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import eca.data.file.resource.FileResource;
 import eca.data.file.xls.XLSLoader;
+import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import weka.core.Instances;
 
@@ -19,6 +22,7 @@ import java.util.Collections;
 @UtilityClass
 public class TestHelperUtils {
 
+    private static final String TITLE = "title";
     private static final String DATA_PATH = "german_credit.xls";
     private static final String TABLE_NAME = "table";
     private static final String CREATED_BY = "user";
@@ -43,7 +47,8 @@ public class TestHelperUtils {
      *
      * @return created training data
      */
-    public static Instances loadInstances() throws Exception {
+    @SneakyThrows
+    public static Instances loadInstances() {
         ClassLoader classLoader = ClassLoader.getSystemClassLoader();
         XLSLoader dataLoader = new XLSLoader();
         dataLoader.setSource(new FileResource(new File(classLoader.getResource(DATA_PATH).getFile())));
@@ -73,5 +78,17 @@ public class TestHelperUtils {
         instancesEntity.setCreated(LocalDateTime.now());
         instancesEntity.setCreatedBy(CREATED_BY);
         return instancesEntity;
+    }
+
+    /**
+     * Creates report properties.
+     *
+     * @return report properties
+     */
+    public static ReportProperties createReportProperties() {
+        var reportProperties = new ReportProperties();
+        reportProperties.setReportType(ReportType.CSV);
+        reportProperties.setTitle(TITLE);
+        return reportProperties;
     }
 }

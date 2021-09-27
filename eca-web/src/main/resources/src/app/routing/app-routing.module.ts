@@ -19,6 +19,7 @@ import { AccessDeniedComponent } from "../access-denied/components/access-denied
 import { AuditLogsComponent } from "../audit-logs/components/audit-logs.component";
 import { ConfirmChangeEmailComponent } from "../update-user-email/components/confirm-change-email/confirm-change-email.component";
 import { TemplatesListComponent } from "../email-templates/components/templates-list/templates-list.component";
+import { InstancesDetailsComponent } from "../instances-details/components/instances-details.component";
 
 const routes: Routes = [
   {
@@ -40,6 +41,10 @@ const routes: Routes = [
       {
         path: 'instances',
         component: InstancesListComponent
+      },
+      {
+        path: 'instances/details/:id',
+        component: InstancesDetailsComponent
       },
       {
         path: 'users',

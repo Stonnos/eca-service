@@ -41,7 +41,12 @@
     <ng-template pTemplate="body" let-item>
       <tr [ngClass]="{'item-blink': isBlink(item)}">
         <td *ngFor="let column of columns">
-          {{ getColumnValue(column.name, item) }}
+          <a [routerLink]="" *ngIf="isLink(column.name)" (click)="onLink(item, column.name)">
+            {{ getColumnValue(column.name, item) }}
+          </a>
+          <div *ngIf="!isLink(column.name)">
+            {{ getColumnValue(column.name, item) }}
+          </div>
         </td>
         <td>
           <button pButton
@@ -52,9 +57,15 @@
           </button>
           <button pButton
                   type="button"
-                  class="ui-button-danger round-button"
+                  class="ui-button-danger round-button mr-1"
                   (click)="onDeleteInstances(item)"
                   icon="pi pi-fw pi-trash">
+          </button>
+          <button pButton
+                  type="button"
+                  class="ui-button-success round-button"
+                  (click)="onExportInstances(item)"
+                  icon="pi pi-fw pi-download">
           </button>
         </td>
       </tr>
@@ -76,3 +87,8 @@
   (itemEvent)="onCreateInstances($event)"
   (renameEvent)="onRenameInstances($event)">
 </app-create-edit-instances>
+
+<app-export-instances [visible]="exportInstancesDialogVisibility"
+                      (visibilityChange)="onExportInstancesDialogVisibility($event)"
+                      [item]="exportInstancesModel">
+</app-export-instances>

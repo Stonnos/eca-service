@@ -1,9 +1,12 @@
 package com.ecaservice.data.storage.service;
 
 import com.ecaservice.data.storage.entity.InstancesEntity;
+import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import org.springframework.data.domain.Page;
 import weka.core.Instances;
+
+import java.util.List;
 
 /**
  * Interface for saving data file into database.
@@ -29,6 +32,14 @@ public interface StorageService {
     InstancesEntity saveData(Instances instances, String tableName);
 
     /**
+     * Gets instances by id.
+     *
+     * @param id - instances id
+     * @return instances entity
+     */
+    InstancesEntity getById(long id);
+
+    /**
      * Renames data with specified id.
      *
      * @param id      - instances id
@@ -44,4 +55,28 @@ public interface StorageService {
      * @return deleted table name
      */
     String deleteData(long id);
+
+    /**
+     * Gets instances data rows.
+     *
+     * @param id -  instances id
+     * @return instances data rows
+     */
+    PageDto<List<String>> getData(long id, PageRequestDto pageRequestDto);
+
+    /**
+     * Gets instances for specified id.
+     *
+     * @param id -  instances id
+     * @return instances data
+     */
+    Instances getInstances(long id);
+
+    /**
+     * Gets instances attributes.
+     *
+     * @param id - instances id
+     * @return instances attributes
+     */
+    List<String> getAttributes(long id);
 }
