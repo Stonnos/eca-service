@@ -63,6 +63,7 @@ public class ErsService {
             evaluationResultsStatus = EvaluationResultsStatus.RESULTS_RECEIVED;
             evaluationResultsDto.setEvaluationResultsStatus(new EnumDto(evaluationResultsStatus.name(),
                     evaluationResultsStatus.getDescription()));
+            return evaluationResultsDto;
         } catch (FeignException.ServiceUnavailable ex) {
             log.error("Service unavailable error while fetching evaluation results for request id [{}]: {}", requestId,
                     ex.getMessage());
