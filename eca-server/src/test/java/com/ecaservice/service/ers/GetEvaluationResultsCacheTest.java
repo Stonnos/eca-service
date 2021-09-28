@@ -8,7 +8,6 @@ import com.ecaservice.config.ers.ErsConfig;
 import com.ecaservice.configuation.CacheConfiguration;
 import com.ecaservice.ers.dto.GetEvaluationResultsRequest;
 import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
-import com.ecaservice.ers.dto.ResponseStatus;
 import com.ecaservice.mapping.ClassifierReportMapperImpl;
 import com.ecaservice.mapping.ErsResponseStatusMapperImpl;
 import com.ecaservice.mapping.InstancesConverter;
@@ -26,7 +25,7 @@ import javax.inject.Inject;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -56,32 +55,24 @@ class GetEvaluationResultsCacheTest extends AbstractJpaTest {
         ReflectionTestUtils.setField(ersRequestService, "ersRequestSender", ersRequestSender);
         String requestId = UUID.randomUUID().toString();
         GetEvaluationResultsResponse first =
-                TestHelperUtils.createGetEvaluationResultsResponse(requestId, ResponseStatus.RESULTS_NOT_FOUND);
+                TestHelperUtils.createGetEvaluationResultsResponse(requestId);
         GetEvaluationResultsResponse second =
-                TestHelperUtils.createGetEvaluationResultsResponse(requestId, ResponseStatus.SUCCESS);
-        GetEvaluationResultsResponse third =
-                TestHelperUtils.createGetEvaluationResultsResponse(requestId, ResponseStatus.SUCCESS);
-        when(ersRequestSender.getEvaluationResultsSimpleResponse(
-                any(GetEvaluationResultsRequest.class))).thenReturn(first).thenReturn(second).thenReturn(third);
+                TestHelperUtils.createGetEvaluationResultsResponse(requestId);
+        when(ersRequestSender.getEvaluationResultsSimpleResponse(any(GetEvaluationResultsRequest.class)))
+                .thenReturn(first)
+                .thenReturn(second);
         //Checks first call with ERROR status (Results shouldn't save in cache)
         GetEvaluationResultsResponse actual =
                 ersRequestService.getEvaluationResults(requestId);
         Assertions.assertThat(actual).isNotNull();
         Assertions.assertThat(actual.getRequestId()).isEqualTo(first.getRequestId());
-        Assertions.assertThat(actual.getStatus()).isEqualTo(first.getStatus());
         //Checks second call
         actual = ersRequestService.getEvaluationResults(requestId);
         Assertions.assertThat(actual).isNotNull();
         Assertions.assertThat(actual.getRequestId()).isEqualTo(second.getRequestId());
-        Assertions.assertThat(actual.getStatus()).isEqualTo(second.getStatus());
-        //Checks third call
-        actual = ersRequestService.getEvaluationResults(requestId);
-        Assertions.assertThat(actual).isNotNull();
-        Assertions.assertThat(actual.getRequestId()).isEqualTo(second.getRequestId());
-        Assertions.assertThat(actual.getStatus()).isEqualTo(second.getStatus());
-        //Method must calls 2 times because of cache
-        verify(ersRequestSender, times(2)).getEvaluationResultsSimpleResponse(any
-                (GetEvaluationResultsRequest.class));
+        //Method must calls once because of cache
+        verify(ersRequestSender, atLeastOnce()).getEvaluationResultsSimpleResponse(
+                any(GetEvaluationResultsRequest.class));
         Assertions.assertThat(
                 cacheManager.getCache(CacheNames.EVALUATION_RESULTS_CACHE_NAME).get(requestId)).isNotNull();
     }

@@ -1,13 +1,13 @@
 package com.ecaservice.service.ers;
 
+import com.ecaservice.common.web.dto.ValidationErrorDto;
 import com.ecaservice.config.cache.CacheNames;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import com.ecaservice.ers.dto.ClassifierOptionsResponse;
 import com.ecaservice.ers.dto.ClassifierReport;
-import com.ecaservice.ers.dto.EvaluationResultsResponse;
+import com.ecaservice.ers.dto.ErsErrorCode;
 import com.ecaservice.ers.dto.GetEvaluationResultsRequest;
 import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
-import com.ecaservice.ers.dto.ResponseStatus;
 import com.ecaservice.mapping.ClassifierReportMapper;
 import com.ecaservice.mapping.ErsResponseStatusMapper;
 import com.ecaservice.model.ClassifierOptionsResult;
@@ -16,17 +16,24 @@ import com.ecaservice.model.entity.ErsRequest;
 import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.repository.ErsRequestRepository;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.core.evaluation.EvaluationResults;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import static com.ecaservice.common.web.util.ValidationErrorHelper.getFirstError;
 import static com.ecaservice.util.ClassifierOptionsHelper.parseOptions;
 import static com.ecaservice.util.Utils.getFirstClassifierReport;
 import static com.ecaservice.util.Utils.isValid;
@@ -45,6 +52,8 @@ public class ErsRequestService {
     private static final String SERVICE_UNAVAILABLE_ERROR_MESSAGE = "Service unavailable";
     private static final String UNKNOWN_ERROR_MESSAGE = "Unknown error";
 
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
     private final ErsRequestSender ersRequestSender;
     private final ErsRequestRepository ersRequestRepository;
     private final ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository;
@@ -62,16 +71,17 @@ public class ErsRequestService {
         ersRequest.setRequestId(UUID.randomUUID().toString());
         try {
             log.info("Starting to send evaluation results to ERS with request [{}]", ersRequest.getRequestId());
-            EvaluationResultsResponse resultsResponse =
-                    ersRequestSender.sendEvaluationResults(evaluationResults, ersRequest.getRequestId());
-            log.info("Received response for requestId [{}] with status = {} from ERS.",
-                    resultsResponse.getRequestId(), resultsResponse.getStatus());
-            ersRequest.setResponseStatus(ersResponseStatusMapper.map(resultsResponse.getStatus()));
+            var resultsResponse = ersRequestSender.sendEvaluationResults(evaluationResults, ersRequest.getRequestId());
+            log.info("Received success response for requestId [{}] from ERS.", resultsResponse.getRequestId());
+            ersRequest.setResponseStatus(ErsResponseStatus.SUCCESS);
         } catch (FeignException.ServiceUnavailable ex) {
-            log.error("There was an error while sending evaluation results: {}", ex.getMessage());
+            log.error("Service unavailable error while sending evaluation results: {}", ex.getMessage());
             handleErrorRequest(ersRequest, ErsResponseStatus.SERVICE_UNAVAILABLE, ex.getMessage());
+        } catch (FeignException.BadRequest ex) {
+            log.error("Bad request error while sending evaluation results: {}", ex.getMessage());
+            handleBadRequest(ersRequest, ex);
         } catch (Exception ex) {
-            log.error("There was an error while sending evaluation results: {}", ex.getMessage());
+            log.error("Unknown an error while sending evaluation results: {}", ex.getMessage());
             handleErrorRequest(ersRequest, ErsResponseStatus.ERROR, ex.getMessage());
         } finally {
             ersRequestRepository.save(ersRequest);
@@ -84,7 +94,7 @@ public class ErsRequestService {
      * @param requestId - ERS request id
      * @return evaluation results simple response
      */
-    @Cacheable(value = CacheNames.EVALUATION_RESULTS_CACHE_NAME, unless = "#result.status.name() != 'SUCCESS'")
+    @Cacheable(value = CacheNames.EVALUATION_RESULTS_CACHE_NAME)
     public GetEvaluationResultsResponse getEvaluationResults(String requestId) {
         log.info("Starting to get evaluation results simple response for request id [{}]", requestId);
         GetEvaluationResultsRequest request = new GetEvaluationResultsRequest();
@@ -110,15 +120,18 @@ public class ErsRequestService {
                     classifierOptionsRequest.getRelationName());
             ClassifierOptionsResponse response =
                     ersRequestSender.getClassifierOptions(classifierOptionsRequest);
-            log.info("Received response with requestId = {}, status = {} for data '{}'", response.getRequestId(),
-                    response.getStatus(), classifierOptionsRequest.getRelationName());
+            log.info("Received response with requestId = {}, for data '{}'", response.getRequestId(),
+                    classifierOptionsRequest.getRelationName());
             handleClassifierOptionsResponse(classifierOptionsRequest, response, requestModel, classifierOptionsResult);
         } catch (FeignException.ServiceUnavailable ex) {
-            log.error("There was an error while sending classifier options request: {}.", ex.getMessage());
+            log.error("Service unavailable error while sending classifier options request: {}.", ex.getMessage());
             handleErrorRequest(requestModel, ErsResponseStatus.SERVICE_UNAVAILABLE, ex.getMessage());
             setClassifierOptionsResultError(classifierOptionsResult, SERVICE_UNAVAILABLE_ERROR_MESSAGE);
+        } catch (FeignException.BadRequest ex) {
+            log.error("Bad request error while sending classifier options request: {}.", ex.getMessage());
+            handleBadRequest(requestModel, ex);
         } catch (Exception ex) {
-            log.error("There was an error while sending classifier options request: {}.", ex.getMessage());
+            log.error("Unknown error while sending classifier options request: {}.", ex.getMessage());
             handleErrorRequest(requestModel, ErsResponseStatus.ERROR, ex.getMessage());
             setClassifierOptionsResultError(classifierOptionsResult, UNKNOWN_ERROR_MESSAGE);
         } finally {
@@ -134,24 +147,20 @@ public class ErsRequestService {
                                                  ClassifierOptionsRequestModel requestModel,
                                                  ClassifierOptionsResult classifierOptionsResult) {
         requestModel.setRequestId(response.getRequestId());
-        requestModel.setResponseStatus(ersResponseStatusMapper.map(response.getStatus()));
-        if (!ResponseStatus.SUCCESS.equals(response.getStatus())) {
+        ClassifierReport classifierReport = getFirstClassifierReport(response);
+        if (!isValid(classifierReport)) {
+            handleErrorRequest(requestModel, ErsResponseStatus.ERROR, "Got empty classifier options string!");
             setClassifierOptionsResultError(classifierOptionsResult, RESULTS_NOT_FOUND_MESSAGE);
         } else {
-            ClassifierReport classifierReport = getFirstClassifierReport(response);
-            if (!isValid(classifierReport)) {
-                handleErrorRequest(requestModel, ErsResponseStatus.ERROR, "Got empty classifier options string!");
-                setClassifierOptionsResultError(classifierOptionsResult, RESULTS_NOT_FOUND_MESSAGE);
-            } else {
-                //Checks classifier options deserialization
-                parseOptions(classifierReport.getOptions());
-                classifierOptionsResult.setOptionsJson(classifierReport.getOptions());
-                classifierOptionsResult.setFound(true);
-                log.info("Optimal classifier options [{}] has been found for data '{}'.",
-                        classifierReport.getOptions(), classifierOptionsRequest.getRelationName());
-                requestModel.setClassifierOptionsResponseModels(
-                        Collections.singletonList(classifierReportMapper.map(classifierReport)));
-            }
+            //Checks classifier options deserialization
+            parseOptions(classifierReport.getOptions());
+            classifierOptionsResult.setOptionsJson(classifierReport.getOptions());
+            classifierOptionsResult.setFound(true);
+            log.info("Optimal classifier options [{}] has been found for data '{}'.",
+                    classifierReport.getOptions(), classifierOptionsRequest.getRelationName());
+            requestModel.setClassifierOptionsResponseModels(
+                    Collections.singletonList(classifierReportMapper.map(classifierReport)));
+            requestModel.setResponseStatus(ErsResponseStatus.SUCCESS);
         }
     }
 
@@ -164,5 +173,36 @@ public class ErsRequestService {
     private void handleErrorRequest(ErsRequest ersRequest, ErsResponseStatus responseStatus, String errorMessage) {
         ersRequest.setResponseStatus(responseStatus);
         ersRequest.setDetails(errorMessage);
+    }
+
+    private void handleBadRequest(ErsRequest ersRequest, FeignException.BadRequest badRequestEx) {
+        try {
+            String responseBody = badRequestEx.contentUTF8();
+            Assert.notNull(responseBody, "Expected not empty response body");
+            List<ValidationErrorDto> validationErrors =
+                    OBJECT_MAPPER.readValue(responseBody, new TypeReference<>() {
+                    });
+            handleValidationError(ersRequest, validationErrors);
+            ersRequest.setDetails(responseBody);
+        } catch (Exception ex) {
+            log.error("Got error while handling bad request with status [{}] for request id [{}]",
+                    badRequestEx.status(), ersRequest.getRequestId());
+            handleErrorRequest(ersRequest, ErsResponseStatus.ERROR, ex.getMessage());
+        }
+    }
+
+    private void handleValidationError(ErsRequest ersRequest, List<ValidationErrorDto> validationErrors) {
+        var errorCodes = Stream.of(ErsErrorCode.values())
+                .map(Enum::name)
+                .collect(Collectors.toList());
+        var validationError = getFirstError(errorCodes, validationErrors);
+        if (validationError.isEmpty()) {
+            log.warn("Got unknown ers error code for request id [{}]. Set ERROR response status",
+                    ersRequest.getRequestId());
+            ersRequest.setResponseStatus(ErsResponseStatus.ERROR);
+        } else {
+            ErsErrorCode ersErrorCode = ErsErrorCode.valueOf(validationError.get().getCode());
+            ersRequest.setResponseStatus(ersResponseStatusMapper.map(ersErrorCode));
+        }
     }
 }

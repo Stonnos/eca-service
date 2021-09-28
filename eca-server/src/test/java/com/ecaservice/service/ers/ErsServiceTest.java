@@ -2,7 +2,6 @@ package com.ecaservice.service.ers;
 
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
-import com.ecaservice.ers.dto.ResponseStatus;
 import com.ecaservice.mapping.ClassificationCostsMapperImpl;
 import com.ecaservice.mapping.GetEvaluationResultsMapper;
 import com.ecaservice.mapping.GetEvaluationResultsMapperImpl;
@@ -88,8 +87,7 @@ class ErsServiceTest extends AbstractJpaTest {
 
     @Test
     void testGetExperimentResultsDetailsWithResultsNotFoundStatus() {
-        testGetEvaluationResults(ResponseStatus.RESULTS_NOT_FOUND,
-                EvaluationResultsStatus.EVALUATION_RESULTS_NOT_FOUND);
+        testGetEvaluationResults(EvaluationResultsStatus.EVALUATION_RESULTS_NOT_FOUND);
     }
 
     @Test
@@ -107,13 +105,13 @@ class ErsServiceTest extends AbstractJpaTest {
 
     @Test
     void testSuccessGetExperimentResultsDetails() {
-        testGetEvaluationResults(ResponseStatus.SUCCESS, EvaluationResultsStatus.RESULTS_RECEIVED);
+        testGetEvaluationResults(EvaluationResultsStatus.RESULTS_RECEIVED);
     }
 
-    private void testGetEvaluationResults(ResponseStatus responseStatus, EvaluationResultsStatus expectedStatus) {
+    private void testGetEvaluationResults(EvaluationResultsStatus expectedStatus) {
         String requestId = UUID.randomUUID().toString();
         GetEvaluationResultsResponse evaluationResultsResponse =
-                TestHelperUtils.createGetEvaluationResultsResponse(requestId, responseStatus);
+                TestHelperUtils.createGetEvaluationResultsResponse(requestId);
         when(ersRequestService.getEvaluationResults(anyString())).thenReturn(evaluationResultsResponse);
         assertEvaluationResults(expectedStatus);
     }

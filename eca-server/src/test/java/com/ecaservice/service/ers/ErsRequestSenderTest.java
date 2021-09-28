@@ -3,7 +3,6 @@ package com.ecaservice.service.ers;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.ers.dto.EvaluationResultsRequest;
 import com.ecaservice.ers.dto.EvaluationResultsResponse;
-import com.ecaservice.ers.dto.ResponseStatus;
 import com.ecaservice.service.evaluation.EvaluationResultsService;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
@@ -49,12 +48,10 @@ class ErsRequestSenderTest {
     @Test
     void testSuccessSending() {
         EvaluationResultsResponse expectedResponse = new EvaluationResultsResponse();
-        expectedResponse.setStatus(ResponseStatus.SUCCESS);
         expectedResponse.setRequestId(UUID.randomUUID().toString());
         when(ersClient.save(any(EvaluationResultsRequest.class))).thenReturn(expectedResponse);
         EvaluationResultsResponse actualResponse =
                 ersRequestSender.sendEvaluationResults(evaluationResults, UUID.randomUUID().toString());
         Assertions.assertThat(actualResponse.getRequestId()).isEqualTo(expectedResponse.getRequestId());
-        Assertions.assertThat(actualResponse.getStatus()).isEqualTo(expectedResponse.getStatus());
     }
 }

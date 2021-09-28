@@ -1,16 +1,11 @@
 package com.ecaservice.ers.dto;
 
 /**
- * ERS response status.
+ * ERS error code.
  *
  * @author Roman Batygin
  */
-public enum ResponseStatus {
-
-    /**
-     * Success status
-     */
-    SUCCESS,
+public enum ErsErrorCode {
 
     /**
      * Duplicate request id

@@ -1,7 +1,7 @@
 package com.ecaservice.ers.exception;
 
 import com.ecaservice.common.web.exception.ValidationErrorException;
-import com.ecaservice.ers.dto.ResponseStatus;
+import com.ecaservice.ers.dto.ErsErrorCode;
 
 /**
  * Data not found exception class.
@@ -16,6 +16,6 @@ public class DataNotFoundException extends ValidationErrorException {
      * @param message - error message
      */
     public DataNotFoundException(String message) {
-        super(ResponseStatus.DATA_NOT_FOUND.name(), message);
+        super(ErsErrorCode.DATA_NOT_FOUND.name(), message);
     }
 }

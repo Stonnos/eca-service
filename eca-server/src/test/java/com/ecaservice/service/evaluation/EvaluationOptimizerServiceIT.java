@@ -11,7 +11,6 @@ import com.ecaservice.configuation.ExecutorConfiguration;
 import com.ecaservice.core.lock.redis.config.RedisLockAutoConfiguration;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import com.ecaservice.ers.dto.ClassifierOptionsResponse;
-import com.ecaservice.ers.dto.ResponseStatus;
 import com.ecaservice.mapping.ClassifierInfoMapperImpl;
 import com.ecaservice.mapping.ClassifierOptionsRequestMapperImpl;
 import com.ecaservice.mapping.ClassifierOptionsRequestModelMapperImpl;
@@ -125,7 +124,7 @@ class EvaluationOptimizerServiceIT extends AbstractJpaTest {
     @Test
     void testClassifierOptionsCacheInMultiThreadEnvironment() throws Exception {
         ClassifierOptionsResponse response = TestHelperUtils.createClassifierOptionsResponse(Collections
-                .singletonList(TestHelperUtils.createClassifierReport(decisionTreeOptions)), ResponseStatus.SUCCESS);
+                .singletonList(TestHelperUtils.createClassifierReport(decisionTreeOptions)));
         when(ersRequestSender.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
         final CountDownLatch finishedLatch = new CountDownLatch(NUM_THREADS);
         ExecutorService executorService = Executors.newFixedThreadPool(NUM_THREADS);

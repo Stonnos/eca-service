@@ -36,8 +36,7 @@ public class ErsRequestSender {
         evaluationResultsRequest.setRequestId(requestId);
         log.trace("Starting to send evaluation results request [{}] to ERS", requestId);
         EvaluationResultsResponse resultsResponse = ersClient.save(evaluationResultsRequest);
-        log.trace("Received response from ERS: requestId [{}] with status [{}]", resultsResponse.getRequestId(),
-                resultsResponse.getStatus());
+        log.trace("Received response from ERS: requestId [{}] ", resultsResponse.getRequestId());
         return resultsResponse;
     }
 

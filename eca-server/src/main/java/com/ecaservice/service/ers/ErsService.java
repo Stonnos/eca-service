@@ -53,13 +53,15 @@ public class ErsService {
      * @return evaluation results dto
      */
     public EvaluationResultsDto getEvaluationResultsFromErs(String requestId) {
-        EvaluationResultsStatus evaluationResultsStatus;
+        EvaluationResultsStatus evaluationResultsStatus = null;
         try {
             GetEvaluationResultsResponse evaluationResultsResponse = ersRequestService.getEvaluationResults(requestId);
             return evaluationResultsMapper.map(evaluationResultsResponse);
         } catch (FeignException.ServiceUnavailable ex) {
             log.error(ex.getMessage());
             evaluationResultsStatus = EvaluationResultsStatus.ERS_SERVICE_UNAVAILABLE;
+        } catch (FeignException.BadRequest ex) {
+
         } catch (Exception ex) {
             log.error("There was an error while fetching evaluation results for request id [{}]: {}", requestId,
                     ex.getMessage());

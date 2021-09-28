@@ -1,7 +1,7 @@
 package com.ecaservice.ers.exception;
 
 import com.ecaservice.common.web.exception.ValidationErrorException;
-import com.ecaservice.ers.dto.ResponseStatus;
+import com.ecaservice.ers.dto.ErsErrorCode;
 
 /**
  * Duplicate request id exception class.
@@ -16,7 +16,7 @@ public class DuplicateRequestIdException extends ValidationErrorException {
      * @param requestId - request id
      */
     public DuplicateRequestIdException(String requestId) {
-        super(ResponseStatus.DUPLICATE_REQUEST_ID.name(),
+        super(ErsErrorCode.DUPLICATE_REQUEST_ID.name(),
                 String.format("Evaluation results with request id = [%s] is already exists!", requestId));
     }
 }

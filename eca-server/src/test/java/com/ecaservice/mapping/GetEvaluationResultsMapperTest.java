@@ -1,10 +1,7 @@
 package com.ecaservice.mapping;
 
 import com.ecaservice.TestHelperUtils;
-import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
-import com.ecaservice.ers.dto.ResponseStatus;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
-import com.ecaservice.web.dto.model.EvaluationResultsStatus;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.context.annotation.Import;
@@ -30,9 +27,7 @@ class GetEvaluationResultsMapperTest {
 
     @Test
     void testMapEvaluationResultsResponseWithSuccessStatus() {
-        GetEvaluationResultsResponse evaluationResultsResponse =
-                TestHelperUtils.createGetEvaluationResultsResponse(UUID.randomUUID().toString(),
-                        ResponseStatus.SUCCESS);
+        var evaluationResultsResponse = TestHelperUtils.createGetEvaluationResultsResponse(UUID.randomUUID().toString());
         evaluationResultsResponse.setStatistics(TestHelperUtils.createStatisticsReport());
         evaluationResultsResponse.setClassificationCosts(newArrayList());
         evaluationResultsResponse.getClassificationCosts().add(TestHelperUtils.createClassificationCostsReport());
@@ -42,18 +37,5 @@ class GetEvaluationResultsMapperTest {
         assertThat(evaluationResultsDto.getEvaluationStatisticsDto()).isNotNull();
         assertThat(evaluationResultsDto.getClassificationCosts()).hasSameSizeAs(
                 evaluationResultsResponse.getClassificationCosts());
-        assertThat(evaluationResultsDto.getEvaluationResultsStatus().getValue()).isEqualTo(
-                EvaluationResultsStatus.RESULTS_RECEIVED.name());
-    }
-
-    @Test
-    void testMapEvaluationResultsResponseWithResultsNotFound() {
-        GetEvaluationResultsResponse evaluationResultsResponse =
-                TestHelperUtils.createGetEvaluationResultsResponse(UUID.randomUUID().toString(),
-                        ResponseStatus.RESULTS_NOT_FOUND);
-        EvaluationResultsDto evaluationResultsDto = evaluationResultsMapper.map(evaluationResultsResponse);
-        assertThat(evaluationResultsDto).isNotNull();
-        assertThat(evaluationResultsDto.getEvaluationResultsStatus().getValue()).isEqualTo(
-                EvaluationResultsStatus.EVALUATION_RESULTS_NOT_FOUND.name());
     }
 }

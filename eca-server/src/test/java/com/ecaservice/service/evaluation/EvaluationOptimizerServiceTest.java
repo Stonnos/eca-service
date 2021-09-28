@@ -20,7 +20,7 @@ import com.ecaservice.config.ers.ErsConfig;
 import com.ecaservice.configuation.ExecutorConfiguration;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import com.ecaservice.ers.dto.ClassifierOptionsResponse;
-import com.ecaservice.ers.dto.ResponseStatus;
+import com.ecaservice.ers.dto.ErsErrorCode;
 import com.ecaservice.mapping.ClassifierInfoMapperImpl;
 import com.ecaservice.mapping.ClassifierOptionsRequestMapperImpl;
 import com.ecaservice.mapping.ClassifierOptionsRequestModelMapperImpl;
@@ -155,7 +155,7 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
     @Test
     void testsInvalidClassifierOptions() {
         ClassifierOptionsResponse response = TestHelperUtils.createClassifierOptionsResponse(Collections
-                .singletonList(TestHelperUtils.createClassifierReport(StringUtils.EMPTY)), ResponseStatus.SUCCESS);
+                .singletonList(TestHelperUtils.createClassifierReport(StringUtils.EMPTY)));
         when(ersRequestSender.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
         EvaluationResponse evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
                 instancesRequest);
@@ -172,7 +172,7 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
     @Test
     void testEvaluationWithNoClassifierOptionsRequests() {
         ClassifierOptionsResponse response = TestHelperUtils.createClassifierOptionsResponse(Collections
-                .singletonList(TestHelperUtils.createClassifierReport(decisionTreeOptions)), ResponseStatus.SUCCESS);
+                .singletonList(TestHelperUtils.createClassifierReport(decisionTreeOptions)));
         when(ersRequestSender.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
         EvaluationResponse evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
                 instancesRequest);
@@ -213,7 +213,7 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         classifierOptionsRequestModelRepository.save(requestModel);
         classifierOptionsRequestRepository.save(requestEntity);
         ClassifierOptionsResponse response = TestHelperUtils.createClassifierOptionsResponse(Collections
-                .singletonList(TestHelperUtils.createClassifierReport(decisionTreeOptions)), ResponseStatus.SUCCESS);
+                .singletonList(TestHelperUtils.createClassifierReport(decisionTreeOptions)));
         when(ersRequestSender.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
         EvaluationResponse evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
                 instancesRequest);
@@ -395,8 +395,7 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
                                                                                                              Class<V> classifierClazz)
             throws IOException {
         ClassifierOptionsResponse response = TestHelperUtils.createClassifierOptionsResponse(Collections.singletonList(
-                TestHelperUtils.createClassifierReport(objectMapper.writeValueAsString(options))),
-                ResponseStatus.SUCCESS);
+                TestHelperUtils.createClassifierReport(objectMapper.writeValueAsString(options))));
         when(ersRequestSender.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
         EvaluationResponse evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
                 instancesRequest);

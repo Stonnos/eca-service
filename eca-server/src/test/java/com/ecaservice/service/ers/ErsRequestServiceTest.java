@@ -5,7 +5,6 @@ import com.ecaservice.TestHelperUtils;
 import com.ecaservice.ers.dto.EvaluationResultsResponse;
 import com.ecaservice.ers.dto.GetEvaluationResultsRequest;
 import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
-import com.ecaservice.ers.dto.ResponseStatus;
 import com.ecaservice.mapping.ClassifierReportMapper;
 import com.ecaservice.mapping.ClassifierReportMapperImpl;
 import com.ecaservice.mapping.ErsResponseStatusMapper;
@@ -80,7 +79,6 @@ class ErsRequestServiceTest extends AbstractJpaTest {
         EvaluationLog evaluationLog = TestHelperUtils.createEvaluationLog();
         evaluationLogRepository.save(evaluationLog);
         EvaluationResultsResponse resultsResponse = new EvaluationResultsResponse();
-        resultsResponse.setStatus(ResponseStatus.SUCCESS);
         when(ersRequestSender.sendEvaluationResults(any(EvaluationResults.class), anyString())).thenReturn(
                 resultsResponse);
         EvaluationResultsRequestEntity requestEntity = new EvaluationResultsRequestEntity();
@@ -90,8 +88,7 @@ class ErsRequestServiceTest extends AbstractJpaTest {
         AssertionUtils.hasOneElement(requestEntities);
         ErsRequest ersRequest = requestEntities.stream().findFirst().orElse(null);
         Assertions.assertThat(ersRequest).isNotNull();
-        Assertions.assertThat(ersRequest.getResponseStatus()).isEqualTo(
-                ersResponseStatusMapper.map(resultsResponse.getStatus()));
+        Assertions.assertThat(ersRequest.getResponseStatus()).isEqualTo(ErsResponseStatus.SUCCESS);
         Assertions.assertThat(ersRequest).isInstanceOf(EvaluationResultsRequestEntity.class);
         EvaluationResultsRequestEntity actual = (EvaluationResultsRequestEntity) ersRequest;
         Assertions.assertThat(actual.getEvaluationLog()).isNotNull();
