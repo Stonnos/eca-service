@@ -23,12 +23,27 @@ public class ValidationErrorHelper {
      * @return first validation error
      */
     public static Optional<ValidationErrorDto> getFirstError(List<String> errorCodes,
-                                                            List<ValidationErrorDto> validationErrors) {
+                                                             List<ValidationErrorDto> validationErrors) {
         if (CollectionUtils.isEmpty(validationErrors) || CollectionUtils.isEmpty(errorCodes)) {
             return Optional.empty();
         }
         return validationErrors.stream()
                 .filter(validationErrorDto -> errorCodes.contains(validationErrorDto.getCode()))
                 .findFirst();
+    }
+
+    /**
+     * Checks that validation errors has specified error code.
+     *
+     * @param errorCode        - error code
+     * @param validationErrors - validation errors
+     * @return {@code true} if validation errors has specified error code, otherwise {@code false}
+     */
+    public static boolean hasError(String errorCode, List<ValidationErrorDto> validationErrors) {
+        if (CollectionUtils.isEmpty(validationErrors)) {
+            return false;
+        }
+        return validationErrors.stream()
+                .anyMatch(validationErrorDto -> validationErrorDto.getCode().equals(errorCode));
     }
 }
