@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import static com.ecaservice.common.web.util.ValidationErrorHelper.hasError;
-import static com.ecaservice.util.ResponseHelper.retrieveValidationErrors;
+import static com.ecaservice.common.web.util.ValidationErrorHelper.retrieveValidationErrors;
 import static com.ecaservice.util.Utils.buildEvaluationResultsDto;
 
 /**

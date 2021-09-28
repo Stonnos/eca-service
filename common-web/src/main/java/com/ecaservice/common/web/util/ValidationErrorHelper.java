@@ -1,7 +1,11 @@
 package com.ecaservice.common.web.util;
 
 import com.ecaservice.common.web.dto.ValidationErrorDto;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.experimental.UtilityClass;
+import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -14,6 +18,8 @@ import java.util.Optional;
  */
 @UtilityClass
 public class ValidationErrorHelper {
+
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     /**
      * Gets first validation error with specified error codes.
@@ -45,5 +51,19 @@ public class ValidationErrorHelper {
         }
         return validationErrors.stream()
                 .anyMatch(validationErrorDto -> validationErrorDto.getCode().equals(errorCode));
+    }
+
+    /**
+     * Gets validation errors list from response body.
+     *
+     * @param responseBody - json response body
+     * @return validation errors list
+     * @throws JsonProcessingException in case of json processing error
+     */
+    public static List<ValidationErrorDto> retrieveValidationErrors(String responseBody)
+            throws JsonProcessingException {
+        Assert.notNull(responseBody, "Expected not empty response body");
+        return OBJECT_MAPPER.readValue(responseBody, new TypeReference<>() {
+        });
     }
 }

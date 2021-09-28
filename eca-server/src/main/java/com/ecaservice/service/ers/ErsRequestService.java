@@ -31,8 +31,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.ecaservice.common.web.util.ValidationErrorHelper.getFirstError;
+import static com.ecaservice.common.web.util.ValidationErrorHelper.retrieveValidationErrors;
 import static com.ecaservice.util.ClassifierOptionsHelper.parseOptions;
-import static com.ecaservice.util.ResponseHelper.retrieveValidationErrors;
 import static com.ecaservice.util.Utils.getFirstClassifierReport;
 import static com.ecaservice.util.Utils.isValid;
 
