@@ -1,7 +1,10 @@
 package com.ecaservice.ers.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Evaluation results response model.
@@ -9,6 +12,9 @@ import lombok.Data;
  * @author Roman Batygin
  */
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Schema(description = "Evaluation results response model")
 public class EvaluationResultsResponse {
 
@@ -17,9 +23,4 @@ public class EvaluationResultsResponse {
      */
     @Schema(description = "Request id")
     private String requestId;
-    /**
-     * Response status
-     */
-    @Schema(description = "Response status")
-    private ResponseStatus status;
 }

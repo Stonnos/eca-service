@@ -3,8 +3,8 @@ package com.ecaservice.ers.service;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import com.ecaservice.ers.dto.ClassifierOptionsResponse;
 import com.ecaservice.ers.dto.EvaluationMethod;
-import com.ecaservice.ers.dto.ResponseStatus;
 import com.ecaservice.ers.exception.DataNotFoundException;
+import com.ecaservice.ers.exception.ResultsNotFoundException;
 import com.ecaservice.ers.mapping.ClassifierOptionsInfoMapper;
 import com.ecaservice.ers.mapping.ClassifierOptionsInfoMapperImpl;
 import com.ecaservice.ers.mapping.ClassifierReportFactory;
@@ -23,6 +23,7 @@ import java.util.List;
 import static com.ecaservice.ers.TestHelperUtils.buildClassifierOptionsInfo;
 import static com.ecaservice.ers.TestHelperUtils.createClassifierOptionsRequest;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 /**
@@ -52,8 +53,8 @@ class ClassifierOptionsRequestServiceTest {
     void testResultsNotFoundStatus() {
         ClassifierOptionsRequest request = createClassifierOptionsRequest(EvaluationMethod.CROSS_VALIDATION);
         when(classifierOptionsService.findBestClassifierOptions(request)).thenReturn(Collections.emptyList());
-        ClassifierOptionsResponse response = classifierOptionsRequestService.findClassifierOptions(request);
-        assertResponse(response, ResponseStatus.RESULTS_NOT_FOUND);
+        assertThrows(ResultsNotFoundException.class,
+                () -> classifierOptionsRequestService.findClassifierOptions(request));
     }
 
     @Test
@@ -61,8 +62,7 @@ class ClassifierOptionsRequestServiceTest {
         ClassifierOptionsRequest request = createClassifierOptionsRequest(EvaluationMethod.CROSS_VALIDATION);
         when(classifierOptionsService.findBestClassifierOptions(request)).thenThrow(
                 new DataNotFoundException("Not found"));
-        ClassifierOptionsResponse response = classifierOptionsRequestService.findClassifierOptions(request);
-        assertResponse(response, ResponseStatus.DATA_NOT_FOUND);
+        assertThrows(DataNotFoundException.class, () -> classifierOptionsRequestService.findClassifierOptions(request));
     }
 
     @Test
@@ -71,13 +71,6 @@ class ClassifierOptionsRequestServiceTest {
         List<ClassifierOptionsInfo> expected = Collections.singletonList(buildClassifierOptionsInfo());
         when(classifierOptionsService.findBestClassifierOptions(request)).thenReturn(expected);
         ClassifierOptionsResponse response = classifierOptionsRequestService.findClassifierOptions(request);
-        assertResponse(response, ResponseStatus.SUCCESS);
         assertThat(response.getClassifierReports()).hasSameSizeAs(expected);
-    }
-
-    private void assertResponse(ClassifierOptionsResponse response, ResponseStatus expected) {
-        assertThat(response).isNotNull();
-        assertThat(response.getRequestId()).isNotNull();
-        assertThat(response.getStatus()).isEqualTo(expected);
     }
 }

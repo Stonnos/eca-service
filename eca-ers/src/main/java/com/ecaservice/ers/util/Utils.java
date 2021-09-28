@@ -3,8 +3,6 @@ package com.ecaservice.ers.util;
 import com.ecaservice.ers.dto.ClassifierOptionsResponse;
 import com.ecaservice.ers.dto.ClassifierReport;
 import com.ecaservice.ers.dto.EvaluationResultsResponse;
-import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
-import com.ecaservice.ers.dto.ResponseStatus;
 import lombok.experimental.UtilityClass;
 
 import java.math.BigInteger;
@@ -23,13 +21,11 @@ public class Utils {
      * Creates evaluation results response.
      *
      * @param requestId      - request id
-     * @param responseStatus - response status
      * @return evaluation results response
      */
-    public static EvaluationResultsResponse buildResponse(String requestId, ResponseStatus responseStatus) {
+    public static EvaluationResultsResponse buildResponse(String requestId) {
         EvaluationResultsResponse evaluationResultsResponse = new EvaluationResultsResponse();
         evaluationResultsResponse.setRequestId(requestId);
-        evaluationResultsResponse.setStatus(responseStatus);
         return evaluationResultsResponse;
     }
 
@@ -37,30 +33,12 @@ public class Utils {
      * Creates classifier options response.
      *
      * @param requestId      - request id
-     * @param responseStatus - response status
      * @return classifier options response
      */
-    public static ClassifierOptionsResponse buildClassifierOptionsResponse(String requestId,
-                                                                           ResponseStatus responseStatus) {
+    public static ClassifierOptionsResponse buildClassifierOptionsResponse(String requestId) {
         ClassifierOptionsResponse classifierOptionsResponse = new ClassifierOptionsResponse();
         classifierOptionsResponse.setRequestId(requestId);
-        classifierOptionsResponse.setStatus(responseStatus);
         return classifierOptionsResponse;
-    }
-
-    /**
-     * Creates evaluation results response.
-     *
-     * @param requestId      - request id
-     * @param responseStatus - response status
-     * @return evaluation results simple response
-     */
-    public static GetEvaluationResultsResponse buildEvaluationResultsResponse(String requestId,
-                                                                              ResponseStatus responseStatus) {
-        GetEvaluationResultsResponse evaluationResultsResponse = new GetEvaluationResultsResponse();
-        evaluationResultsResponse.setRequestId(requestId);
-        evaluationResultsResponse.setStatus(responseStatus);
-        return evaluationResultsResponse;
     }
 
     /**
@@ -68,13 +46,11 @@ public class Utils {
      *
      * @param requestId         - request id
      * @param classifierReports - classifier reports
-     * @param responseStatus    - response status
      * @return classifier options response
      */
     public static ClassifierOptionsResponse buildClassifierOptionsResponse(String requestId,
-                                                                           List<ClassifierReport> classifierReports,
-                                                                           ResponseStatus responseStatus) {
-        ClassifierOptionsResponse classifierOptionsResponse = buildClassifierOptionsResponse(requestId, responseStatus);
+                                                                           List<ClassifierReport> classifierReports) {
+        ClassifierOptionsResponse classifierOptionsResponse = buildClassifierOptionsResponse(requestId);
         classifierOptionsResponse.setClassifierReports(classifierReports);
         return classifierOptionsResponse;
     }

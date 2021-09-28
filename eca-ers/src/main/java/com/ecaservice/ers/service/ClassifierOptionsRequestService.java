@@ -2,18 +2,14 @@ package com.ecaservice.ers.service;
 
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import com.ecaservice.ers.dto.ClassifierOptionsResponse;
-import com.ecaservice.ers.dto.ResponseStatus;
-import com.ecaservice.ers.exception.DataNotFoundException;
+import com.ecaservice.ers.exception.ResultsNotFoundException;
 import com.ecaservice.ers.mapping.ClassifierOptionsInfoMapper;
-import com.ecaservice.ers.model.ClassifierOptionsInfo;
-import com.ecaservice.ers.util.Utils;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.List;
 import java.util.UUID;
 
 import static com.ecaservice.ers.config.MetricConstants.GET_OPTIMAL_CLASSIFIER_OPTIONS_TIMED_METRIC_NAME;
@@ -41,26 +37,21 @@ public class ClassifierOptionsRequestService {
     public ClassifierOptionsResponse findClassifierOptions(ClassifierOptionsRequest classifierOptionsRequest) {
         String requestId = UUID.randomUUID().toString();
         log.info("Received request [{}] for searching optimal classifiers options.", requestId);
-        ResponseStatus responseStatus = ResponseStatus.SUCCESS;
-        try {
-            log.info("Starting to find optimal classifiers options with request id [{}] for data '{}' classification.",
-                    requestId, classifierOptionsRequest.getRelationName());
-            List<ClassifierOptionsInfo> classifierOptionsInfoList =
-                    classifierOptionsService.findBestClassifierOptions(classifierOptionsRequest);
-            if (CollectionUtils.isEmpty(classifierOptionsInfoList)) {
-                log.info("Best classifiers options not found for data '{}', request id [{}]",
-                        classifierOptionsRequest.getRelationName(), requestId);
-                responseStatus = ResponseStatus.RESULTS_NOT_FOUND;
-            } else {
-                log.info("{} best classifiers options has been found for data '{}', request id [{}]",
-                        classifierOptionsInfoList.size(), classifierOptionsRequest.getRelationName(), requestId);
-                return Utils.buildClassifierOptionsResponse(requestId,
-                        classifierOptionsInfoMapper.map(classifierOptionsInfoList), responseStatus);
-            }
-        } catch (DataNotFoundException ex) {
-            log.warn(ex.getMessage());
-            responseStatus = ResponseStatus.DATA_NOT_FOUND;
+        log.info("Starting to find optimal classifiers options with request id [{}] for data '{}' classification.",
+                requestId, classifierOptionsRequest.getRelationName());
+        var classifierOptionsInfoList = classifierOptionsService.findBestClassifierOptions(classifierOptionsRequest);
+        if (CollectionUtils.isEmpty(classifierOptionsInfoList)) {
+            throw new ResultsNotFoundException(
+                    String.format("Best classifiers options not found for data [%s], request id [%s]",
+                            classifierOptionsRequest.getRelationName(), requestId));
+        } else {
+            log.info("[{}] best classifiers options has been found for data [{}], request id [{}]",
+                    classifierOptionsInfoList.size(), classifierOptionsRequest.getRelationName(), requestId);
+            var classifierOptionsReports = classifierOptionsInfoMapper.map(classifierOptionsInfoList);
+            return ClassifierOptionsResponse.builder()
+                    .requestId(requestId)
+                    .classifierReports(classifierOptionsReports)
+                    .build();
         }
-        return Utils.buildClassifierOptionsResponse(requestId, responseStatus);
     }
 }

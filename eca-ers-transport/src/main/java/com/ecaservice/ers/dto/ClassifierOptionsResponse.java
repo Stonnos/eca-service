@@ -1,7 +1,10 @@
 package com.ecaservice.ers.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -11,6 +14,9 @@ import java.util.List;
  * @author Roman Batygin
  */
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Schema(description = "Classifier options response model")
 public class ClassifierOptionsResponse {
 
@@ -25,10 +31,4 @@ public class ClassifierOptionsResponse {
      */
     @Schema(description = "Optimal classifiers reports list")
     private List<ClassifierReport> classifierReports;
-
-    /**
-     * Response status
-     */
-    @Schema(description = "Response status")
-    private ResponseStatus status;
 }
