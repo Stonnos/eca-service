@@ -1,29 +1,22 @@
 package com.ecaservice.service.ers;
 
-import com.ecaservice.common.web.dto.ValidationErrorDto;
 import com.ecaservice.ers.dto.ErsErrorCode;
-import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
 import com.ecaservice.mapping.GetEvaluationResultsMapper;
-import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.model.entity.ExperimentResultsEntity;
 import com.ecaservice.model.entity.ExperimentResultsRequest;
 import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.core.evaluation.EvaluationResults;
 import eca.dataminer.AbstractExperiment;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-
-import java.util.List;
 
 import static com.ecaservice.common.web.util.ValidationErrorHelper.hasError;
+import static com.ecaservice.util.ResponseHelper.retrieveValidationErrors;
 import static com.ecaservice.util.Utils.buildEvaluationResultsDto;
 
 /**
@@ -35,8 +28,6 @@ import static com.ecaservice.util.Utils.buildEvaluationResultsDto;
 @Service
 @RequiredArgsConstructor
 public class ErsService {
-
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private final ErsRequestService ersRequestService;
     private final GetEvaluationResultsMapper evaluationResultsMapper;
@@ -90,11 +81,7 @@ public class ErsService {
 
     private EvaluationResultsStatus handleBadRequest(FeignException.BadRequest badRequestEx) {
         try {
-            String responseBody = badRequestEx.contentUTF8();
-            Assert.notNull(responseBody, "Expected not empty response body");
-            List<ValidationErrorDto> validationErrors =
-                    OBJECT_MAPPER.readValue(responseBody, new TypeReference<>() {
-                    });
+            var validationErrors = retrieveValidationErrors(badRequestEx.contentUTF8());
             if (hasError(ErsErrorCode.RESULTS_NOT_FOUND.name(), validationErrors)) {
                 return EvaluationResultsStatus.EVALUATION_RESULTS_NOT_FOUND;
             }

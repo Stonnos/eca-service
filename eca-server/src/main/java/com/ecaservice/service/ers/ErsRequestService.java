@@ -16,15 +16,12 @@ import com.ecaservice.model.entity.ErsRequest;
 import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.repository.ErsRequestRepository;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.core.evaluation.EvaluationResults;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -35,6 +32,7 @@ import java.util.stream.Stream;
 
 import static com.ecaservice.common.web.util.ValidationErrorHelper.getFirstError;
 import static com.ecaservice.util.ClassifierOptionsHelper.parseOptions;
+import static com.ecaservice.util.ResponseHelper.retrieveValidationErrors;
 import static com.ecaservice.util.Utils.getFirstClassifierReport;
 import static com.ecaservice.util.Utils.isValid;
 
@@ -51,8 +49,6 @@ public class ErsRequestService {
     private static final String RESULTS_NOT_FOUND_MESSAGE = "Can't find classifiers options for data '%s'";
     private static final String SERVICE_UNAVAILABLE_ERROR_MESSAGE = "Service unavailable";
     private static final String UNKNOWN_ERROR_MESSAGE = "Unknown error";
-
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private final ErsRequestSender ersRequestSender;
     private final ErsRequestRepository ersRequestRepository;
@@ -130,6 +126,7 @@ public class ErsRequestService {
         } catch (FeignException.BadRequest ex) {
             log.error("Bad request error while sending classifier options request: {}.", ex.getMessage());
             handleBadRequest(requestModel, ex);
+            setClassifierOptionsResultError(classifierOptionsResult, UNKNOWN_ERROR_MESSAGE);
         } catch (Exception ex) {
             log.error("Unknown error while sending classifier options request: {}.", ex.getMessage());
             handleErrorRequest(requestModel, ErsResponseStatus.ERROR, ex.getMessage());
@@ -177,13 +174,9 @@ public class ErsRequestService {
 
     private void handleBadRequest(ErsRequest ersRequest, FeignException.BadRequest badRequestEx) {
         try {
-            String responseBody = badRequestEx.contentUTF8();
-            Assert.notNull(responseBody, "Expected not empty response body");
-            List<ValidationErrorDto> validationErrors =
-                    OBJECT_MAPPER.readValue(responseBody, new TypeReference<>() {
-                    });
+            var validationErrors = retrieveValidationErrors(badRequestEx.contentUTF8());
             handleValidationError(ersRequest, validationErrors);
-            ersRequest.setDetails(responseBody);
+            ersRequest.setDetails(badRequestEx.contentUTF8());
         } catch (Exception ex) {
             log.error("Got error while handling bad request with status [{}] for request id [{}]",
                     badRequestEx.status(), ersRequest.getRequestId());
