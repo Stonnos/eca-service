@@ -13,9 +13,9 @@ import org.mapstruct.Mapper;
 public interface ErsResponseStatusMapper {
 
     /**
-     * Maps ERS response status to its internal model.
+     * Maps ERS error code to its internal model.
      *
-     * @param ersErrorCode - ERS response status
+     * @param ersErrorCode - ERS error code
      * @return ERS response status internal enum
      */
     ErsResponseStatus map(ErsErrorCode ersErrorCode);
