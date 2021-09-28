@@ -176,7 +176,7 @@ public class ErsRequestService {
         try {
             var validationErrors = retrieveValidationErrors(badRequestEx.contentUTF8());
             handleValidationError(ersRequest, validationErrors);
-            ersRequest.setDetails(badRequestEx.contentUTF8());
+            ersRequest.setDetails(badRequestEx.getMessage());
         } catch (Exception ex) {
             log.error("Got error while handling bad request with status [{}] for request id [{}]",
                     badRequestEx.status(), ersRequest.getRequestId());
