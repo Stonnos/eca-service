@@ -128,7 +128,7 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
         List<Experiment> experiments = newArrayList();
         experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED));
         Experiment experimentToRemove =
-                TestHelperUtils.createSentExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR,
+                TestHelperUtils.createSentExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED,
                         LocalDateTime.now().minusDays(experimentConfig.getNumberOfDaysForStorage() + 1));
         experiments.add(experimentToRemove);
         Experiment sentExperiment =
@@ -140,6 +140,10 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
                         LocalDateTime.now());
         timeoutExperiment.setDeletedDate(LocalDateTime.now());
         experiments.add(timeoutExperiment);
+        Experiment errorExperiment =
+                TestHelperUtils.createSentExperiment(UUID.randomUUID().toString(), RequestStatus.TIMEOUT,
+                        LocalDateTime.now().minusDays(experimentConfig.getNumberOfDaysForStorage() + 1));
+        experiments.add(errorExperiment);
         experimentRepository.saveAll(experiments);
         experimentScheduler.processRequestsToRemove();
         verify(experimentService).removeExperimentModel(argumentCaptor.capture());

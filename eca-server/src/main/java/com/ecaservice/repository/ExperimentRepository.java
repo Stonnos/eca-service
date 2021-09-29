@@ -23,14 +23,6 @@ import java.util.Optional;
 public interface ExperimentRepository extends JpaRepository<Experiment, Long>, JpaSpecificationExecutor<Experiment> {
 
     /**
-     * Finds experiment by request id.
-     *
-     * @param requestId - request id
-     * @return experiment entity
-     */
-    Optional<Experiment> findByRequestId(String requestId);
-
-    /**
      * Finds experiment by token.
      *
      * @param token - experiment token
@@ -55,8 +47,8 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
      * @param dateTime date time threshold value
      * @return experiments list
      */
-    @Query("select exp from Experiment exp where exp.sentDate is not null and exp.deletedDate is null " +
-            "and exp.sentDate < :dateTime order by exp.sentDate")
+    @Query("select exp from Experiment exp where exp.requestStatus = 'FINISHED' and exp.sentDate is not null and " +
+            "exp.deletedDate is null and exp.sentDate < :dateTime order by exp.sentDate")
     List<Experiment> findExperimentsModelsToDelete(@Param("dateTime") LocalDateTime dateTime);
 
     /**
