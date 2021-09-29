@@ -46,9 +46,6 @@ import static com.ecaservice.util.Utils.isValid;
 @RequiredArgsConstructor
 public class ErsRequestService {
 
-    private static final String RESULTS_NOT_FOUND_MESSAGE = "Can't find classifiers options for data '%s'";
-    private static final String UNKNOWN_ERROR_MESSAGE = "Unknown error";
-
     private final ErsRequestSender ersRequestSender;
     private final ErsRequestRepository ersRequestRepository;
     private final ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository;
@@ -129,7 +126,7 @@ public class ErsRequestService {
         } catch (Exception ex) {
             log.error("Unknown error while sending classifier options request: {}.", ex.getMessage());
             handleErrorRequest(requestModel, ErsResponseStatus.ERROR, ex.getMessage());
-            setClassifierOptionsResultError(classifierOptionsResult, UNKNOWN_ERROR_MESSAGE);
+            setClassifierOptionsResultError(classifierOptionsResult, requestModel.getResponseStatus().getDescription());
         } finally {
             classifierOptionsRequestModelRepository.save(requestModel);
         }
@@ -146,7 +143,7 @@ public class ErsRequestService {
         ClassifierReport classifierReport = getFirstClassifierReport(response);
         if (!isValid(classifierReport)) {
             handleErrorRequest(requestModel, ErsResponseStatus.ERROR, "Got empty classifier options string!");
-            setClassifierOptionsResultError(classifierOptionsResult, RESULTS_NOT_FOUND_MESSAGE);
+            setClassifierOptionsResultError(classifierOptionsResult, requestModel.getResponseStatus().getDescription());
         } else {
             //Checks classifier options deserialization
             parseOptions(classifierReport.getOptions());
