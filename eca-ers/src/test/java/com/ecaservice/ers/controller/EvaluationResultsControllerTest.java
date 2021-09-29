@@ -8,7 +8,6 @@ import com.ecaservice.ers.dto.EvaluationResultsRequest;
 import com.ecaservice.ers.dto.EvaluationResultsResponse;
 import com.ecaservice.ers.dto.GetEvaluationResultsRequest;
 import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
-import com.ecaservice.ers.dto.ResponseStatus;
 import com.ecaservice.ers.service.ClassifierOptionsRequestService;
 import com.ecaservice.ers.service.EvaluationResultsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -58,8 +57,7 @@ class EvaluationResultsControllerTest {
     @Test
     void testSaveEvaluationResultsReport() throws Exception {
         EvaluationResultsRequest request = buildEvaluationResultsReport(UUID.randomUUID().toString());
-        EvaluationResultsResponse response =
-                buildEvaluationResultsResponse(request.getRequestId(), ResponseStatus.SUCCESS);
+        EvaluationResultsResponse response = buildEvaluationResultsResponse(request.getRequestId());
         when(evaluationResultsService.saveEvaluationResults(request)).thenReturn(response);
         mockMvc.perform(post(SAVE_EVALUATION_RESULTS_REQUEST_URL)
                 .content(objectMapper.writeValueAsString(request))
@@ -87,7 +85,6 @@ class EvaluationResultsControllerTest {
         ClassifierOptionsRequest request = createClassifierOptionsRequest(EvaluationMethod.CROSS_VALIDATION);
         ClassifierOptionsResponse response = new ClassifierOptionsResponse();
         response.setRequestId(UUID.randomUUID().toString());
-        response.setStatus(ResponseStatus.SUCCESS);
         when(classifierOptionsRequestService.findClassifierOptions(request)).thenReturn(response);
         mockMvc.perform(post(OPTIMAL_CLASSIFIER_OPTIONS_REQUEST_URL)
                 .content(objectMapper.writeValueAsString(request))

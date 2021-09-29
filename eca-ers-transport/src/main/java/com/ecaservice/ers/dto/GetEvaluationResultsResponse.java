@@ -21,12 +21,6 @@ public class GetEvaluationResultsResponse {
     private String requestId;
 
     /**
-     * Response status
-     */
-    @Schema(description = "Response status")
-    private ResponseStatus status;
-
-    /**
      * Instances report
      */
     @Schema(description = "Instances report")

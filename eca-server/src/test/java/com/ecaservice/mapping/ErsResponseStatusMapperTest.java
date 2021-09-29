@@ -1,6 +1,6 @@
 package com.ecaservice.mapping;
 
-import com.ecaservice.ers.dto.ResponseStatus;
+import com.ecaservice.ers.dto.ErsErrorCode;
 import com.ecaservice.model.entity.ErsResponseStatus;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -23,25 +23,20 @@ class ErsResponseStatusMapperTest {
     private ErsResponseStatusMapper ersResponseStatusMapper;
 
     @Test
-    void testMapSuccessStatus() {
-        Assertions.assertThat(ersResponseStatusMapper.map(ResponseStatus.SUCCESS)).isEqualTo(ErsResponseStatus.SUCCESS);
-    }
-
-    @Test
     void testMapDuplicateRequestIdStatus() {
-        Assertions.assertThat(ersResponseStatusMapper.map(ResponseStatus.DUPLICATE_REQUEST_ID)).isEqualTo(
+        Assertions.assertThat(ersResponseStatusMapper.map(ErsErrorCode.DUPLICATE_REQUEST_ID)).isEqualTo(
                 ErsResponseStatus.DUPLICATE_REQUEST_ID);
     }
 
     @Test
     void testMapDataNotFoundStatus() {
-        Assertions.assertThat(ersResponseStatusMapper.map(ResponseStatus.DATA_NOT_FOUND)).isEqualTo(
+        Assertions.assertThat(ersResponseStatusMapper.map(ErsErrorCode.DATA_NOT_FOUND)).isEqualTo(
                 ErsResponseStatus.DATA_NOT_FOUND);
     }
 
     @Test
     void testMapResultsNotFoundStatus() {
-        Assertions.assertThat(ersResponseStatusMapper.map(ResponseStatus.RESULTS_NOT_FOUND)).isEqualTo(
+        Assertions.assertThat(ersResponseStatusMapper.map(ErsErrorCode.RESULTS_NOT_FOUND)).isEqualTo(
                 ErsResponseStatus.RESULTS_NOT_FOUND);
     }
 }

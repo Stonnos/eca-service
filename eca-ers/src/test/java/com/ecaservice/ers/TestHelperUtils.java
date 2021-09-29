@@ -13,7 +13,6 @@ import com.ecaservice.ers.dto.EvaluationResultsResponse;
 import com.ecaservice.ers.dto.GetEvaluationResultsRequest;
 import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
 import com.ecaservice.ers.dto.InstancesReport;
-import com.ecaservice.ers.dto.ResponseStatus;
 import com.ecaservice.ers.dto.RocCurveReport;
 import com.ecaservice.ers.dto.SortDirection;
 import com.ecaservice.ers.dto.SortField;
@@ -401,14 +400,12 @@ public class TestHelperUtils {
      * Creates evaluation results response.
      *
      * @param requestId - request id
-     * @param status    - resposne status
      * @return evaluation results response
      */
-    public static EvaluationResultsResponse buildEvaluationResultsResponse(String requestId, ResponseStatus status) {
-        EvaluationResultsResponse response = new EvaluationResultsResponse();
-        response.setRequestId(requestId);
-        response.setStatus(ResponseStatus.SUCCESS);
-        return response;
+    public static EvaluationResultsResponse buildEvaluationResultsResponse(String requestId) {
+        return EvaluationResultsResponse.builder()
+                .requestId(requestId)
+                .build();
     }
 
     /**
@@ -420,7 +417,6 @@ public class TestHelperUtils {
     public static GetEvaluationResultsResponse buildGetEvaluationResultsResponse(String requestId) {
         GetEvaluationResultsResponse getEvaluationResultsResponse = new GetEvaluationResultsResponse();
         getEvaluationResultsResponse.setRequestId(requestId);
-        getEvaluationResultsResponse.setStatus(ResponseStatus.SUCCESS);
         getEvaluationResultsResponse.setClassifierReport(buildClassifierReport());
         getEvaluationResultsResponse.setEvaluationMethodReport(
                 buildEvaluationMethodReport(EvaluationMethod.CROSS_VALIDATION));

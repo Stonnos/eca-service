@@ -23,7 +23,6 @@ import com.ecaservice.ers.dto.ClassifierOptionsResponse;
 import com.ecaservice.ers.dto.ClassifierReport;
 import com.ecaservice.ers.dto.EvaluationMethodReport;
 import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
-import com.ecaservice.ers.dto.ResponseStatus;
 import com.ecaservice.ers.dto.RocCurveReport;
 import com.ecaservice.ers.dto.StatisticsReport;
 import com.ecaservice.model.MsgProperties;
@@ -628,13 +627,10 @@ public class TestHelperUtils {
      * Creates classifier options response.
      *
      * @param classifierReports - classifier reports
-     * @param responseStatus    - response status
      * @return classifier options response
      */
-    public static ClassifierOptionsResponse createClassifierOptionsResponse(List<ClassifierReport> classifierReports,
-                                                                            ResponseStatus responseStatus) {
+    public static ClassifierOptionsResponse createClassifierOptionsResponse(List<ClassifierReport> classifierReports) {
         ClassifierOptionsResponse response = new ClassifierOptionsResponse();
-        response.setStatus(responseStatus);
         response.setRequestId(java.util.UUID.randomUUID().toString());
         response.setClassifierReports(newArrayList());
         classifierReports.forEach(classifierReport -> response.getClassifierReports().add(classifierReport));
@@ -813,14 +809,11 @@ public class TestHelperUtils {
      * Creates get evaluation results response.
      *
      * @param requestId      - request id
-     * @param responseStatus - response status
      * @return get evaluation results response
      */
-    public static GetEvaluationResultsResponse createGetEvaluationResultsResponse(String requestId,
-                                                                                  ResponseStatus responseStatus) {
+    public static GetEvaluationResultsResponse createGetEvaluationResultsResponse(String requestId) {
         GetEvaluationResultsResponse evaluationResultsResponse = new GetEvaluationResultsResponse();
         evaluationResultsResponse.setRequestId(requestId);
-        evaluationResultsResponse.setStatus(responseStatus);
         return evaluationResultsResponse;
     }
 

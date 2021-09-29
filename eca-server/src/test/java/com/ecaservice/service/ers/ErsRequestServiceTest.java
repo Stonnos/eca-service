@@ -2,10 +2,11 @@ package com.ecaservice.service.ers;
 
 import com.ecaservice.AssertionUtils;
 import com.ecaservice.TestHelperUtils;
+import com.ecaservice.common.web.dto.ValidationErrorDto;
+import com.ecaservice.ers.dto.ErsErrorCode;
 import com.ecaservice.ers.dto.EvaluationResultsResponse;
 import com.ecaservice.ers.dto.GetEvaluationResultsRequest;
 import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
-import com.ecaservice.ers.dto.ResponseStatus;
 import com.ecaservice.mapping.ClassifierReportMapper;
 import com.ecaservice.mapping.ClassifierReportMapperImpl;
 import com.ecaservice.mapping.ErsResponseStatusMapper;
@@ -18,6 +19,8 @@ import com.ecaservice.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.repository.ErsRequestRepository;
 import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.service.AbstractJpaTest;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
 import eca.metrics.KNearestNeighbours;
@@ -28,6 +31,7 @@ import org.mockito.Mock;
 import org.springframework.context.annotation.Import;
 
 import javax.inject.Inject;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -43,6 +47,8 @@ import static org.mockito.Mockito.when;
  */
 @Import({ClassifierReportMapperImpl.class, ErsResponseStatusMapperImpl.class})
 class ErsRequestServiceTest extends AbstractJpaTest {
+
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Inject
     private EvaluationLogRepository evaluationLogRepository;
@@ -80,7 +86,6 @@ class ErsRequestServiceTest extends AbstractJpaTest {
         EvaluationLog evaluationLog = TestHelperUtils.createEvaluationLog();
         evaluationLogRepository.save(evaluationLog);
         EvaluationResultsResponse resultsResponse = new EvaluationResultsResponse();
-        resultsResponse.setStatus(ResponseStatus.SUCCESS);
         when(ersRequestSender.sendEvaluationResults(any(EvaluationResults.class), anyString())).thenReturn(
                 resultsResponse);
         EvaluationResultsRequestEntity requestEntity = new EvaluationResultsRequestEntity();
@@ -90,8 +95,7 @@ class ErsRequestServiceTest extends AbstractJpaTest {
         AssertionUtils.hasOneElement(requestEntities);
         ErsRequest ersRequest = requestEntities.stream().findFirst().orElse(null);
         Assertions.assertThat(ersRequest).isNotNull();
-        Assertions.assertThat(ersRequest.getResponseStatus()).isEqualTo(
-                ersResponseStatusMapper.map(resultsResponse.getStatus()));
+        Assertions.assertThat(ersRequest.getResponseStatus()).isEqualTo(ErsResponseStatus.SUCCESS);
         Assertions.assertThat(ersRequest).isInstanceOf(EvaluationResultsRequestEntity.class);
         EvaluationResultsRequestEntity actual = (EvaluationResultsRequestEntity) ersRequest;
         Assertions.assertThat(actual.getEvaluationLog()).isNotNull();
@@ -105,9 +109,19 @@ class ErsRequestServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    void testSendingWithSErrorStatus() {
+    void testSendingWithErrorStatus() {
         FeignException.BadRequest badRequest = mock(FeignException.BadRequest.class);
         internalTestErrorStatus(badRequest, ErsResponseStatus.ERROR);
+    }
+
+    @Test
+    void testSendingWithBadRequest() throws JsonProcessingException {
+        FeignException.BadRequest badRequest = mock(FeignException.BadRequest.class);
+        var validationError = new ValidationErrorDto();
+        validationError.setCode(ErsErrorCode.DUPLICATE_REQUEST_ID.name());
+        when(badRequest.contentUTF8()).thenReturn(
+                OBJECT_MAPPER.writeValueAsString(Collections.singletonList(validationError)));
+        internalTestErrorStatus(badRequest, ErsResponseStatus.DUPLICATE_REQUEST_ID);
     }
 
     @Test

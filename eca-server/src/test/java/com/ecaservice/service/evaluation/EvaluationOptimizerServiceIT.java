@@ -8,10 +8,10 @@ import com.ecaservice.config.AppProperties;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ers.ErsConfig;
 import com.ecaservice.configuation.ExecutorConfiguration;
+import com.ecaservice.core.lock.aspect.LockExecutionAspect;
 import com.ecaservice.core.lock.redis.config.RedisLockAutoConfiguration;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import com.ecaservice.ers.dto.ClassifierOptionsResponse;
-import com.ecaservice.ers.dto.ResponseStatus;
 import com.ecaservice.mapping.ClassifierInfoMapperImpl;
 import com.ecaservice.mapping.ClassifierOptionsRequestMapperImpl;
 import com.ecaservice.mapping.ClassifierOptionsRequestModelMapperImpl;
@@ -66,7 +66,7 @@ import static org.mockito.Mockito.when;
         CrossValidationConfig.class, EvaluationRequestService.class, InstancesInfoMapperImpl.class,
         ClassifierOptionsRequestModelMapperImpl.class, ClassifierReportMapperImpl.class,
         EvaluationRequestMapperImpl.class, ClassifierOptionsRequestMapperImpl.class,
-        ErsConfig.class, EvaluationLogMapperImpl.class,
+        ErsConfig.class, EvaluationLogMapperImpl.class, LockExecutionAspect.class,
         EvaluationService.class, ErsEvaluationMethodMapperImpl.class, ErsResponseStatusMapperImpl.class,
         InstancesConverter.class, ClassifierOptionsResponseModelMapperImpl.class, ErsRequestService.class,
         EvaluationOptimizerService.class, ClassifierInfoMapperImpl.class, RedisAutoConfiguration.class,
@@ -125,7 +125,7 @@ class EvaluationOptimizerServiceIT extends AbstractJpaTest {
     @Test
     void testClassifierOptionsCacheInMultiThreadEnvironment() throws Exception {
         ClassifierOptionsResponse response = TestHelperUtils.createClassifierOptionsResponse(Collections
-                .singletonList(TestHelperUtils.createClassifierReport(decisionTreeOptions)), ResponseStatus.SUCCESS);
+                .singletonList(TestHelperUtils.createClassifierReport(decisionTreeOptions)));
         when(ersRequestSender.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
         final CountDownLatch finishedLatch = new CountDownLatch(NUM_THREADS);
         ExecutorService executorService = Executors.newFixedThreadPool(NUM_THREADS);

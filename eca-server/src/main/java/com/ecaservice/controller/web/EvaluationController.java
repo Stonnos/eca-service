@@ -115,6 +115,10 @@ public class EvaluationController {
     )
     @GetMapping(value = "/request-statuses-statistics")
     public RequestStatusStatisticsDto getEvaluationRequestStatusesStatistics() {
-        return toRequestStatusesStatistics(evaluationLogService.getRequestStatusesStatistics());
+        log.info("Request get evaluations requests statuses statistics");
+        var requestStatusStatisticsDto =
+                toRequestStatusesStatistics(evaluationLogService.getRequestStatusesStatistics());
+        log.info("Evaluations requests statuses statistics: {}", requestStatusStatisticsDto);
+        return requestStatusStatisticsDto;
     }
 }

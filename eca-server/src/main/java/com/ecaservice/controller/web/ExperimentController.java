@@ -252,7 +252,10 @@ public class ExperimentController {
     )
     @GetMapping(value = "/request-statuses-statistics")
     public RequestStatusStatisticsDto getExperimentsRequestStatusesStatistics() {
-        return toRequestStatusesStatistics(experimentService.getRequestStatusesStatistics());
+        log.info("Request get experiments statuses statistics");
+        var requestStatusStatisticsDto = toRequestStatusesStatistics(experimentService.getRequestStatusesStatistics());
+        log.info("Experiments statuses statistics: {}", requestStatusStatisticsDto);
+        return requestStatusStatisticsDto;
     }
 
     /**

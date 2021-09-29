@@ -1,6 +1,6 @@
 package com.ecaservice.mapping;
 
-import com.ecaservice.ers.dto.ResponseStatus;
+import com.ecaservice.ers.dto.ErsErrorCode;
 import com.ecaservice.model.entity.ErsResponseStatus;
 import org.mapstruct.Mapper;
 
@@ -13,10 +13,10 @@ import org.mapstruct.Mapper;
 public interface ErsResponseStatusMapper {
 
     /**
-     * Maps ERS response status to its internal model.
+     * Maps ERS error code to its internal model.
      *
-     * @param responseStatus - ERS response status
+     * @param ersErrorCode - ERS error code
      * @return ERS response status internal enum
      */
-    ErsResponseStatus map(ResponseStatus responseStatus);
+    ErsResponseStatus map(ErsErrorCode ersErrorCode);
 }

@@ -1,8 +1,9 @@
 package com.ecaservice.service.ers;
 
 import com.ecaservice.TestHelperUtils;
+import com.ecaservice.common.web.dto.ValidationErrorDto;
+import com.ecaservice.ers.dto.ErsErrorCode;
 import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
-import com.ecaservice.ers.dto.ResponseStatus;
 import com.ecaservice.mapping.ClassificationCostsMapperImpl;
 import com.ecaservice.mapping.GetEvaluationResultsMapper;
 import com.ecaservice.mapping.GetEvaluationResultsMapperImpl;
@@ -16,6 +17,8 @@ import com.ecaservice.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.service.AbstractJpaTest;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.core.evaluation.EvaluationResults;
 import eca.dataminer.AbstractExperiment;
 import feign.FeignException;
@@ -25,6 +28,7 @@ import org.mockito.Mock;
 import org.springframework.context.annotation.Import;
 
 import javax.inject.Inject;
+import java.util.Collections;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -42,6 +46,8 @@ import static org.mockito.Mockito.when;
  */
 @Import({StatisticsReportMapperImpl.class, ClassificationCostsMapperImpl.class, GetEvaluationResultsMapperImpl.class})
 class ErsServiceTest extends AbstractJpaTest {
+
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Mock
     private ErsRequestService ersRequestService;
@@ -87,9 +93,14 @@ class ErsServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    void testGetExperimentResultsDetailsWithResultsNotFoundStatus() {
-        testGetEvaluationResults(ResponseStatus.RESULTS_NOT_FOUND,
-                EvaluationResultsStatus.EVALUATION_RESULTS_NOT_FOUND);
+    void testGetExperimentResultsDetailsWithResultsNotFoundStatus() throws JsonProcessingException {
+        var badRequestEx = mock(FeignException.BadRequest.class);
+        var validationError = new ValidationErrorDto();
+        validationError.setCode(ErsErrorCode.RESULTS_NOT_FOUND.name());
+        when(badRequestEx.contentUTF8()).thenReturn(
+                OBJECT_MAPPER.writeValueAsString(Collections.singletonList(validationError)));
+        when(ersRequestService.getEvaluationResults(anyString())).thenThrow(badRequestEx);
+        assertEvaluationResults(EvaluationResultsStatus.EVALUATION_RESULTS_NOT_FOUND);
     }
 
     @Test
@@ -107,15 +118,11 @@ class ErsServiceTest extends AbstractJpaTest {
 
     @Test
     void testSuccessGetExperimentResultsDetails() {
-        testGetEvaluationResults(ResponseStatus.SUCCESS, EvaluationResultsStatus.RESULTS_RECEIVED);
-    }
-
-    private void testGetEvaluationResults(ResponseStatus responseStatus, EvaluationResultsStatus expectedStatus) {
         String requestId = UUID.randomUUID().toString();
         GetEvaluationResultsResponse evaluationResultsResponse =
-                TestHelperUtils.createGetEvaluationResultsResponse(requestId, responseStatus);
+                TestHelperUtils.createGetEvaluationResultsResponse(requestId);
         when(ersRequestService.getEvaluationResults(anyString())).thenReturn(evaluationResultsResponse);
-        assertEvaluationResults(expectedStatus);
+        assertEvaluationResults(EvaluationResultsStatus.RESULTS_RECEIVED);
     }
 
     private void assertEvaluationResults(EvaluationResultsStatus expectedStatus) {

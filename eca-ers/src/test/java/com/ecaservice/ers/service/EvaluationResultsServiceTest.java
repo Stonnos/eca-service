@@ -7,7 +7,8 @@ import com.ecaservice.ers.dto.EvaluationResultsResponse;
 import com.ecaservice.ers.dto.GetEvaluationResultsRequest;
 import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
 import com.ecaservice.ers.dto.InstancesReport;
-import com.ecaservice.ers.dto.ResponseStatus;
+import com.ecaservice.ers.exception.DuplicateRequestIdException;
+import com.ecaservice.ers.exception.ResultsNotFoundException;
 import com.ecaservice.ers.mapping.ClassificationCostsReportMapperImpl;
 import com.ecaservice.ers.mapping.ClassifierOptionsInfoMapperImpl;
 import com.ecaservice.ers.mapping.ClassifierReportFactory;
@@ -33,6 +34,7 @@ import static com.ecaservice.ers.TestHelperUtils.buildEvaluationResultsReport;
 import static com.ecaservice.ers.TestHelperUtils.buildGetEvaluationResultsRequest;
 import static com.ecaservice.ers.TestHelperUtils.buildInstancesReport;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for checking {@link EvaluationResultsService} functionality.
@@ -72,7 +74,6 @@ class EvaluationResultsServiceTest extends AbstractJpaTest {
         EvaluationResultsRequest request = buildEvaluationResultsReport(UUID.randomUUID().toString());
         EvaluationResultsResponse response = evaluationResultsService.saveEvaluationResults(request);
         assertThat(response).isNotNull();
-        assertThat(response.getStatus()).isEqualTo(ResponseStatus.SUCCESS);
         EvaluationResultsInfo evaluationResultsInfo =
                 evaluationResultsInfoRepository.findByRequestId(request.getRequestId());
         assertThat(evaluationResultsInfo).isNotNull();
@@ -99,9 +100,7 @@ class EvaluationResultsServiceTest extends AbstractJpaTest {
     void testExistingReport() {
         EvaluationResultsRequest request = buildEvaluationResultsReport(UUID.randomUUID().toString());
         evaluationResultsService.saveEvaluationResults(request);
-        EvaluationResultsResponse response = evaluationResultsService.saveEvaluationResults(request);
-        assertThat(response).isNotNull();
-        assertThat(response.getStatus()).isEqualTo(ResponseStatus.DUPLICATE_REQUEST_ID);
+        assertThrows(DuplicateRequestIdException.class, () -> evaluationResultsService.saveEvaluationResults(request));
     }
 
     @Test
@@ -111,7 +110,6 @@ class EvaluationResultsServiceTest extends AbstractJpaTest {
         request.setRequestId(UUID.randomUUID().toString());
         EvaluationResultsResponse response = evaluationResultsService.saveEvaluationResults(request);
         assertThat(response).isNotNull();
-        assertThat(response.getStatus()).isEqualTo(ResponseStatus.SUCCESS);
         assertThat(instancesInfoRepository.count()).isOne();
     }
 
@@ -122,9 +120,12 @@ class EvaluationResultsServiceTest extends AbstractJpaTest {
         ExecutorService executorService = Executors.newFixedThreadPool(NUM_THREADS);
         for (int i = 0; i < NUM_THREADS; i++) {
             executorService.submit(() -> {
-                EvaluationResultsRequest request = buildEvaluationResultsReport(requestId);
-                evaluationResultsService.saveEvaluationResults(request);
-                finishedLatch.countDown();
+                try {
+                    EvaluationResultsRequest request = buildEvaluationResultsReport(requestId);
+                    evaluationResultsService.saveEvaluationResults(request);
+                } finally {
+                    finishedLatch.countDown();
+                }
             });
         }
         finishedLatch.await();
@@ -155,11 +156,8 @@ class EvaluationResultsServiceTest extends AbstractJpaTest {
     @Test
     void testGetEvaluationResultsNotFound() {
         GetEvaluationResultsRequest request = buildGetEvaluationResultsRequest(UUID.randomUUID().toString());
-        GetEvaluationResultsResponse response =
-                evaluationResultsService.getEvaluationResultsResponse(request);
-        assertThat(response).isNotNull();
-        assertThat(response.getRequestId()).isEqualTo(request.getRequestId());
-        assertThat(response.getStatus()).isEqualTo(ResponseStatus.RESULTS_NOT_FOUND);
+        assertThrows(ResultsNotFoundException.class,
+                () -> evaluationResultsService.getEvaluationResultsResponse(request));
     }
 
     @Test
@@ -169,14 +167,12 @@ class EvaluationResultsServiceTest extends AbstractJpaTest {
         EvaluationResultsResponse evaluationResultsResponse =
                 evaluationResultsService.saveEvaluationResults(evaluationResultsRequest);
         assertThat(evaluationResultsResponse).isNotNull();
-        assertThat(evaluationResultsResponse.getStatus()).isEqualTo(ResponseStatus.SUCCESS);
         GetEvaluationResultsRequest request =
                 buildGetEvaluationResultsRequest(evaluationResultsRequest.getRequestId());
         GetEvaluationResultsResponse response =
                 evaluationResultsService.getEvaluationResultsResponse(request);
         assertThat(response).isNotNull();
         assertThat(response.getRequestId()).isEqualTo(request.getRequestId());
-        assertThat(response.getStatus()).isEqualTo(ResponseStatus.SUCCESS);
         assertThat(response.getClassifierReport()).isNotNull();
         assertThat(response.getEvaluationMethodReport()).isNotNull();
         assertThat(response.getStatistics()).isNotNull();

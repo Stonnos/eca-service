@@ -47,7 +47,7 @@ public class ClassifierOptionsService {
         Long instancesInfoId = instancesInfoRepository.findIdByDataMd5Hash(dataHash);
         if (instancesInfoId == null) {
             throw new DataNotFoundException(
-                    String.format("Instances '%s' doesn't exists!", classifierOptionsRequest.getRelationName()));
+                    String.format("Instances [%s] doesn't exists!", classifierOptionsRequest.getRelationName()));
         } else {
             EvaluationMethodReport evaluationMethodReport = classifierOptionsRequest.getEvaluationMethodReport();
             EvaluationResultsFilter filter = new EvaluationResultsFilter(instancesInfoId, evaluationMethodReport);
