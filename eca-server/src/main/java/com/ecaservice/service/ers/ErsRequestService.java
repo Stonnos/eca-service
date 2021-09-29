@@ -47,7 +47,6 @@ import static com.ecaservice.util.Utils.isValid;
 public class ErsRequestService {
 
     private static final String RESULTS_NOT_FOUND_MESSAGE = "Can't find classifiers options for data '%s'";
-    private static final String SERVICE_UNAVAILABLE_ERROR_MESSAGE = "Service unavailable";
     private static final String UNKNOWN_ERROR_MESSAGE = "Unknown error";
 
     private final ErsRequestSender ersRequestSender;
@@ -122,11 +121,11 @@ public class ErsRequestService {
         } catch (FeignException.ServiceUnavailable ex) {
             log.error("Service unavailable error while sending classifier options request: {}.", ex.getMessage());
             handleErrorRequest(requestModel, ErsResponseStatus.SERVICE_UNAVAILABLE, ex.getMessage());
-            setClassifierOptionsResultError(classifierOptionsResult, SERVICE_UNAVAILABLE_ERROR_MESSAGE);
+            setClassifierOptionsResultError(classifierOptionsResult, requestModel.getResponseStatus().getDescription());
         } catch (FeignException.BadRequest ex) {
             log.error("Bad request error while sending classifier options request: {}.", ex.getMessage());
             handleBadRequest(requestModel, ex);
-            setClassifierOptionsResultError(classifierOptionsResult, UNKNOWN_ERROR_MESSAGE);
+            setClassifierOptionsResultError(classifierOptionsResult, requestModel.getResponseStatus().getDescription());
         } catch (Exception ex) {
             log.error("Unknown error while sending classifier options request: {}.", ex.getMessage());
             handleErrorRequest(requestModel, ErsResponseStatus.ERROR, ex.getMessage());
