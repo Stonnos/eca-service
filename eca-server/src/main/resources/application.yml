@@ -59,8 +59,8 @@ app:
   maxPageSize: 50
   threadPoolSize: 10
   notifications:
-    webPushesEnabled: true
-    emailsEnabled: true
+    webPushesEnabled: false
+    emailsEnabled: false
 
 ## Queues properties
 queue:
@@ -156,9 +156,6 @@ auth-server:
   clientId: eca_web
   clientSecret: web_secret
 
-lock:
-  enabled: true
-
 redis-lock:
   expireAfter: 60000
   registryKey: eca-server-lock
@@ -171,6 +168,11 @@ management:
     web:
       exposure:
         include: '*'
+  health:
+    rabbit:
+      enabled: false
+    redis:
+      enabled: false
   endpoint:
     health:
       show-details: always

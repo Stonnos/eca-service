@@ -87,6 +87,7 @@ ECA server
    * registryKey - ключ реестра
    * expireAfter - время жизни блокировки
 12) audit.enabled - вкл./выкл. отправки событий аудита
+13) rabbit.enabled - вкл./выкл. подключения к очередям rabbit MQ
 
 Инструкция по развертыванию
 ----------------------------------------
@@ -98,6 +99,29 @@ ECA server
 2. Запустить проект с помощью команды:
 
     java -jar /target/eca-server.war
+
+    С помощью следующих настроек можно отключить все внешние интеграции:
+    
+    * lock.enabled=false
+      (Отключение распределенных блокировок)
+    * audit.enabled=false
+      (Отключение отправки событий аудита)
+    * rabbit.enabled=false
+      (Отключение rabbit MQ)
+    * app.notifications.emailsEnabled=false
+      (Отключение отправки email сообщений)
+     * app.notifications.webPushesEnabled=false
+      (Отключение отправки web пушей )
+    * spring.cache.type=caffeine
+      (Использование in-memory кеша caffeine)
+    * eureka.client.registerWithEureka=false
+      (Отключение регистрации сервиса в discovery server)
+    * eureka.client.fetchRegistry=false
+      (Отключение получения данных от discovery server)
+    * management.health.rabbit.enabled=false
+      (Отключение spring actuator health check для rabbit mq)
+    * management.health.redis.enabled=false
+      (Отключение spring actuator health check для redis)
          
 3. Страница с документацией swagger находится по адресу http://[host]:[port]/eca-server/swagger-ui.html, где host и port
 соответственно адрес машины и порт на котором развернуто приложение.

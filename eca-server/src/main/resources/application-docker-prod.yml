@@ -21,6 +21,11 @@ eureka:
     serviceUrl:
       defaultZone: http://discovery-server:8761/eureka
 
+app:
+  notifications:
+    webPushesEnabled: true
+    emailsEnabled: true
+
 ## Swagger properties
 open-api:
   tokenBaseUrl: http://localhost:8080/eca-oauth
@@ -34,3 +39,16 @@ experiment:
 
 auth-server:
   baseUrl: http://eca-oauth:8080
+
+lock:
+  enabled: true
+
+rabbit:
+  enabled: true
+
+management:
+  health:
+    rabbit:
+      enabled: true
+    redis:
+      enabled: true

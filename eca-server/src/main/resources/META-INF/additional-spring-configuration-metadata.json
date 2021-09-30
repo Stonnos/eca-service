@@ -1,0 +1,19 @@
+{
+  "properties": [
+    {
+      "name": "rabbit.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Rabbit MQ enabled?"
+    },
+    {
+      "name": "experiment.removeExperimentCron",
+      "type": "java.lang.String",
+      "description": "Cron expression for remove experiments job"
+    },
+    {
+      "name": "experiment.ersSendingCron",
+      "type": "java.lang.String",
+      "description": "Cron expression for experiments results sending job"
+    }
+  ]
+}
