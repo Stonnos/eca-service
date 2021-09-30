@@ -59,8 +59,8 @@ app:
   maxPageSize: 50
   threadPoolSize: 10
   notifications:
-    webPushesEnabled: true
-    emailsEnabled: true
+    webPushesEnabled: false
+    emailsEnabled: false
 
 ## Queues properties
 queue:
