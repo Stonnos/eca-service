@@ -1,7 +1,7 @@
 package com.ecaservice.server.config.rabbit;
 
-import com.ecaservice.server.mq.listener.CustomErrorHandler;
 import com.ecaservice.rabbit.config.CoreRabbitConfiguration;
+import com.ecaservice.server.mq.listener.CustomErrorHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;

@@ -2,7 +2,6 @@ package com.ecaservice.server.service.evaluation;
 
 import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.classifier.options.model.ClassifierOptions;
-import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.ers.dto.ClassificationCostsReport;
 import com.ecaservice.ers.dto.ClassifierInputOption;
 import com.ecaservice.ers.dto.ClassifierReport;
@@ -13,6 +12,7 @@ import com.ecaservice.ers.dto.EvaluationMethodReport;
 import com.ecaservice.ers.dto.EvaluationResultsRequest;
 import com.ecaservice.ers.dto.RocCurveReport;
 import com.ecaservice.ers.dto.StatisticsReport;
+import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.mapping.InstancesConverter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.core.evaluation.Evaluation;

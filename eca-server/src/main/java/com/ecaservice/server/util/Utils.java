@@ -39,6 +39,8 @@ import java.util.TreeMap;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.ecaservice.server.util.ClassifierOptionsHelper.isParsableOptions;
+
 /**
  * Utility class.
  *
@@ -127,13 +129,13 @@ public class Utils {
      * @return classifier options response model
      */
     public static ClassifierOptionsResponseModel getFirstResponseModel(ClassifierOptionsRequestModel requestModel) {
-        if (!Optional.ofNullable(requestModel).map(
-                ClassifierOptionsRequestModel::getClassifierOptionsResponseModels).isPresent()) {
+        if (Optional.ofNullable(requestModel).map(
+                ClassifierOptionsRequestModel::getClassifierOptionsResponseModels).isEmpty()) {
             return null;
         } else {
             return requestModel.getClassifierOptionsResponseModels()
                     .stream()
-                    .filter(responseModel -> ClassifierOptionsHelper.isParsableOptions(responseModel.getOptions()))
+                    .filter(responseModel -> isParsableOptions(responseModel.getOptions()))
                     .findFirst()
                     .orElse(null);
         }

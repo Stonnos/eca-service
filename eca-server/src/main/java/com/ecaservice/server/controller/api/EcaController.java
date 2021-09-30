@@ -3,8 +3,6 @@ package com.ecaservice.server.controller.api;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.repository.ExperimentRepository;
-import com.ecaservice.server.util.ExperimentUtils;
-import com.ecaservice.server.util.Utils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,6 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.File;
 
 import static com.ecaservice.common.web.util.MaskUtils.mask;
+import static com.ecaservice.server.util.ExperimentUtils.getExperimentFile;
+import static com.ecaservice.server.util.Utils.buildAttachmentResponse;
+import static com.ecaservice.server.util.Utils.existsFile;
 
 /**
  * Implements REST API for ECA application.
@@ -50,13 +51,13 @@ public class EcaController {
             @PathVariable String token) {
         Experiment experiment = experimentRepository.findByToken(token)
                 .orElseThrow(() -> new EntityNotFoundException(Experiment.class, token));
-        File experimentFile = ExperimentUtils.getExperimentFile(experiment, Experiment::getExperimentAbsolutePath);
-        if (!Utils.existsFile(experimentFile)) {
+        File experimentFile = getExperimentFile(experiment, Experiment::getExperimentAbsolutePath);
+        if (!existsFile(experimentFile)) {
             log.error("Experiment results file not found for token [{}]", mask(token));
             return ResponseEntity.badRequest().build();
         }
         log.info("Downloads experiment file '{}' for token = '{}'", experiment.getExperimentAbsolutePath(),
                 mask(token));
-        return Utils.buildAttachmentResponse(experimentFile);
+        return buildAttachmentResponse(experimentFile);
     }
 }

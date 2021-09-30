@@ -1,7 +1,7 @@
 package com.ecaservice.server.mapping;
 
-import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.report.model.ClassifierOptionsBean;
+import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.web.dto.model.ClassifierOptionsDto;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;

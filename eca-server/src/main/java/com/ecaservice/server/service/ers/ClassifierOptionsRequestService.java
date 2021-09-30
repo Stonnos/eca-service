@@ -1,12 +1,12 @@
 package com.ecaservice.server.service.ers;
 
+import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.filter.ClassifierOptionsRequestModelFilter;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.server.model.entity.FilterTemplateType;
 import com.ecaservice.server.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.server.service.PageRequestService;
-import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

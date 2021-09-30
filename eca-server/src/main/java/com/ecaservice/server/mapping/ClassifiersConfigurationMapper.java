@@ -1,7 +1,7 @@
 package com.ecaservice.server.mapping;
 
-import com.ecaservice.server.model.entity.ClassifiersConfiguration;
 import com.ecaservice.report.model.ClassifiersConfigurationBean;
+import com.ecaservice.server.model.entity.ClassifiersConfiguration;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.UpdateClassifiersConfigurationDto;

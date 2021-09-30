@@ -1,12 +1,11 @@
 package com.ecaservice.server.controller.web;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.server.controller.doc.ApiExamples;
 import com.ecaservice.server.mapping.EvaluationLogMapper;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.repository.EvaluationLogRepository;
-import com.ecaservice.server.controller.doc.ApiExamples;
 import com.ecaservice.server.service.evaluation.EvaluationLogService;
-import com.ecaservice.server.util.Utils;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import com.ecaservice.web.dto.model.EvaluationLogDto;
 import com.ecaservice.web.dto.model.PageDto;
@@ -35,6 +34,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
+import static com.ecaservice.server.util.Utils.toRequestStatusesStatistics;
 
 /**
  * Classifiers evaluation API for web application.
@@ -117,7 +117,7 @@ public class EvaluationController {
     public RequestStatusStatisticsDto getEvaluationRequestStatusesStatistics() {
         log.info("Request get evaluations requests statuses statistics");
         var requestStatusStatisticsDto =
-                Utils.toRequestStatusesStatistics(evaluationLogService.getRequestStatusesStatistics());
+                toRequestStatusesStatistics(evaluationLogService.getRequestStatusesStatistics());
         log.info("Evaluations requests statuses statistics: {}", requestStatusStatisticsDto);
         return requestStatusStatisticsDto;
     }

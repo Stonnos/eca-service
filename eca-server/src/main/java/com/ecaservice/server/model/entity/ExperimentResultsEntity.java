@@ -1,6 +1,5 @@
 package com.ecaservice.server.model.entity;
 
-import com.ecaservice.server.util.FieldConstraints;
 import lombok.Data;
 
 import javax.persistence.CascadeType;
@@ -16,6 +15,9 @@ import javax.persistence.NamedSubgraph;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.math.BigDecimal;
+
+import static com.ecaservice.server.util.FieldConstraints.PRECISION;
+import static com.ecaservice.server.util.FieldConstraints.SCALE;
 
 /**
  * Experiment results persistence entity.
@@ -51,7 +53,7 @@ public class ExperimentResultsEntity {
     /**
      * Correctly classified percentage
      */
-    @Column(name = "pct_correct", precision = FieldConstraints.PRECISION, scale = FieldConstraints.SCALE)
+    @Column(name = "pct_correct", precision = PRECISION, scale = SCALE)
     private BigDecimal pctCorrect;
 
     /**

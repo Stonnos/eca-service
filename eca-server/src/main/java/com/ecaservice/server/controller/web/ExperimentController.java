@@ -3,6 +3,7 @@ package com.ecaservice.server.controller.web;
 import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.server.controller.doc.ApiExamples;
 import com.ecaservice.server.event.model.ExperimentEmailEvent;
 import com.ecaservice.server.mapping.ExperimentMapper;
 import com.ecaservice.server.mapping.ExperimentProgressMapper;
@@ -13,13 +14,11 @@ import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentProgressEntity;
 import com.ecaservice.server.model.entity.ExperimentResultsEntity;
 import com.ecaservice.server.repository.ExperimentResultsEntityRepository;
-import com.ecaservice.server.controller.doc.ApiExamples;
 import com.ecaservice.server.service.auth.UsersClient;
 import com.ecaservice.server.service.experiment.DataService;
 import com.ecaservice.server.service.experiment.ExperimentProgressService;
 import com.ecaservice.server.service.experiment.ExperimentResultsService;
 import com.ecaservice.server.service.experiment.ExperimentService;
-import com.ecaservice.server.util.ExperimentUtils;
 import com.ecaservice.server.util.Utils;
 import com.ecaservice.web.dto.model.ChartDataDto;
 import com.ecaservice.web.dto.model.CreateExperimentResultDto;
@@ -66,6 +65,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
+import static com.ecaservice.server.util.ExperimentUtils.getExperimentFile;
+import static com.ecaservice.server.util.Utils.toRequestStatusesStatistics;
 
 /**
  * Experiments API for web application.
@@ -251,7 +252,7 @@ public class ExperimentController {
     @GetMapping(value = "/request-statuses-statistics")
     public RequestStatusStatisticsDto getExperimentsRequestStatusesStatistics() {
         log.info("Request get experiments statuses statistics");
-        var requestStatusStatisticsDto = Utils.toRequestStatusesStatistics(experimentService.getRequestStatusesStatistics());
+        var requestStatusStatisticsDto = toRequestStatusesStatistics(experimentService.getRequestStatusesStatistics());
         log.info("Experiments statuses statistics: {}", requestStatusStatisticsDto);
         return requestStatusStatisticsDto;
     }
@@ -348,7 +349,7 @@ public class ExperimentController {
                                                                       Function<Experiment, String> filePathFunction,
                                                                       String errorMessage) {
         Experiment experiment = experimentService.getById(id);
-        File experimentFile = ExperimentUtils.getExperimentFile(experiment, filePathFunction);
+        File experimentFile = getExperimentFile(experiment, filePathFunction);
         if (!Utils.existsFile(experimentFile)) {
             log.error(errorMessage);
             return ResponseEntity.badRequest().build();

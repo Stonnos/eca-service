@@ -1,8 +1,8 @@
 package com.ecaservice.server.mapping;
 
 import com.ecaservice.base.model.InstancesRequest;
-import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
+import com.ecaservice.server.config.CrossValidationConfig;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

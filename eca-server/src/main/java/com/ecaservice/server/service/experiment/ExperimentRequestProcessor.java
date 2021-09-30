@@ -1,7 +1,7 @@
 package com.ecaservice.server.service.experiment;
 
-import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.core.lock.annotation.TryLocked;
+import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.event.model.ExperimentEmailEvent;
 import com.ecaservice.server.event.model.ExperimentFinishedEvent;
 import com.ecaservice.server.event.model.ExperimentResponseEvent;

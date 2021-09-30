@@ -1,5 +1,6 @@
 package com.ecaservice.server.service.evaluation;
 
+import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.filter.EvaluationLogFilter;
 import com.ecaservice.server.mapping.EvaluationLogMapper;
@@ -13,7 +14,6 @@ import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.repository.EvaluationResultsRequestEntityRepository;
 import com.ecaservice.server.service.PageRequestService;
 import com.ecaservice.server.service.ers.ErsService;
-import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;

@@ -2,8 +2,8 @@ package com.ecaservice.server.service.classifiers;
 
 import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
-import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.core.audit.annotation.Audit;
+import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.server.model.entity.ClassifiersConfiguration;
 import com.ecaservice.server.repository.ClassifierOptionsDatabaseModelRepository;
@@ -24,9 +24,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.server.config.audit.AuditCodes.ADD_CLASSIFIER_OPTIONS;
 import static com.ecaservice.server.config.audit.AuditCodes.DELETE_CLASSIFIER_OPTIONS;
-import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel_.CREATION_DATE;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.createClassifierOptionsDatabaseModel;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.isEnsembleClassifierOptions;

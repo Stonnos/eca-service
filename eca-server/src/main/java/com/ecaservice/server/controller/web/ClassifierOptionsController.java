@@ -4,7 +4,6 @@ import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.server.mapping.ClassifierOptionsDatabaseModelMapper;
 import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.server.service.classifiers.ClassifierOptionsService;
-import com.ecaservice.server.util.ClassifierOptionsHelper;
 import com.ecaservice.web.dto.model.ClassifierOptionsDto;
 import com.ecaservice.web.dto.model.CreateClassifierOptionsResultDto;
 import com.ecaservice.web.dto.model.PageDto;
@@ -127,7 +126,7 @@ public class ClassifierOptionsController {
         classifierOptionsResultDto.setSourceFileName(classifiersOptionsFile.getOriginalFilename());
         try {
             @Cleanup InputStream inputStream = classifiersOptionsFile.getInputStream();
-            ClassifierOptions classifierOptions = ClassifierOptionsHelper.parseOptions(inputStream);
+            ClassifierOptions classifierOptions = parseOptions(inputStream);
             ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel =
                     classifierOptionsService.saveClassifierOptions(configurationId, classifierOptions);
             classifierOptionsResultDto.setId(classifierOptionsDatabaseModel.getId());

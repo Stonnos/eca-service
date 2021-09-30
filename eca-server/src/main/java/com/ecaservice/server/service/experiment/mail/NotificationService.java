@@ -1,8 +1,8 @@
 package com.ecaservice.server.service.experiment.mail;
 
-import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.notification.dto.EmailRequest;
 import com.ecaservice.notification.dto.EmailResponse;
+import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.service.experiment.visitor.EmailTemplateVisitor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

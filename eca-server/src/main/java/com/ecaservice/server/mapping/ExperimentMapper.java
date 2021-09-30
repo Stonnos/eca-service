@@ -1,9 +1,9 @@
 package com.ecaservice.server.mapping;
 
 import com.ecaservice.base.model.ExperimentRequest;
+import com.ecaservice.report.model.ExperimentBean;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.model.entity.Experiment;
-import com.ecaservice.report.model.ExperimentBean;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.ExperimentDto;
 import eca.core.evaluation.EvaluationMethod;

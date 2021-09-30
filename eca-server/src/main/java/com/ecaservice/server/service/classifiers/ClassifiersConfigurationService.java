@@ -1,21 +1,21 @@
 package com.ecaservice.server.service.classifiers;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
-import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.core.audit.annotation.Audit;
+import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.core.lock.annotation.Locked;
+import com.ecaservice.report.model.ClassifiersConfigurationBean;
+import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.filter.ClassifiersConfigurationFilter;
 import com.ecaservice.server.mapping.ClassifierOptionsDatabaseModelMapper;
 import com.ecaservice.server.mapping.ClassifiersConfigurationMapper;
 import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.server.model.entity.ClassifiersConfiguration;
 import com.ecaservice.server.model.entity.FilterTemplateType;
-import com.ecaservice.report.model.ClassifiersConfigurationBean;
 import com.ecaservice.server.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.server.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.server.service.PageRequestService;
 import com.ecaservice.server.service.UserService;
-import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.PageDto;
@@ -34,11 +34,11 @@ import java.util.Arrays;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.server.config.audit.AuditCodes.ADD_CONFIGURATION;
 import static com.ecaservice.server.config.audit.AuditCodes.COPY_CONFIGURATION;
 import static com.ecaservice.server.config.audit.AuditCodes.DELETE_CONFIGURATION;
 import static com.ecaservice.server.config.audit.AuditCodes.RENAME_CONFIGURATION;
-import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.server.model.entity.BaseEntity_.CREATION_DATE;
 
 /**

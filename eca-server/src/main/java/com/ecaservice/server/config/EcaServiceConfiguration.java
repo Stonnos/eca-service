@@ -1,12 +1,12 @@
 package com.ecaservice.server.config;
 
 import com.ecaservice.common.web.annotation.EnableGlobalExceptionHandler;
-import com.ecaservice.server.config.ers.ErsConfig;
 import com.ecaservice.core.filter.annotation.EnableFilters;
 import com.ecaservice.core.filter.error.FilterExceptionHandler;
 import com.ecaservice.core.lock.annotation.EnableLocks;
-import com.ecaservice.server.model.entity.AbstractEvaluationEntity;
 import com.ecaservice.oauth2.annotation.Oauth2ResourceServer;
+import com.ecaservice.server.config.ers.ErsConfig;
+import com.ecaservice.server.model.entity.AbstractEvaluationEntity;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import eca.data.file.FileDataSaver;
 import org.springframework.boot.autoconfigure.domain.EntityScan;

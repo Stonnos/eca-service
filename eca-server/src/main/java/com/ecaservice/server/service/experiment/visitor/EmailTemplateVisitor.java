@@ -1,9 +1,9 @@
 package com.ecaservice.server.service.experiment.visitor;
 
+import com.ecaservice.notification.dto.EmailRequest;
 import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.RequestStatusVisitor;
-import com.ecaservice.notification.dto.EmailRequest;
 import com.ecaservice.server.service.experiment.dictionary.TemplateVariablesDictionary;
 import com.ecaservice.server.service.experiment.dictionary.Templates;
 import lombok.RequiredArgsConstructor;

@@ -1,11 +1,10 @@
 package com.ecaservice.server.mapping;
 
 import com.ecaservice.base.model.EvaluationRequest;
+import com.ecaservice.report.model.EvaluationLogBean;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.InstancesInfo;
-import com.ecaservice.report.model.EvaluationLogBean;
-import com.ecaservice.server.util.Utils;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import com.ecaservice.web.dto.model.EvaluationLogDto;
@@ -18,6 +17,8 @@ import org.mapstruct.MappingTarget;
 
 import java.util.List;
 import java.util.Optional;
+
+import static com.ecaservice.server.util.Utils.getEvaluationMethodDescription;
 
 /**
  * Implements evaluation request to evaluation log mapping.
@@ -136,7 +137,7 @@ public abstract class EvaluationLogMapper extends AbstractEvaluationMapper {
     protected void mapEvaluationMethodOptions(EvaluationLog evaluationLog,
                                               @MappingTarget EvaluationLogBean evaluationLogBean) {
         String evaluationMethodDescription =
-                Utils.getEvaluationMethodDescription(evaluationLog.getEvaluationMethod(), evaluationLog.getNumFolds(),
+                getEvaluationMethodDescription(evaluationLog.getEvaluationMethod(), evaluationLog.getNumFolds(),
                         evaluationLog.getNumTests());
         evaluationLogBean.setEvaluationMethod(evaluationMethodDescription);
     }

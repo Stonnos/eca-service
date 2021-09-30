@@ -1,13 +1,12 @@
 package com.ecaservice.server.controller.web;
 
 import com.ecaservice.core.audit.annotation.Audit;
-import com.ecaservice.server.mapping.ClassifiersConfigurationMapper;
-import com.ecaservice.server.model.entity.ClassifiersConfiguration;
 import com.ecaservice.report.model.ClassifiersConfigurationBean;
 import com.ecaservice.report.model.ReportType;
 import com.ecaservice.server.controller.doc.ApiExamples;
+import com.ecaservice.server.mapping.ClassifiersConfigurationMapper;
+import com.ecaservice.server.model.entity.ClassifiersConfiguration;
 import com.ecaservice.server.service.classifiers.ClassifiersConfigurationService;
-import com.ecaservice.server.util.ReportHelper;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.PageDto;
@@ -36,8 +35,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 
-import static com.ecaservice.server.config.audit.AuditCodes.SET_ACTIVE_CONFIGURATION;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
+import static com.ecaservice.server.config.audit.AuditCodes.SET_ACTIVE_CONFIGURATION;
+import static com.ecaservice.server.util.ReportHelper.download;
 
 /**
  * Implements API to manage experiment classifiers configurations.
@@ -208,6 +208,6 @@ public class ClassifiersConfigurationController {
                 classifiersConfigurationService.getClassifiersConfigurationReport(id);
         String fileName =
                 String.format(CONFIGURATION_FILE_NAME_FORMAT, classifiersConfigurationBean.getConfigurationName());
-        ReportHelper.download(ReportType.CLASSIFIERS_CONFIGURATION, fileName, httpServletResponse, classifiersConfigurationBean);
+        download(ReportType.CLASSIFIERS_CONFIGURATION, fileName, httpServletResponse, classifiersConfigurationBean);
     }
 }
