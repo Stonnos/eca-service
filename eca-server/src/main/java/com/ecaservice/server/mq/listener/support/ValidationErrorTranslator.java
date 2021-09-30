@@ -2,6 +2,7 @@ package com.ecaservice.server.mq.listener.support;
 
 import com.ecaservice.base.model.EcaResponse;
 import com.ecaservice.base.model.MessageError;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.messaging.handler.annotation.support.MethodArgumentNotValidException;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
@@ -15,7 +16,13 @@ import java.util.stream.Collectors;
 
 import static com.ecaservice.server.util.Utils.buildValidationError;
 
+/**
+ * Validation error exception handler.
+ *
+ * @author Roman Batygin
+ */
 @Component
+@ConditionalOnProperty(value = "rabbit.enabled", havingValue = "true")
 public class ValidationErrorTranslator extends AbstractExceptionTranslator<MethodArgumentNotValidException> {
 
     /**
@@ -35,6 +42,6 @@ public class ValidationErrorTranslator extends AbstractExceptionTranslator<Metho
                 .map(FieldError.class::cast)
                 .map(fieldError -> new MessageError(fieldError.getCode(), fieldError.getField(),
                         fieldError.getDefaultMessage())).collect(Collectors.toList());
-       return buildValidationError(errors);
+        return buildValidationError(errors);
     }
 }
