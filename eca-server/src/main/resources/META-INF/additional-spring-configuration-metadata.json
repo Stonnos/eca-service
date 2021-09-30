@@ -1,0 +1,9 @@
+{
+  "properties": [
+    {
+      "name": "rabbit.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Rabbit MQ enabled?"
+    }
+  ]
+}

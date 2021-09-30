@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
@@ -25,6 +26,7 @@ import javax.validation.Valid;
  */
 @Slf4j
 @Component
+@ConditionalOnProperty(value = "rabbit.enabled", havingValue = "true")
 @RequiredArgsConstructor
 public class ExperimentRequestListener {
 

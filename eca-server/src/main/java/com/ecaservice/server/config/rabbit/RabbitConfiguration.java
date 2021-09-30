@@ -14,6 +14,7 @@ import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistrar;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.boot.autoconfigure.amqp.SimpleRabbitListenerContainerFactoryConfigurer;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,6 +28,7 @@ import org.springframework.validation.beanvalidation.OptionalValidatorFactoryBea
  * @author Roman Batygin
  */
 @Configuration
+@ConditionalOnProperty(value = "rabbit.enabled", havingValue = "true")
 @EnableConfigurationProperties(QueueConfig.class)
 @Import(CoreRabbitConfiguration.class)
 @RequiredArgsConstructor

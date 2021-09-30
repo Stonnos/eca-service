@@ -4,6 +4,7 @@ import com.ecaservice.base.model.EcaResponse;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 /**
  * Abstract exception handler class.
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
  * @author Roman Batygin
  */
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
+@ConditionalOnProperty(value = "rabbit.enabled", havingValue = "true")
 public abstract class AbstractExceptionTranslator<T extends Throwable> {
 
     /**

@@ -8,6 +8,7 @@ import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.support.ListenerExecutionFailedException;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ErrorHandler;
 
@@ -22,6 +23,7 @@ import static com.ecaservice.server.util.Utils.buildErrorResponse;
  */
 @Slf4j
 @Component
+@ConditionalOnProperty(value = "rabbit.enabled", havingValue = "true")
 @RequiredArgsConstructor
 public class CustomErrorHandler implements ErrorHandler {
 
