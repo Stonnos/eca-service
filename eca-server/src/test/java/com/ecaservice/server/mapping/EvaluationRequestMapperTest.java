@@ -1,6 +1,6 @@
 package com.ecaservice.server.mapping;
 
-import com.ecaservice.TestHelperUtils;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import eca.core.evaluation.EvaluationMethod;

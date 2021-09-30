@@ -1,6 +1,6 @@
 package com.ecaservice.server.service.evaluation;
 
-import com.ecaservice.TestHelperUtils;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.classifier.options.config.ClassifiersOptionsAutoConfiguration;
 import com.ecaservice.ers.dto.ClassificationCostsReport;
 import com.ecaservice.ers.dto.ClassifierReport;

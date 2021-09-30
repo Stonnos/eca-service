@@ -1,6 +1,6 @@
 package com.ecaservice.server.service.experiment;
 
-import com.ecaservice.TestHelperUtils;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.mapping.ClassifierInfoMapperImpl;
 import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.mapping.ExperimentMapperImpl;

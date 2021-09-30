@@ -1,6 +1,6 @@
 package com.ecaservice.server.controller.web;
 
-import com.ecaservice.TestHelperUtils;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.server.mapping.ClassifierInfoMapperImpl;
 import com.ecaservice.server.mapping.DateTimeConverter;
@@ -11,7 +11,6 @@ import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.service.evaluation.EvaluationLogService;
-import com.ecaservice.server.util.Utils;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import com.ecaservice.web.dto.model.EvaluationLogDto;
 import com.ecaservice.web.dto.model.PageDto;
@@ -33,12 +32,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.ecaservice.PageRequestUtils.PAGE_NUMBER;
-import static com.ecaservice.PageRequestUtils.TOTAL_ELEMENTS;
-import static com.ecaservice.TestHelperUtils.TEST_UUID;
-import static com.ecaservice.TestHelperUtils.bearerHeader;
-import static com.ecaservice.TestHelperUtils.buildRequestStatusStatisticsMap;
-import static com.ecaservice.TestHelperUtils.createPageRequestDto;
+import static com.ecaservice.server.PageRequestUtils.PAGE_NUMBER;
+import static com.ecaservice.server.PageRequestUtils.TOTAL_ELEMENTS;
+import static com.ecaservice.server.TestHelperUtils.TEST_UUID;
+import static com.ecaservice.server.TestHelperUtils.bearerHeader;
+import static com.ecaservice.server.TestHelperUtils.buildRequestStatusStatisticsMap;
+import static com.ecaservice.server.TestHelperUtils.createPageRequestDto;
 import static com.ecaservice.server.util.Utils.toRequestStatusesStatistics;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;

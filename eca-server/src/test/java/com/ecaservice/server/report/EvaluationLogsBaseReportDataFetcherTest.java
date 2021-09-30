@@ -1,6 +1,6 @@
 package com.ecaservice.server.report;
 
-import com.ecaservice.TestHelperUtils;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.report.model.BaseReportBean;
 import com.ecaservice.report.model.EvaluationLogBean;
@@ -31,9 +31,9 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
-import static com.ecaservice.AssertionUtils.assertBaseReportBean;
-import static com.ecaservice.PageRequestUtils.PAGE_NUMBER;
-import static com.ecaservice.PageRequestUtils.PAGE_SIZE;
+import static com.ecaservice.server.AssertionUtils.assertBaseReportBean;
+import static com.ecaservice.server.PageRequestUtils.PAGE_NUMBER;
+import static com.ecaservice.server.PageRequestUtils.PAGE_SIZE;
 import static com.google.common.collect.Lists.newArrayList;
 
 /**

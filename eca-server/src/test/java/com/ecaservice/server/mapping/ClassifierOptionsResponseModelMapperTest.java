@@ -1,6 +1,6 @@
 package com.ecaservice.server.mapping;
 
-import com.ecaservice.TestHelperUtils;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.model.entity.ClassifierOptionsResponseModel;
 import com.ecaservice.web.dto.model.ClassifierOptionsResponseDto;
 import org.assertj.core.api.Assertions;

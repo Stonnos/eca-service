@@ -1,4 +1,4 @@
-package com.ecaservice;
+package com.ecaservice.server;
 
 import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.base.model.EvaluationResponse;

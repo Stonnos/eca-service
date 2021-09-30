@@ -1,4 +1,4 @@
-package com.ecaservice;
+package com.ecaservice.server;
 
 import lombok.experimental.UtilityClass;
 

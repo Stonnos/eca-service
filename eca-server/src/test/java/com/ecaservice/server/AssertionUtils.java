@@ -1,4 +1,4 @@
-package com.ecaservice;
+package com.ecaservice.server;
 
 import com.ecaservice.report.model.BaseReportBean;
 import com.ecaservice.web.dto.model.PageRequestDto;

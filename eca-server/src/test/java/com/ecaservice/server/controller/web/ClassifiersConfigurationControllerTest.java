@@ -21,11 +21,11 @@ import org.springframework.http.MediaType;
 
 import java.util.Collections;
 
-import static com.ecaservice.PageRequestUtils.PAGE_NUMBER;
-import static com.ecaservice.PageRequestUtils.TOTAL_ELEMENTS;
-import static com.ecaservice.TestHelperUtils.bearerHeader;
-import static com.ecaservice.TestHelperUtils.createClassifiersConfigurationDto;
-import static com.ecaservice.TestHelperUtils.createPageRequestDto;
+import static com.ecaservice.server.PageRequestUtils.PAGE_NUMBER;
+import static com.ecaservice.server.PageRequestUtils.TOTAL_ELEMENTS;
+import static com.ecaservice.server.TestHelperUtils.bearerHeader;
+import static com.ecaservice.server.TestHelperUtils.createClassifiersConfigurationDto;
+import static com.ecaservice.server.TestHelperUtils.createPageRequestDto;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;

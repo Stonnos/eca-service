@@ -1,6 +1,6 @@
 package com.ecaservice.server.service.classifiers;
 
-import com.ecaservice.TestHelperUtils;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.report.model.ClassifiersConfigurationBean;

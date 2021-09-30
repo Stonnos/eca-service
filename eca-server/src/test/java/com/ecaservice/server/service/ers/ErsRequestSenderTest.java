@@ -1,6 +1,6 @@
 package com.ecaservice.server.service.ers;
 
-import com.ecaservice.TestHelperUtils;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.ers.dto.EvaluationResultsRequest;
 import com.ecaservice.ers.dto.EvaluationResultsResponse;
 import com.ecaservice.server.service.evaluation.EvaluationResultsService;

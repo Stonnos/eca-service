@@ -1,6 +1,6 @@
 package com.ecaservice.server.controller.web;
 
-import com.ecaservice.TestHelperUtils;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.classifier.options.model.LogisticOptions;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.server.mapping.ClassifierOptionsDatabaseModelMapper;
@@ -30,11 +30,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static com.ecaservice.PageRequestUtils.PAGE_NUMBER;
-import static com.ecaservice.PageRequestUtils.TOTAL_ELEMENTS;
-import static com.ecaservice.TestHelperUtils.bearerHeader;
-import static com.ecaservice.TestHelperUtils.createClassifiersConfiguration;
-import static com.ecaservice.TestHelperUtils.createPageRequestDto;
+import static com.ecaservice.server.PageRequestUtils.PAGE_NUMBER;
+import static com.ecaservice.server.PageRequestUtils.TOTAL_ELEMENTS;
+import static com.ecaservice.server.TestHelperUtils.bearerHeader;
+import static com.ecaservice.server.TestHelperUtils.createClassifiersConfiguration;
+import static com.ecaservice.server.TestHelperUtils.createPageRequestDto;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doThrow;

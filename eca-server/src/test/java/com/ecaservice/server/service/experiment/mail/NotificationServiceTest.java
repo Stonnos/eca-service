@@ -1,6 +1,6 @@
 package com.ecaservice.server.service.experiment.mail;
 
-import com.ecaservice.TestHelperUtils;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.notification.dto.EmailRequest;
 import com.ecaservice.notification.dto.EmailResponse;
 import com.ecaservice.server.config.ExperimentConfig;

@@ -17,9 +17,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.ecaservice.TestHelperUtils.createEvaluationLog;
-import static com.ecaservice.TestHelperUtils.createEvaluationResponse;
-import static com.ecaservice.TestHelperUtils.getEvaluationResults;
+import static com.ecaservice.server.TestHelperUtils.createEvaluationLog;
+import static com.ecaservice.server.TestHelperUtils.createEvaluationResponse;
+import static com.ecaservice.server.TestHelperUtils.getEvaluationResults;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;

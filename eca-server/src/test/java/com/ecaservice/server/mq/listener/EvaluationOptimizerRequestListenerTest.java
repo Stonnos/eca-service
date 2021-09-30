@@ -1,6 +1,6 @@
 package com.ecaservice.server.mq.listener;
 
-import com.ecaservice.TestHelperUtils;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.base.model.InstancesRequest;
 import com.ecaservice.server.event.model.EvaluationFinishedEvent;

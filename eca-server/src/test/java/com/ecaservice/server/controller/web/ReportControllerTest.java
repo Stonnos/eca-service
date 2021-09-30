@@ -13,9 +13,9 @@ import org.springframework.http.MediaType;
 
 import java.util.Collections;
 
-import static com.ecaservice.TestHelperUtils.bearerHeader;
-import static com.ecaservice.TestHelperUtils.createPageRequestDto;
-import static com.ecaservice.TestHelperUtils.createReportBean;
+import static com.ecaservice.server.TestHelperUtils.bearerHeader;
+import static com.ecaservice.server.TestHelperUtils.createPageRequestDto;
+import static com.ecaservice.server.TestHelperUtils.createReportBean;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;

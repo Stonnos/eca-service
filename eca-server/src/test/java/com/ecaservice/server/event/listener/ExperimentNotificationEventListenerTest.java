@@ -1,6 +1,6 @@
 package com.ecaservice.server.event.listener;
 
-import com.ecaservice.TestHelperUtils;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.event.model.ExperimentEmailEvent;
 import com.ecaservice.server.event.model.ExperimentWebPushEvent;

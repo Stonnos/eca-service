@@ -12,7 +12,7 @@ import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static com.ecaservice.TestHelperUtils.createExperiment;
+import static com.ecaservice.server.TestHelperUtils.createExperiment;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**

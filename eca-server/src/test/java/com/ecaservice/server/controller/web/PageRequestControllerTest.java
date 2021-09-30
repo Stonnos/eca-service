@@ -13,10 +13,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static com.ecaservice.PageRequestUtils.PAGE_NUMBER;
-import static com.ecaservice.PageRequestUtils.PAGE_SIZE;
-import static com.ecaservice.TestHelperUtils.bearerHeader;
-import static com.ecaservice.TestHelperUtils.createPageRequestDto;
+import static com.ecaservice.server.PageRequestUtils.PAGE_NUMBER;
+import static com.ecaservice.server.PageRequestUtils.PAGE_SIZE;
+import static com.ecaservice.server.TestHelperUtils.bearerHeader;
+import static com.ecaservice.server.TestHelperUtils.createPageRequestDto;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 

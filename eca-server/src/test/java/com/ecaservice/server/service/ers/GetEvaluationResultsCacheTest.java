@@ -1,6 +1,6 @@
 package com.ecaservice.server.service.ers;
 
-import com.ecaservice.TestHelperUtils;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.classifier.options.config.ClassifiersOptionsAutoConfiguration;
 import com.ecaservice.ers.dto.GetEvaluationResultsRequest;
 import com.ecaservice.ers.dto.GetEvaluationResultsResponse;

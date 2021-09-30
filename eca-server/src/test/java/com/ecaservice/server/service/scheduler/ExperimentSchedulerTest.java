@@ -1,6 +1,6 @@
 package com.ecaservice.server.service.scheduler;
 
-import com.ecaservice.TestHelperUtils;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.event.model.ExperimentEmailEvent;
@@ -33,7 +33,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import static com.ecaservice.TestHelperUtils.createExperimentHistory;
+import static com.ecaservice.server.TestHelperUtils.createExperimentHistory;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;

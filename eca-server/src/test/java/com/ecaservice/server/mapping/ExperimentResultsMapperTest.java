@@ -1,6 +1,6 @@
 package com.ecaservice.server.mapping;
 
-import com.ecaservice.TestHelperUtils;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentResultsEntity;
 import com.ecaservice.web.dto.model.ExperimentResultsDetailsDto;

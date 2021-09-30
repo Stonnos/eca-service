@@ -1,7 +1,7 @@
 package com.ecaservice.server.service.experiment;
 
-import com.ecaservice.AssertionUtils;
-import com.ecaservice.TestHelperUtils;
+import com.ecaservice.server.AssertionUtils;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
@@ -49,8 +49,8 @@ import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
 
-import static com.ecaservice.TestHelperUtils.createExperimentHistory;
-import static com.ecaservice.TestHelperUtils.createMessageProperties;
+import static com.ecaservice.server.TestHelperUtils.createExperimentHistory;
+import static com.ecaservice.server.TestHelperUtils.createMessageProperties;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;

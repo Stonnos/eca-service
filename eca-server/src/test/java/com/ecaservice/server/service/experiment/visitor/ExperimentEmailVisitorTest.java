@@ -13,7 +13,7 @@ import javax.inject.Inject;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-import static com.ecaservice.TestHelperUtils.createExperiment;
+import static com.ecaservice.server.TestHelperUtils.createExperiment;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;

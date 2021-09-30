@@ -1,6 +1,6 @@
 package com.ecaservice.server.event.listener;
 
-import com.ecaservice.TestHelperUtils;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.event.model.ExperimentFinishedEvent;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentResultsEntity;

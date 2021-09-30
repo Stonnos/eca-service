@@ -1,6 +1,6 @@
 package com.ecaservice.server.mq.listener;
 
-import com.ecaservice.TestHelperUtils;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.base.model.EcaResponse;
 import com.ecaservice.base.model.MessageError;
 import com.ecaservice.base.model.TechnicalStatus;

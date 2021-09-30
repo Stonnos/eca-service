@@ -1,6 +1,6 @@
 package com.ecaservice.server.mapping;
 
-import com.ecaservice.TestHelperUtils;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.report.model.ClassifiersConfigurationBean;
 import com.ecaservice.server.model.entity.ClassifiersConfiguration;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;

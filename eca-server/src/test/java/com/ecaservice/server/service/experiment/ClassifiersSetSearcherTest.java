@@ -1,6 +1,6 @@
 package com.ecaservice.server.service.experiment;
 
-import com.ecaservice.TestHelperUtils;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.classifier.options.config.ClassifiersOptionsAutoConfiguration;

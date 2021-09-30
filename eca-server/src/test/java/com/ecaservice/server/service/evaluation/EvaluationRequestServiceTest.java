@@ -1,7 +1,7 @@
 package com.ecaservice.server.service.evaluation;
 
-import com.ecaservice.AssertionUtils;
-import com.ecaservice.TestHelperUtils;
+import com.ecaservice.server.AssertionUtils;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.base.model.TechnicalStatus;

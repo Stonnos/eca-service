@@ -1,6 +1,6 @@
 package com.ecaservice.server.mapping;
 
-import com.ecaservice.TestHelperUtils;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.report.model.ExperimentBean;
 import com.ecaservice.server.config.CrossValidationConfig;

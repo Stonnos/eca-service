@@ -1,6 +1,6 @@
 package com.ecaservice.server.controller.web;
 
-import com.ecaservice.TestHelperUtils;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.oauth2.test.controller.AbstractControllerTest;
@@ -17,7 +17,7 @@ import org.springframework.http.MediaType;
 import java.util.Collections;
 import java.util.List;
 
-import static com.ecaservice.TestHelperUtils.bearerHeader;
+import static com.ecaservice.server.TestHelperUtils.bearerHeader;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;

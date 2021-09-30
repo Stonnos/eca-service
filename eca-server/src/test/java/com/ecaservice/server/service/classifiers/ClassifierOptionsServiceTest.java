@@ -1,6 +1,6 @@
 package com.ecaservice.server.service.classifiers;
 
-import com.ecaservice.TestHelperUtils;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.classifier.options.model.AdaBoostOptions;
 import com.ecaservice.classifier.options.model.LogisticOptions;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
@@ -24,8 +24,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import static com.ecaservice.TestHelperUtils.createClassifierOptionsDatabaseModel;
-import static com.ecaservice.TestHelperUtils.createClassifiersConfiguration;
+import static com.ecaservice.server.TestHelperUtils.createClassifierOptionsDatabaseModel;
+import static com.ecaservice.server.TestHelperUtils.createClassifiersConfiguration;
 import static com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel_.CREATION_DATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;

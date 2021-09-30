@@ -1,6 +1,6 @@
 package com.ecaservice.server.service.experiment;
 
-import com.ecaservice.TestHelperUtils;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.experiment.InitializationParams;

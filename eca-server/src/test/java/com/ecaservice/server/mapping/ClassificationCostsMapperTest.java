@@ -1,6 +1,6 @@
 package com.ecaservice.server.mapping;
 
-import com.ecaservice.TestHelperUtils;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.ers.dto.ClassificationCostsReport;
 import com.ecaservice.web.dto.model.ClassificationCostsDto;
 import org.assertj.core.api.Assertions;

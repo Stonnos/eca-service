@@ -1,6 +1,6 @@
 package com.ecaservice.server.controller.web;
 
-import com.ecaservice.TestHelperUtils;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
@@ -19,7 +19,6 @@ import com.ecaservice.server.service.experiment.DataService;
 import com.ecaservice.server.service.experiment.ExperimentProgressService;
 import com.ecaservice.server.service.experiment.ExperimentResultsService;
 import com.ecaservice.server.service.experiment.ExperimentService;
-import com.ecaservice.server.util.Utils;
 import com.ecaservice.web.dto.model.ChartDataDto;
 import com.ecaservice.web.dto.model.CreateExperimentResultDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
@@ -53,11 +52,11 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static com.ecaservice.PageRequestUtils.PAGE_NUMBER;
-import static com.ecaservice.PageRequestUtils.TOTAL_ELEMENTS;
-import static com.ecaservice.TestHelperUtils.bearerHeader;
-import static com.ecaservice.TestHelperUtils.buildRequestStatusStatisticsMap;
-import static com.ecaservice.TestHelperUtils.createPageRequestDto;
+import static com.ecaservice.server.PageRequestUtils.PAGE_NUMBER;
+import static com.ecaservice.server.PageRequestUtils.TOTAL_ELEMENTS;
+import static com.ecaservice.server.TestHelperUtils.bearerHeader;
+import static com.ecaservice.server.TestHelperUtils.buildRequestStatusStatisticsMap;
+import static com.ecaservice.server.TestHelperUtils.createPageRequestDto;
 import static com.ecaservice.server.util.Utils.toRequestStatusesStatistics;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;

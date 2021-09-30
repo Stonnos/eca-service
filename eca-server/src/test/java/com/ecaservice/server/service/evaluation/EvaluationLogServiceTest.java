@@ -1,6 +1,6 @@
 package com.ecaservice.server.service.evaluation;
 
-import com.ecaservice.TestHelperUtils;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.mapping.ClassifierInfoMapperImpl;

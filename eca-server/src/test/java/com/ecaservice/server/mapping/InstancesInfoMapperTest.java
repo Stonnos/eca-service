@@ -1,6 +1,6 @@
 package com.ecaservice.server.mapping;
 
-import com.ecaservice.TestHelperUtils;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.web.dto.model.InstancesInfoDto;
 import org.junit.jupiter.api.Test;
