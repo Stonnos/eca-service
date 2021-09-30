@@ -3,7 +3,6 @@ package com.ecaservice.server.controller.web;
 import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
-import com.ecaservice.server.controller.doc.ApiExamples;
 import com.ecaservice.server.event.model.ExperimentEmailEvent;
 import com.ecaservice.server.mapping.ExperimentMapper;
 import com.ecaservice.server.mapping.ExperimentProgressMapper;
@@ -64,6 +63,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
+import static com.ecaservice.server.controller.doc.ApiExamples.EXPERIMENTS_PAGE_REQUEST_JSON;
 import static com.ecaservice.server.util.ExperimentUtils.getExperimentFile;
 import static com.ecaservice.server.util.Utils.buildAttachmentResponse;
 import static com.ecaservice.server.util.Utils.existsFile;
@@ -184,7 +184,7 @@ public class ExperimentController {
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
-                            @ExampleObject(value = ApiExamples.EXPERIMENTS_PAGE_REQUEST_JSON)
+                            @ExampleObject(value = EXPERIMENTS_PAGE_REQUEST_JSON)
                     })
             })
     )

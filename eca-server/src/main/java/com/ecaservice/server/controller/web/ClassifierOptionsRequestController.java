@@ -1,6 +1,5 @@
 package com.ecaservice.server.controller.web;
 
-import com.ecaservice.server.controller.doc.ApiExamples;
 import com.ecaservice.server.mapping.ClassifierOptionsRequestModelMapper;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.server.service.ers.ClassifierOptionsRequestService;
@@ -24,6 +23,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
+import static com.ecaservice.server.controller.doc.ApiExamples.CLASSIFIER_OPTIONS_REQUESTS_PAGE_REQUEST_JSON;
 
 /**
  * Classifier options requests API for web application.
@@ -52,7 +52,7 @@ public class ClassifierOptionsRequestController {
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
-                            @ExampleObject(value = ApiExamples.CLASSIFIER_OPTIONS_REQUESTS_PAGE_REQUEST_JSON)
+                            @ExampleObject(value = CLASSIFIER_OPTIONS_REQUESTS_PAGE_REQUEST_JSON)
                     })
             })
     )

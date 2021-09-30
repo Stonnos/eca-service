@@ -1,7 +1,6 @@
 package com.ecaservice.server.controller.web;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
-import com.ecaservice.server.controller.doc.ApiExamples;
 import com.ecaservice.server.mapping.EvaluationLogMapper;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.repository.EvaluationLogRepository;
@@ -34,6 +33,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
+import static com.ecaservice.server.controller.doc.ApiExamples.EVALUATION_LOGS_PAGE_REQUEST_JSON;
 import static com.ecaservice.server.util.Utils.toRequestStatusesStatistics;
 
 /**
@@ -65,7 +65,7 @@ public class EvaluationController {
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
-                            @ExampleObject(value = ApiExamples.EVALUATION_LOGS_PAGE_REQUEST_JSON)
+                            @ExampleObject(value = EVALUATION_LOGS_PAGE_REQUEST_JSON)
                     })
             })
     )

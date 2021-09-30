@@ -3,7 +3,6 @@ package com.ecaservice.server.controller.web;
 import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.report.model.ClassifiersConfigurationBean;
 import com.ecaservice.report.model.ReportType;
-import com.ecaservice.server.controller.doc.ApiExamples;
 import com.ecaservice.server.mapping.ClassifiersConfigurationMapper;
 import com.ecaservice.server.model.entity.ClassifiersConfiguration;
 import com.ecaservice.server.service.classifiers.ClassifiersConfigurationService;
@@ -37,6 +36,7 @@ import java.io.IOException;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.server.config.audit.AuditCodes.SET_ACTIVE_CONFIGURATION;
+import static com.ecaservice.server.controller.doc.ApiExamples.SIMPLE_PAGE_REQUEST_JSON;
 import static com.ecaservice.server.util.ReportHelper.download;
 
 /**
@@ -69,7 +69,7 @@ public class ClassifiersConfigurationController {
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
-                            @ExampleObject(value = ApiExamples.SIMPLE_PAGE_REQUEST_JSON)
+                            @ExampleObject(value = SIMPLE_PAGE_REQUEST_JSON)
                     })
             })
     )
