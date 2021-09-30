@@ -114,6 +114,10 @@ ECA server
       (Отключение отправки web пушей )
     * spring.cache.type=caffeine
       (Использование in-memory кеша caffeine)
+    * eureka.client.registerWithEureka=false
+      (Отключение регистрации сервиса в discovery server)
+    * eureka.client.fetchRegistry=false
+      (Отключение получения данных от discovery server)
     * management.health.rabbit.enabled=false
       (Отключение spring actuator health check для rabbit mq)
     * management.health.redis.enabled=false
