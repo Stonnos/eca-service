@@ -19,7 +19,6 @@ import com.ecaservice.server.service.experiment.DataService;
 import com.ecaservice.server.service.experiment.ExperimentProgressService;
 import com.ecaservice.server.service.experiment.ExperimentResultsService;
 import com.ecaservice.server.service.experiment.ExperimentService;
-import com.ecaservice.server.util.Utils;
 import com.ecaservice.web.dto.model.ChartDataDto;
 import com.ecaservice.web.dto.model.CreateExperimentResultDto;
 import com.ecaservice.web.dto.model.ExperimentDto;
@@ -66,6 +65,8 @@ import java.util.stream.Collectors;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.server.util.ExperimentUtils.getExperimentFile;
+import static com.ecaservice.server.util.Utils.buildAttachmentResponse;
+import static com.ecaservice.server.util.Utils.existsFile;
 import static com.ecaservice.server.util.Utils.toRequestStatusesStatistics;
 
 /**
@@ -350,11 +351,11 @@ public class ExperimentController {
                                                                       String errorMessage) {
         Experiment experiment = experimentService.getById(id);
         File experimentFile = getExperimentFile(experiment, filePathFunction);
-        if (!Utils.existsFile(experimentFile)) {
+        if (!existsFile(experimentFile)) {
             log.error(errorMessage);
             return ResponseEntity.badRequest().build();
         }
         log.info("Downloads experiment file '{}' for id = '{}'", filePathFunction.apply(experiment), id);
-        return Utils.buildAttachmentResponse(experimentFile);
+        return buildAttachmentResponse(experimentFile);
     }
 }

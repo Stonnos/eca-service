@@ -21,7 +21,6 @@ import com.ecaservice.server.model.projections.RequestStatusStatistics;
 import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.service.PageRequestService;
 import com.ecaservice.server.service.evaluation.CalculationExecutorService;
-import com.ecaservice.server.util.Utils;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import eca.data.file.resource.FileResource;
 import eca.dataminer.AbstractExperiment;
@@ -67,6 +66,7 @@ import static com.ecaservice.server.model.entity.Experiment_.EXPERIMENT_TYPE;
 import static com.ecaservice.server.util.ExperimentUtils.getExperimentFile;
 import static com.ecaservice.server.util.Utils.atEndOfDay;
 import static com.ecaservice.server.util.Utils.atStartOfDay;
+import static com.ecaservice.server.util.Utils.existsFile;
 import static com.ecaservice.server.util.Utils.toRequestStatusStatisticsMap;
 import static com.google.common.collect.Lists.newArrayList;
 
@@ -184,7 +184,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
      */
     public AbstractExperiment<?> getExperimentHistory(Experiment experiment) {
         File experimentFile = getExperimentFile(experiment, Experiment::getExperimentAbsolutePath);
-        if (!Utils.existsFile(experimentFile)) {
+        if (!existsFile(experimentFile)) {
             throw new ResultsNotFoundException(
                     String.format("Experiment results file not found for experiment [%s]!", experiment.getRequestId()));
         }

@@ -4,7 +4,6 @@ import com.ecaservice.report.data.fetcher.AbstractBaseReportDataFetcher;
 import com.ecaservice.report.model.BaseReportBean;
 import com.ecaservice.report.model.ReportType;
 import com.ecaservice.server.controller.doc.ApiExamples;
-import com.ecaservice.server.util.ReportHelper;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -27,6 +26,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
+import static com.ecaservice.server.util.ReportHelper.download;
 
 /**
  * Controller for reports downloading.
@@ -69,7 +69,7 @@ public class ReportController {
         log.info("Request to download base report [{}] with params: {}", reportType, pageRequestDto);
         AbstractBaseReportDataFetcher reportDataFetcher = getReportDataFetcher(reportType);
         BaseReportBean<?> baseReportBean = reportDataFetcher.fetchReportData(pageRequestDto);
-        ReportHelper.download(reportType, reportType.getName(), httpServletResponse, baseReportBean);
+        download(reportType, reportType.getName(), httpServletResponse, baseReportBean);
     }
 
     private AbstractBaseReportDataFetcher getReportDataFetcher(ReportType reportType) {
