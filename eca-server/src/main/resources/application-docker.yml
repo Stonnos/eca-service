@@ -34,3 +34,16 @@ experiment:
 
 auth-server:
   baseUrl: http://eca-oauth:8080
+
+lock:
+  enabled: true
+
+rabbit:
+  enabled: true
+
+management:
+  health:
+    rabbit:
+      enabled: true
+    redis:
+      enabled: true
