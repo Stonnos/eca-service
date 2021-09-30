@@ -1,4 +1,4 @@
-package com.ecaservice.config.feign;
+package com.ecaservice.server.config.feign;
 
 import feign.RequestInterceptor;
 import org.springframework.context.annotation.Bean;

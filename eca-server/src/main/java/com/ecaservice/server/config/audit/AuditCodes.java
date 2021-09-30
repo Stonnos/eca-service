@@ -1,4 +1,4 @@
-package com.ecaservice.config.audit;
+package com.ecaservice.server.config.audit;
 
 import lombok.experimental.UtilityClass;
 

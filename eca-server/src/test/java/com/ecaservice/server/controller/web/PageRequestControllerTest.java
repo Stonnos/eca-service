@@ -1,7 +1,7 @@
-package com.ecaservice.controller.web;
+package com.ecaservice.server.controller.web;
 
-import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel_;
 import com.ecaservice.oauth2.test.controller.AbstractControllerTest;
+import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel_;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import org.apache.commons.lang3.StringUtils;

@@ -1,4 +1,4 @@
-package com.ecaservice.config.cache;
+package com.ecaservice.server.config.cache;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;

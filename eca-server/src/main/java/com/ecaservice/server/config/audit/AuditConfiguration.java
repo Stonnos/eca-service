@@ -1,8 +1,8 @@
-package com.ecaservice.config.audit;
+package com.ecaservice.server.config.audit;
 
 import com.ecaservice.core.audit.annotation.EnableAudit;
 import com.ecaservice.core.audit.service.AuditEventInitiator;
-import com.ecaservice.service.UserService;
+import com.ecaservice.server.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;

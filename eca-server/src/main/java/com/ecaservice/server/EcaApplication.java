@@ -1,4 +1,4 @@
-package com.ecaservice;
+package com.ecaservice.server;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -14,7 +14,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  */
 @SpringBootApplication
 @EnableEurekaClient
-@EnableFeignClients(basePackages = "com.ecaservice.service")
+@EnableFeignClients
 public class EcaApplication extends SpringBootServletInitializer {
 
     @Override

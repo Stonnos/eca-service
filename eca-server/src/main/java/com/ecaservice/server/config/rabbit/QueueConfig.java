@@ -1,4 +1,4 @@
-package com.ecaservice.config.rabbit;
+package com.ecaservice.server.config.rabbit;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

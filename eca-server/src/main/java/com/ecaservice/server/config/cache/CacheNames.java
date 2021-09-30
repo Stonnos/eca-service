@@ -1,4 +1,4 @@
-package com.ecaservice.config.cache;
+package com.ecaservice.server.config.cache;
 
 import lombok.experimental.UtilityClass;
 

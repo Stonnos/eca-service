@@ -1,4 +1,4 @@
-package com.ecaservice.config.cache;
+package com.ecaservice.server.config.cache;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

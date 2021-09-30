@@ -1,4 +1,4 @@
-package com.ecaservice.config.ers;
+package com.ecaservice.server.config.ers;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
