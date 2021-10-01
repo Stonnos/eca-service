@@ -1,6 +1,5 @@
 package com.ecaservice.core.audit.service;
 
-import com.ecaservice.audit.dto.AuditEventRequest;
 import com.ecaservice.core.audit.config.AuditProperties;
 import com.ecaservice.core.audit.entity.AuditEventRequestEntity;
 import com.ecaservice.core.audit.mapping.AuditMapper;
@@ -15,6 +14,7 @@ import org.springframework.util.CollectionUtils;
 
 /**
  * Audit redelivery service.
+ *
  * @author Roman Batygin
  */
 @Slf4j
