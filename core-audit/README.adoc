@@ -43,9 +43,9 @@ audit:
 [source,java]
 ----
 @EnableAudit
-## Если в вашем модуле есть JPA сущности, то указать путь для сканирования
+// Если в вашем модуле есть JPA сущности, то указать путь для сканирования
 @EntityScan(basePackageClasses = MyEntity.class)
-## Если в вашем модуле есть JPA репозитории, то указать путь для сканирования
+// Если в вашем модуле есть JPA репозитории, то указать путь для сканирования
 @EnableJpaRepositories(basePackageClasses = MyEntityRepository.class)
 @Configuration
 public class AppConfiguration {
@@ -112,6 +112,25 @@ public class AppConfiguration {
 |===
 
 Таблица содержит уникальный индекс audit_event_template_code_id_event_type_unique_index на поля audit_code_id, event_type
+
+==== Таблица 2.4 - 'audit_event_request' - содержит данные о запросах с событиями аудита
+[cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
+|===
+|Название колонки|Тип|Unique|Not NULL|Индекс|Описание
+|id                      |bigint           |+|+|+                              |Идентификатор записи (первичный ключ)
+|event_id                |varchar(255)     |-|+|-                              |Внешний ID события
+|message                 |text             |-|+|-                              |Текст сообщения
+|initiator               |varchar(255)     |-|+|-                              |Источник события, например имя пользователя
+|event_type              |varchar(255)     |-|+|-                              |Тип события
+|group_code              |varchar(255)     |-|+|-                              |Код группы событий
+|group_title             |varchar(255)     |-|-|-                              |Описание группы событий
+|audit_code              |varchar(255)     |-|+|-                              |Код события
+|audit_code_title        |varchar(255)     |-|-|-                              |Описание кода события
+|event_date              |timestamp        |-|+|-                              |Дата наступления события
+|event_status            |varchar(255)     |-|+|-                              |Статус отправки события аудита в сервис аудита (SENT, NOT_SENT, ERROR)
+|details                 |text             |-|-|-                              |Дополнительная информация, например текст ошибки
+|sent_date               |timestamp        |-|-|-                              |Дата отправки события аудита в сервис аудита
+|===
 
 == 3. Настройка шаблонов с событиями аудита
 
