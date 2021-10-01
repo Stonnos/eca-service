@@ -14,7 +14,7 @@ public class AuditProperties {
 
     private static final int DEFAULT_THREAD_POOL_SIZE = 1;
     private static final int DEFAULT_PAGE_SIZE = 25;
-    private static final long DEFAULT_REDELIVERY_INTERVAL_MILLIS = 30000L;
+    private static final long DEFAULT_REDELIVERY_INTERVAL_MILLIS = 60000L;
 
     /**
      * Is audit enabled?
