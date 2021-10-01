@@ -37,6 +37,10 @@ audit:
 [source,java]
 ----
 @EnableAudit
+## Если в вашем модуле есть JPA сущности, то указать путь для сканирования
+@EntityScan(basePackageClasses = MyEntity.class)
+## Если в вашем модуле есть JPA репозитории, то указать путь для сканирования
+@EnableJpaRepositories(basePackageClasses = MyEntityRepository.class)
 @Configuration
 public class AppConfiguration {
 
