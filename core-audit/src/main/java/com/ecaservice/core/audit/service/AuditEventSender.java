@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 /**
  * Service to sent audit events.
  *
@@ -33,6 +35,7 @@ public class AuditEventSender {
         try {
             auditEventClient.sendEvent(auditEventRequest);
             auditEventRequestEntity.setEventStatus(EventStatus.SENT);
+            auditEventRequestEntity.setSentDate(LocalDateTime.now());
             log.info("Audit event [{}] with code [{}], type [{}] has been sent", auditEventRequest.getEventId(),
                     auditEventRequest.getCode(), auditEventRequest.getEventType());
         } catch (Exception ex) {

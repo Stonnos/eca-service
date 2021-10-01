@@ -87,4 +87,10 @@ public class AuditEventRequestEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "event_status", nullable = false)
     private EventStatus eventStatus;
+
+    /**
+     * Sent date
+     */
+    @Column(name = "sent_date")
+    private LocalDateTime sentDate;
 }

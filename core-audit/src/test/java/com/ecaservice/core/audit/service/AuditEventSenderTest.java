@@ -44,6 +44,7 @@ class AuditEventSenderTest extends AbstractJpaTest {
         var actual = auditEventRequestRepository.findById(auditEventRequestEntity.getId()).orElse(null);
         assertThat(actual).isNotNull();
         assertThat(actual.getEventStatus()).isEqualTo(EventStatus.SENT);
+        assertThat(actual.getSentDate()).isNotNull();
     }
 
     @Test
@@ -55,5 +56,6 @@ class AuditEventSenderTest extends AbstractJpaTest {
         var actual = auditEventRequestRepository.findById(auditEventRequestEntity.getId()).orElse(null);
         assertThat(actual).isNotNull();
         assertThat(actual.getEventStatus()).isEqualTo(EventStatus.NOT_SENT);
+        assertThat(actual.getSentDate()).isNull();
     }
 }

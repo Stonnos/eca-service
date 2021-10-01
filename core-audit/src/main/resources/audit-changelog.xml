@@ -104,6 +104,7 @@
             <column name="event_status" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
+            <column name="sent_date" type="timestamp"/>
         </createTable>
     </changeSet>
 
