@@ -39,7 +39,7 @@ class AuditEventSenderTest extends AbstractJpaTest {
     @Test
     void testSuccessSent() {
         var auditEventRequest = createAuditEventRequest();
-        var auditEventRequestEntity = createAuditEventRequestEntity();
+        var auditEventRequestEntity = createAuditEventRequestEntity(null);
         auditEventSender.sendAuditEvent(auditEventRequest, auditEventRequestEntity);
         var actual = auditEventRequestRepository.findById(auditEventRequestEntity.getId()).orElse(null);
         assertThat(actual).isNotNull();
@@ -49,7 +49,7 @@ class AuditEventSenderTest extends AbstractJpaTest {
     @Test
     void testNotSent() {
         var auditEventRequest = createAuditEventRequest();
-        var auditEventRequestEntity = createAuditEventRequestEntity();
+        var auditEventRequestEntity = createAuditEventRequestEntity(null);
         doThrow(FeignException.ServiceUnavailable.class).when(auditEventClient).sendEvent(auditEventRequest);
         auditEventSender.sendAuditEvent(auditEventRequest, auditEventRequestEntity);
         var actual = auditEventRequestRepository.findById(auditEventRequestEntity.getId()).orElse(null);

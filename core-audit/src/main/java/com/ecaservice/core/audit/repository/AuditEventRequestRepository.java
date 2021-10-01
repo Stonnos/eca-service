@@ -21,7 +21,7 @@ public interface AuditEventRequestRepository extends JpaRepository<AuditEventReq
      *
      * @return audit events ids
      */
-    @Query("select aer from AuditEventRequestEntity aer where aer.eventStatus = 'NOT_SENT' order by aer.eventDate")
+    @Query("select aer.id from AuditEventRequestEntity aer where aer.eventStatus = 'NOT_SENT' order by aer.eventDate")
     List<Long> findNotSentEvents();
 
     /**

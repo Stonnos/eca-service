@@ -1,5 +1,6 @@
 package com.ecaservice.core.audit.mapping;
 
+import com.ecaservice.core.audit.entity.EventStatus;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.context.annotation.Import;
@@ -90,7 +91,7 @@ class AuditMapperTest {
 
     @Test
     void testMapAuditEventRequestEntity() {
-        var auditEventRequestEntity = createAuditEventRequestEntity();
+        var auditEventRequestEntity = createAuditEventRequestEntity(EventStatus.SENT);
         var auditEventRequest = auditMapper.map(auditEventRequestEntity);
         assertThat(auditEventRequest).isNotNull();
         assertThat(auditEventRequest.getEventId()).isEqualTo(auditEventRequestEntity.getEventId());

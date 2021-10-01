@@ -6,6 +6,7 @@ import com.ecaservice.core.audit.entity.AuditCodeEntity;
 import com.ecaservice.core.audit.entity.AuditEventRequestEntity;
 import com.ecaservice.core.audit.entity.AuditEventTemplateEntity;
 import com.ecaservice.core.audit.entity.AuditGroupEntity;
+import com.ecaservice.core.audit.entity.EventStatus;
 import com.ecaservice.core.audit.model.AuditCodeModel;
 import com.ecaservice.core.audit.model.AuditEventTemplateModel;
 import com.ecaservice.core.audit.model.AuditGroupModel;
@@ -132,9 +133,10 @@ public class TestHelperUtils {
     /**
      * Creates audit event request entity.
      *
+     * @param eventStatus - event status
      * @return audit event request entity
      */
-    public static AuditEventRequestEntity createAuditEventRequestEntity() {
+    public static AuditEventRequestEntity createAuditEventRequestEntity(EventStatus eventStatus) {
         var auditEventRequestEntity = new AuditEventRequestEntity();
         auditEventRequestEntity.setEventId(UUID.randomUUID().toString());
         auditEventRequestEntity.setMessage(MESSAGE);
@@ -145,6 +147,7 @@ public class TestHelperUtils {
         auditEventRequestEntity.setEventType(EventType.SUCCESS);
         auditEventRequestEntity.setInitiator(INITIATOR);
         auditEventRequestEntity.setEventDate(LocalDateTime.now());
+        auditEventRequestEntity.setEventStatus(eventStatus);
         return auditEventRequestEntity;
     }
 }
