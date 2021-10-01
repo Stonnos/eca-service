@@ -14,6 +14,7 @@ public class AuditProperties {
 
     private static final int DEFAULT_THREAD_POOL_SIZE = 1;
     private static final int DEFAULT_PAGE_SIZE = 25;
+    private static final long DEFAULT_REDELIVERY_INTERVAL_MILLIS = 30000L;
 
     /**
      * Is audit enabled?
@@ -34,4 +35,14 @@ public class AuditProperties {
      * Page size (used for pagination)
      */
     private Integer pageSize = DEFAULT_PAGE_SIZE;
+
+    /**
+     * Enabled redelivery?
+     */
+    private Boolean redelivery;
+
+    /**
+     * Redelivery interval in millis
+     */
+    private Long redeliveryIntervalMillis = DEFAULT_REDELIVERY_INTERVAL_MILLIS;
 }

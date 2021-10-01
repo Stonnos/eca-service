@@ -62,6 +62,7 @@ public class AuditCoreConfiguration {
      * @return audit thread pool task scheduler bean
      */
     @Bean(name = AUDIT_THREAD_POOL_TASK_SCHEDULER)
+    @ConditionalOnProperty(value = "audit.redelivery", havingValue = "true")
     public ThreadPoolTaskScheduler auditThreadPoolTaskScheduler() {
         return new ThreadPoolTaskScheduler();
     }

@@ -31,7 +31,7 @@ public class AuditEventRedeliveryService {
      * Redeliver not sent audit events.
      */
     public void processNotSentEvents() {
-        log.debug("Starting redeliver audit events job");
+        log.debug("Starting redeliver audit events");
         var eventIds = auditEventRequestRepository.findNotSentEvents();
         if (!CollectionUtils.isEmpty(eventIds)) {
             log.info("Found [{}] not sent audit events", eventIds.size());
@@ -51,6 +51,6 @@ public class AuditEventRedeliveryService {
                 pageRequest = page.nextPageable();
             } while (page.hasNext());
         }
-        log.debug("Redeliver audit events job has been finished");
+        log.debug("Redeliver audit events has been finished");
     }
 }
