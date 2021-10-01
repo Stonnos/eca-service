@@ -43,10 +43,12 @@ public class AuditEventSender {
             log.error("Audit service unavailable error while sending audit event [{}]: {}",
                     auditEventRequest.getEventId(), ex.getMessage());
             auditEventRequestEntity.setEventStatus(EventStatus.NOT_SENT);
+            auditEventRequestEntity.setDetails(ex.getMessage());
         } catch (Exception ex) {
             log.error("There was an error while sending audit event [{}]: {}", auditEventRequest.getEventId(),
                     ex.getMessage());
             auditEventRequestEntity.setEventStatus(EventStatus.ERROR);
+            auditEventRequestEntity.setDetails(ex.getMessage());
         } finally {
             auditEventRequestRepository.save(auditEventRequestEntity);
         }

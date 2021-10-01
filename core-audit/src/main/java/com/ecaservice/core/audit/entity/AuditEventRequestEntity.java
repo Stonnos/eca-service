@@ -89,6 +89,12 @@ public class AuditEventRequestEntity {
     private EventStatus eventStatus;
 
     /**
+     * Details, may contains error message
+     */
+    @Column(columnDefinition = "text")
+    private String details;
+
+    /**
      * Sent date
      */
     @Column(name = "sent_date")

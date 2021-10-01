@@ -105,6 +105,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="sent_date" type="timestamp"/>
+            <column name="details" type="text"/>
         </createTable>
     </changeSet>
 
