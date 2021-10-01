@@ -45,4 +45,26 @@ public class AuditProperties {
      * Redelivery interval in millis
      */
     private Long redeliveryIntervalMillis = DEFAULT_REDELIVERY_INTERVAL_MILLIS;
+
+    /**
+     * Lock config
+     */
+    private LockProperties lock;
+
+    /**
+     * Lock properties
+     */
+    @Data
+    public static class LockProperties {
+
+        /**
+         * Registry key
+         */
+        private String registryKey;
+
+        /**
+         * Lock duration in millis.
+         */
+        private Long expireAfter;
+    }
 }

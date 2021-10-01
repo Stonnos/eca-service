@@ -4,13 +4,17 @@ import com.ecaservice.core.audit.config.AuditProperties;
 import com.ecaservice.core.audit.entity.AuditEventRequestEntity;
 import com.ecaservice.core.audit.mapping.AuditMapper;
 import com.ecaservice.core.audit.repository.AuditEventRequestRepository;
+import com.ecaservice.core.lock.annotation.TryLocked;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+
+import static com.ecaservice.core.audit.config.AuditCoreConfiguration.AUDIT_REDIS_LOCK_REGISTRY;
 
 /**
  * Audit redelivery service.
@@ -19,6 +23,7 @@ import org.springframework.util.CollectionUtils;
  */
 @Slf4j
 @Service
+@ConditionalOnProperty(value = "audit.redelivery", havingValue = "true")
 @RequiredArgsConstructor
 public class AuditEventRedeliveryService {
 
@@ -30,6 +35,7 @@ public class AuditEventRedeliveryService {
     /**
      * Redeliver not sent audit events.
      */
+    @TryLocked(lockName = "processNotSentAuditEvents", lockRegistry = AUDIT_REDIS_LOCK_REGISTRY)
     public void processNotSentEvents() {
         log.debug("Starting redeliver audit events");
         var eventIds = auditEventRequestRepository.findNotSentEvents();
