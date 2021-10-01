@@ -58,4 +58,16 @@ class AuditEventSenderTest extends AbstractJpaTest {
         assertThat(actual.getEventStatus()).isEqualTo(EventStatus.NOT_SENT);
         assertThat(actual.getSentDate()).isNull();
     }
+
+    @Test
+    void testErrorSent() {
+        var auditEventRequest = createAuditEventRequest();
+        var auditEventRequestEntity = createAuditEventRequestEntity(null);
+        doThrow(FeignException.BadRequest.class).when(auditEventClient).sendEvent(auditEventRequest);
+        auditEventSender.sendAuditEvent(auditEventRequest, auditEventRequestEntity);
+        var actual = auditEventRequestRepository.findById(auditEventRequestEntity.getId()).orElse(null);
+        assertThat(actual).isNotNull();
+        assertThat(actual.getEventStatus()).isEqualTo(EventStatus.ERROR);
+        assertThat(actual.getSentDate()).isNull();
+    }
 }

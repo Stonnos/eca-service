@@ -13,7 +13,12 @@ public enum EventStatus {
     SENT,
 
     /**
-     * Audit event not sent.
+     * Audit event not sent, because of service unavailable.
      */
-    NOT_SENT
+    NOT_SENT,
+
+    /**
+     * Audit event with error
+     */
+    ERROR,
 }
