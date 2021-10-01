@@ -36,6 +36,17 @@ audit:
   redeliveryIntervalMillis: 60000
   ## Размер страницы для повторной отправки событий аудита
   pageSize: 25
+  ## Настройки репозитория для блокировок
+  lock:
+    ## Ключ реестра
+    registryKey: appKey
+    ## Время жизни блокировки
+    expireAfter: 60000
+
+lock:
+  ## Вкл./выкл. распределенных блокировок.
+  ## Используется для scheduler повторной отправки событий аудита, в случае, если запущено несколько инстансов приложения
+  enabled: true
 ----
 
 С помощью аннотации @EnableAudit импортировать бины библиотеки
@@ -47,6 +58,8 @@ audit:
 @EntityScan(basePackageClasses = MyEntity.class)
 // Если в вашем модуле есть JPA репозитории, то указать путь для сканирования
 @EnableJpaRepositories(basePackageClasses = MyEntityRepository.class)
+// Подключить библиотеку блокировок
+@EnableLocks
 @Configuration
 public class AppConfiguration {
 

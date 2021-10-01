@@ -24,6 +24,7 @@
 [source,java]
 ----
 @EnableFilters
+// Подключить библиотеку spring кэша
 @EnableCaching
 // Если в вашем модуле есть JPA сущности, то указать путь для сканирования
 @EntityScan(basePackageClasses = MyEntity.class)
@@ -33,8 +34,6 @@
 public class AppConfiguration {
 }
 ----
-
-Примечание: с помощью аннотации @EnableCaching включается использование spring кэша.
 
 В конфигурационный файл liquibase, добавить путь к файлу filter-template-changelog.xml со скриптами для создания служебных таблиц фильтрации.
 
