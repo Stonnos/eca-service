@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @Entity
-@Table(name = "audit_event_request_entity")
+@Table(name = "audit_event_request")
 public class AuditEventRequestEntity {
 
     @Id
