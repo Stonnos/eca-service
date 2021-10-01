@@ -1,9 +1,11 @@
 package com.ecaservice.core.audit.service;
 
 import com.ecaservice.audit.dto.AuditEventRequest;
+import com.ecaservice.core.audit.entity.EventStatus;
 import com.ecaservice.core.audit.event.AuditEvent;
 import com.ecaservice.core.audit.mapping.AuditMapper;
 import com.ecaservice.core.audit.model.AuditEventTemplateModel;
+import com.ecaservice.core.audit.repository.AuditEventRequestRepository;
 import com.ecaservice.core.audit.service.template.AuditTemplateProcessorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +28,7 @@ public class AuditEventService {
     private final AuditEventTemplateStore auditEventTemplateStore;
     private final AuditTemplateProcessorService auditTemplateProcessorService;
     private final AuditMapper auditMapper;
+    private final AuditEventRequestRepository auditEventRequestRepository;
 
     /**
      * Send audit event.
@@ -49,14 +52,28 @@ public class AuditEventService {
                 auditEventRequest.setMessage(message);
                 auditEventRequest.setInitiator(auditEvent.getInitiator());
                 auditEventRequest.setEventDate(LocalDateTime.now());
-                log.info("Starting to send audit event [{}] with code [{}], type [{}]", auditEventRequest.getEventId(),
-                        auditEventRequest.getCode(), auditEventRequest.getEventType());
-                auditEventSender.sendEvent(auditEventRequest);
-                log.info("Audit event [{}] with code [{}], type [{}] has been sent", auditEventRequest.getEventId(),
-                        auditEventRequest.getCode(), auditEventRequest.getEventType());
+                sendAuditEvent(auditEventRequest);
             }
         } catch (Exception ex) {
-            log.error("There was an error while sending audit event [{}]: {}", eventId, ex.getMessage());
+            log.error("There was an error while process audit event [{}]: {}", eventId, ex.getMessage());
+        }
+    }
+
+    private void sendAuditEvent(AuditEventRequest auditEventRequest) {
+        log.info("Starting to send audit event [{}] with code [{}], type [{}]", auditEventRequest.getEventId(),
+                auditEventRequest.getCode(), auditEventRequest.getEventType());
+        var auditEventRequestEntity = auditMapper.map(auditEventRequest);
+        try {
+            auditEventSender.sendEvent(auditEventRequest);
+            auditEventRequestEntity.setEventStatus(EventStatus.SENT);
+            log.info("Audit event [{}] with code [{}], type [{}] has been sent", auditEventRequest.getEventId(),
+                    auditEventRequest.getCode(), auditEventRequest.getEventType());
+        } catch (Exception ex) {
+            log.error("There was an error while sending audit event [{}]: {}", auditEventRequest.getEventId(),
+                    ex.getMessage());
+            auditEventRequestEntity.setEventStatus(EventStatus.NOT_SENT);
+        } finally {
+            auditEventRequestRepository.save(auditEventRequestEntity);
         }
     }
 }
