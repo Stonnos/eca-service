@@ -1,23 +1,46 @@
 package com.ecaservice.core.audit.service;
 
 import com.ecaservice.audit.dto.AuditEventRequest;
-import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import com.ecaservice.core.audit.entity.AuditEventRequestEntity;
+import com.ecaservice.core.audit.entity.EventStatus;
+import com.ecaservice.core.audit.repository.AuditEventRequestRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 /**
- * Interface for sending audit events to specified channel.
+ * Service to sent audit events.
  *
  * @author Roman Batygin
  */
-@FeignClient(value = "eca-audit-log", path = "/api/audit/event")
-public interface AuditEventSender {
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class AuditEventSender {
+
+    private final AuditEventClient auditEventClient;
+    private final AuditEventRequestRepository auditEventRequestRepository;
 
     /**
-     * Sends audit event request.
+     * Sent audit event request.
      *
-     * @param auditEventRequest audit event request
+     * @param auditEventRequest       - audit event request
+     * @param auditEventRequestEntity - audit event request entity
      */
-    @PostMapping(value = "/save")
-    void sendEvent(@RequestBody AuditEventRequest auditEventRequest);
+    public void sendAuditEvent(AuditEventRequest auditEventRequest, AuditEventRequestEntity auditEventRequestEntity) {
+        log.info("Starting to send audit event [{}] with code [{}], type [{}]", auditEventRequest.getEventId(),
+                auditEventRequest.getCode(), auditEventRequest.getEventType());
+        try {
+            auditEventClient.sendEvent(auditEventRequest);
+            auditEventRequestEntity.setEventStatus(EventStatus.SENT);
+            log.info("Audit event [{}] with code [{}], type [{}] has been sent", auditEventRequest.getEventId(),
+                    auditEventRequest.getCode(), auditEventRequest.getEventType());
+        } catch (Exception ex) {
+            log.error("There was an error while sending audit event [{}]: {}", auditEventRequest.getEventId(),
+                    ex.getMessage());
+            auditEventRequestEntity.setEventStatus(EventStatus.NOT_SENT);
+        } finally {
+            auditEventRequestRepository.save(auditEventRequestEntity);
+        }
+    }
 }

@@ -64,4 +64,12 @@ public interface AuditMapper {
      * @return audit event request entity
      */
     AuditEventRequestEntity map(AuditEventRequest auditEventRequest);
+
+    /**
+     * Maps audit event request entity to dto model.
+     *
+     * @param auditEventRequestEntity - audit event request entity
+     * @return audit event request dto
+     */
+    AuditEventRequest map(AuditEventRequestEntity auditEventRequestEntity);
 }
