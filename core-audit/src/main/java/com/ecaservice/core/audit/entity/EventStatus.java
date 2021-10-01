@@ -18,7 +18,7 @@ public enum EventStatus {
     NOT_SENT,
 
     /**
-     * Audit event with error
+     * Audit event request with error
      */
     ERROR,
 }
