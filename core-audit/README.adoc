@@ -113,7 +113,7 @@ public class AppConfiguration {
 
 Таблица содержит уникальный индекс audit_event_template_code_id_event_type_unique_index на поля audit_code_id, event_type
 
-==== Таблица 2.4 - 'audit_event_request' - содержит данные о запросах с событиями аудита
+Таблица 2.4 - 'audit_event_request' - содержит данные о запросах с событиями аудита
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
