@@ -126,7 +126,7 @@ public class AuditLockConfiguration {
 }
 ----
 
-Примечание: Также можно использовать любую другу реализация LockRegistry от spring integration.
+Примечание: Также можно использовать любую другу реализацию LockRegistry от spring integration.
 
 == 3. Описание таблиц для хранения шаблонов аудита
 
