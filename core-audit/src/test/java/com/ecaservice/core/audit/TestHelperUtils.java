@@ -29,8 +29,8 @@ public class TestHelperUtils {
     private static final String CODE = "code";
     private static final String MESSAGE_TEMPLATE = "Message";
     private static final long ID = 1L;
-    public static final String MESSAGE = "message";
-    public static final String INITIATOR = "initiator";
+    private static final String MESSAGE = "message";
+    private static final String INITIATOR = "initiator";
 
     /**
      * Creates audit group entity.
