@@ -12,8 +12,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.integration.redis.util.RedisLockRegistry;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
@@ -45,9 +43,9 @@ public class AuditCoreConfiguration {
      */
     public static final String AUDIT_THREAD_POOL_TASK_SCHEDULER = "auditThreadPoolTaskScheduler";
     /**
-     * Audit redis lock registry bean
+     * Audit lock registry bean
      */
-    public static final String AUDIT_REDIS_LOCK_REGISTRY = "auditRedisLockRegistry";
+    public static final String AUDIT_LOCK_REGISTRY = "auditLockRegistry";
 
     /**
      * Creates thread pool task executor bean.
@@ -73,23 +71,5 @@ public class AuditCoreConfiguration {
     @ConditionalOnProperty(value = "audit.redelivery", havingValue = "true")
     public ThreadPoolTaskScheduler auditThreadPoolTaskScheduler() {
         return new ThreadPoolTaskScheduler();
-    }
-
-    /**
-     * Creates redis lock registry.
-     *
-     * @param redisConnectionFactory - redis connection factory
-     * @param auditProperties        - redis lock properties
-     * @return redis lock registry
-     */
-    @Bean(name = AUDIT_REDIS_LOCK_REGISTRY)
-    @ConditionalOnProperty(value = "audit.redelivery", havingValue = "true")
-    public RedisLockRegistry redisLockRegistry(final RedisConnectionFactory redisConnectionFactory,
-                                               final AuditProperties auditProperties) {
-        var lockProperties = auditProperties.getLock();
-        var redisLockRegistry = new RedisLockRegistry(redisConnectionFactory, lockProperties.getRegistryKey(),
-                lockProperties.getExpireAfter());
-        log.info("Audit redis lock registry [{}] has been initialized", lockProperties.getRegistryKey());
-        return redisLockRegistry;
     }
 }

@@ -14,7 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import static com.ecaservice.core.audit.config.AuditCoreConfiguration.AUDIT_REDIS_LOCK_REGISTRY;
+import static com.ecaservice.core.audit.config.AuditCoreConfiguration.AUDIT_LOCK_REGISTRY;
 
 /**
  * Audit redelivery service.
@@ -35,7 +35,7 @@ public class AuditEventRedeliveryService {
     /**
      * Redeliver not sent audit events.
      */
-    @TryLocked(lockName = "processNotSentAuditEvents", lockRegistry = AUDIT_REDIS_LOCK_REGISTRY)
+    @TryLocked(lockName = "processNotSentAuditEvents", lockRegistry = AUDIT_LOCK_REGISTRY)
     public void processNotSentEvents() {
         log.debug("Starting redeliver audit events");
         var eventIds = auditEventRequestRepository.findNotSentEvents();
