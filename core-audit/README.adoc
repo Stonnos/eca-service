@@ -49,8 +49,6 @@ audit:
 @EntityScan(basePackageClasses = MyEntity.class)
 // Если в вашем модуле есть JPA репозитории, то указать путь для сканирования
 @EnableJpaRepositories(basePackageClasses = MyEntityRepository.class)
-// Подключить библиотеку блокировок
-@EnableLocks
 @Configuration
 public class AppConfiguration {
 
