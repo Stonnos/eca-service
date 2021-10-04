@@ -5,10 +5,11 @@ import com.ecaservice.core.audit.service.AuditEventRedeliveryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -31,15 +32,11 @@ public class AuditEventScheduler {
     /**
      * Starts audit events redelivery job.
      */
-    @PostConstruct
+    @EventListener(ApplicationReadyEvent.class)
     public void start() {
         log.info("Starting to initialize audit redelivery job");
-        var initialDelayInstant = LocalDateTime.now()
-                .atZone(ZoneId.systemDefault())
-                .plusSeconds(auditProperties.getRedeliveryInitialDelaySeconds())
-                .toInstant();
         auditThreadPoolTaskScheduler.scheduleWithFixedDelay(auditEventRedeliveryService::processNotSentEvents,
-                Date.from(initialDelayInstant), auditProperties.getRedeliveryIntervalMillis());
+                auditProperties.getRedeliveryIntervalMillis());
         log.info("Audit redelivery job has been started");
     }
 }
