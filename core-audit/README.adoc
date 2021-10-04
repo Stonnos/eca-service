@@ -88,7 +88,52 @@ public class AppConfiguration {
 </databaseChangeLog>
 ----
 
-== 2. Описание таблиц для хранения шаблонов аудита
+== 2. Настройка использования блокировок для кластерной среды на примере redis
+
+В pom.xml необходимо добавить зависимости для интеграции с redis
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.springframework.integration</groupId>
+    <artifactId>spring-integration-redis</artifactId>
+</dependency>
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-redis</artifactId>
+</dependency>
+----
+
+В файле application.yml добавить следующие настройки
+
+[source,yml]
+----
+lock:
+  ## Вкл./выкл. распределенных блокировок.
+  ## Используется для scheduler повторной отправки событий аудита, в случае, если запущено несколько инстансов приложения
+  enabled: true
+----
+
+Добавить конфигурацию бина auditLockRegistry для управления блокировками
+
+[source,java]
+----
+// Подключить библиотеку блокировок
+@EnableLocks
+@Configuration
+public class AuditLockConfiguration {
+
+    @Bean(name = "auditLockRegistry")
+    public LockRegistry redisLockRegistry(RedisConnectionFactory redisConnectionFactory) {
+        return new RedisLockRegistry(redisConnectionFactory, "yourRegistryKey");
+    }
+}
+----
+
+Примечание: Также можно использовать любую другу реализация LockRegistry от spring integration.
+
+== 3. Описание таблиц для хранения шаблонов аудита
 
 Таблица 2.1 - 'audit_group' - содержит данные о группах событий аудита
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
@@ -98,7 +143,7 @@ public class AppConfiguration {
 |title                   |varchar(255)     |-|-|-                              |Описание группы
 |===
 
-Таблица 2.2 - 'audit_code' - содержит данные о кодах событий аудита
+Таблица 3.2 - 'audit_code' - содержит данные о кодах событий аудита
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
@@ -108,7 +153,7 @@ public class AppConfiguration {
 |audit_group_id          |varchar(255)     |-|+|fk_audit_code_group_id         |Внешний ключ группы событий
 |===
 
-Таблица 2.3 - 'audit_event_template' - содержит данные о шаблонах событий аудита
+Таблица 3.3 - 'audit_event_template' - содержит данные о шаблонах событий аудита
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
@@ -120,7 +165,7 @@ public class AppConfiguration {
 
 Таблица содержит уникальный индекс audit_event_template_code_id_event_type_unique_index на поля audit_code_id, event_type
 
-Таблица 2.4 - 'audit_event_request' - содержит данные о запросах с событиями аудита
+Таблица 3.4 - 'audit_event_request' - содержит данные о запросах с событиями аудита
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
@@ -139,7 +184,7 @@ public class AppConfiguration {
 |sent_date               |timestamp        |-|-|-                              |Дата отправки события в сервис аудита
 |===
 
-== 3. Настройка шаблонов с событиями аудита
+== 4. Настройка шаблонов с событиями аудита
 
 События аудита создаются по следующей схеме:
 
@@ -147,7 +192,7 @@ public class AppConfiguration {
 * Каждый код события привязывается к определенной группе событий. Это дает возможность привязывать
 набор событий аудита к определенной группе, например действия пользователя в личном кабинете.
 
-=== 3.1. Настройка групп событий
+=== 4.1. Настройка групп событий
 
 Пример csv файла с группами событий для импорта в базу данных:
 
@@ -157,7 +202,7 @@ id;title
 USER_PROFILE_ACTIONS;Действия пользователя в личном кабинете
 ----
 
-=== 3.2. Настройка кодов событий
+=== 4.2. Настройка кодов событий
 
 Пример csv файла с кодами событий для импорта в базу данных:
 
@@ -171,7 +216,7 @@ LOCK_USER;Блокировка пользователя;true;USER_PROFILE_ACTION
 UNLOCK_USER;Снятие блокировки пользователя;true;USER_PROFILE_ACTIONS
 ----
 
-=== 3.3. Настройка шаблонов событий
+=== 4.3. Настройка шаблонов событий
 
 Пример csv файла с шаблонами событий для импорта в базу данных:
 
