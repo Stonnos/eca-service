@@ -1,6 +1,7 @@
 package com.ecaservice.core.audit.service;
 
 import com.ecaservice.audit.dto.AuditEventRequest;
+import com.ecaservice.core.audit.entity.AuditEventRequestEntity;
 import com.ecaservice.core.audit.event.AuditEvent;
 import com.ecaservice.core.audit.mapping.AuditMapper;
 import com.ecaservice.core.audit.model.AuditEventTemplateModel;
@@ -22,10 +23,10 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AuditEventService {
 
-    private final AuditEventSender auditEventSender;
     private final AuditEventTemplateStore auditEventTemplateStore;
     private final AuditTemplateProcessorService auditTemplateProcessorService;
     private final AuditMapper auditMapper;
+    private final AuditEventSender auditEventSender;
 
     /**
      * Send audit event.
@@ -49,14 +50,11 @@ public class AuditEventService {
                 auditEventRequest.setMessage(message);
                 auditEventRequest.setInitiator(auditEvent.getInitiator());
                 auditEventRequest.setEventDate(LocalDateTime.now());
-                log.info("Starting to send audit event [{}] with code [{}], type [{}]", auditEventRequest.getEventId(),
-                        auditEventRequest.getCode(), auditEventRequest.getEventType());
-                auditEventSender.sendEvent(auditEventRequest);
-                log.info("Audit event [{}] with code [{}], type [{}] has been sent", auditEventRequest.getEventId(),
-                        auditEventRequest.getCode(), auditEventRequest.getEventType());
+                AuditEventRequestEntity auditEventRequestEntity = auditMapper.map(auditEventRequest);
+                auditEventSender.sendAuditEvent(auditEventRequest, auditEventRequestEntity);
             }
         } catch (Exception ex) {
-            log.error("There was an error while sending audit event [{}]: {}", eventId, ex.getMessage());
+            log.error("There was an error while process audit event [{}]: {}", eventId, ex.getMessage());
         }
     }
 }

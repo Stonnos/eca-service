@@ -7,6 +7,7 @@ import org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean;
 
 import java.util.Properties;
 
+import static freemarker.core.Configurable.NUMBER_FORMAT_KEY;
 import static freemarker.template.Configuration.LOCALIZED_LOOKUP_KEY;
 
 /**
@@ -17,6 +18,8 @@ import static freemarker.template.Configuration.LOCALIZED_LOOKUP_KEY;
 @Configuration
 @RequiredArgsConstructor
 public class AuditFreemarkerConfiguration {
+
+    private static final String COMPUTER_NUMBER_FORMAT = "computer";
 
     private final DatabaseTemplateLoader databaseTemplateLoader;
 
@@ -30,6 +33,7 @@ public class AuditFreemarkerConfiguration {
         var freeMarkerConfigurationFactoryBean = new FreeMarkerConfigurationFactoryBean();
         var properties = new Properties();
         properties.put(LOCALIZED_LOOKUP_KEY, Boolean.FALSE.toString());
+        properties.put(NUMBER_FORMAT_KEY, COMPUTER_NUMBER_FORMAT);
         freeMarkerConfigurationFactoryBean.setFreemarkerSettings(properties);
         freeMarkerConfigurationFactoryBean.setPreTemplateLoaders(databaseTemplateLoader);
         return freeMarkerConfigurationFactoryBean;

@@ -68,4 +68,45 @@
                              constraintName="audit_event_template_code_id_event_type_unique_index"/>
     </changeSet>
 
+    <changeSet id="create_audit_event_request_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="audit_event_request"/>
+            </not>
+        </preConditions>
+        <createTable tableName="audit_event_request">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="event_id" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="message" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="initiator" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="event_type" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="group_code" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="group_title" type="varchar(255)"/>
+            <column name="audit_code" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="audit_code_title" type="varchar(255)"/>
+            <column name="event_date" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="event_status" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sent_date" type="timestamp"/>
+            <column name="details" type="text"/>
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>

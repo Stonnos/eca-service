@@ -2,6 +2,7 @@ package com.ecaservice.core.audit.service;
 
 import com.ecaservice.audit.dto.AuditEventRequest;
 import com.ecaservice.core.audit.AbstractJpaTest;
+import com.ecaservice.core.audit.entity.AuditEventRequestEntity;
 import com.ecaservice.core.audit.entity.AuditEventTemplateEntity;
 import com.ecaservice.core.audit.event.AuditEvent;
 import com.ecaservice.core.audit.mapping.AuditMapperImpl;
@@ -21,6 +22,7 @@ import javax.inject.Inject;
 
 import static com.ecaservice.core.audit.TestHelperUtils.createAuditEventTemplateEntity;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -80,7 +82,8 @@ class AuditEventServiceTest extends AbstractJpaTest {
         var auditEvent =
                 new AuditEvent(this, auditCode, auditEventTemplateEntity.getEventType(), INITIATOR, contextParams);
         auditEventService.audit(auditEvent);
-        verify(auditEventSender, atLeastOnce()).sendEvent(auditEventRequestArgumentCaptor.capture());
+        verify(auditEventSender, atLeastOnce()).sendAuditEvent(auditEventRequestArgumentCaptor.capture(),
+                any(AuditEventRequestEntity.class));
         var auditEventRequest = auditEventRequestArgumentCaptor.getValue();
         assertThat(auditEventRequest).isNotNull();
         assertThat(auditEventRequest.getEventId()).isNotNull();

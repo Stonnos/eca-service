@@ -1,13 +1,19 @@
 package com.ecaservice.core.audit;
 
+import com.ecaservice.audit.dto.AuditEventRequest;
 import com.ecaservice.audit.dto.EventType;
 import com.ecaservice.core.audit.entity.AuditCodeEntity;
+import com.ecaservice.core.audit.entity.AuditEventRequestEntity;
 import com.ecaservice.core.audit.entity.AuditEventTemplateEntity;
 import com.ecaservice.core.audit.entity.AuditGroupEntity;
+import com.ecaservice.core.audit.entity.EventStatus;
 import com.ecaservice.core.audit.model.AuditCodeModel;
 import com.ecaservice.core.audit.model.AuditEventTemplateModel;
 import com.ecaservice.core.audit.model.AuditGroupModel;
 import lombok.experimental.UtilityClass;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Test helper utility class.
@@ -23,6 +29,8 @@ public class TestHelperUtils {
     private static final String CODE = "code";
     private static final String MESSAGE_TEMPLATE = "Message";
     private static final long ID = 1L;
+    private static final String MESSAGE = "message";
+    private static final String INITIATOR = "initiator";
 
     /**
      * Creates audit group entity.
@@ -101,5 +109,45 @@ public class TestHelperUtils {
         auditGroupModel.setGroupCode(GROUP);
         auditGroupModel.setTitle(GROUP_TITLE);
         return auditGroupModel;
+    }
+
+    /**
+     * Creates audit event request dto.
+     *
+     * @return audit event request dto
+     */
+    public static AuditEventRequest createAuditEventRequest() {
+        var auditEventRequest = new AuditEventRequest();
+        auditEventRequest.setEventId(UUID.randomUUID().toString());
+        auditEventRequest.setMessage(MESSAGE);
+        auditEventRequest.setGroupCode(GROUP);
+        auditEventRequest.setGroupTitle(GROUP_TITLE);
+        auditEventRequest.setCode(CODE);
+        auditEventRequest.setGroupTitle(CODE_TITLE);
+        auditEventRequest.setEventType(EventType.SUCCESS);
+        auditEventRequest.setInitiator(INITIATOR);
+        auditEventRequest.setEventDate(LocalDateTime.now());
+        return auditEventRequest;
+    }
+
+    /**
+     * Creates audit event request entity.
+     *
+     * @param eventStatus - event status
+     * @return audit event request entity
+     */
+    public static AuditEventRequestEntity createAuditEventRequestEntity(EventStatus eventStatus) {
+        var auditEventRequestEntity = new AuditEventRequestEntity();
+        auditEventRequestEntity.setEventId(UUID.randomUUID().toString());
+        auditEventRequestEntity.setMessage(MESSAGE);
+        auditEventRequestEntity.setGroupCode(GROUP);
+        auditEventRequestEntity.setGroupTitle(GROUP_TITLE);
+        auditEventRequestEntity.setCode(CODE);
+        auditEventRequestEntity.setGroupTitle(CODE_TITLE);
+        auditEventRequestEntity.setEventType(EventType.SUCCESS);
+        auditEventRequestEntity.setInitiator(INITIATOR);
+        auditEventRequestEntity.setEventDate(LocalDateTime.now());
+        auditEventRequestEntity.setEventStatus(eventStatus);
+        return auditEventRequestEntity;
     }
 }
