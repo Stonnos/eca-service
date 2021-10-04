@@ -15,6 +15,8 @@ public class AuditProperties {
     private static final int DEFAULT_THREAD_POOL_SIZE = 1;
     private static final int DEFAULT_PAGE_SIZE = 25;
     private static final long DEFAULT_REDELIVERY_INTERVAL_MILLIS = 60000L;
+    private static final String DEFAULT_REGISTRY = "defaultRegistry";
+    private static final long DEFAULT_EXPIRE_AFTER = 60000L;
 
     /**
      * Is audit enabled?
@@ -49,7 +51,7 @@ public class AuditProperties {
     /**
      * Lock config
      */
-    private LockProperties lock;
+    private LockProperties lock = new LockProperties();
 
     /**
      * Lock properties
@@ -60,11 +62,11 @@ public class AuditProperties {
         /**
          * Registry key
          */
-        private String registryKey;
+        private String registryKey = DEFAULT_REGISTRY;
 
         /**
          * Lock duration in millis.
          */
-        private Long expireAfter;
+        private Long expireAfter = DEFAULT_EXPIRE_AFTER;
     }
 }
