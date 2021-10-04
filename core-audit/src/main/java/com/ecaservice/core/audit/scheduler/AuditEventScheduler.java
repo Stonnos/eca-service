@@ -9,6 +9,9 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 
 /**
  * Audit event scheduler.
@@ -31,8 +34,12 @@ public class AuditEventScheduler {
     @PostConstruct
     public void start() {
         log.info("Starting to initialize audit redelivery job");
+        var initialDelayInstant = LocalDateTime.now()
+                .atZone(ZoneId.systemDefault())
+                .plusSeconds(auditProperties.getRedeliveryInitialDelaySeconds())
+                .toInstant();
         auditThreadPoolTaskScheduler.scheduleWithFixedDelay(auditEventRedeliveryService::processNotSentEvents,
-                auditProperties.getRedeliveryIntervalMillis());
+                Date.from(initialDelayInstant), auditProperties.getRedeliveryIntervalMillis());
         log.info("Audit redelivery job has been started");
     }
 }
