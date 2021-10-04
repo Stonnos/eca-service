@@ -43,6 +43,9 @@ auth-server:
 lock:
   enabled: true
 
+redis-lock:
+  registryKey: eca-server
+
 rabbit:
   enabled: true
 
