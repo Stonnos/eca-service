@@ -748,7 +748,7 @@ image::./images/eca-audit-log-db-schema.png[alt=Схема базы данных
 Таблицы databasechangeloglock и databasechangeloglock предназначены для управления миграциями базы данных.
 Описание таблиц для работы с шаблонами фильтров приведено в разделе 3.2 (таблицы 3.7 - 3.12)
 
-=== 3.13 Описание таблиц для хранения шаблонов аудита
+=== 3.13 Описание таблиц аудита
 
 ==== Таблица 3.43 - 'audit_group' - содержит данные о группах событий аудита
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
@@ -779,3 +779,22 @@ image::./images/eca-audit-log-db-schema.png[alt=Схема базы данных
 |===
 
 Таблица содержит уникальный индекс audit_event_template_code_id_event_type_unique_index на поля audit_code_id, event_type
+
+==== Таблица 3.46 - 'audit_event_request' - содержит данные о запросах с событиями аудита
+[cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
+|===
+|Название колонки|Тип|Unique|Not NULL|Индекс|Описание
+|id                      |bigint           |+|+|+                              |Идентификатор записи (первичный ключ)
+|event_id                |varchar(255)     |-|+|-                              |Внешний ID события
+|message                 |text             |-|+|-                              |Текст сообщения
+|initiator               |varchar(255)     |-|+|-                              |Источник события, например имя пользователя
+|event_type              |varchar(255)     |-|+|-                              |Тип события
+|group_code              |varchar(255)     |-|+|-                              |Код группы событий
+|group_title             |varchar(255)     |-|-|-                              |Описание группы событий
+|audit_code              |varchar(255)     |-|+|-                              |Код события
+|audit_code_title        |varchar(255)     |-|-|-                              |Описание кода события
+|event_date              |timestamp        |-|+|-                              |Дата наступления события
+|event_status            |varchar(255)     |-|+|-                              |Статус отправки события в сервис аудита (SENT, NOT_SENT, ERROR)
+|details                 |text             |-|-|-                              |Дополнительная информация, например текст ошибки
+|sent_date               |timestamp        |-|-|-                              |Дата отправки события в сервис аудита
+|===
