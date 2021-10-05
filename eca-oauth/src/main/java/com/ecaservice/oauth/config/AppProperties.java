@@ -4,6 +4,7 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -36,21 +37,25 @@ public class AppProperties {
     /**
      * Web application external base url
      */
+    @NotEmpty
     private String webExternalBaseUrl;
 
     /**
      * Reset password properties
      */
+    @NotNull
     private TokenValidityProperties resetPassword = new TokenValidityProperties();
 
     /**
      * Change password properties
      */
+    @NotNull
     private TokenValidityProperties changePassword = new TokenValidityProperties();
 
     /**
      * Change email properties
      */
+    @NotNull
     private TokenValidityProperties changeEmail = new TokenValidityProperties();
 
     /**
@@ -62,11 +67,13 @@ public class AppProperties {
         /**
          * Token validity in minutes
          */
+        @NotNull
         private Long validityMinutes;
 
         /**
          * Token url
          */
+        @NotEmpty
         private String url;
     }
 }
