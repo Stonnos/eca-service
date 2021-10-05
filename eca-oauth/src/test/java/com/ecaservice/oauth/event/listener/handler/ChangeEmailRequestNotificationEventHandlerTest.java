@@ -30,6 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import({AppProperties.class, ChangeEmailRequestNotificationEventHandler.class})
 class ChangeEmailRequestNotificationEventHandlerTest {
 
+    private static final long MINUTES_IN_HOUR = 60L;
     private static final String TOKEN = "token";
     private static final long USER_ID = 1L;
 
@@ -56,8 +57,9 @@ class ChangeEmailRequestNotificationEventHandlerTest {
         assertThat(actual.getTemplateCode()).isEqualTo(Templates.CHANGE_EMAIL);
         assertThat(actual.getReceiver()).isEqualTo(NEW_EMAIL);
         assertThat(actual.getVariables()).isNotEmpty();
+        Long validityHours = appProperties.getChangeEmail().getValidityMinutes() / MINUTES_IN_HOUR;
         assertThat(actual.getVariables()).containsEntry(TemplateVariablesDictionary.VALIDITY_HOURS_KEY,
-                String.valueOf(appProperties.getChangeEmail().getValidityMinutes()));
+                String.valueOf(validityHours));
         String tokenEndpoint = String.format(appProperties.getChangeEmail().getUrl(), TOKEN);
         String expectedUrl = String.format("%s%s", appProperties.getWebExternalBaseUrl(), tokenEndpoint);
         assertThat(actual.getVariables()).containsEntry(TemplateVariablesDictionary.CHANGE_EMAIL_URL_KEY,

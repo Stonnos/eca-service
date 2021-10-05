@@ -22,6 +22,8 @@ import static com.google.common.collect.Maps.newHashMap;
 public class ChangeEmailRequestNotificationEventHandler
         extends AbstractNotificationEventHandler<ChangeEmailRequestNotificationEvent> {
 
+    private static final long MINUTES_IN_HOUR = 60L;
+
     private final AppProperties appProperties;
 
     /**
@@ -38,9 +40,10 @@ public class ChangeEmailRequestNotificationEventHandler
     Map<String, String> createVariables(ChangeEmailRequestNotificationEvent event) {
         String tokenEndpoint = String.format(appProperties.getChangeEmail().getUrl(), event.getTokenModel().getToken());
         String changeEmailUrl = String.format("%s%s", appProperties.getWebExternalBaseUrl(), tokenEndpoint);
+        Long validityHours = appProperties.getChangeEmail().getValidityMinutes() / MINUTES_IN_HOUR;
         Map<String, String> templateVariables = newHashMap();
         templateVariables.put(CHANGE_EMAIL_URL_KEY, changeEmailUrl);
-        templateVariables.put(VALIDITY_HOURS_KEY, String.valueOf(appProperties.getChangeEmail().getValidityMinutes()));
+        templateVariables.put(VALIDITY_HOURS_KEY, String.valueOf(validityHours));
         return templateVariables;
     }
 }

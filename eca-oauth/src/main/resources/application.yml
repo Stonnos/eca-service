@@ -50,7 +50,7 @@ app:
     validityMinutes: 30
     url: /change-password/?token=%s
   changeEmail:
-    validityMinutes: 30
+    validityMinutes: 2880
     url: /change-email/?token=%s
 
 
