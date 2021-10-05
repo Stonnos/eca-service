@@ -32,4 +32,41 @@ public class AppProperties {
      * Emails sending enabled?
      */
     private Boolean emailsEnabled;
+
+    /**
+     * Web application external base url
+     */
+    private String webExternalBaseUrl;
+
+    /**
+     * Reset password properties
+     */
+    private TokenValidityProperties resetPassword = new TokenValidityProperties();
+
+    /**
+     * Change password properties
+     */
+    private TokenValidityProperties changePassword = new TokenValidityProperties();
+
+    /**
+     * Change email properties
+     */
+    private TokenValidityProperties changeEmail = new TokenValidityProperties();
+
+    /**
+     * Token validity properties
+     */
+    @Data
+    public static class TokenValidityProperties {
+
+        /**
+         * Token validity in minutes
+         */
+        private Long validityMinutes;
+
+        /**
+         * Token url
+         */
+        private String url;
+    }
 }

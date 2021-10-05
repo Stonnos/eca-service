@@ -2,7 +2,7 @@ package com.ecaservice.oauth.service;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.audit.annotation.Audit;
-import com.ecaservice.oauth.config.ChangePasswordConfig;
+import com.ecaservice.oauth.config.AppProperties;
 import com.ecaservice.oauth.dto.ChangePasswordRequest;
 import com.ecaservice.oauth.entity.ChangePasswordRequestEntity;
 import com.ecaservice.oauth.entity.UserEntity;
@@ -37,7 +37,7 @@ import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 @RequiredArgsConstructor
 public class ChangePasswordService {
 
-    private final ChangePasswordConfig changePasswordConfig;
+    private final AppProperties appProperties;
     private final PasswordEncoder passwordEncoder;
     private final Oauth2TokenService oauth2TokenService;
     private final ChangePasswordRequestRepository changePasswordRequestRepository;
@@ -68,7 +68,7 @@ public class ChangePasswordService {
             throw new ChangePasswordRequestAlreadyExistsException(userId);
         }
         String token = generateToken();
-        LocalDateTime expireDate = now.plusMinutes(changePasswordConfig.getValidityMinutes());
+        LocalDateTime expireDate = now.plusMinutes(appProperties.getChangePassword().getValidityMinutes());
         changePasswordRequestEntity = saveChangePasswordRequest(changePasswordRequest, userEntity, token, expireDate);
         return TokenModel.builder()
                 .token(token)

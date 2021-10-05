@@ -28,8 +28,7 @@ import java.util.concurrent.Executor;
 @EnableGlobalExceptionHandler
 @EntityScan(basePackageClasses = UserEntity.class)
 @EnableJpaRepositories(basePackageClasses = UserEntityRepository.class)
-@EnableConfigurationProperties({AppProperties.class, PasswordConfig.class, ResetPasswordConfig.class, TfaConfig.class,
-        ChangePasswordConfig.class, ChangeEmailConfig.class})
+@EnableConfigurationProperties({AppProperties.class, PasswordConfig.class, TfaConfig.class})
 @Import(FilterExceptionHandler.class)
 public class EcaOauthConfiguration {
 

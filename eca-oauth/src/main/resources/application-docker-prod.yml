@@ -17,14 +17,8 @@ eureka:
     serviceUrl:
       defaultZone: http://discovery-server:8761/eureka
 
-reset-password:
-  baseUrl: http://localhost:8080
-
-change-password:
-  baseUrl: http://localhost:8080
-
-change-email:
-  baseUrl: http://localhost:8080
+app:
+  webExternalBaseUrl: http://localhost:8080
 
 ## Swagger properties
 open-api:

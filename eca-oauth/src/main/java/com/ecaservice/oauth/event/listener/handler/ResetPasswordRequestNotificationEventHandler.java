@@ -1,6 +1,6 @@
 package com.ecaservice.oauth.event.listener.handler;
 
-import com.ecaservice.oauth.config.ResetPasswordConfig;
+import com.ecaservice.oauth.config.AppProperties;
 import com.ecaservice.oauth.event.model.ResetPasswordRequestNotificationEvent;
 import com.ecaservice.oauth.service.mail.dictionary.Templates;
 import lombok.extern.slf4j.Slf4j;
@@ -22,27 +22,27 @@ import static com.google.common.collect.Maps.newHashMap;
 public class ResetPasswordRequestNotificationEventHandler
         extends AbstractNotificationEventHandler<ResetPasswordRequestNotificationEvent> {
 
-    private static final String RESET_PASSWORD_URL_FORMAT = "%s/reset-password/?token=%s";
-
-    private final ResetPasswordConfig resetPasswordConfig;
+    private final AppProperties appProperties;
 
     /**
      * Creates reset password notification event handler.
      *
-     * @param resetPasswordConfig - reset password config
+     * @param appProperties - app properties
      */
-    public ResetPasswordRequestNotificationEventHandler(ResetPasswordConfig resetPasswordConfig) {
+    public ResetPasswordRequestNotificationEventHandler(AppProperties appProperties) {
         super(ResetPasswordRequestNotificationEvent.class, Templates.RESET_PASSWORD);
-        this.resetPasswordConfig = resetPasswordConfig;
+        this.appProperties = appProperties;
     }
 
     @Override
     Map<String, String> createVariables(ResetPasswordRequestNotificationEvent event) {
         Map<String, String> templateVariables = newHashMap();
-        String resetPasswordUrl = String.format(RESET_PASSWORD_URL_FORMAT, resetPasswordConfig.getBaseUrl(),
-                event.getTokenModel().getToken());
+        String tokenEndpoint =
+                String.format(appProperties.getResetPassword().getUrl(), event.getTokenModel().getToken());
+        String resetPasswordUrl = String.format("%s%s", appProperties.getWebExternalBaseUrl(), tokenEndpoint);
         templateVariables.put(RESET_PASSWORD_URL_KEY, resetPasswordUrl);
-        templateVariables.put(VALIDITY_MINUTES_KEY, String.valueOf(resetPasswordConfig.getValidityMinutes()));
+        templateVariables.put(VALIDITY_MINUTES_KEY,
+                String.valueOf(appProperties.getResetPassword().getValidityMinutes()));
         return templateVariables;
     }
 }

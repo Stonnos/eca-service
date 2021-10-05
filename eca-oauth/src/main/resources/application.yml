@@ -42,6 +42,17 @@ app:
   maxPageSize: 50
   threadPoolSize: 10
   emailsEnabled: true
+  webExternalBaseUrl: http://localhost:8085
+  resetPassword:
+    validityMinutes: 30
+    url: /reset-password/?token=%s
+  changePassword:
+    validityMinutes: 30
+    url: /change-password/?token=%s
+  changeEmail:
+    validityMinutes: 30
+    url: /change-email/?token=%s
+
 
 ## Password generator configs
 password:
@@ -50,22 +61,10 @@ password:
   useLowerCaseSymbols: true
   useUpperCaseSymbols: true
 
-reset-password:
-  validityMinutes: 30
-  baseUrl: http://localhost:8085
-
 tfa:
   codeValiditySeconds: 120
   codeLength: 6
   enabled: true
-
-change-password:
-  validityMinutes: 30
-  baseUrl: http://localhost:8085
-
-change-email:
-  validityHours: 48
-  baseUrl: http://localhost:8085
 
 ## Swagger properties
 open-api:
