@@ -2,7 +2,7 @@ package com.ecaservice.oauth.service;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.oauth.AbstractJpaTest;
-import com.ecaservice.oauth.config.ChangeEmailConfig;
+import com.ecaservice.oauth.config.AppProperties;
 import com.ecaservice.oauth.entity.ChangeEmailRequestEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.exception.ChangeEmailRequestAlreadyExistsException;
@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  *
  * @author Roman Batygin
  */
-@Import({ChangeEmailConfig.class, ChangeEmailService.class})
+@Import({AppProperties.class, ChangeEmailService.class})
 class ChangeEmailServiceTest extends AbstractJpaTest {
 
     private static final String NEW_EMAIL = "newemail@mail.ru";
@@ -40,7 +40,7 @@ class ChangeEmailServiceTest extends AbstractJpaTest {
     private static final String TOKEN = "token";
 
     @Inject
-    private ChangeEmailConfig changeEmailConfig;
+    private AppProperties appProperties;
     @Inject
     private UserEntityRepository userEntityRepository;
     @Inject
@@ -86,7 +86,7 @@ class ChangeEmailServiceTest extends AbstractJpaTest {
     @Test
     void testCreateChangeEmailRequestWithPreviousExpired() {
         createAndSaveChangeEmailRequestEntity(
-                LocalDateTime.now().minusDays(changeEmailConfig.getValidityHours()), null);
+                LocalDateTime.now().minusMinutes(appProperties.getChangeEmail().getValidityMinutes()), null);
         internalTestCreateChangeEmailRequest(NEW_EMAIL);
         assertThat(changeEmailRequestRepository.count()).isEqualTo(2L);
     }
@@ -94,7 +94,7 @@ class ChangeEmailServiceTest extends AbstractJpaTest {
     @Test
     void testCreateChangeEmailRequestWithPreviousConfirmed() {
         createAndSaveChangeEmailRequestEntity(
-                LocalDateTime.now().plusMinutes(changeEmailConfig.getValidityHours()),
+                LocalDateTime.now().plusMinutes(appProperties.getChangeEmail().getValidityMinutes()),
                 LocalDateTime.now().minusMinutes(1L));
         internalTestCreateChangeEmailRequest(NEW_EMAIL);
         assertThat(changeEmailRequestRepository.count()).isEqualTo(2L);
@@ -125,7 +125,7 @@ class ChangeEmailServiceTest extends AbstractJpaTest {
     @Test
     void testChangeEmailForAlreadyConfirmedRequest() {
         var changeEmailRequestEntity = createAndSaveChangeEmailRequestEntity(
-                LocalDateTime.now().plusMinutes(changeEmailConfig.getValidityHours()),
+                LocalDateTime.now().plusMinutes(appProperties.getChangeEmail().getValidityMinutes()),
                 LocalDateTime.now().minusMinutes(1L));
         String token = changeEmailRequestEntity.getToken();
         assertThrows(InvalidTokenException.class, () -> changeEmailService.changeEmail(token));
@@ -142,7 +142,7 @@ class ChangeEmailServiceTest extends AbstractJpaTest {
     @Test
     void testChangeEmail() {
         var changeEmailRequestEntity = createAndSaveChangeEmailRequestEntity(
-                LocalDateTime.now().plusMinutes(changeEmailConfig.getValidityHours()), null);
+                LocalDateTime.now().plusMinutes(appProperties.getChangeEmail().getValidityMinutes()), null);
         changeEmailService.changeEmail(TOKEN);
         ChangeEmailRequestEntity actual =
                 changeEmailRequestRepository.findById(changeEmailRequestEntity.getId()).orElse(null);
@@ -156,7 +156,7 @@ class ChangeEmailServiceTest extends AbstractJpaTest {
         userEntity.setLocked(true);
         userEntityRepository.save(userEntity);
         createAndSaveChangeEmailRequestEntity(
-                LocalDateTime.now().plusMinutes(changeEmailConfig.getValidityHours()), null);
+                LocalDateTime.now().plusMinutes(appProperties.getChangeEmail().getValidityMinutes()), null);
         assertThrows(UserLockedException.class, () -> changeEmailService.changeEmail(TOKEN));
     }
 

@@ -1,6 +1,6 @@
 package com.ecaservice.oauth.event.listener.handler;
 
-import com.ecaservice.oauth.config.ChangePasswordConfig;
+import com.ecaservice.oauth.config.AppProperties;
 import com.ecaservice.oauth.event.model.ChangePasswordRequestNotificationEvent;
 import com.ecaservice.oauth.service.mail.dictionary.Templates;
 import lombok.extern.slf4j.Slf4j;
@@ -22,27 +22,27 @@ import static com.google.common.collect.Maps.newHashMap;
 public class ChangePasswordRequestNotificationEventHandler
         extends AbstractNotificationEventHandler<ChangePasswordRequestNotificationEvent> {
 
-    private static final String CHANGE_PASSWORD_URL_FORMAT = "%s/change-password/?token=%s";
-
-    private final ChangePasswordConfig changePasswordConfig;
+    private final AppProperties appProperties;
 
     /**
      * Creates change password notification event handler.
      *
-     * @param changePasswordConfig - change password config
+     * @param appProperties - app properties
      */
-    public ChangePasswordRequestNotificationEventHandler(ChangePasswordConfig changePasswordConfig) {
+    public ChangePasswordRequestNotificationEventHandler(AppProperties appProperties) {
         super(ChangePasswordRequestNotificationEvent.class, Templates.CHANGE_PASSWORD);
-        this.changePasswordConfig = changePasswordConfig;
+        this.appProperties = appProperties;
     }
 
     @Override
     Map<String, String> createVariables(ChangePasswordRequestNotificationEvent event) {
-        String changePasswordUrl = String.format(CHANGE_PASSWORD_URL_FORMAT, changePasswordConfig.getBaseUrl(),
-                event.getTokenModel().getToken());
+        String tokenEndpoint =
+                String.format(appProperties.getChangePassword().getUrl(), event.getTokenModel().getToken());
+        String changePasswordUrl = String.format("%s%s", appProperties.getWebExternalBaseUrl(), tokenEndpoint);
         Map<String, String> templateVariables = newHashMap();
         templateVariables.put(CHANGE_PASSWORD_URL_KEY, changePasswordUrl);
-        templateVariables.put(VALIDITY_MINUTES_KEY, String.valueOf(changePasswordConfig.getValidityMinutes()));
+        templateVariables.put(VALIDITY_MINUTES_KEY,
+                String.valueOf(appProperties.getChangePassword().getValidityMinutes()));
         return templateVariables;
     }
 }

@@ -1,7 +1,7 @@
 package com.ecaservice.oauth.service;
 
 import com.ecaservice.core.audit.annotation.Audit;
-import com.ecaservice.oauth.config.ResetPasswordConfig;
+import com.ecaservice.oauth.config.AppProperties;
 import com.ecaservice.oauth.dto.ForgotPasswordRequest;
 import com.ecaservice.oauth.dto.ResetPasswordRequest;
 import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
@@ -36,7 +36,7 @@ import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 @RequiredArgsConstructor
 public class ResetPasswordService {
 
-    private final ResetPasswordConfig resetPasswordConfig;
+    private final AppProperties appProperties;
     private final PasswordEncoder passwordEncoder;
     private final Oauth2TokenService oauth2TokenService;
     private final ResetPasswordRequestRepository resetPasswordRequestRepository;
@@ -66,7 +66,8 @@ public class ResetPasswordService {
         resetPasswordRequestEntity = new ResetPasswordRequestEntity();
         String token = generateToken();
         resetPasswordRequestEntity.setToken(md5Hex(token));
-        resetPasswordRequestEntity.setExpireDate(now.plusMinutes(resetPasswordConfig.getValidityMinutes()));
+        resetPasswordRequestEntity.setExpireDate(
+                now.plusMinutes(appProperties.getResetPassword().getValidityMinutes()));
         resetPasswordRequestEntity.setUserEntity(userEntity);
         resetPasswordRequestRepository.save(resetPasswordRequestEntity);
         return TokenModel.builder()

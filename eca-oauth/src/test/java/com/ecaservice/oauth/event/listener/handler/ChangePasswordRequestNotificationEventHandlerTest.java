@@ -1,7 +1,7 @@
 package com.ecaservice.oauth.event.listener.handler;
 
 import com.ecaservice.notification.dto.EmailRequest;
-import com.ecaservice.oauth.config.ChangePasswordConfig;
+import com.ecaservice.oauth.config.AppProperties;
 import com.ecaservice.oauth.event.model.ChangePasswordRequestNotificationEvent;
 import com.ecaservice.oauth.model.TokenModel;
 import com.ecaservice.oauth.service.mail.dictionary.TemplateVariablesDictionary;
@@ -27,16 +27,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(SpringExtension.class)
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
-@Import({ChangePasswordConfig.class, ChangePasswordRequestNotificationEventHandler.class})
+@Import({AppProperties.class, ChangePasswordRequestNotificationEventHandler.class})
 class ChangePasswordRequestNotificationEventHandlerTest {
 
     private static final String TOKEN = "token";
     private static final long USER_ID = 1L;
 
-    private static final String CHANGE_PASSWORD_URL_FORMAT = "%s/change-password/?token=%s";
-
     @Inject
-    private ChangePasswordConfig changePasswordConfig;
+    private AppProperties appProperties;
     @Inject
     private ChangePasswordRequestNotificationEventHandler eventHandler;
 
@@ -57,9 +55,11 @@ class ChangePasswordRequestNotificationEventHandlerTest {
         assertThat(actual.getReceiver()).isEqualTo(changePasswordRequestEntity.getUserEntity().getEmail());
         assertThat(actual.getVariables()).isNotEmpty();
         assertThat(actual.getVariables()).containsEntry(TemplateVariablesDictionary.VALIDITY_MINUTES_KEY,
-                String.valueOf(changePasswordConfig.getValidityMinutes()));
+                String.valueOf(appProperties.getChangePassword().getValidityMinutes()));
+        String tokenEndpoint = String.format(appProperties.getChangePassword().getUrl(), TOKEN);
+        String expectedUrl = String.format("%s%s", appProperties.getWebExternalBaseUrl(), tokenEndpoint);
         assertThat(actual.getVariables()).containsEntry(TemplateVariablesDictionary.CHANGE_PASSWORD_URL_KEY,
-                String.format(CHANGE_PASSWORD_URL_FORMAT, changePasswordConfig.getBaseUrl(), TOKEN));
+                expectedUrl);
         assertThat(actual.getPriority()).isEqualTo(MEDIUM);
     }
 }

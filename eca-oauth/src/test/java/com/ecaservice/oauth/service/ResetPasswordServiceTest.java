@@ -1,7 +1,7 @@
 package com.ecaservice.oauth.service;
 
 import com.ecaservice.oauth.AbstractJpaTest;
-import com.ecaservice.oauth.config.ResetPasswordConfig;
+import com.ecaservice.oauth.config.AppProperties;
 import com.ecaservice.oauth.dto.ForgotPasswordRequest;
 import com.ecaservice.oauth.dto.ResetPasswordRequest;
 import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
@@ -37,14 +37,14 @@ import static org.mockito.Mockito.verify;
  *
  * @author Roman Batygin
  */
-@Import(ResetPasswordConfig.class)
+@Import(AppProperties.class)
 class ResetPasswordServiceTest extends AbstractJpaTest {
 
     private static final String PASSWORD = "@pa66word!";
     private static final String TOKEN = "token";
 
     @Inject
-    private ResetPasswordConfig resetPasswordConfig;
+    private AppProperties appProperties;
     @Inject
     private UserEntityRepository userEntityRepository;
     @Inject
@@ -60,7 +60,7 @@ class ResetPasswordServiceTest extends AbstractJpaTest {
     @Override
     public void init() {
         PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        resetPasswordService = new ResetPasswordService(resetPasswordConfig, passwordEncoder, oauth2TokenService,
+        resetPasswordService = new ResetPasswordService(appProperties, passwordEncoder, oauth2TokenService,
                 resetPasswordRequestRepository, userEntityRepository);
         userEntity = createAndSaveUser();
     }

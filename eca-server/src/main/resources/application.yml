@@ -176,6 +176,10 @@ management:
   endpoint:
     health:
       show-details: always
+  info:
+    git:
+      enabled: true
+      mode: full
 
 server:
   forward-headers-strategy: framework

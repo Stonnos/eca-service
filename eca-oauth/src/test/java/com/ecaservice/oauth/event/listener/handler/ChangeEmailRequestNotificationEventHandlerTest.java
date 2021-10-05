@@ -1,7 +1,7 @@
 package com.ecaservice.oauth.event.listener.handler;
 
 import com.ecaservice.notification.dto.EmailRequest;
-import com.ecaservice.oauth.config.ChangeEmailConfig;
+import com.ecaservice.oauth.config.AppProperties;
 import com.ecaservice.oauth.event.model.ChangeEmailRequestNotificationEvent;
 import com.ecaservice.oauth.model.TokenModel;
 import com.ecaservice.oauth.service.mail.dictionary.TemplateVariablesDictionary;
@@ -27,17 +27,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(SpringExtension.class)
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
-@Import({ChangeEmailConfig.class, ChangeEmailRequestNotificationEventHandler.class})
+@Import({AppProperties.class, ChangeEmailRequestNotificationEventHandler.class})
 class ChangeEmailRequestNotificationEventHandlerTest {
 
+    private static final long MINUTES_IN_HOUR = 60L;
     private static final String TOKEN = "token";
     private static final long USER_ID = 1L;
 
-    private static final String CHANGE_EMAIL_URL_FORMAT = "%s/change-email/?token=%s";
     private static final String NEW_EMAIL = "newemail@mail.ru";
 
     @Inject
-    private ChangeEmailConfig changeEmailConfig;
+    private AppProperties appProperties;
     @Inject
     private ChangeEmailRequestNotificationEventHandler eventHandler;
 
@@ -57,10 +57,13 @@ class ChangeEmailRequestNotificationEventHandlerTest {
         assertThat(actual.getTemplateCode()).isEqualTo(Templates.CHANGE_EMAIL);
         assertThat(actual.getReceiver()).isEqualTo(NEW_EMAIL);
         assertThat(actual.getVariables()).isNotEmpty();
+        Long validityHours = appProperties.getChangeEmail().getValidityMinutes() / MINUTES_IN_HOUR;
         assertThat(actual.getVariables()).containsEntry(TemplateVariablesDictionary.VALIDITY_HOURS_KEY,
-                String.valueOf(changeEmailConfig.getValidityHours()));
+                String.valueOf(validityHours));
+        String tokenEndpoint = String.format(appProperties.getChangeEmail().getUrl(), TOKEN);
+        String expectedUrl = String.format("%s%s", appProperties.getWebExternalBaseUrl(), tokenEndpoint);
         assertThat(actual.getVariables()).containsEntry(TemplateVariablesDictionary.CHANGE_EMAIL_URL_KEY,
-                String.format(CHANGE_EMAIL_URL_FORMAT, changeEmailConfig.getBaseUrl(), TOKEN));
+                expectedUrl);
         assertThat(actual.getPriority()).isEqualTo(MEDIUM);
     }
 }

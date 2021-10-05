@@ -2,11 +2,11 @@ package com.ecaservice.oauth.service;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.audit.annotation.Audit;
-import com.ecaservice.oauth.config.ChangeEmailConfig;
+import com.ecaservice.oauth.config.AppProperties;
 import com.ecaservice.oauth.entity.ChangeEmailRequestEntity;
 import com.ecaservice.oauth.entity.UserEntity;
-import com.ecaservice.oauth.exception.EmailAlreadyBoundException;
 import com.ecaservice.oauth.exception.ChangeEmailRequestAlreadyExistsException;
+import com.ecaservice.oauth.exception.EmailAlreadyBoundException;
 import com.ecaservice.oauth.exception.EmailDuplicationException;
 import com.ecaservice.oauth.exception.InvalidTokenException;
 import com.ecaservice.oauth.exception.UserLockedException;
@@ -37,7 +37,7 @@ import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 @RequiredArgsConstructor
 public class ChangeEmailService {
 
-    private final ChangeEmailConfig changeEmailConfig;
+    private final AppProperties appProperties;
     private final ChangeEmailRequestRepository changeEmailRequestRepository;
     private final UserEntityRepository userEntityRepository;
 
@@ -68,7 +68,7 @@ public class ChangeEmailService {
             throw new ChangeEmailRequestAlreadyExistsException(userId);
         }
         String token = generateToken();
-        LocalDateTime expireDate = now.plusHours(changeEmailConfig.getValidityHours());
+        LocalDateTime expireDate = now.plusMinutes(appProperties.getChangeEmail().getValidityMinutes());
         var changeEmailRequestEntity = saveChangeEmailRequest(newEmail, userEntity, token, expireDate);
         return TokenModel.builder()
                 .token(token)

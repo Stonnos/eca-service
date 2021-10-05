@@ -1,7 +1,7 @@
 package com.ecaservice.oauth.event.listener.handler;
 
 import com.ecaservice.notification.dto.EmailRequest;
-import com.ecaservice.oauth.config.ResetPasswordConfig;
+import com.ecaservice.oauth.config.AppProperties;
 import com.ecaservice.oauth.event.model.ResetPasswordRequestNotificationEvent;
 import com.ecaservice.oauth.model.TokenModel;
 import com.ecaservice.oauth.service.mail.dictionary.TemplateVariablesDictionary;
@@ -27,16 +27,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(SpringExtension.class)
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
-@Import({ResetPasswordConfig.class, ResetPasswordRequestNotificationEventHandler.class})
+@Import({AppProperties.class, ResetPasswordRequestNotificationEventHandler.class})
 class ResetPasswordRequestNotificationEventHandlerTest {
 
     private static final String TOKEN = "token";
     private static final long USER_ID = 1L;
 
-    private static final String RESET_PASSWORD_URL_FORMAT = "%s/reset-password/?token=%s";
-
     @Inject
-    private ResetPasswordConfig resetPasswordConfig;
+    private AppProperties appProperties;
     @Inject
     private ResetPasswordRequestNotificationEventHandler eventHandler;
 
@@ -49,7 +47,8 @@ class ResetPasswordRequestNotificationEventHandlerTest {
                 .tokenId(resetPasswordRequestEntity.getId())
                 .login(resetPasswordRequestEntity.getUserEntity().getLogin())
                 .email(resetPasswordRequestEntity.getUserEntity().getEmail())
-                .build();;
+                .build();
+        ;
         var resetPasswordNotificationEvent = new ResetPasswordRequestNotificationEvent(this, tokenModel);
         EmailRequest actual = eventHandler.handle(resetPasswordNotificationEvent);
         assertThat(actual).isNotNull();
@@ -57,10 +56,11 @@ class ResetPasswordRequestNotificationEventHandlerTest {
         assertThat(actual.getReceiver()).isEqualTo(resetPasswordRequestEntity.getUserEntity().getEmail());
         assertThat(actual.getVariables()).isNotEmpty();
         assertThat(actual.getVariables()).containsEntry(TemplateVariablesDictionary.VALIDITY_MINUTES_KEY,
-                String.valueOf(resetPasswordConfig.getValidityMinutes()));
+                String.valueOf(appProperties.getResetPassword().getValidityMinutes()));
+        String tokenEndpoint = String.format(appProperties.getResetPassword().getUrl(), TOKEN);
+        String expectedUrl = String.format("%s%s", appProperties.getWebExternalBaseUrl(), tokenEndpoint);
         assertThat(actual.getVariables()).containsEntry(TemplateVariablesDictionary.RESET_PASSWORD_URL_KEY,
-                String.format(RESET_PASSWORD_URL_FORMAT, resetPasswordConfig.getBaseUrl(),
-                        resetPasswordRequestEntity.getToken()));
+                expectedUrl);
         assertThat(actual.getPriority()).isEqualTo(MEDIUM);
     }
 }
