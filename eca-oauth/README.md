@@ -21,6 +21,12 @@
    * app.maxPageSize - максимальное число элементов на странице (используется для запросов с пагинацией)
    * app.emailsEnabled - вкл./выкл. отправки email сообщений
    * app.threadPoolSize - размер пула потоков для асинхронных задач
+   * app.resetPassword.validityMinutes - время действия токена для восстановления пароля в мин.
+   * app.resetPassword.url - url для формирования ссылки для восстановления пароля
+   * app.changePassword.validityMinutes - время действия токена для изменения в мин.
+   * app.changePassword.url - url для формирования ссылки для изменение пароля
+   * app.changeEmail.validityMinutes - время действия токена для изменения email в мин.
+   * app.changeEmail.url - url для формирования ссылки для изменение Email
 3) open-api - настройки Swagger
    * open-api.tokenBaseUrl - базовый url - сервера авторизации
    * open-api.projectVersion - версия API
@@ -36,16 +42,11 @@
    * password.useDigits - использовать цифры?
    * password.useLowerCaseSymbols - использовать латинские буквы нижнего регистра?
    * password.useUpperCaseSymbols - использовать латинские буквы верхнего регистра?
-5) reset-password - настройки для восстановления пароля
-   * reset-password.validityMinutes - время действия токена в мин.
-   * reset-password.baseUrl - базовый url для формирования ссылки для восстановления пароля
-6) change-password - настройки для изменения пароля
-   * change-password.validityMinutes - время действия токена в мин.
-   * change-password.baseUrl - базовый url для формирования ссылки для изменение пароля
-7) change-email - настройки для изменения Email
-   * change-email.validityHours - время действия токена в часах
-   * change-email.baseUrl - базовый url для формирования ссылки для изменение Email
-8) audit.enabled - вкл./выкл. отправки событий аудита
+5) audit.enabled - вкл./выкл. отправки событий аудита
+6) tfa - настройки двухфакторной аутентификации
+   * tfa.enabled - глобальное вкл./выкл. исполользование двухфакторной аутентификации
+   * tfa.codeValiditySeconds - время действия одноразового пароля в сек.
+   * tfa.codeLength - длина пароля
 
 Инструкция по развертыванию
 ----------------------------------------
