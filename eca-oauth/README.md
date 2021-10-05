@@ -23,7 +23,7 @@
    * app.threadPoolSize - размер пула потоков для асинхронных задач
    * app.resetPassword.validityMinutes - время действия токена для восстановления пароля в мин.
    * app.resetPassword.url - url для формирования ссылки для восстановления пароля
-   * app.changePassword.validityMinutes - время действия токена для изменения в мин.
+   * app.changePassword.validityMinutes - время действия токена для изменения пароля в мин.
    * app.changePassword.url - url для формирования ссылки для изменение пароля
    * app.changeEmail.validityMinutes - время действия токена для изменения email в мин.
    * app.changeEmail.url - url для формирования ссылки для изменение Email
