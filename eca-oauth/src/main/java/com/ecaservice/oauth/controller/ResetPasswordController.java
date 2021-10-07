@@ -28,7 +28,7 @@ import java.time.LocalDateTime;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.FORGOT_PASSWORD_REQUEST_JSON;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.INVALID_TOKEN_RESPONSE_JSON;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.RESET_PASSWORD_REQUEST_JSON;
-import static com.ecaservice.oauth.controller.doc.ApiExamples.UNIQUE_EMAIL_RESPONSE_JSON;
+import static com.ecaservice.oauth.controller.doc.ApiExamples.USER_EMAIL_RESPONSE_JSON;
 import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 
 /**
@@ -66,7 +66,7 @@ public class ResetPasswordController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNIQUE_EMAIL_RESPONSE_JSON),
+                                            @ExampleObject(value = USER_EMAIL_RESPONSE_JSON),
                                     }
                             )
                     )
