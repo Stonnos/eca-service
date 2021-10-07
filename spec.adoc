@@ -120,9 +120,15 @@ a|
 ----
 |403
 |Permission denied
-|-
+|application/json
 a|
--
+[source,json]
+----
+{
+  "error" : "access_denied",
+  "error_description" : "Access is denied"
+}
+----
 |400
 |Bad request
 |-
@@ -161,17 +167,6 @@ a|
 {
   "error" : "unauthorized",
   "error_description" : "Full authentication is required to access this resource"
-}
-----
-|403
-|Permission denied
-|application/json
-a|
-[source,json]
-----
-{
-  "error" : "access_denied",
-  "error_description" : "Access is denied"
 }
 ----
 |400
@@ -242,9 +237,15 @@ a|
 ----
 |403
 |Permission denied
-|-
+|application/json
 a|
--
+[source,json]
+----
+{
+  "error" : "access_denied",
+  "error_description" : "Access is denied"
+}
+----
 |400
 |Bad request
 |-
@@ -278,7 +279,31 @@ a|
 |OK
 |application/json
 a|
--
+[source,json]
+----
+{
+  "content" : [ {
+    "id" : 1,
+    "login" : "admin",
+    "email" : "test@mail.ru",
+    "firstName" : "Ivan",
+    "lastName" : "Ivanov",
+    "middleName" : "Ivanovich",
+    "fullName" : "Ivanov Ivan Ivanovich",
+    "creationDate" : "2021-07-01 14:00:00",
+    "tfaEnabled" : true,
+    "locked" : true,
+    "photoId" : 1,
+    "passwordDate" : "2021-07-01 14:00:00",
+    "roles" : [ {
+      "roleName" : "ROLE_SUPER_ADMIN",
+      "description" : "Administrator"
+    } ]
+  } ],
+  "page" : 0,
+  "totalCount" : 1
+}
+----
 |401
 |Not authorized
 |application/json
@@ -339,7 +364,27 @@ a|
 |OK
 |application/json
 a|
--
+[source,json]
+----
+{
+  "id" : 1,
+  "login" : "admin",
+  "email" : "test@mail.ru",
+  "firstName" : "Ivan",
+  "lastName" : "Ivanov",
+  "middleName" : "Ivanovich",
+  "fullName" : "Ivanov Ivan Ivanovich",
+  "creationDate" : "2021-07-01 14:00:00",
+  "tfaEnabled" : true,
+  "locked" : true,
+  "photoId" : 1,
+  "passwordDate" : "2021-07-01 14:00:00",
+  "roles" : [ {
+    "roleName" : "ROLE_SUPER_ADMIN",
+    "description" : "Administrator"
+  } ]
+}
+----
 |401
 |Not authorized
 |application/json
@@ -395,9 +440,12 @@ a|
 |Код ответа|Описание|Формат ответа|Пример ответа
 |200
 |OK
-|*/*
+|application/json
 a|
--
+[source,json]
+----
+false
+----
 |===
 
 == Reset password with specified token
@@ -467,6 +515,17 @@ a|
 |-
 a|
 -
+|401
+|Not authorized
+|application/json
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
 |===
 
 == Confirms change password request
@@ -515,6 +574,17 @@ a|
 |-
 a|
 -
+|401
+|Not authorized
+|application/json
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
 |===
 
 == Confirms change email request
@@ -553,7 +623,27 @@ a|
 |OK
 |application/json
 a|
--
+[source,json]
+----
+{
+  "id" : 1,
+  "login" : "admin",
+  "email" : "test@mail.ru",
+  "firstName" : "Ivan",
+  "lastName" : "Ivanov",
+  "middleName" : "Ivanovich",
+  "fullName" : "Ivanov Ivan Ivanovich",
+  "creationDate" : "2021-07-01 14:00:00",
+  "tfaEnabled" : true,
+  "locked" : true,
+  "photoId" : 1,
+  "passwordDate" : "2021-07-01 14:00:00",
+  "roles" : [ {
+    "roleName" : "ROLE_SUPER_ADMIN",
+    "description" : "Administrator"
+  } ]
+}
+----
 |401
 |Not authorized
 |application/json
@@ -810,108 +900,6 @@ a|
 |*newPassword**
 |New password
 |string 
-|-
-|-
-|-
-|===
-=== RoleDto
-:table-caption: Таблица
-.User role model
-|===
-|Название параметра|Описание параметра|Тип данных|Мин. длина|Макс. длина|Паттерн
-|*roleName*
-|Role name
-|string 
-|-
-|-
-|-
-|*description*
-|Role description
-|string 
-|-
-|-
-|-
-|===
-=== UserDto
-:table-caption: Таблица
-.User model
-|===
-|Название параметра|Описание параметра|Тип данных|Мин. длина|Макс. длина|Паттерн
-|*id*
-|User id
-|integer (int64)
-|-
-|-
-|-
-|*login*
-|User login
-|string 
-|-
-|-
-|-
-|*email*
-|User email
-|string 
-|-
-|-
-|-
-|*firstName*
-|User first name
-|string 
-|-
-|-
-|-
-|*lastName*
-|User last name
-|string 
-|-
-|-
-|-
-|*middleName*
-|User middle name
-|string 
-|-
-|-
-|-
-|*fullName*
-|User full name
-|string 
-|-
-|-
-|-
-|*creationDate*
-|User creation date
-|string 
-|-
-|-
-|-
-|*tfaEnabled*
-|Two factor authentication enabled
-|boolean 
-|-
-|-
-|-
-|*locked*
-|Account locked
-|boolean 
-|-
-|-
-|-
-|*photoId*
-|User photo id
-|integer (int64)
-|-
-|-
-|-
-|*passwordDate*
-|Last password change date
-|string 
-|-
-|-
-|-
-|*roles*
-|User roles
-|array 
 |-
 |-
 |-
