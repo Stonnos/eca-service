@@ -13,10 +13,12 @@ API provides operations with users for ECA web application
 */users/update-info* - Updates info for current authenticated user
 
 |===
-|Формат запроса|Обязательность|Тело запроса
+|Формат запроса|Обязательность|Тело запроса|Пример запроса
 |application/json
 |true
 |<<UpdateUserInfoDto>>
+a|
+-
 |===
 Список кодов ответа
 |===
@@ -45,10 +47,12 @@ a|
 */users/upload-photo* - Uploads photo for current authenticated user
 
 |===
-|Формат запроса|Обязательность|Тело запроса
+|Формат запроса|Обязательность|Тело запроса|Пример запроса
 |multipart/form-data
 |false
 |-
+a|
+-
 |===
 Список кодов ответа
 |===
@@ -218,14 +222,11 @@ a|
 */users/list* - Finds users with specified options
 
 |===
-|Формат запроса|Обязательность|Тело запроса
+|Формат запроса|Обязательность|Тело запроса|Пример запроса
 |application/json
 |true
 |<<PageRequestDto>>
-|===
-
-Пример запроса:
-
+a|
 [source,json]
 ----
 {
@@ -233,6 +234,7 @@ a|
   "size" : 25
 }
 ----
+|===
 Список кодов ответа
 |===
 |Код ответа|Описание|Формат ответа|Пример ответа
@@ -276,10 +278,12 @@ a|
 */users/create* - Creates new user
 
 |===
-|Формат запроса|Обязательность|Тело запроса
+|Формат запроса|Обязательность|Тело запроса|Пример запроса
 |application/json
 |true
 |<<CreateUserDto>>
+a|
+-
 |===
 Список кодов ответа
 |===
@@ -344,10 +348,12 @@ a|
 */password/reset* - Reset password with specified token
 
 |===
-|Формат запроса|Обязательность|Тело запроса
+|Формат запроса|Обязательность|Тело запроса|Пример запроса
 |application/json
 |true
 |<<ResetPasswordRequest>>
+a|
+-
 |===
 Список кодов ответа
 |===
@@ -365,10 +371,12 @@ a|
 */password/forgot* - Creates forgot password request
 
 |===
-|Формат запроса|Обязательность|Тело запроса
+|Формат запроса|Обязательность|Тело запроса|Пример запроса
 |application/json
 |true
 |<<ForgotPasswordRequest>>
+a|
+-
 |===
 Список кодов ответа
 |===
@@ -386,10 +394,12 @@ a|
 */password/change/request* - Creates change password request
 
 |===
-|Формат запроса|Обязательность|Тело запроса
+|Формат запроса|Обязательность|Тело запроса|Пример запроса
 |application/json
 |true
 |<<ChangePasswordRequest>>
+a|
+-
 |===
 Список кодов ответа
 |===
@@ -562,19 +572,19 @@ a|
 .Update user info model
 |===
 |Название параметра|Описание параметра|Тип данных|Мин. длина|Макс. длина|Паттерн
-|*firstName*
+|*firstName**
 |First name
 |string 
 |2
 |30
 |`^([A-Z][a-z]+)\|([А-Я][а-я]+)$`
-|*lastName*
+|*lastName**
 |Last name
 |string 
 |2
 |30
 |`^([A-Z][a-z]+)\|([А-Я][а-я]+)$`
-|*middleName*
+|*middleName**
 |Middle name
 |string 
 |2
@@ -586,7 +596,7 @@ a|
 .Filter request model
 |===
 |Название параметра|Описание параметра|Тип данных|Мин. длина|Макс. длина|Паттерн
-|*name*
+|*name**
 |Filter column name
 |string 
 |0
@@ -598,7 +608,7 @@ a|
 |-
 |-
 |-
-|*matchMode*
+|*matchMode**
 |Match mode type
 |string 
 |-
@@ -610,13 +620,13 @@ a|
 .Page request model
 |===
 |Название параметра|Описание параметра|Тип данных|Мин. длина|Макс. длина|Паттерн
-|*page*
+|*page**
 |Page number
 |integer (int32)
 |-
 |-
 |-
-|*size*
+|*size**
 |Page size
 |integer (int32)
 |-
@@ -778,31 +788,31 @@ a|
 .Create user model
 |===
 |Название параметра|Описание параметра|Тип данных|Мин. длина|Макс. длина|Паттерн
-|*login*
+|*login**
 |User login
 |string 
 |3
 |32
 |`^[a-z0-9]+$`
-|*email*
+|*email**
 |User email
 |string 
 |0
 |255
 |-
-|*firstName*
+|*firstName**
 |First name
 |string 
 |2
 |30
 |`^([A-Z][a-z]+)\|([А-Я][а-я]+)$`
-|*lastName*
+|*lastName**
 |Last name
 |string 
 |2
 |30
 |`^([A-Z][a-z]+)\|([А-Я][а-я]+)$`
-|*middleName*
+|*middleName**
 |Middle name
 |string 
 |2
@@ -814,13 +824,13 @@ a|
 .Reset password request model
 |===
 |Название параметра|Описание параметра|Тип данных|Мин. длина|Макс. длина|Паттерн
-|*token*
+|*token**
 |Token value
 |string 
 |-
 |-
 |-
-|*password*
+|*password**
 |New password
 |string 
 |-
@@ -832,7 +842,7 @@ a|
 .Forgot password request model
 |===
 |Название параметра|Описание параметра|Тип данных|Мин. длина|Макс. длина|Паттерн
-|*email*
+|*email**
 |User email
 |string 
 |-
@@ -844,13 +854,13 @@ a|
 .Change password request model
 |===
 |Название параметра|Описание параметра|Тип данных|Мин. длина|Макс. длина|Паттерн
-|*oldPassword*
+|*oldPassword**
 |Old password
 |string 
 |-
 |-
 |-
-|*newPassword*
+|*newPassword**
 |New password
 |string 
 |-
