@@ -18,7 +18,14 @@ API provides operations with users for ECA web application
 |true
 |<<UpdateUserInfoDto>>
 a|
--
+[source,json]
+----
+{
+  "firstName" : "Roman",
+  "lastName" : "Batygin",
+  "middleName" : "Igorevich"
+}
+----
 |===
 Список кодов ответа
 |===
@@ -92,7 +99,7 @@ a|
 
 |===
 |Название параметра|Описание параметра|Тип|Тип данных|Мин. длина|Макс. длина
-|userId*
+|*userId**
 |User id
 |query
 |integer (int64)
@@ -143,7 +150,7 @@ a|
 
 |===
 |Название параметра|Описание параметра|Тип|Тип данных|Мин. длина|Макс. длина
-|enabled*
+|*enabled**
 |Tfa enabled flag
 |query
 |boolean 
@@ -209,7 +216,7 @@ a|
 
 |===
 |Название параметра|Описание параметра|Тип|Тип данных|Мин. длина|Макс. длина
-|userId*
+|*userId**
 |User id
 |query
 |integer (int64)
@@ -437,7 +444,7 @@ a|
 
 |===
 |Название параметра|Описание параметра|Тип|Тип данных|Мин. длина|Макс. длина
-|token*
+|*token**
 |Reset password token
 |query
 |string 
@@ -468,7 +475,13 @@ false
 |true
 |<<ResetPasswordRequest>>
 a|
--
+[source,json]
+----
+{
+  "token" : "MDhmNTg4MDdiMTI0Y2Y4OWNmN2UxYmE1OTljYjUzOWU6MTYxNjE1MzM4MDMzMQ==",
+  "password" : "passw0rd!"
+}
+----
 |===
 Список кодов ответа
 |===
@@ -478,6 +491,18 @@ a|
 |-
 a|
 -
+|400
+|Bad request
+|application/json
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "InvalidToken",
+  "errorMessage" : "Invalid token"
+} ]
+----
 |===
 
 == Creates forgot password request
@@ -491,7 +516,12 @@ a|
 |true
 |<<ForgotPasswordRequest>>
 a|
--
+[source,json]
+----
+{
+  "email" : "bat1238@yandex.ru"
+}
+----
 |===
 Список кодов ответа
 |===
@@ -501,6 +531,18 @@ a|
 |-
 a|
 -
+|400
+|Bad request
+|application/json
+a|
+[source,json]
+----
+[ {
+  "fieldName" : "email",
+  "code" : "UniqueEmail",
+  "errorMessage" : null
+} ]
+----
 |===
 
 == Creates change password request
@@ -514,7 +556,13 @@ a|
 |true
 |<<ChangePasswordRequest>>
 a|
--
+[source,json]
+----
+{
+  "oldPassword" : "oldPassw0rd!",
+  "newPassword" : "newPassw0rd!"
+}
+----
 |===
 Список кодов ответа
 |===
@@ -535,6 +583,18 @@ a|
   "error_description" : "Full authentication is required to access this resource"
 }
 ----
+|400
+|Bad request
+|application/json
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "InvalidPassword",
+  "errorMessage" : "Invalid password"
+} ]
+----
 |===
 
 == Confirms change password request
@@ -544,7 +604,7 @@ a|
 
 |===
 |Название параметра|Описание параметра|Тип|Тип данных|Мин. длина|Макс. длина
-|token*
+|*token**
 |Token value
 |query
 |string 
@@ -559,6 +619,18 @@ a|
 |-
 a|
 -
+|400
+|Bad request
+|application/json
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "InvalidToken",
+  "errorMessage" : "Invalid token"
+} ]
+----
 |===
 
 == Creates change email request
@@ -568,7 +640,7 @@ a|
 
 |===
 |Название параметра|Описание параметра|Тип|Тип данных|Мин. длина|Макс. длина
-|newEmail*
+|*newEmail**
 |User email
 |query
 |string 
@@ -603,7 +675,7 @@ a|
 
 |===
 |Название параметра|Описание параметра|Тип|Тип данных|Мин. длина|Макс. длина
-|token*
+|*token**
 |Token value
 |query
 |string 
@@ -673,7 +745,7 @@ a|
 
 |===
 |Название параметра|Описание параметра|Тип|Тип данных|Мин. длина|Макс. длина
-|id*
+|*id**
 |Photo id
 |path
 |integer (int64)
