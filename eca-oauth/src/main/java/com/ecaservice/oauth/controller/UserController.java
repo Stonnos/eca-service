@@ -51,6 +51,8 @@ import java.util.List;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.ACCESS_DENIED_RESPONSE_JSON;
+import static com.ecaservice.oauth.controller.doc.ApiExamples.CREATE_USER_REQUEST_JSON;
+import static com.ecaservice.oauth.controller.doc.ApiExamples.DATA_NOT_FOUND_RESPONSE_JSON;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.INVALID_PAGE_REQUEST_RESPONSE_JSON;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.SIMPLE_PAGE_REQUEST_JSON;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.UNAUTHORIZED_RESPONSE_JSON;
@@ -248,6 +250,11 @@ public class UserController {
             description = "Creates new user",
             summary = "Creates new user",
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
+                    @Content(examples = {
+                            @ExampleObject(value = CREATE_USER_REQUEST_JSON)
+                    })
+            }),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200",
                             content = @Content(
@@ -366,7 +373,10 @@ public class UserController {
             summary = "Downloads user photo",
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
             responses = {
-                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE
+                            )),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -375,7 +385,14 @@ public class UserController {
                                     }
                             )
                     ),
-                    @ApiResponse(description = "Bad request", responseCode = "400")
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = DATA_NOT_FOUND_RESPONSE_JSON),
+                                    }
+                            )
+                    )
             }
     )
     @GetMapping(value = "/photo/{id}")
@@ -406,7 +423,14 @@ public class UserController {
                                     }
                             )
                     ),
-                    @ApiResponse(description = "Bad request", responseCode = "400")
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = DATA_NOT_FOUND_RESPONSE_JSON),
+                                    }
+                            )
+                    )
             }
     )
     @DeleteMapping(value = "/delete-photo")
