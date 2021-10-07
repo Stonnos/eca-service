@@ -25,14 +25,10 @@ API provides operations with users for ECA web application
 |401
 |Not authorized
 |application/json
-|
-[source,json]
-----
-{
+|[source,json]----{
   "error" : "unauthorized",
   "error_description" : "Full authentication is required to access this resource"
-}
-----
+}----
 |400
 |Bad request
 |-
@@ -57,14 +53,10 @@ API provides operations with users for ECA web application
 |401
 |Not authorized
 |application/json
-|
-[source,json]
-----
-{
+|[source,json]----{
   "error" : "unauthorized",
   "error_description" : "Full authentication is required to access this resource"
-}
-----
+}----
 |400
 |Bad request
 |-
@@ -92,14 +84,10 @@ API provides operations with users for ECA web application
 |401
 |Not authorized
 |application/json
-|
-[source,json]
-----
-{
+|[source,json]----{
   "error" : "unauthorized",
   "error_description" : "Full authentication is required to access this resource"
-}
-----
+}----
 |403
 |Permission denied
 |-
@@ -131,14 +119,10 @@ API provides operations with users for ECA web application
 |401
 |Not authorized
 |application/json
-|
-[source,json]
-----
-{
+|[source,json]----{
   "error" : "unauthorized",
   "error_description" : "Full authentication is required to access this resource"
-}
-----
+}----
 |403
 |Permission denied
 |-
@@ -161,14 +145,10 @@ API provides operations with users for ECA web application
 |401
 |Not authorized
 |application/json
-|
-[source,json]
-----
-{
+|[source,json]----{
   "error" : "unauthorized",
   "error_description" : "Full authentication is required to access this resource"
-}
-----
+}----
 |===
 
 == Locks user
@@ -192,14 +172,10 @@ API provides operations with users for ECA web application
 |401
 |Not authorized
 |application/json
-|
-[source,json]
-----
-{
+|[source,json]----{
   "error" : "unauthorized",
   "error_description" : "Full authentication is required to access this resource"
-}
-----
+}----
 |403
 |Permission denied
 |-
@@ -235,14 +211,10 @@ API provides operations with users for ECA web application
 |401
 |Not authorized
 |application/json
-|
-[source,json]
-----
-{
+|[source,json]----{
   "error" : "unauthorized",
   "error_description" : "Full authentication is required to access this resource"
-}
-----
+}----
 |403
 |Permission denied
 |*/*
@@ -250,10 +222,7 @@ API provides operations with users for ECA web application
 |400
 |Bad request
 |application/json
-|
-[source,json]
-----
-[ {
+|[source,json]----[ {
   "fieldName" : "page",
   "code" : "Min",
   "errorMessage" : "must be greater than or equal to 0"
@@ -261,8 +230,7 @@ API provides operations with users for ECA web application
   "fieldName" : "size",
   "code" : "Min",
   "errorMessage" : "must be greater than or equal to 1"
-} ]
-----
+} ]----
 |===
 
 == Creates new user
@@ -283,14 +251,10 @@ API provides operations with users for ECA web application
 |401
 |Not authorized
 |application/json
-|
-[source,json]
-----
-{
+|[source,json]----{
   "error" : "unauthorized",
   "error_description" : "Full authentication is required to access this resource"
-}
-----
+}----
 |403
 |Permission denied
 |*/*
@@ -298,15 +262,11 @@ API provides operations with users for ECA web application
 |400
 |Bad request
 |application/json
-|
-[source,json]
-----
-[ {
+|[source,json]----[ {
   "fieldName" : "login",
   "code" : "UniqueLogin",
   "errorMessage" : null
-} ]
-----
+} ]----
 |===
 
 == Verify reset password token
@@ -480,14 +440,10 @@ API provides operations with users for ECA web application
 |401
 |Not authorized
 |application/json
-|
-[source,json]
-----
-{
+|[source,json]----{
   "error" : "unauthorized",
   "error_description" : "Full authentication is required to access this resource"
-}
-----
+}----
 |===
 
 == Downloads user photo
@@ -511,14 +467,10 @@ API provides operations with users for ECA web application
 |401
 |Not authorized
 |application/json
-|
-[source,json]
-----
-{
+|[source,json]----{
   "error" : "unauthorized",
   "error_description" : "Full authentication is required to access this resource"
-}
-----
+}----
 |400
 |Bad request
 |*/*
@@ -537,14 +489,10 @@ API provides operations with users for ECA web application
 |401
 |Not authorized
 |application/json
-|
-[source,json]
-----
-{
+|[source,json]----{
   "error" : "unauthorized",
   "error_description" : "Full authentication is required to access this resource"
-}
-----
+}----
 |400
 |Bad request
 |-
