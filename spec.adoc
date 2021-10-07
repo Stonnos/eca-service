@@ -18,21 +18,25 @@ API provides operations with users for ECA web application
 |true
 |<<UpdateUserInfoDto>>
 |===
-:table-caption: Таблица
-.Список кодов ответа
+Список кодов ответа
 |===
 |Код ответа|Описание|Формат ответа|Пример ответа
 |401
 |Not authorized
 |application/json
-|[source,json]----{
+|
+[source,json]
+----
+{
   "error" : "unauthorized",
   "error_description" : "Full authentication is required to access this resource"
-}----
+}
+----
 |400
 |Bad request
 |-
-|-
+|
+-
 |===
 
 == Uploads photo for current authenticated user
@@ -46,21 +50,25 @@ API provides operations with users for ECA web application
 |false
 |-
 |===
-:table-caption: Таблица
-.Список кодов ответа
+Список кодов ответа
 |===
 |Код ответа|Описание|Формат ответа|Пример ответа
 |401
 |Not authorized
 |application/json
-|[source,json]----{
+|
+[source,json]
+----
+{
   "error" : "unauthorized",
   "error_description" : "Full authentication is required to access this resource"
-}----
+}
+----
 |400
 |Bad request
 |-
-|-
+|
+-
 |===
 
 == Unlocks user
@@ -77,25 +85,30 @@ API provides operations with users for ECA web application
 |-
 |-
 |===
-:table-caption: Таблица
-.Список кодов ответа
+Список кодов ответа
 |===
 |Код ответа|Описание|Формат ответа|Пример ответа
 |401
 |Not authorized
 |application/json
-|[source,json]----{
+|
+[source,json]
+----
+{
   "error" : "unauthorized",
   "error_description" : "Full authentication is required to access this resource"
-}----
+}
+----
 |403
 |Permission denied
 |-
-|-
+|
+-
 |400
 |Bad request
 |-
-|-
+|
+-
 |===
 
 == Enable/disable tfa for current authenticated user
@@ -112,25 +125,30 @@ API provides operations with users for ECA web application
 |-
 |-
 |===
-:table-caption: Таблица
-.Список кодов ответа
+Список кодов ответа
 |===
 |Код ответа|Описание|Формат ответа|Пример ответа
 |401
 |Not authorized
 |application/json
-|[source,json]----{
+|
+[source,json]
+----
+{
   "error" : "unauthorized",
   "error_description" : "Full authentication is required to access this resource"
-}----
+}
+----
 |403
 |Permission denied
 |-
-|-
+|
+-
 |400
 |Bad request
 |-
-|-
+|
+-
 |===
 
 == Logout current user and revokes access/refresh token pair
@@ -138,17 +156,20 @@ API provides operations with users for ECA web application
 *POST*
 */users/logout* - Logout current user and revokes access/refresh token pair
 
-:table-caption: Таблица
-.Список кодов ответа
+Список кодов ответа
 |===
 |Код ответа|Описание|Формат ответа|Пример ответа
 |401
 |Not authorized
 |application/json
-|[source,json]----{
+|
+[source,json]
+----
+{
   "error" : "unauthorized",
   "error_description" : "Full authentication is required to access this resource"
-}----
+}
+----
 |===
 
 == Locks user
@@ -165,25 +186,30 @@ API provides operations with users for ECA web application
 |-
 |-
 |===
-:table-caption: Таблица
-.Список кодов ответа
+Список кодов ответа
 |===
 |Код ответа|Описание|Формат ответа|Пример ответа
 |401
 |Not authorized
 |application/json
-|[source,json]----{
+|
+[source,json]
+----
+{
   "error" : "unauthorized",
   "error_description" : "Full authentication is required to access this resource"
-}----
+}
+----
 |403
 |Permission denied
 |-
-|-
+|
+-
 |400
 |Bad request
 |-
-|-
+|
+-
 |===
 
 == Finds users with specified options
@@ -197,6 +223,9 @@ API provides operations with users for ECA web application
 |true
 |<<PageRequestDto>>
 |===
+
+Пример запроса:
+
 [source,json]
 ----
 {
@@ -204,25 +233,32 @@ API provides operations with users for ECA web application
   "size" : 25
 }
 ----
-:table-caption: Таблица
-.Список кодов ответа
+Список кодов ответа
 |===
 |Код ответа|Описание|Формат ответа|Пример ответа
 |401
 |Not authorized
 |application/json
-|[source,json]----{
+|
+[source,json]
+----
+{
   "error" : "unauthorized",
   "error_description" : "Full authentication is required to access this resource"
-}----
+}
+----
 |403
 |Permission denied
 |*/*
-|-
+|
+-
 |400
 |Bad request
 |application/json
-|[source,json]----[ {
+|
+[source,json]
+----
+[ {
   "fieldName" : "page",
   "code" : "Min",
   "errorMessage" : "must be greater than or equal to 0"
@@ -230,7 +266,8 @@ API provides operations with users for ECA web application
   "fieldName" : "size",
   "code" : "Min",
   "errorMessage" : "must be greater than or equal to 1"
-} ]----
+} ]
+----
 |===
 
 == Creates new user
@@ -244,29 +281,37 @@ API provides operations with users for ECA web application
 |true
 |<<CreateUserDto>>
 |===
-:table-caption: Таблица
-.Список кодов ответа
+Список кодов ответа
 |===
 |Код ответа|Описание|Формат ответа|Пример ответа
 |401
 |Not authorized
 |application/json
-|[source,json]----{
+|
+[source,json]
+----
+{
   "error" : "unauthorized",
   "error_description" : "Full authentication is required to access this resource"
-}----
+}
+----
 |403
 |Permission denied
 |*/*
-|-
+|
+-
 |400
 |Bad request
 |application/json
-|[source,json]----[ {
+|
+[source,json]
+----
+[ {
   "fieldName" : "login",
   "code" : "UniqueLogin",
   "errorMessage" : null
-} ]----
+} ]
+----
 |===
 
 == Verify reset password token
@@ -283,14 +328,14 @@ API provides operations with users for ECA web application
 |-
 |-
 |===
-:table-caption: Таблица
-.Список кодов ответа
+Список кодов ответа
 |===
 |Код ответа|Описание|Формат ответа|Пример ответа
 |200
 |OK
 |*/*
-|-
+|
+-
 |===
 
 == Reset password with specified token
@@ -304,14 +349,14 @@ API provides operations with users for ECA web application
 |true
 |<<ResetPasswordRequest>>
 |===
-:table-caption: Таблица
-.Список кодов ответа
+Список кодов ответа
 |===
 |Код ответа|Описание|Формат ответа|Пример ответа
 |200
 |OK
 |-
-|-
+|
+-
 |===
 
 == Creates forgot password request
@@ -325,14 +370,14 @@ API provides operations with users for ECA web application
 |true
 |<<ForgotPasswordRequest>>
 |===
-:table-caption: Таблица
-.Список кодов ответа
+Список кодов ответа
 |===
 |Код ответа|Описание|Формат ответа|Пример ответа
 |200
 |OK
 |-
-|-
+|
+-
 |===
 
 == Creates change password request
@@ -346,14 +391,14 @@ API provides operations with users for ECA web application
 |true
 |<<ChangePasswordRequest>>
 |===
-:table-caption: Таблица
-.Список кодов ответа
+Список кодов ответа
 |===
 |Код ответа|Описание|Формат ответа|Пример ответа
 |200
 |OK
 |-
-|-
+|
+-
 |===
 
 == Confirms change password request
@@ -370,14 +415,14 @@ API provides operations with users for ECA web application
 |-
 |-
 |===
-:table-caption: Таблица
-.Список кодов ответа
+Список кодов ответа
 |===
 |Код ответа|Описание|Формат ответа|Пример ответа
 |200
 |OK
 |-
-|-
+|
+-
 |===
 
 == Creates change email request
@@ -394,14 +439,14 @@ API provides operations with users for ECA web application
 |0
 |255
 |===
-:table-caption: Таблица
-.Список кодов ответа
+Список кодов ответа
 |===
 |Код ответа|Описание|Формат ответа|Пример ответа
 |200
 |OK
 |-
-|-
+|
+-
 |===
 
 == Confirms change email request
@@ -418,14 +463,14 @@ API provides operations with users for ECA web application
 |-
 |-
 |===
-:table-caption: Таблица
-.Список кодов ответа
+Список кодов ответа
 |===
 |Код ответа|Описание|Формат ответа|Пример ответа
 |200
 |OK
 |-
-|-
+|
+-
 |===
 
 == Gets current authenticated user info
@@ -433,17 +478,20 @@ API provides operations with users for ECA web application
 *GET*
 */users/user-info* - Gets current authenticated user info
 
-:table-caption: Таблица
-.Список кодов ответа
+Список кодов ответа
 |===
 |Код ответа|Описание|Формат ответа|Пример ответа
 |401
 |Not authorized
 |application/json
-|[source,json]----{
+|
+[source,json]
+----
+{
   "error" : "unauthorized",
   "error_description" : "Full authentication is required to access this resource"
-}----
+}
+----
 |===
 
 == Downloads user photo
@@ -460,21 +508,25 @@ API provides operations with users for ECA web application
 |-
 |-
 |===
-:table-caption: Таблица
-.Список кодов ответа
+Список кодов ответа
 |===
 |Код ответа|Описание|Формат ответа|Пример ответа
 |401
 |Not authorized
 |application/json
-|[source,json]----{
+|
+[source,json]
+----
+{
   "error" : "unauthorized",
   "error_description" : "Full authentication is required to access this resource"
-}----
+}
+----
 |400
 |Bad request
 |*/*
-|-
+|
+-
 |===
 
 == Deletes photo for current authenticated user
@@ -482,21 +534,25 @@ API provides operations with users for ECA web application
 *DELETE*
 */users/delete-photo* - Deletes photo for current authenticated user
 
-:table-caption: Таблица
-.Список кодов ответа
+Список кодов ответа
 |===
 |Код ответа|Описание|Формат ответа|Пример ответа
 |401
 |Not authorized
 |application/json
-|[source,json]----{
+|
+[source,json]
+----
+{
   "error" : "unauthorized",
   "error_description" : "Full authentication is required to access this resource"
-}----
+}
+----
 |400
 |Bad request
 |-
-|-
+|
+-
 |===
 
 
