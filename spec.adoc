@@ -1,0 +1,228 @@
+= Microservice for users managment
+Автор: Roman Batygin <roman.batygin@mail.ru>
+:toc:
+:toc-title: Оглавление
+
+== Описание
+
+API provides operations with users for ECA web application
+
+== Updates info for current authenticated user
+
+[red]#PUT#
+*/users/update-info* - Updates info for current authenticated user
+
+|===
+|Формат запроса|Обязательность|Тело запроса
+|application/json
+|true
+|<<UpdateUserInfoDto>>
+|===
+== Uploads photo for current authenticated user
+
+[red]#POST#
+*/users/upload-photo* - Uploads photo for current authenticated user
+
+|===
+|Формат запроса|Обязательность|Тело запроса
+|multipart/form-data
+|false
+|-
+|===
+== Unlocks user
+
+[red]#POST#
+*/users/unlock* - Unlocks user
+
+|===
+|Название параметра|Описание параметра|Тип|Тип данных|Обязательность|Мин. длина|Макс. длина
+|userId
+|User id
+|query
+|integer (int64)
+|true
+|-
+|-
+|===
+== Enable/disable tfa for current authenticated user
+
+[red]#POST#
+*/users/tfa* - Enable/disable tfa for current authenticated user
+
+|===
+|Название параметра|Описание параметра|Тип|Тип данных|Обязательность|Мин. длина|Макс. длина
+|enabled
+|Tfa enabled flag
+|query
+|boolean 
+|true
+|-
+|-
+|===
+== Logout current user and revokes access/refresh token pair
+
+[red]#POST#
+*/users/logout* - Logout current user and revokes access/refresh token pair
+
+== Locks user
+
+[red]#POST#
+*/users/lock* - Locks user
+
+|===
+|Название параметра|Описание параметра|Тип|Тип данных|Обязательность|Мин. длина|Макс. длина
+|userId
+|User id
+|query
+|integer (int64)
+|true
+|-
+|-
+|===
+== Finds users with specified options
+
+[red]#POST#
+*/users/list* - Finds users with specified options
+
+|===
+|Формат запроса|Обязательность|Тело запроса
+|application/json
+|true
+|<<PageRequestDto>>
+|===
+[source,json]
+----
+{
+  "page" : 0,
+  "size" : 25
+}
+----
+== Creates new user
+
+[red]#POST#
+*/users/create* - Creates new user
+
+|===
+|Формат запроса|Обязательность|Тело запроса
+|application/json
+|true
+|<<CreateUserDto>>
+|===
+== Verify reset password token
+
+[red]#POST#
+*/password/verify-token* - Verify reset password token
+
+|===
+|Название параметра|Описание параметра|Тип|Тип данных|Обязательность|Мин. длина|Макс. длина
+|token
+|Reset password token
+|query
+|string 
+|true
+|-
+|-
+|===
+== Reset password with specified token
+
+[red]#POST#
+*/password/reset* - Reset password with specified token
+
+|===
+|Формат запроса|Обязательность|Тело запроса
+|application/json
+|true
+|<<ResetPasswordRequest>>
+|===
+== Creates forgot password request
+
+[red]#POST#
+*/password/forgot* - Creates forgot password request
+
+|===
+|Формат запроса|Обязательность|Тело запроса
+|application/json
+|true
+|<<ForgotPasswordRequest>>
+|===
+== Creates change password request
+
+[red]#POST#
+*/password/change/request* - Creates change password request
+
+|===
+|Формат запроса|Обязательность|Тело запроса
+|application/json
+|true
+|<<ChangePasswordRequest>>
+|===
+== Confirms change password request
+
+[red]#POST#
+*/password/change/confirm* - Confirms change password request
+
+|===
+|Название параметра|Описание параметра|Тип|Тип данных|Обязательность|Мин. длина|Макс. длина
+|token
+|Token value
+|query
+|string 
+|true
+|-
+|-
+|===
+== Creates change email request
+
+[red]#POST#
+*/email/change/request* - Creates change email request
+
+|===
+|Название параметра|Описание параметра|Тип|Тип данных|Обязательность|Мин. длина|Макс. длина
+|newEmail
+|User email
+|query
+|string 
+|true
+|0
+|255
+|===
+== Confirms change email request
+
+[red]#POST#
+*/email/change/confirm* - Confirms change email request
+
+|===
+|Название параметра|Описание параметра|Тип|Тип данных|Обязательность|Мин. длина|Макс. длина
+|token
+|Token value
+|query
+|string 
+|true
+|-
+|-
+|===
+== Gets current authenticated user info
+
+[red]#GET#
+*/users/user-info* - Gets current authenticated user info
+
+== Downloads user photo
+
+[red]#GET#
+*/users/photo/{id}* - Downloads user photo
+
+|===
+|Название параметра|Описание параметра|Тип|Тип данных|Обязательность|Мин. длина|Макс. длина
+|id
+|Photo id
+|path
+|integer (int64)
+|true
+|-
+|-
+|===
+== Deletes photo for current authenticated user
+
+[red]#DELETE#
+*/users/delete-photo* - Deletes photo for current authenticated user
+
