@@ -25,6 +25,10 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 
+import static com.ecaservice.oauth.controller.doc.ApiExamples.FORGOT_PASSWORD_REQUEST_JSON;
+import static com.ecaservice.oauth.controller.doc.ApiExamples.INVALID_TOKEN_RESPONSE_JSON;
+import static com.ecaservice.oauth.controller.doc.ApiExamples.RESET_PASSWORD_REQUEST_JSON;
+import static com.ecaservice.oauth.controller.doc.ApiExamples.UNIQUE_EMAIL_RESPONSE_JSON;
 import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 
 /**
@@ -51,8 +55,21 @@ public class ResetPasswordController {
     @Operation(
             description = "Creates forgot password request",
             summary = "Creates forgot password request",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
+                    @Content(examples = {
+                            @ExampleObject(value = FORGOT_PASSWORD_REQUEST_JSON)
+                    })
+            }),
             responses = {
-                    @ApiResponse(description = "OK", responseCode = "200")
+                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNIQUE_EMAIL_RESPONSE_JSON),
+                                    }
+                            )
+                    )
             }
     )
     @PostMapping(value = "/forgot")
@@ -100,7 +117,23 @@ public class ResetPasswordController {
      */
     @Operation(
             description = "Reset password with specified token",
-            summary = "Reset password with specified token"
+            summary = "Reset password with specified token",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
+                    @Content(examples = {
+                            @ExampleObject(value = RESET_PASSWORD_REQUEST_JSON)
+                    })
+            }),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = INVALID_TOKEN_RESPONSE_JSON),
+                                    }
+                            )
+                    )
+            }
     )
     @PostMapping(value = "/reset")
     public void resetPassword(@Valid @RequestBody ResetPasswordRequest resetPasswordRequest) {

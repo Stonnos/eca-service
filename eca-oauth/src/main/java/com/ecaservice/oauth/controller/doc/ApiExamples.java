@@ -22,6 +22,12 @@ public class ApiExamples {
             "\"errorMessage\": null}]";
 
     /**
+     * Unique login error response json
+     */
+    public static final String UNIQUE_EMAIL_RESPONSE_JSON = "[{\"fieldName\": \"email\", \"code\": \"UniqueEmail\", " +
+            "\"errorMessage\": null}]";
+
+    /**
      * Invalid page request response json
      */
     public static final String INVALID_PAGE_REQUEST_RESPONSE_JSON =
@@ -71,4 +77,39 @@ public class ApiExamples {
      */
     public static final String CREATE_USER_REQUEST_JSON = "{\"login\": \"user\", \"email\": \"bat1238@yandex.ru\", " +
             "\"firstName\": \"Roman\", \"lastName\": \"Batygin\", \"middleName\": \"Igorevich\"}";
+
+    /**
+     * Update user info request json
+     */
+    public static final String UPDATE_USER_INFO_REQUEST_JSON = "{\"firstName\": \"Roman\", \"lastName\": \"Batygin\"," +
+            " \"middleName\": \"Igorevich\"}";
+
+    /**
+     * Change password request json
+     */
+    public static final String CHANGE_PASSWORD_REQUEST_JSON = "{\"oldPassword\": \"oldPassw0rd!\", \"newPassword\": " +
+            "\"newPassw0rd!\"}";
+
+    /**
+     * Forgot password request json
+     */
+    public static final String FORGOT_PASSWORD_REQUEST_JSON = "{\"email\": \"bat1238@yandex.ru\"}";
+
+    /**
+     * Reset password request json
+     */
+    public static final String RESET_PASSWORD_REQUEST_JSON = "{\"token\": " +
+            "\"MDhmNTg4MDdiMTI0Y2Y4OWNmN2UxYmE1OTljYjUzOWU6MTYxNjE1MzM4MDMzMQ==\", \"password\": \"passw0rd!\"}";
+
+    /**
+     * Invalid token response json
+     */
+    public static final String INVALID_TOKEN_RESPONSE_JSON = "[{\"fieldName\": null, \"code\": \"InvalidToken\", " +
+            "\"errorMessage\": \"Invalid token\"}]";
+
+    /**
+     * Invalid password response json
+     */
+    public static final String INVALID_PASSWORD_RESPONSE_JSON = "[{\"fieldName\": null, \"code\": " +
+            "\"InvalidPassword\", \"errorMessage\": \"Invalid password\"}]";
 }
