@@ -13,12 +13,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
 import io.swagger.v3.oas.models.OpenAPI;
+import lombok.Cleanup;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
@@ -26,6 +29,9 @@ import reactor.core.publisher.Mono;
 import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
@@ -81,7 +87,11 @@ class TfaIT extends AbstractUserIT {
                 .retrieve()
                 .bodyToMono(String.class);
         assertThat(result).isNotNull();
-        String json = result.block();
+       // String json = result.block();
+        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        @Cleanup InputStream inputStream = resolver.getResource("audit.json").getInputStream();
+        @Cleanup Reader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+        String json = FileCopyUtils.copyToString(reader);
         assertThat(json).isNotBlank();
 
         final var objectMapper = new ObjectMapper();

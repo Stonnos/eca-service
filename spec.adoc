@@ -1,269 +1,16 @@
-= Microservice for users managment
+= Microservice for collecting and storing audit events
 Автор: Roman Batygin <roman.batygin@mail.ru>
 :toc:
 :toc-title: Оглавление
 
 == Описание
 
-API provides operations with users for ECA web application
+API provides operations with audit events
 
-== Updates info for current authenticated user
-
-*PUT*
-*/users/update-info* - Updates info for current authenticated user
-
-|===
-|Формат запроса|Обязательность|Тело запроса|Пример запроса
-|application/json
-|true
-|<<UpdateUserInfoDto>>
-a|
-[source,json]
-----
-{
-  "firstName" : "Roman",
-  "lastName" : "Batygin",
-  "middleName" : "Igorevich"
-}
-----
-|===
-Список кодов ответа
-|===
-|Код ответа|Описание|Формат ответа|Пример ответа
-|200
-|OK
-|-
-a|
--
-|401
-|Not authorized
-|application/json
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|400
-|Bad request
-|-
-a|
--
-|===
-
-== Uploads photo for current authenticated user
+== Downloads audit logs base report in xlsx format
 
 *POST*
-*/users/upload-photo* - Uploads photo for current authenticated user
-
-|===
-|Формат запроса|Обязательность|Тело запроса|Пример запроса
-|multipart/form-data
-|false
-|-
-a|
--
-|===
-Список кодов ответа
-|===
-|Код ответа|Описание|Формат ответа|Пример ответа
-|200
-|OK
-|-
-a|
--
-|401
-|Not authorized
-|application/json
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|400
-|Bad request
-|-
-a|
--
-|===
-
-== Unlocks user
-
-*POST*
-*/users/unlock* - Unlocks user
-
-|===
-|Название параметра|Описание параметра|Тип|Тип данных|Мин. длина|Макс. длина
-|*userId**
-|User id
-|query
-|integer (int64)
-|-
-|-
-|===
-Список кодов ответа
-|===
-|Код ответа|Описание|Формат ответа|Пример ответа
-|200
-|OK
-|-
-a|
--
-|401
-|Not authorized
-|application/json
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|403
-|Permission denied
-|application/json
-a|
-[source,json]
-----
-{
-  "error" : "access_denied",
-  "error_description" : "Access is denied"
-}
-----
-|400
-|Bad request
-|-
-a|
--
-|===
-
-== Enable/disable tfa for current authenticated user
-
-*POST*
-*/users/tfa* - Enable/disable tfa for current authenticated user
-
-|===
-|Название параметра|Описание параметра|Тип|Тип данных|Мин. длина|Макс. длина
-|*enabled**
-|Tfa enabled flag
-|query
-|boolean 
-|-
-|-
-|===
-Список кодов ответа
-|===
-|Код ответа|Описание|Формат ответа|Пример ответа
-|200
-|OK
-|-
-a|
--
-|401
-|Not authorized
-|application/json
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|400
-|Bad request
-|-
-a|
--
-|===
-
-== Logout current user and revokes access/refresh token pair
-
-*POST*
-*/users/logout* - Logout current user and revokes access/refresh token pair
-
-Список кодов ответа
-|===
-|Код ответа|Описание|Формат ответа|Пример ответа
-|200
-|OK
-|-
-a|
--
-|401
-|Not authorized
-|application/json
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|===
-
-== Locks user
-
-*POST*
-*/users/lock* - Locks user
-
-|===
-|Название параметра|Описание параметра|Тип|Тип данных|Мин. длина|Макс. длина
-|*userId**
-|User id
-|query
-|integer (int64)
-|-
-|-
-|===
-Список кодов ответа
-|===
-|Код ответа|Описание|Формат ответа|Пример ответа
-|200
-|OK
-|-
-a|
--
-|401
-|Not authorized
-|application/json
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|403
-|Permission denied
-|application/json
-a|
-[source,json]
-----
-{
-  "error" : "access_denied",
-  "error_description" : "Access is denied"
-}
-----
-|400
-|Bad request
-|-
-a|
--
-|===
-
-== Finds users with specified options
-
-*POST*
-*/users/list* - Finds users with specified options
+*/audit-log/report/download* - Downloads audit logs base report in xlsx format
 
 |===
 |Формат запроса|Обязательность|Тело запроса|Пример запроса
@@ -275,7 +22,106 @@ a|
 ----
 {
   "page" : 0,
-  "size" : 25
+  "size" : 25,
+  "sortField" : "eventDate",
+  "ascending" : false,
+  "searchQuery" : "",
+  "filters" : [ {
+    "name" : "groupCode",
+    "values" : [ "USER_PROFILE_ACTIONS" ],
+    "matchMode" : "EQUALS"
+  }, {
+    "name" : "initiator",
+    "values" : [ "admin" ],
+    "matchMode" : "LIKE"
+  }, {
+    "name" : "eventDate",
+    "values" : [ "2021-07-16" ],
+    "matchMode" : "RANGE"
+  } ]
+}
+----
+|===
+Список кодов ответа
+|===
+|Код ответа|Описание|Формат ответа|Пример ответа
+|200
+|OK
+|application/octet-stream
+a|
+-
+|401
+|Not authorized
+|application/json
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|403
+|Permission denied
+|application/json
+a|
+[source,json]
+----
+{
+  "error" : "access_denied",
+  "error_description" : "Access is denied"
+}
+----
+|400
+|Bad request
+|application/json
+a|
+[source,json]
+----
+[ {
+  "fieldName" : "page",
+  "code" : "Min",
+  "errorMessage" : "must be greater than or equal to 0"
+}, {
+  "fieldName" : "size",
+  "code" : "Min",
+  "errorMessage" : "must be greater than or equal to 1"
+} ]
+----
+|===
+
+== Finds audit logs with specified options such as filter, sorting and paging
+
+*POST*
+*/audit-log/list* - Finds audit logs with specified options such as filter, sorting and paging
+
+|===
+|Формат запроса|Обязательность|Тело запроса|Пример запроса
+|application/json
+|true
+|<<PageRequestDto>>
+a|
+[source,json]
+----
+{
+  "page" : 0,
+  "size" : 25,
+  "sortField" : "eventDate",
+  "ascending" : false,
+  "searchQuery" : "",
+  "filters" : [ {
+    "name" : "groupCode",
+    "values" : [ "USER_PROFILE_ACTIONS" ],
+    "matchMode" : "EQUALS"
+  }, {
+    "name" : "initiator",
+    "values" : [ "admin" ],
+    "matchMode" : "LIKE"
+  }, {
+    "name" : "eventDate",
+    "values" : [ "2021-07-16" ],
+    "matchMode" : "RANGE"
+  } ]
 }
 ----
 |===
@@ -290,22 +136,14 @@ a|
 ----
 {
   "content" : [ {
-    "id" : 1,
-    "login" : "admin",
-    "email" : "test@mail.ru",
-    "firstName" : "Ivan",
-    "lastName" : "Ivanov",
-    "middleName" : "Ivanovich",
-    "fullName" : "Ivanov Ivan Ivanovich",
-    "creationDate" : "2021-07-01 14:00:00",
-    "tfaEnabled" : true,
-    "locked" : true,
-    "photoId" : 1,
-    "passwordDate" : "2021-07-01 14:00:00",
-    "roles" : [ {
-      "roleName" : "ROLE_SUPER_ADMIN",
-      "description" : "Administrator"
-    } ]
+    "eventId" : "1d2de514-3a87-4620-9b97-c260e24340de",
+    "message" : "Some action",
+    "initiator" : "user",
+    "groupCode" : "USER_ACTIONS",
+    "groupTitle" : "User actions",
+    "code" : "LOGIN",
+    "codeTitle" : "User logged in",
+    "eventDate" : "2021-07-01 14:00:00"
   } ],
   "page" : 0,
   "totalCount" : 1
@@ -351,28 +189,47 @@ a|
 ----
 |===
 
-== Creates new user
+== Saves audit event into database
 
 *POST*
-*/users/create* - Creates new user
+*/api/audit/event/save* - Saves audit event into database
 
 |===
 |Формат запроса|Обязательность|Тело запроса|Пример запроса
 |application/json
 |true
-|<<CreateUserDto>>
+|<<AuditEventRequest>>
 a|
 [source,json]
 ----
 {
-  "login" : "user",
-  "email" : "bat1238@yandex.ru",
-  "firstName" : "Roman",
-  "lastName" : "Batygin",
-  "middleName" : "Igorevich"
+  "eventId" : "a01ebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+  "message" : "Audit message",
+  "initiator" : "user",
+  "eventType" : "START",
+  "groupCode" : "GROUP_CODE",
+  "groupTitle" : "",
+  "code" : "AUDIT_CODE",
+  "codeTitle" : "",
+  "eventDate" : "2021-07-16 07:57:11"
 }
 ----
 |===
+Список кодов ответа
+|===
+|Код ответа|Описание|Формат ответа|Пример ответа
+|200
+|OK
+|-
+a|
+-
+|===
+
+== Gets audit log filter fields
+
+*GET*
+*/audit-log/filter-templates/fields* - Gets audit log filter fields
+
 Список кодов ответа
 |===
 |Код ответа|Описание|Формат ответа|Пример ответа
@@ -382,24 +239,51 @@ a|
 a|
 [source,json]
 ----
-{
-  "id" : 1,
-  "login" : "admin",
-  "email" : "test@mail.ru",
-  "firstName" : "Ivan",
-  "lastName" : "Ivanov",
-  "middleName" : "Ivanovich",
-  "fullName" : "Ivanov Ivan Ivanovich",
-  "creationDate" : "2021-07-01 14:00:00",
-  "tfaEnabled" : true,
-  "locked" : true,
-  "photoId" : 1,
-  "passwordDate" : "2021-07-01 14:00:00",
-  "roles" : [ {
-    "roleName" : "ROLE_SUPER_ADMIN",
-    "description" : "Administrator"
-  } ]
-}
+[ {
+  "fieldName" : "eventId",
+  "description" : "ID события",
+  "fieldOrder" : 0,
+  "filterFieldType" : "TEXT",
+  "matchMode" : "LIKE",
+  "multiple" : false,
+  "dictionary" : null
+}, {
+  "fieldName" : "groupCode",
+  "description" : "Группа событий",
+  "fieldOrder" : 1,
+  "filterFieldType" : "REFERENCE",
+  "matchMode" : "EQUALS",
+  "multiple" : false,
+  "dictionary" : {
+    "name" : "auditGroup",
+    "values" : [ {
+      "label" : "Действия пользователя в личном кабинете",
+      "value" : "USER_PROFILE_ACTIONS"
+    }, {
+      "label" : "Действия с конфигурациями классификаторов",
+      "value" : "CLASSIFIERS_CONFIGURATIONS_ACTIONS"
+    }, {
+      "label" : "Действия с обучающими выборками",
+      "value" : "DATA_STORAGE_ACTIONS"
+    } ]
+  }
+}, {
+  "fieldName" : "initiator",
+  "description" : "Инициатор события",
+  "fieldOrder" : 2,
+  "filterFieldType" : "TEXT",
+  "matchMode" : "LIKE",
+  "multiple" : false,
+  "dictionary" : null
+}, {
+  "fieldName" : "eventDate",
+  "description" : "Дата события",
+  "fieldOrder" : 3,
+  "filterFieldType" : "DATE",
+  "matchMode" : "RANGE",
+  "multiple" : true,
+  "dictionary" : null
+} ]
 ----
 |401
 |Not authorized
@@ -430,392 +314,6 @@ a|
 [source,json]
 ----
 [ {
-  "fieldName" : "login",
-  "code" : "UniqueLogin",
-  "errorMessage" : null
-} ]
-----
-|===
-
-== Verify reset password token
-
-*POST*
-*/password/verify-token* - Verify reset password token
-
-|===
-|Название параметра|Описание параметра|Тип|Тип данных|Мин. длина|Макс. длина
-|*token**
-|Reset password token
-|query
-|string 
-|-
-|-
-|===
-Список кодов ответа
-|===
-|Код ответа|Описание|Формат ответа|Пример ответа
-|200
-|OK
-|application/json
-a|
-[source,json]
-----
-false
-----
-|===
-
-== Reset password with specified token
-
-*POST*
-*/password/reset* - Reset password with specified token
-
-|===
-|Формат запроса|Обязательность|Тело запроса|Пример запроса
-|application/json
-|true
-|<<ResetPasswordRequest>>
-a|
-[source,json]
-----
-{
-  "token" : "MDhmNTg4MDdiMTI0Y2Y4OWNmN2UxYmE1OTljYjUzOWU6MTYxNjE1MzM4MDMzMQ==",
-  "password" : "passw0rd!"
-}
-----
-|===
-Список кодов ответа
-|===
-|Код ответа|Описание|Формат ответа|Пример ответа
-|200
-|OK
-|-
-a|
--
-|400
-|Bad request
-|application/json
-a|
-[source,json]
-----
-[ {
-  "fieldName" : null,
-  "code" : "InvalidToken",
-  "errorMessage" : "Invalid token"
-} ]
-----
-|===
-
-== Creates forgot password request
-
-*POST*
-*/password/forgot* - Creates forgot password request
-
-|===
-|Формат запроса|Обязательность|Тело запроса|Пример запроса
-|application/json
-|true
-|<<ForgotPasswordRequest>>
-a|
-[source,json]
-----
-{
-  "email" : "bat1238@yandex.ru"
-}
-----
-|===
-Список кодов ответа
-|===
-|Код ответа|Описание|Формат ответа|Пример ответа
-|200
-|OK
-|-
-a|
--
-|400
-|Bad request
-|application/json
-a|
-[source,json]
-----
-[ {
-  "fieldName" : "email",
-  "code" : "UniqueEmail",
-  "errorMessage" : null
-} ]
-----
-|===
-
-== Creates change password request
-
-*POST*
-*/password/change/request* - Creates change password request
-
-|===
-|Формат запроса|Обязательность|Тело запроса|Пример запроса
-|application/json
-|true
-|<<ChangePasswordRequest>>
-a|
-[source,json]
-----
-{
-  "oldPassword" : "oldPassw0rd!",
-  "newPassword" : "newPassw0rd!"
-}
-----
-|===
-Список кодов ответа
-|===
-|Код ответа|Описание|Формат ответа|Пример ответа
-|200
-|OK
-|-
-a|
--
-|401
-|Not authorized
-|application/json
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|400
-|Bad request
-|application/json
-a|
-[source,json]
-----
-[ {
-  "fieldName" : null,
-  "code" : "InvalidPassword",
-  "errorMessage" : "Invalid password"
-} ]
-----
-|===
-
-== Confirms change password request
-
-*POST*
-*/password/change/confirm* - Confirms change password request
-
-|===
-|Название параметра|Описание параметра|Тип|Тип данных|Мин. длина|Макс. длина
-|*token**
-|Token value
-|query
-|string 
-|-
-|-
-|===
-Список кодов ответа
-|===
-|Код ответа|Описание|Формат ответа|Пример ответа
-|200
-|OK
-|-
-a|
--
-|400
-|Bad request
-|application/json
-a|
-[source,json]
-----
-[ {
-  "fieldName" : null,
-  "code" : "InvalidToken",
-  "errorMessage" : "Invalid token"
-} ]
-----
-|===
-
-== Creates change email request
-
-*POST*
-*/email/change/request* - Creates change email request
-
-|===
-|Название параметра|Описание параметра|Тип|Тип данных|Мин. длина|Макс. длина
-|*newEmail**
-|User email
-|query
-|string 
-|0
-|255
-|===
-Список кодов ответа
-|===
-|Код ответа|Описание|Формат ответа|Пример ответа
-|200
-|OK
-|-
-a|
--
-|401
-|Not authorized
-|application/json
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|===
-
-== Confirms change email request
-
-*POST*
-*/email/change/confirm* - Confirms change email request
-
-|===
-|Название параметра|Описание параметра|Тип|Тип данных|Мин. длина|Макс. длина
-|*token**
-|Token value
-|query
-|string 
-|-
-|-
-|===
-Список кодов ответа
-|===
-|Код ответа|Описание|Формат ответа|Пример ответа
-|200
-|OK
-|-
-a|
--
-|===
-
-== Gets current authenticated user info
-
-*GET*
-*/users/user-info* - Gets current authenticated user info
-
-Список кодов ответа
-|===
-|Код ответа|Описание|Формат ответа|Пример ответа
-|200
-|OK
-|application/json
-a|
-[source,json]
-----
-{
-  "id" : 1,
-  "login" : "admin",
-  "email" : "test@mail.ru",
-  "firstName" : "Ivan",
-  "lastName" : "Ivanov",
-  "middleName" : "Ivanovich",
-  "fullName" : "Ivanov Ivan Ivanovich",
-  "creationDate" : "2021-07-01 14:00:00",
-  "tfaEnabled" : true,
-  "locked" : true,
-  "photoId" : 1,
-  "passwordDate" : "2021-07-01 14:00:00",
-  "roles" : [ {
-    "roleName" : "ROLE_SUPER_ADMIN",
-    "description" : "Administrator"
-  } ]
-}
-----
-|401
-|Not authorized
-|application/json
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|===
-
-== Downloads user photo
-
-*GET*
-*/users/photo/{id}* - Downloads user photo
-
-|===
-|Название параметра|Описание параметра|Тип|Тип данных|Мин. длина|Макс. длина
-|*id**
-|Photo id
-|path
-|integer (int64)
-|-
-|-
-|===
-Список кодов ответа
-|===
-|Код ответа|Описание|Формат ответа|Пример ответа
-|200
-|OK
-|application/octet-stream
-a|
--
-|401
-|Not authorized
-|application/json
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|400
-|Bad request
-|application/json
-a|
-[source,json]
-----
-[ {
-  "fieldName" : null,
-  "code" : "DataNotFound",
-  "errorMessage" : "Entity with search key [1] not found!"
-} ]
-----
-|===
-
-== Deletes photo for current authenticated user
-
-*DELETE*
-*/users/delete-photo* - Deletes photo for current authenticated user
-
-Список кодов ответа
-|===
-|Код ответа|Описание|Формат ответа|Пример ответа
-|200
-|OK
-|-
-a|
--
-|401
-|Not authorized
-|application/json
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|400
-|Bad request
-|application/json
-a|
-[source,json]
-----
-[ {
   "fieldName" : null,
   "code" : "DataNotFound",
   "errorMessage" : "Entity with search key [1] not found!"
@@ -825,30 +323,6 @@ a|
 
 
 == Описание форматов для запросов
-=== UpdateUserInfoDto
-:table-caption: Таблица
-.Update user info model
-|===
-|Название параметра|Описание параметра|Тип данных|Мин. длина|Макс. длина|Паттерн
-|*firstName**
-|First name
-|string 
-|2
-|30
-|`^([A-Z][a-z]+)\|([А-Я][а-я]+)$`
-|*lastName**
-|Last name
-|string 
-|2
-|30
-|`^([A-Z][a-z]+)\|([А-Я][а-я]+)$`
-|*middleName**
-|Middle name
-|string 
-|2
-|30
-|`^([A-Z][a-z]+)\|([А-Я][а-я]+)$`
-|===
 === FilterRequestDto
 :table-caption: Таблица
 .Filter request model
@@ -915,87 +389,63 @@ a|
 |-
 |-
 |===
-=== CreateUserDto
+=== AuditEventRequest
 :table-caption: Таблица
-.Create user model
+.Audit event request mode
 |===
 |Название параметра|Описание параметра|Тип данных|Мин. длина|Макс. длина|Паттерн
-|*login**
-|User login
-|string 
-|3
-|32
-|`^[a-z0-9]+$`
-|*email**
-|User email
+|*eventId**
+|Audit event id
 |string 
 |0
 |255
 |-
-|*firstName**
-|First name
-|string 
-|2
-|30
-|`^([A-Z][a-z]+)\|([А-Я][а-я]+)$`
-|*lastName**
-|Last name
-|string 
-|2
-|30
-|`^([A-Z][a-z]+)\|([А-Я][а-я]+)$`
-|*middleName**
-|Middle name
-|string 
-|2
-|30
-|`^([A-Z][a-z]+)\|([А-Я][а-я]+)$`
-|===
-=== ResetPasswordRequest
-:table-caption: Таблица
-.Reset password request model
-|===
-|Название параметра|Описание параметра|Тип данных|Мин. длина|Макс. длина|Паттерн
-|*token**
-|Token value
+|*message**
+|Audit message
 |string 
 |-
 |-
 |-
-|*password**
-|New password
+|*initiator**
+|Event initiator
+|string 
+|0
+|255
+|-
+|*eventType**
+|Event type
 |string 
 |-
 |-
 |-
-|===
-=== ForgotPasswordRequest
-:table-caption: Таблица
-.Forgot password request model
-|===
-|Название параметра|Описание параметра|Тип данных|Мин. длина|Макс. длина|Паттерн
-|*email**
-|User email
+|*groupCode**
+|Audit group
 |string 
+|0
+|255
 |-
-|-
-|-
-|===
-=== ChangePasswordRequest
-:table-caption: Таблица
-.Change password request model
-|===
-|Название параметра|Описание параметра|Тип данных|Мин. длина|Макс. длина|Паттерн
-|*oldPassword**
-|Old password
+|*groupTitle*
+|Audit group title
 |string 
+|0
+|255
 |-
-|-
-|-
-|*newPassword**
-|New password
+|*code**
+|Audit code
 |string 
+|0
+|255
+|-
+|*codeTitle*
+|Audit code title
+|string 
+|0
+|255
+|-
+|*eventDate**
+|Event date
+|string (date-time)
 |-
 |-
-|-
+|`yyyy-MM-dd HH:mm:ss`
 |===
