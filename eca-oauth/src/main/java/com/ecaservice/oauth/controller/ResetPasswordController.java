@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 
-import static com.ecaservice.oauth.controller.doc.ApiExamples.UNAUTHORIZED_RESPONSE_JSON;
 import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 
 /**
@@ -75,7 +74,14 @@ public class ResetPasswordController {
             description = "Verify reset password token",
             summary = "Verify reset password token",
             responses = {
-                    @ApiResponse(description = "OK", responseCode = "200")
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = "false"),
+                                    }
+                            )
+                    )
             }
     )
     @PostMapping(value = "/verify-token")
