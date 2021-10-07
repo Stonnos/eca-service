@@ -228,7 +228,9 @@ API provides operations with users for ECA web application
 
 
 == Описание форматов для запросов
-=== UpdateUserInfoDto - Update user info model
+=== UpdateUserInfoDto
+.Update user info model
+|===
 |Название параметра|Описание параметра|Тип данных|Обязательность|Мин. длина|Макс. длина|Паттерн
 |firstName
 |First name
@@ -252,7 +254,9 @@ API provides operations with users for ECA web application
 |30
 |^([A-Z][a-z]+)|([А-Я][а-я]+)$
 |===
-=== FilterRequestDto - Filter request model
+=== FilterRequestDto
+.Filter request model
+|===
 |Название параметра|Описание параметра|Тип данных|Обязательность|Мин. длина|Макс. длина|Паттерн
 |name
 |Filter column name
@@ -276,7 +280,9 @@ API provides operations with users for ECA web application
 |-
 |-
 |===
-=== PageRequestDto - Page request model
+=== PageRequestDto
+.Page request model
+|===
 |Название параметра|Описание параметра|Тип данных|Обязательность|Мин. длина|Макс. длина|Паттерн
 |page
 |Page number
@@ -321,7 +327,9 @@ API provides operations with users for ECA web application
 |-
 |-
 |===
-=== PageDtoUserDto - Page model
+=== PageDtoUserDto
+.Page model
+|===
 |Название параметра|Описание параметра|Тип данных|Обязательность|Мин. длина|Макс. длина|Паттерн
 |content
 |Page content
@@ -345,7 +353,9 @@ API provides operations with users for ECA web application
 |-
 |-
 |===
-=== RoleDto - User role model
+=== RoleDto
+.User role model
+|===
 |Название параметра|Описание параметра|Тип данных|Обязательность|Мин. длина|Макс. длина|Паттерн
 |roleName
 |Role name
@@ -362,7 +372,9 @@ API provides operations with users for ECA web application
 |-
 |-
 |===
-=== UserDto - User model
+=== UserDto
+.User model
+|===
 |Название параметра|Описание параметра|Тип данных|Обязательность|Мин. длина|Макс. длина|Паттерн
 |id
 |User id
@@ -456,7 +468,9 @@ API provides operations with users for ECA web application
 |-
 |-
 |===
-=== CreateUserDto - Create user model
+=== CreateUserDto
+.Create user model
+|===
 |Название параметра|Описание параметра|Тип данных|Обязательность|Мин. длина|Макс. длина|Паттерн
 |login
 |User login
@@ -494,7 +508,9 @@ API provides operations with users for ECA web application
 |30
 |^([A-Z][a-z]+)|([А-Я][а-я]+)$
 |===
-=== ResetPasswordRequest - Reset password request model
+=== ResetPasswordRequest
+.Reset password request model
+|===
 |Название параметра|Описание параметра|Тип данных|Обязательность|Мин. длина|Макс. длина|Паттерн
 |token
 |Token value
@@ -511,7 +527,9 @@ API provides operations with users for ECA web application
 |-
 |-
 |===
-=== ForgotPasswordRequest - Forgot password request model
+=== ForgotPasswordRequest
+.Forgot password request model
+|===
 |Название параметра|Описание параметра|Тип данных|Обязательность|Мин. длина|Макс. длина|Паттерн
 |email
 |User email
@@ -521,7 +539,9 @@ API provides operations with users for ECA web application
 |-
 |-
 |===
-=== ChangePasswordRequest - Change password request model
+=== ChangePasswordRequest
+.Change password request model
+|===
 |Название параметра|Описание параметра|Тип данных|Обязательность|Мин. длина|Макс. длина|Паттерн
 |oldPassword
 |Old password
