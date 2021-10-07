@@ -9,10 +9,8 @@ API provides operations with users for ECA web application
 
 == Updates info for current authenticated user
 
-*PUT*
+[green]##PUT##
 */users/update-info* - Updates info for current authenticated user
-
-[red]#red text#
 
 |===
 |Формат запроса|Обязательность|Тело запроса
@@ -22,10 +20,8 @@ API provides operations with users for ECA web application
 |===
 == Uploads photo for current authenticated user
 
-*POST*
+[green]##POST##
 */users/upload-photo* - Uploads photo for current authenticated user
-
-[red]#red text#
 
 |===
 |Формат запроса|Обязательность|Тело запроса
@@ -35,10 +31,8 @@ API provides operations with users for ECA web application
 |===
 == Unlocks user
 
-*POST*
+[green]##POST##
 */users/unlock* - Unlocks user
-
-[red]#red text#
 
 |===
 |Название параметра|Описание параметра|Тип|Тип данных|Обязательность|Мин. длина|Макс. длина
@@ -52,10 +46,8 @@ API provides operations with users for ECA web application
 |===
 == Enable/disable tfa for current authenticated user
 
-*POST*
+[green]##POST##
 */users/tfa* - Enable/disable tfa for current authenticated user
-
-[red]#red text#
 
 |===
 |Название параметра|Описание параметра|Тип|Тип данных|Обязательность|Мин. длина|Макс. длина
@@ -69,17 +61,13 @@ API provides operations with users for ECA web application
 |===
 == Logout current user and revokes access/refresh token pair
 
-*POST*
+[green]##POST##
 */users/logout* - Logout current user and revokes access/refresh token pair
-
-[red]#red text#
 
 == Locks user
 
-*POST*
+[green]##POST##
 */users/lock* - Locks user
-
-[red]#red text#
 
 |===
 |Название параметра|Описание параметра|Тип|Тип данных|Обязательность|Мин. длина|Макс. длина
@@ -93,10 +81,8 @@ API provides operations with users for ECA web application
 |===
 == Finds users with specified options
 
-*POST*
+[green]##POST##
 */users/list* - Finds users with specified options
-
-[red]#red text#
 
 |===
 |Формат запроса|Обязательность|Тело запроса
@@ -113,10 +99,8 @@ API provides operations with users for ECA web application
 ----
 == Creates new user
 
-*POST*
+[green]##POST##
 */users/create* - Creates new user
-
-[red]#red text#
 
 |===
 |Формат запроса|Обязательность|Тело запроса
@@ -126,10 +110,8 @@ API provides operations with users for ECA web application
 |===
 == Verify reset password token
 
-*POST*
+[green]##POST##
 */password/verify-token* - Verify reset password token
-
-[red]#red text#
 
 |===
 |Название параметра|Описание параметра|Тип|Тип данных|Обязательность|Мин. длина|Макс. длина
@@ -143,10 +125,8 @@ API provides operations with users for ECA web application
 |===
 == Reset password with specified token
 
-*POST*
+[green]##POST##
 */password/reset* - Reset password with specified token
-
-[red]#red text#
 
 |===
 |Формат запроса|Обязательность|Тело запроса
@@ -156,10 +136,8 @@ API provides operations with users for ECA web application
 |===
 == Creates forgot password request
 
-*POST*
+[green]##POST##
 */password/forgot* - Creates forgot password request
-
-[red]#red text#
 
 |===
 |Формат запроса|Обязательность|Тело запроса
@@ -169,10 +147,8 @@ API provides operations with users for ECA web application
 |===
 == Creates change password request
 
-*POST*
+[green]##POST##
 */password/change/request* - Creates change password request
-
-[red]#red text#
 
 |===
 |Формат запроса|Обязательность|Тело запроса
@@ -182,10 +158,8 @@ API provides operations with users for ECA web application
 |===
 == Confirms change password request
 
-*POST*
+[green]##POST##
 */password/change/confirm* - Confirms change password request
-
-[red]#red text#
 
 |===
 |Название параметра|Описание параметра|Тип|Тип данных|Обязательность|Мин. длина|Макс. длина
@@ -199,10 +173,8 @@ API provides operations with users for ECA web application
 |===
 == Creates change email request
 
-*POST*
+[green]##POST##
 */email/change/request* - Creates change email request
-
-[red]#red text#
 
 |===
 |Название параметра|Описание параметра|Тип|Тип данных|Обязательность|Мин. длина|Макс. длина
@@ -216,10 +188,8 @@ API provides operations with users for ECA web application
 |===
 == Confirms change email request
 
-*POST*
+[green]##POST##
 */email/change/confirm* - Confirms change email request
-
-[red]#red text#
 
 |===
 |Название параметра|Описание параметра|Тип|Тип данных|Обязательность|Мин. длина|Макс. длина
@@ -233,17 +203,13 @@ API provides operations with users for ECA web application
 |===
 == Gets current authenticated user info
 
-*GET*
+[green]##GET##
 */users/user-info* - Gets current authenticated user info
-
-[red]#red text#
 
 == Downloads user photo
 
-*GET*
+[green]##GET##
 */users/photo/{id}* - Downloads user photo
-
-[red]#red text#
 
 |===
 |Название параметра|Описание параметра|Тип|Тип данных|Обязательность|Мин. длина|Макс. длина
@@ -257,8 +223,6 @@ API provides operations with users for ECA web application
 |===
 == Deletes photo for current authenticated user
 
-*DELETE*
+[green]##DELETE##
 */users/delete-photo* - Deletes photo for current authenticated user
-
-[red]#red text#
 
