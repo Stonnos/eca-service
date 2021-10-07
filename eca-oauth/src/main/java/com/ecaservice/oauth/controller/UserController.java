@@ -57,6 +57,7 @@ import static com.ecaservice.oauth.controller.doc.ApiExamples.INVALID_PAGE_REQUE
 import static com.ecaservice.oauth.controller.doc.ApiExamples.SIMPLE_PAGE_REQUEST_JSON;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.UNAUTHORIZED_RESPONSE_JSON;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.UNIQUE_LOGIN_RESPONSE_JSON;
+import static com.ecaservice.oauth.controller.doc.ApiExamples.UPDATE_USER_INFO_REQUEST_JSON;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.USERS_PAGE_RESPONSE_JSON;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.USER_INFO_RESPONSE_JSON;
 import static com.ecaservice.oauth.util.Utils.buildAttachmentResponse;
@@ -310,6 +311,11 @@ public class UserController {
             description = "Updates info for current authenticated user",
             summary = "Updates info for current authenticated user",
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
+                    @Content(examples = {
+                            @ExampleObject(value = UPDATE_USER_INFO_REQUEST_JSON)
+                    })
+            }),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200"),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
