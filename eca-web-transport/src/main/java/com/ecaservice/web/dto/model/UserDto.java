@@ -23,43 +23,43 @@ public class UserDto {
     /**
      * User id
      */
-    @Schema(description = "User id")
+    @Schema(description = "User id", example = "1")
     private Long id;
 
     /**
      * User login
      */
-    @Schema(description = "User login")
+    @Schema(description = "User login", example = "admin")
     private String login;
 
     /**
      * User email
      */
-    @Schema(description = "User email")
+    @Schema(description = "User email", example = "test@mail.ru")
     private String email;
 
     /**
      * User first name
      */
-    @Schema(description = "User first name")
+    @Schema(description = "User first name", example = "Ivan")
     private String firstName;
 
     /**
      * User last name
      */
-    @Schema(description = "User last name")
+    @Schema(description = "User last name", example = "Ivanov")
     private String lastName;
 
     /**
      * User middle name
      */
-    @Schema(description = "User middle name")
+    @Schema(description = "User middle name", example = "Ivanovich")
     private String middleName;
 
     /**
      * User full name
      */
-    @Schema(description = "User full name")
+    @Schema(description = "User full name", example = "Ivanov Ivan Ivanovich")
     private String fullName;
 
     /**
@@ -85,7 +85,7 @@ public class UserDto {
     /**
      * User photo id
      */
-    @Schema(description = "User photo id")
+    @Schema(description = "User photo id", example = "1")
     private Long photoId;
 
     /**

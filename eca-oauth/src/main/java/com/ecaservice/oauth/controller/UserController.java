@@ -18,6 +18,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -49,7 +50,13 @@ import java.security.Principal;
 import java.util.List;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
+import static com.ecaservice.oauth.controller.doc.ApiExamples.ACCESS_DENIED_RESPONSE_JSON;
+import static com.ecaservice.oauth.controller.doc.ApiExamples.INVALID_PAGE_REQUEST_RESPONSE_JSON;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.SIMPLE_PAGE_REQUEST_JSON;
+import static com.ecaservice.oauth.controller.doc.ApiExamples.UNAUTHORIZED_RESPONSE_JSON;
+import static com.ecaservice.oauth.controller.doc.ApiExamples.UNIQUE_LOGIN_RESPONSE_JSON;
+import static com.ecaservice.oauth.controller.doc.ApiExamples.USERS_PAGE_RESPONSE_JSON;
+import static com.ecaservice.oauth.controller.doc.ApiExamples.USER_INFO_RESPONSE_JSON;
 import static com.ecaservice.oauth.util.Utils.buildAttachmentResponse;
 
 /**
@@ -81,9 +88,27 @@ public class UserController {
     @Operation(
             description = "Gets current authenticated user info",
             summary = "Gets current authenticated user info",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = USER_INFO_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                    }
+                            )
+                    )
+            }
     )
-    @GetMapping(value = "/user-info")
+    @GetMapping(value = "/user-info", produces = MediaType.APPLICATION_JSON_VALUE)
     public UserDto getUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         UserEntity userEntity = userService.getById(userDetails.getId());
         UserDto userDto = userMapper.map(userEntity);
@@ -100,7 +125,18 @@ public class UserController {
     @Operation(
             description = "Logout current user and revokes access/refresh token pair",
             summary = "Logout current user and revokes access/refresh token pair",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                    }
+                            )
+                    )
+            }
     )
     @PostMapping(value = "/logout")
     public void logout(Principal authentication) {
@@ -119,7 +155,19 @@ public class UserController {
     @Operation(
             description = "Enable/disable tfa for current authenticated user",
             summary = "Enable/disable tfa for current authenticated user",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400")
+            }
     )
     @PostMapping(value = "/tfa")
     public void tfa(@AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -137,7 +185,7 @@ public class UserController {
      * @param pageRequestDto - page request dto
      * @return users page
      */
-    @PreAuthorize("#oauth2.hasScope('web') and hasRole('ROLE_SUPER_ADMIN')")
+    @PreAuthorize("#oauth2.hasScope('web') and hasRole('ROLE_USER')")
     @Operation(
             description = "Finds users with specified options",
             summary = "Finds users with specified options",
@@ -146,9 +194,43 @@ public class UserController {
                     @Content(examples = {
                             @ExampleObject(value = SIMPLE_PAGE_REQUEST_JSON)
                     })
-            })
+            }),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = USERS_PAGE_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Permission denied", responseCode = "403",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = ACCESS_DENIED_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = INVALID_PAGE_REQUEST_RESPONSE_JSON),
+                                    }
+                            )
+                    )
+            }
     )
-    @PostMapping(value = "/list")
+    @PostMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     public PageDto<UserDto> getUsers(@Valid @RequestBody PageRequestDto pageRequestDto) {
         log.info("Received users page request: {}", pageRequestDto);
         Page<UserEntity> usersPage = userService.getNextPage(pageRequestDto);
@@ -165,9 +247,42 @@ public class UserController {
     @Operation(
             description = "Creates new user",
             summary = "Creates new user",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = USER_INFO_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Permission denied", responseCode = "403",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = ACCESS_DENIED_RESPONSE_JSON),
+                                    }
+                            )),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNIQUE_LOGIN_RESPONSE_JSON),
+                                    }
+                            )
+                    )
+            }
     )
-    @PostMapping(value = "/create")
+    @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
     public UserDto save(@Valid @RequestBody CreateUserDto createUserDto) {
         log.info("Received request for user creation [{}]", createUserDto.getLogin());
         String password = passwordService.generatePassword();
@@ -187,7 +302,19 @@ public class UserController {
     @Operation(
             description = "Updates info for current authenticated user",
             summary = "Updates info for current authenticated user",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400")
+            }
     )
     @PutMapping(value = "/update-info")
     public void updateUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -206,7 +333,19 @@ public class UserController {
     @Operation(
             description = "Uploads photo for current authenticated user",
             summary = "Uploads photo for current authenticated user",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400")
+            }
     )
     @PostMapping(value = "/upload-photo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void uploadPhoto(@AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -225,7 +364,19 @@ public class UserController {
     @Operation(
             description = "Downloads user photo",
             summary = "Downloads user photo",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400")
+            }
     )
     @GetMapping(value = "/photo/{id}")
     public ResponseEntity<ByteArrayResource> downloadPhoto(
@@ -244,7 +395,19 @@ public class UserController {
     @Operation(
             description = "Deletes photo for current authenticated user",
             summary = "Deletes photo for current authenticated user",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400")
+            }
     )
     @DeleteMapping(value = "/delete-photo")
     public void deletePhoto(@AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -262,7 +425,27 @@ public class UserController {
     @Operation(
             description = "Locks user",
             summary = "Locks user",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Permission denied", responseCode = "403",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = ACCESS_DENIED_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400")
+            }
     )
     @PostMapping(value = "/lock")
     public void lock(@AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -284,7 +467,27 @@ public class UserController {
     @Operation(
             description = "Unlocks user",
             summary = "Unlocks user",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Permission denied", responseCode = "403",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = ACCESS_DENIED_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400")
+            }
     )
     @PostMapping(value = "/unlock")
     public void unlock(@Parameter(description = "User id", example = "1", required = true) @RequestParam Long userId) {
