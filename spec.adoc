@@ -35,12 +35,11 @@ API provides operations with users for ECA web application
 */users/unlock* - Unlocks user
 
 |===
-|Название параметра|Описание параметра|Тип|Тип данных|Обязательность|Мин. длина|Макс. длина
-|userId
+|Название параметра|Описание параметра|Тип|Тип данных|Мин. длина|Макс. длина
+|userId*
 |User id
 |query
 |integer (int64)
-|true
 |-
 |-
 |===
@@ -50,12 +49,11 @@ API provides operations with users for ECA web application
 */users/tfa* - Enable/disable tfa for current authenticated user
 
 |===
-|Название параметра|Описание параметра|Тип|Тип данных|Обязательность|Мин. длина|Макс. длина
-|enabled
+|Название параметра|Описание параметра|Тип|Тип данных|Мин. длина|Макс. длина
+|enabled*
 |Tfa enabled flag
 |query
 |boolean 
-|true
 |-
 |-
 |===
@@ -70,12 +68,11 @@ API provides operations with users for ECA web application
 */users/lock* - Locks user
 
 |===
-|Название параметра|Описание параметра|Тип|Тип данных|Обязательность|Мин. длина|Макс. длина
-|userId
+|Название параметра|Описание параметра|Тип|Тип данных|Мин. длина|Макс. длина
+|userId*
 |User id
 |query
 |integer (int64)
-|true
 |-
 |-
 |===
@@ -114,12 +111,11 @@ API provides operations with users for ECA web application
 */password/verify-token* - Verify reset password token
 
 |===
-|Название параметра|Описание параметра|Тип|Тип данных|Обязательность|Мин. длина|Макс. длина
-|token
+|Название параметра|Описание параметра|Тип|Тип данных|Мин. длина|Макс. длина
+|token*
 |Reset password token
 |query
 |string 
-|true
 |-
 |-
 |===
@@ -162,12 +158,11 @@ API provides operations with users for ECA web application
 */password/change/confirm* - Confirms change password request
 
 |===
-|Название параметра|Описание параметра|Тип|Тип данных|Обязательность|Мин. длина|Макс. длина
-|token
+|Название параметра|Описание параметра|Тип|Тип данных|Мин. длина|Макс. длина
+|token*
 |Token value
 |query
 |string 
-|true
 |-
 |-
 |===
@@ -177,12 +172,11 @@ API provides operations with users for ECA web application
 */email/change/request* - Creates change email request
 
 |===
-|Название параметра|Описание параметра|Тип|Тип данных|Обязательность|Мин. длина|Макс. длина
-|newEmail
+|Название параметра|Описание параметра|Тип|Тип данных|Мин. длина|Макс. длина
+|newEmail*
 |User email
 |query
 |string 
-|true
 |0
 |255
 |===
@@ -192,12 +186,11 @@ API provides operations with users for ECA web application
 */email/change/confirm* - Confirms change email request
 
 |===
-|Название параметра|Описание параметра|Тип|Тип данных|Обязательность|Мин. длина|Макс. длина
-|token
+|Название параметра|Описание параметра|Тип|Тип данных|Мин. длина|Макс. длина
+|token*
 |Token value
 |query
 |string 
-|true
 |-
 |-
 |===
@@ -212,12 +205,11 @@ API provides operations with users for ECA web application
 */users/photo/{id}* - Downloads user photo
 
 |===
-|Название параметра|Описание параметра|Тип|Тип данных|Обязательность|Мин. длина|Макс. длина
-|id
+|Название параметра|Описание параметра|Тип|Тип данных|Мин. длина|Макс. длина
+|id*
 |Photo id
 |path
 |integer (int64)
-|true
 |-
 |-
 |===
@@ -232,25 +224,22 @@ API provides operations with users for ECA web application
 :table-caption: Таблица
 .Update user info model
 |===
-|Название параметра|Описание параметра|Тип данных|Обязательность|Мин. длина|Макс. длина|Паттерн
-|*firstName*[red]##*##
+|Название параметра|Описание параметра|Тип данных|Мин. длина|Макс. длина|Паттерн
+|*firstName**
 |First name
 |string 
-|true
 |2
 |30
 |`^([A-Z][a-z]+)|([А-Я][а-я]+)$`
-|*lastName*[red]##*##
+|*lastName**
 |Last name
 |string 
-|true
 |2
 |30
 |`^([A-Z][a-z]+)|([А-Я][а-я]+)$`
-|*middleName*[red]##*##
+|*middleName**
 |Middle name
 |string 
-|true
 |2
 |30
 |`^([A-Z][a-z]+)|([А-Я][а-я]+)$`
@@ -259,25 +248,22 @@ API provides operations with users for ECA web application
 :table-caption: Таблица
 .Filter request model
 |===
-|Название параметра|Описание параметра|Тип данных|Обязательность|Мин. длина|Макс. длина|Паттерн
-|*name*[red]##*##
+|Название параметра|Описание параметра|Тип данных|Мин. длина|Макс. длина|Паттерн
+|*name**
 |Filter column name
 |string 
-|true
 |0
 |255
 |-
-|*values*[red]##*##
+|*values*
 |-
 |array 
-|false
 |-
 |-
 |-
-|*matchMode*[red]##*##
+|*matchMode**
 |Match mode type
 |string 
-|true
 |-
 |-
 |-
@@ -286,46 +272,40 @@ API provides operations with users for ECA web application
 :table-caption: Таблица
 .Page request model
 |===
-|Название параметра|Описание параметра|Тип данных|Обязательность|Мин. длина|Макс. длина|Паттерн
-|*page*[red]##*##
+|Название параметра|Описание параметра|Тип данных|Мин. длина|Макс. длина|Паттерн
+|*page**
 |Page number
 |integer (int32)
-|true
 |-
 |-
 |-
-|*size*[red]##*##
+|*size**
 |Page size
 |integer (int32)
-|true
 |-
 |-
 |-
-|*sortField*[red]##*##
+|*sortField*
 |Sort field
 |string 
-|false
 |0
 |255
 |-
-|*ascending*[red]##*##
+|*ascending*
 |Is ascending sort?
 |boolean 
-|false
 |-
 |-
 |-
-|*searchQuery*[red]##*##
+|*searchQuery*
 |Search query string
 |string 
-|false
 |0
 |255
 |-
-|*filters*[red]##*##
+|*filters*
 |Filters list
 |array 
-|false
 |-
 |-
 |-
@@ -334,25 +314,22 @@ API provides operations with users for ECA web application
 :table-caption: Таблица
 .Page model
 |===
-|Название параметра|Описание параметра|Тип данных|Обязательность|Мин. длина|Макс. длина|Паттерн
-|*content*[red]##*##
+|Название параметра|Описание параметра|Тип данных|Мин. длина|Макс. длина|Паттерн
+|*content*
 |Page content
 |array 
-|false
 |-
 |-
 |-
-|*page*[red]##*##
+|*page*
 |Page number
 |integer (int32)
-|false
 |-
 |-
 |-
-|*totalCount*[red]##*##
+|*totalCount*
 |Total elements count in all pages
 |integer (int64)
-|false
 |-
 |-
 |-
@@ -361,18 +338,16 @@ API provides operations with users for ECA web application
 :table-caption: Таблица
 .User role model
 |===
-|Название параметра|Описание параметра|Тип данных|Обязательность|Мин. длина|Макс. длина|Паттерн
-|*roleName*[red]##*##
+|Название параметра|Описание параметра|Тип данных|Мин. длина|Макс. длина|Паттерн
+|*roleName*
 |Role name
 |string 
-|false
 |-
 |-
 |-
-|*description*[red]##*##
+|*description*
 |Role description
 |string 
-|false
 |-
 |-
 |-
@@ -381,95 +356,82 @@ API provides operations with users for ECA web application
 :table-caption: Таблица
 .User model
 |===
-|Название параметра|Описание параметра|Тип данных|Обязательность|Мин. длина|Макс. длина|Паттерн
-|*id*[red]##*##
+|Название параметра|Описание параметра|Тип данных|Мин. длина|Макс. длина|Паттерн
+|*id*
 |User id
 |integer (int64)
-|false
 |-
 |-
 |-
-|*login*[red]##*##
+|*login*
 |User login
 |string 
-|false
 |-
 |-
 |-
-|*email*[red]##*##
+|*email*
 |User email
 |string 
-|false
 |-
 |-
 |-
-|*firstName*[red]##*##
+|*firstName*
 |User first name
 |string 
-|false
 |-
 |-
 |-
-|*lastName*[red]##*##
+|*lastName*
 |User last name
 |string 
-|false
 |-
 |-
 |-
-|*middleName*[red]##*##
+|*middleName*
 |User middle name
 |string 
-|false
 |-
 |-
 |-
-|*fullName*[red]##*##
+|*fullName*
 |User full name
 |string 
-|false
 |-
 |-
 |-
-|*creationDate*[red]##*##
+|*creationDate*
 |User creation date
 |string 
-|false
 |-
 |-
 |-
-|*tfaEnabled*[red]##*##
+|*tfaEnabled*
 |Two factor authentication enabled
 |boolean 
-|false
 |-
 |-
 |-
-|*locked*[red]##*##
+|*locked*
 |Account locked
 |boolean 
-|false
 |-
 |-
 |-
-|*photoId*[red]##*##
+|*photoId*
 |User photo id
 |integer (int64)
-|false
 |-
 |-
 |-
-|*passwordDate*[red]##*##
+|*passwordDate*
 |Last password change date
 |string 
-|false
 |-
 |-
 |-
-|*roles*[red]##*##
+|*roles*
 |User roles
 |array 
-|false
 |-
 |-
 |-
@@ -478,39 +440,34 @@ API provides operations with users for ECA web application
 :table-caption: Таблица
 .Create user model
 |===
-|Название параметра|Описание параметра|Тип данных|Обязательность|Мин. длина|Макс. длина|Паттерн
-|*login*[red]##*##
+|Название параметра|Описание параметра|Тип данных|Мин. длина|Макс. длина|Паттерн
+|*login**
 |User login
 |string 
-|true
 |3
 |32
 |`^[a-z0-9]+$`
-|*email*[red]##*##
+|*email**
 |User email
 |string 
-|true
 |0
 |255
 |-
-|*firstName*[red]##*##
+|*firstName**
 |First name
 |string 
-|true
 |2
 |30
 |`^([A-Z][a-z]+)|([А-Я][а-я]+)$`
-|*lastName*[red]##*##
+|*lastName**
 |Last name
 |string 
-|true
 |2
 |30
 |`^([A-Z][a-z]+)|([А-Я][а-я]+)$`
-|*middleName*[red]##*##
+|*middleName**
 |Middle name
 |string 
-|true
 |2
 |30
 |`^([A-Z][a-z]+)|([А-Я][а-я]+)$`
@@ -519,18 +476,16 @@ API provides operations with users for ECA web application
 :table-caption: Таблица
 .Reset password request model
 |===
-|Название параметра|Описание параметра|Тип данных|Обязательность|Мин. длина|Макс. длина|Паттерн
-|*token*[red]##*##
+|Название параметра|Описание параметра|Тип данных|Мин. длина|Макс. длина|Паттерн
+|*token**
 |Token value
 |string 
-|true
 |-
 |-
 |-
-|*password*[red]##*##
+|*password**
 |New password
 |string 
-|true
 |-
 |-
 |-
@@ -539,11 +494,10 @@ API provides operations with users for ECA web application
 :table-caption: Таблица
 .Forgot password request model
 |===
-|Название параметра|Описание параметра|Тип данных|Обязательность|Мин. длина|Макс. длина|Паттерн
-|*email*[red]##*##
+|Название параметра|Описание параметра|Тип данных|Мин. длина|Макс. длина|Паттерн
+|*email**
 |User email
 |string 
-|true
 |-
 |-
 |-
@@ -552,18 +506,16 @@ API provides operations with users for ECA web application
 :table-caption: Таблица
 .Change password request model
 |===
-|Название параметра|Описание параметра|Тип данных|Обязательность|Мин. длина|Макс. длина|Паттерн
-|*oldPassword*[red]##*##
+|Название параметра|Описание параметра|Тип данных|Мин. длина|Макс. длина|Паттерн
+|*oldPassword**
 |Old password
 |string 
-|true
 |-
 |-
 |-
-|*newPassword*[red]##*##
+|*newPassword**
 |New password
 |string 
-|true
 |-
 |-
 |-
