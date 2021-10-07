@@ -9,7 +9,7 @@ API provides operations with users for ECA web application
 
 == Updates info for current authenticated user
 
-+++<span style="color: red">*PUT*</span>+++
+*[red]##PUT##*
 */users/update-info* - Updates info for current authenticated user
 
 |===
@@ -20,7 +20,7 @@ API provides operations with users for ECA web application
 |===
 == Uploads photo for current authenticated user
 
-+++<span style="color: red">*POST*</span>+++
+*[red]##POST##*
 */users/upload-photo* - Uploads photo for current authenticated user
 
 |===
@@ -31,7 +31,7 @@ API provides operations with users for ECA web application
 |===
 == Unlocks user
 
-+++<span style="color: red">*POST*</span>+++
+*[red]##POST##*
 */users/unlock* - Unlocks user
 
 |===
@@ -46,7 +46,7 @@ API provides operations with users for ECA web application
 |===
 == Enable/disable tfa for current authenticated user
 
-+++<span style="color: red">*POST*</span>+++
+*[red]##POST##*
 */users/tfa* - Enable/disable tfa for current authenticated user
 
 |===
@@ -61,12 +61,12 @@ API provides operations with users for ECA web application
 |===
 == Logout current user and revokes access/refresh token pair
 
-+++<span style="color: red">*POST*</span>+++
+*[red]##POST##*
 */users/logout* - Logout current user and revokes access/refresh token pair
 
 == Locks user
 
-+++<span style="color: red">*POST*</span>+++
+*[red]##POST##*
 */users/lock* - Locks user
 
 |===
@@ -81,7 +81,7 @@ API provides operations with users for ECA web application
 |===
 == Finds users with specified options
 
-+++<span style="color: red">*POST*</span>+++
+*[red]##POST##*
 */users/list* - Finds users with specified options
 
 |===
@@ -99,7 +99,7 @@ API provides operations with users for ECA web application
 ----
 == Creates new user
 
-+++<span style="color: red">*POST*</span>+++
+*[red]##POST##*
 */users/create* - Creates new user
 
 |===
@@ -110,7 +110,7 @@ API provides operations with users for ECA web application
 |===
 == Verify reset password token
 
-+++<span style="color: red">*POST*</span>+++
+*[red]##POST##*
 */password/verify-token* - Verify reset password token
 
 |===
@@ -125,7 +125,7 @@ API provides operations with users for ECA web application
 |===
 == Reset password with specified token
 
-+++<span style="color: red">*POST*</span>+++
+*[red]##POST##*
 */password/reset* - Reset password with specified token
 
 |===
@@ -136,7 +136,7 @@ API provides operations with users for ECA web application
 |===
 == Creates forgot password request
 
-+++<span style="color: red">*POST*</span>+++
+*[red]##POST##*
 */password/forgot* - Creates forgot password request
 
 |===
@@ -147,7 +147,7 @@ API provides operations with users for ECA web application
 |===
 == Creates change password request
 
-+++<span style="color: red">*POST*</span>+++
+*[red]##POST##*
 */password/change/request* - Creates change password request
 
 |===
@@ -158,7 +158,7 @@ API provides operations with users for ECA web application
 |===
 == Confirms change password request
 
-+++<span style="color: red">*POST*</span>+++
+*[red]##POST##*
 */password/change/confirm* - Confirms change password request
 
 |===
@@ -173,7 +173,7 @@ API provides operations with users for ECA web application
 |===
 == Creates change email request
 
-+++<span style="color: red">*POST*</span>+++
+*[red]##POST##*
 */email/change/request* - Creates change email request
 
 |===
@@ -188,7 +188,7 @@ API provides operations with users for ECA web application
 |===
 == Confirms change email request
 
-+++<span style="color: red">*POST*</span>+++
+*[red]##POST##*
 */email/change/confirm* - Confirms change email request
 
 |===
@@ -203,12 +203,12 @@ API provides operations with users for ECA web application
 |===
 == Gets current authenticated user info
 
-+++<span style="color: red">*GET*</span>+++
+*[red]##GET##*
 */users/user-info* - Gets current authenticated user info
 
 == Downloads user photo
 
-+++<span style="color: red">*GET*</span>+++
+*[red]##GET##*
 */users/photo/{id}* - Downloads user photo
 
 |===
@@ -223,6 +223,6 @@ API provides operations with users for ECA web application
 |===
 == Deletes photo for current authenticated user
 
-+++<span style="color: red">*DELETE*</span>+++
+*[red]##DELETE##*
 */users/delete-photo* - Deletes photo for current authenticated user
 
