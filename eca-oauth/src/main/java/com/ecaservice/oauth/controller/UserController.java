@@ -108,7 +108,7 @@ public class UserController {
                     )
             }
     )
-    @GetMapping(value = "/user-info", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/user-info")
     public UserDto getUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         UserEntity userEntity = userService.getById(userDetails.getId());
         UserDto userDto = userMapper.map(userEntity);
@@ -230,7 +230,7 @@ public class UserController {
                     )
             }
     )
-    @PostMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/list")
     public PageDto<UserDto> getUsers(@Valid @RequestBody PageRequestDto pageRequestDto) {
         log.info("Received users page request: {}", pageRequestDto);
         Page<UserEntity> usersPage = userService.getNextPage(pageRequestDto);
@@ -282,7 +282,7 @@ public class UserController {
                     )
             }
     )
-    @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/create")
     public UserDto save(@Valid @RequestBody CreateUserDto createUserDto) {
         log.info("Received request for user creation [{}]", createUserDto.getLogin());
         String password = passwordService.generatePassword();
