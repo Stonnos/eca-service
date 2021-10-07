@@ -355,7 +355,16 @@ a|
 |true
 |<<CreateUserDto>>
 a|
--
+[source,json]
+----
+{
+  "login" : "user",
+  "email" : "bat1238@yandex.ru",
+  "firstName" : "Roman",
+  "lastName" : "Batygin",
+  "middleName" : "Igorevich"
+}
+----
 |===
 Список кодов ответа
 |===
@@ -676,7 +685,7 @@ a|
 |Код ответа|Описание|Формат ответа|Пример ответа
 |200
 |OK
-|*/*
+|application/octet-stream
 a|
 -
 |401
@@ -692,9 +701,16 @@ a|
 ----
 |400
 |Bad request
-|*/*
+|application/json
 a|
--
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "DataNotFound",
+  "errorMessage" : "Entity with search key [1] not found!"
+} ]
+----
 |===
 
 == Deletes photo for current authenticated user
@@ -723,9 +739,16 @@ a|
 ----
 |400
 |Bad request
-|-
+|application/json
 a|
--
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "DataNotFound",
+  "errorMessage" : "Entity with search key [1] not found!"
+} ]
+----
 |===
 
 
