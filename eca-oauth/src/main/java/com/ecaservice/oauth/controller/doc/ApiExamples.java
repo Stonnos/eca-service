@@ -22,9 +22,9 @@ public class ApiExamples {
             "\"errorMessage\": null}]";
 
     /**
-     * Unique login error response json
+     * User email not exists error response json
      */
-    public static final String UNIQUE_EMAIL_RESPONSE_JSON = "[{\"fieldName\": \"email\", \"code\": \"UniqueEmail\", " +
+    public static final String USER_EMAIL_RESPONSE_JSON = "[{\"fieldName\": \"email\", \"code\": \"UserEmail\", " +
             "\"errorMessage\": null}]";
 
     /**
