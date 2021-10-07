@@ -230,19 +230,19 @@ API provides operations with users for ECA web application
 |string 
 |2
 |30
-|[`^([A-Z][a-z]+)|([А-Я][а-я]+)$`]
+|"`^([A-Z][a-z]+)|([А-Я][а-я]+)$`"
 |*lastName**
 |Last name
 |string 
 |2
 |30
-|[`^([A-Z][a-z]+)|([А-Я][а-я]+)$`]
+|"`^([A-Z][a-z]+)|([А-Я][а-я]+)$`"
 |*middleName**
 |Middle name
 |string 
 |2
 |30
-|[`^([A-Z][a-z]+)|([А-Я][а-я]+)$`]
+|"`^([A-Z][a-z]+)|([А-Я][а-я]+)$`"
 |===
 === FilterRequestDto
 :table-caption: Таблица
@@ -446,7 +446,7 @@ API provides operations with users for ECA web application
 |string 
 |3
 |32
-|[`^[a-z0-9]+$`]
+|"`^[a-z0-9]+$`"
 |*email**
 |User email
 |string 
@@ -458,19 +458,19 @@ API provides operations with users for ECA web application
 |string 
 |2
 |30
-|[`^([A-Z][a-z]+)|([А-Я][а-я]+)$`]
+|"`^([A-Z][a-z]+)|([А-Я][а-я]+)$`"
 |*lastName**
 |Last name
 |string 
 |2
 |30
-|[`^([A-Z][a-z]+)|([А-Я][а-я]+)$`]
+|"`^([A-Z][a-z]+)|([А-Я][а-я]+)$`"
 |*middleName**
 |Middle name
 |string 
 |2
 |30
-|[`^([A-Z][a-z]+)|([А-Я][а-я]+)$`]
+|"`^([A-Z][a-z]+)|([А-Я][а-я]+)$`"
 |===
 === ResetPasswordRequest
 :table-caption: Таблица
