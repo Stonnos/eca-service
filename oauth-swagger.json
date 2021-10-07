@@ -1,0 +1,997 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Microservice for users managment",
+    "description": "API provides operations with users for ECA web application",
+    "contact": {
+      "name": "Roman Batygin",
+      "email": "roman.batygin@mail.ru"
+    },
+    "version": "6.1"
+  },
+  "servers": [
+    {
+      "url": "/"
+    }
+  ],
+  "paths": {
+    "/users/update-info": {
+      "put": {
+        "tags": [
+          "Users API for web application"
+        ],
+        "summary": "Updates info for current authenticated user",
+        "description": "Updates info for current authenticated user",
+        "operationId": "updateUserInfo",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserInfoDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "401": {
+            "description": "Not authorized"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/users/upload-photo": {
+      "post": {
+        "tags": [
+          "Users API for web application"
+        ],
+        "summary": "Uploads photo for current authenticated user",
+        "description": "Uploads photo for current authenticated user",
+        "operationId": "uploadPhoto",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "file"
+                ],
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "description": "Photo file",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Not authorized"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/users/unlock": {
+      "post": {
+        "tags": [
+          "Users API for web application"
+        ],
+        "summary": "Unlocks user",
+        "description": "Unlocks user",
+        "operationId": "unlock",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "description": "User id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Not authorized"
+          },
+          "403": {
+            "description": "Permission denied"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/users/tfa": {
+      "post": {
+        "tags": [
+          "Users API for web application"
+        ],
+        "summary": "Enable/disable tfa for current authenticated user",
+        "description": "Enable/disable tfa for current authenticated user",
+        "operationId": "tfa",
+        "parameters": [
+          {
+            "name": "enabled",
+            "in": "query",
+            "description": "Tfa enabled flag",
+            "required": true,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Not authorized"
+          },
+          "403": {
+            "description": "Permission denied"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/users/logout": {
+      "post": {
+        "tags": [
+          "Users API for web application"
+        ],
+        "summary": "Logout current user and revokes access/refresh token pair",
+        "description": "Logout current user and revokes access/refresh token pair",
+        "operationId": "logout",
+        "responses": {
+          "401": {
+            "description": "Not authorized"
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/users/lock": {
+      "post": {
+        "tags": [
+          "Users API for web application"
+        ],
+        "summary": "Locks user",
+        "description": "Locks user",
+        "operationId": "lock",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "description": "User id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Not authorized"
+          },
+          "403": {
+            "description": "Permission denied"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/users/list": {
+      "post": {
+        "tags": [
+          "Users API for web application"
+        ],
+        "summary": "Finds users with specified options",
+        "description": "Finds users with specified options",
+        "operationId": "getUsers",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PageRequestDto"
+              },
+              "example": {
+                "page": 0,
+                "size": 25
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageDtoUserDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageDtoUserDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageDtoUserDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/users/create": {
+      "post": {
+        "tags": [
+          "Users API for web application"
+        ],
+        "summary": "Creates new user",
+        "description": "Creates new user",
+        "operationId": "save",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Login must be unique",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "fieldName": "login",
+                    "code": "UniqueLogin",
+                    "errorMessage": null
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/password/verify-token": {
+      "post": {
+        "tags": [
+          "Reset password API"
+        ],
+        "summary": "Verify reset password token",
+        "description": "Verify reset password token",
+        "operationId": "verifyToken",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "description": "Reset password token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/password/reset": {
+      "post": {
+        "tags": [
+          "Reset password API"
+        ],
+        "summary": "Reset password with specified token",
+        "description": "Reset password with specified token",
+        "operationId": "resetPassword",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/password/forgot": {
+      "post": {
+        "tags": [
+          "Reset password API"
+        ],
+        "summary": "Creates forgot password request",
+        "description": "Creates forgot password request",
+        "operationId": "forgotPassword",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForgotPasswordRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/password/change/request": {
+      "post": {
+        "tags": [
+          "Change password API"
+        ],
+        "summary": "Creates change password request",
+        "description": "Creates change password request",
+        "operationId": "createChangePasswordRequest",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/password/change/confirm": {
+      "post": {
+        "tags": [
+          "Change password API"
+        ],
+        "summary": "Confirms change password request",
+        "description": "Confirms change password request",
+        "operationId": "confirmChangePasswordRequest",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "description": "Token value",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/email/change/request": {
+      "post": {
+        "tags": [
+          "Change email API"
+        ],
+        "summary": "Creates change email request",
+        "description": "Creates change email request",
+        "operationId": "createChangeEmailRequest",
+        "parameters": [
+          {
+            "name": "newEmail",
+            "in": "query",
+            "description": "User email",
+            "required": true,
+            "schema": {
+              "maxLength": 255,
+              "minLength": 0,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/email/change/confirm": {
+      "post": {
+        "tags": [
+          "Change email API"
+        ],
+        "summary": "Confirms change email request",
+        "description": "Confirms change email request",
+        "operationId": "confirmChangeEmailRequest",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "description": "Token value",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/users/user-info": {
+      "get": {
+        "tags": [
+          "Users API for web application"
+        ],
+        "summary": "Gets current authenticated user info",
+        "description": "Gets current authenticated user info",
+        "operationId": "getUserInfo",
+        "responses": {
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/users/photo/{id}": {
+      "get": {
+        "tags": [
+          "Users API for web application"
+        ],
+        "summary": "Downloads user photo",
+        "description": "Downloads user photo",
+        "operationId": "downloadPhoto",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Photo id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/users/delete-photo": {
+      "delete": {
+        "tags": [
+          "Users API for web application"
+        ],
+        "summary": "Deletes photo for current authenticated user",
+        "description": "Deletes photo for current authenticated user",
+        "operationId": "deletePhoto",
+        "responses": {
+          "401": {
+            "description": "Not authorized"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UpdateUserInfoDto": {
+        "required": [
+          "firstName",
+          "lastName",
+          "middleName"
+        ],
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "maxLength": 30,
+            "minLength": 2,
+            "pattern": "^([A-Z][a-z]+)|([А-Я][а-я]+)$",
+            "type": "string",
+            "description": "First name",
+            "example": "Roman"
+          },
+          "lastName": {
+            "maxLength": 30,
+            "minLength": 2,
+            "pattern": "^([A-Z][a-z]+)|([А-Я][а-я]+)$",
+            "type": "string",
+            "description": "Last name",
+            "example": "Batygin"
+          },
+          "middleName": {
+            "maxLength": 30,
+            "minLength": 2,
+            "pattern": "^([A-Z][a-z]+)|([А-Я][а-я]+)$",
+            "type": "string",
+            "description": "Middle name",
+            "example": "Igorevich"
+          }
+        },
+        "description": "Update user info model"
+      },
+      "FilterRequestDto": {
+        "required": [
+          "matchMode",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string",
+            "description": "Filter column name"
+          },
+          "values": {
+            "maxItems": 50,
+            "minItems": 0,
+            "type": "array",
+            "items": {
+              "maxLength": 255,
+              "type": "string",
+              "description": "Column values to filter"
+            }
+          },
+          "matchMode": {
+            "type": "string",
+            "description": "Match mode type",
+            "enum": [
+              "EQUALS",
+              "LIKE",
+              "RANGE"
+            ]
+          }
+        },
+        "description": "Filter request model"
+      },
+      "PageRequestDto": {
+        "required": [
+          "page",
+          "size"
+        ],
+        "type": "object",
+        "properties": {
+          "page": {
+            "minimum": 0,
+            "type": "integer",
+            "description": "Page number",
+            "format": "int32",
+            "example": 0
+          },
+          "size": {
+            "minimum": 1,
+            "type": "integer",
+            "description": "Page size",
+            "format": "int32",
+            "example": 25
+          },
+          "sortField": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string",
+            "description": "Sort field"
+          },
+          "ascending": {
+            "type": "boolean",
+            "description": "Is ascending sort?"
+          },
+          "searchQuery": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string",
+            "description": "Search query string"
+          },
+          "filters": {
+            "maxItems": 50,
+            "minItems": 0,
+            "type": "array",
+            "description": "Filters list",
+            "items": {
+              "$ref": "#/components/schemas/FilterRequestDto"
+            }
+          }
+        },
+        "description": "Page request model"
+      },
+      "PageDtoUserDto": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "description": "Page content",
+            "items": {
+              "$ref": "#/components/schemas/UserDto"
+            }
+          },
+          "page": {
+            "type": "integer",
+            "description": "Page number",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "description": "Total elements count in all pages",
+            "format": "int64"
+          }
+        },
+        "description": "Page model"
+      },
+      "RoleDto": {
+        "type": "object",
+        "properties": {
+          "roleName": {
+            "type": "string",
+            "description": "Role name"
+          },
+          "description": {
+            "type": "string",
+            "description": "Role description"
+          }
+        },
+        "description": "User role model"
+      },
+      "UserDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "User id",
+            "format": "int64"
+          },
+          "login": {
+            "type": "string",
+            "description": "User login"
+          },
+          "email": {
+            "type": "string",
+            "description": "User email"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "User first name"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "User last name"
+          },
+          "middleName": {
+            "type": "string",
+            "description": "User middle name"
+          },
+          "fullName": {
+            "type": "string",
+            "description": "User full name"
+          },
+          "creationDate": {
+            "type": "string",
+            "description": "User creation date",
+            "example": "2021-07-01 14:00:00"
+          },
+          "tfaEnabled": {
+            "type": "boolean",
+            "description": "Two factor authentication enabled"
+          },
+          "locked": {
+            "type": "boolean",
+            "description": "Account locked"
+          },
+          "photoId": {
+            "type": "integer",
+            "description": "User photo id",
+            "format": "int64"
+          },
+          "passwordDate": {
+            "type": "string",
+            "description": "Last password change date",
+            "example": "2021-07-01 14:00:00"
+          },
+          "roles": {
+            "type": "array",
+            "description": "User roles",
+            "items": {
+              "$ref": "#/components/schemas/RoleDto"
+            }
+          }
+        },
+        "description": "User model"
+      },
+      "CreateUserDto": {
+        "required": [
+          "email",
+          "firstName",
+          "lastName",
+          "login",
+          "middleName"
+        ],
+        "type": "object",
+        "properties": {
+          "login": {
+            "maxLength": 32,
+            "minLength": 3,
+            "pattern": "^[a-z0-9]+$",
+            "type": "string",
+            "description": "User login",
+            "example": "user"
+          },
+          "email": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string",
+            "description": "User email",
+            "example": "bat1238@yandex.ru"
+          },
+          "firstName": {
+            "maxLength": 30,
+            "minLength": 2,
+            "pattern": "^([A-Z][a-z]+)|([А-Я][а-я]+)$",
+            "type": "string",
+            "description": "First name",
+            "example": "Roman"
+          },
+          "lastName": {
+            "maxLength": 30,
+            "minLength": 2,
+            "pattern": "^([A-Z][a-z]+)|([А-Я][а-я]+)$",
+            "type": "string",
+            "description": "Last name",
+            "example": "Batygin"
+          },
+          "middleName": {
+            "maxLength": 30,
+            "minLength": 2,
+            "pattern": "^([A-Z][a-z]+)|([А-Я][а-я]+)$",
+            "type": "string",
+            "description": "Middle name",
+            "example": "Igorevich"
+          }
+        },
+        "description": "Create user model"
+      },
+      "ResetPasswordRequest": {
+        "required": [
+          "password",
+          "token"
+        ],
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "Token value",
+            "example": "MDhmNTg4MDdiMTI0Y2Y4OWNmN2UxYmE1OTljYjUzOWU6MTYxNjE1MzM4MDMzMQ=="
+          },
+          "password": {
+            "type": "string",
+            "description": "New password",
+            "example": "passw0rd!"
+          }
+        },
+        "description": "Reset password request model"
+      },
+      "ForgotPasswordRequest": {
+        "required": [
+          "email"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User email",
+            "example": "bat1238@yandex.ru"
+          }
+        },
+        "description": "Forgot password request model"
+      },
+      "ChangePasswordRequest": {
+        "required": [
+          "newPassword",
+          "oldPassword"
+        ],
+        "type": "object",
+        "properties": {
+          "oldPassword": {
+            "type": "string",
+            "description": "Old password",
+            "example": "oldPassw0rd!"
+          },
+          "newPassword": {
+            "type": "string",
+            "description": "New password",
+            "example": "newPassw0rd!"
+          }
+        },
+        "description": "Change password request model"
+      }
+    },
+    "securitySchemes": {
+      "EcaAuth": {
+        "type": "oauth2",
+        "name": "EcaAuth",
+        "flows": {
+          "password": {
+            "tokenUrl": "http://localhost:8080/oauth/token",
+            "refreshUrl": "http://localhost:8080/oauth/token",
+            "scopes": {
+              "web": ""
+            }
+          }
+        }
+      }
+    }
+  }
+}

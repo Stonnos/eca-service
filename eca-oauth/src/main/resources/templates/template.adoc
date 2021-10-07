@@ -1,0 +1,10 @@
+= ${openApi.info.title}
+${openApi.info.description}
+Автор: ${openApi.info.contact.name}
+Email: ${openApi.info.contact.email}
+:toc:
+:toc-title: Оглавление
+
+<#list openApi.paths as path>
+${path.key}
+</#list>

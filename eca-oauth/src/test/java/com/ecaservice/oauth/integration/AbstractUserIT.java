@@ -64,7 +64,7 @@ abstract class AbstractUserIT {
     static final String PASSWORD = "pa66word!";
 
     @LocalServerPort
-    private int port;
+    public int port;
 
     @Value("${oauth2.client.id}")
     private String clientId;

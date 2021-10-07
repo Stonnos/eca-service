@@ -1,0 +1,89 @@
+= ${openApi.title}
+Автор: ${openApi.author} <${openApi.email}>
+:toc:
+:toc-title: Оглавление
+
+== Описание
+
+${openApi.description}
+
+<#list openApi.methods as method>
+== ${method.description}
+
+*${method.requestType}*
+*${method.endpoint}* - ${method.summary}
+
+<#if method.requestBody??>
+|===
+|Формат запроса|Обязательность|Тело запроса|Пример запроса
+|${method.requestBody.contentType}
+|${method.requestBody.required}
+|<#if method.requestBody.bodyRef??><<${method.requestBody.bodyRef}>><#else>-</#if>
+a|
+<#if method.requestBody.example??>
+[source,json]
+----
+${method.requestBody.example}
+----
+<#else>
+-
+</#if>
+|===
+</#if>
+<#if method.requestParameters?has_content>
+|===
+|Название параметра|Описание параметра|Тип|Тип данных|Мин. длина|Макс. длина
+<#list method.requestParameters as parameter>
+|*${parameter.name}*<#if parameter.required == "true">*</#if>
+|${parameter.description}
+|${parameter.in}
+|${parameter.schemaModel.type} <#if parameter.schemaModel.format??>(${parameter.schemaModel.format})</#if>
+|<#if parameter.schemaModel.minLength??>${parameter.schemaModel.minLength}<#else>-</#if>
+|<#if parameter.schemaModel.maxLength??>${parameter.schemaModel.maxLength}<#else>-</#if>
+</#list>
+|===
+</#if>
+<#if method.apiResponses?has_content>
+Список кодов ответа
+|===
+|Код ответа|Описание|Формат ответа|Пример ответа
+<#list method.apiResponses as apiResponse>
+|${apiResponse.responseCode}
+|${apiResponse.description}
+|<#if apiResponse.contentType??>${apiResponse.contentType}<#else>-</#if>
+a|
+<#if apiResponse.example??>
+[source,json]
+----
+${apiResponse.example}
+----
+<#else>
+-
+</#if>
+</#list>
+|===
+
+</#if>
+</#list>
+
+<#if openApi.components?has_content>
+== Описание форматов для запросов
+<#list openApi.components as component>
+=== ${component.name}
+<#if component.fields?has_content>
+:table-caption: Таблица
+.${component.description}
+|===
+|Название параметра|Описание параметра|Тип данных|Мин. длина|Макс. длина|Паттерн
+<#list component.fields as field>
+|*${field.fieldName}*<#if field.required == "true">*</#if>
+|<#if field.description??>${field.description}<#else>-</#if>
+|${field.schemaModel.type} <#if field.schemaModel.format??>(${field.schemaModel.format})</#if>
+|<#if field.schemaModel.minLength??>${field.schemaModel.minLength}<#else>-</#if>
+|<#if field.schemaModel.maxLength??>${field.schemaModel.maxLength}<#else>-</#if>
+|<#if field.schemaModel.pattern??>`${field.schemaModel.pattern}`<#else>-</#if>
+</#list>
+|===
+</#if>
+</#list>
+</#if>
