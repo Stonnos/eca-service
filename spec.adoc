@@ -9,7 +9,7 @@ API provides operations with users for ECA web application
 
 == Updates info for current authenticated user
 
-[green]##PUT##
+*PUT*
 */users/update-info* - Updates info for current authenticated user
 
 |===
@@ -20,7 +20,7 @@ API provides operations with users for ECA web application
 |===
 == Uploads photo for current authenticated user
 
-[green]##POST##
+*POST*
 */users/upload-photo* - Uploads photo for current authenticated user
 
 |===
@@ -31,7 +31,7 @@ API provides operations with users for ECA web application
 |===
 == Unlocks user
 
-[green]##POST##
+*POST*
 */users/unlock* - Unlocks user
 
 |===
@@ -46,7 +46,7 @@ API provides operations with users for ECA web application
 |===
 == Enable/disable tfa for current authenticated user
 
-[green]##POST##
+*POST*
 */users/tfa* - Enable/disable tfa for current authenticated user
 
 |===
@@ -61,12 +61,12 @@ API provides operations with users for ECA web application
 |===
 == Logout current user and revokes access/refresh token pair
 
-[green]##POST##
+*POST*
 */users/logout* - Logout current user and revokes access/refresh token pair
 
 == Locks user
 
-[green]##POST##
+*POST*
 */users/lock* - Locks user
 
 |===
@@ -81,7 +81,7 @@ API provides operations with users for ECA web application
 |===
 == Finds users with specified options
 
-[green]##POST##
+*POST*
 */users/list* - Finds users with specified options
 
 |===
@@ -99,7 +99,7 @@ API provides operations with users for ECA web application
 ----
 == Creates new user
 
-[green]##POST##
+*POST*
 */users/create* - Creates new user
 
 |===
@@ -110,7 +110,7 @@ API provides operations with users for ECA web application
 |===
 == Verify reset password token
 
-[green]##POST##
+*POST*
 */password/verify-token* - Verify reset password token
 
 |===
@@ -125,7 +125,7 @@ API provides operations with users for ECA web application
 |===
 == Reset password with specified token
 
-[green]##POST##
+*POST*
 */password/reset* - Reset password with specified token
 
 |===
@@ -136,7 +136,7 @@ API provides operations with users for ECA web application
 |===
 == Creates forgot password request
 
-[green]##POST##
+*POST*
 */password/forgot* - Creates forgot password request
 
 |===
@@ -147,7 +147,7 @@ API provides operations with users for ECA web application
 |===
 == Creates change password request
 
-[green]##POST##
+*POST*
 */password/change/request* - Creates change password request
 
 |===
@@ -158,7 +158,7 @@ API provides operations with users for ECA web application
 |===
 == Confirms change password request
 
-[green]##POST##
+*POST*
 */password/change/confirm* - Confirms change password request
 
 |===
@@ -173,7 +173,7 @@ API provides operations with users for ECA web application
 |===
 == Creates change email request
 
-[green]##POST##
+*POST*
 */email/change/request* - Creates change email request
 
 |===
@@ -188,7 +188,7 @@ API provides operations with users for ECA web application
 |===
 == Confirms change email request
 
-[green]##POST##
+*POST*
 */email/change/confirm* - Confirms change email request
 
 |===
@@ -203,12 +203,12 @@ API provides operations with users for ECA web application
 |===
 == Gets current authenticated user info
 
-[green]##GET##
+*GET*
 */users/user-info* - Gets current authenticated user info
 
 == Downloads user photo
 
-[green]##GET##
+*GET*
 */users/photo/{id}* - Downloads user photo
 
 |===
@@ -223,6 +223,318 @@ API provides operations with users for ECA web application
 |===
 == Deletes photo for current authenticated user
 
-[green]##DELETE##
+*DELETE*
 */users/delete-photo* - Deletes photo for current authenticated user
 
+
+== Описание форматов для запросов
+=== UpdateUserInfoDto - Update user info model
+|Название параметра|Описание параметра|Тип данных|Обязательность|Мин. длина|Макс. длина|Паттерн
+|firstName
+|First name
+|string 
+|true
+|2
+|30
+|^([A-Z][a-z]+)|([А-Я][а-я]+)$
+|lastName
+|Last name
+|string 
+|true
+|2
+|30
+|^([A-Z][a-z]+)|([А-Я][а-я]+)$
+|middleName
+|Middle name
+|string 
+|true
+|2
+|30
+|^([A-Z][a-z]+)|([А-Я][а-я]+)$
+|===
+=== FilterRequestDto - Filter request model
+|Название параметра|Описание параметра|Тип данных|Обязательность|Мин. длина|Макс. длина|Паттерн
+|name
+|Filter column name
+|string 
+|true
+|0
+|255
+|-
+|values
+|-
+|array 
+|false
+|-
+|-
+|-
+|matchMode
+|Match mode type
+|string 
+|true
+|-
+|-
+|-
+|===
+=== PageRequestDto - Page request model
+|Название параметра|Описание параметра|Тип данных|Обязательность|Мин. длина|Макс. длина|Паттерн
+|page
+|Page number
+|integer (int32)
+|true
+|-
+|-
+|-
+|size
+|Page size
+|integer (int32)
+|true
+|-
+|-
+|-
+|sortField
+|Sort field
+|string 
+|false
+|0
+|255
+|-
+|ascending
+|Is ascending sort?
+|boolean 
+|false
+|-
+|-
+|-
+|searchQuery
+|Search query string
+|string 
+|false
+|0
+|255
+|-
+|filters
+|Filters list
+|array 
+|false
+|-
+|-
+|-
+|===
+=== PageDtoUserDto - Page model
+|Название параметра|Описание параметра|Тип данных|Обязательность|Мин. длина|Макс. длина|Паттерн
+|content
+|Page content
+|array 
+|false
+|-
+|-
+|-
+|page
+|Page number
+|integer (int32)
+|false
+|-
+|-
+|-
+|totalCount
+|Total elements count in all pages
+|integer (int64)
+|false
+|-
+|-
+|-
+|===
+=== RoleDto - User role model
+|Название параметра|Описание параметра|Тип данных|Обязательность|Мин. длина|Макс. длина|Паттерн
+|roleName
+|Role name
+|string 
+|false
+|-
+|-
+|-
+|description
+|Role description
+|string 
+|false
+|-
+|-
+|-
+|===
+=== UserDto - User model
+|Название параметра|Описание параметра|Тип данных|Обязательность|Мин. длина|Макс. длина|Паттерн
+|id
+|User id
+|integer (int64)
+|false
+|-
+|-
+|-
+|login
+|User login
+|string 
+|false
+|-
+|-
+|-
+|email
+|User email
+|string 
+|false
+|-
+|-
+|-
+|firstName
+|User first name
+|string 
+|false
+|-
+|-
+|-
+|lastName
+|User last name
+|string 
+|false
+|-
+|-
+|-
+|middleName
+|User middle name
+|string 
+|false
+|-
+|-
+|-
+|fullName
+|User full name
+|string 
+|false
+|-
+|-
+|-
+|creationDate
+|User creation date
+|string 
+|false
+|-
+|-
+|-
+|tfaEnabled
+|Two factor authentication enabled
+|boolean 
+|false
+|-
+|-
+|-
+|locked
+|Account locked
+|boolean 
+|false
+|-
+|-
+|-
+|photoId
+|User photo id
+|integer (int64)
+|false
+|-
+|-
+|-
+|passwordDate
+|Last password change date
+|string 
+|false
+|-
+|-
+|-
+|roles
+|User roles
+|array 
+|false
+|-
+|-
+|-
+|===
+=== CreateUserDto - Create user model
+|Название параметра|Описание параметра|Тип данных|Обязательность|Мин. длина|Макс. длина|Паттерн
+|login
+|User login
+|string 
+|true
+|3
+|32
+|^[a-z0-9]+$
+|email
+|User email
+|string 
+|true
+|0
+|255
+|-
+|firstName
+|First name
+|string 
+|true
+|2
+|30
+|^([A-Z][a-z]+)|([А-Я][а-я]+)$
+|lastName
+|Last name
+|string 
+|true
+|2
+|30
+|^([A-Z][a-z]+)|([А-Я][а-я]+)$
+|middleName
+|Middle name
+|string 
+|true
+|2
+|30
+|^([A-Z][a-z]+)|([А-Я][а-я]+)$
+|===
+=== ResetPasswordRequest - Reset password request model
+|Название параметра|Описание параметра|Тип данных|Обязательность|Мин. длина|Макс. длина|Паттерн
+|token
+|Token value
+|string 
+|true
+|-
+|-
+|-
+|password
+|New password
+|string 
+|true
+|-
+|-
+|-
+|===
+=== ForgotPasswordRequest - Forgot password request model
+|Название параметра|Описание параметра|Тип данных|Обязательность|Мин. длина|Макс. длина|Паттерн
+|email
+|User email
+|string 
+|true
+|-
+|-
+|-
+|===
+=== ChangePasswordRequest - Change password request model
+|Название параметра|Описание параметра|Тип данных|Обязательность|Мин. длина|Макс. длина|Паттерн
+|oldPassword
+|Old password
+|string 
+|true
+|-
+|-
+|-
+|newPassword
+|New password
+|string 
+|true
+|-
+|-
+|-
+|===
