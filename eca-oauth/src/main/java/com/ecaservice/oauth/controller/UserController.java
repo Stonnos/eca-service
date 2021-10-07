@@ -185,7 +185,7 @@ public class UserController {
      * @param pageRequestDto - page request dto
      * @return users page
      */
-    @PreAuthorize("#oauth2.hasScope('web') and hasRole('ROLE_USER')")
+    @PreAuthorize("#oauth2.hasScope('web') and hasRole('ROLE_SUPER_ADMIN')")
     @Operation(
             description = "Finds users with specified options",
             summary = "Finds users with specified options",
