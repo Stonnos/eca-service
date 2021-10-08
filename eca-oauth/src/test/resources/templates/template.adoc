@@ -88,7 +88,15 @@ ${apiResponse.example}
 <#list component.fields as field>
 |*${field.fieldName}*<#if field.required == "true">*</#if>
 |<#if field.description??>${field.description}<#else>-</#if>
-|${field.schemaModel.type} <#if field.schemaModel.format??>(${field.schemaModel.format})</#if>
+|<#if field.schemaModel.type??>
+${field.schemaModel.type}
+<#if field.schemaModel.format??>
+(${field.schemaModel.format})
+</#if>
+</#if>
+<#if field.schemaModel.objectTypeRef??>
+<<${field.schemaModel.objectTypeRef}>>
+</#if>
 |<#if field.schemaModel.minLength??>${field.schemaModel.minLength}<#else>-</#if>
 |<#if field.schemaModel.maxLength??>${field.schemaModel.maxLength}<#else>-</#if>
 |<#if field.schemaModel.pattern??>`${field.schemaModel.pattern}`<#else>-</#if>

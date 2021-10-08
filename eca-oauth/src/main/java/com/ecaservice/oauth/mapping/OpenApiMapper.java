@@ -5,9 +5,11 @@ import com.ecaservice.oauth.model.RequestBodyModel;
 import com.ecaservice.oauth.model.RequestParameterModel;
 import com.ecaservice.oauth.model.SchemaModel;
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.media.MediaType;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.parameters.Parameter;
 import io.swagger.v3.oas.models.parameters.RequestBody;
+import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -35,6 +37,7 @@ public interface OpenApiMapper {
 
     @Mapping(source = "pattern", target = "pattern", qualifiedByName = "mapPattern")
     @Mapping(source = "enum", target = "enumValues")
+    @Mapping(source = "$ref", target = "objectTypeRef")
     SchemaModel map(Schema schema);
 
     List<RequestParameterModel> map(List<Parameter> parameters);
@@ -50,6 +53,13 @@ public interface OpenApiMapper {
     default String mapPattern(String pattern) {
         return Optional.ofNullable(pattern)
                 .map(val -> val.replace("|", "\\|"))
+                .orElse(null);
+    }
+
+    @Named("mapRef")
+    default String mapRef(String value) {
+        return Optional.ofNullable(value)
+                .map(ref -> StringUtils.substringAfterLast(ref, "/"))
                 .orElse(null);
     }
 }

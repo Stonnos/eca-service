@@ -11,6 +11,7 @@ public class SchemaModel {
     private String description;
     private String type;
     private String format;
+    private String objectTypeRef;
     private BigDecimal maximum;
     private Boolean exclusiveMaximum;
     private BigDecimal minimum;
