@@ -1,5 +1,6 @@
 package com.ecaservice.mail.controller;
 
+import com.ecaservice.common.web.dto.ValidationErrorDto;
 import com.ecaservice.mail.mapping.TemplateMapper;
 import com.ecaservice.mail.model.TemplateEntity;
 import com.ecaservice.mail.service.TemplateService;
@@ -7,8 +8,10 @@ import com.ecaservice.web.dto.model.EmailTemplateDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -70,7 +73,8 @@ public class TemplateController {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
                                             @ExampleObject(value = EMAIL_TEMPLATES_PAGE_RESPONSE_JSON),
-                                    }
+                                    },
+                                    schema = @Schema(implementation = PageDto.class)
                             )
                     ),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
@@ -86,7 +90,8 @@ public class TemplateController {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
                                             @ExampleObject(value = INVALID_PAGE_REQUEST_RESPONSE_JSON),
-                                    }
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
                     )
             }
