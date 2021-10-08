@@ -37,7 +37,7 @@ public interface OpenApiMapper {
 
     @Mapping(source = "pattern", target = "pattern", qualifiedByName = "mapPattern")
     @Mapping(source = "enum", target = "enumValues")
-    @Mapping(source = "$ref", target = "objectTypeRef")
+    @Mapping(source = "$ref", target = "objectTypeRef", qualifiedByName = "mapRef")
     SchemaModel map(Schema schema);
 
     List<RequestParameterModel> map(List<Parameter> parameters);

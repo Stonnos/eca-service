@@ -127,13 +127,13 @@ string
 |-
 |*requestStatus*
 |-
-|<<#/components/schemas/EnumDto>>
+|<<EnumDto>>
 |-
 |-
 |-
 |*evaluationMethod*
 |-
-|<<#/components/schemas/EnumDto>>
+|<<EnumDto>>
 |-
 |-
 |-
@@ -212,7 +212,7 @@ string
 |-
 |*experimentType*
 |-
-|<<#/components/schemas/EnumDto>>
+|<<EnumDto>>
 |-
 |-
 |-
