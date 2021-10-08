@@ -62,6 +62,7 @@ public class OpenApiService {
                 .collect(Collectors.toList());
     }
 
+    @SuppressWarnings("unchecked")
     private ComponentModel convertToComponentModel(String name, Schema schema) {
         Map<String, Schema> properties = Optional.ofNullable(schema.getProperties()).orElse(Collections.emptyMap());
         var requiredFields = Optional.ofNullable(schema.getRequired()).orElse(Collections.emptyList());
@@ -77,7 +78,6 @@ public class OpenApiService {
     }
 
     private FieldModel convertToFieldModel(String fieldName, boolean required, Schema schema) {
-        var requiredFields = Optional.ofNullable(schema.getRequired()).orElse(Collections.emptyList());
         SchemaModel schemaModel = openApiMapper.map(schema);
         return FieldModel.builder()
                 .fieldName(fieldName)
