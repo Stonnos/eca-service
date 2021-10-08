@@ -12,4 +12,6 @@ public class ApiResponseModel {
     private String contentType;
 
     private String example;
+
+    private String objectTypeRef;
 }

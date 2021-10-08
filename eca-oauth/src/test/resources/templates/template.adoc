@@ -15,7 +15,7 @@ ${openApi.description}
 
 <#if method.requestBody??>
 |===
-|Формат запроса|Обязательность|Тело запроса|Пример запроса
+|Формат запроса|Обязательность|Структура запроса|Пример запроса
 |${method.requestBody.contentType}
 |${method.requestBody.required}
 |<#if method.requestBody.bodyRef??><<${method.requestBody.bodyRef}>><#else>-</#if>
@@ -56,11 +56,12 @@ a|<#if parameter.schemaModel.enumValues?has_content>
 
 *Список кодов ответа*
 |===
-|Код ответа|Описание|Формат ответа|Пример ответа
+|Код ответа|Описание|Формат ответа|Структура ответа|Пример ответа
 <#list method.apiResponses as apiResponse>
 |${apiResponse.responseCode}
 |${apiResponse.description}
 |<#if apiResponse.contentType??>${apiResponse.contentType}<#else>-</#if>
+|<#if apiResponse.objectTypeRef??><<${apiResponse.objectTypeRef}>><#else>-</#if>
 a|
 <#if apiResponse.example??>
 [source,json]

@@ -119,7 +119,7 @@ public class OpenApiService {
                     RequestBodyModel requestBodyModel = openApiMapper.map(requestBody);
                     var mediaType = requestBody.getContent().entrySet().iterator().next();
                     requestBodyModel.setContentType(mediaType.getKey());
-                    requestBodyModel.setBodyRef(getBodyRef(mediaType.getValue()));
+                    requestBodyModel.setBodyRef(getBodyRef(mediaType.getValue().getSchema()));
                     requestBodyModel.setExample(getExample(mediaType.getValue()));
                     return requestBodyModel;
                 }).orElse(null);
@@ -143,6 +143,7 @@ public class OpenApiService {
             var mediaType = apiResponse.getContent().entrySet().iterator().next();
             apiResponseModel.setContentType(mediaType.getKey());
             apiResponseModel.setExample(getExample(mediaType.getValue()));
+            apiResponseModel.setObjectTypeRef(getBodyRef(mediaType.getValue().getSchema()));
         }
         return apiResponseModel;
     }
@@ -159,8 +160,8 @@ public class OpenApiService {
                 ).orElse(null);
     }
 
-    private String getBodyRef(MediaType mediaType) {
-        return Optional.ofNullable(mediaType.getSchema())
+    private String getBodyRef(Schema schema) {
+        return Optional.ofNullable(schema)
                 .map(Schema::get$ref)
                 .map(ref -> StringUtils.substringAfterLast(ref, "/"))
                 .orElse(null);
