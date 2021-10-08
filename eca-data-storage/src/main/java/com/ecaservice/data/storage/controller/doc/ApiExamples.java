@@ -11,11 +11,6 @@ import lombok.experimental.UtilityClass;
 public class ApiExamples {
 
     /**
-     * Simple page request json
-     */
-    public static final String SIMPLE_PAGE_REQUEST_JSON = "{\"page\":0,\"size\":25}";
-
-    /**
      * Instances response json
      */
     public static final String INSTANCES_DETAILS_RESPONSE_JSON = "{\"id\": 1, \"tableName\": \"iris\", " +

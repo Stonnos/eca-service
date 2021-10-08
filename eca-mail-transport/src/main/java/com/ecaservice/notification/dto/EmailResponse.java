@@ -17,6 +17,6 @@ public class EmailResponse {
     /**
      * Email request id
      */
-    @Schema(description = "Request id")
+    @Schema(description = "Request id", example = "1d2de514-3a87-4620-9b97-c260e24340de")
     private String requestId;
 }

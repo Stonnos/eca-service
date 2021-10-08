@@ -22,7 +22,7 @@ public class EmailTemplateParameterDto {
     /**
      * ID
      */
-    @Schema(description = "ID")
+    @Schema(description = "ID", example = "1")
     private Long id;
 
     /**
@@ -30,18 +30,18 @@ public class EmailTemplateParameterDto {
      */
     @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @Schema(description = "Parameter creation date")
+    @Schema(description = "Parameter creation date", type = "string", example = "2021-07-01 14:00:00")
     private LocalDateTime created;
 
     /**
      * Parameter name
      */
-    @Schema(description = "Parameter name")
+    @Schema(description = "Parameter name", example = "requestId")
     private String parameterName;
 
     /**
      * Parameter description
      */
-    @Schema(description = "Parameter description")
+    @Schema(description = "Parameter description", example = "Experiment request id")
     private String description;
 }
