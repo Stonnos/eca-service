@@ -31,6 +31,8 @@ ${method.requestBody.example}
 |===
 </#if>
 <#if method.requestParameters?has_content>
+
+*Параметры запроса*
 |===
 |Название параметра|Описание параметра|Тип|Тип данных|Значения|Мин. длина|Макс. длина
 <#list method.requestParameters as parameter>
@@ -51,7 +53,8 @@ a|<#if parameter.schemaModel.enumValues?has_content>
 |===
 </#if>
 <#if method.apiResponses?has_content>
-Список кодов ответа
+
+*Список кодов ответа*
 |===
 |Код ответа|Описание|Формат ответа|Пример ответа
 <#list method.apiResponses as apiResponse>
