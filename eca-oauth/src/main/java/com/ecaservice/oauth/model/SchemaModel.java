@@ -3,6 +3,7 @@ package com.ecaservice.oauth.model;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 public class SchemaModel {
@@ -19,4 +20,5 @@ public class SchemaModel {
     private String pattern;
     private Integer maxItems;
     private Integer minItems;
+    private List<String> enumValues;
 }

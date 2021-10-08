@@ -32,12 +32,19 @@ ${method.requestBody.example}
 </#if>
 <#if method.requestParameters?has_content>
 |===
-|Название параметра|Описание параметра|Тип|Тип данных|Мин. длина|Макс. длина
+|Название параметра|Описание параметра|Тип|Тип данных|Значения|Мин. длина|Макс. длина
 <#list method.requestParameters as parameter>
 |*${parameter.name}*<#if parameter.required == "true">*</#if>
 |${parameter.description}
 |${parameter.in}
 |${parameter.schemaModel.type} <#if parameter.schemaModel.format??>(${parameter.schemaModel.format})</#if>
+a|<#if parameter.schemaModel.enumValues?has_content>
+<#list parameter.schemaModel.enumValues as enumValue>
+* ${enumValue}
+</#list>
+<#else>
+-
+</#if>
 |<#if parameter.schemaModel.minLength??>${parameter.schemaModel.minLength}<#else>-</#if>
 |<#if parameter.schemaModel.maxLength??>${parameter.schemaModel.maxLength}<#else>-</#if>
 </#list>

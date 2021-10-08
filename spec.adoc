@@ -1,16 +1,134 @@
-= Microservice for collecting and storing audit events
+= Microservice for storaging training data sets
 Автор: Roman Batygin <roman.batygin@mail.ru>
 :toc:
 :toc-title: Оглавление
 
 == Описание
 
-API provides operations with audit events
+API provides operations with training data sets for ECA web application
 
-== Downloads audit logs base report in xlsx format
+== Renames data with specified id
+
+*PUT*
+*/instances/rename* - Renames data with specified id
+
+|===
+|Название параметра|Описание параметра|Тип|Тип данных|Значения|Мин. длина|Макс. длина
+|*id**
+|Instances id
+|query
+|integer (int64)
+a|-
+|-
+|-
+|*tableName**
+|Table name
+|query
+|string 
+a|-
+|0
+|30
+|===
+Список кодов ответа
+|===
+|Код ответа|Описание|Формат ответа|Пример ответа
+|200
+|OK
+|-
+a|
+-
+|401
+|Not authorized
+|application/json
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|application/json
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "UniqueTableName",
+  "errorMessage" : "Table with name [iris] already exists!"
+} ]
+----
+|===
+
+== Saves instances into database
 
 *POST*
-*/audit-log/report/download* - Downloads audit logs base report in xlsx format
+*/instances/save* - Saves instances into database
+
+|===
+|Формат запроса|Обязательность|Тело запроса|Пример запроса
+|multipart/form-data
+|false
+|-
+a|
+-
+|===
+|===
+|Название параметра|Описание параметра|Тип|Тип данных|Значения|Мин. длина|Макс. длина
+|*tableName**
+|Table name
+|query
+|string 
+a|-
+|0
+|30
+|===
+Список кодов ответа
+|===
+|Код ответа|Описание|Формат ответа|Пример ответа
+|200
+|OK
+|application/json
+a|
+[source,json]
+----
+{
+  "id" : 1,
+  "sourceFileName" : "iris.xls",
+  "tableName" : "iris"
+}
+----
+|401
+|Not authorized
+|application/json
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|application/json
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "UniqueTableName",
+  "errorMessage" : "Table with name [iris] already exists!"
+} ]
+----
+|===
+
+== Finds instances tables with specified options such as filter, sorting and paging
+
+*POST*
+*/instances/list* - Finds instances tables with specified options such as filter, sorting and paging
 
 |===
 |Формат запроса|Обязательность|Тело запроса|Пример запроса
@@ -22,25 +140,224 @@ a|
 ----
 {
   "page" : 0,
-  "size" : 25,
-  "sortField" : "eventDate",
-  "ascending" : false,
-  "searchQuery" : "",
-  "filters" : [ {
-    "name" : "groupCode",
-    "values" : [ "USER_PROFILE_ACTIONS" ],
-    "matchMode" : "EQUALS"
-  }, {
-    "name" : "initiator",
-    "values" : [ "admin" ],
-    "matchMode" : "LIKE"
-  }, {
-    "name" : "eventDate",
-    "values" : [ "2021-07-16" ],
-    "matchMode" : "RANGE"
-  } ]
+  "size" : 25
 }
 ----
+|===
+Список кодов ответа
+|===
+|Код ответа|Описание|Формат ответа|Пример ответа
+|200
+|OK
+|application/json
+a|
+[source,json]
+----
+{
+  "content" : [ {
+    "id" : 1,
+    "tableName" : "iris",
+    "numInstances" : 150,
+    "numAttributes" : 5,
+    "created" : "2021-07-01 14:00:00",
+    "createdBy" : "admin"
+  } ],
+  "page" : 0,
+  "totalCount" : 1
+}
+----
+|401
+|Not authorized
+|application/json
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|application/json
+a|
+[source,json]
+----
+[ {
+  "fieldName" : "page",
+  "code" : "Min",
+  "errorMessage" : "must be greater than or equal to 0"
+}, {
+  "fieldName" : "size",
+  "code" : "Min",
+  "errorMessage" : "must be greater than or equal to 1"
+} ]
+----
+|===
+
+== Finds data page for specified instances
+
+*POST*
+*/instances/data-page* - Finds data page for specified instances
+
+|===
+|Формат запроса|Обязательность|Тело запроса|Пример запроса
+|application/json
+|true
+|<<PageRequestDto>>
+a|
+[source,json]
+----
+{
+  "page" : 0,
+  "size" : 25
+}
+----
+|===
+|===
+|Название параметра|Описание параметра|Тип|Тип данных|Значения|Мин. длина|Макс. длина
+|*id**
+|Instances id
+|query
+|integer (int64)
+a|-
+|-
+|-
+|===
+Список кодов ответа
+|===
+|Код ответа|Описание|Формат ответа|Пример ответа
+|200
+|OK
+|application/json
+a|
+[source,json]
+----
+{
+  "content" : [ [ "5.1", "3.5", "1.4", "0.2", "Iris-setosa" ], [ "4.9", "3.0", "1.4", "0.2", "Iris-setosa" ], [ "4.7", "3.2", "1.3", "0.2", "Iris-setosa" ] ],
+  "page" : 0,
+  "totalCount" : 3
+}
+----
+|401
+|Not authorized
+|application/json
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|application/json
+a|
+[source,json]
+----
+[ {
+  "fieldName" : "page",
+  "code" : "Min",
+  "errorMessage" : "must be greater than or equal to 0"
+}, {
+  "fieldName" : "size",
+  "code" : "Min",
+  "errorMessage" : "must be greater than or equal to 1"
+} ]
+----
+|===
+
+== Gets instances reports info
+
+*GET*
+*/instances/reports-info* - Gets instances reports info
+
+Список кодов ответа
+|===
+|Код ответа|Описание|Формат ответа|Пример ответа
+|200
+|OK
+|application/json
+a|
+[source,json]
+----
+[ {
+  "title" : "Microsoft Excel (.xlsx)",
+  "reportType" : "XLS",
+  "fileExtension" : "xlsx"
+}, {
+  "title" : "Формат CSV (.csv)",
+  "reportType" : "CSV",
+  "fileExtension" : "csv"
+}, {
+  "title" : "Формат Arff (.arff)",
+  "reportType" : "ARFF",
+  "fileExtension" : "arff"
+}, {
+  "title" : "Json формат (.json)",
+  "reportType" : "JSON",
+  "fileExtension" : "json"
+}, {
+  "title" : "Xml формат (.xml)",
+  "reportType" : "XML",
+  "fileExtension" : "xml"
+}, {
+  "title" : "Текстовый формат (.txt)",
+  "reportType" : "TXT",
+  "fileExtension" : "txt"
+}, {
+  "title" : "Формат данных (.data)",
+  "reportType" : "DATA",
+  "fileExtension" : "data"
+}, {
+  "title" : "Microsoft Word (.docx)",
+  "reportType" : "DOCX",
+  "fileExtension" : "docx"
+} ]
+----
+|401
+|Not authorized
+|application/json
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|===
+
+== Download instances report with specified type
+
+*GET*
+*/instances/download* - Download instances report with specified type
+
+|===
+|Название параметра|Описание параметра|Тип|Тип данных|Значения|Мин. длина|Макс. длина
+|*id**
+|Instances id
+|query
+|integer (int64)
+a|-
+|-
+|-
+|*reportType**
+|Report type
+|query
+|string 
+a|
+* XLS
+* CSV
+* ARFF
+* JSON
+* XML
+* TXT
+* DATA
+* DOCX
+|-
+|-
 |===
 Список кодов ответа
 |===
@@ -61,17 +378,6 @@ a|
   "error_description" : "Full authentication is required to access this resource"
 }
 ----
-|403
-|Permission denied
-|application/json
-a|
-[source,json]
-----
-{
-  "error" : "access_denied",
-  "error_description" : "Access is denied"
-}
-----
 |400
 |Bad request
 |application/json
@@ -79,51 +385,27 @@ a|
 [source,json]
 ----
 [ {
-  "fieldName" : "page",
-  "code" : "Min",
-  "errorMessage" : "must be greater than or equal to 0"
-}, {
-  "fieldName" : "size",
-  "code" : "Min",
-  "errorMessage" : "must be greater than or equal to 1"
+  "fieldName" : null,
+  "code" : "DataNotFound",
+  "errorMessage" : "Entity with search key [1] not found!"
 } ]
 ----
 |===
 
-== Finds audit logs with specified options such as filter, sorting and paging
+== Gets instances details
 
-*POST*
-*/audit-log/list* - Finds audit logs with specified options such as filter, sorting and paging
+*GET*
+*/instances/details/{id}* - Gets instances details
 
 |===
-|Формат запроса|Обязательность|Тело запроса|Пример запроса
-|application/json
-|true
-|<<PageRequestDto>>
-a|
-[source,json]
-----
-{
-  "page" : 0,
-  "size" : 25,
-  "sortField" : "eventDate",
-  "ascending" : false,
-  "searchQuery" : "",
-  "filters" : [ {
-    "name" : "groupCode",
-    "values" : [ "USER_PROFILE_ACTIONS" ],
-    "matchMode" : "EQUALS"
-  }, {
-    "name" : "initiator",
-    "values" : [ "admin" ],
-    "matchMode" : "LIKE"
-  }, {
-    "name" : "eventDate",
-    "values" : [ "2021-07-16" ],
-    "matchMode" : "RANGE"
-  } ]
-}
-----
+|Название параметра|Описание параметра|Тип|Тип данных|Значения|Мин. длина|Макс. длина
+|*id**
+|Instances id
+|path
+|integer (int64)
+a|-
+|-
+|-
 |===
 Список кодов ответа
 |===
@@ -135,18 +417,12 @@ a|
 [source,json]
 ----
 {
-  "content" : [ {
-    "eventId" : "1d2de514-3a87-4620-9b97-c260e24340de",
-    "message" : "Some action",
-    "initiator" : "user",
-    "groupCode" : "USER_ACTIONS",
-    "groupTitle" : "User actions",
-    "code" : "LOGIN",
-    "codeTitle" : "User logged in",
-    "eventDate" : "2021-07-01 14:00:00"
-  } ],
-  "page" : 0,
-  "totalCount" : 1
+  "id" : 1,
+  "tableName" : "iris",
+  "numInstances" : 150,
+  "numAttributes" : 5,
+  "created" : "2021-07-01 14:00:00",
+  "createdBy" : "admin"
 }
 ----
 |401
@@ -160,15 +436,55 @@ a|
   "error_description" : "Full authentication is required to access this resource"
 }
 ----
-|403
-|Permission denied
+|400
+|Bad request
+|application/json
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "DataNotFound",
+  "errorMessage" : "Entity with search key [1] not found!"
+} ]
+----
+|===
+
+== Gets attributes list for specified instances
+
+*GET*
+*/instances/attributes/{id}* - Gets attributes list for specified instances
+
+|===
+|Название параметра|Описание параметра|Тип|Тип данных|Значения|Мин. длина|Макс. длина
+|*id**
+|Instances id
+|path
+|integer (int64)
+a|-
+|-
+|-
+|===
+Список кодов ответа
+|===
+|Код ответа|Описание|Формат ответа|Пример ответа
+|200
+|OK
+|application/json
+a|
+[source,json]
+----
+[ "x1", "x2", "x3", "x4", "class" ]
+----
+|401
+|Not authorized
 |application/json
 a|
 [source,json]
 ----
 {
-  "error" : "access_denied",
-  "error_description" : "Access is denied"
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
 }
 ----
 |400
@@ -178,42 +494,27 @@ a|
 [source,json]
 ----
 [ {
-  "fieldName" : "page",
-  "code" : "Min",
-  "errorMessage" : "must be greater than or equal to 0"
-}, {
-  "fieldName" : "size",
-  "code" : "Min",
-  "errorMessage" : "must be greater than or equal to 1"
+  "fieldName" : null,
+  "code" : "DataNotFound",
+  "errorMessage" : "Entity with search key [1] not found!"
 } ]
 ----
 |===
 
-== Saves audit event into database
+== Deletes instances with specified id
 
-*POST*
-*/api/audit/event/save* - Saves audit event into database
+*DELETE*
+*/instances/delete* - Deletes instances with specified id
 
 |===
-|Формат запроса|Обязательность|Тело запроса|Пример запроса
-|application/json
-|true
-|<<AuditEventRequest>>
-a|
-[source,json]
-----
-{
-  "eventId" : "a01ebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
-  "message" : "Audit message",
-  "initiator" : "user",
-  "eventType" : "START",
-  "groupCode" : "GROUP_CODE",
-  "groupTitle" : "",
-  "code" : "AUDIT_CODE",
-  "codeTitle" : "",
-  "eventDate" : "2021-07-16 07:57:11"
-}
-----
+|Название параметра|Описание параметра|Тип|Тип данных|Значения|Мин. длина|Макс. длина
+|*id**
+|Instances id
+|query
+|integer (int64)
+a|-
+|-
+|-
 |===
 Список кодов ответа
 |===
@@ -223,68 +524,6 @@ a|
 |-
 a|
 -
-|===
-
-== Gets audit log filter fields
-
-*GET*
-*/audit-log/filter-templates/fields* - Gets audit log filter fields
-
-Список кодов ответа
-|===
-|Код ответа|Описание|Формат ответа|Пример ответа
-|200
-|OK
-|application/json
-a|
-[source,json]
-----
-[ {
-  "fieldName" : "eventId",
-  "description" : "ID события",
-  "fieldOrder" : 0,
-  "filterFieldType" : "TEXT",
-  "matchMode" : "LIKE",
-  "multiple" : false,
-  "dictionary" : null
-}, {
-  "fieldName" : "groupCode",
-  "description" : "Группа событий",
-  "fieldOrder" : 1,
-  "filterFieldType" : "REFERENCE",
-  "matchMode" : "EQUALS",
-  "multiple" : false,
-  "dictionary" : {
-    "name" : "auditGroup",
-    "values" : [ {
-      "label" : "Действия пользователя в личном кабинете",
-      "value" : "USER_PROFILE_ACTIONS"
-    }, {
-      "label" : "Действия с конфигурациями классификаторов",
-      "value" : "CLASSIFIERS_CONFIGURATIONS_ACTIONS"
-    }, {
-      "label" : "Действия с обучающими выборками",
-      "value" : "DATA_STORAGE_ACTIONS"
-    } ]
-  }
-}, {
-  "fieldName" : "initiator",
-  "description" : "Инициатор события",
-  "fieldOrder" : 2,
-  "filterFieldType" : "TEXT",
-  "matchMode" : "LIKE",
-  "multiple" : false,
-  "dictionary" : null
-}, {
-  "fieldName" : "eventDate",
-  "description" : "Дата события",
-  "fieldOrder" : 3,
-  "filterFieldType" : "DATE",
-  "matchMode" : "RANGE",
-  "multiple" : true,
-  "dictionary" : null
-} ]
-----
 |401
 |Not authorized
 |application/json
@@ -294,17 +533,6 @@ a|
 {
   "error" : "unauthorized",
   "error_description" : "Full authentication is required to access this resource"
-}
-----
-|403
-|Permission denied
-|application/json
-a|
-[source,json]
-----
-{
-  "error" : "access_denied",
-  "error_description" : "Access is denied"
 }
 ----
 |400
@@ -388,64 +616,4 @@ a|
 |-
 |-
 |-
-|===
-=== AuditEventRequest
-:table-caption: Таблица
-.Audit event request mode
-|===
-|Название параметра|Описание параметра|Тип данных|Мин. длина|Макс. длина|Паттерн
-|*eventId**
-|Audit event id
-|string 
-|0
-|255
-|-
-|*message**
-|Audit message
-|string 
-|-
-|-
-|-
-|*initiator**
-|Event initiator
-|string 
-|0
-|255
-|-
-|*eventType**
-|Event type
-|string 
-|-
-|-
-|-
-|*groupCode**
-|Audit group
-|string 
-|0
-|255
-|-
-|*groupTitle*
-|Audit group title
-|string 
-|0
-|255
-|-
-|*code**
-|Audit code
-|string 
-|0
-|255
-|-
-|*codeTitle*
-|Audit code title
-|string 
-|0
-|255
-|-
-|*eventDate**
-|Event date
-|string (date-time)
-|-
-|-
-|`yyyy-MM-dd HH:mm:ss`
 |===
