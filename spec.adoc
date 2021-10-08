@@ -1,16 +1,140 @@
-= Microservice for sending emails
+= Microservice for storaging training data sets
 Автор: Roman Batygin <roman.batygin@mail.ru>
 :toc:
 :toc-title: Оглавление
 
 == Описание
 
-API provides operations for email notifications sending
+API provides operations with training data sets for ECA web application
 
-== Finds email templates with specified options such as filter, sorting and paging
+== Renames data with specified id
+
+*PUT*
+*/instances/rename* - Renames data with specified id
+
+
+*Параметры запроса*
+|===
+|Название параметра|Описание параметра|Тип|Тип данных|Значения|Мин. длина|Макс. длина
+|*id**
+|Instances id
+|query
+|integer (int64)
+a|-
+|-
+|-
+|*tableName**
+|Table name
+|query
+|string 
+a|-
+|0
+|30
+|===
+
+*Список кодов ответа*
+|===
+|Код ответа|Описание|Формат ответа|Пример ответа
+|200
+|OK
+|-
+a|
+-
+|401
+|Not authorized
+|application/json
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|application/json
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "UniqueTableName",
+  "errorMessage" : "Table with name [iris] already exists!"
+} ]
+----
+|===
+
+== Saves instances into database
 
 *POST*
-*/templates/list* - Finds email templates with specified options such as filter, sorting and paging
+*/instances/save* - Saves instances into database
+
+|===
+|Формат запроса|Обязательность|Тело запроса|Пример запроса
+|multipart/form-data
+|false
+|-
+a|
+-
+|===
+
+*Параметры запроса*
+|===
+|Название параметра|Описание параметра|Тип|Тип данных|Значения|Мин. длина|Макс. длина
+|*tableName**
+|Table name
+|query
+|string 
+a|-
+|0
+|30
+|===
+
+*Список кодов ответа*
+|===
+|Код ответа|Описание|Формат ответа|Пример ответа
+|200
+|OK
+|application/json
+a|
+[source,json]
+----
+{
+  "id" : 1,
+  "sourceFileName" : "iris.xls",
+  "tableName" : "iris"
+}
+----
+|401
+|Not authorized
+|application/json
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|application/json
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "UniqueTableName",
+  "errorMessage" : "Table with name [iris] already exists!"
+} ]
+----
+|===
+
+== Finds instances tables with specified options such as filter, sorting and paging
+
+*POST*
+*/instances/list* - Finds instances tables with specified options such as filter, sorting and paging
 
 |===
 |Формат запроса|Обязательность|Тело запроса|Пример запроса
@@ -39,17 +163,11 @@ a|
 {
   "content" : [ {
     "id" : 1,
+    "tableName" : "iris",
+    "numInstances" : 150,
+    "numAttributes" : 5,
     "created" : "2021-07-01 14:00:00",
-    "code" : "NEW_EXPERIMENT",
-    "description" : "New experiment",
-    "subject" : "New experiment request",
-    "body" : "some body",
-    "parameters" : [ {
-      "id" : 1,
-      "created" : "2021-07-01 14:00:00",
-      "parameterName" : "requestId",
-      "description" : "Experiment request id"
-    } ]
+    "createdBy" : "admin"
   } ],
   "page" : 0,
   "totalCount" : 1
@@ -84,30 +202,36 @@ a|
 ----
 |===
 
-== Saves email request to sent
+== Finds data page for specified instances
 
 *POST*
-*/emails/email-request* - Saves email request to sent
+*/instances/data-page* - Finds data page for specified instances
 
 |===
 |Формат запроса|Обязательность|Тело запроса|Пример запроса
 |application/json
 |true
-|<<EmailRequest>>
+|<<PageRequestDto>>
 a|
 [source,json]
 ----
 {
-  "receiver" : "test@mail.ru",
-  "templateCode" : "NEW_EXPERIMENT",
-  "variables" : {
-    "firstName" : "Роман",
-    "requestId" : "1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
-    "experimentType" : "KNN"
-  },
-  "priority" : 1
+  "page" : 0,
+  "size" : 25
 }
 ----
+|===
+
+*Параметры запроса*
+|===
+|Название параметра|Описание параметра|Тип|Тип данных|Значения|Мин. длина|Макс. длина
+|*id**
+|Instances id
+|query
+|integer (int64)
+a|-
+|-
+|-
 |===
 
 *Список кодов ответа*
@@ -120,7 +244,20 @@ a|
 [source,json]
 ----
 {
-  "requestId" : "1d2de514-3a87-4620-9b97-c260e24340de"
+  "content" : [ [ "5.1", "3.5", "1.4", "0.2", "Iris-setosa" ], [ "4.9", "3.0", "1.4", "0.2", "Iris-setosa" ], [ "4.7", "3.2", "1.3", "0.2", "Iris-setosa" ] ],
+  "page" : 0,
+  "totalCount" : 3
+}
+----
+|401
+|Not authorized
+|application/json
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
 }
 ----
 |400
@@ -130,15 +267,397 @@ a|
 [source,json]
 ----
 [ {
-  "fieldName" : "templateCode",
-  "code" : "ValidEmailRequest",
-  "errorMessage" : "Invalid template code!"
+  "fieldName" : "page",
+  "code" : "Min",
+  "errorMessage" : "must be greater than or equal to 0"
+}, {
+  "fieldName" : "size",
+  "code" : "Min",
+  "errorMessage" : "must be greater than or equal to 1"
+} ]
+----
+|===
+
+== Gets instances reports info
+
+*GET*
+*/instances/reports-info* - Gets instances reports info
+
+
+*Список кодов ответа*
+|===
+|Код ответа|Описание|Формат ответа|Пример ответа
+|200
+|OK
+|application/json
+a|
+[source,json]
+----
+[ {
+  "title" : "Microsoft Excel (.xlsx)",
+  "reportType" : "XLS",
+  "fileExtension" : "xlsx"
+}, {
+  "title" : "Формат CSV (.csv)",
+  "reportType" : "CSV",
+  "fileExtension" : "csv"
+}, {
+  "title" : "Формат Arff (.arff)",
+  "reportType" : "ARFF",
+  "fileExtension" : "arff"
+}, {
+  "title" : "Json формат (.json)",
+  "reportType" : "JSON",
+  "fileExtension" : "json"
+}, {
+  "title" : "Xml формат (.xml)",
+  "reportType" : "XML",
+  "fileExtension" : "xml"
+}, {
+  "title" : "Текстовый формат (.txt)",
+  "reportType" : "TXT",
+  "fileExtension" : "txt"
+}, {
+  "title" : "Формат данных (.data)",
+  "reportType" : "DATA",
+  "fileExtension" : "data"
+}, {
+  "title" : "Microsoft Word (.docx)",
+  "reportType" : "DOCX",
+  "fileExtension" : "docx"
+} ]
+----
+|401
+|Not authorized
+|application/json
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|===
+
+== Download instances report with specified type
+
+*GET*
+*/instances/download* - Download instances report with specified type
+
+
+*Параметры запроса*
+|===
+|Название параметра|Описание параметра|Тип|Тип данных|Значения|Мин. длина|Макс. длина
+|*id**
+|Instances id
+|query
+|integer (int64)
+a|-
+|-
+|-
+|*reportType**
+|Report type
+|query
+|string 
+a|
+* XLS
+* CSV
+* ARFF
+* JSON
+* XML
+* TXT
+* DATA
+* DOCX
+|-
+|-
+|===
+
+*Список кодов ответа*
+|===
+|Код ответа|Описание|Формат ответа|Пример ответа
+|200
+|OK
+|application/octet-stream
+a|
+-
+|401
+|Not authorized
+|application/json
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|application/json
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "DataNotFound",
+  "errorMessage" : "Entity with search key [1] not found!"
+} ]
+----
+|===
+
+== Gets instances details
+
+*GET*
+*/instances/details/{id}* - Gets instances details
+
+
+*Параметры запроса*
+|===
+|Название параметра|Описание параметра|Тип|Тип данных|Значения|Мин. длина|Макс. длина
+|*id**
+|Instances id
+|path
+|integer (int64)
+a|-
+|-
+|-
+|===
+
+*Список кодов ответа*
+|===
+|Код ответа|Описание|Формат ответа|Пример ответа
+|200
+|OK
+|application/json
+a|
+[source,json]
+----
+{
+  "id" : 1,
+  "tableName" : "iris",
+  "numInstances" : 150,
+  "numAttributes" : 5,
+  "created" : "2021-07-01 14:00:00",
+  "createdBy" : "admin"
+}
+----
+|401
+|Not authorized
+|application/json
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|application/json
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "DataNotFound",
+  "errorMessage" : "Entity with search key [1] not found!"
+} ]
+----
+|===
+
+== Gets attributes list for specified instances
+
+*GET*
+*/instances/attributes/{id}* - Gets attributes list for specified instances
+
+
+*Параметры запроса*
+|===
+|Название параметра|Описание параметра|Тип|Тип данных|Значения|Мин. длина|Макс. длина
+|*id**
+|Instances id
+|path
+|integer (int64)
+a|-
+|-
+|-
+|===
+
+*Список кодов ответа*
+|===
+|Код ответа|Описание|Формат ответа|Пример ответа
+|200
+|OK
+|application/json
+a|
+[source,json]
+----
+[ "x1", "x2", "x3", "x4", "class" ]
+----
+|401
+|Not authorized
+|application/json
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|application/json
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "DataNotFound",
+  "errorMessage" : "Entity with search key [1] not found!"
+} ]
+----
+|===
+
+== Deletes instances with specified id
+
+*DELETE*
+*/instances/delete* - Deletes instances with specified id
+
+
+*Параметры запроса*
+|===
+|Название параметра|Описание параметра|Тип|Тип данных|Значения|Мин. длина|Макс. длина
+|*id**
+|Instances id
+|query
+|integer (int64)
+a|-
+|-
+|-
+|===
+
+*Список кодов ответа*
+|===
+|Код ответа|Описание|Формат ответа|Пример ответа
+|200
+|OK
+|-
+a|
+-
+|401
+|Not authorized
+|application/json
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|application/json
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "DataNotFound",
+  "errorMessage" : "Entity with search key [1] not found!"
 } ]
 ----
 |===
 
 
 == Описание форматов для запросов
+=== ValidationErrorDto
+:table-caption: Таблица
+.Validation error model
+|===
+|Название параметра|Описание параметра|Тип данных|Мин. длина|Макс. длина|Паттерн
+|*fieldName*
+|Field name
+|
+string
+|-
+|-
+|-
+|*code*
+|Error code
+|
+string
+|-
+|-
+|-
+|*errorMessage*
+|Error message
+|
+string
+|-
+|-
+|-
+|===
+=== CreateInstancesResultDto
+:table-caption: Таблица
+.Create instances result model
+|===
+|Название параметра|Описание параметра|Тип данных|Мин. длина|Макс. длина|Паттерн
+|*id**
+|Instances id
+|
+integer
+(int64)
+|-
+|-
+|-
+|*sourceFileName**
+|Source file name
+|
+string
+|-
+|-
+|-
+|*tableName**
+|Database table name
+|
+string
+|-
+|-
+|-
+|===
+=== PageDto
+:table-caption: Таблица
+.Page model
+|===
+|Название параметра|Описание параметра|Тип данных|Мин. длина|Макс. длина|Паттерн
+|*content*
+|Page content
+|
+array
+|-
+|-
+|-
+|*page*
+|Page number
+|
+integer
+(int32)
+|-
+|-
+|-
+|*totalCount*
+|Total elements count in all pages
+|
+integer
+(int64)
+|-
+|-
+|-
+|===
 === FilterRequestDto
 :table-caption: Таблица
 .Filter request model
@@ -216,37 +735,80 @@ array
 |-
 |-
 |===
-=== EmailRequest
+=== InstancesReportInfoDto
 :table-caption: Таблица
-.Email request
+.Instances report info model
 |===
 |Название параметра|Описание параметра|Тип данных|Мин. длина|Макс. длина|Паттерн
-|*receiver**
-|Receiver email
-|
-string
-|0
-|255
-|-
-|*templateCode**
-|Email template code
+|*reportType*
+|Report type
 |
 string
 |-
 |-
 |-
-|*variables*
-|-
+|*title*
+|Report title
 |
-array
+string
 |-
 |-
 |-
-|*priority**
-|Delivery priority
+|*fileExtension*
+|Report file extension
+|
+string
+|-
+|-
+|-
+|===
+=== InstancesDto
+:table-caption: Таблица
+.Instances model
+|===
+|Название параметра|Описание параметра|Тип данных|Мин. длина|Макс. длина|Паттерн
+|*id*
+|Instances id
+|
+integer
+(int64)
+|-
+|-
+|-
+|*tableName*
+|Table name
+|
+string
+|-
+|-
+|-
+|*numInstances*
+|Instances number
 |
 integer
 (int32)
+|-
+|-
+|-
+|*numAttributes*
+|Attributes number
+|
+integer
+(int32)
+|-
+|-
+|-
+|*created*
+|Instances creation date
+|
+string
+|-
+|-
+|-
+|*createdBy*
+|User name
+|
+string
 |-
 |-
 |-

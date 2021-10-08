@@ -89,7 +89,7 @@ class TfaIT extends AbstractUserIT {
         assertThat(result).isNotNull();
        // String json = result.block();
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-        @Cleanup InputStream inputStream = resolver.getResource("wp.json").getInputStream();
+        @Cleanup InputStream inputStream = resolver.getResource("ds.json").getInputStream();
         @Cleanup Reader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
         String json = FileCopyUtils.copyToString(reader);
         assertThat(json).isNotBlank();
