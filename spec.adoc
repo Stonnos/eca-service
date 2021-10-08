@@ -1,53 +1,28 @@
-= Web pushes microservice
+= Microservice for sending emails
 Автор: Roman Batygin <roman.batygin@mail.ru>
 :toc:
 :toc-title: Оглавление
 
 == Описание
 
-API provides operations for sending web pushes
+API provides operations for email notifications sending
 
-== Send web push with experiment changes
+== Finds email templates with specified options such as filter, sorting and paging
 
 *POST*
-*/push/experiment* - Send web push with experiment changes
+*/templates/list* - Finds email templates with specified options such as filter, sorting and paging
 
 |===
 |Формат запроса|Обязательность|Тело запроса|Пример запроса
 |application/json
 |true
-|<<ExperimentDto>>
+|<<PageRequestDto>>
 a|
 [source,json]
 ----
 {
-  "id" : 1,
-  "requestId" : "1d2de514-3a87-4620-9b97-c260e24340de",
-  "creationDate" : "2021-07-01 14:00:00",
-  "startDate" : "2021-07-01 14:00:00",
-  "endDate" : "2021-07-01 14:00:00",
-  "requestStatus" : {
-    "value" : "FINISHED",
-    "description" : "Experiment finished"
-  },
-  "evaluationMethod" : {
-    "value" : "CROSS_VALIDATION",
-    "description" : "k*V folds validation"
-  },
-  "numFolds" : 10,
-  "numTests" : 1,
-  "seed" : 1,
-  "evaluationTotalTime" : "00:00:1:43",
-  "firstName" : "Roman",
-  "email" : "test@mail.ru",
-  "experimentAbsolutePath" : "experiment_1d2de514-3a87-4620-9b97-c260e24340de.model",
-  "trainingDataAbsolutePath" : "data_1d2de514-3a87-4620-9b97-c260e24340de.xls",
-  "sentDate" : "2021-07-01 14:00:00",
-  "deletedDate" : "2021-07-01 14:00:00",
-  "experimentType" : {
-    "value" : "RANDOM_FORESTS",
-    "description" : "Random forests"
-  }
+  "page" : 0,
+  "size" : 25
 }
 ----
 |===
@@ -57,162 +32,221 @@ a|
 |Код ответа|Описание|Формат ответа|Пример ответа
 |200
 |OK
-|-
+|application/json
 a|
--
+[source,json]
+----
+{
+  "content" : [ {
+    "id" : 1,
+    "created" : "2021-07-01 14:00:00",
+    "code" : "NEW_EXPERIMENT",
+    "description" : "New experiment",
+    "subject" : "New experiment request",
+    "body" : "some body",
+    "parameters" : [ {
+      "id" : 1,
+      "created" : "2021-07-01 14:00:00",
+      "parameterName" : "requestId",
+      "description" : "Experiment request id"
+    } ]
+  } ],
+  "page" : 0,
+  "totalCount" : 1
+}
+----
+|401
+|Not authorized
+|application/json
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|application/json
+a|
+[source,json]
+----
+[ {
+  "fieldName" : "page",
+  "code" : "Min",
+  "errorMessage" : "must be greater than or equal to 0"
+}, {
+  "fieldName" : "size",
+  "code" : "Min",
+  "errorMessage" : "must be greater than or equal to 1"
+} ]
+----
+|===
+
+== Saves email request to sent
+
+*POST*
+*/emails/email-request* - Saves email request to sent
+
+|===
+|Формат запроса|Обязательность|Тело запроса|Пример запроса
+|application/json
+|true
+|<<EmailRequest>>
+a|
+[source,json]
+----
+{
+  "receiver" : "test@mail.ru",
+  "templateCode" : "NEW_EXPERIMENT",
+  "variables" : {
+    "firstName" : "Роман",
+    "requestId" : "1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
+    "experimentType" : "KNN"
+  },
+  "priority" : 1
+}
+----
+|===
+
+*Список кодов ответа*
+|===
+|Код ответа|Описание|Формат ответа|Пример ответа
+|200
+|OK
+|application/json
+a|
+[source,json]
+----
+{
+  "requestId" : "1d2de514-3a87-4620-9b97-c260e24340de"
+}
+----
+|400
+|Bad request
+|application/json
+a|
+[source,json]
+----
+[ {
+  "fieldName" : "templateCode",
+  "code" : "ValidEmailRequest",
+  "errorMessage" : "Invalid template code!"
+} ]
+----
 |===
 
 
 == Описание форматов для запросов
-=== EnumDto
+=== FilterRequestDto
 :table-caption: Таблица
-.Enum dto model
+.Filter request model
 |===
 |Название параметра|Описание параметра|Тип данных|Мин. длина|Макс. длина|Паттерн
-|*value**
-|Enum value
+|*name**
+|Filter column name
 |
 string
+|0
+|255
+|-
+|*values*
+|-
+|
+array
 |-
 |-
 |-
-|*description**
-|Enum value description
+|*matchMode**
+|Match mode type
 |
 string
 |-
 |-
 |-
 |===
-=== ExperimentDto
+=== PageRequestDto
 :table-caption: Таблица
-.Experiment model
+.Page request model
 |===
 |Название параметра|Описание параметра|Тип данных|Мин. длина|Макс. длина|Паттерн
-|*id*
-|ID
-|
-integer
-(int64)
-|-
-|-
-|-
-|*requestId*
-|Request unique identifier
-|
-string
-|-
-|-
-|-
-|*creationDate*
-|Request creation date
-|
-string
-|-
-|-
-|-
-|*startDate*
-|Evaluation start date
-|
-string
-|-
-|-
-|-
-|*endDate*
-|Evaluation end date
-|
-string
-|-
-|-
-|-
-|*requestStatus*
-|-
-|<<EnumDto>>
-|-
-|-
-|-
-|*evaluationMethod*
-|-
-|<<EnumDto>>
-|-
-|-
-|-
-|*numFolds*
-|Folds number for k * V cross - validation method
+|*page**
+|Page number
 |
 integer
 (int32)
 |-
 |-
 |-
-|*numTests*
-|Tests number for k * V cross - validation method
+|*size**
+|Page size
 |
 integer
 (int32)
 |-
 |-
 |-
-|*seed*
-|Seed value for k * V cross - validation method
+|*sortField*
+|Sort field
+|
+string
+|0
+|255
+|-
+|*ascending*
+|Is ascending sort?
+|
+boolean
+|-
+|-
+|-
+|*searchQuery*
+|Search query string
+|
+string
+|0
+|255
+|-
+|*filters*
+|Filters list
+|
+array
+|-
+|-
+|-
+|===
+=== EmailRequest
+:table-caption: Таблица
+.Email request
+|===
+|Название параметра|Описание параметра|Тип данных|Мин. длина|Макс. длина|Паттерн
+|*receiver**
+|Receiver email
+|
+string
+|0
+|255
+|-
+|*templateCode**
+|Email template code
+|
+string
+|-
+|-
+|-
+|*variables*
+|-
+|
+array
+|-
+|-
+|-
+|*priority**
+|Delivery priority
 |
 integer
 (int32)
-|-
-|-
-|-
-|*evaluationTotalTime*
-|Model evaluation total time in format HH:mm:ss:SS
-|
-string
-|-
-|-
-|-
-|*firstName*
-|Request creator first name
-|
-string
-|-
-|-
-|-
-|*email*
-|Request creator email
-|
-string
-|-
-|-
-|-
-|*experimentAbsolutePath*
-|Experiment results file
-|
-string
-|-
-|-
-|-
-|*trainingDataAbsolutePath*
-|Training data file
-|
-string
-|-
-|-
-|-
-|*sentDate*
-|Experiment results sent date
-|
-string
-|-
-|-
-|-
-|*deletedDate*
-|Experiment files delete date
-|
-string
-|-
-|-
-|-
-|*experimentType*
-|-
-|<<EnumDto>>
 |-
 |-
 |-
