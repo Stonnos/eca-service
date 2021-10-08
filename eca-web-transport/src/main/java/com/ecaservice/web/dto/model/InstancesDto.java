@@ -19,25 +19,25 @@ import static com.ecaservice.web.dto.util.FieldConstraints.DATE_TIME_PATTERN;
 @Schema(description = "Instances model")
 public class InstancesDto {
 
-    @Schema(description = "Instances id")
+    @Schema(description = "Instances id", example = "1")
     private Long id;
 
     /**
      * Instances name
      */
-    @Schema(description = "Table name")
+    @Schema(description = "Table name", example = "iris")
     private String tableName;
 
     /**
      * Instances size
      */
-    @Schema(description = "Instances number")
+    @Schema(description = "Instances number", example = "150")
     private Integer numInstances;
 
     /**
      * Attributes number
      */
-    @Schema(description = "Attributes number")
+    @Schema(description = "Attributes number", example = "5")
     private Integer numAttributes;
 
     /**
@@ -51,6 +51,6 @@ public class InstancesDto {
     /**
      * User name
      */
-    @Schema(description = "User name")
+    @Schema(description = "User name", example = "admin")
     private String createdBy;
 }

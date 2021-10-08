@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +45,17 @@ import javax.validation.constraints.Size;
 import java.util.List;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
+import static com.ecaservice.data.storage.controller.doc.ApiExamples.ATTRIBUTES_LIST_RESPONSE_JSON;
+import static com.ecaservice.data.storage.controller.doc.ApiExamples.CREATE_INSTANCES_RESPONSE_JSON;
+import static com.ecaservice.data.storage.controller.doc.ApiExamples.INSTANCES_DATA_PAGE_RESPONSE_JSON;
+import static com.ecaservice.data.storage.controller.doc.ApiExamples.INSTANCES_DETAILS_RESPONSE_JSON;
+import static com.ecaservice.data.storage.controller.doc.ApiExamples.INSTANCES_PAGE_RESPONSE_JSON;
+import static com.ecaservice.data.storage.controller.doc.ApiExamples.INSTANCES_REPORTS_RESPONSE_JSON;
 import static com.ecaservice.data.storage.controller.doc.ApiExamples.SIMPLE_PAGE_REQUEST_JSON;
+import static com.ecaservice.data.storage.controller.doc.ApiExamples.UNIQUE_TABLE_ERROR_RESPONSE_JSON;
+import static com.ecaservice.web.dto.doc.CommonApiExamples.DATA_NOT_FOUND_RESPONSE_JSON;
+import static com.ecaservice.web.dto.doc.CommonApiExamples.INVALID_PAGE_REQUEST_RESPONSE_JSON;
+import static com.ecaservice.web.dto.doc.CommonApiExamples.UNAUTHORIZED_RESPONSE_JSON;
 
 /**
  * Data storage API for web application.
@@ -83,7 +94,33 @@ public class DataStorageController {
                     @Content(examples = {
                             @ExampleObject(value = SIMPLE_PAGE_REQUEST_JSON)
                     })
-            })
+            }),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = INSTANCES_PAGE_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = INVALID_PAGE_REQUEST_RESPONSE_JSON),
+                                    }
+                            )
+                    )
+            }
     )
     @PostMapping(value = "/list")
     public PageDto<InstancesDto> getInstancesPage(@Valid @RequestBody PageRequestDto pageRequestDto) {
@@ -100,11 +137,37 @@ public class DataStorageController {
      * @param tableName    - table name
      * @return create instances results dto
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    //@PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
             description = "Saves instances into database",
             summary = "Saves instances into database",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = CREATE_INSTANCES_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNIQUE_TABLE_ERROR_RESPONSE_JSON),
+                                    }
+                            )
+                    )
+            }
     )
     @PostMapping(value = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public CreateInstancesResultDto saveInstances(
@@ -134,7 +197,33 @@ public class DataStorageController {
     @Operation(
             description = "Gets instances details",
             summary = "Gets instances details",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = INSTANCES_DETAILS_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = DATA_NOT_FOUND_RESPONSE_JSON),
+                                    }
+                            )
+                    )
+            }
     )
     @GetMapping(value = "/details/{id}")
     public InstancesDto getInstancesDetails(@Parameter(description = "Instances id", example = "1", required = true)
@@ -154,7 +243,26 @@ public class DataStorageController {
     @Operation(
             description = "Renames data with specified id",
             summary = "Renames data with specified id",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNIQUE_TABLE_ERROR_RESPONSE_JSON),
+                                    }
+                            )
+                    )
+            }
     )
     @PutMapping(value = "/rename")
     public void rename(@Parameter(description = "Instances id", example = "1", required = true) @RequestParam long id,
@@ -173,7 +281,26 @@ public class DataStorageController {
     @Operation(
             description = "Deletes instances with specified id",
             summary = "Deletes instances with specified id",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = DATA_NOT_FOUND_RESPONSE_JSON),
+                                    }
+                            )
+                    )
+            }
     )
     @DeleteMapping(value = "/delete")
     public void delete(@Parameter(description = "Instances id", example = "1", required = true) @RequestParam long id) {
@@ -196,7 +323,33 @@ public class DataStorageController {
                     @Content(examples = {
                             @ExampleObject(value = SIMPLE_PAGE_REQUEST_JSON)
                     })
-            })
+            }),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = INSTANCES_DATA_PAGE_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = INVALID_PAGE_REQUEST_RESPONSE_JSON),
+                                    }
+                            )
+                    )
+            }
     )
     @PostMapping(value = "/data-page")
     public PageDto<List<String>> getDataPage(
@@ -217,7 +370,33 @@ public class DataStorageController {
     @Operation(
             description = "Gets attributes list for specified instances",
             summary = "Gets attributes list for specified instances",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = ATTRIBUTES_LIST_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = DATA_NOT_FOUND_RESPONSE_JSON),
+                                    }
+                            )
+                    )
+            }
     )
     @GetMapping(value = "/attributes/{id}")
     public List<String> getAttributes(@Parameter(description = "Instances id", example = "1", required = true)
@@ -235,7 +414,25 @@ public class DataStorageController {
     @Operation(
             description = "Gets instances reports info",
             summary = "Gets instances reports info",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = INSTANCES_REPORTS_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                    }
+                            )
+                    )
+            }
     )
     @GetMapping(value = "/reports-info")
     public List<InstancesReportInfoDto> getInstancesReportsInfo() {
@@ -258,7 +455,30 @@ public class DataStorageController {
     @Operation(
             description = "Download instances report with specified type",
             summary = "Download instances report with specified type",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = DATA_NOT_FOUND_RESPONSE_JSON),
+                                    }
+                            )
+                    )
+            }
     )
     @GetMapping(value = "/download")
     public void downloadInstancesReport(

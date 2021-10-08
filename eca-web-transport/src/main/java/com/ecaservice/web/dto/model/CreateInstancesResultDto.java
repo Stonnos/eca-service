@@ -17,18 +17,18 @@ public class CreateInstancesResultDto {
     /**
      * Instances id
      */
-    @Schema(description = "Instances id", required = true)
+    @Schema(description = "Instances id", required = true, example = "1")
     private Long id;
 
     /**
      * Source file name
      */
-    @Schema(description = "Source file name", required = true)
+    @Schema(description = "Source file name", required = true, example = "iris.xls")
     private String sourceFileName;
 
     /**
      * Database table name
      */
-    @Schema(description = "Database table name", required = true)
+    @Schema(description = "Database table name", required = true, example = "iris")
     private String tableName;
 }
