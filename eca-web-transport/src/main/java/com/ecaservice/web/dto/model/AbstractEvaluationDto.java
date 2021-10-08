@@ -21,13 +21,13 @@ public abstract class AbstractEvaluationDto {
     /**
      * ID
      */
-    @Schema(description = "ID")
+    @Schema(description = "ID", example = "1")
     private Long id;
 
     /**
      * Request unique identifier
      */
-    @Schema(description = "Request unique identifier")
+    @Schema(description = "Request unique identifier", example = "1d2de514-3a87-4620-9b97-c260e24340de")
     private String requestId;
 
     /**
@@ -69,24 +69,24 @@ public abstract class AbstractEvaluationDto {
     /**
      * Folds number for k * V cross - validation method
      */
-    @Schema(description = "Folds number for k * V cross - validation method")
+    @Schema(description = "Folds number for k * V cross - validation method", example = "10")
     private Integer numFolds;
 
     /**
      * Tests number for k * V cross - validation method
      */
-    @Schema(description = "Tests number for k * V cross - validation method")
+    @Schema(description = "Tests number for k * V cross - validation method", example = "1")
     private Integer numTests;
 
     /**
      * Seed value for k * V cross - validation method
      */
-    @Schema(description = "Seed value for k * V cross - validation method")
+    @Schema(description = "Seed value for k * V cross - validation method", example = "1")
     private Integer seed;
 
     /**
      * Model evaluation total time in format HH:mm:ss:SS
      */
-    @Schema(description = "Model evaluation total time in format HH:mm:ss:SS")
+    @Schema(description = "Model evaluation total time in format HH:mm:ss:SS", example = "00:00:1:43")
     private String evaluationTotalTime;
 }
