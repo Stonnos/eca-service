@@ -1,13 +1,16 @@
 package com.ecaservice.oauth.controller;
 
+import com.ecaservice.common.web.dto.ValidationErrorDto;
 import com.ecaservice.oauth.event.model.ChangeEmailRequestNotificationEvent;
 import com.ecaservice.oauth.event.model.EmailChangedNotificationEvent;
 import com.ecaservice.oauth.service.ChangeEmailService;
 import com.ecaservice.user.model.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,8 +30,9 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
+import static com.ecaservice.oauth.controller.doc.ApiExamples.INVALID_TOKEN_RESPONSE_JSON;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.UNAUTHORIZED_RESPONSE_JSON;
-import static com.ecaservice.oauth.controller.doc.ApiExamples.USER_INFO_RESPONSE_JSON;
+import static com.ecaservice.oauth.controller.doc.ApiExamples.UNIQUE_EMAIL_RESPONSE_JSON;
 import static com.ecaservice.oauth.util.FieldConstraints.EMAIL_MAX_SIZE;
 import static com.ecaservice.oauth.util.FieldConstraints.EMAIL_REGEX;
 
@@ -68,6 +72,15 @@ public class ChangeEmailController {
                                             @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
                                     }
                             )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNIQUE_EMAIL_RESPONSE_JSON),
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
+                            )
                     )
             }
     )
@@ -92,7 +105,16 @@ public class ChangeEmailController {
             description = "Confirms change email request",
             summary = "Confirms change email request",
             responses = {
-                    @ApiResponse(description = "OK", responseCode = "200")
+                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = INVALID_TOKEN_RESPONSE_JSON),
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
+                            )
+                    )
             }
     )
     @PostMapping(value = "/confirm")

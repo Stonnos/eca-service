@@ -1,5 +1,6 @@
 package com.ecaservice.data.storage.controller;
 
+import com.ecaservice.common.web.dto.ValidationErrorDto;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.mapping.InstancesMapper;
 import com.ecaservice.data.storage.model.MultipartFileResource;
@@ -15,8 +16,10 @@ import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -101,7 +104,8 @@ public class DataStorageController {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
                                             @ExampleObject(value = INSTANCES_PAGE_RESPONSE_JSON),
-                                    }
+                                    },
+                                    schema = @Schema(implementation = PageDto.class)
                             )
                     ),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
@@ -117,7 +121,8 @@ public class DataStorageController {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
                                             @ExampleObject(value = INVALID_PAGE_REQUEST_RESPONSE_JSON),
-                                    }
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
                     )
             }
@@ -148,7 +153,8 @@ public class DataStorageController {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
                                             @ExampleObject(value = CREATE_INSTANCES_RESPONSE_JSON),
-                                    }
+                                    },
+                                    schema = @Schema(implementation = CreateInstancesResultDto.class)
                             )
                     ),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
@@ -164,7 +170,8 @@ public class DataStorageController {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
                                             @ExampleObject(value = UNIQUE_TABLE_ERROR_RESPONSE_JSON),
-                                    }
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
                     )
             }
@@ -204,7 +211,8 @@ public class DataStorageController {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
                                             @ExampleObject(value = INSTANCES_DETAILS_RESPONSE_JSON),
-                                    }
+                                    },
+                                    schema = @Schema(implementation = InstancesDto.class)
                             )
                     ),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
@@ -220,7 +228,8 @@ public class DataStorageController {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
                                             @ExampleObject(value = DATA_NOT_FOUND_RESPONSE_JSON),
-                                    }
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
                     )
             }
@@ -259,7 +268,8 @@ public class DataStorageController {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
                                             @ExampleObject(value = UNIQUE_TABLE_ERROR_RESPONSE_JSON),
-                                    }
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
                     )
             }
@@ -297,7 +307,8 @@ public class DataStorageController {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
                                             @ExampleObject(value = DATA_NOT_FOUND_RESPONSE_JSON),
-                                    }
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
                     )
             }
@@ -330,7 +341,8 @@ public class DataStorageController {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
                                             @ExampleObject(value = INSTANCES_DATA_PAGE_RESPONSE_JSON),
-                                    }
+                                    },
+                                    schema = @Schema(implementation = PageDto.class)
                             )
                     ),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
@@ -346,7 +358,8 @@ public class DataStorageController {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
                                             @ExampleObject(value = INVALID_PAGE_REQUEST_RESPONSE_JSON),
-                                    }
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
                     )
             }
@@ -377,7 +390,8 @@ public class DataStorageController {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
                                             @ExampleObject(value = ATTRIBUTES_LIST_RESPONSE_JSON),
-                                    }
+                                    },
+                                    array = @ArraySchema(schema = @Schema(type = "string"))
                             )
                     ),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
@@ -393,7 +407,8 @@ public class DataStorageController {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
                                             @ExampleObject(value = DATA_NOT_FOUND_RESPONSE_JSON),
-                                    }
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
                     )
             }
@@ -421,7 +436,9 @@ public class DataStorageController {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
                                             @ExampleObject(value = INSTANCES_REPORTS_RESPONSE_JSON),
-                                    }
+                                    },
+                                    array = @ArraySchema(
+                                            schema = @Schema(implementation = InstancesReportInfoDto.class))
                             )
                     ),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
@@ -475,7 +492,8 @@ public class DataStorageController {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
                                             @ExampleObject(value = DATA_NOT_FOUND_RESPONSE_JSON),
-                                    }
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
                     )
             }

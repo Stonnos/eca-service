@@ -1,5 +1,6 @@
 package com.ecaservice.oauth.controller;
 
+import com.ecaservice.common.web.dto.ValidationErrorDto;
 import com.ecaservice.oauth.dto.ForgotPasswordRequest;
 import com.ecaservice.oauth.dto.ResetPasswordRequest;
 import com.ecaservice.oauth.event.model.PasswordResetNotificationEvent;
@@ -8,8 +9,10 @@ import com.ecaservice.oauth.repository.ResetPasswordRequestRepository;
 import com.ecaservice.oauth.service.ResetPasswordService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -67,7 +70,8 @@ public class ResetPasswordController {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
                                             @ExampleObject(value = USER_EMAIL_RESPONSE_JSON),
-                                    }
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
                     )
             }
@@ -130,7 +134,8 @@ public class ResetPasswordController {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
                                             @ExampleObject(value = INVALID_TOKEN_RESPONSE_JSON),
-                                    }
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
                     )
             }

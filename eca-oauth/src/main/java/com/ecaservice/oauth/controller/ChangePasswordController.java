@@ -1,5 +1,6 @@
 package com.ecaservice.oauth.controller;
 
+import com.ecaservice.common.web.dto.ValidationErrorDto;
 import com.ecaservice.oauth.dto.ChangePasswordRequest;
 import com.ecaservice.oauth.event.model.ChangePasswordRequestNotificationEvent;
 import com.ecaservice.oauth.event.model.PasswordChangedNotificationEvent;
@@ -7,8 +8,10 @@ import com.ecaservice.oauth.service.ChangePasswordService;
 import com.ecaservice.user.model.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -108,7 +111,8 @@ public class ChangePasswordController {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
                                             @ExampleObject(value = INVALID_TOKEN_RESPONSE_JSON),
-                                    }
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
                     )
             }

@@ -28,6 +28,12 @@ public class ApiExamples {
             "\"errorMessage\": null}]";
 
     /**
+     * User email must be unique response json
+     */
+    public static final String UNIQUE_EMAIL_RESPONSE_JSON = "[{\"fieldName\": \"email\", \"code\": \"UniqueEmail\", " +
+            "\"errorMessage\": \"Can't set user email because its exists\"}]";
+
+    /**
      * Invalid page request response json
      */
     public static final String INVALID_PAGE_REQUEST_RESPONSE_JSON =
