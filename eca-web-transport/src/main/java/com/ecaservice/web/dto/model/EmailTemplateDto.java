@@ -22,7 +22,7 @@ public class EmailTemplateDto {
     /**
      * ID
      */
-    @Schema(description = "ID")
+    @Schema(description = "ID", example = "1")
     private Long id;
 
     /**
@@ -30,31 +30,31 @@ public class EmailTemplateDto {
      */
     @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @Schema(description = "Template creation date")
+    @Schema(description = "Template creation date", type = "string", example = "2021-07-01 14:00:00")
     private LocalDateTime created;
 
     /**
      * Template code
      */
-    @Schema(description = "Template code")
+    @Schema(description = "Template code", example = "NEW_EXPERIMENT")
     private String code;
 
     /**
      * Template description
      */
-    @Schema(description = "Template description")
+    @Schema(description = "Template description", example = "New experiment")
     private String description;
 
     /**
      * Template subject
      */
-    @Schema(description = "Template subject")
+    @Schema(description = "Template subject", example = "New experiment request")
     private String subject;
 
     /**
      * Template body
      */
-    @Schema(description = "Template body")
+    @Schema(description = "Template body", example = "some body")
     private String body;
 
     /**

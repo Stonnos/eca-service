@@ -51,10 +51,10 @@ import static com.ecaservice.data.storage.controller.doc.ApiExamples.INSTANCES_D
 import static com.ecaservice.data.storage.controller.doc.ApiExamples.INSTANCES_DETAILS_RESPONSE_JSON;
 import static com.ecaservice.data.storage.controller.doc.ApiExamples.INSTANCES_PAGE_RESPONSE_JSON;
 import static com.ecaservice.data.storage.controller.doc.ApiExamples.INSTANCES_REPORTS_RESPONSE_JSON;
-import static com.ecaservice.data.storage.controller.doc.ApiExamples.SIMPLE_PAGE_REQUEST_JSON;
 import static com.ecaservice.data.storage.controller.doc.ApiExamples.UNIQUE_TABLE_ERROR_RESPONSE_JSON;
 import static com.ecaservice.web.dto.doc.CommonApiExamples.DATA_NOT_FOUND_RESPONSE_JSON;
 import static com.ecaservice.web.dto.doc.CommonApiExamples.INVALID_PAGE_REQUEST_RESPONSE_JSON;
+import static com.ecaservice.web.dto.doc.CommonApiExamples.SIMPLE_PAGE_REQUEST_JSON;
 import static com.ecaservice.web.dto.doc.CommonApiExamples.UNAUTHORIZED_RESPONSE_JSON;
 
 /**
@@ -137,7 +137,7 @@ public class DataStorageController {
      * @param tableName    - table name
      * @return create instances results dto
      */
-    //@PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
             description = "Saves instances into database",
             summary = "Saves instances into database",
