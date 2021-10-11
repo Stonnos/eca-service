@@ -1,22 +1,21 @@
 = ${openApi.title}
 Автор: ${openApi.author} <${openApi.email}>
 :toc:
-:toc-title: Оглавление
+:toc-title: Table of contents
 
-== Описание
+== Overview
 
 ${openApi.description}
 
 <#list openApi.methods as method>
 == ${method.description}
 
-*${method.requestType}*
-*${method.endpoint}* - ${method.summary}
+__${method.requestType}__ *${method.endpoint}* - ${method.summary}
 
 <#if method.requestBody??>
 |===
-|Формат запроса|Обязательность|Структура запроса|Пример запроса
-|${method.requestBody.contentType}
+|Content type|Required|Schema|Example
+|*${method.requestBody.contentType}*
 |${method.requestBody.required}
 |<#if method.requestBody.bodyRef??><<${method.requestBody.bodyRef}>><#else>-</#if>
 a|
@@ -32,23 +31,28 @@ ${method.requestBody.example}
 </#if>
 <#if method.requestParameters?has_content>
 
-*Параметры запроса*
+*Request parameters*
 |===
-|Название параметра|Описание параметра|Тип|Тип данных|Значения|Мин. длина|Макс. длина
+|Name|Description|Type|Schema
 <#list method.requestParameters as parameter>
 |*${parameter.name}*<#if parameter.required == "true">*</#if>
 |${parameter.description}
 |${parameter.in}
-|${parameter.schemaModel.type} <#if parameter.schemaModel.format??>(${parameter.schemaModel.format})</#if>
-a|<#if parameter.schemaModel.enumValues?has_content>
+a|__${parameter.schemaModel.type}__ <#if parameter.schemaModel.format??>__(${parameter.schemaModel.format})__</#if>
+
+<#if parameter.schemaModel.minLength??>*Min. length*: ${parameter.schemaModel.minLength}</#if>
+
+<#if parameter.schemaModel.maxLength??>*Max. length*: ${parameter.schemaModel.maxLength}</#if>
+
+<#if parameter.schemaModel.pattern??>*Pattern*: `${parameter.schemaModel.pattern}`</#if>
+
+<#if parameter.schemaModel.enumValues?has_content>
+*Values*:
 <#list parameter.schemaModel.enumValues as enumValue>
+
 * ${enumValue}
 </#list>
-<#else>
--
 </#if>
-|<#if parameter.schemaModel.minLength??>${parameter.schemaModel.minLength}<#else>-</#if>
-|<#if parameter.schemaModel.maxLength??>${parameter.schemaModel.maxLength}<#else>-</#if>
 </#list>
 |===
 </#if>
@@ -56,11 +60,11 @@ a|<#if parameter.schemaModel.enumValues?has_content>
 
 *Список кодов ответа*
 |===
-|Код ответа|Описание|Формат ответа|Структура ответа|Пример ответа
+|Code|Description|Content type|Schema|Example
 <#list method.apiResponses as apiResponse>
 |${apiResponse.responseCode}
 |${apiResponse.description}
-|<#if apiResponse.contentType??>${apiResponse.contentType}<#else>-</#if>
+|<#if apiResponse.contentType??>*${apiResponse.contentType}*<#else>-</#if>
 |<#if apiResponse.objectTypeRef??><<${apiResponse.objectTypeRef}>><#else>-</#if>
 a|
 <#if apiResponse.example??>
@@ -78,29 +82,40 @@ ${apiResponse.example}
 </#list>
 
 <#if openApi.components?has_content>
-== Описание форматов для запросов
+== Components
 <#list openApi.components as component>
 === ${component.name}
 <#if component.fields?has_content>
-:table-caption: Таблица
+:table-caption: Table
 .${component.description}
 |===
-|Название параметра|Описание параметра|Тип данных|Мин. длина|Макс. длина|Паттерн
+|Name|Description|Schema
 <#list component.fields as field>
 |*${field.fieldName}*<#if field.required == "true">*</#if>
 |<#if field.description??>${field.description}<#else>-</#if>
-|<#if field.schemaModel.type??>
-${field.schemaModel.type}
+a|<#if field.schemaModel.type??>
+__${field.schemaModel.type}__
 <#if field.schemaModel.format??>
-(${field.schemaModel.format})
+__(${field.schemaModel.format})__
 </#if>
 </#if>
 <#if field.schemaModel.objectTypeRef??>
 <<${field.schemaModel.objectTypeRef}>>
 </#if>
-|<#if field.schemaModel.minLength??>${field.schemaModel.minLength}<#else>-</#if>
-|<#if field.schemaModel.maxLength??>${field.schemaModel.maxLength}<#else>-</#if>
-|<#if field.schemaModel.pattern??>`${field.schemaModel.pattern}`<#else>-</#if>
+
+<#if field.schemaModel.minLength??>*Min. length*: ${field.schemaModel.minLength}</#if>
+
+<#if field.schemaModel.maxLength??>*Max. length*: ${field.schemaModel.maxLength}</#if>
+
+<#if field.schemaModel.pattern??>*Pattern*: `${field.schemaModel.pattern}`</#if>
+
+<#if field.schemaModel.enumValues?has_content>
+*Values*:
+<#list field.schemaModel.enumValues as enumValue>
+
+* ${enumValue}
+</#list>
+</#if>
 </#list>
 |===
 </#if>
