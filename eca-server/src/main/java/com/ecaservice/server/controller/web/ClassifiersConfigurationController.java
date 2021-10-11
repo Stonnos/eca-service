@@ -7,6 +7,7 @@ import com.ecaservice.report.model.ReportType;
 import com.ecaservice.server.mapping.ClassifiersConfigurationMapper;
 import com.ecaservice.server.model.entity.ClassifiersConfiguration;
 import com.ecaservice.server.service.classifiers.ClassifiersConfigurationService;
+import com.ecaservice.web.dto.model.ClassifierConfigurationsPageDto;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.PageDto;
@@ -95,7 +96,7 @@ public class ClassifiersConfigurationController {
                                     examples = {
                                             @ExampleObject(value = GET_CLASSIFIERS_CONFIGURATIONS_PAGE_RESPONSE_JSON),
                                     },
-                                    schema = @Schema(implementation = PageDto.class)
+                                    schema = @Schema(implementation = ClassifierConfigurationsPageDto.class)
                             )
                     ),
                     @ApiResponse(description = "Not authorized", responseCode = "401",

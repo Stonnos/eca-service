@@ -6,6 +6,7 @@ import com.ecaservice.server.mapping.ClassifierOptionsDatabaseModelMapper;
 import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.server.service.classifiers.ClassifierOptionsService;
 import com.ecaservice.web.dto.model.ClassifierOptionsDto;
+import com.ecaservice.web.dto.model.ClassifiersOptionsPageDto;
 import com.ecaservice.web.dto.model.CreateClassifierOptionsResultDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -122,7 +123,7 @@ public class ClassifierOptionsController {
                                     examples = {
                                             @ExampleObject(value = GET_CLASSIFIERS_OPTIONS_PAGE_RESPONSE_JSON),
                                     },
-                                    schema = @Schema(implementation = PageDto.class)
+                                    schema = @Schema(implementation = ClassifiersOptionsPageDto.class)
                             )
                     ),
                     @ApiResponse(description = "Not authorized", responseCode = "401",

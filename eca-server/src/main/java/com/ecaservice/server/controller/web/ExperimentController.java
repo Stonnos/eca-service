@@ -25,6 +25,7 @@ import com.ecaservice.web.dto.model.ExperimentDto;
 import com.ecaservice.web.dto.model.ExperimentErsReportDto;
 import com.ecaservice.web.dto.model.ExperimentProgressDto;
 import com.ecaservice.web.dto.model.ExperimentResultsDetailsDto;
+import com.ecaservice.web.dto.model.ExperimentsPageDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
@@ -268,7 +269,7 @@ public class ExperimentController {
                                     examples = {
                                             @ExampleObject(value = EXPERIMENTS_PAGE_RESPONSE_JSON),
                                     },
-                                    schema = @Schema(implementation = PageDto.class)
+                                    schema = @Schema(implementation = ExperimentsPageDto.class)
                             )
                     ),
                     @ApiResponse(description = "Not authorized", responseCode = "401",

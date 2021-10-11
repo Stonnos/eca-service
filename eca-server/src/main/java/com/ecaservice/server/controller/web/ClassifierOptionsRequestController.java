@@ -5,6 +5,7 @@ import com.ecaservice.server.mapping.ClassifierOptionsRequestModelMapper;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.server.service.ers.ClassifierOptionsRequestService;
 import com.ecaservice.web.dto.model.ClassifierOptionsRequestDto;
+import com.ecaservice.web.dto.model.ClassifierOptionsRequestsPageDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -70,7 +71,7 @@ public class ClassifierOptionsRequestController {
                                     examples = {
                                             @ExampleObject(value = CLASSIFIER_OPTIONS_REQUESTS_PAGE_RESPONSE_JSON),
                                     },
-                                    schema = @Schema(implementation = PageDto.class)
+                                    schema = @Schema(implementation = ClassifierOptionsRequestsPageDto.class)
                             )
                     ),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
