@@ -127,4 +127,81 @@ public class ApiExamples {
                     "\"responseStatus\": {\"value\": \"SUCCESS\", \"description\": \"Успешно\"}, " +
                     "\"classifierOptionsResponseModels\": [{\"classifierName\": \"CART\", \"options\": " +
                     "\"json config\"}]}], \"page\": 0, \"totalCount\": 1}";
+
+    public static final String EXPERIMENTS_PAGE_RESPONSE_JSON =
+            "{\"content\": [{\"id\": 1, \"requestId\": \"1d2de514-3a87-4620-9b97-c260e24340de\", " +
+                    "\"creationDate\": \"2021-07-01 14:00:00\", \"startDate\": \"2021-07-01 14:00:30\", " +
+                    "\"endDate\": \"2021-07-01 14:02:13\", \"requestStatus\": {\"value\": \"FINISHED\", " +
+                    "\"description\": \"Завершена\"}, \"evaluationMethod\": {\"value\": \"CROSS_VALIDATION\", " +
+                    "\"description\": \"V-блочная кросс-проверка\"}, \"numFolds\": 10, \"numTests\": 1, " +
+                    "\"seed\": 1, \"evaluationTotalTime\": \"00:00:1:43\", \"firstName\": \"Roman\", " +
+                    "\"email\": \"test@mail.ru\", \"experimentAbsolutePath\": " +
+                    "\"experiment_1d2de514-3a87-4620-9b97-c260e24340de.model\", \"trainingDataAbsolutePath\": " +
+                    "\"data_1d2de514-3a87-4620-9b97-c260e24340de.xls\", \"sentDate\": \"2021-07-01 14:02:15\", " +
+                    "\"deletedDate\": \"2021-07-14 14:00:00\", \"experimentType\": {\"value\": \"RANDOM_FORESTS\", " +
+                    "\"description\": \"Случайные леса\"}}], \"page\": 0, \"totalCount\": 1}";
+
+    public static final String EXPERIMENT_DETAILS_RESPONSE_JSON =
+            "{\"id\": 1, \"requestId\": \"1d2de514-3a87-4620-9b97-c260e24340de\", \"creationDate\": " +
+                    "\"2021-07-01 14:00:00\", \"startDate\": \"2021-07-01 14:00:30\", \"endDate\": " +
+                    "\"2021-07-01 14:02:13\", \"requestStatus\": {\"value\": \"FINISHED\", " +
+                    "\"description\": \"Завершена\"}, \"evaluationMethod\": {\"value\": \"CROSS_VALIDATION\", " +
+                    "\"description\": \"V-блочная кросс-проверка\"}, \"numFolds\": 10, \"numTests\": 1, " +
+                    "\"seed\": 1, \"evaluationTotalTime\": \"00:00:1:43\", \"firstName\": \"Roman\", " +
+                    "\"email\": \"test@mail.ru\", \"experimentAbsolutePath\": " +
+                    "\"experiment_1d2de514-3a87-4620-9b97-c260e24340de.model\", \"trainingDataAbsolutePath\": " +
+                    "\"data_1d2de514-3a87-4620-9b97-c260e24340de.xls\", \"sentDate\": \"2021-07-01 14:02:15\", " +
+                    "\"deletedDate\": \"2021-07-14 14:00:00\", \"experimentType\": {\"value\": \"RANDOM_FORESTS\", " +
+                    "\"description\": \"Случайные леса\"}}";
+
+    public static final String EXPERIMENT_TYPES_STATISTICS_RESPONSE_JSON =
+            "[{\"name\": \"NEURAL_NETWORKS\", \"label\": \"Нейронные сети\", \"count\": 0}, " +
+                    "{\"name\": \"HETEROGENEOUS_ENSEMBLE\", \"label\": \"Неоднородный ансамбль\", " +
+                    "\"count\": 0}, {\"name\": \"MODIFIED_HETEROGENEOUS_ENSEMBLE\", \"label\": " +
+                    "\"Мод. неоднородный ансамбль\", \"count\": 0}, {\"name\": \"ADA_BOOST\", " +
+                    "\"label\": \"Алгоритм AdaBoost\", \"count\": 0}, {\"name\": \"STACKING\", " +
+                    "\"label\": \"Алгоритм Stacking\", \"count\": 0}, {\"name\": \"KNN\", \"label\": " +
+                    "\"Алгоритм KNN\", \"count\": 0}, {\"name\": \"RANDOM_FORESTS\", \"label\": " +
+                    "\"Случайные леса\", \"count\": 0}, {\"name\": \"STACKING_CV\", \"label\": " +
+                    "\"Алгоритм Stacking CV\", \"count\": 0}, {\"name\": \"DECISION_TREE\", " +
+                    "\"label\": \"Деревья решений\", \"count\": 0}]";
+
+    public static final String EXPERIMENT_RESULTS_DETAILS_RESPONSE_JSON =
+            "{\"id\": 1, \"classifierInfo\": {\"classifierName\": \"CART\", \"inputOptions\": [{\"optionName\": " +
+                    "\"Iterations number\", \"optionValue\": \"100\"}]}, \"resultsIndex\": 0, \"pctCorrect\": 99, " +
+                    "\"sent\": true, \"experimentDto\": {\"id\": 1, \"requestId\": " +
+                    "\"1d2de514-3a87-4620-9b97-c260e24340de\", \"creationDate\": \"2021-07-01 14:00:00\", " +
+                    "\"startDate\": \"2021-07-01 14:00:30\", \"endDate\": \"2021-07-01 14:02:13\", " +
+                    "\"requestStatus\": {\"value\": \"FINISHED\", \"description\": \"Завершена\"}, " +
+                    "\"evaluationMethod\": {\"value\": \"CROSS_VALIDATION\", \"description\": " +
+                    "\"V-блочная кросс-проверка\"}, \"numFolds\": 10, \"numTests\": 1, \"seed\": 1, " +
+                    "\"evaluationTotalTime\": \"00:00:1:43\", \"firstName\": \"Roman\", \"email\": " +
+                    "\"test@mail.ru\", \"experimentAbsolutePath\": " +
+                    "\"experiment_1d2de514-3a87-4620-9b97-c260e24340de.model\", " +
+                    "\"trainingDataAbsolutePath\": \"data_1d2de514-3a87-4620-9b97-c260e24340de.xls\", " +
+                    "\"sentDate\": \"2021-07-01 14:02:15\", \"deletedDate\": \"2021-07-14 14:00:00\", " +
+                    "\"experimentType\": {\"value\": \"RANDOM_FORESTS\", \"description\": " +
+                    "\"Случайные леса\"}}, \"evaluationResultsDto\": {\"evaluationResultsStatus\": " +
+                    "{\"value\": \"SUCCESS\", \"description\": \"Успешно\"}, \"evaluationStatisticsDto\": " +
+                    "{\"numTestInstances\": 150, \"numCorrect\": 146, \"numIncorrect\": 4, \"pctCorrect\": 96, " +
+                    "\"pctIncorrect\": 4, \"meanAbsoluteError\": 0.29, \"rootMeanSquaredError\": 0.01, " +
+                    "\"maxAucValue\": 0.89, \"varianceError\": 0.0012, \"confidenceIntervalLowerBound\": 0.01, " +
+                    "\"confidenceIntervalUpperBound\": 0.035}, \"classificationCosts\": [{\"classValue\": " +
+                    "\"Iris-setosa\", \"truePositiveRate\": 0.75, \"falsePositiveRate\": 0.25, " +
+                    "\"trueNegativeRate\": 0.5, \"falseNegativeRate\": 0.5, \"aucValue\": 0.9}]}}";
+
+    public static final String EXPERIMENT_ERS_REPORT_RESPONSE_JSON =
+            "{\"experimentRequestId\": \"1d2de514-3a87-4620-9b97-c260e24340de\", \"classifiersCount\": 1, " +
+                    "\"sentClassifiersCount\": 1, \"experimentResults\": [{\"id\": 1, " +
+                    "\"classifierInfo\": {\"classifierName\": \"CART\", \"inputOptions\": " +
+                    "[{\"optionName\": \"Iterations number\", \"optionValue\": \"100\"}]}, " +
+                    "\"resultsIndex\": 0, \"pctCorrect\": 99, \"sent\": true}], \"ersReportStatus\": " +
+                    "{\"value\": \"SUCCESS_SENT\", \"description\": " +
+                    "\"Результаты эксперимента были успешно отправлены в ERS сервис\"}}";
+
+    public static final String EXPERIMENT_PROGRESS_RESPONSE_JSON = "{\"finished\": false, \"progress\": 85, " +
+            "\"estimatedTimeLeft\": \"00:01:24\"}";
+
+    public static final String CREATE_EXPERIMENT_RESULT_RESPONSE_JSON = "{\"id\": 1, \"requestId\": " +
+            "\"1d2de514-3a87-4620-9b97-c260e24340de\"}";
 }
