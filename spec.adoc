@@ -1,15 +1,15 @@
 = Microservice for storaging training data sets
 Автор: Roman Batygin <roman.batygin@mail.ru>
 :toc:
-:toc-title: Оглавление
+:toc-title: Table of contents
 
-== Table of contents
+== Overview
 
 API provides operations with training data sets for ECA web application
 
 == Renames data with specified id
 
-__*PUT*__ */instances/rename* - Renames data with specified id
+__PUT__ */instances/rename* - Renames data with specified id
 
 
 *Request parameters*
@@ -18,7 +18,7 @@ __*PUT*__ */instances/rename* - Renames data with specified id
 |*id**
 |Instances id
 |query
-a|integer (int64)
+a|__integer__ __(int64)__
 
 
 
@@ -29,7 +29,7 @@ a|integer (int64)
 |*tableName**
 |Table name
 |query
-a|string 
+a|__string__ 
 
 *Min. length*: 0
 
@@ -77,7 +77,7 @@ a|
 
 == Saves instances into database
 
-__*POST*__ */instances/save* - Saves instances into database
+__POST__ */instances/save* - Saves instances into database
 
 |===
 |Content type|Required|Schema|Example
@@ -94,7 +94,7 @@ a|
 |*tableName**
 |Table name
 |query
-a|string 
+a|__string__ 
 
 *Min. length*: 0
 
@@ -149,7 +149,7 @@ a|
 
 == Finds instances tables with specified options such as filter, sorting and paging
 
-__*POST*__ */instances/list* - Finds instances tables with specified options such as filter, sorting and paging
+__POST__ */instances/list* - Finds instances tables with specified options such as filter, sorting and paging
 
 |===
 |Content type|Required|Schema|Example
@@ -222,7 +222,7 @@ a|
 
 == Finds data page for specified instances
 
-__*POST*__ */instances/data-page* - Finds data page for specified instances
+__POST__ */instances/data-page* - Finds data page for specified instances
 
 |===
 |Content type|Required|Schema|Example
@@ -245,7 +245,7 @@ a|
 |*id**
 |Instances id
 |query
-a|integer (int64)
+a|__integer__ __(int64)__
 
 
 
@@ -304,7 +304,7 @@ a|
 
 == Gets instances reports info
 
-__*GET*__ */instances/reports-info* - Gets instances reports info
+__GET__ */instances/reports-info* - Gets instances reports info
 
 
 *Список кодов ответа*
@@ -367,7 +367,7 @@ a|
 
 == Download instances report with specified type
 
-__*GET*__ */instances/download* - Download instances report with specified type
+__GET__ */instances/download* - Download instances report with specified type
 
 
 *Request parameters*
@@ -376,7 +376,7 @@ __*GET*__ */instances/download* - Download instances report with specified type
 |*id**
 |Instances id
 |query
-a|integer (int64)
+a|__integer__ __(int64)__
 
 
 
@@ -387,7 +387,7 @@ a|integer (int64)
 |*reportType**
 |Report type
 |query
-a|string 
+a|__string__ 
 
 
 
@@ -396,6 +396,7 @@ a|string
 
 
 *Values*:
+
 * XLS
 
 * CSV
@@ -411,7 +412,6 @@ a|string
 * DATA
 
 * DOCX
-
 |===
 
 *Список кодов ответа*
@@ -452,7 +452,7 @@ a|
 
 == Gets instances details
 
-__*GET*__ */instances/details/{id}* - Gets instances details
+__GET__ */instances/details/{id}* - Gets instances details
 
 
 *Request parameters*
@@ -461,7 +461,7 @@ __*GET*__ */instances/details/{id}* - Gets instances details
 |*id**
 |Instances id
 |path
-a|integer (int64)
+a|__integer__ __(int64)__
 
 
 
@@ -519,7 +519,7 @@ a|
 
 == Gets attributes list for specified instances
 
-__*GET*__ */instances/attributes/{id}* - Gets attributes list for specified instances
+__GET__ */instances/attributes/{id}* - Gets attributes list for specified instances
 
 
 *Request parameters*
@@ -528,7 +528,7 @@ __*GET*__ */instances/attributes/{id}* - Gets attributes list for specified inst
 |*id**
 |Instances id
 |path
-a|integer (int64)
+a|__integer__ __(int64)__
 
 
 
@@ -579,7 +579,7 @@ a|
 
 == Deletes instances with specified id
 
-__*DELETE*__ */instances/delete* - Deletes instances with specified id
+__DELETE__ */instances/delete* - Deletes instances with specified id
 
 
 *Request parameters*
@@ -588,7 +588,7 @@ __*DELETE*__ */instances/delete* - Deletes instances with specified id
 |*id**
 |Instances id
 |query
-a|integer (int64)
+a|__integer__ __(int64)__
 
 
 
@@ -644,7 +644,7 @@ a|
 |*fieldName*
 |Field name
 a|
-string
+__string__
 
 
 
@@ -655,7 +655,7 @@ string
 |*code*
 |Error code
 a|
-string
+__string__
 
 
 
@@ -666,7 +666,7 @@ string
 |*errorMessage*
 |Error message
 a|
-string
+__string__
 
 
 
@@ -683,8 +683,8 @@ string
 |*id**
 |Instances id
 a|
-integer
-(int64)
+__integer__
+__(int64)__
 
 
 
@@ -695,7 +695,7 @@ integer
 |*sourceFileName**
 |Source file name
 a|
-string
+__string__
 
 
 
@@ -706,7 +706,7 @@ string
 |*tableName**
 |Database table name
 a|
-string
+__string__
 
 
 
@@ -723,7 +723,7 @@ string
 |*content*
 |Page content
 a|
-array
+__array__
 
 
 
@@ -734,8 +734,8 @@ array
 |*page*
 |Page number
 a|
-integer
-(int32)
+__integer__
+__(int32)__
 
 
 
@@ -746,8 +746,8 @@ integer
 |*totalCount*
 |Total elements count in all pages
 a|
-integer
-(int64)
+__integer__
+__(int64)__
 
 
 
@@ -764,7 +764,7 @@ integer
 |*name**
 |Filter column name
 a|
-string
+__string__
 
 *Min. length*: 0
 
@@ -775,7 +775,7 @@ string
 |*values*
 |-
 a|
-array
+__array__
 
 
 
@@ -786,7 +786,7 @@ array
 |*matchMode**
 |Match mode type
 a|
-string
+__string__
 
 
 
@@ -795,12 +795,12 @@ string
 
 
 *Values*:
+
 * EQUALS
 
 * LIKE
 
 * RANGE
-
 |===
 === PageRequestDto
 :table-caption: Table
@@ -810,8 +810,8 @@ string
 |*page**
 |Page number
 a|
-integer
-(int32)
+__integer__
+__(int32)__
 
 
 
@@ -822,8 +822,8 @@ integer
 |*size**
 |Page size
 a|
-integer
-(int32)
+__integer__
+__(int32)__
 
 
 
@@ -834,7 +834,7 @@ integer
 |*sortField*
 |Sort field
 a|
-string
+__string__
 
 *Min. length*: 0
 
@@ -845,7 +845,7 @@ string
 |*ascending*
 |Is ascending sort?
 a|
-boolean
+__boolean__
 
 
 
@@ -856,7 +856,7 @@ boolean
 |*searchQuery*
 |Search query string
 a|
-string
+__string__
 
 *Min. length*: 0
 
@@ -867,7 +867,7 @@ string
 |*filters*
 |Filters list
 a|
-array
+__array__
 
 
 
@@ -884,7 +884,7 @@ array
 |*reportType*
 |Report type
 a|
-string
+__string__
 
 
 
@@ -895,7 +895,7 @@ string
 |*title*
 |Report title
 a|
-string
+__string__
 
 
 
@@ -906,7 +906,7 @@ string
 |*fileExtension*
 |Report file extension
 a|
-string
+__string__
 
 
 
@@ -923,8 +923,8 @@ string
 |*id*
 |Instances id
 a|
-integer
-(int64)
+__integer__
+__(int64)__
 
 
 
@@ -935,7 +935,7 @@ integer
 |*tableName*
 |Table name
 a|
-string
+__string__
 
 
 
@@ -946,8 +946,8 @@ string
 |*numInstances*
 |Instances number
 a|
-integer
-(int32)
+__integer__
+__(int32)__
 
 
 
@@ -958,8 +958,8 @@ integer
 |*numAttributes*
 |Attributes number
 a|
-integer
-(int32)
+__integer__
+__(int32)__
 
 
 
@@ -970,7 +970,7 @@ integer
 |*created*
 |Instances creation date
 a|
-string
+__string__
 
 
 
@@ -981,7 +981,7 @@ string
 |*createdBy*
 |User name
 a|
-string
+__string__
 
 
 
