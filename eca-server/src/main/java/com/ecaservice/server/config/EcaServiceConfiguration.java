@@ -1,6 +1,7 @@
 package com.ecaservice.server.config;
 
 import com.ecaservice.common.web.annotation.EnableGlobalExceptionHandler;
+import com.ecaservice.config.swagger.annotation.EnableOpenApi;
 import com.ecaservice.core.filter.annotation.EnableFilters;
 import com.ecaservice.core.filter.error.FilterExceptionHandler;
 import com.ecaservice.core.lock.annotation.EnableLocks;
@@ -32,6 +33,7 @@ import java.util.concurrent.Executors;
  * @author Roman Batygin
  */
 @Configuration
+@EnableOpenApi
 @EnableScheduling
 @EnableCaching
 @EnableLocks
