@@ -34,8 +34,8 @@ import java.io.InputStream;
 import java.util.List;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
-import static com.ecaservice.server.controller.doc.ApiExamples.SIMPLE_PAGE_REQUEST_JSON;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.parseOptions;
+import static com.ecaservice.web.dto.doc.CommonApiExamples.SIMPLE_PAGE_REQUEST_JSON;
 
 /**
  * Implements experiment classifiers configs API for web application.

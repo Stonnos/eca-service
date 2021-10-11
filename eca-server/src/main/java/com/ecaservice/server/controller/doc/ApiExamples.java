@@ -43,8 +43,32 @@ public class ApiExamples {
                     "\"matchMode\":\"EQUALS\"},{\"name\":\"requestDate\",\"values\":[\"2021-07-16\"]," +
                     "\"matchMode\":\"RANGE\"}]}";
 
-    /**
-     * Simple page request json
-     */
-    public static final String SIMPLE_PAGE_REQUEST_JSON = "{\"page\":0,\"size\":25}";
+
+    public static final String UPDATE_CLASSIFIERS_CONFIGURATION_REQUEST_JSON =
+            "{\"id\": 1, \"configurationName\": \"Classifiers configuration\"}";
+
+    public static final String UPDATE_CLASSIFIERS_CONFIGURATION_BAD_REQUEST_RESPONSE_JSON =
+            "[{\"fieldName\": \"configurationName\", \"code\": \"NotBlank\", \"errorMessage\": \"must not be blank\"}]";
+
+    public static final String CREATE_CLASSIFIERS_CONFIGURATION_REQUEST_JSON =
+            "{\"configurationName\": \"Classifiers configuration\"}";
+
+    public static final String CREATE_CLASSIFIERS_CONFIGURATION_BAD_REQUEST_RESPONSE_JSON =
+            "[{\"fieldName\": \"configurationName\", \"code\": \"NotBlank\", \"errorMessage\": \"must not be blank\"}]";
+
+    public static final String GET_CLASSIFIERS_CONFIGURATIONS_PAGE_RESPONSE_JSON = "{\"content\": [{\"id\": 1, " +
+            "\"configurationName\": \"Default configuration\", \"creationDate\": \"2021-07-01 14:00:00\", " +
+            "\"createdBy\": \"admin\", \"updated\": \"2021-07-01 14:00:00\", \"active\": true, " +
+            "\"buildIn\": true, \"classifiersOptionsCount\": 25}], \"page\": 0, \"totalCount\": 1}";
+
+    public static final String COPY_CLASSIFIERS_CONFIGURATION_REQUEST_JSON =
+            "{\"id\": 1, \"configurationName\": \"Classifiers configuration\"}";
+
+    public static final String COPY_CLASSIFIERS_CONFIGURATION_BAD_REQUEST_RESPONSE_JSON =
+            "[{\"fieldName\": \"configurationName\", \"code\": \"NotBlank\", \"errorMessage\": \"must not be blank\"}]";
+
+    public static final String CLASSIFIERS_CONFIGURATION_DETAILS_RESPONSE_JSON =
+            "{\"id\": 1, \"configurationName\": \"Default configuration\", \"creationDate\": " +
+                    "\"2021-07-01 14:00:00\", \"createdBy\": \"admin\", \"updated\": \"2021-07-01 14:00:00\", " +
+                    "\"active\": true, \"buildIn\": true, \"classifiersOptionsCount\": 25}";
 }
