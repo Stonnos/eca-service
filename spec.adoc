@@ -3,38 +3,37 @@
 :toc:
 :toc-title: Оглавление
 
-== Описание
+== Table of contents
 
 API provides operations with training data sets for ECA web application
 
 == Renames data with specified id
 
-*PUT*
-*/instances/rename* - Renames data with specified id
+__*PUT*__ */instances/rename* - Renames data with specified id
 
 
-*Параметры запроса*
+*Request parameters*
 |===
-|Название параметра|Описание параметра|Тип|Тип данных|Значения|Мин. длина|Макс. длина
+|Name|Description|Type|Schema
 |*id**
 |Instances id
 |query
-|integer (int64)
-a|-
-|-
-|-
+a|integer (int64)
+
+
+
 |*tableName**
 |Table name
 |query
-|string 
-a|-
-|0
-|30
+a|string 
+*Min. length*: 0
+*Max. length*: 30
+*Pattern*: `^[0-9a-z_]+$`
 |===
 
 *Список кодов ответа*
 |===
-|Код ответа|Описание|Формат ответа|Структура ответа|Пример ответа
+|Code|Description|Content type|Schema|Example
 |200
 |OK
 |-
@@ -43,7 +42,7 @@ a|
 -
 |401
 |Not authorized
-|application/json
+|*application/json*
 |-
 a|
 [source,json]
@@ -55,7 +54,7 @@ a|
 ----
 |400
 |Bad request
-|application/json
+|*application/json*
 |-
 a|
 [source,json]
@@ -70,36 +69,35 @@ a|
 
 == Saves instances into database
 
-*POST*
-*/instances/save* - Saves instances into database
+__*POST*__ */instances/save* - Saves instances into database
 
 |===
-|Формат запроса|Обязательность|Структура запроса|Пример запроса
-|multipart/form-data
+|Content type|Required|Schema|Example
+|*multipart/form-data*
 |false
 |-
 a|
 -
 |===
 
-*Параметры запроса*
+*Request parameters*
 |===
-|Название параметра|Описание параметра|Тип|Тип данных|Значения|Мин. длина|Макс. длина
+|Name|Description|Type|Schema
 |*tableName**
 |Table name
 |query
-|string 
-a|-
-|0
-|30
+a|string 
+*Min. length*: 0
+*Max. length*: 30
+*Pattern*: `^[0-9a-z_]+$`
 |===
 
 *Список кодов ответа*
 |===
-|Код ответа|Описание|Формат ответа|Структура ответа|Пример ответа
+|Code|Description|Content type|Schema|Example
 |200
 |OK
-|application/json
+|*application/json*
 |<<CreateInstancesResultDto>>
 a|
 [source,json]
@@ -112,7 +110,7 @@ a|
 ----
 |401
 |Not authorized
-|application/json
+|*application/json*
 |-
 a|
 [source,json]
@@ -124,7 +122,7 @@ a|
 ----
 |400
 |Bad request
-|application/json
+|*application/json*
 |-
 a|
 [source,json]
@@ -139,12 +137,11 @@ a|
 
 == Finds instances tables with specified options such as filter, sorting and paging
 
-*POST*
-*/instances/list* - Finds instances tables with specified options such as filter, sorting and paging
+__*POST*__ */instances/list* - Finds instances tables with specified options such as filter, sorting and paging
 
 |===
-|Формат запроса|Обязательность|Структура запроса|Пример запроса
-|application/json
+|Content type|Required|Schema|Example
+|*application/json*
 |true
 |<<PageRequestDto>>
 a|
@@ -159,10 +156,10 @@ a|
 
 *Список кодов ответа*
 |===
-|Код ответа|Описание|Формат ответа|Структура ответа|Пример ответа
+|Code|Description|Content type|Schema|Example
 |200
 |OK
-|application/json
+|*application/json*
 |<<PageDto>>
 a|
 [source,json]
@@ -182,7 +179,7 @@ a|
 ----
 |401
 |Not authorized
-|application/json
+|*application/json*
 |-
 a|
 [source,json]
@@ -194,7 +191,7 @@ a|
 ----
 |400
 |Bad request
-|application/json
+|*application/json*
 |-
 a|
 [source,json]
@@ -213,12 +210,11 @@ a|
 
 == Finds data page for specified instances
 
-*POST*
-*/instances/data-page* - Finds data page for specified instances
+__*POST*__ */instances/data-page* - Finds data page for specified instances
 
 |===
-|Формат запроса|Обязательность|Структура запроса|Пример запроса
-|application/json
+|Content type|Required|Schema|Example
+|*application/json*
 |true
 |<<PageRequestDto>>
 a|
@@ -231,24 +227,24 @@ a|
 ----
 |===
 
-*Параметры запроса*
+*Request parameters*
 |===
-|Название параметра|Описание параметра|Тип|Тип данных|Значения|Мин. длина|Макс. длина
+|Name|Description|Type|Schema
 |*id**
 |Instances id
 |query
-|integer (int64)
-a|-
-|-
-|-
+a|integer (int64)
+
+
+
 |===
 
 *Список кодов ответа*
 |===
-|Код ответа|Описание|Формат ответа|Структура ответа|Пример ответа
+|Code|Description|Content type|Schema|Example
 |200
 |OK
-|application/json
+|*application/json*
 |<<PageDto>>
 a|
 [source,json]
@@ -261,7 +257,7 @@ a|
 ----
 |401
 |Not authorized
-|application/json
+|*application/json*
 |-
 a|
 [source,json]
@@ -273,7 +269,7 @@ a|
 ----
 |400
 |Bad request
-|application/json
+|*application/json*
 |-
 a|
 [source,json]
@@ -292,16 +288,15 @@ a|
 
 == Gets instances reports info
 
-*GET*
-*/instances/reports-info* - Gets instances reports info
+__*GET*__ */instances/reports-info* - Gets instances reports info
 
 
 *Список кодов ответа*
 |===
-|Код ответа|Описание|Формат ответа|Структура ответа|Пример ответа
+|Code|Description|Content type|Schema|Example
 |200
 |OK
-|application/json
+|*application/json*
 |-
 a|
 [source,json]
@@ -342,7 +337,7 @@ a|
 ----
 |401
 |Not authorized
-|application/json
+|*application/json*
 |-
 a|
 [source,json]
@@ -356,25 +351,27 @@ a|
 
 == Download instances report with specified type
 
-*GET*
-*/instances/download* - Download instances report with specified type
+__*GET*__ */instances/download* - Download instances report with specified type
 
 
-*Параметры запроса*
+*Request parameters*
 |===
-|Название параметра|Описание параметра|Тип|Тип данных|Значения|Мин. длина|Макс. длина
+|Name|Description|Type|Schema
 |*id**
 |Instances id
 |query
-|integer (int64)
-a|-
-|-
-|-
+a|integer (int64)
+
+
+
 |*reportType**
 |Report type
 |query
-|string 
-a|
+a|string 
+
+
+
+*Values*:
 * XLS
 * CSV
 * ARFF
@@ -383,22 +380,20 @@ a|
 * TXT
 * DATA
 * DOCX
-|-
-|-
 |===
 
 *Список кодов ответа*
 |===
-|Код ответа|Описание|Формат ответа|Структура ответа|Пример ответа
+|Code|Description|Content type|Schema|Example
 |200
 |OK
-|application/octet-stream
+|*application/octet-stream*
 |-
 a|
 -
 |401
 |Not authorized
-|application/json
+|*application/json*
 |-
 a|
 [source,json]
@@ -410,7 +405,7 @@ a|
 ----
 |400
 |Bad request
-|application/json
+|*application/json*
 |-
 a|
 [source,json]
@@ -425,28 +420,27 @@ a|
 
 == Gets instances details
 
-*GET*
-*/instances/details/{id}* - Gets instances details
+__*GET*__ */instances/details/{id}* - Gets instances details
 
 
-*Параметры запроса*
+*Request parameters*
 |===
-|Название параметра|Описание параметра|Тип|Тип данных|Значения|Мин. длина|Макс. длина
+|Name|Description|Type|Schema
 |*id**
 |Instances id
 |path
-|integer (int64)
-a|-
-|-
-|-
+a|integer (int64)
+
+
+
 |===
 
 *Список кодов ответа*
 |===
-|Код ответа|Описание|Формат ответа|Структура ответа|Пример ответа
+|Code|Description|Content type|Schema|Example
 |200
 |OK
-|application/json
+|*application/json*
 |<<InstancesDto>>
 a|
 [source,json]
@@ -462,7 +456,7 @@ a|
 ----
 |401
 |Not authorized
-|application/json
+|*application/json*
 |-
 a|
 [source,json]
@@ -474,7 +468,7 @@ a|
 ----
 |400
 |Bad request
-|application/json
+|*application/json*
 |-
 a|
 [source,json]
@@ -489,28 +483,27 @@ a|
 
 == Gets attributes list for specified instances
 
-*GET*
-*/instances/attributes/{id}* - Gets attributes list for specified instances
+__*GET*__ */instances/attributes/{id}* - Gets attributes list for specified instances
 
 
-*Параметры запроса*
+*Request parameters*
 |===
-|Название параметра|Описание параметра|Тип|Тип данных|Значения|Мин. длина|Макс. длина
+|Name|Description|Type|Schema
 |*id**
 |Instances id
 |path
-|integer (int64)
-a|-
-|-
-|-
+a|integer (int64)
+
+
+
 |===
 
 *Список кодов ответа*
 |===
-|Код ответа|Описание|Формат ответа|Структура ответа|Пример ответа
+|Code|Description|Content type|Schema|Example
 |200
 |OK
-|application/json
+|*application/json*
 |-
 a|
 [source,json]
@@ -519,7 +512,7 @@ a|
 ----
 |401
 |Not authorized
-|application/json
+|*application/json*
 |-
 a|
 [source,json]
@@ -531,7 +524,7 @@ a|
 ----
 |400
 |Bad request
-|application/json
+|*application/json*
 |-
 a|
 [source,json]
@@ -546,25 +539,24 @@ a|
 
 == Deletes instances with specified id
 
-*DELETE*
-*/instances/delete* - Deletes instances with specified id
+__*DELETE*__ */instances/delete* - Deletes instances with specified id
 
 
-*Параметры запроса*
+*Request parameters*
 |===
-|Название параметра|Описание параметра|Тип|Тип данных|Значения|Мин. длина|Макс. длина
+|Name|Description|Type|Schema
 |*id**
 |Instances id
 |query
-|integer (int64)
-a|-
-|-
-|-
+a|integer (int64)
+
+
+
 |===
 
 *Список кодов ответа*
 |===
-|Код ответа|Описание|Формат ответа|Структура ответа|Пример ответа
+|Code|Description|Content type|Schema|Example
 |200
 |OK
 |-
@@ -573,7 +565,7 @@ a|
 -
 |401
 |Not authorized
-|application/json
+|*application/json*
 |-
 a|
 [source,json]
@@ -585,7 +577,7 @@ a|
 ----
 |400
 |Bad request
-|application/json
+|*application/json*
 |-
 a|
 [source,json]
@@ -599,243 +591,247 @@ a|
 |===
 
 
-== Описание форматов для запросов
+== Components
 === ValidationErrorDto
-:table-caption: Таблица
+:table-caption: Table
 .Validation error model
 |===
-|Название параметра|Описание параметра|Тип данных|Мин. длина|Макс. длина|Паттерн
+|Name|Description|Schema
 |*fieldName*
 |Field name
 |
 string
-|-
-|-
-|-
+
+
+
 |*code*
 |Error code
 |
 string
-|-
-|-
-|-
+
+
+
 |*errorMessage*
 |Error message
 |
 string
-|-
-|-
-|-
+
+
+
 |===
 === CreateInstancesResultDto
-:table-caption: Таблица
+:table-caption: Table
 .Create instances result model
 |===
-|Название параметра|Описание параметра|Тип данных|Мин. длина|Макс. длина|Паттерн
+|Name|Description|Schema
 |*id**
 |Instances id
 |
 integer
 (int64)
-|-
-|-
-|-
+
+
+
 |*sourceFileName**
 |Source file name
 |
 string
-|-
-|-
-|-
+
+
+
 |*tableName**
 |Database table name
 |
 string
-|-
-|-
-|-
+
+
+
 |===
 === PageDto
-:table-caption: Таблица
+:table-caption: Table
 .Page model
 |===
-|Название параметра|Описание параметра|Тип данных|Мин. длина|Макс. длина|Паттерн
+|Name|Description|Schema
 |*content*
 |Page content
 |
 array
-|-
-|-
-|-
+
+
+
 |*page*
 |Page number
 |
 integer
 (int32)
-|-
-|-
-|-
+
+
+
 |*totalCount*
 |Total elements count in all pages
 |
 integer
 (int64)
-|-
-|-
-|-
+
+
+
 |===
 === FilterRequestDto
-:table-caption: Таблица
+:table-caption: Table
 .Filter request model
 |===
-|Название параметра|Описание параметра|Тип данных|Мин. длина|Макс. длина|Паттерн
+|Name|Description|Schema
 |*name**
 |Filter column name
 |
 string
-|0
-|255
-|-
+*Min. length*: 0
+*Max. length*: 255
+
 |*values*
 |-
 |
 array
-|-
-|-
-|-
+
+
+
 |*matchMode**
 |Match mode type
 |
 string
-|-
-|-
-|-
+
+
+
+*Values*:
+* EQUALS
+* LIKE
+* RANGE
 |===
 === PageRequestDto
-:table-caption: Таблица
+:table-caption: Table
 .Page request model
 |===
-|Название параметра|Описание параметра|Тип данных|Мин. длина|Макс. длина|Паттерн
+|Name|Description|Schema
 |*page**
 |Page number
 |
 integer
 (int32)
-|-
-|-
-|-
+
+
+
 |*size**
 |Page size
 |
 integer
 (int32)
-|-
-|-
-|-
+
+
+
 |*sortField*
 |Sort field
 |
 string
-|0
-|255
-|-
+*Min. length*: 0
+*Max. length*: 255
+
 |*ascending*
 |Is ascending sort?
 |
 boolean
-|-
-|-
-|-
+
+
+
 |*searchQuery*
 |Search query string
 |
 string
-|0
-|255
-|-
+*Min. length*: 0
+*Max. length*: 255
+
 |*filters*
 |Filters list
 |
 array
-|-
-|-
-|-
+
+
+
 |===
 === InstancesReportInfoDto
-:table-caption: Таблица
+:table-caption: Table
 .Instances report info model
 |===
-|Название параметра|Описание параметра|Тип данных|Мин. длина|Макс. длина|Паттерн
+|Name|Description|Schema
 |*reportType*
 |Report type
 |
 string
-|-
-|-
-|-
+
+
+
 |*title*
 |Report title
 |
 string
-|-
-|-
-|-
+
+
+
 |*fileExtension*
 |Report file extension
 |
 string
-|-
-|-
-|-
+
+
+
 |===
 === InstancesDto
-:table-caption: Таблица
+:table-caption: Table
 .Instances model
 |===
-|Название параметра|Описание параметра|Тип данных|Мин. длина|Макс. длина|Паттерн
+|Name|Description|Schema
 |*id*
 |Instances id
 |
 integer
 (int64)
-|-
-|-
-|-
+
+
+
 |*tableName*
 |Table name
 |
 string
-|-
-|-
-|-
+
+
+
 |*numInstances*
 |Instances number
 |
 integer
 (int32)
-|-
-|-
-|-
+
+
+
 |*numAttributes*
 |Attributes number
 |
 integer
 (int32)
-|-
-|-
-|-
+
+
+
 |*created*
 |Instances creation date
 |
 string
-|-
-|-
-|-
+
+
+
 |*createdBy*
 |User name
 |
 string
-|-
-|-
-|-
+
+
+
 |===
