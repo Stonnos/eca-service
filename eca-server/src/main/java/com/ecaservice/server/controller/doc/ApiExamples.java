@@ -118,4 +118,13 @@ public class ApiExamples {
     public static final String REQUESTS_STATUSES_STATISTICS_RESPONSE_JSON =
             "{\"totalCount\": 100, \"newRequestsCount\": 0, \"inProgressRequestsCount\": 1, " +
                     "\"finishedRequestsCount\": 99, \"timeoutRequestsCount\": 0, \"errorRequestsCount\": 0}";
+
+    public static final String CLASSIFIER_OPTIONS_REQUESTS_PAGE_RESPONSE_JSON =
+            "{\"content\": [{\"requestDate\": \"2021-07-01 14:00:00\", \"requestId\": " +
+                    "\"1d2de514-3a87-4620-9b97-c260e24340de\", \"relationName\": \"glass\", " +
+                    "\"evaluationMethod\": {\"value\": \"CROSS_VALIDATION\", \"description\": " +
+                    "\"V-блочная кросс-проверка\"}, \"numFolds\": 10, \"numTests\": 1, \"seed\": 1, " +
+                    "\"responseStatus\": {\"value\": \"SUCCESS\", \"description\": \"Успешно\"}, " +
+                    "\"classifierOptionsResponseModels\": [{\"classifierName\": \"CART\", \"options\": " +
+                    "\"json config\"}]}], \"page\": 0, \"totalCount\": 1}";
 }
