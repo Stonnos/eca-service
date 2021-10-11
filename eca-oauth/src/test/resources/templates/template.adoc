@@ -13,6 +13,7 @@ ${openApi.description}
 __${method.requestType}__ *${method.endpoint}* - ${method.summary}
 
 <#if method.requestBody??>
+[width=100%]
 |===
 |Content type|Required|Schema|Example
 |*${method.requestBody.contentType}*
@@ -32,6 +33,7 @@ ${method.requestBody.example}
 <#if method.requestParameters?has_content>
 
 *Request parameters*
+[width=100%]
 |===
 |Name|Description|Type|Schema
 <#list method.requestParameters as parameter>
@@ -59,6 +61,7 @@ a|__${parameter.schemaModel.type}__ <#if parameter.schemaModel.format??>__(${par
 <#if method.apiResponses?has_content>
 
 *Список кодов ответа*
+[width=100%]
 |===
 |Code|Description|Content type|Schema|Example
 <#list method.apiResponses as apiResponse>
@@ -88,6 +91,7 @@ ${apiResponse.example}
 <#if component.fields?has_content>
 :table-caption: Table
 <#if component.description??>.${component.description}<#else>.Component ${component.name}</#if>
+[width=100%]
 |===
 |Name|Description|Schema
 <#list component.fields as field>
