@@ -5,6 +5,7 @@ import com.ecaservice.mail.mapping.TemplateMapper;
 import com.ecaservice.mail.model.TemplateEntity;
 import com.ecaservice.mail.service.TemplateService;
 import com.ecaservice.web.dto.model.EmailTemplateDto;
+import com.ecaservice.web.dto.model.EmailTemplatesPageDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -74,7 +75,7 @@ public class TemplateController {
                                     examples = {
                                             @ExampleObject(value = EMAIL_TEMPLATES_PAGE_RESPONSE_JSON),
                                     },
-                                    schema = @Schema(implementation = PageDto.class)
+                                    schema = @Schema(implementation = EmailTemplatesPageDto.class)
                             )
                     ),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
