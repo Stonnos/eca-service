@@ -1,83 +1,15 @@
-= Microservice for storaging training data sets
+= Evaluation external API micriservice
 Автор: Roman Batygin <roman.batygin@mail.ru>
 :toc:
 :toc-title: Table of contents
 
 == Overview
 
-API provides operations with training data sets for ECA web application
+API provides operations to performs classifiers evaluation requests
 
-== Renames data with specified id
+== Uploads train data file
 
-__PUT__ */instances/rename* - Renames data with specified id
-
-
-*Request parameters*
-|===
-|Name|Description|Type|Schema
-|*id**
-|Instances id
-|query
-a|__integer__ __(int64)__
-
-
-
-
-
-
-
-|*tableName**
-|Table name
-|query
-a|__string__ 
-
-*Min. length*: 0
-
-*Max. length*: 30
-
-*Pattern*: `^[0-9a-z_]+$`
-
-|===
-
-*Список кодов ответа*
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|-
-|-
-a|
--
-|401
-|Not authorized
-|*application/json*
-|-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|400
-|Bad request
-|*application/json*
-|-
-a|
-[source,json]
-----
-[ {
-  "fieldName" : null,
-  "code" : "UniqueTableName",
-  "errorMessage" : "Table with name [iris] already exists!"
-} ]
-----
-|===
-
-== Saves instances into database
-
-__POST__ */instances/save* - Saves instances into database
+__POST__ */uploads-train-data* - Uploads train data file
 
 |===
 |Content type|Required|Schema|Example
@@ -88,36 +20,23 @@ a|
 -
 |===
 
-*Request parameters*
-|===
-|Name|Description|Type|Schema
-|*tableName**
-|Table name
-|query
-a|__string__ 
-
-*Min. length*: 0
-
-*Max. length*: 30
-
-*Pattern*: `^[0-9a-z_]+$`
-
-|===
-
 *Список кодов ответа*
 |===
 |Code|Description|Content type|Schema|Example
 |200
 |OK
 |*application/json*
-|<<CreateInstancesResultDto>>
+|<<InstancesResponseDto>>
 a|
 [source,json]
 ----
 {
-  "id" : 1,
-  "sourceFileName" : "iris.xls",
-  "tableName" : "iris"
+  "payload" : {
+    "dataId" : "2a35bffe-27ad-4a50-a7e0-8c871cfd7cc5",
+    "dataUrl" : "data://2a35bffe-27ad-4a50-a7e0-8c871cfd7cc5"
+  },
+  "responseCode" : "SUCCESS",
+  "errorDescription" : null
 }
 ----
 |401
@@ -139,120 +58,43 @@ a|
 a|
 [source,json]
 ----
-[ {
-  "fieldName" : null,
-  "code" : "UniqueTableName",
-  "errorMessage" : "Table with name [iris] already exists!"
-} ]
-----
-|===
-
-== Finds instances tables with specified options such as filter, sorting and paging
-
-__POST__ */instances/list* - Finds instances tables with specified options such as filter, sorting and paging
-
-|===
-|Content type|Required|Schema|Example
-|*application/json*
-|true
-|<<PageRequestDto>>
-a|
-[source,json]
-----
 {
-  "page" : 0,
-  "size" : 25
-}
-----
-|===
-
-*Список кодов ответа*
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|*application/json*
-|<<PageDto>>
-a|
-[source,json]
-----
-{
-  "content" : [ {
-    "id" : 1,
-    "tableName" : "iris",
-    "numInstances" : 150,
-    "numAttributes" : 5,
-    "created" : "2021-07-01 14:00:00",
-    "createdBy" : "admin"
+  "payload" : [ {
+    "fieldName" : "trainingData",
+    "code" : "ValidTrainData",
+    "errorMessage" : "Invalid train data extension. Must be one of xls, xlsx, csv, arff, json, xml, txt, data, docx"
   } ],
-  "page" : 0,
-  "totalCount" : 1
+  "responseCode" : "VALIDATION_ERROR",
+  "errorDescription" : "Validation errors"
 }
-----
-|401
-|Not authorized
-|*application/json*
-|-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|400
-|Bad request
-|*application/json*
-|-
-a|
-[source,json]
-----
-[ {
-  "fieldName" : "page",
-  "code" : "Min",
-  "errorMessage" : "must be greater than or equal to 0"
-}, {
-  "fieldName" : "size",
-  "code" : "Min",
-  "errorMessage" : "must be greater than or equal to 1"
-} ]
 ----
 |===
 
-== Finds data page for specified instances
+== Processes evaluation request
 
-__POST__ */instances/data-page* - Finds data page for specified instances
+__POST__ */evaluation-request* - Processes evaluation request
 
 |===
 |Content type|Required|Schema|Example
 |*application/json*
 |true
-|<<PageRequestDto>>
+|<<EvaluationRequestDto>>
 a|
 [source,json]
 ----
 {
-  "page" : 0,
-  "size" : 25
+  "trainDataUrl" : "http://kt.ijs.si/Branax/Repository/WEKA/Iris.xls",
+  "classifierOptions" : {
+    "type" : "logistic",
+    "maxIts" : 200,
+    "useConjugateGradientDescent" : false
+  },
+  "evaluationMethod" : "CROSS_VALIDATION",
+  "numFolds" : 10,
+  "numTests" : 1,
+  "seed" : 1
 }
 ----
-|===
-
-*Request parameters*
-|===
-|Name|Description|Type|Schema
-|*id**
-|Instances id
-|query
-a|__integer__ __(int64)__
-
-
-
-
-
-
-
 |===
 
 *Список кодов ответа*
@@ -261,14 +103,24 @@ a|__integer__ __(int64)__
 |200
 |OK
 |*application/json*
-|<<PageDto>>
+|<<EvaluationResponseWrapperDto>>
 a|
 [source,json]
 ----
 {
-  "content" : [ [ "5.1", "3.5", "1.4", "0.2", "Iris-setosa" ], [ "4.9", "3.0", "1.4", "0.2", "Iris-setosa" ], [ "4.7", "3.2", "1.3", "0.2", "Iris-setosa" ] ],
-  "page" : 0,
-  "totalCount" : 3
+  "payload" : {
+    "requestId" : "1cbe6c49-8432-4c81-9afa-90f04a803fed",
+    "evaluationStatus" : "IN_PROGRESS",
+    "modelUrl" : null,
+    "numTestInstances" : null,
+    "numCorrect" : null,
+    "numIncorrect" : null,
+    "pctCorrect" : null,
+    "pctIncorrect" : null,
+    "meanAbsoluteError" : null
+  },
+  "responseCode" : "SUCCESS",
+  "errorDescription" : null
 }
 ----
 |401
@@ -290,22 +142,42 @@ a|
 a|
 [source,json]
 ----
-[ {
-  "fieldName" : "page",
-  "code" : "Min",
-  "errorMessage" : "must be greater than or equal to 0"
-}, {
-  "fieldName" : "size",
-  "code" : "Min",
-  "errorMessage" : "must be greater than or equal to 1"
-} ]
+{
+  "payload" : [ {
+    "fieldName" : "classifierOptions",
+    "code" : "NotNull",
+    "errorMessage" : "must not be null"
+  }, {
+    "fieldName" : "evaluationMethod",
+    "code" : "NotNull",
+    "errorMessage" : "must not be null"
+  } ],
+  "responseCode" : "VALIDATION_ERROR",
+  "errorDescription" : "Validation errors"
+}
 ----
 |===
 
-== Gets instances reports info
+== Gets evaluation response status
 
-__GET__ */instances/reports-info* - Gets instances reports info
+__GET__ */evaluation-status/{requestId}* - Gets evaluation response status
 
+
+*Request parameters*
+|===
+|Name|Description|Type|Schema
+|*requestId**
+|Request id
+|path
+a|__string__ 
+
+
+
+
+
+
+
+|===
 
 *Список кодов ответа*
 |===
@@ -313,43 +185,25 @@ __GET__ */instances/reports-info* - Gets instances reports info
 |200
 |OK
 |*application/json*
-|-
+|<<ResponseDto>>
 a|
 [source,json]
 ----
-[ {
-  "title" : "Microsoft Excel (.xlsx)",
-  "reportType" : "XLS",
-  "fileExtension" : "xlsx"
-}, {
-  "title" : "Формат CSV (.csv)",
-  "reportType" : "CSV",
-  "fileExtension" : "csv"
-}, {
-  "title" : "Формат Arff (.arff)",
-  "reportType" : "ARFF",
-  "fileExtension" : "arff"
-}, {
-  "title" : "Json формат (.json)",
-  "reportType" : "JSON",
-  "fileExtension" : "json"
-}, {
-  "title" : "Xml формат (.xml)",
-  "reportType" : "XML",
-  "fileExtension" : "xml"
-}, {
-  "title" : "Текстовый формат (.txt)",
-  "reportType" : "TXT",
-  "fileExtension" : "txt"
-}, {
-  "title" : "Формат данных (.data)",
-  "reportType" : "DATA",
-  "fileExtension" : "data"
-}, {
-  "title" : "Microsoft Word (.docx)",
-  "reportType" : "DOCX",
-  "fileExtension" : "docx"
-} ]
+{
+  "payload" : {
+    "requestId" : "1cbe6c49-8432-4c81-9afa-90f04a803fed",
+    "evaluationStatus" : "FINISHED",
+    "modelUrl" : "http://localhost:8080/external-api/download-model/1cbe6c49-8432-4c81-9afa-90f04a803fed",
+    "numTestInstances" : 150,
+    "numCorrect" : 144,
+    "numIncorrect" : 6,
+    "pctCorrect" : 96,
+    "pctIncorrect" : 4,
+    "meanAbsoluteError" : 0.02869334024628254
+  },
+  "responseCode" : "SUCCESS",
+  "errorDescription" : null
+}
 ----
 |401
 |Not authorized
@@ -363,31 +217,135 @@ a|
   "error_description" : "Full authentication is required to access this resource"
 }
 ----
+|400
+|Bad request
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "payload" : [ {
+    "fieldName" : null,
+    "code" : "DataNotFound",
+    "errorMessage" : "Entity with search key [1] not found!"
+  } ],
+  "responseCode" : "VALIDATION_ERROR",
+  "errorDescription" : "Validation errors"
+}
+----
 |===
 
-== Download instances report with specified type
+== Downloads classifier model
 
-__GET__ */instances/download* - Download instances report with specified type
+__GET__ */download-model/{requestId}* - Downloads classifier model
 
 
 *Request parameters*
 |===
 |Name|Description|Type|Schema
-|*id**
-|Instances id
-|query
-a|__integer__ __(int64)__
-
-
-
-
-
-
-
-|*reportType**
-|Report type
-|query
+|*requestId**
+|Request id
+|path
 a|__string__ 
+
+
+
+
+
+
+
+|===
+
+*Список кодов ответа*
+|===
+|Code|Description|Content type|Schema|Example
+|200
+|OK
+|**/**
+|-
+a|
+-
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "payload" : [ {
+    "fieldName" : null,
+    "code" : "DataNotFound",
+    "errorMessage" : "Entity with search key [1] not found!"
+  } ],
+  "responseCode" : "VALIDATION_ERROR",
+  "errorDescription" : "Validation errors"
+}
+----
+|===
+
+
+== Components
+=== InstancesDto
+:table-caption: Table
+.Instances model
+|===
+|Name|Description|Schema
+|*dataId*
+|Data id
+a|
+__string__
+
+
+
+
+
+
+
+|*dataUrl*
+|Train data url in internal format data://dataId
+a|
+__string__
+
+
+
+
+
+
+
+|===
+=== InstancesResponseDto
+:table-caption: Table
+.Instances response wrapper model
+|===
+|Name|Description|Schema
+|*payload*
+|-
+a|<<InstancesDto>>
+
+
+
+
+
+
+
+|*responseCode*
+|Response code
+a|
+__string__
 
 
 
@@ -397,273 +355,18 @@ a|__string__
 
 *Values*:
 
-* XLS
+* SUCCESS
 
-* CSV
+* VALIDATION_ERROR
 
-* ARFF
+* DATA_NOT_FOUND
 
-* JSON
+* ERROR
 
-* XML
+* TIMEOUT
 
-* TXT
-
-* DATA
-
-* DOCX
-|===
-
-*Список кодов ответа*
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|*application/octet-stream*
-|-
-a|
--
-|401
-|Not authorized
-|*application/json*
-|-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|400
-|Bad request
-|*application/json*
-|-
-a|
-[source,json]
-----
-[ {
-  "fieldName" : null,
-  "code" : "DataNotFound",
-  "errorMessage" : "Entity with search key [1] not found!"
-} ]
-----
-|===
-
-== Gets instances details
-
-__GET__ */instances/details/{id}* - Gets instances details
-
-
-*Request parameters*
-|===
-|Name|Description|Type|Schema
-|*id**
-|Instances id
-|path
-a|__integer__ __(int64)__
-
-
-
-
-
-
-
-|===
-
-*Список кодов ответа*
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|*application/json*
-|<<InstancesDto>>
-a|
-[source,json]
-----
-{
-  "id" : 1,
-  "tableName" : "iris",
-  "numInstances" : 150,
-  "numAttributes" : 5,
-  "created" : "2021-07-01 14:00:00",
-  "createdBy" : "admin"
-}
-----
-|401
-|Not authorized
-|*application/json*
-|-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|400
-|Bad request
-|*application/json*
-|-
-a|
-[source,json]
-----
-[ {
-  "fieldName" : null,
-  "code" : "DataNotFound",
-  "errorMessage" : "Entity with search key [1] not found!"
-} ]
-----
-|===
-
-== Gets attributes list for specified instances
-
-__GET__ */instances/attributes/{id}* - Gets attributes list for specified instances
-
-
-*Request parameters*
-|===
-|Name|Description|Type|Schema
-|*id**
-|Instances id
-|path
-a|__integer__ __(int64)__
-
-
-
-
-
-
-
-|===
-
-*Список кодов ответа*
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|*application/json*
-|-
-a|
-[source,json]
-----
-[ "x1", "x2", "x3", "x4", "class" ]
-----
-|401
-|Not authorized
-|*application/json*
-|-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|400
-|Bad request
-|*application/json*
-|-
-a|
-[source,json]
-----
-[ {
-  "fieldName" : null,
-  "code" : "DataNotFound",
-  "errorMessage" : "Entity with search key [1] not found!"
-} ]
-----
-|===
-
-== Deletes instances with specified id
-
-__DELETE__ */instances/delete* - Deletes instances with specified id
-
-
-*Request parameters*
-|===
-|Name|Description|Type|Schema
-|*id**
-|Instances id
-|query
-a|__integer__ __(int64)__
-
-
-
-
-
-
-
-|===
-
-*Список кодов ответа*
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|-
-|-
-a|
--
-|401
-|Not authorized
-|*application/json*
-|-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|400
-|Bad request
-|*application/json*
-|-
-a|
-[source,json]
-----
-[ {
-  "fieldName" : null,
-  "code" : "DataNotFound",
-  "errorMessage" : "Entity with search key [1] not found!"
-} ]
-----
-|===
-
-
-== Components
-=== ValidationErrorDto
-:table-caption: Table
-.Validation error model
-|===
-|Name|Description|Schema
-|*fieldName*
-|Field name
-a|
-__string__
-
-
-
-
-
-
-
-|*code*
-|Error code
-a|
-__string__
-
-
-
-
-
-
-
-|*errorMessage*
+* SERVICE_UNAVAILABLE
+|*errorDescription*
 |Error message
 a|
 __string__
@@ -675,25 +378,13 @@ __string__
 
 
 |===
-=== CreateInstancesResultDto
+=== EvaluationResponseDto
 :table-caption: Table
-.Create instances result model
+.Evaluation response model
 |===
 |Name|Description|Schema
-|*id**
-|Instances id
-a|
-__integer__
-__(int64)__
-
-
-
-
-
-
-
-|*sourceFileName**
-|Source file name
+|*requestId*
+|Evaluation request id
 a|
 __string__
 
@@ -703,88 +394,8 @@ __string__
 
 
 
-|*tableName**
-|Database table name
-a|
-__string__
-
-
-
-
-
-
-
-|===
-=== PageDto
-:table-caption: Table
-.Page model
-|===
-|Name|Description|Schema
-|*content*
-|Page content
-a|
-__array__
-
-
-
-
-
-
-
-|*page*
-|Page number
-a|
-__integer__
-__(int32)__
-
-
-
-
-
-
-
-|*totalCount*
-|Total elements count in all pages
-a|
-__integer__
-__(int64)__
-
-
-
-
-
-
-
-|===
-=== FilterRequestDto
-:table-caption: Table
-.Filter request model
-|===
-|Name|Description|Schema
-|*name**
-|Filter column name
-a|
-__string__
-
-*Min. length*: 0
-
-*Max. length*: 255
-
-
-
-|*values*
-|-
-a|
-__array__
-
-
-
-
-
-
-
-|*matchMode**
-|Match mode type
+|*evaluationStatus*
+|Evaluation status
 a|
 __string__
 
@@ -796,22 +407,102 @@ __string__
 
 *Values*:
 
-* EQUALS
+* IN_PROGRESS
 
-* LIKE
+* FINISHED
 
-* RANGE
+* TIMEOUT
+
+* ERROR
+|*modelUrl*
+|Model url
+a|
+__string__
+
+
+
+
+
+
+
+|*numTestInstances*
+|Test instances number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+|*numCorrect*
+|Correctly classified instances number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+|*numIncorrect*
+|Incorrectly classified instances number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+|*pctCorrect*
+|Correctly classified percentage
+a|
+__number__
+
+
+
+
+
+
+
+|*pctIncorrect*
+|Incorrectly classified percentage
+a|
+__number__
+
+
+
+
+
+
+
+|*meanAbsoluteError*
+|Mean absolute error
+a|
+__number__
+
+
+
+
+
+
+
 |===
-=== PageRequestDto
+=== EvaluationResponseWrapperDto
 :table-caption: Table
-.Page request model
+.Evaluation response wrapper model
 |===
 |Name|Description|Schema
-|*page**
-|Page number
-a|
-__integer__
-__(int32)__
+|*payload*
+|-
+a|<<EvaluationResponseDto>>
 
 
 
@@ -819,55 +510,34 @@ __(int32)__
 
 
 
-|*size**
-|Page size
-a|
-__integer__
-__(int32)__
-
-
-
-
-
-
-
-|*sortField*
-|Sort field
+|*responseCode*
+|Response code
 a|
 __string__
 
-*Min. length*: 0
-
-*Max. length*: 255
-
-
-
-|*ascending*
-|Is ascending sort?
-a|
-__boolean__
 
 
 
 
 
 
+*Values*:
 
-|*searchQuery*
-|Search query string
+* SUCCESS
+
+* VALIDATION_ERROR
+
+* DATA_NOT_FOUND
+
+* ERROR
+
+* TIMEOUT
+
+* SERVICE_UNAVAILABLE
+|*errorDescription*
+|Error message
 a|
 __string__
-
-*Min. length*: 0
-
-*Max. length*: 255
-
-
-
-|*filters*
-|Filters list
-a|
-__array__
 
 
 
@@ -876,13 +546,13 @@ __array__
 
 
 |===
-=== InstancesReportInfoDto
+=== ActivationFunctionOptions
 :table-caption: Table
-.Instances report info model
+.Component ActivationFunctionOptions
 |===
 |Name|Description|Schema
-|*reportType*
-|Report type
+|*activationFunctionType*
+|-
 a|
 __string__
 
@@ -892,21 +562,24 @@ __string__
 
 
 
-|*title*
-|Report title
+*Values*:
+
+* LOGISTIC
+
+* HYPERBOLIC_TANGENT
+
+* SINUSOID
+
+* EXPONENTIAL
+
+* SOFT_SIGN
+
+* INVERSE_SQUARE_ROOT_UNIT
+|*coefficient*
+|-
 a|
-__string__
-
-
-
-
-
-
-
-|*fileExtension*
-|Report file extension
-a|
-__string__
+__number__
+__(double)__
 
 
 
@@ -915,16 +588,16 @@ __string__
 
 
 |===
-=== InstancesDto
+=== BackPropagationOptions
 :table-caption: Table
-.Instances model
+.Component BackPropagationOptions
 |===
 |Name|Description|Schema
-|*id*
-|Instances id
+|*learningRate*
+|-
 a|
-__integer__
-__(int64)__
+__number__
+__(double)__
 
 
 
@@ -932,8 +605,26 @@ __(int64)__
 
 
 
-|*tableName*
-|Table name
+|*momentum*
+|-
+a|
+__number__
+__(double)__
+
+
+
+
+
+
+
+|===
+=== ClassifierOptions
+:table-caption: Table
+.Classifier options json
+|===
+|Name|Description|Schema
+|*type**
+|-
 a|
 __string__
 
@@ -943,8 +634,51 @@ __string__
 
 
 
-|*numInstances*
-|Instances number
+|===
+=== DecisionTreeOptions
+=== EvaluationRequestDto
+:table-caption: Table
+.Evaluation request model
+|===
+|Name|Description|Schema
+|*trainDataUrl**
+|Train data url
+a|
+__string__
+
+
+
+
+
+
+
+|*classifierOptions**
+|-
+a|
+
+
+
+
+
+
+|*evaluationMethod**
+|Evaluation method
+a|
+__string__
+
+
+
+
+
+
+
+*Values*:
+
+* TRAINING_DATA
+
+* CROSS_VALIDATION
+|*numFolds*
+|Folds number for k * V cross - validation method
 a|
 __integer__
 __(int32)__
@@ -955,8 +689,8 @@ __(int32)__
 
 
 
-|*numAttributes*
-|Attributes number
+|*numTests*
+|Tests number for k * V cross - validation method
 a|
 __integer__
 __(int32)__
@@ -967,8 +701,43 @@ __(int32)__
 
 
 
-|*created*
-|Instances creation date
+|*seed*
+|Seed value for k * V cross - validation method
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+|===
+=== IterativeEnsembleOptions
+=== J48Options
+=== KNearestNeighboursOptions
+=== LogisticOptions
+=== NeuralNetworkOptions
+=== StackingOptions
+=== ResponseDto
+:table-caption: Table
+.Response model
+|===
+|Name|Description|Schema
+|*payload*
+|Response payload
+a|
+__object__
+
+
+
+
+
+
+
+|*responseCode*
+|Response code
 a|
 __string__
 
@@ -978,8 +747,21 @@ __string__
 
 
 
-|*createdBy*
-|User name
+*Values*:
+
+* SUCCESS
+
+* VALIDATION_ERROR
+
+* DATA_NOT_FOUND
+
+* ERROR
+
+* TIMEOUT
+
+* SERVICE_UNAVAILABLE
+|*errorDescription*
+|Error message
 a|
 __string__
 

@@ -87,7 +87,7 @@ ${apiResponse.example}
 === ${component.name}
 <#if component.fields?has_content>
 :table-caption: Table
-.${component.description}
+<#if component.description??>.${component.description}<#else>.Component ${component.name}</#if>
 |===
 |Name|Description|Schema
 <#list component.fields as field>
