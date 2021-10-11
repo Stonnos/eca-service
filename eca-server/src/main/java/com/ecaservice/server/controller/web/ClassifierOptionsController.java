@@ -187,8 +187,7 @@ public class ClassifierOptionsController {
                                             @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
                                     }
                             )
-                    ),
-                    @ApiResponse(description = "Bad request", responseCode = "400")
+                    )
             }
     )
     @PostMapping(value = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

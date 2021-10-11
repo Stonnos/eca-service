@@ -81,7 +81,7 @@ public class ApiExamples {
                     "\"createdBy\": \"admin\", \"config\": \"Json config\"}]";
 
     public static final String SAVE_CLASSIFIER_OPTIONS_RESPONSE_JSON =
-            "{\"id\": 1, \"sourceFileName\": \"cart.json\", \"success\": true, \"errorMessage\": \"string\"}";
+            "{\"id\": 1, \"sourceFileName\": \"cart.json\", \"success\": true, \"errorMessage\": \"\"}";
 
     public static final String EVALUATION_LOGS_PAGE_RESPONSE_JSON =
             "{\"content\": [{\"id\": 1, \"requestId\": \"1d2de514-3a87-4620-9b97-c260e24340de\", " +
@@ -106,7 +106,7 @@ public class ApiExamples {
                     "\"optionValue\": \"100\"}]}, \"instancesInfo\": {\"relationName\": \"iris\", " +
                     "\"numInstances\": 150, \"numAttributes\": 5, \"numClasses\": 4, \"className\": " +
                     "\"class\"}, \"evaluationResultsDto\": {\"evaluationResultsStatus\": {\"value\": " +
-                    "\"RESULTS_RECEIVED\", \"description\": \"Получены результаты классифкации\"}, " +
+                    "\"RESULTS_RECEIVED\", \"description\": \"Получены результаты классификации\"}, " +
                     "\"evaluationStatisticsDto\": {\"numTestInstances\": 150, \"numCorrect\": 146, " +
                     "\"numIncorrect\": 4, \"pctCorrect\": 96, \"pctIncorrect\": 4, \"meanAbsoluteError\": 0.29, " +
                     "\"rootMeanSquaredError\": 0.01, \"maxAucValue\": 0.89, \"varianceError\": 0.0012, " +
