@@ -11,6 +11,7 @@ import com.ecaservice.data.storage.service.InstancesLoader;
 import com.ecaservice.data.storage.service.StorageService;
 import com.ecaservice.web.dto.model.CreateInstancesResultDto;
 import com.ecaservice.web.dto.model.InstancesDto;
+import com.ecaservice.web.dto.model.InstancesPageDto;
 import com.ecaservice.web.dto.model.InstancesReportInfoDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -105,7 +106,7 @@ public class DataStorageController {
                                     examples = {
                                             @ExampleObject(value = INSTANCES_PAGE_RESPONSE_JSON),
                                     },
-                                    schema = @Schema(implementation = PageDto.class)
+                                    schema = @Schema(implementation = InstancesPageDto.class)
                             )
                     ),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
@@ -342,7 +343,7 @@ public class DataStorageController {
                                     examples = {
                                             @ExampleObject(value = INSTANCES_DATA_PAGE_RESPONSE_JSON),
                                     },
-                                    schema = @Schema(implementation = PageDto.class)
+                                    schema = @Schema(implementation = InstancesPageDto.class)
                             )
                     ),
                     @ApiResponse(description = "Not authorized", responseCode = "401",

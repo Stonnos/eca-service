@@ -8,6 +8,7 @@ import com.ecaservice.common.web.dto.ValidationErrorDto;
 import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.report.model.ReportType;
 import com.ecaservice.web.dto.model.AuditLogDto;
+import com.ecaservice.web.dto.model.AuditLogsPageDto;
 import com.ecaservice.web.dto.model.FilterFieldDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -92,7 +93,7 @@ public class AuditLogController {
                                     examples = {
                                             @ExampleObject(value = AUDIT_LOGS_PAGE_RESPONSE_JSON),
                                     },
-                                    schema = @Schema(implementation = PageDto.class)
+                                    schema = @Schema(implementation = AuditLogsPageDto.class)
                             )
                     ),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
