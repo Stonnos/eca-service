@@ -118,4 +118,13 @@ public class ApiExamples {
      */
     public static final String INVALID_PASSWORD_RESPONSE_JSON = "[{\"fieldName\": null, \"code\": " +
             "\"InvalidPassword\", \"errorMessage\": \"Invalid password\"}]";
+
+    /**
+     * Invalid update user info request response json
+     */
+    public static final String INVALID_UPDATE_USER_INFO_REQUEST_RESPONSE_JSON =
+            "[{\"fieldName\": \"lastName\", \"code\": \"Size\", \"errorMessage\": \"size must be between 2 and 30\"}, " +
+                    "{\"fieldName\": \"middleName\", \"code\": \"Size\", \"errorMessage\": " +
+                    "\"size must be between 2 and 30\"}, {\"fieldName\": \"firstName\", \"code\": \"Size\", " +
+                    "\"errorMessage\": \"size must be between 2 and 30\"}]";
 }

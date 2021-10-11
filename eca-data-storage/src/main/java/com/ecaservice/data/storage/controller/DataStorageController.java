@@ -474,11 +474,7 @@ public class DataStorageController {
             summary = "Download instances report with specified type",
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
             responses = {
-                    @ApiResponse(description = "OK", responseCode = "200",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE
-                            )
-                    ),
+                    @ApiResponse(description = "OK", responseCode = "200"),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
