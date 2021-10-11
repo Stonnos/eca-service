@@ -4,7 +4,9 @@ import com.ecaservice.common.web.dto.ValidationErrorDto;
 import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.dto.EvaluationRequestDto;
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
+import com.ecaservice.external.api.dto.EvaluationResponseWrapperDto;
 import com.ecaservice.external.api.dto.InstancesDto;
+import com.ecaservice.external.api.dto.InstancesResponseDto;
 import com.ecaservice.external.api.dto.ResponseCode;
 import com.ecaservice.external.api.dto.ResponseDto;
 import com.ecaservice.external.api.service.EcaRequestService;
@@ -98,7 +100,7 @@ public class ExternalApiController {
                                     examples = {
                                             @ExampleObject(value = UPLOAD_INSTANCES_RESPONSE_JSON),
                                     },
-                                    schema = @Schema(implementation = ResponseDto.class)
+                                    schema = @Schema(implementation = InstancesResponseDto.class)
                             )
                     ),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
@@ -163,7 +165,7 @@ public class ExternalApiController {
                                     examples = {
                                             @ExampleObject(value = EVALUATION_REQUEST_RESPONSE_JSON),
                                     },
-                                    schema = @Schema(implementation = ResponseDto.class)
+                                    schema = @Schema(implementation = EvaluationResponseWrapperDto.class)
                             )
                     ),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
@@ -216,7 +218,7 @@ public class ExternalApiController {
                                     examples = {
                                             @ExampleObject(value = EVALUATION_STATUS_RESPONSE_JSON),
                                     },
-                                    schema = @Schema(implementation = ResponseDto.class)
+                                    schema = @Schema(implementation = EvaluationResponseWrapperDto.class)
                             )
                     ),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
