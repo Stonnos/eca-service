@@ -23,7 +23,7 @@ public class ClassifierOptionsResponse {
     /**
      * Request id
      */
-    @Schema(description = "Request id")
+    @Schema(description = "Request id", example = "f8cecbf7-405b-403b-9a94-f51e8fb73ed8")
     private String requestId;
 
     /**
