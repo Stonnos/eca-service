@@ -18,23 +18,17 @@ __*PUT*__ */instances/rename* - Renames data with specified id
 |*id**
 |Instances id
 |query
-a|integer (int64)
+|integer (int64)
 
-+
 
-+
 
-+
 |*tableName**
 |Table name
 |query
-a|string 
+|string 
 *Min. length*: 0
-+
 *Max. length*: 30
-+
 *Pattern*: `^[0-9a-z_]+$`
-+
 |===
 
 *Список кодов ответа*
@@ -92,13 +86,10 @@ a|
 |*tableName**
 |Table name
 |query
-a|string 
+|string 
 *Min. length*: 0
-+
 *Max. length*: 30
-+
 *Pattern*: `^[0-9a-z_]+$`
-+
 |===
 
 *Список кодов ответа*
@@ -242,13 +233,10 @@ a|
 |*id**
 |Instances id
 |query
-a|integer (int64)
+|integer (int64)
 
-+
 
-+
 
-+
 |===
 
 *Список кодов ответа*
@@ -372,40 +360,26 @@ __*GET*__ */instances/download* - Download instances report with specified type
 |*id**
 |Instances id
 |query
-a|integer (int64)
+|integer (int64)
 
-+
 
-+
 
-+
 |*reportType**
 |Report type
 |query
-a|string 
+|string 
 
-+
 
-+
 
-+
 *Values*:
 * XLS
-+
 * CSV
-+
 * ARFF
-+
 * JSON
-+
 * XML
-+
 * TXT
-+
 * DATA
-+
 * DOCX
-+
 |===
 
 *Список кодов ответа*
@@ -455,13 +429,10 @@ __*GET*__ */instances/details/{id}* - Gets instances details
 |*id**
 |Instances id
 |path
-a|integer (int64)
+|integer (int64)
 
-+
 
-+
 
-+
 |===
 
 *Список кодов ответа*
@@ -521,13 +492,10 @@ __*GET*__ */instances/attributes/{id}* - Gets attributes list for specified inst
 |*id**
 |Instances id
 |path
-a|integer (int64)
+|integer (int64)
 
-+
 
-+
 
-+
 |===
 
 *Список кодов ответа*
@@ -580,13 +548,10 @@ __*DELETE*__ */instances/delete* - Deletes instances with specified id
 |*id**
 |Instances id
 |query
-a|integer (int64)
+|integer (int64)
 
-+
 
-+
 
-+
 |===
 
 *Список кодов ответа*
@@ -637,31 +602,22 @@ a|
 |
 string
 
-+
 
-+
 
-+
 |*code*
 |Error code
 |
 string
 
-+
 
-+
 
-+
 |*errorMessage*
 |Error message
 |
 string
 
-+
 
-+
 
-+
 |===
 === CreateInstancesResultDto
 :table-caption: Table
@@ -674,31 +630,22 @@ string
 integer
 (int64)
 
-+
 
-+
 
-+
 |*sourceFileName**
 |Source file name
 |
 string
 
-+
 
-+
 
-+
 |*tableName**
 |Database table name
 |
 string
 
-+
 
-+
 
-+
 |===
 === PageDto
 :table-caption: Table
@@ -710,33 +657,24 @@ string
 |
 array
 
-+
 
-+
 
-+
 |*page*
 |Page number
 |
 integer
 (int32)
 
-+
 
-+
 
-+
 |*totalCount*
 |Total elements count in all pages
 |
 integer
 (int64)
 
-+
 
-+
 
-+
 |===
 === FilterRequestDto
 :table-caption: Table
@@ -748,38 +686,26 @@ integer
 |
 string
 *Min. length*: 0
-+
 *Max. length*: 255
-+
 
-+
 |*values*
 |-
 |
 array
 
-+
 
-+
 
-+
 |*matchMode**
 |Match mode type
 |
 string
 
-+
 
-+
 
-+
 *Values*:
 * EQUALS
-+
 * LIKE
-+
 * RANGE
-+
 |===
 === PageRequestDto
 :table-caption: Table
@@ -792,62 +718,44 @@ string
 integer
 (int32)
 
-+
 
-+
 
-+
 |*size**
 |Page size
 |
 integer
 (int32)
 
-+
 
-+
 
-+
 |*sortField*
 |Sort field
 |
 string
 *Min. length*: 0
-+
 *Max. length*: 255
-+
 
-+
 |*ascending*
 |Is ascending sort?
 |
 boolean
 
-+
 
-+
 
-+
 |*searchQuery*
 |Search query string
 |
 string
 *Min. length*: 0
-+
 *Max. length*: 255
-+
 
-+
 |*filters*
 |Filters list
 |
 array
 
-+
 
-+
 
-+
 |===
 === InstancesReportInfoDto
 :table-caption: Table
@@ -859,31 +767,22 @@ array
 |
 string
 
-+
 
-+
 
-+
 |*title*
 |Report title
 |
 string
 
-+
 
-+
 
-+
 |*fileExtension*
 |Report file extension
 |
 string
 
-+
 
-+
 
-+
 |===
 === InstancesDto
 :table-caption: Table
@@ -896,61 +795,43 @@ string
 integer
 (int64)
 
-+
 
-+
 
-+
 |*tableName*
 |Table name
 |
 string
 
-+
 
-+
 
-+
 |*numInstances*
 |Instances number
 |
 integer
 (int32)
 
-+
 
-+
 
-+
 |*numAttributes*
 |Attributes number
 |
 integer
 (int32)
 
-+
 
-+
 
-+
 |*created*
 |Instances creation date
 |
 string
 
-+
 
-+
 
-+
 |*createdBy*
 |User name
 |
 string
 
-+
 
-+
 
-+
 |===
