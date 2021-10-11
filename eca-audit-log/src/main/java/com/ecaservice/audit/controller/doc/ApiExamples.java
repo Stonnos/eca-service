@@ -52,4 +52,14 @@ public class ApiExamples {
             "\"1d2de514-3a87-4620-9b97-c260e24340de\", \"message\": \"Some action\", \"initiator\": \"user\", " +
             "\"groupCode\": \"USER_ACTIONS\", \"groupTitle\": \"User actions\", \"code\": \"LOGIN\", \"codeTitle\": " +
             "\"User logged in\", \"eventDate\": \"2021-07-01 14:00:00\"}], \"page\": 0, \"totalCount\": 1}";
+
+    /**
+     * Audit event bad request response json
+     */
+    public static final String AUDIT_EVENT_BAD_REQUEST_RESPONSE_JSON = "[{\"fieldName\": \"groupCode\", \"code\": " +
+            "\"NotEmpty\", \"errorMessage\": \"must not be empty\"}, {\"fieldName\": \"initiator\", " +
+            "\"code\": \"NotEmpty\", \"errorMessage\": \"must not be empty\"}, {\"fieldName\": \"message\", " +
+            "\"code\": \"NotEmpty\", \"errorMessage\": \"must not be empty\"}, {\"fieldName\": \"eventId\", " +
+            "\"code\": \"NotEmpty\", \"errorMessage\": \"must not be empty\"}, {\"fieldName\": \"code\", " +
+            "\"code\": \"NotEmpty\", \"errorMessage\": \"must not be empty\"}]";
 }
