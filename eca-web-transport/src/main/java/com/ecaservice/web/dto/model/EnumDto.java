@@ -19,12 +19,12 @@ public class EnumDto {
     /**
      * Enum value
      */
-    @Schema(description = "Enum value", required = true)
+    @Schema(description = "Enum value", required = true, example = "Enum code")
     private String value;
 
     /**
      * Enum value description
      */
-    @Schema(description = "Enum value description", required = true)
+    @Schema(description = "Enum value description", required = true, example = "Enum value")
     private String description;
 }

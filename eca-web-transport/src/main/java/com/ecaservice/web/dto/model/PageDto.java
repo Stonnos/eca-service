@@ -27,13 +27,13 @@ public class PageDto<T> {
     /**
      * Page number
      */
-    @Schema(description = "Page number")
+    @Schema(description = "Page number", example = "0")
     private int page;
 
     /**
      * Total elements count in all pages
      */
-    @Schema(description = "Total elements count in all pages")
+    @Schema(description = "Total elements count in all pages", example = "1")
     private long totalCount;
 
     /**

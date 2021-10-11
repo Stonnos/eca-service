@@ -15,12 +15,12 @@ public class ClassifierOptionsResponseDto {
     /**
      * Classifier name
      */
-    @Schema(description = "Classifier name")
+    @Schema(description = "Classifier name", example = "CART")
     private String classifierName;
 
     /**
      * Classifier options config
      */
-    @Schema(description = "Classifier input options json config")
+    @Schema(description = "Classifier input options json config", example = "json config")
     private String options;
 }

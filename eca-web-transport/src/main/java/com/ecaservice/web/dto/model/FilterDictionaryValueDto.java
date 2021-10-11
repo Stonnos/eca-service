@@ -15,12 +15,12 @@ public class FilterDictionaryValueDto {
     /**
      * Label string
      */
-    @Schema(description = "Filter dictionary field label")
+    @Schema(description = "Filter dictionary field label", example = "Label value")
     private String label;
 
     /**
      * String value
      */
-    @Schema(description = "Filter dictionary field value")
+    @Schema(description = "Filter dictionary field value", example = "Value code")
     private String value;
 }

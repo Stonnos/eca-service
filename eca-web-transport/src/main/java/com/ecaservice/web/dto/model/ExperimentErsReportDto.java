@@ -17,19 +17,19 @@ public class ExperimentErsReportDto {
     /**
      * Experiment request id
      */
-    @Schema(description = "Experiment request id")
+    @Schema(description = "Experiment request id", example = "1d2de514-3a87-4620-9b97-c260e24340de")
     private String experimentRequestId;
 
     /**
      * Total classifiers count that should be sent to ERS service
      */
-    @Schema(description = "Total classifiers count")
+    @Schema(description = "Total classifiers count", example = "10")
     private long classifiersCount;
 
     /**
      * Successfully sent classifiers count
      */
-    @Schema(description = "Successfully sent classifiers count")
+    @Schema(description = "Successfully sent classifiers count", example = "10")
     private long sentClassifiersCount;
 
     /**

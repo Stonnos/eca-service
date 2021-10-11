@@ -17,7 +17,7 @@ public class FilterDictionaryDto {
     /**
      * Dictionary name
      */
-    @Schema(description = "Filter dictionary name")
+    @Schema(description = "Filter dictionary name", example = "Dictionary name")
     private String name;
 
     /**
