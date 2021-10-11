@@ -21,12 +21,13 @@ public class InstancesDto implements Serializable {
     /**
      * Train data id
      */
-    @Schema(description = "Data id")
+    @Schema(description = "Data id", example = "2a35bffe-27ad-4a50-a7e0-8c871cfd7cc5")
     private String dataId;
 
     /**
      * Train data url in internal format data://dataId
      */
-    @Schema(description = "Train data url in internal format data://dataId")
+    @Schema(description = "Train data url in internal format data://dataId",
+            example = "data://2a35bffe-27ad-4a50-a7e0-8c871cfd7cc5")
     private String dataUrl;
 }

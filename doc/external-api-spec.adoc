@@ -175,7 +175,7 @@ curl -X POST "http://localhost:8080/external-api/uploads-train-data" -H "accept:
 {
   "payload": {
     "requestId": "1cbe6c49-8432-4c81-9afa-90f04a803fed",
-    "evaluationStatus": "IN_PROGRESS"
+    "evaluationStatus": "IN_PROGRESS",
     "modelUrl": null,
     "numTestInstances": null,
     "numCorrect": null,
@@ -261,7 +261,7 @@ curl -X GET "http://localhost:8080/external-api/evaluation-status/1cbe6c49-8432-
 {
   "payload": {
     "requestId": "1cbe6c49-8432-4c81-9afa-90f04a803fed",
-    "evaluationStatus": "FINISHED"
+    "evaluationStatus": "FINISHED",
     "modelUrl": "http://localhost:8080/external-api/download-model/1cbe6c49-8432-4c81-9afa-90f04a803fed",
     "numTestInstances": 150,
     "numCorrect": 144,
