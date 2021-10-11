@@ -71,4 +71,15 @@ public class ApiExamples {
             "{\"id\": 1, \"configurationName\": \"Default configuration\", \"creationDate\": " +
                     "\"2021-07-01 14:00:00\", \"createdBy\": \"admin\", \"updated\": \"2021-07-01 14:00:00\", " +
                     "\"active\": true, \"buildIn\": true, \"classifiersOptionsCount\": 25}";
+
+    public static final String GET_CLASSIFIERS_OPTIONS_PAGE_RESPONSE_JSON = "{\"content\": [{\"id\": 1, " +
+            "\"optionsName\": \"DecisionTreeOptions\", \"creationDate\": \"2021-07-01 14:00:00\", " +
+            "\"createdBy\": \"admin\", \"config\": \"Json config\"}], \"page\": 0, \"totalCount\": 1}";
+
+    public static final String GET_CLASSIFIERS_OPTIONS_LIST_RESPONSE_JSON =
+            "[{\"id\": 1, \"optionsName\": \"DecisionTreeOptions\", \"creationDate\": \"2021-07-01 14:00:00\", " +
+                    "\"createdBy\": \"admin\", \"config\": \"Json config\"}]";
+
+    public static final String SAVE_CLASSIFIER_OPTIONS_RESPONSE_JSON =
+            "{\"id\": 1, \"sourceFileName\": \"cart.json\", \"success\": true, \"errorMessage\": \"string\"}";
 }
