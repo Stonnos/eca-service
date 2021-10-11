@@ -82,4 +82,40 @@ public class ApiExamples {
 
     public static final String SAVE_CLASSIFIER_OPTIONS_RESPONSE_JSON =
             "{\"id\": 1, \"sourceFileName\": \"cart.json\", \"success\": true, \"errorMessage\": \"string\"}";
+
+    public static final String EVALUATION_LOGS_PAGE_RESPONSE_JSON =
+            "{\"content\": [{\"id\": 1, \"requestId\": \"1d2de514-3a87-4620-9b97-c260e24340de\", " +
+                    "\"creationDate\": \"2021-07-01 14:00:00\", \"startDate\": \"2021-07-01 14:00:01\", " +
+                    "\"endDate\": \"2021-07-01 14:00:12\", \"requestStatus\": {\"value\": \"FINISHED\", " +
+                    "\"description\": \"Завершена\"}, \"evaluationMethod\": {\"value\": \"CROSS_VALIDATION\", " +
+                    "\"description\": \"V-блочная кросс-проверка\"}, \"numFolds\": 10, \"numTests\": 1, " +
+                    "\"seed\": 1, \"evaluationTotalTime\": \"00:00:00:11\", \"classifierInfo\": " +
+                    "{\"classifierName\": \"CART\", \"inputOptions\": [{\"optionName\": \"Iterations number\", " +
+                    "\"optionValue\": \"100\"}]}, \"instancesInfo\": {\"relationName\": \"iris\", " +
+                    "\"numInstances\": 150, \"numAttributes\": 5, \"numClasses\": 4, \"className\": " +
+                    "\"class\"}}], \"page\": 0, \"totalCount\": 1}";
+
+    public static final String EVALUATION_LOG_DETAILS_RESPONSE_JSON =
+            "{\"id\": 1, \"requestId\": \"1d2de514-3a87-4620-9b97-c260e24340de\", \"creationDate\": " +
+                    "\"2021-07-01 14:00:00\", \"startDate\": \"2021-07-01 14:00:01\", \"endDate\": " +
+                    "\"2021-07-01 14:00:12\", \"requestStatus\": {\"value\": \"FINISHED\", " +
+                    "\"description\": \"Завершена\"}, \"evaluationMethod\": {\"value\": \"CROSS_VALIDATION\", " +
+                    "\"description\": \"V-блочная кросс-проверка\"}, \"numFolds\": 10, \"numTests\": 1, " +
+                    "\"seed\": 1, \"evaluationTotalTime\": \"00:00:00:11\", \"classifierInfo\": " +
+                    "{\"classifierName\": \"CART\", \"inputOptions\": [{\"optionName\": \"Iterations number\", " +
+                    "\"optionValue\": \"100\"}]}, \"instancesInfo\": {\"relationName\": \"iris\", " +
+                    "\"numInstances\": 150, \"numAttributes\": 5, \"numClasses\": 4, \"className\": " +
+                    "\"class\"}, \"evaluationResultsDto\": {\"evaluationResultsStatus\": {\"value\": " +
+                    "\"RESULTS_RECEIVED\", \"description\": \"Получены результаты классифкации\"}, " +
+                    "\"evaluationStatisticsDto\": {\"numTestInstances\": 150, \"numCorrect\": 146, " +
+                    "\"numIncorrect\": 4, \"pctCorrect\": 96, \"pctIncorrect\": 4, \"meanAbsoluteError\": 0.29, " +
+                    "\"rootMeanSquaredError\": 0.01, \"maxAucValue\": 0.89, \"varianceError\": 0.0012, " +
+                    "\"confidenceIntervalLowerBound\": 0.01, \"confidenceIntervalUpperBound\": 0.035}, " +
+                    "\"classificationCosts\": [{\"classValue\": \"Iris-setosa\", \"truePositiveRate\": 0.75, " +
+                    "\"falsePositiveRate\": 0.25, \"trueNegativeRate\": 0.5, \"falseNegativeRate\": 0.5, " +
+                    "\"aucValue\": 0.9}]}}";
+
+    public static final String REQUESTS_STATUSES_STATISTICS_RESPONSE_JSON =
+            "{\"totalCount\": 100, \"newRequestsCount\": 0, \"inProgressRequestsCount\": 1, " +
+                    "\"finishedRequestsCount\": 99, \"timeoutRequestsCount\": 0, \"errorRequestsCount\": 0}";
 }
