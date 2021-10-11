@@ -15,31 +15,31 @@ public class FilterFieldDto {
     /**
      * Field name
      */
-    @Schema(description = "Field name")
+    @Schema(description = "Field name", example = "field")
     private String fieldName;
 
     /**
      * Field description
      */
-    @Schema(description = "Field description")
+    @Schema(description = "Field description", example = "Field sescription")
     private String description;
 
     /**
      * Field order
      */
-    @Schema(description = "Field order")
+    @Schema(description = "Field order", example = "0")
     private int fieldOrder;
 
     /**
      * Filter type
      */
-    @Schema(description = "Filter field type")
+    @Schema(description = "Filter field type", example = "TEXT")
     private FilterFieldType filterFieldType;
 
     /**
      * Filter match mode
      */
-    @Schema(description = "Filter match mode")
+    @Schema(description = "Filter match mode", example = "LIKE")
     private MatchMode matchMode;
 
     /**

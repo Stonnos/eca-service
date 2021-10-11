@@ -19,13 +19,13 @@ import static com.ecaservice.web.dto.util.FieldConstraints.DATE_TIME_PATTERN;
 @Schema(description = "Classifier json input options model")
 public class ClassifierOptionsDto {
 
-    @Schema(description = "Options id")
+    @Schema(description = "Options id", example = "1")
     private Long id;
 
     /**
      * Options name
      */
-    @Schema(description = "Options name", required = true)
+    @Schema(description = "Options name", required = true, example = "DecisionTreeOptions")
     private String optionsName;
 
     /**
@@ -39,12 +39,12 @@ public class ClassifierOptionsDto {
     /**
      * User name
      */
-    @Schema(description = "User name")
+    @Schema(description = "User name", example = "admin")
     private String createdBy;
 
     /**
      * Json config
      */
-    @Schema(description = "Json config", required = true)
+    @Schema(description = "Json config", required = true, example = "Json config")
     private String config;
 }
