@@ -18,17 +18,25 @@ __*PUT*__ */instances/rename* - Renames data with specified id
 |*id**
 |Instances id
 |query
-|integer (int64)
+a|integer (int64)
+
+
+
+
 
 
 
 |*tableName**
 |Table name
 |query
-|string 
+a|string 
+
 *Min. length*: 0
+
 *Max. length*: 30
+
 *Pattern*: `^[0-9a-z_]+$`
+
 |===
 
 *Список кодов ответа*
@@ -86,10 +94,14 @@ a|
 |*tableName**
 |Table name
 |query
-|string 
+a|string 
+
 *Min. length*: 0
+
 *Max. length*: 30
+
 *Pattern*: `^[0-9a-z_]+$`
+
 |===
 
 *Список кодов ответа*
@@ -233,7 +245,11 @@ a|
 |*id**
 |Instances id
 |query
-|integer (int64)
+a|integer (int64)
+
+
+
+
 
 
 
@@ -360,26 +376,42 @@ __*GET*__ */instances/download* - Download instances report with specified type
 |*id**
 |Instances id
 |query
-|integer (int64)
+a|integer (int64)
+
+
+
+
 
 
 
 |*reportType**
 |Report type
 |query
-|string 
+a|string 
+
+
+
+
 
 
 
 *Values*:
 * XLS
+
 * CSV
+
 * ARFF
+
 * JSON
+
 * XML
+
 * TXT
+
 * DATA
+
 * DOCX
+
 |===
 
 *Список кодов ответа*
@@ -429,7 +461,11 @@ __*GET*__ */instances/details/{id}* - Gets instances details
 |*id**
 |Instances id
 |path
-|integer (int64)
+a|integer (int64)
+
+
+
+
 
 
 
@@ -492,7 +528,11 @@ __*GET*__ */instances/attributes/{id}* - Gets attributes list for specified inst
 |*id**
 |Instances id
 |path
-|integer (int64)
+a|integer (int64)
+
+
+
+
 
 
 
@@ -548,7 +588,11 @@ __*DELETE*__ */instances/delete* - Deletes instances with specified id
 |*id**
 |Instances id
 |query
-|integer (int64)
+a|integer (int64)
+
+
+
+
 
 
 
@@ -599,22 +643,34 @@ a|
 |Name|Description|Schema
 |*fieldName*
 |Field name
-|
+a|
 string
+
+
+
+
 
 
 
 |*code*
 |Error code
-|
+a|
 string
+
+
+
+
 
 
 
 |*errorMessage*
 |Error message
-|
+a|
 string
+
+
+
+
 
 
 
@@ -626,23 +682,35 @@ string
 |Name|Description|Schema
 |*id**
 |Instances id
-|
+a|
 integer
 (int64)
 
 
 
+
+
+
+
 |*sourceFileName**
 |Source file name
-|
+a|
 string
+
+
+
+
 
 
 
 |*tableName**
 |Database table name
-|
+a|
 string
+
+
+
+
 
 
 
@@ -654,24 +722,36 @@ string
 |Name|Description|Schema
 |*content*
 |Page content
-|
+a|
 array
+
+
+
+
 
 
 
 |*page*
 |Page number
-|
+a|
 integer
 (int32)
 
 
 
+
+
+
+
 |*totalCount*
 |Total elements count in all pages
-|
+a|
 integer
 (int64)
+
+
+
+
 
 
 
@@ -683,29 +763,44 @@ integer
 |Name|Description|Schema
 |*name**
 |Filter column name
-|
+a|
 string
+
 *Min. length*: 0
+
 *Max. length*: 255
+
+
 
 |*values*
 |-
-|
+a|
 array
+
+
+
+
 
 
 
 |*matchMode**
 |Match mode type
-|
+a|
 string
+
+
+
+
 
 
 
 *Values*:
 * EQUALS
+
 * LIKE
+
 * RANGE
+
 |===
 === PageRequestDto
 :table-caption: Table
@@ -714,45 +809,69 @@ string
 |Name|Description|Schema
 |*page**
 |Page number
-|
+a|
 integer
 (int32)
+
+
+
+
 
 
 
 |*size**
 |Page size
-|
+a|
 integer
 (int32)
 
 
 
+
+
+
+
 |*sortField*
 |Sort field
-|
+a|
 string
+
 *Min. length*: 0
+
 *Max. length*: 255
+
+
 
 |*ascending*
 |Is ascending sort?
-|
+a|
 boolean
+
+
+
+
 
 
 
 |*searchQuery*
 |Search query string
-|
+a|
 string
+
 *Min. length*: 0
+
 *Max. length*: 255
+
+
 
 |*filters*
 |Filters list
-|
+a|
 array
+
+
+
+
 
 
 
@@ -764,22 +883,34 @@ array
 |Name|Description|Schema
 |*reportType*
 |Report type
-|
+a|
 string
+
+
+
+
 
 
 
 |*title*
 |Report title
-|
+a|
 string
+
+
+
+
 
 
 
 |*fileExtension*
 |Report file extension
-|
+a|
 string
+
+
+
+
 
 
 
@@ -791,46 +922,70 @@ string
 |Name|Description|Schema
 |*id*
 |Instances id
-|
+a|
 integer
 (int64)
 
 
 
+
+
+
+
 |*tableName*
 |Table name
-|
+a|
 string
+
+
+
+
 
 
 
 |*numInstances*
 |Instances number
-|
+a|
 integer
 (int32)
+
+
+
+
 
 
 
 |*numAttributes*
 |Attributes number
-|
+a|
 integer
 (int32)
 
 
 
+
+
+
+
 |*created*
 |Instances creation date
-|
+a|
 string
+
+
+
+
 
 
 
 |*createdBy*
 |User name
-|
+a|
 string
+
+
+
+
 
 
 
