@@ -43,46 +43,81 @@ public class ApiExamples {
                     "\"matchMode\":\"EQUALS\"},{\"name\":\"requestDate\",\"values\":[\"2021-07-16\"]," +
                     "\"matchMode\":\"RANGE\"}]}";
 
-
+    /**
+     * Update classifiers configuration request json
+     */
     public static final String UPDATE_CLASSIFIERS_CONFIGURATION_REQUEST_JSON =
             "{\"id\": 1, \"configurationName\": \"Classifiers configuration\"}";
 
+    /**
+     * Update classifiers configuration bad request json
+     */
     public static final String UPDATE_CLASSIFIERS_CONFIGURATION_BAD_REQUEST_RESPONSE_JSON =
             "[{\"fieldName\": \"configurationName\", \"code\": \"NotBlank\", \"errorMessage\": \"must not be blank\"}]";
 
+    /**
+     * Create classifiers configuration request json
+     */
     public static final String CREATE_CLASSIFIERS_CONFIGURATION_REQUEST_JSON =
             "{\"configurationName\": \"Classifiers configuration\"}";
 
+    /**
+     * Create classifiers configuration bad request json
+     */
     public static final String CREATE_CLASSIFIERS_CONFIGURATION_BAD_REQUEST_RESPONSE_JSON =
             "[{\"fieldName\": \"configurationName\", \"code\": \"NotBlank\", \"errorMessage\": \"must not be blank\"}]";
 
+    /**
+     * Gets classifiers configurations page response json
+     */
     public static final String GET_CLASSIFIERS_CONFIGURATIONS_PAGE_RESPONSE_JSON = "{\"content\": [{\"id\": 1, " +
             "\"configurationName\": \"Default configuration\", \"creationDate\": \"2021-07-01 14:00:00\", " +
             "\"createdBy\": \"admin\", \"updated\": \"2021-07-01 14:00:00\", \"active\": true, " +
             "\"buildIn\": true, \"classifiersOptionsCount\": 25}], \"page\": 0, \"totalCount\": 1}";
 
+    /**
+     * Copy classifiers configurations request json
+     */
     public static final String COPY_CLASSIFIERS_CONFIGURATION_REQUEST_JSON =
             "{\"id\": 1, \"configurationName\": \"Classifiers configuration\"}";
 
+    /**
+     * Copy classifiers configurations bad request json
+     */
     public static final String COPY_CLASSIFIERS_CONFIGURATION_BAD_REQUEST_RESPONSE_JSON =
             "[{\"fieldName\": \"configurationName\", \"code\": \"NotBlank\", \"errorMessage\": \"must not be blank\"}]";
 
+    /**
+     * Classifiers configurations details response json
+     */
     public static final String CLASSIFIERS_CONFIGURATION_DETAILS_RESPONSE_JSON =
             "{\"id\": 1, \"configurationName\": \"Default configuration\", \"creationDate\": " +
                     "\"2021-07-01 14:00:00\", \"createdBy\": \"admin\", \"updated\": \"2021-07-01 14:00:00\", " +
                     "\"active\": true, \"buildIn\": true, \"classifiersOptionsCount\": 25}";
 
+    /**
+     * Classifiers options page response json
+     */
     public static final String GET_CLASSIFIERS_OPTIONS_PAGE_RESPONSE_JSON = "{\"content\": [{\"id\": 1, " +
             "\"optionsName\": \"DecisionTreeOptions\", \"creationDate\": \"2021-07-01 14:00:00\", " +
             "\"createdBy\": \"admin\", \"config\": \"Json config\"}], \"page\": 0, \"totalCount\": 1}";
 
+    /**
+     * Classifiers options list response json
+     */
     public static final String GET_CLASSIFIERS_OPTIONS_LIST_RESPONSE_JSON =
             "[{\"id\": 1, \"optionsName\": \"DecisionTreeOptions\", \"creationDate\": \"2021-07-01 14:00:00\", " +
                     "\"createdBy\": \"admin\", \"config\": \"Json config\"}]";
 
+    /**
+     * Save classifiers options response json
+     */
     public static final String SAVE_CLASSIFIER_OPTIONS_RESPONSE_JSON =
             "{\"id\": 1, \"sourceFileName\": \"cart.json\", \"success\": true, \"errorMessage\": \"\"}";
 
+    /**
+     * Evaluation logs page response json
+     */
     public static final String EVALUATION_LOGS_PAGE_RESPONSE_JSON =
             "{\"content\": [{\"id\": 1, \"requestId\": \"1d2de514-3a87-4620-9b97-c260e24340de\", " +
                     "\"creationDate\": \"2021-07-01 14:00:00\", \"startDate\": \"2021-07-01 14:00:01\", " +
@@ -95,6 +130,9 @@ public class ApiExamples {
                     "\"numInstances\": 150, \"numAttributes\": 5, \"numClasses\": 4, \"className\": " +
                     "\"class\"}}], \"page\": 0, \"totalCount\": 1}";
 
+    /**
+     * Evaluation log details response json
+     */
     public static final String EVALUATION_LOG_DETAILS_RESPONSE_JSON =
             "{\"id\": 1, \"requestId\": \"1d2de514-3a87-4620-9b97-c260e24340de\", \"creationDate\": " +
                     "\"2021-07-01 14:00:00\", \"startDate\": \"2021-07-01 14:00:01\", \"endDate\": " +
@@ -115,10 +153,16 @@ public class ApiExamples {
                     "\"falsePositiveRate\": 0.25, \"trueNegativeRate\": 0.5, \"falseNegativeRate\": 0.5, " +
                     "\"aucValue\": 0.9}]}}";
 
+    /**
+     * Request statuses statistics response json
+     */
     public static final String REQUESTS_STATUSES_STATISTICS_RESPONSE_JSON =
             "{\"totalCount\": 100, \"newRequestsCount\": 0, \"inProgressRequestsCount\": 1, " +
                     "\"finishedRequestsCount\": 99, \"timeoutRequestsCount\": 0, \"errorRequestsCount\": 0}";
 
+    /**
+     * Classifier options requests page response json
+     */
     public static final String CLASSIFIER_OPTIONS_REQUESTS_PAGE_RESPONSE_JSON =
             "{\"content\": [{\"requestDate\": \"2021-07-01 14:00:00\", \"requestId\": " +
                     "\"1d2de514-3a87-4620-9b97-c260e24340de\", \"relationName\": \"glass\", " +
@@ -128,6 +172,9 @@ public class ApiExamples {
                     "\"classifierOptionsResponseModels\": [{\"classifierName\": \"CART\", \"options\": " +
                     "\"json config\"}]}], \"page\": 0, \"totalCount\": 1}";
 
+    /**
+     * Experiments page response json
+     */
     public static final String EXPERIMENTS_PAGE_RESPONSE_JSON =
             "{\"content\": [{\"id\": 1, \"requestId\": \"1d2de514-3a87-4620-9b97-c260e24340de\", " +
                     "\"creationDate\": \"2021-07-01 14:00:00\", \"startDate\": \"2021-07-01 14:00:30\", " +
@@ -141,6 +188,9 @@ public class ApiExamples {
                     "\"deletedDate\": \"2021-07-14 14:00:00\", \"experimentType\": {\"value\": \"RANDOM_FORESTS\", " +
                     "\"description\": \"Случайные леса\"}}], \"page\": 0, \"totalCount\": 1}";
 
+    /**
+     * Experiment details response json
+     */
     public static final String EXPERIMENT_DETAILS_RESPONSE_JSON =
             "{\"id\": 1, \"requestId\": \"1d2de514-3a87-4620-9b97-c260e24340de\", \"creationDate\": " +
                     "\"2021-07-01 14:00:00\", \"startDate\": \"2021-07-01 14:00:30\", \"endDate\": " +
@@ -154,6 +204,9 @@ public class ApiExamples {
                     "\"deletedDate\": \"2021-07-14 14:00:00\", \"experimentType\": {\"value\": \"RANDOM_FORESTS\", " +
                     "\"description\": \"Случайные леса\"}}";
 
+    /**
+     * Experiment types statistics response json
+     */
     public static final String EXPERIMENT_TYPES_STATISTICS_RESPONSE_JSON =
             "[{\"name\": \"NEURAL_NETWORKS\", \"label\": \"Нейронные сети\", \"count\": 0}, " +
                     "{\"name\": \"HETEROGENEOUS_ENSEMBLE\", \"label\": \"Неоднородный ансамбль\", " +
@@ -166,6 +219,9 @@ public class ApiExamples {
                     "\"Алгоритм Stacking CV\", \"count\": 0}, {\"name\": \"DECISION_TREE\", " +
                     "\"label\": \"Деревья решений\", \"count\": 0}]";
 
+    /**
+     * Experiment results details response json
+     */
     public static final String EXPERIMENT_RESULTS_DETAILS_RESPONSE_JSON =
             "{\"id\": 1, \"classifierInfo\": {\"classifierName\": \"CART\", \"inputOptions\": [{\"optionName\": " +
                     "\"Iterations number\", \"optionValue\": \"100\"}]}, \"resultsIndex\": 0, \"pctCorrect\": 99, " +
@@ -190,6 +246,9 @@ public class ApiExamples {
                     "\"Iris-setosa\", \"truePositiveRate\": 0.75, \"falsePositiveRate\": 0.25, " +
                     "\"trueNegativeRate\": 0.5, \"falseNegativeRate\": 0.5, \"aucValue\": 0.9}]}}";
 
+    /**
+     * Experiment ers report response json
+     */
     public static final String EXPERIMENT_ERS_REPORT_RESPONSE_JSON =
             "{\"experimentRequestId\": \"1d2de514-3a87-4620-9b97-c260e24340de\", \"classifiersCount\": 1, " +
                     "\"sentClassifiersCount\": 1, \"experimentResults\": [{\"id\": 1, " +
@@ -199,12 +258,21 @@ public class ApiExamples {
                     "{\"value\": \"SUCCESS_SENT\", \"description\": " +
                     "\"Результаты эксперимента были успешно отправлены в ERS сервис\"}}";
 
+    /**
+     * Experiment progress response json
+     */
     public static final String EXPERIMENT_PROGRESS_RESPONSE_JSON = "{\"finished\": false, \"progress\": 85, " +
             "\"estimatedTimeLeft\": \"00:01:24\"}";
 
+    /**
+     * Create experiment results response json
+     */
     public static final String CREATE_EXPERIMENT_RESULT_RESPONSE_JSON = "{\"id\": 1, \"requestId\": " +
             "\"1d2de514-3a87-4620-9b97-c260e24340de\"}";
 
+    /**
+     * Experiments filter template json
+     */
     public static final String EXPERIMENT_FILTER_FIELDS_TEMPLATE_JSON = "[{\"fieldName\": \"requestId\", " +
             "\"description\": \"UUID заявки\", \"fieldOrder\": 0, \"filterFieldType\": \"TEXT\", \"matchMode\": " +
             "\"LIKE\", \"multiple\": false, \"dictionary\": null}, {\"fieldName\": \"email\", \"description\": " +
@@ -235,6 +303,9 @@ public class ApiExamples {
             "\"Дата отправки результатов\", \"fieldOrder\": 6, \"filterFieldType\": \"DATE\", \"matchMode\": " +
             "\"RANGE\", \"multiple\": true, \"dictionary\": null}]";
 
+    /**
+     * Experiment types dictionary json
+     */
     public static final String EXPERIMENT_TYPES_RESPONSE_JSON =
             "{\"name\": \"experimentType\", \"values\": [{\"label\": \"Нейронные сети\", \"value\": " +
                     "\"NEURAL_NETWORKS\"}, {\"label\": \"Алгоритм AdaBoost\", \"value\": \"ADA_BOOST\"}, " +
@@ -245,6 +316,9 @@ public class ApiExamples {
                     "{\"label\": \"Мод. неоднородный ансамбль\", \"value\": " +
                     "\"MODIFIED_HETEROGENEOUS_ENSEMBLE\"}, {\"label\": \"Алгоритм KNN\", \"value\": \"KNN\"}]}";
 
+    /**
+     * Evaluation logs filter template json
+     */
     public static final String EVALUATION_LOGS_FILTER_TEMPLATE_JSON = "[{\"fieldName\": \"requestId\", " +
             "\"description\": \"UUID заявки\", \"fieldOrder\": 0, \"filterFieldType\": \"TEXT\", " +
             "\"matchMode\": \"LIKE\", \"multiple\": false, \"dictionary\": null}, {\"fieldName\": " +
@@ -267,10 +341,16 @@ public class ApiExamples {
             "\"fieldOrder\": 5, \"filterFieldType\": \"DATE\", \"matchMode\": \"RANGE\", \"multiple\": true, " +
             "\"dictionary\": null}]";
 
+    /**
+     * Evaluation methods dictionary json
+     */
     public static final String EVALUATION_METHODS_RESPONSE_JSON = "{\"name\": \"evaluationMethod\", \"values\": " +
             "[{\"label\": \"Использование обучающего множества\", \"value\": \"TRAINING_DATA\"}, " +
             "{\"label\": \"V-блочная кросс-проверка\", \"value\": \"CROSS_VALIDATION\"}]}";
 
+    /**
+     * Classifier options requests filter template json
+     */
     public static final String CLASSIFIER_OPTIONS_REQUESTS_FILTER_TEMPLATE_JSON = "[{\"fieldName\": \"requestId\", " +
             "\"description\": \"UUID заявки\", \"fieldOrder\": 0, \"filterFieldType\": \"TEXT\", " +
             "\"matchMode\": \"LIKE\", \"multiple\": false, \"dictionary\": null}, " +
