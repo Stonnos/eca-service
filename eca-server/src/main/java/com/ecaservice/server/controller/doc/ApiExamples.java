@@ -204,4 +204,91 @@ public class ApiExamples {
 
     public static final String CREATE_EXPERIMENT_RESULT_RESPONSE_JSON = "{\"id\": 1, \"requestId\": " +
             "\"1d2de514-3a87-4620-9b97-c260e24340de\"}";
+
+    public static final String EXPERIMENT_FILTER_FIELDS_TEMPLATE_JSON = "[{\"fieldName\": \"requestId\", " +
+            "\"description\": \"UUID заявки\", \"fieldOrder\": 0, \"filterFieldType\": \"TEXT\", \"matchMode\": " +
+            "\"LIKE\", \"multiple\": false, \"dictionary\": null}, {\"fieldName\": \"email\", \"description\": " +
+            "\"Email заявки\", \"fieldOrder\": 1, \"filterFieldType\": \"TEXT\", \"matchMode\": \"LIKE\", " +
+            "\"multiple\": false, \"dictionary\": null}, {\"fieldName\": \"evaluationMethod\", " +
+            "\"description\": \"Метод оценки точности\", \"fieldOrder\": 2, \"filterFieldType\": " +
+            "\"REFERENCE\", \"matchMode\": \"EQUALS\", \"multiple\": false, \"dictionary\": " +
+            "{\"name\": \"evaluationMethod\", \"values\": [{\"label\": \"Использование обучающего множества\", " +
+            "\"value\": \"TRAINING_DATA\"}, {\"label\": \"V-блочная кросс-проверка\", \"value\": " +
+            "\"CROSS_VALIDATION\"}]}}, {\"fieldName\": \"requestStatus\", \"description\": \"Статус заявки\", " +
+            "\"fieldOrder\": 3, \"filterFieldType\": \"REFERENCE\", \"matchMode\": \"EQUALS\", \"multiple\": false, " +
+            "\"dictionary\": {\"name\": \"requestStatus\", \"values\": [{\"label\": \"Новая\", \"value\": " +
+            "\"NEW\"}, {\"label\": \"Завершена\", \"value\": \"FINISHED\"}, {\"label\": \"Ошибка\", " +
+            "\"value\": \"ERROR\"}, {\"label\": \"Таймаут\", \"value\": \"TIMEOUT\"}, {\"label\": " +
+            "\"В работе\", \"value\": \"IN_PROGRESS\"}]}}, {\"fieldName\": \"experimentType\", " +
+            "\"description\": \"Тип эксперимента\", \"fieldOrder\": 4, \"filterFieldType\": " +
+            "\"REFERENCE\", \"matchMode\": \"EQUALS\", \"multiple\": true, \"dictionary\": " +
+            "{\"name\": \"experimentType\", \"values\": [{\"label\": \"Нейронные сети\", \"value\": " +
+            "\"NEURAL_NETWORKS\"}, {\"label\": \"Алгоритм AdaBoost\", \"value\": \"ADA_BOOST\"}, " +
+            "{\"label\": \"Алгоритм Stacking\", \"value\": \"STACKING\"}, {\"label\": \"Случайные леса\", " +
+            "\"value\": \"RANDOM_FORESTS\"}, {\"label\": \"Алгоритм Stacking CV\", \"value\": " +
+            "\"STACKING_CV\"}, {\"label\": \"Деревья решений\", \"value\": \"DECISION_TREE\"}, {\"label\": " +
+            "\"Неоднородный ансамбль\", \"value\": \"HETEROGENEOUS_ENSEMBLE\"}, {\"label\": " +
+            "\"Мод. неоднородный ансамбль\", \"value\": \"MODIFIED_HETEROGENEOUS_ENSEMBLE\"}, {\"label\": " +
+            "\"Алгоритм KNN\", \"value\": \"KNN\"}]}}, {\"fieldName\": \"creationDate\", \"description\": " +
+            "\"Дата создания заявки\", \"fieldOrder\": 5, \"filterFieldType\": \"DATE\", \"matchMode\": " +
+            "\"RANGE\", \"multiple\": true, \"dictionary\": null}, {\"fieldName\": \"sentDate\", \"description\": " +
+            "\"Дата отправки результатов\", \"fieldOrder\": 6, \"filterFieldType\": \"DATE\", \"matchMode\": " +
+            "\"RANGE\", \"multiple\": true, \"dictionary\": null}]";
+
+    public static final String EXPERIMENT_TYPES_RESPONSE_JSON =
+            "{\"name\": \"experimentType\", \"values\": [{\"label\": \"Нейронные сети\", \"value\": " +
+                    "\"NEURAL_NETWORKS\"}, {\"label\": \"Алгоритм AdaBoost\", \"value\": \"ADA_BOOST\"}, " +
+                    "{\"label\": \"Алгоритм Stacking\", \"value\": \"STACKING\"}, {\"label\": \"Случайные леса\", " +
+                    "\"value\": \"RANDOM_FORESTS\"}, {\"label\": \"Алгоритм Stacking CV\", \"value\": " +
+                    "\"STACKING_CV\"}, {\"label\": \"Деревья решений\", \"value\": \"DECISION_TREE\"}, " +
+                    "{\"label\": \"Неоднородный ансамбль\", \"value\": \"HETEROGENEOUS_ENSEMBLE\"}, " +
+                    "{\"label\": \"Мод. неоднородный ансамбль\", \"value\": " +
+                    "\"MODIFIED_HETEROGENEOUS_ENSEMBLE\"}, {\"label\": \"Алгоритм KNN\", \"value\": \"KNN\"}]}";
+
+    public static final String EVALUATION_LOGS_FILTER_TEMPLATE_JSON = "[{\"fieldName\": \"requestId\", " +
+            "\"description\": \"UUID заявки\", \"fieldOrder\": 0, \"filterFieldType\": \"TEXT\", " +
+            "\"matchMode\": \"LIKE\", \"multiple\": false, \"dictionary\": null}, {\"fieldName\": " +
+            "\"classifierInfo.classifierName\", \"description\": \"Классификатор\", \"fieldOrder\": 1, " +
+            "\"filterFieldType\": \"TEXT\", \"matchMode\": \"LIKE\", \"multiple\": false, " +
+            "\"dictionary\": null}, {\"fieldName\": \"instancesInfo.relationName\", \"description\": " +
+            "\"Обучающая выборка\", \"fieldOrder\": 2, \"filterFieldType\": \"TEXT\", \"matchMode\": " +
+            "\"LIKE\", \"multiple\": false, \"dictionary\": null}, {\"fieldName\": \"evaluationMethod\", " +
+            "\"description\": \"Метод оценки точности\", \"fieldOrder\": 3, \"filterFieldType\": " +
+            "\"REFERENCE\", \"matchMode\": \"EQUALS\", \"multiple\": false, \"dictionary\": {\"name\": " +
+            "\"evaluationMethod\", \"values\": [{\"label\": \"Использование обучающего множества\", " +
+            "\"value\": \"TRAINING_DATA\"}, {\"label\": \"V-блочная кросс-проверка\", \"value\": " +
+            "\"CROSS_VALIDATION\"}]}}, {\"fieldName\": \"requestStatus\", \"description\": " +
+            "\"Статус заявки\", \"fieldOrder\": 4, \"filterFieldType\": \"REFERENCE\", \"matchMode\": " +
+            "\"EQUALS\", \"multiple\": false, \"dictionary\": {\"name\": \"requestStatus\", " +
+            "\"values\": [{\"label\": \"Новая\", \"value\": \"NEW\"}, {\"label\": \"Завершена\", " +
+            "\"value\": \"FINISHED\"}, {\"label\": \"Ошибка\", \"value\": \"ERROR\"}, {\"label\": " +
+            "\"Таймаут\", \"value\": \"TIMEOUT\"}, {\"label\": \"В работе\", \"value\": " +
+            "\"IN_PROGRESS\"}]}}, {\"fieldName\": \"creationDate\", \"description\": \"Дата создания заявки\", " +
+            "\"fieldOrder\": 5, \"filterFieldType\": \"DATE\", \"matchMode\": \"RANGE\", \"multiple\": true, " +
+            "\"dictionary\": null}]";
+
+    public static final String EVALUATION_METHODS_RESPONSE_JSON = "{\"name\": \"evaluationMethod\", \"values\": " +
+            "[{\"label\": \"Использование обучающего множества\", \"value\": \"TRAINING_DATA\"}, " +
+            "{\"label\": \"V-блочная кросс-проверка\", \"value\": \"CROSS_VALIDATION\"}]}";
+
+    public static final String CLASSIFIER_OPTIONS_REQUESTS_FILTER_TEMPLATE_JSON = "[{\"fieldName\": \"requestId\", " +
+            "\"description\": \"UUID заявки\", \"fieldOrder\": 0, \"filterFieldType\": \"TEXT\", " +
+            "\"matchMode\": \"LIKE\", \"multiple\": false, \"dictionary\": null}, " +
+            "{\"fieldName\": \"relationName\", \"description\": " +
+            "\"Обучающая выборка\", \"fieldOrder\": 1, \"filterFieldType\": \"TEXT\", \"matchMode\": \"LIKE\", " +
+            "\"multiple\": false, \"dictionary\": null}, {\"fieldName\": \"evaluationMethod\", \"description\": " +
+            "\"Метод оценки точности\", \"fieldOrder\": 2, \"filterFieldType\": \"REFERENCE\", \"matchMode\": " +
+            "\"EQUALS\", \"multiple\": false, \"dictionary\": {\"name\": \"evaluationMethod\", \"values\": " +
+            "[{\"label\": \"Использование обучающего множества\", \"value\": \"TRAINING_DATA\"}, {\"label\": " +
+            "\"V-блочная кросс-проверка\", \"value\": \"CROSS_VALIDATION\"}]}}, {\"fieldName\": " +
+            "\"responseStatus\", \"description\": \"Статус ответа от ERS\", \"fieldOrder\": 3, " +
+            "\"filterFieldType\": \"REFERENCE\", \"matchMode\": \"EQUALS\", \"multiple\": false, " +
+            "\"dictionary\": {\"name\": \"ersResponseStatus\", \"values\": [{\"label\": \"Успешно\", " +
+            "\"value\": \"SUCCESS\"}, {\"label\": \"Заявка с таким UUID уже существует\", \"value\": " +
+            "\"DUPLICATE_REQUEST_ID\"}, {\"label\": \"Ошибка\", \"value\": \"ERROR\"}, " +
+            "{\"label\": \"Не найдена обучающая выборка\", \"value\": \"DATA_NOT_FOUND\"}, " +
+            "{\"label\": \"Не найдены оптимальные конфигурации моделей\", \"value\": " +
+            "\"RESULTS_NOT_FOUND\"}]}}, {\"fieldName\": \"requestDate\", \"description\": " +
+            "\"Дата отправки запроса в ERS\", \"fieldOrder\": 4, \"filterFieldType\": " +
+            "\"DATE\", \"matchMode\": \"RANGE\", \"multiple\": true, \"dictionary\": null}]";
 }
