@@ -7,6 +7,35 @@
 
 ${openApi.description}
 
+<#if openApi.securitySchemes?has_content>
+== Security schemas
+
+<#list openApi.securitySchemes as securityScheme>
+
+=== ${securityScheme.name} - ${securityScheme.description}
+
+[width=100%]
+|===
+|Type|Description|Scheme
+|*${securityScheme.type}*
+|
+<#if securityScheme.in??>
+*Token pass in:* __${securityScheme.in}__
+</#if>
+
+<#if securityScheme.bearerFormat??>
+*Bearer format:* __${securityScheme.bearerFormat}__
+</#if>
+|<#if securityScheme.oauth2Flows?has_content>
+<#list securityScheme.oauth2Flows as flow>
+
+*Grant type:* ${flow.grantType}
+</#list>
+</#if>
+|===
+</#list>
+</#if>
+
 <#list openApi.methods as method>
 == ${method.description}
 
