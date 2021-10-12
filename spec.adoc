@@ -30,7 +30,8 @@ API provides operations with users for ECA web application
 __PUT__ */users/update-info* - Updates info for current authenticated user
 
 *Security requirement*
-[cols="50%,50%"]
+
+[cols="^50%,^50%",options="header"]
 |===
 |Name|Scopes
 |*EcaAuth*
@@ -106,7 +107,8 @@ a|
 __POST__ */users/upload-photo* - Uploads photo for current authenticated user
 
 *Security requirement*
-[cols="50%,50%"]
+
+[cols="^50%,^50%",options="header"]
 |===
 |Name|Scopes
 |*EcaAuth*
@@ -160,7 +162,8 @@ a|
 __POST__ */users/unlock* - Unlocks user
 
 *Security requirement*
-[cols="50%,50%"]
+
+[cols="^50%,^50%",options="header"]
 |===
 |Name|Scopes
 |*EcaAuth*
@@ -234,7 +237,8 @@ a|
 __POST__ */users/tfa* - Enable/disable tfa for current authenticated user
 
 *Security requirement*
-[cols="50%,50%"]
+
+[cols="^50%,^50%",options="header"]
 |===
 |Name|Scopes
 |*EcaAuth*
@@ -295,7 +299,8 @@ a|
 __POST__ */users/logout* - Logout current user and revokes access/refresh token pair
 
 *Security requirement*
-[cols="50%,50%"]
+
+[cols="^50%,^50%",options="header"]
 |===
 |Name|Scopes
 |*EcaAuth*
@@ -334,7 +339,8 @@ a|
 __POST__ */users/lock* - Locks user
 
 *Security requirement*
-[cols="50%,50%"]
+
+[cols="^50%,^50%",options="header"]
 |===
 |Name|Scopes
 |*EcaAuth*
@@ -408,7 +414,8 @@ a|
 __POST__ */users/list* - Finds users with specified options
 
 *Security requirement*
-[cols="50%,50%"]
+
+[cols="^50%,^50%",options="header"]
 |===
 |Name|Scopes
 |*EcaAuth*
@@ -515,7 +522,8 @@ a|
 __POST__ */users/create* - Creates new user
 
 *Security requirement*
-[cols="50%,50%"]
+
+[cols="^50%,^50%",options="header"]
 |===
 |Name|Scopes
 |*EcaAuth*
@@ -745,7 +753,8 @@ a|
 __POST__ */password/change/request* - Creates change password request
 
 *Security requirement*
-[cols="50%,50%"]
+
+[cols="^50%,^50%",options="header"]
 |===
 |Name|Scopes
 |*EcaAuth*
@@ -859,7 +868,8 @@ a|
 __POST__ */email/change/request* - Creates change email request
 
 *Security requirement*
-[cols="50%,50%"]
+
+[cols="^50%,^50%",options="header"]
 |===
 |Name|Scopes
 |*EcaAuth*
@@ -974,7 +984,8 @@ a|
 __GET__ */users/user-info* - Gets current authenticated user info
 
 *Security requirement*
-[cols="50%,50%"]
+
+[cols="^50%,^50%",options="header"]
 |===
 |Name|Scopes
 |*EcaAuth*
@@ -1033,7 +1044,8 @@ a|
 __GET__ */users/photo/{id}* - Downloads user photo
 
 *Security requirement*
-[cols="50%,50%"]
+
+[cols="^50%,^50%",options="header"]
 |===
 |Name|Scopes
 |*EcaAuth*
@@ -1102,7 +1114,8 @@ a|
 __DELETE__ */users/delete-photo* - Deletes photo for current authenticated user
 
 *Security requirement*
-[cols="50%,50%"]
+
+[cols="^50%,^50%",options="header"]
 |===
 |Name|Scopes
 |*EcaAuth*
