@@ -8,6 +8,7 @@ import com.ecaservice.oauth.model.OpenApiModel;
 import com.ecaservice.oauth.model.OperationModel;
 import com.ecaservice.oauth.model.RequestBodyModel;
 import com.ecaservice.oauth.model.SchemaModel;
+import com.ecaservice.oauth.model.SecurityRequirementModel;
 import com.ecaservice.oauth.model.SecuritySchemaModel;
 import com.ecaservice.oauth.model.openapi.ApiResponse;
 import com.ecaservice.oauth.model.openapi.Components;
@@ -28,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -74,7 +76,8 @@ public class OpenApiService {
     private ComponentModel convertToComponentModel(String name, Schema schema) {
         Map<String, Schema> properties = Optional.ofNullable(schema.getProperties()).orElse(Collections.emptyMap());
         var requiredFields = Optional.ofNullable(schema.getRequired()).orElse(Collections.emptyList());
-        List<FieldModel> fields = properties.entrySet().stream()
+        List<FieldModel> fields = properties.entrySet()
+                .stream()
                 .map(entry -> convertToFieldModel(entry.getKey(),
                         requiredFields.contains(entry.getKey()), entry.getValue()))
                 .collect(Collectors.toList());
@@ -101,6 +104,7 @@ public class OpenApiService {
         var requestParameters = openApiMapper.map(operation.getParameters());
         var apiResponses = convertApiResponses(operation);
         var requestBodyModel = convertRequestBody(operation);
+        var securityRequirementModel = convertToSecurityRequirementModel(operation);
         return MethodInfo.builder()
                 .requestType(operationModel.getRequestMethod().name())
                 .endpoint(entry.getKey())
@@ -109,7 +113,23 @@ public class OpenApiService {
                 .requestBody(requestBodyModel)
                 .requestParameters(requestParameters)
                 .apiResponses(apiResponses)
+                .security(securityRequirementModel)
                 .build();
+    }
+
+    private List<SecurityRequirementModel> convertToSecurityRequirementModel(Operation operation) {
+        if (CollectionUtils.isEmpty(operation.getSecurity())) {
+            return Collections.emptyList();
+        }
+        List<SecurityRequirementModel> securityRequirementModels = newArrayList();
+        operation.getSecurity().forEach(map -> map.forEach((name, scopes) -> {
+            var securityRequirementModel = SecurityRequirementModel.builder()
+                    .name(name)
+                    .scopes(new ArrayList<>(scopes))
+                    .build();
+            securityRequirementModels.add(securityRequirementModel);
+        }));
+        return securityRequirementModels;
     }
 
     private OperationModel getOperationModel(PathItem pathItem) {

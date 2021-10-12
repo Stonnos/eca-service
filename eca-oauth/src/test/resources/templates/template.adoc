@@ -41,6 +41,22 @@ ${openApi.description}
 
 __${method.requestType}__ *${method.endpoint}* - ${method.summary}
 
+<#if method.security?has_content>
+*Security requirement*
+[width=100%]
+|===
+|Name|Scopes
+<#list method.security as security>
+|*${security.name}*
+|
+<#list security.scopes as scope>
+
+* ${scope}
+</#list>
+</#list>
+|===
+</#if>
+
 <#if method.requestBody??>
 [width=100%]
 |===

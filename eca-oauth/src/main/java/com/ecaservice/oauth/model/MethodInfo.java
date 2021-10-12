@@ -22,4 +22,6 @@ public class MethodInfo {
     private List<RequestParameterModel> requestParameters;
 
     private List<ApiResponseModel> apiResponses;
+
+    private List<SecurityRequirementModel> security;
 }

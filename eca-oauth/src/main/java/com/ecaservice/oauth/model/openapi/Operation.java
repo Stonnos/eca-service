@@ -14,5 +14,6 @@ public class Operation {
     private List<Parameter> parameters;
     private RequestBody requestBody;
     private Map<String, ApiResponse> responses;
+    private List<Map<String, List<String>>> security;
     private Boolean deprecated;
 }
