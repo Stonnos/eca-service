@@ -17,6 +17,7 @@
             **/entity/**/*,
             **/config/**/*,
             **/exception/**/*,
+            **/doc/**/*,
             **/util/**/*,
             **/metrics/**/*,
             **/EcaExternalApiApplication.java
