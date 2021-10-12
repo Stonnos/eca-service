@@ -7,7 +7,6 @@ import java.util.List;
 
 @Data
 public class PathItem {
-
     private String summary;
     private String description;
     private Operation get;

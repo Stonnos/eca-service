@@ -8,12 +8,16 @@ import com.ecaservice.oauth.model.OpenApiModel;
 import com.ecaservice.oauth.model.OperationModel;
 import com.ecaservice.oauth.model.RequestBodyModel;
 import com.ecaservice.oauth.model.SchemaModel;
+import com.ecaservice.oauth.model.SecuritySchemaModel;
 import com.ecaservice.oauth.model.openapi.ApiResponse;
+import com.ecaservice.oauth.model.openapi.Components;
 import com.ecaservice.oauth.model.openapi.MediaType;
+import com.ecaservice.oauth.model.openapi.Oauth2Flow;
 import com.ecaservice.oauth.model.openapi.OpenAPI;
 import com.ecaservice.oauth.model.openapi.Operation;
 import com.ecaservice.oauth.model.openapi.PathItem;
 import com.ecaservice.oauth.model.openapi.Schema;
+import com.ecaservice.oauth.model.openapi.SecurityScheme;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -31,6 +35,8 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.google.common.collect.Lists.newArrayList;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -45,8 +51,10 @@ public class OpenApiService {
                 .stream()
                 .map(this::convertToMethodInfo).collect(Collectors.toList());
         var components = convertComponents(openAPI);
+        var securitySchemes = buildSecuritySchemes(openAPI);
         openApiModel.setMethods(methods);
         openApiModel.setComponents(components);
+        openApiModel.setSecuritySchemes(securitySchemes);
         return openApiModel;
     }
 
@@ -174,5 +182,39 @@ public class OpenApiService {
         } else {
             return exampleObjectMapper.writeValueAsString(mediaType.getExample());
         }
+    }
+
+    private List<SecuritySchemaModel> buildSecuritySchemes(OpenAPI openAPI) {
+        if (Optional.ofNullable(openAPI.getComponents()).map(Components::getSecuritySchemes).isEmpty()) {
+            return null;
+        }
+        return openAPI.getComponents()
+                .getSecuritySchemes()
+                .values()
+                .stream()
+                .map(this::buildSecurityScheme)
+                .collect(Collectors.toList());
+    }
+
+    private SecuritySchemaModel buildSecurityScheme(SecurityScheme securityScheme) {
+        var securitySchemaModel = openApiMapper.map(securityScheme);
+        securitySchemaModel.setOauth2Flows(newArrayList());
+        var flows = securityScheme.getFlows();
+        if (Optional.ofNullable(flows).isPresent()) {
+            addOauth2Flow(flows.getPassword(), securitySchemaModel, "password");
+            addOauth2Flow(flows.getImplicit(), securitySchemaModel, "implicit");
+            addOauth2Flow(flows.getAuthorizationCode(), securitySchemaModel, "authorization_code");
+            addOauth2Flow(flows.getClientCredentials(), securitySchemaModel, "client_credentials");
+        }
+        return securitySchemaModel;
+    }
+
+    private void addOauth2Flow(Oauth2Flow oauth2Flow, SecuritySchemaModel securitySchemaModel, String grantType) {
+        Optional.ofNullable(oauth2Flow)
+                .ifPresent(flow -> {
+                    var flowModel = openApiMapper.map(flow);
+                    flowModel.setGrantType(grantType);
+                    securitySchemaModel.getOauth2Flows().add(flowModel);
+                });
     }
 }

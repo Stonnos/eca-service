@@ -6,7 +6,6 @@ import lombok.Data;
 @Data
 @Builder
 public class FieldModel {
-
     private String fieldName;
 
     private String description;

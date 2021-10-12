@@ -18,4 +18,6 @@ public class OpenApiModel {
     private List<MethodInfo> methods;
 
     private List<ComponentModel> components;
+
+    private List<SecuritySchemaModel> securitySchemes;
 }

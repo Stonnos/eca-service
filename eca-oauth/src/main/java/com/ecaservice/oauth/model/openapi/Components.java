@@ -13,4 +13,5 @@ public class Components {
     private Map<String, Parameter> parameters;
     private Map<String, Example> examples;
     private Map<String, RequestBody> requestBodies;
+    private Map<String, SecurityScheme> securitySchemes;
 }
