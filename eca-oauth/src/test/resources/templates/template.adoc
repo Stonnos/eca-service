@@ -49,6 +49,7 @@ ${openApi.description}
 <#list flow.scopes as scope>
 
 * ${scope}
+
 </#list>
 </#if>
 

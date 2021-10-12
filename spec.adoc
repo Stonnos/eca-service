@@ -34,6 +34,7 @@ API provides operations with users for ECA web application
 
 * web
 
+
 |===
 
 == Updates info for current authenticated user
