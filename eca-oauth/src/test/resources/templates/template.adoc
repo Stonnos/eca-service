@@ -26,7 +26,7 @@ ${openApi.description}
 <#if securityScheme.bearerFormat??>
 *Bearer format:* __${securityScheme.bearerFormat}__
 </#if>
-|<#if securityScheme.oauth2Flows?has_content>
+a|<#if securityScheme.oauth2Flows?has_content>
 <#list securityScheme.oauth2Flows as flow>
 
 *Grant type:* ${flow.grantType}
@@ -49,7 +49,6 @@ ${openApi.description}
 <#list flow.scopes as scope>
 
 * ${scope}
-
 </#list>
 </#if>
 

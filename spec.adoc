@@ -20,7 +20,7 @@ API provides operations with users for ECA web application
 *Token value in:* __header__
 
 *Bearer format:* __Authorization: Bearer <access token>__
-|
+a|
 
 *Grant type:* password
 
@@ -33,7 +33,6 @@ API provides operations with users for ECA web application
 
 
 * web
-
 
 |===
 
