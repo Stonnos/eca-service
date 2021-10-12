@@ -16,11 +16,11 @@ ${openApi.description}
 
 [width=100%]
 |===
-|Type|Description|Schema
+|Type|Description|Flows
 |*${securityScheme.type}*
 |
 <#if securityScheme.in??>
-*Token value in:* __${securityScheme.in}__
+*Client credentials location:* __${securityScheme.in}__
 </#if>
 
 <#if securityScheme.bearerFormat??>
@@ -29,22 +29,24 @@ ${openApi.description}
 a|<#if securityScheme.oauth2Flows?has_content>
 <#list securityScheme.oauth2Flows as flow>
 
-*Grant type:* ${flow.grantType}
+*Flow*
+
+__Grant type:__ ${flow.grantType}
 
 <#if flow.tokenUrl??>
-*Token url:* ${flow.tokenUrl}
+__Token url:__ ${flow.tokenUrl}
 </#if>
 
 <#if flow.tokenUrl??>
-*Refresh token url:* ${flow.refreshUrl}
+__Refresh token url:__ ${flow.refreshUrl}
 </#if>
 
 <#if flow.authorizationUrl??>
-*Authorization url:* ${flow.authorizationUrl}
+__Authorization url:__ ${flow.authorizationUrl}
 </#if>
 
 <#if flow.scopes?has_content>
-*Scopes*:
+__Scopes__:
 
 <#list flow.scopes as scope>
 
