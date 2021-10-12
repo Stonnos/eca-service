@@ -14,15 +14,25 @@ API provides operations with users for ECA web application
 
 [width=100%]
 |===
-|Type|Description|Scheme
+|Type|Description|Schema
 |*oauth2*
 |
-*Token pass in:* __header__
+*Token value in:* __header__
 
 *Bearer format:* __Authorization: Bearer <access token>__
 |
 
 *Grant type:* password
+
+*Token url:* http://localhost:8080/oauth/token
+
+*Refresh token url:* http://localhost:8080/oauth/token
+
+
+*Scopes*:
+
+* web
+
 |===
 
 == Updates info for current authenticated user
