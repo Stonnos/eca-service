@@ -27,7 +27,7 @@ a|
 ----
 |===
 
-*Список кодов ответа*
+*Api responses*
 [width=100%]
 |===
 |Code|Description|Content type|Schema|Example
@@ -91,28 +91,16 @@ a|
 |*reportType**
 |Report type
 |query
-a|__string__ 
+a|__string__
 
 
 
 
 
 
-
-*Values*:
-
-* EXPERIMENTS
-
-* EVALUATION_LOGS
-
-* CLASSIFIERS_OPTIONS_REQUESTS
-
-* CLASSIFIERS_CONFIGURATION
-
-* AUDIT_LOGS
 |===
 
-*Список кодов ответа*
+*Api responses*
 [width=100%]
 |===
 |Code|Description|Content type|Schema|Example
@@ -193,7 +181,7 @@ a|
 ----
 |===
 
-*Список кодов ответа*
+*Api responses*
 [width=100%]
 |===
 |Code|Description|Content type|Schema|Example
@@ -290,52 +278,26 @@ a|
 |*experimentType**
 |Experiment type
 |query
-a|__string__ 
+a|__string__
 
 
 
 
 
 
-
-*Values*:
-
-* NEURAL_NETWORKS
-
-* HETEROGENEOUS_ENSEMBLE
-
-* MODIFIED_HETEROGENEOUS_ENSEMBLE
-
-* ADA_BOOST
-
-* STACKING
-
-* KNN
-
-* RANDOM_FORESTS
-
-* STACKING_CV
-
-* DECISION_TREE
 |*evaluationMethod**
 |Evaluation method
 |query
-a|__string__ 
+a|__string__
 
 
 
 
 
 
-
-*Values*:
-
-* TRAINING_DATA
-
-* CROSS_VALIDATION
 |===
 
-*Список кодов ответа*
+*Api responses*
 [width=100%]
 |===
 |Code|Description|Content type|Schema|Example
@@ -386,8 +348,8 @@ a|
 |*configurationId**
 |Configuration id
 |query
-a|__integer__ __(int64)__
-
+a|__integer__
+__(int64)__
 
 
 
@@ -396,7 +358,7 @@ a|__integer__ __(int64)__
 
 |===
 
-*Список кодов ответа*
+*Api responses*
 [width=100%]
 |===
 |Code|Description|Content type|Schema|Example
@@ -455,8 +417,8 @@ a|
 |*configurationId**
 |Configuration id
 |query
-a|__integer__ __(int64)__
-
+a|__integer__
+__(int64)__
 
 
 
@@ -465,7 +427,7 @@ a|__integer__ __(int64)__
 
 |===
 
-*Список кодов ответа*
+*Api responses*
 [width=100%]
 |===
 |Code|Description|Content type|Schema|Example
@@ -531,8 +493,8 @@ __POST__ */experiment/classifiers-configurations/set-active* - Sets classifiers 
 |*id**
 |Configuration id
 |query
-a|__integer__ __(int64)__
-
+a|__integer__
+__(int64)__
 
 
 
@@ -541,7 +503,7 @@ a|__integer__ __(int64)__
 
 |===
 
-*Список кодов ответа*
+*Api responses*
 [width=100%]
 |===
 |Code|Description|Content type|Schema|Example
@@ -597,7 +559,7 @@ a|
 ----
 |===
 
-*Список кодов ответа*
+*Api responses*
 [width=100%]
 |===
 |Code|Description|Content type|Schema|Example
@@ -666,7 +628,7 @@ a|
 ----
 |===
 
-*Список кодов ответа*
+*Api responses*
 [width=100%]
 |===
 |Code|Description|Content type|Schema|Example
@@ -743,7 +705,7 @@ a|
 ----
 |===
 
-*Список кодов ответа*
+*Api responses*
 [width=100%]
 |===
 |Code|Description|Content type|Schema|Example
@@ -828,7 +790,7 @@ a|
 ----
 |===
 
-*Список кодов ответа*
+*Api responses*
 [width=100%]
 |===
 |Code|Description|Content type|Schema|Example
@@ -944,7 +906,7 @@ a|
 ----
 |===
 
-*Список кодов ответа*
+*Api responses*
 [width=100%]
 |===
 |Code|Description|Content type|Schema|Example
@@ -1016,7 +978,7 @@ a|
 __GET__ */filter-templates/experiment* - Gets experiment filter fields
 
 
-*Список кодов ответа*
+*Api responses*
 [width=100%]
 |===
 |Code|Description|Content type|Schema|Example
@@ -1161,7 +1123,7 @@ a|
 __GET__ */filter-templates/experiment-types* - Gets experiment types filter dictionary
 
 
-*Список кодов ответа*
+*Api responses*
 [width=100%]
 |===
 |Code|Description|Content type|Schema|Example
@@ -1223,7 +1185,7 @@ a|
 __GET__ */filter-templates/evaluation* - Gets evaluation log filter fields
 
 
-*Список кодов ответа*
+*Api responses*
 [width=100%]
 |===
 |Code|Description|Content type|Schema|Example
@@ -1330,7 +1292,7 @@ a|
 __GET__ */filter-templates/evaluation-methods* - Gets evaluation method filter dictionary
 
 
-*Список кодов ответа*
+*Api responses*
 [width=100%]
 |===
 |Code|Description|Content type|Schema|Example
@@ -1371,7 +1333,7 @@ a|
 __GET__ */filter-templates/classifier-options-request* - Gets classifier options request filter fields
 
 
-*Список кодов ответа*
+*Api responses*
 [width=100%]
 |===
 |Code|Description|Content type|Schema|Example
@@ -1477,8 +1439,8 @@ __GET__ */experiment/training-data/{id}* - Downloads experiment training data by
 |*id**
 |Experiment id
 |path
-a|__integer__ __(int64)__
-
+a|__integer__
+__(int64)__
 
 
 
@@ -1487,7 +1449,7 @@ a|__integer__ __(int64)__
 
 |===
 
-*Список кодов ответа*
+*Api responses*
 [width=100%]
 |===
 |Code|Description|Content type|Schema|Example
@@ -1536,8 +1498,8 @@ __GET__ */experiment/statistics* - Gets experiment types statistics
 |*createdDateFrom*
 |Experiment created date from
 |query
-a|__string__ __(date)__
-
+a|__string__
+__(date)__
 
 
 
@@ -1547,8 +1509,8 @@ a|__string__ __(date)__
 |*createdDateTo*
 |Experiment created date to
 |query
-a|__string__ __(date)__
-
+a|__string__
+__(date)__
 
 
 
@@ -1557,7 +1519,7 @@ a|__string__ __(date)__
 
 |===
 
-*Список кодов ответа*
+*Api responses*
 [width=100%]
 |===
 |Code|Description|Content type|Schema|Example
@@ -1632,8 +1594,8 @@ __GET__ */experiment/results/{id}* - Downloads experiment results by specified i
 |*id**
 |Experiment id
 |path
-a|__integer__ __(int64)__
-
+a|__integer__
+__(int64)__
 
 
 
@@ -1642,7 +1604,7 @@ a|__integer__ __(int64)__
 
 |===
 
-*Список кодов ответа*
+*Api responses*
 [width=100%]
 |===
 |Code|Description|Content type|Schema|Example
@@ -1691,8 +1653,8 @@ __GET__ */experiment/results/details/{id}* - Finds experiment results details wi
 |*id**
 |Experiment results id
 |path
-a|__integer__ __(int64)__
-
+a|__integer__
+__(int64)__
 
 
 
@@ -1701,7 +1663,7 @@ a|__integer__ __(int64)__
 
 |===
 
-*Список кодов ответа*
+*Api responses*
 [width=100%]
 |===
 |Code|Description|Content type|Schema|Example
@@ -1814,7 +1776,7 @@ a|
 __GET__ */experiment/request-statuses-statistics* - Gets experiments request statuses statistics
 
 
-*Список кодов ответа*
+*Api responses*
 [width=100%]
 |===
 |Code|Description|Content type|Schema|Example
@@ -1860,8 +1822,8 @@ __GET__ */experiment/progress/{id}* - Finds experiment progress with specified i
 |*id**
 |Experiment id
 |path
-a|__integer__ __(int64)__
-
+a|__integer__
+__(int64)__
 
 
 
@@ -1870,7 +1832,7 @@ a|__integer__ __(int64)__
 
 |===
 
-*Список кодов ответа*
+*Api responses*
 [width=100%]
 |===
 |Code|Description|Content type|Schema|Example
@@ -1926,8 +1888,8 @@ __GET__ */experiment/ers-report/{id}* - Gets experiment ERS report
 |*id**
 |Experiment id
 |path
-a|__integer__ __(int64)__
-
+a|__integer__
+__(int64)__
 
 
 
@@ -1936,7 +1898,7 @@ a|__integer__ __(int64)__
 
 |===
 
-*Список кодов ответа*
+*Api responses*
 [width=100%]
 |===
 |Code|Description|Content type|Schema|Example
@@ -2009,8 +1971,8 @@ __GET__ */experiment/details/{id}* - Finds experiment with specified id
 |*id**
 |Experiment id
 |path
-a|__integer__ __(int64)__
-
+a|__integer__
+__(int64)__
 
 
 
@@ -2019,7 +1981,7 @@ a|__integer__ __(int64)__
 
 |===
 
-*Список кодов ответа*
+*Api responses*
 [width=100%]
 |===
 |Code|Description|Content type|Schema|Example
@@ -2092,7 +2054,7 @@ a|
 __GET__ */experiment/classifiers-options/active-options* - Finds active classifiers options configs
 
 
-*Список кодов ответа*
+*Api responses*
 [width=100%]
 |===
 |Code|Description|Content type|Schema|Example
@@ -2137,8 +2099,8 @@ __GET__ */experiment/classifiers-configurations/report/{id}* - Downloads classif
 |*id**
 |Configuration id
 |path
-a|__integer__ __(int64)__
-
+a|__integer__
+__(int64)__
 
 
 
@@ -2147,7 +2109,7 @@ a|__integer__ __(int64)__
 
 |===
 
-*Список кодов ответа*
+*Api responses*
 [width=100%]
 |===
 |Code|Description|Content type|Schema|Example
@@ -2196,8 +2158,8 @@ __GET__ */experiment/classifiers-configurations/details/{id}* - Gets classifiers
 |*id**
 |Configuration id
 |path
-a|__integer__ __(int64)__
-
+a|__integer__
+__(int64)__
 
 
 
@@ -2206,7 +2168,7 @@ a|__integer__ __(int64)__
 
 |===
 
-*Список кодов ответа*
+*Api responses*
 [width=100%]
 |===
 |Code|Description|Content type|Schema|Example
@@ -2260,7 +2222,7 @@ a|
 __GET__ */evaluation/request-statuses-statistics* - Gets evaluations request statuses statistics
 
 
-*Список кодов ответа*
+*Api responses*
 [width=100%]
 |===
 |Code|Description|Content type|Schema|Example
@@ -2306,8 +2268,8 @@ __GET__ */evaluation/details/{id}* - Gets evaluation log details
 |*id**
 |Evaluation log id
 |path
-a|__integer__ __(int64)__
-
+a|__integer__
+__(int64)__
 
 
 
@@ -2316,7 +2278,7 @@ a|__integer__ __(int64)__
 
 |===
 
-*Список кодов ответа*
+*Api responses*
 [width=100%]
 |===
 |Code|Description|Content type|Schema|Example
@@ -2427,8 +2389,7 @@ __GET__ */eca-api/experiment/download/{token}* - Downloads experiment results by
 |*token**
 |Experiment token
 |path
-a|__string__ 
-
+a|__string__
 
 
 
@@ -2437,7 +2398,7 @@ a|__string__
 
 |===
 
-*Список кодов ответа*
+*Api responses*
 [width=100%]
 |===
 |Code|Description|Content type|Schema|Example
@@ -2474,8 +2435,8 @@ __DELETE__ */experiment/classifiers-options/delete* - Classifier options id
 |*id**
 |Classifier options id
 |query
-a|__integer__ __(int64)__
-
+a|__integer__
+__(int64)__
 
 
 
@@ -2484,7 +2445,7 @@ a|__integer__ __(int64)__
 
 |===
 
-*Список кодов ответа*
+*Api responses*
 [width=100%]
 |===
 |Code|Description|Content type|Schema|Example
@@ -2533,8 +2494,8 @@ __DELETE__ */experiment/classifiers-configurations/delete* - Deletes classifiers
 |*id**
 |Configuration id
 |query
-a|__integer__ __(int64)__
-
+a|__integer__
+__(int64)__
 
 
 
@@ -2543,7 +2504,7 @@ a|__integer__ __(int64)__
 
 |===
 
-*Список кодов ответа*
+*Api responses*
 [width=100%]
 |===
 |Code|Description|Content type|Schema|Example
@@ -2691,13 +2652,6 @@ __string__
 
 
 
-*Values*:
-
-* EQUALS
-
-* LIKE
-
-* RANGE
 |===
 === PageRequestDto
 :table-caption: Table
@@ -2766,6 +2720,7 @@ __string__
 |Filters list
 a|
 __array__
+<<<FilterRequestDto>>>
 
 
 
@@ -3019,6 +2974,7 @@ a|<<EnumDto>>
 |Page content
 a|
 __array__
+<<<ExperimentDto>>>
 
 
 
@@ -3206,6 +3162,7 @@ __string__
 |Page content
 a|
 __array__
+<<<ClassifierOptionsDto>>>
 
 
 
@@ -3363,6 +3320,7 @@ __string__
 |Page content
 a|
 __array__
+<<<ClassifiersConfigurationDto>>>
 
 
 
@@ -3416,6 +3374,7 @@ __string__
 |Classifier input options list
 a|
 __array__
+<<<InputOptionDto>>>
 
 
 
@@ -3584,6 +3543,7 @@ a|<<InstancesInfoDto>>
 |Page content
 a|
 __array__
+<<<EvaluationLogDto>>>
 
 
 
@@ -3809,6 +3769,7 @@ a|<<EnumDto>>
 |Classifiers options response models
 a|
 __array__
+<<<ClassifierOptionsResponseDto>>>
 
 
 
@@ -3827,6 +3788,7 @@ __array__
 |Page content
 a|
 __array__
+<<<ClassifierOptionsRequestDto>>>
 
 
 
@@ -3909,6 +3871,7 @@ __string__
 |Filter dictionary values
 a|
 __array__
+<<<FilterDictionaryValueDto>>>
 
 
 
@@ -3997,13 +3960,6 @@ __string__
 
 
 
-*Values*:
-
-* TEXT
-
-* REFERENCE
-
-* DATE
 |*matchMode*
 |Filter match mode
 a|
@@ -4015,13 +3971,6 @@ __string__
 
 
 
-*Values*:
-
-* EQUALS
-
-* LIKE
-
-* RANGE
 |*multiple*
 |Allow multiple values
 a|
@@ -4188,6 +4137,7 @@ a|<<EvaluationStatisticsDto>>
 |Classification costs results
 a|
 __array__
+<<<ClassificationCostsDto>>>
 
 
 
@@ -4572,6 +4522,7 @@ __(int64)__
 |Experiment results list
 a|
 __array__
+<<<ExperimentResultsDto>>>
 
 
 
