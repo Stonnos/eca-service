@@ -4,11 +4,10 @@ import com.ecaservice.oauth.model.OpenApiModel;
 import com.ecaservice.oauth.model.RequestBodyModel;
 import com.ecaservice.oauth.model.RequestParameterModel;
 import com.ecaservice.oauth.model.SchemaModel;
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.media.MediaType;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.parameters.Parameter;
-import io.swagger.v3.oas.models.parameters.RequestBody;
+import com.ecaservice.oauth.model.openapi.OpenAPI;
+import com.ecaservice.oauth.model.openapi.Parameter;
+import com.ecaservice.oauth.model.openapi.RequestBody;
+import com.ecaservice.oauth.model.openapi.Schema;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -32,22 +31,15 @@ public interface OpenApiMapper {
 
     @Mapping(source = "required", target = "required", defaultValue = "false")
     @Mapping(source = "schema", target = "schemaModel")
-    @Mapping(source = "example", target = "example", qualifiedByName = "objectToString")
     RequestParameterModel map(Parameter parameter);
 
     @Mapping(source = "pattern", target = "pattern", qualifiedByName = "mapPattern")
-    @Mapping(source = "enum", target = "enumValues")
-    @Mapping(source = "$ref", target = "objectTypeRef", qualifiedByName = "mapRef")
+    @Mapping(source = "enums", target = "enumValues")
+    @Mapping(source = "ref", target = "objectTypeRef", qualifiedByName = "mapRef")
+    @Mapping(source = "items.ref", target = "itemsObjectRef", qualifiedByName = "mapRef")
     SchemaModel map(Schema schema);
 
     List<RequestParameterModel> map(List<Parameter> parameters);
-
-    @Named("objectToString")
-    default String objectToString(Object object) {
-        return Optional.ofNullable(object)
-                .map(String::valueOf)
-                .orElse(null);
-    }
 
     @Named("mapPattern")
     default String mapPattern(String pattern) {

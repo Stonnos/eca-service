@@ -8,13 +8,13 @@ import com.ecaservice.oauth.model.OpenApiModel;
 import com.ecaservice.oauth.model.OperationModel;
 import com.ecaservice.oauth.model.RequestBodyModel;
 import com.ecaservice.oauth.model.SchemaModel;
+import com.ecaservice.oauth.model.openapi.ApiResponse;
+import com.ecaservice.oauth.model.openapi.MediaType;
+import com.ecaservice.oauth.model.openapi.OpenAPI;
+import com.ecaservice.oauth.model.openapi.Operation;
+import com.ecaservice.oauth.model.openapi.PathItem;
+import com.ecaservice.oauth.model.openapi.Schema;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.Operation;
-import io.swagger.v3.oas.models.PathItem;
-import io.swagger.v3.oas.models.media.MediaType;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -162,7 +162,7 @@ public class OpenApiService {
 
     private String getBodyRef(Schema schema) {
         return Optional.ofNullable(schema)
-                .map(Schema::get$ref)
+                .map(Schema::getRef)
                 .map(ref -> StringUtils.substringAfterLast(ref, "/"))
                 .orElse(null);
     }

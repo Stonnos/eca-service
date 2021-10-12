@@ -22,4 +22,5 @@ public class SchemaModel {
     private Integer maxItems;
     private Integer minItems;
     private List<String> enumValues;
+    private String itemsObjectRef;
 }

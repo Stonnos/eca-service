@@ -1,0 +1,189 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Web pushes microservice",
+    "description": "API provides operations for sending web pushes",
+    "contact": {
+      "name": "Roman Batygin",
+      "email": "roman.batygin@mail.ru"
+    },
+    "version": "6.1"
+  },
+  "servers": [
+    {
+      "url": "/"
+    }
+  ],
+  "paths": {
+    "/push/experiment": {
+      "post": {
+        "tags": [
+          "API for sending web pushes"
+        ],
+        "summary": "Send web push with experiment changes",
+        "description": "Send web push with experiment changes",
+        "operationId": "pushExperiment",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExperimentDto"
+              },
+              "example": {
+                "id": 1,
+                "requestId": "1d2de514-3a87-4620-9b97-c260e24340de",
+                "creationDate": "2021-07-01 14:00:00",
+                "startDate": "2021-07-01 14:00:00",
+                "endDate": "2021-07-01 14:00:00",
+                "requestStatus": {
+                  "value": "FINISHED",
+                  "description": "Experiment finished"
+                },
+                "evaluationMethod": {
+                  "value": "CROSS_VALIDATION",
+                  "description": "k*V folds validation"
+                },
+                "numFolds": 10,
+                "numTests": 1,
+                "seed": 1,
+                "evaluationTotalTime": "00:00:1:43",
+                "firstName": "Roman",
+                "email": "test@mail.ru",
+                "experimentAbsolutePath": "experiment_1d2de514-3a87-4620-9b97-c260e24340de.model",
+                "trainingDataAbsolutePath": "data_1d2de514-3a87-4620-9b97-c260e24340de.xls",
+                "sentDate": "2021-07-01 14:00:00",
+                "deletedDate": "2021-07-01 14:00:00",
+                "experimentType": {
+                  "value": "RANDOM_FORESTS",
+                  "description": "Random forests"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "EnumDto": {
+        "required": [
+          "description",
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "description": "Enum value"
+          },
+          "description": {
+            "type": "string",
+            "description": "Enum value description"
+          }
+        },
+        "description": "Enum dto model"
+      },
+      "ExperimentDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "ID",
+            "format": "int64",
+            "example": 1
+          },
+          "requestId": {
+            "type": "string",
+            "description": "Request unique identifier",
+            "example": "1d2de514-3a87-4620-9b97-c260e24340de"
+          },
+          "creationDate": {
+            "type": "string",
+            "description": "Request creation date",
+            "example": "2021-07-01 14:00:00"
+          },
+          "startDate": {
+            "type": "string",
+            "description": "Evaluation start date",
+            "example": "2021-07-01 14:00:00"
+          },
+          "endDate": {
+            "type": "string",
+            "description": "Evaluation end date",
+            "example": "2021-07-01 14:00:00"
+          },
+          "requestStatus": {
+            "$ref": "#/components/schemas/EnumDto"
+          },
+          "evaluationMethod": {
+            "$ref": "#/components/schemas/EnumDto"
+          },
+          "numFolds": {
+            "type": "integer",
+            "description": "Folds number for k * V cross - validation method",
+            "format": "int32",
+            "example": 10
+          },
+          "numTests": {
+            "type": "integer",
+            "description": "Tests number for k * V cross - validation method",
+            "format": "int32",
+            "example": 1
+          },
+          "seed": {
+            "type": "integer",
+            "description": "Seed value for k * V cross - validation method",
+            "format": "int32",
+            "example": 1
+          },
+          "evaluationTotalTime": {
+            "type": "string",
+            "description": "Model evaluation total time in format HH:mm:ss:SS",
+            "example": "00:00:1:43"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "Request creator first name",
+            "example": "Roman"
+          },
+          "email": {
+            "type": "string",
+            "description": "Request creator email",
+            "example": "test@mail.ru"
+          },
+          "experimentAbsolutePath": {
+            "type": "string",
+            "description": "Experiment results file",
+            "example": "experiment_1d2de514-3a87-4620-9b97-c260e24340de.model"
+          },
+          "trainingDataAbsolutePath": {
+            "type": "string",
+            "description": "Training data file",
+            "example": "data_1d2de514-3a87-4620-9b97-c260e24340de.xls"
+          },
+          "sentDate": {
+            "type": "string",
+            "description": "Experiment results sent date",
+            "example": "2021-07-01 14:00:00"
+          },
+          "deletedDate": {
+            "type": "string",
+            "description": "Experiment files delete date",
+            "example": "2021-07-01 14:00:00"
+          },
+          "experimentType": {
+            "$ref": "#/components/schemas/EnumDto"
+          }
+        },
+        "description": "Experiment model"
+      }
+    }
+  }
+}

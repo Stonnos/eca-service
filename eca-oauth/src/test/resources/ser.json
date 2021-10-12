@@ -1,0 +1,4229 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Microservice for classifiers learning",
+    "description": "API provides operations for individual and ensemble classification models learning",
+    "contact": {
+      "name": "Roman Batygin",
+      "email": "roman.batygin@mail.ru"
+    },
+    "version": "6.1"
+  },
+  "servers": [
+    {
+      "url": "/"
+    }
+  ],
+  "paths": {
+    "/experiment/classifiers-configurations/update": {
+      "put": {
+        "tags": [
+          "API to manage experiment classifiers configurations"
+        ],
+        "summary": "Updates classifiers configuration",
+        "description": "Updates classifiers configuration",
+        "operationId": "update",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateClassifiersConfigurationDto"
+              },
+              "example": {
+                "id": 1,
+                "configurationName": "Classifiers configuration"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ValidationErrorDto"
+                  }
+                },
+                "example": [
+                  {
+                    "fieldName": "configurationName",
+                    "code": "NotBlank",
+                    "errorMessage": "must not be blank"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/reports/download": {
+      "post": {
+        "tags": [
+          "Reports controller for web application"
+        ],
+        "summary": "Downloads specified base report in xlsx format",
+        "description": "Downloads specified base report in xlsx format",
+        "operationId": "downloadReport",
+        "parameters": [
+          {
+            "name": "reportType",
+            "in": "query",
+            "description": "Report type",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "EXPERIMENTS",
+                "EVALUATION_LOGS",
+                "CLASSIFIERS_OPTIONS_REQUESTS",
+                "CLASSIFIERS_CONFIGURATION",
+                "AUDIT_LOGS"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PageRequestDto"
+              },
+              "example": {
+                "page": 0,
+                "size": 25
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ValidationErrorDto"
+                  }
+                },
+                "example": [
+                  {
+                    "fieldName": "page",
+                    "code": "Min",
+                    "errorMessage": "must be greater than or equal to 0"
+                  },
+                  {
+                    "fieldName": "size",
+                    "code": "Min",
+                    "errorMessage": "must be greater than or equal to 1"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/experiment/list": {
+      "post": {
+        "tags": [
+          "Experiments API for web application"
+        ],
+        "summary": "Finds experiments with specified options",
+        "description": "Finds experiments with specified options",
+        "operationId": "getExperiments",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PageRequestDto"
+              },
+              "example": {
+                "page": 0,
+                "size": 25,
+                "sortField": "creationDate",
+                "ascending": false,
+                "searchQuery": "",
+                "filters": [
+                  {
+                    "name": "evaluationMethod",
+                    "values": [
+                      "CROSS_VALIDATION"
+                    ],
+                    "matchMode": "EQUALS"
+                  },
+                  {
+                    "name": "requestStatus",
+                    "values": [
+                      "FINISHED"
+                    ],
+                    "matchMode": "EQUALS"
+                  },
+                  {
+                    "name": "experimentType",
+                    "values": [
+                      "ADA_BOOST",
+                      "NEURAL_NETWORKS",
+                      "HETEROGENEOUS_ENSEMBLE",
+                      "MODIFIED_HETEROGENEOUS_ENSEMBLE"
+                    ],
+                    "matchMode": "EQUALS"
+                  },
+                  {
+                    "name": "creationDate",
+                    "values": [
+                      "2021-07-12"
+                    ],
+                    "matchMode": "RANGE"
+                  }
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExperimentsPageDto"
+                },
+                "example": {
+                  "content": [
+                    {
+                      "id": 1,
+                      "requestId": "1d2de514-3a87-4620-9b97-c260e24340de",
+                      "creationDate": "2021-07-01 14:00:00",
+                      "startDate": "2021-07-01 14:00:30",
+                      "endDate": "2021-07-01 14:02:13",
+                      "requestStatus": {
+                        "value": "FINISHED",
+                        "description": "Завершена"
+                      },
+                      "evaluationMethod": {
+                        "value": "CROSS_VALIDATION",
+                        "description": "V-блочная кросс-проверка"
+                      },
+                      "numFolds": 10,
+                      "numTests": 1,
+                      "seed": 1,
+                      "evaluationTotalTime": "00:00:1:43",
+                      "firstName": "Roman",
+                      "email": "test@mail.ru",
+                      "experimentAbsolutePath": "experiment_1d2de514-3a87-4620-9b97-c260e24340de.model",
+                      "trainingDataAbsolutePath": "data_1d2de514-3a87-4620-9b97-c260e24340de.xls",
+                      "sentDate": "2021-07-01 14:02:15",
+                      "deletedDate": "2021-07-14 14:00:00",
+                      "experimentType": {
+                        "value": "RANDOM_FORESTS",
+                        "description": "Случайные леса"
+                      }
+                    }
+                  ],
+                  "page": 0,
+                  "totalCount": 1
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ValidationErrorDto"
+                  }
+                },
+                "example": [
+                  {
+                    "fieldName": "page",
+                    "code": "Min",
+                    "errorMessage": "must be greater than or equal to 0"
+                  },
+                  {
+                    "fieldName": "size",
+                    "code": "Min",
+                    "errorMessage": "must be greater than or equal to 1"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/experiment/create": {
+      "post": {
+        "tags": [
+          "Experiments API for web application"
+        ],
+        "summary": "Creates experiment request with specified options",
+        "description": "Creates experiment request with specified options",
+        "operationId": "createRequest",
+        "parameters": [
+          {
+            "name": "experimentType",
+            "in": "query",
+            "description": "Experiment type",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "NEURAL_NETWORKS",
+                "HETEROGENEOUS_ENSEMBLE",
+                "MODIFIED_HETEROGENEOUS_ENSEMBLE",
+                "ADA_BOOST",
+                "STACKING",
+                "KNN",
+                "RANDOM_FORESTS",
+                "STACKING_CV",
+                "DECISION_TREE"
+              ]
+            }
+          },
+          {
+            "name": "evaluationMethod",
+            "in": "query",
+            "description": "Evaluation method",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "TRAINING_DATA",
+                "CROSS_VALIDATION"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "trainingData"
+                ],
+                "type": "object",
+                "properties": {
+                  "trainingData": {
+                    "type": "string",
+                    "description": "Training data file",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateExperimentResultDto"
+                },
+                "example": {
+                  "id": 1,
+                  "requestId": "1d2de514-3a87-4620-9b97-c260e24340de"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/experiment/classifiers-options/save": {
+      "post": {
+        "tags": [
+          "Experiment classifiers configs API for web application"
+        ],
+        "summary": "Saves new classifier options for specified configuration",
+        "description": "Saves new classifier options for specified configuration",
+        "operationId": "save",
+        "parameters": [
+          {
+            "name": "configurationId",
+            "in": "query",
+            "description": "Configuration id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "classifiersOptionsFile"
+                ],
+                "type": "object",
+                "properties": {
+                  "classifiersOptionsFile": {
+                    "type": "string",
+                    "description": "Classifiers options file",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateClassifierOptionsResultDto"
+                },
+                "example": {
+                  "id": 1,
+                  "sourceFileName": "cart.json",
+                  "success": true,
+                  "errorMessage": ""
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/experiment/classifiers-options/page": {
+      "post": {
+        "tags": [
+          "Experiment classifiers configs API for web application"
+        ],
+        "summary": "Finds classifiers options configs page",
+        "description": "Finds classifiers options configs page",
+        "operationId": "getClassifiersOptionsPage",
+        "parameters": [
+          {
+            "name": "configurationId",
+            "in": "query",
+            "description": "Configuration id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PageRequestDto"
+              },
+              "example": {
+                "page": 0,
+                "size": 25
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClassifiersOptionsPageDto"
+                },
+                "example": {
+                  "content": [
+                    {
+                      "id": 1,
+                      "optionsName": "DecisionTreeOptions",
+                      "creationDate": "2021-07-01 14:00:00",
+                      "createdBy": "admin",
+                      "config": "Json config"
+                    }
+                  ],
+                  "page": 0,
+                  "totalCount": 1
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ValidationErrorDto"
+                  }
+                },
+                "example": [
+                  {
+                    "fieldName": "page",
+                    "code": "Min",
+                    "errorMessage": "must be greater than or equal to 0"
+                  },
+                  {
+                    "fieldName": "size",
+                    "code": "Min",
+                    "errorMessage": "must be greater than or equal to 1"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/experiment/classifiers-configurations/set-active": {
+      "post": {
+        "tags": [
+          "API to manage experiment classifiers configurations"
+        ],
+        "summary": "Sets classifiers configuration as active",
+        "description": "Sets classifiers configuration as active",
+        "operationId": "setActive",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "Configuration id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ValidationErrorDto"
+                  }
+                },
+                "example": [
+                  {
+                    "fieldName": null,
+                    "code": "DataNotFound",
+                    "errorMessage": "Entity with search key [1] not found!"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/experiment/classifiers-configurations/save": {
+      "post": {
+        "tags": [
+          "API to manage experiment classifiers configurations"
+        ],
+        "summary": "Saves new classifiers configuration",
+        "description": "Saves new classifiers configuration",
+        "operationId": "save_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateClassifiersConfigurationDto"
+              },
+              "example": {
+                "configurationName": "Classifiers configuration"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClassifiersConfigurationDto"
+                },
+                "example": {
+                  "id": 1,
+                  "configurationName": "Default configuration",
+                  "creationDate": "2021-07-01 14:00:00",
+                  "createdBy": "admin",
+                  "updated": "2021-07-01 14:00:00",
+                  "active": true,
+                  "buildIn": true,
+                  "classifiersOptionsCount": 25
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ValidationErrorDto"
+                  }
+                },
+                "example": [
+                  {
+                    "fieldName": "configurationName",
+                    "code": "NotBlank",
+                    "errorMessage": "must not be blank"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/experiment/classifiers-configurations/list": {
+      "post": {
+        "tags": [
+          "API to manage experiment classifiers configurations"
+        ],
+        "summary": "Finds classifiers configurations with specified options",
+        "description": "Finds classifiers configurations with specified options",
+        "operationId": "getClassifiersConfigurations",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PageRequestDto"
+              },
+              "example": {
+                "page": 0,
+                "size": 25
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClassifierConfigurationsPageDto"
+                },
+                "example": {
+                  "content": [
+                    {
+                      "id": 1,
+                      "configurationName": "Default configuration",
+                      "creationDate": "2021-07-01 14:00:00",
+                      "createdBy": "admin",
+                      "updated": "2021-07-01 14:00:00",
+                      "active": true,
+                      "buildIn": true,
+                      "classifiersOptionsCount": 25
+                    }
+                  ],
+                  "page": 0,
+                  "totalCount": 1
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ValidationErrorDto"
+                  }
+                },
+                "example": [
+                  {
+                    "fieldName": "page",
+                    "code": "Min",
+                    "errorMessage": "must be greater than or equal to 0"
+                  },
+                  {
+                    "fieldName": "size",
+                    "code": "Min",
+                    "errorMessage": "must be greater than or equal to 1"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/experiment/classifiers-configurations/copy": {
+      "post": {
+        "tags": [
+          "API to manage experiment classifiers configurations"
+        ],
+        "summary": "Creates classifiers configuration copy",
+        "description": "Creates classifiers configuration copy",
+        "operationId": "copy",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateClassifiersConfigurationDto"
+              },
+              "example": {
+                "id": 1,
+                "configurationName": "Classifiers configuration"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateClassifiersConfigurationDto"
+                },
+                "example": {
+                  "id": 1,
+                  "configurationName": "Default configuration",
+                  "creationDate": "2021-07-01 14:00:00",
+                  "createdBy": "admin",
+                  "updated": "2021-07-01 14:00:00",
+                  "active": true,
+                  "buildIn": true,
+                  "classifiersOptionsCount": 25
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ValidationErrorDto"
+                  }
+                },
+                "example": [
+                  {
+                    "fieldName": "configurationName",
+                    "code": "NotBlank",
+                    "errorMessage": "must not be blank"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/evaluation/list": {
+      "post": {
+        "tags": [
+          "Classifiers evaluation API for web application"
+        ],
+        "summary": "Finds evaluation logs with specified options",
+        "description": "Finds evaluation logs with specified options",
+        "operationId": "getEvaluationLogs",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PageRequestDto"
+              },
+              "example": {
+                "page": 0,
+                "size": 25,
+                "sortField": "creationDate",
+                "ascending": false,
+                "searchQuery": "",
+                "filters": [
+                  {
+                    "name": "evaluationMethod",
+                    "values": [
+                      "CROSS_VALIDATION"
+                    ],
+                    "matchMode": "EQUALS"
+                  },
+                  {
+                    "name": "requestStatus",
+                    "values": [
+                      "FINISHED"
+                    ],
+                    "matchMode": "EQUALS"
+                  },
+                  {
+                    "name": "creationDate",
+                    "values": [
+                      "2021-07-12"
+                    ],
+                    "matchMode": "RANGE"
+                  }
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EvaluationLogsPageDto"
+                },
+                "example": {
+                  "content": [
+                    {
+                      "id": 1,
+                      "requestId": "1d2de514-3a87-4620-9b97-c260e24340de",
+                      "creationDate": "2021-07-01 14:00:00",
+                      "startDate": "2021-07-01 14:00:01",
+                      "endDate": "2021-07-01 14:00:12",
+                      "requestStatus": {
+                        "value": "FINISHED",
+                        "description": "Завершена"
+                      },
+                      "evaluationMethod": {
+                        "value": "CROSS_VALIDATION",
+                        "description": "V-блочная кросс-проверка"
+                      },
+                      "numFolds": 10,
+                      "numTests": 1,
+                      "seed": 1,
+                      "evaluationTotalTime": "00:00:00:11",
+                      "classifierInfo": {
+                        "classifierName": "CART",
+                        "inputOptions": [
+                          {
+                            "optionName": "Iterations number",
+                            "optionValue": "100"
+                          }
+                        ]
+                      },
+                      "instancesInfo": {
+                        "relationName": "iris",
+                        "numInstances": 150,
+                        "numAttributes": 5,
+                        "numClasses": 4,
+                        "className": "class"
+                      }
+                    }
+                  ],
+                  "page": 0,
+                  "totalCount": 1
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ValidationErrorDto"
+                  }
+                },
+                "example": [
+                  {
+                    "fieldName": "page",
+                    "code": "Min",
+                    "errorMessage": "must be greater than or equal to 0"
+                  },
+                  {
+                    "fieldName": "size",
+                    "code": "Min",
+                    "errorMessage": "must be greater than or equal to 1"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/classifiers-options-requests": {
+      "post": {
+        "tags": [
+          "Classifier options requests API for web application"
+        ],
+        "summary": "Finds classifiers options requests models with specified options",
+        "description": "Finds classifiers options requests models with specified options",
+        "operationId": "getClassifierOptionsRequestModels",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PageRequestDto"
+              },
+              "example": {
+                "page": 0,
+                "size": 25,
+                "sortField": "requestDate",
+                "ascending": false,
+                "searchQuery": "",
+                "filters": [
+                  {
+                    "name": "evaluationMethod",
+                    "values": [
+                      "CROSS_VALIDATION"
+                    ],
+                    "matchMode": "EQUALS"
+                  },
+                  {
+                    "name": "responseStatus",
+                    "values": [
+                      "SUCCESS"
+                    ],
+                    "matchMode": "EQUALS"
+                  },
+                  {
+                    "name": "requestDate",
+                    "values": [
+                      "2021-07-16"
+                    ],
+                    "matchMode": "RANGE"
+                  }
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClassifierOptionsRequestsPageDto"
+                },
+                "example": {
+                  "content": [
+                    {
+                      "requestDate": "2021-07-01 14:00:00",
+                      "requestId": "1d2de514-3a87-4620-9b97-c260e24340de",
+                      "relationName": "glass",
+                      "evaluationMethod": {
+                        "value": "CROSS_VALIDATION",
+                        "description": "V-блочная кросс-проверка"
+                      },
+                      "numFolds": 10,
+                      "numTests": 1,
+                      "seed": 1,
+                      "responseStatus": {
+                        "value": "SUCCESS",
+                        "description": "Успешно"
+                      },
+                      "classifierOptionsResponseModels": [
+                        {
+                          "classifierName": "CART",
+                          "options": "json config"
+                        }
+                      ]
+                    }
+                  ],
+                  "page": 0,
+                  "totalCount": 1
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ValidationErrorDto"
+                  }
+                },
+                "example": [
+                  {
+                    "fieldName": "page",
+                    "code": "Min",
+                    "errorMessage": "must be greater than or equal to 0"
+                  },
+                  {
+                    "fieldName": "size",
+                    "code": "Min",
+                    "errorMessage": "must be greater than or equal to 1"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/filter-templates/experiment": {
+      "get": {
+        "tags": [
+          "Filter templates controller for web application"
+        ],
+        "summary": "Gets experiment filter fields",
+        "description": "Gets experiment filter fields",
+        "operationId": "getExperimentFilter",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FilterFieldDto"
+                  }
+                },
+                "example": [
+                  {
+                    "fieldName": "requestId",
+                    "description": "UUID заявки",
+                    "fieldOrder": 0,
+                    "filterFieldType": "TEXT",
+                    "matchMode": "LIKE",
+                    "multiple": false,
+                    "dictionary": null
+                  },
+                  {
+                    "fieldName": "email",
+                    "description": "Email заявки",
+                    "fieldOrder": 1,
+                    "filterFieldType": "TEXT",
+                    "matchMode": "LIKE",
+                    "multiple": false,
+                    "dictionary": null
+                  },
+                  {
+                    "fieldName": "evaluationMethod",
+                    "description": "Метод оценки точности",
+                    "fieldOrder": 2,
+                    "filterFieldType": "REFERENCE",
+                    "matchMode": "EQUALS",
+                    "multiple": false,
+                    "dictionary": {
+                      "name": "evaluationMethod",
+                      "values": [
+                        {
+                          "label": "Использование обучающего множества",
+                          "value": "TRAINING_DATA"
+                        },
+                        {
+                          "label": "V-блочная кросс-проверка",
+                          "value": "CROSS_VALIDATION"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "fieldName": "requestStatus",
+                    "description": "Статус заявки",
+                    "fieldOrder": 3,
+                    "filterFieldType": "REFERENCE",
+                    "matchMode": "EQUALS",
+                    "multiple": false,
+                    "dictionary": {
+                      "name": "requestStatus",
+                      "values": [
+                        {
+                          "label": "Новая",
+                          "value": "NEW"
+                        },
+                        {
+                          "label": "Завершена",
+                          "value": "FINISHED"
+                        },
+                        {
+                          "label": "Ошибка",
+                          "value": "ERROR"
+                        },
+                        {
+                          "label": "Таймаут",
+                          "value": "TIMEOUT"
+                        },
+                        {
+                          "label": "В работе",
+                          "value": "IN_PROGRESS"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "fieldName": "experimentType",
+                    "description": "Тип эксперимента",
+                    "fieldOrder": 4,
+                    "filterFieldType": "REFERENCE",
+                    "matchMode": "EQUALS",
+                    "multiple": true,
+                    "dictionary": {
+                      "name": "experimentType",
+                      "values": [
+                        {
+                          "label": "Нейронные сети",
+                          "value": "NEURAL_NETWORKS"
+                        },
+                        {
+                          "label": "Алгоритм AdaBoost",
+                          "value": "ADA_BOOST"
+                        },
+                        {
+                          "label": "Алгоритм Stacking",
+                          "value": "STACKING"
+                        },
+                        {
+                          "label": "Случайные леса",
+                          "value": "RANDOM_FORESTS"
+                        },
+                        {
+                          "label": "Алгоритм Stacking CV",
+                          "value": "STACKING_CV"
+                        },
+                        {
+                          "label": "Деревья решений",
+                          "value": "DECISION_TREE"
+                        },
+                        {
+                          "label": "Неоднородный ансамбль",
+                          "value": "HETEROGENEOUS_ENSEMBLE"
+                        },
+                        {
+                          "label": "Мод. неоднородный ансамбль",
+                          "value": "MODIFIED_HETEROGENEOUS_ENSEMBLE"
+                        },
+                        {
+                          "label": "Алгоритм KNN",
+                          "value": "KNN"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "fieldName": "creationDate",
+                    "description": "Дата создания заявки",
+                    "fieldOrder": 5,
+                    "filterFieldType": "DATE",
+                    "matchMode": "RANGE",
+                    "multiple": true,
+                    "dictionary": null
+                  },
+                  {
+                    "fieldName": "sentDate",
+                    "description": "Дата отправки результатов",
+                    "fieldOrder": 6,
+                    "filterFieldType": "DATE",
+                    "matchMode": "RANGE",
+                    "multiple": true,
+                    "dictionary": null
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/filter-templates/experiment-types": {
+      "get": {
+        "tags": [
+          "Filter templates controller for web application"
+        ],
+        "summary": "Gets experiment types filter dictionary",
+        "description": "Gets experiment types filter dictionary",
+        "operationId": "getExperimentTypeDictionary",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FilterDictionaryDto"
+                },
+                "example": {
+                  "name": "experimentType",
+                  "values": [
+                    {
+                      "label": "Нейронные сети",
+                      "value": "NEURAL_NETWORKS"
+                    },
+                    {
+                      "label": "Алгоритм AdaBoost",
+                      "value": "ADA_BOOST"
+                    },
+                    {
+                      "label": "Алгоритм Stacking",
+                      "value": "STACKING"
+                    },
+                    {
+                      "label": "Случайные леса",
+                      "value": "RANDOM_FORESTS"
+                    },
+                    {
+                      "label": "Алгоритм Stacking CV",
+                      "value": "STACKING_CV"
+                    },
+                    {
+                      "label": "Деревья решений",
+                      "value": "DECISION_TREE"
+                    },
+                    {
+                      "label": "Неоднородный ансамбль",
+                      "value": "HETEROGENEOUS_ENSEMBLE"
+                    },
+                    {
+                      "label": "Мод. неоднородный ансамбль",
+                      "value": "MODIFIED_HETEROGENEOUS_ENSEMBLE"
+                    },
+                    {
+                      "label": "Алгоритм KNN",
+                      "value": "KNN"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/filter-templates/evaluation": {
+      "get": {
+        "tags": [
+          "Filter templates controller for web application"
+        ],
+        "summary": "Gets evaluation log filter fields",
+        "description": "Gets evaluation log filter fields",
+        "operationId": "getEvaluationLogFilter",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FilterFieldDto"
+                  }
+                },
+                "example": [
+                  {
+                    "fieldName": "requestId",
+                    "description": "UUID заявки",
+                    "fieldOrder": 0,
+                    "filterFieldType": "TEXT",
+                    "matchMode": "LIKE",
+                    "multiple": false,
+                    "dictionary": null
+                  },
+                  {
+                    "fieldName": "classifierInfo.classifierName",
+                    "description": "Классификатор",
+                    "fieldOrder": 1,
+                    "filterFieldType": "TEXT",
+                    "matchMode": "LIKE",
+                    "multiple": false,
+                    "dictionary": null
+                  },
+                  {
+                    "fieldName": "instancesInfo.relationName",
+                    "description": "Обучающая выборка",
+                    "fieldOrder": 2,
+                    "filterFieldType": "TEXT",
+                    "matchMode": "LIKE",
+                    "multiple": false,
+                    "dictionary": null
+                  },
+                  {
+                    "fieldName": "evaluationMethod",
+                    "description": "Метод оценки точности",
+                    "fieldOrder": 3,
+                    "filterFieldType": "REFERENCE",
+                    "matchMode": "EQUALS",
+                    "multiple": false,
+                    "dictionary": {
+                      "name": "evaluationMethod",
+                      "values": [
+                        {
+                          "label": "Использование обучающего множества",
+                          "value": "TRAINING_DATA"
+                        },
+                        {
+                          "label": "V-блочная кросс-проверка",
+                          "value": "CROSS_VALIDATION"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "fieldName": "requestStatus",
+                    "description": "Статус заявки",
+                    "fieldOrder": 4,
+                    "filterFieldType": "REFERENCE",
+                    "matchMode": "EQUALS",
+                    "multiple": false,
+                    "dictionary": {
+                      "name": "requestStatus",
+                      "values": [
+                        {
+                          "label": "Новая",
+                          "value": "NEW"
+                        },
+                        {
+                          "label": "Завершена",
+                          "value": "FINISHED"
+                        },
+                        {
+                          "label": "Ошибка",
+                          "value": "ERROR"
+                        },
+                        {
+                          "label": "Таймаут",
+                          "value": "TIMEOUT"
+                        },
+                        {
+                          "label": "В работе",
+                          "value": "IN_PROGRESS"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "fieldName": "creationDate",
+                    "description": "Дата создания заявки",
+                    "fieldOrder": 5,
+                    "filterFieldType": "DATE",
+                    "matchMode": "RANGE",
+                    "multiple": true,
+                    "dictionary": null
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/filter-templates/evaluation-methods": {
+      "get": {
+        "tags": [
+          "Filter templates controller for web application"
+        ],
+        "summary": "Gets evaluation method filter dictionary",
+        "description": "Gets evaluation method filter dictionary",
+        "operationId": "getEvaluationMethodDictionary",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FilterDictionaryDto"
+                },
+                "example": {
+                  "name": "evaluationMethod",
+                  "values": [
+                    {
+                      "label": "Использование обучающего множества",
+                      "value": "TRAINING_DATA"
+                    },
+                    {
+                      "label": "V-блочная кросс-проверка",
+                      "value": "CROSS_VALIDATION"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/filter-templates/classifier-options-request": {
+      "get": {
+        "tags": [
+          "Filter templates controller for web application"
+        ],
+        "summary": "Gets classifier options request filter fields",
+        "description": "Gets classifier options request filter fields",
+        "operationId": "getClassifierOptionsRequestFilter",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FilterFieldDto"
+                  }
+                },
+                "example": [
+                  {
+                    "fieldName": "requestId",
+                    "description": "UUID заявки",
+                    "fieldOrder": 0,
+                    "filterFieldType": "TEXT",
+                    "matchMode": "LIKE",
+                    "multiple": false,
+                    "dictionary": null
+                  },
+                  {
+                    "fieldName": "relationName",
+                    "description": "Обучающая выборка",
+                    "fieldOrder": 1,
+                    "filterFieldType": "TEXT",
+                    "matchMode": "LIKE",
+                    "multiple": false,
+                    "dictionary": null
+                  },
+                  {
+                    "fieldName": "evaluationMethod",
+                    "description": "Метод оценки точности",
+                    "fieldOrder": 2,
+                    "filterFieldType": "REFERENCE",
+                    "matchMode": "EQUALS",
+                    "multiple": false,
+                    "dictionary": {
+                      "name": "evaluationMethod",
+                      "values": [
+                        {
+                          "label": "Использование обучающего множества",
+                          "value": "TRAINING_DATA"
+                        },
+                        {
+                          "label": "V-блочная кросс-проверка",
+                          "value": "CROSS_VALIDATION"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "fieldName": "responseStatus",
+                    "description": "Статус ответа от ERS",
+                    "fieldOrder": 3,
+                    "filterFieldType": "REFERENCE",
+                    "matchMode": "EQUALS",
+                    "multiple": false,
+                    "dictionary": {
+                      "name": "ersResponseStatus",
+                      "values": [
+                        {
+                          "label": "Успешно",
+                          "value": "SUCCESS"
+                        },
+                        {
+                          "label": "Заявка с таким UUID уже существует",
+                          "value": "DUPLICATE_REQUEST_ID"
+                        },
+                        {
+                          "label": "Ошибка",
+                          "value": "ERROR"
+                        },
+                        {
+                          "label": "Не найдена обучающая выборка",
+                          "value": "DATA_NOT_FOUND"
+                        },
+                        {
+                          "label": "Не найдены оптимальные конфигурации моделей",
+                          "value": "RESULTS_NOT_FOUND"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "fieldName": "requestDate",
+                    "description": "Дата отправки запроса в ERS",
+                    "fieldOrder": 4,
+                    "filterFieldType": "DATE",
+                    "matchMode": "RANGE",
+                    "multiple": true,
+                    "dictionary": null
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/experiment/training-data/{id}": {
+      "get": {
+        "tags": [
+          "Experiments API for web application"
+        ],
+        "summary": "Downloads experiment training data by specified id",
+        "description": "Downloads experiment training data by specified id",
+        "operationId": "downloadTrainingData",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Experiment id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ValidationErrorDto"
+                  }
+                },
+                "example": [
+                  {
+                    "fieldName": null,
+                    "code": "DataNotFound",
+                    "errorMessage": "Entity with search key [1] not found!"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/experiment/statistics": {
+      "get": {
+        "tags": [
+          "Experiments API for web application"
+        ],
+        "summary": "Gets experiment types statistics",
+        "description": "Gets experiment types statistics",
+        "operationId": "getExperimentTypesStatistics",
+        "parameters": [
+          {
+            "name": "createdDateFrom",
+            "in": "query",
+            "description": "Experiment created date from",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "example": "2021-07-01"
+          },
+          {
+            "name": "createdDateTo",
+            "in": "query",
+            "description": "Experiment created date to",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "example": "2021-07-10"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ChartDataDto"
+                  }
+                },
+                "example": [
+                  {
+                    "name": "NEURAL_NETWORKS",
+                    "label": "Нейронные сети",
+                    "count": 0
+                  },
+                  {
+                    "name": "HETEROGENEOUS_ENSEMBLE",
+                    "label": "Неоднородный ансамбль",
+                    "count": 0
+                  },
+                  {
+                    "name": "MODIFIED_HETEROGENEOUS_ENSEMBLE",
+                    "label": "Мод. неоднородный ансамбль",
+                    "count": 0
+                  },
+                  {
+                    "name": "ADA_BOOST",
+                    "label": "Алгоритм AdaBoost",
+                    "count": 0
+                  },
+                  {
+                    "name": "STACKING",
+                    "label": "Алгоритм Stacking",
+                    "count": 0
+                  },
+                  {
+                    "name": "KNN",
+                    "label": "Алгоритм KNN",
+                    "count": 0
+                  },
+                  {
+                    "name": "RANDOM_FORESTS",
+                    "label": "Случайные леса",
+                    "count": 0
+                  },
+                  {
+                    "name": "STACKING_CV",
+                    "label": "Алгоритм Stacking CV",
+                    "count": 0
+                  },
+                  {
+                    "name": "DECISION_TREE",
+                    "label": "Деревья решений",
+                    "count": 0
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/experiment/results/{id}": {
+      "get": {
+        "tags": [
+          "Experiments API for web application"
+        ],
+        "summary": "Downloads experiment results by specified id",
+        "description": "Downloads experiment results by specified id",
+        "operationId": "downloadExperiment",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Experiment id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ValidationErrorDto"
+                  }
+                },
+                "example": [
+                  {
+                    "fieldName": null,
+                    "code": "DataNotFound",
+                    "errorMessage": "Entity with search key [1] not found!"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/experiment/results/details/{id}": {
+      "get": {
+        "tags": [
+          "Experiments API for web application"
+        ],
+        "summary": "Finds experiment results details with specified id",
+        "description": "Finds experiment results details with specified id",
+        "operationId": "getExperimentResultsDetails",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Experiment results id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExperimentResultsDetailsDto"
+                },
+                "example": {
+                  "id": 1,
+                  "classifierInfo": {
+                    "classifierName": "CART",
+                    "inputOptions": [
+                      {
+                        "optionName": "Iterations number",
+                        "optionValue": "100"
+                      }
+                    ]
+                  },
+                  "resultsIndex": 0,
+                  "pctCorrect": 99,
+                  "sent": true,
+                  "experimentDto": {
+                    "id": 1,
+                    "requestId": "1d2de514-3a87-4620-9b97-c260e24340de",
+                    "creationDate": "2021-07-01 14:00:00",
+                    "startDate": "2021-07-01 14:00:30",
+                    "endDate": "2021-07-01 14:02:13",
+                    "requestStatus": {
+                      "value": "FINISHED",
+                      "description": "Завершена"
+                    },
+                    "evaluationMethod": {
+                      "value": "CROSS_VALIDATION",
+                      "description": "V-блочная кросс-проверка"
+                    },
+                    "numFolds": 10,
+                    "numTests": 1,
+                    "seed": 1,
+                    "evaluationTotalTime": "00:00:1:43",
+                    "firstName": "Roman",
+                    "email": "test@mail.ru",
+                    "experimentAbsolutePath": "experiment_1d2de514-3a87-4620-9b97-c260e24340de.model",
+                    "trainingDataAbsolutePath": "data_1d2de514-3a87-4620-9b97-c260e24340de.xls",
+                    "sentDate": "2021-07-01 14:02:15",
+                    "deletedDate": "2021-07-14 14:00:00",
+                    "experimentType": {
+                      "value": "RANDOM_FORESTS",
+                      "description": "Случайные леса"
+                    }
+                  },
+                  "evaluationResultsDto": {
+                    "evaluationResultsStatus": {
+                      "value": "SUCCESS",
+                      "description": "Успешно"
+                    },
+                    "evaluationStatisticsDto": {
+                      "numTestInstances": 150,
+                      "numCorrect": 146,
+                      "numIncorrect": 4,
+                      "pctCorrect": 96,
+                      "pctIncorrect": 4,
+                      "meanAbsoluteError": 0.29,
+                      "rootMeanSquaredError": 0.01,
+                      "maxAucValue": 0.89,
+                      "varianceError": 0.0012,
+                      "confidenceIntervalLowerBound": 0.01,
+                      "confidenceIntervalUpperBound": 0.035
+                    },
+                    "classificationCosts": [
+                      {
+                        "classValue": "Iris-setosa",
+                        "truePositiveRate": 0.75,
+                        "falsePositiveRate": 0.25,
+                        "trueNegativeRate": 0.5,
+                        "falseNegativeRate": 0.5,
+                        "aucValue": 0.9
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ValidationErrorDto"
+                  }
+                },
+                "example": [
+                  {
+                    "fieldName": null,
+                    "code": "DataNotFound",
+                    "errorMessage": "Entity with search key [1] not found!"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/experiment/request-statuses-statistics": {
+      "get": {
+        "tags": [
+          "Experiments API for web application"
+        ],
+        "summary": "Gets experiments request statuses statistics",
+        "description": "Gets experiments request statuses statistics",
+        "operationId": "getExperimentsRequestStatusesStatistics",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestStatusStatisticsDto"
+                },
+                "example": {
+                  "totalCount": 100,
+                  "newRequestsCount": 0,
+                  "inProgressRequestsCount": 1,
+                  "finishedRequestsCount": 99,
+                  "timeoutRequestsCount": 0,
+                  "errorRequestsCount": 0
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/experiment/progress/{id}": {
+      "get": {
+        "tags": [
+          "Experiments API for web application"
+        ],
+        "summary": "Finds experiment progress with specified id",
+        "description": "Finds experiment progress with specified id",
+        "operationId": "getExperimentProgress",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Experiment id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExperimentProgressDto"
+                },
+                "example": {
+                  "finished": false,
+                  "progress": 85,
+                  "estimatedTimeLeft": "00:01:24"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ValidationErrorDto"
+                  }
+                },
+                "example": [
+                  {
+                    "fieldName": null,
+                    "code": "DataNotFound",
+                    "errorMessage": "Entity with search key [1] not found!"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/experiment/ers-report/{id}": {
+      "get": {
+        "tags": [
+          "Experiments API for web application"
+        ],
+        "summary": "Gets experiment ERS report",
+        "description": "Gets experiment ERS report",
+        "operationId": "getExperimentErsReport",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Experiment id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExperimentErsReportDto"
+                },
+                "example": {
+                  "experimentRequestId": "1d2de514-3a87-4620-9b97-c260e24340de",
+                  "classifiersCount": 1,
+                  "sentClassifiersCount": 1,
+                  "experimentResults": [
+                    {
+                      "id": 1,
+                      "classifierInfo": {
+                        "classifierName": "CART",
+                        "inputOptions": [
+                          {
+                            "optionName": "Iterations number",
+                            "optionValue": "100"
+                          }
+                        ]
+                      },
+                      "resultsIndex": 0,
+                      "pctCorrect": 99,
+                      "sent": true
+                    }
+                  ],
+                  "ersReportStatus": {
+                    "value": "SUCCESS_SENT",
+                    "description": "Результаты эксперимента были успешно отправлены в ERS сервис"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ValidationErrorDto"
+                  }
+                },
+                "example": [
+                  {
+                    "fieldName": null,
+                    "code": "DataNotFound",
+                    "errorMessage": "Entity with search key [1] not found!"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/experiment/details/{id}": {
+      "get": {
+        "tags": [
+          "Experiments API for web application"
+        ],
+        "summary": "Finds experiment with specified id",
+        "description": "Finds experiment with specified id",
+        "operationId": "getExperiment",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Experiment id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExperimentDto"
+                },
+                "example": {
+                  "id": 1,
+                  "requestId": "1d2de514-3a87-4620-9b97-c260e24340de",
+                  "creationDate": "2021-07-01 14:00:00",
+                  "startDate": "2021-07-01 14:00:30",
+                  "endDate": "2021-07-01 14:02:13",
+                  "requestStatus": {
+                    "value": "FINISHED",
+                    "description": "Завершена"
+                  },
+                  "evaluationMethod": {
+                    "value": "CROSS_VALIDATION",
+                    "description": "V-блочная кросс-проверка"
+                  },
+                  "numFolds": 10,
+                  "numTests": 1,
+                  "seed": 1,
+                  "evaluationTotalTime": "00:00:1:43",
+                  "firstName": "Roman",
+                  "email": "test@mail.ru",
+                  "experimentAbsolutePath": "experiment_1d2de514-3a87-4620-9b97-c260e24340de.model",
+                  "trainingDataAbsolutePath": "data_1d2de514-3a87-4620-9b97-c260e24340de.xls",
+                  "sentDate": "2021-07-01 14:02:15",
+                  "deletedDate": "2021-07-14 14:00:00",
+                  "experimentType": {
+                    "value": "RANDOM_FORESTS",
+                    "description": "Случайные леса"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ValidationErrorDto"
+                  }
+                },
+                "example": [
+                  {
+                    "fieldName": null,
+                    "code": "DataNotFound",
+                    "errorMessage": "Entity with search key [1] not found!"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/experiment/classifiers-options/active-options": {
+      "get": {
+        "tags": [
+          "Experiment classifiers configs API for web application"
+        ],
+        "summary": "Finds active classifiers options configs",
+        "description": "Finds active classifiers options configs",
+        "operationId": "getActiveClassifiersOptions",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ClassifierOptionsDto"
+                  }
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "optionsName": "DecisionTreeOptions",
+                    "creationDate": "2021-07-01 14:00:00",
+                    "createdBy": "admin",
+                    "config": "Json config"
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/experiment/classifiers-configurations/report/{id}": {
+      "get": {
+        "tags": [
+          "API to manage experiment classifiers configurations"
+        ],
+        "summary": "Downloads classifiers configuration report in xlsx format",
+        "description": "Downloads classifiers configuration report in xlsx format",
+        "operationId": "downloadReport_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Configuration id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ValidationErrorDto"
+                  }
+                },
+                "example": [
+                  {
+                    "fieldName": null,
+                    "code": "DataNotFound",
+                    "errorMessage": "Entity with search key [1] not found!"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/experiment/classifiers-configurations/details/{id}": {
+      "get": {
+        "tags": [
+          "API to manage experiment classifiers configurations"
+        ],
+        "summary": "Gets classifiers configuration details",
+        "description": "Gets classifiers configuration details",
+        "operationId": "getClassifiersConfigurationDetails",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Configuration id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClassifiersConfigurationDto"
+                },
+                "example": {
+                  "id": 1,
+                  "configurationName": "Default configuration",
+                  "creationDate": "2021-07-01 14:00:00",
+                  "createdBy": "admin",
+                  "updated": "2021-07-01 14:00:00",
+                  "active": true,
+                  "buildIn": true,
+                  "classifiersOptionsCount": 25
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ValidationErrorDto"
+                  }
+                },
+                "example": [
+                  {
+                    "fieldName": null,
+                    "code": "DataNotFound",
+                    "errorMessage": "Entity with search key [1] not found!"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/evaluation/request-statuses-statistics": {
+      "get": {
+        "tags": [
+          "Classifiers evaluation API for web application"
+        ],
+        "summary": "Gets evaluations request statuses statistics",
+        "description": "Gets evaluations request statuses statistics",
+        "operationId": "getEvaluationRequestStatusesStatistics",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestStatusStatisticsDto"
+                },
+                "example": {
+                  "totalCount": 100,
+                  "newRequestsCount": 0,
+                  "inProgressRequestsCount": 1,
+                  "finishedRequestsCount": 99,
+                  "timeoutRequestsCount": 0,
+                  "errorRequestsCount": 0
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/evaluation/details/{id}": {
+      "get": {
+        "tags": [
+          "Classifiers evaluation API for web application"
+        ],
+        "summary": "Gets evaluation log details",
+        "description": "Gets evaluation log details",
+        "operationId": "getEvaluationLogDetails",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Evaluation log id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EvaluationLogDetailsDto"
+                },
+                "example": {
+                  "id": 1,
+                  "requestId": "1d2de514-3a87-4620-9b97-c260e24340de",
+                  "creationDate": "2021-07-01 14:00:00",
+                  "startDate": "2021-07-01 14:00:01",
+                  "endDate": "2021-07-01 14:00:12",
+                  "requestStatus": {
+                    "value": "FINISHED",
+                    "description": "Завершена"
+                  },
+                  "evaluationMethod": {
+                    "value": "CROSS_VALIDATION",
+                    "description": "V-блочная кросс-проверка"
+                  },
+                  "numFolds": 10,
+                  "numTests": 1,
+                  "seed": 1,
+                  "evaluationTotalTime": "00:00:00:11",
+                  "classifierInfo": {
+                    "classifierName": "CART",
+                    "inputOptions": [
+                      {
+                        "optionName": "Iterations number",
+                        "optionValue": "100"
+                      }
+                    ]
+                  },
+                  "instancesInfo": {
+                    "relationName": "iris",
+                    "numInstances": 150,
+                    "numAttributes": 5,
+                    "numClasses": 4,
+                    "className": "class"
+                  },
+                  "evaluationResultsDto": {
+                    "evaluationResultsStatus": {
+                      "value": "RESULTS_RECEIVED",
+                      "description": "Получены результаты классификации"
+                    },
+                    "evaluationStatisticsDto": {
+                      "numTestInstances": 150,
+                      "numCorrect": 146,
+                      "numIncorrect": 4,
+                      "pctCorrect": 96,
+                      "pctIncorrect": 4,
+                      "meanAbsoluteError": 0.29,
+                      "rootMeanSquaredError": 0.01,
+                      "maxAucValue": 0.89,
+                      "varianceError": 0.0012,
+                      "confidenceIntervalLowerBound": 0.01,
+                      "confidenceIntervalUpperBound": 0.035
+                    },
+                    "classificationCosts": [
+                      {
+                        "classValue": "Iris-setosa",
+                        "truePositiveRate": 0.75,
+                        "falsePositiveRate": 0.25,
+                        "trueNegativeRate": 0.5,
+                        "falseNegativeRate": 0.5,
+                        "aucValue": 0.9
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ValidationErrorDto"
+                  }
+                },
+                "example": [
+                  {
+                    "fieldName": null,
+                    "code": "DataNotFound",
+                    "errorMessage": "Entity with search key [1] not found!"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/eca-api/experiment/download/{token}": {
+      "get": {
+        "tags": [
+          "API for ECA application"
+        ],
+        "summary": "Downloads experiment results by token",
+        "description": "Downloads experiment results by token",
+        "operationId": "downloadExperiment_1",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "description": "Experiment token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ValidationErrorDto"
+                  }
+                },
+                "example": [
+                  {
+                    "fieldName": null,
+                    "code": "DataNotFound",
+                    "errorMessage": "Entity with search key [1] not found!"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/experiment/classifiers-options/delete": {
+      "delete": {
+        "tags": [
+          "Experiment classifiers configs API for web application"
+        ],
+        "summary": "Classifier options id",
+        "description": "Classifier options id",
+        "operationId": "delete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "Classifier options id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ValidationErrorDto"
+                  }
+                },
+                "example": [
+                  {
+                    "fieldName": null,
+                    "code": "DataNotFound",
+                    "errorMessage": "Entity with search key [1] not found!"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/experiment/classifiers-configurations/delete": {
+      "delete": {
+        "tags": [
+          "API to manage experiment classifiers configurations"
+        ],
+        "summary": "Deletes classifiers configuration",
+        "description": "Deletes classifiers configuration",
+        "operationId": "delete_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "Configuration id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ValidationErrorDto"
+                  }
+                },
+                "example": [
+                  {
+                    "fieldName": null,
+                    "code": "DataNotFound",
+                    "errorMessage": "Entity with search key [1] not found!"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ValidationErrorDto": {
+        "type": "object",
+        "properties": {
+          "fieldName": {
+            "type": "string",
+            "description": "Field name",
+            "example": "field"
+          },
+          "code": {
+            "type": "string",
+            "description": "Error code",
+            "example": "NotNull"
+          },
+          "errorMessage": {
+            "type": "string",
+            "description": "Error message",
+            "example": "Must be not null"
+          }
+        },
+        "description": "Validation error model"
+      },
+      "UpdateClassifiersConfigurationDto": {
+        "required": [
+          "configurationName",
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Configuration id",
+            "format": "int64",
+            "example": 1
+          },
+          "configurationName": {
+            "maxLength": 64,
+            "minLength": 0,
+            "type": "string",
+            "description": "Configuration name",
+            "example": "Classifiers configuration"
+          }
+        },
+        "description": "Update classifiers configuration model"
+      },
+      "FilterRequestDto": {
+        "required": [
+          "matchMode",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string",
+            "description": "Filter column name",
+            "example": "field"
+          },
+          "values": {
+            "maxItems": 50,
+            "minItems": 0,
+            "type": "array",
+            "items": {
+              "maxLength": 255,
+              "type": "string",
+              "description": "Column values to filter"
+            }
+          },
+          "matchMode": {
+            "type": "string",
+            "description": "Match mode type",
+            "example": "LIKE",
+            "enum": [
+              "EQUALS",
+              "LIKE",
+              "RANGE"
+            ]
+          }
+        },
+        "description": "Filter request model"
+      },
+      "PageRequestDto": {
+        "required": [
+          "page",
+          "size"
+        ],
+        "type": "object",
+        "properties": {
+          "page": {
+            "minimum": 0,
+            "type": "integer",
+            "description": "Page number",
+            "format": "int32",
+            "example": 0
+          },
+          "size": {
+            "minimum": 1,
+            "type": "integer",
+            "description": "Page size",
+            "format": "int32",
+            "example": 25
+          },
+          "sortField": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string",
+            "description": "Sort field"
+          },
+          "ascending": {
+            "type": "boolean",
+            "description": "Is ascending sort?"
+          },
+          "searchQuery": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string",
+            "description": "Search query string"
+          },
+          "filters": {
+            "maxItems": 50,
+            "minItems": 0,
+            "type": "array",
+            "description": "Filters list",
+            "items": {
+              "$ref": "#/components/schemas/FilterRequestDto"
+            }
+          }
+        },
+        "description": "Page request model"
+      },
+      "EnumDto": {
+        "required": [
+          "description",
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "description": "Enum value",
+            "example": "Enum code"
+          },
+          "description": {
+            "type": "string",
+            "description": "Enum value description",
+            "example": "Enum value"
+          }
+        },
+        "description": "Enum dto model"
+      },
+      "ExperimentDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "ID",
+            "format": "int64",
+            "example": 1
+          },
+          "requestId": {
+            "type": "string",
+            "description": "Request unique identifier",
+            "example": "1d2de514-3a87-4620-9b97-c260e24340de"
+          },
+          "creationDate": {
+            "type": "string",
+            "description": "Request creation date",
+            "example": "2021-07-01 14:00:00"
+          },
+          "startDate": {
+            "type": "string",
+            "description": "Evaluation start date",
+            "example": "2021-07-01 14:00:00"
+          },
+          "endDate": {
+            "type": "string",
+            "description": "Evaluation end date",
+            "example": "2021-07-01 14:00:00"
+          },
+          "requestStatus": {
+            "$ref": "#/components/schemas/EnumDto"
+          },
+          "evaluationMethod": {
+            "$ref": "#/components/schemas/EnumDto"
+          },
+          "numFolds": {
+            "type": "integer",
+            "description": "Folds number for k * V cross - validation method",
+            "format": "int32",
+            "example": 10
+          },
+          "numTests": {
+            "type": "integer",
+            "description": "Tests number for k * V cross - validation method",
+            "format": "int32",
+            "example": 1
+          },
+          "seed": {
+            "type": "integer",
+            "description": "Seed value for k * V cross - validation method",
+            "format": "int32",
+            "example": 1
+          },
+          "evaluationTotalTime": {
+            "type": "string",
+            "description": "Model evaluation total time in format HH:mm:ss:SS",
+            "example": "00:00:1:43"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "Request creator first name",
+            "example": "Roman"
+          },
+          "email": {
+            "type": "string",
+            "description": "Request creator email",
+            "example": "test@mail.ru"
+          },
+          "experimentAbsolutePath": {
+            "type": "string",
+            "description": "Experiment results file",
+            "example": "experiment_1d2de514-3a87-4620-9b97-c260e24340de.model"
+          },
+          "trainingDataAbsolutePath": {
+            "type": "string",
+            "description": "Training data file",
+            "example": "data_1d2de514-3a87-4620-9b97-c260e24340de.xls"
+          },
+          "sentDate": {
+            "type": "string",
+            "description": "Experiment results sent date",
+            "example": "2021-07-01 14:00:00"
+          },
+          "deletedDate": {
+            "type": "string",
+            "description": "Experiment files delete date",
+            "example": "2021-07-01 14:00:00"
+          },
+          "experimentType": {
+            "$ref": "#/components/schemas/EnumDto"
+          }
+        },
+        "description": "Experiment model"
+      },
+      "ExperimentsPageDto": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "description": "Page content",
+            "items": {
+              "$ref": "#/components/schemas/ExperimentDto"
+            }
+          },
+          "page": {
+            "type": "integer",
+            "description": "Page number",
+            "format": "int32",
+            "example": 0
+          },
+          "totalCount": {
+            "type": "integer",
+            "description": "Total elements count in all pages",
+            "format": "int64",
+            "example": 1
+          }
+        },
+        "description": "Experiments page dto"
+      },
+      "CreateExperimentResultDto": {
+        "required": [
+          "id",
+          "requestId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Experiment id",
+            "format": "int64",
+            "example": 1
+          },
+          "requestId": {
+            "type": "string",
+            "description": "Request id",
+            "example": "1d2de514-3a87-4620-9b97-c260e24340de"
+          }
+        },
+        "description": "Create experiment result model"
+      },
+      "CreateClassifierOptionsResultDto": {
+        "required": [
+          "id",
+          "sourceFileName",
+          "success"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Classifier options id",
+            "format": "int64",
+            "example": 1
+          },
+          "sourceFileName": {
+            "type": "string",
+            "description": "Source file name",
+            "example": "cart.json"
+          },
+          "success": {
+            "type": "boolean",
+            "description": "Classifier options saved boolean flag"
+          },
+          "errorMessage": {
+            "type": "string",
+            "description": "Error message"
+          }
+        },
+        "description": "Create classifier options model"
+      },
+      "ClassifierOptionsDto": {
+        "required": [
+          "config",
+          "creationDate",
+          "optionsName"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Options id",
+            "format": "int64",
+            "example": 1
+          },
+          "optionsName": {
+            "type": "string",
+            "description": "Options name",
+            "example": "DecisionTreeOptions"
+          },
+          "creationDate": {
+            "type": "string",
+            "description": "Creation date",
+            "example": "2021-07-01 14:00:00"
+          },
+          "createdBy": {
+            "type": "string",
+            "description": "User name",
+            "example": "admin"
+          },
+          "config": {
+            "type": "string",
+            "description": "Json config",
+            "example": "Json config"
+          }
+        },
+        "description": "Classifier json input options model"
+      },
+      "ClassifiersOptionsPageDto": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "description": "Page content",
+            "items": {
+              "$ref": "#/components/schemas/ClassifierOptionsDto"
+            }
+          },
+          "page": {
+            "type": "integer",
+            "description": "Page number",
+            "format": "int32",
+            "example": 0
+          },
+          "totalCount": {
+            "type": "integer",
+            "description": "Total elements count in all pages",
+            "format": "int64",
+            "example": 1
+          }
+        },
+        "description": "Classifiers options page dto"
+      },
+      "ClassifiersConfigurationDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Configuration id",
+            "format": "int64",
+            "example": 1
+          },
+          "configurationName": {
+            "type": "string",
+            "description": "Configuration name",
+            "example": "Default configuration"
+          },
+          "creationDate": {
+            "type": "string",
+            "description": "Configuration creation date",
+            "example": "2021-07-01 14:00:00"
+          },
+          "createdBy": {
+            "type": "string",
+            "description": "User name",
+            "example": "admin"
+          },
+          "updated": {
+            "type": "string",
+            "description": "Configuration updated date",
+            "example": "2021-07-01 14:00:00"
+          },
+          "active": {
+            "type": "boolean",
+            "description": "Is active?"
+          },
+          "buildIn": {
+            "type": "boolean",
+            "description": "Is build in?"
+          },
+          "classifiersOptionsCount": {
+            "type": "integer",
+            "description": "Classifiers options count associated with configuration",
+            "format": "int64",
+            "example": 25
+          }
+        },
+        "description": "Classifiers configuration dto model"
+      },
+      "CreateClassifiersConfigurationDto": {
+        "required": [
+          "configurationName"
+        ],
+        "type": "object",
+        "properties": {
+          "configurationName": {
+            "maxLength": 64,
+            "minLength": 0,
+            "type": "string",
+            "description": "Configuration name",
+            "example": "Classifiers configuration"
+          }
+        },
+        "description": "Create classifiers configuration model"
+      },
+      "ClassifierConfigurationsPageDto": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "description": "Page content",
+            "items": {
+              "$ref": "#/components/schemas/ClassifiersConfigurationDto"
+            }
+          },
+          "page": {
+            "type": "integer",
+            "description": "Page number",
+            "format": "int32",
+            "example": 0
+          },
+          "totalCount": {
+            "type": "integer",
+            "description": "Total elements count in all pages",
+            "format": "int64",
+            "example": 1
+          }
+        },
+        "description": "Classifier configurations page dto"
+      },
+      "ClassifierInfoDto": {
+        "type": "object",
+        "properties": {
+          "classifierName": {
+            "type": "string",
+            "description": "Classifier name",
+            "example": "CART"
+          },
+          "inputOptions": {
+            "type": "array",
+            "description": "Classifier input options list",
+            "items": {
+              "$ref": "#/components/schemas/InputOptionDto"
+            }
+          }
+        },
+        "description": "Classifier info model"
+      },
+      "EvaluationLogDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "ID",
+            "format": "int64",
+            "example": 1
+          },
+          "requestId": {
+            "type": "string",
+            "description": "Request unique identifier",
+            "example": "1d2de514-3a87-4620-9b97-c260e24340de"
+          },
+          "creationDate": {
+            "type": "string",
+            "description": "Request creation date",
+            "example": "2021-07-01 14:00:00"
+          },
+          "startDate": {
+            "type": "string",
+            "description": "Evaluation start date",
+            "example": "2021-07-01 14:00:00"
+          },
+          "endDate": {
+            "type": "string",
+            "description": "Evaluation end date",
+            "example": "2021-07-01 14:00:00"
+          },
+          "requestStatus": {
+            "$ref": "#/components/schemas/EnumDto"
+          },
+          "evaluationMethod": {
+            "$ref": "#/components/schemas/EnumDto"
+          },
+          "numFolds": {
+            "type": "integer",
+            "description": "Folds number for k * V cross - validation method",
+            "format": "int32",
+            "example": 10
+          },
+          "numTests": {
+            "type": "integer",
+            "description": "Tests number for k * V cross - validation method",
+            "format": "int32",
+            "example": 1
+          },
+          "seed": {
+            "type": "integer",
+            "description": "Seed value for k * V cross - validation method",
+            "format": "int32",
+            "example": 1
+          },
+          "evaluationTotalTime": {
+            "type": "string",
+            "description": "Model evaluation total time in format HH:mm:ss:SS",
+            "example": "00:00:1:43"
+          },
+          "classifierInfo": {
+            "$ref": "#/components/schemas/ClassifierInfoDto"
+          },
+          "instancesInfo": {
+            "$ref": "#/components/schemas/InstancesInfoDto"
+          }
+        },
+        "description": "Classifier evaluation log model"
+      },
+      "EvaluationLogsPageDto": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "description": "Page content",
+            "items": {
+              "$ref": "#/components/schemas/EvaluationLogDto"
+            }
+          },
+          "page": {
+            "type": "integer",
+            "description": "Page number",
+            "format": "int32",
+            "example": 0
+          },
+          "totalCount": {
+            "type": "integer",
+            "description": "Total elements count in all pages",
+            "format": "int64",
+            "example": 1
+          }
+        },
+        "description": "Evaluation logs page dto"
+      },
+      "InputOptionDto": {
+        "type": "object",
+        "properties": {
+          "optionName": {
+            "type": "string",
+            "description": "Input option name",
+            "example": "Iterations number"
+          },
+          "optionValue": {
+            "type": "string",
+            "description": "Input option value",
+            "example": "100"
+          }
+        },
+        "description": "Classifier input option model"
+      },
+      "InstancesInfoDto": {
+        "type": "object",
+        "properties": {
+          "relationName": {
+            "type": "string",
+            "description": "Instances name",
+            "example": "iris"
+          },
+          "numInstances": {
+            "type": "integer",
+            "description": "Instances number",
+            "format": "int32",
+            "example": 150
+          },
+          "numAttributes": {
+            "type": "integer",
+            "description": "Attributes number",
+            "format": "int32",
+            "example": 5
+          },
+          "numClasses": {
+            "type": "integer",
+            "description": "Classes number",
+            "format": "int32",
+            "example": 4
+          },
+          "className": {
+            "type": "string",
+            "description": "Class name",
+            "example": "class"
+          }
+        },
+        "description": "Classifier training data model"
+      },
+      "ClassifierOptionsRequestDto": {
+        "type": "object",
+        "properties": {
+          "requestDate": {
+            "type": "string",
+            "description": "ERS request date",
+            "example": "2021-07-01 14:00:00"
+          },
+          "requestId": {
+            "type": "string",
+            "description": "Request id",
+            "example": "1d2de514-3a87-4620-9b97-c260e24340de"
+          },
+          "relationName": {
+            "type": "string",
+            "description": "Training data name",
+            "example": "glass"
+          },
+          "evaluationMethod": {
+            "$ref": "#/components/schemas/EnumDto"
+          },
+          "numFolds": {
+            "type": "integer",
+            "description": "Folds number for k * V cross - validation method",
+            "format": "int32",
+            "example": 10
+          },
+          "numTests": {
+            "type": "integer",
+            "description": "Tests number for k * V cross - validation method",
+            "format": "int32",
+            "example": 1
+          },
+          "seed": {
+            "type": "integer",
+            "description": "Seed value for k * V cross - validation method",
+            "format": "int32",
+            "example": 1
+          },
+          "responseStatus": {
+            "$ref": "#/components/schemas/EnumDto"
+          },
+          "classifierOptionsResponseModels": {
+            "type": "array",
+            "description": "Classifiers options response models",
+            "items": {
+              "$ref": "#/components/schemas/ClassifierOptionsResponseDto"
+            }
+          }
+        },
+        "description": "ERS classifier options request model"
+      },
+      "ClassifierOptionsRequestsPageDto": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "description": "Page content",
+            "items": {
+              "$ref": "#/components/schemas/ClassifierOptionsRequestDto"
+            }
+          },
+          "page": {
+            "type": "integer",
+            "description": "Page number",
+            "format": "int32",
+            "example": 0
+          },
+          "totalCount": {
+            "type": "integer",
+            "description": "Total elements count in all pages",
+            "format": "int64",
+            "example": 1
+          }
+        },
+        "description": "Classifier options requests page dto"
+      },
+      "ClassifierOptionsResponseDto": {
+        "type": "object",
+        "properties": {
+          "classifierName": {
+            "type": "string",
+            "description": "Classifier name",
+            "example": "CART"
+          },
+          "options": {
+            "type": "string",
+            "description": "Classifier input options json config",
+            "example": "json config"
+          }
+        },
+        "description": "ERS classifier options response model"
+      },
+      "FilterDictionaryDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Filter dictionary name",
+            "example": "Dictionary name"
+          },
+          "values": {
+            "type": "array",
+            "description": "Filter dictionary values",
+            "items": {
+              "$ref": "#/components/schemas/FilterDictionaryValueDto"
+            }
+          }
+        },
+        "description": "Filter dictionary model"
+      },
+      "FilterDictionaryValueDto": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "description": "Filter dictionary field label",
+            "example": "Label value"
+          },
+          "value": {
+            "type": "string",
+            "description": "Filter dictionary field value",
+            "example": "Value code"
+          }
+        },
+        "description": "Filter dictionary value model"
+      },
+      "FilterFieldDto": {
+        "type": "object",
+        "properties": {
+          "fieldName": {
+            "type": "string",
+            "description": "Field name",
+            "example": "field"
+          },
+          "description": {
+            "type": "string",
+            "description": "Field description",
+            "example": "Field sescription"
+          },
+          "fieldOrder": {
+            "type": "integer",
+            "description": "Field order",
+            "format": "int32",
+            "example": 0
+          },
+          "filterFieldType": {
+            "type": "string",
+            "description": "Filter field type",
+            "example": "TEXT",
+            "enum": [
+              "TEXT",
+              "REFERENCE",
+              "DATE"
+            ]
+          },
+          "matchMode": {
+            "type": "string",
+            "description": "Filter match mode",
+            "example": "LIKE",
+            "enum": [
+              "EQUALS",
+              "LIKE",
+              "RANGE"
+            ]
+          },
+          "multiple": {
+            "type": "boolean",
+            "description": "Allow multiple values"
+          },
+          "dictionary": {
+            "$ref": "#/components/schemas/FilterDictionaryDto"
+          }
+        },
+        "description": "Filter field model"
+      },
+      "ChartDataDto": {
+        "required": [
+          "count",
+          "label",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Chart item name",
+            "example": "key"
+          },
+          "label": {
+            "type": "string",
+            "description": "Chart item label",
+            "example": "label value"
+          },
+          "count": {
+            "type": "integer",
+            "description": "Chart item value",
+            "format": "int64",
+            "example": 10
+          }
+        },
+        "description": "Model for chart"
+      },
+      "ClassificationCostsDto": {
+        "type": "object",
+        "properties": {
+          "classValue": {
+            "type": "string",
+            "description": "Class value",
+            "example": "Iris-setosa"
+          },
+          "truePositiveRate": {
+            "type": "number",
+            "description": "TP rate",
+            "example": 0.75
+          },
+          "falsePositiveRate": {
+            "type": "number",
+            "description": "FP rate",
+            "example": 0.25
+          },
+          "trueNegativeRate": {
+            "type": "number",
+            "description": "TN rate",
+            "example": 0.5
+          },
+          "falseNegativeRate": {
+            "type": "number",
+            "description": "FN rate",
+            "example": 0.5
+          },
+          "aucValue": {
+            "type": "number",
+            "description": "AUC value",
+            "example": 0.9
+          }
+        },
+        "description": "Classification costs model"
+      },
+      "EvaluationResultsDto": {
+        "type": "object",
+        "properties": {
+          "evaluationResultsStatus": {
+            "$ref": "#/components/schemas/EnumDto"
+          },
+          "evaluationStatisticsDto": {
+            "$ref": "#/components/schemas/EvaluationStatisticsDto"
+          },
+          "classificationCosts": {
+            "type": "array",
+            "description": "Classification costs results",
+            "items": {
+              "$ref": "#/components/schemas/ClassificationCostsDto"
+            }
+          }
+        },
+        "description": "Classifier evaluation results model"
+      },
+      "EvaluationStatisticsDto": {
+        "type": "object",
+        "properties": {
+          "numTestInstances": {
+            "type": "integer",
+            "description": "Test instances number",
+            "example": 150
+          },
+          "numCorrect": {
+            "type": "integer",
+            "description": "Correctly classified instances number",
+            "example": 146
+          },
+          "numIncorrect": {
+            "type": "integer",
+            "description": "Incorrectly classified instances number",
+            "example": 4
+          },
+          "pctCorrect": {
+            "type": "number",
+            "description": "Correctly classified percentage",
+            "example": 96
+          },
+          "pctIncorrect": {
+            "type": "number",
+            "description": "Incorrectly classified percentage",
+            "example": 4
+          },
+          "meanAbsoluteError": {
+            "type": "number",
+            "description": "Mean absolute error",
+            "example": 0.29
+          },
+          "rootMeanSquaredError": {
+            "type": "number",
+            "description": "Root mean squared error",
+            "example": 0.01
+          },
+          "maxAucValue": {
+            "type": "number",
+            "description": "Max AUC value",
+            "example": 0.89
+          },
+          "varianceError": {
+            "type": "number",
+            "description": "Variance error",
+            "example": 0.0012
+          },
+          "confidenceIntervalLowerBound": {
+            "type": "number",
+            "description": "95% confidence interval lower bound value",
+            "example": 0.01
+          },
+          "confidenceIntervalUpperBound": {
+            "type": "number",
+            "description": "95% confidence interval upper bound value",
+            "example": 0.035
+          }
+        },
+        "description": "Classifier evaluation statistics model"
+      },
+      "ExperimentResultsDetailsDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Experiment results id",
+            "format": "int64",
+            "example": 1
+          },
+          "classifierInfo": {
+            "$ref": "#/components/schemas/ClassifierInfoDto"
+          },
+          "resultsIndex": {
+            "type": "integer",
+            "description": "Results index",
+            "format": "int32",
+            "example": 0
+          },
+          "pctCorrect": {
+            "type": "number",
+            "description": "Correctly classified percentage",
+            "example": 99
+          },
+          "sent": {
+            "type": "boolean",
+            "description": "Is experiment results sent to ERS?"
+          },
+          "experimentDto": {
+            "$ref": "#/components/schemas/ExperimentDto"
+          },
+          "evaluationResultsDto": {
+            "$ref": "#/components/schemas/EvaluationResultsDto"
+          }
+        },
+        "description": "Experiment results details model"
+      },
+      "RequestStatusStatisticsDto": {
+        "type": "object",
+        "properties": {
+          "totalCount": {
+            "type": "integer",
+            "description": "Total requests count",
+            "format": "int64",
+            "example": 100
+          },
+          "newRequestsCount": {
+            "type": "integer",
+            "description": "Total requests count with status NEW",
+            "format": "int64",
+            "example": 0
+          },
+          "inProgressRequestsCount": {
+            "type": "integer",
+            "description": "Total requests count with status IN_PROGRESS",
+            "format": "int64",
+            "example": 1
+          },
+          "finishedRequestsCount": {
+            "type": "integer",
+            "description": "Total requests count with status FINISHED",
+            "format": "int64",
+            "example": 99
+          },
+          "timeoutRequestsCount": {
+            "type": "integer",
+            "description": "Total requests count with status TIMEOUT",
+            "format": "int64",
+            "example": 0
+          },
+          "errorRequestsCount": {
+            "type": "integer",
+            "description": "Total requests count with status ERROR",
+            "format": "int64",
+            "example": 0
+          }
+        },
+        "description": "Requests statuses statistics model"
+      },
+      "ExperimentProgressDto": {
+        "type": "object",
+        "properties": {
+          "finished": {
+            "type": "boolean",
+            "description": "Is experiment processing finished?"
+          },
+          "progress": {
+            "type": "integer",
+            "description": "Experiment progress bar value",
+            "format": "int32",
+            "example": 85
+          },
+          "estimatedTimeLeft": {
+            "type": "string",
+            "description": "Estimated time left",
+            "example": "00:01:24"
+          }
+        },
+        "description": "Experiment progress model"
+      },
+      "ExperimentErsReportDto": {
+        "type": "object",
+        "properties": {
+          "experimentRequestId": {
+            "type": "string",
+            "description": "Experiment request id",
+            "example": "1d2de514-3a87-4620-9b97-c260e24340de"
+          },
+          "classifiersCount": {
+            "type": "integer",
+            "description": "Total classifiers count",
+            "format": "int64",
+            "example": 10
+          },
+          "sentClassifiersCount": {
+            "type": "integer",
+            "description": "Successfully sent classifiers count",
+            "format": "int64",
+            "example": 10
+          },
+          "experimentResults": {
+            "type": "array",
+            "description": "Experiment results list",
+            "items": {
+              "$ref": "#/components/schemas/ExperimentResultsDto"
+            }
+          },
+          "ersReportStatus": {
+            "$ref": "#/components/schemas/EnumDto"
+          }
+        },
+        "description": "Experiment ERS report model"
+      },
+      "ExperimentResultsDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Experiment results id",
+            "format": "int64",
+            "example": 1
+          },
+          "classifierInfo": {
+            "$ref": "#/components/schemas/ClassifierInfoDto"
+          },
+          "resultsIndex": {
+            "type": "integer",
+            "description": "Results index",
+            "format": "int32",
+            "example": 0
+          },
+          "pctCorrect": {
+            "type": "number",
+            "description": "Correctly classified percentage",
+            "example": 99
+          },
+          "sent": {
+            "type": "boolean",
+            "description": "Is experiment results sent to ERS?"
+          }
+        },
+        "description": "Experiment results model"
+      },
+      "EvaluationLogDetailsDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "ID",
+            "format": "int64",
+            "example": 1
+          },
+          "requestId": {
+            "type": "string",
+            "description": "Request unique identifier",
+            "example": "1d2de514-3a87-4620-9b97-c260e24340de"
+          },
+          "creationDate": {
+            "type": "string",
+            "description": "Request creation date",
+            "example": "2021-07-01 14:00:00"
+          },
+          "startDate": {
+            "type": "string",
+            "description": "Evaluation start date",
+            "example": "2021-07-01 14:00:00"
+          },
+          "endDate": {
+            "type": "string",
+            "description": "Evaluation end date",
+            "example": "2021-07-01 14:00:00"
+          },
+          "requestStatus": {
+            "$ref": "#/components/schemas/EnumDto"
+          },
+          "evaluationMethod": {
+            "$ref": "#/components/schemas/EnumDto"
+          },
+          "numFolds": {
+            "type": "integer",
+            "description": "Folds number for k * V cross - validation method",
+            "format": "int32",
+            "example": 10
+          },
+          "numTests": {
+            "type": "integer",
+            "description": "Tests number for k * V cross - validation method",
+            "format": "int32",
+            "example": 1
+          },
+          "seed": {
+            "type": "integer",
+            "description": "Seed value for k * V cross - validation method",
+            "format": "int32",
+            "example": 1
+          },
+          "evaluationTotalTime": {
+            "type": "string",
+            "description": "Model evaluation total time in format HH:mm:ss:SS",
+            "example": "00:00:1:43"
+          },
+          "classifierInfo": {
+            "$ref": "#/components/schemas/ClassifierInfoDto"
+          },
+          "instancesInfo": {
+            "$ref": "#/components/schemas/InstancesInfoDto"
+          },
+          "evaluationResultsDto": {
+            "$ref": "#/components/schemas/EvaluationResultsDto"
+          }
+        },
+        "description": "Classifier evaluation log details model"
+      }
+    },
+    "securitySchemes": {
+      "EcaAuth": {
+        "type": "oauth2",
+        "name": "EcaAuth",
+        "flows": {
+          "password": {
+            "tokenUrl": "http://localhost:8080/oauth/token",
+            "refreshUrl": "http://localhost:8080/oauth/token",
+            "scopes": {
+              "web": ""
+            }
+          }
+        }
+      }
+    }
+  }
+}

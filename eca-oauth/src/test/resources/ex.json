@@ -1,0 +1,876 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Evaluation external API micriservice",
+    "description": "API provides operations to performs classifiers evaluation requests",
+    "contact": {
+      "name": "Roman Batygin",
+      "email": "roman.batygin@mail.ru"
+    },
+    "version": "6.1"
+  },
+  "servers": [
+    {
+      "url": "/external-api"
+    }
+  ],
+  "paths": {
+    "/uploads-train-data": {
+      "post": {
+        "tags": [
+          "Operations for external API"
+        ],
+        "summary": "Uploads train data file",
+        "description": "Uploads train data file",
+        "operationId": "uploadInstances",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "trainingData"
+                ],
+                "type": "object",
+                "properties": {
+                  "trainingData": {
+                    "type": "string",
+                    "description": "Training data file",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InstancesResponseDto"
+                },
+                "example": {
+                  "payload": {
+                    "dataId": "2a35bffe-27ad-4a50-a7e0-8c871cfd7cc5",
+                    "dataUrl": "data://2a35bffe-27ad-4a50-a7e0-8c871cfd7cc5"
+                  },
+                  "responseCode": "SUCCESS",
+                  "errorDescription": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "example": {
+                  "payload": [
+                    {
+                      "fieldName": "trainingData",
+                      "code": "ValidTrainData",
+                      "errorMessage": "Invalid train data extension. Must be one of xls, xlsx, csv, arff, json, xml, txt, data, docx"
+                    }
+                  ],
+                  "responseCode": "VALIDATION_ERROR",
+                  "errorDescription": "Validation errors"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/evaluation-request": {
+      "post": {
+        "tags": [
+          "Operations for external API"
+        ],
+        "summary": "Processes evaluation request",
+        "description": "Processes evaluation request",
+        "operationId": "evaluateModel",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EvaluationRequestDto"
+              },
+              "example": {
+                "trainDataUrl": "http://kt.ijs.si/Branax/Repository/WEKA/Iris.xls",
+                "classifierOptions": {
+                  "type": "logistic",
+                  "maxIts": 200,
+                  "useConjugateGradientDescent": false
+                },
+                "evaluationMethod": "CROSS_VALIDATION",
+                "numFolds": 10,
+                "numTests": 1,
+                "seed": 1
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EvaluationResponseWrapperDto"
+                },
+                "example": {
+                  "payload": {
+                    "requestId": "1cbe6c49-8432-4c81-9afa-90f04a803fed",
+                    "evaluationStatus": "IN_PROGRESS",
+                    "modelUrl": null,
+                    "numTestInstances": null,
+                    "numCorrect": null,
+                    "numIncorrect": null,
+                    "pctCorrect": null,
+                    "pctIncorrect": null,
+                    "meanAbsoluteError": null
+                  },
+                  "responseCode": "SUCCESS",
+                  "errorDescription": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "example": {
+                  "payload": [
+                    {
+                      "fieldName": "classifierOptions",
+                      "code": "NotNull",
+                      "errorMessage": "must not be null"
+                    },
+                    {
+                      "fieldName": "evaluationMethod",
+                      "code": "NotNull",
+                      "errorMessage": "must not be null"
+                    }
+                  ],
+                  "responseCode": "VALIDATION_ERROR",
+                  "errorDescription": "Validation errors"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/evaluation-status/{requestId}": {
+      "get": {
+        "tags": [
+          "Operations for external API"
+        ],
+        "summary": "Gets evaluation response status",
+        "description": "Gets evaluation response status",
+        "operationId": "getEvaluationResponseStatus",
+        "parameters": [
+          {
+            "name": "requestId",
+            "in": "path",
+            "description": "Request id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseDto"
+                },
+                "example": {
+                  "payload": {
+                    "requestId": "1cbe6c49-8432-4c81-9afa-90f04a803fed",
+                    "evaluationStatus": "FINISHED",
+                    "modelUrl": "http://localhost:8080/external-api/download-model/1cbe6c49-8432-4c81-9afa-90f04a803fed",
+                    "numTestInstances": 150,
+                    "numCorrect": 144,
+                    "numIncorrect": 6,
+                    "pctCorrect": 96,
+                    "pctIncorrect": 4,
+                    "meanAbsoluteError": 0.02869334024628254
+                  },
+                  "responseCode": "SUCCESS",
+                  "errorDescription": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "example": {
+                  "payload": [
+                    {
+                      "fieldName": null,
+                      "code": "DataNotFound",
+                      "errorMessage": "Entity with search key [1] not found!"
+                    }
+                  ],
+                  "responseCode": "VALIDATION_ERROR",
+                  "errorDescription": "Validation errors"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/download-model/{requestId}": {
+      "get": {
+        "tags": [
+          "Operations for external API"
+        ],
+        "summary": "Downloads classifier model",
+        "description": "Downloads classifier model",
+        "operationId": "downloadModel",
+        "parameters": [
+          {
+            "name": "requestId",
+            "in": "path",
+            "description": "Request id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "example": {
+                  "payload": [
+                    {
+                      "fieldName": null,
+                      "code": "DataNotFound",
+                      "errorMessage": "Entity with search key [1] not found!"
+                    }
+                  ],
+                  "responseCode": "VALIDATION_ERROR",
+                  "errorDescription": "Validation errors"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "InstancesDto": {
+        "type": "object",
+        "properties": {
+          "dataId": {
+            "type": "string",
+            "description": "Data id",
+            "example": "2a35bffe-27ad-4a50-a7e0-8c871cfd7cc5"
+          },
+          "dataUrl": {
+            "type": "string",
+            "description": "Train data url in internal format data://dataId",
+            "example": "data://2a35bffe-27ad-4a50-a7e0-8c871cfd7cc5"
+          }
+        },
+        "description": "Instances model"
+      },
+      "InstancesResponseDto": {
+        "type": "object",
+        "properties": {
+          "payload": {
+            "$ref": "#/components/schemas/InstancesDto"
+          },
+          "responseCode": {
+            "type": "string",
+            "description": "Response code",
+            "example": "SUCCESS",
+            "enum": [
+              "SUCCESS",
+              "VALIDATION_ERROR",
+              "DATA_NOT_FOUND",
+              "ERROR",
+              "TIMEOUT",
+              "SERVICE_UNAVAILABLE"
+            ]
+          },
+          "errorDescription": {
+            "type": "string",
+            "description": "Error message"
+          }
+        },
+        "description": "Instances response wrapper model"
+      },
+      "EvaluationResponseDto": {
+        "type": "object",
+        "properties": {
+          "requestId": {
+            "type": "string",
+            "description": "Evaluation request id",
+            "example": "1cbe6c49-8432-4c81-9afa-90f04a803fed"
+          },
+          "evaluationStatus": {
+            "type": "string",
+            "description": "Evaluation status",
+            "example": "FINISHED",
+            "enum": [
+              "IN_PROGRESS",
+              "FINISHED",
+              "TIMEOUT",
+              "ERROR"
+            ]
+          },
+          "modelUrl": {
+            "type": "string",
+            "description": "Model url",
+            "example": "http://localhost:8080/external-api/download-model/1cbe6c49-8432-4c81-9afa-90f04a803fed"
+          },
+          "numTestInstances": {
+            "type": "integer",
+            "description": "Test instances number",
+            "format": "int32",
+            "example": 150
+          },
+          "numCorrect": {
+            "type": "integer",
+            "description": "Correctly classified instances number",
+            "format": "int32",
+            "example": 144
+          },
+          "numIncorrect": {
+            "type": "integer",
+            "description": "Incorrectly classified instances number",
+            "format": "int32",
+            "example": 6
+          },
+          "pctCorrect": {
+            "type": "number",
+            "description": "Correctly classified percentage",
+            "example": 96
+          },
+          "pctIncorrect": {
+            "type": "number",
+            "description": "Incorrectly classified percentage",
+            "example": 4
+          },
+          "meanAbsoluteError": {
+            "type": "number",
+            "description": "Mean absolute error",
+            "example": 0.029
+          }
+        },
+        "description": "Evaluation response model"
+      },
+      "EvaluationResponseWrapperDto": {
+        "type": "object",
+        "properties": {
+          "payload": {
+            "$ref": "#/components/schemas/EvaluationResponseDto"
+          },
+          "responseCode": {
+            "type": "string",
+            "description": "Response code",
+            "example": "SUCCESS",
+            "enum": [
+              "SUCCESS",
+              "VALIDATION_ERROR",
+              "DATA_NOT_FOUND",
+              "ERROR",
+              "TIMEOUT",
+              "SERVICE_UNAVAILABLE"
+            ]
+          },
+          "errorDescription": {
+            "type": "string",
+            "description": "Error message"
+          }
+        },
+        "description": "Evaluation response wrapper model"
+      },
+      "ActivationFunctionOptions": {
+        "type": "object",
+        "properties": {
+          "activationFunctionType": {
+            "type": "string",
+            "enum": [
+              "LOGISTIC",
+              "HYPERBOLIC_TANGENT",
+              "SINUSOID",
+              "EXPONENTIAL",
+              "SOFT_SIGN",
+              "INVERSE_SQUARE_ROOT_UNIT"
+            ]
+          },
+          "coefficient": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "BackPropagationOptions": {
+        "type": "object",
+        "properties": {
+          "learningRate": {
+            "type": "number",
+            "format": "double"
+          },
+          "momentum": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "ClassifierOptions": {
+        "required": [
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          }
+        },
+        "description": "Classifier options json",
+        "discriminator": {
+          "propertyName": "type"
+        }
+      },
+      "DecisionTreeOptions": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ClassifierOptions"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "decisionTreeType": {
+                "type": "string",
+                "enum": [
+                  "CART",
+                  "ID3",
+                  "C45",
+                  "CHAID"
+                ]
+              },
+              "minObj": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "maxDepth": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "randomTree": {
+                "type": "boolean"
+              },
+              "numRandomAttr": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "useBinarySplits": {
+                "type": "boolean"
+              },
+              "useRandomSplits": {
+                "type": "boolean"
+              },
+              "numRandomSplits": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "seed": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "additionalOptions": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "EvaluationRequestDto": {
+        "required": [
+          "classifierOptions",
+          "evaluationMethod",
+          "trainDataUrl"
+        ],
+        "type": "object",
+        "properties": {
+          "trainDataUrl": {
+            "type": "string",
+            "description": "Train data url",
+            "example": "http://kt.ijs.si/Branax/Repository/WEKA/Iris.xls"
+          },
+          "classifierOptions": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/DecisionTreeOptions"
+              },
+              {
+                "$ref": "#/components/schemas/IterativeEnsembleOptions"
+              },
+              {
+                "$ref": "#/components/schemas/J48Options"
+              },
+              {
+                "$ref": "#/components/schemas/KNearestNeighboursOptions"
+              },
+              {
+                "$ref": "#/components/schemas/LogisticOptions"
+              },
+              {
+                "$ref": "#/components/schemas/NeuralNetworkOptions"
+              },
+              {
+                "$ref": "#/components/schemas/StackingOptions"
+              }
+            ]
+          },
+          "evaluationMethod": {
+            "type": "string",
+            "description": "Evaluation method",
+            "enum": [
+              "TRAINING_DATA",
+              "CROSS_VALIDATION"
+            ]
+          },
+          "numFolds": {
+            "maximum": 10,
+            "minimum": 2,
+            "type": "integer",
+            "description": "Folds number for k * V cross - validation method",
+            "format": "int32",
+            "example": 10
+          },
+          "numTests": {
+            "maximum": 10,
+            "minimum": 1,
+            "type": "integer",
+            "description": "Tests number for k * V cross - validation method",
+            "format": "int32",
+            "example": 1
+          },
+          "seed": {
+            "type": "integer",
+            "description": "Seed value for k * V cross - validation method",
+            "format": "int32",
+            "example": 1
+          }
+        },
+        "description": "Evaluation request model"
+      },
+      "IterativeEnsembleOptions": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ClassifierOptions"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "numIterations": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "numThreads": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "seed": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          }
+        ]
+      },
+      "J48Options": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ClassifierOptions"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "minNumObj": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "binarySplits": {
+                "type": "boolean"
+              },
+              "unpruned": {
+                "type": "boolean"
+              },
+              "numFolds": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          }
+        ]
+      },
+      "KNearestNeighboursOptions": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ClassifierOptions"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "numNeighbours": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "weight": {
+                "type": "number",
+                "format": "double"
+              },
+              "distanceType": {
+                "type": "string",
+                "enum": [
+                  "EUCLID",
+                  "SQUARE_EUCLID",
+                  "MANHATTAN",
+                  "CHEBYSHEV"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "LogisticOptions": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ClassifierOptions"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "maxIts": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "useConjugateGradientDescent": {
+                "type": "boolean"
+              }
+            }
+          }
+        ]
+      },
+      "NeuralNetworkOptions": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ClassifierOptions"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "numInNeurons": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "numOutNeurons": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "hiddenLayer": {
+                "type": "string"
+              },
+              "seed": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "numIterations": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "minError": {
+                "type": "number",
+                "format": "double"
+              },
+              "activationFunctionOptions": {
+                "$ref": "#/components/schemas/ActivationFunctionOptions"
+              },
+              "backPropagationOptions": {
+                "$ref": "#/components/schemas/BackPropagationOptions"
+              }
+            }
+          }
+        ]
+      },
+      "StackingOptions": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ClassifierOptions"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "useCrossValidation": {
+                "type": "boolean"
+              },
+              "numFolds": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "seed": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "classifierOptions": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ClassifierOptions"
+                }
+              },
+              "metaClassifierOptions": {
+                "$ref": "#/components/schemas/ClassifierOptions"
+              }
+            }
+          }
+        ]
+      },
+      "ResponseDto": {
+        "type": "object",
+        "properties": {
+          "payload": {
+            "type": "object",
+            "description": "Response payload"
+          },
+          "responseCode": {
+            "type": "string",
+            "description": "Response code",
+            "example": "SUCCESS",
+            "enum": [
+              "SUCCESS",
+              "VALIDATION_ERROR",
+              "DATA_NOT_FOUND",
+              "ERROR",
+              "TIMEOUT",
+              "SERVICE_UNAVAILABLE"
+            ]
+          },
+          "errorDescription": {
+            "type": "string",
+            "description": "Error message"
+          }
+        },
+        "description": "Response model"
+      }
+    },
+    "securitySchemes": {
+      "EcaAuth": {
+        "type": "oauth2",
+        "name": "EcaAuth",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "http://localhost:8080/eca-oauth/oauth/token",
+            "scopes": {
+              "external-api": ""
+            }
+          }
+        }
+      }
+    }
+  }
+}

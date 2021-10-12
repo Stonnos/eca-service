@@ -1,0 +1,567 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Microservice for collecting and storing audit events",
+    "description": "API provides operations with audit events",
+    "contact": {
+      "name": "Roman Batygin",
+      "email": "roman.batygin@mail.ru"
+    },
+    "version": "6.1"
+  },
+  "servers": [
+    {
+      "url": "/"
+    }
+  ],
+  "paths": {
+    "/audit-log/report/download": {
+      "post": {
+        "tags": [
+          "Audit log API for web application"
+        ],
+        "summary": "Downloads audit logs base report in xlsx format",
+        "description": "Downloads audit logs base report in xlsx format",
+        "operationId": "downloadReport",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PageRequestDto"
+              },
+              "example": {
+                "page": 0,
+                "size": 25,
+                "sortField": "eventDate",
+                "ascending": false,
+                "searchQuery": "",
+                "filters": [
+                  {
+                    "name": "groupCode",
+                    "values": [
+                      "USER_PROFILE_ACTIONS"
+                    ],
+                    "matchMode": "EQUALS"
+                  },
+                  {
+                    "name": "initiator",
+                    "values": [
+                      "admin"
+                    ],
+                    "matchMode": "LIKE"
+                  },
+                  {
+                    "name": "eventDate",
+                    "values": [
+                      "2021-07-16"
+                    ],
+                    "matchMode": "RANGE"
+                  }
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/octet-stream": {}
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "access_denied",
+                  "error_description": "Access is denied"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "fieldName": "page",
+                    "code": "Min",
+                    "errorMessage": "must be greater than or equal to 0"
+                  },
+                  {
+                    "fieldName": "size",
+                    "code": "Min",
+                    "errorMessage": "must be greater than or equal to 1"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/audit-log/list": {
+      "post": {
+        "tags": [
+          "Audit log API for web application"
+        ],
+        "summary": "Finds audit logs with specified options such as filter, sorting and paging",
+        "description": "Finds audit logs with specified options such as filter, sorting and paging",
+        "operationId": "getAuditLogsPage",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PageRequestDto"
+              },
+              "example": {
+                "page": 0,
+                "size": 25,
+                "sortField": "eventDate",
+                "ascending": false,
+                "searchQuery": "",
+                "filters": [
+                  {
+                    "name": "groupCode",
+                    "values": [
+                      "USER_PROFILE_ACTIONS"
+                    ],
+                    "matchMode": "EQUALS"
+                  },
+                  {
+                    "name": "initiator",
+                    "values": [
+                      "admin"
+                    ],
+                    "matchMode": "LIKE"
+                  },
+                  {
+                    "name": "eventDate",
+                    "values": [
+                      "2021-07-16"
+                    ],
+                    "matchMode": "RANGE"
+                  }
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "content": [
+                    {
+                      "eventId": "1d2de514-3a87-4620-9b97-c260e24340de",
+                      "message": "Some action",
+                      "initiator": "user",
+                      "groupCode": "USER_ACTIONS",
+                      "groupTitle": "User actions",
+                      "code": "LOGIN",
+                      "codeTitle": "User logged in",
+                      "eventDate": "2021-07-01 14:00:00"
+                    }
+                  ],
+                  "page": 0,
+                  "totalCount": 1
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "access_denied",
+                  "error_description": "Access is denied"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "fieldName": "page",
+                    "code": "Min",
+                    "errorMessage": "must be greater than or equal to 0"
+                  },
+                  {
+                    "fieldName": "size",
+                    "code": "Min",
+                    "errorMessage": "must be greater than or equal to 1"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/api/audit/event/save": {
+      "post": {
+        "tags": [
+          "Audit events API for services"
+        ],
+        "summary": "Saves audit event into database",
+        "description": "Saves audit event into database",
+        "operationId": "saveAuditEvent",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuditEventRequest"
+              },
+              "example": {
+                "eventId": "a01ebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+                "message": "Audit message",
+                "initiator": "user",
+                "eventType": "START",
+                "groupCode": "GROUP_CODE",
+                "groupTitle": "",
+                "code": "AUDIT_CODE",
+                "codeTitle": "",
+                "eventDate": "2021-07-16 07:57:11"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/audit-log/filter-templates/fields": {
+      "get": {
+        "tags": [
+          "Audit log API for web application"
+        ],
+        "summary": "Gets audit log filter fields",
+        "description": "Gets audit log filter fields",
+        "operationId": "getAuditLogFilter",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "fieldName": "eventId",
+                    "description": "ID события",
+                    "fieldOrder": 0,
+                    "filterFieldType": "TEXT",
+                    "matchMode": "LIKE",
+                    "multiple": false,
+                    "dictionary": null
+                  },
+                  {
+                    "fieldName": "groupCode",
+                    "description": "Группа событий",
+                    "fieldOrder": 1,
+                    "filterFieldType": "REFERENCE",
+                    "matchMode": "EQUALS",
+                    "multiple": false,
+                    "dictionary": {
+                      "name": "auditGroup",
+                      "values": [
+                        {
+                          "label": "Действия пользователя в личном кабинете",
+                          "value": "USER_PROFILE_ACTIONS"
+                        },
+                        {
+                          "label": "Действия с конфигурациями классификаторов",
+                          "value": "CLASSIFIERS_CONFIGURATIONS_ACTIONS"
+                        },
+                        {
+                          "label": "Действия с обучающими выборками",
+                          "value": "DATA_STORAGE_ACTIONS"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "fieldName": "initiator",
+                    "description": "Инициатор события",
+                    "fieldOrder": 2,
+                    "filterFieldType": "TEXT",
+                    "matchMode": "LIKE",
+                    "multiple": false,
+                    "dictionary": null
+                  },
+                  {
+                    "fieldName": "eventDate",
+                    "description": "Дата события",
+                    "fieldOrder": 3,
+                    "filterFieldType": "DATE",
+                    "matchMode": "RANGE",
+                    "multiple": true,
+                    "dictionary": null
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "access_denied",
+                  "error_description": "Access is denied"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "fieldName": null,
+                    "code": "DataNotFound",
+                    "errorMessage": "Entity with search key [1] not found!"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "FilterRequestDto": {
+        "required": [
+          "matchMode",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string",
+            "description": "Filter column name"
+          },
+          "values": {
+            "maxItems": 50,
+            "minItems": 0,
+            "type": "array",
+            "items": {
+              "maxLength": 255,
+              "type": "string",
+              "description": "Column values to filter"
+            }
+          },
+          "matchMode": {
+            "type": "string",
+            "description": "Match mode type",
+            "enum": [
+              "EQUALS",
+              "LIKE",
+              "RANGE"
+            ]
+          }
+        },
+        "description": "Filter request model"
+      },
+      "PageRequestDto": {
+        "required": [
+          "page",
+          "size"
+        ],
+        "type": "object",
+        "properties": {
+          "page": {
+            "minimum": 0,
+            "type": "integer",
+            "description": "Page number",
+            "format": "int32",
+            "example": 0
+          },
+          "size": {
+            "minimum": 1,
+            "type": "integer",
+            "description": "Page size",
+            "format": "int32",
+            "example": 25
+          },
+          "sortField": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string",
+            "description": "Sort field"
+          },
+          "ascending": {
+            "type": "boolean",
+            "description": "Is ascending sort?"
+          },
+          "searchQuery": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string",
+            "description": "Search query string"
+          },
+          "filters": {
+            "maxItems": 50,
+            "minItems": 0,
+            "type": "array",
+            "description": "Filters list",
+            "items": {
+              "$ref": "#/components/schemas/FilterRequestDto"
+            }
+          }
+        },
+        "description": "Page request model"
+      },
+      "AuditEventRequest": {
+        "required": [
+          "code",
+          "eventDate",
+          "eventId",
+          "eventType",
+          "groupCode",
+          "initiator",
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "eventId": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string",
+            "description": "Audit event id"
+          },
+          "message": {
+            "type": "string",
+            "description": "Audit message"
+          },
+          "initiator": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string",
+            "description": "Event initiator"
+          },
+          "eventType": {
+            "type": "string",
+            "description": "Event type",
+            "enum": [
+              "START",
+              "SUCCESS",
+              "FAILED"
+            ]
+          },
+          "groupCode": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string",
+            "description": "Audit group"
+          },
+          "groupTitle": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string",
+            "description": "Audit group title"
+          },
+          "code": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string",
+            "description": "Audit code"
+          },
+          "codeTitle": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string",
+            "description": "Audit code title"
+          },
+          "eventDate": {
+            "pattern": "yyyy-MM-dd HH:mm:ss",
+            "type": "string",
+            "description": "Event date",
+            "format": "date-time"
+          }
+        },
+        "description": "Audit event request mode"
+      }
+    },
+    "securitySchemes": {
+      "EcaAuth": {
+        "type": "oauth2",
+        "name": "EcaAuth",
+        "flows": {
+          "password": {
+            "tokenUrl": "http://localhost:8080/oauth/token",
+            "refreshUrl": "http://localhost:8080/oauth/token",
+            "scopes": {
+              "web": ""
+            }
+          }
+        }
+      }
+    }
+  }
+}

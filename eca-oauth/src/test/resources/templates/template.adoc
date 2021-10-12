@@ -40,8 +40,13 @@ ${method.requestBody.example}
 |*${parameter.name}*<#if parameter.required == "true">*</#if>
 |${parameter.description}
 |${parameter.in}
-a|__${parameter.schemaModel.type}__ <#if parameter.schemaModel.format??>__(${parameter.schemaModel.format})__</#if>
-
+a|__${parameter.schemaModel.type}__
+<#if parameter.schemaModel.format??>
+__(${parameter.schemaModel.format})__
+</#if>
+<#if parameter.schemaModel.itemsObjectRef??>
+<<<${parameter.schemaModel.itemsObjectRef}>>>
+</#if>
 <#if parameter.schemaModel.minLength??>*Min. length*: ${parameter.schemaModel.minLength}</#if>
 
 <#if parameter.schemaModel.maxLength??>*Max. length*: ${parameter.schemaModel.maxLength}</#if>
@@ -60,7 +65,7 @@ a|__${parameter.schemaModel.type}__ <#if parameter.schemaModel.format??>__(${par
 </#if>
 <#if method.apiResponses?has_content>
 
-*Список кодов ответа*
+*Api responses*
 [width=100%]
 |===
 |Code|Description|Content type|Schema|Example
@@ -101,6 +106,9 @@ a|<#if field.schemaModel.type??>
 __${field.schemaModel.type}__
 <#if field.schemaModel.format??>
 __(${field.schemaModel.format})__
+</#if>
+<#if field.schemaModel.itemsObjectRef??>
+<<<${field.schemaModel.itemsObjectRef}>>>
 </#if>
 </#if>
 <#if field.schemaModel.objectTypeRef??>

@@ -1,6 +1,6 @@
 package com.ecaservice.oauth.model;
 
-import io.swagger.v3.oas.models.Operation;
+import com.ecaservice.oauth.model.openapi.Operation;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.web.bind.annotation.RequestMethod;

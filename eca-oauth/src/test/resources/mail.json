@@ -1,0 +1,312 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Microservice for sending emails",
+    "description": "API provides operations for email notifications sending",
+    "contact": {
+      "name": "Roman Batygin",
+      "email": "roman.batygin@mail.ru"
+    },
+    "version": "6.1"
+  },
+  "servers": [
+    {
+      "url": "/"
+    }
+  ],
+  "paths": {
+    "/templates/list": {
+      "post": {
+        "tags": [
+          "Email template API for web application"
+        ],
+        "summary": "Finds email templates with specified options such as filter, sorting and paging",
+        "description": "Finds email templates with specified options such as filter, sorting and paging",
+        "operationId": "getTemplatesPage",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PageRequestDto"
+              },
+              "example": {
+                "page": 0,
+                "size": 25
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "content": [
+                    {
+                      "id": 1,
+                      "created": "2021-07-01 14:00:00",
+                      "code": "NEW_EXPERIMENT",
+                      "description": "New experiment",
+                      "subject": "New experiment request",
+                      "body": "some body",
+                      "parameters": [
+                        {
+                          "id": 1,
+                          "created": "2021-07-01 14:00:00",
+                          "parameterName": "requestId",
+                          "description": "Experiment request id"
+                        }
+                      ]
+                    }
+                  ],
+                  "page": 0,
+                  "totalCount": 1
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "fieldName": "page",
+                    "code": "Min",
+                    "errorMessage": "must be greater than or equal to 0"
+                  },
+                  {
+                    "fieldName": "size",
+                    "code": "Min",
+                    "errorMessage": "must be greater than or equal to 1"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/emails/email-request": {
+      "post": {
+        "tags": [
+          "API for email sending"
+        ],
+        "summary": "Saves email request to sent",
+        "description": "Saves email request to sent",
+        "operationId": "saveRequest",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmailRequest"
+              },
+              "example": {
+                "receiver": "test@mail.ru",
+                "templateCode": "NEW_EXPERIMENT",
+                "variables": {
+                  "firstName": "Роман",
+                  "requestId": "1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
+                  "experimentType": "KNN"
+                },
+                "priority": 1
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "requestId": "1d2de514-3a87-4620-9b97-c260e24340de"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "fieldName": "templateCode",
+                    "code": "ValidEmailRequest",
+                    "errorMessage": "Invalid template code!"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "FilterRequestDto": {
+        "required": [
+          "matchMode",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string",
+            "description": "Filter column name"
+          },
+          "values": {
+            "maxItems": 50,
+            "minItems": 0,
+            "type": "array",
+            "items": {
+              "maxLength": 255,
+              "type": "string",
+              "description": "Column values to filter"
+            }
+          },
+          "matchMode": {
+            "type": "string",
+            "description": "Match mode type",
+            "enum": [
+              "EQUALS",
+              "LIKE",
+              "RANGE"
+            ]
+          }
+        },
+        "description": "Filter request model"
+      },
+      "PageRequestDto": {
+        "required": [
+          "page",
+          "size"
+        ],
+        "type": "object",
+        "properties": {
+          "page": {
+            "minimum": 0,
+            "type": "integer",
+            "description": "Page number",
+            "format": "int32",
+            "example": 0
+          },
+          "size": {
+            "minimum": 1,
+            "type": "integer",
+            "description": "Page size",
+            "format": "int32",
+            "example": 25
+          },
+          "sortField": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string",
+            "description": "Sort field"
+          },
+          "ascending": {
+            "type": "boolean",
+            "description": "Is ascending sort?"
+          },
+          "searchQuery": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string",
+            "description": "Search query string"
+          },
+          "filters": {
+            "maxItems": 50,
+            "minItems": 0,
+            "type": "array",
+            "description": "Filters list",
+            "items": {
+              "$ref": "#/components/schemas/FilterRequestDto"
+            }
+          }
+        },
+        "description": "Page request model"
+      },
+      "EmailRequest": {
+        "required": [
+          "priority",
+          "receiver",
+          "templateCode"
+        ],
+        "type": "object",
+        "properties": {
+          "receiver": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string",
+            "description": "Receiver email",
+            "example": "bat1238@yandex.ru"
+          },
+          "templateCode": {
+            "type": "string",
+            "description": "Email template code",
+            "example": "NEW_EXPERIMENT"
+          },
+          "variables": {
+            "maxItems": 50,
+            "minItems": 0,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string",
+                "description": "Email templates variables"
+              },
+              "description": "Email templates variables"
+            }
+          },
+          "priority": {
+            "maximum": 3,
+            "minimum": 0,
+            "type": "integer",
+            "description": "Delivery priority",
+            "format": "int32",
+            "example": 0
+          }
+        },
+        "description": "Email request"
+      }
+    },
+    "securitySchemes": {
+      "EcaAuth": {
+        "type": "oauth2",
+        "name": "EcaAuth",
+        "flows": {
+          "password": {
+            "tokenUrl": "http://localhost:8080/oauth/token",
+            "refreshUrl": "http://localhost:8080/oauth/token",
+            "scopes": {
+              "web": ""
+            }
+          }
+        }
+      }
+    }
+  }
+}

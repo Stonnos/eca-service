@@ -1,0 +1,1027 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Microservice for storaging training data sets",
+    "description": "API provides operations with training data sets for ECA web application",
+    "contact": {
+      "name": "Roman Batygin",
+      "email": "roman.batygin@mail.ru"
+    },
+    "version": "6.1"
+  },
+  "servers": [
+    {
+      "url": "/"
+    }
+  ],
+  "paths": {
+    "/instances/rename": {
+      "put": {
+        "tags": [
+          "Data storage API for web application"
+        ],
+        "summary": "Renames data with specified id",
+        "description": "Renames data with specified id",
+        "operationId": "rename",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "Instances id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          },
+          {
+            "name": "tableName",
+            "in": "query",
+            "description": "Table name",
+            "required": true,
+            "schema": {
+              "maxLength": 30,
+              "minLength": 0,
+              "pattern": "^[0-9a-z_]+$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ValidationErrorDto"
+                  }
+                },
+                "example": [
+                  {
+                    "fieldName": null,
+                    "code": "UniqueTableName",
+                    "errorMessage": "Table with name [iris] already exists!"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/instances/save": {
+      "post": {
+        "tags": [
+          "Data storage API for web application"
+        ],
+        "summary": "Saves instances into database",
+        "description": "Saves instances into database",
+        "operationId": "saveInstances",
+        "parameters": [
+          {
+            "name": "tableName",
+            "in": "query",
+            "description": "Table name",
+            "required": true,
+            "schema": {
+              "maxLength": 30,
+              "minLength": 0,
+              "pattern": "^[0-9a-z_]+$",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "trainingData"
+                ],
+                "type": "object",
+                "properties": {
+                  "trainingData": {
+                    "type": "string",
+                    "description": "Training data file",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateInstancesResultDto"
+                },
+                "example": {
+                  "id": 1,
+                  "sourceFileName": "iris.xls",
+                  "tableName": "iris"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ValidationErrorDto"
+                  }
+                },
+                "example": [
+                  {
+                    "fieldName": null,
+                    "code": "UniqueTableName",
+                    "errorMessage": "Table with name [iris] already exists!"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/instances/list": {
+      "post": {
+        "tags": [
+          "Data storage API for web application"
+        ],
+        "summary": "Finds instances tables with specified options such as filter, sorting and paging",
+        "description": "Finds instances tables with specified options such as filter, sorting and paging",
+        "operationId": "getInstancesPage",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PageRequestDto"
+              },
+              "example": {
+                "page": 0,
+                "size": 25
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageDto"
+                },
+                "example": {
+                  "content": [
+                    {
+                      "id": 1,
+                      "tableName": "iris",
+                      "numInstances": 150,
+                      "numAttributes": 5,
+                      "created": "2021-07-01 14:00:00",
+                      "createdBy": "admin"
+                    }
+                  ],
+                  "page": 0,
+                  "totalCount": 1
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ValidationErrorDto"
+                  }
+                },
+                "example": [
+                  {
+                    "fieldName": "page",
+                    "code": "Min",
+                    "errorMessage": "must be greater than or equal to 0"
+                  },
+                  {
+                    "fieldName": "size",
+                    "code": "Min",
+                    "errorMessage": "must be greater than or equal to 1"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/instances/data-page": {
+      "post": {
+        "tags": [
+          "Data storage API for web application"
+        ],
+        "summary": "Finds data page for specified instances",
+        "description": "Finds data page for specified instances",
+        "operationId": "getDataPage",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "Instances id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PageRequestDto"
+              },
+              "example": {
+                "page": 0,
+                "size": 25
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageDto"
+                },
+                "example": {
+                  "content": [
+                    [
+                      "5.1",
+                      "3.5",
+                      "1.4",
+                      "0.2",
+                      "Iris-setosa"
+                    ],
+                    [
+                      "4.9",
+                      "3.0",
+                      "1.4",
+                      "0.2",
+                      "Iris-setosa"
+                    ],
+                    [
+                      "4.7",
+                      "3.2",
+                      "1.3",
+                      "0.2",
+                      "Iris-setosa"
+                    ]
+                  ],
+                  "page": 0,
+                  "totalCount": 3
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ValidationErrorDto"
+                  }
+                },
+                "example": [
+                  {
+                    "fieldName": "page",
+                    "code": "Min",
+                    "errorMessage": "must be greater than or equal to 0"
+                  },
+                  {
+                    "fieldName": "size",
+                    "code": "Min",
+                    "errorMessage": "must be greater than or equal to 1"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/instances/reports-info": {
+      "get": {
+        "tags": [
+          "Data storage API for web application"
+        ],
+        "summary": "Gets instances reports info",
+        "description": "Gets instances reports info",
+        "operationId": "getInstancesReportsInfo",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/InstancesReportInfoDto"
+                  }
+                },
+                "example": [
+                  {
+                    "title": "Microsoft Excel (.xlsx)",
+                    "reportType": "XLS",
+                    "fileExtension": "xlsx"
+                  },
+                  {
+                    "title": "Формат CSV (.csv)",
+                    "reportType": "CSV",
+                    "fileExtension": "csv"
+                  },
+                  {
+                    "title": "Формат Arff (.arff)",
+                    "reportType": "ARFF",
+                    "fileExtension": "arff"
+                  },
+                  {
+                    "title": "Json формат (.json)",
+                    "reportType": "JSON",
+                    "fileExtension": "json"
+                  },
+                  {
+                    "title": "Xml формат (.xml)",
+                    "reportType": "XML",
+                    "fileExtension": "xml"
+                  },
+                  {
+                    "title": "Текстовый формат (.txt)",
+                    "reportType": "TXT",
+                    "fileExtension": "txt"
+                  },
+                  {
+                    "title": "Формат данных (.data)",
+                    "reportType": "DATA",
+                    "fileExtension": "data"
+                  },
+                  {
+                    "title": "Microsoft Word (.docx)",
+                    "reportType": "DOCX",
+                    "fileExtension": "docx"
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/instances/download": {
+      "get": {
+        "tags": [
+          "Data storage API for web application"
+        ],
+        "summary": "Download instances report with specified type",
+        "description": "Download instances report with specified type",
+        "operationId": "downloadInstancesReport",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "Instances id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          },
+          {
+            "name": "reportType",
+            "in": "query",
+            "description": "Report type",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "XLS",
+                "CSV",
+                "ARFF",
+                "JSON",
+                "XML",
+                "TXT",
+                "DATA",
+                "DOCX"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/octet-stream": {}
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ValidationErrorDto"
+                  }
+                },
+                "example": [
+                  {
+                    "fieldName": null,
+                    "code": "DataNotFound",
+                    "errorMessage": "Entity with search key [1] not found!"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/instances/details/{id}": {
+      "get": {
+        "tags": [
+          "Data storage API for web application"
+        ],
+        "summary": "Gets instances details",
+        "description": "Gets instances details",
+        "operationId": "getInstancesDetails",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Instances id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InstancesDto"
+                },
+                "example": {
+                  "id": 1,
+                  "tableName": "iris",
+                  "numInstances": 150,
+                  "numAttributes": 5,
+                  "created": "2021-07-01 14:00:00",
+                  "createdBy": "admin"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ValidationErrorDto"
+                  }
+                },
+                "example": [
+                  {
+                    "fieldName": null,
+                    "code": "DataNotFound",
+                    "errorMessage": "Entity with search key [1] not found!"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/instances/attributes/{id}": {
+      "get": {
+        "tags": [
+          "Data storage API for web application"
+        ],
+        "summary": "Gets attributes list for specified instances",
+        "description": "Gets attributes list for specified instances",
+        "operationId": "getAttributes",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Instances id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "example": [
+                  "x1",
+                  "x2",
+                  "x3",
+                  "x4",
+                  "class"
+                ]
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ValidationErrorDto"
+                  }
+                },
+                "example": [
+                  {
+                    "fieldName": null,
+                    "code": "DataNotFound",
+                    "errorMessage": "Entity with search key [1] not found!"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    },
+    "/instances/delete": {
+      "delete": {
+        "tags": [
+          "Data storage API for web application"
+        ],
+        "summary": "Deletes instances with specified id",
+        "description": "Deletes instances with specified id",
+        "operationId": "delete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "Instances id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "error_description": "Full authentication is required to access this resource"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ValidationErrorDto"
+                  }
+                },
+                "example": [
+                  {
+                    "fieldName": null,
+                    "code": "DataNotFound",
+                    "errorMessage": "Entity with search key [1] not found!"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "EcaAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ValidationErrorDto": {
+        "type": "object",
+        "properties": {
+          "fieldName": {
+            "type": "string",
+            "description": "Field name",
+            "example": "field"
+          },
+          "code": {
+            "type": "string",
+            "description": "Error code",
+            "example": "NotNull"
+          },
+          "errorMessage": {
+            "type": "string",
+            "description": "Error message",
+            "example": "Must be not null"
+          }
+        },
+        "description": "Validation error model"
+      },
+      "CreateInstancesResultDto": {
+        "required": [
+          "id",
+          "sourceFileName",
+          "tableName"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Instances id",
+            "format": "int64",
+            "example": 1
+          },
+          "sourceFileName": {
+            "type": "string",
+            "description": "Source file name",
+            "example": "iris.xls"
+          },
+          "tableName": {
+            "type": "string",
+            "description": "Database table name",
+            "example": "iris"
+          }
+        },
+        "description": "Create instances result model"
+      },
+      "PageDto": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "description": "Page content",
+            "items": {
+              "type": "object",
+              "description": "Page content"
+            }
+          },
+          "page": {
+            "type": "integer",
+            "description": "Page number",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "description": "Total elements count in all pages",
+            "format": "int64"
+          }
+        },
+        "description": "Page model"
+      },
+      "FilterRequestDto": {
+        "required": [
+          "matchMode",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string",
+            "description": "Filter column name"
+          },
+          "values": {
+            "maxItems": 50,
+            "minItems": 0,
+            "type": "array",
+            "items": {
+              "maxLength": 255,
+              "type": "string",
+              "description": "Column values to filter"
+            }
+          },
+          "matchMode": {
+            "type": "string",
+            "description": "Match mode type",
+            "enum": [
+              "EQUALS",
+              "LIKE",
+              "RANGE"
+            ]
+          }
+        },
+        "description": "Filter request model"
+      },
+      "PageRequestDto": {
+        "required": [
+          "page",
+          "size"
+        ],
+        "type": "object",
+        "properties": {
+          "page": {
+            "minimum": 0,
+            "type": "integer",
+            "description": "Page number",
+            "format": "int32",
+            "example": 0
+          },
+          "size": {
+            "minimum": 1,
+            "type": "integer",
+            "description": "Page size",
+            "format": "int32",
+            "example": 25
+          },
+          "sortField": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string",
+            "description": "Sort field"
+          },
+          "ascending": {
+            "type": "boolean",
+            "description": "Is ascending sort?"
+          },
+          "searchQuery": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string",
+            "description": "Search query string"
+          },
+          "filters": {
+            "maxItems": 50,
+            "minItems": 0,
+            "type": "array",
+            "description": "Filters list",
+            "items": {
+              "$ref": "#/components/schemas/FilterRequestDto"
+            }
+          }
+        },
+        "description": "Page request model"
+      },
+      "InstancesReportInfoDto": {
+        "type": "object",
+        "properties": {
+          "reportType": {
+            "type": "string",
+            "description": "Report type",
+            "example": "XLS"
+          },
+          "title": {
+            "type": "string",
+            "description": "Report title",
+            "example": "Microsoft Excel (.xlsx)"
+          },
+          "fileExtension": {
+            "type": "string",
+            "description": "Report file extension",
+            "example": "xlsx"
+          }
+        },
+        "description": "Instances report info model"
+      },
+      "InstancesDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Instances id",
+            "format": "int64",
+            "example": 1
+          },
+          "tableName": {
+            "type": "string",
+            "description": "Table name",
+            "example": "iris"
+          },
+          "numInstances": {
+            "type": "integer",
+            "description": "Instances number",
+            "format": "int32",
+            "example": 150
+          },
+          "numAttributes": {
+            "type": "integer",
+            "description": "Attributes number",
+            "format": "int32",
+            "example": 5
+          },
+          "created": {
+            "type": "string",
+            "description": "Instances creation date",
+            "example": "2021-07-01 14:00:00"
+          },
+          "createdBy": {
+            "type": "string",
+            "description": "User name",
+            "example": "admin"
+          }
+        },
+        "description": "Instances model"
+      }
+    },
+    "securitySchemes": {
+      "EcaAuth": {
+        "type": "oauth2",
+        "name": "EcaAuth",
+        "flows": {
+          "password": {
+            "tokenUrl": "http://localhost:8080/oauth/token",
+            "refreshUrl": "http://localhost:8080/oauth/token",
+            "scopes": {
+              "web": ""
+            }
+          }
+        }
+      }
+    }
+  }
+}
