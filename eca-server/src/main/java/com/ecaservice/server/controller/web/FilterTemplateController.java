@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
+import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
 import static com.ecaservice.server.controller.doc.ApiExamples.CLASSIFIER_OPTIONS_REQUESTS_FILTER_TEMPLATE_JSON;
 import static com.ecaservice.server.controller.doc.ApiExamples.EVALUATION_LOGS_FILTER_TEMPLATE_JSON;
 import static com.ecaservice.server.controller.doc.ApiExamples.EVALUATION_METHODS_RESPONSE_JSON;
@@ -54,7 +55,7 @@ public class FilterTemplateController {
     @Operation(
             description = "Gets experiment filter fields",
             summary = "Gets experiment filter fields",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200",
                             content = @Content(
@@ -89,7 +90,7 @@ public class FilterTemplateController {
     @Operation(
             description = "Gets evaluation log filter fields",
             summary = "Gets evaluation log filter fields",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200",
                             content = @Content(
@@ -124,7 +125,7 @@ public class FilterTemplateController {
     @Operation(
             description = "Gets classifier options request filter fields",
             summary = "Gets classifier options request filter fields",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200",
                             content = @Content(
@@ -159,7 +160,7 @@ public class FilterTemplateController {
     @Operation(
             description = "Gets experiment types filter dictionary",
             summary = "Gets experiment types filter dictionary",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200",
                             content = @Content(
@@ -194,7 +195,7 @@ public class FilterTemplateController {
     @Operation(
             description = "Gets evaluation method filter dictionary",
             summary = "Gets evaluation method filter dictionary",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200",
                             content = @Content(

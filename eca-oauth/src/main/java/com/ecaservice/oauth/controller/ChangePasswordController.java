@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
+import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.CHANGE_PASSWORD_REQUEST_JSON;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.INVALID_PASSWORD_RESPONSE_JSON;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.INVALID_TOKEN_RESPONSE_JSON;
@@ -60,7 +61,7 @@ public class ChangePasswordController {
     @Operation(
             description = "Creates change password request",
             summary = "Creates change password request",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
                             @ExampleObject(value = CHANGE_PASSWORD_REQUEST_JSON)

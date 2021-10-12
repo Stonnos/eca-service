@@ -49,6 +49,7 @@ import javax.validation.constraints.Size;
 import java.util.List;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
+import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
 import static com.ecaservice.data.storage.controller.doc.ApiExamples.ATTRIBUTES_LIST_RESPONSE_JSON;
 import static com.ecaservice.data.storage.controller.doc.ApiExamples.CREATE_INSTANCES_RESPONSE_JSON;
 import static com.ecaservice.data.storage.controller.doc.ApiExamples.INSTANCES_DATA_PAGE_RESPONSE_JSON;
@@ -93,7 +94,7 @@ public class DataStorageController {
     @Operation(
             description = "Finds instances tables with specified options such as filter, sorting and paging",
             summary = "Finds instances tables with specified options such as filter, sorting and paging",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
                             @ExampleObject(value = SIMPLE_PAGE_REQUEST_JSON)
@@ -147,7 +148,7 @@ public class DataStorageController {
     @Operation(
             description = "Saves instances into database",
             summary = "Saves instances into database",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200",
                             content = @Content(
@@ -205,7 +206,7 @@ public class DataStorageController {
     @Operation(
             description = "Gets instances details",
             summary = "Gets instances details",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200",
                             content = @Content(
@@ -253,7 +254,7 @@ public class DataStorageController {
     @Operation(
             description = "Renames data with specified id",
             summary = "Renames data with specified id",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200"),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
@@ -292,7 +293,7 @@ public class DataStorageController {
     @Operation(
             description = "Deletes instances with specified id",
             summary = "Deletes instances with specified id",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200"),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
@@ -330,7 +331,7 @@ public class DataStorageController {
     @Operation(
             description = "Finds data page for specified instances",
             summary = "Finds data page for specified instances",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
                             @ExampleObject(value = SIMPLE_PAGE_REQUEST_JSON)
@@ -384,7 +385,7 @@ public class DataStorageController {
     @Operation(
             description = "Gets attributes list for specified instances",
             summary = "Gets attributes list for specified instances",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200",
                             content = @Content(
@@ -430,7 +431,7 @@ public class DataStorageController {
     @Operation(
             description = "Gets instances reports info",
             summary = "Gets instances reports info",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200",
                             content = @Content(
@@ -473,7 +474,7 @@ public class DataStorageController {
     @Operation(
             description = "Download instances report with specified type",
             summary = "Download instances report with specified type",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200"),
                     @ApiResponse(description = "Not authorized", responseCode = "401",

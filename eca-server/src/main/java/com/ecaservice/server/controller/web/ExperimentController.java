@@ -68,6 +68,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
+import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
 import static com.ecaservice.server.controller.doc.ApiExamples.CREATE_EXPERIMENT_RESULT_RESPONSE_JSON;
 import static com.ecaservice.server.controller.doc.ApiExamples.EXPERIMENTS_PAGE_REQUEST_JSON;
 import static com.ecaservice.server.controller.doc.ApiExamples.EXPERIMENTS_PAGE_RESPONSE_JSON;
@@ -121,7 +122,7 @@ public class ExperimentController {
     @Operation(
             description = "Downloads experiment training data by specified id",
             summary = "Downloads experiment training data by specified id",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200"),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
@@ -160,7 +161,7 @@ public class ExperimentController {
     @Operation(
             description = "Downloads experiment results by specified id",
             summary = "Downloads experiment results by specified id",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200"),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
@@ -202,7 +203,7 @@ public class ExperimentController {
     @Operation(
             description = "Creates experiment request with specified options",
             summary = "Creates experiment request with specified options",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200",
                             content = @Content(
@@ -256,7 +257,7 @@ public class ExperimentController {
     @Operation(
             description = "Finds experiments with specified options",
             summary = "Finds experiments with specified options",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
                             @ExampleObject(value = EXPERIMENTS_PAGE_REQUEST_JSON)
@@ -309,7 +310,7 @@ public class ExperimentController {
     @Operation(
             description = "Finds experiment with specified id",
             summary = "Finds experiment with specified id",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200",
                             content = @Content(
@@ -358,7 +359,7 @@ public class ExperimentController {
     @Operation(
             description = "Finds experiment results details with specified id",
             summary = "Finds experiment results details with specified id",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200",
                             content = @Content(
@@ -407,7 +408,7 @@ public class ExperimentController {
     @Operation(
             description = "Gets experiments request statuses statistics",
             summary = "Gets experiments request statuses statistics",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200",
                             content = @Content(
@@ -446,7 +447,7 @@ public class ExperimentController {
     @Operation(
             description = "Gets experiment ERS report",
             summary = "Gets experiment ERS report",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200",
                             content = @Content(
@@ -496,7 +497,7 @@ public class ExperimentController {
     @Operation(
             description = "Gets experiment types statistics",
             summary = "Gets experiment types statistics",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200",
                             content = @Content(
@@ -545,7 +546,7 @@ public class ExperimentController {
     @Operation(
             description = "Finds experiment progress with specified id",
             summary = "Finds experiment progress with specified id",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200",
                             content = @Content(

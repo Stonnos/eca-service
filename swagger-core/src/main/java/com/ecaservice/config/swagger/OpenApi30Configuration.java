@@ -30,6 +30,11 @@ public class OpenApi30Configuration {
 
     public static final String ECA_AUTHENTICATION_SECURITY_SCHEME = "EcaAuth";
 
+    public static final String SCOPE_WEB = "web";
+
+    private static final String ECA_AUTHENTICATION_SECURITY_DESCRIPTION = "Oauth2 authentication";
+    private static final String BEARER_ACCESS_TOKEN = "Bearer <access token>";
+
     private static final String TOKEN_URL_FORMAT = "%s/oauth/token";
 
     private final OpenApiProperties openApiProperties;
@@ -71,6 +76,9 @@ public class OpenApi30Configuration {
         var securityScheme = new SecurityScheme()
                 .name(ECA_AUTHENTICATION_SECURITY_SCHEME)
                 .type(SecurityScheme.Type.OAUTH2)
+                .in(SecurityScheme.In.HEADER)
+                .description(ECA_AUTHENTICATION_SECURITY_DESCRIPTION)
+                .bearerFormat(BEARER_ACCESS_TOKEN)
                 .flows(new OAuthFlows());
         openApiProperties.getApiAuth().forEach(
                 (grantType, openApiAuthProperties) -> grantType.handle(new GrantTypeVisitor() {
