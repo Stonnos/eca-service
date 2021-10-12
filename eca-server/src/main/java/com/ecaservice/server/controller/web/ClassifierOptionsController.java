@@ -39,6 +39,7 @@ import java.io.InputStream;
 import java.util.List;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
+import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
 import static com.ecaservice.server.controller.doc.ApiExamples.GET_CLASSIFIERS_OPTIONS_LIST_RESPONSE_JSON;
 import static com.ecaservice.server.controller.doc.ApiExamples.GET_CLASSIFIERS_OPTIONS_PAGE_RESPONSE_JSON;
 import static com.ecaservice.server.controller.doc.ApiExamples.SAVE_CLASSIFIER_OPTIONS_RESPONSE_JSON;
@@ -72,7 +73,7 @@ public class ClassifierOptionsController {
     @Operation(
             description = "Finds active classifiers options configs",
             summary = "Finds active classifiers options configs",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200",
                             content = @Content(
@@ -110,7 +111,7 @@ public class ClassifierOptionsController {
     @Operation(
             description = "Finds classifiers options configs page",
             summary = "Finds classifiers options configs page",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
                             @ExampleObject(value = SIMPLE_PAGE_REQUEST_JSON)
@@ -170,7 +171,7 @@ public class ClassifierOptionsController {
     @Operation(
             description = "Saves new classifier options for specified configuration",
             summary = "Saves new classifier options for specified configuration",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200",
                             content = @Content(
@@ -225,7 +226,7 @@ public class ClassifierOptionsController {
     @Operation(
             description = "Classifier options id",
             summary = "Classifier options id",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200"),
                     @ApiResponse(description = "Not authorized", responseCode = "401",

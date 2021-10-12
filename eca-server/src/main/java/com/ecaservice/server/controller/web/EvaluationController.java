@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
+import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
 import static com.ecaservice.server.controller.doc.ApiExamples.EVALUATION_LOGS_PAGE_REQUEST_JSON;
 import static com.ecaservice.server.controller.doc.ApiExamples.EVALUATION_LOGS_PAGE_RESPONSE_JSON;
 import static com.ecaservice.server.controller.doc.ApiExamples.EVALUATION_LOG_DETAILS_RESPONSE_JSON;
@@ -73,7 +74,7 @@ public class EvaluationController {
     @Operation(
             description = "Finds evaluation logs with specified options",
             summary = "Finds evaluation logs with specified options",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
                             @ExampleObject(value = EVALUATION_LOGS_PAGE_REQUEST_JSON)
@@ -129,7 +130,7 @@ public class EvaluationController {
     @Operation(
             description = "Gets evaluation log details",
             summary = "Gets evaluation log details",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200",
                             content = @Content(
@@ -178,7 +179,7 @@ public class EvaluationController {
     @Operation(
             description = "Gets evaluations request statuses statistics",
             summary = "Gets evaluations request statuses statistics",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200",
                             content = @Content(

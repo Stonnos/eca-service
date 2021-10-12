@@ -41,6 +41,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
+import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
 import static com.ecaservice.server.config.audit.AuditCodes.SET_ACTIVE_CONFIGURATION;
 import static com.ecaservice.server.controller.doc.ApiExamples.CLASSIFIERS_CONFIGURATION_DETAILS_RESPONSE_JSON;
 import static com.ecaservice.server.controller.doc.ApiExamples.COPY_CLASSIFIERS_CONFIGURATION_BAD_REQUEST_RESPONSE_JSON;
@@ -83,7 +84,7 @@ public class ClassifiersConfigurationController {
     @Operation(
             description = "Finds classifiers configurations with specified options",
             summary = "Finds classifiers configurations with specified options",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
                             @ExampleObject(value = SIMPLE_PAGE_REQUEST_JSON)
@@ -134,7 +135,7 @@ public class ClassifiersConfigurationController {
     @Operation(
             description = "Gets classifiers configuration details",
             summary = "Gets classifiers configuration details",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200",
                             content = @Content(
@@ -182,7 +183,7 @@ public class ClassifiersConfigurationController {
     @Operation(
             description = "Saves new classifiers configuration",
             summary = "Saves new classifiers configuration",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
                             @ExampleObject(value = CREATE_CLASSIFIERS_CONFIGURATION_REQUEST_JSON)
@@ -233,7 +234,7 @@ public class ClassifiersConfigurationController {
     @Operation(
             description = "Updates classifiers configuration",
             summary = "Updates classifiers configuration",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
                             @ExampleObject(value = UPDATE_CLASSIFIERS_CONFIGURATION_REQUEST_JSON)
@@ -275,7 +276,7 @@ public class ClassifiersConfigurationController {
     @Operation(
             description = "Deletes classifiers configuration",
             summary = "Deletes classifiers configuration",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200"),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
@@ -313,7 +314,7 @@ public class ClassifiersConfigurationController {
     @Operation(
             description = "Creates classifiers configuration copy",
             summary = "Creates classifiers configuration copy",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
                             @ExampleObject(value = COPY_CLASSIFIERS_CONFIGURATION_REQUEST_JSON)
@@ -365,7 +366,7 @@ public class ClassifiersConfigurationController {
     @Operation(
             description = "Sets classifiers configuration as active",
             summary = "Sets classifiers configuration as active",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200"),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
@@ -405,7 +406,7 @@ public class ClassifiersConfigurationController {
     @Operation(
             description = "Downloads classifiers configuration report in xlsx format",
             summary = "Downloads classifiers configuration report in xlsx format",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200"),
                     @ApiResponse(description = "Not authorized", responseCode = "401",

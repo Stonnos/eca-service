@@ -31,6 +31,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
+import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
 import static com.ecaservice.mail.controller.docs.ApiExamples.EMAIL_TEMPLATES_PAGE_RESPONSE_JSON;
 import static com.ecaservice.web.dto.doc.CommonApiExamples.INVALID_PAGE_REQUEST_RESPONSE_JSON;
 import static com.ecaservice.web.dto.doc.CommonApiExamples.SIMPLE_PAGE_REQUEST_JSON;
@@ -62,7 +63,7 @@ public class TemplateController {
     @Operation(
             description = "Finds email templates with specified options such as filter, sorting and paging",
             summary = "Finds email templates with specified options such as filter, sorting and paging",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
                             @ExampleObject(value = SIMPLE_PAGE_REQUEST_JSON)

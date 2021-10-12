@@ -47,6 +47,7 @@ import java.time.Duration;
 import java.util.Optional;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
+import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
 import static com.ecaservice.external.api.controller.docs.ApiExamples.EVALUATION_REQUEST_JSON;
 import static com.ecaservice.external.api.controller.docs.ApiExamples.EVALUATION_REQUEST_RESPONSE_JSON;
 import static com.ecaservice.external.api.controller.docs.ApiExamples.EVALUATION_STATUS_RESPONSE_JSON;
@@ -73,6 +74,8 @@ import static com.ecaservice.external.api.util.Utils.toJson;
 @RequiredArgsConstructor
 public class ExternalApiController {
 
+    private static final String SCOPE_EXTERNAL_API = "external-api";
+
     private final ExternalApiConfig externalApiConfig;
     private final MessageCorrelationService messageCorrelationService;
     private final EvaluationApiService evaluationApiService;
@@ -92,7 +95,7 @@ public class ExternalApiController {
     @Operation(
             description = "Uploads train data file",
             summary = "Uploads train data file",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_EXTERNAL_API),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200",
                             content = @Content(
@@ -152,7 +155,7 @@ public class ExternalApiController {
     @Operation(
             description = "Processes evaluation request",
             summary = "Processes evaluation request",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_EXTERNAL_API),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
                             @ExampleObject(value = EVALUATION_REQUEST_JSON)
@@ -210,7 +213,7 @@ public class ExternalApiController {
     @Operation(
             description = "Gets evaluation response status",
             summary = "Gets evaluation response status",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_EXTERNAL_API),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200",
                             content = @Content(
@@ -258,7 +261,7 @@ public class ExternalApiController {
     @Operation(
             description = "Downloads classifier model",
             summary = "Downloads classifier model",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_EXTERNAL_API),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200"),
                     @ApiResponse(description = "Not authorized", responseCode = "401",

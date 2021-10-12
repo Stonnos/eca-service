@@ -44,6 +44,7 @@ import static com.ecaservice.audit.controller.doc.ApiExamples.AUDIT_LOGS_PAGE_RE
 import static com.ecaservice.audit.controller.doc.ApiExamples.AUDIT_LOG_FILTER_RESPONSE_JSON;
 import static com.ecaservice.audit.dictionary.FilterDictionaries.AUDIT_LOG_TEMPLATE;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
+import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
 import static com.ecaservice.report.ReportGenerator.generateReport;
 import static com.ecaservice.web.dto.doc.CommonApiExamples.ACCESS_DENIED_RESPONSE_JSON;
 import static com.ecaservice.web.dto.doc.CommonApiExamples.DATA_NOT_FOUND_RESPONSE_JSON;
@@ -80,7 +81,7 @@ public class AuditLogController {
     @Operation(
             description = "Finds audit logs with specified options such as filter, sorting and paging",
             summary = "Finds audit logs with specified options such as filter, sorting and paging",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
                             @ExampleObject(value = AUDIT_LOGS_PAGE_REQUEST_JSON)
@@ -140,7 +141,7 @@ public class AuditLogController {
     @Operation(
             description = "Gets audit log filter fields",
             summary = "Gets audit log filter fields",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200",
                             content = @Content(
@@ -193,7 +194,7 @@ public class AuditLogController {
     @Operation(
             description = "Downloads audit logs base report in xlsx format",
             summary = "Downloads audit logs base report in xlsx format",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
                             @ExampleObject(value = AUDIT_LOGS_PAGE_REQUEST_JSON)

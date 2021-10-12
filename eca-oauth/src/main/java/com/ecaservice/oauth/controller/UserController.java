@@ -54,6 +54,7 @@ import java.security.Principal;
 import java.util.List;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
+import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.ACCESS_DENIED_RESPONSE_JSON;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.CREATE_USER_REQUEST_JSON;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.DATA_NOT_FOUND_RESPONSE_JSON;
@@ -96,7 +97,7 @@ public class UserController {
     @Operation(
             description = "Gets current authenticated user info",
             summary = "Gets current authenticated user info",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200",
                             content = @Content(
@@ -134,7 +135,7 @@ public class UserController {
     @Operation(
             description = "Logout current user and revokes access/refresh token pair",
             summary = "Logout current user and revokes access/refresh token pair",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200"),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
@@ -164,7 +165,7 @@ public class UserController {
     @Operation(
             description = "Enable/disable tfa for current authenticated user",
             summary = "Enable/disable tfa for current authenticated user",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200"),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
@@ -198,7 +199,7 @@ public class UserController {
     @Operation(
             description = "Finds users with specified options",
             summary = "Finds users with specified options",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
                             @ExampleObject(value = SIMPLE_PAGE_REQUEST_JSON)
@@ -258,7 +259,7 @@ public class UserController {
     @Operation(
             description = "Creates new user",
             summary = "Creates new user",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
                             @ExampleObject(value = CREATE_USER_REQUEST_JSON)
@@ -320,7 +321,7 @@ public class UserController {
     @Operation(
             description = "Updates info for current authenticated user",
             summary = "Updates info for current authenticated user",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
                             @ExampleObject(value = UPDATE_USER_INFO_REQUEST_JSON)
@@ -364,7 +365,7 @@ public class UserController {
     @Operation(
             description = "Uploads photo for current authenticated user",
             summary = "Uploads photo for current authenticated user",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200"),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
@@ -395,7 +396,7 @@ public class UserController {
     @Operation(
             description = "Downloads user photo",
             summary = "Downloads user photo",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200"),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
@@ -434,7 +435,7 @@ public class UserController {
     @Operation(
             description = "Deletes photo for current authenticated user",
             summary = "Deletes photo for current authenticated user",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200"),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
@@ -472,7 +473,7 @@ public class UserController {
     @Operation(
             description = "Locks user",
             summary = "Locks user",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200"),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
@@ -514,7 +515,7 @@ public class UserController {
     @Operation(
             description = "Unlocks user",
             summary = "Unlocks user",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200"),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
