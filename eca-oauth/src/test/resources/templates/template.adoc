@@ -48,8 +48,7 @@ __${method.requestType}__ *${method.endpoint}* - ${method.summary}
 |Name|Scopes
 <#list method.security as security>
 |*${security.name}*
-|
-<#list security.scopes as scope>
+a|<#list security.scopes as scope>
 
 * ${scope}
 </#list>

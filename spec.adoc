@@ -34,7 +34,7 @@ __PUT__ */users/update-info* - Updates info for current authenticated user
 |===
 |Name|Scopes
 |*EcaAuth*
-|
+a|
 
 * web
 |===
@@ -110,7 +110,7 @@ __POST__ */users/upload-photo* - Uploads photo for current authenticated user
 |===
 |Name|Scopes
 |*EcaAuth*
-|
+a|
 
 * web
 |===
@@ -164,7 +164,7 @@ __POST__ */users/unlock* - Unlocks user
 |===
 |Name|Scopes
 |*EcaAuth*
-|
+a|
 
 * web
 |===
@@ -238,7 +238,7 @@ __POST__ */users/tfa* - Enable/disable tfa for current authenticated user
 |===
 |Name|Scopes
 |*EcaAuth*
-|
+a|
 
 * web
 |===
@@ -299,7 +299,7 @@ __POST__ */users/logout* - Logout current user and revokes access/refresh token 
 |===
 |Name|Scopes
 |*EcaAuth*
-|
+a|
 
 * web
 |===
@@ -338,7 +338,7 @@ __POST__ */users/lock* - Locks user
 |===
 |Name|Scopes
 |*EcaAuth*
-|
+a|
 
 * web
 |===
@@ -412,7 +412,7 @@ __POST__ */users/list* - Finds users with specified options
 |===
 |Name|Scopes
 |*EcaAuth*
-|
+a|
 
 * web
 |===
@@ -519,7 +519,7 @@ __POST__ */users/create* - Creates new user
 |===
 |Name|Scopes
 |*EcaAuth*
-|
+a|
 
 * web
 |===
@@ -749,7 +749,7 @@ __POST__ */password/change/request* - Creates change password request
 |===
 |Name|Scopes
 |*EcaAuth*
-|
+a|
 
 * web
 |===
@@ -863,7 +863,7 @@ __POST__ */email/change/request* - Creates change email request
 |===
 |Name|Scopes
 |*EcaAuth*
-|
+a|
 
 * web
 |===
@@ -978,7 +978,7 @@ __GET__ */users/user-info* - Gets current authenticated user info
 |===
 |Name|Scopes
 |*EcaAuth*
-|
+a|
 
 * web
 |===
@@ -1037,7 +1037,7 @@ __GET__ */users/photo/{id}* - Downloads user photo
 |===
 |Name|Scopes
 |*EcaAuth*
-|
+a|
 
 * web
 |===
@@ -1106,7 +1106,7 @@ __DELETE__ */users/delete-photo* - Deletes photo for current authenticated user
 |===
 |Name|Scopes
 |*EcaAuth*
-|
+a|
 
 * web
 |===
