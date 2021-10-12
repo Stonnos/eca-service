@@ -1,2112 +1,49 @@
-= Microservice for classifiers learning
+= Microservice for users managment
 Автор: Roman Batygin <roman.batygin@mail.ru>
 :toc:
 :toc-title: Table of contents
 
 == Overview
 
-API provides operations for individual and ensemble classification models learning
+API provides operations with users for ECA web application
 
-== Updates classifiers configuration
+== Security schemas
 
-__PUT__ */experiment/classifiers-configurations/update* - Updates classifiers configuration
+
+=== EcaAuth - Oauth2 authentication
+
+[width=100%]
+|===
+|Type|Description|Scheme
+|*oauth2*
+|
+*Token pass in:* __header__
+
+*Bearer format:* __Authorization: Bearer <access token>__
+|
+
+*Grant type:* password
+|===
+
+== Updates info for current authenticated user
+
+__PUT__ */users/update-info* - Updates info for current authenticated user
 
 [width=100%]
 |===
 |Content type|Required|Schema|Example
 |*application/json*
 |true
-|<<UpdateClassifiersConfigurationDto>>
+|<<UpdateUserInfoDto>>
 a|
 [source,json]
 ----
 {
-  "id" : 1,
-  "configurationName" : "Classifiers configuration"
-}
-----
-|===
-
-*Api responses*
-[width=100%]
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|-
-|-
-a|
--
-|401
-|Not authorized
-|*application/json*
-|-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|400
-|Bad request
-|*application/json*
-|-
-a|
-[source,json]
-----
-[ {
-  "fieldName" : "configurationName",
-  "code" : "NotBlank",
-  "errorMessage" : "must not be blank"
-} ]
-----
-|===
-
-== Downloads specified base report in xlsx format
-
-__POST__ */reports/download* - Downloads specified base report in xlsx format
-
-[width=100%]
-|===
-|Content type|Required|Schema|Example
-|*application/json*
-|true
-|<<PageRequestDto>>
-a|
-[source,json]
-----
-{
-  "page" : 0,
-  "size" : 25
-}
-----
-|===
-
-*Request parameters*
-[width=100%]
-|===
-|Name|Description|Type|Schema
-|*reportType**
-|Report type
-|query
-a|__string__
-
-
-
-
-
-
-|===
-
-*Api responses*
-[width=100%]
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|-
-|-
-a|
--
-|401
-|Not authorized
-|*application/json*
-|-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|400
-|Bad request
-|*application/json*
-|-
-a|
-[source,json]
-----
-[ {
-  "fieldName" : "page",
-  "code" : "Min",
-  "errorMessage" : "must be greater than or equal to 0"
-}, {
-  "fieldName" : "size",
-  "code" : "Min",
-  "errorMessage" : "must be greater than or equal to 1"
-} ]
-----
-|===
-
-== Finds experiments with specified options
-
-__POST__ */experiment/list* - Finds experiments with specified options
-
-[width=100%]
-|===
-|Content type|Required|Schema|Example
-|*application/json*
-|true
-|<<PageRequestDto>>
-a|
-[source,json]
-----
-{
-  "page" : 0,
-  "size" : 25,
-  "sortField" : "creationDate",
-  "ascending" : false,
-  "searchQuery" : "",
-  "filters" : [ {
-    "name" : "evaluationMethod",
-    "values" : [ "CROSS_VALIDATION" ],
-    "matchMode" : "EQUALS"
-  }, {
-    "name" : "requestStatus",
-    "values" : [ "FINISHED" ],
-    "matchMode" : "EQUALS"
-  }, {
-    "name" : "experimentType",
-    "values" : [ "ADA_BOOST", "NEURAL_NETWORKS", "HETEROGENEOUS_ENSEMBLE", "MODIFIED_HETEROGENEOUS_ENSEMBLE" ],
-    "matchMode" : "EQUALS"
-  }, {
-    "name" : "creationDate",
-    "values" : [ "2021-07-12" ],
-    "matchMode" : "RANGE"
-  } ]
-}
-----
-|===
-
-*Api responses*
-[width=100%]
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|*application/json*
-|<<ExperimentsPageDto>>
-a|
-[source,json]
-----
-{
-  "content" : [ {
-    "id" : 1,
-    "requestId" : "1d2de514-3a87-4620-9b97-c260e24340de",
-    "creationDate" : "2021-07-01 14:00:00",
-    "startDate" : "2021-07-01 14:00:30",
-    "endDate" : "2021-07-01 14:02:13",
-    "requestStatus" : {
-      "value" : "FINISHED",
-      "description" : "Завершена"
-    },
-    "evaluationMethod" : {
-      "value" : "CROSS_VALIDATION",
-      "description" : "V-блочная кросс-проверка"
-    },
-    "numFolds" : 10,
-    "numTests" : 1,
-    "seed" : 1,
-    "evaluationTotalTime" : "00:00:1:43",
-    "firstName" : "Roman",
-    "email" : "test@mail.ru",
-    "experimentAbsolutePath" : "experiment_1d2de514-3a87-4620-9b97-c260e24340de.model",
-    "trainingDataAbsolutePath" : "data_1d2de514-3a87-4620-9b97-c260e24340de.xls",
-    "sentDate" : "2021-07-01 14:02:15",
-    "deletedDate" : "2021-07-14 14:00:00",
-    "experimentType" : {
-      "value" : "RANDOM_FORESTS",
-      "description" : "Случайные леса"
-    }
-  } ],
-  "page" : 0,
-  "totalCount" : 1
-}
-----
-|401
-|Not authorized
-|*application/json*
-|-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|400
-|Bad request
-|*application/json*
-|-
-a|
-[source,json]
-----
-[ {
-  "fieldName" : "page",
-  "code" : "Min",
-  "errorMessage" : "must be greater than or equal to 0"
-}, {
-  "fieldName" : "size",
-  "code" : "Min",
-  "errorMessage" : "must be greater than or equal to 1"
-} ]
-----
-|===
-
-== Creates experiment request with specified options
-
-__POST__ */experiment/create* - Creates experiment request with specified options
-
-[width=100%]
-|===
-|Content type|Required|Schema|Example
-|*multipart/form-data*
-|false
-|-
-a|
--
-|===
-
-*Request parameters*
-[width=100%]
-|===
-|Name|Description|Type|Schema
-|*experimentType**
-|Experiment type
-|query
-a|__string__
-
-
-
-
-
-
-|*evaluationMethod**
-|Evaluation method
-|query
-a|__string__
-
-
-
-
-
-
-|===
-
-*Api responses*
-[width=100%]
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|*application/json*
-|<<CreateExperimentResultDto>>
-a|
-[source,json]
-----
-{
-  "id" : 1,
-  "requestId" : "1d2de514-3a87-4620-9b97-c260e24340de"
-}
-----
-|401
-|Not authorized
-|*application/json*
-|-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|===
-
-== Saves new classifier options for specified configuration
-
-__POST__ */experiment/classifiers-options/save* - Saves new classifier options for specified configuration
-
-[width=100%]
-|===
-|Content type|Required|Schema|Example
-|*multipart/form-data*
-|false
-|-
-a|
--
-|===
-
-*Request parameters*
-[width=100%]
-|===
-|Name|Description|Type|Schema
-|*configurationId**
-|Configuration id
-|query
-a|__integer__
-__(int64)__
-
-
-
-
-
-
-|===
-
-*Api responses*
-[width=100%]
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|*application/json*
-|<<CreateClassifierOptionsResultDto>>
-a|
-[source,json]
-----
-{
-  "id" : 1,
-  "sourceFileName" : "cart.json",
-  "success" : true,
-  "errorMessage" : ""
-}
-----
-|401
-|Not authorized
-|*application/json*
-|-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|===
-
-== Finds classifiers options configs page
-
-__POST__ */experiment/classifiers-options/page* - Finds classifiers options configs page
-
-[width=100%]
-|===
-|Content type|Required|Schema|Example
-|*application/json*
-|true
-|<<PageRequestDto>>
-a|
-[source,json]
-----
-{
-  "page" : 0,
-  "size" : 25
-}
-----
-|===
-
-*Request parameters*
-[width=100%]
-|===
-|Name|Description|Type|Schema
-|*configurationId**
-|Configuration id
-|query
-a|__integer__
-__(int64)__
-
-
-
-
-
-
-|===
-
-*Api responses*
-[width=100%]
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|*application/json*
-|<<ClassifiersOptionsPageDto>>
-a|
-[source,json]
-----
-{
-  "content" : [ {
-    "id" : 1,
-    "optionsName" : "DecisionTreeOptions",
-    "creationDate" : "2021-07-01 14:00:00",
-    "createdBy" : "admin",
-    "config" : "Json config"
-  } ],
-  "page" : 0,
-  "totalCount" : 1
-}
-----
-|401
-|Not authorized
-|*application/json*
-|-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|400
-|Bad request
-|*application/json*
-|-
-a|
-[source,json]
-----
-[ {
-  "fieldName" : "page",
-  "code" : "Min",
-  "errorMessage" : "must be greater than or equal to 0"
-}, {
-  "fieldName" : "size",
-  "code" : "Min",
-  "errorMessage" : "must be greater than or equal to 1"
-} ]
-----
-|===
-
-== Sets classifiers configuration as active
-
-__POST__ */experiment/classifiers-configurations/set-active* - Sets classifiers configuration as active
-
-
-*Request parameters*
-[width=100%]
-|===
-|Name|Description|Type|Schema
-|*id**
-|Configuration id
-|query
-a|__integer__
-__(int64)__
-
-
-
-
-
-
-|===
-
-*Api responses*
-[width=100%]
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|-
-|-
-a|
--
-|401
-|Not authorized
-|*application/json*
-|-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|400
-|Bad request
-|*application/json*
-|-
-a|
-[source,json]
-----
-[ {
-  "fieldName" : null,
-  "code" : "DataNotFound",
-  "errorMessage" : "Entity with search key [1] not found!"
-} ]
-----
-|===
-
-== Saves new classifiers configuration
-
-__POST__ */experiment/classifiers-configurations/save* - Saves new classifiers configuration
-
-[width=100%]
-|===
-|Content type|Required|Schema|Example
-|*application/json*
-|true
-|<<CreateClassifiersConfigurationDto>>
-a|
-[source,json]
-----
-{
-  "configurationName" : "Classifiers configuration"
-}
-----
-|===
-
-*Api responses*
-[width=100%]
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|*application/json*
-|<<ClassifiersConfigurationDto>>
-a|
-[source,json]
-----
-{
-  "id" : 1,
-  "configurationName" : "Default configuration",
-  "creationDate" : "2021-07-01 14:00:00",
-  "createdBy" : "admin",
-  "updated" : "2021-07-01 14:00:00",
-  "active" : true,
-  "buildIn" : true,
-  "classifiersOptionsCount" : 25
-}
-----
-|401
-|Not authorized
-|*application/json*
-|-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|400
-|Bad request
-|*application/json*
-|-
-a|
-[source,json]
-----
-[ {
-  "fieldName" : "configurationName",
-  "code" : "NotBlank",
-  "errorMessage" : "must not be blank"
-} ]
-----
-|===
-
-== Finds classifiers configurations with specified options
-
-__POST__ */experiment/classifiers-configurations/list* - Finds classifiers configurations with specified options
-
-[width=100%]
-|===
-|Content type|Required|Schema|Example
-|*application/json*
-|true
-|<<PageRequestDto>>
-a|
-[source,json]
-----
-{
-  "page" : 0,
-  "size" : 25
-}
-----
-|===
-
-*Api responses*
-[width=100%]
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|*application/json*
-|<<ClassifierConfigurationsPageDto>>
-a|
-[source,json]
-----
-{
-  "content" : [ {
-    "id" : 1,
-    "configurationName" : "Default configuration",
-    "creationDate" : "2021-07-01 14:00:00",
-    "createdBy" : "admin",
-    "updated" : "2021-07-01 14:00:00",
-    "active" : true,
-    "buildIn" : true,
-    "classifiersOptionsCount" : 25
-  } ],
-  "page" : 0,
-  "totalCount" : 1
-}
-----
-|401
-|Not authorized
-|*application/json*
-|-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|400
-|Bad request
-|*application/json*
-|-
-a|
-[source,json]
-----
-[ {
-  "fieldName" : "page",
-  "code" : "Min",
-  "errorMessage" : "must be greater than or equal to 0"
-}, {
-  "fieldName" : "size",
-  "code" : "Min",
-  "errorMessage" : "must be greater than or equal to 1"
-} ]
-----
-|===
-
-== Creates classifiers configuration copy
-
-__POST__ */experiment/classifiers-configurations/copy* - Creates classifiers configuration copy
-
-[width=100%]
-|===
-|Content type|Required|Schema|Example
-|*application/json*
-|true
-|<<UpdateClassifiersConfigurationDto>>
-a|
-[source,json]
-----
-{
-  "id" : 1,
-  "configurationName" : "Classifiers configuration"
-}
-----
-|===
-
-*Api responses*
-[width=100%]
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|*application/json*
-|<<UpdateClassifiersConfigurationDto>>
-a|
-[source,json]
-----
-{
-  "id" : 1,
-  "configurationName" : "Default configuration",
-  "creationDate" : "2021-07-01 14:00:00",
-  "createdBy" : "admin",
-  "updated" : "2021-07-01 14:00:00",
-  "active" : true,
-  "buildIn" : true,
-  "classifiersOptionsCount" : 25
-}
-----
-|401
-|Not authorized
-|*application/json*
-|-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|400
-|Bad request
-|*application/json*
-|-
-a|
-[source,json]
-----
-[ {
-  "fieldName" : "configurationName",
-  "code" : "NotBlank",
-  "errorMessage" : "must not be blank"
-} ]
-----
-|===
-
-== Finds evaluation logs with specified options
-
-__POST__ */evaluation/list* - Finds evaluation logs with specified options
-
-[width=100%]
-|===
-|Content type|Required|Schema|Example
-|*application/json*
-|true
-|<<PageRequestDto>>
-a|
-[source,json]
-----
-{
-  "page" : 0,
-  "size" : 25,
-  "sortField" : "creationDate",
-  "ascending" : false,
-  "searchQuery" : "",
-  "filters" : [ {
-    "name" : "evaluationMethod",
-    "values" : [ "CROSS_VALIDATION" ],
-    "matchMode" : "EQUALS"
-  }, {
-    "name" : "requestStatus",
-    "values" : [ "FINISHED" ],
-    "matchMode" : "EQUALS"
-  }, {
-    "name" : "creationDate",
-    "values" : [ "2021-07-12" ],
-    "matchMode" : "RANGE"
-  } ]
-}
-----
-|===
-
-*Api responses*
-[width=100%]
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|*application/json*
-|<<EvaluationLogsPageDto>>
-a|
-[source,json]
-----
-{
-  "content" : [ {
-    "id" : 1,
-    "requestId" : "1d2de514-3a87-4620-9b97-c260e24340de",
-    "creationDate" : "2021-07-01 14:00:00",
-    "startDate" : "2021-07-01 14:00:01",
-    "endDate" : "2021-07-01 14:00:12",
-    "requestStatus" : {
-      "value" : "FINISHED",
-      "description" : "Завершена"
-    },
-    "evaluationMethod" : {
-      "value" : "CROSS_VALIDATION",
-      "description" : "V-блочная кросс-проверка"
-    },
-    "numFolds" : 10,
-    "numTests" : 1,
-    "seed" : 1,
-    "evaluationTotalTime" : "00:00:00:11",
-    "classifierInfo" : {
-      "classifierName" : "CART",
-      "inputOptions" : [ {
-        "optionName" : "Iterations number",
-        "optionValue" : "100"
-      } ]
-    },
-    "instancesInfo" : {
-      "relationName" : "iris",
-      "numInstances" : 150,
-      "numAttributes" : 5,
-      "numClasses" : 4,
-      "className" : "class"
-    }
-  } ],
-  "page" : 0,
-  "totalCount" : 1
-}
-----
-|401
-|Not authorized
-|*application/json*
-|-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|400
-|Bad request
-|*application/json*
-|-
-a|
-[source,json]
-----
-[ {
-  "fieldName" : "page",
-  "code" : "Min",
-  "errorMessage" : "must be greater than or equal to 0"
-}, {
-  "fieldName" : "size",
-  "code" : "Min",
-  "errorMessage" : "must be greater than or equal to 1"
-} ]
-----
-|===
-
-== Finds classifiers options requests models with specified options
-
-__POST__ */classifiers-options-requests* - Finds classifiers options requests models with specified options
-
-[width=100%]
-|===
-|Content type|Required|Schema|Example
-|*application/json*
-|true
-|<<PageRequestDto>>
-a|
-[source,json]
-----
-{
-  "page" : 0,
-  "size" : 25,
-  "sortField" : "requestDate",
-  "ascending" : false,
-  "searchQuery" : "",
-  "filters" : [ {
-    "name" : "evaluationMethod",
-    "values" : [ "CROSS_VALIDATION" ],
-    "matchMode" : "EQUALS"
-  }, {
-    "name" : "responseStatus",
-    "values" : [ "SUCCESS" ],
-    "matchMode" : "EQUALS"
-  }, {
-    "name" : "requestDate",
-    "values" : [ "2021-07-16" ],
-    "matchMode" : "RANGE"
-  } ]
-}
-----
-|===
-
-*Api responses*
-[width=100%]
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|*application/json*
-|<<ClassifierOptionsRequestsPageDto>>
-a|
-[source,json]
-----
-{
-  "content" : [ {
-    "requestDate" : "2021-07-01 14:00:00",
-    "requestId" : "1d2de514-3a87-4620-9b97-c260e24340de",
-    "relationName" : "glass",
-    "evaluationMethod" : {
-      "value" : "CROSS_VALIDATION",
-      "description" : "V-блочная кросс-проверка"
-    },
-    "numFolds" : 10,
-    "numTests" : 1,
-    "seed" : 1,
-    "responseStatus" : {
-      "value" : "SUCCESS",
-      "description" : "Успешно"
-    },
-    "classifierOptionsResponseModels" : [ {
-      "classifierName" : "CART",
-      "options" : "json config"
-    } ]
-  } ],
-  "page" : 0,
-  "totalCount" : 1
-}
-----
-|401
-|Not authorized
-|*application/json*
-|-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|400
-|Bad request
-|*application/json*
-|-
-a|
-[source,json]
-----
-[ {
-  "fieldName" : "page",
-  "code" : "Min",
-  "errorMessage" : "must be greater than or equal to 0"
-}, {
-  "fieldName" : "size",
-  "code" : "Min",
-  "errorMessage" : "must be greater than or equal to 1"
-} ]
-----
-|===
-
-== Gets experiment filter fields
-
-__GET__ */filter-templates/experiment* - Gets experiment filter fields
-
-
-*Api responses*
-[width=100%]
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|*application/json*
-|-
-a|
-[source,json]
-----
-[ {
-  "fieldName" : "requestId",
-  "description" : "UUID заявки",
-  "fieldOrder" : 0,
-  "filterFieldType" : "TEXT",
-  "matchMode" : "LIKE",
-  "multiple" : false,
-  "dictionary" : null
-}, {
-  "fieldName" : "email",
-  "description" : "Email заявки",
-  "fieldOrder" : 1,
-  "filterFieldType" : "TEXT",
-  "matchMode" : "LIKE",
-  "multiple" : false,
-  "dictionary" : null
-}, {
-  "fieldName" : "evaluationMethod",
-  "description" : "Метод оценки точности",
-  "fieldOrder" : 2,
-  "filterFieldType" : "REFERENCE",
-  "matchMode" : "EQUALS",
-  "multiple" : false,
-  "dictionary" : {
-    "name" : "evaluationMethod",
-    "values" : [ {
-      "label" : "Использование обучающего множества",
-      "value" : "TRAINING_DATA"
-    }, {
-      "label" : "V-блочная кросс-проверка",
-      "value" : "CROSS_VALIDATION"
-    } ]
-  }
-}, {
-  "fieldName" : "requestStatus",
-  "description" : "Статус заявки",
-  "fieldOrder" : 3,
-  "filterFieldType" : "REFERENCE",
-  "matchMode" : "EQUALS",
-  "multiple" : false,
-  "dictionary" : {
-    "name" : "requestStatus",
-    "values" : [ {
-      "label" : "Новая",
-      "value" : "NEW"
-    }, {
-      "label" : "Завершена",
-      "value" : "FINISHED"
-    }, {
-      "label" : "Ошибка",
-      "value" : "ERROR"
-    }, {
-      "label" : "Таймаут",
-      "value" : "TIMEOUT"
-    }, {
-      "label" : "В работе",
-      "value" : "IN_PROGRESS"
-    } ]
-  }
-}, {
-  "fieldName" : "experimentType",
-  "description" : "Тип эксперимента",
-  "fieldOrder" : 4,
-  "filterFieldType" : "REFERENCE",
-  "matchMode" : "EQUALS",
-  "multiple" : true,
-  "dictionary" : {
-    "name" : "experimentType",
-    "values" : [ {
-      "label" : "Нейронные сети",
-      "value" : "NEURAL_NETWORKS"
-    }, {
-      "label" : "Алгоритм AdaBoost",
-      "value" : "ADA_BOOST"
-    }, {
-      "label" : "Алгоритм Stacking",
-      "value" : "STACKING"
-    }, {
-      "label" : "Случайные леса",
-      "value" : "RANDOM_FORESTS"
-    }, {
-      "label" : "Алгоритм Stacking CV",
-      "value" : "STACKING_CV"
-    }, {
-      "label" : "Деревья решений",
-      "value" : "DECISION_TREE"
-    }, {
-      "label" : "Неоднородный ансамбль",
-      "value" : "HETEROGENEOUS_ENSEMBLE"
-    }, {
-      "label" : "Мод. неоднородный ансамбль",
-      "value" : "MODIFIED_HETEROGENEOUS_ENSEMBLE"
-    }, {
-      "label" : "Алгоритм KNN",
-      "value" : "KNN"
-    } ]
-  }
-}, {
-  "fieldName" : "creationDate",
-  "description" : "Дата создания заявки",
-  "fieldOrder" : 5,
-  "filterFieldType" : "DATE",
-  "matchMode" : "RANGE",
-  "multiple" : true,
-  "dictionary" : null
-}, {
-  "fieldName" : "sentDate",
-  "description" : "Дата отправки результатов",
-  "fieldOrder" : 6,
-  "filterFieldType" : "DATE",
-  "matchMode" : "RANGE",
-  "multiple" : true,
-  "dictionary" : null
-} ]
-----
-|401
-|Not authorized
-|*application/json*
-|-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|===
-
-== Gets experiment types filter dictionary
-
-__GET__ */filter-templates/experiment-types* - Gets experiment types filter dictionary
-
-
-*Api responses*
-[width=100%]
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|*application/json*
-|<<FilterDictionaryDto>>
-a|
-[source,json]
-----
-{
-  "name" : "experimentType",
-  "values" : [ {
-    "label" : "Нейронные сети",
-    "value" : "NEURAL_NETWORKS"
-  }, {
-    "label" : "Алгоритм AdaBoost",
-    "value" : "ADA_BOOST"
-  }, {
-    "label" : "Алгоритм Stacking",
-    "value" : "STACKING"
-  }, {
-    "label" : "Случайные леса",
-    "value" : "RANDOM_FORESTS"
-  }, {
-    "label" : "Алгоритм Stacking CV",
-    "value" : "STACKING_CV"
-  }, {
-    "label" : "Деревья решений",
-    "value" : "DECISION_TREE"
-  }, {
-    "label" : "Неоднородный ансамбль",
-    "value" : "HETEROGENEOUS_ENSEMBLE"
-  }, {
-    "label" : "Мод. неоднородный ансамбль",
-    "value" : "MODIFIED_HETEROGENEOUS_ENSEMBLE"
-  }, {
-    "label" : "Алгоритм KNN",
-    "value" : "KNN"
-  } ]
-}
-----
-|401
-|Not authorized
-|*application/json*
-|-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|===
-
-== Gets evaluation log filter fields
-
-__GET__ */filter-templates/evaluation* - Gets evaluation log filter fields
-
-
-*Api responses*
-[width=100%]
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|*application/json*
-|-
-a|
-[source,json]
-----
-[ {
-  "fieldName" : "requestId",
-  "description" : "UUID заявки",
-  "fieldOrder" : 0,
-  "filterFieldType" : "TEXT",
-  "matchMode" : "LIKE",
-  "multiple" : false,
-  "dictionary" : null
-}, {
-  "fieldName" : "classifierInfo.classifierName",
-  "description" : "Классификатор",
-  "fieldOrder" : 1,
-  "filterFieldType" : "TEXT",
-  "matchMode" : "LIKE",
-  "multiple" : false,
-  "dictionary" : null
-}, {
-  "fieldName" : "instancesInfo.relationName",
-  "description" : "Обучающая выборка",
-  "fieldOrder" : 2,
-  "filterFieldType" : "TEXT",
-  "matchMode" : "LIKE",
-  "multiple" : false,
-  "dictionary" : null
-}, {
-  "fieldName" : "evaluationMethod",
-  "description" : "Метод оценки точности",
-  "fieldOrder" : 3,
-  "filterFieldType" : "REFERENCE",
-  "matchMode" : "EQUALS",
-  "multiple" : false,
-  "dictionary" : {
-    "name" : "evaluationMethod",
-    "values" : [ {
-      "label" : "Использование обучающего множества",
-      "value" : "TRAINING_DATA"
-    }, {
-      "label" : "V-блочная кросс-проверка",
-      "value" : "CROSS_VALIDATION"
-    } ]
-  }
-}, {
-  "fieldName" : "requestStatus",
-  "description" : "Статус заявки",
-  "fieldOrder" : 4,
-  "filterFieldType" : "REFERENCE",
-  "matchMode" : "EQUALS",
-  "multiple" : false,
-  "dictionary" : {
-    "name" : "requestStatus",
-    "values" : [ {
-      "label" : "Новая",
-      "value" : "NEW"
-    }, {
-      "label" : "Завершена",
-      "value" : "FINISHED"
-    }, {
-      "label" : "Ошибка",
-      "value" : "ERROR"
-    }, {
-      "label" : "Таймаут",
-      "value" : "TIMEOUT"
-    }, {
-      "label" : "В работе",
-      "value" : "IN_PROGRESS"
-    } ]
-  }
-}, {
-  "fieldName" : "creationDate",
-  "description" : "Дата создания заявки",
-  "fieldOrder" : 5,
-  "filterFieldType" : "DATE",
-  "matchMode" : "RANGE",
-  "multiple" : true,
-  "dictionary" : null
-} ]
-----
-|401
-|Not authorized
-|*application/json*
-|-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|===
-
-== Gets evaluation method filter dictionary
-
-__GET__ */filter-templates/evaluation-methods* - Gets evaluation method filter dictionary
-
-
-*Api responses*
-[width=100%]
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|*application/json*
-|<<FilterDictionaryDto>>
-a|
-[source,json]
-----
-{
-  "name" : "evaluationMethod",
-  "values" : [ {
-    "label" : "Использование обучающего множества",
-    "value" : "TRAINING_DATA"
-  }, {
-    "label" : "V-блочная кросс-проверка",
-    "value" : "CROSS_VALIDATION"
-  } ]
-}
-----
-|401
-|Not authorized
-|*application/json*
-|-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|===
-
-== Gets classifier options request filter fields
-
-__GET__ */filter-templates/classifier-options-request* - Gets classifier options request filter fields
-
-
-*Api responses*
-[width=100%]
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|*application/json*
-|-
-a|
-[source,json]
-----
-[ {
-  "fieldName" : "requestId",
-  "description" : "UUID заявки",
-  "fieldOrder" : 0,
-  "filterFieldType" : "TEXT",
-  "matchMode" : "LIKE",
-  "multiple" : false,
-  "dictionary" : null
-}, {
-  "fieldName" : "relationName",
-  "description" : "Обучающая выборка",
-  "fieldOrder" : 1,
-  "filterFieldType" : "TEXT",
-  "matchMode" : "LIKE",
-  "multiple" : false,
-  "dictionary" : null
-}, {
-  "fieldName" : "evaluationMethod",
-  "description" : "Метод оценки точности",
-  "fieldOrder" : 2,
-  "filterFieldType" : "REFERENCE",
-  "matchMode" : "EQUALS",
-  "multiple" : false,
-  "dictionary" : {
-    "name" : "evaluationMethod",
-    "values" : [ {
-      "label" : "Использование обучающего множества",
-      "value" : "TRAINING_DATA"
-    }, {
-      "label" : "V-блочная кросс-проверка",
-      "value" : "CROSS_VALIDATION"
-    } ]
-  }
-}, {
-  "fieldName" : "responseStatus",
-  "description" : "Статус ответа от ERS",
-  "fieldOrder" : 3,
-  "filterFieldType" : "REFERENCE",
-  "matchMode" : "EQUALS",
-  "multiple" : false,
-  "dictionary" : {
-    "name" : "ersResponseStatus",
-    "values" : [ {
-      "label" : "Успешно",
-      "value" : "SUCCESS"
-    }, {
-      "label" : "Заявка с таким UUID уже существует",
-      "value" : "DUPLICATE_REQUEST_ID"
-    }, {
-      "label" : "Ошибка",
-      "value" : "ERROR"
-    }, {
-      "label" : "Не найдена обучающая выборка",
-      "value" : "DATA_NOT_FOUND"
-    }, {
-      "label" : "Не найдены оптимальные конфигурации моделей",
-      "value" : "RESULTS_NOT_FOUND"
-    } ]
-  }
-}, {
-  "fieldName" : "requestDate",
-  "description" : "Дата отправки запроса в ERS",
-  "fieldOrder" : 4,
-  "filterFieldType" : "DATE",
-  "matchMode" : "RANGE",
-  "multiple" : true,
-  "dictionary" : null
-} ]
-----
-|401
-|Not authorized
-|*application/json*
-|-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|===
-
-== Downloads experiment training data by specified id
-
-__GET__ */experiment/training-data/{id}* - Downloads experiment training data by specified id
-
-
-*Request parameters*
-[width=100%]
-|===
-|Name|Description|Type|Schema
-|*id**
-|Experiment id
-|path
-a|__integer__
-__(int64)__
-
-
-
-
-
-
-|===
-
-*Api responses*
-[width=100%]
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|**/**
-|-
-a|
--
-|401
-|Not authorized
-|*application/json*
-|-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|400
-|Bad request
-|*application/json*
-|-
-a|
-[source,json]
-----
-[ {
-  "fieldName" : null,
-  "code" : "DataNotFound",
-  "errorMessage" : "Entity with search key [1] not found!"
-} ]
-----
-|===
-
-== Gets experiment types statistics
-
-__GET__ */experiment/statistics* - Gets experiment types statistics
-
-
-*Request parameters*
-[width=100%]
-|===
-|Name|Description|Type|Schema
-|*createdDateFrom*
-|Experiment created date from
-|query
-a|__string__
-__(date)__
-
-
-
-
-
-
-|*createdDateTo*
-|Experiment created date to
-|query
-a|__string__
-__(date)__
-
-
-
-
-
-
-|===
-
-*Api responses*
-[width=100%]
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|*application/json*
-|-
-a|
-[source,json]
-----
-[ {
-  "name" : "NEURAL_NETWORKS",
-  "label" : "Нейронные сети",
-  "count" : 0
-}, {
-  "name" : "HETEROGENEOUS_ENSEMBLE",
-  "label" : "Неоднородный ансамбль",
-  "count" : 0
-}, {
-  "name" : "MODIFIED_HETEROGENEOUS_ENSEMBLE",
-  "label" : "Мод. неоднородный ансамбль",
-  "count" : 0
-}, {
-  "name" : "ADA_BOOST",
-  "label" : "Алгоритм AdaBoost",
-  "count" : 0
-}, {
-  "name" : "STACKING",
-  "label" : "Алгоритм Stacking",
-  "count" : 0
-}, {
-  "name" : "KNN",
-  "label" : "Алгоритм KNN",
-  "count" : 0
-}, {
-  "name" : "RANDOM_FORESTS",
-  "label" : "Случайные леса",
-  "count" : 0
-}, {
-  "name" : "STACKING_CV",
-  "label" : "Алгоритм Stacking CV",
-  "count" : 0
-}, {
-  "name" : "DECISION_TREE",
-  "label" : "Деревья решений",
-  "count" : 0
-} ]
-----
-|401
-|Not authorized
-|*application/json*
-|-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|===
-
-== Downloads experiment results by specified id
-
-__GET__ */experiment/results/{id}* - Downloads experiment results by specified id
-
-
-*Request parameters*
-[width=100%]
-|===
-|Name|Description|Type|Schema
-|*id**
-|Experiment id
-|path
-a|__integer__
-__(int64)__
-
-
-
-
-
-
-|===
-
-*Api responses*
-[width=100%]
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|**/**
-|-
-a|
--
-|401
-|Not authorized
-|*application/json*
-|-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|400
-|Bad request
-|*application/json*
-|-
-a|
-[source,json]
-----
-[ {
-  "fieldName" : null,
-  "code" : "DataNotFound",
-  "errorMessage" : "Entity with search key [1] not found!"
-} ]
-----
-|===
-
-== Finds experiment results details with specified id
-
-__GET__ */experiment/results/details/{id}* - Finds experiment results details with specified id
-
-
-*Request parameters*
-[width=100%]
-|===
-|Name|Description|Type|Schema
-|*id**
-|Experiment results id
-|path
-a|__integer__
-__(int64)__
-
-
-
-
-
-
-|===
-
-*Api responses*
-[width=100%]
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|*application/json*
-|<<ExperimentResultsDetailsDto>>
-a|
-[source,json]
-----
-{
-  "id" : 1,
-  "classifierInfo" : {
-    "classifierName" : "CART",
-    "inputOptions" : [ {
-      "optionName" : "Iterations number",
-      "optionValue" : "100"
-    } ]
-  },
-  "resultsIndex" : 0,
-  "pctCorrect" : 99,
-  "sent" : true,
-  "experimentDto" : {
-    "id" : 1,
-    "requestId" : "1d2de514-3a87-4620-9b97-c260e24340de",
-    "creationDate" : "2021-07-01 14:00:00",
-    "startDate" : "2021-07-01 14:00:30",
-    "endDate" : "2021-07-01 14:02:13",
-    "requestStatus" : {
-      "value" : "FINISHED",
-      "description" : "Завершена"
-    },
-    "evaluationMethod" : {
-      "value" : "CROSS_VALIDATION",
-      "description" : "V-блочная кросс-проверка"
-    },
-    "numFolds" : 10,
-    "numTests" : 1,
-    "seed" : 1,
-    "evaluationTotalTime" : "00:00:1:43",
-    "firstName" : "Roman",
-    "email" : "test@mail.ru",
-    "experimentAbsolutePath" : "experiment_1d2de514-3a87-4620-9b97-c260e24340de.model",
-    "trainingDataAbsolutePath" : "data_1d2de514-3a87-4620-9b97-c260e24340de.xls",
-    "sentDate" : "2021-07-01 14:02:15",
-    "deletedDate" : "2021-07-14 14:00:00",
-    "experimentType" : {
-      "value" : "RANDOM_FORESTS",
-      "description" : "Случайные леса"
-    }
-  },
-  "evaluationResultsDto" : {
-    "evaluationResultsStatus" : {
-      "value" : "SUCCESS",
-      "description" : "Успешно"
-    },
-    "evaluationStatisticsDto" : {
-      "numTestInstances" : 150,
-      "numCorrect" : 146,
-      "numIncorrect" : 4,
-      "pctCorrect" : 96,
-      "pctIncorrect" : 4,
-      "meanAbsoluteError" : 0.29,
-      "rootMeanSquaredError" : 0.01,
-      "maxAucValue" : 0.89,
-      "varianceError" : 0.0012,
-      "confidenceIntervalLowerBound" : 0.01,
-      "confidenceIntervalUpperBound" : 0.035
-    },
-    "classificationCosts" : [ {
-      "classValue" : "Iris-setosa",
-      "truePositiveRate" : 0.75,
-      "falsePositiveRate" : 0.25,
-      "trueNegativeRate" : 0.5,
-      "falseNegativeRate" : 0.5,
-      "aucValue" : 0.9
-    } ]
-  }
-}
-----
-|401
-|Not authorized
-|*application/json*
-|-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|400
-|Bad request
-|*application/json*
-|-
-a|
-[source,json]
-----
-[ {
-  "fieldName" : null,
-  "code" : "DataNotFound",
-  "errorMessage" : "Entity with search key [1] not found!"
-} ]
-----
-|===
-
-== Gets experiments request statuses statistics
-
-__GET__ */experiment/request-statuses-statistics* - Gets experiments request statuses statistics
-
-
-*Api responses*
-[width=100%]
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|*application/json*
-|<<RequestStatusStatisticsDto>>
-a|
-[source,json]
-----
-{
-  "totalCount" : 100,
-  "newRequestsCount" : 0,
-  "inProgressRequestsCount" : 1,
-  "finishedRequestsCount" : 99,
-  "timeoutRequestsCount" : 0,
-  "errorRequestsCount" : 0
-}
-----
-|401
-|Not authorized
-|*application/json*
-|-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|===
-
-== Finds experiment progress with specified id
-
-__GET__ */experiment/progress/{id}* - Finds experiment progress with specified id
-
-
-*Request parameters*
-[width=100%]
-|===
-|Name|Description|Type|Schema
-|*id**
-|Experiment id
-|path
-a|__integer__
-__(int64)__
-
-
-
-
-
-
-|===
-
-*Api responses*
-[width=100%]
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|*application/json*
-|<<ExperimentProgressDto>>
-a|
-[source,json]
-----
-{
-  "finished" : false,
-  "progress" : 85,
-  "estimatedTimeLeft" : "00:01:24"
-}
-----
-|401
-|Not authorized
-|*application/json*
-|-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|400
-|Bad request
-|*application/json*
-|-
-a|
-[source,json]
-----
-[ {
-  "fieldName" : null,
-  "code" : "DataNotFound",
-  "errorMessage" : "Entity with search key [1] not found!"
-} ]
-----
-|===
-
-== Gets experiment ERS report
-
-__GET__ */experiment/ers-report/{id}* - Gets experiment ERS report
-
-
-*Request parameters*
-[width=100%]
-|===
-|Name|Description|Type|Schema
-|*id**
-|Experiment id
-|path
-a|__integer__
-__(int64)__
-
-
-
-
-
-
-|===
-
-*Api responses*
-[width=100%]
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|*application/json*
-|<<ExperimentErsReportDto>>
-a|
-[source,json]
-----
-{
-  "experimentRequestId" : "1d2de514-3a87-4620-9b97-c260e24340de",
-  "classifiersCount" : 1,
-  "sentClassifiersCount" : 1,
-  "experimentResults" : [ {
-    "id" : 1,
-    "classifierInfo" : {
-      "classifierName" : "CART",
-      "inputOptions" : [ {
-        "optionName" : "Iterations number",
-        "optionValue" : "100"
-      } ]
-    },
-    "resultsIndex" : 0,
-    "pctCorrect" : 99,
-    "sent" : true
-  } ],
-  "ersReportStatus" : {
-    "value" : "SUCCESS_SENT",
-    "description" : "Результаты эксперимента были успешно отправлены в ERS сервис"
-  }
-}
-----
-|401
-|Not authorized
-|*application/json*
-|-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|400
-|Bad request
-|*application/json*
-|-
-a|
-[source,json]
-----
-[ {
-  "fieldName" : null,
-  "code" : "DataNotFound",
-  "errorMessage" : "Entity with search key [1] not found!"
-} ]
-----
-|===
-
-== Finds experiment with specified id
-
-__GET__ */experiment/details/{id}* - Finds experiment with specified id
-
-
-*Request parameters*
-[width=100%]
-|===
-|Name|Description|Type|Schema
-|*id**
-|Experiment id
-|path
-a|__integer__
-__(int64)__
-
-
-
-
-
-
-|===
-
-*Api responses*
-[width=100%]
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|*application/json*
-|<<ExperimentDto>>
-a|
-[source,json]
-----
-{
-  "id" : 1,
-  "requestId" : "1d2de514-3a87-4620-9b97-c260e24340de",
-  "creationDate" : "2021-07-01 14:00:00",
-  "startDate" : "2021-07-01 14:00:30",
-  "endDate" : "2021-07-01 14:02:13",
-  "requestStatus" : {
-    "value" : "FINISHED",
-    "description" : "Завершена"
-  },
-  "evaluationMethod" : {
-    "value" : "CROSS_VALIDATION",
-    "description" : "V-блочная кросс-проверка"
-  },
-  "numFolds" : 10,
-  "numTests" : 1,
-  "seed" : 1,
-  "evaluationTotalTime" : "00:00:1:43",
   "firstName" : "Roman",
-  "email" : "test@mail.ru",
-  "experimentAbsolutePath" : "experiment_1d2de514-3a87-4620-9b97-c260e24340de.model",
-  "trainingDataAbsolutePath" : "data_1d2de514-3a87-4620-9b97-c260e24340de.xls",
-  "sentDate" : "2021-07-01 14:02:15",
-  "deletedDate" : "2021-07-14 14:00:00",
-  "experimentType" : {
-    "value" : "RANDOM_FORESTS",
-    "description" : "Случайные леса"
-  }
+  "lastName" : "Batygin",
+  "middleName" : "Igorevich"
 }
 ----
-|401
-|Not authorized
-|*application/json*
-|-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|400
-|Bad request
-|*application/json*
-|-
-a|
-[source,json]
-----
-[ {
-  "fieldName" : null,
-  "code" : "DataNotFound",
-  "errorMessage" : "Entity with search key [1] not found!"
-} ]
-----
-|===
-
-== Finds active classifiers options configs
-
-__GET__ */experiment/classifiers-options/active-options* - Finds active classifiers options configs
-
-
-*Api responses*
-[width=100%]
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|*application/json*
-|-
-a|
-[source,json]
-----
-[ {
-  "id" : 1,
-  "optionsName" : "DecisionTreeOptions",
-  "creationDate" : "2021-07-01 14:00:00",
-  "createdBy" : "admin",
-  "config" : "Json config"
-} ]
-----
-|401
-|Not authorized
-|*application/json*
-|-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|===
-
-== Downloads classifiers configuration report in xlsx format
-
-__GET__ */experiment/classifiers-configurations/report/{id}* - Downloads classifiers configuration report in xlsx format
-
-
-*Request parameters*
-[width=100%]
-|===
-|Name|Description|Type|Schema
-|*id**
-|Configuration id
-|path
-a|__integer__
-__(int64)__
-
-
-
-
-
-
 |===
 
 *Api responses*
@@ -2139,25 +76,77 @@ a|
 [source,json]
 ----
 [ {
-  "fieldName" : null,
-  "code" : "DataNotFound",
-  "errorMessage" : "Entity with search key [1] not found!"
+  "fieldName" : "lastName",
+  "code" : "Size",
+  "errorMessage" : "size must be between 2 and 30"
+}, {
+  "fieldName" : "middleName",
+  "code" : "Size",
+  "errorMessage" : "size must be between 2 and 30"
+}, {
+  "fieldName" : "firstName",
+  "code" : "Size",
+  "errorMessage" : "size must be between 2 and 30"
 } ]
 ----
 |===
 
-== Gets classifiers configuration details
+== Uploads photo for current authenticated user
 
-__GET__ */experiment/classifiers-configurations/details/{id}* - Gets classifiers configuration details
+__POST__ */users/upload-photo* - Uploads photo for current authenticated user
+
+[width=100%]
+|===
+|Content type|Required|Schema|Example
+|*multipart/form-data*
+|false
+|-
+a|
+-
+|===
+
+*Api responses*
+[width=100%]
+|===
+|Code|Description|Content type|Schema|Example
+|200
+|OK
+|-
+|-
+a|
+-
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|-
+|-
+a|
+-
+|===
+
+== Unlocks user
+
+__POST__ */users/unlock* - Unlocks user
 
 
 *Request parameters*
 [width=100%]
 |===
 |Name|Description|Type|Schema
-|*id**
-|Configuration id
-|path
+|*userId**
+|User id
+|query
 a|__integer__
 __(int64)__
 
@@ -2174,22 +163,73 @@ __(int64)__
 |Code|Description|Content type|Schema|Example
 |200
 |OK
+|-
+|-
+a|
+-
+|401
+|Not authorized
 |*application/json*
-|<<ClassifiersConfigurationDto>>
+|-
 a|
 [source,json]
 ----
 {
-  "id" : 1,
-  "configurationName" : "Default configuration",
-  "creationDate" : "2021-07-01 14:00:00",
-  "createdBy" : "admin",
-  "updated" : "2021-07-01 14:00:00",
-  "active" : true,
-  "buildIn" : true,
-  "classifiersOptionsCount" : 25
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
 }
 ----
+|403
+|Permission denied
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "access_denied",
+  "error_description" : "Access is denied"
+}
+----
+|400
+|Bad request
+|-
+|-
+a|
+-
+|===
+
+== Enable/disable tfa for current authenticated user
+
+__POST__ */users/tfa* - Enable/disable tfa for current authenticated user
+
+
+*Request parameters*
+[width=100%]
+|===
+|Name|Description|Type|Schema
+|*enabled**
+|Tfa enabled flag
+|query
+a|__boolean__
+
+
+
+
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|Code|Description|Content type|Schema|Example
+|200
+|OK
+|-
+|-
+a|
+-
 |401
 |Not authorized
 |*application/json*
@@ -2204,22 +244,15 @@ a|
 ----
 |400
 |Bad request
-|*application/json*
+|-
 |-
 a|
-[source,json]
-----
-[ {
-  "fieldName" : null,
-  "code" : "DataNotFound",
-  "errorMessage" : "Entity with search key [1] not found!"
-} ]
-----
+-
 |===
 
-== Gets evaluations request statuses statistics
+== Logout current user and revokes access/refresh token pair
 
-__GET__ */evaluation/request-statuses-statistics* - Gets evaluations request statuses statistics
+__POST__ */users/logout* - Logout current user and revokes access/refresh token pair
 
 
 *Api responses*
@@ -2228,20 +261,10 @@ __GET__ */evaluation/request-statuses-statistics* - Gets evaluations request sta
 |Code|Description|Content type|Schema|Example
 |200
 |OK
-|*application/json*
-|<<RequestStatusStatisticsDto>>
+|-
+|-
 a|
-[source,json]
-----
-{
-  "totalCount" : 100,
-  "newRequestsCount" : 0,
-  "inProgressRequestsCount" : 1,
-  "finishedRequestsCount" : 99,
-  "timeoutRequestsCount" : 0,
-  "errorRequestsCount" : 0
-}
-----
+-
 |401
 |Not authorized
 |*application/json*
@@ -2256,18 +279,18 @@ a|
 ----
 |===
 
-== Gets evaluation log details
+== Locks user
 
-__GET__ */evaluation/details/{id}* - Gets evaluation log details
+__POST__ */users/lock* - Locks user
 
 
 *Request parameters*
 [width=100%]
 |===
 |Name|Description|Type|Schema
-|*id**
-|Evaluation log id
-|path
+|*userId**
+|User id
+|query
 a|__integer__
 __(int64)__
 
@@ -2284,70 +307,94 @@ __(int64)__
 |Code|Description|Content type|Schema|Example
 |200
 |OK
+|-
+|-
+a|
+-
+|401
+|Not authorized
 |*application/json*
-|<<EvaluationLogDetailsDto>>
+|-
 a|
 [source,json]
 ----
 {
-  "id" : 1,
-  "requestId" : "1d2de514-3a87-4620-9b97-c260e24340de",
-  "creationDate" : "2021-07-01 14:00:00",
-  "startDate" : "2021-07-01 14:00:01",
-  "endDate" : "2021-07-01 14:00:12",
-  "requestStatus" : {
-    "value" : "FINISHED",
-    "description" : "Завершена"
-  },
-  "evaluationMethod" : {
-    "value" : "CROSS_VALIDATION",
-    "description" : "V-блочная кросс-проверка"
-  },
-  "numFolds" : 10,
-  "numTests" : 1,
-  "seed" : 1,
-  "evaluationTotalTime" : "00:00:00:11",
-  "classifierInfo" : {
-    "classifierName" : "CART",
-    "inputOptions" : [ {
-      "optionName" : "Iterations number",
-      "optionValue" : "100"
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|403
+|Permission denied
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "access_denied",
+  "error_description" : "Access is denied"
+}
+----
+|400
+|Bad request
+|-
+|-
+a|
+-
+|===
+
+== Finds users with specified options
+
+__POST__ */users/list* - Finds users with specified options
+
+[width=100%]
+|===
+|Content type|Required|Schema|Example
+|*application/json*
+|true
+|<<PageRequestDto>>
+a|
+[source,json]
+----
+{
+  "page" : 0,
+  "size" : 25
+}
+----
+|===
+
+*Api responses*
+[width=100%]
+|===
+|Code|Description|Content type|Schema|Example
+|200
+|OK
+|*application/json*
+|<<UsersPageDto>>
+a|
+[source,json]
+----
+{
+  "content" : [ {
+    "id" : 1,
+    "login" : "admin",
+    "email" : "test@mail.ru",
+    "firstName" : "Ivan",
+    "lastName" : "Ivanov",
+    "middleName" : "Ivanovich",
+    "fullName" : "Ivanov Ivan Ivanovich",
+    "creationDate" : "2021-07-01 14:00:00",
+    "tfaEnabled" : true,
+    "locked" : true,
+    "photoId" : 1,
+    "passwordDate" : "2021-07-01 14:00:00",
+    "roles" : [ {
+      "roleName" : "ROLE_SUPER_ADMIN",
+      "description" : "Administrator"
     } ]
-  },
-  "instancesInfo" : {
-    "relationName" : "iris",
-    "numInstances" : 150,
-    "numAttributes" : 5,
-    "numClasses" : 4,
-    "className" : "class"
-  },
-  "evaluationResultsDto" : {
-    "evaluationResultsStatus" : {
-      "value" : "RESULTS_RECEIVED",
-      "description" : "Получены результаты классификации"
-    },
-    "evaluationStatisticsDto" : {
-      "numTestInstances" : 150,
-      "numCorrect" : 146,
-      "numIncorrect" : 4,
-      "pctCorrect" : 96,
-      "pctIncorrect" : 4,
-      "meanAbsoluteError" : 0.29,
-      "rootMeanSquaredError" : 0.01,
-      "maxAucValue" : 0.89,
-      "varianceError" : 0.0012,
-      "confidenceIntervalLowerBound" : 0.01,
-      "confidenceIntervalUpperBound" : 0.035
-    },
-    "classificationCosts" : [ {
-      "classValue" : "Iris-setosa",
-      "truePositiveRate" : 0.75,
-      "falsePositiveRate" : 0.25,
-      "trueNegativeRate" : 0.5,
-      "falseNegativeRate" : 0.5,
-      "aucValue" : 0.9
-    } ]
-  }
+  } ],
+  "page" : 0,
+  "totalCount" : 1
 }
 ----
 |401
@@ -2362,6 +409,18 @@ a|
   "error_description" : "Full authentication is required to access this resource"
 }
 ----
+|403
+|Permission denied
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "access_denied",
+  "error_description" : "Access is denied"
+}
+----
 |400
 |Bad request
 |*application/json*
@@ -2370,16 +429,112 @@ a|
 [source,json]
 ----
 [ {
-  "fieldName" : null,
-  "code" : "DataNotFound",
-  "errorMessage" : "Entity with search key [1] not found!"
+  "fieldName" : "page",
+  "code" : "Min",
+  "errorMessage" : "must be greater than or equal to 0"
+}, {
+  "fieldName" : "size",
+  "code" : "Min",
+  "errorMessage" : "must be greater than or equal to 1"
 } ]
 ----
 |===
 
-== Downloads experiment results by token
+== Creates new user
 
-__GET__ */eca-api/experiment/download/{token}* - Downloads experiment results by token
+__POST__ */users/create* - Creates new user
+
+[width=100%]
+|===
+|Content type|Required|Schema|Example
+|*application/json*
+|true
+|<<CreateUserDto>>
+a|
+[source,json]
+----
+{
+  "login" : "user",
+  "email" : "bat1238@yandex.ru",
+  "firstName" : "Roman",
+  "lastName" : "Batygin",
+  "middleName" : "Igorevich"
+}
+----
+|===
+
+*Api responses*
+[width=100%]
+|===
+|Code|Description|Content type|Schema|Example
+|200
+|OK
+|*application/json*
+|<<UserDto>>
+a|
+[source,json]
+----
+{
+  "id" : 1,
+  "login" : "admin",
+  "email" : "test@mail.ru",
+  "firstName" : "Ivan",
+  "lastName" : "Ivanov",
+  "middleName" : "Ivanovich",
+  "fullName" : "Ivanov Ivan Ivanovich",
+  "creationDate" : "2021-07-01 14:00:00",
+  "tfaEnabled" : true,
+  "locked" : true,
+  "photoId" : 1,
+  "passwordDate" : "2021-07-01 14:00:00",
+  "roles" : [ {
+    "roleName" : "ROLE_SUPER_ADMIN",
+    "description" : "Administrator"
+  } ]
+}
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|403
+|Permission denied
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "access_denied",
+  "error_description" : "Access is denied"
+}
+----
+|400
+|Bad request
+|*application/json*
+|-
+a|
+[source,json]
+----
+[ {
+  "fieldName" : "login",
+  "code" : "UniqueLogin",
+  "errorMessage" : null
+} ]
+----
+|===
+
+== Verify reset password token
+
+__POST__ */password/verify-token* - Verify reset password token
 
 
 *Request parameters*
@@ -2387,8 +542,8 @@ __GET__ */eca-api/experiment/download/{token}* - Downloads experiment results by
 |===
 |Name|Description|Type|Schema
 |*token**
-|Experiment token
-|path
+|Reset password token
+|query
 a|__string__
 
 
@@ -2404,7 +559,42 @@ a|__string__
 |Code|Description|Content type|Schema|Example
 |200
 |OK
-|**/**
+|*application/json*
+|-
+a|
+[source,json]
+----
+false
+----
+|===
+
+== Reset password with specified token
+
+__POST__ */password/reset* - Reset password with specified token
+
+[width=100%]
+|===
+|Content type|Required|Schema|Example
+|*application/json*
+|true
+|<<ResetPasswordRequest>>
+a|
+[source,json]
+----
+{
+  "token" : "MDhmNTg4MDdiMTI0Y2Y4OWNmN2UxYmE1OTljYjUzOWU6MTYxNjE1MzM4MDMzMQ==",
+  "password" : "passw0rd!"
+}
+----
+|===
+
+*Api responses*
+[width=100%]
+|===
+|Code|Description|Content type|Schema|Example
+|200
+|OK
+|-
 |-
 a|
 -
@@ -2417,29 +607,175 @@ a|
 ----
 [ {
   "fieldName" : null,
-  "code" : "DataNotFound",
-  "errorMessage" : "Entity with search key [1] not found!"
+  "code" : "InvalidToken",
+  "errorMessage" : "Invalid token"
 } ]
 ----
 |===
 
-== Classifier options id
+== Creates forgot password request
 
-__DELETE__ */experiment/classifiers-options/delete* - Classifier options id
+__POST__ */password/forgot* - Creates forgot password request
+
+[width=100%]
+|===
+|Content type|Required|Schema|Example
+|*application/json*
+|true
+|<<ForgotPasswordRequest>>
+a|
+[source,json]
+----
+{
+  "email" : "bat1238@yandex.ru"
+}
+----
+|===
+
+*Api responses*
+[width=100%]
+|===
+|Code|Description|Content type|Schema|Example
+|200
+|OK
+|-
+|-
+a|
+-
+|400
+|Bad request
+|*application/json*
+|-
+a|
+[source,json]
+----
+[ {
+  "fieldName" : "email",
+  "code" : "UserEmail",
+  "errorMessage" : null
+} ]
+----
+|===
+
+== Creates change password request
+
+__POST__ */password/change/request* - Creates change password request
+
+[width=100%]
+|===
+|Content type|Required|Schema|Example
+|*application/json*
+|true
+|<<ChangePasswordRequest>>
+a|
+[source,json]
+----
+{
+  "oldPassword" : "oldPassw0rd!",
+  "newPassword" : "newPassw0rd!"
+}
+----
+|===
+
+*Api responses*
+[width=100%]
+|===
+|Code|Description|Content type|Schema|Example
+|200
+|OK
+|-
+|-
+a|
+-
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|-
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "InvalidPassword",
+  "errorMessage" : "Invalid password"
+} ]
+----
+|===
+
+== Confirms change password request
+
+__POST__ */password/change/confirm* - Confirms change password request
 
 
 *Request parameters*
 [width=100%]
 |===
 |Name|Description|Type|Schema
-|*id**
-|Classifier options id
+|*token**
+|Token value
 |query
-a|__integer__
-__(int64)__
+a|__string__
 
 
 
+
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|Code|Description|Content type|Schema|Example
+|200
+|OK
+|-
+|-
+a|
+-
+|400
+|Bad request
+|*application/json*
+|-
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "InvalidToken",
+  "errorMessage" : "Invalid token"
+} ]
+----
+|===
+
+== Creates change email request
+
+__POST__ */email/change/request* - Creates change email request
+
+
+*Request parameters*
+[width=100%]
+|===
+|Name|Description|Type|Schema
+|*newEmail**
+|User email
+|query
+a|__string__
+*Min. length*: 0
+
+*Max. length*: 255
 
 
 
@@ -2475,16 +811,111 @@ a|
 [source,json]
 ----
 [ {
-  "fieldName" : null,
-  "code" : "DataNotFound",
-  "errorMessage" : "Entity with search key [1] not found!"
+  "fieldName" : "email",
+  "code" : "UniqueEmail",
+  "errorMessage" : "Can't set user email because its exists"
 } ]
 ----
 |===
 
-== Deletes classifiers configuration
+== Confirms change email request
 
-__DELETE__ */experiment/classifiers-configurations/delete* - Deletes classifiers configuration
+__POST__ */email/change/confirm* - Confirms change email request
+
+
+*Request parameters*
+[width=100%]
+|===
+|Name|Description|Type|Schema
+|*token**
+|Token value
+|query
+a|__string__
+
+
+
+
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|Code|Description|Content type|Schema|Example
+|200
+|OK
+|-
+|-
+a|
+-
+|400
+|Bad request
+|*application/json*
+|-
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "InvalidToken",
+  "errorMessage" : "Invalid token"
+} ]
+----
+|===
+
+== Gets current authenticated user info
+
+__GET__ */users/user-info* - Gets current authenticated user info
+
+
+*Api responses*
+[width=100%]
+|===
+|Code|Description|Content type|Schema|Example
+|200
+|OK
+|*application/json*
+|<<UserDto>>
+a|
+[source,json]
+----
+{
+  "id" : 1,
+  "login" : "admin",
+  "email" : "test@mail.ru",
+  "firstName" : "Ivan",
+  "lastName" : "Ivanov",
+  "middleName" : "Ivanovich",
+  "fullName" : "Ivanov Ivan Ivanovich",
+  "creationDate" : "2021-07-01 14:00:00",
+  "tfaEnabled" : true,
+  "locked" : true,
+  "photoId" : 1,
+  "passwordDate" : "2021-07-01 14:00:00",
+  "roles" : [ {
+    "roleName" : "ROLE_SUPER_ADMIN",
+    "description" : "Administrator"
+  } ]
+}
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|===
+
+== Downloads user photo
+
+__GET__ */users/photo/{id}* - Downloads user photo
 
 
 *Request parameters*
@@ -2492,8 +923,8 @@ __DELETE__ */experiment/classifiers-configurations/delete* - Deletes classifiers
 |===
 |Name|Description|Type|Schema
 |*id**
-|Configuration id
-|query
+|Photo id
+|path
 a|__integer__
 __(int64)__
 
@@ -2503,6 +934,48 @@ __(int64)__
 
 
 |===
+
+*Api responses*
+[width=100%]
+|===
+|Code|Description|Content type|Schema|Example
+|200
+|OK
+|**/**
+|-
+a|
+-
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|-
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "DataNotFound",
+  "errorMessage" : "Entity with search key [1] not found!"
+} ]
+----
+|===
+
+== Deletes photo for current authenticated user
+
+__DELETE__ */users/delete-photo* - Deletes photo for current authenticated user
+
 
 *Api responses*
 [width=100%]
@@ -2583,14 +1056,83 @@ __string__
 
 
 |===
-=== UpdateClassifiersConfigurationDto
+=== UpdateUserInfoDto
 :table-caption: Table
-.Update classifiers configuration model
+.Update user info model
 [width=100%]
 |===
 |Name|Description|Schema
-|*id**
-|Configuration id
+|*firstName**
+|First name
+a|
+__string__
+
+*Min. length*: 2
+
+*Max. length*: 30
+
+*Pattern*: `^([A-Z][a-z]+)\|([А-Я][а-я]+)$`
+
+|*lastName**
+|Last name
+a|
+__string__
+
+*Min. length*: 2
+
+*Max. length*: 30
+
+*Pattern*: `^([A-Z][a-z]+)\|([А-Я][а-я]+)$`
+
+|*middleName**
+|Middle name
+a|
+__string__
+
+*Min. length*: 2
+
+*Max. length*: 30
+
+*Pattern*: `^([A-Z][a-z]+)\|([А-Я][а-я]+)$`
+
+|===
+=== RoleDto
+:table-caption: Table
+.User role model
+[width=100%]
+|===
+|Name|Description|Schema
+|*roleName*
+|Role name
+a|
+__string__
+
+
+
+
+
+
+
+|*description*
+|Role description
+a|
+__string__
+
+
+
+
+
+
+
+|===
+=== UserDto
+:table-caption: Table
+.User model
+[width=100%]
+|===
+|Name|Description|Schema
+|*id*
+|User id
 a|
 __integer__
 __(int64)__
@@ -2601,14 +1143,180 @@ __(int64)__
 
 
 
-|*configurationName**
-|Configuration name
+|*login*
+|User login
 a|
 __string__
 
-*Min. length*: 0
 
-*Max. length*: 64
+
+
+
+
+
+|*email*
+|User email
+a|
+__string__
+
+
+
+
+
+
+
+|*firstName*
+|User first name
+a|
+__string__
+
+
+
+
+
+
+
+|*lastName*
+|User last name
+a|
+__string__
+
+
+
+
+
+
+
+|*middleName*
+|User middle name
+a|
+__string__
+
+
+
+
+
+
+
+|*fullName*
+|User full name
+a|
+__string__
+
+
+
+
+
+
+
+|*creationDate*
+|User creation date
+a|
+__string__
+
+
+
+
+
+
+
+|*tfaEnabled*
+|Two factor authentication enabled
+a|
+__boolean__
+
+
+
+
+
+
+
+|*locked*
+|Account locked
+a|
+__boolean__
+
+
+
+
+
+
+
+|*photoId*
+|User photo id
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+
+|*passwordDate*
+|Last password change date
+a|
+__string__
+
+
+
+
+
+
+
+|*roles*
+|User roles
+a|
+__array__
+<<<RoleDto>>>
+
+
+
+
+
+
+
+|===
+=== UsersPageDto
+:table-caption: Table
+.Users page dto
+[width=100%]
+|===
+|Name|Description|Schema
+|*content*
+|Page content
+a|
+__array__
+<<<UserDto>>>
+
+
+
+
+
+
+
+|*page*
+|Page number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+|*totalCount*
+|Total elements count in all pages
+a|
+__integer__
+__(int64)__
+
+
+
+
 
 
 
@@ -2729,598 +1437,78 @@ __array__
 
 
 |===
-=== EnumDto
+=== CreateUserDto
 :table-caption: Table
-.Enum dto model
+.Create user model
 [width=100%]
 |===
 |Name|Description|Schema
-|*value**
-|Enum value
+|*login**
+|User login
 a|
 __string__
 
+*Min. length*: 3
 
+*Max. length*: 32
 
+*Pattern*: `^[a-z0-9]+$`
 
-
-
-
-|*description**
-|Enum value description
-a|
-__string__
-
-
-
-
-
-
-
-|===
-=== ExperimentDto
-:table-caption: Table
-.Experiment model
-[width=100%]
-|===
-|Name|Description|Schema
-|*id*
-|ID
-a|
-__integer__
-__(int64)__
-
-
-
-
-
-
-
-|*requestId*
-|Request unique identifier
-a|
-__string__
-
-
-
-
-
-
-
-|*creationDate*
-|Request creation date
-a|
-__string__
-
-
-
-
-
-
-
-|*startDate*
-|Evaluation start date
-a|
-__string__
-
-
-
-
-
-
-
-|*endDate*
-|Evaluation end date
-a|
-__string__
-
-
-
-
-
-
-
-|*requestStatus*
-|-
-a|<<EnumDto>>
-
-
-
-
-
-
-
-|*evaluationMethod*
-|-
-a|<<EnumDto>>
-
-
-
-
-
-
-
-|*numFolds*
-|Folds number for k * V cross - validation method
-a|
-__integer__
-__(int32)__
-
-
-
-
-
-
-
-|*numTests*
-|Tests number for k * V cross - validation method
-a|
-__integer__
-__(int32)__
-
-
-
-
-
-
-
-|*seed*
-|Seed value for k * V cross - validation method
-a|
-__integer__
-__(int32)__
-
-
-
-
-
-
-
-|*evaluationTotalTime*
-|Model evaluation total time in format HH:mm:ss:SS
-a|
-__string__
-
-
-
-
-
-
-
-|*firstName*
-|Request creator first name
-a|
-__string__
-
-
-
-
-
-
-
-|*email*
-|Request creator email
-a|
-__string__
-
-
-
-
-
-
-
-|*experimentAbsolutePath*
-|Experiment results file
-a|
-__string__
-
-
-
-
-
-
-
-|*trainingDataAbsolutePath*
-|Training data file
-a|
-__string__
-
-
-
-
-
-
-
-|*sentDate*
-|Experiment results sent date
-a|
-__string__
-
-
-
-
-
-
-
-|*deletedDate*
-|Experiment files delete date
-a|
-__string__
-
-
-
-
-
-
-
-|*experimentType*
-|-
-a|<<EnumDto>>
-
-
-
-
-
-
-
-|===
-=== ExperimentsPageDto
-:table-caption: Table
-.Experiments page dto
-[width=100%]
-|===
-|Name|Description|Schema
-|*content*
-|Page content
-a|
-__array__
-<<<ExperimentDto>>>
-
-
-
-
-
-
-
-|*page*
-|Page number
-a|
-__integer__
-__(int32)__
-
-
-
-
-
-
-
-|*totalCount*
-|Total elements count in all pages
-a|
-__integer__
-__(int64)__
-
-
-
-
-
-
-
-|===
-=== CreateExperimentResultDto
-:table-caption: Table
-.Create experiment result model
-[width=100%]
-|===
-|Name|Description|Schema
-|*id**
-|Experiment id
-a|
-__integer__
-__(int64)__
-
-
-
-
-
-
-
-|*requestId**
-|Request id
-a|
-__string__
-
-
-
-
-
-
-
-|===
-=== CreateClassifierOptionsResultDto
-:table-caption: Table
-.Create classifier options model
-[width=100%]
-|===
-|Name|Description|Schema
-|*id**
-|Classifier options id
-a|
-__integer__
-__(int64)__
-
-
-
-
-
-
-
-|*sourceFileName**
-|Source file name
-a|
-__string__
-
-
-
-
-
-
-
-|*success**
-|Classifier options saved boolean flag
-a|
-__boolean__
-
-
-
-
-
-
-
-|*errorMessage*
-|Error message
-a|
-__string__
-
-
-
-
-
-
-
-|===
-=== ClassifierOptionsDto
-:table-caption: Table
-.Classifier json input options model
-[width=100%]
-|===
-|Name|Description|Schema
-|*id*
-|Options id
-a|
-__integer__
-__(int64)__
-
-
-
-
-
-
-
-|*optionsName**
-|Options name
-a|
-__string__
-
-
-
-
-
-
-
-|*creationDate**
-|Creation date
-a|
-__string__
-
-
-
-
-
-
-
-|*createdBy*
-|User name
-a|
-__string__
-
-
-
-
-
-
-
-|*config**
-|Json config
-a|
-__string__
-
-
-
-
-
-
-
-|===
-=== ClassifiersOptionsPageDto
-:table-caption: Table
-.Classifiers options page dto
-[width=100%]
-|===
-|Name|Description|Schema
-|*content*
-|Page content
-a|
-__array__
-<<<ClassifierOptionsDto>>>
-
-
-
-
-
-
-
-|*page*
-|Page number
-a|
-__integer__
-__(int32)__
-
-
-
-
-
-
-
-|*totalCount*
-|Total elements count in all pages
-a|
-__integer__
-__(int64)__
-
-
-
-
-
-
-
-|===
-=== ClassifiersConfigurationDto
-:table-caption: Table
-.Classifiers configuration dto model
-[width=100%]
-|===
-|Name|Description|Schema
-|*id*
-|Configuration id
-a|
-__integer__
-__(int64)__
-
-
-
-
-
-
-
-|*configurationName*
-|Configuration name
-a|
-__string__
-
-
-
-
-
-
-
-|*creationDate*
-|Configuration creation date
-a|
-__string__
-
-
-
-
-
-
-
-|*createdBy*
-|User name
-a|
-__string__
-
-
-
-
-
-
-
-|*updated*
-|Configuration updated date
-a|
-__string__
-
-
-
-
-
-
-
-|*active*
-|Is active?
-a|
-__boolean__
-
-
-
-
-
-
-
-|*buildIn*
-|Is build in?
-a|
-__boolean__
-
-
-
-
-
-
-
-|*classifiersOptionsCount*
-|Classifiers options count associated with configuration
-a|
-__integer__
-__(int64)__
-
-
-
-
-
-
-
-|===
-=== CreateClassifiersConfigurationDto
-:table-caption: Table
-.Create classifiers configuration model
-[width=100%]
-|===
-|Name|Description|Schema
-|*configurationName**
-|Configuration name
+|*email**
+|User email
 a|
 __string__
 
 *Min. length*: 0
 
-*Max. length*: 64
+*Max. length*: 255
 
 
+
+|*firstName**
+|First name
+a|
+__string__
+
+*Min. length*: 2
+
+*Max. length*: 30
+
+*Pattern*: `^([A-Z][a-z]+)\|([А-Я][а-я]+)$`
+
+|*lastName**
+|Last name
+a|
+__string__
+
+*Min. length*: 2
+
+*Max. length*: 30
+
+*Pattern*: `^([A-Z][a-z]+)\|([А-Я][а-я]+)$`
+
+|*middleName**
+|Middle name
+a|
+__string__
+
+*Min. length*: 2
+
+*Max. length*: 30
+
+*Pattern*: `^([A-Z][a-z]+)\|([А-Я][а-я]+)$`
 
 |===
-=== ClassifierConfigurationsPageDto
+=== ResetPasswordRequest
 :table-caption: Table
-.Classifier configurations page dto
+.Reset password request model
 [width=100%]
 |===
 |Name|Description|Schema
-|*content*
-|Page content
+|*token**
+|Token value
 a|
-__array__
-<<<ClassifiersConfigurationDto>>>
+__string__
 
 
 
@@ -3328,23 +1516,10 @@ __array__
 
 
 
-|*page*
-|Page number
+|*password**
+|New password
 a|
-__integer__
-__(int32)__
-
-
-
-
-
-
-
-|*totalCount*
-|Total elements count in all pages
-a|
-__integer__
-__(int64)__
+__string__
 
 
 
@@ -3353,14 +1528,14 @@ __(int64)__
 
 
 |===
-=== ClassifierInfoDto
+=== ForgotPasswordRequest
 :table-caption: Table
-.Classifier info model
+.Forgot password request model
 [width=100%]
 |===
 |Name|Description|Schema
-|*classifierName*
-|Classifier name
+|*email**
+|User email
 a|
 __string__
 
@@ -3370,39 +1545,15 @@ __string__
 
 
 
-|*inputOptions*
-|Classifier input options list
-a|
-__array__
-<<<InputOptionDto>>>
-
-
-
-
-
-
-
 |===
-=== EvaluationLogDto
+=== ChangePasswordRequest
 :table-caption: Table
-.Classifier evaluation log model
+.Change password request model
 [width=100%]
 |===
 |Name|Description|Schema
-|*id*
-|ID
-a|
-__integer__
-__(int64)__
-
-
-
-
-
-
-
-|*requestId*
-|Request unique identifier
+|*oldPassword**
+|Old password
 a|
 __string__
 
@@ -3412,1350 +1563,10 @@ __string__
 
 
 
-|*creationDate*
-|Request creation date
+|*newPassword**
+|New password
 a|
 __string__
-
-
-
-
-
-
-
-|*startDate*
-|Evaluation start date
-a|
-__string__
-
-
-
-
-
-
-
-|*endDate*
-|Evaluation end date
-a|
-__string__
-
-
-
-
-
-
-
-|*requestStatus*
-|-
-a|<<EnumDto>>
-
-
-
-
-
-
-
-|*evaluationMethod*
-|-
-a|<<EnumDto>>
-
-
-
-
-
-
-
-|*numFolds*
-|Folds number for k * V cross - validation method
-a|
-__integer__
-__(int32)__
-
-
-
-
-
-
-
-|*numTests*
-|Tests number for k * V cross - validation method
-a|
-__integer__
-__(int32)__
-
-
-
-
-
-
-
-|*seed*
-|Seed value for k * V cross - validation method
-a|
-__integer__
-__(int32)__
-
-
-
-
-
-
-
-|*evaluationTotalTime*
-|Model evaluation total time in format HH:mm:ss:SS
-a|
-__string__
-
-
-
-
-
-
-
-|*classifierInfo*
-|-
-a|<<ClassifierInfoDto>>
-
-
-
-
-
-
-
-|*instancesInfo*
-|-
-a|<<InstancesInfoDto>>
-
-
-
-
-
-
-
-|===
-=== EvaluationLogsPageDto
-:table-caption: Table
-.Evaluation logs page dto
-[width=100%]
-|===
-|Name|Description|Schema
-|*content*
-|Page content
-a|
-__array__
-<<<EvaluationLogDto>>>
-
-
-
-
-
-
-
-|*page*
-|Page number
-a|
-__integer__
-__(int32)__
-
-
-
-
-
-
-
-|*totalCount*
-|Total elements count in all pages
-a|
-__integer__
-__(int64)__
-
-
-
-
-
-
-
-|===
-=== InputOptionDto
-:table-caption: Table
-.Classifier input option model
-[width=100%]
-|===
-|Name|Description|Schema
-|*optionName*
-|Input option name
-a|
-__string__
-
-
-
-
-
-
-
-|*optionValue*
-|Input option value
-a|
-__string__
-
-
-
-
-
-
-
-|===
-=== InstancesInfoDto
-:table-caption: Table
-.Classifier training data model
-[width=100%]
-|===
-|Name|Description|Schema
-|*relationName*
-|Instances name
-a|
-__string__
-
-
-
-
-
-
-
-|*numInstances*
-|Instances number
-a|
-__integer__
-__(int32)__
-
-
-
-
-
-
-
-|*numAttributes*
-|Attributes number
-a|
-__integer__
-__(int32)__
-
-
-
-
-
-
-
-|*numClasses*
-|Classes number
-a|
-__integer__
-__(int32)__
-
-
-
-
-
-
-
-|*className*
-|Class name
-a|
-__string__
-
-
-
-
-
-
-
-|===
-=== ClassifierOptionsRequestDto
-:table-caption: Table
-.ERS classifier options request model
-[width=100%]
-|===
-|Name|Description|Schema
-|*requestDate*
-|ERS request date
-a|
-__string__
-
-
-
-
-
-
-
-|*requestId*
-|Request id
-a|
-__string__
-
-
-
-
-
-
-
-|*relationName*
-|Training data name
-a|
-__string__
-
-
-
-
-
-
-
-|*evaluationMethod*
-|-
-a|<<EnumDto>>
-
-
-
-
-
-
-
-|*numFolds*
-|Folds number for k * V cross - validation method
-a|
-__integer__
-__(int32)__
-
-
-
-
-
-
-
-|*numTests*
-|Tests number for k * V cross - validation method
-a|
-__integer__
-__(int32)__
-
-
-
-
-
-
-
-|*seed*
-|Seed value for k * V cross - validation method
-a|
-__integer__
-__(int32)__
-
-
-
-
-
-
-
-|*responseStatus*
-|-
-a|<<EnumDto>>
-
-
-
-
-
-
-
-|*classifierOptionsResponseModels*
-|Classifiers options response models
-a|
-__array__
-<<<ClassifierOptionsResponseDto>>>
-
-
-
-
-
-
-
-|===
-=== ClassifierOptionsRequestsPageDto
-:table-caption: Table
-.Classifier options requests page dto
-[width=100%]
-|===
-|Name|Description|Schema
-|*content*
-|Page content
-a|
-__array__
-<<<ClassifierOptionsRequestDto>>>
-
-
-
-
-
-
-
-|*page*
-|Page number
-a|
-__integer__
-__(int32)__
-
-
-
-
-
-
-
-|*totalCount*
-|Total elements count in all pages
-a|
-__integer__
-__(int64)__
-
-
-
-
-
-
-
-|===
-=== ClassifierOptionsResponseDto
-:table-caption: Table
-.ERS classifier options response model
-[width=100%]
-|===
-|Name|Description|Schema
-|*classifierName*
-|Classifier name
-a|
-__string__
-
-
-
-
-
-
-
-|*options*
-|Classifier input options json config
-a|
-__string__
-
-
-
-
-
-
-
-|===
-=== FilterDictionaryDto
-:table-caption: Table
-.Filter dictionary model
-[width=100%]
-|===
-|Name|Description|Schema
-|*name*
-|Filter dictionary name
-a|
-__string__
-
-
-
-
-
-
-
-|*values*
-|Filter dictionary values
-a|
-__array__
-<<<FilterDictionaryValueDto>>>
-
-
-
-
-
-
-
-|===
-=== FilterDictionaryValueDto
-:table-caption: Table
-.Filter dictionary value model
-[width=100%]
-|===
-|Name|Description|Schema
-|*label*
-|Filter dictionary field label
-a|
-__string__
-
-
-
-
-
-
-
-|*value*
-|Filter dictionary field value
-a|
-__string__
-
-
-
-
-
-
-
-|===
-=== FilterFieldDto
-:table-caption: Table
-.Filter field model
-[width=100%]
-|===
-|Name|Description|Schema
-|*fieldName*
-|Field name
-a|
-__string__
-
-
-
-
-
-
-
-|*description*
-|Field description
-a|
-__string__
-
-
-
-
-
-
-
-|*fieldOrder*
-|Field order
-a|
-__integer__
-__(int32)__
-
-
-
-
-
-
-
-|*filterFieldType*
-|Filter field type
-a|
-__string__
-
-
-
-
-
-
-
-|*matchMode*
-|Filter match mode
-a|
-__string__
-
-
-
-
-
-
-
-|*multiple*
-|Allow multiple values
-a|
-__boolean__
-
-
-
-
-
-
-
-|*dictionary*
-|-
-a|<<FilterDictionaryDto>>
-
-
-
-
-
-
-
-|===
-=== ChartDataDto
-:table-caption: Table
-.Model for chart
-[width=100%]
-|===
-|Name|Description|Schema
-|*name**
-|Chart item name
-a|
-__string__
-
-
-
-
-
-
-
-|*label**
-|Chart item label
-a|
-__string__
-
-
-
-
-
-
-
-|*count**
-|Chart item value
-a|
-__integer__
-__(int64)__
-
-
-
-
-
-
-
-|===
-=== ClassificationCostsDto
-:table-caption: Table
-.Classification costs model
-[width=100%]
-|===
-|Name|Description|Schema
-|*classValue*
-|Class value
-a|
-__string__
-
-
-
-
-
-
-
-|*truePositiveRate*
-|TP rate
-a|
-__number__
-
-
-
-
-
-
-
-|*falsePositiveRate*
-|FP rate
-a|
-__number__
-
-
-
-
-
-
-
-|*trueNegativeRate*
-|TN rate
-a|
-__number__
-
-
-
-
-
-
-
-|*falseNegativeRate*
-|FN rate
-a|
-__number__
-
-
-
-
-
-
-
-|*aucValue*
-|AUC value
-a|
-__number__
-
-
-
-
-
-
-
-|===
-=== EvaluationResultsDto
-:table-caption: Table
-.Classifier evaluation results model
-[width=100%]
-|===
-|Name|Description|Schema
-|*evaluationResultsStatus*
-|-
-a|<<EnumDto>>
-
-
-
-
-
-
-
-|*evaluationStatisticsDto*
-|-
-a|<<EvaluationStatisticsDto>>
-
-
-
-
-
-
-
-|*classificationCosts*
-|Classification costs results
-a|
-__array__
-<<<ClassificationCostsDto>>>
-
-
-
-
-
-
-
-|===
-=== EvaluationStatisticsDto
-:table-caption: Table
-.Classifier evaluation statistics model
-[width=100%]
-|===
-|Name|Description|Schema
-|*numTestInstances*
-|Test instances number
-a|
-__integer__
-
-
-
-
-
-
-
-|*numCorrect*
-|Correctly classified instances number
-a|
-__integer__
-
-
-
-
-
-
-
-|*numIncorrect*
-|Incorrectly classified instances number
-a|
-__integer__
-
-
-
-
-
-
-
-|*pctCorrect*
-|Correctly classified percentage
-a|
-__number__
-
-
-
-
-
-
-
-|*pctIncorrect*
-|Incorrectly classified percentage
-a|
-__number__
-
-
-
-
-
-
-
-|*meanAbsoluteError*
-|Mean absolute error
-a|
-__number__
-
-
-
-
-
-
-
-|*rootMeanSquaredError*
-|Root mean squared error
-a|
-__number__
-
-
-
-
-
-
-
-|*maxAucValue*
-|Max AUC value
-a|
-__number__
-
-
-
-
-
-
-
-|*varianceError*
-|Variance error
-a|
-__number__
-
-
-
-
-
-
-
-|*confidenceIntervalLowerBound*
-|95% confidence interval lower bound value
-a|
-__number__
-
-
-
-
-
-
-
-|*confidenceIntervalUpperBound*
-|95% confidence interval upper bound value
-a|
-__number__
-
-
-
-
-
-
-
-|===
-=== ExperimentResultsDetailsDto
-:table-caption: Table
-.Experiment results details model
-[width=100%]
-|===
-|Name|Description|Schema
-|*id*
-|Experiment results id
-a|
-__integer__
-__(int64)__
-
-
-
-
-
-
-
-|*classifierInfo*
-|-
-a|<<ClassifierInfoDto>>
-
-
-
-
-
-
-
-|*resultsIndex*
-|Results index
-a|
-__integer__
-__(int32)__
-
-
-
-
-
-
-
-|*pctCorrect*
-|Correctly classified percentage
-a|
-__number__
-
-
-
-
-
-
-
-|*sent*
-|Is experiment results sent to ERS?
-a|
-__boolean__
-
-
-
-
-
-
-
-|*experimentDto*
-|-
-a|<<ExperimentDto>>
-
-
-
-
-
-
-
-|*evaluationResultsDto*
-|-
-a|<<EvaluationResultsDto>>
-
-
-
-
-
-
-
-|===
-=== RequestStatusStatisticsDto
-:table-caption: Table
-.Requests statuses statistics model
-[width=100%]
-|===
-|Name|Description|Schema
-|*totalCount*
-|Total requests count
-a|
-__integer__
-__(int64)__
-
-
-
-
-
-
-
-|*newRequestsCount*
-|Total requests count with status NEW
-a|
-__integer__
-__(int64)__
-
-
-
-
-
-
-
-|*inProgressRequestsCount*
-|Total requests count with status IN_PROGRESS
-a|
-__integer__
-__(int64)__
-
-
-
-
-
-
-
-|*finishedRequestsCount*
-|Total requests count with status FINISHED
-a|
-__integer__
-__(int64)__
-
-
-
-
-
-
-
-|*timeoutRequestsCount*
-|Total requests count with status TIMEOUT
-a|
-__integer__
-__(int64)__
-
-
-
-
-
-
-
-|*errorRequestsCount*
-|Total requests count with status ERROR
-a|
-__integer__
-__(int64)__
-
-
-
-
-
-
-
-|===
-=== ExperimentProgressDto
-:table-caption: Table
-.Experiment progress model
-[width=100%]
-|===
-|Name|Description|Schema
-|*finished*
-|Is experiment processing finished?
-a|
-__boolean__
-
-
-
-
-
-
-
-|*progress*
-|Experiment progress bar value
-a|
-__integer__
-__(int32)__
-
-
-
-
-
-
-
-|*estimatedTimeLeft*
-|Estimated time left
-a|
-__string__
-
-
-
-
-
-
-
-|===
-=== ExperimentErsReportDto
-:table-caption: Table
-.Experiment ERS report model
-[width=100%]
-|===
-|Name|Description|Schema
-|*experimentRequestId*
-|Experiment request id
-a|
-__string__
-
-
-
-
-
-
-
-|*classifiersCount*
-|Total classifiers count
-a|
-__integer__
-__(int64)__
-
-
-
-
-
-
-
-|*sentClassifiersCount*
-|Successfully sent classifiers count
-a|
-__integer__
-__(int64)__
-
-
-
-
-
-
-
-|*experimentResults*
-|Experiment results list
-a|
-__array__
-<<<ExperimentResultsDto>>>
-
-
-
-
-
-
-
-|*ersReportStatus*
-|-
-a|<<EnumDto>>
-
-
-
-
-
-
-
-|===
-=== ExperimentResultsDto
-:table-caption: Table
-.Experiment results model
-[width=100%]
-|===
-|Name|Description|Schema
-|*id*
-|Experiment results id
-a|
-__integer__
-__(int64)__
-
-
-
-
-
-
-
-|*classifierInfo*
-|-
-a|<<ClassifierInfoDto>>
-
-
-
-
-
-
-
-|*resultsIndex*
-|Results index
-a|
-__integer__
-__(int32)__
-
-
-
-
-
-
-
-|*pctCorrect*
-|Correctly classified percentage
-a|
-__number__
-
-
-
-
-
-
-
-|*sent*
-|Is experiment results sent to ERS?
-a|
-__boolean__
-
-
-
-
-
-
-
-|===
-=== EvaluationLogDetailsDto
-:table-caption: Table
-.Classifier evaluation log details model
-[width=100%]
-|===
-|Name|Description|Schema
-|*id*
-|ID
-a|
-__integer__
-__(int64)__
-
-
-
-
-
-
-
-|*requestId*
-|Request unique identifier
-a|
-__string__
-
-
-
-
-
-
-
-|*creationDate*
-|Request creation date
-a|
-__string__
-
-
-
-
-
-
-
-|*startDate*
-|Evaluation start date
-a|
-__string__
-
-
-
-
-
-
-
-|*endDate*
-|Evaluation end date
-a|
-__string__
-
-
-
-
-
-
-
-|*requestStatus*
-|-
-a|<<EnumDto>>
-
-
-
-
-
-
-
-|*evaluationMethod*
-|-
-a|<<EnumDto>>
-
-
-
-
-
-
-
-|*numFolds*
-|Folds number for k * V cross - validation method
-a|
-__integer__
-__(int32)__
-
-
-
-
-
-
-
-|*numTests*
-|Tests number for k * V cross - validation method
-a|
-__integer__
-__(int32)__
-
-
-
-
-
-
-
-|*seed*
-|Seed value for k * V cross - validation method
-a|
-__integer__
-__(int32)__
-
-
-
-
-
-
-
-|*evaluationTotalTime*
-|Model evaluation total time in format HH:mm:ss:SS
-a|
-__string__
-
-
-
-
-
-
-
-|*classifierInfo*
-|-
-a|<<ClassifierInfoDto>>
-
-
-
-
-
-
-
-|*instancesInfo*
-|-
-a|<<InstancesInfoDto>>
-
-
-
-
-
-
-
-|*evaluationResultsDto*
-|-
-a|<<EvaluationResultsDto>>
 
 
 
