@@ -43,7 +43,6 @@ __${method.requestType}__ *${method.endpoint}* - ${method.summary}
 
 <#if method.security?has_content>
 *Security requirement*
-[cols="50%,50%"]
 |===
 |Name|Scopes
 <#list method.security as security>
