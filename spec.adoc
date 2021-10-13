@@ -83,14 +83,14 @@ a|
 |OK
 |*-*
 |-
--
+
 a|
 -
 |401
 |Not authorized
 |*application/json*
 |-
--
+
 a|
 [source,json]
 ----
@@ -184,14 +184,14 @@ __(binary)__
 |OK
 |*-*
 |-
--
+
 a|
 -
 |401
 |Not authorized
 |*application/json*
 |-
--
+
 a|
 [source,json]
 ----
@@ -204,7 +204,7 @@ a|
 |Bad request
 |*-*
 |-
--
+
 a|
 -
 |===
@@ -257,14 +257,14 @@ __(int64)__
 |OK
 |*-*
 |-
--
+
 a|
 -
 |401
 |Not authorized
 |*application/json*
 |-
--
+
 a|
 [source,json]
 ----
@@ -277,7 +277,7 @@ a|
 |Permission denied
 |*application/json*
 |-
--
+
 a|
 [source,json]
 ----
@@ -290,7 +290,7 @@ a|
 |Bad request
 |*-*
 |-
--
+
 a|
 -
 |===
@@ -342,14 +342,14 @@ a|__boolean__
 |OK
 |*-*
 |-
--
+
 a|
 -
 |401
 |Not authorized
 |*application/json*
 |-
--
+
 a|
 [source,json]
 ----
@@ -362,7 +362,7 @@ a|
 |Bad request
 |*-*
 |-
--
+
 a|
 -
 |===
@@ -392,14 +392,14 @@ a|
 |OK
 |*-*
 |-
--
+
 a|
 -
 |401
 |Not authorized
 |*application/json*
 |-
--
+
 a|
 [source,json]
 ----
@@ -458,14 +458,14 @@ __(int64)__
 |OK
 |*-*
 |-
--
+
 a|
 -
 |401
 |Not authorized
 |*application/json*
 |-
--
+
 a|
 [source,json]
 ----
@@ -478,7 +478,7 @@ a|
 |Permission denied
 |*application/json*
 |-
--
+
 a|
 [source,json]
 ----
@@ -491,7 +491,7 @@ a|
 |Bad request
 |*-*
 |-
--
+
 a|
 -
 |===
@@ -539,7 +539,7 @@ a|
 |OK
 |*application/json*
 |<<UsersPageDto>>
--
+
 a|
 [source,json]
 ----
@@ -570,7 +570,7 @@ a|
 |Not authorized
 |*application/json*
 |-
--
+
 a|
 [source,json]
 ----
@@ -583,7 +583,7 @@ a|
 |Permission denied
 |*application/json*
 |-
--
+
 a|
 [source,json]
 ----
@@ -658,7 +658,7 @@ a|
 |OK
 |*application/json*
 |<<UserDto>>
--
+
 a|
 [source,json]
 ----
@@ -685,7 +685,7 @@ a|
 |Not authorized
 |*application/json*
 |-
--
+
 a|
 [source,json]
 ----
@@ -698,7 +698,7 @@ a|
 |Permission denied
 |*application/json*
 |-
--
+
 a|
 [source,json]
 ----
@@ -760,7 +760,7 @@ a|__string__
 |OK
 |*application/json*
 |-
--
+
 a|
 [source,json]
 ----
@@ -801,7 +801,7 @@ a|
 |OK
 |*-*
 |-
--
+
 a|
 -
 |400
@@ -852,7 +852,7 @@ a|
 |OK
 |*-*
 |-
--
+
 a|
 -
 |400
@@ -914,14 +914,14 @@ a|
 |OK
 |*-*
 |-
--
+
 a|
 -
 |401
 |Not authorized
 |*application/json*
 |-
--
+
 a|
 [source,json]
 ----
@@ -934,7 +934,7 @@ a|
 |Bad request
 |*application/json*
 |-
--
+
 a|
 [source,json]
 ----
@@ -983,7 +983,7 @@ a|__string__
 |OK
 |*-*
 |-
--
+
 a|
 -
 |400
@@ -1049,14 +1049,14 @@ a|__string__
 |OK
 |*-*
 |-
--
+
 a|
 -
 |401
 |Not authorized
 |*application/json*
 |-
--
+
 a|
 [source,json]
 ----
@@ -1118,7 +1118,7 @@ a|__string__
 |OK
 |*-*
 |-
--
+
 a|
 -
 |400
@@ -1162,7 +1162,7 @@ a|
 |OK
 |*application/json*
 |<<UserDto>>
--
+
 a|
 [source,json]
 ----
@@ -1189,7 +1189,7 @@ a|
 |Not authorized
 |*application/json*
 |-
--
+
 a|
 [source,json]
 ----
@@ -1248,14 +1248,14 @@ __(int64)__
 |OK
 |**/**
 |-
--
+
 a|
 -
 |401
 |Not authorized
 |*application/json*
 |-
--
+
 a|
 [source,json]
 ----
@@ -1305,14 +1305,14 @@ a|
 |OK
 |*-*
 |-
--
+
 a|
 -
 |401
 |Not authorized
 |*application/json*
 |-
--
+
 a|
 [source,json]
 ----
