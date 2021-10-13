@@ -41,7 +41,6 @@ public interface OpenApiMapper {
     @Mapping(source = "required", target = "required", defaultValue = "false")
     RequestBodyModel map(RequestBody requestBody);
 
-    @Mapping(source = "required", target = "required", defaultValue = "false")
     @Mapping(source = "schema", target = "schemaModel")
     RequestParameterModel map(Parameter parameter);
 

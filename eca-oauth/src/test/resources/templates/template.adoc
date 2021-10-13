@@ -117,7 +117,7 @@ ${method.requestBody.example}
 |===
 |Name|Description|Type|Schema
 <#list method.requestParameters as parameter>
-|*${(parameter.name)!"-"}*<#if parameter.required == "true">*</#if>
+|*${(parameter.name)!"-"}*<#if parameter.required>*</#if>
 |${(parameter.description)!"-"}
 |${(parameter.in)!"-"}
 a|__${(parameter.schemaModel.type)!"unknown type"}__
@@ -181,7 +181,7 @@ ${apiResponse.example}
 |===
 |Name|Description|Schema
 <#list component.fields as field>
-|*${(field.fieldName)!"-"}*<#if field.required == "true">*</#if>
+|*${(field.fieldName)!"-"}*<#if field.required>*</#if>
 |${(field.description)!"-"}
 a|<#if field.schemaModel.type??>
 __${field.schemaModel.type}__

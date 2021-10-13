@@ -9,7 +9,7 @@ public class RequestParameterModel {
 
     private String description;
 
-    private String required;
+    private boolean required;
 
     private String in;
 

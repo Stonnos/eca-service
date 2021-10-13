@@ -10,7 +10,7 @@ public class FieldModel {
 
     private String description;
 
-    private String required;
+    private boolean required;
 
     private SchemaModel schemaModel;
 }

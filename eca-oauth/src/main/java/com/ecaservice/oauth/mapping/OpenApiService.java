@@ -93,7 +93,7 @@ public class OpenApiService {
         return FieldModel.builder()
                 .fieldName(fieldName)
                 .description(schemaModel.getDescription())
-                .required(Boolean.toString(required))
+                .required(required)
                 .schemaModel(schemaModel)
                 .build();
     }
