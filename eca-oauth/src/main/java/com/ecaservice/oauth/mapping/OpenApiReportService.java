@@ -49,6 +49,12 @@ import static com.google.common.collect.Lists.newArrayList;
 @RequiredArgsConstructor
 public class OpenApiReportService {
 
+    private static final String SLASH_SEPARATOR = "/";
+    private static final String PASSWORD_GRANT = "password";
+    private static final String IMPLICIT_GRANT = "implicit";
+    private static final String AUTHORIZATION_CODE_GRANT = "authorization_code";
+    private static final String CLIENT_CREDENTIALS_GRANT = "client_credentials";
+
     private final OpenApiMapper openApiMapper;
     private final ObjectMapper exampleObjectMapper;
 
@@ -114,6 +120,7 @@ public class OpenApiReportService {
 
     private MethodInfo convertToMethodInfo(Map.Entry<String, PathItem> entry) {
         var operationModel = getOperationModel(entry.getValue());
+        //TODO fix npe
         var operation = operationModel.getOperation();
         var requestParameters = openApiMapper.map(operation.getParameters());
         var apiResponses = convertApiResponses(operation);
@@ -159,10 +166,12 @@ public class OpenApiReportService {
         return Optional.ofNullable(operation.getRequestBody())
                 .map(requestBody -> {
                     RequestBodyReport requestBodyReport = openApiMapper.map(requestBody);
-                    var mediaType = requestBody.getContent().entrySet().iterator().next();
-                    requestBodyReport.setContentType(mediaType.getKey());
-                    requestBodyReport.setBodyRef(getBodyRef(mediaType.getValue().getSchema()));
-                    requestBodyReport.setExample(getExample(mediaType.getValue()));
+                    if (!CollectionUtils.isEmpty(requestBody.getContent())) {
+                        var mediaType = requestBody.getContent().entrySet().iterator().next();
+                        requestBodyReport.setContentType(mediaType.getKey());
+                        requestBodyReport.setBodyRef(getBodyRef(mediaType.getValue().getSchema()));
+                        requestBodyReport.setExample(getExample(mediaType.getValue()));
+                    }
                     return requestBodyReport;
                 }).orElse(null);
     }
@@ -205,7 +214,7 @@ public class OpenApiReportService {
     private String getBodyRef(Schema schema) {
         return Optional.ofNullable(schema)
                 .map(Schema::getRef)
-                .map(ref -> StringUtils.substringAfterLast(ref, "/"))
+                .map(ref -> StringUtils.substringAfterLast(ref, SLASH_SEPARATOR))
                 .orElse(null);
     }
 
@@ -235,10 +244,10 @@ public class OpenApiReportService {
         securitySchemaModel.setOauth2Flows(newArrayList());
         var flows = securityScheme.getFlows();
         if (Optional.ofNullable(flows).isPresent()) {
-            addOauth2Flow(flows.getPassword(), securitySchemaModel, "password");
-            addOauth2Flow(flows.getImplicit(), securitySchemaModel, "implicit");
-            addOauth2Flow(flows.getAuthorizationCode(), securitySchemaModel, "authorization_code");
-            addOauth2Flow(flows.getClientCredentials(), securitySchemaModel, "client_credentials");
+            addOauth2Flow(flows.getPassword(), securitySchemaModel, PASSWORD_GRANT);
+            addOauth2Flow(flows.getImplicit(), securitySchemaModel, IMPLICIT_GRANT);
+            addOauth2Flow(flows.getAuthorizationCode(), securitySchemaModel, AUTHORIZATION_CODE_GRANT);
+            addOauth2Flow(flows.getClientCredentials(), securitySchemaModel, CLIENT_CREDENTIALS_GRANT);
         }
         return securitySchemaModel;
     }
