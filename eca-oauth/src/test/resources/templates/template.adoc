@@ -1,23 +1,32 @@
+<#if openApi.title??>
 = ${openApi.title}
-Автор: ${openApi.author} <${openApi.email}>
+</#if>
+<#if openApi.author??>
+Автор: ${openApi.author}
+</#if>
+<#if openApi.email??>
+(${openApi.email})
+</#if>
 :toc:
 :toc-title: Table of contents
 
+<#if openApi.description??>
 == Overview
 
 ${openApi.description}
+</#if>
 
 <#if openApi.securitySchemes?has_content>
 == Security schemas
 
 <#list openApi.securitySchemes as securityScheme>
 
-=== ${securityScheme.name} - ${securityScheme.description}
+=== ${(securityScheme.name)!"Unknown schema"} <#if securityScheme.description??>- ${securityScheme.description}</#if>
 
 [width=100%]
 |===
 |Type|Description|Flows
-|*${securityScheme.type}*
+|*${(securityScheme.type)!"-"}*
 |
 <#if securityScheme.in??>
 *Client credentials location:* __${securityScheme.in}__
@@ -31,7 +40,7 @@ a|<#if securityScheme.oauth2Flows?has_content>
 
 *Flow*
 
-__Grant type:__ ${flow.grantType}
+__Grant type:__ ${(flow.grantType)!"-"}
 
 <#if flow.tokenUrl??>
 __Token url:__ ${flow.tokenUrl}
@@ -50,7 +59,7 @@ __Scopes__:
 
 <#list flow.scopes as scope>
 
-* ${scope}
+* <#if scope??>${scope}</#if>
 </#list>
 </#if>
 
@@ -61,9 +70,9 @@ __Scopes__:
 </#if>
 
 <#list openApi.methods as method>
-== ${method.description}
+== ${(method.description)!"API method"}
 
-__${method.requestType}__ *${method.endpoint}* - ${method.summary}
+__${method.requestType}__ *${method.endpoint}* <#if method.summary??>- ${method.summary}</#if>
 
 <#if method.security?has_content>
 *Security requirement*
@@ -72,11 +81,13 @@ __${method.requestType}__ *${method.endpoint}* - ${method.summary}
 |===
 |Name|Scopes
 <#list method.security as security>
-|*${security.name}*
-a|<#list security.scopes as scope>
+|*${(security.name)!"-"}*
+a|<#if security.scopes?has_content>
+<#list security.scopes as scope>
 
-* ${scope}
+* <#if scope??>${scope}</#if>
 </#list>
+</#if>
 </#list>
 |===
 </#if>
@@ -85,8 +96,8 @@ a|<#list security.scopes as scope>
 [width=100%]
 |===
 |Content type|Required|Schema|Example
-|*${method.requestBody.contentType}*
-|${method.requestBody.required}
+|*${(method.requestBody.contentType)!"-"}*
+|${(method.requestBody.required)!"-"}
 |<#if method.requestBody.bodyRef??><<${method.requestBody.bodyRef}>><#else>-</#if>
 a|
 <#if method.requestBody.example??>
@@ -106,16 +117,17 @@ ${method.requestBody.example}
 |===
 |Name|Description|Type|Schema
 <#list method.requestParameters as parameter>
-|*${parameter.name}*<#if parameter.required == "true">*</#if>
-|${parameter.description}
-|${parameter.in}
-a|__${parameter.schemaModel.type}__
+|*${(parameter.name)!"-"}*<#if parameter.required == "true">*</#if>
+|${(parameter.description)!"-"}
+|${(parameter.in)!"-"}
+a|__${(parameter.schemaModel.type)!"unknown type"}__
 <#if parameter.schemaModel.format??>
 __(${parameter.schemaModel.format})__
 </#if>
 <#if parameter.schemaModel.itemsObjectRef??>
 <<<${parameter.schemaModel.itemsObjectRef}>>>
 </#if>
+
 <#if parameter.schemaModel.minLength??>*Min. length*: ${parameter.schemaModel.minLength}</#if>
 
 <#if parameter.schemaModel.maxLength??>*Max. length*: ${parameter.schemaModel.maxLength}</#if>
@@ -126,7 +138,7 @@ __(${parameter.schemaModel.format})__
 *Values*:
 <#list parameter.schemaModel.enumValues as enumValue>
 
-* ${enumValue}
+* <#if enumValue??>${enumValue}</#if>
 </#list>
 </#if>
 </#list>
@@ -139,9 +151,9 @@ __(${parameter.schemaModel.format})__
 |===
 |Code|Description|Content type|Schema|Example
 <#list method.apiResponses as apiResponse>
-|${apiResponse.responseCode}
-|${apiResponse.description}
-|<#if apiResponse.contentType??>*${apiResponse.contentType}*<#else>-</#if>
+|${(apiResponse.responseCode)!"-"}
+|${(apiResponse.description)!"-"}
+|*${(apiResponse.contentType)!"-"}*
 |<#if apiResponse.objectTypeRef??><<${apiResponse.objectTypeRef}>><#else>-</#if>
 a|
 <#if apiResponse.example??>
@@ -161,16 +173,16 @@ ${apiResponse.example}
 <#if openApi.components?has_content>
 == Components
 <#list openApi.components as component>
-=== ${component.name}
+=== ${(component.name)!"Component"}
 <#if component.fields?has_content>
 :table-caption: Table
-<#if component.description??>.${component.description}<#else>.Component ${component.name}</#if>
+<#if component.description??>.${component.description}<#else>.Component ${(component.name)!""}</#if>
 [width=100%]
 |===
 |Name|Description|Schema
 <#list component.fields as field>
-|*${field.fieldName}*<#if field.required == "true">*</#if>
-|<#if field.description??>${field.description}<#else>-</#if>
+|*${(field.fieldName)!"-"}*<#if field.required == "true">*</#if>
+|${(field.description)!"-"}
 a|<#if field.schemaModel.type??>
 __${field.schemaModel.type}__
 <#if field.schemaModel.format??>
@@ -194,7 +206,7 @@ __(${field.schemaModel.format})__
 *Values*:
 <#list field.schemaModel.enumValues as enumValue>
 
-* ${enumValue}
+* <#if enumValue??>${enumValue}</#if>
 </#list>
 </#if>
 </#list>
