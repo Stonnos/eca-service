@@ -18,4 +18,6 @@ public class ApiResponseReport {
     private String example;
 
     private String objectTypeRef;
+
+    private String itemsObjectRef;
 }

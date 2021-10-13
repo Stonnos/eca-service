@@ -199,9 +199,13 @@ public class OpenApiReportService {
         apiResponseReport.setDescription(apiResponse.getDescription());
         if (!CollectionUtils.isEmpty(apiResponse.getContent())) {
             var mediaType = apiResponse.getContent().entrySet().iterator().next();
+            var schema = mediaType.getValue().getSchema();
             apiResponseReport.setContentType(mediaType.getKey());
             apiResponseReport.setExample(getExample(mediaType.getValue()));
-            apiResponseReport.setObjectTypeRef(getBodyRef(mediaType.getValue().getSchema()));
+            apiResponseReport.setObjectTypeRef(getBodyRef(schema));
+            if (Optional.ofNullable(schema).map(Schema::getItems).isPresent()) {
+                apiResponseReport.setItemsObjectRef(getBodyRef(schema.getItems()));
+            }
         }
         return apiResponseReport;
     }

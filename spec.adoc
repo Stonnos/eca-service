@@ -83,12 +83,14 @@ a|
 |OK
 |*-*
 |-
+-
 a|
 -
 |401
 |Not authorized
 |*application/json*
 |-
+-
 a|
 [source,json]
 ----
@@ -101,6 +103,7 @@ a|
 |Bad request
 |*application/json*
 |-
+__array__<<<ValidationErrorDto>>>
 a|
 [source,json]
 ----
@@ -170,7 +173,6 @@ __(binary)__
 
 
 
-
 |===
 
 
@@ -182,12 +184,14 @@ __(binary)__
 |OK
 |*-*
 |-
+-
 a|
 -
 |401
 |Not authorized
 |*application/json*
 |-
+-
 a|
 [source,json]
 ----
@@ -200,6 +204,7 @@ a|
 |Bad request
 |*-*
 |-
+-
 a|
 -
 |===
@@ -242,7 +247,6 @@ __(int64)__
 
 
 
-
 |===
 
 *Api responses*
@@ -253,12 +257,14 @@ __(int64)__
 |OK
 |*-*
 |-
+-
 a|
 -
 |401
 |Not authorized
 |*application/json*
 |-
+-
 a|
 [source,json]
 ----
@@ -271,6 +277,7 @@ a|
 |Permission denied
 |*application/json*
 |-
+-
 a|
 [source,json]
 ----
@@ -283,6 +290,7 @@ a|
 |Bad request
 |*-*
 |-
+-
 a|
 -
 |===
@@ -324,7 +332,6 @@ a|__boolean__
 
 
 
-
 |===
 
 *Api responses*
@@ -335,12 +342,14 @@ a|__boolean__
 |OK
 |*-*
 |-
+-
 a|
 -
 |401
 |Not authorized
 |*application/json*
 |-
+-
 a|
 [source,json]
 ----
@@ -353,6 +362,7 @@ a|
 |Bad request
 |*-*
 |-
+-
 a|
 -
 |===
@@ -382,12 +392,14 @@ a|
 |OK
 |*-*
 |-
+-
 a|
 -
 |401
 |Not authorized
 |*application/json*
 |-
+-
 a|
 [source,json]
 ----
@@ -436,7 +448,6 @@ __(int64)__
 
 
 
-
 |===
 
 *Api responses*
@@ -447,12 +458,14 @@ __(int64)__
 |OK
 |*-*
 |-
+-
 a|
 -
 |401
 |Not authorized
 |*application/json*
 |-
+-
 a|
 [source,json]
 ----
@@ -465,6 +478,7 @@ a|
 |Permission denied
 |*application/json*
 |-
+-
 a|
 [source,json]
 ----
@@ -477,6 +491,7 @@ a|
 |Bad request
 |*-*
 |-
+-
 a|
 -
 |===
@@ -524,6 +539,7 @@ a|
 |OK
 |*application/json*
 |<<UsersPageDto>>
+-
 a|
 [source,json]
 ----
@@ -554,6 +570,7 @@ a|
 |Not authorized
 |*application/json*
 |-
+-
 a|
 [source,json]
 ----
@@ -566,6 +583,7 @@ a|
 |Permission denied
 |*application/json*
 |-
+-
 a|
 [source,json]
 ----
@@ -578,6 +596,7 @@ a|
 |Bad request
 |*application/json*
 |-
+__array__<<<ValidationErrorDto>>>
 a|
 [source,json]
 ----
@@ -639,6 +658,7 @@ a|
 |OK
 |*application/json*
 |<<UserDto>>
+-
 a|
 [source,json]
 ----
@@ -665,6 +685,7 @@ a|
 |Not authorized
 |*application/json*
 |-
+-
 a|
 [source,json]
 ----
@@ -677,6 +698,7 @@ a|
 |Permission denied
 |*application/json*
 |-
+-
 a|
 [source,json]
 ----
@@ -689,6 +711,7 @@ a|
 |Bad request
 |*application/json*
 |-
+__array__<<<ValidationErrorDto>>>
 a|
 [source,json]
 ----
@@ -727,7 +750,6 @@ a|__string__
 
 
 
-
 |===
 
 *Api responses*
@@ -738,6 +760,7 @@ a|__string__
 |OK
 |*application/json*
 |-
+-
 a|
 [source,json]
 ----
@@ -778,12 +801,14 @@ a|
 |OK
 |*-*
 |-
+-
 a|
 -
 |400
 |Bad request
 |*application/json*
 |-
+__array__<<<ValidationErrorDto>>>
 a|
 [source,json]
 ----
@@ -827,12 +852,14 @@ a|
 |OK
 |*-*
 |-
+-
 a|
 -
 |400
 |Bad request
 |*application/json*
 |-
+__array__<<<ValidationErrorDto>>>
 a|
 [source,json]
 ----
@@ -887,12 +914,14 @@ a|
 |OK
 |*-*
 |-
+-
 a|
 -
 |401
 |Not authorized
 |*application/json*
 |-
+-
 a|
 [source,json]
 ----
@@ -905,6 +934,7 @@ a|
 |Bad request
 |*application/json*
 |-
+-
 a|
 [source,json]
 ----
@@ -943,7 +973,6 @@ a|__string__
 
 
 
-
 |===
 
 *Api responses*
@@ -954,12 +983,14 @@ a|__string__
 |OK
 |*-*
 |-
+-
 a|
 -
 |400
 |Bad request
 |*application/json*
 |-
+__array__<<<ValidationErrorDto>>>
 a|
 [source,json]
 ----
@@ -1008,7 +1039,6 @@ a|__string__
 
 
 
-
 |===
 
 *Api responses*
@@ -1019,12 +1049,14 @@ a|__string__
 |OK
 |*-*
 |-
+-
 a|
 -
 |401
 |Not authorized
 |*application/json*
 |-
+-
 a|
 [source,json]
 ----
@@ -1037,6 +1069,7 @@ a|
 |Bad request
 |*application/json*
 |-
+__array__<<<ValidationErrorDto>>>
 a|
 [source,json]
 ----
@@ -1075,7 +1108,6 @@ a|__string__
 
 
 
-
 |===
 
 *Api responses*
@@ -1086,12 +1118,14 @@ a|__string__
 |OK
 |*-*
 |-
+-
 a|
 -
 |400
 |Bad request
 |*application/json*
 |-
+__array__<<<ValidationErrorDto>>>
 a|
 [source,json]
 ----
@@ -1128,6 +1162,7 @@ a|
 |OK
 |*application/json*
 |<<UserDto>>
+-
 a|
 [source,json]
 ----
@@ -1154,6 +1189,7 @@ a|
 |Not authorized
 |*application/json*
 |-
+-
 a|
 [source,json]
 ----
@@ -1202,7 +1238,6 @@ __(int64)__
 
 
 
-
 |===
 
 *Api responses*
@@ -1213,12 +1248,14 @@ __(int64)__
 |OK
 |**/**
 |-
+-
 a|
 -
 |401
 |Not authorized
 |*application/json*
 |-
+-
 a|
 [source,json]
 ----
@@ -1231,6 +1268,7 @@ a|
 |Bad request
 |*application/json*
 |-
+__array__<<<ValidationErrorDto>>>
 a|
 [source,json]
 ----
@@ -1267,12 +1305,14 @@ a|
 |OK
 |*-*
 |-
+-
 a|
 -
 |401
 |Not authorized
 |*application/json*
 |-
+-
 a|
 [source,json]
 ----
@@ -1285,6 +1325,7 @@ a|
 |Bad request
 |*application/json*
 |-
+__array__<<<ValidationErrorDto>>>
 a|
 [source,json]
 ----
@@ -1380,7 +1421,7 @@ __string__
 
 
 
-*Pattern*: ^([A-Z][a-z]+)\|([А-Я][а-я]+)$
+*Pattern*: `^([A-Z][a-z]+)\|([А-Я][а-я]+)$`
 
 
 |*lastName**
@@ -1398,7 +1439,7 @@ __string__
 
 
 
-*Pattern*: ^([A-Z][a-z]+)\|([А-Я][а-я]+)$
+*Pattern*: `^([A-Z][a-z]+)\|([А-Я][а-я]+)$`
 
 
 |*middleName**
@@ -1416,7 +1457,7 @@ __string__
 
 
 
-*Pattern*: ^([A-Z][a-z]+)\|([А-Я][а-я]+)$
+*Pattern*: `^([A-Z][a-z]+)\|([А-Я][а-я]+)$`
 
 
 |===
@@ -1973,7 +2014,7 @@ __string__
 
 
 
-*Pattern*: ^[a-z0-9]+$
+*Pattern*: `^[a-z0-9]+$`
 
 
 |*email**
@@ -2009,7 +2050,7 @@ __string__
 
 
 
-*Pattern*: ^([A-Z][a-z]+)\|([А-Я][а-я]+)$
+*Pattern*: `^([A-Z][a-z]+)\|([А-Я][а-я]+)$`
 
 
 |*lastName**
@@ -2027,7 +2068,7 @@ __string__
 
 
 
-*Pattern*: ^([A-Z][a-z]+)\|([А-Я][а-я]+)$
+*Pattern*: `^([A-Z][a-z]+)\|([А-Я][а-я]+)$`
 
 
 |*middleName**
@@ -2045,7 +2086,7 @@ __string__
 
 
 
-*Pattern*: ^([A-Z][a-z]+)\|([А-Я][а-я]+)$
+*Pattern*: `^([A-Z][a-z]+)\|([А-Я][а-я]+)$`
 
 
 |===
