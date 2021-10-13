@@ -49,7 +49,8 @@ public class OpenApiService {
 
     public OpenApiModel process(OpenAPI openAPI) {
         OpenApiModel openApiModel = openApiMapper.map(openAPI);
-        var methods = openAPI.getPaths().entrySet()
+        var paths = Optional.ofNullable(openAPI.getPaths()).orElse(Collections.emptyMap());
+        var methods = paths.entrySet()
                 .stream()
                 .map(this::convertToMethodInfo).collect(Collectors.toList());
         var components = convertComponents(openAPI);
