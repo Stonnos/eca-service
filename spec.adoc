@@ -16,7 +16,7 @@ API provides operations with users for ECA web application
 [width=100%]
 |===
 |Type|Description|Flows
-|*$oauth2*
+|*oauth2*
 |
 *Client credentials location:* __header__
 
@@ -202,6 +202,7 @@ __(int64)__
 
 
 
+
 |===
 
 *Api responses*
@@ -270,6 +271,7 @@ a|
 |Tfa enabled flag
 |query
 a|__boolean__
+
 
 
 
@@ -373,6 +375,7 @@ a|
 |query
 a|__integer__
 __(int64)__
+
 
 
 
@@ -654,6 +657,7 @@ a|__string__
 
 
 
+
 |===
 
 *Api responses*
@@ -850,6 +854,7 @@ a|__string__
 
 
 
+
 |===
 
 *Api responses*
@@ -901,6 +906,7 @@ a|
 |User email
 |query
 a|__string__
+
 *Min. length*: 0
 
 *Max. length*: 255
@@ -960,6 +966,7 @@ __POST__ */email/change/confirm* - Confirms change email request
 |Token value
 |query
 a|__string__
+
 
 
 
@@ -1078,6 +1085,7 @@ a|
 |path
 a|__integer__
 __(int64)__
+
 
 
 
