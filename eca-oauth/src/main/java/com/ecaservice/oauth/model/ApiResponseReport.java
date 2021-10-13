@@ -3,7 +3,7 @@ package com.ecaservice.oauth.model;
 import lombok.Data;
 
 @Data
-public class ApiResponseModel {
+public class ApiResponseReport {
 
     private String responseCode;
 

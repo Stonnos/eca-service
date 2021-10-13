@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class OpenApiModel {
+public class OpenApiReport {
 
     private String title;
 
@@ -17,7 +17,7 @@ public class OpenApiModel {
 
     private List<MethodInfo> methods;
 
-    private List<ComponentModel> components;
+    private List<ComponentReport> components;
 
     private List<SecuritySchemaModel> securitySchemes;
 }

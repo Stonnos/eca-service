@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Data
-public class SchemaModel {
+public class SchemaReport {
 
     private String description;
     private String type;

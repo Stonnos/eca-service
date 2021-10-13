@@ -3,7 +3,7 @@ package com.ecaservice.oauth.model;
 import lombok.Data;
 
 @Data
-public class RequestBodyModel {
+public class RequestBodyReport {
 
     private String contentType;
 

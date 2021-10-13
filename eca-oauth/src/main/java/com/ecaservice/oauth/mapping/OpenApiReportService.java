@@ -1,14 +1,14 @@
 package com.ecaservice.oauth.mapping;
 
-import com.ecaservice.oauth.model.ApiResponseModel;
-import com.ecaservice.oauth.model.ComponentModel;
-import com.ecaservice.oauth.model.FieldModel;
+import com.ecaservice.oauth.model.ApiResponseReport;
+import com.ecaservice.oauth.model.ComponentReport;
+import com.ecaservice.oauth.model.FieldReport;
 import com.ecaservice.oauth.model.MethodInfo;
-import com.ecaservice.oauth.model.OpenApiModel;
-import com.ecaservice.oauth.model.OperationModel;
-import com.ecaservice.oauth.model.RequestBodyModel;
-import com.ecaservice.oauth.model.SchemaModel;
-import com.ecaservice.oauth.model.SecurityRequirementModel;
+import com.ecaservice.oauth.model.OpenApiReport;
+import com.ecaservice.oauth.model.OperationReport;
+import com.ecaservice.oauth.model.RequestBodyReport;
+import com.ecaservice.oauth.model.SchemaReport;
+import com.ecaservice.oauth.model.SecurityRequirementReport;
 import com.ecaservice.oauth.model.SecuritySchemaModel;
 import com.ecaservice.oauth.model.openapi.ApiResponse;
 import com.ecaservice.oauth.model.openapi.Components;
@@ -39,29 +39,42 @@ import java.util.stream.Collectors;
 
 import static com.google.common.collect.Lists.newArrayList;
 
+/**
+ * Open api report service.
+ *
+ * @author Roman batygin
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class OpenApiService {
+public class OpenApiReportService {
 
     private final OpenApiMapper openApiMapper;
     private final ObjectMapper exampleObjectMapper;
 
-    public OpenApiModel process(OpenAPI openAPI) {
-        OpenApiModel openApiModel = openApiMapper.map(openAPI);
+    /**
+     * Builds open api report model.
+     *
+     * @param openAPI - open api schema
+     * @return open api report model
+     */
+    public OpenApiReport buildReport(OpenAPI openAPI) {
+        log.info("Starting to build open api report");
+        OpenApiReport openApiReport = openApiMapper.map(openAPI);
         var paths = Optional.ofNullable(openAPI.getPaths()).orElse(Collections.emptyMap());
         var methods = paths.entrySet()
                 .stream()
                 .map(this::convertToMethodInfo).collect(Collectors.toList());
         var components = convertComponents(openAPI);
         var securitySchemes = buildSecuritySchemes(openAPI);
-        openApiModel.setMethods(methods);
-        openApiModel.setComponents(components);
-        openApiModel.setSecuritySchemes(securitySchemes);
-        return openApiModel;
+        openApiReport.setMethods(methods);
+        openApiReport.setComponents(components);
+        openApiReport.setSecuritySchemes(securitySchemes);
+        log.info("Open api report has been built");
+        return openApiReport;
     }
 
-    private List<ComponentModel> convertComponents(OpenAPI openAPI) {
+    private List<ComponentReport> convertComponents(OpenAPI openAPI) {
         if (Optional.ofNullable(openAPI.getComponents()).isEmpty() ||
                 CollectionUtils.isEmpty(openAPI.getComponents().getSchemas())) {
             return Collections.emptyList();
@@ -74,28 +87,28 @@ public class OpenApiService {
     }
 
     @SuppressWarnings("unchecked")
-    private ComponentModel convertToComponentModel(String name, Schema schema) {
+    private ComponentReport convertToComponentModel(String name, Schema schema) {
         Map<String, Schema> properties = Optional.ofNullable(schema.getProperties()).orElse(Collections.emptyMap());
         var requiredFields = Optional.ofNullable(schema.getRequired()).orElse(Collections.emptyList());
-        List<FieldModel> fields = properties.entrySet()
+        List<FieldReport> fields = properties.entrySet()
                 .stream()
                 .map(entry -> convertToFieldModel(entry.getKey(),
                         requiredFields.contains(entry.getKey()), entry.getValue()))
                 .collect(Collectors.toList());
-        return ComponentModel.builder()
+        return ComponentReport.builder()
                 .name(name)
                 .description(schema.getDescription())
                 .fields(fields)
                 .build();
     }
 
-    private FieldModel convertToFieldModel(String fieldName, boolean required, Schema schema) {
-        SchemaModel schemaModel = openApiMapper.map(schema);
-        return FieldModel.builder()
+    private FieldReport convertToFieldModel(String fieldName, boolean required, Schema schema) {
+        SchemaReport schemaReport = openApiMapper.map(schema);
+        return FieldReport.builder()
                 .fieldName(fieldName)
-                .description(schemaModel.getDescription())
+                .description(schemaReport.getDescription())
                 .required(required)
-                .schemaModel(schemaModel)
+                .schema(schemaReport)
                 .build();
     }
 
@@ -118,22 +131,22 @@ public class OpenApiService {
                 .build();
     }
 
-    private List<SecurityRequirementModel> convertToSecurityRequirementModel(Operation operation) {
+    private List<SecurityRequirementReport> convertToSecurityRequirementModel(Operation operation) {
         if (CollectionUtils.isEmpty(operation.getSecurity())) {
             return Collections.emptyList();
         }
-        List<SecurityRequirementModel> securityRequirementModels = newArrayList();
+        List<SecurityRequirementReport> securityRequirementReports = newArrayList();
         operation.getSecurity().forEach(map -> map.forEach((name, scopes) -> {
-            var securityRequirementModel = SecurityRequirementModel.builder()
+            var securityRequirementModel = SecurityRequirementReport.builder()
                     .name(name)
                     .scopes(new ArrayList<>(scopes))
                     .build();
-            securityRequirementModels.add(securityRequirementModel);
+            securityRequirementReports.add(securityRequirementModel);
         }));
-        return securityRequirementModels;
+        return securityRequirementReports;
     }
 
-    private OperationModel getOperationModel(PathItem pathItem) {
+    private OperationReport getOperationModel(PathItem pathItem) {
         return ObjectUtils.firstNonNull(
                 getOperationOrNull(pathItem, PathItem::getGet, RequestMethod.GET),
                 getOperationOrNull(pathItem, PathItem::getPost, RequestMethod.POST),
@@ -142,19 +155,19 @@ public class OpenApiService {
         );
     }
 
-    private RequestBodyModel convertRequestBody(Operation operation) {
+    private RequestBodyReport convertRequestBody(Operation operation) {
         return Optional.ofNullable(operation.getRequestBody())
                 .map(requestBody -> {
-                    RequestBodyModel requestBodyModel = openApiMapper.map(requestBody);
+                    RequestBodyReport requestBodyReport = openApiMapper.map(requestBody);
                     var mediaType = requestBody.getContent().entrySet().iterator().next();
-                    requestBodyModel.setContentType(mediaType.getKey());
-                    requestBodyModel.setBodyRef(getBodyRef(mediaType.getValue().getSchema()));
-                    requestBodyModel.setExample(getExample(mediaType.getValue()));
-                    return requestBodyModel;
+                    requestBodyReport.setContentType(mediaType.getKey());
+                    requestBodyReport.setBodyRef(getBodyRef(mediaType.getValue().getSchema()));
+                    requestBodyReport.setExample(getExample(mediaType.getValue()));
+                    return requestBodyReport;
                 }).orElse(null);
     }
 
-    private List<ApiResponseModel> convertApiResponses(Operation operation) {
+    private List<ApiResponseReport> convertApiResponses(Operation operation) {
         if (CollectionUtils.isEmpty(operation.getResponses())) {
             return Collections.emptyList();
         }
@@ -164,24 +177,24 @@ public class OpenApiService {
                 .collect(Collectors.toList());
     }
 
-    private ApiResponseModel convertApiResponse(String responseCode, ApiResponse apiResponse) {
-        ApiResponseModel apiResponseModel = new ApiResponseModel();
-        apiResponseModel.setResponseCode(responseCode);
-        apiResponseModel.setDescription(apiResponse.getDescription());
+    private ApiResponseReport convertApiResponse(String responseCode, ApiResponse apiResponse) {
+        ApiResponseReport apiResponseReport = new ApiResponseReport();
+        apiResponseReport.setResponseCode(responseCode);
+        apiResponseReport.setDescription(apiResponse.getDescription());
         if (!CollectionUtils.isEmpty(apiResponse.getContent())) {
             var mediaType = apiResponse.getContent().entrySet().iterator().next();
-            apiResponseModel.setContentType(mediaType.getKey());
-            apiResponseModel.setExample(getExample(mediaType.getValue()));
-            apiResponseModel.setObjectTypeRef(getBodyRef(mediaType.getValue().getSchema()));
+            apiResponseReport.setContentType(mediaType.getKey());
+            apiResponseReport.setExample(getExample(mediaType.getValue()));
+            apiResponseReport.setObjectTypeRef(getBodyRef(mediaType.getValue().getSchema()));
         }
-        return apiResponseModel;
+        return apiResponseReport;
     }
 
-    private OperationModel getOperationOrNull(PathItem pathItem,
-                                              Function<PathItem, Operation> operationFunction,
-                                              RequestMethod requestMethod) {
+    private OperationReport getOperationOrNull(PathItem pathItem,
+                                               Function<PathItem, Operation> operationFunction,
+                                               RequestMethod requestMethod) {
         return Optional.ofNullable(operationFunction.apply(pathItem))
-                .map(operation -> OperationModel
+                .map(operation -> OperationReport
                         .builder()
                         .operation(operation)
                         .requestMethod(requestMethod)
@@ -207,7 +220,7 @@ public class OpenApiService {
 
     private List<SecuritySchemaModel> buildSecuritySchemes(OpenAPI openAPI) {
         if (Optional.ofNullable(openAPI.getComponents()).map(Components::getSecuritySchemes).isEmpty()) {
-            return null;
+            return Collections.emptyList();
         }
         return openAPI.getComponents()
                 .getSecuritySchemes()

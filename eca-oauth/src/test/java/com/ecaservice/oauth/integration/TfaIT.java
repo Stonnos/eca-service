@@ -3,8 +3,8 @@ package com.ecaservice.oauth.integration;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.mapping.Config2;
 import com.ecaservice.oauth.mapping.OpenApiMapperImpl;
-import com.ecaservice.oauth.mapping.OpenApiService;
-import com.ecaservice.oauth.model.OpenApiModel;
+import com.ecaservice.oauth.mapping.OpenApiReportService;
+import com.ecaservice.oauth.model.OpenApiReport;
 import com.ecaservice.oauth.model.openapi.OpenAPI;
 import com.ecaservice.oauth.service.mail.dictionary.TemplateVariablesDictionary;
 import com.ecaservice.oauth.service.mail.dictionary.Templates;
@@ -45,7 +45,7 @@ import static org.springframework.ui.freemarker.FreeMarkerTemplateUtils.processT
  *
  * @author Roman Batygin
  */
-@Import({FreemarkerConfiguration.class, Config2.class, OpenApiMapperImpl.class, OpenApiService.class})
+@Import({FreemarkerConfiguration.class, Config2.class, OpenApiMapperImpl.class, OpenApiReportService.class})
 class TfaIT extends AbstractUserIT {
 
     private static final String TFA_CODE_PARAM = "tfa_code";
@@ -54,7 +54,7 @@ class TfaIT extends AbstractUserIT {
     @Inject
     private Configuration configuration;
     @Inject
-    private OpenApiService openApiService;
+    private OpenApiReportService openApiReportService;
 
     @Override
     String getApiPrefix() {
@@ -102,8 +102,8 @@ class TfaIT extends AbstractUserIT {
 
         var template = configuration.getTemplate("classpath:templates/template.adoc");
         Map<String, Object> context = newHashMap();
-        OpenApiModel openApiModel = openApiService.process(openAPI);
-        context.put("openApi", openApiModel);
+        OpenApiReport openApiReport = openApiReportService.buildReport(openAPI);
+        context.put("openApi", openApiReport);
         String message = processTemplateIntoString(template, context);
         System.out.println();
         FileUtils.write(new File("/home/roman/adoc12/spec.adoc"), message, StandardCharsets.UTF_8);

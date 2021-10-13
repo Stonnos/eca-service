@@ -17,11 +17,11 @@ public class MethodInfo {
 
     private String description;
 
-    private RequestBodyModel requestBody;
+    private RequestBodyReport requestBody;
 
-    private List<RequestParameterModel> requestParameters;
+    private List<RequestParameterReport> requestParameters;
 
-    private List<ApiResponseModel> apiResponses;
+    private List<ApiResponseReport> apiResponses;
 
-    private List<SecurityRequirementModel> security;
+    private List<SecurityRequirementReport> security;
 }

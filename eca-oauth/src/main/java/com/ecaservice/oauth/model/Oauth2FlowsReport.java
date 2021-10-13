@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class Oauth2FlowsModel {
+public class Oauth2FlowsReport {
 
     private String grantType;
     private String authorizationUrl;

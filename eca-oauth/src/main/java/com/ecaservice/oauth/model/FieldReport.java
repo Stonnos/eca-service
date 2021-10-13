@@ -5,12 +5,12 @@ import lombok.Data;
 
 @Data
 @Builder
-public class FieldModel {
+public class FieldReport {
     private String fieldName;
 
     private String description;
 
     private boolean required;
 
-    private SchemaModel schemaModel;
+    private SchemaReport schema;
 }

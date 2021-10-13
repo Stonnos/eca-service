@@ -7,8 +7,11 @@ import java.util.List;
 
 @Data
 @Builder
-public class SecurityRequirementModel {
+public class ComponentReport {
 
     private String name;
-    private List<String> scopes;
+
+    private String description;
+
+    private List<FieldReport> fields;
 }

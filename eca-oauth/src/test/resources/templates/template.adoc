@@ -120,23 +120,23 @@ ${method.requestBody.example}
 |*${(parameter.name)!"-"}*<#if parameter.required>*</#if>
 |${(parameter.description)!"-"}
 |${(parameter.in)!"-"}
-a|__${(parameter.schemaModel.type)!"unknown type"}__
-<#if parameter.schemaModel.format??>
-__(${parameter.schemaModel.format})__
+a|__${(parameter.schema.type)!"unknown type"}__
+<#if parameter.schema.format??>
+__(${parameter.schema.format})__
 </#if>
-<#if parameter.schemaModel.itemsObjectRef??>
-<<<${parameter.schemaModel.itemsObjectRef}>>>
+<#if parameter.schema.itemsObjectRef??>
+<<<${parameter.schema.itemsObjectRef}>>>
 </#if>
 
-<#if parameter.schemaModel.minLength??>*Min. length*: ${parameter.schemaModel.minLength}</#if>
+<#if parameter.schema.minLength??>*Min. length*: ${parameter.schema.minLength}</#if>
 
-<#if parameter.schemaModel.maxLength??>*Max. length*: ${parameter.schemaModel.maxLength}</#if>
+<#if parameter.schema.maxLength??>*Max. length*: ${parameter.schema.maxLength}</#if>
 
-<#if parameter.schemaModel.pattern??>*Pattern*: `${parameter.schemaModel.pattern}`</#if>
+<#if parameter.schema.pattern??>*Pattern*: `${parameter.schema.pattern}`</#if>
 
-<#if parameter.schemaModel.enumValues?has_content>
+<#if parameter.schema.enumValues?has_content>
 *Values*:
-<#list parameter.schemaModel.enumValues as enumValue>
+<#list parameter.schema.enumValues as enumValue>
 
 * <#if enumValue??>${enumValue}</#if>
 </#list>
@@ -183,28 +183,28 @@ ${apiResponse.example}
 <#list component.fields as field>
 |*${(field.fieldName)!"-"}*<#if field.required>*</#if>
 |${(field.description)!"-"}
-a|<#if field.schemaModel.type??>
-__${field.schemaModel.type}__
-<#if field.schemaModel.format??>
-__(${field.schemaModel.format})__
+a|<#if field.schema.type??>
+__${field.schema.type}__
+<#if field.schema.format??>
+__(${field.schema.format})__
 </#if>
-<#if field.schemaModel.itemsObjectRef??>
-<<<${field.schemaModel.itemsObjectRef}>>>
+<#if field.schema.itemsObjectRef??>
+<<<${field.schema.itemsObjectRef}>>>
 </#if>
 </#if>
-<#if field.schemaModel.objectTypeRef??>
-<<${field.schemaModel.objectTypeRef}>>
+<#if field.schema.objectTypeRef??>
+<<${field.schema.objectTypeRef}>>
 </#if>
 
-<#if field.schemaModel.minLength??>*Min. length*: ${field.schemaModel.minLength}</#if>
+<#if field.schema.minLength??>*Min. length*: ${field.schema.minLength}</#if>
 
-<#if field.schemaModel.maxLength??>*Max. length*: ${field.schemaModel.maxLength}</#if>
+<#if field.schema.maxLength??>*Max. length*: ${field.schema.maxLength}</#if>
 
-<#if field.schemaModel.pattern??>*Pattern*: `${field.schemaModel.pattern}`</#if>
+<#if field.schema.pattern??>*Pattern*: `${field.schema.pattern}`</#if>
 
-<#if field.schemaModel.enumValues?has_content>
+<#if field.schema.enumValues?has_content>
 *Values*:
-<#list field.schemaModel.enumValues as enumValue>
+<#list field.schema.enumValues as enumValue>
 
 * <#if enumValue??>${enumValue}</#if>
 </#list>

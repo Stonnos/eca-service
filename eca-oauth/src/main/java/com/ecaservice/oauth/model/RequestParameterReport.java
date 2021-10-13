@@ -3,7 +3,7 @@ package com.ecaservice.oauth.model;
 import lombok.Data;
 
 @Data
-public class RequestParameterModel {
+public class RequestParameterReport {
 
     private String name;
 
@@ -15,5 +15,5 @@ public class RequestParameterModel {
 
     private String example;
 
-    private SchemaModel schemaModel;
+    private SchemaReport schema;
 }

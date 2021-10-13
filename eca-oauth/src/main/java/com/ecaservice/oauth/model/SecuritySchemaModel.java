@@ -14,5 +14,5 @@ public class SecuritySchemaModel {
     private String in;
     private String scheme;
     private String bearerFormat;
-    private List<Oauth2FlowsModel> oauth2Flows;
+    private List<Oauth2FlowsReport> oauth2Flows;
 }

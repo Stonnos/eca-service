@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @Data
 @Builder
-public class OperationModel {
+public class OperationReport {
 
     private RequestMethod requestMethod;
 
