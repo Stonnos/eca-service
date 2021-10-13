@@ -1,4 +1,4 @@
-= Microservice for storaging and analysis evaluation results
+= Microservice for users managment
 Автор: Roman Batygin
 (roman.batygin@mail.ru)
 :toc:
@@ -6,13 +6,53 @@
 
 == Overview
 
-API provides operations with evaluation results
+API provides operations with users for ECA web application
+
+== Security schemas
 
 
-== Saves evaluation results report
+=== EcaAuth - Oauth2 authentication
 
-__POST__ */api/save* - Saves evaluation results report
+[width=100%]
+|===
+|Type|Description|Flows
+|*oauth2*
+|
+*Client credentials location:* __header__
 
+*Bearer format:* __Authorization: Bearer <access token>__
+a|
+
+*Flow*
+
+__Grant type:__ password
+
+__Token url:__ http://localhost:8080/oauth/token
+
+__Refresh token url:__ http://localhost:8080/oauth/token
+
+
+__Scopes__:
+
+
+* web
+
+|===
+
+== Updates info for current authenticated user
+
+__PUT__ */users/update-info* - Updates info for current authenticated user
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|Name|Scopes
+|*EcaAuth*
+a|
+
+* web
+|===
 
 *Request body*
 
@@ -21,292 +61,14 @@ __POST__ */api/save* - Saves evaluation results report
 |Content type|Required|Schema|Example
 |*application/json*
 |true
-|<<EvaluationResultsRequest>>
+|<<UpdateUserInfoDto>>
 a|
 [source,json]
 ----
 {
-  "requestId" : "04b1373f-7838-4535-b65a-88c088830879",
-  "instances" : {
-    "structure" : "<data structure>",
-    "relationName" : "Glass",
-    "numInstances" : 214,
-    "numAttributes" : 10,
-    "numClasses" : 6,
-    "className" : "Type"
-  },
-  "classifierReport" : {
-    "type" : "ClassifierReport",
-    "classifierName" : "ExtraTreesClassifier",
-    "classifierDescription" : null,
-    "options" : "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}",
-    "classifierInputOptions" : [ {
-      "key" : "Число деревьев:",
-      "value" : "20"
-    }, {
-      "key" : "Минимальное число объектов в листе:",
-      "value" : "2"
-    }, {
-      "key" : "Максиальная глубина дерева:",
-      "value" : "0"
-    }, {
-      "key" : "Число случайных атрибутов:",
-      "value" : "5"
-    }, {
-      "key" : "Алгоритм построения дерева решений:",
-      "value" : "ID3"
-    }, {
-      "key" : "Число потоков",
-      "value" : "6"
-    }, {
-      "key" : "Начальное значение (Seed)",
-      "value" : "1"
-    }, {
-      "key" : "Число случайных расщеплений атрибута:",
-      "value" : "6"
-    }, {
-      "key" : "Формирование обучающих выборок:",
-      "value" : "Исходное обучающее множество"
-    } ],
-    "metaClassifier" : false
-  },
-  "evaluationMethodReport" : {
-    "evaluationMethod" : "CROSS_VALIDATION",
-    "numFolds" : 10,
-    "numTests" : 1,
-    "seed" : 1
-  },
-  "statistics" : {
-    "numTestInstances" : 214,
-    "numCorrect" : 172,
-    "numIncorrect" : 42,
-    "pctCorrect" : 80.37383177570094,
-    "pctIncorrect" : 19.626168224299064,
-    "meanAbsoluteError" : 0.11885129227585131,
-    "rootMeanSquaredError" : 0.231476151125149,
-    "maxAucValue" : 0.9983739837398374,
-    "varianceError" : 0.00436052266530287,
-    "confidenceIntervalLowerBound" : 0.14902362368597982,
-    "confidenceIntervalUpperBound" : 0.24349974080000147
-  },
-  "classificationCosts" : [ {
-    "classValue" : "build wind float",
-    "truePositiveRate" : 0.9142857142857143,
-    "falsePositiveRate" : 0.125,
-    "trueNegativeRate" : 0.875,
-    "falseNegativeRate" : 0.08571428571428572,
-    "rocCurve" : {
-      "aucValue" : 0.9313988095238095,
-      "specificity" : 0.8611111111111112,
-      "sensitivity" : 0.9428571428571428,
-      "thresholdValue" : 0.4138291855203621
-    }
-  }, {
-    "classValue" : "vehic wind float",
-    "truePositiveRate" : 0.23529411764705882,
-    "falsePositiveRate" : 0.01015228426395939,
-    "trueNegativeRate" : 0.9898477157360406,
-    "falseNegativeRate" : 0.7647058823529411,
-    "rocCurve" : {
-      "aucValue" : 0.9252015527022992,
-      "specificity" : 0.751269035532995,
-      "sensitivity" : 1.0,
-      "thresholdValue" : 0.08396763793615986
-    }
-  }, {
-    "classValue" : "tableware",
-    "truePositiveRate" : 0.7777777777777778,
-    "falsePositiveRate" : 0.004878048780487805,
-    "trueNegativeRate" : 0.9951219512195122,
-    "falseNegativeRate" : 0.2222222222222222,
-    "rocCurve" : {
-      "aucValue" : 0.9983739837398374,
-      "specificity" : 0.9951219512195122,
-      "sensitivity" : 1.0,
-      "thresholdValue" : 0.33422619047619045
-    }
-  }, {
-    "classValue" : "build wind non-float",
-    "truePositiveRate" : 0.8289473684210527,
-    "falsePositiveRate" : 0.10869565217391304,
-    "trueNegativeRate" : 0.8913043478260869,
-    "falseNegativeRate" : 0.17105263157894737,
-    "rocCurve" : {
-      "aucValue" : 0.9111365369946606,
-      "specificity" : 0.9492753623188406,
-      "sensitivity" : 0.75,
-      "thresholdValue" : 0.49067460317460315
-    }
-  }, {
-    "classValue" : "headlamps",
-    "truePositiveRate" : 0.8275862068965517,
-    "falsePositiveRate" : 0.016216216216216217,
-    "trueNegativeRate" : 0.9837837837837838,
-    "falseNegativeRate" : 0.1724137931034483,
-    "rocCurve" : {
-      "aucValue" : 0.9606710158434296,
-      "specificity" : 0.9459459459459459,
-      "sensitivity" : 0.9655172413793104,
-      "thresholdValue" : 0.1461273690078038
-    }
-  }, {
-    "classValue" : "containers",
-    "truePositiveRate" : 0.7692307692307693,
-    "falsePositiveRate" : 0.014925373134328358,
-    "trueNegativeRate" : 0.9850746268656716,
-    "falseNegativeRate" : 0.23076923076923078,
-    "rocCurve" : {
-      "aucValue" : 0.9862227324913893,
-      "specificity" : 0.9701492537313433,
-      "sensitivity" : 0.9230769230769231,
-      "thresholdValue" : 0.2746176338281601
-    }
-  } ],
-  "confusionMatrix" : [ {
-    "actualClass" : "build wind float",
-    "predictedClass" : "build wind float",
-    "numInstances" : 64
-  }, {
-    "actualClass" : "build wind float",
-    "predictedClass" : "vehic wind float",
-    "numInstances" : 1
-  }, {
-    "actualClass" : "build wind float",
-    "predictedClass" : "tableware",
-    "numInstances" : 0
-  }, {
-    "actualClass" : "build wind float",
-    "predictedClass" : "build wind non-float",
-    "numInstances" : 5
-  }, {
-    "actualClass" : "build wind float",
-    "predictedClass" : "headlamps",
-    "numInstances" : 0
-  }, {
-    "actualClass" : "build wind float",
-    "predictedClass" : "containers",
-    "numInstances" : 0
-  }, {
-    "actualClass" : "vehic wind float",
-    "predictedClass" : "build wind float",
-    "numInstances" : 9
-  }, {
-    "actualClass" : "vehic wind float",
-    "predictedClass" : "vehic wind float",
-    "numInstances" : 4
-  }, {
-    "actualClass" : "vehic wind float",
-    "predictedClass" : "tableware",
-    "numInstances" : 0
-  }, {
-    "actualClass" : "vehic wind float",
-    "predictedClass" : "build wind non-float",
-    "numInstances" : 4
-  }, {
-    "actualClass" : "vehic wind float",
-    "predictedClass" : "headlamps",
-    "numInstances" : 0
-  }, {
-    "actualClass" : "vehic wind float",
-    "predictedClass" : "containers",
-    "numInstances" : 0
-  }, {
-    "actualClass" : "tableware",
-    "predictedClass" : "build wind float",
-    "numInstances" : 0
-  }, {
-    "actualClass" : "tableware",
-    "predictedClass" : "vehic wind float",
-    "numInstances" : 0
-  }, {
-    "actualClass" : "tableware",
-    "predictedClass" : "tableware",
-    "numInstances" : 7
-  }, {
-    "actualClass" : "tableware",
-    "predictedClass" : "build wind non-float",
-    "numInstances" : 1
-  }, {
-    "actualClass" : "tableware",
-    "predictedClass" : "headlamps",
-    "numInstances" : 1
-  }, {
-    "actualClass" : "tableware",
-    "predictedClass" : "containers",
-    "numInstances" : 0
-  }, {
-    "actualClass" : "build wind non-float",
-    "predictedClass" : "build wind float",
-    "numInstances" : 8
-  }, {
-    "actualClass" : "build wind non-float",
-    "predictedClass" : "vehic wind float",
-    "numInstances" : 1
-  }, {
-    "actualClass" : "build wind non-float",
-    "predictedClass" : "tableware",
-    "numInstances" : 1
-  }, {
-    "actualClass" : "build wind non-float",
-    "predictedClass" : "build wind non-float",
-    "numInstances" : 63
-  }, {
-    "actualClass" : "build wind non-float",
-    "predictedClass" : "headlamps",
-    "numInstances" : 1
-  }, {
-    "actualClass" : "build wind non-float",
-    "predictedClass" : "containers",
-    "numInstances" : 2
-  }, {
-    "actualClass" : "headlamps",
-    "predictedClass" : "build wind float",
-    "numInstances" : 1
-  }, {
-    "actualClass" : "headlamps",
-    "predictedClass" : "vehic wind float",
-    "numInstances" : 0
-  }, {
-    "actualClass" : "headlamps",
-    "predictedClass" : "tableware",
-    "numInstances" : 0
-  }, {
-    "actualClass" : "headlamps",
-    "predictedClass" : "build wind non-float",
-    "numInstances" : 3
-  }, {
-    "actualClass" : "headlamps",
-    "predictedClass" : "headlamps",
-    "numInstances" : 24
-  }, {
-    "actualClass" : "headlamps",
-    "predictedClass" : "containers",
-    "numInstances" : 1
-  }, {
-    "actualClass" : "containers",
-    "predictedClass" : "build wind float",
-    "numInstances" : 0
-  }, {
-    "actualClass" : "containers",
-    "predictedClass" : "vehic wind float",
-    "numInstances" : 0
-  }, {
-    "actualClass" : "containers",
-    "predictedClass" : "tableware",
-    "numInstances" : 0
-  }, {
-    "actualClass" : "containers",
-    "predictedClass" : "build wind non-float",
-    "numInstances" : 2
-  }, {
-    "actualClass" : "containers",
-    "predictedClass" : "headlamps",
-    "numInstances" : 1
-  }, {
-    "actualClass" : "containers",
-    "predictedClass" : "containers",
-    "numInstances" : 10
-  } ]
+  "firstName" : "Roman",
+  "lastName" : "Batygin",
+  "middleName" : "Igorevich"
 }
 ----
 |===
@@ -319,13 +81,20 @@ a|
 |Code|Description|Content type|Schema|Example
 |200
 |OK
+|*-*
+|-
+a|
+-
+|401
+|Not authorized
 |*application/json*
-|<<EvaluationResultsResponse>>
+|-
 a|
 [source,json]
 ----
 {
-  "requestId" : "04b1373f-7838-4535-b65a-88c088830879"
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
 }
 ----
 |400
@@ -336,33 +105,396 @@ a|
 [source,json]
 ----
 [ {
-  "fieldName" : "requestId",
-  "code" : "Pattern",
-  "errorMessage" : "must match \"^[0-9a-f]{8}-[0-9a-f]{4}-[34][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$\""
+  "fieldName" : "lastName",
+  "code" : "Size",
+  "errorMessage" : "size must be between 2 and 30"
 }, {
-  "fieldName" : "instances.structure",
-  "code" : "NotBlank",
-  "errorMessage" : "must not be blank"
+  "fieldName" : "middleName",
+  "code" : "Size",
+  "errorMessage" : "size must be between 2 and 30"
 }, {
-  "fieldName" : "requestId",
-  "code" : "NotBlank",
-  "errorMessage" : "must not be blank"
-}, {
-  "fieldName" : "instances.relationName",
-  "code" : "NotBlank",
-  "errorMessage" : "must not be blank"
-}, {
-  "fieldName" : "classifierReport.classifierName",
-  "code" : "NotBlank",
-  "errorMessage" : "must not be blank"
+  "fieldName" : "firstName",
+  "code" : "Size",
+  "errorMessage" : "size must be between 2 and 30"
 } ]
 ----
 |===
 
-== Gets evaluation results simple report
+== Uploads photo for current authenticated user
 
-__POST__ */api/results* - Gets evaluation results simple report
+__POST__ */users/upload-photo* - Uploads photo for current authenticated user
 
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|Name|Scopes
+|*EcaAuth*
+a|
+
+* web
+|===
+
+*Request body*
+
+[width=100%]
+|===
+|Content type|Required|Schema|Example
+|*multipart/form-data*
+|false
+|-
+a|
+-
+|===
+
+*Multipart form data fields*
+
+[width=100%]
+|===
+|Name|Description|Schema
+|*file**
+|Photo file
+a|
+__string__
+__(binary)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+
+
+*Api responses*
+[width=100%]
+|===
+|Code|Description|Content type|Schema|Example
+|200
+|OK
+|*-*
+|-
+a|
+-
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*-*
+|-
+a|
+-
+|===
+
+== Unlocks user
+
+__POST__ */users/unlock* - Unlocks user
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|Name|Scopes
+|*EcaAuth*
+a|
+
+* web
+|===
+
+
+*Request parameters*
+[width=100%]
+|===
+|Name|Description|Type|Schema
+|*userId**
+|User id
+|query
+a|__integer__
+__(int64)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|Code|Description|Content type|Schema|Example
+|200
+|OK
+|*-*
+|-
+a|
+-
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|403
+|Permission denied
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "access_denied",
+  "error_description" : "Access is denied"
+}
+----
+|400
+|Bad request
+|*-*
+|-
+a|
+-
+|===
+
+== Enable/disable tfa for current authenticated user
+
+__POST__ */users/tfa* - Enable/disable tfa for current authenticated user
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|Name|Scopes
+|*EcaAuth*
+a|
+
+* web
+|===
+
+
+*Request parameters*
+[width=100%]
+|===
+|Name|Description|Type|Schema
+|*enabled**
+|Tfa enabled flag
+|query
+a|__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|Code|Description|Content type|Schema|Example
+|200
+|OK
+|*-*
+|-
+a|
+-
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*-*
+|-
+a|
+-
+|===
+
+== Logout current user and revokes access/refresh token pair
+
+__POST__ */users/logout* - Logout current user and revokes access/refresh token pair
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|Name|Scopes
+|*EcaAuth*
+a|
+
+* web
+|===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|Code|Description|Content type|Schema|Example
+|200
+|OK
+|*-*
+|-
+a|
+-
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|===
+
+== Locks user
+
+__POST__ */users/lock* - Locks user
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|Name|Scopes
+|*EcaAuth*
+a|
+
+* web
+|===
+
+
+*Request parameters*
+[width=100%]
+|===
+|Name|Description|Type|Schema
+|*userId**
+|User id
+|query
+a|__integer__
+__(int64)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|Code|Description|Content type|Schema|Example
+|200
+|OK
+|*-*
+|-
+a|
+-
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|403
+|Permission denied
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "access_denied",
+  "error_description" : "Access is denied"
+}
+----
+|400
+|Bad request
+|*-*
+|-
+a|
+-
+|===
+
+== Finds users with specified options
+
+__POST__ */users/list* - Finds users with specified options
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|Name|Scopes
+|*EcaAuth*
+a|
+
+* web
+|===
 
 *Request body*
 
@@ -371,12 +503,13 @@ __POST__ */api/results* - Gets evaluation results simple report
 |Content type|Required|Schema|Example
 |*application/json*
 |true
-|<<GetEvaluationResultsRequest>>
+|<<PageRequestDto>>
 a|
 [source,json]
 ----
 {
-  "requestId" : "04b1373f-7838-4535-b65a-88c088830879"
+  "page" : 0,
+  "size" : 25
 }
 ----
 |===
@@ -390,292 +523,55 @@ a|
 |200
 |OK
 |*application/json*
-|<<GetEvaluationResultsResponse>>
+|<<UsersPageDto>>
 a|
 [source,json]
 ----
 {
-  "requestId" : "04b1373f-7838-4535-b65a-88c088830879",
-  "instances" : {
-    "structure" : "<data structure>",
-    "relationName" : "Glass",
-    "numInstances" : 214,
-    "numAttributes" : 10,
-    "numClasses" : 6,
-    "className" : "Type"
-  },
-  "classifierReport" : {
-    "type" : "ClassifierReport",
-    "classifierName" : "ExtraTreesClassifier",
-    "classifierDescription" : null,
-    "options" : "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}",
-    "classifierInputOptions" : [ {
-      "key" : "Число потоков",
-      "value" : "6"
-    }, {
-      "key" : "Формирование обучающих выборок:",
-      "value" : "Исходное обучающее множество"
-    }, {
-      "key" : "Алгоритм построения дерева решений:",
-      "value" : "ID3"
-    }, {
-      "key" : "Число деревьев:",
-      "value" : "20"
-    }, {
-      "key" : "Максиальная глубина дерева:",
-      "value" : "0"
-    }, {
-      "key" : "Число случайных атрибутов:",
-      "value" : "5"
-    }, {
-      "key" : "Число случайных расщеплений атрибута:",
-      "value" : "6"
-    }, {
-      "key" : "Минимальное число объектов в листе:",
-      "value" : "2"
-    }, {
-      "key" : "Начальное значение (Seed)",
-      "value" : "1"
-    } ],
-    "metaClassifier" : false
-  },
-  "evaluationMethodReport" : {
-    "evaluationMethod" : "CROSS_VALIDATION",
-    "numFolds" : 10,
-    "numTests" : 1,
-    "seed" : 1
-  },
-  "statistics" : {
-    "numTestInstances" : 214,
-    "numCorrect" : 172,
-    "numIncorrect" : 42,
-    "pctCorrect" : 80.3738,
-    "pctIncorrect" : 19.6262,
-    "meanAbsoluteError" : 0.1189,
-    "rootMeanSquaredError" : 0.2315,
-    "maxAucValue" : 0.9984,
-    "varianceError" : 0.0044,
-    "confidenceIntervalLowerBound" : 0.149,
-    "confidenceIntervalUpperBound" : 0.2435
-  },
-  "classificationCosts" : [ {
-    "classValue" : "build wind float",
-    "truePositiveRate" : 0.9143,
-    "falsePositiveRate" : 0.125,
-    "trueNegativeRate" : 0.875,
-    "falseNegativeRate" : 0.0857,
-    "rocCurve" : {
-      "aucValue" : 0.9314,
-      "specificity" : 0.8611,
-      "sensitivity" : 0.9429,
-      "thresholdValue" : 0.4138
-    }
-  }, {
-    "classValue" : "build wind non-float",
-    "truePositiveRate" : 0.8289,
-    "falsePositiveRate" : 0.1087,
-    "trueNegativeRate" : 0.8913,
-    "falseNegativeRate" : 0.1711,
-    "rocCurve" : {
-      "aucValue" : 0.9111,
-      "specificity" : 0.9493,
-      "sensitivity" : 0.75,
-      "thresholdValue" : 0.4907
-    }
-  }, {
-    "classValue" : "containers",
-    "truePositiveRate" : 0.7692,
-    "falsePositiveRate" : 0.0149,
-    "trueNegativeRate" : 0.9851,
-    "falseNegativeRate" : 0.2308,
-    "rocCurve" : {
-      "aucValue" : 0.9862,
-      "specificity" : 0.9701,
-      "sensitivity" : 0.9231,
-      "thresholdValue" : 0.2746
-    }
-  }, {
-    "classValue" : "headlamps",
-    "truePositiveRate" : 0.8276,
-    "falsePositiveRate" : 0.0162,
-    "trueNegativeRate" : 0.9838,
-    "falseNegativeRate" : 0.1724,
-    "rocCurve" : {
-      "aucValue" : 0.9607,
-      "specificity" : 0.9459,
-      "sensitivity" : 0.9655,
-      "thresholdValue" : 0.1461
-    }
-  }, {
-    "classValue" : "tableware",
-    "truePositiveRate" : 0.7778,
-    "falsePositiveRate" : 0.0049,
-    "trueNegativeRate" : 0.9951,
-    "falseNegativeRate" : 0.2222,
-    "rocCurve" : {
-      "aucValue" : 0.9984,
-      "specificity" : 0.9951,
-      "sensitivity" : 1.0,
-      "thresholdValue" : 0.3342
-    }
-  }, {
-    "classValue" : "vehic wind float",
-    "truePositiveRate" : 0.2353,
-    "falsePositiveRate" : 0.0102,
-    "trueNegativeRate" : 0.9898,
-    "falseNegativeRate" : 0.7647,
-    "rocCurve" : {
-      "aucValue" : 0.9252,
-      "specificity" : 0.7513,
-      "sensitivity" : 1.0,
-      "thresholdValue" : 0.084
-    }
+  "content" : [ {
+    "id" : 1,
+    "login" : "admin",
+    "email" : "test@mail.ru",
+    "firstName" : "Ivan",
+    "lastName" : "Ivanov",
+    "middleName" : "Ivanovich",
+    "fullName" : "Ivanov Ivan Ivanovich",
+    "creationDate" : "2021-07-01 14:00:00",
+    "tfaEnabled" : true,
+    "locked" : true,
+    "photoId" : 1,
+    "passwordDate" : "2021-07-01 14:00:00",
+    "roles" : [ {
+      "roleName" : "ROLE_SUPER_ADMIN",
+      "description" : "Administrator"
+    } ]
   } ],
-  "confusionMatrix" : [ {
-    "actualClass" : "tableware",
-    "predictedClass" : "build wind float",
-    "numInstances" : 0
-  }, {
-    "actualClass" : "build wind non-float",
-    "predictedClass" : "build wind float",
-    "numInstances" : 8
-  }, {
-    "actualClass" : "vehic wind float",
-    "predictedClass" : "containers",
-    "numInstances" : 0
-  }, {
-    "actualClass" : "vehic wind float",
-    "predictedClass" : "build wind non-float",
-    "numInstances" : 4
-  }, {
-    "actualClass" : "build wind float",
-    "predictedClass" : "build wind non-float",
-    "numInstances" : 5
-  }, {
-    "actualClass" : "build wind non-float",
-    "predictedClass" : "build wind non-float",
-    "numInstances" : 63
-  }, {
-    "actualClass" : "build wind non-float",
-    "predictedClass" : "containers",
-    "numInstances" : 2
-  }, {
-    "actualClass" : "build wind float",
-    "predictedClass" : "headlamps",
-    "numInstances" : 0
-  }, {
-    "actualClass" : "headlamps",
-    "predictedClass" : "build wind float",
-    "numInstances" : 1
-  }, {
-    "actualClass" : "headlamps",
-    "predictedClass" : "tableware",
-    "numInstances" : 0
-  }, {
-    "actualClass" : "containers",
-    "predictedClass" : "headlamps",
-    "numInstances" : 1
-  }, {
-    "actualClass" : "headlamps",
-    "predictedClass" : "build wind non-float",
-    "numInstances" : 3
-  }, {
-    "actualClass" : "headlamps",
-    "predictedClass" : "containers",
-    "numInstances" : 1
-  }, {
-    "actualClass" : "tableware",
-    "predictedClass" : "build wind non-float",
-    "numInstances" : 1
-  }, {
-    "actualClass" : "containers",
-    "predictedClass" : "build wind non-float",
-    "numInstances" : 2
-  }, {
-    "actualClass" : "headlamps",
-    "predictedClass" : "headlamps",
-    "numInstances" : 24
-  }, {
-    "actualClass" : "containers",
-    "predictedClass" : "build wind float",
-    "numInstances" : 0
-  }, {
-    "actualClass" : "vehic wind float",
-    "predictedClass" : "tableware",
-    "numInstances" : 0
-  }, {
-    "actualClass" : "vehic wind float",
-    "predictedClass" : "headlamps",
-    "numInstances" : 0
-  }, {
-    "actualClass" : "build wind float",
-    "predictedClass" : "build wind float",
-    "numInstances" : 64
-  }, {
-    "actualClass" : "containers",
-    "predictedClass" : "containers",
-    "numInstances" : 10
-  }, {
-    "actualClass" : "containers",
-    "predictedClass" : "vehic wind float",
-    "numInstances" : 0
-  }, {
-    "actualClass" : "tableware",
-    "predictedClass" : "containers",
-    "numInstances" : 0
-  }, {
-    "actualClass" : "build wind non-float",
-    "predictedClass" : "tableware",
-    "numInstances" : 1
-  }, {
-    "actualClass" : "build wind float",
-    "predictedClass" : "containers",
-    "numInstances" : 0
-  }, {
-    "actualClass" : "tableware",
-    "predictedClass" : "vehic wind float",
-    "numInstances" : 0
-  }, {
-    "actualClass" : "build wind float",
-    "predictedClass" : "tableware",
-    "numInstances" : 0
-  }, {
-    "actualClass" : "vehic wind float",
-    "predictedClass" : "vehic wind float",
-    "numInstances" : 4
-  }, {
-    "actualClass" : "build wind float",
-    "predictedClass" : "vehic wind float",
-    "numInstances" : 1
-  }, {
-    "actualClass" : "vehic wind float",
-    "predictedClass" : "build wind float",
-    "numInstances" : 9
-  }, {
-    "actualClass" : "build wind non-float",
-    "predictedClass" : "headlamps",
-    "numInstances" : 1
-  }, {
-    "actualClass" : "containers",
-    "predictedClass" : "tableware",
-    "numInstances" : 0
-  }, {
-    "actualClass" : "build wind non-float",
-    "predictedClass" : "vehic wind float",
-    "numInstances" : 1
-  }, {
-    "actualClass" : "tableware",
-    "predictedClass" : "headlamps",
-    "numInstances" : 1
-  }, {
-    "actualClass" : "tableware",
-    "predictedClass" : "tableware",
-    "numInstances" : 7
-  }, {
-    "actualClass" : "headlamps",
-    "predictedClass" : "vehic wind float",
-    "numInstances" : 0
-  } ]
+  "page" : 0,
+  "totalCount" : 1
+}
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|403
+|Permission denied
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "access_denied",
+  "error_description" : "Access is denied"
 }
 ----
 |400
@@ -686,17 +582,31 @@ a|
 [source,json]
 ----
 [ {
-  "fieldName" : "requestId",
-  "code" : "Pattern",
-  "errorMessage" : "must match \"^[0-9a-f]{8}-[0-9a-f]{4}-[34][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$\""
+  "fieldName" : "page",
+  "code" : "Min",
+  "errorMessage" : "must be greater than or equal to 0"
+}, {
+  "fieldName" : "size",
+  "code" : "Min",
+  "errorMessage" : "must be greater than or equal to 1"
 } ]
 ----
 |===
 
-== Endpoint for searching optimal classifiers options for specified request
+== Creates new user
 
-__POST__ */api/optimal-classifier-options* - Endpoint for searching optimal classifiers options for specified request
+__POST__ */users/create* - Creates new user
 
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|Name|Scopes
+|*EcaAuth*
+a|
+
+* web
+|===
 
 *Request body*
 
@@ -705,20 +615,16 @@ __POST__ */api/optimal-classifier-options* - Endpoint for searching optimal clas
 |Content type|Required|Schema|Example
 |*application/json*
 |true
-|<<ClassifierOptionsRequest>>
+|<<CreateUserDto>>
 a|
 [source,json]
 ----
 {
-  "relationName" : "Glass",
-  "dataHash" : "2aeb5c41423c895995e8cb304fe30b2d",
-  "evaluationMethodReport" : {
-    "evaluationMethod" : "CROSS_VALIDATION",
-    "numFolds" : 10,
-    "numTests" : 1,
-    "seed" : 1
-  },
-  "sortFields" : null
+  "login" : "user",
+  "email" : "bat1238@yandex.ru",
+  "firstName" : "Roman",
+  "lastName" : "Batygin",
+  "middleName" : "Igorevich"
 }
 ----
 |===
@@ -732,81 +638,51 @@ a|
 |200
 |OK
 |*application/json*
-|<<ClassifierOptionsResponse>>
+|<<UserDto>>
 a|
 [source,json]
 ----
 {
-  "requestId" : "f8cecbf7-405b-403b-9a94-f51e8fb73ed8",
-  "classifierReports" : [ {
-    "type" : "ClassifierReport",
-    "classifierName" : "ExtraTreesClassifier",
-    "classifierDescription" : null,
-    "options" : "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}",
-    "classifierInputOptions" : [ {
-      "key" : "Число потоков",
-      "value" : "6"
-    }, {
-      "key" : "Формирование обучающих выборок:",
-      "value" : "Исходное обучающее множество"
-    }, {
-      "key" : "Алгоритм построения дерева решений:",
-      "value" : "ID3"
-    }, {
-      "key" : "Число деревьев:",
-      "value" : "20"
-    }, {
-      "key" : "Максиальная глубина дерева:",
-      "value" : "0"
-    }, {
-      "key" : "Число случайных атрибутов:",
-      "value" : "5"
-    }, {
-      "key" : "Число случайных расщеплений атрибута:",
-      "value" : "6"
-    }, {
-      "key" : "Минимальное число объектов в листе:",
-      "value" : "2"
-    }, {
-      "key" : "Начальное значение (Seed)",
-      "value" : "1"
-    } ],
-    "metaClassifier" : false
-  }, {
-    "type" : "ClassifierReport",
-    "classifierName" : "ExtraTreesClassifier",
-    "classifierDescription" : null,
-    "options" : "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}",
-    "classifierInputOptions" : [ {
-      "key" : "Число потоков",
-      "value" : "6"
-    }, {
-      "key" : "Формирование обучающих выборок:",
-      "value" : "Исходное обучающее множество"
-    }, {
-      "key" : "Алгоритм построения дерева решений:",
-      "value" : "ID3"
-    }, {
-      "key" : "Число деревьев:",
-      "value" : "20"
-    }, {
-      "key" : "Максиальная глубина дерева:",
-      "value" : "0"
-    }, {
-      "key" : "Число случайных атрибутов:",
-      "value" : "5"
-    }, {
-      "key" : "Число случайных расщеплений атрибута:",
-      "value" : "6"
-    }, {
-      "key" : "Минимальное число объектов в листе:",
-      "value" : "2"
-    }, {
-      "key" : "Начальное значение (Seed)",
-      "value" : "1"
-    } ],
-    "metaClassifier" : false
+  "id" : 1,
+  "login" : "admin",
+  "email" : "test@mail.ru",
+  "firstName" : "Ivan",
+  "lastName" : "Ivanov",
+  "middleName" : "Ivanovich",
+  "fullName" : "Ivanov Ivan Ivanovich",
+  "creationDate" : "2021-07-01 14:00:00",
+  "tfaEnabled" : true,
+  "locked" : true,
+  "photoId" : 1,
+  "passwordDate" : "2021-07-01 14:00:00",
+  "roles" : [ {
+    "roleName" : "ROLE_SUPER_ADMIN",
+    "description" : "Administrator"
   } ]
+}
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|403
+|Permission denied
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "access_denied",
+  "error_description" : "Access is denied"
 }
 ----
 |400
@@ -817,48 +693,611 @@ a|
 [source,json]
 ----
 [ {
-  "fieldName" : "evaluationMethodReport.evaluationMethod",
-  "code" : "NotNull",
-  "errorMessage" : "must not be null"
-}, {
-  "fieldName" : "dataHash",
-  "code" : "NotBlank",
-  "errorMessage" : "must not be blank"
-}, {
-  "fieldName" : "relationName",
-  "code" : "NotBlank",
-  "errorMessage" : "must not be blank"
+  "fieldName" : "login",
+  "code" : "UniqueLogin",
+  "errorMessage" : null
+} ]
+----
+|===
+
+== Verify reset password token
+
+__POST__ */password/verify-token* - Verify reset password token
+
+
+
+*Request parameters*
+[width=100%]
+|===
+|Name|Description|Type|Schema
+|*token**
+|Reset password token
+|query
+a|__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|Code|Description|Content type|Schema|Example
+|200
+|OK
+|*application/json*
+|-
+a|
+[source,json]
+----
+false
+----
+|===
+
+== Reset password with specified token
+
+__POST__ */password/reset* - Reset password with specified token
+
+
+*Request body*
+
+[width=100%]
+|===
+|Content type|Required|Schema|Example
+|*application/json*
+|true
+|<<ResetPasswordRequest>>
+a|
+[source,json]
+----
+{
+  "token" : "MDhmNTg4MDdiMTI0Y2Y4OWNmN2UxYmE1OTljYjUzOWU6MTYxNjE1MzM4MDMzMQ==",
+  "password" : "passw0rd!"
+}
+----
+|===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|Code|Description|Content type|Schema|Example
+|200
+|OK
+|*-*
+|-
+a|
+-
+|400
+|Bad request
+|*application/json*
+|-
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "InvalidToken",
+  "errorMessage" : "Invalid token"
+} ]
+----
+|===
+
+== Creates forgot password request
+
+__POST__ */password/forgot* - Creates forgot password request
+
+
+*Request body*
+
+[width=100%]
+|===
+|Content type|Required|Schema|Example
+|*application/json*
+|true
+|<<ForgotPasswordRequest>>
+a|
+[source,json]
+----
+{
+  "email" : "bat1238@yandex.ru"
+}
+----
+|===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|Code|Description|Content type|Schema|Example
+|200
+|OK
+|*-*
+|-
+a|
+-
+|400
+|Bad request
+|*application/json*
+|-
+a|
+[source,json]
+----
+[ {
+  "fieldName" : "email",
+  "code" : "UserEmail",
+  "errorMessage" : null
+} ]
+----
+|===
+
+== Creates change password request
+
+__POST__ */password/change/request* - Creates change password request
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|Name|Scopes
+|*EcaAuth*
+a|
+
+* web
+|===
+
+*Request body*
+
+[width=100%]
+|===
+|Content type|Required|Schema|Example
+|*application/json*
+|true
+|<<ChangePasswordRequest>>
+a|
+[source,json]
+----
+{
+  "oldPassword" : "oldPassw0rd!",
+  "newPassword" : "newPassw0rd!"
+}
+----
+|===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|Code|Description|Content type|Schema|Example
+|200
+|OK
+|*-*
+|-
+a|
+-
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|-
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "InvalidPassword",
+  "errorMessage" : "Invalid password"
+} ]
+----
+|===
+
+== Confirms change password request
+
+__POST__ */password/change/confirm* - Confirms change password request
+
+
+
+*Request parameters*
+[width=100%]
+|===
+|Name|Description|Type|Schema
+|*token**
+|Token value
+|query
+a|__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|Code|Description|Content type|Schema|Example
+|200
+|OK
+|*-*
+|-
+a|
+-
+|400
+|Bad request
+|*application/json*
+|-
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "InvalidToken",
+  "errorMessage" : "Invalid token"
+} ]
+----
+|===
+
+== Creates change email request
+
+__POST__ */email/change/request* - Creates change email request
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|Name|Scopes
+|*EcaAuth*
+a|
+
+* web
+|===
+
+
+*Request parameters*
+[width=100%]
+|===
+|Name|Description|Type|Schema
+|*newEmail**
+|User email
+|query
+a|__string__
+
+*Min. length*: 0
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|Code|Description|Content type|Schema|Example
+|200
+|OK
+|*-*
+|-
+a|
+-
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|-
+a|
+[source,json]
+----
+[ {
+  "fieldName" : "email",
+  "code" : "UniqueEmail",
+  "errorMessage" : "Can't set user email because its exists"
+} ]
+----
+|===
+
+== Confirms change email request
+
+__POST__ */email/change/confirm* - Confirms change email request
+
+
+
+*Request parameters*
+[width=100%]
+|===
+|Name|Description|Type|Schema
+|*token**
+|Token value
+|query
+a|__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|Code|Description|Content type|Schema|Example
+|200
+|OK
+|*-*
+|-
+a|
+-
+|400
+|Bad request
+|*application/json*
+|-
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "InvalidToken",
+  "errorMessage" : "Invalid token"
+} ]
+----
+|===
+
+== Gets current authenticated user info
+
+__GET__ */users/user-info* - Gets current authenticated user info
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|Name|Scopes
+|*EcaAuth*
+a|
+
+* web
+|===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|Code|Description|Content type|Schema|Example
+|200
+|OK
+|*application/json*
+|<<UserDto>>
+a|
+[source,json]
+----
+{
+  "id" : 1,
+  "login" : "admin",
+  "email" : "test@mail.ru",
+  "firstName" : "Ivan",
+  "lastName" : "Ivanov",
+  "middleName" : "Ivanovich",
+  "fullName" : "Ivanov Ivan Ivanovich",
+  "creationDate" : "2021-07-01 14:00:00",
+  "tfaEnabled" : true,
+  "locked" : true,
+  "photoId" : 1,
+  "passwordDate" : "2021-07-01 14:00:00",
+  "roles" : [ {
+    "roleName" : "ROLE_SUPER_ADMIN",
+    "description" : "Administrator"
+  } ]
+}
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|===
+
+== Downloads user photo
+
+__GET__ */users/photo/{id}* - Downloads user photo
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|Name|Scopes
+|*EcaAuth*
+a|
+
+* web
+|===
+
+
+*Request parameters*
+[width=100%]
+|===
+|Name|Description|Type|Schema
+|*id**
+|Photo id
+|path
+a|__integer__
+__(int64)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|Code|Description|Content type|Schema|Example
+|200
+|OK
+|**/**
+|-
+a|
+-
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|-
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "DataNotFound",
+  "errorMessage" : "Entity with search key [1] not found!"
+} ]
+----
+|===
+
+== Deletes photo for current authenticated user
+
+__DELETE__ */users/delete-photo* - Deletes photo for current authenticated user
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|Name|Scopes
+|*EcaAuth*
+a|
+
+* web
+|===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|Code|Description|Content type|Schema|Example
+|200
+|OK
+|*-*
+|-
+a|
+-
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|-
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "DataNotFound",
+  "errorMessage" : "Entity with search key [1] not found!"
 } ]
 ----
 |===
 
 
 == Components
-=== EvaluationResultsResponse
-:table-caption: Table
-.Evaluation results response model
-[width=100%]
-|===
-|Name|Description|Schema
-|*requestId*
-|Request id
-a|
-__string__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|===
 === ValidationErrorDto
 :table-caption: Table
 .Validation error model
@@ -920,22 +1359,20 @@ __string__
 
 
 |===
-=== ClassificationCostsReport
+=== UpdateUserInfoDto
 :table-caption: Table
-.Classification costs report model
+.Update user info model
 [width=100%]
 |===
 |Name|Description|Schema
-|*classValue**
-|Class value
+|*firstName**
+|First name
 a|
 __string__
 
-*Min. length*: 0
+*Min. length*: 2
 
-*Max. length*: 255
-
-
+*Max. length*: 30
 
 
 
@@ -943,19 +1380,17 @@ __string__
 
 
 
+*Pattern*: ^([A-Z][a-z]+)\|([А-Я][а-я]+)$
 
-|*truePositiveRate**
-|True positive rate
+
+|*lastName**
+|Last name
 a|
-__number__
+__string__
 
+*Min. length*: 2
 
-
-
-
-*Minimum*: 0*
-
-*Maximum*: 1*
+*Max. length*: 30
 
 
 
@@ -963,39 +1398,17 @@ __number__
 
 
 
+*Pattern*: ^([A-Z][a-z]+)\|([А-Я][а-я]+)$
 
-|*falsePositiveRate**
-|False positive rate
+
+|*middleName**
+|Middle name
 a|
-__number__
+__string__
 
+*Min. length*: 2
 
-
-
-
-*Minimum*: 0*
-
-*Maximum*: 1*
-
-
-
-
-
-
-
-
-|*trueNegativeRate**
-|True negative rate
-a|
-__number__
-
-
-
-
-
-*Minimum*: 0*
-
-*Maximum*: 1*
+*Max. length*: 30
 
 
 
@@ -1003,59 +1416,21 @@ __number__
 
 
 
-
-|*falseNegativeRate**
-|False negative rate
-a|
-__number__
-
-
-
-
-
-*Minimum*: 0*
-
-*Maximum*: 1*
-
-
-
-
-
-
-
-
-|*rocCurve*
-|-
-a|<<RocCurveReport>>
-
-
-
-
-
-
-
-
-
-
-
-
+*Pattern*: ^([A-Z][a-z]+)\|([А-Я][а-я]+)$
 
 
 |===
-=== ClassifierInputOption
+=== RoleDto
 :table-caption: Table
-.Classifier input option model
+.User role model
 [width=100%]
 |===
 |Name|Description|Schema
-|*key**
-|Option key
+|*roleName*
+|Role name
 a|
 __string__
 
-*Min. length*: 0
-
-*Max. length*: 255
 
 
 
@@ -1066,14 +1441,17 @@ __string__
 
 
 
-|*value**
-|Option value
+
+
+
+|*description*
+|Role description
 a|
 __string__
 
-*Min. length*: 0
 
-*Max. length*: 255
+
+
 
 
 
@@ -1085,20 +1463,17 @@ __string__
 
 
 |===
-=== ClassifierReport
+=== UserDto
 :table-caption: Table
-.Classifier report model
+.User model
 [width=100%]
 |===
 |Name|Description|Schema
-|*classifierName**
-|Classifier name
+|*id*
+|User id
 a|
-__string__
-
-*Min. length*: 0
-
-*Max. length*: 255
+__integer__
+__(int64)__
 
 
 
@@ -1109,26 +1484,12 @@ __string__
 
 
 
-|*classifierDescription*
-|Classifier description
-a|
-__string__
-
-*Min. length*: 0
-
-*Max. length*: 255
 
 
 
 
-
-
-
-
-
-
-|*options**
-|Classifier options string
+|*login*
+|User login
 a|
 __string__
 
@@ -1145,11 +1506,10 @@ __string__
 
 
 
-|*classifierInputOptions*
-|Classifier input options
+|*email*
+|User email
 a|
-__array__
-<<<ClassifierInputOption>>>
+__string__
 
 
 
@@ -1164,8 +1524,98 @@ __array__
 
 
 
-|*metaClassifier*
-|Is meta classifier?
+|*firstName*
+|User first name
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*lastName*
+|User last name
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*middleName*
+|User middle name
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*fullName*
+|User full name
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*creationDate*
+|User creation date
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*tfaEnabled*
+|Two factor authentication enabled
 a|
 __boolean__
 
@@ -1182,8 +1632,45 @@ __boolean__
 
 
 
-|*type**
-|-
+|*locked*
+|Account locked
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*photoId*
+|User photo id
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*passwordDate*
+|Last password change date
 a|
 __string__
 
@@ -1200,21 +1687,37 @@ __string__
 
 
 
+|*roles*
+|User roles
+a|
+__array__
+<<<RoleDto>>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 |===
-=== ConfusionMatrixReport
+=== UsersPageDto
 :table-caption: Table
-.Confusion matrix report
+.Users page dto
 [width=100%]
 |===
 |Name|Description|Schema
-|*actualClass**
-|Actual class
+|*content*
+|Page content
 a|
-__string__
-
-*Min. length*: 0
-
-*Max. length*: 255
+__array__
+<<<UserDto>>>
 
 
 
@@ -1225,28 +1728,121 @@ __string__
 
 
 
-|*predictedClass**
-|Predicted class
-a|
-__string__
-
-*Min. length*: 0
-
-*Max. length*: 255
 
 
 
 
-
-
-
-
-
-
-|*numInstances**
-|Instances number
+|*page*
+|Page number
 a|
 __integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*totalCount*
+|Total elements count in all pages
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== FilterRequestDto
+:table-caption: Table
+.Filter request model
+[width=100%]
+|===
+|Name|Description|Schema
+|*name**
+|Filter column name
+a|
+__string__
+
+*Min. length*: 0
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*values*
+|-
+a|
+__array__
+
+
+
+
+
+
+
+*Min. items*: 0
+
+*Max. items*: 50
+
+
+
+
+|*matchMode**
+|Match mode type
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== PageRequestDto
+:table-caption: Table
+.Page request model
+[width=100%]
+|===
+|Name|Description|Schema
+|*page**
+|Page number
+a|
+__integer__
+__(int32)__
 
 
 
@@ -1262,55 +1858,11 @@ __integer__
 
 
 
-|===
-=== EnsembleClassifierReport
-=== EvaluationMethodReport
-:table-caption: Table
-.Evaluation method report model
-[width=100%]
-|===
-|Name|Description|Schema
-|*evaluationMethod**
-|Evaluation method
-a|
-__string__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*numFolds*
-|Folds number for k * V cross - validation method
+|*size**
+|Page size
 a|
 __integer__
-
-
-
-
-
-*Minimum*: 2*
-
-
-
-
-
-
-
-
-
-|*numTests*
-|Tests number for k * V cross - validation method
-a|
-__integer__
+__(int32)__
 
 
 
@@ -1326,181 +1878,8 @@ __integer__
 
 
 
-|*seed*
-|Seed value for k * V cross - validation method
-a|
-__integer__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|===
-=== EvaluationResultsRequest
-:table-caption: Table
-.Evaluation results request model
-[width=100%]
-|===
-|Name|Description|Schema
-|*requestId**
-|Request id
-a|
-__string__
-
-*Min. length*: 0
-
-*Max. length*: 36
-
-
-
-
-
-
-
-*Pattern*: ^[0-9a-f]{8}-[0-9a-f]{4}-[34][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$
-
-
-|*instances**
-|-
-a|<<InstancesReport>>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*classifierReport**
-|-
-a|
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*evaluationMethodReport**
-|-
-a|<<EvaluationMethodReport>>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*statistics**
-|-
-a|<<StatisticsReport>>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*classificationCosts*
-|Classification costs report
-a|
-__array__
-<<<ClassificationCostsReport>>>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*confusionMatrix*
-|Confusion matrix report
-a|
-__array__
-<<<ConfusionMatrixReport>>>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|===
-=== InstancesReport
-:table-caption: Table
-.Training data report model
-[width=100%]
-|===
-|Name|Description|Schema
-|*structure**
-|Training data structure
-a|
-__string__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*relationName**
-|Relation name
+|*sortField*
+|Sort field
 a|
 __string__
 
@@ -1517,16 +1896,10 @@ __string__
 
 
 
-|*numInstances**
-|Instances number
+|*ascending*
+|Is ascending sort?
 a|
-__integer__
-
-
-
-
-
-*Minimum*: 2*
+__boolean__
 
 
 
@@ -1536,46 +1909,13 @@ __integer__
 
 
 
-|*numAttributes**
-|Attributes number
-a|
-__integer__
 
 
 
 
 
-*Minimum*: 2*
-
-
-
-
-
-
-
-
-
-|*numClasses**
-|Classes number
-a|
-__integer__
-
-
-
-
-
-*Minimum*: 2*
-
-
-
-
-
-
-
-
-
-|*className**
-|Class name
+|*searchQuery*
+|Search query string
 a|
 __string__
 
@@ -1592,411 +1932,11 @@ __string__
 
 
 
-|===
-=== RocCurveReport
-:table-caption: Table
-.Roc curve report model
-[width=100%]
-|===
-|Name|Description|Schema
-|*aucValue*
-|Auc value
-a|
-__number__
-
-
-
-
-
-*Minimum*: 0*
-
-*Maximum*: 1*
-
-
-
-
-
-
-
-
-|*specificity*
-|Specificity value at optimal ROC - curve point
-a|
-__number__
-
-
-
-
-
-*Minimum*: 0*
-
-*Maximum*: 1*
-
-
-
-
-
-
-
-
-|*sensitivity*
-|Sensitivity value at optimal ROC - curve point
-a|
-__number__
-
-
-
-
-
-*Minimum*: 0*
-
-*Maximum*: 1*
-
-
-
-
-
-
-
-
-|*thresholdValue*
-|Threshold value at optimal ROC - curve point
-a|
-__number__
-
-
-
-
-
-*Minimum*: 0*
-
-*Maximum*: 1*
-
-
-
-
-
-
-
-
-|===
-=== StatisticsReport
-:table-caption: Table
-.Evaluation statistics report model
-[width=100%]
-|===
-|Name|Description|Schema
-|*numTestInstances**
-|Test instances number
-a|
-__integer__
-
-
-
-
-
-*Minimum*: 2*
-
-
-
-
-
-
-
-
-
-|*numCorrect**
-|Correctly classified instances number
-a|
-__integer__
-
-
-
-
-
-*Minimum*: 0*
-
-
-
-
-
-
-
-
-
-|*numIncorrect**
-|Incorrectly classified instances number
-a|
-__integer__
-
-
-
-
-
-*Minimum*: 0*
-
-
-
-
-
-
-
-
-
-|*pctCorrect**
-|Correctly classified percentage
-a|
-__number__
-
-
-
-
-
-*Minimum*: 0*
-
-*Maximum*: 100*
-
-
-
-
-
-
-
-
-|*pctIncorrect**
-|Incorrectly classified percentage
-a|
-__number__
-
-
-
-
-
-*Minimum*: 0*
-
-*Maximum*: 100*
-
-
-
-
-
-
-
-
-|*meanAbsoluteError*
-|Mean absolute error
-a|
-__number__
-
-
-
-
-
-*Minimum*: 0*
-
-*Maximum*: 1*
-
-
-
-
-
-
-
-
-|*rootMeanSquaredError*
-|Root mean squared error
-a|
-__number__
-
-
-
-
-
-*Minimum*: 0*
-
-*Maximum*: 1*
-
-
-
-
-
-
-
-
-|*maxAucValue*
-|Max AUC value
-a|
-__number__
-
-
-
-
-
-*Minimum*: 0*
-
-*Maximum*: 1*
-
-
-
-
-
-
-
-
-|*varianceError*
-|Variance error
-a|
-__number__
-
-
-
-
-
-*Minimum*: 0*
-
-*Maximum*: 1*
-
-
-
-
-
-
-
-
-|*confidenceIntervalLowerBound*
-|95% confidence interval lower bound value
-a|
-__number__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*confidenceIntervalUpperBound*
-|95% confidence interval upper bound value
-a|
-__number__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|===
-=== GetEvaluationResultsResponse
-:table-caption: Table
-.Get evaluation results response model
-[width=100%]
-|===
-|Name|Description|Schema
-|*requestId*
-|Request id
-a|
-__string__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*instances*
-|-
-a|<<InstancesReport>>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*classifierReport*
-|-
-a|<<ClassifierReport>>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*evaluationMethodReport*
-|-
-a|<<EvaluationMethodReport>>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*statistics*
-|-
-a|<<StatisticsReport>>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*classificationCosts*
-|Classification costs report
+|*filters*
+|Filters list
 a|
 __array__
-<<<ClassificationCostsReport>>>
+<<<FilterRequestDto>>>
 
 
 
@@ -2004,47 +1944,28 @@ __array__
 
 
 
+*Min. items*: 0
 
-
-
-
-
-
-
-|*confusionMatrix*
-|Confusion matrix report
-a|
-__array__
-<<<ConfusionMatrixReport>>>
-
-
-
-
-
-
-
-
-
-
+*Max. items*: 50
 
 
 
 
 |===
-=== GetEvaluationResultsRequest
+=== CreateUserDto
 :table-caption: Table
-.Get evaluation results request model
+.Create user model
 [width=100%]
 |===
 |Name|Description|Schema
-|*requestId**
-|Request id
+|*login**
+|User login
 a|
 __string__
 
-*Min. length*: 0
+*Min. length*: 3
 
-*Max. length*: 36
+*Max. length*: 32
 
 
 
@@ -2052,141 +1973,11 @@ __string__
 
 
 
-*Pattern*: ^[0-9a-f]{8}-[0-9a-f]{4}-[34][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$
+*Pattern*: ^[a-z0-9]+$
 
 
-|===
-=== ClassifierOptionsResponse
-:table-caption: Table
-.Classifier options response model
-[width=100%]
-|===
-|Name|Description|Schema
-|*requestId*
-|Request id
-a|
-__string__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*classifierReports*
-|Optimal classifiers reports list
-a|
-__array__
-<<<ClassifierReport>>>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|===
-=== ClassifierOptionsRequest
-:table-caption: Table
-.Classifier options request model
-[width=100%]
-|===
-|Name|Description|Schema
-|*relationName**
-|Instances name
-a|
-__string__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*dataHash**
-|Instances MD5 hash sum
-a|
-__string__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*evaluationMethodReport**
-|-
-a|<<EvaluationMethodReport>>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*sortFields*
-|Sort fields list
-a|
-__array__
-<<<SortField>>>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|===
-=== SortField
-:table-caption: Table
-.Sort field model
-[width=100%]
-|===
-|Name|Description|Schema
-|*fieldName**
-|Sort field name
+|*email**
+|User email
 a|
 __string__
 
@@ -2203,8 +1994,155 @@ __string__
 
 
 
-|*direction*
-|Sort direction
+|*firstName**
+|First name
+a|
+__string__
+
+*Min. length*: 2
+
+*Max. length*: 30
+
+
+
+
+
+
+
+*Pattern*: ^([A-Z][a-z]+)\|([А-Я][а-я]+)$
+
+
+|*lastName**
+|Last name
+a|
+__string__
+
+*Min. length*: 2
+
+*Max. length*: 30
+
+
+
+
+
+
+
+*Pattern*: ^([A-Z][a-z]+)\|([А-Я][а-я]+)$
+
+
+|*middleName**
+|Middle name
+a|
+__string__
+
+*Min. length*: 2
+
+*Max. length*: 30
+
+
+
+
+
+
+
+*Pattern*: ^([A-Z][a-z]+)\|([А-Я][а-я]+)$
+
+
+|===
+=== ResetPasswordRequest
+:table-caption: Table
+.Reset password request model
+[width=100%]
+|===
+|Name|Description|Schema
+|*token**
+|Token value
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*password**
+|New password
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== ForgotPasswordRequest
+:table-caption: Table
+.Forgot password request model
+[width=100%]
+|===
+|Name|Description|Schema
+|*email**
+|User email
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== ChangePasswordRequest
+:table-caption: Table
+.Change password request model
+[width=100%]
+|===
+|Name|Description|Schema
+|*oldPassword**
+|Old password
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*newPassword**
+|New password
 a|
 __string__
 
