@@ -2,6 +2,10 @@ package com.ecaservice.oauth.model.openapi;
 
 import lombok.Data;
 
+/**
+ *
+ * @author Roman Batygin
+ */
 @Data
 public class Info {
     private String title;

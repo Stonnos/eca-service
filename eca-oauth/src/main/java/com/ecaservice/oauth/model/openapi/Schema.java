@@ -8,6 +8,10 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+/**
+ *
+ * @author Roman Batygin
+ */
 @Data
 public class Schema {
     private String name;

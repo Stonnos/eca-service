@@ -4,6 +4,10 @@ import lombok.Data;
 
 import java.util.List;
 
+/**
+ *
+ * @author Roman Batygin
+ */
 @Data
 public class OpenApiReport {
 

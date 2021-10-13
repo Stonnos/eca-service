@@ -2,6 +2,10 @@ package com.ecaservice.oauth.model.openapi;
 
 import lombok.Data;
 
+/**
+ *
+ * @author Roman Batygin
+ */
 @Data
 public class Oauth2Flows {
     private Oauth2Flow implicit;

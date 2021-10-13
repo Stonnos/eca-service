@@ -3,6 +3,10 @@ package com.ecaservice.oauth.model.openapi;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+/**
+ *
+ * @author Roman Batygin
+ */
 @Data
 public class SecurityScheme {
 

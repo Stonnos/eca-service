@@ -5,6 +5,10 @@ import lombok.Data;
 
 import java.util.Map;
 
+/**
+ *
+ * @author Roman Batygin
+ */
 @Data
 public class Parameter {
     private String name;

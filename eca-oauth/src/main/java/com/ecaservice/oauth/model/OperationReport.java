@@ -5,6 +5,10 @@ import lombok.Builder;
 import lombok.Data;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+/**
+ *
+ * @author Roman Batygin
+ */
 @Data
 @Builder
 public class OperationReport {

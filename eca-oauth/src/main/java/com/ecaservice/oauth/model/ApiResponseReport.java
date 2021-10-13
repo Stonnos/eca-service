@@ -2,6 +2,10 @@ package com.ecaservice.oauth.model;
 
 import lombok.Data;
 
+/**
+ *
+ * @author Roman Batygin
+ */
 @Data
 public class ApiResponseReport {
 

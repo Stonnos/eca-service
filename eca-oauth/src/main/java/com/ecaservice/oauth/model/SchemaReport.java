@@ -5,6 +5,10 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ *
+ * @author Roman Batygin
+ */
 @Data
 public class SchemaReport {
 
