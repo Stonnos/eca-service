@@ -138,6 +138,18 @@ __(${field.schema.format})__
 
 <#if field.schema.maxLength??>*Max. length*: ${field.schema.maxLength}</#if>
 
+<#if field.schema.minimum??>
+*Minimum*: ${field.schema.minimum}<#if !field.schema.exclusiveMinimum>*</#if>
+</#if>
+
+<#if field.schema.maximum??>
+*Maximum*: ${field.schema.maximum}<#if !field.schema.exclusiveMaximum>*</#if>
+</#if>
+
+<#if field.schema.minItems??>*Min. items*: ${field.schema.minItems}</#if>
+
+<#if field.schema.maxItems??>*Max. items*: ${field.schema.maxItems}</#if>
+
 <#if field.schema.pattern??>*Pattern*: `${field.schema.pattern}`</#if>
 
 <#if field.schema.enumValues?has_content>
@@ -172,6 +184,18 @@ __(${parameter.schema.format})__
 <#if parameter.schema.minLength??>*Min. length*: ${parameter.schema.minLength}</#if>
 
 <#if parameter.schema.maxLength??>*Max. length*: ${parameter.schema.maxLength}</#if>
+
+<#if parameter.schema.minimum??>
+*Minimum*: ${parameter.schema.minimum}<#if !parameter.schema.exclusiveMinimum>*</#if>
+</#if>
+
+<#if parameter.schema.maximum??>
+*Maximum*: ${parameter.schema.maximum}<#if !parameter.schema.exclusiveMaximum>*</#if>
+</#if>
+
+<#if parameter.schema.minItems??>*Min. items*: ${parameter.schema.minItems}</#if>
+
+<#if parameter.schema.maxItems??>*Max. items*: ${parameter.schema.maxItems}</#if>
 
 <#if parameter.schema.pattern??>*Pattern*: `${parameter.schema.pattern}`</#if>
 
@@ -241,7 +265,20 @@ __(${field.schema.format})__
 
 <#if field.schema.maxLength??>*Max. length*: ${field.schema.maxLength}</#if>
 
+<#if field.schema.minimum??>
+*Minimum*: ${field.schema.minimum}<#if !field.schema.exclusiveMinimum>*</#if>
+</#if>
+
+<#if field.schema.maximum??>
+*Maximum*: ${field.schema.maximum}<#if !field.schema.exclusiveMaximum>*</#if>
+</#if>
+
+<#if field.schema.minItems??>*Min. items*: ${field.schema.minItems}</#if>
+
+<#if field.schema.maxItems??>*Max. items*: ${field.schema.maxItems}</#if>
+
 <#if field.schema.pattern??>*Pattern*: `${field.schema.pattern}`</#if>
+
 
 <#if field.schema.enumValues?has_content>
 *Values*:

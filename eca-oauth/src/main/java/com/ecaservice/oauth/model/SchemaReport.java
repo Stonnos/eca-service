@@ -17,9 +17,9 @@ public class SchemaReport {
     private String format;
     private String objectTypeRef;
     private BigDecimal maximum;
-    private Boolean exclusiveMaximum;
+    private boolean exclusiveMaximum;
     private BigDecimal minimum;
-    private Boolean exclusiveMinimum;
+    private boolean exclusiveMinimum;
     private Integer maxLength;
     private Integer minLength;
     private String pattern;
