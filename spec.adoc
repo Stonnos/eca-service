@@ -857,6 +857,7 @@ __string__
 
 
 
+
 |===
 === ValidationErrorDto
 :table-caption: Table
@@ -868,6 +869,7 @@ __string__
 |Field name
 a|
 __string__
+
 
 
 
@@ -898,10 +900,12 @@ __string__
 
 
 
+
 |*errorMessage*
 |Error message
 a|
 __string__
+
 
 
 
@@ -939,6 +943,7 @@ __string__
 
 
 
+
 |*truePositiveRate**
 |True positive rate
 a|
@@ -948,11 +953,12 @@ __number__
 
 
 
-
-
 *Minimum*: 0*
 
 *Maximum*: 1*
+
+
+
 
 
 
@@ -967,11 +973,12 @@ __number__
 
 
 
-
-
 *Minimum*: 0*
 
 *Maximum*: 1*
+
+
+
 
 
 
@@ -986,11 +993,12 @@ __number__
 
 
 
-
-
 *Minimum*: 0*
 
 *Maximum*: 1*
+
+
+
 
 
 
@@ -1005,8 +1013,6 @@ __number__
 
 
 
-
-
 *Minimum*: 0*
 
 *Maximum*: 1*
@@ -1015,9 +1021,13 @@ __number__
 
 
 
+
+
+
 |*rocCurve*
 |-
 a|<<RocCurveReport>>
+
 
 
 
@@ -1055,6 +1065,7 @@ __string__
 
 
 
+
 |*value**
 |Option value
 a|
@@ -1063,6 +1074,7 @@ __string__
 *Min. length*: 0
 
 *Max. length*: 255
+
 
 
 
@@ -1096,6 +1108,7 @@ __string__
 
 
 
+
 |*classifierDescription*
 |Classifier description
 a|
@@ -1113,10 +1126,12 @@ __string__
 
 
 
+
 |*options**
 |Classifier options string
 a|
 __string__
+
 
 
 
@@ -1148,6 +1163,7 @@ __array__
 
 
 
+
 |*metaClassifier*
 |Is meta classifier?
 a|
@@ -1165,10 +1181,12 @@ __boolean__
 
 
 
+
 |*type**
 |-
 a|
 __string__
+
 
 
 
@@ -1206,6 +1224,7 @@ __string__
 
 
 
+
 |*predictedClass**
 |Predicted class
 a|
@@ -1214,6 +1233,7 @@ __string__
 *Min. length*: 0
 
 *Max. length*: 255
+
 
 
 
@@ -1232,9 +1252,10 @@ __integer__
 
 
 
-
-
 *Minimum*: 0*
+
+
+
 
 
 
@@ -1266,6 +1287,7 @@ __string__
 
 
 
+
 |*numFolds*
 |Folds number for k * V cross - validation method
 a|
@@ -1275,9 +1297,10 @@ __integer__
 
 
 
-
-
 *Minimum*: 2*
+
+
+
 
 
 
@@ -1293,9 +1316,10 @@ __integer__
 
 
 
-
-
 *Minimum*: 1*
+
+
+
 
 
 
@@ -1306,6 +1330,7 @@ __integer__
 |Seed value for k * V cross - validation method
 a|
 __integer__
+
 
 
 
@@ -1335,17 +1360,19 @@ __string__
 
 *Max. length*: 36
 
+
+
+
+
+
+
 *Pattern*: ^[0-9a-f]{8}-[0-9a-f]{4}-[34][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$
-
-
-
-
-
 
 
 |*instances**
 |-
 a|<<InstancesReport>>
+
 
 
 
@@ -1374,6 +1401,7 @@ a|
 
 
 
+
 |*evaluationMethodReport**
 |-
 a|<<EvaluationMethodReport>>
@@ -1390,9 +1418,11 @@ a|<<EvaluationMethodReport>>
 
 
 
+
 |*statistics**
 |-
 a|<<StatisticsReport>>
+
 
 
 
@@ -1424,11 +1454,13 @@ __array__
 
 
 
+
 |*confusionMatrix*
 |Confusion matrix report
 a|
 __array__
 <<<ConfusionMatrixReport>>>
+
 
 
 
@@ -1466,6 +1498,7 @@ __string__
 
 
 
+
 |*relationName**
 |Relation name
 a|
@@ -1474,6 +1507,7 @@ __string__
 *Min. length*: 0
 
 *Max. length*: 255
+
 
 
 
@@ -1492,9 +1526,10 @@ __integer__
 
 
 
-
-
 *Minimum*: 2*
+
+
+
 
 
 
@@ -1510,9 +1545,10 @@ __integer__
 
 
 
-
-
 *Minimum*: 2*
+
+
+
 
 
 
@@ -1528,9 +1564,10 @@ __integer__
 
 
 
-
-
 *Minimum*: 2*
+
+
+
 
 
 
@@ -1545,6 +1582,7 @@ __string__
 *Min. length*: 0
 
 *Max. length*: 255
+
 
 
 
@@ -1570,11 +1608,12 @@ __number__
 
 
 
-
-
 *Minimum*: 0*
 
 *Maximum*: 1*
+
+
+
 
 
 
@@ -1589,11 +1628,12 @@ __number__
 
 
 
-
-
 *Minimum*: 0*
 
 *Maximum*: 1*
+
+
+
 
 
 
@@ -1608,11 +1648,12 @@ __number__
 
 
 
-
-
 *Minimum*: 0*
 
 *Maximum*: 1*
+
+
+
 
 
 
@@ -1627,11 +1668,12 @@ __number__
 
 
 
-
-
 *Minimum*: 0*
 
 *Maximum*: 1*
+
+
+
 
 
 
@@ -1653,9 +1695,10 @@ __integer__
 
 
 
-
-
 *Minimum*: 2*
+
+
+
 
 
 
@@ -1671,9 +1714,10 @@ __integer__
 
 
 
-
-
 *Minimum*: 0*
+
+
+
 
 
 
@@ -1689,9 +1733,10 @@ __integer__
 
 
 
-
-
 *Minimum*: 0*
+
+
+
 
 
 
@@ -1707,11 +1752,12 @@ __number__
 
 
 
-
-
 *Minimum*: 0*
 
 *Maximum*: 100*
+
+
+
 
 
 
@@ -1726,11 +1772,12 @@ __number__
 
 
 
-
-
 *Minimum*: 0*
 
 *Maximum*: 100*
+
+
+
 
 
 
@@ -1745,11 +1792,12 @@ __number__
 
 
 
-
-
 *Minimum*: 0*
 
 *Maximum*: 1*
+
+
+
 
 
 
@@ -1764,11 +1812,12 @@ __number__
 
 
 
-
-
 *Minimum*: 0*
 
 *Maximum*: 1*
+
+
+
 
 
 
@@ -1783,11 +1832,12 @@ __number__
 
 
 
-
-
 *Minimum*: 0*
 
 *Maximum*: 1*
+
+
+
 
 
 
@@ -1802,11 +1852,12 @@ __number__
 
 
 
-
-
 *Minimum*: 0*
 
 *Maximum*: 1*
+
+
+
 
 
 
@@ -1829,10 +1880,12 @@ __number__
 
 
 
+
 |*confidenceIntervalUpperBound*
 |95% confidence interval upper bound value
 a|
 __number__
+
 
 
 
@@ -1870,9 +1923,11 @@ __string__
 
 
 
+
 |*instances*
 |-
 a|<<InstancesReport>>
+
 
 
 
@@ -1902,6 +1957,7 @@ a|<<ClassifierReport>>
 
 
 
+
 |*evaluationMethodReport*
 |-
 a|<<EvaluationMethodReport>>
@@ -1918,9 +1974,11 @@ a|<<EvaluationMethodReport>>
 
 
 
+
 |*statistics*
 |-
 a|<<StatisticsReport>>
+
 
 
 
@@ -1952,11 +2010,13 @@ __array__
 
 
 
+
 |*confusionMatrix*
 |Confusion matrix report
 a|
 __array__
 <<<ConfusionMatrixReport>>>
+
 
 
 
@@ -1986,12 +2046,13 @@ __string__
 
 *Max. length*: 36
 
+
+
+
+
+
+
 *Pattern*: ^[0-9a-f]{8}-[0-9a-f]{4}-[34][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$
-
-
-
-
-
 
 
 |===
@@ -2018,11 +2079,13 @@ __string__
 
 
 
+
 |*classifierReports*
 |Optimal classifiers reports list
 a|
 __array__
 <<<ClassifierReport>>>
+
 
 
 
@@ -2060,10 +2123,12 @@ __string__
 
 
 
+
 |*dataHash**
 |Instances MD5 hash sum
 a|
 __string__
+
 
 
 
@@ -2093,11 +2158,13 @@ a|<<EvaluationMethodReport>>
 
 
 
+
 |*sortFields*
 |Sort fields list
 a|
 __array__
 <<<SortField>>>
+
 
 
 
@@ -2135,10 +2202,12 @@ __string__
 
 
 
+
 |*direction*
 |Sort direction
 a|
 __string__
+
 
 
 
