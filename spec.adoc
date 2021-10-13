@@ -1,5 +1,6 @@
 = Microservice for users managment
-Автор: Roman Batygin <roman.batygin@mail.ru>
+Автор: Roman Batygin
+(roman.batygin@mail.ru)
 :toc:
 :toc-title: Table of contents
 
@@ -15,7 +16,7 @@ API provides operations with users for ECA web application
 [width=100%]
 |===
 |Type|Description|Flows
-|*oauth2*
+|*$oauth2*
 |
 *Client credentials location:* __header__
 
@@ -76,7 +77,7 @@ a|
 |Code|Description|Content type|Schema|Example
 |200
 |OK
-|-
+|*-*
 |-
 a|
 -
@@ -146,7 +147,7 @@ a|
 |Code|Description|Content type|Schema|Example
 |200
 |OK
-|-
+|*-*
 |-
 a|
 -
@@ -164,7 +165,7 @@ a|
 ----
 |400
 |Bad request
-|-
+|*-*
 |-
 a|
 -
@@ -209,7 +210,7 @@ __(int64)__
 |Code|Description|Content type|Schema|Example
 |200
 |OK
-|-
+|*-*
 |-
 a|
 -
@@ -239,7 +240,7 @@ a|
 ----
 |400
 |Bad request
-|-
+|*-*
 |-
 a|
 -
@@ -283,7 +284,7 @@ a|__boolean__
 |Code|Description|Content type|Schema|Example
 |200
 |OK
-|-
+|*-*
 |-
 a|
 -
@@ -301,7 +302,7 @@ a|
 ----
 |400
 |Bad request
-|-
+|*-*
 |-
 a|
 -
@@ -329,7 +330,7 @@ a|
 |Code|Description|Content type|Schema|Example
 |200
 |OK
-|-
+|*-*
 |-
 a|
 -
@@ -386,7 +387,7 @@ __(int64)__
 |Code|Description|Content type|Schema|Example
 |200
 |OK
-|-
+|*-*
 |-
 a|
 -
@@ -416,7 +417,7 @@ a|
 ----
 |400
 |Bad request
-|-
+|*-*
 |-
 a|
 -
@@ -697,7 +698,7 @@ a|
 |Code|Description|Content type|Schema|Example
 |200
 |OK
-|-
+|*-*
 |-
 a|
 -
@@ -742,7 +743,7 @@ a|
 |Code|Description|Content type|Schema|Example
 |200
 |OK
-|-
+|*-*
 |-
 a|
 -
@@ -798,7 +799,7 @@ a|
 |Code|Description|Content type|Schema|Example
 |200
 |OK
-|-
+|*-*
 |-
 a|
 -
@@ -857,7 +858,7 @@ a|__string__
 |Code|Description|Content type|Schema|Example
 |200
 |OK
-|-
+|*-*
 |-
 a|
 -
@@ -914,7 +915,7 @@ a|__string__
 |Code|Description|Content type|Schema|Example
 |200
 |OK
-|-
+|*-*
 |-
 a|
 -
@@ -973,7 +974,7 @@ a|__string__
 |Code|Description|Content type|Schema|Example
 |200
 |OK
-|-
+|*-*
 |-
 a|
 -
@@ -1144,7 +1145,7 @@ a|
 |Code|Description|Content type|Schema|Example
 |200
 |OK
-|-
+|*-*
 |-
 a|
 -
