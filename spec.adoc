@@ -1,4 +1,4 @@
-= Microservice for users managment
+= Microservice for storaging training data sets
 Автор: Roman Batygin
 (roman.batygin@mail.ru)
 :toc:
@@ -6,21 +6,19 @@
 
 == Overview
 
-API provides operations with users for ECA web application
+API provides operations with training data sets for ECA web application
 
 == Security schemas
 
 
-=== EcaAuth - Oauth2 authentication
+=== EcaAuth 
 
 [width=100%]
 |===
 |Type|Description|Flows
 |*oauth2*
 |
-*Client credentials location:* __header__
 
-*Bearer format:* __Authorization: Bearer <access token>__
 a|
 
 *Flow*
@@ -39,9 +37,9 @@ __Scopes__:
 
 |===
 
-== Updates info for current authenticated user
+== Renames data with specified id
 
-__PUT__ */users/update-info* - Updates info for current authenticated user
+__PUT__ */instances/rename* - Renames data with specified id
 
 *Security requirement*
 
@@ -49,31 +47,49 @@ __PUT__ */users/update-info* - Updates info for current authenticated user
 |===
 |Name|Scopes
 |*EcaAuth*
-a|
+a||===
 
-* web
-|===
 
-*Request body*
-
+*Request parameters*
 [width=100%]
 |===
-|Content type|Required|Schema|Example
-|*application/json*
-|true
-|<<UpdateUserInfoDto>>
-a|
-[source,json]
-----
-{
-  "firstName" : "Roman",
-  "lastName" : "Batygin",
-  "middleName" : "Igorevich"
-}
-----
+|Name|Description|Type|Schema
+|*id**
+|Instances id
+|query
+a|__integer__
+__(int64)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*tableName**
+|Table name
+|query
+a|__string__
+
+*Min. length*: 0
+
+*Max. length*: 30
+
+
+
+
+
+
+
+*Pattern*: `^[0-9a-z_]+$`
+
 |===
-
-
 
 *Api responses*
 [width=100%]
@@ -83,14 +99,12 @@ a|
 |OK
 |*-*
 |-
-
 a|
 -
 |401
 |Not authorized
 |*application/json*
 |-
-
 a|
 [source,json]
 ----
@@ -102,30 +116,21 @@ a|
 |400
 |Bad request
 |*application/json*
-|-
-__array__<<<ValidationErrorDto>>>
+|__array__<<<ValidationErrorDto>>>
 a|
 [source,json]
 ----
 [ {
-  "fieldName" : "lastName",
-  "code" : "Size",
-  "errorMessage" : "size must be between 2 and 30"
-}, {
-  "fieldName" : "middleName",
-  "code" : "Size",
-  "errorMessage" : "size must be between 2 and 30"
-}, {
-  "fieldName" : "firstName",
-  "code" : "Size",
-  "errorMessage" : "size must be between 2 and 30"
+  "fieldName" : null,
+  "code" : "UniqueTableName",
+  "errorMessage" : "Table with name [iris] already exists!"
 } ]
 ----
 |===
 
-== Uploads photo for current authenticated user
+== Saves instances into database
 
-__POST__ */users/upload-photo* - Uploads photo for current authenticated user
+__POST__ */instances/save* - Saves instances into database
 
 *Security requirement*
 
@@ -133,10 +138,7 @@ __POST__ */users/upload-photo* - Uploads photo for current authenticated user
 |===
 |Name|Scopes
 |*EcaAuth*
-a|
-
-* web
-|===
+a||===
 
 *Request body*
 
@@ -155,8 +157,8 @@ a|
 [width=100%]
 |===
 |Name|Description|Schema
-|*file**
-|Photo file
+|*trainingData**
+|Training data file
 a|
 __string__
 __(binary)__
@@ -175,65 +177,18 @@ __(binary)__
 
 |===
 
-
-*Api responses*
-[width=100%]
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|*-*
-|-
-
-a|
--
-|401
-|Not authorized
-|*application/json*
-|-
-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|400
-|Bad request
-|*-*
-|-
-
-a|
--
-|===
-
-== Unlocks user
-
-__POST__ */users/unlock* - Unlocks user
-
-*Security requirement*
-
-[cols="^50%,^50%",options="header"]
-|===
-|Name|Scopes
-|*EcaAuth*
-a|
-
-* web
-|===
-
-
 *Request parameters*
 [width=100%]
 |===
 |Name|Description|Type|Schema
-|*userId**
-|User id
+|*tableName**
+|Table name
 |query
-a|__integer__
-__(int64)__
+a|__string__
+
+*Min. length*: 0
+
+*Max. length*: 30
 
 
 
@@ -241,11 +196,7 @@ __(int64)__
 
 
 
-
-
-
-
-
+*Pattern*: `^[0-9a-z_]+$`
 
 |===
 
@@ -255,101 +206,22 @@ __(int64)__
 |Code|Description|Content type|Schema|Example
 |200
 |OK
-|*-*
-|-
-
-a|
--
-|401
-|Not authorized
 |*application/json*
-|-
-
+|
+<<CreateInstancesResultDto>>
 a|
 [source,json]
 ----
 {
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
+  "id" : 1,
+  "sourceFileName" : "iris.xls",
+  "tableName" : "iris"
 }
 ----
-|403
-|Permission denied
-|*application/json*
-|-
-
-a|
-[source,json]
-----
-{
-  "error" : "access_denied",
-  "error_description" : "Access is denied"
-}
-----
-|400
-|Bad request
-|*-*
-|-
-
-a|
--
-|===
-
-== Enable/disable tfa for current authenticated user
-
-__POST__ */users/tfa* - Enable/disable tfa for current authenticated user
-
-*Security requirement*
-
-[cols="^50%,^50%",options="header"]
-|===
-|Name|Scopes
-|*EcaAuth*
-a|
-
-* web
-|===
-
-
-*Request parameters*
-[width=100%]
-|===
-|Name|Description|Type|Schema
-|*enabled**
-|Tfa enabled flag
-|query
-a|__boolean__
-
-
-
-
-
-
-
-
-
-
-
-
-
-|===
-
-*Api responses*
-[width=100%]
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|*-*
-|-
-
-a|
--
 |401
 |Not authorized
 |*application/json*
 |-
-
 a|
 [source,json]
 ----
@@ -360,16 +232,22 @@ a|
 ----
 |400
 |Bad request
-|*-*
-|-
-
+|*application/json*
+|__array__<<<ValidationErrorDto>>>
 a|
--
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "UniqueTableName",
+  "errorMessage" : "Table with name [iris] already exists!"
+} ]
+----
 |===
 
-== Logout current user and revokes access/refresh token pair
+== Finds instances tables with specified options such as filter, sorting and paging
 
-__POST__ */users/logout* - Logout current user and revokes access/refresh token pair
+__POST__ */instances/list* - Finds instances tables with specified options such as filter, sorting and paging
 
 *Security requirement*
 
@@ -377,139 +255,7 @@ __POST__ */users/logout* - Logout current user and revokes access/refresh token 
 |===
 |Name|Scopes
 |*EcaAuth*
-a|
-
-* web
-|===
-
-
-
-*Api responses*
-[width=100%]
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|*-*
-|-
-
-a|
--
-|401
-|Not authorized
-|*application/json*
-|-
-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|===
-
-== Locks user
-
-__POST__ */users/lock* - Locks user
-
-*Security requirement*
-
-[cols="^50%,^50%",options="header"]
-|===
-|Name|Scopes
-|*EcaAuth*
-a|
-
-* web
-|===
-
-
-*Request parameters*
-[width=100%]
-|===
-|Name|Description|Type|Schema
-|*userId**
-|User id
-|query
-a|__integer__
-__(int64)__
-
-
-
-
-
-
-
-
-
-
-
-
-
-|===
-
-*Api responses*
-[width=100%]
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|*-*
-|-
-
-a|
--
-|401
-|Not authorized
-|*application/json*
-|-
-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|403
-|Permission denied
-|*application/json*
-|-
-
-a|
-[source,json]
-----
-{
-  "error" : "access_denied",
-  "error_description" : "Access is denied"
-}
-----
-|400
-|Bad request
-|*-*
-|-
-
-a|
--
-|===
-
-== Finds users with specified options
-
-__POST__ */users/list* - Finds users with specified options
-
-*Security requirement*
-
-[cols="^50%,^50%",options="header"]
-|===
-|Name|Scopes
-|*EcaAuth*
-a|
-
-* web
-|===
+a||===
 
 *Request body*
 
@@ -538,29 +284,19 @@ a|
 |200
 |OK
 |*application/json*
-|<<UsersPageDto>>
-
+|
+<<PageDto>>
 a|
 [source,json]
 ----
 {
   "content" : [ {
     "id" : 1,
-    "login" : "admin",
-    "email" : "test@mail.ru",
-    "firstName" : "Ivan",
-    "lastName" : "Ivanov",
-    "middleName" : "Ivanovich",
-    "fullName" : "Ivanov Ivan Ivanovich",
-    "creationDate" : "2021-07-01 14:00:00",
-    "tfaEnabled" : true,
-    "locked" : true,
-    "photoId" : 1,
-    "passwordDate" : "2021-07-01 14:00:00",
-    "roles" : [ {
-      "roleName" : "ROLE_SUPER_ADMIN",
-      "description" : "Administrator"
-    } ]
+    "tableName" : "iris",
+    "numInstances" : 150,
+    "numAttributes" : 5,
+    "created" : "2021-07-01 14:00:00",
+    "createdBy" : "admin"
   } ],
   "page" : 0,
   "totalCount" : 1
@@ -570,7 +306,6 @@ a|
 |Not authorized
 |*application/json*
 |-
-
 a|
 [source,json]
 ----
@@ -579,24 +314,10 @@ a|
   "error_description" : "Full authentication is required to access this resource"
 }
 ----
-|403
-|Permission denied
-|*application/json*
-|-
-
-a|
-[source,json]
-----
-{
-  "error" : "access_denied",
-  "error_description" : "Access is denied"
-}
-----
 |400
 |Bad request
 |*application/json*
-|-
-__array__<<<ValidationErrorDto>>>
+|__array__<<<ValidationErrorDto>>>
 a|
 [source,json]
 ----
@@ -612,9 +333,9 @@ a|
 ----
 |===
 
-== Creates new user
+== Finds data page for specified instances
 
-__POST__ */users/create* - Creates new user
+__POST__ */instances/data-page* - Finds data page for specified instances
 
 *Security requirement*
 
@@ -622,10 +343,7 @@ __POST__ */users/create* - Creates new user
 |===
 |Name|Scopes
 |*EcaAuth*
-a|
-
-* web
-|===
+a||===
 
 *Request body*
 
@@ -634,585 +352,15 @@ a|
 |Content type|Required|Schema|Example
 |*application/json*
 |true
-|<<CreateUserDto>>
+|<<PageRequestDto>>
 a|
 [source,json]
 ----
 {
-  "login" : "user",
-  "email" : "bat1238@yandex.ru",
-  "firstName" : "Roman",
-  "lastName" : "Batygin",
-  "middleName" : "Igorevich"
+  "page" : 0,
+  "size" : 25
 }
 ----
-|===
-
-
-
-*Api responses*
-[width=100%]
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|*application/json*
-|<<UserDto>>
-
-a|
-[source,json]
-----
-{
-  "id" : 1,
-  "login" : "admin",
-  "email" : "test@mail.ru",
-  "firstName" : "Ivan",
-  "lastName" : "Ivanov",
-  "middleName" : "Ivanovich",
-  "fullName" : "Ivanov Ivan Ivanovich",
-  "creationDate" : "2021-07-01 14:00:00",
-  "tfaEnabled" : true,
-  "locked" : true,
-  "photoId" : 1,
-  "passwordDate" : "2021-07-01 14:00:00",
-  "roles" : [ {
-    "roleName" : "ROLE_SUPER_ADMIN",
-    "description" : "Administrator"
-  } ]
-}
-----
-|401
-|Not authorized
-|*application/json*
-|-
-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|403
-|Permission denied
-|*application/json*
-|-
-
-a|
-[source,json]
-----
-{
-  "error" : "access_denied",
-  "error_description" : "Access is denied"
-}
-----
-|400
-|Bad request
-|*application/json*
-|-
-__array__<<<ValidationErrorDto>>>
-a|
-[source,json]
-----
-[ {
-  "fieldName" : "login",
-  "code" : "UniqueLogin",
-  "errorMessage" : null
-} ]
-----
-|===
-
-== Verify reset password token
-
-__POST__ */password/verify-token* - Verify reset password token
-
-
-
-*Request parameters*
-[width=100%]
-|===
-|Name|Description|Type|Schema
-|*token**
-|Reset password token
-|query
-a|__string__
-
-
-
-
-
-
-
-
-
-
-
-
-
-|===
-
-*Api responses*
-[width=100%]
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|*application/json*
-|-
-
-a|
-[source,json]
-----
-false
-----
-|===
-
-== Reset password with specified token
-
-__POST__ */password/reset* - Reset password with specified token
-
-
-*Request body*
-
-[width=100%]
-|===
-|Content type|Required|Schema|Example
-|*application/json*
-|true
-|<<ResetPasswordRequest>>
-a|
-[source,json]
-----
-{
-  "token" : "MDhmNTg4MDdiMTI0Y2Y4OWNmN2UxYmE1OTljYjUzOWU6MTYxNjE1MzM4MDMzMQ==",
-  "password" : "passw0rd!"
-}
-----
-|===
-
-
-
-*Api responses*
-[width=100%]
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|*-*
-|-
-
-a|
--
-|400
-|Bad request
-|*application/json*
-|-
-__array__<<<ValidationErrorDto>>>
-a|
-[source,json]
-----
-[ {
-  "fieldName" : null,
-  "code" : "InvalidToken",
-  "errorMessage" : "Invalid token"
-} ]
-----
-|===
-
-== Creates forgot password request
-
-__POST__ */password/forgot* - Creates forgot password request
-
-
-*Request body*
-
-[width=100%]
-|===
-|Content type|Required|Schema|Example
-|*application/json*
-|true
-|<<ForgotPasswordRequest>>
-a|
-[source,json]
-----
-{
-  "email" : "bat1238@yandex.ru"
-}
-----
-|===
-
-
-
-*Api responses*
-[width=100%]
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|*-*
-|-
-
-a|
--
-|400
-|Bad request
-|*application/json*
-|-
-__array__<<<ValidationErrorDto>>>
-a|
-[source,json]
-----
-[ {
-  "fieldName" : "email",
-  "code" : "UserEmail",
-  "errorMessage" : null
-} ]
-----
-|===
-
-== Creates change password request
-
-__POST__ */password/change/request* - Creates change password request
-
-*Security requirement*
-
-[cols="^50%,^50%",options="header"]
-|===
-|Name|Scopes
-|*EcaAuth*
-a|
-
-* web
-|===
-
-*Request body*
-
-[width=100%]
-|===
-|Content type|Required|Schema|Example
-|*application/json*
-|true
-|<<ChangePasswordRequest>>
-a|
-[source,json]
-----
-{
-  "oldPassword" : "oldPassw0rd!",
-  "newPassword" : "newPassw0rd!"
-}
-----
-|===
-
-
-
-*Api responses*
-[width=100%]
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|*-*
-|-
-
-a|
--
-|401
-|Not authorized
-|*application/json*
-|-
-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|400
-|Bad request
-|*application/json*
-|-
-
-a|
-[source,json]
-----
-[ {
-  "fieldName" : null,
-  "code" : "InvalidPassword",
-  "errorMessage" : "Invalid password"
-} ]
-----
-|===
-
-== Confirms change password request
-
-__POST__ */password/change/confirm* - Confirms change password request
-
-
-
-*Request parameters*
-[width=100%]
-|===
-|Name|Description|Type|Schema
-|*token**
-|Token value
-|query
-a|__string__
-
-
-
-
-
-
-
-
-
-
-
-
-
-|===
-
-*Api responses*
-[width=100%]
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|*-*
-|-
-
-a|
--
-|400
-|Bad request
-|*application/json*
-|-
-__array__<<<ValidationErrorDto>>>
-a|
-[source,json]
-----
-[ {
-  "fieldName" : null,
-  "code" : "InvalidToken",
-  "errorMessage" : "Invalid token"
-} ]
-----
-|===
-
-== Creates change email request
-
-__POST__ */email/change/request* - Creates change email request
-
-*Security requirement*
-
-[cols="^50%,^50%",options="header"]
-|===
-|Name|Scopes
-|*EcaAuth*
-a|
-
-* web
-|===
-
-
-*Request parameters*
-[width=100%]
-|===
-|Name|Description|Type|Schema
-|*newEmail**
-|User email
-|query
-a|__string__
-
-*Min. length*: 0
-
-*Max. length*: 255
-
-
-
-
-
-
-
-
-
-|===
-
-*Api responses*
-[width=100%]
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|*-*
-|-
-
-a|
--
-|401
-|Not authorized
-|*application/json*
-|-
-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|400
-|Bad request
-|*application/json*
-|-
-__array__<<<ValidationErrorDto>>>
-a|
-[source,json]
-----
-[ {
-  "fieldName" : "email",
-  "code" : "UniqueEmail",
-  "errorMessage" : "Can't set user email because its exists"
-} ]
-----
-|===
-
-== Confirms change email request
-
-__POST__ */email/change/confirm* - Confirms change email request
-
-
-
-*Request parameters*
-[width=100%]
-|===
-|Name|Description|Type|Schema
-|*token**
-|Token value
-|query
-a|__string__
-
-
-
-
-
-
-
-
-
-
-
-
-
-|===
-
-*Api responses*
-[width=100%]
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|*-*
-|-
-
-a|
--
-|400
-|Bad request
-|*application/json*
-|-
-__array__<<<ValidationErrorDto>>>
-a|
-[source,json]
-----
-[ {
-  "fieldName" : null,
-  "code" : "InvalidToken",
-  "errorMessage" : "Invalid token"
-} ]
-----
-|===
-
-== Gets current authenticated user info
-
-__GET__ */users/user-info* - Gets current authenticated user info
-
-*Security requirement*
-
-[cols="^50%,^50%",options="header"]
-|===
-|Name|Scopes
-|*EcaAuth*
-a|
-
-* web
-|===
-
-
-
-*Api responses*
-[width=100%]
-|===
-|Code|Description|Content type|Schema|Example
-|200
-|OK
-|*application/json*
-|<<UserDto>>
-
-a|
-[source,json]
-----
-{
-  "id" : 1,
-  "login" : "admin",
-  "email" : "test@mail.ru",
-  "firstName" : "Ivan",
-  "lastName" : "Ivanov",
-  "middleName" : "Ivanovich",
-  "fullName" : "Ivanov Ivan Ivanovich",
-  "creationDate" : "2021-07-01 14:00:00",
-  "tfaEnabled" : true,
-  "locked" : true,
-  "photoId" : 1,
-  "passwordDate" : "2021-07-01 14:00:00",
-  "roles" : [ {
-    "roleName" : "ROLE_SUPER_ADMIN",
-    "description" : "Administrator"
-  } ]
-}
-----
-|401
-|Not authorized
-|*application/json*
-|-
-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|===
-
-== Downloads user photo
-
-__GET__ */users/photo/{id}* - Downloads user photo
-
-*Security requirement*
-
-[cols="^50%,^50%",options="header"]
-|===
-|Name|Scopes
-|*EcaAuth*
-a|
-
-* web
 |===
 
 
@@ -1221,7 +369,257 @@ a|
 |===
 |Name|Description|Type|Schema
 |*id**
-|Photo id
+|Instances id
+|query
+a|__integer__
+__(int64)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|Code|Description|Content type|Schema|Example
+|200
+|OK
+|*application/json*
+|
+<<PageDto>>
+a|
+[source,json]
+----
+{
+  "content" : [ [ "5.1", "3.5", "1.4", "0.2", "Iris-setosa" ], [ "4.9", "3.0", "1.4", "0.2", "Iris-setosa" ], [ "4.7", "3.2", "1.3", "0.2", "Iris-setosa" ] ],
+  "page" : 0,
+  "totalCount" : 3
+}
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|__array__<<<ValidationErrorDto>>>
+a|
+[source,json]
+----
+[ {
+  "fieldName" : "page",
+  "code" : "Min",
+  "errorMessage" : "must be greater than or equal to 0"
+}, {
+  "fieldName" : "size",
+  "code" : "Min",
+  "errorMessage" : "must be greater than or equal to 1"
+} ]
+----
+|===
+
+== Gets instances reports info
+
+__GET__ */instances/reports-info* - Gets instances reports info
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|Name|Scopes
+|*EcaAuth*
+a||===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|Code|Description|Content type|Schema|Example
+|200
+|OK
+|*application/json*
+|__array__<<<InstancesReportInfoDto>>>
+a|
+[source,json]
+----
+[ {
+  "title" : "Microsoft Excel (.xlsx)",
+  "reportType" : "XLS",
+  "fileExtension" : "xlsx"
+}, {
+  "title" : "Формат CSV (.csv)",
+  "reportType" : "CSV",
+  "fileExtension" : "csv"
+}, {
+  "title" : "Формат Arff (.arff)",
+  "reportType" : "ARFF",
+  "fileExtension" : "arff"
+}, {
+  "title" : "Json формат (.json)",
+  "reportType" : "JSON",
+  "fileExtension" : "json"
+}, {
+  "title" : "Xml формат (.xml)",
+  "reportType" : "XML",
+  "fileExtension" : "xml"
+}, {
+  "title" : "Текстовый формат (.txt)",
+  "reportType" : "TXT",
+  "fileExtension" : "txt"
+}, {
+  "title" : "Формат данных (.data)",
+  "reportType" : "DATA",
+  "fileExtension" : "data"
+}, {
+  "title" : "Microsoft Word (.docx)",
+  "reportType" : "DOCX",
+  "fileExtension" : "docx"
+} ]
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|===
+
+== Download instances report with specified type
+
+__GET__ */instances/download* - Download instances report with specified type
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|Name|Scopes
+|*EcaAuth*
+a||===
+
+
+*Request parameters*
+[width=100%]
+|===
+|Name|Description|Type|Schema
+|*id**
+|Instances id
+|query
+a|__integer__
+__(int64)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*reportType**
+|Report type
+|query
+a|__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|Code|Description|Content type|Schema|Example
+|200
+|OK
+|*application/octet-stream*
+|-
+a|
+-
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|__array__<<<ValidationErrorDto>>>
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "DataNotFound",
+  "errorMessage" : "Entity with search key [1] not found!"
+} ]
+----
+|===
+
+== Gets instances details
+
+__GET__ */instances/details/{id}* - Gets instances details
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|Name|Scopes
+|*EcaAuth*
+a||===
+
+
+*Request parameters*
+[width=100%]
+|===
+|Name|Description|Type|Schema
+|*id**
+|Instances id
 |path
 a|__integer__
 __(int64)__
@@ -1246,16 +644,25 @@ __(int64)__
 |Code|Description|Content type|Schema|Example
 |200
 |OK
-|**/**
-|-
-
+|*application/json*
+|
+<<InstancesDto>>
 a|
--
+[source,json]
+----
+{
+  "id" : 1,
+  "tableName" : "iris",
+  "numInstances" : 150,
+  "numAttributes" : 5,
+  "created" : "2021-07-01 14:00:00",
+  "createdBy" : "admin"
+}
+----
 |401
 |Not authorized
 |*application/json*
 |-
-
 a|
 [source,json]
 ----
@@ -1267,8 +674,7 @@ a|
 |400
 |Bad request
 |*application/json*
-|-
-__array__<<<ValidationErrorDto>>>
+|__array__<<<ValidationErrorDto>>>
 a|
 [source,json]
 ----
@@ -1280,9 +686,9 @@ a|
 ----
 |===
 
-== Deletes photo for current authenticated user
+== Gets attributes list for specified instances
 
-__DELETE__ */users/delete-photo* - Deletes photo for current authenticated user
+__GET__ */instances/attributes/{id}* - Gets attributes list for specified instances
 
 *Security requirement*
 
@@ -1290,12 +696,32 @@ __DELETE__ */users/delete-photo* - Deletes photo for current authenticated user
 |===
 |Name|Scopes
 |*EcaAuth*
-a|
+a||===
 
-* web
+
+*Request parameters*
+[width=100%]
 |===
+|Name|Description|Type|Schema
+|*id**
+|Instances id
+|path
+a|__integer__
+__(int64)__
 
 
+
+
+
+
+
+
+
+
+
+
+
+|===
 
 *Api responses*
 [width=100%]
@@ -1303,16 +729,17 @@ a|
 |Code|Description|Content type|Schema|Example
 |200
 |OK
-|*-*
+|*application/json*
 |-
-
 a|
--
+[source,json]
+----
+[ "x1", "x2", "x3", "x4", "class" ]
+----
 |401
 |Not authorized
 |*application/json*
 |-
-
 a|
 [source,json]
 ----
@@ -1324,8 +751,81 @@ a|
 |400
 |Bad request
 |*application/json*
+|__array__<<<ValidationErrorDto>>>
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "DataNotFound",
+  "errorMessage" : "Entity with search key [1] not found!"
+} ]
+----
+|===
+
+== Deletes instances with specified id
+
+__DELETE__ */instances/delete* - Deletes instances with specified id
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|Name|Scopes
+|*EcaAuth*
+a||===
+
+
+*Request parameters*
+[width=100%]
+|===
+|Name|Description|Type|Schema
+|*id**
+|Instances id
+|query
+a|__integer__
+__(int64)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|Code|Description|Content type|Schema|Example
+|200
+|OK
+|*-*
 |-
-__array__<<<ValidationErrorDto>>>
+a|
+-
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|__array__<<<ValidationErrorDto>>>
 a|
 [source,json]
 ----
@@ -1400,118 +900,14 @@ __string__
 
 
 |===
-=== UpdateUserInfoDto
+=== CreateInstancesResultDto
 :table-caption: Table
-.Update user info model
+.Create instances result model
 [width=100%]
 |===
 |Name|Description|Schema
-|*firstName**
-|First name
-a|
-__string__
-
-*Min. length*: 2
-
-*Max. length*: 30
-
-
-
-
-
-
-
-*Pattern*: `^([A-Z][a-z]+)\|([А-Я][а-я]+)$`
-
-
-|*lastName**
-|Last name
-a|
-__string__
-
-*Min. length*: 2
-
-*Max. length*: 30
-
-
-
-
-
-
-
-*Pattern*: `^([A-Z][a-z]+)\|([А-Я][а-я]+)$`
-
-
-|*middleName**
-|Middle name
-a|
-__string__
-
-*Min. length*: 2
-
-*Max. length*: 30
-
-
-
-
-
-
-
-*Pattern*: `^([A-Z][a-z]+)\|([А-Я][а-я]+)$`
-
-
-|===
-=== RoleDto
-:table-caption: Table
-.User role model
-[width=100%]
-|===
-|Name|Description|Schema
-|*roleName*
-|Role name
-a|
-__string__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*description*
-|Role description
-a|
-__string__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|===
-=== UserDto
-:table-caption: Table
-.User model
-[width=100%]
-|===
-|Name|Description|Schema
-|*id*
-|User id
+|*id**
+|Instances id
 a|
 __integer__
 __(int64)__
@@ -1529,8 +925,8 @@ __(int64)__
 
 
 
-|*login*
-|User login
+|*sourceFileName**
+|Source file name
 a|
 __string__
 
@@ -1547,192 +943,10 @@ __string__
 
 
 
-|*email*
-|User email
+|*tableName**
+|Database table name
 a|
 __string__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*firstName*
-|User first name
-a|
-__string__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*lastName*
-|User last name
-a|
-__string__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*middleName*
-|User middle name
-a|
-__string__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*fullName*
-|User full name
-a|
-__string__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*creationDate*
-|User creation date
-a|
-__string__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*tfaEnabled*
-|Two factor authentication enabled
-a|
-__boolean__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*locked*
-|Account locked
-a|
-__boolean__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*photoId*
-|User photo id
-a|
-__integer__
-__(int64)__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*passwordDate*
-|Last password change date
-a|
-__string__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*roles*
-|User roles
-a|
-__array__
-<<<RoleDto>>>
 
 
 
@@ -1748,9 +962,9 @@ __array__
 
 
 |===
-=== UsersPageDto
+=== PageDto
 :table-caption: Table
-.Users page dto
+.Page model
 [width=100%]
 |===
 |Name|Description|Schema
@@ -1758,7 +972,6 @@ __array__
 |Page content
 a|
 __array__
-<<<UserDto>>>
 
 
 
@@ -1993,20 +1206,17 @@ __array__
 
 
 |===
-=== CreateUserDto
+=== InstancesReportInfoDto
 :table-caption: Table
-.Create user model
+.Instances report info model
 [width=100%]
 |===
 |Name|Description|Schema
-|*login**
-|User login
+|*reportType*
+|Report type
 a|
 __string__
 
-*Min. length*: 3
-
-*Max. length*: 32
 
 
 
@@ -2014,17 +1224,17 @@ __string__
 
 
 
-*Pattern*: `^[a-z0-9]+$`
 
 
-|*email**
-|User email
+
+
+
+
+|*title*
+|Report title
 a|
 __string__
 
-*Min. length*: 0
-
-*Max. length*: 255
 
 
 
@@ -2035,14 +1245,14 @@ __string__
 
 
 
-|*firstName**
-|First name
+
+
+
+|*fileExtension*
+|Report file extension
 a|
 __string__
 
-*Min. length*: 2
-
-*Max. length*: 30
 
 
 
@@ -2050,54 +1260,40 @@ __string__
 
 
 
-*Pattern*: `^([A-Z][a-z]+)\|([А-Я][а-я]+)$`
-
-
-|*lastName**
-|Last name
-a|
-__string__
-
-*Min. length*: 2
-
-*Max. length*: 30
 
 
 
 
-
-
-
-*Pattern*: `^([A-Z][a-z]+)\|([А-Я][а-я]+)$`
-
-
-|*middleName**
-|Middle name
-a|
-__string__
-
-*Min. length*: 2
-
-*Max. length*: 30
-
-
-
-
-
-
-
-*Pattern*: `^([A-Z][a-z]+)\|([А-Я][а-я]+)$`
 
 
 |===
-=== ResetPasswordRequest
+=== InstancesDto
 :table-caption: Table
-.Reset password request model
+.Instances model
 [width=100%]
 |===
 |Name|Description|Schema
-|*token**
-|Token value
+|*id*
+|Instances id
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*tableName*
+|Table name
 a|
 __string__
 
@@ -2114,8 +1310,46 @@ __string__
 
 
 
-|*password**
-|New password
+|*numInstances*
+|Instances number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*numAttributes*
+|Attributes number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*created*
+|Instances creation date
 a|
 __string__
 
@@ -2132,58 +1366,8 @@ __string__
 
 
 
-|===
-=== ForgotPasswordRequest
-:table-caption: Table
-.Forgot password request model
-[width=100%]
-|===
-|Name|Description|Schema
-|*email**
-|User email
-a|
-__string__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|===
-=== ChangePasswordRequest
-:table-caption: Table
-.Change password request model
-[width=100%]
-|===
-|Name|Description|Schema
-|*oldPassword**
-|Old password
-a|
-__string__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*newPassword**
-|New password
+|*createdBy*
+|User name
 a|
 __string__
 

@@ -219,8 +219,14 @@ __(${parameter.schema.format})__
 |${(apiResponse.responseCode)!"-"}
 |${(apiResponse.description)!"-"}
 |*${(apiResponse.contentType)!"-"}*
-|<#if apiResponse.objectTypeRef??><<${apiResponse.objectTypeRef}>><#else>-</#if>
-<#if apiResponse.itemsObjectRef??>__array__<<<${apiResponse.itemsObjectRef}>>></#if>
+|<#if apiResponse.objectTypeRef??>
+<<${apiResponse.objectTypeRef}>>
+<#else>
+<#if apiResponse.itemsObjectRef??>__array__<<<${apiResponse.itemsObjectRef}>>>
+<#else>
+-
+</#if>
+</#if>
 a|
 <#if apiResponse.example??>
 [source,json]
