@@ -82,14 +82,14 @@ a|
 |200
 |OK
 |*-*
-|-
+|
 
 a|
 -
 |401
 |Not authorized
 |*application/json*
-|-
+|
 
 a|
 [source,json]
@@ -102,7 +102,7 @@ a|
 |400
 |Bad request
 |*application/json*
-|-
+|
 __array__<<<ValidationErrorDto>>>
 a|
 [source,json]
@@ -183,14 +183,14 @@ __(binary)__
 |200
 |OK
 |*-*
-|-
+|
 
 a|
 -
 |401
 |Not authorized
 |*application/json*
-|-
+|
 
 a|
 [source,json]
@@ -203,7 +203,7 @@ a|
 |400
 |Bad request
 |*-*
-|-
+|
 
 a|
 -
@@ -256,14 +256,14 @@ __(int64)__
 |200
 |OK
 |*-*
-|-
+|
 
 a|
 -
 |401
 |Not authorized
 |*application/json*
-|-
+|
 
 a|
 [source,json]
@@ -276,7 +276,7 @@ a|
 |403
 |Permission denied
 |*application/json*
-|-
+|
 
 a|
 [source,json]
@@ -289,7 +289,7 @@ a|
 |400
 |Bad request
 |*-*
-|-
+|
 
 a|
 -
@@ -341,14 +341,14 @@ a|__boolean__
 |200
 |OK
 |*-*
-|-
+|
 
 a|
 -
 |401
 |Not authorized
 |*application/json*
-|-
+|
 
 a|
 [source,json]
@@ -361,7 +361,7 @@ a|
 |400
 |Bad request
 |*-*
-|-
+|
 
 a|
 -
@@ -391,14 +391,14 @@ a|
 |200
 |OK
 |*-*
-|-
+|
 
 a|
 -
 |401
 |Not authorized
 |*application/json*
-|-
+|
 
 a|
 [source,json]
@@ -457,14 +457,14 @@ __(int64)__
 |200
 |OK
 |*-*
-|-
+|
 
 a|
 -
 |401
 |Not authorized
 |*application/json*
-|-
+|
 
 a|
 [source,json]
@@ -477,7 +477,7 @@ a|
 |403
 |Permission denied
 |*application/json*
-|-
+|
 
 a|
 [source,json]
@@ -490,7 +490,7 @@ a|
 |400
 |Bad request
 |*-*
-|-
+|
 
 a|
 -
@@ -569,7 +569,7 @@ a|
 |401
 |Not authorized
 |*application/json*
-|-
+|
 
 a|
 [source,json]
@@ -582,7 +582,7 @@ a|
 |403
 |Permission denied
 |*application/json*
-|-
+|
 
 a|
 [source,json]
@@ -595,7 +595,7 @@ a|
 |400
 |Bad request
 |*application/json*
-|-
+|
 __array__<<<ValidationErrorDto>>>
 a|
 [source,json]
@@ -684,7 +684,7 @@ a|
 |401
 |Not authorized
 |*application/json*
-|-
+|
 
 a|
 [source,json]
@@ -697,7 +697,7 @@ a|
 |403
 |Permission denied
 |*application/json*
-|-
+|
 
 a|
 [source,json]
@@ -710,7 +710,7 @@ a|
 |400
 |Bad request
 |*application/json*
-|-
+|
 __array__<<<ValidationErrorDto>>>
 a|
 [source,json]
@@ -759,7 +759,7 @@ a|__string__
 |200
 |OK
 |*application/json*
-|-
+|
 
 a|
 [source,json]
@@ -800,14 +800,14 @@ a|
 |200
 |OK
 |*-*
-|-
+|
 
 a|
 -
 |400
 |Bad request
 |*application/json*
-|-
+|
 __array__<<<ValidationErrorDto>>>
 a|
 [source,json]
@@ -851,14 +851,14 @@ a|
 |200
 |OK
 |*-*
-|-
+|
 
 a|
 -
 |400
 |Bad request
 |*application/json*
-|-
+|
 __array__<<<ValidationErrorDto>>>
 a|
 [source,json]
@@ -913,14 +913,14 @@ a|
 |200
 |OK
 |*-*
-|-
+|
 
 a|
 -
 |401
 |Not authorized
 |*application/json*
-|-
+|
 
 a|
 [source,json]
@@ -933,7 +933,7 @@ a|
 |400
 |Bad request
 |*application/json*
-|-
+|
 
 a|
 [source,json]
@@ -982,14 +982,14 @@ a|__string__
 |200
 |OK
 |*-*
-|-
+|
 
 a|
 -
 |400
 |Bad request
 |*application/json*
-|-
+|
 __array__<<<ValidationErrorDto>>>
 a|
 [source,json]
@@ -1048,14 +1048,14 @@ a|__string__
 |200
 |OK
 |*-*
-|-
+|
 
 a|
 -
 |401
 |Not authorized
 |*application/json*
-|-
+|
 
 a|
 [source,json]
@@ -1068,7 +1068,7 @@ a|
 |400
 |Bad request
 |*application/json*
-|-
+|
 __array__<<<ValidationErrorDto>>>
 a|
 [source,json]
@@ -1117,14 +1117,14 @@ a|__string__
 |200
 |OK
 |*-*
-|-
+|
 
 a|
 -
 |400
 |Bad request
 |*application/json*
-|-
+|
 __array__<<<ValidationErrorDto>>>
 a|
 [source,json]
@@ -1188,7 +1188,7 @@ a|
 |401
 |Not authorized
 |*application/json*
-|-
+|
 
 a|
 [source,json]
@@ -1247,14 +1247,14 @@ __(int64)__
 |200
 |OK
 |**/**
-|-
+|
 
 a|
 -
 |401
 |Not authorized
 |*application/json*
-|-
+|
 
 a|
 [source,json]
@@ -1267,7 +1267,7 @@ a|
 |400
 |Bad request
 |*application/json*
-|-
+|
 __array__<<<ValidationErrorDto>>>
 a|
 [source,json]
@@ -1304,14 +1304,14 @@ a|
 |200
 |OK
 |*-*
-|-
+|
 
 a|
 -
 |401
 |Not authorized
 |*application/json*
-|-
+|
 
 a|
 [source,json]
@@ -1324,7 +1324,7 @@ a|
 |400
 |Bad request
 |*application/json*
-|-
+|
 __array__<<<ValidationErrorDto>>>
 a|
 [source,json]
