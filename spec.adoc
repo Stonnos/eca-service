@@ -54,6 +54,8 @@ a|
 * web
 |===
 
+*Request body*
+
 [width=100%]
 |===
 |Content type|Required|Schema|Example
@@ -70,6 +72,8 @@ a|
 }
 ----
 |===
+
+
 
 *Api responses*
 [width=100%]
@@ -131,6 +135,8 @@ a|
 * web
 |===
 
+*Request body*
+
 [width=100%]
 |===
 |Content type|Required|Schema|Example
@@ -140,6 +146,25 @@ a|
 a|
 -
 |===
+
+*Multipart form data fields*
+
+[width=100%]
+|===
+|Name|Description|Schema
+|*file**
+|Photo file
+a|
+__string__
+__(binary)__
+
+
+
+
+
+
+
+
 
 *Api responses*
 [width=100%]
@@ -326,6 +351,7 @@ a|
 |===
 
 
+
 *Api responses*
 [width=100%]
 |===
@@ -441,6 +467,8 @@ a|
 * web
 |===
 
+*Request body*
+
 [width=100%]
 |===
 |Content type|Required|Schema|Example
@@ -456,6 +484,8 @@ a|
 }
 ----
 |===
+
+
 
 *Api responses*
 [width=100%]
@@ -549,6 +579,8 @@ a|
 * web
 |===
 
+*Request body*
+
 [width=100%]
 |===
 |Content type|Required|Schema|Example
@@ -567,6 +599,8 @@ a|
 }
 ----
 |===
+
+
 
 *Api responses*
 [width=100%]
@@ -680,6 +714,8 @@ false
 __POST__ */password/reset* - Reset password with specified token
 
 
+*Request body*
+
 [width=100%]
 |===
 |Content type|Required|Schema|Example
@@ -695,6 +731,8 @@ a|
 }
 ----
 |===
+
+
 
 *Api responses*
 [width=100%]
@@ -726,6 +764,8 @@ a|
 __POST__ */password/forgot* - Creates forgot password request
 
 
+*Request body*
+
 [width=100%]
 |===
 |Content type|Required|Schema|Example
@@ -740,6 +780,8 @@ a|
 }
 ----
 |===
+
+
 
 *Api responses*
 [width=100%]
@@ -781,6 +823,8 @@ a|
 * web
 |===
 
+*Request body*
+
 [width=100%]
 |===
 |Content type|Required|Schema|Example
@@ -796,6 +840,8 @@ a|
 }
 ----
 |===
+
+
 
 *Api responses*
 [width=100%]
@@ -1016,6 +1062,7 @@ a|
 |===
 
 
+
 *Api responses*
 [width=100%]
 |===
@@ -1145,6 +1192,7 @@ a|
 
 * web
 |===
+
 
 
 *Api responses*

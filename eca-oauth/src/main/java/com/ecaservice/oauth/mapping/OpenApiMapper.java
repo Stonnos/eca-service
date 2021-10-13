@@ -5,7 +5,7 @@ import com.ecaservice.oauth.model.OpenApiReport;
 import com.ecaservice.oauth.model.RequestBodyReport;
 import com.ecaservice.oauth.model.RequestParameterReport;
 import com.ecaservice.oauth.model.SchemaReport;
-import com.ecaservice.oauth.model.SecuritySchemaModel;
+import com.ecaservice.oauth.model.SecuritySchemaReport;
 import com.ecaservice.oauth.model.openapi.Oauth2Flow;
 import com.ecaservice.oauth.model.openapi.OpenAPI;
 import com.ecaservice.oauth.model.openapi.Parameter;
@@ -48,7 +48,7 @@ public interface OpenApiMapper {
     SchemaReport map(Schema schema);
 
     @Mapping(target = "oauth2Flows", ignore = true)
-    SecuritySchemaModel map(SecurityScheme securityScheme);
+    SecuritySchemaReport map(SecurityScheme securityScheme);
 
     @Mapping(target = "scopes", ignore = true)
     Oauth2FlowsReport map(Oauth2Flow oauth2Flow);

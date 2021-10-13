@@ -23,5 +23,5 @@ public class OpenApiReport {
 
     private List<ComponentReport> components;
 
-    private List<SecuritySchemaModel> securitySchemes;
+    private List<SecuritySchemaReport> securitySchemes;
 }

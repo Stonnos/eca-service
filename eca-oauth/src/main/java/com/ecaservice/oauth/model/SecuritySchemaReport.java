@@ -9,7 +9,7 @@ import java.util.List;
  * @author Roman Batygin
  */
 @Data
-public class SecuritySchemaModel {
+public class SecuritySchemaReport {
 
     private String type;
     private String description;
