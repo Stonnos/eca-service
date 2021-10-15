@@ -23,9 +23,11 @@ import java.io.Serializable;
         @JsonSubTypes.Type(value = StackingOptions.class, name = ClassifierOptionsType.STACKING),
         @JsonSubTypes.Type(value = IterativeEnsembleOptions.class, name = ClassifierOptionsType.ITERATIVE_ENSEMBLE),
 })
-@Schema(subTypes = {AdaBoostOptions.class, ExtraTreesOptions.class,
+@Schema(subTypes = {
+        AdaBoostOptions.class, ExtraTreesOptions.class,
         HeterogeneousClassifierOptions.class, RandomForestsOptions.class, RandomNetworkOptions.class,
-        DecisionTreeOptions.class, LogisticOptions.class, KNearestNeighboursOptions.class, NeuralNetworkOptions.class,
-        J48Options.class, StackingOptions.class})
+        DecisionTreeOptions.class, LogisticOptions.class, KNearestNeighboursOptions.class,
+        NeuralNetworkOptions.class, J48Options.class, StackingOptions.class
+})
 public abstract class ClassifierOptions implements Serializable {
 }
