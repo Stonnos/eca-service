@@ -1,6 +1,7 @@
 package com.ecaservice.classifier.options.model;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -22,15 +23,18 @@ public abstract class AbstractHeterogeneousClassifierOptions extends IterativeEn
     /**
      * Min. error threshold
      */
+    @Schema(description = "Classifier min. error threshold")
     private Double minError;
 
     /**
      * Max. error threshold
      */
+    @Schema(description = "Classifier max. error threshold")
     private Double maxError;
 
     /**
      * Individual classifiers options
      */
+    @Schema(description = "Individual classifiers options")
     private List<ClassifierOptions> classifierOptions;
 }

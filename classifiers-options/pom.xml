@@ -21,6 +21,10 @@
             <groupId>eca</groupId>
             <artifactId>eca-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

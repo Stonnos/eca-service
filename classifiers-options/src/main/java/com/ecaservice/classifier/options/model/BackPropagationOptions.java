@@ -1,5 +1,6 @@
 package com.ecaservice.classifier.options.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
@@ -13,10 +14,12 @@ public class BackPropagationOptions {
     /**
      * Learning rate value
      */
+    @Schema(description = "Learning rate value")
     private Double learningRate;
 
     /**
      * Momentum coefficient value
      */
+    @Schema(description = "Momentum coefficient value")
     private Double momentum;
 }
