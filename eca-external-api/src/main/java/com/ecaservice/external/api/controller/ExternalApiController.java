@@ -3,7 +3,7 @@ package com.ecaservice.external.api.controller;
 import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.dto.EvaluationRequestDto;
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
-import com.ecaservice.external.api.dto.EvaluationResponseWrapperDto;
+import com.ecaservice.external.api.dto.EvaluationResponsePayloadDto;
 import com.ecaservice.external.api.dto.InstancesDto;
 import com.ecaservice.external.api.dto.InstancesResponseDto;
 import com.ecaservice.external.api.dto.ResponseCode;
@@ -157,7 +157,7 @@ public class ExternalApiController {
                                     examples = {
                                             @ExampleObject(value = EVALUATION_REQUEST_RESPONSE_JSON),
                                     },
-                                    schema = @Schema(implementation = EvaluationResponseWrapperDto.class)
+                                    schema = @Schema(implementation = EvaluationResponsePayloadDto.class)
                             )
                     ),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
@@ -211,7 +211,7 @@ public class ExternalApiController {
                                     examples = {
                                             @ExampleObject(value = EVALUATION_STATUS_RESPONSE_JSON),
                                     },
-                                    schema = @Schema(implementation = EvaluationResponseWrapperDto.class)
+                                    schema = @Schema(implementation = EvaluationResponsePayloadDto.class)
                             )
                     ),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
