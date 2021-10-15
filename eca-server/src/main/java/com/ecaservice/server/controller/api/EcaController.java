@@ -1,14 +1,21 @@
 package com.ecaservice.server.controller.api;
 
+import com.ecaservice.common.web.dto.ValidationErrorDto;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.repository.ExperimentRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +28,7 @@ import static com.ecaservice.common.web.util.MaskUtils.mask;
 import static com.ecaservice.server.util.ExperimentUtils.getExperimentFile;
 import static com.ecaservice.server.util.Utils.buildAttachmentResponse;
 import static com.ecaservice.server.util.Utils.existsFile;
+import static com.ecaservice.web.dto.doc.CommonApiExamples.DATA_NOT_FOUND_RESPONSE_JSON;
 
 /**
  * Implements REST API for ECA application.
@@ -43,7 +51,19 @@ public class EcaController {
      */
     @Operation(
             description = "Downloads experiment results by token",
-            summary = "Downloads experiment results by token"
+            summary = "Downloads experiment results by token",
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = DATA_NOT_FOUND_RESPONSE_JSON),
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
+                            )
+                    )
+            }
     )
     @GetMapping(value = "/experiment/download/{token}")
     public ResponseEntity<FileSystemResource> downloadExperiment(

@@ -2,12 +2,17 @@ package com.ecaservice.audit.controller.audit;
 
 import com.ecaservice.audit.dto.AuditEventRequest;
 import com.ecaservice.audit.service.AuditLogService;
+import com.ecaservice.common.web.dto.ValidationErrorDto;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+import static com.ecaservice.audit.controller.doc.ApiExamples.AUDIT_EVENT_BAD_REQUEST_RESPONSE_JSON;
 import static com.ecaservice.audit.controller.doc.ApiExamples.AUDIT_EVENT_REQUEST_JSON;
 
 /**
@@ -43,7 +49,19 @@ public class AuditEventController {
                     @Content(examples = {
                             @ExampleObject(value = AUDIT_EVENT_REQUEST_JSON)
                     })
-            })
+            }),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = AUDIT_EVENT_BAD_REQUEST_RESPONSE_JSON),
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
+                            )
+                    )
+            }
     )
     @PostMapping(value = "/save")
     public void saveAuditEvent(@Valid @RequestBody AuditEventRequest auditEventRequest) {

@@ -31,7 +31,7 @@ public class ResponseDto<T> implements Serializable {
     /**
      * Response code
      */
-    @Schema(description = "Response code")
+    @Schema(description = "Response code", example = "SUCCESS")
     private ResponseCode responseCode;
 
     /**

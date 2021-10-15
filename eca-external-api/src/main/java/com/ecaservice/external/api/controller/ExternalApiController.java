@@ -3,7 +3,9 @@ package com.ecaservice.external.api.controller;
 import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.dto.EvaluationRequestDto;
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
+import com.ecaservice.external.api.dto.EvaluationResponseWrapperDto;
 import com.ecaservice.external.api.dto.InstancesDto;
+import com.ecaservice.external.api.dto.InstancesResponseDto;
 import com.ecaservice.external.api.dto.ResponseCode;
 import com.ecaservice.external.api.dto.ResponseDto;
 import com.ecaservice.external.api.service.EcaRequestService;
@@ -16,6 +18,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +46,13 @@ import java.util.Optional;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.external.api.controller.docs.ApiExamples.EVALUATION_REQUEST_JSON;
+import static com.ecaservice.external.api.controller.docs.ApiExamples.EVALUATION_REQUEST_RESPONSE_JSON;
+import static com.ecaservice.external.api.controller.docs.ApiExamples.EVALUATION_STATUS_RESPONSE_JSON;
+import static com.ecaservice.external.api.controller.docs.ApiExamples.INVALID_EVALUATION_REQUEST_RESPONSE_JSON;
+import static com.ecaservice.external.api.controller.docs.ApiExamples.INVALID_TRAIN_DATA_RESPONSE_JSON;
+import static com.ecaservice.external.api.controller.docs.ApiExamples.UNAUTHORIZED_RESPONSE_JSON;
+import static com.ecaservice.external.api.controller.docs.ApiExamples.UPLOAD_INSTANCES_RESPONSE_JSON;
+import static com.ecaservice.external.api.controller.docs.ApiExamples.VALIDATION_ERROR_RESPONSE_JSON;
 import static com.ecaservice.external.api.util.Constants.DATA_URL_PREFIX;
 import static com.ecaservice.external.api.util.Utils.buildAttachmentResponse;
 import static com.ecaservice.external.api.util.Utils.buildResponse;
@@ -59,6 +70,8 @@ import static com.ecaservice.external.api.util.Utils.toJson;
 @RestController
 @RequiredArgsConstructor
 public class ExternalApiController {
+
+    private static final String SCOPE_EXTERNAL_API = "external-api";
 
     private final ExternalApiConfig externalApiConfig;
     private final MessageCorrelationService messageCorrelationService;
@@ -79,7 +92,35 @@ public class ExternalApiController {
     @Operation(
             description = "Uploads train data file",
             summary = "Uploads train data file",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_EXTERNAL_API),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UPLOAD_INSTANCES_RESPONSE_JSON),
+                                    },
+                                    schema = @Schema(implementation = InstancesResponseDto.class)
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = INVALID_TRAIN_DATA_RESPONSE_JSON),
+                                    },
+                                    schema = @Schema(implementation = ResponseDto.class)
+                            )
+                    )
+            }
     )
     @PostMapping(value = "/uploads-train-data", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseDto<InstancesDto> uploadInstances(
@@ -103,12 +144,40 @@ public class ExternalApiController {
     @Operation(
             description = "Processes evaluation request",
             summary = "Processes evaluation request",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_EXTERNAL_API),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
                             @ExampleObject(value = EVALUATION_REQUEST_JSON)
                     })
-            })
+            }),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = EVALUATION_REQUEST_RESPONSE_JSON),
+                                    },
+                                    schema = @Schema(implementation = EvaluationResponseWrapperDto.class)
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = INVALID_EVALUATION_REQUEST_RESPONSE_JSON),
+                                    },
+                                    schema = @Schema(implementation = ResponseDto.class)
+                            )
+                    )
+            }
     )
     @PostMapping(value = "/evaluation-request")
     public Mono<ResponseDto<EvaluationResponseDto>> evaluateModel(
@@ -134,7 +203,35 @@ public class ExternalApiController {
     @Operation(
             description = "Gets evaluation response status",
             summary = "Gets evaluation response status",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_EXTERNAL_API),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = EVALUATION_STATUS_RESPONSE_JSON),
+                                    },
+                                    schema = @Schema(implementation = EvaluationResponseWrapperDto.class)
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = VALIDATION_ERROR_RESPONSE_JSON),
+                                    },
+                                    schema = @Schema(implementation = ResponseDto.class)
+                            )
+                    )
+            }
     )
     @GetMapping(value = "/evaluation-status/{requestId}")
     public ResponseDto<EvaluationResponseDto> getEvaluationResponseStatus(
@@ -155,7 +252,27 @@ public class ExternalApiController {
     @Operation(
             description = "Downloads classifier model",
             summary = "Downloads classifier model",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_EXTERNAL_API),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = VALIDATION_ERROR_RESPONSE_JSON),
+                                    },
+                                    schema = @Schema(implementation = ResponseDto.class)
+                            )
+                    )
+            }
     )
     @GetMapping(value = "/download-model/{requestId}")
     public ResponseEntity<FileSystemResource> downloadModel(@Parameter(description = "Request id", required = true)

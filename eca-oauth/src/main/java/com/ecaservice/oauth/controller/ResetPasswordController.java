@@ -1,5 +1,6 @@
 package com.ecaservice.oauth.controller;
 
+import com.ecaservice.common.web.dto.ValidationErrorDto;
 import com.ecaservice.oauth.dto.ForgotPasswordRequest;
 import com.ecaservice.oauth.dto.ResetPasswordRequest;
 import com.ecaservice.oauth.event.model.PasswordResetNotificationEvent;
@@ -8,10 +9,16 @@ import com.ecaservice.oauth.repository.ResetPasswordRequestRepository;
 import com.ecaservice.oauth.service.ResetPasswordService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +28,10 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 
+import static com.ecaservice.oauth.controller.doc.ApiExamples.FORGOT_PASSWORD_REQUEST_JSON;
+import static com.ecaservice.oauth.controller.doc.ApiExamples.INVALID_TOKEN_RESPONSE_JSON;
+import static com.ecaservice.oauth.controller.doc.ApiExamples.RESET_PASSWORD_REQUEST_JSON;
+import static com.ecaservice.oauth.controller.doc.ApiExamples.USER_EMAIL_RESPONSE_JSON;
 import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 
 /**
@@ -46,7 +57,24 @@ public class ResetPasswordController {
      */
     @Operation(
             description = "Creates forgot password request",
-            summary = "Creates forgot password request"
+            summary = "Creates forgot password request",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
+                    @Content(examples = {
+                            @ExampleObject(value = FORGOT_PASSWORD_REQUEST_JSON)
+                    })
+            }),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = USER_EMAIL_RESPONSE_JSON),
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
+                            )
+                    )
+            }
     )
     @PostMapping(value = "/forgot")
     public void forgotPassword(@Valid @RequestBody ForgotPasswordRequest forgotPasswordRequest) {
@@ -65,7 +93,17 @@ public class ResetPasswordController {
      */
     @Operation(
             description = "Verify reset password token",
-            summary = "Verify reset password token"
+            summary = "Verify reset password token",
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = "false"),
+                                    }
+                            )
+                    )
+            }
     )
     @PostMapping(value = "/verify-token")
     public boolean verifyToken(
@@ -83,7 +121,24 @@ public class ResetPasswordController {
      */
     @Operation(
             description = "Reset password with specified token",
-            summary = "Reset password with specified token"
+            summary = "Reset password with specified token",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
+                    @Content(examples = {
+                            @ExampleObject(value = RESET_PASSWORD_REQUEST_JSON)
+                    })
+            }),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = INVALID_TOKEN_RESPONSE_JSON),
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
+                            )
+                    )
+            }
     )
     @PostMapping(value = "/reset")
     public void resetPassword(@Valid @RequestBody ResetPasswordRequest resetPasswordRequest) {

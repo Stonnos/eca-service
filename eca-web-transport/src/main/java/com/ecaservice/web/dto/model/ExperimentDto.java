@@ -24,25 +24,25 @@ public class ExperimentDto extends AbstractEvaluationDto {
     /**
      * First name
      */
-    @Schema(description = "Request creator first name")
+    @Schema(description = "Request creator first name", example = "Roman")
     private String firstName;
 
     /**
      * Email
      */
-    @Schema(description = "Request creator email")
+    @Schema(description = "Request creator email", example = "test@mail.ru")
     private String email;
 
     /**
      * Experiment file absolute path
      */
-    @Schema(description = "Experiment results file")
+    @Schema(description = "Experiment results file", example = "experiment_1d2de514-3a87-4620-9b97-c260e24340de.model")
     private String experimentAbsolutePath;
 
     /**
      * Training data absolute path
      */
-    @Schema(description = "Training data file")
+    @Schema(description = "Training data file", example = "data_1d2de514-3a87-4620-9b97-c260e24340de.xls")
     private String trainingDataAbsolutePath;
 
     /**

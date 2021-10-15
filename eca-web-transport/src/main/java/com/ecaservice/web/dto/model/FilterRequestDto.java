@@ -30,7 +30,7 @@ public class FilterRequestDto {
      */
     @NotBlank
     @Size(max = MAX_LENGTH_255)
-    @Schema(description = "Filter column name")
+    @Schema(description = "Filter column name", example = "field")
     private String name;
 
     /**
@@ -44,6 +44,6 @@ public class FilterRequestDto {
      * Match mode type {@link MatchMode}
      */
     @NotNull
-    @Schema(description = "Match mode type")
+    @Schema(description = "Match mode type", example = "LIKE")
     private MatchMode matchMode;
 }

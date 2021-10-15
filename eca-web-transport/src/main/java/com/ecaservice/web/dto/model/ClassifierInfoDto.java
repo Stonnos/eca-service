@@ -17,7 +17,7 @@ public class ClassifierInfoDto {
     /**
      * Classifier name
      */
-    @Schema(description = "Classifier name")
+    @Schema(description = "Classifier name", example = "CART")
     private String classifierName;
 
     /**

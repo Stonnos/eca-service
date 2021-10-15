@@ -31,13 +31,13 @@ public class ClassifierOptionsRequestDto {
     /**
      * Request id
      */
-    @Schema(description = "Request id")
+    @Schema(description = "Request id", example = "1d2de514-3a87-4620-9b97-c260e24340de")
     private String requestId;
 
     /**
      * Training data name
      */
-    @Schema(description = "Training data name")
+    @Schema(description = "Training data name", example = "glass")
     private String relationName;
 
     /**
@@ -49,19 +49,19 @@ public class ClassifierOptionsRequestDto {
     /**
      * Folds number for k * V cross - validation method
      */
-    @Schema(description = "Folds number for k * V cross - validation method")
+    @Schema(description = "Folds number for k * V cross - validation method", example = "10")
     private Integer numFolds;
 
     /**
      * Tests number for k * V cross - validation method
      */
-    @Schema(description = "Tests number for k * V cross - validation method")
+    @Schema(description = "Tests number for k * V cross - validation method", example = "1")
     private Integer numTests;
 
     /**
      * Seed value for k * V cross - validation method
      */
-    @Schema(description = "Seed value for k * V cross - validation method")
+    @Schema(description = "Seed value for k * V cross - validation method", example = "1")
     private Integer seed;
 
     /**

@@ -3,6 +3,9 @@ package com.ecaservice.web.push.controller;
 import com.ecaservice.web.dto.model.ExperimentDto;
 import com.ecaservice.web.push.config.ws.QueueConfig;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import static com.ecaservice.web.push.controller.doc.ApiExamples.EXPERIMENT_REQUEST_JSON;
 
 /**
  * Implements REST API for sending web pushes.
@@ -34,7 +39,15 @@ public class WebPushController {
      */
     @Operation(
             description = "Send web push with experiment changes",
-            summary = "Send web push with experiment changes"
+            summary = "Send web push with experiment changes",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
+                    @Content(examples = {
+                            @ExampleObject(value = EXPERIMENT_REQUEST_JSON)
+                    })
+            }),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200")
+            }
     )
     @PostMapping(value = "/experiment")
     public void pushExperiment(@RequestBody ExperimentDto experimentDto) {

@@ -3,6 +3,7 @@ package com.ecaservice.web.dto.model;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ import java.util.List;
  * @author Roman Batygin
  */
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "Page model")
 public class PageDto<T> {
@@ -25,13 +27,13 @@ public class PageDto<T> {
     /**
      * Page number
      */
-    @Schema(description = "Page number")
+    @Schema(description = "Page number", example = "0")
     private int page;
 
     /**
      * Total elements count in all pages
      */
-    @Schema(description = "Total elements count in all pages")
+    @Schema(description = "Total elements count in all pages", example = "1")
     private long totalCount;
 
     /**

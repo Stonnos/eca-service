@@ -68,7 +68,7 @@ queue:
 ## Swagger properties
 open-api:
   basePath: /
-  title: Evaluation external API micriservice
+  title: Evaluation external API microservice
   description: API provides operations to performs classifiers evaluation requests
   author: Roman Batygin
   email: roman.batygin@mail.ru

@@ -19,13 +19,13 @@ public class CreateClassifierOptionsResultDto {
     /**
      * Classifier options id
      */
-    @Schema(description = "Classifier options id", required = true)
+    @Schema(description = "Classifier options id", required = true, example = "1")
     private Long id;
 
     /**
      * Source file name
      */
-    @Schema(description = "Source file name", required = true)
+    @Schema(description = "Source file name", required = true, example = "cart.json")
     private String sourceFileName;
 
     /**

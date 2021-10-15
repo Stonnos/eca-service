@@ -2,6 +2,7 @@ package com.ecaservice.server.controller.web;
 
 import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.base.model.ExperimentType;
+import com.ecaservice.common.web.dto.ValidationErrorDto;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.server.event.model.ExperimentEmailEvent;
 import com.ecaservice.server.mapping.ExperimentMapper;
@@ -24,6 +25,7 @@ import com.ecaservice.web.dto.model.ExperimentDto;
 import com.ecaservice.web.dto.model.ExperimentErsReportDto;
 import com.ecaservice.web.dto.model.ExperimentProgressDto;
 import com.ecaservice.web.dto.model.ExperimentResultsDetailsDto;
+import com.ecaservice.web.dto.model.ExperimentsPageDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
@@ -31,8 +33,11 @@ import com.ecaservice.web.dto.model.UserDto;
 import eca.core.evaluation.EvaluationMethod;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -63,11 +68,23 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
+import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
+import static com.ecaservice.server.controller.doc.ApiExamples.CREATE_EXPERIMENT_RESULT_RESPONSE_JSON;
 import static com.ecaservice.server.controller.doc.ApiExamples.EXPERIMENTS_PAGE_REQUEST_JSON;
+import static com.ecaservice.server.controller.doc.ApiExamples.EXPERIMENTS_PAGE_RESPONSE_JSON;
+import static com.ecaservice.server.controller.doc.ApiExamples.EXPERIMENT_DETAILS_RESPONSE_JSON;
+import static com.ecaservice.server.controller.doc.ApiExamples.EXPERIMENT_ERS_REPORT_RESPONSE_JSON;
+import static com.ecaservice.server.controller.doc.ApiExamples.EXPERIMENT_PROGRESS_RESPONSE_JSON;
+import static com.ecaservice.server.controller.doc.ApiExamples.EXPERIMENT_RESULTS_DETAILS_RESPONSE_JSON;
+import static com.ecaservice.server.controller.doc.ApiExamples.EXPERIMENT_TYPES_STATISTICS_RESPONSE_JSON;
+import static com.ecaservice.server.controller.doc.ApiExamples.REQUESTS_STATUSES_STATISTICS_RESPONSE_JSON;
 import static com.ecaservice.server.util.ExperimentUtils.getExperimentFile;
 import static com.ecaservice.server.util.Utils.buildAttachmentResponse;
 import static com.ecaservice.server.util.Utils.existsFile;
 import static com.ecaservice.server.util.Utils.toRequestStatusesStatistics;
+import static com.ecaservice.web.dto.doc.CommonApiExamples.DATA_NOT_FOUND_RESPONSE_JSON;
+import static com.ecaservice.web.dto.doc.CommonApiExamples.INVALID_PAGE_REQUEST_RESPONSE_JSON;
+import static com.ecaservice.web.dto.doc.CommonApiExamples.UNAUTHORIZED_RESPONSE_JSON;
 
 /**
  * Experiments API for web application.
@@ -105,7 +122,27 @@ public class ExperimentController {
     @Operation(
             description = "Downloads experiment training data by specified id",
             summary = "Downloads experiment training data by specified id",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = DATA_NOT_FOUND_RESPONSE_JSON),
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
+                            )
+                    )
+            }
     )
     @GetMapping(value = "/training-data/{id}")
     public ResponseEntity<FileSystemResource> downloadTrainingData(
@@ -124,7 +161,27 @@ public class ExperimentController {
     @Operation(
             description = "Downloads experiment results by specified id",
             summary = "Downloads experiment results by specified id",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = DATA_NOT_FOUND_RESPONSE_JSON),
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
+                            )
+                    )
+            }
     )
     @GetMapping(value = "/results/{id}")
     public ResponseEntity<FileSystemResource> downloadExperiment(
@@ -146,7 +203,26 @@ public class ExperimentController {
     @Operation(
             description = "Creates experiment request with specified options",
             summary = "Creates experiment request with specified options",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = CREATE_EXPERIMENT_RESULT_RESPONSE_JSON),
+                                    },
+                                    schema = @Schema(implementation = CreateExperimentResultDto.class)
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                    }
+                            )
+                    )
+            }
     )
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public CreateExperimentResultDto createRequest(
@@ -181,12 +257,40 @@ public class ExperimentController {
     @Operation(
             description = "Finds experiments with specified options",
             summary = "Finds experiments with specified options",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
                             @ExampleObject(value = EXPERIMENTS_PAGE_REQUEST_JSON)
                     })
-            })
+            }),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = EXPERIMENTS_PAGE_RESPONSE_JSON),
+                                    },
+                                    schema = @Schema(implementation = ExperimentsPageDto.class)
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = INVALID_PAGE_REQUEST_RESPONSE_JSON),
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
+                            )
+                    )
+            }
     )
     @PostMapping(value = "/list")
     public PageDto<ExperimentDto> getExperiments(@Valid @RequestBody PageRequestDto pageRequestDto) {
@@ -206,15 +310,43 @@ public class ExperimentController {
     @Operation(
             description = "Finds experiment with specified id",
             summary = "Finds experiment with specified id",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = EXPERIMENT_DETAILS_RESPONSE_JSON),
+                                    },
+                                    schema = @Schema(implementation = ExperimentDto.class)
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = DATA_NOT_FOUND_RESPONSE_JSON),
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
+                            )
+                    )
+            }
     )
     @GetMapping(value = "/details/{id}")
-    public ResponseEntity<ExperimentDto> getExperiment(
+    public ExperimentDto getExperiment(
             @Parameter(description = "Experiment id", required = true)
             @PathVariable Long id) {
         log.info("Received request to get experiment details for id [{}]", id);
         Experiment experiment = experimentService.getById(id);
-        return ResponseEntity.ok(experimentMapper.map(experiment));
+        return experimentMapper.map(experiment);
     }
 
     /**
@@ -227,16 +359,44 @@ public class ExperimentController {
     @Operation(
             description = "Finds experiment results details with specified id",
             summary = "Finds experiment results details with specified id",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = EXPERIMENT_RESULTS_DETAILS_RESPONSE_JSON),
+                                    },
+                                    schema = @Schema(implementation = ExperimentResultsDetailsDto.class)
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = DATA_NOT_FOUND_RESPONSE_JSON),
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
+                            )
+                    )
+            }
     )
     @GetMapping(value = "/results/details/{id}")
-    public ResponseEntity<ExperimentResultsDetailsDto> getExperimentResultsDetails(
+    public ExperimentResultsDetailsDto getExperimentResultsDetails(
             @Parameter(description = "Experiment results id", example = "1", required = true)
             @PathVariable Long id) {
         log.info("Received request to get experiment results details for id [{}]", id);
         ExperimentResultsEntity experimentResultsEntityOptional = experimentResultsEntityRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(ExperimentResultsEntity.class, id));
-        return ResponseEntity.ok(experimentResultsService.getExperimentResultsDetails(experimentResultsEntityOptional));
+        return experimentResultsService.getExperimentResultsDetails(experimentResultsEntityOptional);
     }
 
     /**
@@ -248,7 +408,26 @@ public class ExperimentController {
     @Operation(
             description = "Gets experiments request statuses statistics",
             summary = "Gets experiments request statuses statistics",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = REQUESTS_STATUSES_STATISTICS_RESPONSE_JSON),
+                                    },
+                                    schema = @Schema(implementation = RequestStatusStatisticsDto.class)
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                    }
+                            )
+                    )
+            }
     )
     @GetMapping(value = "/request-statuses-statistics")
     public RequestStatusStatisticsDto getExperimentsRequestStatusesStatistics() {
@@ -268,15 +447,43 @@ public class ExperimentController {
     @Operation(
             description = "Gets experiment ERS report",
             summary = "Gets experiment ERS report",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = EXPERIMENT_ERS_REPORT_RESPONSE_JSON),
+                                    },
+                                    schema = @Schema(implementation = ExperimentErsReportDto.class)
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = DATA_NOT_FOUND_RESPONSE_JSON),
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
+                            )
+                    )
+            }
     )
     @GetMapping(value = "/ers-report/{id}")
-    public ResponseEntity<ExperimentErsReportDto> getExperimentErsReport(
+    public ExperimentErsReportDto getExperimentErsReport(
             @Parameter(description = "Experiment id", required = true)
             @PathVariable Long id) {
         log.info("Received request for ERS report for experiment [{}]", id);
         Experiment experiment = experimentService.getById(id);
-        return ResponseEntity.ok(experimentResultsService.getErsReport(experiment));
+        return experimentResultsService.getErsReport(experiment);
     }
 
     /**
@@ -290,7 +497,26 @@ public class ExperimentController {
     @Operation(
             description = "Gets experiment types statistics",
             summary = "Gets experiment types statistics",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = EXPERIMENT_TYPES_STATISTICS_RESPONSE_JSON),
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ChartDataDto.class))
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                    }
+                            )
+                    )
+            }
     )
     @GetMapping(value = "/statistics")
     public List<ChartDataDto> getExperimentTypesStatistics(
@@ -320,16 +546,44 @@ public class ExperimentController {
     @Operation(
             description = "Finds experiment progress with specified id",
             summary = "Finds experiment progress with specified id",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = EXPERIMENT_PROGRESS_RESPONSE_JSON),
+                                    },
+                                    schema = @Schema(implementation = ExperimentProgressDto.class)
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = DATA_NOT_FOUND_RESPONSE_JSON),
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
+                            )
+                    )
+            }
     )
     @GetMapping(value = "/progress/{id}")
-    public ResponseEntity<ExperimentProgressDto> getExperimentProgress(
+    public ExperimentProgressDto getExperimentProgress(
             @Parameter(description = "Experiment id", required = true)
             @PathVariable Long id) {
         log.trace("Received request to get experiment progress for id [{}]", id);
         Experiment experiment = experimentService.getById(id);
         ExperimentProgressEntity experimentProgressEntity = experimentProgressService.getExperimentProgress(experiment);
-        return ResponseEntity.ok(experimentProgressMapper.map(experimentProgressEntity));
+        return experimentProgressMapper.map(experimentProgressEntity);
     }
 
     private ExperimentRequest createExperimentRequest(MultipartFile trainingData,

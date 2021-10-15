@@ -1,17 +1,22 @@
 package com.ecaservice.server.controller.web;
 
 import com.ecaservice.classifier.options.model.ClassifierOptions;
+import com.ecaservice.common.web.dto.ValidationErrorDto;
 import com.ecaservice.server.mapping.ClassifierOptionsDatabaseModelMapper;
 import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.server.service.classifiers.ClassifierOptionsService;
 import com.ecaservice.web.dto.model.ClassifierOptionsDto;
+import com.ecaservice.web.dto.model.ClassifiersOptionsPageDto;
 import com.ecaservice.web.dto.model.CreateClassifierOptionsResultDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Cleanup;
@@ -34,8 +39,15 @@ import java.io.InputStream;
 import java.util.List;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
-import static com.ecaservice.server.controller.doc.ApiExamples.SIMPLE_PAGE_REQUEST_JSON;
+import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
+import static com.ecaservice.server.controller.doc.ApiExamples.GET_CLASSIFIERS_OPTIONS_LIST_RESPONSE_JSON;
+import static com.ecaservice.server.controller.doc.ApiExamples.GET_CLASSIFIERS_OPTIONS_PAGE_RESPONSE_JSON;
+import static com.ecaservice.server.controller.doc.ApiExamples.SAVE_CLASSIFIER_OPTIONS_RESPONSE_JSON;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.parseOptions;
+import static com.ecaservice.web.dto.doc.CommonApiExamples.DATA_NOT_FOUND_RESPONSE_JSON;
+import static com.ecaservice.web.dto.doc.CommonApiExamples.INVALID_PAGE_REQUEST_RESPONSE_JSON;
+import static com.ecaservice.web.dto.doc.CommonApiExamples.SIMPLE_PAGE_REQUEST_JSON;
+import static com.ecaservice.web.dto.doc.CommonApiExamples.UNAUTHORIZED_RESPONSE_JSON;
 
 /**
  * Implements experiment classifiers configs API for web application.
@@ -61,7 +73,26 @@ public class ClassifierOptionsController {
     @Operation(
             description = "Finds active classifiers options configs",
             summary = "Finds active classifiers options configs",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = GET_CLASSIFIERS_OPTIONS_LIST_RESPONSE_JSON),
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ClassifierOptionsDto.class))
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                    }
+                            )
+                    )
+            }
     )
     @GetMapping(value = "/active-options")
     public List<ClassifierOptionsDto> getActiveClassifiersOptions() {
@@ -80,12 +111,40 @@ public class ClassifierOptionsController {
     @Operation(
             description = "Finds classifiers options configs page",
             summary = "Finds classifiers options configs page",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
                             @ExampleObject(value = SIMPLE_PAGE_REQUEST_JSON)
                     })
-            })
+            }),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = GET_CLASSIFIERS_OPTIONS_PAGE_RESPONSE_JSON),
+                                    },
+                                    schema = @Schema(implementation = ClassifiersOptionsPageDto.class)
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = INVALID_PAGE_REQUEST_RESPONSE_JSON),
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
+                            )
+                    )
+            }
     )
     @PostMapping(value = "/page")
     public PageDto<ClassifierOptionsDto> getClassifiersOptionsPage(
@@ -112,7 +171,26 @@ public class ClassifierOptionsController {
     @Operation(
             description = "Saves new classifier options for specified configuration",
             summary = "Saves new classifier options for specified configuration",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = SAVE_CLASSIFIER_OPTIONS_RESPONSE_JSON),
+                                    },
+                                    schema = @Schema(implementation = CreateClassifierOptionsResultDto.class)
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                    }
+                            )
+                    )
+            }
     )
     @PostMapping(value = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public CreateClassifierOptionsResultDto save(
@@ -148,7 +226,27 @@ public class ClassifierOptionsController {
     @Operation(
             description = "Classifier options id",
             summary = "Classifier options id",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = DATA_NOT_FOUND_RESPONSE_JSON),
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
+                            )
+                    )
+            }
     )
     @DeleteMapping(value = "/delete")
     public void delete(@Parameter(description = "Classifier options id", example = "1", required = true)

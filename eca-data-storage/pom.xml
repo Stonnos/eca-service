@@ -17,6 +17,7 @@
             **/model/**/*,
             **/entity/**/*,
             **/dto/**/*,
+            **/doc/**/*,
             **/config/**/*,
             **/exception/**/*,
             **/dictionary/**/*,

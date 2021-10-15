@@ -15,12 +15,12 @@ public class RoleDto {
     /**
      * Role name
      */
-    @Schema(description = "Role name")
+    @Schema(description = "Role name", example = "ROLE_SUPER_ADMIN")
     private String roleName;
 
     /**
      * Role description
      */
-    @Schema(description = "Role description")
+    @Schema(description = "Role description", example = "Administrator")
     private String description;
 }

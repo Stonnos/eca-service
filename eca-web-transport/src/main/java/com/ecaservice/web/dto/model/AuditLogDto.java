@@ -24,43 +24,43 @@ public class AuditLogDto {
     /**
      * Audit event id.
      */
-    @Schema(description = "Audit event id")
+    @Schema(description = "Audit event id", example = "1d2de514-3a87-4620-9b97-c260e24340de")
     private String eventId;
 
     /**
      * Audit message
      */
-    @Schema(description = "Audit message")
+    @Schema(description = "Audit message", example = "Some action")
     private String message;
 
     /**
      * Event initiator
      */
-    @Schema(description = "Event initiator")
+    @Schema(description = "Event initiator", example = "user")
     private String initiator;
 
     /**
      * Audit group
      */
-    @Schema(description = "Audit group")
+    @Schema(description = "Audit group", example = "USER_ACTIONS")
     private String groupCode;
 
     /**
      * Audit group title
      */
-    @Schema(description = "Audit group title")
+    @Schema(description = "Audit group title", example = "User actions")
     private String groupTitle;
 
     /**
      * Audit code
      */
-    @Schema(description = "Audit code")
+    @Schema(description = "Audit code", example = "LOGIN")
     private String code;
 
     /**
      * Audit code title
      */
-    @Schema(description = "Audit code title")
+    @Schema(description = "Audit code title", example = "User logged in")
     private String codeTitle;
 
     /**

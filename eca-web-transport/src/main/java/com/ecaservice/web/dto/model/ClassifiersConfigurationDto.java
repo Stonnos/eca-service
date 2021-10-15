@@ -19,13 +19,13 @@ import static com.ecaservice.web.dto.util.FieldConstraints.DATE_TIME_PATTERN;
 @Schema(description = "Classifiers configuration dto model")
 public class ClassifiersConfigurationDto {
 
-    @Schema(description = "Configuration id")
+    @Schema(description = "Configuration id", example = "1")
     private Long id;
 
     /**
      * Configuration name
      */
-    @Schema(description = "Configuration name")
+    @Schema(description = "Configuration name", example = "Default configuration")
     private String configurationName;
 
     /**
@@ -39,7 +39,7 @@ public class ClassifiersConfigurationDto {
     /**
      * User name
      */
-    @Schema(description = "User name")
+    @Schema(description = "User name", example = "admin")
     private String createdBy;
 
     /**
@@ -65,6 +65,6 @@ public class ClassifiersConfigurationDto {
     /**
      * Classifiers options count associated with configuration
      */
-    @Schema(description = "Classifiers options count associated with configuration")
+    @Schema(description = "Classifiers options count associated with configuration", example = "25")
     private long classifiersOptionsCount;
 }

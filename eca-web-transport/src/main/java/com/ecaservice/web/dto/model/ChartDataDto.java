@@ -19,18 +19,18 @@ public class ChartDataDto {
     /**
      * Chart item name
      */
-    @Schema(description = "Chart item name", required = true)
+    @Schema(description = "Chart item name", required = true, example = "key")
     private String name;
 
     /**
      * Chart item label
      */
-    @Schema(description = "Chart item label", required = true)
+    @Schema(description = "Chart item label", required = true, example = "label value")
     private String label;
 
     /**
      * Chart item value
      */
-    @Schema(description = "Chart item value", required = true)
+    @Schema(description = "Chart item value", required = true, example = "10")
     private Long count;
 }

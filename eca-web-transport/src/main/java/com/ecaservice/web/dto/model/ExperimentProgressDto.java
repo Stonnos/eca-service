@@ -21,12 +21,12 @@ public class ExperimentProgressDto {
     /**
      * Experiment progress bar value
      */
-    @Schema(description = "Experiment progress bar value")
+    @Schema(description = "Experiment progress bar value", example = "85")
     private Integer progress;
 
     /**
      * Estimated time left
      */
-    @Schema(description = "Estimated time left")
+    @Schema(description = "Estimated time left", example = "00:01:24")
     private String estimatedTimeLeft;
 }
