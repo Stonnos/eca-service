@@ -1,0 +1,1133 @@
+= Microservice for collecting and storing audit events
+Автор: Roman Batygin
+(roman.batygin@mail.ru)
+:toc:
+:toc-title: Table of contents
+
+== Overview
+
+API provides operations with audit events
+
+== Security schemas
+
+
+=== EcaAuth
+
+[width=100%]
+|===
+|*Type*|*Description*|*Flows*
+|*oauth2*
+|Oauth2 authentication
+
+*Client credentials location:* __header__
+
+*Bearer format:* __Authorization: Bearer <access token>__
+a|
+
+*Flow*
+
+__Grant type:__ password
+
+__Token url:__ http://localhost:8080/oauth/token
+
+__Refresh token url:__ http://localhost:8080/oauth/token
+
+
+__Scopes__:
+
+
+* web
+
+|===
+
+== Downloads audit logs base report in xlsx format
+
+__POST__ */audit-log/report/download* - Downloads audit logs base report in xlsx format
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+*Request body*
+
+[width=100%]
+|===
+|*Content type*|*Required*|*Schema*|*Example*
+|*application/json*
+|true
+|<<PageRequestDto>>
+a|
+[source,json]
+----
+{
+  "page" : 0,
+  "size" : 25,
+  "sortField" : "eventDate",
+  "ascending" : false,
+  "searchQuery" : "",
+  "filters" : [ {
+    "name" : "groupCode",
+    "values" : [ "USER_PROFILE_ACTIONS" ],
+    "matchMode" : "EQUALS"
+  }, {
+    "name" : "initiator",
+    "values" : [ "admin" ],
+    "matchMode" : "LIKE"
+  }, {
+    "name" : "eventDate",
+    "values" : [ "2021-07-16" ],
+    "matchMode" : "RANGE"
+  } ]
+}
+----
+|===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*-*
+|-
+a|
+-
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|403
+|Permission denied
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "access_denied",
+  "error_description" : "Access is denied"
+}
+----
+|400
+|Bad request
+|*application/json*
+|__array__<<<ValidationErrorDto>>>
+a|
+[source,json]
+----
+[ {
+  "fieldName" : "page",
+  "code" : "Min",
+  "errorMessage" : "must be greater than or equal to 0"
+}, {
+  "fieldName" : "size",
+  "code" : "Min",
+  "errorMessage" : "must be greater than or equal to 1"
+} ]
+----
+|===
+
+== Finds audit logs with specified options such as filter, sorting and paging
+
+__POST__ */audit-log/list* - Finds audit logs with specified options such as filter, sorting and paging
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+*Request body*
+
+[width=100%]
+|===
+|*Content type*|*Required*|*Schema*|*Example*
+|*application/json*
+|true
+|<<PageRequestDto>>
+a|
+[source,json]
+----
+{
+  "page" : 0,
+  "size" : 25,
+  "sortField" : "eventDate",
+  "ascending" : false,
+  "searchQuery" : "",
+  "filters" : [ {
+    "name" : "groupCode",
+    "values" : [ "USER_PROFILE_ACTIONS" ],
+    "matchMode" : "EQUALS"
+  }, {
+    "name" : "initiator",
+    "values" : [ "admin" ],
+    "matchMode" : "LIKE"
+  }, {
+    "name" : "eventDate",
+    "values" : [ "2021-07-16" ],
+    "matchMode" : "RANGE"
+  } ]
+}
+----
+|===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|<<AuditLogsPageDto>>
+a|
+[source,json]
+----
+{
+  "content" : [ {
+    "eventId" : "1d2de514-3a87-4620-9b97-c260e24340de",
+    "message" : "Some action",
+    "initiator" : "user",
+    "groupCode" : "USER_ACTIONS",
+    "groupTitle" : "User actions",
+    "code" : "LOGIN",
+    "codeTitle" : "User logged in",
+    "eventDate" : "2021-07-01 14:00:00"
+  } ],
+  "page" : 0,
+  "totalCount" : 1
+}
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|403
+|Permission denied
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "access_denied",
+  "error_description" : "Access is denied"
+}
+----
+|400
+|Bad request
+|*application/json*
+|__array__<<<ValidationErrorDto>>>
+a|
+[source,json]
+----
+[ {
+  "fieldName" : "page",
+  "code" : "Min",
+  "errorMessage" : "must be greater than or equal to 0"
+}, {
+  "fieldName" : "size",
+  "code" : "Min",
+  "errorMessage" : "must be greater than or equal to 1"
+} ]
+----
+|===
+
+== Saves audit event into database
+
+__POST__ */api/audit/event/save* - Saves audit event into database
+
+
+*Request body*
+
+[width=100%]
+|===
+|*Content type*|*Required*|*Schema*|*Example*
+|*application/json*
+|true
+|<<AuditEventRequest>>
+a|
+[source,json]
+----
+{
+  "eventId" : "a01ebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+  "message" : "Audit message",
+  "initiator" : "user",
+  "eventType" : "START",
+  "groupCode" : "GROUP_CODE",
+  "groupTitle" : "",
+  "code" : "AUDIT_CODE",
+  "codeTitle" : "",
+  "eventDate" : "2021-07-16 07:57:11"
+}
+----
+|===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*-*
+|-
+a|
+-
+|400
+|Bad request
+|*application/json*
+|__array__<<<ValidationErrorDto>>>
+a|
+[source,json]
+----
+[ {
+  "fieldName" : "groupCode",
+  "code" : "NotEmpty",
+  "errorMessage" : "must not be empty"
+}, {
+  "fieldName" : "initiator",
+  "code" : "NotEmpty",
+  "errorMessage" : "must not be empty"
+}, {
+  "fieldName" : "message",
+  "code" : "NotEmpty",
+  "errorMessage" : "must not be empty"
+}, {
+  "fieldName" : "eventId",
+  "code" : "NotEmpty",
+  "errorMessage" : "must not be empty"
+}, {
+  "fieldName" : "code",
+  "code" : "NotEmpty",
+  "errorMessage" : "must not be empty"
+} ]
+----
+|===
+
+== Gets audit log filter fields
+
+__GET__ */audit-log/filter-templates/fields* - Gets audit log filter fields
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|-
+a|
+[source,json]
+----
+[ {
+  "fieldName" : "eventId",
+  "description" : "ID события",
+  "fieldOrder" : 0,
+  "filterFieldType" : "TEXT",
+  "matchMode" : "LIKE",
+  "multiple" : false,
+  "dictionary" : null
+}, {
+  "fieldName" : "groupCode",
+  "description" : "Группа событий",
+  "fieldOrder" : 1,
+  "filterFieldType" : "REFERENCE",
+  "matchMode" : "EQUALS",
+  "multiple" : false,
+  "dictionary" : {
+    "name" : "auditGroup",
+    "values" : [ {
+      "label" : "Действия пользователя в личном кабинете",
+      "value" : "USER_PROFILE_ACTIONS"
+    }, {
+      "label" : "Действия с конфигурациями классификаторов",
+      "value" : "CLASSIFIERS_CONFIGURATIONS_ACTIONS"
+    }, {
+      "label" : "Действия с обучающими выборками",
+      "value" : "DATA_STORAGE_ACTIONS"
+    } ]
+  }
+}, {
+  "fieldName" : "initiator",
+  "description" : "Инициатор события",
+  "fieldOrder" : 2,
+  "filterFieldType" : "TEXT",
+  "matchMode" : "LIKE",
+  "multiple" : false,
+  "dictionary" : null
+}, {
+  "fieldName" : "eventDate",
+  "description" : "Дата события",
+  "fieldOrder" : 3,
+  "filterFieldType" : "DATE",
+  "matchMode" : "RANGE",
+  "multiple" : true,
+  "dictionary" : null
+} ]
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|403
+|Permission denied
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "access_denied",
+  "error_description" : "Access is denied"
+}
+----
+|400
+|Bad request
+|*application/json*
+|__array__<<<ValidationErrorDto>>>
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "DataNotFound",
+  "errorMessage" : "Entity with search key [1] not found!"
+} ]
+----
+|===
+
+
+== Components
+=== ValidationErrorDto
+:table-caption: Table
+.Validation error model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*fieldName*
+|Field name
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*code*
+|Error code
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*errorMessage*
+|Error message
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== FilterRequestDto
+:table-caption: Table
+.Filter request model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*name**
+|Filter column name
+a|
+__string__
+
+
+*Min. length*: 0
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*values*
+|-
+a|
+__array__
+
+
+
+
+
+
+
+
+*Min. items*: 0
+
+*Max. items*: 50
+
+
+
+
+|*matchMode**
+|Match mode type
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* EQUALS
+
+* LIKE
+
+* RANGE
+|===
+=== PageRequestDto
+:table-caption: Table
+.Page request model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*page**
+|Page number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+
+
+
+
+
+
+
+
+|*size**
+|Page size
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+
+
+
+
+
+
+
+
+|*sortField*
+|Sort field
+a|
+__string__
+
+
+*Min. length*: 0
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*ascending*
+|Is ascending sort?
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*searchQuery*
+|Search query string
+a|
+__string__
+
+
+*Min. length*: 0
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*filters*
+|Filters list
+a|
+__array__
+<<<FilterRequestDto>>>
+
+
+
+
+
+
+
+
+*Min. items*: 0
+
+*Max. items*: 50
+
+
+
+
+|===
+=== AuditLogDto
+:table-caption: Table
+.Audit log model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*eventId*
+|Audit event id
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*message*
+|Audit message
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*initiator*
+|Event initiator
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*groupCode*
+|Audit group
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*groupTitle*
+|Audit group title
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*code*
+|Audit code
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*codeTitle*
+|Audit code title
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*eventDate*
+|Event date
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== AuditLogsPageDto
+:table-caption: Table
+.Audit logs page dto
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*content*
+|Page content
+a|
+__array__
+<<<AuditLogDto>>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*page*
+|Page number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*totalCount*
+|Total elements count in all pages
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== AuditEventRequest
+:table-caption: Table
+.Audit event request mode
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*eventId**
+|Audit event id
+a|
+__string__
+
+
+*Min. length*: 0
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*message**
+|Audit message
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*initiator**
+|Event initiator
+a|
+__string__
+
+
+*Min. length*: 0
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*eventType**
+|Event type
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* START
+
+* SUCCESS
+
+* FAILED
+|*groupCode**
+|Audit group
+a|
+__string__
+
+
+*Min. length*: 0
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*groupTitle*
+|Audit group title
+a|
+__string__
+
+
+*Min. length*: 0
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*code**
+|Audit code
+a|
+__string__
+
+
+*Min. length*: 0
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*codeTitle*
+|Audit code title
+a|
+__string__
+
+
+*Min. length*: 0
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*eventDate**
+|Event date
+a|
+__string__
+__(date-time)__
+
+
+
+
+
+
+
+
+
+
+
+
+*Pattern*: `yyyy-MM-dd HH:mm:ss`
+
+
+|===

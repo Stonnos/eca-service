@@ -1,0 +1,869 @@
+= Microservice for sending emails
+Автор: Roman Batygin
+(roman.batygin@mail.ru)
+:toc:
+:toc-title: Table of contents
+
+== Overview
+
+API provides operations for email notifications sending
+
+== Security schemas
+
+
+=== EcaAuth
+
+[width=100%]
+|===
+|*Type*|*Description*|*Flows*
+|*oauth2*
+|Oauth2 authentication
+
+*Client credentials location:* __header__
+
+*Bearer format:* __Authorization: Bearer <access token>__
+a|
+
+*Flow*
+
+__Grant type:__ password
+
+__Token url:__ http://localhost:8080/oauth/token
+
+__Refresh token url:__ http://localhost:8080/oauth/token
+
+
+__Scopes__:
+
+
+* web
+
+|===
+
+== Finds email templates with specified options such as filter, sorting and paging
+
+__POST__ */templates/list* - Finds email templates with specified options such as filter, sorting and paging
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+*Request body*
+
+[width=100%]
+|===
+|*Content type*|*Required*|*Schema*|*Example*
+|*application/json*
+|true
+|<<PageRequestDto>>
+a|
+[source,json]
+----
+{
+  "page" : 0,
+  "size" : 25
+}
+----
+|===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|<<EmailTemplatesPageDto>>
+a|
+[source,json]
+----
+{
+  "content" : [ {
+    "id" : 1,
+    "created" : "2021-07-01 14:00:00",
+    "code" : "NEW_EXPERIMENT",
+    "description" : "New experiment",
+    "subject" : "New experiment request",
+    "body" : "some body",
+    "parameters" : [ {
+      "id" : 1,
+      "created" : "2021-07-01 14:00:00",
+      "parameterName" : "requestId",
+      "description" : "Experiment request id"
+    } ]
+  } ],
+  "page" : 0,
+  "totalCount" : 1
+}
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|__array__<<<ValidationErrorDto>>>
+a|
+[source,json]
+----
+[ {
+  "fieldName" : "page",
+  "code" : "Min",
+  "errorMessage" : "must be greater than or equal to 0"
+}, {
+  "fieldName" : "size",
+  "code" : "Min",
+  "errorMessage" : "must be greater than or equal to 1"
+} ]
+----
+|===
+
+== Saves email request to sent
+
+__POST__ */emails/email-request* - Saves email request to sent
+
+
+*Request body*
+
+[width=100%]
+|===
+|*Content type*|*Required*|*Schema*|*Example*
+|*application/json*
+|true
+|<<EmailRequest>>
+a|
+[source,json]
+----
+{
+  "receiver" : "test@mail.ru",
+  "templateCode" : "NEW_EXPERIMENT",
+  "variables" : {
+    "firstName" : "Роман",
+    "requestId" : "1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
+    "experimentType" : "KNN"
+  },
+  "priority" : 1
+}
+----
+|===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|<<EmailResponse>>
+a|
+[source,json]
+----
+{
+  "requestId" : "1d2de514-3a87-4620-9b97-c260e24340de"
+}
+----
+|400
+|Bad request
+|*application/json*
+|__array__<<<ValidationErrorDto>>>
+a|
+[source,json]
+----
+[ {
+  "fieldName" : "templateCode",
+  "code" : "ValidEmailRequest",
+  "errorMessage" : "Invalid template code!"
+} ]
+----
+|===
+
+
+== Components
+=== EmailTemplateDto
+:table-caption: Table
+.Email template model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*id*
+|ID
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*created*
+|Template creation date
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*code*
+|Template code
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*description*
+|Template description
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*subject*
+|Template subject
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*body*
+|Template body
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*parameters*
+|Email template parameters
+a|
+__array__
+<<<EmailTemplateParameterDto>>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== EmailTemplateParameterDto
+:table-caption: Table
+.Email template parameter model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*id*
+|ID
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*created*
+|Parameter creation date
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*parameterName*
+|Parameter name
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*description*
+|Parameter description
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== EmailTemplatesPageDto
+:table-caption: Table
+.Email template page dto
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*content*
+|Page content
+a|
+__array__
+<<<EmailTemplateDto>>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*page*
+|Page number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*totalCount*
+|Total elements count in all pages
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== ValidationErrorDto
+:table-caption: Table
+.Validation error model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*fieldName*
+|Field name
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*code*
+|Error code
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*errorMessage*
+|Error message
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== FilterRequestDto
+:table-caption: Table
+.Filter request model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*name**
+|Filter column name
+a|
+__string__
+
+
+*Min. length*: 0
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*values*
+|-
+a|
+__array__
+
+
+
+
+
+
+
+
+*Min. items*: 0
+
+*Max. items*: 50
+
+
+
+
+|*matchMode**
+|Match mode type
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* EQUALS
+
+* LIKE
+
+* RANGE
+|===
+=== PageRequestDto
+:table-caption: Table
+.Page request model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*page**
+|Page number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+
+
+
+
+
+
+
+
+|*size**
+|Page size
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+
+
+
+
+
+
+
+
+|*sortField*
+|Sort field
+a|
+__string__
+
+
+*Min. length*: 0
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*ascending*
+|Is ascending sort?
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*searchQuery*
+|Search query string
+a|
+__string__
+
+
+*Min. length*: 0
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*filters*
+|Filters list
+a|
+__array__
+<<<FilterRequestDto>>>
+
+
+
+
+
+
+
+
+*Min. items*: 0
+
+*Max. items*: 50
+
+
+
+
+|===
+=== EmailResponse
+:table-caption: Table
+.Email response
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*requestId*
+|Request id
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== EmailRequest
+:table-caption: Table
+.Email request
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*receiver**
+|Receiver email
+a|
+__string__
+
+
+*Min. length*: 0
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*templateCode**
+|Email template code
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*variables*
+|-
+a|
+__array__
+
+
+
+
+
+
+
+
+*Min. items*: 0
+
+*Max. items*: 50
+
+
+
+
+|*priority**
+|Delivery priority
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 3*
+
+
+
+
+
+
+
+
+|===
