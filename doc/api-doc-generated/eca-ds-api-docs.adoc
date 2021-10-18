@@ -1249,7 +1249,7 @@ __string__
 |-
 a|
 __array__
-<<<string>>>
+<string>
 
 
 
@@ -1428,7 +1428,7 @@ __array__
 |Page content
 a|
 __array__
-<<<array>>>
+<array>
 
 
 
