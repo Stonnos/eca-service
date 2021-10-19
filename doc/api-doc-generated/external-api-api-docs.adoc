@@ -1,0 +1,3072 @@
+= Evaluation external API microservice
+Автор: Roman Batygin
+(roman.batygin@mail.ru)
+:toc:
+:toc-title: Table of contents
+
+== Overview
+
+API provides operations to performs classifiers evaluation requests
+
+== Security schemas
+
+
+=== EcaAuth
+
+[width=100%]
+|===
+|*Type*|*Description*|*Flows*
+|*oauth2*
+|Oauth2 authentication
+
+*Client credentials location:* __header__
+
+*Bearer format:* __Authorization: Bearer <access token>__
+a|
+
+*Flow*
+
+__Grant type:__ client_credentials
+
+__Token url:__ http://localhost:8080/oauth/token
+
+
+
+__Scopes__:
+
+
+* external-api
+
+|===
+
+== Uploads train data file
+
+__POST__ */uploads-train-data* - Uploads train data file
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* external-api
+
+|===
+
+*Request body*
+
+[width=100%]
+|===
+|*Content type*|*Required*|*Schema*|*Example*
+|*multipart/form-data*
+|false
+|
+__object__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+-
+|===
+
+*Multipart form data fields*
+
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*trainingData**
+|Training data file
+a|
+__string__
+__(binary)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+<<InstancesResponseDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "payload" : {
+    "dataId" : "2a35bffe-27ad-4a50-a7e0-8c871cfd7cc5",
+    "dataUrl" : "data://2a35bffe-27ad-4a50-a7e0-8c871cfd7cc5"
+  },
+  "responseCode" : "SUCCESS",
+  "errorDescription" : null
+}
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|
+<<ResponseDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "payload" : [ {
+    "fieldName" : "trainingData",
+    "code" : "ValidTrainData",
+    "errorMessage" : "Invalid train data extension. Must be one of xls, xlsx, csv, arff, json, xml, txt, data, docx"
+  } ],
+  "responseCode" : "VALIDATION_ERROR",
+  "errorDescription" : "Validation errors"
+}
+----
+|===
+
+== Processes evaluation request
+
+__POST__ */evaluation-request* - Processes evaluation request
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* external-api
+
+|===
+
+*Request body*
+
+[width=100%]
+|===
+|*Content type*|*Required*|*Schema*|*Example*
+|*application/json*
+|true
+|
+<<EvaluationRequestDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "trainDataUrl" : "http://kt.ijs.si/Branax/Repository/WEKA/Iris.xls",
+  "classifierOptions" : {
+    "type" : "logistic",
+    "maxIts" : 200,
+    "useConjugateGradientDescent" : false
+  },
+  "evaluationMethod" : "CROSS_VALIDATION",
+  "numFolds" : 10,
+  "numTests" : 1,
+  "seed" : 1
+}
+----
+|===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+<<EvaluationResponsePayloadDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "payload" : {
+    "requestId" : "1cbe6c49-8432-4c81-9afa-90f04a803fed",
+    "evaluationStatus" : "IN_PROGRESS",
+    "modelUrl" : null,
+    "numTestInstances" : null,
+    "numCorrect" : null,
+    "numIncorrect" : null,
+    "pctCorrect" : null,
+    "pctIncorrect" : null,
+    "meanAbsoluteError" : null
+  },
+  "responseCode" : "SUCCESS",
+  "errorDescription" : null
+}
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|
+<<ResponseDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "payload" : [ {
+    "fieldName" : "classifierOptions",
+    "code" : "NotNull",
+    "errorMessage" : "must not be null"
+  }, {
+    "fieldName" : "evaluationMethod",
+    "code" : "NotNull",
+    "errorMessage" : "must not be null"
+  } ],
+  "responseCode" : "VALIDATION_ERROR",
+  "errorDescription" : "Validation errors"
+}
+----
+|===
+
+== Gets evaluation response status
+
+__GET__ */evaluation-status/{requestId}* - Gets evaluation response status
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* external-api
+
+|===
+
+
+*Request parameters*
+[width=100%]
+|===
+|*Name*|*Description*|*Location*|*Schema*
+|*requestId**
+|Request id
+|path
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+<<EvaluationResponsePayloadDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "payload" : {
+    "requestId" : "1cbe6c49-8432-4c81-9afa-90f04a803fed",
+    "evaluationStatus" : "FINISHED",
+    "modelUrl" : "http://localhost:8080/external-api/download-model/1cbe6c49-8432-4c81-9afa-90f04a803fed",
+    "numTestInstances" : 150,
+    "numCorrect" : 144,
+    "numIncorrect" : 6,
+    "pctCorrect" : 96,
+    "pctIncorrect" : 4,
+    "meanAbsoluteError" : 0.02869334024628254
+  },
+  "responseCode" : "SUCCESS",
+  "errorDescription" : null
+}
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|
+<<ResponseDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "payload" : [ {
+    "fieldName" : null,
+    "code" : "DataNotFound",
+    "errorMessage" : "Entity with search key [1] not found!"
+  } ],
+  "responseCode" : "VALIDATION_ERROR",
+  "errorDescription" : "Validation errors"
+}
+----
+|===
+
+== Downloads classifier model
+
+__GET__ */download-model/{requestId}* - Downloads classifier model
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* external-api
+
+|===
+
+
+*Request parameters*
+[width=100%]
+|===
+|*Name*|*Description*|*Location*|*Schema*
+|*requestId**
+|Request id
+|path
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|**/**
+|
+__string__
+__(binary)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+-
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|
+<<ResponseDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "payload" : [ {
+    "fieldName" : null,
+    "code" : "DataNotFound",
+    "errorMessage" : "Entity with search key [1] not found!"
+  } ],
+  "responseCode" : "VALIDATION_ERROR",
+  "errorDescription" : "Validation errors"
+}
+----
+|===
+
+
+== Components
+=== InstancesDto
+:table-caption: Table
+.Instances model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*dataId*
+|Data id
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*dataUrl*
+|Train data url in internal format data://dataId
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== InstancesResponseDto
+:table-caption: Table
+.Instances response wrapper model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*payload*
+|-
+a|
+<<InstancesDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*responseCode*
+|Response code
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* SUCCESS
+
+* VALIDATION_ERROR
+
+* DATA_NOT_FOUND
+
+* ERROR
+
+* TIMEOUT
+
+* SERVICE_UNAVAILABLE
+|*errorDescription*
+|Error message
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== ResponseDto
+:table-caption: Table
+.Response model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*payload*
+|Response payload
+a|
+__object__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*responseCode*
+|Response code
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* SUCCESS
+
+* VALIDATION_ERROR
+
+* DATA_NOT_FOUND
+
+* ERROR
+
+* TIMEOUT
+
+* SERVICE_UNAVAILABLE
+|*errorDescription*
+|Error message
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== EvaluationResponseDto
+:table-caption: Table
+.Evaluation response model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*requestId*
+|Evaluation request id
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*evaluationStatus*
+|Evaluation status
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* IN_PROGRESS
+
+* FINISHED
+
+* TIMEOUT
+
+* ERROR
+|*modelUrl*
+|Model url
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*numTestInstances*
+|Test instances number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*numCorrect*
+|Correctly classified instances number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*numIncorrect*
+|Incorrectly classified instances number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*pctCorrect*
+|Correctly classified percentage
+a|
+__number__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*pctIncorrect*
+|Incorrectly classified percentage
+a|
+__number__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*meanAbsoluteError*
+|Mean absolute error
+a|
+__number__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== EvaluationResponsePayloadDto
+:table-caption: Table
+.Evaluation response payload model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*payload*
+|-
+a|
+<<EvaluationResponseDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*responseCode*
+|Response code
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* SUCCESS
+
+* VALIDATION_ERROR
+
+* DATA_NOT_FOUND
+
+* ERROR
+
+* TIMEOUT
+
+* SERVICE_UNAVAILABLE
+|*errorDescription*
+|Error message
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== ActivationFunctionOptions
+:table-caption: Table
+.Activation function options
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*activationFunctionType*
+|Activation function type
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* LOGISTIC
+
+* HYPERBOLIC_TANGENT
+
+* SINUSOID
+
+* EXPONENTIAL
+
+* SOFT_SIGN
+
+* INVERSE_SQUARE_ROOT_UNIT
+|*coefficient*
+|Activation function coefficient value
+a|
+__number__
+__(double)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== AdaBoostOptions
+:table-caption: Table
+.Component AdaBoostOptions
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*type**
+|-
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*numIterations*
+|Iterations number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*numThreads*
+|Threads number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*seed*
+|Seed value for random generator
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*minError*
+|Classifier min. error threshold
+a|
+__number__
+__(double)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*maxError*
+|Classifier max. error threshold
+a|
+__number__
+__(double)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*classifierOptions*
+|-
+a|
+__array__
+<<<ClassifierOptions>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== BackPropagationOptions
+:table-caption: Table
+.Back propagation options
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*learningRate*
+|Learning rate value
+a|
+__number__
+__(double)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*momentum*
+|Momentum coefficient value
+a|
+__number__
+__(double)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== ClassifierOptions
+:table-caption: Table
+.Classifier options json
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*type**
+|-
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== DecisionTreeOptions
+:table-caption: Table
+.Component DecisionTreeOptions
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*type**
+|-
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*decisionTreeType*
+|Decision tree algorithm
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* CART
+
+* ID3
+
+* C45
+
+* CHAID
+|*minObj*
+|Minimum objects number per leaf
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*maxDepth*
+|Maximum tree depth
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*randomTree*
+|Random tree flag
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*numRandomAttr*
+|Random attributes number at each split for random tree
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*useBinarySplits*
+|Binary tree flag
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*useRandomSplits*
+|Use random splits flag
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*numRandomSplits*
+|Random splits number at each node split
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*seed*
+|Seed value for random generator
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*additionalOptions*
+|Additional options map
+a|
+__object__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== EvaluationRequestDto
+:table-caption: Table
+.Evaluation request model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*trainDataUrl**
+|Train data url
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*classifierOptions**
+|-
+a|
+
+
+*One of types:*
+
+* <<AdaBoostOptions>>
+
+* <<DecisionTreeOptions>>
+
+* <<ExtraTreesOptions>>
+
+* <<HeterogeneousClassifierOptions>>
+
+* <<J48Options>>
+
+* <<KNearestNeighboursOptions>>
+
+* <<LogisticOptions>>
+
+* <<NeuralNetworkOptions>>
+
+* <<RandomForestsOptions>>
+
+* <<RandomNetworkOptions>>
+
+* <<StackingOptions>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*evaluationMethod**
+|Evaluation method
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* TRAINING_DATA
+
+* CROSS_VALIDATION
+|*numFolds*
+|Folds number for k * V cross - validation method
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 2*
+
+*Maximum*: 10*
+
+
+
+
+
+
+
+
+|*numTests*
+|Tests number for k * V cross - validation method
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 10*
+
+
+
+
+
+
+
+
+|*seed*
+|Seed value for k * V cross - validation method
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== ExtraTreesOptions
+:table-caption: Table
+.Component ExtraTreesOptions
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*type**
+|-
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*numIterations*
+|Iterations number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*numThreads*
+|Threads number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*seed*
+|Seed value for random generator
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*numRandomAttr*
+|Random attributes number at each node split
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*minObj*
+|Min. objects per leaf
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*maxDepth*
+|Maximum tree depth
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*decisionTreeType*
+|Decision tree algorithm
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* CART
+
+* ID3
+
+* C45
+
+* CHAID
+|*numRandomSplits*
+|Number of random splits
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*useBootstrapSamples*
+|Use bootstrap samples flag
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== HeterogeneousClassifierOptions
+:table-caption: Table
+.Component HeterogeneousClassifierOptions
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*type**
+|-
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*numIterations*
+|Iterations number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*numThreads*
+|Threads number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*seed*
+|Seed value for random generator
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*minError*
+|Classifier min. error threshold
+a|
+__number__
+__(double)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*maxError*
+|Classifier max. error threshold
+a|
+__number__
+__(double)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*classifierOptions*
+|-
+a|
+__array__
+<<<ClassifierOptions>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*useWeightedVotes*
+|Use weighted votes method
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*useRandomClassifier*
+|Use random classifier at each iteration
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*samplingMethod*
+|Sampling method at each iteration
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* INITIAL
+
+* BAGGING
+
+* RANDOM
+
+* RANDOM_BAGGING
+|*useRandomSubspaces*
+|Use random subspaces
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== J48Options
+:table-caption: Table
+.Component J48Options
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*type**
+|-
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*minNumObj*
+|Minimum objects number per leaf
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*binarySplits*
+|Binary tree flag
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*unpruned*
+|Unpruned tree flag
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*numFolds*
+|Folds number for tree pruning procedure
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== KNearestNeighboursOptions
+:table-caption: Table
+.Component KNearestNeighboursOptions
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*type**
+|-
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*numNeighbours*
+|Neighbours number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*weight*
+|Neighbour's weight value
+a|
+__number__
+__(double)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*distanceType*
+|Distance function type
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* EUCLID
+
+* SQUARE_EUCLID
+
+* MANHATTAN
+
+* CHEBYSHEV
+|===
+=== LogisticOptions
+:table-caption: Table
+.Component LogisticOptions
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*type**
+|-
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*maxIts*
+|Maximum iterations number for optimization method
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*useConjugateGradientDescent*
+|Use conjugate gradient descent method
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== NeuralNetworkOptions
+:table-caption: Table
+.Component NeuralNetworkOptions
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*type**
+|-
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*numInNeurons*
+|Neurons number in input layer
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*numOutNeurons*
+|Neurons number in output layer
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*hiddenLayer*
+|Hidden layer structure
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*seed*
+|Seed value for random generator
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*numIterations*
+|Max. its for learning
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*minError*
+|Min. error for optimization algorithm
+a|
+__number__
+__(double)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*activationFunctionOptions*
+|-
+a|
+<<ActivationFunctionOptions>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*backPropagationOptions*
+|-
+a|
+<<BackPropagationOptions>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== RandomForestsOptions
+:table-caption: Table
+.Component RandomForestsOptions
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*type**
+|-
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*numIterations*
+|Iterations number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*numThreads*
+|Threads number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*seed*
+|Seed value for random generator
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*numRandomAttr*
+|Random attributes number at each node split
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*minObj*
+|Min. objects per leaf
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*maxDepth*
+|Maximum tree depth
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*decisionTreeType*
+|Decision tree algorithm
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* CART
+
+* ID3
+
+* C45
+
+* CHAID
+|===
+=== RandomNetworkOptions
+:table-caption: Table
+.Component RandomNetworkOptions
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*type**
+|-
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*numIterations*
+|Iterations number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*numThreads*
+|Threads number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*seed*
+|Seed value for random generator
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*minError*
+|Classifier min. error threshold
+a|
+__number__
+__(double)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*maxError*
+|Classifier max. error threshold
+a|
+__number__
+__(double)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*useBootstrapSamples*
+|Use bootstrap samples
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== StackingOptions
+:table-caption: Table
+.Component StackingOptions
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*type**
+|-
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*useCrossValidation*
+|Use cross - validation method for meta data building
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*numFolds*
+|Folds number for V - cross validation method
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*seed*
+|Seed value for random generator
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*classifierOptions*
+|-
+a|
+__array__
+<<<ClassifierOptions>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*metaClassifierOptions*
+|-
+a|
+<<ClassifierOptions>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
