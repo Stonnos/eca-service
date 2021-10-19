@@ -175,6 +175,8 @@ __(binary)__
 
 
 
+
+
 |===
 
 
@@ -233,8 +235,11 @@ a|
 |*userId**
 |User id
 |query
-a|__integer__
+a|
+__integer__
 __(int64)__
+
+
 
 
 
@@ -317,7 +322,10 @@ a|
 |*enabled**
 |Tfa enabled flag
 |query
-a|__boolean__
+a|
+__boolean__
+
+
 
 
 
@@ -431,8 +439,11 @@ a|
 |*userId**
 |User id
 |query
-a|__integer__
+a|
+__integer__
 __(int64)__
+
+
 
 
 
@@ -726,7 +737,10 @@ __POST__ */password/verify-token* - Verify reset password token
 |*token**
 |Reset password token
 |query
-a|__string__
+a|
+__string__
+
+
 
 
 
@@ -943,7 +957,10 @@ __POST__ */password/change/confirm* - Confirms change password request
 |*token**
 |Token value
 |query
-a|__string__
+a|
+__string__
+
+
 
 
 
@@ -1009,11 +1026,14 @@ a|
 |*newEmail**
 |User email
 |query
-a|__string__
+a|
+__string__
+
 
 *Min. length*: 0
 
 *Max. length*: 255
+
 
 
 
@@ -1075,7 +1095,10 @@ __POST__ */email/change/confirm* - Confirms change email request
 |*token**
 |Token value
 |query
-a|__string__
+a|
+__string__
+
+
 
 
 
@@ -1204,8 +1227,11 @@ a|
 |*id**
 |Photo id
 |path
-a|__integer__
+a|
+__integer__
 __(int64)__
+
+
 
 
 
@@ -1729,7 +1755,8 @@ __string__
 |User roles
 a|
 __array__
-<<<RoleDto>>>
+<<<RoleDto>>
+>
 
 
 
@@ -1756,7 +1783,8 @@ __array__
 |Page content
 a|
 __array__
-<<<UserDto>>>
+<<<UserDto>>
+>
 
 
 
@@ -1842,7 +1870,8 @@ __string__
 |-
 a|
 __array__
-<string>
+<string
+>
 
 
 
@@ -1994,7 +2023,8 @@ __string__
 |Filters list
 a|
 __array__
-<<<FilterRequestDto>>>
+<<<FilterRequestDto>>
+>
 
 
 

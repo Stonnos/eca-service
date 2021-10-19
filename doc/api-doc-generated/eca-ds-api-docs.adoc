@@ -65,8 +65,11 @@ a|
 |*id**
 |Instances id
 |query
-a|__integer__
+a|
+__integer__
 __(int64)__
+
+
 
 
 
@@ -83,7 +86,9 @@ __(int64)__
 |*tableName**
 |Table name
 |query
-a|__string__
+a|
+__string__
+
 
 *Min. length*: 0
 
@@ -96,6 +101,7 @@ a|__string__
 
 
 *Pattern*: `^[0-9a-z_]+$`
+
 
 |===
 
@@ -188,6 +194,8 @@ __(binary)__
 
 
 
+
+
 |===
 
 *Request parameters*
@@ -197,7 +205,9 @@ __(binary)__
 |*tableName**
 |Table name
 |query
-a|__string__
+a|
+__string__
+
 
 *Min. length*: 0
 
@@ -210,6 +220,7 @@ a|__string__
 
 
 *Pattern*: `^[0-9a-z_]+$`
+
 
 |===
 
@@ -392,8 +403,11 @@ a|
 |*id**
 |Instances id
 |query
-a|__integer__
+a|
+__integer__
 __(int64)__
+
+
 
 
 
@@ -560,8 +574,11 @@ a|
 |*id**
 |Instances id
 |query
-a|__integer__
+a|
+__integer__
 __(int64)__
+
+
 
 
 
@@ -578,7 +595,10 @@ __(int64)__
 |*reportType**
 |Report type
 |query
-a|__string__
+a|
+__string__
+
+
 
 
 
@@ -673,8 +693,11 @@ a|
 |*id**
 |Instances id
 |path
-a|__integer__
+a|
+__integer__
 __(int64)__
+
+
 
 
 
@@ -762,8 +785,11 @@ a|
 |*id**
 |Instances id
 |path
-a|__integer__
+a|
+__integer__
 __(int64)__
+
+
 
 
 
@@ -844,8 +870,11 @@ a|
 |*id**
 |Instances id
 |query
-a|__integer__
+a|
+__integer__
 __(int64)__
+
+
 
 
 
@@ -1163,7 +1192,8 @@ __string__
 |Page content
 a|
 __array__
-<<<InstancesDto>>>
+<<<InstancesDto>>
+>
 
 
 
@@ -1249,7 +1279,8 @@ __string__
 |-
 a|
 __array__
-<string>
+<string
+>
 
 
 
@@ -1401,7 +1432,8 @@ __string__
 |Filters list
 a|
 __array__
-<<<FilterRequestDto>>>
+<<<FilterRequestDto>>
+>
 
 
 
@@ -1428,7 +1460,9 @@ __array__
 |Page content
 a|
 __array__
-<array>
+<array
+<string
+>>
 
 
 

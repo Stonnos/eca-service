@@ -551,7 +551,8 @@ __string__
 |-
 a|
 __array__
-<string>
+<string
+>
 
 
 
@@ -703,7 +704,8 @@ __string__
 |Filters list
 a|
 __array__
-<<<FilterRequestDto>>>
+<<<FilterRequestDto>>
+>
 
 
 
@@ -889,7 +891,8 @@ __string__
 |Page content
 a|
 __array__
-<<<AuditLogDto>>>
+<<<AuditLogDto>>
+>
 
 
 

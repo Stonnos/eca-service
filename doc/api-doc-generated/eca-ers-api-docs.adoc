@@ -1035,7 +1035,8 @@ __number__
 
 |*rocCurve*
 |-
-a|<<RocCurveReport>>
+a|
+<<RocCurveReport>>
 
 
 
@@ -1164,7 +1165,8 @@ __string__
 |Classifier input options
 a|
 __array__
-<<<ClassifierInputOption>>>
+<<<ClassifierInputOption>>
+>
 
 
 
@@ -1351,7 +1353,8 @@ __string__
 |Classifier input options
 a|
 __array__
-<<<ClassifierInputOption>>>
+<<<ClassifierInputOption>>
+>
 
 
 
@@ -1409,7 +1412,8 @@ __string__
 |Individual classifiers reports
 a|
 __array__
-<<<ClassifierReport>>>
+<<<ClassifierReport>>
+>
 
 
 
@@ -1543,7 +1547,8 @@ __string__
 
 |*instances**
 |-
-a|<<InstancesReport>>
+a|
+<<InstancesReport>>
 
 
 
@@ -1562,6 +1567,7 @@ a|<<InstancesReport>>
 |*classifierReport**
 |-
 a|
+
 
 *One of types:*
 
@@ -1584,7 +1590,8 @@ a|
 
 |*evaluationMethodReport**
 |-
-a|<<EvaluationMethodReport>>
+a|
+<<EvaluationMethodReport>>
 
 
 
@@ -1602,7 +1609,8 @@ a|<<EvaluationMethodReport>>
 
 |*statistics**
 |-
-a|<<StatisticsReport>>
+a|
+<<StatisticsReport>>
 
 
 
@@ -1622,7 +1630,8 @@ a|<<StatisticsReport>>
 |Classification costs report
 a|
 __array__
-<<<ClassificationCostsReport>>>
+<<<ClassificationCostsReport>>
+>
 
 
 
@@ -1642,7 +1651,8 @@ __array__
 |Confusion matrix report
 a|
 __array__
-<<<ConfusionMatrixReport>>>
+<<<ConfusionMatrixReport>>
+>
 
 
 
@@ -2132,7 +2142,8 @@ __string__
 
 |*instances*
 |-
-a|<<InstancesReport>>
+a|
+<<InstancesReport>>
 
 
 
@@ -2150,7 +2161,8 @@ a|<<InstancesReport>>
 
 |*classifierReport*
 |-
-a|<<ClassifierReport>>
+a|
+<<ClassifierReport>>
 
 
 
@@ -2168,7 +2180,8 @@ a|<<ClassifierReport>>
 
 |*evaluationMethodReport*
 |-
-a|<<EvaluationMethodReport>>
+a|
+<<EvaluationMethodReport>>
 
 
 
@@ -2186,7 +2199,8 @@ a|<<EvaluationMethodReport>>
 
 |*statistics*
 |-
-a|<<StatisticsReport>>
+a|
+<<StatisticsReport>>
 
 
 
@@ -2206,7 +2220,8 @@ a|<<StatisticsReport>>
 |Classification costs report
 a|
 __array__
-<<<ClassificationCostsReport>>>
+<<<ClassificationCostsReport>>
+>
 
 
 
@@ -2226,7 +2241,8 @@ __array__
 |Confusion matrix report
 a|
 __array__
-<<<ConfusionMatrixReport>>>
+<<<ConfusionMatrixReport>>
+>
 
 
 
@@ -2298,7 +2314,8 @@ __string__
 |Optimal classifiers reports list
 a|
 __array__
-<<<ClassifierReport>>>
+<<<ClassifierReport>>
+>
 
 
 
@@ -2361,7 +2378,8 @@ __string__
 
 |*evaluationMethodReport**
 |-
-a|<<EvaluationMethodReport>>
+a|
+<<EvaluationMethodReport>>
 
 
 
@@ -2381,7 +2399,8 @@ a|<<EvaluationMethodReport>>
 |Sort fields list
 a|
 __array__
-<<<SortField>>>
+<<<SortField>>
+>
 
 
 

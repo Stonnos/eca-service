@@ -157,7 +157,10 @@ a|
 |*reportType**
 |Report type
 |query
-a|__string__
+a|
+__string__
+
+
 
 
 
@@ -410,6 +413,8 @@ __(binary)__
 
 
 
+
+
 |===
 
 *Request parameters*
@@ -419,7 +424,10 @@ __(binary)__
 |*experimentType**
 |Experiment type
 |query
-a|__string__
+a|
+__string__
+
+
 
 
 
@@ -455,7 +463,10 @@ a|__string__
 |*evaluationMethod**
 |Evaluation method
 |query
-a|__string__
+a|
+__string__
+
+
 
 
 
@@ -558,6 +569,8 @@ __(binary)__
 
 
 
+
+
 |===
 
 *Request parameters*
@@ -567,8 +580,11 @@ __(binary)__
 |*configurationId**
 |Configuration id
 |query
-a|__integer__
+a|
+__integer__
 __(int64)__
+
+
 
 
 
@@ -659,8 +675,11 @@ a|
 |*configurationId**
 |Configuration id
 |query
-a|__integer__
+a|
+__integer__
 __(int64)__
+
+
 
 
 
@@ -755,8 +774,11 @@ a|
 |*id**
 |Configuration id
 |query
-a|__integer__
+a|
+__integer__
 __(int64)__
+
+
 
 
 
@@ -1876,8 +1898,11 @@ a|
 |*id**
 |Experiment id
 |path
-a|__integer__
+a|
+__integer__
 __(int64)__
+
+
 
 
 
@@ -1955,8 +1980,11 @@ a|
 |*createdDateFrom*
 |Experiment created date from
 |query
-a|__string__
+a|
+__string__
 __(date)__
+
+
 
 
 
@@ -1973,8 +2001,11 @@ __(date)__
 |*createdDateTo*
 |Experiment created date to
 |query
-a|__string__
+a|
+__string__
 __(date)__
+
+
 
 
 
@@ -2078,8 +2109,11 @@ a|
 |*id**
 |Experiment id
 |path
-a|__integer__
+a|
+__integer__
 __(int64)__
+
+
 
 
 
@@ -2157,8 +2191,11 @@ a|
 |*id**
 |Experiment results id
 |path
-a|__integer__
+a|
+__integer__
 __(int64)__
+
+
 
 
 
@@ -2360,8 +2397,11 @@ a|
 |*id**
 |Experiment id
 |path
-a|__integer__
+a|
+__integer__
 __(int64)__
+
+
 
 
 
@@ -2446,8 +2486,11 @@ a|
 |*id**
 |Experiment id
 |path
-a|__integer__
+a|
+__integer__
 __(int64)__
+
+
 
 
 
@@ -2549,8 +2592,11 @@ a|
 |*id**
 |Experiment id
 |path
-a|__integer__
+a|
+__integer__
 __(int64)__
+
+
 
 
 
@@ -2711,8 +2757,11 @@ a|
 |*id**
 |Configuration id
 |path
-a|__integer__
+a|
+__integer__
 __(int64)__
+
+
 
 
 
@@ -2790,8 +2839,11 @@ a|
 |*id**
 |Configuration id
 |path
-a|__integer__
+a|
+__integer__
 __(int64)__
+
+
 
 
 
@@ -2934,8 +2986,11 @@ a|
 |*id**
 |Evaluation log id
 |path
-a|__integer__
+a|
+__integer__
 __(int64)__
+
+
 
 
 
@@ -3063,7 +3118,10 @@ __GET__ */eca-api/experiment/download/{token}* - Downloads experiment results by
 |*token**
 |Experiment token
 |path
-a|__string__
+a|
+__string__
+
+
 
 
 
@@ -3129,8 +3187,11 @@ a|
 |*id**
 |Classifier options id
 |query
-a|__integer__
+a|
+__integer__
 __(int64)__
+
+
 
 
 
@@ -3208,8 +3269,11 @@ a|
 |*id**
 |Configuration id
 |query
-a|__integer__
+a|
+__integer__
 __(int64)__
+
+
 
 
 
@@ -3403,7 +3467,8 @@ __string__
 |-
 a|
 __array__
-<string>
+<string
+>
 
 
 
@@ -3555,7 +3620,8 @@ __string__
 |Filters list
 a|
 __array__
-<<<FilterRequestDto>>>
+<<<FilterRequestDto>>
+>
 
 
 
@@ -3721,7 +3787,8 @@ __string__
 
 |*requestStatus*
 |-
-a|<<EnumDto>>
+a|
+<<EnumDto>>
 
 
 
@@ -3739,7 +3806,8 @@ a|<<EnumDto>>
 
 |*evaluationMethod*
 |-
-a|<<EnumDto>>
+a|
+<<EnumDto>>
 
 
 
@@ -3950,7 +4018,8 @@ __string__
 
 |*experimentType*
 |-
-a|<<EnumDto>>
+a|
+<<EnumDto>>
 
 
 
@@ -3977,7 +4046,8 @@ a|<<EnumDto>>
 |Page content
 a|
 __array__
-<<<ExperimentDto>>>
+<<<ExperimentDto>>
+>
 
 
 
@@ -4277,7 +4347,8 @@ __string__
 |Page content
 a|
 __array__
-<<<ClassifierOptionsDto>>>
+<<<ClassifierOptionsDto>>
+>
 
 
 
@@ -4531,7 +4602,8 @@ __string__
 |Page content
 a|
 __array__
-<<<ClassifiersConfigurationDto>>>
+<<<ClassifiersConfigurationDto>>
+>
 
 
 
@@ -4617,7 +4689,8 @@ __string__
 |Classifier input options list
 a|
 __array__
-<<<InputOptionDto>>>
+<<<InputOptionDto>>
+>
 
 
 
@@ -4738,7 +4811,8 @@ __string__
 
 |*requestStatus*
 |-
-a|<<EnumDto>>
+a|
+<<EnumDto>>
 
 
 
@@ -4756,7 +4830,8 @@ a|<<EnumDto>>
 
 |*evaluationMethod*
 |-
-a|<<EnumDto>>
+a|
+<<EnumDto>>
 
 
 
@@ -4853,7 +4928,8 @@ __string__
 
 |*classifierInfo*
 |-
-a|<<ClassifierInfoDto>>
+a|
+<<ClassifierInfoDto>>
 
 
 
@@ -4871,7 +4947,8 @@ a|<<ClassifierInfoDto>>
 
 |*instancesInfo*
 |-
-a|<<InstancesInfoDto>>
+a|
+<<InstancesInfoDto>>
 
 
 
@@ -4898,7 +4975,8 @@ a|<<InstancesInfoDto>>
 |Page content
 a|
 __array__
-<<<EvaluationLogDto>>>
+<<<EvaluationLogDto>>
+>
 
 
 
@@ -5170,7 +5248,8 @@ __string__
 
 |*evaluationMethod*
 |-
-a|<<EnumDto>>
+a|
+<<EnumDto>>
 
 
 
@@ -5248,7 +5327,8 @@ __(int32)__
 
 |*responseStatus*
 |-
-a|<<EnumDto>>
+a|
+<<EnumDto>>
 
 
 
@@ -5268,7 +5348,8 @@ a|<<EnumDto>>
 |Classifiers options response models
 a|
 __array__
-<<<ClassifierOptionsResponseDto>>>
+<<<ClassifierOptionsResponseDto>>
+>
 
 
 
@@ -5295,7 +5376,8 @@ __array__
 |Page content
 a|
 __array__
-<<<ClassifierOptionsRequestDto>>>
+<<<ClassifierOptionsRequestDto>>
+>
 
 
 
@@ -5426,7 +5508,8 @@ __string__
 |Filter dictionary values
 a|
 __array__
-<<<FilterDictionaryValueDto>>>
+<<<FilterDictionaryValueDto>>
+>
 
 
 
@@ -5625,7 +5708,8 @@ __boolean__
 
 |*dictionary*
 |-
-a|<<FilterDictionaryDto>>
+a|
+<<FilterDictionaryDto>>
 
 
 
@@ -5836,7 +5920,8 @@ __number__
 |*Name*|*Description*|*Schema*
 |*evaluationResultsStatus*
 |-
-a|<<EnumDto>>
+a|
+<<EnumDto>>
 
 
 
@@ -5854,7 +5939,8 @@ a|<<EnumDto>>
 
 |*evaluationStatisticsDto*
 |-
-a|<<EvaluationStatisticsDto>>
+a|
+<<EvaluationStatisticsDto>>
 
 
 
@@ -5874,7 +5960,8 @@ a|<<EvaluationStatisticsDto>>
 |Classification costs results
 a|
 __array__
-<<<ClassificationCostsDto>>>
+<<<ClassificationCostsDto>>
+>
 
 
 
@@ -6135,7 +6222,8 @@ __(int64)__
 
 |*classifierInfo*
 |-
-a|<<ClassifierInfoDto>>
+a|
+<<ClassifierInfoDto>>
 
 
 
@@ -6211,7 +6299,8 @@ __boolean__
 
 |*experimentDto*
 |-
-a|<<ExperimentDto>>
+a|
+<<ExperimentDto>>
 
 
 
@@ -6229,7 +6318,8 @@ a|<<ExperimentDto>>
 
 |*evaluationResultsDto*
 |-
-a|<<EvaluationResultsDto>>
+a|
+<<EvaluationResultsDto>>
 
 
 
@@ -6507,7 +6597,8 @@ __(int64)__
 |Experiment results list
 a|
 __array__
-<<<ExperimentResultsDto>>>
+<<<ExperimentResultsDto>>
+>
 
 
 
@@ -6525,7 +6616,8 @@ __array__
 
 |*ersReportStatus*
 |-
-a|<<EnumDto>>
+a|
+<<EnumDto>>
 
 
 
@@ -6570,7 +6662,8 @@ __(int64)__
 
 |*classifierInfo*
 |-
-a|<<ClassifierInfoDto>>
+a|
+<<ClassifierInfoDto>>
 
 
 
@@ -6749,7 +6842,8 @@ __string__
 
 |*requestStatus*
 |-
-a|<<EnumDto>>
+a|
+<<EnumDto>>
 
 
 
@@ -6767,7 +6861,8 @@ a|<<EnumDto>>
 
 |*evaluationMethod*
 |-
-a|<<EnumDto>>
+a|
+<<EnumDto>>
 
 
 
@@ -6864,7 +6959,8 @@ __string__
 
 |*classifierInfo*
 |-
-a|<<ClassifierInfoDto>>
+a|
+<<ClassifierInfoDto>>
 
 
 
@@ -6882,7 +6978,8 @@ a|<<ClassifierInfoDto>>
 
 |*instancesInfo*
 |-
-a|<<InstancesInfoDto>>
+a|
+<<InstancesInfoDto>>
 
 
 
@@ -6900,7 +6997,8 @@ a|<<InstancesInfoDto>>
 
 |*evaluationResultsDto*
 |-
-a|<<EvaluationResultsDto>>
+a|
+<<EvaluationResultsDto>>
 
 
 
