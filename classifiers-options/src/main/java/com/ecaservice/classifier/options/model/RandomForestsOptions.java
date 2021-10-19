@@ -1,6 +1,5 @@
 package com.ecaservice.classifier.options.model;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
 import eca.ensemble.forests.DecisionTreeType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -13,9 +12,6 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = ExtraTreesOptions.class, name = ClassifierOptionsType.EXTRA_TREES),
-})
 public class RandomForestsOptions extends IterativeEnsembleOptions {
 
     /**

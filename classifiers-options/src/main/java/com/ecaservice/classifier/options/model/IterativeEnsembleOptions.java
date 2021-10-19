@@ -1,6 +1,5 @@
 package com.ecaservice.classifier.options.model;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -12,12 +11,6 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = RandomForestsOptions.class),
-        @JsonSubTypes.Type(value = RandomNetworkOptions.class, name = ClassifierOptionsType.RANDOM_NETWORKS),
-        @JsonSubTypes.Type(value = AbstractHeterogeneousClassifierOptions.class,
-                name = ClassifierOptionsType.ABSTRACT_HEC)
-})
 public abstract class IterativeEnsembleOptions extends ClassifierOptions {
 
     /**

@@ -1,6 +1,6 @@
 package com.ecaservice.classifier.options.model;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -14,10 +14,6 @@ import java.util.List;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = AdaBoostOptions.class, name = ClassifierOptionsType.ADA_BOOST),
-        @JsonSubTypes.Type(value = HeterogeneousClassifierOptions.class, name = ClassifierOptionsType.HEC)
-})
 public abstract class AbstractHeterogeneousClassifierOptions extends IterativeEnsembleOptions {
 
     /**
@@ -35,6 +31,7 @@ public abstract class AbstractHeterogeneousClassifierOptions extends IterativeEn
     /**
      * Individual classifiers options
      */
-    @Schema(description = "Individual classifiers options")
+    @ArraySchema(schema = @Schema(description = "Individual classifiers options",
+            ref = "#/components/schemas/ClassifierOptions"))
     private List<ClassifierOptions> classifierOptions;
 }

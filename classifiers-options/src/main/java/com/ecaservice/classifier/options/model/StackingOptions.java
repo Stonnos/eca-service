@@ -1,5 +1,6 @@
 package com.ecaservice.classifier.options.model;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -36,7 +37,7 @@ public class StackingOptions extends ClassifierOptions {
     /**
      * Individual classifiers options
      */
-    @Schema(description = "Individual classifiers options")
+    @ArraySchema(schema = @Schema(description = "Individual classifiers options"))
     private List<ClassifierOptions> classifierOptions;
 
     /**

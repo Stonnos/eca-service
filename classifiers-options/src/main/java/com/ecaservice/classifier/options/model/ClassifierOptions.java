@@ -2,7 +2,6 @@ package com.ecaservice.classifier.options.model;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.io.Serializable;
 
@@ -21,13 +20,11 @@ import java.io.Serializable;
         @JsonSubTypes.Type(value = NeuralNetworkOptions.class, name = ClassifierOptionsType.NEURAL_NETWORK),
         @JsonSubTypes.Type(value = J48Options.class, name = ClassifierOptionsType.J48),
         @JsonSubTypes.Type(value = StackingOptions.class, name = ClassifierOptionsType.STACKING),
-        @JsonSubTypes.Type(value = IterativeEnsembleOptions.class, name = ClassifierOptionsType.ITERATIVE_ENSEMBLE),
-})
-@Schema(subTypes = {
-        AdaBoostOptions.class, ExtraTreesOptions.class,
-        HeterogeneousClassifierOptions.class, RandomForestsOptions.class, RandomNetworkOptions.class,
-        DecisionTreeOptions.class, LogisticOptions.class, KNearestNeighboursOptions.class,
-        NeuralNetworkOptions.class, J48Options.class, StackingOptions.class
+        @JsonSubTypes.Type(value = RandomForestsOptions.class),
+        @JsonSubTypes.Type(value = RandomNetworkOptions.class, name = ClassifierOptionsType.RANDOM_NETWORKS),
+        @JsonSubTypes.Type(value = AdaBoostOptions.class, name = ClassifierOptionsType.ADA_BOOST),
+        @JsonSubTypes.Type(value = HeterogeneousClassifierOptions.class, name = ClassifierOptionsType.HEC),
+        @JsonSubTypes.Type(value = ExtraTreesOptions.class, name = ClassifierOptionsType.EXTRA_TREES)
 })
 public abstract class ClassifierOptions implements Serializable {
 }
