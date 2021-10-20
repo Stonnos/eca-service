@@ -4,6 +4,8 @@ import com.ecaservice.common.web.dto.ValidationErrorDto;
 import com.ecaservice.report.data.fetcher.AbstractBaseReportDataFetcher;
 import com.ecaservice.report.model.BaseReportBean;
 import com.ecaservice.report.model.ReportType;
+import com.ecaservice.server.mapping.ReportTypeMapper;
+import com.ecaservice.web.dto.model.BaseReportType;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -48,6 +50,7 @@ import static com.ecaservice.web.dto.doc.CommonApiExamples.UNAUTHORIZED_RESPONSE
 @RequiredArgsConstructor
 public class ReportController {
 
+    private final ReportTypeMapper reportTypeMapper;
     private final List<AbstractBaseReportDataFetcher> reportDataFetchers;
 
     /**
@@ -91,13 +94,14 @@ public class ReportController {
     @PostMapping(value = "/download")
     public void downloadReport(@Valid @RequestBody PageRequestDto pageRequestDto,
                                @Parameter(description = "Report type", required = true)
-                               @RequestParam ReportType reportType,
+                               @RequestParam BaseReportType reportType,
                                HttpServletResponse httpServletResponse)
             throws IOException {
         log.info("Request to download base report [{}] with params: {}", reportType, pageRequestDto);
-        AbstractBaseReportDataFetcher reportDataFetcher = getReportDataFetcher(reportType);
+        var targetReportType = reportTypeMapper.map(reportType);
+        AbstractBaseReportDataFetcher reportDataFetcher = getReportDataFetcher(targetReportType);
         BaseReportBean<?> baseReportBean = reportDataFetcher.fetchReportData(pageRequestDto);
-        download(reportType, reportType.getName(), httpServletResponse, baseReportBean);
+        download(targetReportType, targetReportType.getName(), httpServletResponse, baseReportBean);
     }
 
     private AbstractBaseReportDataFetcher getReportDataFetcher(ReportType reportType) {
