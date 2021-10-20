@@ -3,6 +3,7 @@ package com.ecaservice.mail.scheduler;
 import com.ecaservice.mail.AbstractJpaTest;
 import com.ecaservice.mail.TestHelperUtils;
 import com.ecaservice.mail.config.MailConfig;
+import com.ecaservice.mail.metrics.MetricsService;
 import com.ecaservice.mail.service.MailSenderService;
 import com.ecaservice.mail.model.Email;
 import com.ecaservice.mail.model.EmailStatus;
@@ -33,12 +34,14 @@ class MailSchedulerTest extends AbstractJpaTest {
     private EmailRepository emailRepository;
     @Mock
     private MailSenderService mailSenderService;
+    @Mock
+    private MetricsService metricsService;
 
     private MailScheduler mailScheduler;
 
     @Override
     public void init() {
-        mailScheduler = new MailScheduler(mailConfig, mailSenderService, emailRepository);
+        mailScheduler = new MailScheduler(mailConfig, metricsService, mailSenderService, emailRepository);
     }
 
     @Override
