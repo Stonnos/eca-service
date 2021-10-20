@@ -33,6 +33,7 @@ public class MetricsService {
     public void init() {
         sendingEmailMessageErrorTotalCounter = meterRegistry.counter(SENDING_EMAIL_MESSAGE_ERRORS_METRIC);
         sendingEmailMessageSuccessTotalCounter = meterRegistry.counter(SENDING_EMAIL_MESSAGE_SUCCESS_METRIC);
+        log.info("Email metrics has been initialized");
     }
 
     /**
