@@ -1,5 +1,6 @@
 package com.ecaservice.mail.scheduler;
 
+import com.ecaservice.mail.metrics.MetricsService;
 import com.ecaservice.mail.service.MailSenderService;
 import com.ecaservice.mail.config.MailConfig;
 import com.ecaservice.mail.model.Email;
@@ -32,6 +33,7 @@ import static com.ecaservice.mail.model.Email_.SAVE_DATE;
 public class MailScheduler {
 
     private final MailConfig mailConfig;
+    private final MetricsService metricsService;
     private final MailSenderService mailSenderService;
     private final EmailRepository emailRepository;
 
@@ -50,8 +52,10 @@ public class MailScheduler {
                 mailSenderService.sendEmail(email);
                 email.setStatus(EmailStatus.SENT);
                 email.setSentDate(LocalDateTime.now());
+                metricsService.trackSendingEmailMessageSuccessTotalCounter();
             } catch (Exception ex) {
                 log.error("There was an error while sending email [{}]: {} ", email.getId(), ex.getMessage());
+                metricsService.trackSendingEmailMessageErrorTotalCounter();
                 handleErrorSent(email, ex.getMessage());
             } finally {
                 emailRepository.save(email);
@@ -61,10 +65,11 @@ public class MailScheduler {
     }
 
     private void handleErrorSent(Email email, String errorMessage) {
-        if (email.getFailedAttemptsToSent() >= mailConfig.getMaxFailedAttemptsToSent()) {
+        int failedAttemptsToSent = email.getFailedAttemptsToSent() + 1;
+        if (failedAttemptsToSent >= mailConfig.getMaxFailedAttemptsToSent()) {
             email.setStatus(EmailStatus.EXCEEDED);
         } else {
-            email.setFailedAttemptsToSent(email.getFailedAttemptsToSent() + 1);
+            email.setFailedAttemptsToSent(failedAttemptsToSent);
             email.setStatus(EmailStatus.NOT_SENT);
             email.setErrorMessage(errorMessage);
         }
