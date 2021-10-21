@@ -32,36 +32,56 @@ a|`eca_mail_sending_message_error_total{application="eca-mail",} 0.0`
 |Счетчик числа ответов, параметризированный по http коду ответа (htto_status), названию метода (method), имя вызываемого сервиса (host).
 a|
 `feign_Client_http_response_code_total{application="eca-server",client="com.ecaservice.server.service.auth.UsersClient",host="eca-oauth",http_status="200",method="getUserInfo",status_group="2xx",} 1.0
+
 feign_Client_http_response_code_total{application="eca-server",client="com.ecaservice.core.audit.service.AuditEventClient",host="eca-audit-log",http_status="200",method="sendEvent",status_group="2xx",} 1.0
+
 feign_Client_http_response_code_total{application="eca-server",client="com.ecaservice.server.service.push.WebPushClient",host="eca-web-push",http_status="200",method="push",status_group="2xx",} 2.0
+
 feign_Client_http_response_code_total{application="eca-server",client="com.ecaservice.server.service.experiment.mail.EmailClient",host="eca-mail",http_status="200",method="sendEmail",status_group="2xx",} 3.0
+
 feign_Client_http_response_code_total{application="eca-server",client="com.ecaservice.server.service.ers.ErsClient",host="eca-ers",http_status="200",method="getEvaluationResults",status_group="2xx",} 1.0
+
 feign_Client_http_response_code_total{application="eca-server",client="com.ecaservice.server.service.ers.ErsClient",host="eca-ers",http_status="200",method="save",status_group="2xx",} 5.0`
 |*feign_Client_seconds_count*
 |Счетчик числа http запросов, параметризированный по названию метода (method), имя вызываемого сервиса (host).
 a|
 `feign_Client_seconds_count{application="eca-server",client="com.ecaservice.server.service.experiment.mail.EmailClient",host="eca-mail",method="sendEmail",} 3.0
+
 feign_Client_seconds_count{application="eca-server",client="com.ecaservice.core.audit.service.AuditEventClient",host="eca-audit-log",method="sendEvent",} 1.0
+
 feign_Client_seconds_count{application="eca-server",client="com.ecaservice.server.service.ers.ErsClient",host="eca-ers",method="save",} 5.0
+
 feign_Client_seconds_count{application="eca-server",client="com.ecaservice.server.service.ers.ErsClient",host="eca-ers",method="getEvaluationResults",} 1.0
+
 feign_Client_seconds_count{application="eca-server",client="com.ecaservice.server.service.auth.UsersClient",host="eca-oauth",method="getUserInfo",} 1.0
+
 feign_Client_seconds_count{application="eca-server",client="com.ecaservice.server.service.push.WebPushClient",host="eca-web-push",method="push",} 2.0`
 |*feign_Client_seconds_sum*
 |Счетчик суммарного времени выполнения http запроса, параметризированный по названию метода (method), имя вызываемого сервиса (host).
 a|
 `feign_Client_seconds_sum{application="eca-server",client="com.ecaservice.server.service.experiment.mail.EmailClient",host="eca-mail",method="sendEmail",} 2.171083791
+
 feign_Client_seconds_sum{application="eca-server",client="com.ecaservice.core.audit.service.AuditEventClient",host="eca-audit-log",method="sendEvent",} 0.12708842
+
 feign_Client_seconds_sum{application="eca-server",client="com.ecaservice.server.service.ers.ErsClient",host="eca-ers",method="save",} 2.123148685
+
 feign_Client_seconds_sum{application="eca-server",client="com.ecaservice.server.service.ers.ErsClient",host="eca-ers",method="getEvaluationResults",} 0.080737109
+
 feign_Client_seconds_sum{application="eca-server",client="com.ecaservice.server.service.auth.UsersClient",host="eca-oauth",method="getUserInfo",} 0.034848082
+
 feign_Client_seconds_sum{application="eca-server",client="com.ecaservice.server.service.push.WebPushClient",host="eca-web-push",method="push",} 0.0777714`
 |*feign_Client_seconds_max*
 |Макс. время выполнения http запроса.
 a|
 `feign_Client_seconds_max{application="eca-server",client="com.ecaservice.server.service.experiment.mail.EmailClient",host="eca-mail",method="sendEmail",} 0.0
+
 feign_Client_seconds_max{application="eca-server",client="com.ecaservice.core.audit.service.AuditEventClient",host="eca-audit-log",method="sendEvent",} 0.0
+
 feign_Client_seconds_max{application="eca-server",client="com.ecaservice.server.service.ers.ErsClient",host="eca-ers",method="save",} 1.991423887
+
 feign_Client_seconds_max{application="eca-server",client="com.ecaservice.server.service.ers.ErsClient",host="eca-ers",method="getEvaluationResults",} 0.080737109
+
 feign_Client_seconds_max{application="eca-server",client="com.ecaservice.server.service.auth.UsersClient",host="eca-oauth",method="getUserInfo",} 0.0
+
 feign_Client_seconds_max{application="eca-server",client="com.ecaservice.server.service.push.WebPushClient",host="eca-web-push",method="push",} 0.070433362`
 |===
