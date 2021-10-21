@@ -148,6 +148,12 @@
         </dependency>
 
         <dependency>
+            <groupId>eca.service</groupId>
+            <artifactId>feign-metrics</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
