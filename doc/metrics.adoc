@@ -25,7 +25,7 @@ jvm_memory_max_bytes{application="eca-mail",area="heap",id="G1 Old Gen",} 4.1586
 
 ...
 |http://[host]:[port]/actuator/info
-|Получение информации о версии, сборке, коммите и т.д.
+|Получение информации о приложении (версия, сборке, текущий коммит и т.д.)
 a|
 [source,json]
 ----
