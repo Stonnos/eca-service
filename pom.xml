@@ -30,6 +30,7 @@
         <module>classifiers-options-adapter</module>
         <module>eca-report</module>
         <module>eca-report-data</module>
+        <module>feign-metrics</module>
         <module>eca-tests-common</module>
         <module>eca-oauth</module>
         <module>eca-server</module>
