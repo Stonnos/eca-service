@@ -49,8 +49,8 @@ a|
         "full": "#ES-156 - replaced dependencies"
       },
       "user": {
-        "name": "Батыгин Роман Игоревич",
-        "email": "batygin@self.team"
+        "name": "Commit author",
+        "email": "Author email"
       },
       "time": "2021-10-21T07:48:53Z"
     },
@@ -60,8 +60,8 @@ a|
       "version": "6.1",
       "host": "Roman1993",
       "user": {
-        "name": "Батыгин Роман Игоревич",
-        "email": "batygin@self.team"
+        "name": "Commit author",
+        "email": "Author email"
       }
     },
     "tags": "",
