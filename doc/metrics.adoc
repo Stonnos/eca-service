@@ -6,13 +6,108 @@
 
 В данном документе приведено описание метрик для всех микросервисов.
 
-== 1. JVM метрики
+== 1. Actuator endpoints
+
+|===
+|Endpoint|Описание|Пример ответа
+|http://[host]:[port]/actuator/prometheus
+|Получение всех метрик приложения в формате для prometheus
+a|
+# HELP tomcat_sessions_active_current_sessions
+
+# TYPE tomcat_sessions_active_current_sessions gauge
+
+tomcat_sessions_active_current_sessions{application="eca-mail",} 0.0
+
+# HELP jvm_buffer_memory_used_bytes An estimate of the memory that the Java virtual machine is using for this buffer pool
+
+# TYPE jvm_buffer_memory_used_bytes gauge
+
+jvm_buffer_memory_used_bytes{application="eca-mail",id="direct",} 8192.0
+
+jvm_buffer_memory_used_bytes{application="eca-mail",id="mapped",} 0.0
+
+# HELP jvm_memory_max_bytes The maximum amount of memory in bytes that can be used for memory management
+
+# TYPE jvm_memory_max_bytes gauge
+
+jvm_memory_max_bytes{application="eca-mail",area="heap",id="G1 Survivor Space",} -1.0
+
+jvm_memory_max_bytes{application="eca-mail",area="heap",id="G1 Old Gen",} 4.158652416E9
+
+...
+|http://[host]:[port]/actuator/info
+|Получение информации о версии, сборке, коммите и т.д.
+a|
+[source,json]
+----
+{
+  "git": {
+    "local": {
+      "branch": {
+        "ahead": "NO_REMOTE",
+        "behind": "NO_REMOTE"
+      }
+    },
+    "commit": {
+      "id": {
+        "describe-short": "a38cdbf",
+        "abbrev": "a38cdbf",
+        "full": "a38cdbf073d964f721ee08a0b183911df744fee5",
+        "describe": "a38cdbf"
+      },
+      "message": {
+        "short": "#ES-156 - replaced dependencies",
+        "full": "#ES-156 - replaced dependencies"
+      },
+      "user": {
+        "name": "Батыгин Роман Игоревич",
+        "email": "batygin@self.team"
+      },
+      "time": "2021-10-21T07:48:53Z"
+    },
+    "branch": "feature/ES-156",
+    "build": {
+      "time": "2021-10-21T07:51:45Z",
+      "version": "6.1",
+      "host": "Roman1993",
+      "user": {
+        "name": "Батыгин Роман Игоревич",
+        "email": "batygin@self.team"
+      }
+    },
+    "tags": "",
+    "total": {
+      "commit": {
+        "count": "3317"
+      }
+    },
+    "closest": {
+      "tag": {
+        "commit": {
+          "count": ""
+        },
+        "name": ""
+      }
+    },
+    "remote": {
+      "origin": {
+        "url": "https://github.com/Stonnos/eca-service.git"
+      }
+    },
+    "dirty": "false"
+  }
+}
+----
+|===
+
+== 2. JVM метрики
 
 |===
 |Название метрики|Описание
 |===
 
-== 2. Бизнес метрики
+== 3. Бизнес метрики
 
 |===
 |Название метрики|Описание|Примеры
@@ -24,7 +119,7 @@ a|`eca_mail_sending_message_success_total{application="eca-mail",} 0.0`
 a|`eca_mail_sending_message_error_total{application="eca-mail",} 0.0`
 |===
 
-== 3. Метрики Feign http клиента
+== 4. Метрики Feign http клиента
 
 |===
 |Название метрики|Описание|Примеры
