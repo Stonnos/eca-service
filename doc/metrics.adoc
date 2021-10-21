@@ -13,23 +13,11 @@
 |http://[host]:[port]/actuator/prometheus
 |Получение всех метрик приложения в формате для prometheus
 a|
-# HELP tomcat_sessions_active_current_sessions
-
-# TYPE tomcat_sessions_active_current_sessions gauge
-
 tomcat_sessions_active_current_sessions{application="eca-mail",} 0.0
-
-# HELP jvm_buffer_memory_used_bytes An estimate of the memory that the Java virtual machine is using for this buffer pool
-
-# TYPE jvm_buffer_memory_used_bytes gauge
 
 jvm_buffer_memory_used_bytes{application="eca-mail",id="direct",} 8192.0
 
 jvm_buffer_memory_used_bytes{application="eca-mail",id="mapped",} 0.0
-
-# HELP jvm_memory_max_bytes The maximum amount of memory in bytes that can be used for memory management
-
-# TYPE jvm_memory_max_bytes gauge
 
 jvm_memory_max_bytes{application="eca-mail",area="heap",id="G1 Survivor Space",} -1.0
 
