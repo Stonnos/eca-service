@@ -13,7 +13,6 @@
     <packaging>jar</packaging>
 
     <properties>
-        <feign.version>11.2</feign.version>
         <sonar.coverage.exclusions>**/*.*</sonar.coverage.exclusions>
     </properties>
 
@@ -24,14 +23,12 @@
             <artifactId>spring-boot</artifactId>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/io.github.openfeign/feign-micrometer -->
         <dependency>
             <groupId>io.github.openfeign</groupId>
             <artifactId>feign-micrometer</artifactId>
             <version>${feign.version}</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/io.github.openfeign/feign-micrometer -->
         <dependency>
             <groupId>io.github.openfeign</groupId>
             <artifactId>feign-core</artifactId>
