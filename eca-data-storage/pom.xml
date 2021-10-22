@@ -133,6 +133,18 @@
 
         <dependency>
             <groupId>eca.service</groupId>
+            <artifactId>feign-metrics</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-core</artifactId>
+            <version>${feign.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>eca.service</groupId>
             <artifactId>eca-web-transport</artifactId>
             <version>${project.version}</version>
         </dependency>

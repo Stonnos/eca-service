@@ -30,6 +30,7 @@
         <module>classifiers-options-adapter</module>
         <module>eca-report</module>
         <module>eca-report-data</module>
+        <module>feign-metrics</module>
         <module>eca-tests-common</module>
         <module>eca-oauth</module>
         <module>eca-server</module>
@@ -90,6 +91,7 @@
         <swagger-annotations.version>2.1.9</swagger-annotations.version>
         <open-api.version>1.5.9</open-api.version>
         <guava.version>30.0-jre</guava.version>
+        <feign.version>11.2</feign.version>
         <jacoco-plugin.version>0.8.5</jacoco-plugin.version>
         <jacoco.minCoverage>0.70</jacoco.minCoverage>
     </properties>
