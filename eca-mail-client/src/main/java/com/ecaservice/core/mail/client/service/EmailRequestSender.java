@@ -30,7 +30,6 @@ public class EmailRequestSender {
      */
     public void sendEmail(EmailRequest emailRequest, EmailRequestEntity emailRequestEntity) {
         log.info("Starting to sent email request with code [{}]", emailRequest.getTemplateCode());
-        emailClient.sendEmail(emailRequest);
         try {
             var emailResponse = emailClient.sendEmail(emailRequest);
             emailRequestEntity.setRequestId(emailResponse.getRequestId());
