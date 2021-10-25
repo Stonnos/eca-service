@@ -28,6 +28,15 @@ public interface EmailRequestRepository extends JpaRepository<EmailRequestEntity
     List<Long> findNotSentEmailRequests(@Param("date") LocalDateTime date);
 
     /**
+     * Gets exceeded email requests.
+     *
+     * @return email requests ids
+     */
+    @Query("select emr.id from EmailRequestEntity emr where emr.requestStatus = 'NOT_SENT' and " +
+            "emr.expiredAt is not null and emr.expiredAt < :date order by emr.created")
+    List<Long> findExceededEmailRequests(@Param("date") LocalDateTime date);
+
+    /**
      * Finds email requests page with specified ids.
      *
      * @param ids      - ids list

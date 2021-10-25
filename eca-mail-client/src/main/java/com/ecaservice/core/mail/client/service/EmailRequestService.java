@@ -16,6 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 import static com.ecaservice.core.mail.client.config.EcaMailClientAutoConfiguration.MAIL_LOCK_REGISTRY;
 import static com.ecaservice.core.mail.client.util.Utils.readVariables;
@@ -29,7 +32,7 @@ import static com.ecaservice.core.mail.client.util.Utils.readVariables;
 @Service
 @ConditionalOnProperty(value = "mail.client.redelivery", havingValue = "true")
 @RequiredArgsConstructor
-public class EmailRequestRedeliveryService {
+public class EmailRequestService {
 
     private final EcaMailClientProperties ecaMailClientProperties;
     private final EmailRequestMapper emailRequestMapper;
@@ -45,20 +48,47 @@ public class EmailRequestRedeliveryService {
         var ids = emailRequestRepository.findNotSentEmailRequests(LocalDateTime.now());
         if (!CollectionUtils.isEmpty(ids)) {
             log.info("Found [{}] not sent email requests", ids.size());
-            Pageable pageRequest = PageRequest.of(0, ecaMailClientProperties.getPageSize());
-            Page<EmailRequestEntity> page;
-            do {
-                page = emailRequestRepository.findByIdIn(ids, pageRequest);
-                if (page == null || !page.hasContent()) {
-                    log.trace("No one email request has been fetched");
-                    break;
-                } else {
-                    page.forEach(this::sendEmailRequest);
-                }
-                pageRequest = page.nextPageable();
-            } while (page.hasNext());
+            processPaging(ids, emailRequestRepository::findByIdIn,
+                    emailRequestEntities -> emailRequestEntities.forEach(this::sendEmailRequest));
         }
         log.debug("Redeliver email requests has been finished");
+    }
+
+    /**
+     * Processed exceeded email requests.
+     */
+    @TryLocked(lockName = "processExceededEmailRequests", lockRegistry = MAIL_LOCK_REGISTRY)
+    public void processExceededEmailRequests() {
+        log.debug("Starting to process exceeded email requests");
+        var ids = emailRequestRepository.findExceededEmailRequests(LocalDateTime.now());
+        if (!CollectionUtils.isEmpty(ids)) {
+            log.info("Found [{}] exceeded email requests", ids.size());
+            processPaging(ids, emailRequestRepository::findByIdIn, this::processExceededRequests);
+        }
+        log.debug("Exceeded email requests processing has been finished");
+    }
+
+    private void processPaging(List<Long> ids,
+                               BiFunction<List<Long>, Pageable, Page<EmailRequestEntity>> nextPageFunction,
+                               Consumer<List<EmailRequestEntity>> pageContentAction) {
+        Pageable pageRequest = PageRequest.of(0, ecaMailClientProperties.getPageSize());
+        Page<EmailRequestEntity> page;
+        do {
+            page = nextPageFunction.apply(ids, pageRequest);
+            if (page == null || !page.hasContent()) {
+                log.trace("No one email request has been fetched");
+                break;
+            } else {
+                pageContentAction.accept(page.getContent());
+            }
+            pageRequest = page.nextPageable();
+        } while (page.hasNext());
+    }
+
+    private void processExceededRequests(List<EmailRequestEntity> emailRequestEntities) {
+        emailRequestEntities.forEach(
+                emailRequestEntity -> emailRequestEntity.setRequestStatus(EmailRequestStatus.EXCEEDED));
+        emailRequestRepository.saveAll(emailRequestEntities);
     }
 
     private void sendEmailRequest(EmailRequestEntity emailRequestEntity) {

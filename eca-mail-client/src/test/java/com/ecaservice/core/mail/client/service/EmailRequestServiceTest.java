@@ -23,19 +23,19 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 /**
- * Unit tests for {@link EmailRequestRedeliveryService} class.
+ * Unit tests for {@link EmailRequestService} class.
  *
  * @author Roman Batygin
  */
-@Import({EmailRequestRedeliveryService.class, EmailRequestMapperImpl.class, EcaMailClientProperties.class})
-class EmailRequestRedeliveryServiceTest extends AbstractJpaTest {
+@Import({EmailRequestService.class, EmailRequestMapperImpl.class, EcaMailClientProperties.class})
+class EmailRequestServiceTest extends AbstractJpaTest {
 
     private static final String INVALID_VARIABLES_JSON = "abc";
 
     @Inject
     private EmailRequestRepository emailRequestRepository;
     @Inject
-    private EmailRequestRedeliveryService emailRequestRedeliveryService;
+    private EmailRequestService emailRequestService;
 
     @MockBean
     private EmailRequestSender emailRequestSender;
@@ -53,7 +53,7 @@ class EmailRequestRedeliveryServiceTest extends AbstractJpaTest {
         var forth = createEmailRequestEntity(EmailRequestStatus.EXCEEDED, null);
         var fifth = createEmailRequestEntity(EmailRequestStatus.NOT_SENT, LocalDateTime.now().minusMinutes(1L));
         emailRequestRepository.saveAll(Arrays.asList(first, second, third, forth, fifth));
-        emailRequestRedeliveryService.processNotSentEmailRequests();
+        emailRequestService.processNotSentEmailRequests();
         verify(emailRequestSender, atLeastOnce()).sendEmail(any(EmailRequest.class),
                 any(EmailRequestEntity.class));
     }
@@ -63,7 +63,7 @@ class EmailRequestRedeliveryServiceTest extends AbstractJpaTest {
         var emailRequestEntity = createEmailRequestEntity(EmailRequestStatus.NOT_SENT, null);
         emailRequestEntity.setVariablesJson(INVALID_VARIABLES_JSON);
         emailRequestRepository.save(emailRequestEntity);
-        emailRequestRedeliveryService.processNotSentEmailRequests();
+        emailRequestService.processNotSentEmailRequests();
         verify(emailRequestSender, never()).sendEmail(any(EmailRequest.class),
                 any(EmailRequestEntity.class));
         var actual = emailRequestRepository.findById(emailRequestEntity.getId()).orElse(null);
