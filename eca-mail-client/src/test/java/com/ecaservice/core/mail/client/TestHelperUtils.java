@@ -57,4 +57,13 @@ public class TestHelperUtils {
         emailRequestEntity.setExpiredAt(expiredAt);
         return emailRequestEntity;
     }
+
+    /**
+     * Creates email request entity.
+     *
+     * @return email request entity
+     */
+    public static EmailRequestEntity createEmailRequestEntity() {
+        return createEmailRequestEntity(null, null);
+    }
 }
