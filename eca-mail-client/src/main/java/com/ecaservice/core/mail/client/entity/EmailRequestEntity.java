@@ -81,6 +81,12 @@ public class EmailRequestEntity {
     private LocalDateTime sentDate;
 
     /**
+     * Email request cache expiration date
+     */
+    @Column(name = "expired_at")
+    private LocalDateTime expiredAt;
+
+    /**
      * Details string
      */
     @Column(columnDefinition = "text")

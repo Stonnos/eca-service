@@ -31,6 +31,7 @@
             </column>
             <column name="request_id" type="varchar(255)"/>
             <column name="sent_date" type="timestamp"/>
+            <column name="expired_at" type="timestamp"/>
             <column name="details" type="text"/>
         </createTable>
     </changeSet>
