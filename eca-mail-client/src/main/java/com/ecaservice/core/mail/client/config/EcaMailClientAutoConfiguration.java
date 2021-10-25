@@ -28,6 +28,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 @EnableFeignClients(basePackageClasses = EmailClient.class)
 @EntityScan(basePackageClasses = EmailRequestEntity.class)
 @EnableJpaRepositories(basePackageClasses = EmailRequestRepository.class)
+@ConditionalOnProperty(value = "mail.client.enabled", havingValue = "true")
 public class EcaMailClientAutoConfiguration {
 
     /**
