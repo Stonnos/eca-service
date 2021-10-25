@@ -73,4 +73,16 @@ public class EmailRequestEntity {
      */
     @Column(name = "request_id")
     private String requestId;
+
+    /**
+     * Email request sent date
+     */
+    @Column(name = "sent_date")
+    private LocalDateTime sentDate;
+
+    /**
+     * Details string
+     */
+    @Column(columnDefinition = "text")
+    private String details;
 }
