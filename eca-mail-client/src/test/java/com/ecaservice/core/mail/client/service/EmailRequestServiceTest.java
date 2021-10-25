@@ -46,7 +46,7 @@ class EmailRequestServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    void testProcessNotSentEvents() {
+    void testProcessNotSentRequests() {
         var first = createEmailRequestEntity(EmailRequestStatus.SENT, null);
         var second = createEmailRequestEntity(EmailRequestStatus.NOT_SENT, null);
         var third = createEmailRequestEntity(EmailRequestStatus.ERROR, null);
@@ -69,5 +69,19 @@ class EmailRequestServiceTest extends AbstractJpaTest {
         var actual = emailRequestRepository.findById(emailRequestEntity.getId()).orElse(null);
         assertThat(actual).isNotNull();
         assertThat(actual.getRequestStatus()).isEqualTo(EmailRequestStatus.ERROR);
+    }
+
+    @Test
+    void testProcessExceededRequests() {
+        var first = createEmailRequestEntity(EmailRequestStatus.SENT, null);
+        var second = createEmailRequestEntity(EmailRequestStatus.NOT_SENT, null);
+        var third = createEmailRequestEntity(EmailRequestStatus.ERROR, null);
+        var forth = createEmailRequestEntity(EmailRequestStatus.EXCEEDED, null);
+        var fifth = createEmailRequestEntity(EmailRequestStatus.NOT_SENT, LocalDateTime.now().minusMinutes(1L));
+        emailRequestRepository.saveAll(Arrays.asList(first, second, third, forth, fifth));
+        emailRequestService.processExceededEmailRequests();
+        var actual = emailRequestRepository.findById(fifth.getId()).orElse(null);
+        assertThat(actual).isNotNull();
+        assertThat(actual.getRequestStatus()).isEqualTo(EmailRequestStatus.EXCEEDED);
     }
 }
