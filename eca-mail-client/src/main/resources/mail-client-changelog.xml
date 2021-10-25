@@ -26,6 +26,10 @@
             </column>
             <column name="variables_json" type="varchar(2000)"/>
             <column name="encrypted" type="boolean" defaultValueBoolean="false"/>
+            <column name="request_status" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="request_id" type="varchar(255)"/>
         </createTable>
     </changeSet>
 </databaseChangeLog>
