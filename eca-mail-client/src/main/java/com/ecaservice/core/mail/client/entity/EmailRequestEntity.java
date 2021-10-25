@@ -9,6 +9,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 
+import static com.ecaservice.core.mail.client.util.Constraints.VARIABLES_JSON_LENGTH;
+
 /**
  * Email request entity.
  *
@@ -38,7 +40,6 @@ public class EmailRequestEntity {
     /**
      * Delivery priority
      */
-    @Column(nullable = false)
     private int priority;
 
     /**
@@ -50,7 +51,7 @@ public class EmailRequestEntity {
     /**
      * Template variables in json format
      */
-    @Column(name = "variables_json")
+    @Column(name = "variables_json", length = VARIABLES_JSON_LENGTH)
     private String variablesJson;
 
     /**
