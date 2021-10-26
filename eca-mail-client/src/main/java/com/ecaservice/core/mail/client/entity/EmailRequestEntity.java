@@ -20,7 +20,7 @@ import static com.ecaservice.core.mail.client.util.Constraints.REQUEST_JSON_LENG
  */
 @Data
 @Entity
-@Table(name = "email_request_entity")
+@Table(name = "email_request")
 public class EmailRequestEntity {
 
     @Id
