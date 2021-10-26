@@ -15,6 +15,8 @@ public class EcaMailClientProperties {
     private static final int DEFAULT_THREAD_POOL_SIZE = 1;
     private static final int DEFAULT_PAGE_SIZE = 25;
     private static final long DEFAULT_REDELIVERY_INTERVAL_MILLIS = 60000L;
+    private static final String DEFAULT_SALT = "s@lt#";
+    private static final String DEFAULT_PASSWORD = "passw0rd@!";
 
     /**
      * Is email sending enabled?
@@ -35,4 +37,31 @@ public class EcaMailClientProperties {
      * Redelivery interval in millis
      */
     private Long redeliveryIntervalMillis = DEFAULT_REDELIVERY_INTERVAL_MILLIS;
+
+    /**
+     * Encrypt properties
+     */
+    private EncryptProperties encrypt = new EncryptProperties();
+
+    /**
+     * Encrypt properties.
+     */
+    @Data
+    public static class EncryptProperties {
+
+        /**
+         * Encrypt enabled?
+         */
+        private Boolean enabled;
+
+        /**
+         * Password for PBKDF2WithHmacSHA1 algorithm
+         */
+        private String password = DEFAULT_PASSWORD;
+
+        /**
+         * Salt for PBKDF2WithHmacSHA1 algorithm
+         */
+        private String salt = DEFAULT_SALT;
+    }
 }

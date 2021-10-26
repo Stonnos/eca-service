@@ -33,6 +33,13 @@ mail:
     redeliveryIntervalMillis: 60000
     ## Размер страницы для повторной отправки email сообщений
     pageSize: 25
+    encrypt:
+      ## Вкл./выкл. хранение email сообщений в зашифрованном виде
+      enabled: true
+      ## Пароль для алгоритма генерации ключа PBKDF2WithHmacSHA1
+      password: passw0rd@!
+      ## Соль для алгоритма генерации ключа PBKDF2WithHmacSHA1
+      salt: s@lt#
 ----
 
 Добавить класс конфигурации
