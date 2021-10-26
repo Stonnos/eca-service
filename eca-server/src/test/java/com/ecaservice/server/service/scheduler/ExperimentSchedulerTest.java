@@ -112,18 +112,6 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
     }
 
     @Test
-    void testSentExperiments() {
-        List<Experiment> experiments = newArrayList();
-        experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED));
-        experiments.add(
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR));
-        experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.TIMEOUT));
-        experimentRepository.saveAll(experiments);
-        experimentScheduler.processRequestsToSent();
-        verify(eventPublisher, times(experiments.size())).publishEvent(any(ExperimentEmailEvent.class));
-    }
-
-    @Test
     void testRemoveExperiments() {
         List<Experiment> experiments = newArrayList();
         experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED));

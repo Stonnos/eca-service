@@ -77,22 +77,6 @@ public class ExperimentRequestProcessor {
     }
 
     /**
-     * Send email notification for finished experiment.
-     *
-     * @param experiment - experiment entity
-     */
-    @TryLocked(lockName = "experiment", key = "#experiment.requestId",
-            lockRegistry = EXPERIMENT_REDIS_LOCK_REGISTRY_BEAN)
-    public void notifyExperimentFinished(Experiment experiment) {
-        putMdc(TX_ID, experiment.getRequestId());
-        putMdc(EV_REQUEST_ID, experiment.getRequestId());
-        log.info("Retry to sent email for finished experiment [{}]", experiment.getRequestId());
-        eventPublisher.publishEvent(new ExperimentEmailEvent(this, experiment));
-        log.info("Email sent retrying process has been finished for finished experiment [{}]",
-                experiment.getRequestId());
-    }
-
-    /**
      * Sent experiments results to ERS service.
      */
     @TryLocked(lockName = EXPERIMENTS_CRON_JOB_KEY, lockRegistry = EXPERIMENT_REDIS_LOCK_REGISTRY_BEAN)
