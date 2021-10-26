@@ -797,3 +797,23 @@ image::./images/eca-audit-log-db-schema.png[alt=Схема базы данных
 |details                 |text             |-|-|-                              |Дополнительная информация, например текст ошибки
 |sent_date               |timestamp        |-|-|-                              |Дата отправки события в сервис аудита
 |===
+
+=== 3.14 Описание служебных таблиц для отправки почты
+
+==== Таблица 3.47 - 'email_request' - содержит данные о запросах в сервис eca-mail
+[cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
+|===
+|Название колонки|Тип|Unique|Not NULL|Индекс|Описание
+|id                      |bigint           |+|+|+                              |ID (первичный ключ)
+|receiver                |varchar(255)     |-|+|-                              |Email получателя
+|template_code           |varchar(255)     |-|+|-                              |Технический код шаблона сообщения
+|priority                |integer          |-|-|-                              |Приоритет отправки
+|created                 |timestamp        |-|+|-                              |Дата создания запроса
+|request_json            |varchar(2000)    |-|+|-                              |Структура запроса в сервис eca-mail в формате json
+|encrypted               |boolean          |-|-|-                              |Флаг равен true, если переменные шаблона (variablesJson) хранятся в зашифрованном виде
+|request_status          |varchar(255)     |-|+|-                              |Статус отправки (SENT, NOT_SENT, ERROR, EXCEEDED)
+|request_id              |varchar(255)     |-|-|-                              |UUID запроса в eca-mail
+|sent_date               |timestamp        |-|-|-                              |Дата успешной отправки запроса в eca-mail
+|expired_at              |timestamp        |-|-|-                              |Дата истечения срока действия кэша запроса
+|details                 |text             |-|-|-                              |Доп. информация, например текст ошибки
+|===
