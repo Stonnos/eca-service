@@ -8,12 +8,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-
-import static com.ecaservice.oauth.config.EcaOauthConfiguration.ECA_OAUTH_THREAD_POOL_TASK_EXECUTOR;
 
 /**
  * Notification event listener.
@@ -34,7 +31,6 @@ public class NotificationEventListener {
      * @param notificationEvent - notification event.
      */
     @SuppressWarnings("unchecked")
-    @Async(ECA_OAUTH_THREAD_POOL_TASK_EXECUTOR)
     @EventListener
     public void handleNotificationEvent(AbstractNotificationEvent notificationEvent) {
         log.info("Received notification event [{}] from source [{}]", notificationEvent.getClass().getSimpleName(),

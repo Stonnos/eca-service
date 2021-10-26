@@ -24,12 +24,6 @@ public class AppProperties {
     private Integer maxPageSize;
 
     /**
-     * Thread pool size for async tasks
-     */
-    @NotNull
-    private Integer threadPoolSize;
-
-    /**
      * Web application external base url
      */
     @NotEmpty
