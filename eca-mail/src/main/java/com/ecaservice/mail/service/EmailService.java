@@ -1,5 +1,6 @@
 package com.ecaservice.mail.service;
 
+import com.ecaservice.common.web.crypto.EncryptorBase64AdapterService;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.mail.config.MailConfig;
 import com.ecaservice.mail.mapping.EmailRequestMapper;

@@ -1,5 +1,6 @@
 package com.ecaservice.mail.service;
 
+import com.ecaservice.common.web.crypto.EncryptorBase64AdapterService;
 import com.ecaservice.mail.model.Email;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

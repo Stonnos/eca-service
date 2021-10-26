@@ -1,5 +1,6 @@
 package com.ecaservice.mail.service;
 
+import com.ecaservice.common.web.crypto.EncryptorBase64AdapterService;
 import com.ecaservice.mail.model.Email;
 import com.ecaservice.mail.model.EmailStatus;
 import org.junit.jupiter.api.Test;
