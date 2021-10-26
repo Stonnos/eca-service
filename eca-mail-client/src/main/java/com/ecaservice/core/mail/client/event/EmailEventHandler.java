@@ -1,8 +1,13 @@
 package com.ecaservice.core.mail.client.event;
 
+import com.ecaservice.common.web.crypto.EncryptorBase64AdapterService;
+import com.ecaservice.core.mail.client.config.EcaMailClientProperties;
+import com.ecaservice.core.mail.client.entity.EmailRequestEntity;
 import com.ecaservice.core.mail.client.event.model.EmailEvent;
 import com.ecaservice.core.mail.client.mapping.EmailRequestMapper;
 import com.ecaservice.core.mail.client.service.EmailRequestSender;
+import com.ecaservice.notification.dto.EmailRequest;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,8 +28,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class EmailEventHandler {
 
+    private final EcaMailClientProperties ecaMailClientProperties;
     private final EmailRequestSender emailRequestSender;
     private final EmailRequestMapper emailRequestMapper;
+    private final EncryptorBase64AdapterService encryptorBase64AdapterService;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     /**
@@ -43,11 +50,23 @@ public class EmailEventHandler {
                     .map(duration -> LocalDateTime.now().plusMinutes(duration))
                     .orElse(null);
             emailRequestEntity.setExpiredAt(expiredAt);
-            emailRequestEntity.setRequestJson(objectMapper.writeValueAsString(emailRequest));
+            setRequestJson(emailRequest, emailRequestEntity);
             emailRequestSender.sendEmail(emailRequest, emailRequestEntity);
         } catch (Exception ex) {
             log.error("There was an error while sent email request [{}]: {}", emailRequest.getTemplateCode(),
                     ex.getMessage());
+        }
+    }
+
+    private void setRequestJson(EmailRequest emailRequest, EmailRequestEntity emailRequestEntity)
+            throws JsonProcessingException {
+        String requestJson = objectMapper.writeValueAsString(emailRequest);
+        if (Boolean.TRUE.equals(ecaMailClientProperties.getEncrypt().getEnabled())) {
+            String jsonRequestCipher = encryptorBase64AdapterService.encrypt(requestJson);
+            emailRequestEntity.setRequestJson(jsonRequestCipher);
+            emailRequestEntity.setEncrypted(true);
+        } else {
+            emailRequestEntity.setRequestJson(requestJson);
         }
     }
 }

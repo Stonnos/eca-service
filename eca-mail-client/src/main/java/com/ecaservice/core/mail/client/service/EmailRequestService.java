@@ -1,11 +1,13 @@
 package com.ecaservice.core.mail.client.service;
 
+import com.ecaservice.common.web.crypto.EncryptorBase64AdapterService;
 import com.ecaservice.core.lock.annotation.TryLocked;
 import com.ecaservice.core.mail.client.config.EcaMailClientProperties;
 import com.ecaservice.core.mail.client.entity.EmailRequestEntity;
 import com.ecaservice.core.mail.client.entity.EmailRequestStatus;
 import com.ecaservice.core.mail.client.repository.EmailRequestRepository;
 import com.ecaservice.notification.dto.EmailRequest;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +38,7 @@ public class EmailRequestService {
 
     private final EcaMailClientProperties ecaMailClientProperties;
     private final EmailRequestSender emailRequestSender;
+    private final EncryptorBase64AdapterService encryptorBase64AdapterService;
     private final EmailRequestRepository emailRequestRepository;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -91,9 +94,19 @@ public class EmailRequestService {
         emailRequestRepository.saveAll(emailRequestEntities);
     }
 
+    private EmailRequest getEmailRequest(EmailRequestEntity emailRequestEntity) throws JsonProcessingException {
+        String requestJson;
+        if (emailRequestEntity.isEncrypted()) {
+            requestJson = encryptorBase64AdapterService.decrypt(emailRequestEntity.getRequestJson());
+        } else {
+            requestJson = emailRequestEntity.getRequestJson();
+        }
+        return objectMapper.readValue(requestJson, EmailRequest.class);
+    }
+
     private void sendEmailRequest(EmailRequestEntity emailRequestEntity) {
         try {
-            var emailRequest = objectMapper.readValue(emailRequestEntity.getRequestJson(), EmailRequest.class);
+            var emailRequest = getEmailRequest(emailRequestEntity);
             emailRequestSender.sendEmail(emailRequest, emailRequestEntity);
         } catch (Exception ex) {
             log.error("Unknown error while sending email request [{}]: {}", emailRequestEntity.getTemplateCode(),

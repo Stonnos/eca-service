@@ -1,5 +1,7 @@
 package com.ecaservice.core.mail.client.event;
 
+import com.ecaservice.common.web.crypto.EncryptorBase64AdapterService;
+import com.ecaservice.core.mail.client.config.EcaMailClientProperties;
 import com.ecaservice.core.mail.client.entity.EmailRequestEntity;
 import com.ecaservice.core.mail.client.event.model.EmailEvent;
 import com.ecaservice.core.mail.client.mapping.EmailRequestMapperImpl;
@@ -7,8 +9,10 @@ import com.ecaservice.core.mail.client.service.EmailRequestSender;
 import com.ecaservice.notification.dto.EmailRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
@@ -24,7 +28,9 @@ import static org.mockito.Mockito.verify;
  * @author Roman Batygin
  */
 @ExtendWith(SpringExtension.class)
-@Import({EmailEventHandler.class, EmailRequestMapperImpl.class})
+@EnableConfigurationProperties
+@TestPropertySource("classpath:application.properties")
+@Import({EmailEventHandler.class, EmailRequestMapperImpl.class, EcaMailClientProperties.class})
 class EmailEventHandlerTest {
 
     private static final long REQUEST_CACHE_DURATION_IN_MINUTES = 30L;
@@ -34,6 +40,8 @@ class EmailEventHandlerTest {
 
     @MockBean
     private EmailRequestSender emailRequestSender;
+    @MockBean
+    private EncryptorBase64AdapterService encryptorBase64AdapterService;
 
     @Test
     void testHandleEmailEvent() {

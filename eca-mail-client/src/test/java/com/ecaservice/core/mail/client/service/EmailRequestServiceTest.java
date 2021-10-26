@@ -1,5 +1,6 @@
 package com.ecaservice.core.mail.client.service;
 
+import com.ecaservice.common.web.crypto.EncryptorBase64AdapterService;
 import com.ecaservice.core.mail.client.AbstractJpaTest;
 import com.ecaservice.core.mail.client.config.EcaMailClientProperties;
 import com.ecaservice.core.mail.client.entity.EmailRequestEntity;
@@ -39,6 +40,8 @@ class EmailRequestServiceTest extends AbstractJpaTest {
 
     @MockBean
     private EmailRequestSender emailRequestSender;
+    @MockBean
+    private EncryptorBase64AdapterService encryptorBase64AdapterService;
 
     @Override
     public void deleteAll() {
