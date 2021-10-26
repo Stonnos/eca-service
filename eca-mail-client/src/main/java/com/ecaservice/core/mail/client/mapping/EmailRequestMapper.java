@@ -19,12 +19,4 @@ public interface EmailRequestMapper {
      * @return email request entity
      */
     EmailRequestEntity map(EmailRequest emailRequest);
-
-    /**
-     * Maps email request entity to dto model.
-     *
-     * @param emailRequestEntity - email request entity
-     * @return email request dto
-     */
-    EmailRequest map(EmailRequestEntity emailRequestEntity);
 }

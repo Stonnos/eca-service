@@ -11,7 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 
-import static com.ecaservice.core.mail.client.util.Constraints.VARIABLES_JSON_LENGTH;
+import static com.ecaservice.core.mail.client.util.Constraints.REQUEST_JSON_LENGTH;
 
 /**
  * Email request entity.
@@ -51,10 +51,10 @@ public class EmailRequestEntity {
     private LocalDateTime created;
 
     /**
-     * Template variables in json format
+     * Email request in json format
      */
-    @Column(name = "variables_json", length = VARIABLES_JSON_LENGTH)
-    private String variablesJson;
+    @Column(name = "request_json", length = REQUEST_JSON_LENGTH)
+    private String requestJson;
 
     /**
      * Is template variables encrypted?

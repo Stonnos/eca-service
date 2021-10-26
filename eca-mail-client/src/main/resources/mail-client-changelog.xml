@@ -24,7 +24,9 @@
             <column name="created" type="timestamp">
                 <constraints nullable="false"/>
             </column>
-            <column name="variables_json" type="varchar(2000)"/>
+            <column name="request_json" type="varchar(2000)">
+                <constraints nullable="false"/>
+            </column>
             <column name="encrypted" type="boolean" defaultValueBoolean="false"/>
             <column name="request_status" type="varchar(255)">
                 <constraints nullable="false"/>

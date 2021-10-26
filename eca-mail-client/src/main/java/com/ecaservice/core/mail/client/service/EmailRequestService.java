@@ -4,8 +4,9 @@ import com.ecaservice.core.lock.annotation.TryLocked;
 import com.ecaservice.core.mail.client.config.EcaMailClientProperties;
 import com.ecaservice.core.mail.client.entity.EmailRequestEntity;
 import com.ecaservice.core.mail.client.entity.EmailRequestStatus;
-import com.ecaservice.core.mail.client.mapping.EmailRequestMapper;
 import com.ecaservice.core.mail.client.repository.EmailRequestRepository;
+import com.ecaservice.notification.dto.EmailRequest;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -21,7 +22,6 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 import static com.ecaservice.core.mail.client.config.EcaMailClientAutoConfiguration.MAIL_LOCK_REGISTRY;
-import static com.ecaservice.core.mail.client.util.Utils.readVariables;
 
 /**
  * Audit redelivery service.
@@ -35,9 +35,9 @@ import static com.ecaservice.core.mail.client.util.Utils.readVariables;
 public class EmailRequestService {
 
     private final EcaMailClientProperties ecaMailClientProperties;
-    private final EmailRequestMapper emailRequestMapper;
     private final EmailRequestSender emailRequestSender;
     private final EmailRequestRepository emailRequestRepository;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     /**
      * Redeliver not sent email requests.
@@ -93,9 +93,7 @@ public class EmailRequestService {
 
     private void sendEmailRequest(EmailRequestEntity emailRequestEntity) {
         try {
-            var emailRequest = emailRequestMapper.map(emailRequestEntity);
-            var variables = readVariables(emailRequestEntity.getVariablesJson());
-            emailRequest.setVariables(variables);
+            var emailRequest = objectMapper.readValue(emailRequestEntity.getRequestJson(), EmailRequest.class);
             emailRequestSender.sendEmail(emailRequest, emailRequestEntity);
         } catch (Exception ex) {
             log.error("Unknown error while sending email request [{}]: {}", emailRequestEntity.getTemplateCode(),

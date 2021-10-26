@@ -30,7 +30,7 @@ import static org.mockito.Mockito.verify;
 @Import({EmailRequestService.class, EmailRequestMapperImpl.class, EcaMailClientProperties.class})
 class EmailRequestServiceTest extends AbstractJpaTest {
 
-    private static final String INVALID_VARIABLES_JSON = "abc";
+    private static final String INVALID_REQUEST_JSON = "abc";
 
     @Inject
     private EmailRequestRepository emailRequestRepository;
@@ -61,7 +61,7 @@ class EmailRequestServiceTest extends AbstractJpaTest {
     @Test
     void testProcessNotSentEventWithError() {
         var emailRequestEntity = createEmailRequestEntity(EmailRequestStatus.NOT_SENT, null);
-        emailRequestEntity.setVariablesJson(INVALID_VARIABLES_JSON);
+        emailRequestEntity.setRequestJson(INVALID_REQUEST_JSON);
         emailRequestRepository.save(emailRequestEntity);
         emailRequestService.processNotSentEmailRequests();
         verify(emailRequestSender, never()).sendEmail(any(EmailRequest.class),

@@ -3,6 +3,7 @@ package com.ecaservice.core.mail.client.event;
 import com.ecaservice.core.mail.client.event.model.EmailEvent;
 import com.ecaservice.core.mail.client.mapping.EmailRequestMapper;
 import com.ecaservice.core.mail.client.service.EmailRequestSender;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -10,8 +11,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
-
-import static com.ecaservice.core.mail.client.util.Utils.toJson;
 
 
 /**
@@ -26,6 +25,7 @@ public class EmailEventHandler {
 
     private final EmailRequestSender emailRequestSender;
     private final EmailRequestMapper emailRequestMapper;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     /**
      * Handles email event.
@@ -43,7 +43,7 @@ public class EmailEventHandler {
                     .map(duration -> LocalDateTime.now().plusMinutes(duration))
                     .orElse(null);
             emailRequestEntity.setExpiredAt(expiredAt);
-            emailRequestEntity.setVariablesJson(toJson(emailRequest.getVariables()));
+            emailRequestEntity.setRequestJson(objectMapper.writeValueAsString(emailRequest));
             emailRequestSender.sendEmail(emailRequest, emailRequestEntity);
         } catch (Exception ex) {
             log.error("There was an error while sent email request [{}]: {}", emailRequest.getTemplateCode(),

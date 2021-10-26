@@ -13,5 +13,5 @@ public class Constraints {
     /**
      * Variables json length.
      */
-    public static final int VARIABLES_JSON_LENGTH = 2000;
+    public static final int REQUEST_JSON_LENGTH = 2000;
 }
