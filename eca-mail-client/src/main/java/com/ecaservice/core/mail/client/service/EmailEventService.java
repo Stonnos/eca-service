@@ -44,6 +44,7 @@ public class EmailEventService {
                 emailEvent.getSource().getClass().getSimpleName());
         try {
             var emailRequestEntity = emailRequestMapper.map(emailRequest);
+            emailRequestEntity.setCreated(LocalDateTime.now());
             var expiredAt = Optional.ofNullable(emailEvent.getRequestCacheDurationInMinutes())
                     .map(duration -> LocalDateTime.now().plusMinutes(duration))
                     .orElse(null);

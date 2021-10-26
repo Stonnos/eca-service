@@ -92,6 +92,7 @@ public class EmailRequestService {
         emailRequestEntities.forEach(
                 emailRequestEntity -> emailRequestEntity.setRequestStatus(EmailRequestStatus.EXCEEDED));
         emailRequestRepository.saveAll(emailRequestEntities);
+        log.info("[{}] email requests has been marked as exceeded", emailRequestEntities.size());
     }
 
     private EmailRequest getEmailRequest(EmailRequestEntity emailRequestEntity) throws JsonProcessingException {
