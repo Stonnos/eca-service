@@ -24,7 +24,6 @@ eureka:
 app:
   notifications:
     webPushesEnabled: true
-    emailsEnabled: true
 
 ## Swagger properties
 open-api:
