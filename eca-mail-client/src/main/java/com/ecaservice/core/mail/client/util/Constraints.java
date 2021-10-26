@@ -11,7 +11,7 @@ import lombok.experimental.UtilityClass;
 public class Constraints {
 
     /**
-     * Variables json length.
+     * Request json length.
      */
     public static final int REQUEST_JSON_LENGTH = 2000;
 }
