@@ -49,6 +49,7 @@ public class NotificationEventListener {
         log.info("Starting to sent email template [{}] to [{}]", emailRequest.getTemplateCode(),
                 emailRequest.getReceiver());
         EmailEvent emailEvent = new EmailEvent(this, emailRequest);
+        emailEvent.setRequestCacheDurationInMinutes(eventHandler.getRequestCacheDurationInMinutes());
         applicationEventPublisher.publishEvent(emailEvent);
     }
 }

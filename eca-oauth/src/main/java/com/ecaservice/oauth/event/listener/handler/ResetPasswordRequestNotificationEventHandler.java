@@ -45,4 +45,9 @@ public class ResetPasswordRequestNotificationEventHandler
                 String.valueOf(appProperties.getResetPassword().getValidityMinutes()));
         return templateVariables;
     }
+
+    @Override
+    public Long getRequestCacheDurationInMinutes() {
+        return appProperties.getResetPassword().getValidityMinutes();
+    }
 }

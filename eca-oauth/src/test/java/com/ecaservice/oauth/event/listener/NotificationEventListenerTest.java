@@ -2,6 +2,7 @@ package com.ecaservice.oauth.event.listener;
 
 import com.ecaservice.core.mail.client.event.model.EmailEvent;
 import com.ecaservice.oauth.config.AppProperties;
+import com.ecaservice.oauth.config.TfaConfig;
 import com.ecaservice.oauth.event.listener.handler.AbstractNotificationEventHandler;
 import com.ecaservice.oauth.event.model.AbstractNotificationEvent;
 import com.ecaservice.oauth.event.model.ChangeEmailRequestNotificationEvent;
@@ -48,7 +49,7 @@ import static org.mockito.Mockito.verify;
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
 @ComponentScan(basePackageClasses = AbstractNotificationEventHandler.class)
-@Import({NotificationEventListener.class, AppProperties.class})
+@Import({NotificationEventListener.class, AppProperties.class, TfaConfig.class})
 class NotificationEventListenerTest {
 
     private static final String TFA_CODE = "code";
