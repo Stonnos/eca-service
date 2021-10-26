@@ -37,6 +37,11 @@ experiment:
   data:
     storagePath: /home/experiment/data/
 
+mail:
+  client:
+    enabled: true
+    redelivery: true
+
 auth-server:
   baseUrl: http://eca-oauth:8080
 

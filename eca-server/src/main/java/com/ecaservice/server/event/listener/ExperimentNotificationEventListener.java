@@ -4,7 +4,7 @@ import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.event.model.ExperimentEmailEvent;
 import com.ecaservice.server.event.model.ExperimentWebPushEvent;
 import com.ecaservice.server.model.entity.Experiment;
-import com.ecaservice.server.service.experiment.visitor.ExperimentEmailVisitor;
+import com.ecaservice.server.service.experiment.mail.NotificationService;
 import com.ecaservice.server.service.push.WebPushService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
 public class ExperimentNotificationEventListener {
 
     private final AppProperties appProperties;
-    private final ExperimentEmailVisitor experimentEmailVisitor;
+    private final NotificationService notificationService;
     private final WebPushService webPushService;
 
     /**
@@ -35,11 +35,7 @@ public class ExperimentNotificationEventListener {
         Experiment experiment = experimentEmailEvent.getExperiment();
         log.info("Handles experiment [{}] email event from source [{}]", experiment.getRequestId(),
                 experimentEmailEvent.getSource().getClass().getSimpleName());
-        if (!Boolean.TRUE.equals(appProperties.getNotifications().getEmailsEnabled())) {
-            log.warn("Emails sending are disabled. You may set [app.notifications.emailsEnabled] property");
-        } else {
-            experiment.getRequestStatus().handle(experimentEmailVisitor, experiment);
-        }
+        notificationService.notifyByEmail(experiment);
     }
 
     /**

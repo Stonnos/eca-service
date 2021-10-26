@@ -1,11 +1,12 @@
 package com.ecaservice.server.service.experiment.mail;
 
+import com.ecaservice.core.mail.client.event.model.EmailEvent;
 import com.ecaservice.notification.dto.EmailRequest;
-import com.ecaservice.notification.dto.EmailResponse;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.service.experiment.visitor.EmailTemplateVisitor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 /**
@@ -19,7 +20,7 @@ import org.springframework.stereotype.Service;
 public class NotificationService {
 
     private final EmailTemplateVisitor statusTemplateVisitor;
-    private final EmailClient emailClient;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     /**
      * Sends email message based on experiment status.
@@ -30,8 +31,9 @@ public class NotificationService {
         log.info("Starting to send email request for experiment [{}] with status [{}].", experiment.getRequestId(),
                 experiment.getRequestStatus());
         EmailRequest emailRequest = experiment.getRequestStatus().handle(statusTemplateVisitor, experiment);
-        EmailResponse emailResponse = emailClient.sendEmail(emailRequest);
-        log.info("Email request [{}] has been successfully sent for experiment [{}], experiment status [{}].",
-                emailResponse.getRequestId(), experiment.getRequestId(), experiment.getRequestStatus());
+        EmailEvent emailEvent = new EmailEvent(this, emailRequest);
+        applicationEventPublisher.publishEvent(emailEvent);
+        log.info("Email request has been sent for experiment [{}], experiment status [{}].", experiment.getRequestId(),
+                experiment.getRequestStatus());
     }
 }

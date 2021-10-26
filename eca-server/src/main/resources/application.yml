@@ -60,7 +60,6 @@ app:
   threadPoolSize: 10
   notifications:
     webPushesEnabled: false
-    emailsEnabled: false
 
 ## Queues properties
 queue:
