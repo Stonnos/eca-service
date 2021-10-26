@@ -26,4 +26,5 @@
     <include file="../audit-changelog.xml" relativeToChangelogFile="true"/>
     <include file="db/changelog/v19-insert-audit-codes-and-events.xml"/>
     <include file="db/changelog/v20-create-change-email-request-table.xml"/>
+    <include file="../mail-client-changelog.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

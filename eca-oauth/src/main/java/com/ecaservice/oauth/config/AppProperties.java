@@ -30,11 +30,6 @@ public class AppProperties {
     private Integer threadPoolSize;
 
     /**
-     * Emails sending enabled?
-     */
-    private Boolean emailsEnabled;
-
-    /**
      * Web application external base url
      */
     @NotEmpty

@@ -1,5 +1,6 @@
 package com.ecaservice.oauth.integration;
 
+import com.ecaservice.core.mail.client.service.EmailClient;
 import com.ecaservice.notification.dto.EmailRequest;
 import com.ecaservice.notification.dto.EmailResponse;
 import com.ecaservice.oauth.TestHelperUtils;
@@ -10,7 +11,6 @@ import com.ecaservice.oauth.repository.ResetPasswordRequestRepository;
 import com.ecaservice.oauth.repository.RoleRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import com.ecaservice.oauth.service.UserService;
-import com.ecaservice.oauth.service.mail.EmailClient;
 import com.ecaservice.oauth2.test.token.TokenResponse;
 import lombok.Getter;
 import lombok.SneakyThrows;
