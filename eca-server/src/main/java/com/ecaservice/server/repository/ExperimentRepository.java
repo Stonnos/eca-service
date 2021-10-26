@@ -36,8 +36,7 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
      * @param statuses - {@link RequestStatus} collection
      * @return experiments list
      */
-    @Query("select exp from Experiment exp where exp.requestStatus in (:statuses) " +
-            "and exp.sentDate is null order by exp.creationDate")
+    @Query("select exp from Experiment exp where exp.requestStatus in (:statuses) order by exp.creationDate")
     Page<Experiment> findExperimentsForProcessing(@Param("statuses") Collection<RequestStatus> statuses,
                                                   Pageable pageable);
 
@@ -47,8 +46,8 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
      * @param dateTime date time threshold value
      * @return experiments list
      */
-    @Query("select exp from Experiment exp where exp.requestStatus = 'FINISHED' and exp.sentDate is not null and " +
-            "exp.deletedDate is null and exp.sentDate < :dateTime order by exp.sentDate")
+    @Query("select exp from Experiment exp where exp.requestStatus = 'FINISHED' and " +
+            "exp.deletedDate is null and exp.endDate < :dateTime order by exp.endDate")
     List<Experiment> findExperimentsModelsToDelete(@Param("dateTime") LocalDateTime dateTime);
 
     /**
@@ -57,8 +56,8 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
      * @param dateTime date time threshold value
      * @return experiments list
      */
-    @Query("select exp from Experiment exp where exp.sentDate is not null and " +
-            "exp.trainingDataAbsolutePath is not null and exp.sentDate < :dateTime order by exp.sentDate")
+    @Query("select exp from Experiment exp where " +
+            "exp.trainingDataAbsolutePath is not null and exp.creationDate < :dateTime order by exp.creationDate")
     List<Experiment> findExperimentsTrainingDataToDelete(@Param("dateTime") LocalDateTime dateTime);
 
     /**

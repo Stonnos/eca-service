@@ -79,7 +79,6 @@ public abstract class ExperimentMapper extends AbstractEvaluationMapper {
     @Mapping(source = "creationDate", target = "creationDate", qualifiedByName = "formatLocalDateTime")
     @Mapping(source = "startDate", target = "startDate", qualifiedByName = "formatLocalDateTime")
     @Mapping(source = "endDate", target = "endDate", qualifiedByName = "formatLocalDateTime")
-    @Mapping(source = "sentDate", target = "sentDate", qualifiedByName = "formatLocalDateTime")
     @Mapping(source = "deletedDate", target = "deletedDate", qualifiedByName = "formatLocalDateTime")
     public abstract ExperimentBean mapToBean(Experiment experiment);
 

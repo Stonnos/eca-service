@@ -327,7 +327,6 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |training_data_absolute_path  |varchar(255)     |-|-|-                                 |Абсолютный путь к файлу с обучающей выборкой
 |experiment_absolute_path     |varchar(255)     |-|-|-                                 |Абсолютный путь к файлу с результатами эксперимента
 |error_message                |text             |-|-|-                                 |Текст ошибки
-|sent_date                    |timestamp        |-|-|-                                 |Дата отправки email с результатами эксперимента пользователю
 |deleted_date                 |timestamp        |-|-|-                                 |Дата удаления файлов с результатами эксперимента
 |token                        |varchar(255)     |-|-|-                                 |Токен для скачивания результатов эксперимента с сервера
 |channel_type                 |varchar(255)     |-|+|-                                 |Канал поступления заявки (QUEUE или WEB)

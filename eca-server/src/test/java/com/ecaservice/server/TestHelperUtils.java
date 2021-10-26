@@ -259,21 +259,6 @@ public class TestHelperUtils {
     }
 
     /**
-     * Creates sent experiment.
-     *
-     * @param requestId        - request id
-     * @param experimentStatus - experiment status
-     * @param sentDate         - sent date
-     * @return created experiment
-     */
-    public static Experiment createSentExperiment(String requestId, RequestStatus experimentStatus,
-                                                  LocalDateTime sentDate) {
-        Experiment experiment = createExperiment(requestId, experimentStatus);
-        experiment.setSentDate(sentDate);
-        return experiment;
-    }
-
-    /**
      * Creates experiment initialization params.
      *
      * @param data training data

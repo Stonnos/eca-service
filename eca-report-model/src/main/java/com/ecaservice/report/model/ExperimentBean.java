@@ -38,11 +38,6 @@ public class ExperimentBean extends EvaluationBean {
     private String trainingDataAbsolutePath;
 
     /**
-     * Date when experiment results is sent
-     */
-    private String sentDate;
-
-    /**
      * Experiment files deleted date
      */
     private String deletedDate;

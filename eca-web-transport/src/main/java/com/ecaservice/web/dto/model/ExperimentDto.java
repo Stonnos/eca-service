@@ -46,14 +46,6 @@ public class ExperimentDto extends AbstractEvaluationDto {
     private String trainingDataAbsolutePath;
 
     /**
-     * Date when experiment results is sent
-     */
-    @Schema(description = "Experiment results sent date", type = "string", example = "2021-07-01 14:00:00")
-    @JsonFormat(pattern = DATE_TIME_PATTERN)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    private LocalDateTime sentDate;
-
-    /**
      * Experiment files deleted date
      */
     @Schema(description = "Experiment files delete date", type = "string", example = "2021-07-01 14:00:00")

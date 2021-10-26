@@ -58,12 +58,6 @@ public class Experiment extends AbstractEvaluationEntity {
     private Integer classIndex;
 
     /**
-     * Date when experiment results notification is sent to email service
-     */
-    @Column(name = "sent_date")
-    private LocalDateTime sentDate;
-
-    /**
      * Experiment files deleted date
      */
     @Column(name = "deleted_date")
