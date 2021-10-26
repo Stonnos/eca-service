@@ -1,4 +1,4 @@
-package com.ecaservice.core.mail.client.event;
+package com.ecaservice.core.mail.client.event.listener;
 
 import com.ecaservice.core.mail.client.event.model.EmailEvent;
 import com.ecaservice.core.mail.client.service.EmailEventService;
