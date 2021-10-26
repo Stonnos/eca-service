@@ -24,6 +24,16 @@ public class EcaMailClientProperties {
     private Boolean enabled;
 
     /**
+     * Use async sending?
+     */
+    private Boolean async;
+
+    /**
+     * Thread pool size
+     */
+    private Integer threadPoolSize = DEFAULT_THREAD_POOL_SIZE;
+
+    /**
      * Page size (used for pagination)
      */
     private Integer pageSize = DEFAULT_PAGE_SIZE;

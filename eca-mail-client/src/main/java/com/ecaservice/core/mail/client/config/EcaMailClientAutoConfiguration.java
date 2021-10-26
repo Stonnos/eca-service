@@ -14,8 +14,11 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.security.crypto.encrypt.AesBytesEncryptor;
+
+import java.util.concurrent.Executor;
 
 import static com.ecaservice.common.web.crypto.factory.EncryptFactory.getAesBytesEncryptor;
 
@@ -36,6 +39,10 @@ import static com.ecaservice.common.web.crypto.factory.EncryptFactory.getAesByte
 public class EcaMailClientAutoConfiguration {
 
     /**
+     * Mail client thread pool task executor bean
+     */
+    public static final String MAIL_CLIENT_THREAD_POOL_TASK_EXECUTOR = "mailClientThreadPoolTaskExecutor";
+    /**
      * Mail client thread pool task scheduler executor bean
      */
     public static final String MAIL_THREAD_POOL_TASK_SCHEDULER = "mailThreadPoolTaskScheduler";
@@ -43,6 +50,21 @@ public class EcaMailClientAutoConfiguration {
      * Mail lock registry bean
      */
     public static final String MAIL_LOCK_REGISTRY = "mailLockRegistry";
+
+    /**
+     * Creates thread pool task executor bean.
+     *
+     * @param ecaMailClientProperties - eca mail client properties
+     * @return thread pool task executor
+     */
+    @Bean(name = MAIL_CLIENT_THREAD_POOL_TASK_EXECUTOR)
+    @ConditionalOnProperty(value = "mail.client.async", havingValue = "true")
+    public Executor mailClientEventThreadPoolTaskExecutor(EcaMailClientProperties ecaMailClientProperties) {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(ecaMailClientProperties.getThreadPoolSize());
+        executor.setMaxPoolSize(ecaMailClientProperties.getThreadPoolSize());
+        return executor;
+    }
 
     /**
      * Creates mail client thread pool task scheduler bean.

@@ -6,7 +6,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+
+import static com.ecaservice.core.mail.client.config.EcaMailClientAutoConfiguration.MAIL_CLIENT_THREAD_POOL_TASK_EXECUTOR;
 
 
 /**
@@ -16,9 +19,9 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-@ConditionalOnProperty(value = "mail.client.async", havingValue = "false", matchIfMissing = true)
+@ConditionalOnProperty(value = "mail.client.async", havingValue = "true")
 @RequiredArgsConstructor
-public class EmailEventHandler {
+public class AsyncEmailEventHandler {
 
     private final EmailEventService emailEventService;
 
@@ -27,6 +30,7 @@ public class EmailEventHandler {
      *
      * @param emailEvent - email event
      */
+    @Async(MAIL_CLIENT_THREAD_POOL_TASK_EXECUTOR)
     @EventListener
     public void handleEmailEvent(EmailEvent emailEvent) {
         emailEventService.handleEmailEvent(emailEvent);

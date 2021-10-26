@@ -1,11 +1,10 @@
-package com.ecaservice.core.mail.client.event;
+package com.ecaservice.core.mail.client.service;
 
 import com.ecaservice.common.web.crypto.EncryptorBase64AdapterService;
 import com.ecaservice.core.mail.client.config.EcaMailClientProperties;
 import com.ecaservice.core.mail.client.entity.EmailRequestEntity;
 import com.ecaservice.core.mail.client.event.model.EmailEvent;
 import com.ecaservice.core.mail.client.mapping.EmailRequestMapperImpl;
-import com.ecaservice.core.mail.client.service.EmailRequestSender;
 import com.ecaservice.notification.dto.EmailRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,20 +22,20 @@ import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 
 /**
- * Unit tests for {@link EmailEventHandler} class.
+ * Unit tests for {@link EmailEventService} class.
  *
  * @author Roman Batygin
  */
 @ExtendWith(SpringExtension.class)
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
-@Import({EmailEventHandler.class, EmailRequestMapperImpl.class, EcaMailClientProperties.class})
-class EmailEventHandlerTest {
+@Import({EmailEventService.class, EmailRequestMapperImpl.class, EcaMailClientProperties.class})
+class EmailEventServiceTest {
 
     private static final long REQUEST_CACHE_DURATION_IN_MINUTES = 30L;
 
     @Inject
-    private EmailEventHandler emailEventHandler;
+    private EmailEventService emailEventService;
 
     @MockBean
     private EmailRequestSender emailRequestSender;
@@ -48,7 +47,7 @@ class EmailEventHandlerTest {
         var emailRequest = createEmailRequest();
         var emailEvent = new EmailEvent(this, emailRequest);
         emailEvent.setRequestCacheDurationInMinutes(REQUEST_CACHE_DURATION_IN_MINUTES);
-        emailEventHandler.handleEmailEvent(emailEvent);
+        emailEventService.handleEmailEvent(emailEvent);
         verify(emailRequestSender, atLeastOnce()).sendEmail(any(EmailRequest.class), any(EmailRequestEntity.class));
     }
 }
