@@ -130,7 +130,7 @@ public class EmailClientLockConfiguration {
 |priority                |integer          |-|-|-                              |Приоритет отправки
 |created                 |timestamp        |-|+|-                              |Дата создания запроса
 |request_json            |varchar(2000)    |-|+|-                              |Структура запроса в сервис eca-mail в формате json
-|encrypted               |boolean          |-|-|-                              |Флаг равен true, структура запроса (requestJson) хранится в зашифрованном виде
+|encrypted               |boolean          |-|-|-                              |Флаг равен true, если структура запроса (requestJson) хранится в зашифрованном виде
 |request_status          |varchar(255)     |-|+|-                              |Статус отправки (SENT, NOT_SENT, ERROR, EXCEEDED)
 |request_id              |varchar(255)     |-|-|-                              |UUID запроса в eca-mail
 |sent_date               |timestamp        |-|-|-                              |Дата успешной отправки запроса в eca-mail
