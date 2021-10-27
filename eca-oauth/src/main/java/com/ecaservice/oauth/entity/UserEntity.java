@@ -89,6 +89,12 @@ public class UserEntity {
     private LocalDateTime passwordDate;
 
     /**
+     * Password expiration date
+     */
+    @Column(name = "password_expired_at")
+    private LocalDateTime passwordExpiredAt;
+
+    /**
      * User roles
      */
     @ManyToMany(fetch = FetchType.EAGER)

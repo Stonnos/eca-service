@@ -98,6 +98,7 @@ public class ResetPasswordService {
         }
         userEntity.setPassword(passwordEncoder.encode(resetPasswordRequest.getPassword().trim()));
         userEntity.setPasswordDate(LocalDateTime.now());
+        userEntity.setPasswordExpiredAt(null);
         resetPasswordRequestEntity.setResetDate(LocalDateTime.now());
         userEntityRepository.save(userEntity);
         resetPasswordRequestRepository.save(resetPasswordRequestEntity);

@@ -97,6 +97,7 @@ public class ChangePasswordService {
         }
         userEntity.setPassword(changePasswordRequestEntity.getNewPassword());
         userEntity.setPasswordDate(LocalDateTime.now());
+        userEntity.setPasswordExpiredAt(null);
         changePasswordRequestEntity.setConfirmationDate(LocalDateTime.now());
         userEntityRepository.save(userEntity);
         changePasswordRequestRepository.save(changePasswordRequestEntity);

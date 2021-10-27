@@ -3,6 +3,7 @@ package com.ecaservice.oauth.config.granter;
 import com.ecaservice.oauth.config.TfaConfig;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.event.model.TfaCodeNotificationEvent;
+import com.ecaservice.oauth.exception.PasswordExpiredException;
 import com.ecaservice.oauth.exception.TfaRequiredException;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import org.springframework.context.ApplicationEventPublisher;
@@ -15,6 +16,8 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.TokenRequest;
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.password.ResourceOwnerPasswordTokenGranter;
+
+import java.time.LocalDateTime;
 
 /**
  * Resource owner password granter implementation for two factor authentication support.
@@ -55,16 +58,22 @@ public class TfaResourceOwnerPasswordTokenGranter extends ResourceOwnerPasswordT
     @Override
     protected OAuth2AccessToken getAccessToken(ClientDetails client, TokenRequest tokenRequest) {
         OAuth2Authentication oAuth2Authentication = getOAuth2Authentication(client, tokenRequest);
-        if (Boolean.TRUE.equals(tfaConfig.getEnabled())) {
-            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                    (UsernamePasswordAuthenticationToken) oAuth2Authentication.getUserAuthentication();
-            UserEntity userEntity = userEntityRepository.findUser(usernamePasswordAuthenticationToken.getName());
-            if (userEntity.isTfaEnabled()) {
-                String code = authorizationCodeServices.createAuthorizationCode(oAuth2Authentication);
-                applicationEventPublisher.publishEvent(new TfaCodeNotificationEvent(this, userEntity, code));
-                throw new TfaRequiredException(tfaConfig.getCodeValiditySeconds());
-            }
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                (UsernamePasswordAuthenticationToken) oAuth2Authentication.getUserAuthentication();
+        UserEntity userEntity = userEntityRepository.findUser(usernamePasswordAuthenticationToken.getName());
+        checkPasswordExpiration(userEntity);
+        if (Boolean.TRUE.equals(tfaConfig.getEnabled()) && userEntity.isTfaEnabled()) {
+            String code = authorizationCodeServices.createAuthorizationCode(oAuth2Authentication);
+            applicationEventPublisher.publishEvent(new TfaCodeNotificationEvent(this, userEntity, code));
+            throw new TfaRequiredException(tfaConfig.getCodeValiditySeconds());
         }
         return getTokenServices().createAccessToken(oAuth2Authentication);
+    }
+
+    private void checkPasswordExpiration(UserEntity userEntity) {
+        if (userEntity.getPasswordExpiredAt() != null &&
+                userEntity.getPasswordExpiredAt().isBefore(LocalDateTime.now())) {
+            throw new PasswordExpiredException();
+        }
     }
 }
