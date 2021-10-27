@@ -1,7 +1,8 @@
 package com.ecaservice.oauth.integration;
 
+import com.ecaservice.core.mail.client.entity.EmailRequestEntity;
+import com.ecaservice.core.mail.client.service.EmailRequestSender;
 import com.ecaservice.notification.dto.EmailRequest;
-import com.ecaservice.notification.dto.EmailResponse;
 import com.ecaservice.oauth.TestHelperUtils;
 import com.ecaservice.oauth.dto.CreateUserDto;
 import com.ecaservice.oauth.entity.UserEntity;
@@ -10,7 +11,6 @@ import com.ecaservice.oauth.repository.ResetPasswordRequestRepository;
 import com.ecaservice.oauth.repository.RoleRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import com.ecaservice.oauth.service.UserService;
-import com.ecaservice.oauth.service.mail.EmailClient;
 import com.ecaservice.oauth2.test.token.TokenResponse;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -39,7 +39,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * Integration tests for user operations.
@@ -73,7 +72,7 @@ abstract class AbstractUserIT {
     private String clientSecret;
 
     @MockBean
-    private EmailClient emailClient;
+    private EmailRequestSender emailRequestSender;
     @Captor
     private ArgumentCaptor<EmailRequest> emailRequestArgumentCaptor;
 
@@ -117,7 +116,6 @@ abstract class AbstractUserIT {
     abstract String getApiPrefix();
 
     void init() {
-        when(emailClient.sendEmail(any(EmailRequest.class))).thenReturn(new EmailResponse());
         roleRepository.save(TestHelperUtils.createRoleEntity());
         CreateUserDto createUserDto = TestHelperUtils.createUserDto();
         userEntity = userService.createUser(createUserDto, PASSWORD);
@@ -166,7 +164,8 @@ abstract class AbstractUserIT {
     }
 
     String getHttpRequestParamFromEmailUrlVariable(String template, String variable, String tokenRequestParam) {
-        verify(emailClient, atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
+        verify(emailRequestSender, atLeastOnce())
+                .sendEmail(emailRequestArgumentCaptor.capture(), any(EmailRequestEntity.class));
         EmailRequest emailRequest = emailRequestArgumentCaptor.getValue();
         assertThat(emailRequest).isNotNull();
         assertThat(emailRequest.getTemplateCode()).isEqualTo(template);
@@ -180,7 +179,8 @@ abstract class AbstractUserIT {
     }
 
     String getVariableFromEmail(String template, String variable) {
-        verify(emailClient, atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
+        verify(emailRequestSender, atLeastOnce())
+                .sendEmail(emailRequestArgumentCaptor.capture(), any(EmailRequestEntity.class));
         EmailRequest emailRequest = emailRequestArgumentCaptor.getValue();
         assertThat(emailRequest).isNotNull();
         assertThat(emailRequest.getTemplateCode()).isEqualTo(template);

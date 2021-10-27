@@ -184,7 +184,7 @@ public class ApiExamples {
                     "\"seed\": 1, \"evaluationTotalTime\": \"00:00:1:43\", \"firstName\": \"Roman\", " +
                     "\"email\": \"test@mail.ru\", \"experimentAbsolutePath\": " +
                     "\"experiment_1d2de514-3a87-4620-9b97-c260e24340de.model\", \"trainingDataAbsolutePath\": " +
-                    "\"data_1d2de514-3a87-4620-9b97-c260e24340de.xls\", \"sentDate\": \"2021-07-01 14:02:15\", " +
+                    "\"data_1d2de514-3a87-4620-9b97-c260e24340de.xls\", " +
                     "\"deletedDate\": \"2021-07-14 14:00:00\", \"experimentType\": {\"value\": \"RANDOM_FORESTS\", " +
                     "\"description\": \"Случайные леса\"}}], \"page\": 0, \"totalCount\": 1}";
 
@@ -200,7 +200,7 @@ public class ApiExamples {
                     "\"seed\": 1, \"evaluationTotalTime\": \"00:00:1:43\", \"firstName\": \"Roman\", " +
                     "\"email\": \"test@mail.ru\", \"experimentAbsolutePath\": " +
                     "\"experiment_1d2de514-3a87-4620-9b97-c260e24340de.model\", \"trainingDataAbsolutePath\": " +
-                    "\"data_1d2de514-3a87-4620-9b97-c260e24340de.xls\", \"sentDate\": \"2021-07-01 14:02:15\", " +
+                    "\"data_1d2de514-3a87-4620-9b97-c260e24340de.xls\", " +
                     "\"deletedDate\": \"2021-07-14 14:00:00\", \"experimentType\": {\"value\": \"RANDOM_FORESTS\", " +
                     "\"description\": \"Случайные леса\"}}";
 
@@ -235,7 +235,7 @@ public class ApiExamples {
                     "\"test@mail.ru\", \"experimentAbsolutePath\": " +
                     "\"experiment_1d2de514-3a87-4620-9b97-c260e24340de.model\", " +
                     "\"trainingDataAbsolutePath\": \"data_1d2de514-3a87-4620-9b97-c260e24340de.xls\", " +
-                    "\"sentDate\": \"2021-07-01 14:02:15\", \"deletedDate\": \"2021-07-14 14:00:00\", " +
+                    "\"deletedDate\": \"2021-07-14 14:00:00\", " +
                     "\"experimentType\": {\"value\": \"RANDOM_FORESTS\", \"description\": " +
                     "\"Случайные леса\"}}, \"evaluationResultsDto\": {\"evaluationResultsStatus\": " +
                     "{\"value\": \"SUCCESS\", \"description\": \"Успешно\"}, \"evaluationStatisticsDto\": " +
@@ -299,8 +299,6 @@ public class ApiExamples {
             "\"Мод. неоднородный ансамбль\", \"value\": \"MODIFIED_HETEROGENEOUS_ENSEMBLE\"}, {\"label\": " +
             "\"Алгоритм KNN\", \"value\": \"KNN\"}]}}, {\"fieldName\": \"creationDate\", \"description\": " +
             "\"Дата создания заявки\", \"fieldOrder\": 5, \"filterFieldType\": \"DATE\", \"matchMode\": " +
-            "\"RANGE\", \"multiple\": true, \"dictionary\": null}, {\"fieldName\": \"sentDate\", \"description\": " +
-            "\"Дата отправки результатов\", \"fieldOrder\": 6, \"filterFieldType\": \"DATE\", \"matchMode\": " +
             "\"RANGE\", \"multiple\": true, \"dictionary\": null}]";
 
     /**

@@ -76,7 +76,6 @@ class ExperimentMapperTest {
         experiment.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
         experiment.setStartDate(LocalDateTime.now().plusHours(1L));
         experiment.setEndDate(experiment.getStartDate().minusMinutes(1L));
-        experiment.setSentDate(experiment.getEndDate().plusMinutes(1L));
         experiment.setDeletedDate(experiment.getEndDate().plusMinutes(1L));
         experiment.setTrainingDataAbsolutePath(TRAINING_DATA_ABSOLUTE_PATH);
         experiment.setExperimentAbsolutePath(EXPERIMENT_ABSOLUTE_PATH);
@@ -90,7 +89,6 @@ class ExperimentMapperTest {
         assertThat(experimentDto.getCreationDate()).isEqualTo(experiment.getCreationDate());
         assertThat(experimentDto.getStartDate()).isEqualTo(experiment.getStartDate());
         assertThat(experimentDto.getEndDate()).isEqualTo(experiment.getEndDate());
-        assertThat(experimentDto.getSentDate()).isEqualTo(experiment.getSentDate());
         assertThat(experimentDto.getDeletedDate()).isEqualTo(experiment.getDeletedDate());
         assertThat(experimentDto.getEvaluationMethod().getDescription()).isEqualTo(
                 experiment.getEvaluationMethod().getDescription());
@@ -127,7 +125,6 @@ class ExperimentMapperTest {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
         experiment.setStartDate(LocalDateTime.now());
         experiment.setEndDate(LocalDateTime.now());
-        experiment.setSentDate(LocalDateTime.now());
         experiment.setDeletedDate(LocalDateTime.now());
         experiment.setTrainingDataAbsolutePath(TRAINING_DATA_ABSOLUTE_PATH);
         experiment.setExperimentAbsolutePath(EXPERIMENT_ABSOLUTE_PATH);
@@ -138,7 +135,6 @@ class ExperimentMapperTest {
         assertThat(experimentBean.getCreationDate()).isNotNull();
         assertThat(experimentBean.getStartDate()).isNotNull();
         assertThat(experimentBean.getEndDate()).isNotNull();
-        assertThat(experimentBean.getSentDate()).isNotNull();
         assertThat(experimentBean.getDeletedDate()).isNotNull();
         assertThat(experimentBean.getEvaluationMethod()).isNotNull();
         assertThat(experimentBean.getRequestStatus()).isEqualTo(experiment.getRequestStatus().getDescription());

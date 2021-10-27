@@ -20,6 +20,12 @@ eureka:
 app:
   webExternalBaseUrl: http://localhost:8080
 
+mail:
+  client:
+    enabled: true
+    redelivery: true
+    redeliveryIntervalMillis: 15000
+
 ## Swagger properties
 open-api:
   tokenBaseUrl: http://localhost:8080/eca-oauth

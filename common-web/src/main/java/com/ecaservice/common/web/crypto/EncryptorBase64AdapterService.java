@@ -1,4 +1,4 @@
-package com.ecaservice.mail.service;
+package com.ecaservice.common.web.crypto;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.encrypt.BytesEncryptor;

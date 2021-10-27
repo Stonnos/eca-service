@@ -1,8 +1,8 @@
 package com.ecaservice.oauth.event.listener;
 
-import com.ecaservice.notification.dto.EmailRequest;
-import com.ecaservice.notification.dto.EmailResponse;
+import com.ecaservice.core.mail.client.event.model.EmailEvent;
 import com.ecaservice.oauth.config.AppProperties;
+import com.ecaservice.oauth.config.TfaConfig;
 import com.ecaservice.oauth.event.listener.handler.AbstractNotificationEventHandler;
 import com.ecaservice.oauth.event.model.AbstractNotificationEvent;
 import com.ecaservice.oauth.event.model.ChangeEmailRequestNotificationEvent;
@@ -14,20 +14,21 @@ import com.ecaservice.oauth.event.model.ResetPasswordRequestNotificationEvent;
 import com.ecaservice.oauth.event.model.TfaCodeNotificationEvent;
 import com.ecaservice.oauth.event.model.UserCreatedEvent;
 import com.ecaservice.oauth.model.TokenModel;
-import com.ecaservice.oauth.service.mail.EmailClient;
 import com.ecaservice.oauth.service.mail.dictionary.Templates;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
+import java.util.List;
 
 import static com.ecaservice.oauth.TestHelperUtils.createChangeEmailRequestEntity;
 import static com.ecaservice.oauth.TestHelperUtils.createChangePasswordRequestEntity;
@@ -35,10 +36,9 @@ import static com.ecaservice.oauth.TestHelperUtils.createResetPasswordRequestEnt
 import static com.ecaservice.oauth.TestHelperUtils.createUserEntity;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for {@link NotificationEventListener} class.
@@ -49,7 +49,7 @@ import static org.mockito.Mockito.when;
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
 @ComponentScan(basePackageClasses = AbstractNotificationEventHandler.class)
-@Import({NotificationEventListener.class, AppProperties.class})
+@Import({NotificationEventListener.class, AppProperties.class, TfaConfig.class})
 class NotificationEventListenerTest {
 
     private static final String TFA_CODE = "code";
@@ -58,14 +58,21 @@ class NotificationEventListenerTest {
     private static final long USER_ID = 1L;
     private static final String NEW_EMAIL = "newemail@mail.ru";
 
-    @MockBean
-    private EmailClient emailClient;
-
     @Inject
+    private List<AbstractNotificationEventHandler> notificationEventHandlers;
+
+    private ApplicationEventPublisher applicationEventPublisher;
+
     private NotificationEventListener notificationEventListener;
 
     @Captor
-    private ArgumentCaptor<EmailRequest> emailRequestArgumentCaptor;
+    private ArgumentCaptor<EmailEvent> emailRequestArgumentCaptor;
+
+    @BeforeEach
+    void init() {
+        applicationEventPublisher = mock(ApplicationEventPublisher.class);
+        notificationEventListener = new NotificationEventListener(applicationEventPublisher, notificationEventHandlers);
+    }
 
     @Test
     void testTfaCode() {
@@ -158,12 +165,12 @@ class NotificationEventListenerTest {
     private void internalTestEvent(AbstractNotificationEvent event,
                                    String expectedTemplateCode,
                                    String expectedReceiver) {
-        when(emailClient.sendEmail(any(EmailRequest.class))).thenReturn(new EmailResponse());
         notificationEventListener.handleNotificationEvent(event);
-        verify(emailClient, atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
-        EmailRequest actual = emailRequestArgumentCaptor.getValue();
+        verify(applicationEventPublisher, atLeastOnce()).publishEvent(emailRequestArgumentCaptor.capture());
+        EmailEvent actual = emailRequestArgumentCaptor.getValue();
         assertThat(actual).isNotNull();
-        assertThat(actual.getTemplateCode()).isEqualTo(expectedTemplateCode);
-        assertThat(actual.getReceiver()).isEqualTo(expectedReceiver);
+        assertThat(actual.getEmailRequest()).isNotNull();
+        assertThat(actual.getEmailRequest().getTemplateCode()).isEqualTo(expectedTemplateCode);
+        assertThat(actual.getEmailRequest().getReceiver()).isEqualTo(expectedReceiver);
     }
 }

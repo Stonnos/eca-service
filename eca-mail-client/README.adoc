@@ -1,0 +1,139 @@
+= Библиотека для отправки email сообщений
+:toc:
+:toc-title: Оглавление
+
+== Введение
+
+В данном документе приведена инструкция для подключения библиотеки eca-mail-client к spring boot приложению.
+
+== 1. Базовые настройки библиотеки
+
+Для начала, необходимо добавить зависимость в pom.xml
+
+[source,xml]
+----
+<dependency>
+    <groupId>eca.service</groupId>
+    <artifactId>eca-mail-client</artifactId>
+    <version>${project.version}</version>
+</dependency>
+----
+
+В файле application.yml добавить настройки библиотеки
+
+[source,yml]
+----
+mail:
+  client:
+    ## Вкл./выкл. отправки email сообщений
+    enabled: true
+    ## Флаг асинхронной отправки email сообщений
+    async: true
+    ## Размер пула потоков для асинхронной отправки email сообщений
+    threadPoolSize: 3
+    ## Вкл./выкл. режима повторной отправки email сообщений в случае недоступности сервиса eca-mail
+    redelivery: true
+    ## Интервал между запусками заданий на повторную отправку email сообщений
+    redeliveryIntervalMillis: 60000
+    ## Размер страницы для повторной отправки email сообщений
+    pageSize: 25
+    encrypt:
+      ## Вкл./выкл. хранение email сообщений в зашифрованном виде
+      enabled: true
+      ## Пароль для алгоритма генерации ключа PBKDF2WithHmacSHA1
+      password: passw0rd@!
+      ## Соль для алгоритма генерации ключа PBKDF2WithHmacSHA1
+      salt: s@lt#
+----
+
+Добавить класс конфигурации
+
+[source,java]
+----
+// Если в вашем модуле есть JPA сущности, то указать путь для сканирования
+@EntityScan(basePackageClasses = MyEntity.class)
+// Если в вашем модуле есть JPA репозитории, то указать путь для сканирования
+@EnableJpaRepositories(basePackageClasses = MyEntityRepository.class)
+@Configuration
+public class AppConfiguration {
+}
+----
+
+В конфигурационный файл liquibase, добавить путь к файлу mail-client-changelog.xml со скриптами для создания служебных таблиц.
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!-- your change sets -->
+    <include file="../mail-client-changelog.xml" relativeToChangelogFile="true"/>
+</databaseChangeLog>
+----
+
+== 2. Настройка использования блокировок для кластерной среды на примере redis
+
+В pom.xml необходимо добавить зависимости для интеграции с redis
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.springframework.integration</groupId>
+    <artifactId>spring-integration-redis</artifactId>
+</dependency>
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-redis</artifactId>
+</dependency>
+----
+
+В файле application.yml добавить следующие настройки
+
+[source,yml]
+----
+lock:
+  ## Вкл./выкл. распределенных блокировок.
+  ## Используется для scheduler повторной отправки email сообщений, в случае, если запущено несколько инстансов приложения
+  enabled: true
+----
+
+Добавить конфигурацию бина mailLockRegistry для управления блокировками
+
+[source,java]
+----
+// Подключить библиотеку блокировок
+@EnableLocks
+@Configuration
+public class EmailClientLockConfiguration {
+
+    @Bean(name = "mailLockRegistry")
+    public LockRegistry redisLockRegistry(RedisConnectionFactory redisConnectionFactory) {
+        return new RedisLockRegistry(redisConnectionFactory, "yourRegistryKey");
+    }
+}
+----
+
+Примечание: Также можно использовать любую другу реализацию LockRegistry от spring integration.
+
+== 3. Описание таблиц
+
+Таблица 3.1 - 'email_request' - содержит данные о запросах в сервис eca-mail
+[cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
+|===
+|Название колонки|Тип|Unique|Not NULL|Индекс|Описание
+|id                      |bigint           |+|+|+                              |ID (первичный ключ)
+|receiver                |varchar(255)     |-|+|-                              |Email получателя
+|template_code           |varchar(255)     |-|+|-                              |Технический код шаблона сообщения
+|priority                |integer          |-|-|-                              |Приоритет отправки
+|created                 |timestamp        |-|+|-                              |Дата создания запроса
+|request_json            |varchar(2000)    |-|+|-                              |Структура запроса в сервис eca-mail в формате json
+|encrypted               |boolean          |-|-|-                              |Флаг равен true, если структура запроса (requestJson) хранится в зашифрованном виде
+|request_status          |varchar(255)     |-|+|-                              |Статус отправки (SENT, NOT_SENT, ERROR, EXCEEDED)
+|request_id              |varchar(255)     |-|-|-                              |UUID запроса в eca-mail
+|sent_date               |timestamp        |-|-|-                              |Дата успешной отправки запроса в eca-mail
+|expired_at              |timestamp        |-|-|-                              |Дата истечения срока действия кэша запроса
+|details                 |text             |-|-|-                              |Доп. информация, например текст ошибки
+|===

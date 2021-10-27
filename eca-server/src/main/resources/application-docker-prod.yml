@@ -24,7 +24,6 @@ eureka:
 app:
   notifications:
     webPushesEnabled: true
-    emailsEnabled: true
 
 ## Swagger properties
 open-api:
@@ -36,6 +35,11 @@ experiment:
   downloadBaseUrl: http://localhost:8080/eca-server
   data:
     storagePath: /home/experiment/data/
+
+mail:
+  client:
+    enabled: true
+    redelivery: true
 
 auth-server:
   baseUrl: http://eca-oauth:8080

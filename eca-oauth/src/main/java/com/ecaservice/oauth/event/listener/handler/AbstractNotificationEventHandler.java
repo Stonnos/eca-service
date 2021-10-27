@@ -69,4 +69,13 @@ public abstract class AbstractNotificationEventHandler<T extends AbstractNotific
     Map<String, String> createVariables(T event) {
         return Collections.emptyMap();
     }
+
+    /**
+     * Gets request cache duration in minutes.
+     *
+     * @return request cache duration in minutes
+     */
+    public Long getRequestCacheDurationInMinutes() {
+        return null;
+    }
 }

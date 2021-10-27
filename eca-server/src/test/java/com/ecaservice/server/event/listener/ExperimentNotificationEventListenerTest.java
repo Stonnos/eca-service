@@ -4,9 +4,7 @@ import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.event.model.ExperimentEmailEvent;
 import com.ecaservice.server.event.model.ExperimentWebPushEvent;
-import com.ecaservice.server.model.entity.Experiment;
-import com.ecaservice.server.model.entity.RequestStatus;
-import com.ecaservice.server.service.experiment.visitor.ExperimentEmailVisitor;
+import com.ecaservice.server.service.experiment.mail.NotificationService;
 import com.ecaservice.server.service.push.WebPushService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.UUID;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -31,65 +28,33 @@ import static org.mockito.Mockito.when;
 class ExperimentNotificationEventListenerTest {
 
     @Mock
-    private AppProperties appProperties;
-    @Mock
-    private ExperimentEmailVisitor experimentEmailVisitor;
+    private NotificationService notificationService;
     @Mock
     private WebPushService webPushService;
 
-    @InjectMocks
     private ExperimentNotificationEventListener experimentNotificationEventListener;
 
     @BeforeEach
     void init() {
-        AppProperties.NotificationProperties notificationProperties = new AppProperties.NotificationProperties();
-        notificationProperties.setEmailsEnabled(true);
-        notificationProperties.setWebPushesEnabled(true);
-        when(appProperties.getNotifications()).thenReturn(notificationProperties);
+       AppProperties appProperties = new AppProperties();
+       appProperties.getNotifications().setWebPushesEnabled(true);
+       experimentNotificationEventListener = new ExperimentNotificationEventListener(appProperties,
+               notificationService, webPushService);
     }
 
     @Test
-    void testHandleEmailEventForNewRequest() {
-        internalTestEmailEvent(RequestStatus.NEW);
-        verify(experimentEmailVisitor, atLeastOnce()).caseNew(any(Experiment.class));
+    void testHandleEmailEvent() {
+        var experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
+        var experimentEmailEvent = new ExperimentEmailEvent(this, experiment);
+        experimentNotificationEventListener.handleExperimentEmailEvent(experimentEmailEvent);
+        verify(notificationService, atLeastOnce()).notifyByEmail(experiment);
     }
 
-    @Test
-    void testHandleEmailEventForInProgressRequest() {
-        internalTestEmailEvent(RequestStatus.IN_PROGRESS);
-        verify(experimentEmailVisitor, atLeastOnce()).caseInProgress(any(Experiment.class));
-    }
-
-    @Test
-    void testHandleEmailEventForFinishedRequest() {
-        internalTestEmailEvent(RequestStatus.FINISHED);
-        verify(experimentEmailVisitor, atLeastOnce()).caseFinished(any(Experiment.class));
-    }
-
-    @Test
-    void testHandleEmailEventFoErrorRequest() {
-        internalTestEmailEvent(RequestStatus.ERROR);
-        verify(experimentEmailVisitor, atLeastOnce()).caseError(any(Experiment.class));
-    }
-
-    @Test
-    void testHandleEmailEventForTimeoutRequest() {
-        internalTestEmailEvent(RequestStatus.TIMEOUT);
-        verify(experimentEmailVisitor, atLeastOnce()).caseTimeout(any(Experiment.class));
-    }
-    
     @Test
     void testHandleWebPushEvent() {
         var experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
         var experimentPushEvent = new ExperimentWebPushEvent(this, experiment);
         experimentNotificationEventListener.handleExperimentPushEvent(experimentPushEvent);
         verify(webPushService, atLeastOnce()).sendWebPush(experiment);
-    }
-
-    private void internalTestEmailEvent(RequestStatus requestStatus) {
-        var experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
-        experiment.setRequestStatus(requestStatus);
-        var experimentEmailEvent = new ExperimentEmailEvent(this, experiment);
-        experimentNotificationEventListener.handleExperimentEmailEvent(experimentEmailEvent);
     }
 }

@@ -61,7 +61,6 @@ ECA server
 5) app - общие настройки приложения
    * app.threadPoolSize - число потоков для асинхронных задач
    * app.maxPageSize - максимальное число элементов на странице (используется для запросов с пагинацией)
-   * app.notifications.emailsEnabled - вкл./выкл. отправки email сообщений
    * app.notifications.webPushesEnabled - вкл./выкл. отправки web пушей 
 6) cache.specs - настройки spring cache
 7) open-api - настройки Swagger
@@ -88,6 +87,7 @@ ECA server
    * expireAfter - время жизни блокировки
 12) audit.enabled - вкл./выкл. отправки событий аудита
 13) rabbit.enabled - вкл./выкл. подключения к очередям rabbit MQ
+14) mail.client - настройки библиотеки отправки email сообщений
 
 Инструкция по развертыванию
 ----------------------------------------
@@ -108,7 +108,7 @@ ECA server
       (Отключение отправки событий аудита)
     * rabbit.enabled=false
       (Отключение rabbit MQ)
-    * app.notifications.emailsEnabled=false
+    * mail.client.enabled=false
       (Отключение отправки email сообщений)
      * app.notifications.webPushesEnabled=false
       (Отключение отправки web пушей )

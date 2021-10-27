@@ -112,37 +112,22 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
     }
 
     @Test
-    void testSentExperiments() {
-        List<Experiment> experiments = newArrayList();
-        experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED));
-        experiments.add(
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR));
-        experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.TIMEOUT));
-        experimentRepository.saveAll(experiments);
-        experimentScheduler.processRequestsToSent();
-        verify(eventPublisher, times(experiments.size())).publishEvent(any(ExperimentEmailEvent.class));
-    }
-
-    @Test
     void testRemoveExperiments() {
         List<Experiment> experiments = newArrayList();
         experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED));
         Experiment experimentToRemove =
-                TestHelperUtils.createSentExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED,
-                        LocalDateTime.now().minusDays(experimentConfig.getNumberOfDaysForStorage() + 1));
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        experimentToRemove.setEndDate(LocalDateTime.now().minusDays(experimentConfig.getNumberOfDaysForStorage() + 1));
         experiments.add(experimentToRemove);
-        Experiment sentExperiment =
-                TestHelperUtils.createSentExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED,
-                        LocalDateTime.now());
-        experiments.add(sentExperiment);
+        Experiment finishedExperiment =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        experiments.add(finishedExperiment);
         Experiment timeoutExperiment =
-                TestHelperUtils.createSentExperiment(UUID.randomUUID().toString(), RequestStatus.TIMEOUT,
-                        LocalDateTime.now());
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.TIMEOUT);
         timeoutExperiment.setDeletedDate(LocalDateTime.now());
         experiments.add(timeoutExperiment);
         Experiment errorExperiment =
-                TestHelperUtils.createSentExperiment(UUID.randomUUID().toString(), RequestStatus.TIMEOUT,
-                        LocalDateTime.now().minusDays(experimentConfig.getNumberOfDaysForStorage() + 1));
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.TIMEOUT);
         experiments.add(errorExperiment);
         experimentRepository.saveAll(experiments);
         experimentScheduler.processRequestsToRemove();

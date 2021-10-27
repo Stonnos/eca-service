@@ -40,8 +40,6 @@ ribbon:
 ## Application properties
 app:
   maxPageSize: 50
-  threadPoolSize: 10
-  emailsEnabled: true
   webExternalBaseUrl: http://localhost:8085
   resetPassword:
     validityMinutes: 30
@@ -53,6 +51,14 @@ app:
     validityMinutes: 2880
     url: /change-email/?token=%s
 
+mail:
+  client:
+    async: true
+    threadPoolSize: 3
+    encrypt:
+      enabled: true
+      password: pa66word!
+      salt: s@lt#
 
 ## Password generator configs
 password:

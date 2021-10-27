@@ -1,5 +1,6 @@
 package com.ecaservice.mail.service;
 
+import com.ecaservice.common.web.crypto.EncryptorBase64AdapterService;
 import com.ecaservice.mail.AbstractJpaTest;
 import com.ecaservice.mail.TestHelperUtils;
 import com.ecaservice.mail.config.EncryptorConfiguration;

@@ -13,9 +13,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-
-import java.util.concurrent.Executor;
 
 /**
  * Eca oauth module configuration.
@@ -32,8 +29,6 @@ import java.util.concurrent.Executor;
 @Import(FilterExceptionHandler.class)
 public class EcaOauthConfiguration {
 
-    public static final String ECA_OAUTH_THREAD_POOL_TASK_EXECUTOR = "ecaOauthThreadPoolTaskExecutor";
-
     /**
      * Creates password generator bean.
      *
@@ -42,19 +37,5 @@ public class EcaOauthConfiguration {
     @Bean
     public PasswordGenerator passwordGenerator() {
         return new PasswordGenerator();
-    }
-
-    /**
-     * Creates thread pool task executor bean.
-     *
-     * @param appProperties - common config bean
-     * @return thread pool task executor
-     */
-    @Bean(name = ECA_OAUTH_THREAD_POOL_TASK_EXECUTOR)
-    public Executor ecaOauthThreadPoolTaskExecutor(AppProperties appProperties) {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(appProperties.getThreadPoolSize());
-        executor.setMaxPoolSize(appProperties.getThreadPoolSize());
-        return executor;
     }
 }

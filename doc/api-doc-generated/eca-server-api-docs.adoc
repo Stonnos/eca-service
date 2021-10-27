@@ -28,9 +28,9 @@ a|
 
 __Grant type:__ password
 
-__Token url:__ http://localhost:8080/oauth/token
+__Token url:__ http://localhost:8080/eca-oauth/oauth/token
 
-__Refresh token url:__ http://localhost:8080/oauth/token
+__Refresh token url:__ http://localhost:8080/eca-oauth/oauth/token
 
 
 __Scopes__:
@@ -417,7 +417,6 @@ a|
     "email" : "test@mail.ru",
     "experimentAbsolutePath" : "experiment_1d2de514-3a87-4620-9b97-c260e24340de.model",
     "trainingDataAbsolutePath" : "data_1d2de514-3a87-4620-9b97-c260e24340de.xls",
-    "sentDate" : "2021-07-01 14:02:15",
     "deletedDate" : "2021-07-14 14:00:00",
     "experimentType" : {
       "value" : "RANDOM_FORESTS",
@@ -2000,14 +1999,6 @@ a|
   "matchMode" : "RANGE",
   "multiple" : true,
   "dictionary" : null
-}, {
-  "fieldName" : "sentDate",
-  "description" : "Дата отправки результатов",
-  "fieldOrder" : 6,
-  "filterFieldType" : "DATE",
-  "matchMode" : "RANGE",
-  "multiple" : true,
-  "dictionary" : null
 } ]
 ----
 |401
@@ -2944,7 +2935,6 @@ a|
     "email" : "test@mail.ru",
     "experimentAbsolutePath" : "experiment_1d2de514-3a87-4620-9b97-c260e24340de.model",
     "trainingDataAbsolutePath" : "data_1d2de514-3a87-4620-9b97-c260e24340de.xls",
-    "sentDate" : "2021-07-01 14:02:15",
     "deletedDate" : "2021-07-14 14:00:00",
     "experimentType" : {
       "value" : "RANDOM_FORESTS",
@@ -3451,7 +3441,6 @@ a|
   "email" : "test@mail.ru",
   "experimentAbsolutePath" : "experiment_1d2de514-3a87-4620-9b97-c260e24340de.model",
   "trainingDataAbsolutePath" : "data_1d2de514-3a87-4620-9b97-c260e24340de.xls",
-  "sentDate" : "2021-07-01 14:02:15",
   "deletedDate" : "2021-07-14 14:00:00",
   "experimentType" : {
     "value" : "RANDOM_FORESTS",
@@ -4976,25 +4965,6 @@ __string__
 
 |*trainingDataAbsolutePath*
 |Training data file
-a|
-__string__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*sentDate*
-|Experiment results sent date
 a|
 __string__
 

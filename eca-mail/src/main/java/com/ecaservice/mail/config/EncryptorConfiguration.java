@@ -1,12 +1,11 @@
 package com.ecaservice.mail.config;
 
-import com.ecaservice.mail.service.EncryptorBase64AdapterService;
+import com.ecaservice.common.web.crypto.EncryptorBase64AdapterService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.crypto.codec.Hex;
 import org.springframework.security.crypto.encrypt.AesBytesEncryptor;
 
-import java.nio.charset.StandardCharsets;
+import static com.ecaservice.common.web.crypto.factory.EncryptFactory.getAesBytesEncryptor;
 
 /**
  * Encryptor configuration.
@@ -24,8 +23,7 @@ public class EncryptorConfiguration {
      */
     @Bean
     public AesBytesEncryptor aesBytesEncryptor(MailConfig mailConfig) {
-        char[] saltHex = Hex.encode(mailConfig.getEncrypt().getSalt().getBytes(StandardCharsets.UTF_8));
-        return new AesBytesEncryptor(mailConfig.getEncrypt().getPassword(), new String(saltHex));
+        return getAesBytesEncryptor(mailConfig.getEncrypt().getPassword(), mailConfig.getEncrypt().getSalt());
     }
 
     /**

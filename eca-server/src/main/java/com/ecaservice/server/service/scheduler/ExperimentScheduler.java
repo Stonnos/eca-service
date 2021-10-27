@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -26,10 +27,7 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 public class ExperimentScheduler {
 
-    private static final int PAGE_SIZE = 1;
-    private static final List<RequestStatus> NEW_STATUSES = List.of(RequestStatus.NEW);
-    private static final List<RequestStatus> FINISHED_STATUSES =
-            List.of(RequestStatus.FINISHED, RequestStatus.ERROR, RequestStatus.TIMEOUT);
+    private static final List<RequestStatus> NEW_STATUSES = Collections.singletonList(RequestStatus.NEW);
 
     private final ExperimentRepository experimentRepository;
     private final ExperimentRequestProcessor experimentRequestProcessor;
@@ -47,19 +45,6 @@ public class ExperimentScheduler {
             experiments.forEach(experimentRequestProcessor::processNewExperiment);
         });
         log.trace("New experiments processing has been successfully finished.");
-    }
-
-    /**
-     * Processing experiment results sending to emails.
-     */
-    @Scheduled(fixedDelayString = "${experiment.delaySeconds}000")
-    public void processRequestsToSent() {
-        log.trace("Starting to sent experiment results.");
-        Function<Pageable, Page<Experiment>> pageFunction =
-                pageable -> experimentRepository.findExperimentsForProcessing(FINISHED_STATUSES, pageable);
-        processPaging(pageFunction,
-                experiments -> experiments.forEach(experimentRequestProcessor::notifyExperimentFinished));
-        log.trace("Sending experiments has been successfully finished.");
     }
 
     /**
@@ -84,7 +69,7 @@ public class ExperimentScheduler {
     }
 
     private <T> void processPaging(Function<Pageable, Page<T>> pageFunction, Consumer<List<T>> pageContentAction) {
-        Pageable pageRequest = PageRequest.of(0, PAGE_SIZE);
+        Pageable pageRequest = PageRequest.of(0, 1);
         Page<T> page;
         do {
             page = pageFunction.apply(pageRequest);

@@ -31,8 +31,7 @@ public class AppProperties {
     /**
      * Notification properties
      */
-    @NotNull
-    private NotificationProperties notifications;
+    private NotificationProperties notifications = new NotificationProperties();
 
     /**
      * Notification properties
@@ -44,9 +43,5 @@ public class AppProperties {
          * Web pushes enabled?
          */
         private Boolean webPushesEnabled;
-        /**
-         * Emails sending enabled?
-         */
-        private Boolean emailsEnabled;
     }
 }
