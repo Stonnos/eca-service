@@ -21,10 +21,14 @@ export class LoginComponent implements BaseForm, OnInit, OnDestroy {
   private static readonly UNKNOWN_ERROR_MESSAGE = 'Возникла неизвестная ошибка';
   private static readonly INVALID_TFA_CODE_MESSAGE = 'Неправильный код';
 
+  private static readonly TFA_REQUIRED_ERROR_CODE = 'tfa_required';
+  private static readonly PASSWORD_EXPIRED_ERROR_CODE = 'password_expired';
+
   public errorMessage: string;
   public submitted: boolean = false;
   public loading: boolean = false;
   public tfaCodeVerificationStep: boolean = false;
+  public passwordExpired: boolean = false;
 
   public userModel: UserModel = new UserModel();
 
@@ -141,15 +145,29 @@ export class LoginComponent implements BaseForm, OnInit, OnDestroy {
       if (error.status === 400) {
         this.errorMessage = error.error.error_description;
       } else if (error.status === 403) {
-        this.errorMessage = null;
-        this.tfaCodeVerificationStep = true;
-        this.codeExpired = false;
-        this.startTfaCodeValidityTimer(error.error.expires_in);
+        this.handleForbiddenError(error)
       } else {
         this.errorMessage = LoginComponent.UNKNOWN_ERROR_MESSAGE;
       }
     } else {
       this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+    }
+  }
+
+  private handleForbiddenError(error): void {
+    switch (error.error.error) {
+      case LoginComponent.TFA_REQUIRED_ERROR_CODE:
+        this.errorMessage = null;
+        this.tfaCodeVerificationStep = true;
+        this.codeExpired = false;
+        this.startTfaCodeValidityTimer(error.error.expires_in);
+        break;
+      case LoginComponent.PASSWORD_EXPIRED_ERROR_CODE:
+        this.errorMessage = null;
+        this.passwordExpired = true;
+        break;
+      default:
+        this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
     }
   }
 

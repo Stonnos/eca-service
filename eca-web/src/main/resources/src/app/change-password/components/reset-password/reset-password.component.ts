@@ -68,7 +68,7 @@ export class ResetPasswordComponent implements BaseForm, OnInit {
           next: () => {
             this.clear();
             this.logoutService.logout();
-            this.messageService.add({ severity: 'info', summary: `Пароль был успешно восстановлен`, detail: '' });
+            this.messageService.add({ severity: 'info', summary: `Пароль был успешно сброшен`, detail: '' });
           },
           error: (error) => {
             this.handleError(error);
