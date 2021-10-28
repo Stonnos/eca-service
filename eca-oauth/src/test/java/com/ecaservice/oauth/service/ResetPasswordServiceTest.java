@@ -7,6 +7,7 @@ import com.ecaservice.oauth.dto.ResetPasswordRequest;
 import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.exception.InvalidTokenException;
+import com.ecaservice.oauth.exception.PasswordsMatchedException;
 import com.ecaservice.oauth.exception.ResetPasswordRequestAlreadyExistsException;
 import com.ecaservice.oauth.exception.UserLockedException;
 import com.ecaservice.oauth.model.TokenModel;
@@ -41,6 +42,7 @@ import static org.mockito.Mockito.verify;
 class ResetPasswordServiceTest extends AbstractJpaTest {
 
     private static final String PASSWORD = "@pa66word!";
+    private static final String NEW_PASSWORD = "@p#a66word!";
     private static final String TOKEN = "token";
 
     @Inject
@@ -53,13 +55,15 @@ class ResetPasswordServiceTest extends AbstractJpaTest {
     @MockBean
     private Oauth2TokenService oauth2TokenService;
 
+    private PasswordEncoder passwordEncoder;
+
     private ResetPasswordService resetPasswordService;
 
     private UserEntity userEntity;
 
     @Override
     public void init() {
-        PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         resetPasswordService = new ResetPasswordService(appProperties, passwordEncoder, oauth2TokenService,
                 resetPasswordRequestRepository, userEntityRepository);
         userEntity = createAndSaveUser();
@@ -145,7 +149,7 @@ class ResetPasswordServiceTest extends AbstractJpaTest {
     void testResetPassword() {
         ResetPasswordRequestEntity resetPasswordRequestEntity =
                 createAndSaveResetPasswordRequestEntity(LocalDateTime.now().plusMinutes(2L), null);
-        ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest(TOKEN, PASSWORD);
+        ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest(TOKEN, NEW_PASSWORD);
         resetPasswordService.resetPassword(resetPasswordRequest);
         ResetPasswordRequestEntity actual =
                 resetPasswordRequestRepository.findById(resetPasswordRequestEntity.getId()).orElse(null);
@@ -154,6 +158,13 @@ class ResetPasswordServiceTest extends AbstractJpaTest {
         assertThat(actual.getUserEntity().getPasswordChangeDate()).isNotNull();
         assertThat(actual.getUserEntity().getPassword()).isNotNull();
         verify(oauth2TokenService, atLeastOnce()).revokeTokens(any(UserEntity.class));
+    }
+
+    @Test
+    void testResetPasswordShouldThrowPasswordsMatchedException() {
+        createAndSaveResetPasswordRequestEntity(LocalDateTime.now().plusMinutes(2L), null);
+        ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest(TOKEN, PASSWORD);
+        assertThrows(PasswordsMatchedException.class, () -> resetPasswordService.resetPassword(resetPasswordRequest));
     }
 
     @Test
@@ -167,6 +178,7 @@ class ResetPasswordServiceTest extends AbstractJpaTest {
 
     private UserEntity createAndSaveUser() {
         UserEntity userEntity = createUserEntity();
+        userEntity.setPassword(passwordEncoder.encode(PASSWORD));
         userEntity.setRoles(Collections.emptySet());
         return userEntityRepository.save(userEntity);
     }
