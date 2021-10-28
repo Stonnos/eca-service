@@ -91,8 +91,8 @@ public class UserEntity {
     /**
      * Last password change date
      */
-    @Column(name = "password_date")
-    private LocalDateTime passwordDate;
+    @Column(name = "password_change_date")
+    private LocalDateTime passwordChangeDate;
 
     /**
      * User roles

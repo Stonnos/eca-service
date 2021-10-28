@@ -151,7 +151,7 @@ class ResetPasswordServiceTest extends AbstractJpaTest {
                 resetPasswordRequestRepository.findById(resetPasswordRequestEntity.getId()).orElse(null);
         assertThat(actual).isNotNull();
         assertThat(actual.getResetDate()).isNotNull();
-        assertThat(actual.getUserEntity().getPasswordDate()).isNotNull();
+        assertThat(actual.getUserEntity().getPasswordChangeDate()).isNotNull();
         assertThat(actual.getUserEntity().getPassword()).isNotNull();
         verify(oauth2TokenService, atLeastOnce()).revokeTokens(any(UserEntity.class));
     }

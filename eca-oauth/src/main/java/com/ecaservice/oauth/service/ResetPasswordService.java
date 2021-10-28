@@ -97,7 +97,7 @@ public class ResetPasswordService {
             throw new UserLockedException(userEntity.getId());
         }
         userEntity.setPassword(passwordEncoder.encode(resetPasswordRequest.getPassword().trim()));
-        userEntity.setPasswordDate(LocalDateTime.now());
+        userEntity.setPasswordChangeDate(LocalDateTime.now());
         userEntity.setForceChangePassword(false);
         resetPasswordRequestEntity.setResetDate(LocalDateTime.now());
         userEntityRepository.save(userEntity);

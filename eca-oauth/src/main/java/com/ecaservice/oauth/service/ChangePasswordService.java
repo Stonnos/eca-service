@@ -96,7 +96,7 @@ public class ChangePasswordService {
             throw new UserLockedException(userEntity.getId());
         }
         userEntity.setPassword(changePasswordRequestEntity.getNewPassword());
-        userEntity.setPasswordDate(LocalDateTime.now());
+        userEntity.setPasswordChangeDate(LocalDateTime.now());
         changePasswordRequestEntity.setConfirmationDate(LocalDateTime.now());
         userEntityRepository.save(userEntity);
         changePasswordRequestRepository.save(changePasswordRequestEntity);

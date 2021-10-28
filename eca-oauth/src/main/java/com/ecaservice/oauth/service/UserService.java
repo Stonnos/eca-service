@@ -93,7 +93,7 @@ public class UserService {
     public UserEntity createUser(CreateUserDto createUserDto, String password) {
         UserEntity userEntity = userMapper.map(createUserDto);
         userEntity.setPassword(passwordEncoder.encode(password));
-        userEntity.setPasswordDate(LocalDateTime.now());
+        userEntity.setPasswordChangeDate(LocalDateTime.now());
         populateUserRole(userEntity);
         userEntity.setForceChangePassword(true);
         userEntity.setCreationDate(LocalDateTime.now());
