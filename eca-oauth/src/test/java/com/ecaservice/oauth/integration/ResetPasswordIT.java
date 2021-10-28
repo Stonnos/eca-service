@@ -27,7 +27,7 @@ class ResetPasswordIT extends AbstractUserIT {
     private static final String TOKEN_PARAM = "token";
 
     private static final String API_PREFIX = "/password";
-    private static final String FORGOT_URL = "/forgot";
+    private static final String CREATE_RESET_PASSWORD_REQUEST_URL = "/create-reset-request";
     private static final String RESET_URL = "/reset";
 
     @Inject
@@ -52,7 +52,7 @@ class ResetPasswordIT extends AbstractUserIT {
     private void createResetPasswordRequest() {
         var createResetPasswordRequest = new CreateResetPasswordRequest(getUserEntity().getEmail());
         getWebClient().post()
-                .uri(FORGOT_URL)
+                .uri(CREATE_RESET_PASSWORD_REQUEST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(createResetPasswordRequest)
                 .retrieve()

@@ -3,19 +3,19 @@ import { MessageService } from "primeng/api";
 import { ValidationService } from "../../../common/services/validation.service";
 import { BaseForm } from "../../../common/form/base-form";
 import { NgForm } from "@angular/forms";
-import { ForgotPasswordRequest } from "../../model/forgot-password.request";
 import { ResetPasswordService } from "../../services/reset-password.service";
 import { finalize } from "rxjs/operators";
 import { HttpErrorResponse } from "@angular/common/http";
 import { UserFields } from "../../../common/util/field-names";
 import { ValidationErrorCode } from "../../../common/model/validation-error-code";
+import { CreateResetPasswordRequest } from "../../model/create-reset-password.request";
 
 @Component({
-  selector: 'app-forgot-password',
-  templateUrl: './forgot-password.component.html',
-  styleUrls: ['./forgot-password.component.scss']
+  selector: 'app-create-reset-password-request',
+  templateUrl: './create-reset-password-request.component.html',
+  styleUrls: ['./create-reset-password-request.component.scss']
 })
-export class ForgotPasswordComponent implements BaseForm, OnInit {
+export class CreateResetPasswordRequestComponent implements BaseForm, OnInit {
 
   public submitted: boolean = false;
   public loading: boolean = false;
@@ -28,7 +28,7 @@ export class ForgotPasswordComponent implements BaseForm, OnInit {
   @ViewChild(NgForm, { static: true })
   public form: NgForm;
 
-  public forgotPasswordRequest: ForgotPasswordRequest = new ForgotPasswordRequest();
+  public createResetPasswordRequest: CreateResetPasswordRequest = new CreateResetPasswordRequest();
 
   public constructor(private messageService: MessageService,
                      private validationService: ValidationService,
@@ -50,7 +50,7 @@ export class ForgotPasswordComponent implements BaseForm, OnInit {
     this.submitted = true;
     if (this.isValid()) {
       this.loading = true;
-      this.resetPasswordService.forgotPassword(this.forgotPasswordRequest)
+      this.resetPasswordService.createResetPasswordRequest(this.createResetPasswordRequest)
         .pipe(
           finalize(() => {
             this.loading = false;

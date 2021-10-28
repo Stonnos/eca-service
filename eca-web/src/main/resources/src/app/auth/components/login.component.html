@@ -57,7 +57,9 @@
             </div>
           </div>
           <div class="ui-g-10 mx-auto d-flex align-items-end justify-content-end">
-            <a class="forgot-password-link" [routerLink]="['/forgot-password']" [class.disabled-link]="loading">
+            <a class="create-reset-request-password-link"
+               [routerLink]="['/create-reset-password-request']"
+               [class.disabled-link]="loading">
               Забыли пароль?
             </a>
           </div>
@@ -157,7 +159,7 @@
           <div class="ui-g-10 mx-auto mt-1 d-flex align-items-center justify-content-center">
             <button
               pButton
-              [routerLink]="['/forgot-password']"
+              [routerLink]="['/create-reset-password-request']"
               type="button"
               label="Изменить"
               class="w-50 mb-1 mb-sm-2">
