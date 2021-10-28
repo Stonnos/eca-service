@@ -11,6 +11,7 @@ import { Utils } from "../../../common/util/utils";
 import { LogoutService } from "../../../auth/services/logout.service";
 import { ValidationErrorCode } from "../../../common/model/validation-error-code";
 import { ValidationService } from "../../../common/services/validation.service";
+import { ErrorHandler } from "../../../common/services/error-handler";
 
 @Component({
   selector: 'app-reset-password',
@@ -22,7 +23,6 @@ export class ResetPasswordComponent implements BaseForm, OnInit {
   public submitted: boolean = false;
   public loading: boolean = false;
   public tokenValid: boolean = false;
-  public userLocked: boolean = false;
 
   @ViewChild(NgForm, { static: true })
   public form: NgForm;
@@ -33,10 +33,25 @@ export class ResetPasswordComponent implements BaseForm, OnInit {
   public password: string;
   public confirmPassword: string;
 
+  public message: string;
+
+  private errorCode: string;
+
+  private readonly errorCodes: string[] = [
+    ValidationErrorCode.USER_LOCKED,
+    ValidationErrorCode.PASSWORDS_MATCHED
+  ];
+
+  private readonly errorCodesMap = new Map<string, string>()
+    .set(ValidationErrorCode.USER_LOCKED, 'Не удалось изменить пароль, т.к. ваш аккаунт заблокирован.')
+    .set(ValidationErrorCode.PASSWORDS_MATCHED, 'Придумайте новый пароль отличный от старого.');
+
+
   public constructor(private messageService: MessageService,
                      private resetPasswordService: ResetPasswordService,
                      private logoutService: LogoutService,
                      private validationService: ValidationService,
+                     private errorHandler: ErrorHandler,
                      private route: ActivatedRoute) {
     this.token = this.route.snapshot.queryParams['token'];
   }
@@ -77,6 +92,10 @@ export class ResetPasswordComponent implements BaseForm, OnInit {
     }
   }
 
+  public getErrorMessage(): string {
+    return this.errorCode && this.errorCodesMap.get(this.errorCode);
+  }
+
   public onStrengthChange(score: number): void {
     this.safePassword = score >= Utils.PASSWORD_STRENGTH_CUTOFF;
   }
@@ -102,7 +121,8 @@ export class ResetPasswordComponent implements BaseForm, OnInit {
   private handleError(error): void {
     if (error instanceof HttpErrorResponse && error.status === 400) {
       this.tokenValid = !this.validationService.hasErrorCode(error.error, ValidationErrorCode.INVALID_TOKEN);
-      this.userLocked = this.validationService.hasErrorCode(error.error, ValidationErrorCode.USER_LOCKED);
+      this.errorCode = this.errorHandler.getFirstErrorCode(error, this.errorCodes);
+      this.message = this.errorCodesMap.get(this.errorCode);
     } else {
       this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
     }
