@@ -9,15 +9,15 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotBlank;
 
 /**
- * Forgot password request model.
+ * Create reset password request model.
  *
  * @author Roman Batygin
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "Forgot password request model")
-public class ForgotPasswordRequest {
+@Schema(description = "Create reset password request model")
+public class CreateResetPasswordRequest {
 
     /**
      * User email

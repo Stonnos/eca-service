@@ -2,7 +2,7 @@ package com.ecaservice.oauth.service;
 
 import com.ecaservice.oauth.AbstractJpaTest;
 import com.ecaservice.oauth.config.AppProperties;
-import com.ecaservice.oauth.dto.ForgotPasswordRequest;
+import com.ecaservice.oauth.dto.CreateResetPasswordRequest;
 import com.ecaservice.oauth.dto.ResetPasswordRequest;
 import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
 import com.ecaservice.oauth.entity.UserEntity;
@@ -73,8 +73,8 @@ class ResetPasswordServiceTest extends AbstractJpaTest {
 
     @Test
     void testSaveNewResetPasswordRequest() {
-        ForgotPasswordRequest forgotPasswordRequest = new ForgotPasswordRequest(userEntity.getEmail());
-        TokenModel tokenModel = resetPasswordService.createResetPasswordRequest(forgotPasswordRequest);
+        CreateResetPasswordRequest createResetPasswordRequest = new CreateResetPasswordRequest(userEntity.getEmail());
+        TokenModel tokenModel = resetPasswordService.createResetPasswordRequest(createResetPasswordRequest);
         assertThat(tokenModel).isNotNull();
         assertThat(tokenModel.getTokenId()).isNotNull();
         assertThat(tokenModel.getLogin()).isNotNull();
@@ -93,24 +93,24 @@ class ResetPasswordServiceTest extends AbstractJpaTest {
     void testSaveResetPasswordRequestForLockedUser() {
         userEntity.setLocked(true);
         userEntityRepository.save(userEntity);
-        ForgotPasswordRequest forgotPasswordRequest = new ForgotPasswordRequest(userEntity.getEmail());
+        CreateResetPasswordRequest createResetPasswordRequest = new CreateResetPasswordRequest(userEntity.getEmail());
         assertThrows(UserLockedException.class,
-                () -> resetPasswordService.createResetPasswordRequest(forgotPasswordRequest));
+                () -> resetPasswordService.createResetPasswordRequest(createResetPasswordRequest));
     }
 
     @Test
     void testCreateResetPasswordRequestWithResetPasswordRequestAlreadyExistsException() {
-        ForgotPasswordRequest forgotPasswordRequest = new ForgotPasswordRequest(userEntity.getEmail());
-        resetPasswordService.createResetPasswordRequest(forgotPasswordRequest);
+        CreateResetPasswordRequest createResetPasswordRequest = new CreateResetPasswordRequest(userEntity.getEmail());
+        resetPasswordService.createResetPasswordRequest(createResetPasswordRequest);
         assertThrows(ResetPasswordRequestAlreadyExistsException.class,
-                () -> resetPasswordService.createResetPasswordRequest(forgotPasswordRequest));
+                () -> resetPasswordService.createResetPasswordRequest(createResetPasswordRequest));
     }
 
     @Test
     void testSaveResetPasswordRequestWithException() {
-        ForgotPasswordRequest forgotPasswordRequest = new ForgotPasswordRequest(StringUtils.EMPTY);
+        CreateResetPasswordRequest createResetPasswordRequest = new CreateResetPasswordRequest(StringUtils.EMPTY);
         assertThrows(IllegalStateException.class,
-                () -> resetPasswordService.createResetPasswordRequest(forgotPasswordRequest));
+                () -> resetPasswordService.createResetPasswordRequest(createResetPasswordRequest));
     }
 
     @Test

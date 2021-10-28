@@ -2,7 +2,7 @@ package com.ecaservice.oauth.service;
 
 import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.oauth.config.AppProperties;
-import com.ecaservice.oauth.dto.ForgotPasswordRequest;
+import com.ecaservice.oauth.dto.CreateResetPasswordRequest;
 import com.ecaservice.oauth.dto.ResetPasswordRequest;
 import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
 import com.ecaservice.oauth.entity.UserEntity;
@@ -45,15 +45,15 @@ public class ResetPasswordService {
     /**
      * Save reset password request.
      *
-     * @param forgotPasswordRequest - forgot password request
+     * @param createResetPasswordRequest - reset password request data
      * @return reset password request token
      */
     @Audit(value = CREATE_RESET_PASSWORD_REQUEST, targetInitiator = "login")
-    public TokenModel createResetPasswordRequest(ForgotPasswordRequest forgotPasswordRequest) {
-        UserEntity userEntity = userEntityRepository.findByEmail(forgotPasswordRequest.getEmail())
+    public TokenModel createResetPasswordRequest(CreateResetPasswordRequest createResetPasswordRequest) {
+        UserEntity userEntity = userEntityRepository.findByEmail(createResetPasswordRequest.getEmail())
                 .orElseThrow(() -> new IllegalStateException(
                         String.format("Can't create reset password request, because user with email %s doesn't exists!",
-                                forgotPasswordRequest.getEmail())));
+                                createResetPasswordRequest.getEmail())));
         if (userEntity.isLocked()) {
             throw new UserLockedException(userEntity.getId());
         }

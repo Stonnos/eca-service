@@ -1,6 +1,6 @@
 package com.ecaservice.oauth.integration;
 
-import com.ecaservice.oauth.dto.ForgotPasswordRequest;
+import com.ecaservice.oauth.dto.CreateResetPasswordRequest;
 import com.ecaservice.oauth.dto.ResetPasswordRequest;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.service.mail.dictionary.TemplateVariablesDictionary;
@@ -42,19 +42,19 @@ class ResetPasswordIT extends AbstractUserIT {
 
     @Test
     void testResetPassword() {
-        forgotPasswordRequest();
+        createResetPasswordRequest();
         String token = getHttpRequestParamFromEmailUrlVariable(Templates.RESET_PASSWORD,
                 TemplateVariablesDictionary.RESET_PASSWORD_URL_KEY, TOKEN_PARAM);
         resetPassword(token);
         verifyResetPassword();
     }
 
-    private void forgotPasswordRequest() {
-        ForgotPasswordRequest forgotPasswordRequest = new ForgotPasswordRequest(getUserEntity().getEmail());
+    private void createResetPasswordRequest() {
+        var createResetPasswordRequest = new CreateResetPasswordRequest(getUserEntity().getEmail());
         getWebClient().post()
                 .uri(FORGOT_URL)
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(forgotPasswordRequest)
+                .bodyValue(createResetPasswordRequest)
                 .retrieve()
                 .bodyToMono(Void.class)
                 .block();
