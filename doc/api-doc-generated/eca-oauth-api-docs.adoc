@@ -28,9 +28,9 @@ a|
 
 __Grant type:__ password
 
-__Token url:__ http://localhost:8080/oauth/token
+__Token url:__ http://localhost:8080/eca-oauth/oauth/token
 
-__Refresh token url:__ http://localhost:8080/oauth/token
+__Refresh token url:__ http://localhost:8080/eca-oauth/oauth/token
 
 
 __Scopes__:
@@ -1005,9 +1005,9 @@ a|
 ----
 |===
 
-== Creates forgot password request
+== Creates reset password request
 
-__POST__ */password/forgot* - Creates forgot password request
+__POST__ */password/create-reset-request* - Creates reset password request
 
 
 *Request body*
@@ -1018,7 +1018,7 @@ __POST__ */password/forgot* - Creates forgot password request
 |*application/json*
 |true
 |
-<<ForgotPasswordRequest>>
+<<CreateResetPasswordRequest>>
 
 
 
@@ -2089,7 +2089,7 @@ __(int64)__
 
 
 
-|*passwordDate*
+|*passwordChangeDate*
 |Last password change date
 a|
 __string__
@@ -2545,9 +2545,9 @@ __string__
 
 
 |===
-=== ForgotPasswordRequest
+=== CreateResetPasswordRequest
 :table-caption: Table
-.Forgot password request model
+.Create reset password request model
 [width=100%]
 |===
 |*Name*|*Description*|*Schema*
