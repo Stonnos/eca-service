@@ -71,6 +71,10 @@
     
     {"access_token":"cf4cd583-b9f1-4dce-8dcc-afefd1510974","token_type":"bearer","refresh_token":"7321ab3a-ee63-4e2e-bdfd-58aaca9fb263","expires_in":1799,"scope":"web"}
     
+    В случае, если у пользователя установлен временный пароль, то запрос возвращает 403 ошибку с телом ответа:
+        
+    {"error":"change_password_required","error_description":"Password must be changed"}
+    
     В случае, если настроена двухфакторная аутентификация, то запрос возвращает 403 ошибку с телом ответа:
     
     {"error":"tfa_required","error_description":"Two-factor authentication required","expires_in":"120"}
