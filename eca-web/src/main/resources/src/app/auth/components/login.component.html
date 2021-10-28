@@ -1,7 +1,7 @@
 <div class="container">
   <div class="row h-100">
     <div class="col-12 d-flex py-4">
-      <form *ngIf="!tfaCodeVerificationStep && !passwordExpired"
+      <form *ngIf="loginStep"
             novalidate
             class="form d-flex flex-column justify-content-center m-auto"
             (submit)="submit()"
@@ -145,23 +145,25 @@
         </p-panel>
       </form>
 
-      <form *ngIf="passwordExpired" class="form d-flex flex-column justify-content-center m-auto">
-        <p-panel header="Сообщение">
-          <div class="ui-g ui-fluid">
-            <div class="ui-g-10 mx-auto d-flex align-items-center justify-content-center text-center text-bold text-danger">
-              Вам был выдан временный пароль. Его необходимо изменить.
-            </div>
-            <div class="ui-g-10 mx-auto mt-1 d-flex align-items-center justify-content-center">
-              <button
-                pButton
-                [routerLink]="['/forgot-password']"
-                type="button"
-                label="Изменить"
-                class="w-50 mb-1 mb-sm-2">
-              </button>
-            </div>
+      <form *ngIf="changePasswordRequiredStep" class="form d-flex flex-column justify-content-center m-auto">
+        <div class="ui-g-10 text-center mx-auto">
+          <img class="eca-icon" src="assets/images/eca-icon.jpg">
+          <h4 class="eca-service-text">ECA - SERVICE</h4>
+        </div>
+        <div class="ui-g ui-fluid">
+          <div class="ui-g-10 mx-auto d-flex align-items-center justify-content-center text-center text-bold text-danger">
+            Вам был выдан временный пароль. Его необходимо изменить.
           </div>
-        </p-panel>
+          <div class="ui-g-10 mx-auto mt-1 d-flex align-items-center justify-content-center">
+            <button
+              pButton
+              [routerLink]="['/forgot-password']"
+              type="button"
+              label="Изменить"
+              class="w-50 mb-1 mb-sm-2">
+            </button>
+          </div>
+        </div>
       </form>
 
     </div>
