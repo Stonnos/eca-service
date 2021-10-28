@@ -95,7 +95,7 @@ public class UserService {
         userEntity.setPassword(passwordEncoder.encode(password));
         userEntity.setPasswordDate(LocalDateTime.now());
         populateUserRole(userEntity);
-        userEntity.setPasswordExpiredAt(LocalDateTime.now());
+        userEntity.setForceChangePassword(true);
         userEntity.setCreationDate(LocalDateTime.now());
         return userEntityRepository.save(userEntity);
     }

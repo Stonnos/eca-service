@@ -4,22 +4,22 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 
 /**
- * Password expired exception.
+ * Change password required exception.
  *
  * @author Roman Batygin
  */
-public class PasswordExpiredException extends OAuth2Exception {
+public class ChangePasswordRequiredException extends OAuth2Exception {
 
     /**
-     * Creates password expired exception.
+     * Change password required exception.
      */
-    public PasswordExpiredException() {
-        super("Password has been expired");
+    public ChangePasswordRequiredException() {
+        super("Password must be changed");
     }
 
     @Override
     public String getOAuth2ErrorCode() {
-        return "password_expired";
+        return "change_password_required";
     }
 
     @Override

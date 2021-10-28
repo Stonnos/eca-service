@@ -83,16 +83,16 @@ public class UserEntity {
     private boolean locked;
 
     /**
+     * Force change temporary password?
+     */
+    @Column(name = "force_change_password")
+    private boolean forceChangePassword;
+
+    /**
      * Last password change date
      */
     @Column(name = "password_date")
     private LocalDateTime passwordDate;
-
-    /**
-     * Password expiration date
-     */
-    @Column(name = "password_expired_at")
-    private LocalDateTime passwordExpiredAt;
 
     /**
      * User roles
