@@ -9,7 +9,7 @@ LOCK_USER;Блокировка пользователя;true;USER_PROFILE_ACTION
 UNLOCK_USER;Снятие блокировки пользователя;true;USER_PROFILE_ACTIONS
 CREATE_CHANGE_PASSWORD_REQUEST;Создание запроса на изменение пароля;true;USER_PROFILE_ACTIONS
 CONFIRM_CHANGE_PASSWORD_REQUEST;Подтверждение запроса на изменение пароля;true;USER_PROFILE_ACTIONS
-CREATE_RESET_PASSWORD_REQUEST;Создание запроса на восстановление пароля;true;USER_PROFILE_ACTIONS
-RESET_PASSWORD;Восстановление пароля;true;USER_PROFILE_ACTIONS
+CREATE_RESET_PASSWORD_REQUEST;Создание запроса на сброс пароля;true;USER_PROFILE_ACTIONS
+RESET_PASSWORD;Сброс пароля;true;USER_PROFILE_ACTIONS
 CREATE_CHANGE_EMAIL_REQUEST;Создание запроса на изменение Email;true;USER_PROFILE_ACTIONS
 CONFIRM_CHANGE_EMAIL_REQUEST;Подтверждение запроса на изменение Email;true;USER_PROFILE_ACTIONS

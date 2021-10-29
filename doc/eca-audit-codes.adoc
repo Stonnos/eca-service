@@ -55,10 +55,10 @@
 |Подтверждение запроса на изменение пароля
 |USER_PROFILE_ACTIONS
 |CREATE_RESET_PASSWORD_REQUEST
-|Создание запроса на восстановление пароля
+|Создание запроса на сброс пароля
 |USER_PROFILE_ACTIONS
 |RESET_PASSWORD
-|Восстановление пароля
+|Сброс пароля
 |USER_PROFILE_ACTIONS
 |CREATE_CHANGE_EMAIL_REQUEST
 |Создание запроса на изменение Email
