@@ -119,6 +119,8 @@ abstract class AbstractUserIT {
         roleRepository.save(TestHelperUtils.createRoleEntity());
         CreateUserDto createUserDto = TestHelperUtils.createUserDto();
         userEntity = userService.createUser(createUserDto, PASSWORD);
+        userEntity.setForceChangePassword(false);
+        userEntityRepository.save(userEntity);
         webClient = createWebClient(getApiPrefix());
     }
 

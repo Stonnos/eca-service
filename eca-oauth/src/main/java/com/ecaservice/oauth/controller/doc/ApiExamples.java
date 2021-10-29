@@ -97,9 +97,9 @@ public class ApiExamples {
             "\"newPassw0rd!\"}";
 
     /**
-     * Forgot password request json
+     * Create reset password request json
      */
-    public static final String FORGOT_PASSWORD_REQUEST_JSON = "{\"email\": \"bat1238@yandex.ru\"}";
+    public static final String CREATE_RESET_PASSWORD_REQUEST_JSON = "{\"email\": \"bat1238@yandex.ru\"}";
 
     /**
      * Reset password request json

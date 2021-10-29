@@ -10,7 +10,6 @@ import { ExperimentDetailsComponent } from "../experiment-details/components/exp
 import { ExperimentResultsDetailsComponent } from "../experiment-results-details/components/experiment-results-details.component";
 import { ClassifiersConfigurationDetailsComponent } from "../classifiers-configuration-details/components/classifiers-configuration-details.component";
 import { UsersListComponent } from "../users/components/users-list.component";
-import { ForgotPasswordComponent } from "../change-password/components/forgot-password/forgot-password.component";
 import { ResetPasswordComponent } from "../change-password/components/reset-password/reset-password.component";
 import { InstancesListComponent } from "../instances/components/instances-list.component";
 import { UserProfileComponent } from "../user-profile/components/user-profile.component";
@@ -20,6 +19,7 @@ import { AuditLogsComponent } from "../audit-logs/components/audit-logs.componen
 import { ConfirmChangeEmailComponent } from "../update-user-email/components/confirm-change-email/confirm-change-email.component";
 import { TemplatesListComponent } from "../email-templates/components/templates-list/templates-list.component";
 import { InstancesDetailsComponent } from "../instances-details/components/instances-details.component";
+import {CreateResetPasswordRequestComponent} from "../change-password/components/create-reset-password-request/create-reset-password-request.component";
 
 const routes: Routes = [
   {
@@ -85,8 +85,8 @@ const routes: Routes = [
     component: LoginComponent
   },
   {
-    path: 'forgot-password',
-    component: ForgotPasswordComponent
+    path: 'create-reset-password-request',
+    component: CreateResetPasswordRequestComponent
   },
   {
     path: 'reset-password',

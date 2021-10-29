@@ -9,6 +9,7 @@ import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.exception.ChangePasswordRequestAlreadyExistsException;
 import com.ecaservice.oauth.exception.InvalidPasswordException;
 import com.ecaservice.oauth.exception.InvalidTokenException;
+import com.ecaservice.oauth.exception.PasswordsMatchedException;
 import com.ecaservice.oauth.exception.UserLockedException;
 import com.ecaservice.oauth.model.TokenModel;
 import com.ecaservice.oauth.repository.ChangePasswordRequestRepository;
@@ -60,6 +61,9 @@ public class ChangePasswordService {
         if (!isValidOldPassword(userEntity, changePasswordRequest)) {
             throw new InvalidPasswordException();
         }
+        if (isPasswordsMatched(userEntity, changePasswordRequest)) {
+            throw new PasswordsMatchedException(userId);
+        }
         LocalDateTime now = LocalDateTime.now();
         ChangePasswordRequestEntity changePasswordRequestEntity =
                 changePasswordRequestRepository.findByUserEntityAndExpireDateAfterAndConfirmationDateIsNull(userEntity,
@@ -96,7 +100,7 @@ public class ChangePasswordService {
             throw new UserLockedException(userEntity.getId());
         }
         userEntity.setPassword(changePasswordRequestEntity.getNewPassword());
-        userEntity.setPasswordDate(LocalDateTime.now());
+        userEntity.setPasswordChangeDate(LocalDateTime.now());
         changePasswordRequestEntity.setConfirmationDate(LocalDateTime.now());
         userEntityRepository.save(userEntity);
         changePasswordRequestRepository.save(changePasswordRequestEntity);
@@ -108,6 +112,10 @@ public class ChangePasswordService {
 
     private boolean isValidOldPassword(UserEntity userEntity, ChangePasswordRequest changePasswordRequest) {
         return passwordEncoder.matches(changePasswordRequest.getOldPassword().trim(), userEntity.getPassword());
+    }
+
+    private boolean isPasswordsMatched(UserEntity userEntity, ChangePasswordRequest changePasswordRequest) {
+        return passwordEncoder.matches(changePasswordRequest.getNewPassword().trim(), userEntity.getPassword());
     }
 
     private ChangePasswordRequestEntity saveChangePasswordRequest(ChangePasswordRequest changePasswordRequest,

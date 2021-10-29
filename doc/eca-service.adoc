@@ -441,7 +441,8 @@ image::./images/eca-oauth-db-schema.png[alt=Схема базы данных eca
 |middle_name             |varchar(255)     |-|+|-                              |Отчество пользователя
 |tfa_enabled             |boolean          |-|-|-                              |Вкл./выкл. двухфакторную аутентификацию
 |locked                  |boolean          |-|-|-                              |Вкл./выкл. блокировку пользователя
-|password_date           |timestamp        |-|-|-                              |Дата последнего изменения пароля
+|password_change_date    |timestamp        |-|-|-                              |Дата последнего изменения пароля
+|force_change_password   |boolean          |-|-|-                              |Флаг принудительной смены временного пароля
 |===
 
 ==== Таблица 3.23 - 'role_entity' - содержит данные о ролях

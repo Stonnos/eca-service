@@ -1,9 +1,9 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from "../../../environments/environment";
-import { ForgotPasswordRequest } from "../model/forgot-password.request";
 import { ResetPasswordRequest } from "../model/reset-password.request";
 import { Observable } from "rxjs/internal/Observable";
+import { CreateResetPasswordRequest } from "../model/create-reset-password.request";
 
 @Injectable()
 export class ResetPasswordService {
@@ -13,11 +13,11 @@ export class ResetPasswordService {
   public constructor(private http: HttpClient) {
   }
 
-  public forgotPassword(forgotPasswordRequest: ForgotPasswordRequest) {
+  public createResetPasswordRequest(createResetPasswordRequest: CreateResetPasswordRequest) {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8'
     });
-    return this.http.post(this.serviceUrl + '/forgot', forgotPasswordRequest, { headers: headers })
+    return this.http.post(this.serviceUrl + '/create-reset-request', createResetPasswordRequest, { headers: headers })
   }
 
   public resetPassword(resetPasswordRequest: ResetPasswordRequest) {

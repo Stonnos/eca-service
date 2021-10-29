@@ -9,6 +9,7 @@ import { ValidationErrorDto } from "../../../../../../../../target/generated-sou
 import { ValidationErrorCode } from "../../../common/model/validation-error-code";
 import { ValidationService } from "../../../common/services/validation.service";
 import { Utils } from "../../../common/util/utils";
+import { ErrorHandler } from "../../../common/services/error-handler";
 
 @Component({
   selector: 'app-change-password-dialog',
@@ -22,13 +23,28 @@ export class ChangePasswordDialogComponent extends BaseCreateDialogComponent<Cha
   public confirmPassword: string;
 
   public invalidPassword: boolean = false;
-  public hasActiveChangePasswordRequest: boolean = false;
 
   public safePassword: boolean = false;
 
+  public message: string;
+
+  private errorCode: string;
+
+  private readonly errorCodes: string[] = [
+    ValidationErrorCode.USER_LOCKED,
+    ValidationErrorCode.ACTIVE_CHANGE_PASSWORD_REQUEST,
+    ValidationErrorCode.PASSWORDS_MATCHED
+  ];
+
+  private readonly errorCodesMap = new Map<string, string>()
+    .set(ValidationErrorCode.USER_LOCKED, 'Не удалось изменить пароль, т.к. ваш аккаунт заблокирован.')
+    .set(ValidationErrorCode.PASSWORDS_MATCHED, 'Придумайте новый пароль отличный от старого.')
+    .set(ValidationErrorCode.ACTIVE_CHANGE_PASSWORD_REQUEST, 'Вы уже отправили запрос на изменение пароля');
+
   public constructor(private messageService: MessageService,
                      private changePasswordService: ChangePasswordService,
-                     private validationService: ValidationService) {
+                     private validationService: ValidationService,
+                     private errorHandler: ErrorHandler) {
     super();
   }
 
@@ -36,7 +52,7 @@ export class ChangePasswordDialogComponent extends BaseCreateDialogComponent<Cha
   }
 
   public hide(): void {
-    this.hasActiveChangePasswordRequest = false;
+    this.errorCode = null;
     super.hide();
   }
 
@@ -70,12 +86,16 @@ export class ChangePasswordDialogComponent extends BaseCreateDialogComponent<Cha
     this.invalidPassword = false;
   }
 
+  public getErrorMessage(): string {
+    return this.errorCode && this.errorCodesMap.get(this.errorCode);
+  }
+
   private handleError(error): void {
     if (error instanceof HttpErrorResponse && error.status === 400) {
       const errors: ValidationErrorDto[] = error.error;
       this.invalidPassword = this.validationService.hasErrorCode(errors, ValidationErrorCode.INVALID_PASSWORD);
-      this.hasActiveChangePasswordRequest =
-        this.validationService.hasErrorCode(errors, ValidationErrorCode.ACTIVE_CHANGE_PASSWORD_REQUEST);
+      this.errorCode = this.errorHandler.getFirstErrorCode(error, this.errorCodes);
+      this.message = this.errorCodesMap.get(this.errorCode);
     } else {
       this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
     }

@@ -9,6 +9,7 @@ import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.exception.ChangePasswordRequestAlreadyExistsException;
 import com.ecaservice.oauth.exception.InvalidPasswordException;
 import com.ecaservice.oauth.exception.InvalidTokenException;
+import com.ecaservice.oauth.exception.PasswordsMatchedException;
 import com.ecaservice.oauth.exception.UserLockedException;
 import com.ecaservice.oauth.model.TokenModel;
 import com.ecaservice.oauth.repository.ChangePasswordRequestRepository;
@@ -79,6 +80,13 @@ class ChangePasswordServiceTest extends AbstractJpaTest {
     void testCreateChangePasswordRequest() {
         internalTestCreateChangePasswordRequest();
         assertThat(changePasswordRequestRepository.count()).isOne();
+    }
+
+    @Test
+    void testCreateChangePasswordRequestShouldThrowPasswordsMatchedException() {
+        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest(PASSWORD, PASSWORD);
+        assertThrows(PasswordsMatchedException.class,
+                () -> changePasswordService.createChangePasswordRequest(userEntity.getId(), changePasswordRequest));
     }
 
     @Test
@@ -163,7 +171,7 @@ class ChangePasswordServiceTest extends AbstractJpaTest {
                 changePasswordRequestRepository.findById(changePasswordRequestEntity.getId()).orElse(null);
         assertThat(actual).isNotNull();
         assertThat(actual.getConfirmationDate()).isNotNull();
-        assertThat(actual.getUserEntity().getPasswordDate()).isNotNull();
+        assertThat(actual.getUserEntity().getPasswordChangeDate()).isNotNull();
         assertThat(actual.getUserEntity().getPassword()).isEqualTo(changePasswordRequestEntity.getNewPassword());
         verify(oauth2TokenService, atLeastOnce()).revokeTokens(any(UserEntity.class));
     }

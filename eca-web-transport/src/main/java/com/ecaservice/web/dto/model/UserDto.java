@@ -94,7 +94,7 @@ public class UserDto {
     @Schema(description = "Last password change date", type = "string", example = "2021-07-01 14:00:00")
     @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
-    private LocalDateTime passwordDate;
+    private LocalDateTime passwordChangeDate;
 
     /**
      * Roles list

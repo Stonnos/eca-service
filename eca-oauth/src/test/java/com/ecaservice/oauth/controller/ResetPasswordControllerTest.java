@@ -1,7 +1,7 @@
 package com.ecaservice.oauth.controller;
 
 import com.ecaservice.common.web.annotation.EnableGlobalExceptionHandler;
-import com.ecaservice.oauth.dto.ForgotPasswordRequest;
+import com.ecaservice.oauth.dto.CreateResetPasswordRequest;
 import com.ecaservice.oauth.dto.ResetPasswordRequest;
 import com.ecaservice.oauth.model.TokenModel;
 import com.ecaservice.oauth.repository.ResetPasswordRequestRepository;
@@ -43,7 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ResetPasswordControllerTest {
 
     private static final String BASE_URL = "/password";
-    private static final String FORGOT_URL = BASE_URL + "/forgot";
+    private static final String CREATE_RESET_PASSWORD_REQUEST_URL = BASE_URL + "/create-reset-request";
     private static final String RESET_URL = BASE_URL + "/reset";
     private static final String VERIFY_TOKEN_URL = BASE_URL + "/verify-token";
     private static final String EMAIL = "test@mail.ru";
@@ -65,32 +65,32 @@ class ResetPasswordControllerTest {
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
-    void testForgotPasswordWithEmptyEmail() throws Exception {
-        ForgotPasswordRequest forgotPasswordRequest = new ForgotPasswordRequest();
-        mockMvc.perform(post(FORGOT_URL)
-                .content(objectMapper.writeValueAsString(forgotPasswordRequest))
+    void testCreateResetPasswordRequestWithEmptyEmail() throws Exception {
+        CreateResetPasswordRequest createResetPasswordRequest = new CreateResetPasswordRequest();
+        mockMvc.perform(post(CREATE_RESET_PASSWORD_REQUEST_URL)
+                .content(objectMapper.writeValueAsString(createResetPasswordRequest))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    void testForgotPasswordWithNotExistsEmail() throws Exception {
-        ForgotPasswordRequest forgotPasswordRequest = new ForgotPasswordRequest(EMAIL);
+    void testCreateResetPasswordRequestWithNotExistsEmail() throws Exception {
+        CreateResetPasswordRequest createResetPasswordRequest = new CreateResetPasswordRequest(EMAIL);
         when(userEntityRepository.existsByEmail(EMAIL)).thenReturn(false);
-        mockMvc.perform(post(FORGOT_URL)
-                .content(objectMapper.writeValueAsString(forgotPasswordRequest))
+        mockMvc.perform(post(CREATE_RESET_PASSWORD_REQUEST_URL)
+                .content(objectMapper.writeValueAsString(createResetPasswordRequest))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    void testForgotPassword() throws Exception {
-        ForgotPasswordRequest forgotPasswordRequest = new ForgotPasswordRequest(EMAIL);
+    void testCreateResetPasswordRequest() throws Exception {
+        CreateResetPasswordRequest createResetPasswordRequest = new CreateResetPasswordRequest(EMAIL);
         when(userEntityRepository.existsByEmail(EMAIL)).thenReturn(true);
-        when(resetPasswordService.createResetPasswordRequest(forgotPasswordRequest)).thenReturn(
+        when(resetPasswordService.createResetPasswordRequest(createResetPasswordRequest)).thenReturn(
                 TokenModel.builder().build());
-        mockMvc.perform(post(FORGOT_URL)
-                .content(objectMapper.writeValueAsString(forgotPasswordRequest))
+        mockMvc.perform(post(CREATE_RESET_PASSWORD_REQUEST_URL)
+                .content(objectMapper.writeValueAsString(createResetPasswordRequest))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }

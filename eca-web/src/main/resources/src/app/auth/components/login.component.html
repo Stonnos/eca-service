@@ -1,7 +1,7 @@
 <div class="container">
   <div class="row h-100">
     <div class="col-12 d-flex py-4">
-      <form *ngIf="!tfaCodeVerificationStep"
+      <form *ngIf="loginStep"
             novalidate
             class="form d-flex flex-column justify-content-center m-auto"
             (submit)="submit()"
@@ -57,7 +57,9 @@
             </div>
           </div>
           <div class="ui-g-10 mx-auto d-flex align-items-end justify-content-end">
-            <a class="forgot-password-link" [routerLink]="['/forgot-password']" [class.disabled-link]="loading">
+            <a class="create-reset-request-password-link"
+               [routerLink]="['/create-reset-password-request']"
+               [class.disabled-link]="loading">
               Забыли пароль?
             </a>
           </div>
@@ -108,7 +110,8 @@
             </div>
             <div class="ui-g-10 mt-2 mx-auto d-flex align-items-end justify-content-end">
               <span *ngIf="!codeExpired" class="tfa-code-timer">
-                Время действия кода: <span class="ml-2 mr-2 pi pi-clock">{{ getFormattedCurrentTokenValidityTime() }}</span>
+                Время действия кода: <span
+                class="ml-2 mr-2 pi pi-clock">{{ getFormattedCurrentTokenValidityTime() }}</span>
               </span>
               <span *ngIf="codeExpired" class="tfa-code-timer-expired">
                 Время действия кода истекло
@@ -142,6 +145,27 @@
 
           </div>
         </p-panel>
+      </form>
+
+      <form *ngIf="changePasswordRequiredStep" class="form d-flex flex-column justify-content-center m-auto">
+        <div class="ui-g-10 text-center mx-auto">
+          <img class="eca-icon" src="assets/images/eca-icon.jpg">
+          <h4 class="eca-service-text">ECA - SERVICE</h4>
+        </div>
+        <div class="ui-g ui-fluid">
+          <div class="ui-g-10 mx-auto d-flex align-items-center justify-content-center text-center text-danger">
+            Вам был выдан временный пароль. Его необходимо изменить.
+          </div>
+          <div class="ui-g-10 mx-auto mt-1 d-flex align-items-center justify-content-center">
+            <button
+              pButton
+              [routerLink]="['/create-reset-password-request']"
+              type="button"
+              label="Изменить"
+              class="w-50 mb-1 mb-sm-2">
+            </button>
+          </div>
+        </div>
       </form>
 
     </div>

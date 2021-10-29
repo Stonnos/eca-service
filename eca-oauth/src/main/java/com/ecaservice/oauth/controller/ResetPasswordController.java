@@ -1,7 +1,7 @@
 package com.ecaservice.oauth.controller;
 
 import com.ecaservice.common.web.dto.ValidationErrorDto;
-import com.ecaservice.oauth.dto.ForgotPasswordRequest;
+import com.ecaservice.oauth.dto.CreateResetPasswordRequest;
 import com.ecaservice.oauth.dto.ResetPasswordRequest;
 import com.ecaservice.oauth.event.model.PasswordResetNotificationEvent;
 import com.ecaservice.oauth.event.model.ResetPasswordRequestNotificationEvent;
@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 
-import static com.ecaservice.oauth.controller.doc.ApiExamples.FORGOT_PASSWORD_REQUEST_JSON;
+import static com.ecaservice.oauth.controller.doc.ApiExamples.CREATE_RESET_PASSWORD_REQUEST_JSON;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.INVALID_TOKEN_RESPONSE_JSON;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.RESET_PASSWORD_REQUEST_JSON;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.USER_EMAIL_RESPONSE_JSON;
@@ -51,16 +51,16 @@ public class ResetPasswordController {
     private final ResetPasswordRequestRepository resetPasswordRequestRepository;
 
     /**
-     * Creates forgot password request.
+     * Creates reset password request.
      *
-     * @param forgotPasswordRequest - forgot password request
+     * @param createResetPasswordRequest - reset password request
      */
     @Operation(
-            description = "Creates forgot password request",
-            summary = "Creates forgot password request",
+            description = "Creates reset password request",
+            summary = "Creates reset password request",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
-                            @ExampleObject(value = FORGOT_PASSWORD_REQUEST_JSON)
+                            @ExampleObject(value = CREATE_RESET_PASSWORD_REQUEST_JSON)
                     })
             }),
             responses = {
@@ -76,10 +76,10 @@ public class ResetPasswordController {
                     )
             }
     )
-    @PostMapping(value = "/forgot")
-    public void forgotPassword(@Valid @RequestBody ForgotPasswordRequest forgotPasswordRequest) {
-        log.info("Received forgot password request {}", forgotPasswordRequest);
-        var tokenModel = resetPasswordService.createResetPasswordRequest(forgotPasswordRequest);
+    @PostMapping(value = "/create-reset-request")
+    public void createResetPasswordRequest(@Valid @RequestBody CreateResetPasswordRequest createResetPasswordRequest) {
+        log.info("Received reset password request creation [{}]", createResetPasswordRequest);
+        var tokenModel = resetPasswordService.createResetPasswordRequest(createResetPasswordRequest);
         log.info("Reset password request [{}] has been created for user [{}]", tokenModel.getTokenId(),
                 tokenModel.getLogin());
         applicationEventPublisher.publishEvent(new ResetPasswordRequestNotificationEvent(this, tokenModel));

@@ -17,7 +17,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     private static final String FORWARD = "forward:/";
 
     private static final List<String> URL_PATHS =
-            List.of("/login", "/dashboard/**", "/forgot-password", "/reset-password/**",
+            List.of("/login", "/dashboard/**", "/create-reset-password-request", "/reset-password/**",
                     "/change-password/**", "/access-denied", "/change-email/**");
 
     @Override
