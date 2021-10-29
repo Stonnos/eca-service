@@ -1,7 +1,6 @@
 package com.ecaservice.oauth.config.granter;
 
 import com.ecaservice.oauth.config.TfaConfig;
-import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.event.model.TfaCodeNotificationEvent;
 import com.ecaservice.oauth.exception.ChangePasswordRequiredException;
 import com.ecaservice.oauth.exception.TfaRequiredException;
@@ -9,11 +8,9 @@ import com.ecaservice.oauth.repository.UserEntityRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.provider.ClientDetails;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.TokenRequest;
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.password.ResourceOwnerPasswordTokenGranter;
@@ -57,10 +54,9 @@ public class TfaResourceOwnerPasswordTokenGranter extends ResourceOwnerPasswordT
 
     @Override
     protected OAuth2AccessToken getAccessToken(ClientDetails client, TokenRequest tokenRequest) {
-        OAuth2Authentication oAuth2Authentication = getOAuth2Authentication(client, tokenRequest);
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                (UsernamePasswordAuthenticationToken) oAuth2Authentication.getUserAuthentication();
-        UserEntity userEntity = userEntityRepository.findUser(usernamePasswordAuthenticationToken.getName());
+        var oAuth2Authentication = getOAuth2Authentication(client, tokenRequest);
+        var authentication = oAuth2Authentication.getUserAuthentication();
+        var userEntity = userEntityRepository.findUser(authentication.getName());
         if (userEntity.isForceChangePassword()) {
             log.info("Password must be change for user [{}]", userEntity.getLogin());
             throw new ChangePasswordRequiredException();
