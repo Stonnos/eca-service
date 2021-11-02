@@ -1,9 +1,11 @@
 package com.ecaservice.external.api.service;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.external.api.dto.EvaluationRequestDto;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
+import com.ecaservice.external.api.mapping.EcaRequestMapper;
 import com.ecaservice.external.api.repository.EvaluationRequestRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,21 +25,37 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class EcaRequestService {
 
+    private final EcaRequestMapper ecaRequestMapper;
     private final FileDataService fileDataService;
     private final EvaluationRequestRepository evaluationRequestRepository;
 
     /**
      * Creates and save evaluation request entity.
      *
+     * @param evaluationRequestDto - evaluation request dto
      * @return eca request entity
      */
-    public EcaRequestEntity createAndSaveEvaluationRequestEntity() {
+    public EcaRequestEntity createAndSaveEvaluationRequestEntity(EvaluationRequestDto evaluationRequestDto) {
+        String correlationId = UUID.randomUUID().toString();
+        log.info("Starting to save evaluation request for correlation id [{}]", correlationId);
+        var ecaRequestEntity = ecaRequestMapper.map(evaluationRequestDto);
+        initializeRequest(ecaRequestEntity, correlationId);
+        evaluationRequestRepository.save(ecaRequestEntity);
+        log.info("Evaluation request has been saved for correlation id [{}]", correlationId);
+        return ecaRequestEntity;
+    }
+
+    /**
+     * Creates and save evaluation request entity with use optimal classifier options flag.
+     *
+     * @return eca request entity
+     */
+    public EcaRequestEntity createAndSaveEvaluationOptimizerRequestEntity() {
         String correlationId = UUID.randomUUID().toString();
         log.info("Starting to save evaluation request for correlation id [{}]", correlationId);
         var ecaRequestEntity = new EvaluationRequestEntity();
-        ecaRequestEntity.setCorrelationId(correlationId);
-        ecaRequestEntity.setRequestStage(RequestStageType.READY);
-        ecaRequestEntity.setCreationDate(LocalDateTime.now());
+        ecaRequestEntity.setUseOptimalClassifierOptions(true);
+        initializeRequest(ecaRequestEntity, correlationId);
         evaluationRequestRepository.save(ecaRequestEntity);
         log.info("Evaluation request has been saved for correlation id [{}]", correlationId);
         return ecaRequestEntity;
@@ -70,5 +88,11 @@ public class EcaRequestService {
         fileDataService.delete(classifierAbsolutePath);
         log.info("Evaluation request [{}] classifier model file has been deleted",
                 evaluationRequestEntity.getCorrelationId());
+    }
+
+    private void initializeRequest(EcaRequestEntity ecaRequestEntity, String correlationId) {
+        ecaRequestEntity.setCorrelationId(correlationId);
+        ecaRequestEntity.setRequestStage(RequestStageType.READY);
+        ecaRequestEntity.setCreationDate(LocalDateTime.now());
     }
 }

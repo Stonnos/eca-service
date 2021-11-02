@@ -5,6 +5,7 @@ import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.dto.EvaluationStatus;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
+import com.ecaservice.external.api.mapping.EcaRequestMapperImpl;
 import com.ecaservice.external.api.mapping.EvaluationStatusMapperImpl;
 import com.ecaservice.external.api.repository.EvaluationRequestRepository;
 import org.junit.jupiter.api.Test;
@@ -26,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @ExtendWith(SpringExtension.class)
 @Import({ExternalApiConfig.class, EvaluationResponseService.class, EvaluationStatusMapperImpl.class,
-        EcaRequestService.class})
+        EcaRequestService.class, EcaRequestMapperImpl.class})
 class EvaluationResponseServiceTest extends AbstractJpaTest {
 
     private static final String MODEL_DOWNLOAD_URL_FORMAT = "%s/download-model/%s";

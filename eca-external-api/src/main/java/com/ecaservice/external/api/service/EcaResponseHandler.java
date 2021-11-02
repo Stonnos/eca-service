@@ -63,7 +63,9 @@ public class EcaResponseHandler {
                 evaluationRequestEntity.setErrorMessage(errorMessage);
             } else {
                 EvaluationResults evaluationResults = evaluationResponse.getEvaluationResults();
-                populateEvaluationOptions(evaluationResults, evaluationRequestEntity);
+                if (evaluationRequestEntity.isUseOptimalClassifierOptions()) {
+                    populateEvaluationOptions(evaluationResults, evaluationRequestEntity);
+                }
                 saveEvaluationResults(evaluationResults, evaluationRequestEntity);
                 saveClassifierToFile(evaluationResults, evaluationRequestEntity);
                 evaluationRequestEntity.setRequestStage(RequestStageType.COMPLETED);

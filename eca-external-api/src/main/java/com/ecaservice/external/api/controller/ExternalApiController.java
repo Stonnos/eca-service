@@ -190,7 +190,8 @@ public class ExternalApiController {
             log.debug("Received request with options [{}], evaluation method [{}]",
                     toJson(evaluationRequestDto.getClassifierOptions()), evaluationRequestDto.getEvaluationMethod());
         }
-        return evaluateModel(evaluationApiService::processRequest, evaluationRequestDto);
+        var ecaRequestEntity = ecaRequestService.createAndSaveEvaluationRequestEntity(evaluationRequestDto);
+        return evaluateModel(evaluationApiService::processRequest, ecaRequestEntity, evaluationRequestDto);
     }
 
     /**
@@ -243,7 +244,8 @@ public class ExternalApiController {
             @Valid @RequestBody InstancesRequestDto instancesRequestDto) {
         log.info("Received request to evaluate optimal classifier for data url [{}]",
                 instancesRequestDto.getTrainDataUrl());
-        return evaluateModel(evaluationApiService::processRequest, instancesRequestDto);
+        var ecaRequestEntity = ecaRequestService.createAndSaveEvaluationOptimizerRequestEntity();
+        return evaluateModel(evaluationApiService::processRequest, ecaRequestEntity, instancesRequestDto);
     }
 
     /**
@@ -343,8 +345,8 @@ public class ExternalApiController {
     }
 
     private <T> Mono<ResponseDto<EvaluationResponseDto>> evaluateModel(BiConsumer<EcaRequestEntity, T> requestConsumer,
+                                                                       EcaRequestEntity ecaRequestEntity,
                                                                        T requestDto) {
-        var ecaRequestEntity = ecaRequestService.createAndSaveEvaluationRequestEntity();
         return Mono.<ResponseDto<EvaluationResponseDto>>create(sink -> {
             messageCorrelationService.push(ecaRequestEntity.getCorrelationId(), sink);
             requestConsumer.accept(ecaRequestEntity, requestDto);

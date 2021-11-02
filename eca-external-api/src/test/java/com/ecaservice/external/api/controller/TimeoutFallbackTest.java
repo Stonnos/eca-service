@@ -3,6 +3,7 @@ package com.ecaservice.external.api.controller;
 import com.ecaservice.external.api.AbstractJpaTest;
 import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.dto.ResponseCode;
+import com.ecaservice.external.api.mapping.EcaRequestMapperImpl;
 import com.ecaservice.external.api.metrics.MetricsService;
 import com.ecaservice.external.api.repository.EvaluationRequestRepository;
 import com.ecaservice.external.api.service.EcaRequestService;
@@ -23,7 +24,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Roman Batygin
  */
-@Import({TimeoutFallback.class, RequestStageHandler.class, ExternalApiConfig.class, EcaRequestService.class})
+@Import({TimeoutFallback.class, RequestStageHandler.class, ExternalApiConfig.class, EcaRequestService.class,
+        EcaRequestMapperImpl.class})
 class TimeoutFallbackTest extends AbstractJpaTest {
 
     @MockBean
