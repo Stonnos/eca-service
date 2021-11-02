@@ -26,22 +26,22 @@ public class RabbitConfiguration {
     private final QueueConfig queueConfig;
 
     /**
-     * Creates evaluation request reply to bean.
+     * Creates evaluation response queue bean.
      *
-     * @return evaluation request reply to bean
+     * @return  evaluation response queue bean
      */
     @Bean
-    public Queue evaluationRequestReplyToQueue() {
-        return QueueBuilder.durable(queueConfig.getEvaluationRequestReplyToQueue()).build();
+    public Queue evaluationResponseQueue() {
+        return QueueBuilder.durable(queueConfig.getEvaluationResponseQueue()).build();
     }
 
     /**
-     * Creates evaluation request reply to queue bindings bean.
+     * Creates evaluation response queue bindings bean.
      *
-     * @return evaluation request reply to queue bindings bean
+     * @return evaluation response queue bindings bean
      */
     @Bean
-    public Binding bindingEvaluationRequestReplyToQueue() {
-        return BindingBuilder.bind(evaluationRequestReplyToQueue()).to(DirectExchange.DEFAULT).withQueueName();
+    public Binding bindingEvaluationResponseQueue() {
+        return BindingBuilder.bind(evaluationResponseQueue()).to(DirectExchange.DEFAULT).withQueueName();
     }
 }

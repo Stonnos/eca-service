@@ -1,7 +1,7 @@
 package com.ecaservice.external.api.service;
 
 import com.ecaservice.base.model.EvaluationResponse;
-import com.ecaservice.classifier.options.config.ClassifiersOptionsConfig;
+import com.ecaservice.classifier.options.config.ClassifiersOptionsAutoConfiguration;
 import com.ecaservice.external.api.AbstractJpaTest;
 import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
@@ -27,7 +27,7 @@ import static org.mockito.Mockito.doThrow;
  *
  * @author Roman Batygin
  */
-@Import({ExternalApiConfig.class, ClassifiersOptionsConfig.class, EcaResponseHandler.class})
+@Import({ExternalApiConfig.class, EcaResponseHandler.class, ClassifiersOptionsAutoConfiguration.class})
 class EcaResponseHandlerTest extends AbstractJpaTest {
 
     private static final String CLASSIFIER_MODEL_PATH_FORMAT = "%s%s_%s.model";

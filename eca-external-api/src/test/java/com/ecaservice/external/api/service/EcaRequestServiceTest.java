@@ -1,12 +1,10 @@
 package com.ecaservice.external.api.service;
 
 import com.ecaservice.external.api.AbstractJpaTest;
-import com.ecaservice.external.api.dto.EvaluationRequestDto;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.exception.ProcessFileException;
-import com.ecaservice.external.api.mapping.EcaRequestMapperImpl;
 import com.ecaservice.external.api.repository.EvaluationRequestRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -15,7 +13,6 @@ import org.springframework.context.annotation.Import;
 import javax.inject.Inject;
 import java.util.UUID;
 
-import static com.ecaservice.external.api.TestHelperUtils.createEvaluationRequestDto;
 import static com.ecaservice.external.api.TestHelperUtils.createEvaluationRequestEntity;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -26,7 +23,7 @@ import static org.mockito.Mockito.doThrow;
  *
  * @author Roman Batygin
  */
-@Import({EcaRequestService.class, EcaRequestMapperImpl.class})
+@Import(EcaRequestService.class)
 class EcaRequestServiceTest extends AbstractJpaTest {
 
     private static final String CLASSIFIER_ABSOLUTE_PATH = "/home/roman/classifier.model";
@@ -42,8 +39,7 @@ class EcaRequestServiceTest extends AbstractJpaTest {
 
     @Test
     void testSaveRequestEntity() {
-        EvaluationRequestDto evaluationRequestDto = createEvaluationRequestDto();
-        EcaRequestEntity ecaRequestEntity = ecaRequestService.createAndSaveRequestEntity(evaluationRequestDto);
+        EcaRequestEntity ecaRequestEntity = ecaRequestService.createAndSaveEvaluationRequestEntity();
         assertThat(ecaRequestEntity).isNotNull();
         EvaluationRequestEntity actual = evaluationRequestRepository.findById(ecaRequestEntity.getId()).orElse(null);
         assertThat(actual).isNotNull();

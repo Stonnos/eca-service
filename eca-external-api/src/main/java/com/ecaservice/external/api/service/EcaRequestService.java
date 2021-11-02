@@ -1,11 +1,9 @@
 package com.ecaservice.external.api.service;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
-import com.ecaservice.external.api.dto.EvaluationRequestDto;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
-import com.ecaservice.external.api.mapping.EcaRequestMapper;
 import com.ecaservice.external.api.repository.EvaluationRequestRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,22 +23,24 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class EcaRequestService {
 
-    private final EcaRequestMapper ecaRequestMapper;
     private final FileDataService fileDataService;
     private final EvaluationRequestRepository evaluationRequestRepository;
 
     /**
-     * Creates and save request entity.
+     * Creates and save evaluation request entity.
      *
-     * @param evaluationRequestDto - evaluation request dto
      * @return eca request entity
      */
-    public EcaRequestEntity createAndSaveRequestEntity(EvaluationRequestDto evaluationRequestDto) {
-        var ecaRequestEntity = ecaRequestMapper.map(evaluationRequestDto);
-        ecaRequestEntity.setCorrelationId(UUID.randomUUID().toString());
+    public EcaRequestEntity createAndSaveEvaluationRequestEntity() {
+        String correlationId = UUID.randomUUID().toString();
+        log.info("Starting to save evaluation request for correlation id [{}]", correlationId);
+        var ecaRequestEntity = new EvaluationRequestEntity();
+        ecaRequestEntity.setCorrelationId(correlationId);
         ecaRequestEntity.setRequestStage(RequestStageType.READY);
         ecaRequestEntity.setCreationDate(LocalDateTime.now());
-        return evaluationRequestRepository.save(ecaRequestEntity);
+        evaluationRequestRepository.save(ecaRequestEntity);
+        log.info("Evaluation request has been saved for correlation id [{}]", correlationId);
+        return ecaRequestEntity;
     }
 
     /**

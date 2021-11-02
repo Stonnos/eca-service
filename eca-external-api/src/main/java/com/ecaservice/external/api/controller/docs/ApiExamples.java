@@ -20,6 +20,12 @@ public class ApiExamples {
                     "\"evaluationMethod\": \"CROSS_VALIDATION\", \"numFolds\": 10, \"numTests\": 1, \"seed\": 1}";
 
     /**
+     * Instances request json
+     */
+    public static final String INSTANCES_REQUEST_JSON =
+            "{\"trainDataUrl\": \"http://kt.ijs.si/Branax/Repository/WEKA/Iris.xls\"}";
+
+    /**
      * Upload instances response json
      */
     public static final String UPLOAD_INSTANCES_RESPONSE_JSON = "{\"payload\": {\"dataId\": " +

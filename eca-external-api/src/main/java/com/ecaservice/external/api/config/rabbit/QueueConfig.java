@@ -18,7 +18,12 @@ public class QueueConfig {
     private String evaluationRequestQueue;
 
     /**
-     * Evaluation request reply to queue name
+     * Optimal evaluation request queue name
      */
-    private String evaluationRequestReplyToQueue;
+    private String optimalEvaluationRequestQueue;
+
+    /**
+     * Evaluation response queue name
+     */
+    private String evaluationResponseQueue;
 }

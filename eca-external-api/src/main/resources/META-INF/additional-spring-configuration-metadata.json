@@ -1,0 +1,19 @@
+{
+  "properties": [
+    {
+      "name": "external-api.delaySeconds",
+      "type": "java.lang.Integer",
+      "description": "Scheduler delay in seconds"
+    },
+    {
+      "name": "external-api.removeClassifiersCron",
+      "type": "java.lang.String",
+      "description": "Cron expression for classifier models removing"
+    },
+    {
+      "name": "external-api.removeDataCron",
+      "type": "java.lang.String",
+      "description": "Cron expression for training data removing"
+    }
+  ]
+}

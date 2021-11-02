@@ -3,23 +3,28 @@ package com.ecaservice.external.api.service;
 import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.base.model.MessageError;
 import com.ecaservice.base.model.TechnicalStatus;
+import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.classifier.options.config.ClassifiersOptionsConfig;
 import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.repository.EcaRequestRepository;
 import eca.core.evaluation.Evaluation;
+import eca.core.evaluation.EvaluationMethod;
 import eca.core.evaluation.EvaluationResults;
 import eca.core.model.ClassificationModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import weka.classifiers.AbstractClassifier;
 
 import java.io.File;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
+
+import static com.ecaservice.external.api.util.Utils.toJson;
 
 /**
  * Eca response handler.
@@ -36,6 +41,7 @@ public class EcaResponseHandler {
     private final ExternalApiConfig externalApiConfig;
     private final ClassifiersOptionsConfig classifiersOptionsConfig;
     private final FileDataService fileDataService;
+    private final ClassifierOptionsAdapter classifierOptionsAdapter;
     private final EcaRequestRepository ecaRequestRepository;
 
     /**
@@ -57,6 +63,7 @@ public class EcaResponseHandler {
                 evaluationRequestEntity.setErrorMessage(errorMessage);
             } else {
                 EvaluationResults evaluationResults = evaluationResponse.getEvaluationResults();
+                populateEvaluationOptions(evaluationResults, evaluationRequestEntity);
                 saveEvaluationResults(evaluationResults, evaluationRequestEntity);
                 saveClassifierToFile(evaluationResults, evaluationRequestEntity);
                 evaluationRequestEntity.setRequestStage(RequestStageType.COMPLETED);
@@ -71,6 +78,24 @@ public class EcaResponseHandler {
         } finally {
             evaluationRequestEntity.setEndDate(LocalDateTime.now());
             ecaRequestRepository.save(evaluationRequestEntity);
+        }
+    }
+
+    private void populateEvaluationOptions(EvaluationResults evaluationResults,
+                                           EvaluationRequestEntity evaluationRequestEntity) {
+        var classifier = evaluationResults.getClassifier();
+        Assert.isInstanceOf(AbstractClassifier.class, classifier,
+                String.format("Got [%s] classifier class. Expected [%s] classifier sub class",
+                        AbstractClassifier.class.getSimpleName(), classifier.getClass().getSimpleName()));
+        var classifierOptions = classifierOptionsAdapter.convert((AbstractClassifier) classifier);
+        evaluationRequestEntity.setClassifierOptionsJson(toJson(classifierOptions));
+        Evaluation evaluation = evaluationResults.getEvaluation();
+        if (!evaluation.isKCrossValidationMethod()) {
+            evaluationRequestEntity.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
+        } else {
+            evaluationRequestEntity.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
+            evaluationRequestEntity.setNumFolds(evaluation.numFolds());
+            evaluationRequestEntity.setNumTests(evaluation.getValidationsNum());
         }
     }
 
