@@ -53,6 +53,7 @@ import static com.ecaservice.external.api.controller.docs.ApiExamples.EVALUATION
 import static com.ecaservice.external.api.controller.docs.ApiExamples.EVALUATION_STATUS_RESPONSE_JSON;
 import static com.ecaservice.external.api.controller.docs.ApiExamples.INSTANCES_REQUEST_JSON;
 import static com.ecaservice.external.api.controller.docs.ApiExamples.INVALID_EVALUATION_REQUEST_RESPONSE_JSON;
+import static com.ecaservice.external.api.controller.docs.ApiExamples.INVALID_INSTANCES_REQUEST_RESPONSE_JSON;
 import static com.ecaservice.external.api.controller.docs.ApiExamples.INVALID_TRAIN_DATA_RESPONSE_JSON;
 import static com.ecaservice.external.api.controller.docs.ApiExamples.UNAUTHORIZED_RESPONSE_JSON;
 import static com.ecaservice.external.api.controller.docs.ApiExamples.UPLOAD_INSTANCES_RESPONSE_JSON;
@@ -232,7 +233,7 @@ public class ExternalApiController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = INVALID_EVALUATION_REQUEST_RESPONSE_JSON),
+                                            @ExampleObject(value = INVALID_INSTANCES_REQUEST_RESPONSE_JSON),
                                     },
                                     schema = @Schema(implementation = ResponseDto.class)
                             )

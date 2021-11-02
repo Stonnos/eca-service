@@ -79,4 +79,12 @@ public class ApiExamples {
             "\"classifierOptions\", \"code\": \"NotNull\", \"errorMessage\": \"must not be null\"}, " +
             "{\"fieldName\": \"evaluationMethod\", \"code\": \"NotNull\", \"errorMessage\": \"must not be null\"}], " +
             "\"responseCode\": \"VALIDATION_ERROR\", \"errorDescription\": \"Validation errors\"}";
+
+    /**
+     * Invalid instances request response json
+     */
+    public static final String INVALID_INSTANCES_REQUEST_RESPONSE_JSON = "{\"payload\": [{\"fieldName\": " +
+            "\"trainDataUrl\", \"code\": \"DataURL\", \"errorMessage\": \"train data url must have one of the " +
+            "protocols such as http, ftp, data\"}], \"responseCode\": \"VALIDATION_ERROR\", " +
+            "\"errorDescription\": \"Validation errors\"}";
 }
