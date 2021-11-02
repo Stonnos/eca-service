@@ -20,6 +20,11 @@ API предоставляет следующие методы:
 |Загрузка файла с обучающей выборкой на сервер
 |multipart/form-data
 |application/json
+|http://eca-service:8080/external-api/optimal-evaluation-request
+|POST
+|Создание запроса на построение модели классификатора с использованием оптимальных параметров
+|application/json
+|application/json
 |http://eca-service:8080/external-api/evaluation-request
 |POST
 |Создание запроса на построение модели классификатора
@@ -247,14 +252,57 @@ curl -X POST "http://localhost:8080/external-api/uploads-train-data" -H "accept:
 
 * Примечание: данные с моделями хранятся 14 дней
 
-==== 3.8. Пример запроса на получение статуса построения модели
+==== 3.8. Пример запроса на построение модели классификатора с использованием оптимальных параметров
+
+[source,json]
+----
+{
+  "trainDataUrl": "http://kt.ijs.si/Branax/Repository/WEKA/Iris.xls"
+}
+----
+
+==== 3.9. Описание параметров запроса на построение модели классификатора с использованием оптимальных параметров
+
+|===
+|Название поля/атрибута|Тип|Обязательное|Описание|Комментарий
+|trainDataUrl
+|string
+|+
+|Ссылка на обучающую выборку
+|Может быть передана ссылка на внешний источник, например http или ftp, так и ссылка на файл с данными на сервере в формате data://DATA_ID
+|===
+
+==== 3.10. Пример ответа на запрос построения модели классификатора с использованием оптимальных параметров
+
+[source,json]
+----
+{
+  "payload": {
+    "requestId": "1cbe6c49-8432-4c81-9afa-90f04a803fed",
+    "evaluationStatus": "IN_PROGRESS",
+    "modelUrl": null,
+    "numTestInstances": null,
+    "numCorrect": null,
+    "numIncorrect": null,
+    "pctCorrect": null,
+    "pctIncorrect": null,
+    "meanAbsoluteError": null
+  },
+  "responseCode": "SUCCESS",
+  "errorDescription": null
+}
+----
+
+Описание полей ответа приведено в п. 3.7.
+
+==== 3.11. Пример запроса на получение статуса построения модели
 
 [source,bash]
 ----
 curl -X GET "http://localhost:8080/external-api/evaluation-status/1cbe6c49-8432-4c81-9afa-90f04a803fed" -H "accept: */*" -H "authorization: Bearer cf4cd583-b9f1-4dce-8dcc-afefd1510974"
 ----
 
-=== 3.9. Пример ответа на запрос статуса построения модели
+==== 3.12. Пример ответа на запрос статуса построения модели
 
 [source,json]
 ----
@@ -275,7 +323,7 @@ curl -X GET "http://localhost:8080/external-api/evaluation-status/1cbe6c49-8432-
 }
 ----
 
-==== 3.10. Пример запроса на скачивание модели классификатора
+==== 3.13. Пример запроса на скачивание модели классификатора
 
 [source,bash]
 ----
