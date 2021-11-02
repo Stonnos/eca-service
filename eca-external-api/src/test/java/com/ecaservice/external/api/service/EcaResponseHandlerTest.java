@@ -53,6 +53,7 @@ class EcaResponseHandlerTest extends AbstractJpaTest {
     void testSuccessResponseHandle() {
         EvaluationRequestEntity evaluationRequestEntity =
                 createEvaluationRequestEntity(RequestStageType.RESPONSE_RECEIVED, null, LocalDateTime.now());
+        evaluationRequestEntity.setUseOptimalClassifierOptions(true);
         evaluationRequestRepository.save(evaluationRequestEntity);
         EvaluationResponse evaluationResponse = successEvaluationResponse();
         String expectedClassifierPath =
@@ -63,6 +64,7 @@ class EcaResponseHandlerTest extends AbstractJpaTest {
         EvaluationRequestEntity actual =
                 internalTestResponseHandle(evaluationRequestEntity, evaluationResponse, RequestStageType.COMPLETED);
         assertThat(actual.getClassifierAbsolutePath()).isEqualTo(expectedClassifierPath);
+        assertThat(actual.getClassifierOptionsJson()).isNotNull();
     }
 
     @Test

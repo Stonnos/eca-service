@@ -5,6 +5,7 @@ import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.external.api.dto.EvaluationRequestDto;
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
 import com.ecaservice.external.api.dto.EvaluationStatus;
+import com.ecaservice.external.api.dto.InstancesRequestDto;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.InstancesEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
@@ -44,6 +45,7 @@ public class TestHelperUtils {
     private static final String ABSOLUTE_PATH = "data.csv";
     private static final String TRAINING_DATA_PARAM = "trainingData";
     private static final String IRIS_XLS = "iris.xls";
+    private static final String TRAIN_DATA_URL = "data://84327874";
 
     /**
      * Generates the test data set.
@@ -105,6 +107,17 @@ public class TestHelperUtils {
         @Cleanup InputStream inputStream =
                 TestHelperUtils.class.getClassLoader().getResourceAsStream(TEST_REQUEST_JSON);
         return OBJECT_MAPPER.readValue(inputStream, EvaluationRequestDto.class);
+    }
+
+    /**
+     * Creates instances request dto.
+     *
+     * @return instances request dto
+     */
+    public static InstancesRequestDto createInstancesRequestDto() {
+        var instancesRequestDto = new InstancesRequestDto();
+        instancesRequestDto.setTrainDataUrl(TRAIN_DATA_URL);
+        return instancesRequestDto;
     }
 
     /**
