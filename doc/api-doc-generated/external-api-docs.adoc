@@ -998,6 +998,25 @@ __string__
 * TIMEOUT
 
 * ERROR
+|*errorCode*
+|Error code
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 |*modelUrl*
 |Model url
 a|
