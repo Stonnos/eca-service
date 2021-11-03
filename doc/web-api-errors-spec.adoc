@@ -1,0 +1,55 @@
+= Коды ошибок WEB API
+:toc:
+:toc-title: Оглавление
+
+== Введение
+
+В данном документе приведено описание кодов ошибок для WEB API.
+
+== Пример ответа для 400 http кода
+
+[source,json]
+----
+[
+  {
+    "fieldName": null,
+    "code": "UniqueTableName",
+    "errorMessage": "Table with name [iris] already exists!"
+  }
+]
+----
+
+
+== Коды ошибок
+
+|===
+|Код ошибки|Описание
+|UniqueLogin
+|Пользователь с таким логином уже существует
+|UniqueEmail
+|Пользователь с таким email уже существует
+|UserEmail
+|Пользователя с заданным email не существует
+|UniqueTableName
+|Таблица с заданным именем уже существует
+|InvalidPassword
+|Неправильный пароль
+|ActiveChangePasswordRequest
+|Активный запрос на изменение пароля уже существует
+|ActiveResetPasswordRequest
+|Активный запрос на сброс пароля уже существует
+|UserLocked
+|Пользователь заблокирован
+|InvalidToken
+|Передан невалидный токен
+|InvalidFile
+|Неправильное расширение файла
+|ProcessFileError
+|Ошибка при обработке файла
+|ActiveChangeEmailRequest
+|Активный запрос на изменение email уже существует
+|EmailAlreadyBound
+|Заданный Email уже привязан к аккаунту
+|PasswordsMatched
+|Новый и старый пароли совпадают
+|===
