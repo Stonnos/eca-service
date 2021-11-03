@@ -109,7 +109,7 @@
 ----
 {
   "requestId": "1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
-  "status": "ERROR",
+  "status": "VALIDATION_ERROR",
   "errors": [
     {
       "code": "NotNull",
