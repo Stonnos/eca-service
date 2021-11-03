@@ -1,6 +1,7 @@
 package com.ecaservice.server.util;
 
 import com.ecaservice.base.model.EcaResponse;
+import com.ecaservice.base.model.ErrorCode;
 import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.base.model.MessageError;
 import com.ecaservice.base.model.TechnicalStatus;
@@ -69,26 +70,27 @@ public class Utils {
     /**
      * Creates error object.
      *
-     * @param errorMessage - error message
+     * @param errorCode - error code
      * @return error object
      */
-    public static MessageError error(String errorMessage) {
+    public static MessageError error(ErrorCode errorCode) {
         MessageError error = new MessageError();
-        error.setMessage(errorMessage);
+        error.setCode(errorCode.name());
+        error.setMessage(errorCode.getErrorMessage());
         return error;
     }
 
     /**
      * Creates evaluation response with error status.
      *
-     * @param errorMessage - error message
+     * @param errorCode - error code
      * @return evaluation response
      */
-    public static EvaluationResponse buildEvaluationErrorResponse(String errorMessage) {
+    public static EvaluationResponse buildEvaluationErrorResponse(ErrorCode errorCode) {
         EvaluationResponse evaluationResponse = new EvaluationResponse();
         evaluationResponse.setRequestId(UUID.randomUUID().toString());
         evaluationResponse.setStatus(TechnicalStatus.ERROR);
-        MessageError error = error(errorMessage);
+        MessageError error = error(errorCode);
         evaluationResponse.setErrors(Collections.singletonList(error));
         return evaluationResponse;
     }
@@ -96,14 +98,14 @@ public class Utils {
     /**
      * Creates response with error status.
      *
-     * @param errorMessage - error message
+     * @param errorCode - error code
      * @return eca response
      */
-    public static EcaResponse buildErrorResponse(String errorMessage) {
+    public static EcaResponse buildErrorResponse(ErrorCode errorCode) {
         EcaResponse ecaResponse = new EcaResponse();
         ecaResponse.setRequestId(UUID.randomUUID().toString());
         ecaResponse.setStatus(TechnicalStatus.ERROR);
-        MessageError error = error(errorMessage);
+        MessageError error = error(errorCode);
         ecaResponse.setErrors(Collections.singletonList(error));
         return ecaResponse;
     }

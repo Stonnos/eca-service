@@ -1,9 +1,11 @@
 package com.ecaservice.external.api.service;
 
 import com.ecaservice.base.model.EvaluationRequest;
+import com.ecaservice.base.model.InstancesRequest;
 import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.external.api.aspect.RequestExecution;
 import com.ecaservice.external.api.dto.EvaluationRequestDto;
+import com.ecaservice.external.api.dto.InstancesRequestDto;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.repository.EcaRequestRepository;
@@ -48,13 +50,32 @@ public class EvaluationApiService {
         log.info("Evaluation request [{}] has been sent to eca-server", ecaRequestEntity.getCorrelationId());
     }
 
+    /**
+     * Processes evaluation request using optimal classifier model.
+     *
+     * @param ecaRequestEntity    - eca request entity
+     * @param instancesRequestDto - instances request dto.
+     */
+    @RequestExecution
+    public void processRequest(EcaRequestEntity ecaRequestEntity, InstancesRequestDto instancesRequestDto) {
+        log.info("Starting to process request [{}] for optimal classifier evaluation",
+                ecaRequestEntity.getCorrelationId());
+        Instances instances =
+                loadInstances(instancesRequestDto.getTrainDataUrl(), ecaRequestEntity.getCorrelationId());
+        InstancesRequest instancesRequest = new InstancesRequest();
+        instancesRequest.setData(instances);
+        rabbitSender.sendInstancesRequest(instancesRequest, ecaRequestEntity.getCorrelationId());
+        ecaRequestEntity.setRequestStage(RequestStageType.REQUEST_SENT);
+        ecaRequestEntity.setRequestDate(LocalDateTime.now());
+        ecaRequestRepository.save(ecaRequestEntity);
+        log.info("Optimal classifier evaluation request [{}] has been sent to eca-server",
+                ecaRequestEntity.getCorrelationId());
+    }
+
     private EvaluationRequest createEvaluationRequest(EcaRequestEntity ecaRequestEntity,
                                                       EvaluationRequestDto evaluationRequestDto) {
-        log.info("Starting to load train data from [{}] for request [{}]", evaluationRequestDto.getTrainDataUrl(),
-                ecaRequestEntity.getCorrelationId());
-        Instances instances = instancesService.loadInstances(evaluationRequestDto.getTrainDataUrl());
-        log.info("Train data has been loaded from [{}] for request [{}]", evaluationRequestDto.getTrainDataUrl(),
-                ecaRequestEntity.getCorrelationId());
+        Instances instances =
+                loadInstances(evaluationRequestDto.getTrainDataUrl(), ecaRequestEntity.getCorrelationId());
         AbstractClassifier classifier =
                 classifierOptionsAdapter.convert(evaluationRequestDto.getClassifierOptions());
         EvaluationRequest evaluationRequest = new EvaluationRequest();
@@ -67,5 +88,13 @@ public class EvaluationApiService {
             evaluationRequest.setSeed(evaluationRequestDto.getSeed());
         }
         return evaluationRequest;
+    }
+
+    private Instances loadInstances(String url, String correlationId) {
+        log.info("Starting to load train data from [{}] for request [{}]", url, correlationId);
+        Instances instances = instancesService.loadInstances(url);
+        log.info("Train data has been loaded from [{}] for request [{}]", url, correlationId);
+        return instances;
+
     }
 }

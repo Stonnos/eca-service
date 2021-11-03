@@ -5,9 +5,11 @@ import com.ecaservice.external.api.dto.EvaluationRequestDto;
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
 import com.ecaservice.external.api.dto.EvaluationResponsePayloadDto;
 import com.ecaservice.external.api.dto.InstancesDto;
+import com.ecaservice.external.api.dto.InstancesRequestDto;
 import com.ecaservice.external.api.dto.InstancesResponseDto;
 import com.ecaservice.external.api.dto.ResponseCode;
 import com.ecaservice.external.api.dto.ResponseDto;
+import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.service.EcaRequestService;
 import com.ecaservice.external.api.service.EvaluationApiService;
 import com.ecaservice.external.api.service.EvaluationResponseService;
@@ -43,12 +45,15 @@ import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.external.api.controller.docs.ApiExamples.EVALUATION_REQUEST_JSON;
 import static com.ecaservice.external.api.controller.docs.ApiExamples.EVALUATION_REQUEST_RESPONSE_JSON;
 import static com.ecaservice.external.api.controller.docs.ApiExamples.EVALUATION_STATUS_RESPONSE_JSON;
+import static com.ecaservice.external.api.controller.docs.ApiExamples.INSTANCES_REQUEST_JSON;
 import static com.ecaservice.external.api.controller.docs.ApiExamples.INVALID_EVALUATION_REQUEST_RESPONSE_JSON;
+import static com.ecaservice.external.api.controller.docs.ApiExamples.INVALID_INSTANCES_REQUEST_RESPONSE_JSON;
 import static com.ecaservice.external.api.controller.docs.ApiExamples.INVALID_TRAIN_DATA_RESPONSE_JSON;
 import static com.ecaservice.external.api.controller.docs.ApiExamples.UNAUTHORIZED_RESPONSE_JSON;
 import static com.ecaservice.external.api.controller.docs.ApiExamples.UPLOAD_INSTANCES_RESPONSE_JSON;
@@ -186,12 +191,62 @@ public class ExternalApiController {
             log.debug("Received request with options [{}], evaluation method [{}]",
                     toJson(evaluationRequestDto.getClassifierOptions()), evaluationRequestDto.getEvaluationMethod());
         }
-        var ecaRequestEntity = ecaRequestService.createAndSaveRequestEntity(evaluationRequestDto);
-        return Mono.<ResponseDto<EvaluationResponseDto>>create(sink -> {
-            messageCorrelationService.push(ecaRequestEntity.getCorrelationId(), sink);
-            evaluationApiService.processRequest(ecaRequestEntity, evaluationRequestDto);
-        }).timeout(Duration.ofSeconds(externalApiConfig.getRequestTimeoutSeconds()),
-                timeoutFallback.timeout(ecaRequestEntity.getCorrelationId()));
+        var ecaRequestEntity = ecaRequestService.createAndSaveEvaluationRequestEntity(evaluationRequestDto);
+        return evaluateModel(evaluationApiService::processRequest, ecaRequestEntity, evaluationRequestDto);
+    }
+
+    /**
+     * Processes evaluation request using optimal classifier model.
+     *
+     * @param instancesRequestDto - instances request dto
+     * @return evaluation response mono object
+     */
+    @PreAuthorize("#oauth2.hasScope('external-api')")
+    @Operation(
+            description = "Processes evaluation request using optimal classifier model",
+            summary = "Processes evaluation request using optimal classifier model",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_EXTERNAL_API),
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
+                    @Content(examples = {
+                            @ExampleObject(value = INSTANCES_REQUEST_JSON)
+                    })
+            }),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = EVALUATION_REQUEST_RESPONSE_JSON),
+                                    },
+                                    schema = @Schema(implementation = EvaluationResponsePayloadDto.class)
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = INVALID_INSTANCES_REQUEST_RESPONSE_JSON),
+                                    },
+                                    schema = @Schema(implementation = ResponseDto.class)
+                            )
+                    )
+            }
+    )
+    @PostMapping(value = "/optimal-evaluation-request")
+    public Mono<ResponseDto<EvaluationResponseDto>> evaluateOptimalModel(
+            @Valid @RequestBody InstancesRequestDto instancesRequestDto) {
+        log.info("Received request to evaluate optimal classifier for data url [{}]",
+                instancesRequestDto.getTrainDataUrl());
+        var ecaRequestEntity = ecaRequestService.createAndSaveEvaluationOptimizerRequestEntity();
+        return evaluateModel(evaluationApiService::processRequest, ecaRequestEntity, instancesRequestDto);
     }
 
     /**
@@ -288,5 +343,16 @@ public class ExternalApiController {
         log.info("Downloads classifier model file {} for request id [{}]",
                 evaluationRequestEntity.getClassifierAbsolutePath(), evaluationRequestEntity.getCorrelationId());
         return buildAttachmentResponse(modelFile);
+    }
+
+    private <T> Mono<ResponseDto<EvaluationResponseDto>> evaluateModel(BiConsumer<EcaRequestEntity, T> requestConsumer,
+                                                                       EcaRequestEntity ecaRequestEntity,
+                                                                       T requestDto) {
+        return Mono.<ResponseDto<EvaluationResponseDto>>create(sink -> {
+            messageCorrelationService.push(ecaRequestEntity.getCorrelationId(), sink);
+            requestConsumer.accept(ecaRequestEntity, requestDto);
+
+        }).timeout(Duration.ofSeconds(externalApiConfig.getRequestTimeoutSeconds()),
+                timeoutFallback.timeout(ecaRequestEntity.getCorrelationId()));
     }
 }

@@ -1,6 +1,7 @@
 package com.ecaservice.server.mq.listener;
 
 import com.ecaservice.base.model.EcaResponse;
+import com.ecaservice.base.model.ErrorCode;
 import com.ecaservice.server.mq.listener.support.AbstractExceptionTranslator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,6 +56,6 @@ public class CustomErrorHandler implements ErrorHandler {
                 .filter(t -> t.canTranslate(cause))
                 .findFirst()
                 .map(t -> t.translate(cause))
-                .orElse(buildErrorResponse(cause.getMessage()));
+                .orElse(buildErrorResponse(ErrorCode.INTERNAL_SERVER_ERROR));
     }
 }

@@ -1,7 +1,6 @@
 package com.ecaservice.external.api.service;
 
 import com.ecaservice.external.api.AbstractJpaTest;
-import com.ecaservice.external.api.dto.EvaluationRequestDto;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
@@ -41,15 +40,22 @@ class EcaRequestServiceTest extends AbstractJpaTest {
     private EcaRequestService ecaRequestService;
 
     @Test
-    void testSaveRequestEntity() {
-        EvaluationRequestDto evaluationRequestDto = createEvaluationRequestDto();
-        EcaRequestEntity ecaRequestEntity = ecaRequestService.createAndSaveRequestEntity(evaluationRequestDto);
+    void testSaveEvaluationRequestEntity() {
+        var evaluationRequestDto = createEvaluationRequestDto();
+        var ecaRequestEntity = ecaRequestService.createAndSaveEvaluationRequestEntity(evaluationRequestDto);
         assertThat(ecaRequestEntity).isNotNull();
-        EvaluationRequestEntity actual = evaluationRequestRepository.findById(ecaRequestEntity.getId()).orElse(null);
-        assertThat(actual).isNotNull();
-        assertThat(actual.getRequestStage()).isEqualTo(RequestStageType.READY);
-        assertThat(actual.getCreationDate()).isNotNull();
-        assertThat(actual.getCorrelationId()).isNotNull();
+        var actual = evaluationRequestRepository.findById(ecaRequestEntity.getId()).orElse(null);
+        assertCreatedRequestEntityBaseFields(actual);
+        assertThat(actual.isUseOptimalClassifierOptions()).isFalse();
+    }
+
+    @Test
+    void testSaveEvaluationRequestEntityWithUseOptimalClassifierOptionsFlag() {
+        var ecaRequestEntity = ecaRequestService.createAndSaveEvaluationOptimizerRequestEntity();
+        assertThat(ecaRequestEntity).isNotNull();
+        var actual = evaluationRequestRepository.findById(ecaRequestEntity.getId()).orElse(null);
+        assertCreatedRequestEntityBaseFields(actual);
+        assertThat(actual.isUseOptimalClassifierOptions()).isTrue();
     }
 
     @Test
@@ -76,5 +82,14 @@ class EcaRequestServiceTest extends AbstractJpaTest {
         assertThat(actual).isNotNull();
         assertThat(actual.getClassifierAbsolutePath()).isNotNull();
         assertThat(actual.getDeletedDate()).isNull();
+    }
+
+    private void assertCreatedRequestEntityBaseFields(EcaRequestEntity ecaRequestEntity) {
+        assertThat(ecaRequestEntity).isNotNull();
+        EvaluationRequestEntity actual = evaluationRequestRepository.findById(ecaRequestEntity.getId()).orElse(null);
+        assertThat(actual).isNotNull();
+        assertThat(actual.getRequestStage()).isEqualTo(RequestStageType.READY);
+        assertThat(actual.getCreationDate()).isNotNull();
+        assertThat(actual.getCorrelationId()).isNotNull();
     }
 }

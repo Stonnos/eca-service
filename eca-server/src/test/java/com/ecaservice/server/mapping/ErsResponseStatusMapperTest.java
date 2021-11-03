@@ -1,5 +1,6 @@
 package com.ecaservice.server.mapping;
 
+import com.ecaservice.base.model.ErrorCode;
 import com.ecaservice.ers.dto.ErsErrorCode;
 import com.ecaservice.server.model.entity.ErsResponseStatus;
 import org.assertj.core.api.Assertions;
@@ -38,5 +39,23 @@ class ErsResponseStatusMapperTest {
     void testMapResultsNotFoundStatus() {
         Assertions.assertThat(ersResponseStatusMapper.map(ErsErrorCode.RESULTS_NOT_FOUND)).isEqualTo(
                 ErsResponseStatus.RESULTS_NOT_FOUND);
+    }
+
+    @Test
+    void testMapDuplicateRequestIdStatusToErrorCode() {
+        Assertions.assertThat(ersResponseStatusMapper.mapErrorCode(ErsErrorCode.DUPLICATE_REQUEST_ID))
+                .isEqualTo(ErrorCode.INTERNAL_SERVER_ERROR);
+    }
+
+    @Test
+    void testMapDataNotFoundStatusToErrorCode() {
+        Assertions.assertThat(ersResponseStatusMapper.mapErrorCode(ErsErrorCode.DATA_NOT_FOUND))
+                .isEqualTo(ErrorCode.TRAINING_DATA_NOT_FOUND);
+    }
+
+    @Test
+    void testMapResultsNotFoundStatusToErrorCode() {
+        Assertions.assertThat(ersResponseStatusMapper.mapErrorCode(ErsErrorCode.RESULTS_NOT_FOUND))
+                .isEqualTo(ErrorCode.CLASSIFIER_OPTIONS_NOT_FOUND);
     }
 }

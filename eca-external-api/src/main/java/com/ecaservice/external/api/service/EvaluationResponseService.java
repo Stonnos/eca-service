@@ -37,7 +37,9 @@ public class EvaluationResponseService {
                 .requestId(ecaRequestEntity.getCorrelationId());
         var evaluationStatus = evaluationStatusMapper.map(ecaRequestEntity.getRequestStage());
         evaluationResponseDtoBuilder.evaluationStatus(evaluationStatus);
-        if (EvaluationStatus.FINISHED.equals(evaluationStatus)) {
+        if (!EvaluationStatus.FINISHED.equals(evaluationStatus)) {
+            evaluationResponseDtoBuilder.errorCode(ecaRequestEntity.getErrorCode());
+        } else {
             evaluationResponseDtoBuilder.numTestInstances(ecaRequestEntity.getNumTestInstances())
                     .numCorrect(ecaRequestEntity.getNumCorrect())
                     .numIncorrect(ecaRequestEntity.getNumIncorrect())

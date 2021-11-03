@@ -20,6 +20,12 @@ public class ApiExamples {
                     "\"evaluationMethod\": \"CROSS_VALIDATION\", \"numFolds\": 10, \"numTests\": 1, \"seed\": 1}";
 
     /**
+     * Instances request json
+     */
+    public static final String INSTANCES_REQUEST_JSON =
+            "{\"trainDataUrl\": \"http://kt.ijs.si/Branax/Repository/WEKA/Iris.xls\"}";
+
+    /**
      * Upload instances response json
      */
     public static final String UPLOAD_INSTANCES_RESPONSE_JSON = "{\"payload\": {\"dataId\": " +
@@ -31,6 +37,7 @@ public class ApiExamples {
      */
     public static final String EVALUATION_REQUEST_RESPONSE_JSON = "{\"payload\": {\"requestId\": " +
             "\"1cbe6c49-8432-4c81-9afa-90f04a803fed\", \"evaluationStatus\": \"IN_PROGRESS\", " +
+            "\"errorCode\": null, " +
             "\"modelUrl\": null, \"numTestInstances\": null, \"numCorrect\": null, \"numIncorrect\": null, " +
             "\"pctCorrect\": null, \"pctIncorrect\": null, \"meanAbsoluteError\": null}, \"responseCode\": " +
             "\"SUCCESS\", \"errorDescription\": null}";
@@ -39,7 +46,8 @@ public class ApiExamples {
      * Evaluation status response json
      */
     public static final String EVALUATION_STATUS_RESPONSE_JSON = "{\"payload\": {\"requestId\": " +
-            "\"1cbe6c49-8432-4c81-9afa-90f04a803fed\", \"evaluationStatus\": \"FINISHED\", \"modelUrl\": " +
+            "\"1cbe6c49-8432-4c81-9afa-90f04a803fed\", \"evaluationStatus\": \"FINISHED\", " +
+            "\"errorCode\": null, \"modelUrl\": " +
             "\"http://localhost:8080/external-api/download-model/1cbe6c49-8432-4c81-9afa-90f04a803fed\", " +
             "\"numTestInstances\": 150, \"numCorrect\": 144, \"numIncorrect\": 6, \"pctCorrect\": 96, " +
             "\"pctIncorrect\": 4, \"meanAbsoluteError\": 0.02869334024628254}, \"responseCode\": \"SUCCESS\", " +
@@ -73,4 +81,12 @@ public class ApiExamples {
             "\"classifierOptions\", \"code\": \"NotNull\", \"errorMessage\": \"must not be null\"}, " +
             "{\"fieldName\": \"evaluationMethod\", \"code\": \"NotNull\", \"errorMessage\": \"must not be null\"}], " +
             "\"responseCode\": \"VALIDATION_ERROR\", \"errorDescription\": \"Validation errors\"}";
+
+    /**
+     * Invalid instances request response json
+     */
+    public static final String INVALID_INSTANCES_REQUEST_RESPONSE_JSON = "{\"payload\": [{\"fieldName\": " +
+            "\"trainDataUrl\", \"code\": \"DataURL\", \"errorMessage\": \"train data url must have one of the " +
+            "protocols such as http, ftp, data\"}], \"responseCode\": \"VALIDATION_ERROR\", " +
+            "\"errorDescription\": \"Validation errors\"}";
 }

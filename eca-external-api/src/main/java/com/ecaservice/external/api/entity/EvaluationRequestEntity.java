@@ -33,6 +33,12 @@ public class EvaluationRequestEntity extends EcaRequestEntity {
     private String classifierOptionsJson;
 
     /**
+     * Use optimal classifier options?
+     */
+    @Column(name = "use_optimal_classifier_options")
+    private boolean useOptimalClassifierOptions;
+
+    /**
      * Classifier model absolute path
      */
     @Column(name = "classifier_absolute_path")

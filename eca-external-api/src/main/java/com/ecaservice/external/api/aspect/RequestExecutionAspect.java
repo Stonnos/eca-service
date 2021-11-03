@@ -84,6 +84,7 @@ public class RequestExecutionAspect {
             var evaluationResponseDto = EvaluationResponseDto.builder()
                     .requestId(ecaRequestEntity.getCorrelationId())
                     .evaluationStatus(EvaluationStatus.ERROR)
+                    .errorCode(ecaRequestEntity.getErrorCode())
                     .build();
             var responseDto = buildResponse(responseCode, evaluationResponseDto);
             metricsService.trackResponse(ecaRequestEntity, responseCode);

@@ -195,6 +195,149 @@ a|
 ----
 |===
 
+== Processes evaluation request using optimal classifier model
+
+__POST__ */optimal-evaluation-request* - Processes evaluation request using optimal classifier model
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* external-api
+
+|===
+
+*Request body*
+
+[width=100%]
+|===
+|*Content type*|*Required*|*Schema*|*Example*
+|*application/json*
+|true
+|
+<<InstancesRequestDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "trainDataUrl" : "http://kt.ijs.si/Branax/Repository/WEKA/Iris.xls"
+}
+----
+|===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+<<EvaluationResponsePayloadDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "payload" : {
+    "requestId" : "1cbe6c49-8432-4c81-9afa-90f04a803fed",
+    "evaluationStatus" : "IN_PROGRESS",
+    "errorCode" : null,
+    "modelUrl" : null,
+    "numTestInstances" : null,
+    "numCorrect" : null,
+    "numIncorrect" : null,
+    "pctCorrect" : null,
+    "pctIncorrect" : null,
+    "meanAbsoluteError" : null
+  },
+  "responseCode" : "SUCCESS",
+  "errorDescription" : null
+}
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|
+<<ResponseDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "payload" : [ {
+    "fieldName" : "trainDataUrl",
+    "code" : "DataURL",
+    "errorMessage" : "train data url must have one of the protocols such as http, ftp, data"
+  } ],
+  "responseCode" : "VALIDATION_ERROR",
+  "errorDescription" : "Validation errors"
+}
+----
+|===
+
 == Processes evaluation request
 
 __POST__ */evaluation-request* - Processes evaluation request
@@ -287,6 +430,7 @@ a|
   "payload" : {
     "requestId" : "1cbe6c49-8432-4c81-9afa-90f04a803fed",
     "evaluationStatus" : "IN_PROGRESS",
+    "errorCode" : null,
     "modelUrl" : null,
     "numTestInstances" : null,
     "numCorrect" : null,
@@ -425,6 +569,7 @@ a|
   "payload" : {
     "requestId" : "1cbe6c49-8432-4c81-9afa-90f04a803fed",
     "evaluationStatus" : "FINISHED",
+    "errorCode" : null,
     "modelUrl" : "http://localhost:8080/external-api/download-model/1cbe6c49-8432-4c81-9afa-90f04a803fed",
     "numTestInstances" : 150,
     "numCorrect" : 144,
@@ -856,6 +1001,25 @@ __string__
 * TIMEOUT
 
 * ERROR
+|*errorCode*
+|Error code
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 |*modelUrl*
 |Model url
 a|
@@ -1052,6 +1216,32 @@ __string__
 * SERVICE_UNAVAILABLE
 |*errorDescription*
 |Error message
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== InstancesRequestDto
+:table-caption: Table
+.Instances request model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*trainDataUrl**
+|Train data url
 a|
 __string__
 

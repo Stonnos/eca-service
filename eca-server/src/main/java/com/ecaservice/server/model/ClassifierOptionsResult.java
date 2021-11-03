@@ -1,5 +1,6 @@
 package com.ecaservice.server.model;
 
+import com.ecaservice.base.model.ErrorCode;
 import lombok.Data;
 
 /**
@@ -23,5 +24,5 @@ public class ClassifierOptionsResult {
     /**
      * Error message
      */
-    private String errorMessage;
+    private ErrorCode errorCode;
 }

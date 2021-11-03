@@ -51,7 +51,7 @@ public class EvaluationOptimizerService {
                 classifierOptionsRequestMapper.map(instancesRequest, crossValidationConfig);
         ClassifierOptionsResult classifierOptionsResult = getOptimalClassifierOptions(classifierOptionsRequest);
         if (!classifierOptionsResult.isFound()) {
-            return buildEvaluationErrorResponse(classifierOptionsResult.getErrorMessage());
+            return buildEvaluationErrorResponse(classifierOptionsResult.getErrorCode());
         } else {
             return evaluateModel(classifierOptionsRequest, classifierOptionsResult.getOptionsJson(), data);
         }

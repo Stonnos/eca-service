@@ -1,7 +1,7 @@
 package com.ecaservice.external.api.service;
 
-
 import com.ecaservice.base.model.EvaluationRequest;
+import com.ecaservice.base.model.InstancesRequest;
 import com.ecaservice.external.api.config.rabbit.QueueConfig;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,6 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import javax.inject.Inject;
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
@@ -36,6 +37,8 @@ class RabbitSenderTest {
     private RabbitTemplate rabbitTemplate;
 
     @Inject
+    private QueueConfig queueConfig;
+    @Inject
     private RabbitSender rabbitSender;
 
     @Captor
@@ -46,5 +49,14 @@ class RabbitSenderTest {
         rabbitSender.sendEvaluationRequest(new EvaluationRequest(), UUID.randomUUID().toString());
         verify(rabbitTemplate).convertAndSend(queueCaptor.capture(), any(EvaluationRequest.class), any(
                 MessagePostProcessor.class));
+        assertThat(queueCaptor.getValue()).isEqualTo(queueConfig.getEvaluationRequestQueue());
+    }
+
+    @Test
+    void testSendInstancesRequest() {
+        rabbitSender.sendInstancesRequest(new InstancesRequest(), UUID.randomUUID().toString());
+        verify(rabbitTemplate).convertAndSend(queueCaptor.capture(), any(InstancesRequest.class), any(
+                MessagePostProcessor.class));
+        assertThat(queueCaptor.getValue()).isEqualTo(queueConfig.getOptimalEvaluationRequestQueue());
     }
 }

@@ -29,7 +29,7 @@ public class EcaResponseListener {
      * @param evaluationResponse - evaluation response
      * @param message            - message
      */
-    @RabbitListener(queues = "${queue.evaluationRequestReplyToQueue}")
+    @RabbitListener(queues = "${queue.evaluationResponseQueue}")
     public void handleEvaluationMessage(EvaluationResponse evaluationResponse, Message message) {
         String correlationId = message.getMessageProperties().getCorrelationId();
         log.info("Received response from eca - server with correlation id [{}], status [{}]", correlationId,
