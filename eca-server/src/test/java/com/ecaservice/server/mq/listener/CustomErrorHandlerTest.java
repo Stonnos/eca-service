@@ -1,5 +1,6 @@
 package com.ecaservice.server.mq.listener;
 
+import com.ecaservice.base.model.ErrorCode;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.base.model.EcaResponse;
 import com.ecaservice.base.model.MessageError;
@@ -35,12 +36,11 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class CustomErrorHandlerTest {
 
-    private static final String ERROR_MESSAGE = "errorMessage";
-
     @Mock
     private RabbitTemplate rabbitTemplate;
     @Mock
-    private List<AbstractExceptionTranslator> exceptionTranslators;;
+    private List<AbstractExceptionTranslator> exceptionTranslators;
+    ;
     @InjectMocks
     private CustomErrorHandler customErrorHandler;
 
@@ -55,8 +55,7 @@ class CustomErrorHandlerTest {
         MessageProperties messageProperties = TestHelperUtils.buildMessageProperties();
         when(message.getMessageProperties()).thenReturn(messageProperties);
         customErrorHandler.handleError(
-                new ListenerExecutionFailedException(StringUtils.EMPTY, new IllegalStateException(ERROR_MESSAGE),
-                        message));
+                new ListenerExecutionFailedException(StringUtils.EMPTY, new IllegalStateException(), message));
         verify(rabbitTemplate).convertAndSend(replyToCaptor.capture(), ecaResponseArgumentCaptor.capture(),
                 any(MessagePostProcessor.class));
         assertThat(replyToCaptor.getValue()).isEqualTo(messageProperties.getReplyTo());
@@ -66,6 +65,7 @@ class CustomErrorHandlerTest {
         assertThat(ecaResponseArgumentCaptor.getValue().getErrors()).hasSize(1);
         MessageError error = ecaResponseArgumentCaptor.getValue().getErrors().iterator().next();
         assertThat(error).isNotNull();
-        assertThat(error.getMessage()).isEqualTo(ERROR_MESSAGE);
+        assertThat(error.getMessage()).isEqualTo(ErrorCode.INTERNAL_SERVER_ERROR.getErrorMessage());
+        assertThat(error.getCode()).isEqualTo(ErrorCode.INTERNAL_SERVER_ERROR.name());
     }
 }

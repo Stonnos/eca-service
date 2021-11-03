@@ -1,5 +1,6 @@
 package com.ecaservice.server.service.evaluation;
 
+import com.ecaservice.base.model.ErrorCode;
 import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.base.model.MessageError;
@@ -94,7 +95,7 @@ public class EvaluationRequestService {
         evaluationLog.setRequestStatus(RequestStatus.ERROR);
         evaluationLog.setErrorMessage(errorMessage);
         evaluationResponse.setStatus(TechnicalStatus.ERROR);
-        MessageError error = error(errorMessage);
+        MessageError error = error(ErrorCode.INTERNAL_SERVER_ERROR);
         evaluationResponse.setErrors(Collections.singletonList(error));
     }
 }
