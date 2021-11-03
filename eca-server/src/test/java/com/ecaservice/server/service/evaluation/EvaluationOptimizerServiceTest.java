@@ -148,7 +148,7 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    void testTrainingDataNotFoundError() {
+    void testErrorStatus() {
         FeignException.BadRequest badRequest = mock(FeignException.BadRequest.class);
         internalTestErrorStatus(badRequest, ErsResponseStatus.ERROR, ErrorCode.INTERNAL_SERVER_ERROR);
     }

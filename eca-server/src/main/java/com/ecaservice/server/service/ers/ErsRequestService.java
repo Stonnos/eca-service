@@ -122,8 +122,7 @@ public class ErsRequestService {
             setClassifierOptionsResultError(classifierOptionsResult, ErrorCode.SERVICE_UNAVAILABLE);
         } catch (FeignException.BadRequest ex) {
             log.error("Bad request error while sending classifier options request: {}.", ex.getMessage());
-            handleBadRequest(requestModel, ex);
-            setClassifierOptionsResultError(classifierOptionsResult, ErrorCode.INTERNAL_SERVER_ERROR);
+            handleBadRequest(requestModel, classifierOptionsResult, ex);
         } catch (Exception ex) {
             log.error("Unknown error while sending classifier options request: {}.", ex.getMessage());
             handleErrorRequest(requestModel, ErsResponseStatus.ERROR, ex.getMessage());
@@ -169,29 +168,49 @@ public class ErsRequestService {
         ersRequest.setDetails(errorMessage);
     }
 
-    private void handleBadRequest(ErsRequest ersRequest, FeignException.BadRequest badRequestEx) {
+    private void handleBadRequest(ErsRequest ersRequest,
+                                  ClassifierOptionsResult classifierOptionsResult,
+                                  FeignException.BadRequest badRequestEx) {
+        var ersErrorCode = handleBadRequest(ersRequest, badRequestEx);
+        if (ersErrorCode == null) {
+            setClassifierOptionsResultError(classifierOptionsResult, ErrorCode.INTERNAL_SERVER_ERROR);
+        } else {
+            var errorCode = ersResponseStatusMapper.mapErrorCode(ersErrorCode);
+            setClassifierOptionsResultError(classifierOptionsResult, errorCode);
+        }
+    }
+
+    private ErsErrorCode handleBadRequest(ErsRequest ersRequest, FeignException.BadRequest badRequestEx) {
         try {
             var validationErrors = retrieveValidationErrors(badRequestEx.contentUTF8());
-            handleValidationError(ersRequest, validationErrors);
+            var ersErrorCode = getErsErrorCode(validationErrors);
+            handleValidationError(ersRequest, ersErrorCode);
             ersRequest.setDetails(badRequestEx.getMessage());
+            return ersErrorCode;
         } catch (Exception ex) {
             log.error("Got error while handling bad request with status [{}] for request id [{}]",
                     badRequestEx.status(), ersRequest.getRequestId());
             handleErrorRequest(ersRequest, ErsResponseStatus.ERROR, ex.getMessage());
         }
+        return null;
     }
 
-    private void handleValidationError(ErsRequest ersRequest, List<ValidationErrorDto> validationErrors) {
+    private ErsErrorCode getErsErrorCode(List<ValidationErrorDto> validationErrors) {
         var errorCodes = Stream.of(ErsErrorCode.values())
                 .map(Enum::name)
                 .collect(Collectors.toList());
         var validationError = getFirstError(errorCodes, validationErrors);
-        if (validationError.isEmpty()) {
+        return validationError
+                .map(validationErrorDto -> ErsErrorCode.valueOf(validationErrorDto.getCode()))
+                .orElse(null);
+    }
+
+    private void handleValidationError(ErsRequest ersRequest, ErsErrorCode ersErrorCode) {
+        if (ersErrorCode == null) {
             log.warn("Got unknown ers error code for request id [{}]. Set ERROR response status",
                     ersRequest.getRequestId());
             ersRequest.setResponseStatus(ErsResponseStatus.ERROR);
         } else {
-            ErsErrorCode ersErrorCode = ErsErrorCode.valueOf(validationError.get().getCode());
             ersRequest.setResponseStatus(ersResponseStatusMapper.map(ersErrorCode));
         }
     }
