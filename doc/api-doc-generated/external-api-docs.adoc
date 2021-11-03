@@ -28,7 +28,7 @@ a|
 
 __Grant type:__ client_credentials
 
-__Token url:__ http://localhost:8080/eca-oauth/oauth/token
+__Token url:__ http://localhost:8080/oauth/token
 
 
 
@@ -278,6 +278,7 @@ a|
   "payload" : {
     "requestId" : "1cbe6c49-8432-4c81-9afa-90f04a803fed",
     "evaluationStatus" : "IN_PROGRESS",
+    "errorCode" : null,
     "modelUrl" : null,
     "numTestInstances" : null,
     "numCorrect" : null,
@@ -429,6 +430,7 @@ a|
   "payload" : {
     "requestId" : "1cbe6c49-8432-4c81-9afa-90f04a803fed",
     "evaluationStatus" : "IN_PROGRESS",
+    "errorCode" : null,
     "modelUrl" : null,
     "numTestInstances" : null,
     "numCorrect" : null,
@@ -567,6 +569,7 @@ a|
   "payload" : {
     "requestId" : "1cbe6c49-8432-4c81-9afa-90f04a803fed",
     "evaluationStatus" : "FINISHED",
+    "errorCode" : null,
     "modelUrl" : "http://localhost:8080/external-api/download-model/1cbe6c49-8432-4c81-9afa-90f04a803fed",
     "numTestInstances" : 150,
     "numCorrect" : 144,

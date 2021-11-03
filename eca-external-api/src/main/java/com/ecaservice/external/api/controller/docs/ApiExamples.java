@@ -37,6 +37,7 @@ public class ApiExamples {
      */
     public static final String EVALUATION_REQUEST_RESPONSE_JSON = "{\"payload\": {\"requestId\": " +
             "\"1cbe6c49-8432-4c81-9afa-90f04a803fed\", \"evaluationStatus\": \"IN_PROGRESS\", " +
+            "\"errorCode\": null, " +
             "\"modelUrl\": null, \"numTestInstances\": null, \"numCorrect\": null, \"numIncorrect\": null, " +
             "\"pctCorrect\": null, \"pctIncorrect\": null, \"meanAbsoluteError\": null}, \"responseCode\": " +
             "\"SUCCESS\", \"errorDescription\": null}";
@@ -45,7 +46,8 @@ public class ApiExamples {
      * Evaluation status response json
      */
     public static final String EVALUATION_STATUS_RESPONSE_JSON = "{\"payload\": {\"requestId\": " +
-            "\"1cbe6c49-8432-4c81-9afa-90f04a803fed\", \"evaluationStatus\": \"FINISHED\", \"modelUrl\": " +
+            "\"1cbe6c49-8432-4c81-9afa-90f04a803fed\", \"evaluationStatus\": \"FINISHED\", " +
+            "\"errorCode\": null, \"modelUrl\": " +
             "\"http://localhost:8080/external-api/download-model/1cbe6c49-8432-4c81-9afa-90f04a803fed\", " +
             "\"numTestInstances\": 150, \"numCorrect\": 144, \"numIncorrect\": 6, \"pctCorrect\": 96, " +
             "\"pctIncorrect\": 4, \"meanAbsoluteError\": 0.02869334024628254}, \"responseCode\": \"SUCCESS\", " +
