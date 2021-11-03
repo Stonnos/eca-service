@@ -1,6 +1,5 @@
 package com.ecaservice.server.service.evaluation;
 
-import com.ecaservice.base.model.ErrorCode;
 import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.base.model.InstancesRequest;
@@ -52,7 +51,7 @@ public class EvaluationOptimizerService {
                 classifierOptionsRequestMapper.map(instancesRequest, crossValidationConfig);
         ClassifierOptionsResult classifierOptionsResult = getOptimalClassifierOptions(classifierOptionsRequest);
         if (!classifierOptionsResult.isFound()) {
-            return buildEvaluationErrorResponse(ErrorCode.INTERNAL_SERVER_ERROR);
+            return buildEvaluationErrorResponse(classifierOptionsResult.getErrorCode());
         } else {
             return evaluateModel(classifierOptionsRequest, classifierOptionsResult.getOptionsJson(), data);
         }

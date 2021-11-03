@@ -1,5 +1,6 @@
 package com.ecaservice.server.service.ers;
 
+import com.ecaservice.base.model.ErrorCode;
 import com.ecaservice.common.web.dto.ValidationErrorDto;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import com.ecaservice.ers.dto.ClassifierOptionsResponse;
@@ -118,15 +119,15 @@ public class ErsRequestService {
         } catch (FeignException.ServiceUnavailable ex) {
             log.error("Service unavailable error while sending classifier options request: {}.", ex.getMessage());
             handleErrorRequest(requestModel, ErsResponseStatus.SERVICE_UNAVAILABLE, ex.getMessage());
-            setClassifierOptionsResultError(classifierOptionsResult, requestModel.getResponseStatus().getDescription());
+            setClassifierOptionsResultError(classifierOptionsResult, ErrorCode.SERVICE_UNAVAILABLE);
         } catch (FeignException.BadRequest ex) {
             log.error("Bad request error while sending classifier options request: {}.", ex.getMessage());
             handleBadRequest(requestModel, ex);
-            setClassifierOptionsResultError(classifierOptionsResult, requestModel.getResponseStatus().getDescription());
+            setClassifierOptionsResultError(classifierOptionsResult, ErrorCode.INTERNAL_SERVER_ERROR);
         } catch (Exception ex) {
             log.error("Unknown error while sending classifier options request: {}.", ex.getMessage());
             handleErrorRequest(requestModel, ErsResponseStatus.ERROR, ex.getMessage());
-            setClassifierOptionsResultError(classifierOptionsResult, requestModel.getResponseStatus().getDescription());
+            setClassifierOptionsResultError(classifierOptionsResult, ErrorCode.INTERNAL_SERVER_ERROR);
         } finally {
             classifierOptionsRequestModelRepository.save(requestModel);
         }
@@ -143,7 +144,7 @@ public class ErsRequestService {
         ClassifierReport classifierReport = getFirstClassifierReport(response);
         if (!isValid(classifierReport)) {
             handleErrorRequest(requestModel, ErsResponseStatus.ERROR, "Got empty classifier options string!");
-            setClassifierOptionsResultError(classifierOptionsResult, requestModel.getResponseStatus().getDescription());
+            setClassifierOptionsResultError(classifierOptionsResult, ErrorCode.INTERNAL_SERVER_ERROR);
         } else {
             //Checks classifier options deserialization
             parseOptions(classifierReport.getOptions());
@@ -158,9 +159,9 @@ public class ErsRequestService {
     }
 
     private void setClassifierOptionsResultError(ClassifierOptionsResult classifierOptionsResultError,
-                                                 String errorMessage) {
+                                                 ErrorCode errorCode) {
         classifierOptionsResultError.setFound(false);
-        classifierOptionsResultError.setErrorMessage(errorMessage);
+        classifierOptionsResultError.setErrorCode(errorCode);
     }
 
     private void handleErrorRequest(ErsRequest ersRequest, ErsResponseStatus responseStatus, String errorMessage) {

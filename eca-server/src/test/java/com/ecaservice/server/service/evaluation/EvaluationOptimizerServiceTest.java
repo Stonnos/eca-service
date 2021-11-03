@@ -1,5 +1,6 @@
 package com.ecaservice.server.service.evaluation;
 
+import com.ecaservice.base.model.ErrorCode;
 import com.ecaservice.server.AssertionUtils;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.base.model.EvaluationResponse;
@@ -142,13 +143,14 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
     @Test
     void testServiceUnavailable() {
         FeignException.ServiceUnavailable serviceUnavailable = mock(FeignException.ServiceUnavailable.class);
-        internalTestErrorStatus(serviceUnavailable, ErsResponseStatus.SERVICE_UNAVAILABLE);
+        internalTestErrorStatus(serviceUnavailable, ErsResponseStatus.SERVICE_UNAVAILABLE,
+                ErrorCode.SERVICE_UNAVAILABLE);
     }
 
     @Test
-    void testErrorStatus() {
+    void testTrainingDataNotFoundError() {
         FeignException.BadRequest badRequest = mock(FeignException.BadRequest.class);
-        internalTestErrorStatus(badRequest, ErsResponseStatus.ERROR);
+        internalTestErrorStatus(badRequest, ErsResponseStatus.ERROR, ErrorCode.INTERNAL_SERVER_ERROR);
     }
 
     @Test
@@ -375,13 +377,17 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
 
     }
 
-    private void internalTestErrorStatus(Exception ex, ErsResponseStatus expectedStatus) {
+    private void internalTestErrorStatus(Exception ex, ErsResponseStatus expectedStatus, ErrorCode expectedErrorCode) {
         when(ersRequestSender.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenThrow(ex);
         EvaluationResponse evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
                 instancesRequest);
         assertThat(evaluationResponse).isNotNull();
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.ERROR);
         assertThat(evaluationResponse.getEvaluationResults()).isNull();
+        assertThat(evaluationResponse.getErrors()).hasSize(1);
+        var error = evaluationResponse.getErrors().iterator().next();
+        assertThat(error.getCode()).isEqualTo(expectedErrorCode.name());
+        assertThat(error.getMessage()).isEqualTo(expectedErrorCode.getErrorMessage());
         List<ClassifierOptionsRequestModel> optionsRequests = classifierOptionsRequestModelRepository.findAll();
         AssertionUtils.hasOneElement(optionsRequests);
         ClassifierOptionsRequestModel requestModel = optionsRequests.get(0);

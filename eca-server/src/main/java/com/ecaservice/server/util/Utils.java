@@ -90,7 +90,7 @@ public class Utils {
         EvaluationResponse evaluationResponse = new EvaluationResponse();
         evaluationResponse.setRequestId(UUID.randomUUID().toString());
         evaluationResponse.setStatus(TechnicalStatus.ERROR);
-        MessageError error = error(ErrorCode.INTERNAL_SERVER_ERROR);
+        MessageError error = error(errorCode);
         evaluationResponse.setErrors(Collections.singletonList(error));
         return evaluationResponse;
     }
