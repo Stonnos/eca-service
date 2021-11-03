@@ -97,6 +97,12 @@ public abstract class EcaRequestEntity {
     private Integer seed;
 
     /**
+     * Error code
+     */
+    @Column(name = "error_code")
+    private String errorCode;
+
+    /**
      * Error message
      */
     @Column(name = "error_message", columnDefinition = "text")

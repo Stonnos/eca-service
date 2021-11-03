@@ -36,6 +36,12 @@ public class EvaluationResponseDto implements Serializable {
     private EvaluationStatus evaluationStatus;
 
     /**
+     * Error code
+     */
+    @Schema(description = "Error code", example = "INTERNAL_SERVER_ERROR")
+    private String errorCode;
+
+    /**
      * Classifier model url
      */
     @Schema(description = "Model url",

@@ -7,4 +7,5 @@
     <include file="db/changelog/v0-init-schema.xml"/>
     <include file="db/changelog/v1-add-evaluation-results-columns.xml"/>
     <include file="db/changelog/v2-add-optimal-classifier-options-column.xml"/>
+    <include file="db/changelog/v3-add-error-code-column.xml"/>
 </databaseChangeLog>

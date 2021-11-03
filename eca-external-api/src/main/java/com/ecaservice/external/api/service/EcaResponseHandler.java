@@ -1,7 +1,6 @@
 package com.ecaservice.external.api.service;
 
 import com.ecaservice.base.model.EvaluationResponse;
-import com.ecaservice.base.model.MessageError;
 import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.classifier.options.config.ClassifiersOptionsConfig;
@@ -56,11 +55,12 @@ public class EcaResponseHandler {
         try {
             if (!TechnicalStatus.SUCCESS.equals(evaluationResponse.getStatus())) {
                 evaluationRequestEntity.setRequestStage(RequestStageType.ERROR);
-                String errorMessage = Optional.ofNullable(evaluationResponse.getErrors())
+                Optional.ofNullable(evaluationResponse.getErrors())
                         .map(messageErrors -> messageErrors.iterator().next())
-                        .map(MessageError::getMessage)
-                        .orElse(null);
-                evaluationRequestEntity.setErrorMessage(errorMessage);
+                        .ifPresent(error -> {
+                            evaluationRequestEntity.setErrorCode(error.getCode());
+                            evaluationRequestEntity.setErrorMessage(error.getMessage());
+                        });
             } else {
                 EvaluationResults evaluationResults = evaluationResponse.getEvaluationResults();
                 if (evaluationRequestEntity.isUseOptimalClassifierOptions()) {
