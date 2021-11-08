@@ -11,7 +11,6 @@ import { FieldService } from "../../common/services/field.service";
 import { UsersService } from "../services/users.service";
 import { CreateUserModel } from "../../create-user/model/create-user.model";
 import { finalize } from "rxjs/internal/operators";
-import { Utils } from "../../common/util/utils";
 
 @Component({
   selector: 'app-users-list',
@@ -60,10 +59,6 @@ export class UsersListComponent extends BaseListComponent<UserDto> implements On
 
   public showCreateUserDialog(): void {
     this.createUserDialogVisibility = true;
-  }
-
-  public isLockAllowed(user: UserDto): boolean {
-    return !Utils.isSuperAdmin(user);
   }
 
   public lockUser(user: UserDto): void {

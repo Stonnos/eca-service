@@ -1,6 +1,8 @@
 package com.ecaservice.oauth.service;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.common.web.exception.FileProcessingException;
+import com.ecaservice.common.web.exception.InvalidOperationException;
 import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.oauth.config.AppProperties;
 import com.ecaservice.oauth.dto.CreateUserDto;
@@ -9,6 +11,8 @@ import com.ecaservice.oauth.entity.RoleEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.entity.UserEntity_;
 import com.ecaservice.oauth.entity.UserPhoto;
+import com.ecaservice.oauth.exception.UserLockNotAllowedException;
+import com.ecaservice.oauth.exception.UserLockedException;
 import com.ecaservice.oauth.filter.UserFilter;
 import com.ecaservice.oauth.mapping.UserMapper;
 import com.ecaservice.oauth.repository.RoleRepository;
@@ -135,7 +139,7 @@ public class UserService {
         log.info("Starting to enable tfa for user [{}]", userId);
         UserEntity userEntity = getById(userId);
         if (userEntity.isTfaEnabled()) {
-            throw new IllegalStateException(String.format("Tfa is already enabled for user [%d]", userId));
+            throw new InvalidOperationException("Tfa is already enabled for user");
         }
         userEntity.setTfaEnabled(true);
         userEntityRepository.save(userEntity);
@@ -152,7 +156,7 @@ public class UserService {
         log.info("Starting to disable tfa for user [{}]", userId);
         UserEntity userEntity = getById(userId);
         if (!userEntity.isTfaEnabled()) {
-            throw new IllegalStateException(String.format("Tfa is already disabled for user [%d]", userId));
+            throw new InvalidOperationException("Tfa is already disabled");
         }
         userEntity.setTfaEnabled(false);
         userEntityRepository.save(userEntity);
@@ -171,10 +175,10 @@ public class UserService {
         log.info("Starting to lock user [{}]", userId);
         UserEntity userEntity = getById(userId);
         if (isSuperAdmin(userEntity)) {
-            throw new IllegalStateException(String.format("Can't lock super admin user [%d]", userId));
+            throw new UserLockNotAllowedException();
         }
         if (userEntity.isLocked()) {
-            throw new IllegalStateException(String.format("User [%d] is already locked", userId));
+            throw new UserLockedException(userId);
         }
         userEntity.setLocked(true);
         userEntityRepository.save(userEntity);
@@ -194,7 +198,7 @@ public class UserService {
         log.info("Starting to unlock user [{}]", userId);
         UserEntity userEntity = getById(userId);
         if (!userEntity.isLocked()) {
-            throw new IllegalStateException(String.format("User [%d] is already unlocked", userId));
+            throw new InvalidOperationException("User is already unlocked");
         }
         userEntity.setLocked(false);
         userEntityRepository.save(userEntity);
@@ -241,8 +245,7 @@ public class UserService {
 
     private void populateUserRole(UserEntity userEntity) {
         RoleEntity roleEntity = roleRepository.findByRoleName(ROLE_ECA_USER)
-                .orElseThrow(() -> new IllegalStateException(
-                        String.format("Role with name [%s] doesn't exists", ROLE_ECA_USER)));
+                .orElseThrow(() -> new EntityNotFoundException(RoleEntity.class, ROLE_ECA_USER));
         userEntity.setRoles(Sets.newHashSet(roleEntity));
     }
 
@@ -254,7 +257,7 @@ public class UserService {
             userPhoto.setPhoto(file.getBytes());
             userPhotoRepository.save(userPhoto);
         } catch (IOException ex) {
-            throw new IllegalStateException(ex);
+            throw new FileProcessingException(ex.getMessage());
         }
     }
 }

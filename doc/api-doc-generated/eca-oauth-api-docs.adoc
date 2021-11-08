@@ -2129,6 +2129,25 @@ __array__
 
 
 
+|*lockAllowed*
+|Is user lock allowed?
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 |===
 === UsersPageDto
 :table-caption: Table

@@ -1,6 +1,7 @@
 package com.ecaservice.oauth.service;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.common.web.exception.InvalidOperationException;
 import com.ecaservice.oauth.AbstractJpaTest;
 import com.ecaservice.oauth.TestHelperUtils;
 import com.ecaservice.oauth.config.AppProperties;
@@ -9,6 +10,8 @@ import com.ecaservice.oauth.dto.UpdateUserInfoDto;
 import com.ecaservice.oauth.entity.RoleEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.entity.UserPhoto;
+import com.ecaservice.oauth.exception.UserLockNotAllowedException;
+import com.ecaservice.oauth.exception.UserLockedException;
 import com.ecaservice.oauth.mapping.RoleMapperImpl;
 import com.ecaservice.oauth.mapping.UserMapper;
 import com.ecaservice.oauth.mapping.UserMapperImpl;
@@ -58,8 +61,6 @@ class UserServiceTest extends AbstractJpaTest {
     private static final long USER_ID = 1L;
     private static final String PHOTO_FILE_NAME = "image.png";
     private static final int BYTE_ARRAY_LENGTH = 32;
-    private static final String EMAIL_TO_UPDATE = "updateemail@test.ru";
-    private static final String TEST_2_USER = "test2";
     private static final int PAGE = 0;
     private static final int SIZE = 10;
 
@@ -110,7 +111,7 @@ class UserServiceTest extends AbstractJpaTest {
     void testCreateUserWithNotExistingRole() {
         roleRepository.deleteAll();
         CreateUserDto createUserDto = TestHelperUtils.createUserDto();
-        assertThrows(IllegalStateException.class, () -> userService.createUser(createUserDto, PASSWORD));
+        assertThrows(EntityNotFoundException.class, () -> userService.createUser(createUserDto, PASSWORD));
     }
 
     @Test
@@ -186,7 +187,7 @@ class UserServiceTest extends AbstractJpaTest {
         UserEntity userEntity = createAndSaveUser();
         userEntity.setTfaEnabled(true);
         userEntityRepository.save(userEntity);
-        assertThrows(IllegalStateException.class, () -> userService.enableTfa(userEntity.getId()));
+        assertThrows(InvalidOperationException.class, () -> userService.enableTfa(userEntity.getId()));
     }
 
     @Test
@@ -208,7 +209,7 @@ class UserServiceTest extends AbstractJpaTest {
     @Test
     void testDisableTfaShouldThrowIllegalStateException() {
         UserEntity userEntity = createAndSaveUser();
-        assertThrows(IllegalStateException.class, () -> userService.disableTfa(userEntity.getId()));
+        assertThrows(InvalidOperationException.class, () -> userService.disableTfa(userEntity.getId()));
     }
 
     @Test
@@ -268,7 +269,7 @@ class UserServiceTest extends AbstractJpaTest {
         userEntity.setRoles(Sets.newHashSet(role));
         userEntityRepository.save(userEntity);
         Long userId = userEntity.getId();
-        assertThrows(IllegalStateException.class, () -> userService.lock(userId));
+        assertThrows(UserLockNotAllowedException.class, () -> userService.lock(userId));
     }
 
     @Test
@@ -283,12 +284,12 @@ class UserServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    void testLockUserShouldThrowIllegalStateException() {
+    void testLockUserShouldThrowUserLockedException() {
         UserEntity userEntity = createAndSaveUser();
         userEntity.setLocked(true);
         userEntityRepository.save(userEntity);
         Long userId = userEntity.getId();
-        assertThrows(IllegalStateException.class, () -> userService.lock(userId));
+        assertThrows(UserLockedException.class, () -> userService.lock(userId));
     }
 
     @Test
@@ -304,10 +305,10 @@ class UserServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    void testUnlockUserShouldThrowIllegalStateException() {
+    void testUnlockUserShouldThrowInvalidOperationExceptionException() {
         UserEntity userEntity = createAndSaveUser();
         Long userId = userEntity.getId();
-        assertThrows(IllegalStateException.class, () -> userService.unlock(userId));
+        assertThrows(InvalidOperationException.class, () -> userService.unlock(userId));
     }
 
     private UserEntity createAndSaveUser() {
