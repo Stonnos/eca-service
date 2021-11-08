@@ -1,0 +1,33 @@
+[
+  {
+    "label": "Эксперименты",
+    "routerLink": "/dashboard/experiments"
+  },
+  {
+    "label": "Классификаторы",
+    "routerLink": "/dashboard/classifiers"
+  },
+  {
+    "label": "Оптимальные настройки классификаторов",
+    "routerLink": "/dashboard/classifiers-options-requests"
+  },
+  {
+    "label": "Датасеты",
+    "routerLink": "/dashboard/instances"
+  },
+  {
+    "label": "Пользователи",
+    "routerLink": "/dashboard/users",
+    "availableRoles": ["ROLE_SUPER_ADMIN"]
+  },
+  {
+    "label": "Шаблоны email сообщений",
+    "routerLink": "/dashboard/email-templates",
+    "availableRoles": ["ROLE_SUPER_ADMIN"]
+  },
+  {
+    "label": "Журнал аудита",
+    "routerLink": "/dashboard/audit-logs",
+    "availableRoles": ["ROLE_SUPER_ADMIN"]
+  }
+]

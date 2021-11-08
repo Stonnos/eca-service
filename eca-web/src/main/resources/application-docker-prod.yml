@@ -4,3 +4,6 @@ eureka:
     fetchRegistry: true
     serviceUrl:
       defaultZone: http://discovery-server:8761/eureka
+
+auth-server:
+  baseUrl: http://eca-oauth:8080

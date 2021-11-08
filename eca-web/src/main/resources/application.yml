@@ -16,6 +16,11 @@ eureka:
 ribbon:
   ReadTimeout: 60000
 
+auth-server:
+  baseUrl: http://localhost:8085/eca-oauth
+  clientId: eca_web
+  clientSecret: web_secret
+
 management:
   metrics:
     tags:
