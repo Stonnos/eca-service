@@ -7,6 +7,7 @@ import com.ecaservice.oauth.dto.UpdateUserInfoDto;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.entity.UserPhoto;
 import com.ecaservice.oauth.event.model.UserCreatedEvent;
+import com.ecaservice.oauth.exception.UserLockNotAllowedException;
 import com.ecaservice.oauth.mapping.UserMapper;
 import com.ecaservice.oauth.repository.UserPhotoRepository;
 import com.ecaservice.oauth.service.PasswordService;
@@ -501,7 +502,7 @@ public class UserController {
                      @RequestParam Long userId) {
         log.info("Received request for user [{}] locking", userId);
         if (userDetails.getId().equals(userId)) {
-            throw new IllegalStateException(String.format("Can't lock yourself: [%d]", userId));
+            throw new UserLockNotAllowedException();
         }
         userService.lock(userId);
     }

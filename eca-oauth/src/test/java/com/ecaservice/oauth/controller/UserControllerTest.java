@@ -271,7 +271,7 @@ class UserControllerTest extends AbstractControllerTest {
         mockMvc.perform(post(LOCK_URL)
                 .param(USER_ID_PARAM, String.valueOf(USER_ID))
                 .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isForbidden());
     }
 
     @Test
