@@ -16,6 +16,30 @@ eureka:
 ribbon:
   ReadTimeout: 60000
 
+## Swagger properties
+open-api:
+  basePath: /
+  title: Microservice for web application
+  description: API provides operations for web application
+  author: Roman Batygin
+  email: roman.batygin@mail.ru
+  tokenBaseUrl: http://localhost:8080
+  apiAuth:
+    PASSWORD:
+      scopes: web
+
+springdoc:
+  swagger-ui:
+    oauth:
+      client-id: swagger
+      client-secret: swagger_secret
+    disable-swagger-default-url: true
+
+auth-server:
+  baseUrl: http://localhost:8085/eca-oauth
+  clientId: eca_web
+  clientSecret: web_secret
+
 management:
   metrics:
     tags:

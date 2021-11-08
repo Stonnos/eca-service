@@ -9,6 +9,7 @@ export const environment = {
   dsUrl: `http://${window.location.hostname}:${window.location.port}/eca-ds`,
   mailUrl: `http://${window.location.hostname}:${window.location.port}/eca-mail`,
   auditLogUrl: `http://${window.location.hostname}:${window.location.port}/eca-audit-log`,
+  webAppUrl: `http://${window.location.hostname}:${window.location.port}`,
   wsUrl: `ws://${window.location.hostname}:8099/socket`,
   clientId: "eca_web",
   secret: "web_secret"

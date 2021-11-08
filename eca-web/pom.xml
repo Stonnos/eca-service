@@ -95,6 +95,18 @@
             <version>${project.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>eca.service</groupId>
+            <artifactId>oauth2-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>eca.service</groupId>
+            <artifactId>swagger-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -107,6 +119,7 @@
                     <include>application-docker.yml</include>
                     <include>application-docker-prod.yml</include>
                     <include>logback-spring.xml</include>
+                    <include>menu-bar.json</include>
                 </includes>
             </resource>
             <resource>
