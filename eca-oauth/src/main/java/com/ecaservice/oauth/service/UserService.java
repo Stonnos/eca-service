@@ -9,6 +9,8 @@ import com.ecaservice.oauth.entity.RoleEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.entity.UserEntity_;
 import com.ecaservice.oauth.entity.UserPhoto;
+import com.ecaservice.oauth.exception.UserLockNotAllowedException;
+import com.ecaservice.oauth.exception.UserLockedException;
 import com.ecaservice.oauth.filter.UserFilter;
 import com.ecaservice.oauth.mapping.UserMapper;
 import com.ecaservice.oauth.repository.RoleRepository;
@@ -171,10 +173,10 @@ public class UserService {
         log.info("Starting to lock user [{}]", userId);
         UserEntity userEntity = getById(userId);
         if (isSuperAdmin(userEntity)) {
-            throw new IllegalStateException(String.format("Can't lock super admin user [%d]", userId));
+            throw new UserLockNotAllowedException();
         }
         if (userEntity.isLocked()) {
-            throw new IllegalStateException(String.format("User [%d] is already locked", userId));
+            throw new UserLockedException(userId);
         }
         userEntity.setLocked(true);
         userEntityRepository.save(userEntity);

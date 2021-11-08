@@ -9,6 +9,8 @@ import com.ecaservice.oauth.dto.UpdateUserInfoDto;
 import com.ecaservice.oauth.entity.RoleEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.entity.UserPhoto;
+import com.ecaservice.oauth.exception.UserLockNotAllowedException;
+import com.ecaservice.oauth.exception.UserLockedException;
 import com.ecaservice.oauth.mapping.RoleMapperImpl;
 import com.ecaservice.oauth.mapping.UserMapper;
 import com.ecaservice.oauth.mapping.UserMapperImpl;
@@ -268,7 +270,7 @@ class UserServiceTest extends AbstractJpaTest {
         userEntity.setRoles(Sets.newHashSet(role));
         userEntityRepository.save(userEntity);
         Long userId = userEntity.getId();
-        assertThrows(IllegalStateException.class, () -> userService.lock(userId));
+        assertThrows(UserLockNotAllowedException.class, () -> userService.lock(userId));
     }
 
     @Test
@@ -283,12 +285,12 @@ class UserServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    void testLockUserShouldThrowIllegalStateException() {
+    void testLockUserShouldThrowUserLockedException() {
         UserEntity userEntity = createAndSaveUser();
         userEntity.setLocked(true);
         userEntityRepository.save(userEntity);
         Long userId = userEntity.getId();
-        assertThrows(IllegalStateException.class, () -> userService.lock(userId));
+        assertThrows(UserLockedException.class, () -> userService.lock(userId));
     }
 
     @Test
