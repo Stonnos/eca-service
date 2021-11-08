@@ -56,11 +56,19 @@ public class OpenApi30Configuration {
     private Info apiInfo() {
         return new Info()
                 .title(openApiProperties.getTitle())
-                .version(openApiProperties.getProjectVersion())
+                .version(getVersion())
                 .description(openApiProperties.getDescription())
                 .contact(new Contact()
                         .name(openApiProperties.getAuthor())
                         .email(openApiProperties.getEmail()));
+    }
+
+    private String getVersion() {
+        if (StringUtils.isNotEmpty(openApiProperties.getProjectVersion())) {
+            return openApiProperties.getProjectVersion();
+        } else {
+            return getClass().getPackage().getImplementationVersion();
+        }
     }
 
     private Components components() {

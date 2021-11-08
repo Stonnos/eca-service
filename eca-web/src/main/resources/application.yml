@@ -23,7 +23,6 @@ open-api:
   description: API provides operations for web application
   author: Roman Batygin
   email: roman.batygin@mail.ru
-  projectVersion: 6.1
   tokenBaseUrl: http://localhost:8080
   apiAuth:
     PASSWORD:

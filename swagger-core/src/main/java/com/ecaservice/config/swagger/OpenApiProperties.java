@@ -23,7 +23,6 @@ public class OpenApiProperties {
     /**
      * Project version
      */
-    @NotEmpty
     private String projectVersion;
 
     /**
