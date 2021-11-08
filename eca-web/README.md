@@ -16,7 +16,7 @@
 
 Описание ключевой конфигурации модуля
 ----------------------------------------
-Настройки для проекта eca-web находятся в файле environment.ts или environment.prod.ts. Ниже приведены основные параметры:
+Настройки для angular приложения находятся в файле environment.ts или environment.prod.ts. Ниже приведены основные параметры:
 
 * serverUrl - url REST API сервера eca-server
 * oauthUrl - url сервера авторизации
@@ -26,6 +26,22 @@
 * wsUrl - url сервера веб - сокетов (модуль eca-web-push)
 * clientId - идентификатор клиента
 * secret - секретный ключ или пароль клиента
+
+Настройки для серверной части находятся в application.yml. Основные параметры:
+1) open-api - настройки Swagger
+   * open-api.tokenBaseUrl - базовый url - сервера авторизации
+   * open-api.projectVersion - версия API
+   * open-api.title - краткое название API
+   * open-api.description - описание API
+   * open-api.author - автор
+   * open-api.email - email для связи
+   * open-api.basePath - базовый префикс для API
+   * open-api.apiAuth - настройки авторизации
+   * open-api.apiAuth.scopes - список scopes
+2) auth-server - настройки интеграции с eca-oauth
+   * baseUrl - базовый url eca-oauth
+   * clientId - идентификатор клиента
+   * clientSecret - пароль клиента
 
 Инструкция по развертыванию
 ----------------------------------------
