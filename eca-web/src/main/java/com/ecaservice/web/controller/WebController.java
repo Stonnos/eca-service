@@ -3,6 +3,7 @@ package com.ecaservice.web.controller;
 import com.ecaservice.web.dto.model.MenuItemDto;
 import com.ecaservice.web.service.MenuBarService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+
+import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
+import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
 
 /**
  * API for web application.
@@ -35,7 +39,8 @@ public class WebController {
     @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
             description = "Gets menu bar for web application",
-            summary = "Gets menu bar for web application"
+            summary = "Gets menu bar for web application",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB)
     )
     @GetMapping(value = "/menu-bar")
     public List<MenuItemDto> getMenuItems() {
