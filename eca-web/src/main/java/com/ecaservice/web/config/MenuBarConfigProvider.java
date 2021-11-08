@@ -1,4 +1,4 @@
-package com.ecaservice.web.service;
+package com.ecaservice.web.config;
 
 import com.ecaservice.web.model.MenuItem;
 import com.fasterxml.jackson.core.type.TypeReference;
