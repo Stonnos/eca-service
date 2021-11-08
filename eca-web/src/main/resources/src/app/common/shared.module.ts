@@ -12,7 +12,8 @@ import { UploadTrainingDataComponent } from "./upload-training-data/upload-train
 import { ConfirmDialogComponent } from "./confirm-dialog/confirm-dialog.component";
 import { EditableInputTextComponent } from "./editable-input-text/editable-input-text.component";
 import { InfoPanelComponent } from "./info-panel/info-panel.component";
-import {ErrorHandler} from "./services/error-handler";
+import { ErrorHandler } from "./services/error-handler";
+import { WebAppService } from "./services/web-app.service";
 
 @NgModule({
   imports: [
@@ -42,7 +43,8 @@ import {ErrorHandler} from "./services/error-handler";
     FieldService,
     ReportsService,
     ValidationService,
-    ErrorHandler
+    ErrorHandler,
+    WebAppService
   ]
 })
 export class SharedModule {

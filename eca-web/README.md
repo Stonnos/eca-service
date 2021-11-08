@@ -23,6 +23,7 @@
 * dsUrl - url модуля eca-data-storage
 * mailUrl - url модуля eca-mail
 * auditLogUrl - url модуля eca-audit-log
+* webAppUrl - url модуля для получения конфигурации web - приложения
 * wsUrl - url сервера веб - сокетов (модуль eca-web-push)
 * clientId - идентификатор клиента
 * secret - секретный ключ или пароль клиента

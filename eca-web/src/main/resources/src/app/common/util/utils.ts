@@ -1,10 +1,9 @@
 import { EvaluationMethod } from "../model/evaluation-method.enum";
 import {
   ClassifiersConfigurationDto,
-  EnumDto, RoleDto, UserDto
+  EnumDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { AuthenticationKeys } from "../../auth/model/auth.keys";
-import { Role } from "../model/roles";
 
 export class Utils {
 
@@ -16,10 +15,6 @@ export class Utils {
 
   public static readonly MISSING_VALUE: string = "-";
   public static readonly PASSWORD_STRENGTH_CUTOFF: number = 3;
-
-  public static isSuperAdmin(user: UserDto): boolean {
-    return user && user.roles && user.roles.map((role: RoleDto) => role.roleName).includes(Role.ROLE_SUPER_ADMIN)
-  }
 
   public static getEvaluationMethodDescription(evaluationMethod: EnumDto, numFolds: number, numTests: number): string {
     if (evaluationMethod.value == EvaluationMethod.CROSS_VALIDATION) {
