@@ -101,4 +101,10 @@ public class UserDto {
      */
     @Schema(description = "User roles")
     private List<RoleDto> roles;
+
+    /**
+     * Is user lock allowed?
+     */
+    @Schema(description = "Is user lock allowed?")
+    private boolean lockAllowed;
 }

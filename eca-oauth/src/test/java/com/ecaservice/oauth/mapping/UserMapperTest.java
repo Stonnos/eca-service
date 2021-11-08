@@ -45,6 +45,7 @@ class UserMapperTest {
         assertThat(userDto.getCreationDate()).isEqualTo(userEntity.getCreationDate());
         assertThat(userDto.isTfaEnabled()).isEqualTo(userEntity.isTfaEnabled());
         assertThat(userDto.isLocked()).isEqualTo(userEntity.isLocked());
+        assertThat(userDto.isLockAllowed()).isTrue();
     }
 
     @Test

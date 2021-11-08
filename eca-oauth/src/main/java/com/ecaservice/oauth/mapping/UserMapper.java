@@ -5,6 +5,7 @@ import com.ecaservice.oauth.dto.UpdateUserInfoDto;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.user.model.UserDetailsImpl;
 import com.ecaservice.web.dto.model.UserDto;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -12,6 +13,8 @@ import org.mapstruct.Named;
 
 import java.util.List;
 import java.util.Optional;
+
+import static com.ecaservice.oauth.util.Utils.isSuperAdmin;
 
 /**
  * Users mapper.
@@ -74,5 +77,10 @@ public interface UserMapper {
     @Named("trim")
     default String trim(String value) {
         return Optional.ofNullable(value).map(String::trim).orElse(null);
+    }
+
+    @AfterMapping
+    default void mapLockAllowed(UserEntity userEntity, @MappingTarget UserDto userDto) {
+        userDto.setLockAllowed(!isSuperAdmin(userEntity));
     }
 }
