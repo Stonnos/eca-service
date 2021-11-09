@@ -12,7 +12,6 @@ import com.ecaservice.ers.dto.EvaluationMethodReport;
 import com.ecaservice.ers.dto.EvaluationResultsRequest;
 import com.ecaservice.ers.dto.RocCurveReport;
 import com.ecaservice.ers.dto.StatisticsReport;
-import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.mapping.InstancesConverter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.core.evaluation.Evaluation;
@@ -50,7 +49,6 @@ public class EvaluationResultsService {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     private final ClassifierOptionsAdapter classifierOptionsAdapter;
-    private final CrossValidationConfig crossValidationConfig;
     private final InstancesConverter instancesConverter;
 
     /**
@@ -79,8 +77,8 @@ public class EvaluationResultsService {
                         EvaluationMethod.TRAINING_DATA);
         if (evaluation.isKCrossValidationMethod()) {
             evaluationMethodReport.setNumFolds(BigInteger.valueOf(evaluation.numFolds()));
-            evaluationMethodReport.setNumTests(BigInteger.valueOf(evaluation.getValidationsNum()));
-            evaluationMethodReport.setSeed(BigInteger.valueOf(crossValidationConfig.getSeed()));
+            evaluationMethodReport.setNumTests(BigInteger.valueOf(evaluation.getNumTests()));
+            evaluationMethodReport.setSeed(BigInteger.valueOf(evaluation.getSeed()));
         }
         evaluationResultsRequest.setEvaluationMethodReport(evaluationMethodReport);
     }

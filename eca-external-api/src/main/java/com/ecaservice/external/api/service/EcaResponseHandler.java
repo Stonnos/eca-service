@@ -97,7 +97,8 @@ public class EcaResponseHandler {
         } else {
             evaluationRequestEntity.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
             evaluationRequestEntity.setNumFolds(evaluation.numFolds());
-            evaluationRequestEntity.setNumTests(evaluation.getValidationsNum());
+            evaluationRequestEntity.setNumTests(evaluation.getNumTests());
+            evaluationRequestEntity.setSeed(evaluation.getSeed());
         }
     }
 
