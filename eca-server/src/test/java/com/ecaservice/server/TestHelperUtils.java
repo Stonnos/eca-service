@@ -82,7 +82,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -188,7 +187,7 @@ public class TestHelperUtils {
             Instances testInstances = loadInstances();
             Evaluation evaluation = EvaluationService.evaluateModel(cart, testInstances,
                     eca.core.evaluation.EvaluationMethod.CROSS_VALIDATION, TestHelperUtils.NUM_FOLDS,
-                    TestHelperUtils.NUM_TESTS, new Random(SEED));
+                    TestHelperUtils.NUM_TESTS, SEED);
             return new EvaluationResults(cart, evaluation);
         } catch (Exception ex) {
             throw new IllegalStateException(ex.getMessage());

@@ -93,7 +93,7 @@ public class TestHelperUtils {
         CART cart = new CART();
         Instances testInstances = loadInstances();
         Evaluation evaluation = EvaluationService.evaluateModel(cart, testInstances,
-                EvaluationMethod.TRAINING_DATA, 0, 0, null);
+                EvaluationMethod.TRAINING_DATA, 0, 0, 0);
         return new EvaluationResults(cart, evaluation);
     }
 

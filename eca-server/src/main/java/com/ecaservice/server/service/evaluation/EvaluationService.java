@@ -16,7 +16,6 @@ import weka.classifiers.Classifier;
 import weka.core.Instances;
 
 import java.util.Optional;
-import java.util.Random;
 
 /**
  * Implements classifier model evaluation.
@@ -67,8 +66,7 @@ public class EvaluationService {
                     int seed = Optional.ofNullable(evaluationRequest.getSeed()).orElse(config.getSeed());
                     log.trace("evaluateModel: numFolds = {}, numTests = {}, seed {}", folds, tests, seed);
                     stopWatch.start(String.format("%s model evaluation", classifierName));
-                    evaluation.kCrossValidateModel(AbstractClassifier.makeCopy(classifier), data, folds, tests,
-                            new Random(seed));
+                    evaluation.kCrossValidateModel(AbstractClassifier.makeCopy(classifier), data, folds, tests, seed);
                     stopWatch.stop();
 
                     stopWatch.start(String.format("%s model training", classifierName));

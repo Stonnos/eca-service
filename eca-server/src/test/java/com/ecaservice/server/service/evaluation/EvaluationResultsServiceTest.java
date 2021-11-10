@@ -1,6 +1,5 @@
 package com.ecaservice.server.service.evaluation;
 
-import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.classifier.options.config.ClassifiersOptionsAutoConfiguration;
 import com.ecaservice.ers.dto.ClassificationCostsReport;
 import com.ecaservice.ers.dto.ClassifierReport;
@@ -12,7 +11,7 @@ import com.ecaservice.ers.dto.EvaluationResultsRequest;
 import com.ecaservice.ers.dto.InstancesReport;
 import com.ecaservice.ers.dto.RocCurveReport;
 import com.ecaservice.ers.dto.StatisticsReport;
-import com.ecaservice.server.config.CrossValidationConfig;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.mapping.InstancesConverter;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
@@ -47,14 +46,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(SpringExtension.class)
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
-@Import({EvaluationResultsService.class, CrossValidationConfig.class,
-        InstancesConverter.class, ClassifiersOptionsAutoConfiguration.class})
+@Import({EvaluationResultsService.class, InstancesConverter.class, ClassifiersOptionsAutoConfiguration.class})
 class EvaluationResultsServiceTest {
 
     @Inject
     private EvaluationResultsService evaluationResultsService;
-    @Inject
-    private CrossValidationConfig crossValidationConfig;
 
     private EvaluationResults evaluationResults;
 
@@ -141,8 +137,8 @@ class EvaluationResultsServiceTest {
                 EvaluationMethod.CROSS_VALIDATION);
         assertThat(evaluationMethodReport.getNumFolds().intValue()).isEqualTo(evaluation.numFolds());
         assertThat(evaluationMethodReport.getNumTests().intValue()).isEqualTo(
-                evaluation.getValidationsNum());
-        assertThat(evaluationMethodReport.getSeed().intValue()).isEqualTo(crossValidationConfig.getSeed());
+                evaluation.getNumTests());
+        assertThat(evaluationMethodReport.getSeed().intValue()).isEqualTo(evaluation.getSeed());
     }
 
     private void verifyClassificationCostsReport(Evaluation evaluation, EvaluationResultsRequest resultsRequest) {
