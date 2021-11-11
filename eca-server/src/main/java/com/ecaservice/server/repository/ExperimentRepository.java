@@ -31,14 +31,14 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
     Optional<Experiment> findByToken(String token);
 
     /**
-     * Finds not sent experiments by statuses
+     * Finds not sent experiments by statuses.
      *
      * @param statuses - {@link RequestStatus} collection
-     * @return experiments list
+     * @return experiments ids list
      */
-    @Query("select exp from Experiment exp where exp.requestStatus in (:statuses) order by exp.creationDate")
-    Page<Experiment> findExperimentsForProcessing(@Param("statuses") Collection<RequestStatus> statuses,
-                                                  Pageable pageable);
+    @Query("select exp.id from Experiment exp where exp.requestStatus in (:statuses) order by exp.creationDate")
+    Page<Long> findExperimentsForProcessing(@Param("statuses") Collection<RequestStatus> statuses,
+                                            Pageable pageable);
 
     /**
      * Finds experiments models to delete.

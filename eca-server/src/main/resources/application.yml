@@ -116,6 +116,8 @@ experiment:
   timeout: 5
   ## Scheduler delay in seconds
   delaySeconds: 30
+  ## Experiments page size
+  pageSize: 10
 
   data:
     storagePath: D:/experiment/data/

@@ -53,11 +53,17 @@ public class ExperimentRequestProcessor {
     /**
      * Processes new experiment.
      *
-     * @param experiment - experiment entity
+     * @param id - experiment id
      */
-    @TryLocked(lockName = "experiment", key = "#experiment.requestId",
+    @TryLocked(lockName = "experiment", key = "#experiment.id",
             lockRegistry = EXPERIMENT_REDIS_LOCK_REGISTRY_BEAN)
-    public void processNewExperiment(Experiment experiment) {
+    public void processNewExperiment(Long id) {
+        var experiment = experimentService.getById(id);
+        if (!RequestStatus.NEW.equals(experiment.getRequestStatus())) {
+            log.warn("Attempt to process new experiment [{}] with status [{}]. Skipped...", experiment.getRequestId(),
+                    experiment.getRequestStatus());
+            return;
+        }
         putMdc(TX_ID, experiment.getRequestId());
         putMdc(EV_REQUEST_ID, experiment.getRequestId());
         log.info("Starting to process new experiment [{}]", experiment.getRequestId());

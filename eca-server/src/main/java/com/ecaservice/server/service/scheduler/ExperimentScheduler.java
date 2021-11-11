@@ -1,5 +1,6 @@
 package com.ecaservice.server.service.scheduler;
 
+import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.repository.ExperimentRepository;
@@ -29,8 +30,9 @@ public class ExperimentScheduler {
 
     private static final List<RequestStatus> NEW_STATUSES = Collections.singletonList(RequestStatus.NEW);
 
-    private final ExperimentRepository experimentRepository;
+    private final ExperimentConfig experimentConfig;
     private final ExperimentRequestProcessor experimentRequestProcessor;
+    private final ExperimentRepository experimentRepository;
 
     /**
      * Processing new experiment requests.
@@ -38,7 +40,7 @@ public class ExperimentScheduler {
     @Scheduled(fixedDelayString = "${experiment.delaySeconds}000")
     public void processNewRequests() {
         log.trace("Starting to process new experiments.");
-        Function<Pageable, Page<Experiment>> pageFunction =
+        Function<Pageable, Page<Long>> pageFunction =
                 pageable -> experimentRepository.findExperimentsForProcessing(NEW_STATUSES, pageable);
         processPaging(pageFunction, experiments -> {
             log.info("Obtained {} new experiments", experiments.size());
@@ -69,7 +71,7 @@ public class ExperimentScheduler {
     }
 
     private <T> void processPaging(Function<Pageable, Page<T>> pageFunction, Consumer<List<T>> pageContentAction) {
-        Pageable pageRequest = PageRequest.of(0, 1);
+        Pageable pageRequest = PageRequest.of(0, experimentConfig.getPageSize());
         Page<T> page;
         do {
             page = pageFunction.apply(pageRequest);
