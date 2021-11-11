@@ -3,6 +3,8 @@ package com.ecaservice.server.repository;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.projections.RequestStatusStatistics;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -38,24 +40,33 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
     List<Long> findExperimentsForProcessing(@Param("statuses") Collection<RequestStatus> statuses);
 
     /**
+     * Gets experiments page with specified ids.
+     *
+     * @param ids      - experiment ids
+     * @param pageable - pageable object
+     * @return experiments page
+     */
+    Page<Experiment> findByIdIn(Collection<Long> ids, Pageable pageable);
+
+    /**
      * Finds experiments models to delete.
      *
      * @param dateTime date time threshold value
-     * @return experiments list
+     * @return experiments ids list
      */
-    @Query("select exp from Experiment exp where exp.requestStatus = 'FINISHED' and " +
+    @Query("select exp.id from Experiment exp where exp.requestStatus = 'FINISHED' and " +
             "exp.deletedDate is null and exp.endDate < :dateTime order by exp.endDate")
-    List<Experiment> findExperimentsModelsToDelete(@Param("dateTime") LocalDateTime dateTime);
+    List<Long> findExperimentsModelsToDelete(@Param("dateTime") LocalDateTime dateTime);
 
     /**
      * Finds experiments training data to delete.
      *
      * @param dateTime date time threshold value
-     * @return experiments list
+     * @return experiments ids list
      */
-    @Query("select exp from Experiment exp where " +
+    @Query("select exp.id from Experiment exp where " +
             "exp.trainingDataAbsolutePath is not null and exp.creationDate < :dateTime order by exp.creationDate")
-    List<Experiment> findExperimentsTrainingDataToDelete(@Param("dateTime") LocalDateTime dateTime);
+    List<Long> findExperimentsTrainingDataToDelete(@Param("dateTime") LocalDateTime dateTime);
 
     /**
      * Calculates requests status counting statistics.
