@@ -55,8 +55,7 @@ public class ExperimentRequestProcessor {
      *
      * @param id - experiment id
      */
-    @TryLocked(lockName = "experiment", key = "#experiment.id",
-            lockRegistry = EXPERIMENT_REDIS_LOCK_REGISTRY_BEAN)
+    @TryLocked(lockName = "experiment", key = "#id", lockRegistry = EXPERIMENT_REDIS_LOCK_REGISTRY_BEAN)
     public void processNewExperiment(Long id) {
         var experiment = experimentService.getById(id);
         if (!RequestStatus.NEW.equals(experiment.getRequestStatus())) {
