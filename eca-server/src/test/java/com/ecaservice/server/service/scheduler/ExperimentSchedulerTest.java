@@ -37,6 +37,7 @@ import static com.ecaservice.server.TestHelperUtils.createExperimentHistory;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -73,8 +74,6 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
 
     @Inject
     private ExperimentConfig experimentConfig;
-    @Inject
-    private AppProperties appProperties;
 
     private ExperimentScheduler experimentScheduler;
 
@@ -83,7 +82,7 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
         ExperimentRequestProcessor experimentRequestProcessor = new ExperimentRequestProcessor(experimentRepository,
                 experimentResultsEntityRepository, experimentService, eventPublisher, ersService,
                 experimentProgressService, experimentConfig);
-        experimentScheduler = new ExperimentScheduler(experimentRepository, experimentRequestProcessor);
+        experimentScheduler = new ExperimentScheduler(experimentRequestProcessor, experimentRepository);
     }
 
     @Override
@@ -103,6 +102,8 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
         experiments.add(
                 TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED));
         experimentRepository.saveAll(experiments);
+        var iterator = experiments.iterator();
+        when(experimentService.getById(anyLong())).thenReturn(iterator.next());
         experimentScheduler.processNewRequests();
         verify(experimentService, atLeastOnce()).processExperiment(any(Experiment.class));
         verify(eventPublisher, times(EXPECTED_CHANGE_STATUS_EVENTS_COUNT)).publishEvent(

@@ -78,6 +78,11 @@ public class ExperimentConfig {
     private Integer delaySeconds;
 
     /**
+     * Page size for processing
+     */
+    private Integer pageSize;
+
+    /**
      * Data configuration properties.
      */
     @Data

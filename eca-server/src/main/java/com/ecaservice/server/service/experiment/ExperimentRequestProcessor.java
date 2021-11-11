@@ -18,11 +18,16 @@ import eca.dataminer.AbstractExperiment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static com.ecaservice.common.web.util.LogHelper.EV_REQUEST_ID;
@@ -53,11 +58,16 @@ public class ExperimentRequestProcessor {
     /**
      * Processes new experiment.
      *
-     * @param experiment - experiment entity
+     * @param id - experiment id
      */
-    @TryLocked(lockName = "experiment", key = "#experiment.requestId",
-            lockRegistry = EXPERIMENT_REDIS_LOCK_REGISTRY_BEAN)
-    public void processNewExperiment(Experiment experiment) {
+    @TryLocked(lockName = "experiment", key = "#id", lockRegistry = EXPERIMENT_REDIS_LOCK_REGISTRY_BEAN)
+    public void processNewExperiment(Long id) {
+        var experiment = experimentService.getById(id);
+        if (!RequestStatus.NEW.equals(experiment.getRequestStatus())) {
+            log.warn("Attempt to process new experiment [{}] with status [{}]. Skipped...", experiment.getRequestId(),
+                    experiment.getRequestStatus());
+            return;
+        }
         putMdc(TX_ID, experiment.getRequestId());
         putMdc(EV_REQUEST_ID, experiment.getRequestId());
         log.info("Starting to process new experiment [{}]", experiment.getRequestId());
@@ -111,18 +121,9 @@ public class ExperimentRequestProcessor {
     public void removeExperimentsModels() {
         log.info("Starting to remove experiments models.");
         LocalDateTime dateTime = LocalDateTime.now().minusDays(experimentConfig.getNumberOfDaysForStorage());
-        List<Experiment> experiments = experimentRepository.findExperimentsModelsToDelete(dateTime);
-        log.info("Obtained {} experiments to remove model files", experiments.size());
-        experiments.forEach(experiment -> {
-            putMdc(TX_ID, experiment.getRequestId());
-            putMdc(EV_REQUEST_ID, experiment.getRequestId());
-            try {
-                experimentService.removeExperimentModel(experiment);
-            } catch (Exception ex) {
-                log.error("There was an error while remove experiment [{}] model file: {}", experiment.getRequestId(),
-                        ex.getMessage());
-            }
-        });
+        var experimentIds = experimentRepository.findExperimentsModelsToDelete(dateTime);
+        log.info("Obtained {} experiments to remove model files", experimentIds.size());
+        processPaging(experimentIds, experimentRepository::findByIdIn, this::removedExperimentsModels);
         log.info("Experiments models removing has been finished.");
     }
 
@@ -133,18 +134,9 @@ public class ExperimentRequestProcessor {
     public void removeExperimentsTrainingData() {
         log.info("Starting to remove experiments training data.");
         LocalDateTime dateTime = LocalDateTime.now().minusDays(experimentConfig.getNumberOfDaysForStorage());
-        List<Experiment> experiments = experimentRepository.findExperimentsTrainingDataToDelete(dateTime);
-        log.info("Obtained {} experiments to remove training data files", experiments.size());
-        experiments.forEach(experiment -> {
-            putMdc(TX_ID, experiment.getRequestId());
-            putMdc(EV_REQUEST_ID, experiment.getRequestId());
-            try {
-                experimentService.removeExperimentTrainingData(experiment);
-            } catch (Exception ex) {
-                log.error("There was an error while remove experiment [{}] training data file: {}",
-                        experiment.getRequestId(), ex.getMessage());
-            }
-        });
+        var experimentIds = experimentRepository.findExperimentsTrainingDataToDelete(dateTime);
+        log.info("Obtained {} experiments to remove training data files", experimentIds.size());
+        processPaging(experimentIds, experimentRepository::findByIdIn, this::removeExperimentsTrainingData);
         log.info("Experiments training data removing has been finished.");
     }
 
@@ -155,5 +147,48 @@ public class ExperimentRequestProcessor {
         log.info("Experiment [{}] in progress status has been set", experiment.getRequestId());
         eventPublisher.publishEvent(new ExperimentWebPushEvent(this, experiment));
         eventPublisher.publishEvent(new ExperimentEmailEvent(this, experiment));
+    }
+
+    private void removedExperimentsModels(List<Experiment> experiments) {
+        experiments.forEach(experiment -> {
+            putMdc(TX_ID, experiment.getRequestId());
+            putMdc(EV_REQUEST_ID, experiment.getRequestId());
+            try {
+                experimentService.removeExperimentModel(experiment);
+            } catch (Exception ex) {
+                log.error("There was an error while remove experiment [{}] model file: {}", experiment.getRequestId(),
+                        ex.getMessage());
+            }
+        });
+    }
+
+    private void removeExperimentsTrainingData(List<Experiment> experiments) {
+        experiments.forEach(experiment -> {
+            putMdc(TX_ID, experiment.getRequestId());
+            putMdc(EV_REQUEST_ID, experiment.getRequestId());
+            try {
+                experimentService.removeExperimentTrainingData(experiment);
+            } catch (Exception ex) {
+                log.error("There was an error while remove experiment [{}] training data file: {}",
+                        experiment.getRequestId(), ex.getMessage());
+            }
+        });
+    }
+
+    private <T> void processPaging(List<Long> ids,
+                                   BiFunction<List<Long>, Pageable, Page<T>> nextPageFunction,
+                                   Consumer<List<T>> pageContentAction) {
+        Pageable pageRequest = PageRequest.of(0, experimentConfig.getPageSize());
+        Page<T> page;
+        do {
+            page = nextPageFunction.apply(ids, pageRequest);
+            if (page == null || !page.hasContent()) {
+                log.trace("No one requests has been fetched");
+                break;
+            } else {
+                pageContentAction.accept(page.getContent());
+            }
+            pageRequest = page.nextPageable();
+        } while (page.hasNext());
     }
 }

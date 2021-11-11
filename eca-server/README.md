@@ -45,7 +45,8 @@ ECA server
    * experiment.removeExperimentCron - крон выражение для удаления файлов с результатами экспериментов
    * experiment.ersSendingCron - крон выражение для отправки результатов экспериментов в ERS - сервис
    * experiment.timeout - время таймаута эксперимента в часах.
-   * experiment.delay - интервал между запусками scheduler для обработки экспериметов
+   * experiment.delaySeconds - интервал между запусками scheduler для обработки экспериметов
+   * experiment.pageSize - размер страницы для постраничной обработки заявок
    * experiment.data.storagePath - путь к папке на файловой системе для хранения файлов с исходныи данными (обучающая выборка)
    * experiment.ensemble.numIterations - число итераций для ансамблевых алгоритмов
    * experiment.ensemble.numBestClassifiers - число наилучших по точности базовых классификаторов, которые впоследствии

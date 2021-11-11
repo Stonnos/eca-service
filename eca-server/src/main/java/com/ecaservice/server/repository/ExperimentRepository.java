@@ -31,34 +31,42 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
     Optional<Experiment> findByToken(String token);
 
     /**
-     * Finds not sent experiments by statuses
+     * Finds not sent experiments by statuses.
      *
      * @param statuses - {@link RequestStatus} collection
-     * @return experiments list
+     * @return experiments ids list
      */
-    @Query("select exp from Experiment exp where exp.requestStatus in (:statuses) order by exp.creationDate")
-    Page<Experiment> findExperimentsForProcessing(@Param("statuses") Collection<RequestStatus> statuses,
-                                                  Pageable pageable);
+    @Query("select exp.id from Experiment exp where exp.requestStatus in (:statuses) order by exp.creationDate")
+    List<Long> findExperimentsForProcessing(@Param("statuses") Collection<RequestStatus> statuses);
+
+    /**
+     * Gets experiments page with specified ids.
+     *
+     * @param ids      - experiment ids
+     * @param pageable - pageable object
+     * @return experiments page
+     */
+    Page<Experiment> findByIdIn(Collection<Long> ids, Pageable pageable);
 
     /**
      * Finds experiments models to delete.
      *
      * @param dateTime date time threshold value
-     * @return experiments list
+     * @return experiments ids list
      */
-    @Query("select exp from Experiment exp where exp.requestStatus = 'FINISHED' and " +
+    @Query("select exp.id from Experiment exp where exp.requestStatus = 'FINISHED' and " +
             "exp.deletedDate is null and exp.endDate < :dateTime order by exp.endDate")
-    List<Experiment> findExperimentsModelsToDelete(@Param("dateTime") LocalDateTime dateTime);
+    List<Long> findExperimentsModelsToDelete(@Param("dateTime") LocalDateTime dateTime);
 
     /**
      * Finds experiments training data to delete.
      *
      * @param dateTime date time threshold value
-     * @return experiments list
+     * @return experiments ids list
      */
-    @Query("select exp from Experiment exp where " +
+    @Query("select exp.id from Experiment exp where " +
             "exp.trainingDataAbsolutePath is not null and exp.creationDate < :dateTime order by exp.creationDate")
-    List<Experiment> findExperimentsTrainingDataToDelete(@Param("dateTime") LocalDateTime dateTime);
+    List<Long> findExperimentsTrainingDataToDelete(@Param("dateTime") LocalDateTime dateTime);
 
     /**
      * Calculates requests status counting statistics.
