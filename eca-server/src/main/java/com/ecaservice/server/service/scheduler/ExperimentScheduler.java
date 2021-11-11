@@ -1,22 +1,16 @@
 package com.ecaservice.server.service.scheduler;
 
-import com.ecaservice.server.config.ExperimentConfig;
-import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.service.experiment.ExperimentRequestProcessor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 /**
  * Experiment scheduler.
@@ -30,7 +24,6 @@ public class ExperimentScheduler {
 
     private static final List<RequestStatus> NEW_STATUSES = Collections.singletonList(RequestStatus.NEW);
 
-    private final ExperimentConfig experimentConfig;
     private final ExperimentRequestProcessor experimentRequestProcessor;
     private final ExperimentRepository experimentRepository;
 
@@ -40,12 +33,11 @@ public class ExperimentScheduler {
     @Scheduled(fixedDelayString = "${experiment.delaySeconds}000")
     public void processNewRequests() {
         log.trace("Starting to process new experiments.");
-        Function<Pageable, Page<Long>> pageFunction =
-                pageable -> experimentRepository.findExperimentsForProcessing(NEW_STATUSES, pageable);
-        processPaging(pageFunction, experiments -> {
-            log.info("Obtained {} new experiments", experiments.size());
-            experiments.forEach(experimentRequestProcessor::processNewExperiment);
-        });
+        var newExperimentIds = experimentRepository.findExperimentsForProcessing(NEW_STATUSES);
+        if (!CollectionUtils.isEmpty(newExperimentIds)) {
+            log.info("Obtained {} new experiments", newExperimentIds.size());
+            newExperimentIds.forEach(experimentRequestProcessor::processNewExperiment);
+        }
         log.trace("New experiments processing has been successfully finished.");
     }
 
@@ -68,20 +60,5 @@ public class ExperimentScheduler {
         experimentRequestProcessor.removeExperimentsTrainingData();
         experimentRequestProcessor.removeExperimentsModels();
         log.info("Removing experiments data files job has been finished");
-    }
-
-    private <T> void processPaging(Function<Pageable, Page<T>> pageFunction, Consumer<List<T>> pageContentAction) {
-        Pageable pageRequest = PageRequest.of(0, experimentConfig.getPageSize());
-        Page<T> page;
-        do {
-            page = pageFunction.apply(pageRequest);
-            if (page == null || !page.hasContent()) {
-                log.trace("No one requests has been fetched");
-                break;
-            } else {
-                pageContentAction.accept(page.getContent());
-            }
-            pageRequest = page.nextPageable();
-        } while (page.hasNext());
     }
 }

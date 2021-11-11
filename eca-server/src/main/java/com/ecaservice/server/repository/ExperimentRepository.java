@@ -3,8 +3,6 @@ package com.ecaservice.server.repository;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.projections.RequestStatusStatistics;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -37,8 +35,7 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
      * @return experiments ids list
      */
     @Query("select exp.id from Experiment exp where exp.requestStatus in (:statuses) order by exp.creationDate")
-    Page<Long> findExperimentsForProcessing(@Param("statuses") Collection<RequestStatus> statuses,
-                                            Pageable pageable);
+    List<Long> findExperimentsForProcessing(@Param("statuses") Collection<RequestStatus> statuses);
 
     /**
      * Finds experiments models to delete.
