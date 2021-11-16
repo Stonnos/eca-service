@@ -55,7 +55,8 @@ public class ClassifierOptionsService {
             PageRequest pageRequest = PageRequest.of(0, ersConfig.getResultSize(), sort);
             Page<EvaluationResultsInfo> evaluationResultsInfoPage =
                     evaluationResultsInfoRepository.findAll(filter, pageRequest);
-            return evaluationResultsInfoPage.getContent().stream()
+            return evaluationResultsInfoPage.getContent()
+                    .stream()
                     .map(EvaluationResultsInfo::getClassifierOptionsInfo)
                     .collect(Collectors.toList());
         }
@@ -65,10 +66,12 @@ public class ClassifierOptionsService {
         if (CollectionUtils.isEmpty(classifierOptionsRequest.getSortFields())) {
             return sortFieldService.getEvaluationResultsDefaultSort();
         } else {
-            Sort.Order[] orders = classifierOptionsRequest.getSortFields().stream()
+            Sort.Order[] orders = classifierOptionsRequest.getSortFields()
+                    .stream()
                     .map(sortField -> SortDirection.DESC.equals(sortField.getDirection()) ?
                             Sort.Order.desc(sortField.getFieldName()) : Sort.Order.asc(sortField.getFieldName())
-                    ).toArray(Sort.Order[]::new);
+                    )
+                    .toArray(Sort.Order[]::new);
             return Sort.by(orders);
         }
     }
