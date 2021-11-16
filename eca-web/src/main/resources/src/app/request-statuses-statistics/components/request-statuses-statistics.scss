@@ -24,3 +24,28 @@
   margin-top: 10px;
   font-size: 22px;
 }
+
+.request-status-progress-spinner::ng-deep {
+  .ui-progress-spinner {
+    margin-top: 12px;
+    width: 25px;
+    height: 25px;
+  }
+
+  @keyframes ui-progress-spinner-color {
+    100%,
+    0% {
+      stroke: #aeaeae;
+    }
+    40% {
+      stroke: #9a9a9a;
+    }
+    66% {
+      stroke: #aeaeae;
+    }
+    80%,
+    90% {
+      stroke: #9a9a9a;
+    }
+  }
+}
