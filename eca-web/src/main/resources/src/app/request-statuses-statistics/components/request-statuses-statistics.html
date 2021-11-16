@@ -1,43 +1,79 @@
 <div class="ui-g ui-fluid">
   <div class="ui-g-12 ui-md-2 pl-2">
-    <p-panel class="statistics-panel text-center" [showHeader]="false">
+    <p-panel class="statistics-panel text-center align-items-center justify-content-center" [showHeader]="false">
       <p class="attr">Всего</p>
-      <p class="value">{{ requestStatusStatisticsDto?.totalCount }}</p>
+      <p *ngIf="requestStatusStatisticsDto" class="value">{{ requestStatusStatisticsDto?.totalCount }}</p>
+      <p-progressSpinner
+        *ngIf="!requestStatusStatisticsDto"
+        class="request-status-progress-spinner"
+        strokeWidth="6"
+        animationDuration=".5s">
+      </p-progressSpinner>
     </p-panel>
   </div>
 
   <div class="ui-g-12 ui-md-2">
-    <p-panel class="statistics-panel text-center" [showHeader]="false">
+    <p-panel class="statistics-panel text-center align-items-center justify-content-center" [showHeader]="false">
       <p class="attr">Новые</p>
-      <p class="value">{{ requestStatusStatisticsDto?.newRequestsCount }}</p>
+      <p *ngIf="requestStatusStatisticsDto" class="value">{{ requestStatusStatisticsDto?.newRequestsCount }}</p>
+      <p-progressSpinner
+        *ngIf="!requestStatusStatisticsDto"
+        class="request-status-progress-spinner"
+        strokeWidth="6"
+        animationDuration=".5s">
+      </p-progressSpinner>
     </p-panel>
   </div>
 
   <div class="ui-g-12 ui-md-2">
-    <p-panel class="statistics-panel text-center" [showHeader]="false">
+    <p-panel class="statistics-panel text-center align-items-center justify-content-center" [showHeader]="false">
       <p class="attr">В работе</p>
-      <p class="value">{{ requestStatusStatisticsDto?.inProgressRequestsCount }}</p>
+      <p *ngIf="requestStatusStatisticsDto" class="value">{{ requestStatusStatisticsDto?.inProgressRequestsCount }}</p>
+      <p-progressSpinner
+        *ngIf="!requestStatusStatisticsDto"
+        class="request-status-progress-spinner"
+        strokeWidth="6"
+        animationDuration=".5s">
+      </p-progressSpinner>
     </p-panel>
   </div>
 
   <div class="ui-g-12 ui-md-2">
-    <p-panel class="statistics-panel text-center" [showHeader]="false">
+    <p-panel class="statistics-panel text-center align-items-center justify-content-center" [showHeader]="false">
       <p class="attr">Завершено</p>
-      <p class="value">{{ requestStatusStatisticsDto?.finishedRequestsCount }}</p>
+      <p *ngIf="requestStatusStatisticsDto" class="value">{{ requestStatusStatisticsDto?.finishedRequestsCount }}</p>
+      <p-progressSpinner
+        *ngIf="!requestStatusStatisticsDto"
+        class="request-status-progress-spinner"
+        strokeWidth="6"
+        animationDuration=".5s">
+      </p-progressSpinner>
     </p-panel>
   </div>
 
   <div class="ui-g-12 ui-md-2">
-    <p-panel class="statistics-panel text-center" [showHeader]="false">
+    <p-panel class="statistics-panel text-center align-items-center justify-content-center" [showHeader]="false">
       <p class="attr">С ошибкой</p>
-      <p class="value">{{ requestStatusStatisticsDto?.errorRequestsCount }}</p>
+      <p *ngIf="requestStatusStatisticsDto" class="value">{{ requestStatusStatisticsDto?.errorRequestsCount }}</p>
+      <p-progressSpinner
+        *ngIf="!requestStatusStatisticsDto"
+        class="request-status-progress-spinner"
+        strokeWidth="6"
+        animationDuration=".5s">
+      </p-progressSpinner>
     </p-panel>
   </div>
 
   <div class="ui-g-12 ui-md-2 pr-2">
-    <p-panel class="statistics-panel text-center" [showHeader]="false">
+    <p-panel class="statistics-panel text-center align-items-center justify-content-center" [showHeader]="false">
       <p class="attr">Таймаут</p>
-      <p class="value">{{ requestStatusStatisticsDto?.timeoutRequestsCount }}</p>
+      <p *ngIf="requestStatusStatisticsDto" class="value">{{ requestStatusStatisticsDto?.timeoutRequestsCount }}</p>
+      <p-progressSpinner
+        *ngIf="!requestStatusStatisticsDto"
+        class="request-status-progress-spinner"
+        strokeWidth="6"
+        animationDuration=".5s">
+      </p-progressSpinner>
     </p-panel>
   </div>
 </div>
