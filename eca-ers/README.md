@@ -32,20 +32,6 @@ Evaluation results service
 3) ers - основные настройки модуля
     * ers.resultSize - число наилучших конфигураций классификаторов
 
-Бизнес метрики приложения
-----------------------------------------
-* ers.operation.save-evaluation-results.timed.seconds.max - Макс. время выполнения операции сохранения результатов классификации
-* ers.operation.save-evaluation-results.timed.seconds.count - Общее число операций сохранения результатов классификации
-* ers.operation.save-evaluation-results.timed.seconds.sum - Суммарное время для операций сохранения результатов классификации
-* ers.operation.get-evaluation-results.timed.seconds.max - Макс. время выполнения операции получения результатов классификации
-* ers.operation.get-evaluation-results.timed.seconds.count - Общее число операций получения результатов классификации
-* ers.operation.get-evaluation-results.timed.seconds.sum - Суммарное время для операций получения результатов классификации
-* ers.operation.get-optimal-classifier-options.timed.seconds.max - Макс. время выполнения операции поиска оптимальных конфигураций классификаторов
-* ers.operation.get-optimal-classifier-options.seconds.count - Общее число операций поиска оптимальных конфигураций классификаторов
-* ers.operation.get-optimal-classifier-options.timed.seconds.sum - Суммарное время для операций поиска оптимальных конфигураций классификаторов
-
-Метрики приложения доступны по адресу http://[service.host]:[service.port]/actuator/prometheus
-
 Инструкция по развертыванию
 ----------------------------------------
    

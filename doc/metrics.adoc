@@ -162,3 +162,20 @@ a|
 
 `feign_Client_seconds_max{application="eca-server",client="com.ecaservice.server.service.push.WebPushClient",host="eca-web-push",method="push",} 0.070433362`
 |===
+
+== 4. Метрики http запросов
+
+|===
+|*Название метрики*|*Описание*|*Примеры*
+|*http_server_requests_seconds_count*
+|Счетчик числа http запросов, параметризированный имени сервиса (application), по названию метода (uri), коду ответа (status).
+a|
+`http_server_requests_seconds_count{application="eca-ers",exception="None",method="POST",outcome="SUCCESS",status="200",uri="/api/save",} 1.0`
+|*http_server_requests_seconds_sum*
+|Счетчик суммарного времени выполнения http запроса, параметризированный имени сервиса (application), по названию метода (uri), коду ответа (status).
+a|
+`http_server_requests_seconds_sum{application="eca-ers",exception="None",method="POST",outcome="SUCCESS",status="200",uri="/api/save",} 0.221839122`
+|*http_server_requests_seconds_max*
+|Макс. время выполнения http запроса
+a|
+`http_server_requests_seconds_max{application="eca-ers",exception="None",method="POST",outcome="SUCCESS",status="200",uri="/api/save",} 0.221839122`
