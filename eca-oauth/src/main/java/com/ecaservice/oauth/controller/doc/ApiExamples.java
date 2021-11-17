@@ -129,4 +129,10 @@ public class ApiExamples {
                     "{\"fieldName\": \"middleName\", \"code\": \"Size\", \"errorMessage\": " +
                     "\"size must be between 2 and 30\"}, {\"fieldName\": \"firstName\", \"code\": \"Size\", " +
                     "\"errorMessage\": \"size must be between 2 and 30\"}]";
+
+    /**
+     * Invalid tfa request response json
+     */
+    public static final String INVALID_TFA_REQUEST_RESPONSE_JSON = "[{\"fieldName\": null, \"code\": " +
+            "\"InvalidOperation\", \"errorMessage\": \"Tfa is already enabled for user\"}]";
 }
