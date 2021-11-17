@@ -28,9 +28,9 @@ a|
 
 __Grant type:__ password
 
-__Token url:__ http://localhost:8080/eca-oauth/oauth/token
+__Token url:__ http://localhost:8080/oauth/token
 
-__Refresh token url:__ http://localhost:8080/eca-oauth/oauth/token
+__Refresh token url:__ http://localhost:8080/oauth/token
 
 
 __Scopes__:
@@ -415,10 +415,17 @@ a|
 ----
 |400
 |Bad request
-|*-*
+|*application/json*
 |-
 a|
--
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "InvalidOperation",
+  "errorMessage" : "Tfa is already enabled for user"
+} ]
+----
 |===
 
 == Logout current user and revokes access/refresh token pair
@@ -644,11 +651,12 @@ a|
     "tfaEnabled" : true,
     "locked" : true,
     "photoId" : 1,
-    "passwordDate" : "2021-07-01 14:00:00",
+    "passwordChangeDate" : "2021-07-01 14:00:00",
     "roles" : [ {
       "roleName" : "ROLE_SUPER_ADMIN",
       "description" : "Administrator"
-    } ]
+    } ],
+    "lockAllowed" : "false"
   } ],
   "page" : 0,
   "totalCount" : 1
@@ -810,11 +818,12 @@ a|
   "tfaEnabled" : true,
   "locked" : true,
   "photoId" : 1,
-  "passwordDate" : "2021-07-01 14:00:00",
+  "passwordChangeDate" : "2021-07-01 14:00:00",
   "roles" : [ {
     "roleName" : "ROLE_SUPER_ADMIN",
     "description" : "Administrator"
-  } ]
+  } ],
+  "lockAllowed" : "false"
 }
 ----
 |401
@@ -1485,11 +1494,12 @@ a|
   "tfaEnabled" : true,
   "locked" : true,
   "photoId" : 1,
-  "passwordDate" : "2021-07-01 14:00:00",
+  "passwordChangeDate" : "2021-07-01 14:00:00",
   "roles" : [ {
     "roleName" : "ROLE_SUPER_ADMIN",
     "description" : "Administrator"
-  } ]
+  } ],
+  "lockAllowed" : "false"
 }
 ----
 |401
