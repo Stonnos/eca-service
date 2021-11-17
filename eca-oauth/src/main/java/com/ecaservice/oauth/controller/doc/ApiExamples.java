@@ -65,8 +65,9 @@ public class ApiExamples {
     public static final String USER_INFO_RESPONSE_JSON = "{\"id\": 1, \"login\": \"admin\", \"email\": \"test@mail" +
             ".ru\", \"firstName\": \"Ivan\", \"lastName\": \"Ivanov\", \"middleName\": \"Ivanovich\", \"fullName\": " +
             "\"Ivanov Ivan Ivanovich\", \"creationDate\": \"2021-07-01 14:00:00\", \"tfaEnabled\": true, " +
-            "\"locked\": true, \"photoId\": 1, \"passwordDate\": \"2021-07-01 14:00:00\", \"roles\": " +
-            "[{\"roleName\": \"ROLE_SUPER_ADMIN\", \"description\": \"Administrator\"}]}";
+            "\"locked\": true, \"photoId\": 1, \"passwordChangeDate\": \"2021-07-01 14:00:00\", \"roles\": " +
+            "[{\"roleName\": \"ROLE_SUPER_ADMIN\", \"description\": \"Administrator\"}], " +
+            "\"lockAllowed\": \"false\"}";
 
     /**
      * Users page response json
@@ -74,8 +75,9 @@ public class ApiExamples {
     public static final String USERS_PAGE_RESPONSE_JSON = "{\"content\": [{\"id\": 1, \"login\": \"admin\", " +
             "\"email\": \"test@mail.ru\", \"firstName\": \"Ivan\", \"lastName\": \"Ivanov\", \"middleName\": " +
             "\"Ivanovich\", \"fullName\": \"Ivanov Ivan Ivanovich\", \"creationDate\": \"2021-07-01 14:00:00\", " +
-            "\"tfaEnabled\": true, \"locked\": true, \"photoId\": 1, \"passwordDate\": \"2021-07-01 14:00:00\", " +
-            "\"roles\": [{\"roleName\": \"ROLE_SUPER_ADMIN\", \"description\": \"Administrator\"}]}], " +
+            "\"tfaEnabled\": true, \"locked\": true, \"photoId\": 1, \"passwordChangeDate\": \"2021-07-01 14:00:00\"" +
+            ", \"roles\": [{\"roleName\": \"ROLE_SUPER_ADMIN\", \"description\": \"Administrator\"}]," +
+            "\"lockAllowed\": \"false\"}], " +
             "\"page\": 0, \"totalCount\": 1}";
 
     /**
@@ -127,4 +129,10 @@ public class ApiExamples {
                     "{\"fieldName\": \"middleName\", \"code\": \"Size\", \"errorMessage\": " +
                     "\"size must be between 2 and 30\"}, {\"fieldName\": \"firstName\", \"code\": \"Size\", " +
                     "\"errorMessage\": \"size must be between 2 and 30\"}]";
+
+    /**
+     * Invalid tfa request response json
+     */
+    public static final String INVALID_TFA_REQUEST_RESPONSE_JSON = "[{\"fieldName\": null, \"code\": " +
+            "\"InvalidOperation\", \"errorMessage\": \"Tfa is already enabled for user\"}]";
 }

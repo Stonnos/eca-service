@@ -60,6 +60,7 @@ import static com.ecaservice.oauth.controller.doc.ApiExamples.ACCESS_DENIED_RESP
 import static com.ecaservice.oauth.controller.doc.ApiExamples.CREATE_USER_REQUEST_JSON;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.DATA_NOT_FOUND_RESPONSE_JSON;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.INVALID_PAGE_REQUEST_RESPONSE_JSON;
+import static com.ecaservice.oauth.controller.doc.ApiExamples.INVALID_TFA_REQUEST_RESPONSE_JSON;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.INVALID_UPDATE_USER_INFO_REQUEST_RESPONSE_JSON;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.SIMPLE_PAGE_REQUEST_JSON;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.UNAUTHORIZED_RESPONSE_JSON;
@@ -177,7 +178,13 @@ public class UserController {
                                     }
                             )
                     ),
-                    @ApiResponse(description = "Bad request", responseCode = "400")
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = INVALID_TFA_REQUEST_RESPONSE_JSON),
+                                    }
+                            ))
             }
     )
     @PostMapping(value = "/tfa")
