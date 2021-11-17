@@ -164,7 +164,7 @@ a|
 |Bad request
 |*application/json*
 |
-<<ResponseDto>>
+<<ValidationErrorResponsePayloadDto>>
 
 
 
@@ -307,7 +307,7 @@ a|
 |Bad request
 |*application/json*
 |
-<<ResponseDto>>
+<<ValidationErrorResponsePayloadDto>>
 
 
 
@@ -459,7 +459,7 @@ a|
 |Bad request
 |*application/json*
 |
-<<ResponseDto>>
+<<ValidationErrorResponsePayloadDto>>
 
 
 
@@ -598,7 +598,7 @@ a|
 |Bad request
 |*application/json*
 |
-<<ResponseDto>>
+<<ValidationErrorResponsePayloadDto>>
 
 
 
@@ -716,7 +716,7 @@ a|
 |Bad request
 |*application/json*
 |
-<<ResponseDto>>
+<<ValidationErrorResponsePayloadDto>>
 
 
 
@@ -871,16 +871,82 @@ __string__
 
 
 |===
-=== ResponseDto
+=== ValidationErrorDto
 :table-caption: Table
-.Response model
+.Validation error model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*fieldName*
+|Field name
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*code*
+|Error code
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*errorMessage*
+|Error message
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== ValidationErrorResponsePayloadDto
+:table-caption: Table
+.Validation error response payload model
 [width=100%]
 |===
 |*Name*|*Description*|*Schema*
 |*payload*
 |Response payload
 a|
-__object__
+__array__
+<<<ValidationErrorDto>>
+>
 
 
 
