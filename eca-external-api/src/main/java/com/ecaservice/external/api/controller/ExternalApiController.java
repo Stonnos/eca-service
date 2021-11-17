@@ -9,6 +9,7 @@ import com.ecaservice.external.api.dto.InstancesRequestDto;
 import com.ecaservice.external.api.dto.InstancesResponseDto;
 import com.ecaservice.external.api.dto.ResponseCode;
 import com.ecaservice.external.api.dto.ResponseDto;
+import com.ecaservice.external.api.dto.ValidationErrorResponsePayloadDto;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.service.EcaRequestService;
 import com.ecaservice.external.api.service.EvaluationApiService;
@@ -122,7 +123,7 @@ public class ExternalApiController {
                                     examples = {
                                             @ExampleObject(value = INVALID_TRAIN_DATA_RESPONSE_JSON),
                                     },
-                                    schema = @Schema(implementation = ResponseDto.class)
+                                    schema = @Schema(implementation = ValidationErrorResponsePayloadDto.class)
                             )
                     )
             }
@@ -179,7 +180,7 @@ public class ExternalApiController {
                                     examples = {
                                             @ExampleObject(value = INVALID_EVALUATION_REQUEST_RESPONSE_JSON),
                                     },
-                                    schema = @Schema(implementation = ResponseDto.class)
+                                    schema = @Schema(implementation = ValidationErrorResponsePayloadDto.class)
                             )
                     )
             }
@@ -235,7 +236,7 @@ public class ExternalApiController {
                                     examples = {
                                             @ExampleObject(value = INVALID_INSTANCES_REQUEST_RESPONSE_JSON),
                                     },
-                                    schema = @Schema(implementation = ResponseDto.class)
+                                    schema = @Schema(implementation = ValidationErrorResponsePayloadDto.class)
                             )
                     )
             }
@@ -283,7 +284,7 @@ public class ExternalApiController {
                                     examples = {
                                             @ExampleObject(value = VALIDATION_ERROR_RESPONSE_JSON),
                                     },
-                                    schema = @Schema(implementation = ResponseDto.class)
+                                    schema = @Schema(implementation = ValidationErrorResponsePayloadDto.class)
                             )
                     )
             }
@@ -324,7 +325,7 @@ public class ExternalApiController {
                                     examples = {
                                             @ExampleObject(value = VALIDATION_ERROR_RESPONSE_JSON),
                                     },
-                                    schema = @Schema(implementation = ResponseDto.class)
+                                    schema = @Schema(implementation = ValidationErrorResponsePayloadDto.class)
                             )
                     )
             }
