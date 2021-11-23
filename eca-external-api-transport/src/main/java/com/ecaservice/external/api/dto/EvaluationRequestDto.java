@@ -6,6 +6,7 @@ import eca.core.evaluation.EvaluationMethod;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -40,6 +41,7 @@ public class EvaluationRequestDto implements Serializable {
     /**
      * Classifier input options json config
      */
+    @Valid
     @NotNull
     @Schema(description = "Classifier options json", required = true)
     private ClassifierOptions classifierOptions;
@@ -70,6 +72,8 @@ public class EvaluationRequestDto implements Serializable {
     /**
      * Seed value for k * V cross - validation method
      */
+    @Min(Integer.MIN_VALUE)
+    @Max(Integer.MAX_VALUE)
     @Schema(description = "Seed value for k * V cross - validation method", example = "1")
     private Integer seed;
 }

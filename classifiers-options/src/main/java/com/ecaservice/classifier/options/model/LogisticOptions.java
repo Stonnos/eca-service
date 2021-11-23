@@ -4,6 +4,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+
+import static com.ecaservice.classifier.options.model.Constraints.VALUE_1;
+
 /**
  * Logistic regression input options model.
  *
@@ -17,6 +22,8 @@ public class LogisticOptions extends ClassifierOptions {
     /**
      * Maximum iterations number for optimization method
      */
+    @Min(VALUE_1)
+    @Max(Integer.MAX_VALUE)
     @Schema(description = "Maximum iterations number for optimization method")
     private Integer maxIts;
 
