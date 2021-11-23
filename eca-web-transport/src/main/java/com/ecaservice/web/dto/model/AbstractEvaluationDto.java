@@ -9,6 +9,15 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 import static com.ecaservice.web.dto.util.FieldConstraints.DATE_TIME_PATTERN;
+import static com.ecaservice.web.dto.util.FieldConstraints.EVALUATION_TOTAL_TIME_MAX_LENGTH;
+import static com.ecaservice.web.dto.util.FieldConstraints.LOCAL_DATE_TIME_MAX_LENGTH;
+import static com.ecaservice.web.dto.util.FieldConstraints.MAXIMUM_NUM_FOLDS_STRING;
+import static com.ecaservice.web.dto.util.FieldConstraints.MAXIMUM_NUM_TESTS_STRING;
+import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LONG_VALUE_STRING;
+import static com.ecaservice.web.dto.util.FieldConstraints.MINIMUM_NUM_FOLDS_STRING;
+import static com.ecaservice.web.dto.util.FieldConstraints.MINIMUM_NUM_TESTS_STRING;
+import static com.ecaservice.web.dto.util.FieldConstraints.UUID_MAX_LENGTH;
+import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1_STRING;
 
 /**
  * Abstract evaluation dto model.
@@ -21,19 +30,21 @@ public abstract class AbstractEvaluationDto {
     /**
      * ID
      */
-    @Schema(description = "ID", example = "1")
+    @Schema(description = "ID", example = "1", minimum = VALUE_1_STRING, maximum = MAX_LONG_VALUE_STRING)
     private Long id;
 
     /**
      * Request unique identifier
      */
-    @Schema(description = "Request unique identifier", example = "1d2de514-3a87-4620-9b97-c260e24340de")
+    @Schema(description = "Request unique identifier", example = "1d2de514-3a87-4620-9b97-c260e24340de",
+            maxLength = UUID_MAX_LENGTH)
     private String requestId;
 
     /**
      * Request creation date
      */
-    @Schema(description = "Request creation date", type = "string", example = "2021-07-01 14:00:00")
+    @Schema(description = "Request creation date", type = "string", example = "2021-07-01 14:00:00",
+            maxLength = LOCAL_DATE_TIME_MAX_LENGTH)
     @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime creationDate;
@@ -41,7 +52,8 @@ public abstract class AbstractEvaluationDto {
     /**
      * Evaluation start date
      */
-    @Schema(description = "Evaluation start date", type = "string", example = "2021-07-01 14:00:00")
+    @Schema(description = "Evaluation start date", type = "string", example = "2021-07-01 14:00:00",
+            maxLength = LOCAL_DATE_TIME_MAX_LENGTH)
     @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime startDate;
@@ -49,7 +61,8 @@ public abstract class AbstractEvaluationDto {
     /**
      * Evaluation end date
      */
-    @Schema(description = "Evaluation end date", type = "string", example = "2021-07-01 14:00:00")
+    @Schema(description = "Evaluation end date", type = "string", example = "2021-07-01 14:00:00",
+            maxLength = LOCAL_DATE_TIME_MAX_LENGTH)
     @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime endDate;
@@ -69,13 +82,15 @@ public abstract class AbstractEvaluationDto {
     /**
      * Folds number for k * V cross - validation method
      */
-    @Schema(description = "Folds number for k * V cross - validation method", example = "10")
+    @Schema(description = "Folds number for k * V cross - validation method", example = "10",
+            minimum = MINIMUM_NUM_FOLDS_STRING, maximum = MAXIMUM_NUM_FOLDS_STRING)
     private Integer numFolds;
 
     /**
      * Tests number for k * V cross - validation method
      */
-    @Schema(description = "Tests number for k * V cross - validation method", example = "1")
+    @Schema(description = "Tests number for k * V cross - validation method", example = "1",
+            minimum = MINIMUM_NUM_TESTS_STRING, maximum = MAXIMUM_NUM_TESTS_STRING)
     private Integer numTests;
 
     /**
@@ -87,6 +102,7 @@ public abstract class AbstractEvaluationDto {
     /**
      * Model evaluation total time in format HH:mm:ss:SS
      */
-    @Schema(description = "Model evaluation total time in format HH:mm:ss:SS", example = "00:00:1:43")
+    @Schema(description = "Model evaluation total time in format HH:mm:ss:SS", example = "00:00:1:43",
+            maxLength = EVALUATION_TOTAL_TIME_MAX_LENGTH)
     private String evaluationTotalTime;
 }

@@ -6,6 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
+import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
 
 /**
  * Reset password request model.
@@ -22,6 +25,7 @@ public class ResetPasswordRequest {
      * Token value
      */
     @NotBlank
+    @Size(max = MAX_LENGTH_255)
     @Schema(description = "Token value",
             example = "MDhmNTg4MDdiMTI0Y2Y4OWNmN2UxYmE1OTljYjUzOWU6MTYxNjE1MzM4MDMzMQ==", required = true)
     private String token;
@@ -30,6 +34,7 @@ public class ResetPasswordRequest {
      * New password
      */
     @NotBlank
+    @Size(max = MAX_LENGTH_255)
     @Schema(description = "New password", example = "passw0rd!", required = true)
     private String password;
 }

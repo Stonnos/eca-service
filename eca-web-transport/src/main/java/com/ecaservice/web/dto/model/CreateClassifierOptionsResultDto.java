@@ -5,6 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
+import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LONG_VALUE_STRING;
+import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1_STRING;
+
 /**
  * Create classifier options dto model.
  *
@@ -19,13 +23,14 @@ public class CreateClassifierOptionsResultDto {
     /**
      * Classifier options id
      */
-    @Schema(description = "Classifier options id", required = true, example = "1")
+    @Schema(description = "Classifier options id", required = true, example = "1", minimum = VALUE_1_STRING,
+            maximum = MAX_LONG_VALUE_STRING)
     private Long id;
 
     /**
      * Source file name
      */
-    @Schema(description = "Source file name", required = true, example = "cart.json")
+    @Schema(description = "Source file name", required = true, example = "cart.json", maxLength = MAX_LENGTH_255)
     private String sourceFileName;
 
     /**

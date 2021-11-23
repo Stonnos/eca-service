@@ -3,6 +3,8 @@ package com.ecaservice.web.dto.model;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
+
 /**
  * Filter field dictionary value dto model.
  *
@@ -15,12 +17,12 @@ public class FilterDictionaryValueDto {
     /**
      * Label string
      */
-    @Schema(description = "Filter dictionary field label", example = "Label value")
+    @Schema(description = "Filter dictionary field label", example = "Label value", maxLength = MAX_LENGTH_255)
     private String label;
 
     /**
      * String value
      */
-    @Schema(description = "Filter dictionary field value", example = "Value code")
+    @Schema(description = "Filter dictionary field value", example = "Value code", maxLength = MAX_LENGTH_255)
     private String value;
 }
