@@ -31,11 +31,6 @@ public class FieldConstraints {
     public static final int LOCAL_DATE_TIME_MAX_LENGTH = 19;
 
     /**
-     * Local date max length
-     */
-    public static final int LOCAL_DATE_MAX_LENGTH = 10;
-
-    /**
      * Filters list max length
      */
     public static final int FILTERS_LIST_MAX_LENGTH = 50;
