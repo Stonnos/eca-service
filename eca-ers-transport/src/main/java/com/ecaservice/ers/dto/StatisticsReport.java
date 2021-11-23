@@ -5,6 +5,7 @@ import lombok.Data;
 
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -30,6 +31,7 @@ public class StatisticsReport {
      */
     @NotNull
     @Min(MIN_2)
+    @Max(Integer.MAX_VALUE)
     @Schema(description = "Test instances number", example = "100", required = true)
     private BigInteger numTestInstances;
 
@@ -38,6 +40,7 @@ public class StatisticsReport {
      */
     @NotNull
     @Min(MIN_ZERO)
+    @Max(Integer.MAX_VALUE)
     @Schema(description = "Correctly classified instances number", example = "100", required = true)
     private BigInteger numCorrect;
 
@@ -46,6 +49,7 @@ public class StatisticsReport {
      */
     @NotNull
     @Min(MIN_ZERO)
+    @Max(Integer.MAX_VALUE)
     @Schema(description = "Incorrectly classified instances number", example = "0", required = true)
     private BigInteger numIncorrect;
 

@@ -3,6 +3,7 @@ package com.ecaservice.ers.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -41,6 +42,7 @@ public class InstancesReport {
      */
     @NotNull
     @Min(MIN_2)
+    @Max(Integer.MAX_VALUE)
     @Schema(description = "Instances number", example = "150", required = true)
     private BigInteger numInstances;
 
@@ -49,6 +51,7 @@ public class InstancesReport {
      */
     @NotNull
     @Min(MIN_2)
+    @Max(Integer.MAX_VALUE)
     @Schema(description = "Attributes number", example = "5", required = true)
     private BigInteger numAttributes;
 
@@ -57,6 +60,7 @@ public class InstancesReport {
      */
     @NotNull
     @Min(MIN_2)
+    @Max(Integer.MAX_VALUE)
     @Schema(description = "Classes number", example = "4", required = true)
     private BigInteger numClasses;
 
