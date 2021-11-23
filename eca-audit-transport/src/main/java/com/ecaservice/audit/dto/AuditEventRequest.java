@@ -14,6 +14,7 @@ import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 import static com.ecaservice.audit.dto.FieldConstraints.DATE_TIME_PATTERN;
+import static com.ecaservice.audit.dto.FieldConstraints.LOCAL_DATE_TIME_MAX_LENGTH;
 import static com.ecaservice.audit.dto.FieldConstraints.MAX_LENGTH_255;
 
 /**
@@ -92,6 +93,6 @@ public class AuditEventRequest {
     @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @Schema(description = "Event date", pattern = DATE_TIME_PATTERN)
+    @Schema(description = "Event date", pattern = DATE_TIME_PATTERN, maxLength = LOCAL_DATE_TIME_MAX_LENGTH)
     private LocalDateTime eventDate;
 }
