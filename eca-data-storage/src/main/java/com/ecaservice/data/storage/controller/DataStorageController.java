@@ -45,6 +45,8 @@ import weka.core.Instances;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.List;
@@ -62,6 +64,8 @@ import static com.ecaservice.web.dto.doc.CommonApiExamples.DATA_NOT_FOUND_RESPON
 import static com.ecaservice.web.dto.doc.CommonApiExamples.INVALID_PAGE_REQUEST_RESPONSE_JSON;
 import static com.ecaservice.web.dto.doc.CommonApiExamples.SIMPLE_PAGE_REQUEST_JSON;
 import static com.ecaservice.web.dto.doc.CommonApiExamples.UNAUTHORIZED_RESPONSE_JSON;
+import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
+import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
 /**
  * Data storage API for web application.
@@ -239,6 +243,7 @@ public class DataStorageController {
     )
     @GetMapping(value = "/details/{id}")
     public InstancesDto getInstancesDetails(@Parameter(description = "Instances id", example = "1", required = true)
+                                            @Min(VALUE_1) @Max(Long.MAX_VALUE)
                                             @PathVariable Long id) {
         log.info("Request get instances [{}] details", id);
         var instancesEntity = storageService.getById(id);
@@ -278,7 +283,8 @@ public class DataStorageController {
             }
     )
     @PutMapping(value = "/rename")
-    public void rename(@Parameter(description = "Instances id", example = "1", required = true) @RequestParam long id,
+    public void rename(@Parameter(description = "Instances id", example = "1", required = true)
+                       @Min(VALUE_1) @Max(Long.MAX_VALUE) @RequestParam long id,
                        @Parameter(description = "Table name", required = true)
                        @Pattern(regexp = TABLE_NAME_REGEX)
                        @Size(max = MAX_TABLE_NAME_LENGTH) @RequestParam String tableName) {
@@ -317,7 +323,8 @@ public class DataStorageController {
             }
     )
     @DeleteMapping(value = "/delete")
-    public void delete(@Parameter(description = "Instances id", example = "1", required = true) @RequestParam long id) {
+    public void delete(@Parameter(description = "Instances id", example = "1", required = true)
+                       @Min(VALUE_1) @Max(Long.MAX_VALUE) @RequestParam long id) {
         storageService.deleteData(id);
     }
 
@@ -370,7 +377,7 @@ public class DataStorageController {
     @PostMapping(value = "/data-page")
     public PageDto<List<String>> getDataPage(
             @Parameter(description = "Instances id", example = "1", required = true)
-            @RequestParam long id,
+            @RequestParam @Min(VALUE_1) @Max(Long.MAX_VALUE) long id,
             @Valid @RequestBody PageRequestDto pageRequestDto) {
         log.info("Received data page request: {}, instances id [{}]", pageRequestDto, id);
         return storageService.getData(id, pageRequestDto);
@@ -418,7 +425,7 @@ public class DataStorageController {
     )
     @GetMapping(value = "/attributes/{id}")
     public List<String> getAttributes(@Parameter(description = "Instances id", example = "1", required = true)
-                                      @PathVariable Long id) {
+                                      @PathVariable @Min(VALUE_1) @Max(Long.MAX_VALUE) Long id) {
         log.info("Received attributes request for instances [{}]", id);
         return storageService.getAttributes(id);
     }
@@ -500,9 +507,9 @@ public class DataStorageController {
     @GetMapping(value = "/download")
     public void downloadInstancesReport(
             @Parameter(description = "Instances id", example = "1", required = true)
-            @RequestParam long id,
+            @RequestParam @Min(VALUE_1) @Max(Long.MAX_VALUE) long id,
             @Parameter(description = "Report type", required = true)
-            @RequestParam ReportType reportType,
+            @RequestParam @Size(max = MAX_LENGTH_255) ReportType reportType,
             HttpServletResponse httpServletResponse) throws Exception {
         log.info("Request to download instances [{}] report [{}]", id, reportType);
         instancesReportService.generateInstancesReport(id, reportType, httpServletResponse);
