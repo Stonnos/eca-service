@@ -188,7 +188,7 @@ public class DataStorageController {
             @Parameter(description = "Training data file", required = true) @RequestParam MultipartFile trainingData,
             @Parameter(description = "Table name", required = true)
             @Pattern(regexp = TABLE_NAME_REGEX)
-            @Size(max = MAX_TABLE_NAME_LENGTH) @RequestParam String tableName) {
+            @Size(min = VALUE_1, max = MAX_TABLE_NAME_LENGTH) @RequestParam String tableName) {
         log.info("Received request for saving instances '{}' into table [{}]",
                 trainingData.getOriginalFilename(), tableName);
         MultipartFileResource multipartFileResource = new MultipartFileResource(trainingData);
@@ -287,7 +287,7 @@ public class DataStorageController {
                        @Min(VALUE_1) @Max(Long.MAX_VALUE) @RequestParam long id,
                        @Parameter(description = "Table name", required = true)
                        @Pattern(regexp = TABLE_NAME_REGEX)
-                       @Size(max = MAX_TABLE_NAME_LENGTH) @RequestParam String tableName) {
+                       @Size(min = VALUE_1, max = MAX_TABLE_NAME_LENGTH) @RequestParam String tableName) {
         storageService.renameData(id, tableName);
     }
 
@@ -509,7 +509,7 @@ public class DataStorageController {
             @Parameter(description = "Instances id", example = "1", required = true)
             @RequestParam @Min(VALUE_1) @Max(Long.MAX_VALUE) long id,
             @Parameter(description = "Report type", required = true)
-            @RequestParam @Size(max = MAX_LENGTH_255) ReportType reportType,
+            @RequestParam @Size(min = VALUE_1, max = MAX_LENGTH_255) ReportType reportType,
             HttpServletResponse httpServletResponse) throws Exception {
         log.info("Request to download instances [{}] report [{}]", id, reportType);
         instancesReportService.generateInstancesReport(id, reportType, httpServletResponse);

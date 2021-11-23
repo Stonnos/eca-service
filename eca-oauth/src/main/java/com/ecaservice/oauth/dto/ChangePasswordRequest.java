@@ -9,6 +9,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
+import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
 /**
  * Change password request model.
@@ -25,7 +26,7 @@ public class ChangePasswordRequest {
      * Old password
      */
     @NotBlank
-    @Size(max = MAX_LENGTH_255)
+    @Size(min = VALUE_1, max = MAX_LENGTH_255)
     @Schema(description = "Old password", example = "oldPassw0rd!", required = true)
     private String oldPassword;
 
@@ -33,7 +34,7 @@ public class ChangePasswordRequest {
      * New password
      */
     @NotBlank
-    @Size(max = MAX_LENGTH_255)
+    @Size(min = VALUE_1, max = MAX_LENGTH_255)
     @Schema(description = "New password", example = "newPassw0rd!", required = true)
     private String newPassword;
 }

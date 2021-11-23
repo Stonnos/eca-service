@@ -35,6 +35,7 @@ import static com.ecaservice.oauth.controller.doc.ApiExamples.INVALID_TOKEN_RESP
 import static com.ecaservice.oauth.controller.doc.ApiExamples.RESET_PASSWORD_REQUEST_JSON;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.USER_EMAIL_RESPONSE_JSON;
 import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
+import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 
 /**
@@ -111,7 +112,7 @@ public class ResetPasswordController {
     )
     @PostMapping(value = "/verify-token")
     public boolean verifyToken(
-            @Size(max = MAX_LENGTH_255)
+            @Size(min = VALUE_1, max = MAX_LENGTH_255)
             @Parameter(description = "Reset password token", required = true) @RequestParam String token) {
         log.info("Received request for reset password token verification");
         String md5Hash = md5Hex(token);

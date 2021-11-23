@@ -38,6 +38,7 @@ import static com.ecaservice.oauth.controller.doc.ApiExamples.INVALID_PASSWORD_R
 import static com.ecaservice.oauth.controller.doc.ApiExamples.INVALID_TOKEN_RESPONSE_JSON;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.UNAUTHORIZED_RESPONSE_JSON;
 import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
+import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
 /**
  * Implements change password REST API.
@@ -124,7 +125,7 @@ public class ChangePasswordController {
     )
     @PostMapping(value = "/confirm")
     public void confirmChangePasswordRequest(
-            @Size(max = MAX_LENGTH_255)
+            @Size(min = VALUE_1, max = MAX_LENGTH_255)
             @Parameter(description = "Token value", required = true) @RequestParam String token) {
         log.info("Received change password request confirmation");
         var changePasswordRequest = changePasswordService.changePassword(token);
