@@ -61,6 +61,11 @@ public class FieldConstraints {
     public static final String ZERO_VALUE_STRING = "0";
 
     /**
+     * Min. integer value
+     */
+    public static final String MIN_INTEGER_VALUE_STRING = "-2147483648";
+
+    /**
      * Max. integer value
      */
     public static final String MAX_INTEGER_VALUE_STRING = "2147483647";

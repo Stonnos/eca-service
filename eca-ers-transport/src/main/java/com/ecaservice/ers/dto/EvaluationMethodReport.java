@@ -47,6 +47,8 @@ public class EvaluationMethodReport {
     /**
      * Seed value for k * V cross - validation method
      */
+    @Min(Long.MIN_VALUE)
+    @Max(Long.MAX_VALUE)
     @Schema(description = "Seed value for k * V cross - validation method")
     private BigInteger seed;
 }

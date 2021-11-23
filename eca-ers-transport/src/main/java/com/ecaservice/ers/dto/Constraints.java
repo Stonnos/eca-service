@@ -65,4 +65,14 @@ public class Constraints {
      * Sor fields max items
      */
     public static final int SORT_FIELDS_MAX_ITEMS = 10;
+
+    /**
+     * Min. integer value
+     */
+    public static final String MIN_INTEGER_VALUE_STRING = "-2147483648";
+
+    /**
+     * Max. integer value
+     */
+    public static final String MAX_INTEGER_VALUE_STRING = "2147483647";
 }

@@ -13,9 +13,11 @@ import static com.ecaservice.web.dto.util.FieldConstraints.EVALUATION_TOTAL_TIME
 import static com.ecaservice.web.dto.util.FieldConstraints.LOCAL_DATE_TIME_MAX_LENGTH;
 import static com.ecaservice.web.dto.util.FieldConstraints.MAXIMUM_NUM_FOLDS_STRING;
 import static com.ecaservice.web.dto.util.FieldConstraints.MAXIMUM_NUM_TESTS_STRING;
+import static com.ecaservice.web.dto.util.FieldConstraints.MAX_INTEGER_VALUE_STRING;
 import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LONG_VALUE_STRING;
 import static com.ecaservice.web.dto.util.FieldConstraints.MINIMUM_NUM_FOLDS_STRING;
 import static com.ecaservice.web.dto.util.FieldConstraints.MINIMUM_NUM_TESTS_STRING;
+import static com.ecaservice.web.dto.util.FieldConstraints.MIN_INTEGER_VALUE_STRING;
 import static com.ecaservice.web.dto.util.FieldConstraints.UUID_MAX_LENGTH;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1_STRING;
 
@@ -96,7 +98,8 @@ public abstract class AbstractEvaluationDto {
     /**
      * Seed value for k * V cross - validation method
      */
-    @Schema(description = "Seed value for k * V cross - validation method", example = "1")
+    @Schema(description = "Seed value for k * V cross - validation method", example = "1",
+            minimum = MIN_INTEGER_VALUE_STRING, maximum = MAX_INTEGER_VALUE_STRING)
     private Integer seed;
 
     /**

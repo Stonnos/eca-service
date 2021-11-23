@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import static com.ecaservice.web.dto.util.FieldConstraints.MAX_INTEGER_VALUE_STRING;
+import static com.ecaservice.web.dto.util.FieldConstraints.MIN_INTEGER_VALUE_STRING;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_100_STRING;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1_STRING;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_2_STRING;
@@ -85,12 +86,14 @@ public class EvaluationStatisticsDto {
     /**
      * 95% confidence interval lower bound value
      */
-    @Schema(description = "95% confidence interval lower bound value", example = "0.01")
+    @Schema(description = "95% confidence interval lower bound value", example = "0.01",
+            minimum = MIN_INTEGER_VALUE_STRING, maximum = MAX_INTEGER_VALUE_STRING)
     private BigDecimal confidenceIntervalLowerBound;
 
     /**
      * 95% confidence interval upper bound value
      */
-    @Schema(description = "95% confidence interval upper bound value", example = "0.035")
+    @Schema(description = "95% confidence interval upper bound value", example = "0.035",
+            minimum = MIN_INTEGER_VALUE_STRING, maximum = MAX_INTEGER_VALUE_STRING)
     private BigDecimal confidenceIntervalUpperBound;
 }
