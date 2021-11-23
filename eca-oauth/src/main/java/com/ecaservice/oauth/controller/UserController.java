@@ -51,6 +51,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.security.Principal;
 import java.util.List;
 
@@ -69,6 +71,7 @@ import static com.ecaservice.oauth.controller.doc.ApiExamples.UPDATE_USER_INFO_R
 import static com.ecaservice.oauth.controller.doc.ApiExamples.USERS_PAGE_RESPONSE_JSON;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.USER_INFO_RESPONSE_JSON;
 import static com.ecaservice.oauth.util.Utils.buildAttachmentResponse;
+import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
 /**
  * Implements users REST API.
@@ -428,7 +431,8 @@ public class UserController {
     )
     @GetMapping(value = "/photo/{id}")
     public ResponseEntity<ByteArrayResource> downloadPhoto(
-            @Parameter(description = "Photo id", required = true, example = "1") @PathVariable Long id) {
+            @Parameter(description = "Photo id", required = true, example = "1")
+            @Min(VALUE_1) @Max(Long.MAX_VALUE) @PathVariable Long id) {
         UserPhoto userPhoto = userPhotoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(UserPhoto.class, id));
         return buildAttachmentResponse(userPhoto.getPhoto(), userPhoto.getFileName());
@@ -506,6 +510,7 @@ public class UserController {
     @PostMapping(value = "/lock")
     public void lock(@AuthenticationPrincipal UserDetailsImpl userDetails,
                      @Parameter(description = "User id", example = "1", required = true)
+                     @Min(VALUE_1) @Max(Long.MAX_VALUE)
                      @RequestParam Long userId) {
         log.info("Received request for user [{}] locking", userId);
         if (userDetails.getId().equals(userId)) {
@@ -546,7 +551,8 @@ public class UserController {
             }
     )
     @PostMapping(value = "/unlock")
-    public void unlock(@Parameter(description = "User id", example = "1", required = true) @RequestParam Long userId) {
+    public void unlock(@Parameter(description = "User id", example = "1", required = true)
+                       @Min(VALUE_1) @Max(Long.MAX_VALUE) @RequestParam Long userId) {
         log.info("Received request for user [{}] unlocking", userId);
         userService.unlock(userId);
     }

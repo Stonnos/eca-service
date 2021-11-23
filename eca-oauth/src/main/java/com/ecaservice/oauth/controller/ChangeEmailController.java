@@ -36,6 +36,7 @@ import static com.ecaservice.oauth.controller.doc.ApiExamples.UNAUTHORIZED_RESPO
 import static com.ecaservice.oauth.controller.doc.ApiExamples.UNIQUE_EMAIL_RESPONSE_JSON;
 import static com.ecaservice.oauth.util.FieldConstraints.EMAIL_MAX_SIZE;
 import static com.ecaservice.oauth.util.FieldConstraints.EMAIL_REGEX;
+import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
 
 /**
  * Implements change email REST API.
@@ -120,6 +121,7 @@ public class ChangeEmailController {
     )
     @PostMapping(value = "/confirm")
     public void confirmChangeEmailRequest(
+            @Size(max = MAX_LENGTH_255)
             @Parameter(description = "Token value", required = true) @RequestParam String token) {
         log.info("Received change email request confirmation");
         var changeEmailRequest = changeEmailService.changeEmail(token);
