@@ -28,7 +28,6 @@ public class SortField {
     /**
      * Sort direction
      */
-    @Size(max = MAX_LENGTH_255)
-    @Schema(description = "Sort direction")
+    @Schema(description = "Sort direction", maxLength = MAX_LENGTH_255)
     private SortDirection direction;
 }
