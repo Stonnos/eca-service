@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.constraints.Size;
 import java.io.File;
 
 import static com.ecaservice.common.web.util.MaskUtils.mask;
@@ -29,6 +30,8 @@ import static com.ecaservice.server.util.ExperimentUtils.getExperimentFile;
 import static com.ecaservice.server.util.Utils.buildAttachmentResponse;
 import static com.ecaservice.server.util.Utils.existsFile;
 import static com.ecaservice.web.dto.doc.CommonApiExamples.DATA_NOT_FOUND_RESPONSE_JSON;
+import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
+import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
 /**
  * Implements REST API for ECA application.
@@ -68,6 +71,7 @@ public class EcaController {
     @GetMapping(value = "/experiment/download/{token}")
     public ResponseEntity<FileSystemResource> downloadExperiment(
             @Parameter(description = "Experiment token", required = true)
+            @Size(min = VALUE_1, max = MAX_LENGTH_255)
             @PathVariable String token) {
         Experiment experiment = experimentRepository.findByToken(token)
                 .orElseThrow(() -> new EntityNotFoundException(Experiment.class, token));

@@ -38,6 +38,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.io.IOException;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
@@ -56,6 +58,7 @@ import static com.ecaservice.web.dto.doc.CommonApiExamples.DATA_NOT_FOUND_RESPON
 import static com.ecaservice.web.dto.doc.CommonApiExamples.INVALID_PAGE_REQUEST_RESPONSE_JSON;
 import static com.ecaservice.web.dto.doc.CommonApiExamples.SIMPLE_PAGE_REQUEST_JSON;
 import static com.ecaservice.web.dto.doc.CommonApiExamples.UNAUTHORIZED_RESPONSE_JSON;
+import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
 /**
  * Implements API to manage experiment classifiers configurations.
@@ -168,6 +171,7 @@ public class ClassifiersConfigurationController {
     @GetMapping(value = "/details/{id}")
     public ClassifiersConfigurationDto getClassifiersConfigurationDetails(
             @Parameter(description = "Configuration id", example = "1", required = true)
+            @Min(VALUE_1) @Max(Long.MAX_VALUE)
             @PathVariable Long id) {
         log.info("Gets classifier configuration details by id {}", id);
         return classifiersConfigurationService.getClassifiersConfigurationDetails(id);
@@ -300,6 +304,7 @@ public class ClassifiersConfigurationController {
     )
     @DeleteMapping(value = "/delete")
     public void delete(@Parameter(description = "Configuration id", example = "1", required = true)
+                       @Min(VALUE_1) @Max(Long.MAX_VALUE)
                        @RequestParam long id) {
         classifiersConfigurationService.delete(id);
     }
@@ -391,6 +396,7 @@ public class ClassifiersConfigurationController {
     )
     @PostMapping(value = "/set-active")
     public void setActive(@Parameter(description = "Configuration id", example = "1", required = true)
+                          @Min(VALUE_1) @Max(Long.MAX_VALUE)
                           @RequestParam long id) {
         classifiersConfigurationService.setActive(id);
     }
@@ -431,7 +437,8 @@ public class ClassifiersConfigurationController {
     )
     @GetMapping(value = "/report/{id}")
     public void downloadReport(
-            @Parameter(description = "Configuration id", example = "1", required = true) @PathVariable Long id,
+            @Parameter(description = "Configuration id", example = "1", required = true)
+            @Min(VALUE_1) @Max(Long.MAX_VALUE) @PathVariable Long id,
             HttpServletResponse httpServletResponse) throws IOException {
         log.info("Downloads classifier configuration report by id {}", id);
         ClassifiersConfigurationBean classifiersConfigurationBean =

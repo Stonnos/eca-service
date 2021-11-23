@@ -35,6 +35,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.io.InputStream;
 import java.util.List;
 
@@ -48,6 +50,7 @@ import static com.ecaservice.web.dto.doc.CommonApiExamples.DATA_NOT_FOUND_RESPON
 import static com.ecaservice.web.dto.doc.CommonApiExamples.INVALID_PAGE_REQUEST_RESPONSE_JSON;
 import static com.ecaservice.web.dto.doc.CommonApiExamples.SIMPLE_PAGE_REQUEST_JSON;
 import static com.ecaservice.web.dto.doc.CommonApiExamples.UNAUTHORIZED_RESPONSE_JSON;
+import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
 /**
  * Implements experiment classifiers configs API for web application.
@@ -149,6 +152,7 @@ public class ClassifierOptionsController {
     @PostMapping(value = "/page")
     public PageDto<ClassifierOptionsDto> getClassifiersOptionsPage(
             @Parameter(description = "Configuration id", example = "1", required = true)
+            @Min(VALUE_1) @Max(Long.MAX_VALUE)
             @RequestParam long configurationId,
             @Valid @RequestBody PageRequestDto pageRequestDto) {
         log.info("Received classifiers options page request: {}, configuration id [{}]", pageRequestDto,
@@ -195,6 +199,7 @@ public class ClassifierOptionsController {
     @PostMapping(value = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public CreateClassifierOptionsResultDto save(
             @Parameter(description = "Configuration id", example = "1", required = true)
+            @Min(VALUE_1) @Max(Long.MAX_VALUE)
             @RequestParam long configurationId,
             @Parameter(description = "Classifiers options file", required = true)
             @RequestParam MultipartFile classifiersOptionsFile) {
@@ -250,6 +255,7 @@ public class ClassifierOptionsController {
     )
     @DeleteMapping(value = "/delete")
     public void delete(@Parameter(description = "Classifier options id", example = "1", required = true)
+                       @Min(VALUE_1) @Max(Long.MAX_VALUE)
                        @RequestParam long id) {
         classifierOptionsService.deleteOptions(id);
     }
