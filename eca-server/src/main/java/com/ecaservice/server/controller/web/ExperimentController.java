@@ -89,6 +89,7 @@ import static com.ecaservice.server.util.Utils.toRequestStatusesStatistics;
 import static com.ecaservice.web.dto.doc.CommonApiExamples.DATA_NOT_FOUND_RESPONSE_JSON;
 import static com.ecaservice.web.dto.doc.CommonApiExamples.INVALID_PAGE_REQUEST_RESPONSE_JSON;
 import static com.ecaservice.web.dto.doc.CommonApiExamples.UNAUTHORIZED_RESPONSE_JSON;
+import static com.ecaservice.web.dto.util.FieldConstraints.LOCAL_DATE_MAX_LENGTH;
 import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
@@ -530,9 +531,11 @@ public class ExperimentController {
     public List<ChartDataDto> getExperimentTypesStatistics(
             @Parameter(description = "Experiment created date from", example = "2021-07-01")
             @RequestParam(required = false)
+            @Size(max = LOCAL_DATE_MAX_LENGTH)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate createdDateFrom,
             @Parameter(description = "Experiment created date to", example = "2021-07-10")
             @RequestParam(required = false)
+            @Size(max = LOCAL_DATE_MAX_LENGTH)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate createdDateTo) {
         log.info("Received request for experiment types statistics calculation with creation date from [{}] to [{}]",
                 createdDateFrom, createdDateTo);
