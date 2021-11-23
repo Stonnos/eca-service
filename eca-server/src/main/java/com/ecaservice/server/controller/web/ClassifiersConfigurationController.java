@@ -26,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -67,6 +68,7 @@ import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
  */
 @Slf4j
 @Tag(name = "API to manage experiment classifiers configurations")
+@Validated
 @RestController
 @RequestMapping("/experiment/classifiers-configurations")
 @RequiredArgsConstructor
