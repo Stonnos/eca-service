@@ -45,7 +45,7 @@ public class ClassificationCostsDto {
     /**
      * FN rate
      */
-    @Schema(description = "FN rate", example = "0.5", minimum = "0", maximum = "1")
+    @Schema(description = "FN rate", example = "0.5", minimum = ZERO_VALUE_STRING, maximum = VALUE_1_STRING)
     private BigDecimal falseNegativeRate;
 
     /**
