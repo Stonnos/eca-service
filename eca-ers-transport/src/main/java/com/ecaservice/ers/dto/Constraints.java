@@ -60,4 +60,9 @@ public class Constraints {
      * Optimal classifier options reports max items
      */
     public static final int OPTIMAL_CLASSIFIER_OPTIONS_REPORT_MAX_ITEMS = 5;
+
+    /**
+     * Sor fields max items
+     */
+    public static final int SORT_FIELDS_MAX_ITEMS = 10;
 }
