@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import static com.ecaservice.ers.dto.Constraints.UUID_MAX_SIZE;
+
 /**
  * Evaluation results response model.
  *
@@ -21,6 +23,6 @@ public class EvaluationResultsResponse {
     /**
      * Request id
      */
-    @Schema(description = "Request id")
+    @Schema(description = "Request id", maxLength = UUID_MAX_SIZE)
     private String requestId;
 }
