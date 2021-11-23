@@ -5,8 +5,10 @@ import lombok.Data;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.math.BigInteger;
 
+import static com.ecaservice.ers.dto.Constraints.MAX_LENGTH_255;
 import static com.ecaservice.ers.dto.Constraints.MIN_1;
 import static com.ecaservice.ers.dto.Constraints.MIN_2;
 
@@ -23,6 +25,7 @@ public class EvaluationMethodReport {
      * Evaluation method
      */
     @NotNull
+    @Size(max = MAX_LENGTH_255)
     @Schema(description = "Evaluation method", required = true)
     private EvaluationMethod evaluationMethod;
 
