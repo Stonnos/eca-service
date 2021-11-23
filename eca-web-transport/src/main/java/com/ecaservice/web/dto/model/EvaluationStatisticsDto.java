@@ -31,14 +31,14 @@ public class EvaluationStatisticsDto {
     /**
      * Correctly classified instances number
      */
-    @Schema(description = "Correctly classified instances number", example = "146", minimum = VALUE_2_STRING,
+    @Schema(description = "Correctly classified instances number", example = "146", minimum = ZERO_VALUE_STRING,
             maximum = MAX_INTEGER_VALUE_STRING)
     private BigInteger numCorrect;
 
     /**
      * Incorrectly classified instances number
      */
-    @Schema(description = "Incorrectly classified instances number", example = "4", minimum = VALUE_2_STRING,
+    @Schema(description = "Incorrectly classified instances number", example = "4", minimum = ZERO_VALUE_STRING,
             maximum = MAX_INTEGER_VALUE_STRING)
     private BigInteger numIncorrect;
 
