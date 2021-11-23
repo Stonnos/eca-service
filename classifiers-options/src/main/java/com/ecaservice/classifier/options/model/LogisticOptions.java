@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
  * @author Roman Batygin
  */
 @Data
+@Schema(description = "Logistic regression classifier options")
 @EqualsAndHashCode(callSuper = true)
 public class LogisticOptions extends ClassifierOptions {
 

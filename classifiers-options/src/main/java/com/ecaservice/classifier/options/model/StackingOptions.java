@@ -13,6 +13,7 @@ import java.util.List;
  * @author Roman Batygin
  */
 @Data
+@Schema(description = "Stacking classifier options")
 @EqualsAndHashCode(callSuper = true)
 public class StackingOptions extends ClassifierOptions {
 

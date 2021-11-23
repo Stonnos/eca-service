@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
  * @author Roman Batygin
  */
 @Data
+@Schema(description = "Neural network classifier options")
 @EqualsAndHashCode(callSuper = true)
 public class NeuralNetworkOptions extends ClassifierOptions {
 

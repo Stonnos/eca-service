@@ -5,12 +5,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import static com.ecaservice.classifier.options.model.Constraints.MAX_LENGTH_255;
+
 /**
  * K - nearest neighbours input options.
  *
  * @author Roman Batygin
  */
 @Data
+@Schema(description = "K - nearest neighbours classifier options")
 @EqualsAndHashCode(callSuper = true)
 public class KNearestNeighboursOptions extends ClassifierOptions {
 
@@ -29,7 +32,7 @@ public class KNearestNeighboursOptions extends ClassifierOptions {
     /**
      * Distance function type
      */
-    @Schema(description = "Distance function type")
+    @Schema(description = "Distance function type", maxLength = MAX_LENGTH_255)
     private DistanceType distanceType;
 
 }

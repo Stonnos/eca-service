@@ -5,12 +5,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import static com.ecaservice.classifier.options.model.Constraints.MAX_LENGTH_255;
+
 /**
  * Heterogeneous classifier options model.
  *
  * @author Roman Batygin
  */
 @Data
+@Schema(description = "Heterogeneous classifier options")
 @EqualsAndHashCode(callSuper = true)
 public class HeterogeneousClassifierOptions extends AbstractHeterogeneousClassifierOptions {
 
@@ -29,7 +32,7 @@ public class HeterogeneousClassifierOptions extends AbstractHeterogeneousClassif
     /**
      * Sampling method at each iteration
      */
-    @Schema(description = "Sampling method at each iteration")
+    @Schema(description = "Sampling method at each iteration", maxLength = MAX_LENGTH_255)
     private SamplingMethod samplingMethod;
 
     /**

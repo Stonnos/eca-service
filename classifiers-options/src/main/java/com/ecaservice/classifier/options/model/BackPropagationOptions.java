@@ -9,6 +9,7 @@ import lombok.Data;
  * @author Roman Batygin
  */
 @Data
+@Schema(description = "Back propagation learning algorithm options")
 public class BackPropagationOptions {
 
     /**

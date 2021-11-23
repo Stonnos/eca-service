@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
  * @author Roman Batygin
  */
 @Data
+@Schema(description = "J48 algorithm classifier options")
 @EqualsAndHashCode(callSuper = true)
 public class J48Options extends ClassifierOptions {
 

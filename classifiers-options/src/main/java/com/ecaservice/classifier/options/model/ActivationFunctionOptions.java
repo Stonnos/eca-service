@@ -6,18 +6,21 @@ import lombok.Data;
 
 import java.io.Serializable;
 
+import static com.ecaservice.classifier.options.model.Constraints.MAX_LENGTH_255;
+
 /**
  * Activation function options.
  *
  * @author Roman Batygin
  */
 @Data
+@Schema(description = "Activation function options")
 public class ActivationFunctionOptions implements Serializable {
 
     /**
      * Activation function type
      */
-    @Schema(description = "Activation function type")
+    @Schema(description = "Activation function type", maxLength = MAX_LENGTH_255)
     private ActivationFunctionType activationFunctionType;
 
     /**

@@ -7,19 +7,22 @@ import lombok.EqualsAndHashCode;
 
 import java.util.Map;
 
+import static com.ecaservice.classifier.options.model.Constraints.MAX_LENGTH_255;
+
 /**
  * Decision tree input options model.
  *
  * @author Roman Batygin
  */
 @Data
+@Schema(description = "Decision tree classifier options")
 @EqualsAndHashCode(callSuper = true)
 public class DecisionTreeOptions extends ClassifierOptions {
 
     /**
      * Decision tree algorithm
      */
-    @Schema(description = "Decision tree algorithm")
+    @Schema(description = "Decision tree algorithm", maxLength = MAX_LENGTH_255)
     private DecisionTreeType decisionTreeType;
 
     /**

@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
  * @author Roman Batygin
  */
 @Data
+@Schema(description = "Random networks classifier options")
 @EqualsAndHashCode(callSuper = true)
 public class RandomNetworkOptions extends IterativeEnsembleOptions {
 

@@ -5,12 +5,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import static com.ecaservice.classifier.options.model.Constraints.MAX_LENGTH_255;
+
 /**
  * Random forests options model.
  *
  * @author Roman Batygin
  */
 @Data
+@Schema(description = "Random forests classifier options")
 @EqualsAndHashCode(callSuper = true)
 public class RandomForestsOptions extends IterativeEnsembleOptions {
 
@@ -35,6 +38,6 @@ public class RandomForestsOptions extends IterativeEnsembleOptions {
     /**
      * Decision tree algorithm
      */
-    @Schema(description = "Decision tree algorithm")
+    @Schema(description = "Decision tree algorithm", maxLength = MAX_LENGTH_255)
     private DecisionTreeType decisionTreeType;
 }

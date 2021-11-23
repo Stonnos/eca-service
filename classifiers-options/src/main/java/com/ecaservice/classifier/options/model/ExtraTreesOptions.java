@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
  * @author Roman Batygin
  */
 @Data
+@Schema(description = "Extra trees classifier options")
 @EqualsAndHashCode(callSuper = true)
 public class ExtraTreesOptions extends RandomForestsOptions {
 
