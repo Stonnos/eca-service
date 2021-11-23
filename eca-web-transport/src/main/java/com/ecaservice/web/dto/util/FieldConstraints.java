@@ -124,4 +124,14 @@ public class FieldConstraints {
      * Value 0
      */
     public static final int VALUE_0 = 0;
+
+    /**
+     * Optimal classifier options reports max items
+     */
+    public static final int OPTIMAL_CLASSIFIER_OPTIONS_RESPONSES_MAX_ITEMS = 5;
+
+    /**
+     * Experiment results max items
+     */
+    public static final int EXPERIMENT_RESULTS_MAX_ITEMS = 5;
 }

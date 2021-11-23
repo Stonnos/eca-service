@@ -42,6 +42,6 @@ public class CreateClassifierOptionsResultDto {
     /**
      * Error message
      */
-    @Schema(description = "Error message")
+    @Schema(description = "Error message", maxLength = MAX_LENGTH_255)
     private String errorMessage;
 }

@@ -1,5 +1,6 @@
 package com.ecaservice.ers.dto;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+import static com.ecaservice.ers.dto.Constraints.OPTIMAL_CLASSIFIER_OPTIONS_REPORT_MAX_ITEMS;
 import static com.ecaservice.ers.dto.Constraints.UUID_MAX_SIZE;
 
 /**
@@ -31,6 +33,7 @@ public class ClassifierOptionsResponse {
     /**
      * Optimal classifiers reports list
      */
-    @Schema(description = "Optimal classifiers reports list")
+    @ArraySchema(schema = @Schema(description = "Optimal classifiers reports list"),
+            maxItems = OPTIMAL_CLASSIFIER_OPTIONS_REPORT_MAX_ITEMS)
     private List<ClassifierReport> classifierReports;
 }

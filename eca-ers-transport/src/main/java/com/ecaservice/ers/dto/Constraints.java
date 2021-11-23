@@ -55,4 +55,9 @@ public class Constraints {
      */
     public static final String UUID_PATTERN =
             "^[0-9a-f]{8}-[0-9a-f]{4}-[34][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$";
+
+    /**
+     * Optimal classifier options reports max items
+     */
+    public static final int OPTIMAL_CLASSIFIER_OPTIONS_REPORT_MAX_ITEMS = 5;
 }
