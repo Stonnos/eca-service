@@ -52,6 +52,7 @@ public class AuditEventRequest {
      * Event type
      */
     @NotNull
+    @Size(max = MAX_LENGTH_255)
     @Schema(description = "Event type")
     private EventType eventType;
 
