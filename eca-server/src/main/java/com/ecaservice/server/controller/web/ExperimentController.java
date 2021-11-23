@@ -63,7 +63,6 @@ import weka.core.Instances;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.Size;
 import java.io.File;
 import java.time.LocalDate;
 import java.util.List;
@@ -234,10 +233,12 @@ public class ExperimentController {
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public CreateExperimentResultDto createRequest(
             @Parameter(description = "Training data file", required = true) @RequestParam MultipartFile trainingData,
-            @Parameter(description = "Experiment type", required = true)
-            @Size(min = VALUE_1, max = MAX_LENGTH_255) @RequestParam ExperimentType experimentType,
-            @Parameter(description = "Evaluation method", required = true)
-            @Size(min = VALUE_1, max = MAX_LENGTH_255) @RequestParam EvaluationMethod evaluationMethod) {
+            @Parameter(description = "Experiment type", required = true,
+                    schema = @Schema(maxLength = MAX_LENGTH_255))
+            @RequestParam ExperimentType experimentType,
+            @Parameter(description = "Evaluation method", required = true,
+                    schema = @Schema(maxLength = MAX_LENGTH_255))
+            @RequestParam EvaluationMethod evaluationMethod) {
         log.info("Received experiment request for data '{}', experiment type {}, evaluation method {}",
                 trainingData.getOriginalFilename(), experimentType, evaluationMethod);
         UserDto userDto = usersClient.getUserInfo();

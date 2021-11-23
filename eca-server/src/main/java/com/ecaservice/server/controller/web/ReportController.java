@@ -29,7 +29,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import javax.validation.constraints.Size;
 import java.io.IOException;
 import java.util.List;
 
@@ -40,7 +39,6 @@ import static com.ecaservice.web.dto.doc.CommonApiExamples.INVALID_PAGE_REQUEST_
 import static com.ecaservice.web.dto.doc.CommonApiExamples.SIMPLE_PAGE_REQUEST_JSON;
 import static com.ecaservice.web.dto.doc.CommonApiExamples.UNAUTHORIZED_RESPONSE_JSON;
 import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
-import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
 /**
  * Controller for reports downloading.
@@ -98,8 +96,9 @@ public class ReportController {
     )
     @PostMapping(value = "/download")
     public void downloadReport(@Valid @RequestBody PageRequestDto pageRequestDto,
-                               @Parameter(description = "Report type", required = true)
-                               @Size(min = VALUE_1, max = MAX_LENGTH_255) @RequestParam BaseReportType reportType,
+                               @Parameter(description = "Report type", required = true,
+                                       schema = @Schema(maxLength = MAX_LENGTH_255))
+                               @RequestParam BaseReportType reportType,
                                HttpServletResponse httpServletResponse)
             throws IOException {
         log.info("Request to download base report [{}] with params: {}", reportType, pageRequestDto);

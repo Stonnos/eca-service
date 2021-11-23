@@ -508,8 +508,9 @@ public class DataStorageController {
     public void downloadInstancesReport(
             @Parameter(description = "Instances id", example = "1", required = true)
             @RequestParam @Min(VALUE_1) @Max(Long.MAX_VALUE) long id,
-            @Parameter(description = "Report type", required = true)
-            @RequestParam @Size(min = VALUE_1, max = MAX_LENGTH_255) ReportType reportType,
+            @Parameter(description = "Report type", required = true,
+                    schema = @Schema(maxLength = MAX_LENGTH_255))
+            @RequestParam ReportType reportType,
             HttpServletResponse httpServletResponse) throws Exception {
         log.info("Request to download instances [{}] report [{}]", id, reportType);
         instancesReportService.generateInstancesReport(id, reportType, httpServletResponse);
