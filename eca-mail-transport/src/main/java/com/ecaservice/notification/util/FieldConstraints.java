@@ -14,6 +14,11 @@ public class FieldConstraints {
     public static final int EMAIL_MAX_SIZE = 255;
 
     /**
+     * Max length 255
+     */
+    public static final int MAX_LENGTH_255 = 255;
+
+    /**
      * Email regex
      */
     public static final String EMAIL_REGEX =

@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import static com.ecaservice.notification.util.FieldConstraints.MAX_LENGTH_255;
+
 /**
  * Email response dto.
  */
@@ -17,6 +19,7 @@ public class EmailResponse {
     /**
      * Email request id
      */
-    @Schema(description = "Request id", example = "1d2de514-3a87-4620-9b97-c260e24340de")
+    @Schema(description = "Request id", example = "1d2de514-3a87-4620-9b97-c260e24340de",
+            maxLength = MAX_LENGTH_255)
     private String requestId;
 }
