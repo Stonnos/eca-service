@@ -44,7 +44,6 @@ public class FilterRequestDto {
      * Match mode type {@link MatchMode}
      */
     @NotNull
-    @Size(max = MAX_LENGTH_255)
-    @Schema(description = "Match mode type", example = "LIKE")
+    @Schema(description = "Match mode type", example = "LIKE", maxLength = MAX_LENGTH_255)
     private MatchMode matchMode;
 }
