@@ -24,7 +24,7 @@ import static com.ecaservice.audit.dto.FieldConstraints.VALUE_1;
  * @author Roman Batygin
  */
 @Data
-@Schema(description = "Audit event request mode")
+@Schema(description = "Audit event request model")
 public class AuditEventRequest {
 
     /**

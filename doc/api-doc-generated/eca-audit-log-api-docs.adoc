@@ -1093,7 +1093,7 @@ __(int64)__
 |===
 === AuditEventRequest
 :table-caption: Table
-.Audit event request mode
+.Audit event request model
 [width=100%]
 |===
 |*Name*|*Description*|*Schema*
