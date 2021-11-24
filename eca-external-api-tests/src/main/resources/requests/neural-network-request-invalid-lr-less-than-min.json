@@ -1,0 +1,20 @@
+{
+  "displayName": "Neural network request with invalid 'learningRate' less than minimum",
+  "testType": "USING_EXTERNAL_DATA_URL",
+  "request": {
+    "trainDataUrl": "http://kt.ijs.si/Branax/Repository/WEKA/Iris.xls",
+    "classifierOptions": {
+      "type": "neural_network",
+      "activationFunctionOptions": {
+        "activationFunctionType": "LOGISTIC"
+      },
+      "backPropagationOptions": {
+        "learningRate": 0.0
+      }
+    },
+    "evaluationMethod": "TRAINING_DATA"
+  },
+  "expectedResponse": {
+    "responseCode": "VALIDATION_ERROR"
+  }
+}

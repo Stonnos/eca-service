@@ -6,6 +6,8 @@ import lombok.Data;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 
+import java.io.Serializable;
+
 import static com.ecaservice.classifier.options.model.Constraints.DECIMAL_VALUE_0_STRING;
 import static com.ecaservice.classifier.options.model.Constraints.DECIMAL_VALUE_1_STRING;
 
@@ -16,7 +18,7 @@ import static com.ecaservice.classifier.options.model.Constraints.DECIMAL_VALUE_
  */
 @Data
 @Schema(description = "Back propagation learning algorithm options")
-public class BackPropagationOptions {
+public class BackPropagationOptions implements Serializable {
 
     /**
      * Learning rate value
