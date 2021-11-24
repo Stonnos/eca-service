@@ -39,6 +39,7 @@ public class AuditEventRequest {
      * Audit message
      */
     @NotEmpty
+    @Size(min = VALUE_1)
     @Schema(description = "Audit message")
     private String message;
 

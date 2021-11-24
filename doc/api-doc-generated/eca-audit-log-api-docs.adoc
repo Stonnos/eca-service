@@ -1122,9 +1122,9 @@ a|
 __string__
 
 
+*Min. length*: 1
 
-
-
+*Max. length*: 2,147,483,647
 
 
 
