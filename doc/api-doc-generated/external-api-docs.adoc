@@ -1534,7 +1534,7 @@ __(double)__
 
 
 
-|*classifierOptions*
+|*classifierOptions**
 |-
 a|
 __array__
@@ -1548,7 +1548,7 @@ __array__
 
 
 
-*Min. items*: 0
+*Min. items*: 1
 
 *Max. items*: 25
 
@@ -2393,7 +2393,7 @@ __(double)__
 
 
 
-|*classifierOptions*
+|*classifierOptions**
 |-
 a|
 __array__
@@ -2407,7 +2407,7 @@ __array__
 
 
 
-*Min. items*: 0
+*Min. items*: 1
 
 *Max. items*: 25
 
@@ -3395,7 +3395,7 @@ __(int32)__
 
 
 
-|*classifierOptions*
+|*classifierOptions**
 |-
 a|
 __array__
@@ -3409,14 +3409,14 @@ __array__
 
 
 
-*Min. items*: 0
+*Min. items*: 1
 
 *Max. items*: 25
 
 
 
 
-|*metaClassifierOptions*
+|*metaClassifierOptions**
 |-
 a|
 <<ClassifierOptions>>

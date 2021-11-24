@@ -1086,7 +1086,7 @@ a|
 __string__
 
 
-*Min. length*: 0
+*Min. length*: 1
 
 *Max. length*: 255
 
@@ -1215,7 +1215,7 @@ a|
 __string__
 
 
-*Min. length*: 0
+*Min. length*: 1
 
 *Max. length*: 255
 
@@ -1234,7 +1234,7 @@ a|
 __string__
 
 
-*Min. length*: 0
+*Min. length*: 1
 
 *Max. length*: 255
 
@@ -1260,7 +1260,7 @@ a|
 __string__
 
 
-*Min. length*: 0
+*Min. length*: 1
 
 *Max. length*: 255
 
@@ -1298,9 +1298,9 @@ a|
 __string__
 
 
+*Min. length*: 1
 
-
-
+*Max. length*: 2,147,483,647
 
 
 
@@ -1383,7 +1383,7 @@ a|
 __string__
 
 
-*Min. length*: 0
+*Min. length*: 1
 
 *Max. length*: 255
 
@@ -1402,7 +1402,7 @@ a|
 __string__
 
 
-*Min. length*: 0
+*Min. length*: 1
 
 *Max. length*: 255
 
@@ -1449,7 +1449,7 @@ a|
 __string__
 
 
-*Min. length*: 0
+*Min. length*: 1
 
 *Max. length*: 255
 
@@ -1487,9 +1487,9 @@ a|
 __string__
 
 
+*Min. length*: 1
 
-
-
+*Max. length*: 2,147,483,647
 
 
 
@@ -1687,7 +1687,7 @@ a|
 __string__
 
 
-*Min. length*: 0
+*Min. length*: 1
 
 *Max. length*: 36
 
@@ -1836,9 +1836,9 @@ a|
 __string__
 
 
+*Min. length*: 1
 
-
-
+*Max. length*: 2,147,483,647
 
 
 
@@ -1855,7 +1855,7 @@ a|
 __string__
 
 
-*Min. length*: 0
+*Min. length*: 1
 
 *Max. length*: 255
 
@@ -1937,7 +1937,7 @@ a|
 __string__
 
 
-*Min. length*: 0
+*Min. length*: 1
 
 *Max. length*: 255
 
@@ -2436,7 +2436,7 @@ a|
 __string__
 
 
-*Min. length*: 0
+*Min. length*: 1
 
 *Max. length*: 36
 
@@ -2509,7 +2509,7 @@ a|
 __string__
 
 
-*Min. length*: 0
+*Min. length*: 1
 
 *Max. length*: 255
 
@@ -2528,7 +2528,7 @@ a|
 __string__
 
 
-*Min. length*: 0
+*Min. length*: 1
 
 *Max. length*: 255
 
@@ -2594,7 +2594,7 @@ a|
 __string__
 
 
-*Min. length*: 0
+*Min. length*: 1
 
 *Max. length*: 255
 

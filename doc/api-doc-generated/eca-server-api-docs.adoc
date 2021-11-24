@@ -4425,7 +4425,7 @@ a|
 __string__
 
 
-*Min. length*: 0
+*Min. length*: 1
 
 *Max. length*: 64
 
@@ -4451,7 +4451,7 @@ a|
 __string__
 
 
-*Min. length*: 0
+*Min. length*: 1
 
 *Max. length*: 255
 
@@ -4491,7 +4491,7 @@ a|
 __string__
 
 
-
+*Min. length*: 1
 
 *Max. length*: 255
 
@@ -5588,7 +5588,7 @@ a|
 __string__
 
 
-*Min. length*: 0
+*Min. length*: 1
 
 *Max. length*: 64
 
