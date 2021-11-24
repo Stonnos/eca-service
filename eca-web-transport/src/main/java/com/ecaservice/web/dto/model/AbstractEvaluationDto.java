@@ -105,7 +105,7 @@ public abstract class AbstractEvaluationDto {
     /**
      * Model evaluation total time in format HH:mm:ss:SS
      */
-    @Schema(description = "Model evaluation total time in format HH:mm:ss:SS", example = "00:00:1:43",
+    @Schema(description = "Model evaluation total time in format HH:mm:ss:SS", example = "00:00:01:43",
             maxLength = EVALUATION_TOTAL_TIME_MAX_LENGTH)
     private String evaluationTotalTime;
 }
