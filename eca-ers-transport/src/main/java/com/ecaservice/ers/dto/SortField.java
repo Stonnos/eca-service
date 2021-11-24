@@ -7,6 +7,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import static com.ecaservice.ers.dto.Constraints.MAX_LENGTH_255;
+import static com.ecaservice.ers.dto.Constraints.MIN_1;
 
 /**
  * Sort field model.
@@ -21,7 +22,7 @@ public class SortField {
      * Sort field name
      */
     @NotBlank
-    @Size(max = MAX_LENGTH_255)
+    @Size(min = MIN_1, max = MAX_LENGTH_255)
     @Schema(description = "Sort field name", example = "statistics.pctCorrect", required = true)
     private String fieldName;
 

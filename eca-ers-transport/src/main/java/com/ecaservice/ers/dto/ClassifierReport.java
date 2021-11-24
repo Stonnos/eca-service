@@ -11,6 +11,7 @@ import javax.validation.constraints.Size;
 import java.util.List;
 
 import static com.ecaservice.ers.dto.Constraints.MAX_LENGTH_255;
+import static com.ecaservice.ers.dto.Constraints.MIN_1;
 
 /**
  * Classifier report model.
@@ -31,7 +32,7 @@ public class ClassifierReport {
      * Classifier name
      */
     @NotBlank
-    @Size(max = MAX_LENGTH_255)
+    @Size(min = MIN_1, max = MAX_LENGTH_255)
     @Schema(description = "Classifier name", example = "CART", required = true)
     private String classifierName;
 
@@ -46,6 +47,7 @@ public class ClassifierReport {
      * Classifier options string
      */
     @NotBlank
+    @Size(min = MIN_1)
     @Schema(description = "Classifier options string", example = "classifier options string", required = true)
     private String options;
 

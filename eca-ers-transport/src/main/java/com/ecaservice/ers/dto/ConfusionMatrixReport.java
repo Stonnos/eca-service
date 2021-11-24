@@ -11,6 +11,7 @@ import javax.validation.constraints.Size;
 import java.math.BigInteger;
 
 import static com.ecaservice.ers.dto.Constraints.MAX_LENGTH_255;
+import static com.ecaservice.ers.dto.Constraints.MIN_1;
 import static com.ecaservice.ers.dto.Constraints.MIN_ZERO;
 
 /**
@@ -26,7 +27,7 @@ public class ConfusionMatrixReport {
      * Actual class.
      */
     @NotBlank
-    @Size(max = MAX_LENGTH_255)
+    @Size(min = MIN_1, max = MAX_LENGTH_255)
     @Schema(description = "Actual class", example = "Iris-setosa", required = true)
     private String actualClass;
 
@@ -34,7 +35,7 @@ public class ConfusionMatrixReport {
      * Predicted class
      */
     @NotBlank
-    @Size(max = MAX_LENGTH_255)
+    @Size(min = MIN_1, max = MAX_LENGTH_255)
     @Schema(description = "Predicted class", example = "Iris-versicolor", required = true)
     private String predictedClass;
 

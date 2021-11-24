@@ -9,6 +9,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import static com.ecaservice.ers.dto.Constraints.MAX_LENGTH_255;
+import static com.ecaservice.ers.dto.Constraints.MIN_1;
 
 /**
  * Classifier input option model.
@@ -25,7 +26,7 @@ public class ClassifierInputOption {
      * Option key
      */
     @NotBlank
-    @Size(max = MAX_LENGTH_255)
+    @Size(min = MIN_1, max = MAX_LENGTH_255)
     @Schema(description = "Option key", required = true)
     private String key;
 
@@ -33,7 +34,7 @@ public class ClassifierInputOption {
      * Option value
      */
     @NotBlank
-    @Size(max = MAX_LENGTH_255)
+    @Size(min = MIN_1, max = MAX_LENGTH_255)
     @Schema(description = "Option value", required = true)
     private String value;
 }

@@ -38,7 +38,7 @@ public class UpdateClassifiersConfigurationDto {
      * Configuration name
      */
     @NotBlank
-    @Size(max = FieldConstraints.CONFIGURATION_NAME_MAX_LENGTH)
+    @Size(min = VALUE_1, max = FieldConstraints.CONFIGURATION_NAME_MAX_LENGTH)
     @Schema(description = "Configuration name", example = "Classifiers configuration", required = true)
     private String configurationName;
 }

@@ -9,6 +9,11 @@ import lombok.experimental.UtilityClass;
 public class FieldConstraints {
 
     /**
+     * Value 1
+     */
+    public static final int VALUE_1 = 1;
+
+    /**
      * Email max size
      */
     public static final int EMAIL_MAX_SIZE = 255;

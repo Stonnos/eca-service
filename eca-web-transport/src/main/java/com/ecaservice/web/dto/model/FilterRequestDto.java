@@ -13,6 +13,7 @@ import java.util.List;
 
 import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUES_LIST_MAX_LENGTH;
+import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
 /**
  * Filter request model.
@@ -29,7 +30,7 @@ public class FilterRequestDto {
      * Column name
      */
     @NotBlank
-    @Size(max = MAX_LENGTH_255)
+    @Size(min = VALUE_1, max = MAX_LENGTH_255)
     @Schema(description = "Filter column name", example = "field")
     private String name;
 
@@ -44,6 +45,6 @@ public class FilterRequestDto {
      * Match mode type {@link MatchMode}
      */
     @NotNull
-    @Schema(description = "Match mode type", example = "LIKE", maxLength = MAX_LENGTH_255)
+    @Schema(description = "Match mode type", example = "LIKE", minLength = VALUE_1, maxLength = MAX_LENGTH_255)
     private MatchMode matchMode;
 }

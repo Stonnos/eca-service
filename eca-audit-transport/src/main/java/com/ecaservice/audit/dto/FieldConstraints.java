@@ -11,6 +11,11 @@ import lombok.experimental.UtilityClass;
 public class FieldConstraints {
 
     /**
+     * Value 1
+     */
+    public static final int VALUE_1 = 1;
+
+    /**
      * Max length 255
      */
     public static final int MAX_LENGTH_255 = 255;

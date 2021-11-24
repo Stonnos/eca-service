@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
+
 /**
  * Create classifiers configuration dto.
  *
@@ -24,7 +26,7 @@ public class CreateClassifiersConfigurationDto {
      * Configuration name
      */
     @NotBlank
-    @Size(max = FieldConstraints.CONFIGURATION_NAME_MAX_LENGTH)
+    @Size(min = VALUE_1, max = FieldConstraints.CONFIGURATION_NAME_MAX_LENGTH)
     @Schema(description = "Configuration name", example = "Classifiers configuration", required = true)
     private String configurationName;
 }
