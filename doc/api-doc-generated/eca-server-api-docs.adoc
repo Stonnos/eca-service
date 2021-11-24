@@ -213,6 +213,7 @@ __string__
 
 
 
+*Max. length*: 255
 
 
 
@@ -223,16 +224,6 @@ __string__
 
 
 
-
-*Values*:
-
-* EXPERIMENTS
-
-* EVALUATION_LOGS
-
-* CLASSIFIERS_OPTIONS_REQUESTS
-
-* CLASSIFIERS_CONFIGURATION
 |===
 
 *Api responses*
@@ -561,6 +552,7 @@ __string__
 
 
 
+*Max. length*: 255
 
 
 
@@ -571,26 +563,6 @@ __string__
 
 
 
-
-*Values*:
-
-* NEURAL_NETWORKS
-
-* HETEROGENEOUS_ENSEMBLE
-
-* MODIFIED_HETEROGENEOUS_ENSEMBLE
-
-* ADA_BOOST
-
-* STACKING
-
-* KNN
-
-* RANDOM_FORESTS
-
-* STACKING_CV
-
-* DECISION_TREE
 |*evaluationMethod**
 |Evaluation method
 |query
@@ -600,6 +572,7 @@ __string__
 
 
 
+*Max. length*: 255
 
 
 
@@ -610,12 +583,6 @@ __string__
 
 
 
-
-*Values*:
-
-* TRAINING_DATA
-
-* CROSS_VALIDATION
 |===
 
 *Api responses*
@@ -752,7 +719,9 @@ __(int64)__
 
 
 
+*Minimum*: 1*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -879,7 +848,9 @@ __(int64)__
 
 
 
+*Minimum*: 1*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -1012,7 +983,9 @@ __(int64)__
 
 
 
+*Minimum*: 1*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -2482,7 +2455,9 @@ __(int64)__
 
 
 
+*Minimum*: 1*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -2746,7 +2721,9 @@ __(int64)__
 
 
 
+*Minimum*: 1*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -2863,7 +2840,9 @@ __(int64)__
 
 
 
+*Minimum*: 1*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -3118,7 +3097,9 @@ __(int64)__
 
 
 
+*Minimum*: 1*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -3241,7 +3222,9 @@ __(int64)__
 
 
 
+*Minimum*: 1*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -3381,7 +3364,9 @@ __(int64)__
 
 
 
+*Minimum*: 1*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -3597,7 +3582,9 @@ __(int64)__
 
 
 
+*Minimum*: 1*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -3697,7 +3684,9 @@ __(int64)__
 
 
 
+*Minimum*: 1*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -3894,7 +3883,9 @@ __(int64)__
 
 
 
+*Minimum*: 1*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -4055,9 +4046,9 @@ a|
 __string__
 
 
+*Min. length*: 1
 
-
-
+*Max. length*: 255
 
 
 
@@ -4164,7 +4155,9 @@ __(int64)__
 
 
 
+*Minimum*: 1*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -4264,7 +4257,9 @@ __(int64)__
 
 
 
+*Minimum*: 1*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -4346,7 +4341,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -4365,7 +4360,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -4384,7 +4379,7 @@ __string__
 
 
 
-
+*Max. length*: 1,000
 
 
 
@@ -4413,7 +4408,9 @@ __(int64)__
 
 
 
+*Minimum*: 1*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -4496,7 +4493,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -4534,6 +4531,7 @@ __(int32)__
 
 *Minimum*: 0*
 
+*Maximum*: 2,147,483,647*
 
 
 
@@ -4555,6 +4553,7 @@ __(int32)__
 
 *Minimum*: 1*
 
+*Maximum*: 100*
 
 
 
@@ -4656,7 +4655,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -4675,7 +4674,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -4704,7 +4703,9 @@ __(int64)__
 
 
 
+*Minimum*: 1*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -4721,7 +4722,7 @@ __string__
 
 
 
-
+*Max. length*: 36
 
 
 
@@ -4740,7 +4741,7 @@ __string__
 
 
 
-
+*Max. length*: 19
 
 
 
@@ -4759,7 +4760,7 @@ __string__
 
 
 
-
+*Max. length*: 19
 
 
 
@@ -4778,7 +4779,7 @@ __string__
 
 
 
-
+*Max. length*: 19
 
 
 
@@ -4838,7 +4839,9 @@ __(int32)__
 
 
 
+*Minimum*: 2*
 
+*Maximum*: 10*
 
 
 
@@ -4858,7 +4861,9 @@ __(int32)__
 
 
 
+*Minimum*: 1*
 
+*Maximum*: 10*
 
 
 
@@ -4878,7 +4883,9 @@ __(int32)__
 
 
 
+*Minimum*: -2,147,483,648*
 
+*Maximum*: 2,147,483,647*
 
 
 
@@ -4895,7 +4902,7 @@ __string__
 
 
 
-
+*Max. length*: 11
 
 
 
@@ -4914,7 +4921,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -4933,7 +4940,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -4952,7 +4959,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -4971,7 +4978,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -4990,7 +4997,7 @@ __string__
 
 
 
-
+*Max. length*: 19
 
 
 
@@ -5028,7 +5035,7 @@ a|
 |===
 |*Name*|*Description*|*Schema*
 |*content*
-|Page content
+|-
 a|
 __array__
 <<<ExperimentDto>>
@@ -5043,7 +5050,7 @@ __array__
 
 
 
-
+*Max. items*: 100
 
 
 
@@ -5059,7 +5066,9 @@ __(int32)__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 2,147,483,647*
 
 
 
@@ -5079,7 +5088,9 @@ __(int64)__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -5106,7 +5117,9 @@ __(int64)__
 
 
 
+*Minimum*: 1*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -5123,7 +5136,7 @@ __string__
 
 
 
-
+*Max. length*: 36
 
 
 
@@ -5152,7 +5165,9 @@ __(int64)__
 
 
 
+*Minimum*: 1*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -5169,7 +5184,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -5207,7 +5222,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -5236,7 +5251,9 @@ __(int64)__
 
 
 
+*Minimum*: 1*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -5253,7 +5270,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -5272,7 +5289,7 @@ __string__
 
 
 
-
+*Max. length*: 19
 
 
 
@@ -5291,7 +5308,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -5329,7 +5346,7 @@ __string__
 |===
 |*Name*|*Description*|*Schema*
 |*content*
-|Page content
+|-
 a|
 __array__
 <<<ClassifierOptionsDto>>
@@ -5344,7 +5361,7 @@ __array__
 
 
 
-
+*Max. items*: 100
 
 
 
@@ -5360,7 +5377,9 @@ __(int32)__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 2,147,483,647*
 
 
 
@@ -5380,7 +5399,9 @@ __(int64)__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -5407,7 +5428,9 @@ __(int64)__
 
 
 
+*Minimum*: 1*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -5424,7 +5447,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -5443,7 +5466,7 @@ __string__
 
 
 
-
+*Max. length*: 19
 
 
 
@@ -5462,7 +5485,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -5481,7 +5504,7 @@ __string__
 
 
 
-
+*Max. length*: 19
 
 
 
@@ -5541,7 +5564,9 @@ __(int64)__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -5584,7 +5609,7 @@ __string__
 |===
 |*Name*|*Description*|*Schema*
 |*content*
-|Page content
+|-
 a|
 __array__
 <<<ClassifiersConfigurationDto>>
@@ -5599,7 +5624,7 @@ __array__
 
 
 
-
+*Max. items*: 100
 
 
 
@@ -5615,7 +5640,9 @@ __(int32)__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 2,147,483,647*
 
 
 
@@ -5635,7 +5662,9 @@ __(int64)__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -5659,7 +5688,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -5709,7 +5738,9 @@ __(int64)__
 
 
 
+*Minimum*: 1*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -5726,7 +5757,7 @@ __string__
 
 
 
-
+*Max. length*: 36
 
 
 
@@ -5745,7 +5776,7 @@ __string__
 
 
 
-
+*Max. length*: 19
 
 
 
@@ -5764,7 +5795,7 @@ __string__
 
 
 
-
+*Max. length*: 19
 
 
 
@@ -5783,7 +5814,7 @@ __string__
 
 
 
-
+*Max. length*: 19
 
 
 
@@ -5843,7 +5874,9 @@ __(int32)__
 
 
 
+*Minimum*: 2*
 
+*Maximum*: 10*
 
 
 
@@ -5863,7 +5896,9 @@ __(int32)__
 
 
 
+*Minimum*: 1*
 
+*Maximum*: 10*
 
 
 
@@ -5883,7 +5918,9 @@ __(int32)__
 
 
 
+*Minimum*: -2,147,483,648*
 
+*Maximum*: 2,147,483,647*
 
 
 
@@ -5900,7 +5937,7 @@ __string__
 
 
 
-
+*Max. length*: 11
 
 
 
@@ -5957,7 +5994,7 @@ a|
 |===
 |*Name*|*Description*|*Schema*
 |*content*
-|Page content
+|-
 a|
 __array__
 <<<EvaluationLogDto>>
@@ -5972,7 +6009,7 @@ __array__
 
 
 
-
+*Max. items*: 100
 
 
 
@@ -5988,7 +6025,9 @@ __(int32)__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 2,147,483,647*
 
 
 
@@ -6008,7 +6047,9 @@ __(int64)__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -6032,7 +6073,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -6051,7 +6092,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -6077,7 +6118,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -6099,7 +6140,9 @@ __(int32)__
 
 
 
+*Minimum*: 2*
 
+*Maximum*: 2,147,483,647*
 
 
 
@@ -6119,7 +6162,9 @@ __(int32)__
 
 
 
+*Minimum*: 2*
 
+*Maximum*: 2,147,483,647*
 
 
 
@@ -6139,7 +6184,9 @@ __(int32)__
 
 
 
+*Minimum*: 2*
 
+*Maximum*: 2,147,483,647*
 
 
 
@@ -6156,7 +6203,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -6182,7 +6229,7 @@ __string__
 
 
 
-
+*Max. length*: 19
 
 
 
@@ -6201,7 +6248,7 @@ __string__
 
 
 
-
+*Max. length*: 36
 
 
 
@@ -6220,7 +6267,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -6261,7 +6308,9 @@ __(int32)__
 
 
 
+*Minimum*: 2*
 
+*Maximum*: 10*
 
 
 
@@ -6281,7 +6330,9 @@ __(int32)__
 
 
 
+*Minimum*: 1*
 
+*Maximum*: 10*
 
 
 
@@ -6301,7 +6352,9 @@ __(int32)__
 
 
 
+*Minimum*: -2,147,483,648*
 
+*Maximum*: 2,147,483,647*
 
 
 
@@ -6330,7 +6383,7 @@ a|
 
 
 |*classifierOptionsResponseModels*
-|Classifiers options response models
+|-
 a|
 __array__
 <<<ClassifierOptionsResponseDto>>
@@ -6345,7 +6398,7 @@ __array__
 
 
 
-
+*Max. items*: 5
 
 
 
@@ -6358,7 +6411,7 @@ __array__
 |===
 |*Name*|*Description*|*Schema*
 |*content*
-|Page content
+|-
 a|
 __array__
 <<<ClassifierOptionsRequestDto>>
@@ -6373,7 +6426,7 @@ __array__
 
 
 
-
+*Max. items*: 100
 
 
 
@@ -6389,7 +6442,9 @@ __(int32)__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 2,147,483,647*
 
 
 
@@ -6409,7 +6464,9 @@ __(int64)__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -6433,7 +6490,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -6478,7 +6535,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -6525,7 +6582,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -6544,7 +6601,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -6570,7 +6627,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -6589,7 +6646,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -6611,7 +6668,9 @@ __(int32)__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 2,147,483,647*
 
 
 
@@ -6628,7 +6687,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -6654,7 +6713,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -6725,7 +6784,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -6744,7 +6803,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -6766,7 +6825,9 @@ __(int64)__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -6790,7 +6851,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -6811,7 +6872,9 @@ __number__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 1*
 
 
 
@@ -6830,7 +6893,9 @@ __number__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 1*
 
 
 
@@ -6849,7 +6914,9 @@ __number__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 1*
 
 
 
@@ -6868,7 +6935,9 @@ __number__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 1*
 
 
 
@@ -6887,7 +6956,9 @@ __number__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 1*
 
 
 
@@ -6979,7 +7050,9 @@ __integer__
 
 
 
+*Minimum*: 2*
 
+*Maximum*: 2,147,483,647*
 
 
 
@@ -6998,7 +7071,9 @@ __integer__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 2,147,483,647*
 
 
 
@@ -7017,7 +7092,9 @@ __integer__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 2,147,483,647*
 
 
 
@@ -7036,7 +7113,9 @@ __number__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 100*
 
 
 
@@ -7055,7 +7134,9 @@ __number__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 100*
 
 
 
@@ -7074,7 +7155,9 @@ __number__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 1*
 
 
 
@@ -7093,7 +7176,9 @@ __number__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 1*
 
 
 
@@ -7112,7 +7197,9 @@ __number__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 1*
 
 
 
@@ -7131,7 +7218,9 @@ __number__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 1*
 
 
 
@@ -7150,7 +7239,9 @@ __number__
 
 
 
+*Minimum*: -2,147,483,648*
 
+*Maximum*: 2,147,483,647*
 
 
 
@@ -7169,7 +7260,9 @@ __number__
 
 
 
+*Minimum*: -2,147,483,648*
 
+*Maximum*: 2,147,483,647*
 
 
 
@@ -7196,7 +7289,9 @@ __(int64)__
 
 
 
+*Minimum*: 1*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -7235,7 +7330,9 @@ __(int32)__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 2,147,483,647*
 
 
 
@@ -7254,7 +7351,9 @@ __number__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 100*
 
 
 
@@ -7338,7 +7437,9 @@ __(int64)__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -7358,7 +7459,9 @@ __(int64)__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -7378,7 +7481,9 @@ __(int64)__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -7398,7 +7503,9 @@ __(int64)__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -7418,7 +7525,9 @@ __(int64)__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -7438,7 +7547,9 @@ __(int64)__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -7484,7 +7595,9 @@ __(int32)__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 100*
 
 
 
@@ -7501,7 +7614,7 @@ __string__
 
 
 
-
+*Max. length*: 8
 
 
 
@@ -7527,7 +7640,7 @@ __string__
 
 
 
-
+*Max. length*: 36
 
 
 
@@ -7549,7 +7662,9 @@ __(int64)__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -7569,7 +7684,9 @@ __(int64)__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -7579,7 +7696,7 @@ __(int64)__
 
 
 |*experimentResults*
-|Experiment results list
+|-
 a|
 __array__
 <<<ExperimentResultsDto>>
@@ -7594,7 +7711,7 @@ __array__
 
 
 
-
+*Max. items*: 5
 
 
 
@@ -7636,7 +7753,9 @@ __(int64)__
 
 
 
+*Minimum*: 1*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -7675,7 +7794,9 @@ __(int32)__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 2,147,483,647*
 
 
 
@@ -7694,7 +7815,9 @@ __number__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 100*
 
 
 
@@ -7740,7 +7863,9 @@ __(int64)__
 
 
 
+*Minimum*: 1*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -7757,7 +7882,7 @@ __string__
 
 
 
-
+*Max. length*: 36
 
 
 
@@ -7776,7 +7901,7 @@ __string__
 
 
 
-
+*Max. length*: 19
 
 
 
@@ -7795,7 +7920,7 @@ __string__
 
 
 
-
+*Max. length*: 19
 
 
 
@@ -7814,7 +7939,7 @@ __string__
 
 
 
-
+*Max. length*: 19
 
 
 
@@ -7874,7 +7999,9 @@ __(int32)__
 
 
 
+*Minimum*: 2*
 
+*Maximum*: 10*
 
 
 
@@ -7894,7 +8021,9 @@ __(int32)__
 
 
 
+*Minimum*: 1*
 
+*Maximum*: 10*
 
 
 
@@ -7914,7 +8043,9 @@ __(int32)__
 
 
 
+*Minimum*: -2,147,483,648*
 
+*Maximum*: 2,147,483,647*
 
 
 
@@ -7931,7 +8062,7 @@ __string__
 
 
 
-
+*Max. length*: 11
 
 
 
