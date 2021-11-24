@@ -16,6 +16,7 @@ import java.util.List;
 import static com.ecaservice.classifier.options.model.Constraints.DECIMAL_VALUE_0_5_STRING;
 import static com.ecaservice.classifier.options.model.Constraints.DECIMAL_VALUE_0_STRING;
 import static com.ecaservice.classifier.options.model.Constraints.MAX_INDIVIDUAL_CLASSIFIERS;
+import static com.ecaservice.classifier.options.model.Constraints.VALUE_1;
 
 /**
  * Base options model for heterogeneous ensemble.
@@ -47,7 +48,7 @@ public abstract class AbstractHeterogeneousClassifierOptions extends IterativeEn
      */
     @Valid
     @NotEmpty
-    @Size(max = MAX_INDIVIDUAL_CLASSIFIERS)
+    @Size(min = VALUE_1, max = MAX_INDIVIDUAL_CLASSIFIERS)
     @ArraySchema(schema = @Schema(description = "Individual classifiers options",
             ref = "#/components/schemas/ClassifierOptions"))
     private List<@NotNull ClassifierOptions> classifierOptions;

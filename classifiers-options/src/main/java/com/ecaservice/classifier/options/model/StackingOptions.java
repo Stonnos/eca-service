@@ -14,6 +14,7 @@ import javax.validation.constraints.Size;
 import java.util.List;
 
 import static com.ecaservice.classifier.options.model.Constraints.MAX_INDIVIDUAL_CLASSIFIERS;
+import static com.ecaservice.classifier.options.model.Constraints.VALUE_1;
 import static com.ecaservice.classifier.options.model.Constraints.VALUE_100;
 import static com.ecaservice.classifier.options.model.Constraints.VALUE_2;
 
@@ -54,7 +55,7 @@ public class StackingOptions extends ClassifierOptions {
      */
     @Valid
     @NotEmpty
-    @Size(max = MAX_INDIVIDUAL_CLASSIFIERS)
+    @Size(min = VALUE_1, max = MAX_INDIVIDUAL_CLASSIFIERS)
     @ArraySchema(schema = @Schema(description = "Individual classifiers options"))
     private List<@NotNull ClassifierOptions> classifierOptions;
 
