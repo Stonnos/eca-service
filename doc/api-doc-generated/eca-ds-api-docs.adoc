@@ -28,9 +28,9 @@ a|
 
 __Grant type:__ password
 
-__Token url:__ http://localhost:8080/eca-oauth/oauth/token
+__Token url:__ http://localhost:8080/oauth/token
 
-__Refresh token url:__ http://localhost:8080/eca-oauth/oauth/token
+__Refresh token url:__ http://localhost:8080/oauth/token
 
 
 __Scopes__:
@@ -793,7 +793,6 @@ __string__
 
 
 
-*Max. length*: 255
 
 
 
@@ -804,6 +803,24 @@ __string__
 
 
 
+
+*Values*:
+
+* XLS
+
+* CSV
+
+* ARFF
+
+* JSON
+
+* XML
+
+* TXT
+
+* DATA
+
+* DOCX
 |===
 
 *Api responses*
