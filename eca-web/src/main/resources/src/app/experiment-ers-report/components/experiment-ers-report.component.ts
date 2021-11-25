@@ -11,6 +11,7 @@ import { FieldLink } from "../../common/model/field-link";
 import { FieldService } from "../../common/services/field.service";
 import { ExperimentResultsFields } from "../../common/util/field-names";
 import { ErsSentStatusEnum } from "../../common/model/ers-sent-status.enum";
+import { OverlayPanel } from "primeng/overlaypanel";
 
 @Component({
   selector: 'app-experiment-ers-report',
@@ -29,8 +30,6 @@ export class ExperimentErsReportComponent implements OnInit, FieldLink {
 
   public selectedExperimentResults: ExperimentResultsDto;
 
-  public classifierOptionsDialogVisibility: boolean = false;
-
   public loading: boolean = false;
 
   public constructor(private experimentsService: ExperimentsService,
@@ -47,22 +46,18 @@ export class ExperimentErsReportComponent implements OnInit, FieldLink {
     return this.linkColumns.includes(column);
   }
 
-  public onLink(experimentResults: ExperimentResultsDto, column: string): void {
+  public onLink(event: any, experimentResults: ExperimentResultsDto, column: string, overlayPanel: OverlayPanel): void {
     switch (column) {
       case ExperimentResultsFields.RESULTS_INDEX:
         this.router.navigate([RouterPaths.EXPERIMENT_RESULTS_DETAILS_URL, experimentResults.id]);
         break;
       case ExperimentResultsFields.CLASSIFIER_NAME:
         this.selectedExperimentResults = experimentResults;
-        this.classifierOptionsDialogVisibility = true;
+        overlayPanel.toggle(event);
         break;
       default:
         this.messageService.add({severity: 'error', summary: 'Ошибка', detail: `Can't handle ${column} as link`});
     }
-  }
-
-  public hideClassifierOptionsDialog(): void {
-    this.classifierOptionsDialogVisibility = false;
   }
 
   public getColumnValue(column: string, item: ExperimentResultsDto) {
