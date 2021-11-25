@@ -11,6 +11,7 @@ import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.evaluation.ClassificationResult;
 import com.ecaservice.server.repository.EvaluationLogRepository;
+import com.ecaservice.server.service.evaluation.initializers.ClassifierInitializerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -43,6 +44,7 @@ public class EvaluationRequestService {
     private final EvaluationService evaluationService;
     private final EvaluationLogRepository evaluationLogRepository;
     private final EvaluationLogMapper evaluationLogMapper;
+    private final ClassifierInitializerService classifierInitializerService;
 
     /**
      * Processes input request and returns classification results.
@@ -57,6 +59,7 @@ public class EvaluationRequestService {
         log.info("Received request for classifier [{}] evaluation with data [{}]",
                 evaluationRequest.getClassifier().getClass().getSimpleName(),
                 evaluationRequest.getData().relationName());
+        classifierInitializerService.initialize(evaluationRequest.getClassifier(), evaluationRequest.getData());
         EvaluationLog evaluationLog = evaluationLogMapper.map(evaluationRequest, crossValidationConfig);
         evaluationLog.setRequestStatus(RequestStatus.IN_PROGRESS);
         evaluationLog.setRequestId(requestId);

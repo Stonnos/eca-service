@@ -16,8 +16,10 @@ import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
+import com.ecaservice.server.service.evaluation.initializers.ClassifierInitializerService;
 import eca.core.evaluation.EvaluationMethod;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.context.annotation.Import;
 
 import javax.inject.Inject;
@@ -52,13 +54,16 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
     @Inject
     private CalculationExecutorService calculationExecutorService;
 
+    @Mock
+    private ClassifierInitializerService classifierInitializerService;
+
     private EvaluationRequestService evaluationRequestService;
 
     @Override
     public void init() {
         evaluationRequestService =
                 new EvaluationRequestService(crossValidationConfig, calculationExecutorService, evaluationService,
-                        evaluationLogRepository, evaluationLogMapper);
+                        evaluationLogRepository, evaluationLogMapper, classifierInitializerService);
     }
 
     @Override
@@ -86,7 +91,7 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
         CalculationExecutorServiceImpl executorService = mock(CalculationExecutorServiceImpl.class);
         EvaluationRequestService service =
                 new EvaluationRequestService(crossValidationConfig, executorService, evaluationService,
-                        evaluationLogRepository, evaluationLogMapper);
+                        evaluationLogRepository, evaluationLogMapper, classifierInitializerService);
         doThrow(new RuntimeException("Error")).when(executorService)
                 .execute(any(), anyLong(), any(TimeUnit.class));
         EvaluationResponse evaluationResponse = service.processRequest(request);
@@ -118,7 +123,7 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
         CalculationExecutorServiceImpl executorService = mock(CalculationExecutorServiceImpl.class);
         EvaluationRequestService service =
                 new EvaluationRequestService(crossValidationConfig, executorService, evaluationService,
-                        evaluationLogRepository, evaluationLogMapper);
+                        evaluationLogRepository, evaluationLogMapper, classifierInitializerService);
         doThrow(TimeoutException.class).when(executorService).execute(any(), anyLong(), any(TimeUnit.class));
         EvaluationResponse evaluationResponse = service.processRequest(request);
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.TIMEOUT);
