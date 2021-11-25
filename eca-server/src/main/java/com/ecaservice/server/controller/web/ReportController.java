@@ -38,7 +38,6 @@ import static com.ecaservice.server.util.ReportHelper.download;
 import static com.ecaservice.web.dto.doc.CommonApiExamples.INVALID_PAGE_REQUEST_RESPONSE_JSON;
 import static com.ecaservice.web.dto.doc.CommonApiExamples.SIMPLE_PAGE_REQUEST_JSON;
 import static com.ecaservice.web.dto.doc.CommonApiExamples.UNAUTHORIZED_RESPONSE_JSON;
-import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
 
 /**
  * Controller for reports downloading.
@@ -96,8 +95,7 @@ public class ReportController {
     )
     @PostMapping(value = "/download")
     public void downloadReport(@Valid @RequestBody PageRequestDto pageRequestDto,
-                               @Parameter(description = "Report type", required = true,
-                                       schema = @Schema(maxLength = MAX_LENGTH_255))
+                               @Parameter(description = "Report type", required = true)
                                @RequestParam BaseReportType reportType,
                                HttpServletResponse httpServletResponse)
             throws IOException {

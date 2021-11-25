@@ -64,7 +64,6 @@ import static com.ecaservice.web.dto.doc.CommonApiExamples.DATA_NOT_FOUND_RESPON
 import static com.ecaservice.web.dto.doc.CommonApiExamples.INVALID_PAGE_REQUEST_RESPONSE_JSON;
 import static com.ecaservice.web.dto.doc.CommonApiExamples.SIMPLE_PAGE_REQUEST_JSON;
 import static com.ecaservice.web.dto.doc.CommonApiExamples.UNAUTHORIZED_RESPONSE_JSON;
-import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
 /**
@@ -508,8 +507,7 @@ public class DataStorageController {
     public void downloadInstancesReport(
             @Parameter(description = "Instances id", example = "1", required = true)
             @RequestParam @Min(VALUE_1) @Max(Long.MAX_VALUE) long id,
-            @Parameter(description = "Report type", required = true,
-                    schema = @Schema(maxLength = MAX_LENGTH_255))
+            @Parameter(description = "Report type", required = true)
             @RequestParam ReportType reportType,
             HttpServletResponse httpServletResponse) throws Exception {
         log.info("Request to download instances [{}] report [{}]", id, reportType);

@@ -88,7 +88,6 @@ import static com.ecaservice.server.util.Utils.toRequestStatusesStatistics;
 import static com.ecaservice.web.dto.doc.CommonApiExamples.DATA_NOT_FOUND_RESPONSE_JSON;
 import static com.ecaservice.web.dto.doc.CommonApiExamples.INVALID_PAGE_REQUEST_RESPONSE_JSON;
 import static com.ecaservice.web.dto.doc.CommonApiExamples.UNAUTHORIZED_RESPONSE_JSON;
-import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
 /**
@@ -233,12 +232,9 @@ public class ExperimentController {
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public CreateExperimentResultDto createRequest(
             @Parameter(description = "Training data file", required = true) @RequestParam MultipartFile trainingData,
-            @Parameter(description = "Experiment type", required = true,
-                    schema = @Schema(maxLength = MAX_LENGTH_255))
-            @RequestParam ExperimentType experimentType,
-            @Parameter(description = "Evaluation method", required = true,
-                    schema = @Schema(maxLength = MAX_LENGTH_255))
-            @RequestParam EvaluationMethod evaluationMethod) {
+            @Parameter(description = "Experiment type", required = true) @RequestParam ExperimentType experimentType,
+            @Parameter(description = "Evaluation method", required = true) @RequestParam
+                    EvaluationMethod evaluationMethod) {
         log.info("Received experiment request for data '{}', experiment type {}, evaluation method {}",
                 trainingData.getOriginalFilename(), experimentType, evaluationMethod);
         UserDto userDto = usersClient.getUserInfo();
