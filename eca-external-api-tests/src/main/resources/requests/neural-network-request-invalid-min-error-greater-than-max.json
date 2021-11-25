@@ -1,0 +1,18 @@
+{
+  "displayName": "Neural network request with invalid 'minError' greater than maximum",
+  "testType": "USING_EXTERNAL_DATA_URL",
+  "request": {
+    "trainDataUrl": "http://kt.ijs.si/Branax/Repository/WEKA/Iris.xls",
+    "classifierOptions": {
+      "type": "neural_network",
+      "minError": 1.01,
+      "activationFunctionOptions": {
+        "activationFunctionType": "LOGISTIC"
+      }
+    },
+    "evaluationMethod": "TRAINING_DATA"
+  },
+  "expectedResponse": {
+    "responseCode": "VALIDATION_ERROR"
+  }
+}

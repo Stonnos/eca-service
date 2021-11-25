@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.MediaType;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,12 +27,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 import static com.ecaservice.oauth.controller.doc.ApiExamples.CREATE_RESET_PASSWORD_REQUEST_JSON;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.INVALID_TOKEN_RESPONSE_JSON;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.RESET_PASSWORD_REQUEST_JSON;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.USER_EMAIL_RESPONSE_JSON;
+import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
+import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 
 /**
@@ -41,6 +45,7 @@ import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
  */
 @Slf4j
 @Tag(name = "Reset password API")
+@Validated
 @RestController
 @RequestMapping("/password")
 @RequiredArgsConstructor
@@ -107,6 +112,7 @@ public class ResetPasswordController {
     )
     @PostMapping(value = "/verify-token")
     public boolean verifyToken(
+            @Size(min = VALUE_1, max = MAX_LENGTH_255)
             @Parameter(description = "Reset password token", required = true) @RequestParam String token) {
         log.info("Received request for reset password token verification");
         String md5Hash = md5Hex(token);

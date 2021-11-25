@@ -14,7 +14,9 @@ import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 import static com.ecaservice.audit.dto.FieldConstraints.DATE_TIME_PATTERN;
+import static com.ecaservice.audit.dto.FieldConstraints.LOCAL_DATE_TIME_MAX_LENGTH;
 import static com.ecaservice.audit.dto.FieldConstraints.MAX_LENGTH_255;
+import static com.ecaservice.audit.dto.FieldConstraints.VALUE_1;
 
 /**
  * Audit event request model.
@@ -22,14 +24,14 @@ import static com.ecaservice.audit.dto.FieldConstraints.MAX_LENGTH_255;
  * @author Roman Batygin
  */
 @Data
-@Schema(description = "Audit event request mode")
+@Schema(description = "Audit event request model")
 public class AuditEventRequest {
 
     /**
      * Audit event id.
      */
     @NotEmpty
-    @Size(max = MAX_LENGTH_255)
+    @Size(min = VALUE_1, max = MAX_LENGTH_255)
     @Schema(description = "Audit event id")
     private String eventId;
 
@@ -37,6 +39,7 @@ public class AuditEventRequest {
      * Audit message
      */
     @NotEmpty
+    @Size(min = VALUE_1)
     @Schema(description = "Audit message")
     private String message;
 
@@ -44,7 +47,7 @@ public class AuditEventRequest {
      * Event initiator
      */
     @NotEmpty
-    @Size(max = MAX_LENGTH_255)
+    @Size(min = VALUE_1, max = MAX_LENGTH_255)
     @Schema(description = "Event initiator")
     private String initiator;
 
@@ -52,14 +55,14 @@ public class AuditEventRequest {
      * Event type
      */
     @NotNull
-    @Schema(description = "Event type")
+    @Schema(description = "Event type", minLength = VALUE_1, maxLength = MAX_LENGTH_255)
     private EventType eventType;
 
     /**
      * Audit group
      */
     @NotEmpty
-    @Size(max = MAX_LENGTH_255)
+    @Size(min = VALUE_1, max = MAX_LENGTH_255)
     @Schema(description = "Audit group")
     private String groupCode;
 
@@ -74,7 +77,7 @@ public class AuditEventRequest {
      * Audit code
      */
     @NotEmpty
-    @Size(max = MAX_LENGTH_255)
+    @Size(min = VALUE_1, max = MAX_LENGTH_255)
     @Schema(description = "Audit code")
     private String code;
 
@@ -92,6 +95,6 @@ public class AuditEventRequest {
     @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @Schema(description = "Event date", pattern = DATE_TIME_PATTERN)
+    @Schema(description = "Event date", pattern = DATE_TIME_PATTERN, maxLength = LOCAL_DATE_TIME_MAX_LENGTH)
     private LocalDateTime eventDate;
 }

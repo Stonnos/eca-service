@@ -10,6 +10,8 @@ import lombok.EqualsAndHashCode;
 import java.time.LocalDateTime;
 
 import static com.ecaservice.web.dto.util.FieldConstraints.DATE_TIME_PATTERN;
+import static com.ecaservice.web.dto.util.FieldConstraints.LOCAL_DATE_TIME_MAX_LENGTH;
+import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
 
 /**
  * Experiment dto model.
@@ -24,31 +26,34 @@ public class ExperimentDto extends AbstractEvaluationDto {
     /**
      * First name
      */
-    @Schema(description = "Request creator first name", example = "Roman")
+    @Schema(description = "Request creator first name", example = "Roman", maxLength = MAX_LENGTH_255)
     private String firstName;
 
     /**
      * Email
      */
-    @Schema(description = "Request creator email", example = "test@mail.ru")
+    @Schema(description = "Request creator email", example = "test@mail.ru", maxLength = MAX_LENGTH_255)
     private String email;
 
     /**
      * Experiment file absolute path
      */
-    @Schema(description = "Experiment results file", example = "experiment_1d2de514-3a87-4620-9b97-c260e24340de.model")
+    @Schema(description = "Experiment results file", example = "experiment_1d2de514-3a87-4620-9b97-c260e24340de.model",
+            maxLength = MAX_LENGTH_255)
     private String experimentAbsolutePath;
 
     /**
      * Training data absolute path
      */
-    @Schema(description = "Training data file", example = "data_1d2de514-3a87-4620-9b97-c260e24340de.xls")
+    @Schema(description = "Training data file", example = "data_1d2de514-3a87-4620-9b97-c260e24340de.xls",
+            maxLength = MAX_LENGTH_255)
     private String trainingDataAbsolutePath;
 
     /**
      * Experiment files deleted date
      */
-    @Schema(description = "Experiment files delete date", type = "string", example = "2021-07-01 14:00:00")
+    @Schema(description = "Experiment files delete date", type = "string", example = "2021-07-01 14:00:00",
+            maxLength = LOCAL_DATE_TIME_MAX_LENGTH)
     @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime deletedDate;

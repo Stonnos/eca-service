@@ -7,6 +7,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
+import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
+import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
 /**
  * Create reset password request model.
@@ -24,6 +28,7 @@ public class CreateResetPasswordRequest {
      */
     @NotBlank
     @UserEmail
+    @Size(min = VALUE_1, max = MAX_LENGTH_255)
     @Schema(description = "User email", example = "bat1238@yandex.ru", required = true)
     private String email;
 }

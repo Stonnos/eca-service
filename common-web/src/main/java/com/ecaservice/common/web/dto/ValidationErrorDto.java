@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
+import static com.ecaservice.common.web.dto.Constraints.STRING_MAX_LENGTH_1000;
+import static com.ecaservice.common.web.dto.Constraints.STRING_MAX_LENGTH_255;
+
 /**
  * Validation error dto.
  *
@@ -21,18 +24,18 @@ public class ValidationErrorDto implements Serializable {
     /**
      * Field name
      */
-    @Schema(description = "Field name", example = "field")
+    @Schema(description = "Field name", example = "field", maxLength = STRING_MAX_LENGTH_255)
     private String fieldName;
 
     /**
      * Error code
      */
-    @Schema(description = "Error code", example = "NotNull")
+    @Schema(description = "Error code", example = "NotNull", maxLength = STRING_MAX_LENGTH_255)
     private String code;
 
     /**
      * Error message
      */
-    @Schema(description = "Error message", example = "Must be not null")
+    @Schema(description = "Error message", example = "Must be not null", maxLength = STRING_MAX_LENGTH_1000)
     private String errorMessage;
 }

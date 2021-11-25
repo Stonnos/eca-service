@@ -28,9 +28,9 @@ a|
 
 __Grant type:__ password
 
-__Token url:__ http://localhost:8080/oauth/token
+__Token url:__ http://localhost:8080/eca-oauth/oauth/token
 
-__Refresh token url:__ http://localhost:8080/oauth/token
+__Refresh token url:__ http://localhost:8080/eca-oauth/oauth/token
 
 
 __Scopes__:
@@ -318,7 +318,9 @@ __(int64)__
 
 
 
+*Minimum*: 1*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -335,7 +337,7 @@ __string__
 
 
 
-
+*Max. length*: 19
 
 
 
@@ -354,7 +356,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -373,7 +375,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -392,7 +394,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -461,7 +463,9 @@ __(int64)__
 
 
 
+*Minimum*: 1*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -478,7 +482,7 @@ __string__
 
 
 
-
+*Max. length*: 19
 
 
 
@@ -497,7 +501,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -516,7 +520,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -535,7 +539,7 @@ __string__
 |===
 |*Name*|*Description*|*Schema*
 |*content*
-|Page content
+|-
 a|
 __array__
 <<<EmailTemplateDto>>
@@ -550,7 +554,7 @@ __array__
 
 
 
-
+*Max. items*: 100
 
 
 
@@ -566,7 +570,9 @@ __(int32)__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 2,147,483,647*
 
 
 
@@ -586,7 +592,9 @@ __(int64)__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -610,7 +618,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -629,7 +637,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -648,7 +656,7 @@ __string__
 
 
 
-
+*Max. length*: 1,000
 
 
 
@@ -672,7 +680,7 @@ a|
 __string__
 
 
-*Min. length*: 0
+*Min. length*: 1
 
 *Max. length*: 255
 
@@ -712,9 +720,9 @@ a|
 __string__
 
 
+*Min. length*: 1
 
-
-
+*Max. length*: 255
 
 
 
@@ -752,6 +760,7 @@ __(int32)__
 
 *Minimum*: 0*
 
+*Maximum*: 2,147,483,647*
 
 
 
@@ -773,6 +782,7 @@ __(int32)__
 
 *Minimum*: 1*
 
+*Maximum*: 100*
 
 
 
@@ -874,7 +884,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -898,7 +908,7 @@ a|
 __string__
 
 
-*Min. length*: 0
+*Min. length*: 1
 
 *Max. length*: 255
 
@@ -917,9 +927,9 @@ a|
 __string__
 
 
+*Min. length*: 1
 
-
-
+*Max. length*: 255
 
 
 

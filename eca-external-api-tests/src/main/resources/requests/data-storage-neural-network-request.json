@@ -5,6 +5,7 @@
   "request": {
     "classifierOptions": {
       "type": "neural_network",
+      "hiddenLayer": "7,8",
       "activationFunctionOptions": {
         "activationFunctionType": "LOGISTIC"
       }

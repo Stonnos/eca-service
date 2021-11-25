@@ -7,6 +7,8 @@ import lombok.experimental.Tolerate;
 
 import java.io.Serializable;
 
+import static com.ecaservice.external.api.dto.Constraints.MAX_LENGTH_255;
+
 /**
  * Base response dto model.
  *
@@ -31,12 +33,12 @@ public class ResponseDto<T> implements Serializable {
     /**
      * Response code
      */
-    @Schema(description = "Response code", example = "SUCCESS")
+    @Schema(description = "Response code", example = "SUCCESS", maxLength = MAX_LENGTH_255)
     private ResponseCode responseCode;
 
     /**
      * Error message
      */
-    @Schema(description = "Error message")
+    @Schema(description = "Error message", maxLength = MAX_LENGTH_255)
     private String errorDescription;
 }

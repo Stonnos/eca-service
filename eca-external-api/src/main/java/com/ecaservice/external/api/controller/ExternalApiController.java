@@ -42,6 +42,7 @@ import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Size;
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
@@ -59,6 +60,8 @@ import static com.ecaservice.external.api.controller.docs.ApiExamples.INVALID_TR
 import static com.ecaservice.external.api.controller.docs.ApiExamples.UNAUTHORIZED_RESPONSE_JSON;
 import static com.ecaservice.external.api.controller.docs.ApiExamples.UPLOAD_INSTANCES_RESPONSE_JSON;
 import static com.ecaservice.external.api.controller.docs.ApiExamples.VALIDATION_ERROR_RESPONSE_JSON;
+import static com.ecaservice.external.api.dto.Constraints.MAX_LENGTH_255;
+import static com.ecaservice.external.api.dto.Constraints.MIN_LENGTH_1;
 import static com.ecaservice.external.api.util.Constants.DATA_URL_PREFIX;
 import static com.ecaservice.external.api.util.Utils.buildAttachmentResponse;
 import static com.ecaservice.external.api.util.Utils.buildResponse;
@@ -291,7 +294,8 @@ public class ExternalApiController {
     )
     @GetMapping(value = "/evaluation-status/{requestId}")
     public ResponseDto<EvaluationResponseDto> getEvaluationResponseStatus(
-            @Parameter(description = "Request id", required = true) @PathVariable String requestId) {
+            @Parameter(description = "Request id", required = true)
+            @Size(min = MIN_LENGTH_1, max = MAX_LENGTH_255) @PathVariable String requestId) {
         log.debug("Request to get evaluation [{}] response status", requestId);
         var evaluationResponseDto = evaluationResponseService.processResponse(requestId);
         var responseDto = buildResponse(ResponseCode.SUCCESS, evaluationResponseDto);
@@ -332,6 +336,7 @@ public class ExternalApiController {
     )
     @GetMapping(value = "/download-model/{requestId}")
     public ResponseEntity<FileSystemResource> downloadModel(@Parameter(description = "Request id", required = true)
+                                                            @Size(min = MIN_LENGTH_1, max = MAX_LENGTH_255)
                                                             @PathVariable String requestId) {
         var evaluationRequestEntity = ecaRequestService.getByCorrelationId(requestId);
         var modelFile = Optional.ofNullable(evaluationRequestEntity.getClassifierAbsolutePath())

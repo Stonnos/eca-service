@@ -1,0 +1,41 @@
+{
+  "displayName": "Stacking classifier request with invalid 'numFolds' less than minimum",
+  "testType": "USING_EXTERNAL_DATA_URL",
+  "request": {
+    "trainDataUrl": "http://kt.ijs.si/Branax/Repository/WEKA/Iris.xls",
+    "classifierOptions": {
+      "type": "stacking",
+      "useCrossValidation": true,
+      "numFolds": 1,
+      "classifierOptions": [
+        {
+          "type": "decision_tree",
+          "decisionTreeType": "CART",
+          "minObj": 2,
+          "maxDepth": 0,
+          "randomTree": false,
+          "useBinarySplits": true,
+          "useRandomSplits": false
+        },
+        {
+          "type": "logistic",
+          "maxIts": 200,
+          "useConjugateGradientDescent": false
+        }
+      ],
+      "metaClassifierOptions": {
+        "type": "decision_tree",
+        "decisionTreeType": "ID3",
+        "minObj": 2,
+        "maxDepth": 0,
+        "randomTree": false,
+        "useBinarySplits": false,
+        "useRandomSplits": false
+      }
+    },
+    "evaluationMethod": "TRAINING_DATA"
+  },
+  "expectedResponse": {
+    "responseCode": "VALIDATION_ERROR"
+  }
+}

@@ -21,6 +21,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Size;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
@@ -35,6 +37,8 @@ import static com.ecaservice.oauth.controller.doc.ApiExamples.CHANGE_PASSWORD_RE
 import static com.ecaservice.oauth.controller.doc.ApiExamples.INVALID_PASSWORD_RESPONSE_JSON;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.INVALID_TOKEN_RESPONSE_JSON;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.UNAUTHORIZED_RESPONSE_JSON;
+import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
+import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
 /**
  * Implements change password REST API.
@@ -43,6 +47,7 @@ import static com.ecaservice.oauth.controller.doc.ApiExamples.UNAUTHORIZED_RESPO
  */
 @Slf4j
 @Tag(name = "Change password API")
+@Validated
 @RestController
 @RequestMapping("/password/change")
 @RequiredArgsConstructor
@@ -120,6 +125,7 @@ public class ChangePasswordController {
     )
     @PostMapping(value = "/confirm")
     public void confirmChangePasswordRequest(
+            @Size(min = VALUE_1, max = MAX_LENGTH_255)
             @Parameter(description = "Token value", required = true) @RequestParam String token) {
         log.info("Received change password request confirmation");
         var changePasswordRequest = changePasswordService.changePassword(token);

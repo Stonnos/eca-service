@@ -49,6 +49,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,6 +61,8 @@ import org.springframework.web.multipart.MultipartFile;
 import weka.core.Instances;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.io.File;
 import java.time.LocalDate;
 import java.util.List;
@@ -85,6 +88,7 @@ import static com.ecaservice.server.util.Utils.toRequestStatusesStatistics;
 import static com.ecaservice.web.dto.doc.CommonApiExamples.DATA_NOT_FOUND_RESPONSE_JSON;
 import static com.ecaservice.web.dto.doc.CommonApiExamples.INVALID_PAGE_REQUEST_RESPONSE_JSON;
 import static com.ecaservice.web.dto.doc.CommonApiExamples.UNAUTHORIZED_RESPONSE_JSON;
+import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
 /**
  * Experiments API for web application.
@@ -93,6 +97,7 @@ import static com.ecaservice.web.dto.doc.CommonApiExamples.UNAUTHORIZED_RESPONSE
  */
 @Tag(name = "Experiments API for web application")
 @Slf4j
+@Validated
 @RestController
 @RequestMapping("/experiment")
 @RequiredArgsConstructor
@@ -147,7 +152,7 @@ public class ExperimentController {
     @GetMapping(value = "/training-data/{id}")
     public ResponseEntity<FileSystemResource> downloadTrainingData(
             @Parameter(description = "Experiment id", required = true)
-            @PathVariable Long id) {
+            @Min(VALUE_1) @Max(Long.MAX_VALUE) @PathVariable Long id) {
         return downloadExperimentFile(id, Experiment::getTrainingDataAbsolutePath,
                 String.format(EXPERIMENT_TRAINING_DATA_FILE_NOT_FOUND_FORMAT, id));
     }
@@ -186,7 +191,7 @@ public class ExperimentController {
     @GetMapping(value = "/results/{id}")
     public ResponseEntity<FileSystemResource> downloadExperiment(
             @Parameter(description = "Experiment id", required = true)
-            @PathVariable Long id) {
+            @Min(VALUE_1) @Max(Long.MAX_VALUE) @PathVariable Long id) {
         return downloadExperimentFile(id, Experiment::getExperimentAbsolutePath,
                 String.format(EXPERIMENT_RESULTS_FILE_NOT_FOUND, id));
     }
@@ -343,7 +348,7 @@ public class ExperimentController {
     @GetMapping(value = "/details/{id}")
     public ExperimentDto getExperiment(
             @Parameter(description = "Experiment id", required = true)
-            @PathVariable Long id) {
+            @Min(VALUE_1) @Max(Long.MAX_VALUE) @PathVariable Long id) {
         log.info("Received request to get experiment details for id [{}]", id);
         Experiment experiment = experimentService.getById(id);
         return experimentMapper.map(experiment);
@@ -392,7 +397,7 @@ public class ExperimentController {
     @GetMapping(value = "/results/details/{id}")
     public ExperimentResultsDetailsDto getExperimentResultsDetails(
             @Parameter(description = "Experiment results id", example = "1", required = true)
-            @PathVariable Long id) {
+            @Min(VALUE_1) @Max(Long.MAX_VALUE) @PathVariable Long id) {
         log.info("Received request to get experiment results details for id [{}]", id);
         ExperimentResultsEntity experimentResultsEntityOptional = experimentResultsEntityRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(ExperimentResultsEntity.class, id));
@@ -480,7 +485,7 @@ public class ExperimentController {
     @GetMapping(value = "/ers-report/{id}")
     public ExperimentErsReportDto getExperimentErsReport(
             @Parameter(description = "Experiment id", required = true)
-            @PathVariable Long id) {
+            @Min(VALUE_1) @Max(Long.MAX_VALUE) @PathVariable Long id) {
         log.info("Received request for ERS report for experiment [{}]", id);
         Experiment experiment = experimentService.getById(id);
         return experimentResultsService.getErsReport(experiment);
@@ -579,7 +584,7 @@ public class ExperimentController {
     @GetMapping(value = "/progress/{id}")
     public ExperimentProgressDto getExperimentProgress(
             @Parameter(description = "Experiment id", required = true)
-            @PathVariable Long id) {
+            @Min(VALUE_1) @Max(Long.MAX_VALUE) @PathVariable Long id) {
         log.trace("Received request to get experiment progress for id [{}]", id);
         Experiment experiment = experimentService.getById(id);
         ExperimentProgressEntity experimentProgressEntity = experimentProgressService.getExperimentProgress(experiment);

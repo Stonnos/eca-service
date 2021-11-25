@@ -5,6 +5,8 @@ import lombok.Data;
 
 import java.util.List;
 
+import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
+
 /**
  * Filter dictionary dto model.
  *
@@ -17,7 +19,7 @@ public class FilterDictionaryDto {
     /**
      * Dictionary name
      */
-    @Schema(description = "Filter dictionary name", example = "Dictionary name")
+    @Schema(description = "Filter dictionary name", example = "Dictionary name", maxLength = MAX_LENGTH_255)
     private String name;
 
     /**

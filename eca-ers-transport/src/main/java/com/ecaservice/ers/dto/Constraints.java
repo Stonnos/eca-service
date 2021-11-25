@@ -55,4 +55,24 @@ public class Constraints {
      */
     public static final String UUID_PATTERN =
             "^[0-9a-f]{8}-[0-9a-f]{4}-[34][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$";
+
+    /**
+     * Optimal classifier options reports max items
+     */
+    public static final int OPTIMAL_CLASSIFIER_OPTIONS_REPORT_MAX_ITEMS = 5;
+
+    /**
+     * Sor fields max items
+     */
+    public static final int SORT_FIELDS_MAX_ITEMS = 10;
+
+    /**
+     * Min. integer value
+     */
+    public static final String MIN_INTEGER_VALUE_STRING = "-2147483648";
+
+    /**
+     * Max. integer value
+     */
+    public static final String MAX_INTEGER_VALUE_STRING = "2147483647";
 }

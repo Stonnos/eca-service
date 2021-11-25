@@ -26,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,6 +35,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,6 +50,7 @@ import static com.ecaservice.server.util.Utils.toRequestStatusesStatistics;
 import static com.ecaservice.web.dto.doc.CommonApiExamples.DATA_NOT_FOUND_RESPONSE_JSON;
 import static com.ecaservice.web.dto.doc.CommonApiExamples.INVALID_PAGE_REQUEST_RESPONSE_JSON;
 import static com.ecaservice.web.dto.doc.CommonApiExamples.UNAUTHORIZED_RESPONSE_JSON;
+import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
 /**
  * Classifiers evaluation API for web application.
@@ -55,6 +59,7 @@ import static com.ecaservice.web.dto.doc.CommonApiExamples.UNAUTHORIZED_RESPONSE
  */
 @Tag(name = "Classifiers evaluation API for web application")
 @Slf4j
+@Validated
 @RestController
 @RequestMapping("/evaluation")
 @RequiredArgsConstructor
@@ -163,7 +168,7 @@ public class EvaluationController {
     @GetMapping(value = "/details/{id}")
     public EvaluationLogDetailsDto getEvaluationLogDetails(
             @Parameter(description = "Evaluation log id", required = true)
-            @PathVariable Long id) {
+            @Min(VALUE_1) @Max(Long.MAX_VALUE) @PathVariable Long id) {
         log.info("Received request for evaluation log details for id [{}]", id);
         EvaluationLog evaluationLog = evaluationLogRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(EvaluationLog.class, id));

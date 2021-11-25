@@ -98,6 +98,7 @@ class ErsModelValidationTest {
             ImmutableList.of("truePositiveRate", "falsePositiveRate", "trueNegativeRate", "falseNegativeRate");
     private static final List<String> ROC_CURVE_FIELDS_BOUNDS_TEST =
             ImmutableList.of("aucValue", "specificity", "sensitivity", "thresholdValue");
+    public static final int EXPECTED_EMPTY_ERROR_SIZE = 2;
 
     private final PropertyUtilsBean propertyUtilsBean = new PropertyUtilsBean();
 
@@ -302,7 +303,7 @@ class ErsModelValidationTest {
 
     private <T> void internalTestEmptyFields(List<String> testFields,
                                              Function<EvaluationResultsRequest, T> targetFunction) {
-        internalTestFieldsWithConstraints(testFields, targetFunction, StringUtils.EMPTY);
+        internalTestFieldsWithConstraints(testFields, targetFunction, StringUtils.EMPTY, EXPECTED_EMPTY_ERROR_SIZE);
     }
 
     private <T> void internalTestNullFields(List<String> testFields,
@@ -318,6 +319,13 @@ class ErsModelValidationTest {
     private <T> void internalTestFieldsWithConstraints(List<String> testFields,
                                                        Function<EvaluationResultsRequest, T> targetFunction,
                                                        Object value) {
+      internalTestFieldsWithConstraints(testFields, targetFunction, value, 1);
+    }
+
+    private <T> void internalTestFieldsWithConstraints(List<String> testFields,
+                                                       Function<EvaluationResultsRequest, T> targetFunction,
+                                                       Object value,
+                                                       int expectedErrors) {
         for (String field : testFields) {
             try {
                 EvaluationResultsRequest evaluationResultsRequest =
@@ -326,7 +334,7 @@ class ErsModelValidationTest {
                 propertyUtilsBean.setProperty(target, field, value);
                 Set<ConstraintViolation<EvaluationResultsRequest>> violations =
                         validator.validate(evaluationResultsRequest);
-                assertThat(violations.size()).isOne();
+                assertThat(violations).hasSize(expectedErrors);
             } catch (Exception ex) {
                 throw new IllegalStateException(ex);
             }

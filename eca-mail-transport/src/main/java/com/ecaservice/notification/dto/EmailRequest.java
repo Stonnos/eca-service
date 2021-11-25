@@ -14,7 +14,9 @@ import java.util.Map;
 
 import static com.ecaservice.notification.util.FieldConstraints.EMAIL_MAX_SIZE;
 import static com.ecaservice.notification.util.FieldConstraints.EMAIL_REGEX;
+import static com.ecaservice.notification.util.FieldConstraints.MAX_LENGTH_255;
 import static com.ecaservice.notification.util.FieldConstraints.MAX_VARIABLES_SIZE;
+import static com.ecaservice.notification.util.FieldConstraints.VALUE_1;
 import static com.ecaservice.notification.util.Priority.HIGHEST;
 import static com.ecaservice.notification.util.Priority.LOW;
 
@@ -30,7 +32,7 @@ public class EmailRequest {
      */
     @NotBlank
     @Email(regexp = EMAIL_REGEX)
-    @Size(max = EMAIL_MAX_SIZE)
+    @Size(min = VALUE_1, max = EMAIL_MAX_SIZE)
     @Schema(description = "Receiver email", example = "bat1238@yandex.ru", required = true)
     private String receiver;
 
@@ -38,6 +40,7 @@ public class EmailRequest {
      * Template code
      */
     @NotBlank
+    @Size(min = VALUE_1, max = MAX_LENGTH_255)
     @Schema(description = "Email template code", example = "NEW_EXPERIMENT", required = true)
     private String templateCode;
 

@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
+
 /**
  * Classifier input option dto model.
  *
@@ -19,12 +21,12 @@ public class InputOptionDto {
     /**
      * Option key
      */
-    @Schema(description = "Input option name", example = "Iterations number")
+    @Schema(description = "Input option name", example = "Iterations number", maxLength = MAX_LENGTH_255)
     private String optionName;
 
     /**
      * Option value
      */
-    @Schema(description = "Input option value", example = "100")
+    @Schema(description = "Input option value", example = "100", maxLength = MAX_LENGTH_255)
     private String optionValue;
 }

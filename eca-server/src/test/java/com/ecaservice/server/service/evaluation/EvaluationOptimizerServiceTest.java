@@ -44,6 +44,7 @@ import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.ers.ErsRequestSender;
 import com.ecaservice.server.service.ers.ErsRequestService;
+import com.ecaservice.server.service.evaluation.initializers.ClassifierInitializerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.core.evaluation.EvaluationResults;
 import eca.ensemble.AdaBoostClassifier;
@@ -102,6 +103,8 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
 
     @MockBean
     private ErsRequestSender ersRequestSender;
+    @MockBean
+    private ClassifierInitializerService classifierInitializerService;
     @Inject
     private ErsConfig ersConfig;
     @Inject

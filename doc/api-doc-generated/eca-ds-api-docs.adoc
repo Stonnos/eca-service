@@ -74,7 +74,9 @@ __(int64)__
 
 
 
+*Minimum*: 1*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -90,7 +92,7 @@ a|
 __string__
 
 
-*Min. length*: 0
+*Min. length*: 1
 
 *Max. length*: 30
 
@@ -243,7 +245,7 @@ a|
 __string__
 
 
-*Min. length*: 0
+*Min. length*: 1
 
 *Max. length*: 30
 
@@ -546,7 +548,9 @@ __(int64)__
 
 
 
+*Minimum*: 1*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -769,7 +773,9 @@ __(int64)__
 
 
 
+*Minimum*: 1*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -906,7 +912,9 @@ __(int64)__
 
 
 
+*Minimum*: 1*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -1032,7 +1040,9 @@ __(int64)__
 
 
 
+*Minimum*: 1*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -1153,7 +1163,9 @@ __(int64)__
 
 
 
+*Minimum*: 1*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -1235,7 +1247,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -1254,7 +1266,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -1273,7 +1285,7 @@ __string__
 
 
 
-
+*Max. length*: 1,000
 
 
 
@@ -1302,7 +1314,9 @@ __(int64)__
 
 
 
+*Minimum*: 1*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -1319,7 +1333,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -1338,7 +1352,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -1367,7 +1381,9 @@ __(int64)__
 
 
 
+*Minimum*: 1*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -1384,7 +1400,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -1406,7 +1422,9 @@ __(int32)__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 2,147,483,647*
 
 
 
@@ -1426,7 +1444,9 @@ __(int32)__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 2,147,483,647*
 
 
 
@@ -1443,7 +1463,7 @@ __string__
 
 
 
-
+*Max. length*: 19
 
 
 
@@ -1462,7 +1482,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -1481,7 +1501,7 @@ __string__
 |===
 |*Name*|*Description*|*Schema*
 |*content*
-|Page content
+|-
 a|
 __array__
 <<<InstancesDto>>
@@ -1496,7 +1516,7 @@ __array__
 
 
 
-
+*Max. items*: 100
 
 
 
@@ -1512,7 +1532,9 @@ __(int32)__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 2,147,483,647*
 
 
 
@@ -1532,7 +1554,9 @@ __(int64)__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -1554,7 +1578,7 @@ a|
 __string__
 
 
-*Min. length*: 0
+*Min. length*: 1
 
 *Max. length*: 255
 
@@ -1594,9 +1618,9 @@ a|
 __string__
 
 
+*Min. length*: 1
 
-
-
+*Max. length*: 255
 
 
 
@@ -1634,6 +1658,7 @@ __(int32)__
 
 *Minimum*: 0*
 
+*Maximum*: 2,147,483,647*
 
 
 
@@ -1655,6 +1680,7 @@ __(int32)__
 
 *Minimum*: 1*
 
+*Maximum*: 100*
 
 
 
@@ -1749,7 +1775,7 @@ __array__
 |===
 |*Name*|*Description*|*Schema*
 |*content*
-|Page content
+|-
 a|
 __array__
 <array
@@ -1765,7 +1791,7 @@ __array__
 
 
 
-
+*Max. items*: 100
 
 
 
@@ -1781,7 +1807,9 @@ __(int32)__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 2,147,483,647*
 
 
 
@@ -1801,7 +1829,9 @@ __(int64)__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -1825,7 +1855,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -1844,7 +1874,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -1863,7 +1893,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 

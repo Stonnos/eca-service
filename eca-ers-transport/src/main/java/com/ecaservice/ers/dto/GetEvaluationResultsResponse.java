@@ -5,6 +5,8 @@ import lombok.Data;
 
 import java.util.List;
 
+import static com.ecaservice.ers.dto.Constraints.UUID_MAX_SIZE;
+
 /**
  * Get evaluation results response model.
  *
@@ -17,7 +19,7 @@ public class GetEvaluationResultsResponse {
     /**
      * Request id
      */
-    @Schema(description = "Request id")
+    @Schema(description = "Request id", maxLength = UUID_MAX_SIZE)
     private String requestId;
 
     /**

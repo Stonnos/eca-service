@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 import static com.ecaservice.ers.dto.Constraints.DECIMAL_MAX_ONE;
 import static com.ecaservice.ers.dto.Constraints.DECIMAL_MIN_ZERO;
 import static com.ecaservice.ers.dto.Constraints.MAX_LENGTH_255;
+import static com.ecaservice.ers.dto.Constraints.MIN_1;
 
 /**
  * Classification costs report model.
@@ -28,7 +29,7 @@ public class ClassificationCostsReport {
      * Class value
      */
     @NotBlank
-    @Size(max = MAX_LENGTH_255)
+    @Size(min = MIN_1, max = MAX_LENGTH_255)
     @Schema(description = "Class value", example = "classValue", required = true)
     private String classValue;
 

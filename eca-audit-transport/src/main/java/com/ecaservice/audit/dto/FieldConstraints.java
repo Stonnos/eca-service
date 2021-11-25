@@ -11,6 +11,11 @@ import lombok.experimental.UtilityClass;
 public class FieldConstraints {
 
     /**
+     * Value 1
+     */
+    public static final int VALUE_1 = 1;
+
+    /**
      * Max length 255
      */
     public static final int MAX_LENGTH_255 = 255;
@@ -19,4 +24,9 @@ public class FieldConstraints {
      * Date time pattern
      */
     public static final String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
+
+    /**
+     * Local date time max length
+     */
+    public static final int LOCAL_DATE_TIME_MAX_LENGTH = 19;
 }

@@ -5,6 +5,8 @@ import lombok.Data;
 
 import java.util.List;
 
+import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
+
 /**
  * Menu item model.
  *
@@ -17,13 +19,13 @@ public class MenuItemDto {
     /**
      * Item label
      */
-    @Schema(description = "Item label", example = "Эксперименты")
+    @Schema(description = "Item label", example = "Эксперименты", maxLength = MAX_LENGTH_255)
     private String label;
 
     /**
      * Router link
      */
-    @Schema(description = "Router link", example = "/dashboard/experiments")
+    @Schema(description = "Router link", example = "/dashboard/experiments", maxLength = MAX_LENGTH_255)
     private String routerLink;
 
     /**

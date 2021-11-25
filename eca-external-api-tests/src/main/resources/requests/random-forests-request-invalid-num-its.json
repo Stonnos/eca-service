@@ -1,0 +1,19 @@
+{
+  "displayName": "Random forests request with invalid 'numIterations'",
+  "testType": "USING_EXTERNAL_DATA_URL",
+  "request": {
+    "trainDataUrl": "http://kt.ijs.si/Branax/Repository/WEKA/Iris.xls",
+    "classifierOptions": {
+      "type": "RandomForestsOptions",
+      "numIterations": -1,
+      "numThreads": 4,
+      "minObj": 2,
+      "maxDepth": 0,
+      "decisionTreeType": "CART"
+    },
+    "evaluationMethod": "TRAINING_DATA"
+  },
+  "expectedResponse": {
+    "responseCode": "VALIDATION_ERROR"
+  }
+}

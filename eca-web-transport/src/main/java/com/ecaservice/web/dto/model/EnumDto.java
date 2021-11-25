@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
+
 /**
  * Enum dto model.
  *
@@ -19,12 +21,12 @@ public class EnumDto {
     /**
      * Enum value
      */
-    @Schema(description = "Enum value", required = true, example = "Enum code")
+    @Schema(description = "Enum value", required = true, example = "Enum code", maxLength = MAX_LENGTH_255)
     private String value;
 
     /**
      * Enum value description
      */
-    @Schema(description = "Enum value description", required = true, example = "Enum value")
+    @Schema(description = "Enum value description", required = true, example = "Enum value", maxLength = MAX_LENGTH_255)
     private String description;
 }

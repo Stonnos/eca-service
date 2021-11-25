@@ -998,7 +998,7 @@ __string__
 
 
 
-
+*Max. length*: 36
 
 
 
@@ -1024,7 +1024,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -1043,7 +1043,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -1062,7 +1062,7 @@ __string__
 
 
 
-
+*Max. length*: 1,000
 
 
 
@@ -1086,7 +1086,7 @@ a|
 __string__
 
 
-*Min. length*: 0
+*Min. length*: 1
 
 *Max. length*: 255
 
@@ -1215,7 +1215,7 @@ a|
 __string__
 
 
-*Min. length*: 0
+*Min. length*: 1
 
 *Max. length*: 255
 
@@ -1234,7 +1234,7 @@ a|
 __string__
 
 
-*Min. length*: 0
+*Min. length*: 1
 
 *Max. length*: 255
 
@@ -1260,7 +1260,7 @@ a|
 __string__
 
 
-*Min. length*: 0
+*Min. length*: 1
 
 *Max. length*: 255
 
@@ -1298,9 +1298,9 @@ a|
 __string__
 
 
+*Min. length*: 1
 
-
-
+*Max. length*: 2,147,483,647
 
 
 
@@ -1383,7 +1383,7 @@ a|
 __string__
 
 
-*Min. length*: 0
+*Min. length*: 1
 
 *Max. length*: 255
 
@@ -1402,7 +1402,7 @@ a|
 __string__
 
 
-*Min. length*: 0
+*Min. length*: 1
 
 *Max. length*: 255
 
@@ -1427,6 +1427,7 @@ __integer__
 
 *Minimum*: 0*
 
+*Maximum*: 2,147,483,647*
 
 
 
@@ -1448,7 +1449,7 @@ a|
 __string__
 
 
-*Min. length*: 0
+*Min. length*: 1
 
 *Max. length*: 255
 
@@ -1486,9 +1487,9 @@ a|
 __string__
 
 
+*Min. length*: 1
 
-
-
+*Max. length*: 2,147,483,647
 
 
 
@@ -1594,7 +1595,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 
@@ -1622,6 +1623,7 @@ __integer__
 
 *Minimum*: 2*
 
+*Maximum*: 2,147,483,647*
 
 
 
@@ -1642,6 +1644,7 @@ __integer__
 
 *Minimum*: 1*
 
+*Maximum*: 2,147,483,647*
 
 
 
@@ -1660,7 +1663,9 @@ __integer__
 
 
 
+*Minimum*: -9,223,372,036,854,775,808*
 
+*Maximum*: 9,223,372,036,854,775,807*
 
 
 
@@ -1682,7 +1687,7 @@ a|
 __string__
 
 
-*Min. length*: 0
+*Min. length*: 1
 
 *Max. length*: 36
 
@@ -1831,9 +1836,9 @@ a|
 __string__
 
 
+*Min. length*: 1
 
-
-
+*Max. length*: 2,147,483,647
 
 
 
@@ -1850,7 +1855,7 @@ a|
 __string__
 
 
-*Min. length*: 0
+*Min. length*: 1
 
 *Max. length*: 255
 
@@ -1875,6 +1880,7 @@ __integer__
 
 *Minimum*: 2*
 
+*Maximum*: 2,147,483,647*
 
 
 
@@ -1895,6 +1901,7 @@ __integer__
 
 *Minimum*: 2*
 
+*Maximum*: 2,147,483,647*
 
 
 
@@ -1915,6 +1922,7 @@ __integer__
 
 *Minimum*: 2*
 
+*Maximum*: 2,147,483,647*
 
 
 
@@ -1929,7 +1937,7 @@ a|
 __string__
 
 
-*Min. length*: 0
+*Min. length*: 1
 
 *Max. length*: 255
 
@@ -2052,6 +2060,7 @@ __integer__
 
 *Minimum*: 2*
 
+*Maximum*: 2,147,483,647*
 
 
 
@@ -2072,6 +2081,7 @@ __integer__
 
 *Minimum*: 0*
 
+*Maximum*: 2,147,483,647*
 
 
 
@@ -2092,6 +2102,7 @@ __integer__
 
 *Minimum*: 0*
 
+*Maximum*: 2,147,483,647*
 
 
 
@@ -2236,7 +2247,9 @@ __number__
 
 
 
+*Minimum*: -2,147,483,648*
 
+*Maximum*: 2,147,483,647*
 
 
 
@@ -2255,7 +2268,9 @@ __number__
 
 
 
+*Minimum*: -2,147,483,648*
 
+*Maximum*: 2,147,483,647*
 
 
 
@@ -2279,7 +2294,7 @@ __string__
 
 
 
-
+*Max. length*: 36
 
 
 
@@ -2421,7 +2436,7 @@ a|
 __string__
 
 
-*Min. length*: 0
+*Min. length*: 1
 
 *Max. length*: 36
 
@@ -2449,7 +2464,7 @@ __string__
 
 
 
-
+*Max. length*: 36
 
 
 
@@ -2461,7 +2476,7 @@ __string__
 
 
 |*classifierReports*
-|Optimal classifiers reports list
+|-
 a|
 __array__
 <<<ClassifierReport>>
@@ -2476,7 +2491,7 @@ __array__
 
 
 
-
+*Max. items*: 5
 
 
 
@@ -2494,9 +2509,9 @@ a|
 __string__
 
 
+*Min. length*: 1
 
-
-
+*Max. length*: 255
 
 
 
@@ -2513,9 +2528,9 @@ a|
 __string__
 
 
+*Min. length*: 1
 
-
-
+*Max. length*: 255
 
 
 
@@ -2546,7 +2561,7 @@ a|
 
 
 |*sortFields*
-|Sort fields list
+|-
 a|
 __array__
 <<<SortField>>
@@ -2559,9 +2574,9 @@ __array__
 
 
 
+*Min. items*: 0
 
-
-
+*Max. items*: 10
 
 
 
@@ -2579,7 +2594,7 @@ a|
 __string__
 
 
-*Min. length*: 0
+*Min. length*: 1
 
 *Max. length*: 255
 
@@ -2600,7 +2615,7 @@ __string__
 
 
 
-
+*Max. length*: 255
 
 
 

@@ -6,9 +6,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
 /**
  * Update classifiers configuration dto.
@@ -25,6 +29,8 @@ public class UpdateClassifiersConfigurationDto {
      * Configuration id
      */
     @NotNull
+    @Min(VALUE_1)
+    @Max(Long.MAX_VALUE)
     @Schema(description = "Configuration id", example = "1", required = true)
     private Long id;
 
@@ -32,7 +38,7 @@ public class UpdateClassifiersConfigurationDto {
      * Configuration name
      */
     @NotBlank
-    @Size(max = FieldConstraints.CONFIGURATION_NAME_MAX_LENGTH)
+    @Size(min = VALUE_1, max = FieldConstraints.CONFIGURATION_NAME_MAX_LENGTH)
     @Schema(description = "Configuration name", example = "Classifiers configuration", required = true)
     private String configurationName;
 }

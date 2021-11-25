@@ -18,6 +18,7 @@ import static com.ecaservice.oauth.util.FieldConstraints.LOGIN_REGEX;
 import static com.ecaservice.oauth.util.FieldConstraints.PERSON_NAME_MAX_SIZE;
 import static com.ecaservice.oauth.util.FieldConstraints.PERSON_NAME_MIN_SIZE;
 import static com.ecaservice.oauth.util.FieldConstraints.PERSON_NAME_REGEX;
+import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
 /**
  * Create user dto model.
@@ -42,7 +43,7 @@ public class CreateUserDto {
      * User email
      */
     @Email(regexp = EMAIL_REGEX)
-    @Size(max = EMAIL_MAX_SIZE)
+    @Size(min = VALUE_1, max = EMAIL_MAX_SIZE)
     @UniqueEmail
     @Schema(description = "User email", example = "bat1238@yandex.ru", required = true)
     private String email;
