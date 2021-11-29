@@ -43,7 +43,6 @@ ECA server
    * experiment.maximumFractionDigits - число десятичных знаков после запятой
    * experiment.numberOfDaysForStorage - кол-во дней для хранения файлов с результатами экспериментов
    * experiment.removeExperimentCron - крон выражение для удаления файлов с результатами экспериментов
-   * experiment.ersSendingCron - крон выражение для отправки результатов экспериментов в ERS - сервис
    * experiment.timeout - время таймаута эксперимента в часах.
    * experiment.delaySeconds - интервал между запусками scheduler для обработки экспериметов
    * experiment.pageSize - размер страницы для постраничной обработки заявок

@@ -5,21 +5,13 @@ import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.event.model.ExperimentEmailEvent;
 import com.ecaservice.server.event.model.ExperimentWebPushEvent;
-import com.ecaservice.server.model.entity.ErsResponseStatus;
 import com.ecaservice.server.model.entity.Experiment;
-import com.ecaservice.server.model.entity.ExperimentResultsEntity;
 import com.ecaservice.server.model.entity.RequestStatus;
-import com.ecaservice.server.model.experiment.ExperimentResultsRequestSource;
-import com.ecaservice.server.repository.ErsRequestRepository;
 import com.ecaservice.server.repository.ExperimentRepository;
-import com.ecaservice.server.repository.ExperimentResultsEntityRepository;
-import com.ecaservice.server.repository.ExperimentResultsRequestRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
-import com.ecaservice.server.service.ers.ErsService;
 import com.ecaservice.server.service.experiment.ExperimentProgressService;
 import com.ecaservice.server.service.experiment.ExperimentRequestProcessor;
 import com.ecaservice.server.service.experiment.ExperimentService;
-import eca.dataminer.AbstractExperiment;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -29,11 +21,9 @@ import org.springframework.context.annotation.Import;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import static com.ecaservice.server.TestHelperUtils.createExperimentHistory;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -55,16 +45,8 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
 
     @Inject
     private ExperimentRepository experimentRepository;
-    @Inject
-    private ErsRequestRepository ersRequestRepository;
-    @Inject
-    private ExperimentResultsRequestRepository experimentResultsRequestRepository;
-    @Inject
-    private ExperimentResultsEntityRepository experimentResultsEntityRepository;
     @Mock
     private ExperimentService experimentService;
-    @Mock
-    private ErsService ersService;
     @Mock
     private ExperimentProgressService experimentProgressService;
     @Mock
@@ -79,16 +61,14 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
 
     @Override
     public void init() {
-        ExperimentRequestProcessor experimentRequestProcessor = new ExperimentRequestProcessor(experimentRepository,
-                experimentResultsEntityRepository, experimentService, eventPublisher, ersService,
-                experimentProgressService, experimentConfig);
+        ExperimentRequestProcessor experimentRequestProcessor =
+                new ExperimentRequestProcessor(experimentRepository, experimentService, eventPublisher,
+                        experimentProgressService, experimentConfig);
         experimentScheduler = new ExperimentScheduler(experimentRequestProcessor, experimentRepository);
     }
 
     @Override
     public void deleteAll() {
-        ersRequestRepository.deleteAll();
-        experimentResultsEntityRepository.deleteAll();
         experimentRepository.deleteAll();
     }
 
@@ -134,41 +114,5 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
         experimentScheduler.processRequestsToRemove();
         verify(experimentService).removeExperimentModel(argumentCaptor.capture());
         assertThat(argumentCaptor.getValue()).isEqualTo(experimentToRemove);
-    }
-
-    @Test
-    void testSentExperimentsToErs() {
-        //Create finished experiment
-        Experiment finishedExperiment =
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        experimentRepository.save(finishedExperiment);
-        ExperimentResultsEntity firstResults = TestHelperUtils.createExperimentResultsEntity(finishedExperiment);
-        ExperimentResultsEntity secondResults = TestHelperUtils.createExperimentResultsEntity(finishedExperiment);
-        ExperimentResultsEntity thirdResults = TestHelperUtils.createExperimentResultsEntity(finishedExperiment);
-        experimentResultsEntityRepository.saveAll(Arrays.asList(firstResults, secondResults, thirdResults));
-        experimentResultsRequestRepository.save(
-                TestHelperUtils.createExperimentResultsRequest(firstResults, ErsResponseStatus.ERROR));
-        experimentResultsRequestRepository.save(
-                TestHelperUtils.createExperimentResultsRequest(firstResults, ErsResponseStatus.DUPLICATE_REQUEST_ID));
-        experimentResultsRequestRepository.save(
-                TestHelperUtils.createExperimentResultsRequest(secondResults, ErsResponseStatus.SUCCESS));
-        //Created deleted experiment
-        Experiment removedExperiment =
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        removedExperiment.setDeletedDate(LocalDateTime.now());
-        experimentRepository.save(removedExperiment);
-        //Create error experiment
-        Experiment errorExperiment =
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.TIMEOUT);
-        experimentRepository.save(errorExperiment);
-        //Create another finished experiment
-        finishedExperiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        experimentRepository.save(finishedExperiment);
-        experimentResultsEntityRepository.save(TestHelperUtils.createExperimentResultsEntity(finishedExperiment));
-        AbstractExperiment automatedKNearestNeighbours = createExperimentHistory();
-        when(experimentService.getExperimentHistory(any(Experiment.class))).thenReturn(automatedKNearestNeighbours);
-        experimentScheduler.processRequestsToErs();
-        verify(ersService, times(3)).sentExperimentResults(any(ExperimentResultsEntity.class),
-                any(AbstractExperiment.class), any(ExperimentResultsRequestSource.class));
     }
 }

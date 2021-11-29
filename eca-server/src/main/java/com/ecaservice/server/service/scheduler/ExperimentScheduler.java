@@ -42,16 +42,6 @@ public class ExperimentScheduler {
     }
 
     /**
-     * Try to sent experiments results to ERS service.
-     */
-    @Scheduled(cron = "${experiment.ersSendingCron}")
-    public void processRequestsToErs() {
-        log.info("Starting job to sent experiments results to ERS service");
-        experimentRequestProcessor.sentExperimentResultsToErs();
-        log.info("Experiments results sending job has been finished");
-    }
-
-    /**
      * Removes experiments data files from disk. Schedules by cron.
      */
     @Scheduled(cron = "${experiment.removeExperimentCron}")

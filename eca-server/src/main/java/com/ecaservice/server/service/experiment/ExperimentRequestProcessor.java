@@ -8,12 +8,8 @@ import com.ecaservice.server.event.model.ExperimentResponseEvent;
 import com.ecaservice.server.event.model.ExperimentWebPushEvent;
 import com.ecaservice.server.model.entity.Channel;
 import com.ecaservice.server.model.entity.Experiment;
-import com.ecaservice.server.model.entity.ExperimentResultsEntity;
 import com.ecaservice.server.model.entity.RequestStatus;
-import com.ecaservice.server.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.server.repository.ExperimentRepository;
-import com.ecaservice.server.repository.ExperimentResultsEntityRepository;
-import com.ecaservice.server.service.ers.ErsService;
 import eca.dataminer.AbstractExperiment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,8 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.ecaservice.common.web.util.LogHelper.EV_REQUEST_ID;
 import static com.ecaservice.common.web.util.LogHelper.TX_ID;
@@ -44,10 +38,8 @@ public class ExperimentRequestProcessor {
     private static final String EXPERIMENTS_CRON_JOB_KEY = "experimentsCronJob";
 
     private final ExperimentRepository experimentRepository;
-    private final ExperimentResultsEntityRepository experimentResultsEntityRepository;
     private final ExperimentService experimentService;
     private final ApplicationEventPublisher eventPublisher;
-    private final ErsService ersService;
     private final ExperimentProgressService experimentProgressService;
     private final ExperimentConfig experimentConfig;
 
@@ -80,34 +72,6 @@ public class ExperimentRequestProcessor {
         }
         experimentProgressService.finish(experiment);
         log.info("New experiment [{}] has been processed", experiment.getRequestId());
-    }
-
-    /**
-     * Sent experiments results to ERS service.
-     */
-    @TryLocked(lockName = EXPERIMENTS_CRON_JOB_KEY, lockRegistry = EXPERIMENT_REDIS_LOCK_REGISTRY_BEAN)
-    public void sentExperimentResultsToErs() {
-        log.info("Starting to sent experiment results to ERS service");
-        List<ExperimentResultsEntity> experimentResultsEntities =
-                experimentResultsEntityRepository.findExperimentsResultsToErsSent();
-        log.trace("Obtained {} experiments results sending to ERS service", experimentResultsEntities.size());
-        Map<Experiment, List<ExperimentResultsEntity>> experimentResultsMap = experimentResultsEntities
-                .stream()
-                .collect(Collectors.groupingBy(ExperimentResultsEntity::getExperiment));
-        experimentResultsMap.forEach((experiment, experimentResultsEntityList) -> {
-            putMdc(TX_ID, experiment.getRequestId());
-            putMdc(EV_REQUEST_ID, experiment.getRequestId());
-            try {
-                AbstractExperiment<?> abstractExperiment = experimentService.getExperimentHistory(experiment);
-                experimentResultsEntityList.forEach(
-                        experimentResultsEntity -> ersService.sentExperimentResults(experimentResultsEntity,
-                                abstractExperiment, ExperimentResultsRequestSource.SYSTEM));
-            } catch (Exception ex) {
-                log.error("There was an error while sending experiment [{}] history: {}", experiment.getRequestId(),
-                        ex.getMessage());
-            }
-        });
-        log.info("Finished to sent experiment results to ERS service");
     }
 
     /**

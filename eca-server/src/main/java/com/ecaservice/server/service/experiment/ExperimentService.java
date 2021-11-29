@@ -8,7 +8,6 @@ import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.exception.experiment.ExperimentException;
-import com.ecaservice.server.exception.experiment.ResultsNotFoundException;
 import com.ecaservice.server.filter.ExperimentFilter;
 import com.ecaservice.server.mapping.ExperimentMapper;
 import com.ecaservice.server.model.MsgProperties;
@@ -63,10 +62,8 @@ import static com.ecaservice.common.web.util.RandomUtils.generateToken;
 import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.server.model.entity.AbstractEvaluationEntity_.CREATION_DATE;
 import static com.ecaservice.server.model.entity.Experiment_.EXPERIMENT_TYPE;
-import static com.ecaservice.server.util.ExperimentUtils.getExperimentFile;
 import static com.ecaservice.server.util.Utils.atEndOfDay;
 import static com.ecaservice.server.util.Utils.atStartOfDay;
-import static com.ecaservice.server.util.Utils.existsFile;
 import static com.ecaservice.server.util.Utils.toRequestStatusStatisticsMap;
 import static com.google.common.collect.Lists.newArrayList;
 
@@ -177,25 +174,6 @@ public class ExperimentService implements PageRequestService<Experiment> {
     }
 
     /**
-     * Gets experiment history.
-     *
-     * @param experiment - experiment entity
-     * @return experiment history
-     */
-    public AbstractExperiment<?> getExperimentHistory(Experiment experiment) {
-        File experimentFile = getExperimentFile(experiment, Experiment::getExperimentAbsolutePath);
-        if (!existsFile(experimentFile)) {
-            throw new ResultsNotFoundException(
-                    String.format("Experiment results file not found for experiment [%s]!", experiment.getRequestId()));
-        }
-        try {
-            return dataService.loadExperimentHistory(experimentFile);
-        } catch (Exception ex) {
-            throw new ExperimentException(ex.getMessage());
-        }
-    }
-
-    /**
      * Removes experiment model file from disk.
      *
      * @param experiment - experiment entity
@@ -270,7 +248,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
         Root<Experiment> root = criteria.from(Experiment.class);
         List<Predicate> predicates = newArrayList();
         Optional.ofNullable(createdDateFrom).ifPresent(value -> predicates.add(
-                builder.greaterThanOrEqualTo(root.get(CREATION_DATE),atStartOfDay(value))));
+                builder.greaterThanOrEqualTo(root.get(CREATION_DATE), atStartOfDay(value))));
         Optional.ofNullable(createdDateTo).ifPresent(value -> predicates.add(
                 builder.lessThanOrEqualTo(root.get(CREATION_DATE), atEndOfDay(value))));
         criteria.groupBy(root.get(EXPERIMENT_TYPE));
