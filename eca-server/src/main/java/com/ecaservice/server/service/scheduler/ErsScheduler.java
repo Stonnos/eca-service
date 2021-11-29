@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
-@ConditionalOnProperty(value = "ers.redelivery", havingValue = "true")
+@ConditionalOnProperty(value = "${ers.redelivery}", havingValue = "true")
 @RequiredArgsConstructor
 public class ErsScheduler {
 
