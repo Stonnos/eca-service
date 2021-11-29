@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
+import static com.ecaservice.common.web.util.LogHelper.TX_ID;
+import static com.ecaservice.common.web.util.LogHelper.getMdc;
+
 /**
  * Ers retry request service.
  *
@@ -33,7 +36,9 @@ public class ErsRetryRequestCacheService {
      */
     public void put(ErsRequest ersRequest, String jsonRequest) {
         log.info("Starting to put ers request [{}] into cache", ersRequest.getRequestId());
+        String txId = getMdc(TX_ID);
         ErsRetryRequest ersRetryRequest = new ErsRetryRequest();
+        ersRetryRequest.setTxId(txId);
         ersRetryRequest.setJsonRequest(jsonRequest);
         ersRetryRequest.setErsRequest(ersRequest);
         ersRetryRequest.setCreated(LocalDateTime.now());

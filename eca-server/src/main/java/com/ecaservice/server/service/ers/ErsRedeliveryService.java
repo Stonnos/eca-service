@@ -14,6 +14,8 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
+import static com.ecaservice.common.web.util.LogHelper.TX_ID;
+import static com.ecaservice.common.web.util.LogHelper.putMdc;
 import static com.ecaservice.server.config.EcaServiceConfiguration.EXPERIMENT_REDIS_LOCK_REGISTRY_BEAN;
 import static com.ecaservice.server.util.PageHelper.processWithPagination;
 
@@ -52,6 +54,7 @@ public class ErsRedeliveryService {
 
     private void processPage(List<ErsRetryRequest> ersRetryRequests) {
         for (ErsRetryRequest ersRetryRequest : ersRetryRequests) {
+            putMdc(TX_ID, ersRetryRequest.getTxId());
             try {
                 log.info("Resend ers request [{}]", ersRetryRequest.getErsRequest().getRequestId());
                 var evaluationResultsRequest = OBJECT_MAPPER.readValue(ersRetryRequest.getJsonRequest(),

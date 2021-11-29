@@ -18,6 +18,7 @@
             <column name="json_request" type="text">
                 <constraints nullable="false"/>
             </column>
+            <column name="tx_id" type="varchar(255)"/>
             <column name="created" type="timestamp">
                 <constraints nullable="false"/>
             </column>

@@ -32,6 +32,12 @@ public class ErsRetryRequest {
     private String jsonRequest;
 
     /**
+     * Transaction id (used for cross - system logging)
+     */
+    @Column(name = "tx_id")
+    private String txId;
+
+    /**
      * Created date
      */
     @Column(nullable = false)
