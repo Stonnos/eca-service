@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({ErsConfig.class, ClassifierReportMapperImpl.class,
+@Import({ErsConfig.class, ClassifierReportMapperImpl.class, ErsErrorHandler.class,
         EvaluationResultsService.class, ErsResponseStatusMapperImpl.class,
         CacheConfiguration.class, CrossValidationConfig.class, ErsRequestService.class,
         ClassifiersOptionsAutoConfiguration.class, InstancesConverter.class})

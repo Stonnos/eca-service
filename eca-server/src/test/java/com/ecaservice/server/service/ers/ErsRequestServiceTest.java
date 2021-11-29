@@ -17,8 +17,8 @@ import com.ecaservice.server.model.entity.ErsResponseStatus;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.EvaluationResultsRequestEntity;
 import com.ecaservice.server.repository.ClassifierOptionsRequestModelRepository;
-import com.ecaservice.server.repository.ErsRetryRequestRepository;
 import com.ecaservice.server.repository.ErsRequestRepository;
+import com.ecaservice.server.repository.ErsRetryRequestRepository;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.evaluation.EvaluationResultsService;
@@ -47,7 +47,8 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({ClassifierReportMapperImpl.class, ErsResponseStatusMapperImpl.class, ErsRetryRequestCacheService.class})
+@Import({ClassifierReportMapperImpl.class, ErsResponseStatusMapperImpl.class, ErsRetryRequestCacheService.class,
+        ErsErrorHandler.class})
 class ErsRequestServiceTest extends AbstractJpaTest {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -63,6 +64,8 @@ class ErsRequestServiceTest extends AbstractJpaTest {
     @Inject
     private ErsRetryRequestRepository ersRetryRequestRepository;
     @Inject
+    private ErsErrorHandler ersErrorHandler;
+    @Inject
     private ErsRetryRequestCacheService ersRetryRequestCacheService;
     @Inject
     private ClassifierReportMapper classifierReportMapper;
@@ -77,7 +80,9 @@ class ErsRequestServiceTest extends AbstractJpaTest {
 
     @Override
     public void init() throws Exception {
-        ersRequestService = new ErsRequestService(ersClient, evaluationResultsService, ersRetryRequestCacheService, ersRequestRepository, classifierOptionsRequestModelRepository, classifierReportMapper, ersResponseStatusMapper);
+        ersRequestService = new ErsRequestService(ersClient, evaluationResultsService, ersRetryRequestCacheService,
+                ersRequestRepository, classifierOptionsRequestModelRepository, classifierReportMapper, ersErrorHandler,
+                ersResponseStatusMapper);
         evaluationResults =
                 new EvaluationResults(new KNearestNeighbours(), new Evaluation(TestHelperUtils.loadInstances()));
     }
