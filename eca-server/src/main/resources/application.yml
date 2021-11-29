@@ -136,6 +136,8 @@ experiment:
 ers:
   useClassifierOptionsCache: false
   classifierOptionsCacheDurationInDays: 2
+  pageSize: 10
+  redeliveryIntervalSeconds: 900
 
 cache:
   specs:

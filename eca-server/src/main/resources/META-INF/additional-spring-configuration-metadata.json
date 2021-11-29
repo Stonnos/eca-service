@@ -14,6 +14,11 @@
       "name": "experiment.ersSendingCron",
       "type": "java.lang.String",
       "description": "Cron expression for experiments results sending job"
+    },
+    {
+      "name": "ers.redeliveryIntervalSeconds",
+      "type": "java.lang.String",
+      "description": "Redelivery interval in seconds for ers requests resending"
     }
   ]
 }
