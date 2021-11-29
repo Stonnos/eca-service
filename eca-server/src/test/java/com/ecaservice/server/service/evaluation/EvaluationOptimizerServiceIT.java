@@ -1,6 +1,5 @@
 package com.ecaservice.server.service.evaluation;
 
-import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.base.model.InstancesRequest;
 import com.ecaservice.classifier.options.config.ClassifiersOptionsAutoConfiguration;
 import com.ecaservice.classifier.options.model.DecisionTreeOptions;
@@ -8,6 +7,7 @@ import com.ecaservice.core.lock.aspect.LockExecutionAspect;
 import com.ecaservice.core.lock.redis.config.RedisLockAutoConfiguration;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import com.ecaservice.ers.dto.ClassifierOptionsResponse;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.config.ers.ErsConfig;
@@ -31,7 +31,7 @@ import com.ecaservice.server.repository.ClassifierOptionsRequestRepository;
 import com.ecaservice.server.repository.ErsRequestRepository;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
-import com.ecaservice.server.service.ers.ErsRequestSender;
+import com.ecaservice.server.service.ers.ErsClient;
 import com.ecaservice.server.service.ers.ErsRequestService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.ensemble.forests.DecisionTreeType;
@@ -77,7 +77,7 @@ class EvaluationOptimizerServiceIT extends AbstractJpaTest {
     private static final int NUM_THREADS = 2;
 
     @MockBean
-    private ErsRequestSender ersRequestSender;
+    private ErsClient ersClient;
     @Inject
     private ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository;
     @Inject
@@ -126,7 +126,7 @@ class EvaluationOptimizerServiceIT extends AbstractJpaTest {
     void testClassifierOptionsCacheInMultiThreadEnvironment() throws Exception {
         ClassifierOptionsResponse response = TestHelperUtils.createClassifierOptionsResponse(Collections
                 .singletonList(TestHelperUtils.createClassifierReport(decisionTreeOptions)));
-        when(ersRequestSender.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
+        when(ersClient.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
         final CountDownLatch finishedLatch = new CountDownLatch(NUM_THREADS);
         ExecutorService executorService = Executors.newFixedThreadPool(NUM_THREADS);
         for (int i = 0; i < NUM_THREADS; i++) {

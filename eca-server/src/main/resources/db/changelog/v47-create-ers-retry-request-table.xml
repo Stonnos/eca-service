@@ -8,10 +8,10 @@
     <changeSet id="1" author="roman.batygin@mail.ru" context="schema">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="ers_request_cache"/>
+                <tableExists tableName="ers_retry_request"/>
             </not>
         </preConditions>
-        <createTable tableName="ers_request_cache">
+        <createTable tableName="ers_retry_request">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -22,10 +22,10 @@
                 <constraints nullable="false"/>
             </column>
             <column name="ers_request_id" type="bigint">
-                <constraints foreignKeyName="fk_ers_request_cache_ers_request_id"
+                <constraints foreignKeyName="fk_ers_retry_request_ers_request_id"
                              referencedTableName="ers_request"
                              referencedColumnNames="id" nullable="false"
-                             unique="true" uniqueConstraintName="ers_request_cache_ers_request_id_unique_idx"/>
+                             unique="true" uniqueConstraintName="ers_retry_request_ers_request_id_unique_idx"/>
             </column>
         </createTable>
     </changeSet>
