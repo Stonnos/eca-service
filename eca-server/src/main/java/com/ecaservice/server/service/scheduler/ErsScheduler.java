@@ -2,9 +2,12 @@ package com.ecaservice.server.service.scheduler;
 
 import com.ecaservice.ers.dto.EvaluationResultsRequest;
 import com.ecaservice.server.config.ers.ErsConfig;
+import com.ecaservice.server.model.entity.ErsResponseStatus;
 import com.ecaservice.server.model.entity.ErsRetryRequest;
 import com.ecaservice.server.repository.ErsRetryRequestRepository;
+import com.ecaservice.server.service.ers.ErsErrorHandler;
 import com.ecaservice.server.service.ers.ErsRequestService;
+import com.ecaservice.server.service.ers.ErsRetryRequestCacheService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +35,8 @@ public class ErsScheduler {
 
     private final ErsConfig ersConfig;
     private final ErsRequestService ersRequestService;
+    private final ErsErrorHandler ersErrorHandler;
+    private final ErsRetryRequestCacheService ersRetryRequestCacheService;
     private final ErsRetryRequestRepository ersRetryRequestRepository;
 
     /**
@@ -59,6 +64,9 @@ public class ErsScheduler {
             } catch (Exception ex) {
                 log.error("There was an error while resend ers request [{}]: {}",
                         ersRetryRequest.getErsRequest().getRequestId(), ex.getMessage());
+                ersErrorHandler.handleErrorRequest(ersRetryRequest.getErsRequest(), ErsResponseStatus.ERROR,
+                        ex.getMessage());
+                ersRetryRequestCacheService.evict(ersRetryRequest.getErsRequest());
             }
         }
     }
