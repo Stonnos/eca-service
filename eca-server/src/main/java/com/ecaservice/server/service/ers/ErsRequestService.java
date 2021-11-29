@@ -51,7 +51,7 @@ public class ErsRequestService {
 
     private final ErsClient ersClient;
     private final EvaluationResultsService evaluationResultsService;
-    private final ErsRequestCacheService ersRequestCacheService;
+    private final ErsRetryRequestCacheService ersRetryRequestCacheService;
     private final ErsRequestRepository ersRequestRepository;
     private final ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository;
     private final ClassifierReportMapper classifierReportMapper;
@@ -89,11 +89,11 @@ public class ErsRequestService {
             log.info("Received success response for requestId [{}] from ERS.", resultsResponse.getRequestId());
             ersRequest.setResponseStatus(ErsResponseStatus.SUCCESS);
             ersRequestRepository.save(ersRequest);
-            ersRequestCacheService.evictIfAbsent(ersRequest);
+            ersRetryRequestCacheService.evictIfAbsent(ersRequest);
         } catch (FeignException.ServiceUnavailable ex) {
             log.error("Service unavailable error while sending evaluation results: {}", ex.getMessage());
             handleErrorRequest(ersRequest, ErsResponseStatus.SERVICE_UNAVAILABLE, ex.getMessage());
-            ersRequestCacheService.putIfAbsent(ersRequest, evaluationResultsRequest);
+            ersRetryRequestCacheService.putIfAbsent(ersRequest, evaluationResultsRequest);
         } catch (FeignException.BadRequest ex) {
             log.error("Bad request error while sending evaluation results: {}", ex.getMessage());
             handleBadRequest(ersRequest, ex);

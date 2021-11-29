@@ -43,7 +43,7 @@ import com.ecaservice.server.repository.ErsRequestRepository;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.ers.ErsClient;
-import com.ecaservice.server.service.ers.ErsRequestCacheService;
+import com.ecaservice.server.service.ers.ErsRetryRequestCacheService;
 import com.ecaservice.server.service.ers.ErsRequestService;
 import com.ecaservice.server.service.evaluation.initializers.ClassifierInitializerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -105,7 +105,7 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
     @MockBean
     private ErsClient ersClient;
     @MockBean
-    private ErsRequestCacheService ersRequestCacheService;
+    private ErsRetryRequestCacheService ersRetryRequestCacheService;
     @MockBean
     private EvaluationResultsService evaluationResultsService;
     @MockBean

@@ -41,7 +41,7 @@ class GetEvaluationResultsCacheTest extends AbstractJpaTest {
     @MockBean
     private ErsClient ersClient;
     @MockBean
-    private ErsRequestCacheService ersRequestCacheService;
+    private ErsRetryRequestCacheService ersRetryRequestCacheService;
 
     @Inject
     private ErsRequestService ersRequestService;

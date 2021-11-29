@@ -12,14 +12,14 @@ import javax.persistence.Table;
 import java.time.LocalDateTime;
 
 /**
- * Ers request cache entity. Used for requests resending.
+ * Ers retry request entity. Used for requests resending.
  *
  * @author Roman Batygin
  */
 @Data
 @Entity
-@Table(name = "ers_request_cache")
-public class ErsRequestCache {
+@Table(name = "ers_retry_request")
+public class ErsRetryRequest {
 
     @Id
     @GeneratedValue

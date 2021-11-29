@@ -2,8 +2,8 @@ package com.ecaservice.server.service.ers;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.server.model.entity.ErsRequest;
-import com.ecaservice.server.model.entity.ErsRequestCache;
-import com.ecaservice.server.repository.ErsRequestCacheRepository;
+import com.ecaservice.server.model.entity.ErsRetryRequest;
+import com.ecaservice.server.repository.ErsRetryRequestRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,32 +12,32 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
 /**
- * Ers request cache service.
+ * Ers retry request service.
  *
  * @author Roman Batygin
  */
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ErsRequestCacheService {
+public class ErsRetryRequestCacheService {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    private final ErsRequestCacheRepository ersRequestCacheRepository;
+    private final ErsRetryRequestRepository ersRetryRequestRepository;
 
     /**
-     * Puts ers request into cache.
+     * Save ers retry request into database.
      *
      * @param ersRequest  - ers request
      * @param jsonRequest - json request string
      */
     public void put(ErsRequest ersRequest, String jsonRequest) {
         log.info("Starting to put ers request [{}] into cache", ersRequest.getRequestId());
-        ErsRequestCache ersRequestCache = new ErsRequestCache();
-        ersRequestCache.setJsonRequest(jsonRequest);
-        ersRequestCache.setErsRequest(ersRequest);
-        ersRequestCache.setCreated(LocalDateTime.now());
-        ersRequestCacheRepository.save(ersRequestCache);
+        ErsRetryRequest ersRetryRequest = new ErsRetryRequest();
+        ersRetryRequest.setJsonRequest(jsonRequest);
+        ersRetryRequest.setErsRequest(ersRequest);
+        ersRetryRequest.setCreated(LocalDateTime.now());
+        ersRetryRequestRepository.save(ersRetryRequest);
         log.info("Ers request [{}] has been put into cache", ersRequest.getRequestId());
     }
 
@@ -48,9 +48,9 @@ public class ErsRequestCacheService {
      */
     public void evict(ErsRequest ersRequest) {
         log.info("Starting to remove ers request [{}] from cache", ersRequest.getRequestId());
-        var ersRequestCacheId = ersRequestCacheRepository.findRequestCacheId(ersRequest)
-                .orElseThrow(() -> new EntityNotFoundException(ErsRequestCache.class, ersRequest.getRequestId()));
-        ersRequestCacheRepository.deleteById(ersRequestCacheId);
+        var ersRequestCacheId = ersRetryRequestRepository.findRequestCacheId(ersRequest)
+                .orElseThrow(() -> new EntityNotFoundException(ErsRetryRequest.class, ersRequest.getRequestId()));
+        ersRetryRequestRepository.deleteById(ersRequestCacheId);
         log.info("Ers request [{}] has been removed from cache", ersRequest.getRequestId());
     }
 
@@ -62,7 +62,7 @@ public class ErsRequestCacheService {
      */
     public boolean contains(ErsRequest ersRequest) {
         log.debug("Check ers request [{}] in cache", ersRequest.getRequestId());
-        return ersRequestCacheRepository.existsByErsRequest(ersRequest);
+        return ersRetryRequestRepository.existsByErsRequest(ersRequest);
     }
 
     /**

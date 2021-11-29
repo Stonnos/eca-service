@@ -1,7 +1,7 @@
 package com.ecaservice.server.repository;
 
 import com.ecaservice.server.model.entity.ErsRequest;
-import com.ecaservice.server.model.entity.ErsRequestCache;
+import com.ecaservice.server.model.entity.ErsRetryRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -9,11 +9,11 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 /**
- * Repository to manage with {@link ErsRequestCache} persistence entity.
+ * Repository to manage with {@link ErsRetryRequest} persistence entity.
  *
  * @author Roman Batygin
  */
-public interface ErsRequestCacheRepository extends JpaRepository<ErsRequestCache, Long> {
+public interface ErsRetryRequestRepository extends JpaRepository<ErsRetryRequest, Long> {
 
     /**
      * Checks ers request cache.
@@ -29,6 +29,6 @@ public interface ErsRequestCacheRepository extends JpaRepository<ErsRequestCache
      * @param ersRequest - ers request
      * @return ers request cache id
      */
-    @Query("select ec.id from ErsRequestCache ec where ec.ersRequest = :ersRequest")
+    @Query("select ec.id from ErsRetryRequest ec where ec.ersRequest = :ersRequest")
     Optional<Long> findRequestCacheId(@Param("ersRequest") ErsRequest ersRequest);
 }
