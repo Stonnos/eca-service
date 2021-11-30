@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
+import static com.ecaservice.common.web.util.LogHelper.TX_ID;
+import static com.ecaservice.common.web.util.LogHelper.putMdc;
 import static com.ecaservice.core.mail.client.config.EcaMailClientAutoConfiguration.MAIL_LOCK_REGISTRY;
 
 /**
@@ -106,6 +108,7 @@ public class EmailRequestService {
     }
 
     private void sendEmailRequest(EmailRequestEntity emailRequestEntity) {
+        putMdc(TX_ID, emailRequestEntity.getRequestId());
         try {
             var emailRequest = getEmailRequest(emailRequestEntity);
             emailRequestSender.sendEmail(emailRequest, emailRequestEntity);

@@ -37,4 +37,16 @@
             <column name="details" type="text"/>
         </createTable>
     </changeSet>
+
+    <changeSet id="add_tx_id_column_to_email_request_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="email_request"/>
+            <not>
+                <columnExists tableName="email_request" columnName="tx_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="email_request">
+            <column name="tx_id" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

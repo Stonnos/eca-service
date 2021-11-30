@@ -87,6 +87,12 @@ public class EmailRequestEntity {
     private LocalDateTime expiredAt;
 
     /**
+     * Transaction id (used for cross - system logging)
+     */
+    @Column(name = "tx_id")
+    private String txId;
+
+    /**
      * Details string
      */
     @Column(columnDefinition = "text")

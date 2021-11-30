@@ -16,6 +16,9 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static com.ecaservice.common.web.util.LogHelper.TX_ID;
+import static com.ecaservice.common.web.util.LogHelper.getMdc;
+
 
 /**
  * Email event handler.
@@ -44,6 +47,7 @@ public class EmailEventService {
                 emailEvent.getSource().getClass().getSimpleName());
         try {
             var emailRequestEntity = emailRequestMapper.map(emailRequest);
+            emailRequestEntity.setTxId(getMdc(TX_ID));
             emailRequestEntity.setCreated(LocalDateTime.now());
             var expiredAt = Optional.ofNullable(emailEvent.getRequestCacheDurationInMinutes())
                     .map(duration -> LocalDateTime.now().plusMinutes(duration))
