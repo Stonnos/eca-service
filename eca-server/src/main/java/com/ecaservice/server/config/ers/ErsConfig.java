@@ -21,4 +21,14 @@ public class ErsConfig {
      * Classifier options cache duration in days
      */
     private Integer classifierOptionsCacheDurationInDays;
+
+    /**
+     * Redelivery enabled?
+     */
+    private Boolean redelivery;
+
+    /**
+     * Page size (used for pagination)
+     */
+    private Integer pageSize;
 }

@@ -1,9 +1,9 @@
 package com.ecaservice.server.service.ers;
 
-import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.classifier.options.config.ClassifiersOptionsAutoConfiguration;
 import com.ecaservice.ers.dto.GetEvaluationResultsRequest;
 import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.config.cache.CacheNames;
 import com.ecaservice.server.config.ers.ErsConfig;
@@ -15,11 +15,9 @@ import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.evaluation.EvaluationResultsService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.inject.Inject;
 import java.util.UUID;
@@ -34,7 +32,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({ErsConfig.class, ClassifierReportMapperImpl.class, ErsRequestSender.class,
+@Import({ErsConfig.class, ClassifierReportMapperImpl.class, ErsErrorHandler.class,
         EvaluationResultsService.class, ErsResponseStatusMapperImpl.class,
         CacheConfiguration.class, CrossValidationConfig.class, ErsRequestService.class,
         ClassifiersOptionsAutoConfiguration.class, InstancesConverter.class})
@@ -42,23 +40,22 @@ class GetEvaluationResultsCacheTest extends AbstractJpaTest {
 
     @MockBean
     private ErsClient ersClient;
+    @MockBean
+    private ErsRetryRequestCacheService ersRetryRequestCacheService;
 
     @Inject
     private ErsRequestService ersRequestService;
     @Inject
     private CacheManager cacheManager;
-    @Mock
-    private ErsRequestSender ersRequestSender;
 
     @Test
     void testGetEvaluationResultsCache() {
-        ReflectionTestUtils.setField(ersRequestService, "ersRequestSender", ersRequestSender);
         String requestId = UUID.randomUUID().toString();
         GetEvaluationResultsResponse first =
                 TestHelperUtils.createGetEvaluationResultsResponse(requestId);
         GetEvaluationResultsResponse second =
                 TestHelperUtils.createGetEvaluationResultsResponse(requestId);
-        when(ersRequestSender.getEvaluationResultsSimpleResponse(any(GetEvaluationResultsRequest.class)))
+        when(ersClient.getEvaluationResults(any(GetEvaluationResultsRequest.class)))
                 .thenReturn(first)
                 .thenReturn(second);
         //Checks first call with ERROR status (Results shouldn't save in cache)
@@ -71,8 +68,7 @@ class GetEvaluationResultsCacheTest extends AbstractJpaTest {
         Assertions.assertThat(actual).isNotNull();
         Assertions.assertThat(actual.getRequestId()).isEqualTo(second.getRequestId());
         //Method must calls once because of cache
-        verify(ersRequestSender, atLeastOnce()).getEvaluationResultsSimpleResponse(
-                any(GetEvaluationResultsRequest.class));
+        verify(ersClient, atLeastOnce()).getEvaluationResults(any(GetEvaluationResultsRequest.class));
         Assertions.assertThat(
                 cacheManager.getCache(CacheNames.EVALUATION_RESULTS_CACHE_NAME).get(requestId)).isNotNull();
     }

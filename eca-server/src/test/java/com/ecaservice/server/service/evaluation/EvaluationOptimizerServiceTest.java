@@ -1,8 +1,6 @@
 package com.ecaservice.server.service.evaluation;
 
 import com.ecaservice.base.model.ErrorCode;
-import com.ecaservice.server.AssertionUtils;
-import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.base.model.InstancesRequest;
 import com.ecaservice.base.model.TechnicalStatus;
@@ -17,6 +15,8 @@ import com.ecaservice.classifier.options.model.NeuralNetworkOptions;
 import com.ecaservice.classifier.options.model.RandomForestsOptions;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import com.ecaservice.ers.dto.ClassifierOptionsResponse;
+import com.ecaservice.server.AssertionUtils;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.config.ers.ErsConfig;
@@ -42,7 +42,9 @@ import com.ecaservice.server.repository.ClassifierOptionsRequestRepository;
 import com.ecaservice.server.repository.ErsRequestRepository;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
-import com.ecaservice.server.service.ers.ErsRequestSender;
+import com.ecaservice.server.service.ers.ErsClient;
+import com.ecaservice.server.service.ers.ErsErrorHandler;
+import com.ecaservice.server.service.ers.ErsRetryRequestCacheService;
 import com.ecaservice.server.service.ers.ErsRequestService;
 import com.ecaservice.server.service.evaluation.initializers.ClassifierInitializerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -95,14 +97,18 @@ import static org.mockito.Mockito.when;
         ErsConfig.class, EvaluationLogMapperImpl.class,
         EvaluationService.class, ErsEvaluationMethodMapperImpl.class, ErsResponseStatusMapperImpl.class,
         InstancesConverter.class, ClassifierOptionsResponseModelMapperImpl.class, ErsRequestService.class,
-        EvaluationOptimizerService.class, ClassifierInfoMapperImpl.class,
+        EvaluationOptimizerService.class, ClassifierInfoMapperImpl.class, ErsErrorHandler.class,
         ClassifierOptionsCacheService.class, DateTimeConverter.class})
 class EvaluationOptimizerServiceTest extends AbstractJpaTest {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @MockBean
-    private ErsRequestSender ersRequestSender;
+    private ErsClient ersClient;
+    @MockBean
+    private ErsRetryRequestCacheService ersRetryRequestCacheService;
+    @MockBean
+    private EvaluationResultsService evaluationResultsService;
     @MockBean
     private ClassifierInitializerService classifierInitializerService;
     @Inject
@@ -160,7 +166,7 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
     void testsInvalidClassifierOptions() {
         ClassifierOptionsResponse response = TestHelperUtils.createClassifierOptionsResponse(Collections
                 .singletonList(TestHelperUtils.createClassifierReport(StringUtils.EMPTY)));
-        when(ersRequestSender.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
+        when(ersClient.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
         EvaluationResponse evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
                 instancesRequest);
         assertThat(evaluationResponse).isNotNull();
@@ -177,7 +183,7 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
     void testEvaluationWithNoClassifierOptionsRequests() {
         ClassifierOptionsResponse response = TestHelperUtils.createClassifierOptionsResponse(Collections
                 .singletonList(TestHelperUtils.createClassifierReport(decisionTreeOptions)));
-        when(ersRequestSender.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
+        when(ersClient.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
         EvaluationResponse evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
                 instancesRequest);
         assertSuccessEvaluationResponse(evaluationResponse);
@@ -218,7 +224,7 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         classifierOptionsRequestRepository.save(requestEntity);
         ClassifierOptionsResponse response = TestHelperUtils.createClassifierOptionsResponse(Collections
                 .singletonList(TestHelperUtils.createClassifierReport(decisionTreeOptions)));
-        when(ersRequestSender.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
+        when(ersClient.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
         EvaluationResponse evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
                 instancesRequest);
         assertSuccessEvaluationResponse(evaluationResponse);
@@ -381,7 +387,7 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
     }
 
     private void internalTestErrorStatus(Exception ex, ErsResponseStatus expectedStatus, ErrorCode expectedErrorCode) {
-        when(ersRequestSender.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenThrow(ex);
+        when(ersClient.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenThrow(ex);
         EvaluationResponse evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
                 instancesRequest);
         assertThat(evaluationResponse).isNotNull();
@@ -404,7 +410,7 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
             throws IOException {
         ClassifierOptionsResponse response = TestHelperUtils.createClassifierOptionsResponse(Collections.singletonList(
                 TestHelperUtils.createClassifierReport(objectMapper.writeValueAsString(options))));
-        when(ersRequestSender.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
+        when(ersClient.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
         EvaluationResponse evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
                 instancesRequest);
         assertSuccessEvaluationResponse(evaluationResponse);

@@ -7,7 +7,6 @@ import eca.core.ModelSerializationHelper;
 import eca.data.file.FileDataLoader;
 import eca.data.file.FileDataSaver;
 import eca.data.file.resource.DataResource;
-import eca.data.file.resource.FileResource;
 import eca.dataminer.AbstractExperiment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -94,21 +93,6 @@ public class DataService {
         log.info("Starting to save experiment history to file {}", file.getAbsolutePath());
         ModelSerializationHelper.serialize(file, experiment);
         log.info("Experiment history has been successfully saved to file {}", file.getAbsolutePath());
-    }
-
-    /**
-     * Loads experiment history from file.
-     *
-     * @param file - file object
-     * @return experiment history
-     * @throws Exception in case of I/O error
-     */
-    public AbstractExperiment<?> loadExperimentHistory(File file) throws Exception {
-        log.info("Starting to load experiment history from file {}", file.getAbsolutePath());
-        AbstractExperiment<?> experimentHistory =
-                ModelSerializationHelper.deserialize(new FileResource(file), AbstractExperiment.class);
-        log.info("Experiment history has been loaded from file {}", file.getAbsolutePath());
-        return experimentHistory;
     }
 
     /**

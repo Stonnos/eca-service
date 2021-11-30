@@ -110,8 +110,6 @@ experiment:
   numberOfDaysForStorage: 14
   ## Each day at midnight
   removeExperimentCron: 0 0 0 * * *
-  ## Every 2 hours
-  ersSendingCron: 0 0 0/2 * * *
   ## Experiment timeout in hours
   timeout: 5
   ## Scheduler delay in seconds
@@ -136,6 +134,8 @@ experiment:
 ers:
   useClassifierOptionsCache: false
   classifierOptionsCacheDurationInDays: 2
+  pageSize: 10
+  redeliveryIntervalSeconds: 900
 
 cache:
   specs:

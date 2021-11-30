@@ -43,7 +43,6 @@ ECA server
    * experiment.maximumFractionDigits - число десятичных знаков после запятой
    * experiment.numberOfDaysForStorage - кол-во дней для хранения файлов с результатами экспериментов
    * experiment.removeExperimentCron - крон выражение для удаления файлов с результатами экспериментов
-   * experiment.ersSendingCron - крон выражение для отправки результатов экспериментов в ERS - сервис
    * experiment.timeout - время таймаута эксперимента в часах.
    * experiment.delaySeconds - интервал между запусками scheduler для обработки экспериметов
    * experiment.pageSize - размер страницы для постраничной обработки заявок
@@ -59,6 +58,9 @@ ECA server
 4) ers - настройки интеграции с сервисом eca-ers
    * ers.useClassifierOptionsCache - вкл./выкл. кеширование оптимальных настроек классификатора
    * ers.classifierOptionsCacheDurationInDays - период хранения оптимальных настроек классификатора, полученных от сервиса ERS
+   * ers.redelivery - вкл./выкл механизма повторной отправки запросов в ers в случае недоступности сервиса
+   * ers.redeliveryIntervalSeconds - интервал в сек. между запусками шедулера для повторной отправки запросов в ERS
+   * ers.pageSize - размер страницы для постаничной обработки данных
 5) app - общие настройки приложения
    * app.threadPoolSize - число потоков для асинхронных задач
    * app.maxPageSize - максимальное число элементов на странице (используется для запросов с пагинацией)
