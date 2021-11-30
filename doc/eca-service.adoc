@@ -827,5 +827,6 @@ image::./images/eca-audit-log-db-schema.png[alt=Схема базы данных
 |request_id              |varchar(255)     |-|-|-                              |UUID запроса в eca-mail
 |sent_date               |timestamp        |-|-|-                              |Дата успешной отправки запроса в eca-mail
 |expired_at              |timestamp        |-|-|-                              |Дата истечения срока действия кэша запроса
+|tx_id                   |varchar(255)     |-|-|-                              |Идентификатор для кросс системного логирования
 |details                 |text             |-|-|-                              |Доп. информация, например текст ошибки
 |===
