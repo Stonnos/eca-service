@@ -91,9 +91,11 @@ public class ErsRequestService {
         } catch (FeignException.BadRequest ex) {
             log.error("Bad request error while sending evaluation results: {}", ex.getMessage());
             ersErrorHandler.handleBadRequest(ersRequest, ex);
+            ersRetryRequestCacheService.evictIfAbsent(ersRequest);
         } catch (Exception ex) {
             log.error("Unknown an error while sending evaluation results: {}", ex.getMessage());
             ersErrorHandler.handleErrorRequest(ersRequest, ErsResponseStatus.ERROR, ex.getMessage());
+            ersRetryRequestCacheService.evictIfAbsent(ersRequest);
         }
     }
 
