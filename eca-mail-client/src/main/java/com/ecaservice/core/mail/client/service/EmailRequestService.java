@@ -108,7 +108,7 @@ public class EmailRequestService {
     }
 
     private void sendEmailRequest(EmailRequestEntity emailRequestEntity) {
-        putMdc(TX_ID, emailRequestEntity.getRequestId());
+        putMdc(TX_ID, emailRequestEntity.getTxId());
         try {
             var emailRequest = getEmailRequest(emailRequestEntity);
             emailRequestSender.sendEmail(emailRequest, emailRequestEntity);
