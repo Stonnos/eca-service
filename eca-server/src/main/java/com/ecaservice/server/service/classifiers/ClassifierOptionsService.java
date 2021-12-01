@@ -75,10 +75,11 @@ public class ClassifierOptionsService {
      * Deletes classifier options with specified id.
      *
      * @param id - classifier options id
+     * @return deleted classifier options entity
      */
     @Audit(DELETE_CLASSIFIER_OPTIONS)
     @Transactional
-    public void deleteOptions(long id) {
+    public ClassifierOptionsDatabaseModel deleteOptions(long id) {
         log.info("Starting to delete classifier options [{}]", id);
         var classifierOptionsDatabaseModel = classifierOptionsDatabaseModelRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(ClassifierOptionsDatabaseModel.class, id));
@@ -92,6 +93,7 @@ public class ClassifierOptionsService {
         classifiersConfiguration.setUpdated(LocalDateTime.now());
         classifiersConfigurationRepository.save(classifiersConfiguration);
         log.info("Classifier options with id [{}] has been deleted", classifierOptionsDatabaseModel.getId());
+        return classifierOptionsDatabaseModel;
     }
 
     /**
@@ -137,7 +139,8 @@ public class ClassifierOptionsService {
                                                       Set<ClassifierOptionsDatabaseModel> newOptions) {
         Assert.state(classifiersConfiguration.isBuildIn(), "Expected build in configuration!");
         Assert.notEmpty(newOptions, "New classifiers options list must be not empty!");
-        var latestOptions = classifierOptionsDatabaseModelRepository.findAllByConfigurationOrderByCreationDateDesc(classifiersConfiguration);
+        var latestOptions = classifierOptionsDatabaseModelRepository.findAllByConfigurationOrderByCreationDateDesc(
+                classifiersConfiguration);
         if (CollectionUtils.isEmpty(latestOptions) || latestOptions.size() != newOptions.size() ||
                 !newOptions.containsAll(latestOptions)) {
             var oldOptionsToDelete = latestOptions.stream()
