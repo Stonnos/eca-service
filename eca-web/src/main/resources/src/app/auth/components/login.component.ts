@@ -88,6 +88,7 @@ export class LoginComponent implements BaseForm, OnInit, OnDestroy {
 
   public resetTfaCodeVerification(): void {
     this.tfaCodeVerificationStep = false;
+    this.loginStep = true;
     this.tfaVerificationCode = null;
     this.errorMessage = null;
     this.userModel = new UserModel();
