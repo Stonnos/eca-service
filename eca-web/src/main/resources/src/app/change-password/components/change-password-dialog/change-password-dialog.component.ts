@@ -28,7 +28,7 @@ export class ChangePasswordDialogComponent extends BaseCreateDialogComponent<Cha
 
   public message: string;
 
-  private errorCode: string;
+  public errorCode: string;
 
   private readonly errorCodes: string[] = [
     ValidationErrorCode.USER_LOCKED,

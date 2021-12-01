@@ -35,7 +35,7 @@ export class ResetPasswordComponent implements BaseForm, OnInit {
 
   public message: string;
 
-  private errorCode: string;
+  public errorCode: string;
 
   private readonly errorCodes: string[] = [
     ValidationErrorCode.USER_LOCKED,
