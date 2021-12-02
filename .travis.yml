@@ -17,12 +17,12 @@ stages:
 jobs:
   include:
     - stage: sonar_analysis
-      script: mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=$PROJECT_KEY -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+      script: mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=$PROJECT_KEY -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
     - stage: build_image
       before_script:
         - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD;
       script:
-        - mvn clean install dockerfile:build -Pprod -Dmaven.test.skip=true -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+        - mvn clean install dockerfile:build -Pprod -Dmaven.test.skip=true -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
         - docker tag eca-oauth $DOCKER_USERNAME/$DOCKER_REPOSITORY:eca-oauth;
         - docker push $DOCKER_USERNAME/$DOCKER_REPOSITORY:eca-oauth;
         - docker tag eca-server $DOCKER_USERNAME/$DOCKER_REPOSITORY:eca-server;
