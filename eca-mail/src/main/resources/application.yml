@@ -72,8 +72,8 @@ springdoc:
 
 auth-server:
   baseUrl: http://localhost:8085/eca-oauth
-  clientId: eca_web
-  clientSecret: web_secret
+  clientId: eca_service_tech
+  clientSecret: 02#eca_service_tech6
 
 mail-config:
   maxFailedAttemptsToSent: 25
