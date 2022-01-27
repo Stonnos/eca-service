@@ -73,7 +73,7 @@
         <java.version>11</java.version>
         <lombok.version>1.18.12</lombok.version>
         <inject.version>1</inject.version>
-        <logback.version>1.2.3</logback.version>
+        <logback.version>1.2.10</logback.version>
         <slf4j.version>1.7.30</slf4j.version>
         <eca.version>6.9.0</eca.version>
         <h2.version>1.4.199</h2.version>
