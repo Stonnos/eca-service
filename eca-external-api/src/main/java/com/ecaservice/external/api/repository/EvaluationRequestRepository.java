@@ -1,8 +1,6 @@
 package com.ecaservice.external.api.repository;
 
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -50,9 +48,8 @@ public interface EvaluationRequestRepository extends JpaRepository<EvaluationReq
     /**
      * Finds evaluation requests page by ids.
      *
-     * @param ids      - ids list
-     * @param pageable - pageable object
+     * @param ids - ids list
      * @return evaluation requests page
      */
-    Page<EvaluationRequestEntity> findByIdIn(Collection<Long> ids, Pageable pageable);
+    List<EvaluationRequestEntity> findByIdIn(Collection<Long> ids);
 }

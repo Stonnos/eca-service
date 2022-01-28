@@ -1,8 +1,6 @@
 package com.ecaservice.external.api.repository;
 
 import com.ecaservice.external.api.entity.InstancesEntity;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -39,9 +37,8 @@ public interface InstancesRepository extends JpaRepository<InstancesEntity, Long
     /**
      * Finds instances page by ids.
      *
-     * @param ids      - ids list
-     * @param pageable - pageable object
+     * @param ids - ids list
      * @return instances page
      */
-    Page<InstancesEntity> findByIdIn(Collection<Long> ids, Pageable pageable);
+    List<InstancesEntity> findByIdIn(Collection<Long> ids);
 }

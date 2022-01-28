@@ -8,16 +8,15 @@ import com.ecaservice.external.api.service.InstancesService;
 import com.ecaservice.external.api.service.RequestStageHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Evaluation request scheduler.
@@ -93,19 +92,20 @@ public class EvaluationRequestScheduler {
     }
 
     private <T> void processPaging(List<Long> ids,
-                                   BiFunction<List<Long>, Pageable, Page<T>> nextPageFunction,
+                                   Function<List<Long>, List<T>> nextPageFunction,
                                    Consumer<List<T>> pageContentAction) {
-        Pageable pageRequest = PageRequest.of(0, externalApiConfig.getBatchSize());
-        Page<T> page;
-        do {
-            page = nextPageFunction.apply(ids, pageRequest);
-            if (page == null || !page.hasContent()) {
-                log.trace("No one record has been fetched");
+        for (int offset = 0; offset < ids.size(); offset += externalApiConfig.getBatchSize()) {
+            var nextIds = ids.stream()
+                    .skip(offset)
+                    .limit(externalApiConfig.getBatchSize())
+                    .collect(Collectors.toList());
+            var nextPage = nextPageFunction.apply(nextIds);
+            if (CollectionUtils.isEmpty(nextPage)) {
+                log.debug("No one requests has been fetched");
                 break;
             } else {
-                pageContentAction.accept(page.getContent());
+                pageContentAction.accept(nextPage);
             }
-            pageRequest = page.nextPageable();
-        } while (page.hasNext());
+        }
     }
 }
