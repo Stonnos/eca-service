@@ -1,7 +1,6 @@
 package com.ecaservice.oauth.exception;
 
 import com.ecaservice.common.web.exception.ValidationErrorException;
-import com.ecaservice.oauth.validation.annotations.UniqueEmail;
 
 /**
  * Exception throws in case if email is already bound to account.
