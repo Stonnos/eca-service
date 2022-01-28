@@ -25,14 +25,14 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.stream.IntStream;
 
 import static com.ecaservice.server.TestHelperUtils.createEvaluationLog;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for class {@link ErsScheduler}
@@ -42,6 +42,8 @@ import static org.mockito.Mockito.when;
 @Import({ErsRedeliveryService.class, ErsScheduler.class, ErsConfig.class, ErsErrorHandler.class,
         ErsRetryRequestCacheService.class, ErsResponseStatusMapperImpl.class})
 class ErsSchedulerTest extends AbstractJpaTest {
+
+    private static final int REQUESTS_SIZE = 7;
 
     @MockBean
     private ErsRequestService ersRequestService;
@@ -63,7 +65,6 @@ class ErsSchedulerTest extends AbstractJpaTest {
     @Override
     public void init() {
         ersScheduler = new ErsScheduler(ersRedeliveryService);
-        createAndSaveErsRequests();
     }
 
     @Override
@@ -75,13 +76,15 @@ class ErsSchedulerTest extends AbstractJpaTest {
 
     @Test
     void testSuccessResend() {
+        IntStream.range(0, REQUESTS_SIZE).forEach(i-> createAndSaveErsRequests());
         ersScheduler.resendErsRequests();
-        verify(ersRequestService, atLeastOnce()).saveEvaluationResults(any(EvaluationResultsRequest.class),
+        verify(ersRequestService, times(REQUESTS_SIZE)).saveEvaluationResults(any(EvaluationResultsRequest.class),
                 any(ErsRequest.class));
     }
 
     @Test
     void testResendWithError() {
+        createAndSaveErsRequests();
         doThrow(new RuntimeException())
                 .when(ersRequestService)
                 .saveEvaluationResults(any(EvaluationResultsRequest.class), any(ErsRequest.class));

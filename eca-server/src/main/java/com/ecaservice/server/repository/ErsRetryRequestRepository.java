@@ -2,8 +2,6 @@ package com.ecaservice.server.repository;
 
 import com.ecaservice.server.model.entity.ErsRequest;
 import com.ecaservice.server.model.entity.ErsRetryRequest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -41,15 +39,14 @@ public interface ErsRetryRequestRepository extends JpaRepository<ErsRetryRequest
      *
      * @return ids list
      */
-    @Query("select er.id from ErsRetryRequest er")
+    @Query("select er.id from ErsRetryRequest er order by er.id")
     List<Long> getNotSentIds();
 
     /**
      * Gets ers retry requests page.
      *
-     * @param ids      - ids list
-     * @param pageable - pageable function
+     * @param ids - ids list
      * @return ers retry requests page
      */
-    Page<ErsRetryRequest> findByIdIn(Collection<Long> ids, Pageable pageable);
+    List<ErsRetryRequest> findByIdIn(Collection<Long> ids);
 }
