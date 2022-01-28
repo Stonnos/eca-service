@@ -19,6 +19,7 @@ import com.ecaservice.server.repository.ErsRequestRepository;
 import com.ecaservice.server.service.evaluation.EvaluationResultsService;
 import eca.core.evaluation.EvaluationResults;
 import feign.FeignException;
+import feign.RetryableException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
@@ -84,8 +85,9 @@ public class ErsRequestService {
             ersRequest.setResponseStatus(ErsResponseStatus.SUCCESS);
             ersRequestRepository.save(ersRequest);
             ersRetryRequestCacheService.evictIfAbsent(ersRequest);
-        } catch (FeignException.ServiceUnavailable ex) {
-            log.error("Service unavailable error while sending evaluation results: {}", ex.getMessage());
+        } catch (FeignException.ServiceUnavailable | RetryableException ex) {
+            log.error("Service unavailable error [{}] while sending evaluation results: {}",
+                    ex.getClass().getSimpleName(), ex.getMessage());
             ersErrorHandler.handleErrorRequest(ersRequest, ErsResponseStatus.SERVICE_UNAVAILABLE, ex.getMessage());
             ersRetryRequestCacheService.putIfAbsent(ersRequest, evaluationResultsRequest);
         } catch (FeignException.BadRequest ex) {
@@ -93,7 +95,7 @@ public class ErsRequestService {
             ersErrorHandler.handleBadRequest(ersRequest, ex);
             ersRetryRequestCacheService.evictIfAbsent(ersRequest);
         } catch (Exception ex) {
-            log.error("Unknown an error while sending evaluation results: {}", ex.getMessage());
+            log.error("Unknown error while sending evaluation results: {}", ex.getMessage());
             ersErrorHandler.handleErrorRequest(ersRequest, ErsResponseStatus.ERROR, ex.getMessage());
             ersRetryRequestCacheService.evictIfAbsent(ersRequest);
         }
@@ -133,7 +135,7 @@ public class ErsRequestService {
             log.info("Received response with requestId = {}, for data '{}'", response.getRequestId(),
                     classifierOptionsRequest.getRelationName());
             handleClassifierOptionsResponse(classifierOptionsRequest, response, requestModel, classifierOptionsResult);
-        } catch (FeignException.ServiceUnavailable ex) {
+        } catch (FeignException.ServiceUnavailable | RetryableException ex) {
             log.error("Service unavailable error while sending classifier options request: {}.", ex.getMessage());
             ersErrorHandler.handleErrorRequest(requestModel, ErsResponseStatus.SERVICE_UNAVAILABLE, ex.getMessage());
             setClassifierOptionsResultError(classifierOptionsResult, ErrorCode.SERVICE_UNAVAILABLE);
