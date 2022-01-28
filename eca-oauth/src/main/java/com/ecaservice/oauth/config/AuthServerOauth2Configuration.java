@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -29,6 +30,7 @@ public class AuthServerOauth2Configuration extends AuthorizationServerConfigurer
     private final TokenGranterConfigurer tokenGranterConfigurer;
     private final UserDetailsServiceImpl userDetailsService;
     private final DataSource oauthDataSource;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public void configure(final AuthorizationServerSecurityConfigurer oauthServer) {
@@ -37,7 +39,7 @@ public class AuthServerOauth2Configuration extends AuthorizationServerConfigurer
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        clients.jdbc(oauthDataSource);
+        clients.jdbc(oauthDataSource).passwordEncoder(passwordEncoder);
     }
 
     @Override
