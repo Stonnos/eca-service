@@ -1,8 +1,6 @@
 package com.ecaservice.load.test.repository;
 
 import com.ecaservice.load.test.entity.LoadTestEntity;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -46,9 +44,8 @@ public interface LoadTestRepository extends JpaRepository<LoadTestEntity, Long> 
     /**
      * Finds load tests page with specified ids.
      *
-     * @param ids      - ids list
-     * @param pageable - pageable object
+     * @param ids - ids list
      * @return evaluation requests page
      */
-    Page<LoadTestEntity> findByIdIn(Collection<Long> ids, Pageable pageable);
+    List<LoadTestEntity> findByIdIn(Collection<Long> ids);
 }

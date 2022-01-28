@@ -1,8 +1,6 @@
 package com.ecaservice.core.mail.client.repository;
 
 import com.ecaservice.core.mail.client.entity.EmailRequestEntity;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -39,9 +37,8 @@ public interface EmailRequestRepository extends JpaRepository<EmailRequestEntity
     /**
      * Finds email requests page with specified ids.
      *
-     * @param ids      - ids list
-     * @param pageable - pageable object
+     * @param ids - ids list
      * @return email requests page
      */
-    Page<EmailRequestEntity> findByIdIn(Collection<Long> ids, Pageable pageable);
+    List<EmailRequestEntity> findByIdIn(Collection<Long> ids);
 }

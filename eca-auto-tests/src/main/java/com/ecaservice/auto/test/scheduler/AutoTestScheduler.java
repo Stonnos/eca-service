@@ -1,6 +1,7 @@
 package com.ecaservice.auto.test.scheduler;
 
 import com.ecaservice.auto.test.config.AutoTestsProperties;
+import com.ecaservice.auto.test.entity.ExperimentRequestEntity;
 import com.ecaservice.auto.test.entity.ExperimentRequestStageType;
 import com.ecaservice.auto.test.repository.AutoTestsJobRepository;
 import com.ecaservice.auto.test.repository.ExperimentRequestRepository;
@@ -16,17 +17,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.Resource;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
+
+import static com.ecaservice.common.web.util.PageHelper.processWithPagination;
 
 /**
  * Auto test scheduler.
@@ -60,8 +59,8 @@ public class AutoTestScheduler {
     public void startNewTestsJobs() {
         log.trace("Starting to processed new tests jobs");
         List<Long> testIds = autoTestsJobRepository.findNewTests();
-        processPaging(testIds, autoTestsJobRepository::findByIdIn,
-                pageContent -> pageContent.forEach(autoTestExecutor::runTests));
+        processWithPagination(testIds, autoTestsJobRepository::findByIdIn,
+                pageContent -> pageContent.forEach(autoTestExecutor::runTests), autoTestsProperties.getPageSize());
         log.trace("New tests has been processed jobs");
     }
 
@@ -72,25 +71,8 @@ public class AutoTestScheduler {
     public void processFinishedRequests() {
         log.trace("Starting to processed finished requests");
         List<Long> finishedIds = experimentRequestRepository.findFinishedRequests();
-        processPaging(finishedIds, experimentRequestRepository::findByIdIn, pageContent ->
-                pageContent.forEach(experimentRequestEntity -> {
-                    try {
-                        log.info("Starting to download experiment [{}] history",
-                                experimentRequestEntity.getRequestId());
-                        String token = StringUtils.substringAfterLast(experimentRequestEntity.getDownloadUrl(),
-                                SLASH_SEPARATOR);
-                        Resource modelResource = ecaServerClient.downloadModel(token);
-                        @Cleanup InputStream inputStream = modelResource.getInputStream();
-                        AbstractExperiment<?> experimentHistory = SerializationUtils.deserialize(inputStream);
-                        log.info("Experiment [{}] history has been downloaded", experimentRequestEntity.getRequestId());
-                        experimentRequestService.processExperimentHistory(experimentRequestEntity, experimentHistory);
-                    } catch (Exception ex) {
-                        log.error("There was an error while process finished experiment request [{}]: {}",
-                                experimentRequestEntity.getRequestId(), ex.getMessage());
-                        experimentRequestService.finishWithError(experimentRequestEntity, ex.getMessage());
-                    }
-                })
-        );
+        processWithPagination(finishedIds, experimentRequestRepository::findByIdIn, this::processFinishedRequests,
+                autoTestsProperties.getPageSize());
     }
 
     /**
@@ -101,7 +83,7 @@ public class AutoTestScheduler {
         log.trace("Starting to processed exceeded requests");
         LocalDateTime exceededTime = LocalDateTime.now().minusSeconds(autoTestsProperties.getRequestTimeoutInSeconds());
         List<Long> exceededIds = experimentRequestRepository.findExceededRequestIds(exceededTime, FINISHED_STAGES);
-        processPaging(exceededIds, experimentRequestRepository::findByIdIn, pageContent ->
+        processWithPagination(exceededIds, experimentRequestRepository::findByIdIn, pageContent ->
                 pageContent.forEach(experimentRequestEntity -> {
                     experimentRequestEntity.setExecutionStatus(ExecutionStatus.ERROR);
                     experimentRequestEntity.setStageType(ExperimentRequestStageType.EXCEEDED);
@@ -111,7 +93,7 @@ public class AutoTestScheduler {
                     experimentRequestEntity.setFinished(LocalDateTime.now());
                     experimentRequestRepository.save(experimentRequestEntity);
                     log.info("Exceeded request with correlation id [{}]", experimentRequestEntity.getCorrelationId());
-                })
+                }), autoTestsProperties.getPageSize()
         );
         log.trace("Exceeded requests has been processed");
     }
@@ -123,31 +105,40 @@ public class AutoTestScheduler {
     public void processFinishedTestJobs() {
         log.trace("Starting to processed finished tests jobs");
         List<Long> testIds = autoTestsJobRepository.findFinishedJobs(FINISHED_STAGES);
-        processPaging(testIds, autoTestsJobRepository::findByIdIn, pageContent ->
+        processWithPagination(testIds, autoTestsJobRepository::findByIdIn, pageContent ->
                 pageContent.forEach(autoTestsJobEntity -> {
                     autoTestsJobEntity.setExecutionStatus(ExecutionStatus.FINISHED);
                     autoTestsJobEntity.setFinished(LocalDateTime.now());
                     autoTestsJobRepository.save(autoTestsJobEntity);
                     log.info("Auto tests job [{}] has been finished", autoTestsJobEntity.getJobUuid());
-                })
+                }), autoTestsProperties.getPageSize()
         );
         log.trace("Finished tests jobs has been processed");
     }
 
-    private <T> void processPaging(List<Long> ids,
-                                   BiFunction<List<Long>, Pageable, Page<T>> nextPageFunction,
-                                   Consumer<List<T>> pageContentAction) {
-        Pageable pageRequest = PageRequest.of(0, autoTestsProperties.getPageSize());
-        Page<T> page;
-        do {
-            page = nextPageFunction.apply(ids, pageRequest);
-            if (page == null || !page.hasContent()) {
-                log.trace("No one requests has been fetched");
-                break;
-            } else {
-                pageContentAction.accept(page.getContent());
+    private void processFinishedRequests(List<ExperimentRequestEntity> experimentRequestEntities) {
+        experimentRequestEntities.forEach(experimentRequestEntity -> {
+            try {
+                AbstractExperiment<?> experimentHistory = downloadExperimentHistory(experimentRequestEntity);
+                experimentRequestService.processExperimentHistory(experimentRequestEntity, experimentHistory);
+            } catch (Exception ex) {
+                log.error("There was an error while process finished experiment request [{}]: {}",
+                        experimentRequestEntity.getRequestId(), ex.getMessage());
+                experimentRequestService.finishWithError(experimentRequestEntity, ex.getMessage());
             }
-            pageRequest = page.nextPageable();
-        } while (page.hasNext());
+        });
+    }
+
+    private AbstractExperiment<?> downloadExperimentHistory(ExperimentRequestEntity experimentRequestEntity)
+            throws IOException {
+        log.info("Starting to download experiment [{}] history",
+                experimentRequestEntity.getRequestId());
+        String token = StringUtils.substringAfterLast(experimentRequestEntity.getDownloadUrl(),
+                SLASH_SEPARATOR);
+        Resource modelResource = ecaServerClient.downloadModel(token);
+        @Cleanup InputStream inputStream = modelResource.getInputStream();
+        AbstractExperiment<?> experimentHistory = SerializationUtils.deserialize(inputStream);
+        log.info("Experiment [{}] history has been downloaded", experimentRequestEntity.getRequestId());
+        return experimentHistory;
     }
 }

@@ -1,8 +1,6 @@
 package com.ecaservice.core.audit.repository;
 
 import com.ecaservice.core.audit.entity.AuditEventRequestEntity;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -27,9 +25,8 @@ public interface AuditEventRequestRepository extends JpaRepository<AuditEventReq
     /**
      * Finds audit events requests page with specified ids.
      *
-     * @param ids      - ids list
-     * @param pageable - pageable object
+     * @param ids - ids list
      * @return audit events requests page
      */
-    Page<AuditEventRequestEntity> findByIdIn(Collection<Long> ids, Pageable pageable);
+    List<AuditEventRequestEntity> findByIdIn(Collection<Long> ids);
 }
