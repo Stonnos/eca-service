@@ -1,4 +1,4 @@
-package com.ecaservice.server.util;
+package com.ecaservice.common.web.util;
 
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;

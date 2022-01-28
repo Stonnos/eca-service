@@ -16,8 +16,8 @@ import java.util.List;
 
 import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.putMdc;
+import static com.ecaservice.common.web.util.PageHelper.processWithPagination;
 import static com.ecaservice.server.config.EcaServiceConfiguration.EXPERIMENT_REDIS_LOCK_REGISTRY_BEAN;
-import static com.ecaservice.server.util.PageHelper.processWithPagination;
 
 /**
  * Ers requests scheduler.

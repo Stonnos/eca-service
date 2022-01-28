@@ -1,6 +1,8 @@
 package com.ecaservice.external.api.scheduler;
 
 import com.ecaservice.external.api.config.ExternalApiConfig;
+import com.ecaservice.external.api.entity.EvaluationRequestEntity;
+import com.ecaservice.external.api.entity.InstancesEntity;
 import com.ecaservice.external.api.repository.EvaluationRequestRepository;
 import com.ecaservice.external.api.repository.InstancesRepository;
 import com.ecaservice.external.api.service.EcaRequestService;
@@ -10,13 +12,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+
+import static com.ecaservice.common.web.util.PageHelper.processWithPagination;
 
 /**
  * Evaluation request scheduler.
@@ -44,8 +44,9 @@ public class EvaluationRequestScheduler {
         LocalDateTime exceededTime =
                 LocalDateTime.now().minusMinutes(externalApiConfig.getEvaluationRequestTimeoutMinutes());
         List<Long> exceededIds = evaluationRequestRepository.findExceededRequestIds(exceededTime);
-        processPaging(exceededIds, evaluationRequestRepository::findByIdIn, pageContent ->
-                pageContent.forEach(requestStageHandler::handleExceeded)
+        processWithPagination(exceededIds, evaluationRequestRepository::findByIdIn,
+                pageContent -> pageContent.forEach(requestStageHandler::handleExceeded),
+                externalApiConfig.getBatchSize()
         );
         log.trace("Exceeded requests has been processed");
     }
@@ -59,15 +60,8 @@ public class EvaluationRequestScheduler {
         LocalDateTime dateTime = LocalDateTime.now().minusDays(externalApiConfig.getNumberOfDaysForStorage());
         List<Long> ids = evaluationRequestRepository.findNotDeletedModels(dateTime);
         log.info("Obtained {} classifiers files to remove", ids.size());
-        processPaging(ids, evaluationRequestRepository::findByIdIn,
-                pageContent -> pageContent.forEach(evaluationRequestEntity -> {
-                    try {
-                        ecaRequestService.deleteClassifierModel(evaluationRequestEntity);
-                    } catch (Exception ex) {
-                        log.error("There was an error while deleting evaluation request [{}] classifier model: {}",
-                                evaluationRequestEntity.getCorrelationId(), ex.getMessage());
-                    }
-                }));
+        processWithPagination(ids, evaluationRequestRepository::findByIdIn, this::clearClassifiers,
+                externalApiConfig.getBatchSize());
         log.info("Classifiers data removing has been finished.");
     }
 
@@ -80,32 +74,29 @@ public class EvaluationRequestScheduler {
         LocalDateTime dateTime = LocalDateTime.now().minusDays(externalApiConfig.getNumberOfDaysForStorage());
         List<Long> ids = instancesRepository.findNotDeletedData(dateTime);
         log.info("Obtained {} data files to remove", ids.size());
-        processPaging(ids, instancesRepository::findByIdIn, pageContent -> pageContent.forEach(instancesEntity -> {
+        processWithPagination(ids, instancesRepository::findByIdIn, this::clearData, externalApiConfig.getBatchSize());
+        log.info("Train data removing has been finished.");
+    }
+
+    private void clearClassifiers(List<EvaluationRequestEntity> evaluationRequestEntities) {
+        evaluationRequestEntities.forEach(evaluationRequestEntity -> {
+            try {
+                ecaRequestService.deleteClassifierModel(evaluationRequestEntity);
+            } catch (Exception ex) {
+                log.error("There was an error while deleting evaluation request [{}] classifier model: {}",
+                        evaluationRequestEntity.getCorrelationId(), ex.getMessage());
+            }
+        });
+    }
+
+    private void clearData(List<InstancesEntity> instancesEntities) {
+        instancesEntities.forEach(instancesEntity -> {
             try {
                 instancesService.deleteInstances(instancesEntity);
             } catch (Exception ex) {
                 log.error("There was an error while deleting instances [{}]: {}", instancesEntity.getId(),
                         ex.getMessage());
             }
-        }));
-        log.info("Train data removing has been finished.");
-    }
-
-    private <T> void processPaging(List<Long> ids,
-                                   Function<List<Long>, List<T>> nextPageFunction,
-                                   Consumer<List<T>> pageContentAction) {
-        for (int offset = 0; offset < ids.size(); offset += externalApiConfig.getBatchSize()) {
-            var nextIds = ids.stream()
-                    .skip(offset)
-                    .limit(externalApiConfig.getBatchSize())
-                    .collect(Collectors.toList());
-            var nextPage = nextPageFunction.apply(nextIds);
-            if (CollectionUtils.isEmpty(nextPage)) {
-                log.debug("No one requests has been fetched");
-                break;
-            } else {
-                pageContentAction.accept(nextPage);
-            }
-        }
+        });
     }
 }
