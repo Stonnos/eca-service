@@ -86,9 +86,8 @@ public interface ExperimentRequestRepository extends JpaRepository<ExperimentReq
     /**
      * Finds experiment requests page with specified ids.
      *
-     * @param ids      - ids list
-     * @param pageable - pageable object
+     * @param ids - ids list
      * @return experiment requests page
      */
-    Page<ExperimentRequestEntity> findByIdIn(Collection<Long> ids, Pageable pageable);
+    List<ExperimentRequestEntity> findByIdIn(Collection<Long> ids);
 }

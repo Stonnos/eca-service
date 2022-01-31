@@ -12,19 +12,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
 
 import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.putMdc;
+import static com.ecaservice.common.web.util.PageHelper.processWithPagination;
 import static com.ecaservice.core.mail.client.config.EcaMailClientAutoConfiguration.MAIL_LOCK_REGISTRY;
 
 /**
@@ -53,8 +49,9 @@ public class EmailRequestService {
         var ids = emailRequestRepository.findNotSentEmailRequests(LocalDateTime.now());
         if (!CollectionUtils.isEmpty(ids)) {
             log.info("Found [{}] not sent email requests", ids.size());
-            processPaging(ids, emailRequestRepository::findByIdIn,
-                    emailRequestEntities -> emailRequestEntities.forEach(this::sendEmailRequest));
+            processWithPagination(ids, emailRequestRepository::findByIdIn,
+                    emailRequestEntities -> emailRequestEntities.forEach(this::sendEmailRequest),
+                    ecaMailClientProperties.getPageSize());
         }
         log.debug("Redeliver email requests has been finished");
     }
@@ -68,26 +65,10 @@ public class EmailRequestService {
         var ids = emailRequestRepository.findExceededEmailRequests(LocalDateTime.now());
         if (!CollectionUtils.isEmpty(ids)) {
             log.info("Found [{}] exceeded email requests", ids.size());
-            processPaging(ids, emailRequestRepository::findByIdIn, this::processExceededRequests);
+            processWithPagination(ids, emailRequestRepository::findByIdIn, this::processExceededRequests,
+                    ecaMailClientProperties.getPageSize());
         }
         log.debug("Exceeded email requests processing has been finished");
-    }
-
-    private void processPaging(List<Long> ids,
-                               BiFunction<List<Long>, Pageable, Page<EmailRequestEntity>> nextPageFunction,
-                               Consumer<List<EmailRequestEntity>> pageContentAction) {
-        Pageable pageRequest = PageRequest.of(0, ecaMailClientProperties.getPageSize());
-        Page<EmailRequestEntity> page;
-        do {
-            page = nextPageFunction.apply(ids, pageRequest);
-            if (page == null || !page.hasContent()) {
-                log.trace("No one email request has been fetched");
-                break;
-            } else {
-                pageContentAction.accept(page.getContent());
-            }
-            pageRequest = page.nextPageable();
-        } while (page.hasNext());
     }
 
     private void processExceededRequests(List<EmailRequestEntity> emailRequestEntities) {

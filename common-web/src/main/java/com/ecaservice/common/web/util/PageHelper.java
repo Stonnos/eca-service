@@ -1,14 +1,13 @@
-package com.ecaservice.server.util;
+package com.ecaservice.common.web.util;
 
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Page helper utility class.
@@ -29,22 +28,21 @@ public class PageHelper {
      * @param <T>               - entity generic type
      */
     public static <T> void processWithPagination(List<Long> ids,
-                                                 BiFunction<List<Long>, Pageable, Page<T>> nextPageFunction,
+                                                 Function<List<Long>, List<T>> nextPageFunction,
                                                  Consumer<List<T>> pageContentAction,
                                                  int pageSize) {
-        Pageable pageRequest = PageRequest.of(0, pageSize);
-        Page<T> page;
-        do {
-            page = nextPageFunction.apply(ids, pageRequest);
-            if (page == null || !page.hasContent()) {
+        for (int offset = 0; offset < ids.size(); offset += pageSize) {
+            var nextIds = ids.stream()
+                    .skip(offset)
+                    .limit(pageSize)
+                    .collect(Collectors.toList());
+            var nextPage = nextPageFunction.apply(nextIds);
+            if (CollectionUtils.isEmpty(nextPage)) {
                 log.debug("No one requests has been fetched");
                 break;
             } else {
-                log.debug("Process page [{}] of [{}] with size [{}]", page.getNumber(), page.getTotalPages(),
-                        page.getSize());
-                pageContentAction.accept(page.getContent());
+                pageContentAction.accept(nextPage);
             }
-            pageRequest = page.nextPageable();
-        } while (page.hasNext());
+        }
     }
 }

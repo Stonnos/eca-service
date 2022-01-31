@@ -5,6 +5,7 @@ import com.ecaservice.core.audit.entity.AuditEventRequestEntity;
 import com.ecaservice.core.audit.entity.EventStatus;
 import com.ecaservice.core.audit.repository.AuditEventRequestRepository;
 import feign.FeignException;
+import feign.RetryableException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -39,9 +40,9 @@ public class AuditEventSender {
             auditEventRequestEntity.setSentDate(LocalDateTime.now());
             log.info("Audit event [{}] with code [{}], type [{}] has been sent", auditEventRequest.getEventId(),
                     auditEventRequest.getCode(), auditEventRequest.getEventType());
-        } catch (FeignException.ServiceUnavailable ex) {
-            log.error("Audit service unavailable error while sending audit event [{}]: {}",
-                    auditEventRequest.getEventId(), ex.getMessage());
+        } catch (FeignException.ServiceUnavailable | RetryableException ex) {
+            log.error("Audit service unavailable error [{}] while sending audit event [{}]: {}",
+                    ex.getClass().getSimpleName(), auditEventRequest.getEventId(), ex.getMessage());
             auditEventRequestEntity.setEventStatus(EventStatus.NOT_SENT);
             auditEventRequestEntity.setDetails(ex.getMessage());
         } catch (Exception ex) {

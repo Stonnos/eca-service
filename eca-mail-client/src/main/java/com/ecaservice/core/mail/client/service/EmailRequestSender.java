@@ -5,6 +5,7 @@ import com.ecaservice.core.mail.client.entity.EmailRequestStatus;
 import com.ecaservice.core.mail.client.repository.EmailRequestRepository;
 import com.ecaservice.notification.dto.EmailRequest;
 import feign.FeignException;
+import feign.RetryableException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -37,14 +38,14 @@ public class EmailRequestSender {
             emailRequestEntity.setSentDate(LocalDateTime.now());
             log.info("Email [{}] has been sent with request id [{}]", emailRequest.getTemplateCode(),
                     emailResponse.getRequestId());
-        } catch (FeignException.ServiceUnavailable ex) {
+        } catch (FeignException.ServiceUnavailable | RetryableException ex) {
             log.error("Service unavailable error while sending email request [{}]: {}",
                     emailRequest.getTemplateCode(), ex.getMessage());
             emailRequestEntity.setRequestStatus(EmailRequestStatus.NOT_SENT);
             emailRequestEntity.setDetails(ex.getMessage());
         } catch (Exception ex) {
-            log.error("There was an error while sending email request [{}]: {}", emailRequest.getTemplateCode(),
-                    ex.getMessage());
+            log.error("There was an error [{}] while sending email request [{}]: {}", ex.getClass().getSimpleName(),
+                    emailRequest.getTemplateCode(), ex.getMessage());
             emailRequestEntity.setRequestStatus(EmailRequestStatus.ERROR);
             emailRequestEntity.setDetails(ex.getMessage());
         } finally {

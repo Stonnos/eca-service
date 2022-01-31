@@ -2,8 +2,6 @@ package com.ecaservice.auto.test.repository;
 
 import com.ecaservice.auto.test.entity.AutoTestsJobEntity;
 import com.ecaservice.auto.test.entity.ExperimentRequestStageType;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -40,11 +38,10 @@ public interface AutoTestsJobRepository extends JpaRepository<AutoTestsJobEntity
     /**
      * Finds auto tests page with specified ids.
      *
-     * @param ids      - ids list
-     * @param pageable - pageable object
+     * @param ids - ids list
      * @return evaluation requests page
      */
-    Page<AutoTestsJobEntity> findByIdIn(Collection<Long> ids, Pageable pageable);
+    List<AutoTestsJobEntity> findByIdIn(Collection<Long> ids);
 
     /**
      * Finds auto tests job by uuid.
