@@ -32,7 +32,7 @@ public abstract class AbstractCsvTestResultsReportGenerator<T> implements TestRe
         @Cleanup var writer = new OutputStreamWriter(zipOutputStream, StandardCharsets.UTF_8);
 
         zipOutputStream.putNextEntry(new ZipEntry(TEST_RUN_LOGS_CSV));
-        var resultsPrinter = new CSVPrinter(writer, CSVFormat.EXCEL.withHeader(getResultsReportHeaders())
+        @Cleanup var resultsPrinter = new CSVPrinter(writer, CSVFormat.EXCEL.withHeader(getResultsReportHeaders())
                 .withDelimiter(HEADER_DELIMITER));
         printReportTestResults(resultsPrinter, data, counter);
         writer.flush();
@@ -40,7 +40,7 @@ public abstract class AbstractCsvTestResultsReportGenerator<T> implements TestRe
         zipOutputStream.closeEntry();
 
         zipOutputStream.putNextEntry(new ZipEntry(TEST_RUN_TOTALS_CSV));
-        var totalPrinter = new CSVPrinter(writer, CSVFormat.EXCEL.withHeader(getTotalReportHeaders())
+        @Cleanup var totalPrinter = new CSVPrinter(writer, CSVFormat.EXCEL.withHeader(getTotalReportHeaders())
                 .withDelimiter(HEADER_DELIMITER));
         printReportTotal(totalPrinter, data, counter);
         writer.flush();
