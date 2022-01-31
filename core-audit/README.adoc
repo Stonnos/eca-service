@@ -235,3 +235,5 @@ returnValue
 Получить конфигурацию событий аудита в формате csv можно через actuator endpoint:
 
 http://[host]:[port]/actuator/auditevents
+
+где host, port соответственно хост и порт на котором развернуто приложение
