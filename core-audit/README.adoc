@@ -229,3 +229,9 @@ id;event_type;message_template;audit_code_id
 Для доступа к полю объекта используется следующий синтаксис myInputParam.field1Value
 * Возвращаемое значение метода java класса. Доступ к объекту возвращаемого значения осуществляется с использованием переменной
 returnValue
+
+== 5. Получение конфигурации событий аудита через actuator endpoint
+
+Получить конфигурацию событий аудита в формате csv можно через actuator endpoint:
+
+http://[host]:[port]/actuator/auditevents
