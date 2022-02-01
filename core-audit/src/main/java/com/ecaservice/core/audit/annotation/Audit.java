@@ -30,7 +30,8 @@ public @interface Audit {
     String targetInitiator() default "";
 
     /**
-     * Spring Expression Language (SpEL) expression for computing the correlation id key dynamically.
+     * Spring Expression Language (SpEL) expression for computing the correlation id key dynamically from method
+     * parameters.
      */
     String sourceCorrelationIdKey() default "";
 
