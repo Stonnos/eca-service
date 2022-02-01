@@ -2,6 +2,7 @@ package com.ecaservice.core.audit.aspect;
 
 import com.ecaservice.audit.dto.EventType;
 import com.ecaservice.core.audit.annotation.Audit;
+import com.ecaservice.core.audit.annotation.Audits;
 import com.ecaservice.core.audit.event.AuditEvent;
 import com.ecaservice.core.audit.model.AuditContextParams;
 import com.ecaservice.core.audit.service.AuditEventInitiator;
@@ -49,16 +50,38 @@ public class AuditAspect {
     @Around("execution(@com.ecaservice.core.audit.annotation.Audit * * (..)) && @annotation(audit)")
     public Object around(ProceedingJoinPoint joinPoint, Audit audit) throws Throwable {
         log.debug("Starting to around audited method [{}]", joinPoint.getSignature().getName());
-        Map<String, Object> methodParams = getMethodParams(joinPoint);
         Object result = joinPoint.proceed();
+        publishAuditEvent(joinPoint, audit, result);
+        log.debug("Around audited method [{}] has been processed", joinPoint.getSignature().getName());
+        return result;
+    }
+
+    /**
+     * Wrapper to audit service method.
+     *
+     * @param joinPoint - give reflective access to the processed method
+     * @param audits    - audits annotation
+     * @return result object
+     */
+    @Around("execution(@com.ecaservice.core.audit.annotation.Audits * * (..)) && @annotation(audits)")
+    public Object around(ProceedingJoinPoint joinPoint, Audits audits) throws Throwable {
+        log.debug("Starting to around audited method [{}]", joinPoint.getSignature().getName());
+        Object result = joinPoint.proceed();
+        for (Audit audit : audits.value()) {
+            publishAuditEvent(joinPoint, audit, result);
+        }
+        log.debug("Around audited method [{}] has been processed", joinPoint.getSignature().getName());
+        return result;
+    }
+
+    private void publishAuditEvent(ProceedingJoinPoint joinPoint, Audit audit, Object result) {
+        Map<String, Object> methodParams = getMethodParams(joinPoint);
         AuditContextParams auditContextParams = new AuditContextParams(methodParams, result);
         String eventInitiator = getInitiator(audit, result);
         String correlationId = getCorrelationId(audit, joinPoint, result);
         AuditEvent auditEvent = new AuditEvent(this, audit.value(), EventType.SUCCESS, correlationId,
                 eventInitiator, auditContextParams);
         applicationEventPublisher.publishEvent(auditEvent);
-        log.debug("Around audited method [{}] has been processed", joinPoint.getSignature().getName());
-        return result;
     }
 
     private String getInitiator(Audit audit, Object methodResult) {

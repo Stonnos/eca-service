@@ -117,6 +117,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
      * @return classifiers configuration copy entity
      */
     @Audit(value = COPY_CONFIGURATION, sourceCorrelationIdKey = "#configurationDto.id")
+    @Audit(value = ADD_CONFIGURATION, targetCorrelationIdKey = "id")
     @Transactional
     public ClassifiersConfiguration copy(UpdateClassifiersConfigurationDto configurationDto) {
         log.info("Starting to create classifiers configuration [{}] copy with name [{}]",
