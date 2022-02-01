@@ -64,6 +64,7 @@ class AuditLogServiceTest extends AbstractJpaTest {
         var actual = auditLogRepository.findById(auditLog.getId()).orElse(null);
         assertThat(actual).isNotNull();
         assertThat(actual.getEventId()).isEqualTo(auditEventRequest.getEventId());
+        assertThat(actual.getCorrelationId()).isEqualTo(auditEventRequest.getCorrelationId());
     }
 
     /**

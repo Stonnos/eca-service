@@ -7,4 +7,5 @@
     <include file="db/changelog/v0-init-schema.xml"/>
     <include file="../filter-template-changelog.xml" relativeToChangelogFile="true"/>
     <include file="db/changelog/v1-insert-filter-templates.xml"/>
+    <include file="db/changelog/v2-add-correlation-id-column.xml"/>
 </databaseChangeLog>
