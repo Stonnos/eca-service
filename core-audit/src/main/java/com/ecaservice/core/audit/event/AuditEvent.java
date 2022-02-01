@@ -24,6 +24,11 @@ public class AuditEvent extends ApplicationEvent {
     private final EventType eventType;
 
     /**
+     * Correlation id
+     */
+    private final String correlationId;
+
+    /**
      * Event initiator
      */
     private final String initiator;
@@ -40,14 +45,16 @@ public class AuditEvent extends ApplicationEvent {
      *                           which the event is associated (never {@code null})
      * @param auditCode          - audit code
      * @param eventType          - event type
+     * @param correlationId      - correlation id
      * @param initiator          - event initiator
      * @param auditContextParams - audit context params
      */
-    public AuditEvent(Object source, String auditCode, EventType eventType, String initiator,
+    public AuditEvent(Object source, String auditCode, EventType eventType, String correlationId, String initiator,
                       AuditContextParams auditContextParams) {
         super(source);
         this.auditCode = auditCode;
         this.eventType = eventType;
+        this.correlationId = correlationId;
         this.initiator = initiator;
         this.auditContextParams = auditContextParams;
     }

@@ -36,6 +36,13 @@ public class AuditEventRequest {
     private String eventId;
 
     /**
+     * Correlation id.
+     */
+    @Size(max = MAX_LENGTH_255)
+    @Schema(description = "Correlation id")
+    private String correlationId;
+
+    /**
      * Audit message
      */
     @NotEmpty

@@ -33,7 +33,7 @@ class SimpleAuditEventHandlerTest {
     @Test
     void testHandleAuditEvent() {
         var contextParams = new AuditContextParams();
-        var auditEvent = new AuditEvent(this, AUDIT_CODE, EventType.SUCCESS, INITIATOR, contextParams);
+        var auditEvent = new AuditEvent(this, AUDIT_CODE, EventType.SUCCESS, correlationId, INITIATOR, contextParams);
         simpleAuditEventHandler.handleAuditEvent(auditEvent);
         verify(auditEventService, atLeastOnce()).audit(auditEvent);
     }

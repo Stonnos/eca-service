@@ -53,8 +53,9 @@ public class AuditAspect {
         Object result = joinPoint.proceed();
         AuditContextParams auditContextParams = new AuditContextParams(methodParams, result);
         String eventInitiator = getInitiator(audit, result);
-        AuditEvent auditEvent =
-                new AuditEvent(this, audit.value(), EventType.SUCCESS, eventInitiator, auditContextParams);
+        String correlationId = getCorrelationId(audit, joinPoint, result);
+        AuditEvent auditEvent = new AuditEvent(this, audit.value(), EventType.SUCCESS, correlationId,
+                eventInitiator, auditContextParams);
         applicationEventPublisher.publishEvent(auditEvent);
         log.debug("Around audited method [{}] has been processed", joinPoint.getSignature().getName());
         return result;
@@ -64,10 +65,34 @@ public class AuditAspect {
         if (!StringUtils.hasText(audit.targetInitiator())) {
             return auditEventInitiator.getInitiator();
         } else {
-            StandardEvaluationContext context = new StandardEvaluationContext(methodResult);
-            Object val = expressionParser.parseExpression(audit.targetInitiator()).getValue(context, Object.class);
-            return String.valueOf(val);
+            return parseMethodResultExpression(audit.targetInitiator(), methodResult);
         }
+    }
+
+    private String getCorrelationId(Audit audit, ProceedingJoinPoint joinPoint, Object methodResult) {
+        if (StringUtils.hasText(audit.sourceCorrelationIdKey())) {
+            return parseMethodParameterExpression(audit.sourceCorrelationIdKey(), joinPoint);
+        } else if (StringUtils.hasText(audit.targetCorrelationIdKey())) {
+            return parseMethodResultExpression(audit.targetCorrelationIdKey(), methodResult);
+        } else {
+            return null;
+        }
+    }
+
+    private String parseMethodParameterExpression(String expression, ProceedingJoinPoint joinPoint) {
+        StandardEvaluationContext context = new StandardEvaluationContext();
+        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+        String[] methodParameters = methodSignature.getParameterNames();
+        Object[] args = joinPoint.getArgs();
+        IntStream.range(0, methodParameters.length).forEach(i -> context.setVariable(methodParameters[i], args[i]));
+        Object value = expressionParser.parseExpression(expression).getValue(context, Object.class);
+        return String.valueOf(value);
+    }
+
+    private String parseMethodResultExpression(String expression, Object methodResult) {
+        StandardEvaluationContext context = new StandardEvaluationContext(methodResult);
+        Object val = expressionParser.parseExpression(expression).getValue(context, Object.class);
+        return String.valueOf(val);
     }
 
     private Map<String, Object> getMethodParams(ProceedingJoinPoint joinPoint) {

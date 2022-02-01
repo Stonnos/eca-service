@@ -26,4 +26,16 @@ public @interface Audit {
      * This expression is evaluated after the method has been called and can therefore refer to the {@code result}.
      */
     String targetInitiator() default "";
+
+    /**
+     * Spring Expression Language (SpEL) expression for computing the correlation id key dynamically.
+     * <p>Default is {@code ""}, meaning all method parameters are considered as a key
+     */
+    String sourceCorrelationIdKey() default "";
+
+    /**
+     * Spring Expression Language (SpEL) attribute for computing the initiator correlation id key dynamically.
+     * This expression is evaluated after the method has been called and can therefore refer to the {@code result}.
+     */
+    String targetCorrelationIdKey() default "";
 }

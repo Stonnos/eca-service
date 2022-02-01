@@ -47,6 +47,7 @@ public class AuditEventService {
                         auditEvent.getEventType(), auditEvent.getAuditContextParams());
                 AuditEventRequest auditEventRequest = auditMapper.map(auditEventTemplate);
                 auditEventRequest.setEventId(eventId);
+                auditEventRequest.setCorrelationId(auditEvent.getCorrelationId());
                 auditEventRequest.setMessage(message);
                 auditEventRequest.setInitiator(auditEvent.getInitiator());
                 auditEventRequest.setEventDate(LocalDateTime.now());
