@@ -29,7 +29,6 @@ public @interface Audit {
 
     /**
      * Spring Expression Language (SpEL) expression for computing the correlation id key dynamically.
-     * <p>Default is {@code ""}, meaning all method parameters are considered as a key
      */
     String sourceCorrelationIdKey() default "";
 
