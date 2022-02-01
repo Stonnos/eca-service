@@ -32,7 +32,10 @@ import com.ecaservice.server.repository.ErsRequestRepository;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.ers.ErsClient;
+import com.ecaservice.server.service.ers.ErsErrorHandler;
 import com.ecaservice.server.service.ers.ErsRequestService;
+import com.ecaservice.server.service.ers.ErsRetryRequestCacheService;
+import com.ecaservice.server.service.evaluation.initializers.ClassifierInitializerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.ensemble.forests.DecisionTreeType;
 import org.junit.jupiter.api.AfterAll;
@@ -66,7 +69,7 @@ import static org.mockito.Mockito.when;
         CrossValidationConfig.class, EvaluationRequestService.class, InstancesInfoMapperImpl.class,
         ClassifierOptionsRequestModelMapperImpl.class, ClassifierReportMapperImpl.class,
         EvaluationRequestMapperImpl.class, ClassifierOptionsRequestMapperImpl.class,
-        ErsConfig.class, EvaluationLogMapperImpl.class, LockExecutionAspect.class,
+        ErsConfig.class, EvaluationLogMapperImpl.class, LockExecutionAspect.class, ErsErrorHandler.class,
         EvaluationService.class, ErsEvaluationMethodMapperImpl.class, ErsResponseStatusMapperImpl.class,
         InstancesConverter.class, ClassifierOptionsResponseModelMapperImpl.class, ErsRequestService.class,
         EvaluationOptimizerService.class, ClassifierInfoMapperImpl.class, RedisAutoConfiguration.class,
@@ -78,6 +81,12 @@ class EvaluationOptimizerServiceIT extends AbstractJpaTest {
 
     @MockBean
     private ErsClient ersClient;
+    @MockBean
+    private ClassifierInitializerService classifierInitializerService;
+    @MockBean
+    private EvaluationResultsService evaluationResultsService;
+    @MockBean
+    private ErsRetryRequestCacheService ersRetryRequestCacheService;
     @Inject
     private ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository;
     @Inject
