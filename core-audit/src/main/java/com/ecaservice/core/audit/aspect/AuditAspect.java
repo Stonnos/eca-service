@@ -51,7 +51,7 @@ public class AuditAspect {
     public Object around(ProceedingJoinPoint joinPoint, Audit audit) throws Throwable {
         log.debug("Starting to around audited method [{}]", joinPoint.getSignature().getName());
         Object result = joinPoint.proceed();
-        publishAuditEvent(joinPoint, audit, result);
+        publishAuditEvent(audit, joinPoint, result);
         log.debug("Around audited method [{}] has been processed", joinPoint.getSignature().getName());
         return result;
     }
@@ -68,27 +68,29 @@ public class AuditAspect {
         log.debug("Starting to around audited method [{}]", joinPoint.getSignature().getName());
         Object result = joinPoint.proceed();
         for (Audit audit : audits.value()) {
-            publishAuditEvent(joinPoint, audit, result);
+            publishAuditEvent(audit, joinPoint, result);
         }
         log.debug("Around audited method [{}] has been processed", joinPoint.getSignature().getName());
         return result;
     }
 
-    private void publishAuditEvent(ProceedingJoinPoint joinPoint, Audit audit, Object result) {
+    private void publishAuditEvent(Audit audit, ProceedingJoinPoint joinPoint, Object result) {
         Map<String, Object> methodParams = getMethodParams(joinPoint);
         AuditContextParams auditContextParams = new AuditContextParams(methodParams, result);
-        String eventInitiator = getInitiator(audit, result);
+        String eventInitiator = getInitiator(audit, joinPoint, result);
         String correlationId = getCorrelationId(audit, joinPoint, result);
         AuditEvent auditEvent = new AuditEvent(this, audit.value(), EventType.SUCCESS, correlationId,
                 eventInitiator, auditContextParams);
         applicationEventPublisher.publishEvent(auditEvent);
     }
 
-    private String getInitiator(Audit audit, Object methodResult) {
-        if (!StringUtils.hasText(audit.targetInitiator())) {
-            return auditEventInitiator.getInitiator();
-        } else {
+    private String getInitiator(Audit audit, ProceedingJoinPoint joinPoint, Object methodResult) {
+        if (StringUtils.hasText(audit.sourceInitiator())) {
+            return parseMethodParameterExpression(audit.sourceInitiator(), joinPoint);
+        } else if (StringUtils.hasText(audit.targetInitiator())) {
             return parseMethodResultExpression(audit.targetInitiator(), methodResult);
+        } else {
+            return auditEventInitiator.getInitiator();
         }
     }
 

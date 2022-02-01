@@ -24,6 +24,12 @@ public @interface Audit {
     String value() default "";
 
     /**
+     * Spring Expression Language (SpEL) attribute for computing the initiator key dynamically from method
+     * parameters.
+     */
+    String sourceInitiator() default "";
+
+    /**
      * Spring Expression Language (SpEL) attribute for computing the initiator key dynamically.
      * This expression is evaluated after the method has been called and can therefore refer to the {@code result}.
      */
