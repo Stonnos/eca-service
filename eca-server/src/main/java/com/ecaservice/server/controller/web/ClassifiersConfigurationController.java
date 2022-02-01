@@ -368,7 +368,7 @@ public class ClassifiersConfigurationController {
      *
      * @param id - configuration id
      */
-    @Audit(SET_ACTIVE_CONFIGURATION)
+    @Audit(value = SET_ACTIVE_CONFIGURATION, sourceCorrelationIdKey = "#id")
     @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
             description = "Sets classifiers configuration as active",
