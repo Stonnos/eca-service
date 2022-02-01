@@ -109,4 +109,17 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="add_correlation_id_column_in_audit_event_request_table"
+               author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="audit_event_request"/>
+            <not>
+                <columnExists tableName="audit_event_request" columnName="correlation_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="audit_event_request">
+            <column name="correlation_id" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

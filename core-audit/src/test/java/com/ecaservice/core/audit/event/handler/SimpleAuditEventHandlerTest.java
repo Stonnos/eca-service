@@ -10,6 +10,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.UUID;
+
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 
@@ -33,7 +35,8 @@ class SimpleAuditEventHandlerTest {
     @Test
     void testHandleAuditEvent() {
         var contextParams = new AuditContextParams();
-        var auditEvent = new AuditEvent(this, AUDIT_CODE, EventType.SUCCESS, correlationId, INITIATOR, contextParams);
+        var auditEvent = new AuditEvent(this, AUDIT_CODE, EventType.SUCCESS, UUID.randomUUID().toString(),
+                INITIATOR, contextParams);
         simpleAuditEventHandler.handleAuditEvent(auditEvent);
         verify(auditEventService, atLeastOnce()).audit(auditEvent);
     }
