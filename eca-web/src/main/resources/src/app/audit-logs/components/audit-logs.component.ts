@@ -58,6 +58,7 @@ export class AuditLogsComponent extends BaseListComponent<AuditLogDto> {
   private initColumns() {
     this.columns = [
       { name: AuditLogFields.EVENT_ID, label: "ID события" },
+      { name: AuditLogFields.CORRELATION_ID, label: "ID корреляции" },
       { name: AuditLogFields.EVENT_DATE, label: "Дата события" },
       { name: AuditLogFields.GROUP_TITLE, label: "Группа событий" },
       { name: AuditLogFields.CODE_TITLE, label: "Код события" },
