@@ -745,7 +745,7 @@ image::./images/eca-audit-log-db-schema.png[alt=Схема базы данных
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                      |bigint           |+|+|+                              |Идентификатор записи (первичный ключ)
-|event_id                |varchar(255)     |-|+|-                              |Внешний ID события
+|event_id                |varchar(255)     |+|+|audit_log_event_id_unique_idx  |Внешний ID события
 |message                 |text             |-|+|-                              |Текст сообщения
 |initiator               |varchar(255)     |-|+|-                              |Источник события, например имя пользователя
 |event_type              |varchar(255)     |-|+|-                              |Тип события
