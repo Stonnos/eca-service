@@ -25,7 +25,8 @@ public @interface Audit {
 
     /**
      * Spring Expression Language (SpEL) attribute for computing the initiator key dynamically from method
-     * parameters.
+     * parameters. If both sourceInitiator and targetInitiator is specified then the targetInitiator will be used and
+     * sourceInitiator is ignored.
      */
     String sourceInitiator() default "";
 
@@ -37,7 +38,8 @@ public @interface Audit {
 
     /**
      * Spring Expression Language (SpEL) expression for computing the correlation id key dynamically from method
-     * parameters.
+     * parameters. If both sourceCorrelationIdKey and targetCorrelationIdKey is specified then the
+     * targetCorrelationIdKey will be used and sourceCorrelationIdKey is ignored.
      */
     String sourceCorrelationIdKey() default "";
 
