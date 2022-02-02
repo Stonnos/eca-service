@@ -9,4 +9,5 @@
     <include file="db/changelog/v1-insert-filter-templates.xml"/>
     <include file="db/changelog/v2-add-correlation-id-column.xml"/>
     <include file="db/changelog/v3-insert-correlation-id-in-filter-templates.xml"/>
+    <include file="db/changelog/v4-add-event-id-unique-idx.xml"/>
 </databaseChangeLog>

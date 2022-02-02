@@ -29,7 +29,7 @@ public class AuditLogEntity {
     /**
      * Audit event id.
      */
-    @Column(name = "event_id", nullable = false)
+    @Column(name = "event_id", nullable = false, unique = true)
     private String eventId;
 
     /**
