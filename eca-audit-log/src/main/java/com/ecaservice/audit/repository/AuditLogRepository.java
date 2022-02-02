@@ -11,4 +11,12 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
  */
 public interface AuditLogRepository
         extends JpaRepository<AuditLogEntity, Long>, JpaSpecificationExecutor<AuditLogEntity> {
+
+    /**
+     * Check audit log existing with specified event id.
+     *
+     * @param eventId - event id
+     * @return {@code true} if audit log with specified event id exists, otherwise {@link false}
+     */
+    boolean existsByEventId(String eventId);
 }
