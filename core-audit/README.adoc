@@ -175,6 +175,7 @@ public class AuditLockConfiguration {
 |event_status            |varchar(255)     |-|+|-                              |Статус отправки события в сервис аудита (SENT, NOT_SENT, ERROR)
 |details                 |text             |-|-|-                              |Дополнительная информация, например текст ошибки
 |sent_date               |timestamp        |-|-|-                              |Дата отправки события в сервис аудита
+|correlation_id          |varchar(255)     |-|-|-                              |ID корреляции
 |===
 
 == 4. Настройка шаблонов с событиями аудита

@@ -808,6 +808,7 @@ image::./images/eca-audit-log-db-schema.png[alt=Схема базы данных
 |event_status            |varchar(255)     |-|+|-                              |Статус отправки события в сервис аудита (SENT, NOT_SENT, ERROR)
 |details                 |text             |-|-|-                              |Дополнительная информация, например текст ошибки
 |sent_date               |timestamp        |-|-|-                              |Дата отправки события в сервис аудита
+|correlation_id          |varchar(255)     |-|-|-                              |ID корреляции
 |===
 
 === 3.14 Описание служебных таблиц для отправки почты
