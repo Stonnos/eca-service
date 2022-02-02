@@ -45,6 +45,7 @@ class AuditLogMapperTest {
         var auditLogDto = auditLogMapper.map(auditLog);
         assertThat(auditLogDto).isNotNull();
         assertThat(auditLogDto.getEventId()).isEqualTo(auditLog.getEventId());
+        assertThat(auditLogDto.getCorrelationId()).isEqualTo(auditLog.getCorrelationId());
         assertThat(auditLogDto.getEventDate()).isEqualTo(auditLog.getEventDate());
         assertThat(auditLogDto.getMessage()).isEqualTo(auditLog.getMessage());
         assertThat(auditLogDto.getCode()).isEqualTo(auditLog.getCode());
