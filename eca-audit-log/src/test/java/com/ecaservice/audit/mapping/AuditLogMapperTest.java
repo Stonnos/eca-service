@@ -66,5 +66,6 @@ class AuditLogMapperTest {
         assertThat(auditLogBean.getCodeTitle()).isEqualTo(auditLog.getCodeTitle());
         assertThat(auditLogBean.getGroupCode()).isEqualTo(auditLog.getGroupCode());
         assertThat(auditLogBean.getGroupTitle()).isEqualTo(auditLog.getGroupTitle());
+        assertThat(auditLogBean.getCorrelationId()).isEqualTo(auditLog.getCorrelationId());
     }
 }
