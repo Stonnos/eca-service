@@ -36,6 +36,8 @@ import static com.google.common.collect.Maps.newHashMap;
 @RequiredArgsConstructor
 public class AuditAspect {
 
+    private static final String RESULT_EXPRESSION = "result";
+
     private final ApplicationEventPublisher applicationEventPublisher;
     private final AuditEventInitiator auditEventInitiator;
     private final ExpressionParser expressionParser = new SpelExpressionParser();
@@ -115,9 +117,13 @@ public class AuditAspect {
     }
 
     private String parseMethodResultExpression(String expression, Object methodResult) {
-        StandardEvaluationContext context = new StandardEvaluationContext(methodResult);
-        Object val = expressionParser.parseExpression(expression).getValue(context, Object.class);
-        return String.valueOf(val);
+        if (RESULT_EXPRESSION.equals(expression)) {
+            return String.valueOf(methodResult);
+        } else {
+            StandardEvaluationContext context = new StandardEvaluationContext(methodResult);
+            Object val = expressionParser.parseExpression(expression).getValue(context, Object.class);
+            return String.valueOf(val);
+        }
     }
 
     private Map<String, Object> getMethodParams(ProceedingJoinPoint joinPoint) {
