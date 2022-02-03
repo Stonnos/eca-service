@@ -25,7 +25,7 @@ public @interface Audit {
 
     /**
      * Spring Expression Language (SpEL) attribute for computing the initiator key dynamically. Expression may contain
-     * method input parameters shortcuts or method returned value shortcuts.
+     * method input parameter shortcut or method returned value shortcut.
      * Method input parameters examples: {@code #id}, {@code #object.name} - for field in class object.
      * Method returned value examples: {@code #result}, {@code #result.value} - for field in class object.
      * Note that method returned value shortcut must be started with #result prefix.
