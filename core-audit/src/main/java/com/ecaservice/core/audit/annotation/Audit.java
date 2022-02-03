@@ -24,28 +24,18 @@ public @interface Audit {
     String value() default "";
 
     /**
-     * Spring Expression Language (SpEL) attribute for computing the initiator key dynamically from method
-     * parameters. If both sourceInitiator and targetInitiator is specified then the targetInitiator will be used and
-     * sourceInitiator is ignored.
+     * Spring Expression Language (SpEL) attribute for computing the initiator key dynamically. Expression may contain
+     * method input parameters shortcuts or method returned value shortcuts.
+     * Method input parameters examples: {@code #id}, {@code #object.name} - for field in class object.
+     * Method returned value examples: {@code #result}, {@code #result.value} - for field in class object.
      */
-    String sourceInitiator() default "";
+    String initiatorKey() default "";
 
     /**
-     * Spring Expression Language (SpEL) attribute for computing the initiator key dynamically.
-     * This expression is evaluated after the method has been called and can therefore refer to the {@code result}.
+     * Spring Expression Language (SpEL) attribute for computing the correlation id key dynamically. Expression may
+     * contain method input parameters shortcuts or method returned value shortcuts.
+     * Method input parameters examples: {@code #id}, {@code #object.name} - for field in class object.
+     * Method returned value examples: {@code #result}, {@code #result.value} - for field in class object.
      */
-    String targetInitiator() default "";
-
-    /**
-     * Spring Expression Language (SpEL) expression for computing the correlation id key dynamically from method
-     * parameters. If both sourceCorrelationIdKey and targetCorrelationIdKey is specified then the
-     * targetCorrelationIdKey will be used and sourceCorrelationIdKey is ignored.
-     */
-    String sourceCorrelationIdKey() default "";
-
-    /**
-     * Spring Expression Language (SpEL) attribute for computing the initiator correlation id key dynamically.
-     * This expression is evaluated after the method has been called and can therefore refer to the {@code result}.
-     */
-    String targetCorrelationIdKey() default "";
+    String correlationIdKey() default "";
 }

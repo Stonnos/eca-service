@@ -45,7 +45,7 @@ class AuditAspectTest {
     private static final String PARAM_2 = "param2";
 
     private static final String[] PARAMETERS_NAMES = {PARAM_1, PARAM_2};
-    private static final String RESULT_EXPRESSION = "result";
+    private static final String RESULT_EXPRESSION = "#result";
 
     @Mock
     private ApplicationEventPublisher applicationEventPublisher;
@@ -100,10 +100,10 @@ class AuditAspectTest {
     }
 
     @Test
-    void testAroundAuditMethodWithSourceInitiator() throws Throwable {
+    void testAroundAuditMethodWithInitiatorFromInputParameters() throws Throwable {
         var audit = mock(Audit.class);
         when(audit.value()).thenReturn(AUDIT_CODE);
-        when(audit.sourceInitiator()).thenReturn(String.format("#%s", PARAM_1));
+        when(audit.initiatorKey()).thenReturn(String.format("#%s", PARAM_1));
         var joinPoint = mockProceedingJoinPoint(OUTPUT_VALUE);
         auditAspect.around(joinPoint, audit);
         verify(applicationEventPublisher, atLeastOnce()).publishEvent(auditEventArgumentCaptor.capture());
@@ -113,10 +113,10 @@ class AuditAspectTest {
     }
 
     @Test
-    void testAroundAuditMethodWithTargetInitiator() throws Throwable {
+    void testAroundAuditMethodWithInitiatorInReturnedValue() throws Throwable {
         var audit = mock(Audit.class);
         when(audit.value()).thenReturn(AUDIT_CODE);
-        when(audit.targetInitiator()).thenReturn(RESULT_EXPRESSION);
+        when(audit.initiatorKey()).thenReturn(RESULT_EXPRESSION);
         var joinPoint = mockProceedingJoinPoint(OUTPUT_VALUE);
         auditAspect.around(joinPoint, audit);
         verify(applicationEventPublisher, atLeastOnce()).publishEvent(auditEventArgumentCaptor.capture());
@@ -126,10 +126,10 @@ class AuditAspectTest {
     }
 
     @Test
-    void testAroundAuditMethodWithSourceCorrelationId() throws Throwable {
+    void testAroundAuditMethodWithCorrelationIdInInputParameters() throws Throwable {
         var audit = mock(Audit.class);
         when(audit.value()).thenReturn(AUDIT_CODE);
-        when(audit.sourceCorrelationIdKey()).thenReturn(String.format("#%s", PARAM_1));
+        when(audit.correlationIdKey()).thenReturn(String.format("#%s", PARAM_1));
         var joinPoint = mockProceedingJoinPoint(OUTPUT_VALUE);
         auditAspect.around(joinPoint, audit);
         verify(applicationEventPublisher, atLeastOnce()).publishEvent(auditEventArgumentCaptor.capture());
@@ -139,10 +139,10 @@ class AuditAspectTest {
     }
 
     @Test
-    void testAroundAuditMethodWithTargetCorrelationId() throws Throwable {
+    void testAroundAuditMethodWithCorrelationIdInReturnedValue() throws Throwable {
         var audit = mock(Audit.class);
         when(audit.value()).thenReturn(AUDIT_CODE);
-        when(audit.targetCorrelationIdKey()).thenReturn(RESULT_EXPRESSION);
+        when(audit.correlationIdKey()).thenReturn(RESULT_EXPRESSION);
         var joinPoint = mockProceedingJoinPoint(OUTPUT_VALUE);
         auditAspect.around(joinPoint, audit);
         verify(applicationEventPublisher, atLeastOnce()).publishEvent(auditEventArgumentCaptor.capture());
@@ -152,10 +152,10 @@ class AuditAspectTest {
     }
 
     @Test
-    void testAroundAuditMethodWithTargetCorrelationIdAsObjectFieldRef() throws Throwable {
+    void testAroundAuditMethodWithCorrelationIdAsObjectFieldRefInReturnedValue() throws Throwable {
         var audit = mock(Audit.class);
         when(audit.value()).thenReturn(AUDIT_CODE);
-        when(audit.targetCorrelationIdKey()).thenReturn("x");
+        when(audit.correlationIdKey()).thenReturn("#result.x");
         var object = new TestObject("xValue");
         var joinPoint = mockProceedingJoinPoint(object);
         auditAspect.around(joinPoint, audit);

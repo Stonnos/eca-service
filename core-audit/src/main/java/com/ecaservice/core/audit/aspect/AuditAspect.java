@@ -8,6 +8,7 @@ import com.ecaservice.core.audit.model.AuditContextParams;
 import com.ecaservice.core.audit.service.AuditEventInitiator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -17,7 +18,6 @@ import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import java.util.Collections;
 import java.util.Map;
@@ -36,7 +36,7 @@ import static com.google.common.collect.Maps.newHashMap;
 @RequiredArgsConstructor
 public class AuditAspect {
 
-    private static final String RESULT_EXPRESSION = "result";
+    private static final String RESULT_EXPRESSION_PREFIX = "#result";
 
     private final ApplicationEventPublisher applicationEventPublisher;
     private final AuditEventInitiator auditEventInitiator;
@@ -87,22 +87,26 @@ public class AuditAspect {
     }
 
     private String getInitiator(Audit audit, ProceedingJoinPoint joinPoint, Object methodResult) {
-        if (StringUtils.hasText(audit.sourceInitiator())) {
-            return parseMethodParameterExpression(audit.sourceInitiator(), joinPoint);
-        } else if (StringUtils.hasText(audit.targetInitiator())) {
-            return parseMethodResultExpression(audit.targetInitiator(), methodResult);
+        if (StringUtils.isNotBlank(audit.initiatorKey())) {
+            return parseExpression(audit.initiatorKey(), joinPoint, methodResult);
         } else {
             return auditEventInitiator.getInitiator();
         }
     }
 
     private String getCorrelationId(Audit audit, ProceedingJoinPoint joinPoint, Object methodResult) {
-        if (StringUtils.hasText(audit.sourceCorrelationIdKey())) {
-            return parseMethodParameterExpression(audit.sourceCorrelationIdKey(), joinPoint);
-        } else if (StringUtils.hasText(audit.targetCorrelationIdKey())) {
-            return parseMethodResultExpression(audit.targetCorrelationIdKey(), methodResult);
-        } else {
+        if (StringUtils.isBlank(audit.correlationIdKey())) {
             return null;
+        } else {
+            return parseExpression(audit.correlationIdKey(), joinPoint, methodResult);
+        }
+    }
+
+    private String parseExpression(String expression, ProceedingJoinPoint joinPoint, Object methodResult) {
+        if (StringUtils.startsWith(expression, RESULT_EXPRESSION_PREFIX)) {
+            return parseMethodResultExpression(expression, methodResult);
+        } else {
+            return parseMethodParameterExpression(expression, joinPoint);
         }
     }
 
@@ -117,11 +121,12 @@ public class AuditAspect {
     }
 
     private String parseMethodResultExpression(String expression, Object methodResult) {
-        if (RESULT_EXPRESSION.equals(expression)) {
+        if (RESULT_EXPRESSION_PREFIX.equals(expression)) {
             return String.valueOf(methodResult);
         } else {
+            String expr = StringUtils.substringAfter(expression, String.format("%s.", RESULT_EXPRESSION_PREFIX));
             StandardEvaluationContext context = new StandardEvaluationContext(methodResult);
-            Object val = expressionParser.parseExpression(expression).getValue(context, Object.class);
+            Object val = expressionParser.parseExpression(expr).getValue(context, Object.class);
             return String.valueOf(val);
         }
     }

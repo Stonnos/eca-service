@@ -52,7 +52,7 @@ public class ClassifierOptionsService {
      * @param configurationId   - configuration id
      * @param classifierOptions - classifier options
      */
-    @Audit(value = ADD_CLASSIFIER_OPTIONS, sourceCorrelationIdKey = "#configurationId")
+    @Audit(value = ADD_CLASSIFIER_OPTIONS, correlationIdKey = "#configurationId")
     @Transactional
     public ClassifierOptionsDatabaseModel saveClassifierOptions(long configurationId,
                                                                 ClassifierOptions classifierOptions) {
@@ -77,7 +77,7 @@ public class ClassifierOptionsService {
      * @param id - classifier options id
      * @return deleted classifier options entity
      */
-    @Audit(value = DELETE_CLASSIFIER_OPTIONS, targetCorrelationIdKey = "configuration.id")
+    @Audit(value = DELETE_CLASSIFIER_OPTIONS, correlationIdKey = "#result.configuration.id")
     @Transactional
     public ClassifierOptionsDatabaseModel deleteOptions(long id) {
         log.info("Starting to delete classifier options [{}]", id);
