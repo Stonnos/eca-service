@@ -34,9 +34,10 @@ public @interface Audit {
 
     /**
      * Spring Expression Language (SpEL) attribute for computing the correlation id key dynamically. Expression may
-     * contain method input parameters shortcuts or method returned value shortcuts.
+     * contain method input parameter shortcut or method returned value shortcut.
      * Method input parameters examples: {@code #id}, {@code #object.name} - for field in class object.
      * Method returned value examples: {@code #result}, {@code #result.value} - for field in class object.
+     * Note that method returned value shortcut should start with #result prefix.
      */
     String correlationIdKey() default "";
 }
