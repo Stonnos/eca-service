@@ -33,6 +33,12 @@ public class AuditEventRequestEntity {
     private String eventId;
 
     /**
+     * Correlation id.
+     */
+    @Column(name = "correlation_id")
+    private String correlationId;
+
+    /**
      * Audit message
      */
     @Column(nullable = false, columnDefinition = "text")

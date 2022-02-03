@@ -28,9 +28,9 @@ a|
 
 __Grant type:__ password
 
-__Token url:__ http://localhost:8080/eca-oauth/oauth/token
+__Token url:__ http://localhost:8080/oauth/token
 
-__Refresh token url:__ http://localhost:8080/eca-oauth/oauth/token
+__Refresh token url:__ http://localhost:8080/oauth/token
 
 
 __Scopes__:
@@ -279,6 +279,7 @@ a|
 {
   "content" : [ {
     "eventId" : "1d2de514-3a87-4620-9b97-c260e24340de",
+    "correlationId" : "202786",
     "message" : "Some action",
     "initiator" : "user",
     "groupCode" : "USER_ACTIONS",
@@ -386,6 +387,7 @@ a|
 ----
 {
   "eventId" : "a01ebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+  "correlationId" : "202786",
   "message" : "Audit message",
   "initiator" : "user",
   "eventType" : "START",
@@ -498,9 +500,17 @@ a|
   "multiple" : false,
   "dictionary" : null
 }, {
+  "fieldName" : "correlationId",
+  "description" : "ID корреляции",
+  "fieldOrder" : 1,
+  "filterFieldType" : "TEXT",
+  "matchMode" : "LIKE",
+  "multiple" : false,
+  "dictionary" : null
+}, {
   "fieldName" : "groupCode",
   "description" : "Группа событий",
-  "fieldOrder" : 1,
+  "fieldOrder" : 2,
   "filterFieldType" : "REFERENCE",
   "matchMode" : "EQUALS",
   "multiple" : false,
@@ -520,7 +530,7 @@ a|
 }, {
   "fieldName" : "initiator",
   "description" : "Инициатор события",
-  "fieldOrder" : 2,
+  "fieldOrder" : 3,
   "filterFieldType" : "TEXT",
   "matchMode" : "LIKE",
   "multiple" : false,
@@ -528,7 +538,7 @@ a|
 }, {
   "fieldName" : "eventDate",
   "description" : "Дата события",
-  "fieldOrder" : 3,
+  "fieldOrder" : 4,
   "filterFieldType" : "DATE",
   "matchMode" : "RANGE",
   "multiple" : true,
@@ -885,6 +895,25 @@ __string__
 
 
 
+|*correlationId*
+|Correlation id
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
 |*message*
 |Audit message
 a|
@@ -1104,6 +1133,25 @@ __string__
 
 
 *Min. length*: 1
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*correlationId*
+|Correlation id
+a|
+__string__
+
+
+*Min. length*: 0
 
 *Max. length*: 255
 

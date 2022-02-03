@@ -87,7 +87,7 @@ public class ChangePasswordService {
      *
      * @param token - token value
      */
-    @Audit(value = CONFIRM_CHANGE_PASSWORD_REQUEST, targetInitiator = "userEntity.login")
+    @Audit(value = CONFIRM_CHANGE_PASSWORD_REQUEST, initiatorKey = "#result.userEntity.login")
     @Transactional
     public ChangePasswordRequestEntity changePassword(String token) {
         log.info("Starting to change password for token [{}]", mask(token));

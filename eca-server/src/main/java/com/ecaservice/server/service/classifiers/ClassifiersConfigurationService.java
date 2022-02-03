@@ -65,7 +65,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
      * @param configurationDto - create classifiers configuration dto
      * @return classifiers configuration entity
      */
-    @Audit(ADD_CONFIGURATION)
+    @Audit(value = ADD_CONFIGURATION, correlationIdKey = "#result.id")
     public ClassifiersConfiguration save(CreateClassifiersConfigurationDto configurationDto) {
         log.info("Starting to save new classifiers configuration [{}]", configurationDto.getConfigurationName());
         var classifiersConfiguration = classifiersConfigurationMapper.map(configurationDto);
@@ -81,7 +81,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
      *
      * @param configurationDto - update classifiers configuration dto
      */
-    @Audit(RENAME_CONFIGURATION)
+    @Audit(value = RENAME_CONFIGURATION, correlationIdKey = "#configurationDto.id")
     public void update(UpdateClassifiersConfigurationDto configurationDto) {
         log.info("Starting to update classifiers configuration [{}] with new name [{}]", configurationDto.getId(),
                 configurationDto.getConfigurationName());
@@ -98,7 +98,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
      *
      * @param id - classifiers configuration id
      */
-    @Audit(DELETE_CONFIGURATION)
+    @Audit(value = DELETE_CONFIGURATION, correlationIdKey = "#id")
     public void delete(long id) {
         log.info("Starting to delete classifiers configuration [{}]", id);
         var classifiersConfiguration = getById(id);
@@ -114,9 +114,10 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
      * Creates classifiers configuration copy. Created copy will always be not build in and not active.
      *
      * @param configurationDto - configuration data
-     * @return classifiers configuration entity
+     * @return classifiers configuration copy entity
      */
-    @Audit(COPY_CONFIGURATION)
+    @Audit(value = COPY_CONFIGURATION, correlationIdKey = "#configurationDto.id")
+    @Audit(value = ADD_CONFIGURATION, correlationIdKey = "#result.id")
     @Transactional
     public ClassifiersConfiguration copy(UpdateClassifiersConfigurationDto configurationDto) {
         log.info("Starting to create classifiers configuration [{}] copy with name [{}]",

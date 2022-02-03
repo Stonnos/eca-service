@@ -745,7 +745,7 @@ image::./images/eca-audit-log-db-schema.png[alt=Схема базы данных
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                      |bigint           |+|+|+                              |Идентификатор записи (первичный ключ)
-|event_id                |varchar(255)     |-|+|-                              |Внешний ID события
+|event_id                |varchar(255)     |+|+|audit_log_event_id_unique_idx  |Внешний ID события
 |message                 |text             |-|+|-                              |Текст сообщения
 |initiator               |varchar(255)     |-|+|-                              |Источник события, например имя пользователя
 |event_type              |varchar(255)     |-|+|-                              |Тип события
@@ -808,6 +808,7 @@ image::./images/eca-audit-log-db-schema.png[alt=Схема базы данных
 |event_status            |varchar(255)     |-|+|-                              |Статус отправки события в сервис аудита (SENT, NOT_SENT, ERROR)
 |details                 |text             |-|-|-                              |Дополнительная информация, например текст ошибки
 |sent_date               |timestamp        |-|-|-                              |Дата отправки события в сервис аудита
+|correlation_id          |varchar(255)     |-|-|-                              |ID корреляции
 |===
 
 === 3.14 Описание служебных таблиц для отправки почты

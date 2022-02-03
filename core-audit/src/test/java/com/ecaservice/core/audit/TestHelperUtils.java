@@ -119,6 +119,7 @@ public class TestHelperUtils {
     public static AuditEventRequest createAuditEventRequest() {
         var auditEventRequest = new AuditEventRequest();
         auditEventRequest.setEventId(UUID.randomUUID().toString());
+        auditEventRequest.setCorrelationId(UUID.randomUUID().toString());
         auditEventRequest.setMessage(MESSAGE);
         auditEventRequest.setGroupCode(GROUP);
         auditEventRequest.setGroupTitle(GROUP_TITLE);
