@@ -29,6 +29,7 @@ import java.util.stream.Stream;
 
 import static com.ecaservice.core.filter.util.ReflectionUtils.getFieldType;
 import static com.ecaservice.core.filter.util.Utils.splitByPointSeparator;
+import static com.ecaservice.core.filter.util.Utils.valueOf;
 import static com.google.common.collect.Lists.newArrayList;
 
 /**
@@ -180,7 +181,7 @@ public abstract class AbstractFilter<T> implements Specification<T> {
         } else if (fieldClazz.isEnum()) {
             Expression<?> expression = buildExpression(root, filterRequestDto.getName());
             return expression.in(
-                    values.stream().map(value -> Enum.valueOf(fieldClazz, value)).collect(Collectors.toList()));
+                    values.stream().map(value -> valueOf(fieldClazz, value)).collect(Collectors.toList()));
         } else {
             Expression<String> expression = buildExpression(root, filterRequestDto.getName());
             return expression.in(values);
