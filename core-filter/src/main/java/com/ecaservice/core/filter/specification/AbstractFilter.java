@@ -181,7 +181,10 @@ public abstract class AbstractFilter<T> implements Specification<T> {
         } else if (fieldClazz.isEnum()) {
             Expression<?> expression = buildExpression(root, filterRequestDto.getName());
             return expression.in(
-                    values.stream().map(value -> valueOf(fieldClazz, value)).collect(Collectors.toList()));
+                    values.stream()
+                            .map(value -> valueOf(filterRequestDto.getName(), fieldClazz, value))
+                            .collect(Collectors.toList())
+            );
         } else {
             Expression<String> expression = buildExpression(root, filterRequestDto.getName());
             return expression.in(values);

@@ -15,8 +15,9 @@ public class InvalidValueFormatException extends ValidationErrorException {
      * Constructor with parameters.
      *
      * @param errorMessage - error message
+     * @param fieldName    - field name
      */
-    public InvalidValueFormatException(String errorMessage) {
-        super(ERROR_CODE, errorMessage);
+    public InvalidValueFormatException(String errorMessage, String fieldName) {
+        super(ERROR_CODE, errorMessage, fieldName);
     }
 }
