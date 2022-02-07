@@ -21,13 +21,13 @@ import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.ecaservice.core.filter.util.ReflectionUtils.getFieldType;
+import static com.ecaservice.core.filter.util.Utils.parseDate;
 import static com.ecaservice.core.filter.util.Utils.splitByPointSeparator;
 import static com.ecaservice.core.filter.util.Utils.valueOf;
 import static com.google.common.collect.Lists.newArrayList;
@@ -145,7 +145,7 @@ public abstract class AbstractFilter<T> implements Specification<T> {
                     filterRequestDto.getName(), clazz.getName()));
         } else if (LocalDateTime.class.isAssignableFrom(fieldClazz)) {
             Expression<LocalDateTime> expression = buildExpression(root, filterRequestDto.getName());
-            LocalDate localDate = LocalDate.parse(value, DateTimeFormatter.ISO_LOCAL_DATE);
+            LocalDate localDate = parseDate(filterRequestDto.getName(), value);
             return criteriaBuilder.greaterThanOrEqualTo(expression, localDate.atStartOfDay());
         } else {
             return criteriaBuilder.greaterThanOrEqualTo(buildExpression(root, filterRequestDto.getName()), value);
@@ -160,7 +160,7 @@ public abstract class AbstractFilter<T> implements Specification<T> {
                     filterRequestDto.getName(), clazz.getName()));
         } else if (LocalDateTime.class.isAssignableFrom(fieldClazz)) {
             Expression<LocalDateTime> expression = buildExpression(root, filterRequestDto.getName());
-            LocalDate localDate = LocalDate.parse(value, DateTimeFormatter.ISO_LOCAL_DATE);
+            LocalDate localDate = parseDate(filterRequestDto.getName(), value);
             return criteriaBuilder.lessThanOrEqualTo(expression, localDate.atTime(LocalTime.MAX));
         } else {
             return criteriaBuilder.lessThanOrEqualTo(buildExpression(root, filterRequestDto.getName()), value);
@@ -173,7 +173,7 @@ public abstract class AbstractFilter<T> implements Specification<T> {
         if (LocalDateTime.class.isAssignableFrom(fieldClazz)) {
             Predicate[] predicates = values.stream().map(value -> {
                 Expression<LocalDateTime> expression = buildExpression(root, filterRequestDto.getName());
-                LocalDate localDate = LocalDate.parse(value, DateTimeFormatter.ISO_LOCAL_DATE);
+                LocalDate localDate = parseDate(filterRequestDto.getName(), value);
                 return criteriaBuilder.between(expression, localDate.atStartOfDay(),
                         localDate.atTime(LocalTime.MAX));
             }).toArray(Predicate[]::new);
