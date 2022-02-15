@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class FeignExceptionStrategyTest {
 
     private static final String MESSAGE = "message";
+    private static final int STATUS = 503;
 
     private final FeignExceptionStrategy feignExceptionStrategy = new FeignExceptionStrategy();
 
@@ -35,6 +36,13 @@ class FeignExceptionStrategyTest {
     void testServiceUnavailableException() {
         boolean result = feignExceptionStrategy.notFatal(
                 new FeignException.ServiceUnavailable(MESSAGE, request, null));
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    void testRetryableException() {
+        boolean result = feignExceptionStrategy.notFatal(
+                new RetryableException(STATUS, MESSAGE, Request.HttpMethod.GET, null, request));
         assertThat(result).isTrue();
     }
 
