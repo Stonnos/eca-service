@@ -41,6 +41,11 @@ public class RedeliveryCoreAutoConfiguration {
     public static final String REDELIVERY_LOCK_REGISTRY = "redeliveryLockRegistry";
 
     /**
+     * Json message converter bean name
+     */
+    public static final String JSON_REQUEST_MESSAGE_CONVERTER = "jsonRequestMessageConverter";
+
+    /**
      * Creates thread pool task executor bean.
      *
      * @param redeliveryProperties - redelivery properties
@@ -61,7 +66,7 @@ public class RedeliveryCoreAutoConfiguration {
      * @return request message converter bean
      */
     @ConditionalOnBean(name = "objectMapper")
-    @Bean("jsonRequestMessageConverter")
+    @Bean(JSON_REQUEST_MESSAGE_CONVERTER)
     public RequestMessageConverter requestMessageConverter(ObjectMapper objectMapper) {
         return new JsonRequestMessageConverter(objectMapper);
     }
