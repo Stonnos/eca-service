@@ -335,6 +335,7 @@
                         <exclude>**/exception/**/*</exclude>
                         <exclude>**/util/**/*</exclude>
                         <exclude>**/specification/**/*</exclude>
+                        <exclude>**/annotation/**/*</exclude>
                         <exclude>**/fetcher/**/*</exclude>
                         <exclude>**/metrics/**/*</exclude>
                         <exclude>**/doc/**/*</exclude>
