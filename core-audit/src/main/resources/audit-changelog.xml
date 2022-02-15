@@ -130,6 +130,6 @@
     </changeSet>
 
     <!-- Includes redelivery lib changelog file -->
-    <include file="../redelivery-changelog.xml" relativeToChangelogFile="true"/>
+    <include file="redelivery-changelog.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
