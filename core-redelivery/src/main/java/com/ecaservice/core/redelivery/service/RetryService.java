@@ -135,8 +135,8 @@ public class RetryService {
         Object targetBean = AopProxyUtils.getSingletonTarget(redeliverBean);
         Assert.notNull(targetBean,
                 String.format("Bean [%s] is not AOP proxy", redeliverBean.getClass().getSimpleName()));
-        Object request = deserializeRequest(retryRequest.getRequest(), retryMethod, redeliverAnnotation);
         try {
+            Object request = deserializeRequest(retryRequest.getRequest(), retryMethod, redeliverAnnotation);
             ReflectionUtils.invokeMethod(retryMethod, targetBean, request);
             log.info("Retry request [{}] with id [{}] has been sent", retryRequest.getRequestType(),
                     retryRequest.getId());
