@@ -6,7 +6,6 @@ import com.ecaservice.core.redelivery.entity.RetryRequest;
 import com.ecaservice.core.redelivery.repository.RetryRequestRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -65,7 +64,6 @@ public class RedeliveryCoreAutoConfiguration {
      * @param objectMapper - object mapper
      * @return request message converter bean
      */
-    @ConditionalOnBean(name = "objectMapper")
     @Bean(JSON_REQUEST_MESSAGE_CONVERTER)
     public RequestMessageConverter requestMessageConverter(ObjectMapper objectMapper) {
         return new JsonRequestMessageConverter(objectMapper);
