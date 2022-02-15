@@ -1,73 +1,36 @@
 package com.ecaservice.core.audit.service;
 
-import com.ecaservice.core.audit.AbstractJpaTest;
-import com.ecaservice.core.audit.entity.EventStatus;
-import com.ecaservice.core.audit.repository.AuditEventRequestRepository;
-import feign.FeignException;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
 
 import static com.ecaservice.core.audit.TestHelperUtils.createAuditEventRequest;
-import static com.ecaservice.core.audit.TestHelperUtils.createAuditEventRequestEntity;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.verify;
 
 /**
  * Unit tests for {@link AuditEventSender} class.
  *
  * @author Roman Batygin
  */
+@ExtendWith(SpringExtension.class)
 @Import(AuditEventSender.class)
-class AuditEventSenderTest extends AbstractJpaTest {
+class AuditEventSenderTest {
 
-    @Inject
-    private AuditEventRequestRepository auditEventRequestRepository;
     @Inject
     private AuditEventSender auditEventSender;
 
     @MockBean
     private AuditEventClient auditEventClient;
 
-    @Override
-    public void deleteAll() {
-        auditEventRequestRepository.deleteAll();
-    }
-
     @Test
-    void testSuccessSent() {
+    void testSendAuditEvent() {
         var auditEventRequest = createAuditEventRequest();
-        var auditEventRequestEntity = createAuditEventRequestEntity(null);
-        auditEventSender.sendAuditEvent(auditEventRequest, auditEventRequestEntity);
-        var actual = auditEventRequestRepository.findById(auditEventRequestEntity.getId()).orElse(null);
-        assertThat(actual).isNotNull();
-        assertThat(actual.getEventStatus()).isEqualTo(EventStatus.SENT);
-        assertThat(actual.getSentDate()).isNotNull();
-    }
-
-    @Test
-    void testNotSent() {
-        var auditEventRequest = createAuditEventRequest();
-        var auditEventRequestEntity = createAuditEventRequestEntity(null);
-        doThrow(FeignException.ServiceUnavailable.class).when(auditEventClient).sendEvent(auditEventRequest);
-        auditEventSender.sendAuditEvent(auditEventRequest, auditEventRequestEntity);
-        var actual = auditEventRequestRepository.findById(auditEventRequestEntity.getId()).orElse(null);
-        assertThat(actual).isNotNull();
-        assertThat(actual.getEventStatus()).isEqualTo(EventStatus.NOT_SENT);
-        assertThat(actual.getSentDate()).isNull();
-    }
-
-    @Test
-    void testErrorSent() {
-        var auditEventRequest = createAuditEventRequest();
-        var auditEventRequestEntity = createAuditEventRequestEntity(null);
-        doThrow(FeignException.BadRequest.class).when(auditEventClient).sendEvent(auditEventRequest);
-        auditEventSender.sendAuditEvent(auditEventRequest, auditEventRequestEntity);
-        var actual = auditEventRequestRepository.findById(auditEventRequestEntity.getId()).orElse(null);
-        assertThat(actual).isNotNull();
-        assertThat(actual.getEventStatus()).isEqualTo(EventStatus.ERROR);
-        assertThat(actual.getSentDate()).isNull();
+        auditEventSender.sendAuditEvent(auditEventRequest);
+        verify(auditEventClient, atLeastOnce()).sendEvent(auditEventRequest);
     }
 }

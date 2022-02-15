@@ -1,6 +1,5 @@
 package com.ecaservice.core.audit.mapping;
 
-import com.ecaservice.core.audit.entity.EventStatus;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.context.annotation.Import;
@@ -9,8 +8,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import javax.inject.Inject;
 
 import static com.ecaservice.core.audit.TestHelperUtils.createAuditCodeEntity;
-import static com.ecaservice.core.audit.TestHelperUtils.createAuditEventRequest;
-import static com.ecaservice.core.audit.TestHelperUtils.createAuditEventRequestEntity;
 import static com.ecaservice.core.audit.TestHelperUtils.createAuditEventTemplateEntity;
 import static com.ecaservice.core.audit.TestHelperUtils.createAuditEventTemplateModel;
 import static com.ecaservice.core.audit.TestHelperUtils.createAuditGroupEntity;
@@ -71,38 +68,5 @@ class AuditMapperTest {
         assertThat(auditEventRequest.getGroupTitle()).isEqualTo(
                 auditEventTemplateModel.getAuditCode().getAuditGroup().getTitle());
         assertThat(auditEventRequest.getEventType()).isEqualTo(auditEventTemplateModel.getEventType());
-    }
-
-    @Test
-    void testMapAuditEventRequest() {
-        var auditEventRequest = createAuditEventRequest();
-        var auditEventRequestEntity = auditMapper.map(auditEventRequest);
-        assertThat(auditEventRequestEntity).isNotNull();
-        assertThat(auditEventRequestEntity.getEventId()).isEqualTo(auditEventRequest.getEventId());
-        assertThat(auditEventRequestEntity.getCorrelationId()).isEqualTo(auditEventRequest.getCorrelationId());
-        assertThat(auditEventRequestEntity.getEventDate()).isEqualTo(auditEventRequest.getEventDate());
-        assertThat(auditEventRequestEntity.getEventType()).isEqualTo(auditEventRequest.getEventType());
-        assertThat(auditEventRequestEntity.getGroupCode()).isEqualTo(auditEventRequest.getGroupCode());
-        assertThat(auditEventRequestEntity.getGroupTitle()).isEqualTo(auditEventRequest.getGroupTitle());
-        assertThat(auditEventRequestEntity.getCode()).isEqualTo(auditEventRequest.getCode());
-        assertThat(auditEventRequestEntity.getCodeTitle()).isEqualTo(auditEventRequest.getCodeTitle());
-        assertThat(auditEventRequestEntity.getInitiator()).isEqualTo(auditEventRequest.getInitiator());
-        assertThat(auditEventRequestEntity.getMessage()).isEqualTo(auditEventRequest.getMessage());
-    }
-
-    @Test
-    void testMapAuditEventRequestEntity() {
-        var auditEventRequestEntity = createAuditEventRequestEntity(EventStatus.SENT);
-        var auditEventRequest = auditMapper.map(auditEventRequestEntity);
-        assertThat(auditEventRequest).isNotNull();
-        assertThat(auditEventRequest.getEventId()).isEqualTo(auditEventRequestEntity.getEventId());
-        assertThat(auditEventRequest.getEventDate()).isEqualTo(auditEventRequestEntity.getEventDate());
-        assertThat(auditEventRequest.getEventType()).isEqualTo(auditEventRequestEntity.getEventType());
-        assertThat(auditEventRequest.getGroupCode()).isEqualTo(auditEventRequestEntity.getGroupCode());
-        assertThat(auditEventRequest.getGroupTitle()).isEqualTo(auditEventRequestEntity.getGroupTitle());
-        assertThat(auditEventRequest.getCode()).isEqualTo(auditEventRequestEntity.getCode());
-        assertThat(auditEventRequest.getCodeTitle()).isEqualTo(auditEventRequestEntity.getCodeTitle());
-        assertThat(auditEventRequest.getInitiator()).isEqualTo(auditEventRequestEntity.getInitiator());
-        assertThat(auditEventRequest.getMessage()).isEqualTo(auditEventRequestEntity.getMessage());
     }
 }

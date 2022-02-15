@@ -35,6 +35,11 @@
             <artifactId>spring-boot-configuration-processor</artifactId>
         </dependency>
         <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-core</artifactId>
+            <version>${feign.version}</version>
+        </dependency>
+        <dependency>
             <groupId>eca.service</groupId>
             <artifactId>core-lock</artifactId>
             <version>${project.version}</version>

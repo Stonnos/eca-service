@@ -2,7 +2,6 @@ package com.ecaservice.core.audit.mapping;
 
 import com.ecaservice.audit.dto.AuditEventRequest;
 import com.ecaservice.core.audit.entity.AuditCodeEntity;
-import com.ecaservice.core.audit.entity.AuditEventRequestEntity;
 import com.ecaservice.core.audit.entity.AuditEventTemplateEntity;
 import com.ecaservice.core.audit.entity.AuditGroupEntity;
 import com.ecaservice.core.audit.model.AuditCodeModel;
@@ -56,20 +55,4 @@ public interface AuditMapper {
     @Mapping(source = "auditCode.auditGroup.groupCode", target = "groupCode")
     @Mapping(source = "auditCode.auditGroup.title", target = "groupTitle")
     AuditEventRequest map(AuditEventTemplateModel auditEventTemplateModel);
-
-    /**
-     * Maps audit event request to entity model.
-     *
-     * @param auditEventRequest - audit event request
-     * @return audit event request entity
-     */
-    AuditEventRequestEntity map(AuditEventRequest auditEventRequest);
-
-    /**
-     * Maps audit event request entity to dto model.
-     *
-     * @param auditEventRequestEntity - audit event request entity
-     * @return audit event request dto
-     */
-    AuditEventRequest map(AuditEventRequestEntity auditEventRequestEntity);
 }
