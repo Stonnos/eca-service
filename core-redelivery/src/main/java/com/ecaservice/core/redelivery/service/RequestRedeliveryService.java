@@ -1,5 +1,6 @@
 package com.ecaservice.core.redelivery.service;
 
+import com.ecaservice.core.lock.annotation.TryLocked;
 import com.ecaservice.core.redelivery.config.RedeliveryProperties;
 import com.ecaservice.core.redelivery.entity.RetryRequest;
 import com.ecaservice.core.redelivery.repository.RetryRequestRepository;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import static com.ecaservice.common.web.util.PageHelper.processWithPagination;
+import static com.ecaservice.core.redelivery.config.RedeliveryCoreAutoConfiguration.REDELIVERY_LOCK_REGISTRY;
 
 /**
  * Retry requests redelivery service.
@@ -27,6 +29,7 @@ public class RequestRedeliveryService {
     /**
      * Retries all not sent requests.
      */
+    @TryLocked(lockName = "processNotSentRetryRequests", lockRegistry = REDELIVERY_LOCK_REGISTRY)
     public void processNotSentRequests() {
         log.debug("Starting redeliver requests");
         var ids = retryRequestRepository.getNotSentRequestIds();

@@ -30,7 +30,15 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 @ConditionalOnProperty(value = "redelivery.enabled", havingValue = "true")
 public class RedeliveryCoreAutoConfiguration {
 
+    /**
+     * Retry request thread pool task scheduler bean name
+     */
     public static final String RETRY_REQUEST_THREAD_POOL_TASK_SCHEDULER = "retryRequestThreadPoolTaskScheduler";
+
+    /**
+     * Redelivery lock registry bean name
+     */
+    public static final String REDELIVERY_LOCK_REGISTRY = "redeliveryLockRegistry";
 
     /**
      * Creates thread pool task executor bean.
