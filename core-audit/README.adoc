@@ -30,12 +30,6 @@ audit:
   asyncEvents: true
   ## Размер пула потоков для асинхронной отправки событий аудита
   threadPoolSize: 3
-  ## Вкл./выкл. режима повторной отправки событий в случае недоступности сервиса аудита
-  redelivery: true
-  ## Интервал между запусками заданий на повторную отправку событий аудита
-  redeliveryIntervalMillis: 60000
-  ## Размер страницы для повторной отправки событий аудита
-  pageSize: 25
 ----
 
 С помощью аннотации @EnableAudit импортировать бины библиотеки
@@ -81,7 +75,22 @@ public class AppConfiguration {
 </databaseChangeLog>
 ----
 
-== 2. Настройка использования блокировок для кластерной среды на примере redis
+== 2. Настройка использования механизма redelivery
+
+Для поддержки redelivery (повторной отправки событий в случае сбоев) в файле application.yml необходимо добавить следующие настройки
+
+[source,yml]
+----
+redelivery:
+  ## Вкл./выкл. механизма redelivery.
+  enabled: true
+  ## Интервал между запусками заданий на повторную отправку событий
+  redeliveryIntervalMillis: 60000
+  ## Размер страницы для повторной отправки событий
+  pageSize: 25
+----
+
+== 3. Настройка использования блокировок для кластерной среды на примере redis
 
 В pom.xml необходимо добавить зависимости для интеграции с redis
 
@@ -108,7 +117,7 @@ lock:
   enabled: true
 ----
 
-Добавить конфигурацию бина auditLockRegistry для управления блокировками
+Добавить конфигурацию бина redeliveryLockRegistry для управления блокировками
 
 [source,java]
 ----
@@ -117,7 +126,7 @@ lock:
 @Configuration
 public class AuditLockConfiguration {
 
-    @Bean(name = "auditLockRegistry")
+    @Bean(name = "redeliveryLockRegistry")
     public LockRegistry redisLockRegistry(RedisConnectionFactory redisConnectionFactory) {
         return new RedisLockRegistry(redisConnectionFactory, "yourRegistryKey");
     }
@@ -126,9 +135,9 @@ public class AuditLockConfiguration {
 
 Примечание: Также можно использовать любую другу реализацию LockRegistry от spring integration.
 
-== 3. Описание таблиц для хранения шаблонов аудита
+== 4. Описание таблиц для хранения шаблонов аудита
 
-Таблица 3.1 - 'audit_group' - содержит данные о группах событий аудита
+Таблица 4.1 - 'audit_group' - содержит данные о группах событий аудита
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
@@ -136,7 +145,7 @@ public class AuditLockConfiguration {
 |title                   |varchar(255)     |-|-|-                              |Описание группы
 |===
 
-Таблица 3.2 - 'audit_code' - содержит данные о кодах событий аудита
+Таблица 4.2 - 'audit_code' - содержит данные о кодах событий аудита
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
@@ -146,7 +155,7 @@ public class AuditLockConfiguration {
 |audit_group_id          |varchar(255)     |-|+|fk_audit_code_group_id         |Внешний ключ группы событий
 |===
 
-Таблица 3.3 - 'audit_event_template' - содержит данные о шаблонах событий аудита
+Таблица 4.3 - 'audit_event_template' - содержит данные о шаблонах событий аудита
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
@@ -158,27 +167,7 @@ public class AuditLockConfiguration {
 
 Таблица содержит уникальный индекс audit_event_template_code_id_event_type_unique_index на поля audit_code_id, event_type
 
-Таблица 3.4 - 'audit_event_request' - содержит данные о запросах с событиями аудита
-[cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
-|===
-|Название колонки|Тип|Unique|Not NULL|Индекс|Описание
-|id                      |bigint           |+|+|+                              |Идентификатор записи (первичный ключ)
-|event_id                |varchar(255)     |-|+|-                              |Внешний ID события
-|message                 |text             |-|+|-                              |Текст сообщения
-|initiator               |varchar(255)     |-|+|-                              |Источник события, например имя пользователя
-|event_type              |varchar(255)     |-|+|-                              |Тип события
-|group_code              |varchar(255)     |-|+|-                              |Код группы событий
-|group_title             |varchar(255)     |-|-|-                              |Описание группы событий
-|audit_code              |varchar(255)     |-|+|-                              |Код события
-|audit_code_title        |varchar(255)     |-|-|-                              |Описание кода события
-|event_date              |timestamp        |-|+|-                              |Дата наступления события
-|event_status            |varchar(255)     |-|+|-                              |Статус отправки события в сервис аудита (SENT, NOT_SENT, ERROR)
-|details                 |text             |-|-|-                              |Дополнительная информация, например текст ошибки
-|sent_date               |timestamp        |-|-|-                              |Дата отправки события в сервис аудита
-|correlation_id          |varchar(255)     |-|-|-                              |ID корреляции
-|===
-
-== 4. Настройка шаблонов с событиями аудита
+== 5. Настройка шаблонов с событиями аудита
 
 События аудита создаются по следующей схеме:
 
@@ -186,7 +175,7 @@ public class AuditLockConfiguration {
 * Каждый код события привязывается к определенной группе событий. Это дает возможность привязывать
 набор событий аудита к определенной группе, например действия пользователя в личном кабинете.
 
-=== 4.1. Настройка групп событий
+=== 5.1. Настройка групп событий
 
 Пример csv файла с группами событий для импорта в базу данных:
 
@@ -196,7 +185,7 @@ id;title
 USER_PROFILE_ACTIONS;Действия пользователя в личном кабинете
 ----
 
-=== 4.2. Настройка кодов событий
+=== 5.2. Настройка кодов событий
 
 Пример csv файла с кодами событий для импорта в базу данных:
 
@@ -210,7 +199,7 @@ LOCK_USER;Блокировка пользователя;true;USER_PROFILE_ACTION
 UNLOCK_USER;Снятие блокировки пользователя;true;USER_PROFILE_ACTIONS
 ----
 
-=== 4.3. Настройка шаблонов событий
+=== 5.3. Настройка шаблонов событий
 
 Пример csv файла с шаблонами событий для импорта в базу данных:
 
@@ -231,7 +220,7 @@ id;event_type;message_template;audit_code_id
 * Возвращаемое значение метода java класса. Доступ к объекту возвращаемого значения осуществляется с использованием переменной
 returnValue
 
-== 5. Получение конфигурации событий аудита через actuator endpoint
+== 6. Получение конфигурации событий аудита через actuator endpoint
 
 Получить конфигурацию событий аудита в формате csv можно через actuator endpoint:
 
