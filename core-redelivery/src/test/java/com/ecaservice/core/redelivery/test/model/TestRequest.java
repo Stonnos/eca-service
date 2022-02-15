@@ -1,4 +1,4 @@
-package com.ecaservice.core.redelivery.model;
+package com.ecaservice.core.redelivery.test.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

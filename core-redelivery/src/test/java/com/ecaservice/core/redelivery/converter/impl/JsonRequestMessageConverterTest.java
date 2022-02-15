@@ -1,6 +1,6 @@
 package com.ecaservice.core.redelivery.converter.impl;
 
-import com.ecaservice.core.redelivery.model.TestRequest;
+import com.ecaservice.core.redelivery.test.model.TestRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
