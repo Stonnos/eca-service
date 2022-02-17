@@ -68,9 +68,9 @@ services:
       SPRING_REDIS_HOST: "redis"
       SPRING_CACHE_TYPE: "redis"
       AUDIT_ENABLED: "true"
-      AUDIT_REDELIVERY: "true"
       AUDIT_ASYNCEVENTS: ${AUDIT_ASYNC_EVENTS}
       AUDIT_THREADPOOLSIZE: ${AUDIT_THREAD_POOL_SIZE}
+      REDELIVERY_ENABLED: "true"
       ERS_REDELIVERY: "true"
       OPENAPI_BASEPATH: "/eca-server"
     networks:
@@ -90,9 +90,9 @@ services:
       DB_CONTAINER_WAIT_TIMEOUT: ${DB_CONTAINER_WAIT_TIMEOUT}
       JAVA_OPTS: "-Xmx756m"
       AUDIT_ENABLED: "true"
-      AUDIT_REDELIVERY: "true"
       AUDIT_ASYNCEVENTS: ${AUDIT_ASYNC_EVENTS}
       AUDIT_THREADPOOLSIZE: ${AUDIT_THREAD_POOL_SIZE}
+      REDELIVERY_ENABLED: "true"
       OPENAPI_BASEPATH: "/eca-oauth"
     networks:
       - default
@@ -126,9 +126,9 @@ services:
       DB_CONTAINER_WAIT_TIMEOUT: ${DB_CONTAINER_WAIT_TIMEOUT}
       JAVA_OPTS: "-Xmx512m"
       AUDIT_ENABLED: "true"
-      AUDIT_REDELIVERY: "true"
       AUDIT_ASYNCEVENTS: ${AUDIT_ASYNC_EVENTS}
       AUDIT_THREADPOOLSIZE: ${AUDIT_THREAD_POOL_SIZE}
+      REDELIVERY_ENABLED: "true"
       OPENAPI_BASEPATH: "/eca-ds"
     networks:
       - default
