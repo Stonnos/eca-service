@@ -31,12 +31,6 @@ mail:
     async: true
     ## Размер пула потоков для асинхронной отправки email сообщений
     threadPoolSize: 3
-    ## Вкл./выкл. режима повторной отправки email сообщений в случае недоступности сервиса eca-mail
-    redelivery: true
-    ## Интервал между запусками заданий на повторную отправку email сообщений
-    redeliveryIntervalMillis: 60000
-    ## Размер страницы для повторной отправки email сообщений
-    pageSize: 25
     encrypt:
       ## Вкл./выкл. хранение email сообщений в зашифрованном виде
       enabled: true
@@ -73,7 +67,22 @@ public class AppConfiguration {
 </databaseChangeLog>
 ----
 
-== 2. Настройка использования блокировок для кластерной среды на примере redis
+== 2. Настройка использования механизма redelivery
+
+Для поддержки redelivery (повторной отправки запросов в случае сбоев) в файле application.yml необходимо добавить следующие настройки
+
+[source,yml]
+----
+redelivery:
+  ## Вкл./выкл. механизма redelivery.
+  enabled: true
+  ## Интервал между запусками заданий на повторную отправку запросов
+  redeliveryIntervalMillis: 60000
+  ## Размер страницы для повторной отправки запросов
+  pageSize: 25
+----
+
+== 3. Настройка использования блокировок для кластерной среды на примере redis
 
 В pom.xml необходимо добавить зависимости для интеграции с redis
 
@@ -100,7 +109,7 @@ lock:
   enabled: true
 ----
 
-Добавить конфигурацию бина mailLockRegistry для управления блокировками
+Добавить конфигурацию бина redeliveryLockRegistry для управления блокировками
 
 [source,java]
 ----
@@ -109,7 +118,7 @@ lock:
 @Configuration
 public class EmailClientLockConfiguration {
 
-    @Bean(name = "mailLockRegistry")
+    @Bean(name = "redeliveryLockRegistry")
     public LockRegistry redisLockRegistry(RedisConnectionFactory redisConnectionFactory) {
         return new RedisLockRegistry(redisConnectionFactory, "yourRegistryKey");
     }
@@ -117,24 +126,3 @@ public class EmailClientLockConfiguration {
 ----
 
 Примечание: Также можно использовать любую другу реализацию LockRegistry от spring integration.
-
-== 3. Описание таблиц
-
-Таблица 3.1 - 'email_request' - содержит данные о запросах в сервис eca-mail
-[cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
-|===
-|Название колонки|Тип|Unique|Not NULL|Индекс|Описание
-|id                      |bigint           |+|+|+                              |ID (первичный ключ)
-|receiver                |varchar(255)     |-|+|-                              |Email получателя
-|template_code           |varchar(255)     |-|+|-                              |Технический код шаблона сообщения
-|priority                |integer          |-|-|-                              |Приоритет отправки
-|created                 |timestamp        |-|+|-                              |Дата создания запроса
-|request_json            |varchar(2000)    |-|+|-                              |Структура запроса в сервис eca-mail в формате json
-|encrypted               |boolean          |-|-|-                              |Флаг равен true, если структура запроса (requestJson) хранится в зашифрованном виде
-|request_status          |varchar(255)     |-|+|-                              |Статус отправки (SENT, NOT_SENT, ERROR, EXCEEDED)
-|request_id              |varchar(255)     |-|-|-                              |UUID запроса в eca-mail
-|sent_date               |timestamp        |-|-|-                              |Дата успешной отправки запроса в eca-mail
-|expired_at              |timestamp        |-|-|-                              |Дата истечения срока действия кэша запроса
-|tx_id                   |varchar(255)     |-|-|-                              |Идентификатор для кросс системного логирования
-|details                 |text             |-|-|-                              |Доп. информация, например текст ошибки
-|===
