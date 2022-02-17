@@ -52,9 +52,9 @@
 
     <changeSet id="drop_email_request_table" author="roman.batygin@mail.ru" context="schema">
         <preConditions onFail="MARK_RAN">
-            <tableExists tableName="email_request_table"/>
+            <tableExists tableName="email_request"/>
         </preConditions>
-        <dropTable tableName="email_request_table"/>
+        <dropTable tableName="email_request"/>
     </changeSet>
 
     <!-- Includes redelivery lib changelog file -->
