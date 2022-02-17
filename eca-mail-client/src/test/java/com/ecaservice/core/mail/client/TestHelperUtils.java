@@ -1,13 +1,8 @@
 package com.ecaservice.core.mail.client;
 
-import com.ecaservice.core.mail.client.entity.EmailRequestEntity;
-import com.ecaservice.core.mail.client.entity.EmailRequestStatus;
 import com.ecaservice.notification.dto.EmailRequest;
-import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.time.LocalDateTime;
 import java.util.Map;
 
 import static com.ecaservice.notification.util.Priority.LOW;
@@ -19,8 +14,6 @@ import static com.ecaservice.notification.util.Priority.LOW;
  */
 @UtilityClass
 public class TestHelperUtils {
-
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private static final String TEMPLATE_CODE = "TemplateCode";
     private static final String RECEIVER = "receiver@mail.ru";
@@ -39,35 +32,5 @@ public class TestHelperUtils {
         emailRequest.setVariables(VARIABLES);
         emailRequest.setPriority(LOW);
         return emailRequest;
-    }
-
-    /**
-     * Creates email request entity.
-     *
-     * @param requestStatus - request status
-     * @param expiredAt     - expired at date
-     * @return email request entity
-     */
-    @SneakyThrows
-    public static EmailRequestEntity createEmailRequestEntity(EmailRequestStatus requestStatus,
-                                                              LocalDateTime expiredAt) {
-        EmailRequestEntity emailRequestEntity = new EmailRequestEntity();
-        emailRequestEntity.setTemplateCode(TEMPLATE_CODE);
-        emailRequestEntity.setReceiver(RECEIVER);
-        emailRequestEntity.setPriority(LOW);
-        emailRequestEntity.setCreated(LocalDateTime.now());
-        emailRequestEntity.setRequestJson(OBJECT_MAPPER.writeValueAsString(createEmailRequest()));
-        emailRequestEntity.setRequestStatus(requestStatus);
-        emailRequestEntity.setExpiredAt(expiredAt);
-        return emailRequestEntity;
-    }
-
-    /**
-     * Creates email request entity.
-     *
-     * @return email request entity
-     */
-    public static EmailRequestEntity createEmailRequestEntity() {
-        return createEmailRequestEntity(null, null);
     }
 }

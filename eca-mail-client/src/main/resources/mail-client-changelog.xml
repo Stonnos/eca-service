@@ -49,4 +49,14 @@
             <column name="tx_id" type="varchar(255)"/>
         </addColumn>
     </changeSet>
+
+    <changeSet id="drop_email_request_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="email_request_table"/>
+        </preConditions>
+        <dropTable tableName="email_request_table"/>
+    </changeSet>
+
+    <!-- Includes redelivery lib changelog file -->
+    <include file="redelivery-changelog.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
