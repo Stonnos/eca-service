@@ -38,4 +38,19 @@ public class SpelExpressionHelper {
         log.debug("Parsed expression result for method [{}]: [{}]", methodName, value);
         return value;
     }
+
+    /**
+     * Parses expression for given object.
+     *
+     * @param object     - object
+     * @param expression - expression
+     * @return result value
+     */
+    public Object parseExpression(Object object, String expression) {
+        log.debug("Starting to parse expression [{}]", expression);
+        StandardEvaluationContext context = new StandardEvaluationContext(object);
+        Object value = expressionParser.parseExpression(expression).getValue(context, Object.class);
+        log.debug("Parsed expression result: [{}]", value);
+        return value;
+    }
 }

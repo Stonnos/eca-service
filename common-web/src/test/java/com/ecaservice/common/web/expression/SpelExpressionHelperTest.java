@@ -23,7 +23,7 @@ class SpelExpressionHelperTest {
     private SpelExpressionHelper spelExpressionHelper = new SpelExpressionHelper();
 
     @Test
-    void testParseExpression() {
+    void testParseExpressionForMethodParams() {
         ProceedingJoinPoint proceedingJoinPoint = mock(ProceedingJoinPoint.class);
         when(proceedingJoinPoint.getArgs()).thenReturn(new Object[] {INPUT_VALUE_1, INPUT_VALUE_2});
         MethodSignature signature = mock(MethodSignature.class);
@@ -31,6 +31,13 @@ class SpelExpressionHelperTest {
         when(signature.getParameterNames()).thenReturn(PARAMETERS_NAMES);
         when(proceedingJoinPoint.getSignature()).thenReturn(signature);
         Object actualValue = spelExpressionHelper.parseExpression(proceedingJoinPoint, "#param1");
+        assertThat(actualValue).isNotNull();
+        assertThat(String.valueOf(actualValue)).isEqualTo(INPUT_VALUE_1);
+    }
+
+    @Test
+    void testParseExpressionForObject() {
+        Object actualValue = spelExpressionHelper.parseExpression(INPUT_VALUE_1, "#root");
         assertThat(actualValue).isNotNull();
         assertThat(String.valueOf(actualValue)).isEqualTo(INPUT_VALUE_1);
     }
