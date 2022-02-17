@@ -39,7 +39,9 @@ experiment:
 mail:
   client:
     enabled: true
-    redelivery: true
+
+redelivery:
+  enabled: true
 
 auth-server:
   baseUrl: http://eca-oauth:8080

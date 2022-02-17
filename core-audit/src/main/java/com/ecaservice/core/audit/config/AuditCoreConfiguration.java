@@ -37,10 +37,6 @@ public class AuditCoreConfiguration {
      * Audit event thread pool task executor bean
      */
     public static final String AUDIT_EVENT_THREAD_POOL_TASK_EXECUTOR = "auditEventThreadPoolTaskExecutor";
-    /**
-     * Audit lock registry bean
-     */
-    public static final String AUDIT_LOCK_REGISTRY = "auditLockRegistry";
 
     /**
      * Creates thread pool task executor bean.
