@@ -1,5 +1,6 @@
 package com.ecaservice.common.web.expression;
 
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.expression.ExpressionParser;
@@ -13,6 +14,7 @@ import java.util.stream.IntStream;
  *
  * @author Roman Batygin
  */
+@Slf4j
 public class SpelExpressionHelper {
 
     private final ExpressionParser expressionParser = new SpelExpressionParser();
@@ -25,11 +27,15 @@ public class SpelExpressionHelper {
      * @return result value
      */
     public Object parseExpression(ProceedingJoinPoint joinPoint, String expression) {
+        String methodName = joinPoint.getSignature().getName();
+        log.debug("Starting to parse expression [{}] for method [{}]", expression, methodName);
         StandardEvaluationContext context = new StandardEvaluationContext();
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         String[] methodParameters = methodSignature.getParameterNames();
         Object[] args = joinPoint.getArgs();
         IntStream.range(0, methodParameters.length).forEach(i -> context.setVariable(methodParameters[i], args[i]));
-        return expressionParser.parseExpression(expression).getValue(context, Object.class);
+        Object value = expressionParser.parseExpression(expression).getValue(context, Object.class);
+        log.debug("Parsed expression result for method [{}]: [{}]", methodName, value);
+        return value;
     }
 }

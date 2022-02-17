@@ -2,6 +2,7 @@ package com.ecaservice.core.redelivery.service;
 
 import com.ecaservice.core.redelivery.annotation.Retry;
 import com.ecaservice.core.redelivery.annotation.Retryable;
+import com.ecaservice.core.redelivery.callback.RetryCallback;
 import com.ecaservice.core.redelivery.converter.RequestMessageConverter;
 import com.ecaservice.core.redelivery.entity.RetryRequest;
 import com.ecaservice.core.redelivery.error.ExceptionStrategy;
@@ -9,7 +10,6 @@ import com.ecaservice.core.redelivery.model.MethodInfo;
 import com.ecaservice.core.redelivery.model.MethodsInfo;
 import com.ecaservice.core.redelivery.model.RetryContext;
 import com.ecaservice.core.redelivery.repository.RetryRequestRepository;
-import com.ecaservice.core.redelivery.callback.RetryCallback;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopProxyUtils;
@@ -25,7 +25,6 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -139,7 +138,7 @@ public class RetryService {
         Assert.notNull(targetBean,
                 String.format("Bean [%s] is not AOP proxy", retryBean.getClass().getSimpleName()));
         var retryCallback = applicationContext.getBean(retryAnnotation.retryCallback(), RetryCallback.class);
-        var retryContext = new RetryContext(UUID.randomUUID().toString(), retryRequest.getRetries() + 1,
+        var retryContext = new RetryContext(retryRequest.getRequestId(), retryRequest.getRetries() + 1,
                 retryRequest.getMaxRetries());
         try {
             Object request = deserializeRequest(retryRequest.getRequest(), retryMethod, retryAnnotation);

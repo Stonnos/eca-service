@@ -24,6 +24,13 @@ public @interface Retry {
     String value() default "";
 
     /**
+     * Spring Expression Language (SpEL) attribute for computing the request id key dynamically. Expression may contain
+     * method input parameter shortcut.
+     * Method input parameters examples: {@code #id}, {@code #object.name} - for field in class object.
+     */
+    String requestIdKey() default "";
+
+    /**
      * The bean name of the custom {@link com.ecaservice.core.redelivery.converter.RequestMessageConverter}.
      *
      * @return message converter bean name

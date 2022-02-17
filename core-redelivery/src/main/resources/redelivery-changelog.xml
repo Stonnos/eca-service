@@ -17,6 +17,7 @@
             <column name="request_type" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
+            <column name="request_id" type="varchar(255)"/>
             <column name="request" type="text">
                 <constraints nullable="false"/>
             </column>

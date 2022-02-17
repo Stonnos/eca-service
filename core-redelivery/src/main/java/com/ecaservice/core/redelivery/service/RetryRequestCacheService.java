@@ -27,13 +27,15 @@ public class RetryRequestCacheService {
      * Saves retry request into db.
      *
      * @param requestType - request type (code)
+     * @param requestId   - request id
      * @param request     - request body
      * @param maxRetries  - maximum retries
      */
-    public void save(String requestType, String request, int maxRetries) {
+    public void save(String requestType, String requestId, String request, int maxRetries) {
         log.info("Starting to save retry request [{}] into db cache", requestType);
         var retryRequest = new RetryRequest();
         retryRequest.setRequestType(requestType);
+        retryRequest.setRequestId(requestId);
         retryRequest.setRequest(request);
         retryRequest.setTxId(getMdc(TX_ID));
         retryRequest.setMaxRetries(maxRetries);

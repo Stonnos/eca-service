@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Import;
 
 import javax.inject.Inject;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -33,20 +34,22 @@ class RetryRequestCacheServiceTest extends AbstractJpaTest {
 
     @Test
     void testSaveRetryRequest() {
-        retryRequestCacheService.save(REQUEST_TYPE, REQUEST, 0);
+        String requestId = UUID.randomUUID().toString();
+        retryRequestCacheService.save(REQUEST_TYPE, requestId, REQUEST, 0);
         var requests = retryRequestRepository.findAll();
         assertThat(requests).hasSize(1);
         var actual = requests.iterator().next();
         assertThat(actual).isNotNull();
         assertThat(actual.getRequestType()).isEqualTo(REQUEST_TYPE);
         assertThat(actual.getRequest()).isEqualTo(REQUEST);
+        assertThat(actual.getRequestId()).isEqualTo(requestId);
         assertThat(actual.getMaxRetries()).isZero();
         assertThat(actual.getCreatedAt()).isNotNull();
     }
 
     @Test
     void testDeleteRequest() {
-        retryRequestCacheService.save(REQUEST_TYPE, REQUEST, 0);
+        retryRequestCacheService.save(REQUEST_TYPE, UUID.randomUUID().toString(), REQUEST, 0);
         var requests = retryRequestRepository.findAll();
         assertThat(requests).hasSize(1);
         var retryRequest = requests.iterator().next();

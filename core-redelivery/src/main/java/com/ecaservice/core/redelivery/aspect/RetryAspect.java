@@ -1,11 +1,13 @@
 package com.ecaservice.core.redelivery.aspect;
 
+import com.ecaservice.common.web.expression.SpelExpressionHelper;
 import com.ecaservice.core.redelivery.annotation.Retry;
 import com.ecaservice.core.redelivery.converter.RequestMessageConverter;
 import com.ecaservice.core.redelivery.error.ExceptionStrategy;
 import com.ecaservice.core.redelivery.service.RetryRequestCacheService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -29,6 +31,7 @@ public class RetryAspect {
 
     private final ApplicationContext applicationContext;
     private final RetryRequestCacheService retryRequestCacheService;
+    private final SpelExpressionHelper spelExpressionHelper = new SpelExpressionHelper();
 
     /**
      * Around method to support redelivery mechanism. If request fails, then it will save in queue for retry sending.
@@ -48,27 +51,28 @@ public class RetryAspect {
             return result;
         } catch (Exception ex) {
             log.error("Error while sending request: {}", ex.getMessage());
-            handleError(retry, request, ex);
+            handleError(retry, joinPoint, request, ex);
             throw ex;
         }
     }
 
-    private void saveRequest(Object request, Retry retry) {
+    private void saveRequest(Object request, ProceedingJoinPoint joinPoint, Retry retry) {
         try {
             var requestMessageConverter =
                     applicationContext.getBean(retry.messageConverter(), RequestMessageConverter.class);
             var convertedRequest = requestMessageConverter.convert(request);
-            retryRequestCacheService.save(retry.value(), convertedRequest, retry.maxRetries());
+            String requestId = getRequestId(joinPoint, retry);
+            retryRequestCacheService.save(retry.value(), requestId, convertedRequest, retry.maxRetries());
         } catch (Exception ex) {
             log.error("Can's save retry request [{}]: {}", retry.value(), ex.getMessage());
         }
     }
 
-    private void handleError(Retry retry, Object request, Exception exception) {
+    private void handleError(Retry retry, ProceedingJoinPoint joinPoint, Object request, Exception exception) {
         ExceptionStrategy exceptionStrategy =
                 applicationContext.getBean(retry.exceptionStrategy(), ExceptionStrategy.class);
         if (exceptionStrategy.notFatal(exception)) {
-            saveRequest(request, retry);
+            saveRequest(request, joinPoint, retry);
         }
     }
 
@@ -84,5 +88,14 @@ public class RetryAspect {
                             REQUEST_INPUT_PARAM_INDEX, Retry.class.getSimpleName()));
         }
         return inputArg;
+    }
+
+    private String getRequestId(ProceedingJoinPoint joinPoint, Retry retry) {
+        if (StringUtils.isBlank(retry.requestIdKey())) {
+            return null;
+        } else {
+            Object value = spelExpressionHelper.parseExpression(joinPoint, retry.requestIdKey());
+            return String.valueOf(value);
+        }
     }
 }

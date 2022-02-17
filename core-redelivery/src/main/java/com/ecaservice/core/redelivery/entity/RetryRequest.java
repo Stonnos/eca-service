@@ -30,6 +30,12 @@ public class RetryRequest {
     private String requestType;
 
     /**
+     * Request id
+     */
+    @Column(name = "request_id")
+    private String requestId;
+
+    /**
      * Request body
      */
     @Column(name = "request", columnDefinition = "text", nullable = false)
