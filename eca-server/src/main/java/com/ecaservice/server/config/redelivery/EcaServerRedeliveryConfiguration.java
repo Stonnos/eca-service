@@ -2,7 +2,6 @@ package com.ecaservice.server.config.redelivery;
 
 import com.ecaservice.core.lock.redis.config.RedisLockProperties;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -16,7 +15,6 @@ import static com.ecaservice.core.redelivery.config.RedeliveryCoreAutoConfigurat
  * @author Roman Batygin
  */
 @Slf4j
-@ConditionalOnProperty(value = "redelivery.enabled", havingValue = "true")
 @Configuration
 public class EcaServerRedeliveryConfiguration {
 
