@@ -25,7 +25,8 @@ public class AuditEventSender {
      *
      * @param auditEventRequest - audit event request
      */
-    @Retry(value = "auditRequest", exceptionStrategy = "feignExceptionStrategy")
+    @Retry(value = "auditRequest", exceptionStrategy = "feignExceptionStrategy",
+            requestIdKey = "#auditEventRequest.eventId")
     public void sendAuditEvent(AuditEventRequest auditEventRequest) {
         log.info("Starting to send audit event [{}] with code [{}], type [{}]", auditEventRequest.getEventId(),
                 auditEventRequest.getCode(), auditEventRequest.getEventType());
