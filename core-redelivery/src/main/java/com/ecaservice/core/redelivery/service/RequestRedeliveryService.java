@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import static com.ecaservice.common.web.util.LogHelper.TX_ID;
+import static com.ecaservice.common.web.util.LogHelper.putMdc;
 import static com.ecaservice.common.web.util.PageHelper.processWithPagination;
 import static com.ecaservice.core.redelivery.config.RedeliveryCoreAutoConfiguration.REDELIVERY_LOCK_REGISTRY;
 
@@ -42,6 +44,7 @@ public class RequestRedeliveryService {
     }
 
     private void retryRequest(RetryRequest retryRequest) {
+        putMdc(TX_ID, retryRequest.getTxId());
         try {
             retryService.retry(retryRequest);
         } catch (Exception ex) {

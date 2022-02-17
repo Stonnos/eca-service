@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
+import static com.ecaservice.common.web.util.LogHelper.TX_ID;
+import static com.ecaservice.common.web.util.LogHelper.getMdc;
+
 /**
  * Implements retry request cache service.
  *
@@ -32,6 +35,7 @@ public class RetryRequestCacheService {
         var retryRequest = new RetryRequest();
         retryRequest.setRequestType(requestType);
         retryRequest.setRequest(request);
+        retryRequest.setTxId(getMdc(TX_ID));
         retryRequest.setMaxRetries(maxRetries);
         retryRequest.setCreatedAt(LocalDateTime.now());
         retryRequestRepository.save(retryRequest);

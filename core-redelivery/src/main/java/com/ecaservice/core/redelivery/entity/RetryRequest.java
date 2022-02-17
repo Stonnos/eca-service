@@ -36,6 +36,12 @@ public class RetryRequest {
     private String request;
 
     /**
+     * Transaction id (used for cross - system logging)
+     */
+    @Column(name = "tx_id")
+    private String txId;
+
+    /**
      * Current retries
      */
     private int retries;

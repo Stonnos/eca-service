@@ -20,6 +20,7 @@
             <column name="request" type="text">
                 <constraints nullable="false"/>
             </column>
+            <column name="tx_id" type="varchar(255)"/>
             <column name="retries" type="integer" defaultValue="0"/>
             <column name="max_retries" type="integer" defaultValue="-1"/>
             <column name="created_at" type="timestamp">
