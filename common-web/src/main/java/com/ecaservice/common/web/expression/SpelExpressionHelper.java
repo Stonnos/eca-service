@@ -24,7 +24,7 @@ public class SpelExpressionHelper {
      * @param expression - expression
      * @return result value
      */
-    private Object parseExpression(ProceedingJoinPoint joinPoint, String expression) {
+    public Object parseExpression(ProceedingJoinPoint joinPoint, String expression) {
         StandardEvaluationContext context = new StandardEvaluationContext();
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         String[] methodParameters = methodSignature.getParameterNames();
