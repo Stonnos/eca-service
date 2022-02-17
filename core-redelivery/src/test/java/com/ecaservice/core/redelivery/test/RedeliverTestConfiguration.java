@@ -1,5 +1,7 @@
 package com.ecaservice.core.redelivery.test;
 
+import com.ecaservice.core.redelivery.callback.RetryCallback;
+import com.ecaservice.core.redelivery.callback.impl.DefaultRetryCallback;
 import com.ecaservice.core.redelivery.converter.RequestMessageConverter;
 import com.ecaservice.core.redelivery.converter.impl.JsonRequestMessageConverter;
 import com.ecaservice.core.redelivery.error.DefaultExceptionStrategy;
@@ -21,5 +23,10 @@ public class RedeliverTestConfiguration {
     @Bean(JSON_REQUEST_MESSAGE_CONVERTER)
     public RequestMessageConverter requestMessageConverter() {
         return new JsonRequestMessageConverter(new ObjectMapper());
+    }
+
+    @Bean("defaultRetryCallback")
+    public RetryCallback retryCallback() {
+        return new DefaultRetryCallback();
     }
 }

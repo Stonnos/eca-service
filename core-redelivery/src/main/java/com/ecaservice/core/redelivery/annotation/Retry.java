@@ -1,5 +1,7 @@
 package com.ecaservice.core.redelivery.annotation;
 
+import com.ecaservice.core.redelivery.callback.RetryCallback;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -41,4 +43,11 @@ public @interface Retry {
      * @return maximum retries
      */
     int maxRetries() default -1;
+
+    /**
+     * The bean name of the custom {@link RetryCallback}.
+     *
+     * @return retry callback bean name
+     */
+    String retryCallback() default "defaultRetryCallback";
 }

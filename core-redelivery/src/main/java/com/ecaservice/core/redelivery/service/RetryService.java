@@ -7,7 +7,9 @@ import com.ecaservice.core.redelivery.entity.RetryRequest;
 import com.ecaservice.core.redelivery.error.ExceptionStrategy;
 import com.ecaservice.core.redelivery.model.MethodInfo;
 import com.ecaservice.core.redelivery.model.MethodsInfo;
+import com.ecaservice.core.redelivery.model.RetryContext;
 import com.ecaservice.core.redelivery.repository.RetryRequestRepository;
+import com.ecaservice.core.redelivery.callback.RetryCallback;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopProxyUtils;
@@ -23,6 +25,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -49,8 +52,8 @@ public class RetryService {
     public void retry(RetryRequest retryRequest) {
         log.info("Starting to resent retry request [{}] with id [{}]", retryRequest.getRequestType(),
                 retryRequest.getId());
-        var redeliverMethod = getRetryMethodInfo(retryRequest);
-        invokeRetryMethod(retryRequest, redeliverMethod.getBean(), redeliverMethod.getMethod());
+        var retryMethodInfo = getRetryMethodInfo(retryRequest);
+        invokeRetryMethod(retryRequest, retryMethodInfo.getBean(), retryMethodInfo.getMethod());
     }
 
     private MethodInfo getRetryMethodInfo(RetryRequest retryRequest) {
@@ -71,15 +74,15 @@ public class RetryService {
                         String.format("No one method found annotated with [%s], code [%s]", Retry.class.getSimpleName(),
                                 retryRequest.getRequestType()));
             }
-            int redeliverMethodsSize = retryMethods.values()
+            int retryMethodsSize = retryMethods.values()
                     .stream()
                     .mapToInt(methodsInfo -> methodsInfo.getMethods().size())
                     .sum();
-            log.debug("Found [{}] methods annotated with [{}], code [{}]", redeliverMethodsSize,
+            log.debug("Found [{}] methods annotated with [{}], code [{}]", retryMethodsSize,
                     Retry.class.getSimpleName(), retryRequest.getRequestType());
-            if (redeliverMethodsSize > 1) {
+            if (retryMethodsSize > 1) {
                 throw new IllegalStateException(
-                        String.format("[%d] methods found annotated with [%s], code [%s]", redeliverMethodsSize,
+                        String.format("[%d] methods found annotated with [%s], code [%s]", retryMethodsSize,
                                 Retry.class.getSimpleName(), retryRequest.getRequestType()));
             }
             var retryMethodsInfo = retryMethods.values().iterator().next();
@@ -108,11 +111,11 @@ public class RetryService {
         for (var entry : beans.entrySet()) {
             Class<?> targetClass = AopUtils.getTargetClass(entry.getValue());
             var methods = ReflectionUtils.getDeclaredMethods(targetClass);
-            var redeliverMethods = getRetryMethods(methods, code);
-            log.debug("Found [{}] methods with code [{}] annotated with [{}] for bean [{}]", redeliverMethods.size(),
+            var retryMethods = getRetryMethods(methods, code);
+            log.debug("Found [{}] methods with code [{}] annotated with [{}] for bean [{}]", retryMethods.size(),
                     code, Retry.class.getSimpleName(), entry.getValue().getClass().getSimpleName());
-            if (!CollectionUtils.isEmpty(redeliverMethods)) {
-                methodsInfoMap.put(entry.getKey(), new MethodsInfo(entry.getValue(), redeliverMethods));
+            if (!CollectionUtils.isEmpty(retryMethods)) {
+                methodsInfoMap.put(entry.getKey(), new MethodsInfo(entry.getValue(), retryMethods));
             }
         }
         return methodsInfoMap;
@@ -121,57 +124,67 @@ public class RetryService {
     private List<Method> getRetryMethods(Method[] methods, String code) {
         return Stream.of(methods)
                 .filter(method -> {
-                    var redeliverAnnotation = AnnotationUtils.findAnnotation(method, Retry.class);
-                    return redeliverAnnotation != null && redeliverAnnotation.value().equals(code);
+                    var annotation = AnnotationUtils.findAnnotation(method, Retry.class);
+                    return annotation != null && annotation.value().equals(code);
                 }).collect(Collectors.toList());
     }
 
-    private void invokeRetryMethod(RetryRequest retryRequest, Object redeliverBean, Method retryMethod) {
-        var redeliverAnnotation = AnnotationUtils.findAnnotation(retryMethod, Retry.class);
-        Assert.notNull(redeliverAnnotation,
+    private void invokeRetryMethod(RetryRequest retryRequest, Object retryBean, Method retryMethod) {
+        var retryAnnotation = AnnotationUtils.findAnnotation(retryMethod, Retry.class);
+        Assert.notNull(retryAnnotation,
                 String.format("[%s] annotation not specified for method [%s#%s]", Retry.class.getSimpleName(),
-                        redeliverBean.getClass().getSimpleName(), retryMethod.getName()));
+                        retryBean.getClass().getSimpleName(), retryMethod.getName()));
         //Get real bean under AOP proxy to prevent aspect invocation
-        Object targetBean = AopProxyUtils.getSingletonTarget(redeliverBean);
+        Object targetBean = AopProxyUtils.getSingletonTarget(retryBean);
         Assert.notNull(targetBean,
-                String.format("Bean [%s] is not AOP proxy", redeliverBean.getClass().getSimpleName()));
+                String.format("Bean [%s] is not AOP proxy", retryBean.getClass().getSimpleName()));
+        var retryCallback = applicationContext.getBean(retryAnnotation.retryCallback(), RetryCallback.class);
+        var retryContext = new RetryContext(UUID.randomUUID().toString(), retryRequest.getRetries() + 1,
+                retryRequest.getMaxRetries());
         try {
-            Object request = deserializeRequest(retryRequest.getRequest(), retryMethod, redeliverAnnotation);
+            Object request = deserializeRequest(retryRequest.getRequest(), retryMethod, retryAnnotation);
             ReflectionUtils.invokeMethod(retryMethod, targetBean, request);
             log.info("Retry request [{}] with id [{}] has been sent", retryRequest.getRequestType(),
                     retryRequest.getId());
             retryRequestCacheService.delete(retryRequest);
+            retryCallback.onSuccess(retryContext);
         } catch (Exception ex) {
             log.error("Error while retry request with id [{}]: {}", retryRequest.getId(),
                     ex.getMessage());
-            ExceptionStrategy exceptionStrategy =
-                    applicationContext.getBean(redeliverAnnotation.exceptionStrategy(), ExceptionStrategy.class);
+            var exceptionStrategy =
+                    applicationContext.getBean(retryAnnotation.exceptionStrategy(), ExceptionStrategy.class);
             if (exceptionStrategy.notFatal(ex)) {
-                handleError(retryRequest);
+                handleNotFatalError(retryRequest, retryContext, retryCallback, ex);
             } else {
                 retryRequestCacheService.delete(retryRequest);
+                retryCallback.onError(retryContext, ex);
             }
         }
     }
 
-    private Object deserializeRequest(String request, Method redeliverMethod, Retry retry) {
+    private Object deserializeRequest(String request, Method method, Retry retry) {
         try {
             var requestMessageConverter =
                     applicationContext.getBean(retry.messageConverter(), RequestMessageConverter.class);
-            return requestMessageConverter.convert(request, redeliverMethod.getParameters()[0].getType());
+            return requestMessageConverter.convert(request, method.getParameters()[0].getType());
         } catch (Exception ex) {
             throw new IllegalStateException(ex);
         }
     }
 
-    private void handleError(RetryRequest retryRequest) {
+    private void handleNotFatalError(RetryRequest retryRequest,
+                                     RetryContext retryContext,
+                                     RetryCallback retryCallback,
+                                     Exception ex) {
         if (retryRequest.getMaxRetries() > 0 && retryRequest.getRetries() + 1 >= retryRequest.getMaxRetries()) {
             log.info("Exceeded retry request [{}] with id [{}]", retryRequest.getRequestType(),
                     retryRequest.getId());
             retryRequestCacheService.delete(retryRequest);
+            retryCallback.onRetryExhausted(retryContext);
         } else {
             retryRequest.setRetries(retryRequest.getRetries() + 1);
             retryRequestRepository.save(retryRequest);
+            retryCallback.onError(retryContext, ex);
         }
     }
 }
