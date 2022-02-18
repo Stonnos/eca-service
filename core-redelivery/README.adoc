@@ -1,0 +1,174 @@
+= Библиотека core-redelivery
+:toc:
+:toc-title: Оглавление
+
+== Введение
+
+Библиотека реализует функционал для повторной отправки данных (запросов) в случае ошибок, например недоступности
+внешних сервисов.
+
+== 1. Базовые настройки библиотеки
+
+Для начала, необходимо добавить зависимость в pom.xml
+
+[source,xml]
+----
+<dependency>
+    <groupId>eca.service</groupId>
+    <artifactId>core-redelivery</artifactId>
+    <version>${project.version}</version>
+</dependency>
+----
+
+В файле application.yml добавить настройки библиотеки
+
+[source,yml]
+----
+redelivery:
+  ## Вкл./выкл. поддержки redelivery
+  enabled: true
+  ## Размер страницы для постраничной обработки данных
+  pageSize: 5
+  ## Максимальное допустимое число запросов для повторной отправки в рамках одной задачи (вызова scheduler)
+  maxRequests: 50
+  ## Размер пула потоков для scheduler
+  threadPoolSize: 1
+  ## Интервал в мс. между запусками scheduler для повторной отправки данных
+  redeliveryIntervalMillis: 60000
+----
+
+Добавить java конфигурацию, если необходимо
+
+[source,java]
+----
+// Если в вашем модуле есть JPA сущности, то указать путь для сканирования
+@EntityScan(basePackageClasses = MyEntity.class)
+// Если в вашем модуле есть JPA репозитории, то указать путь для сканирования
+@EnableJpaRepositories(basePackageClasses = MyEntityRepository.class)
+@Configuration
+public class AppConfiguration {
+
+    //При необходимости сконфигурировать кастомный бин для конвертации запросов
+    @Bean("requestMessageConverterBean")
+    public RequestMessageConverter requestMessageConverter() {
+        return new RequestMessageConverterImpl();
+    }
+
+    //При необходимости сконфигурировать кастомный бин стратегии обработки исключений.
+    //Реализация определяет при каких ошибках нужно отправить запрос повторно.
+    @Bean("exceptionStrategyBean")
+    public ExceptionStrategy exceptionStrategy() {
+        return new ExceptionStrategyImpl();
+    }
+
+    //При необходимости сконфигурировать кастомный бин для поддержки retry callback.
+    @Bean("retryCallbackBean")
+    public RetryCallback retryCallback() {
+        return new RetryCallbackImpl();
+    }
+}
+----
+
+В конфигурационный файл liquibase, добавить путь к файлу redelivery-changelog.xml со скриптами для создания служебных таблиц библиотеки
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!-- your change sets -->
+    <include file="../redelivery-changelog.xml" relativeToChangelogFile="true"/>
+</databaseChangeLog>
+----
+
+== 2. Настройка использования блокировок для кластерной среды на примере redis
+
+В pom.xml необходимо добавить зависимости для интеграции с redis
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.springframework.integration</groupId>
+    <artifactId>spring-integration-redis</artifactId>
+</dependency>
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-redis</artifactId>
+</dependency>
+----
+
+В файле application.yml добавить следующие настройки
+
+[source,yml]
+----
+lock:
+  ## Вкл./выкл. распределенных блокировок.
+  ## Используется для scheduler повторной отправки данных.
+  ## Необходимо использовать в случае, если запущено несколько инстансов приложения, во избежании data race
+  enabled: true
+----
+
+Добавить конфигурацию бина redeliveryLockRegistry для управления блокировками
+
+[source,java]
+----
+// Подключить библиотеку блокировок
+@EnableLocks
+@Configuration
+public class LockConfiguration {
+
+    @Bean(name = "redeliveryLockRegistry")
+    public LockRegistry redisLockRegistry(RedisConnectionFactory redisConnectionFactory) {
+        return new RedisLockRegistry(redisConnectionFactory, "yourRegistryKey");
+    }
+}
+----
+
+Примечание: Также можно использовать любую другу реализацию LockRegistry от spring integration.
+
+== 3. Описание таблиц
+
+Таблица 3.1 - 'retry_request' - содержит данные запросов для повторной отправки
+[cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
+|===
+|Название колонки|Тип|Unique|Not NULL|Индекс|Описание
+|id                                  |bigint           |+|+|+                                   |Идентификатор записи (первичный ключ)
+|request_type                        |varchar(255)     |-|+|-                                   |Тип запроса (код)
+|request                             |text             |-|+|-                                   |Тело запроса
+|request_id                          |varchar(255)     |-|-|-                                   |Уникальный идентификатор запроса (внешний интеграционный ID)
+|tx_id                               |varchar(255)     |-|-|-                                   |Идентификатор для кросс системного логирования
+|retries                             |integer          |-|-|-                                   |Счетчик числа попыток повторной отправки запроса
+|max_retries                         |integer          |-|-|-                                   |Макс. число попыток повторной отправки запроса
+|created_at                             |timestamp        |-|+|-                                   |Дата создания записи
+|===
+
+== 4. Примеры использования
+
+Ниже приведен пример сервиса с поддержкой механизма redelivery:
+
+[source,java]
+----
+@Slf4j
+@Service
+//Аннотация маркер @Retryable необходима для поддержки обработки аннотаций @Retry
+@Retryable
+@RequiredArgsConstructor
+public class EmailRequestSender {
+
+    private final EmailClient emailClient;
+
+    //Включение механизма redelivery для повторной отправки запроса.
+    //Поле value должно быть уникальным в рамках всего приложения
+    @Retry(value = "emailRequest", exceptionStrategy = "feignExceptionStrategy")
+    public void sendEmail(EmailRequest emailRequest) {
+        log.info("Starting to sent email request with code [{}]", emailRequest.getTemplateCode());
+        var emailResponse = emailClient.sendEmail(emailRequest);
+        log.info("Email [{}] has been sent with request id [{}]", emailRequest.getTemplateCode(),
+                emailResponse.getRequestId());
+    }
+}
+----
+
