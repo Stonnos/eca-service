@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import static com.ecaservice.core.redelivery.config.RedeliveryCoreAutoConfiguration.FEIGN_EXCEPTION_STRATEGY;
+
 /**
  * Ers request sender.
  *
@@ -26,7 +28,7 @@ public class ErsRequestSender {
      * @param evaluationResultsRequest - evaluation results request
      */
     @Retry(value = "ersEvaluationResultsRequest", requestIdKey = "#evaluationResultsRequest.requestId",
-            exceptionStrategy = "feignExceptionStrategy", retryCallback = "ersRetryCallback")
+            exceptionStrategy = FEIGN_EXCEPTION_STRATEGY, retryCallback = "ersRetryCallback")
     public void send(EvaluationResultsRequest evaluationResultsRequest) {
         log.info("Starting to send evaluation results to ERS with request [{}]",
                 evaluationResultsRequest.getRequestId());

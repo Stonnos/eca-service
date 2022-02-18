@@ -2,7 +2,6 @@ package com.ecaservice.core.redelivery.error;
 
 import feign.FeignException;
 import feign.RetryableException;
-import org.springframework.stereotype.Component;
 
 import java.util.stream.Stream;
 
@@ -11,7 +10,6 @@ import java.util.stream.Stream;
  *
  * @author Roman Batygin
  */
-@Component
 public class FeignExceptionStrategy implements ExceptionStrategy {
 
     private final Class<?>[] notFatalExceptions = new Class<?>[] {

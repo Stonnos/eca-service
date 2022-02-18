@@ -3,7 +3,6 @@ package com.ecaservice.core.redelivery.callback.impl;
 import com.ecaservice.core.redelivery.callback.RetryCallback;
 import com.ecaservice.core.redelivery.model.RetryContext;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 /**
  * Retry callback default implementation.
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Component;
  * @author Roman Batygin
  */
 @Slf4j
-@Component
 public class DefaultRetryCallback implements RetryCallback {
 
     @Override

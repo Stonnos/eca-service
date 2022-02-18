@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import static com.ecaservice.core.redelivery.config.RedeliveryCoreAutoConfiguration.FEIGN_EXCEPTION_STRATEGY;
+
 /**
  * Service to sent audit events.
  *
@@ -25,7 +27,7 @@ public class AuditEventSender {
      *
      * @param auditEventRequest - audit event request
      */
-    @Retry(value = "auditRequest", exceptionStrategy = "feignExceptionStrategy",
+    @Retry(value = "auditRequest", exceptionStrategy = FEIGN_EXCEPTION_STRATEGY,
             requestIdKey = "#auditEventRequest.eventId")
     public void sendAuditEvent(AuditEventRequest auditEventRequest) {
         log.info("Starting to send audit event [{}] with code [{}], type [{}]", auditEventRequest.getEventId(),

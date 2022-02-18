@@ -1,8 +1,13 @@
 package com.ecaservice.core.redelivery.config;
 
+import com.ecaservice.core.redelivery.callback.RetryCallback;
+import com.ecaservice.core.redelivery.callback.impl.DefaultRetryCallback;
 import com.ecaservice.core.redelivery.converter.RequestMessageConverter;
 import com.ecaservice.core.redelivery.converter.impl.JsonRequestMessageConverter;
 import com.ecaservice.core.redelivery.entity.RetryRequest;
+import com.ecaservice.core.redelivery.error.DefaultExceptionStrategy;
+import com.ecaservice.core.redelivery.error.ExceptionStrategy;
+import com.ecaservice.core.redelivery.error.FeignExceptionStrategy;
 import com.ecaservice.core.redelivery.repository.RetryRequestRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +50,21 @@ public class RedeliveryCoreAutoConfiguration {
     public static final String JSON_REQUEST_MESSAGE_CONVERTER = "jsonRequestMessageConverter";
 
     /**
+     * Default exception strategy bean name
+     */
+    public static final String DEFAULT_EXCEPTION_STRATEGY = "defaultExceptionStrategy";
+
+    /**
+     * Feign exception strategy bean name
+     */
+    public static final String FEIGN_EXCEPTION_STRATEGY = "feignExceptionStrategy";
+
+    /**
+     * Default exception strategy bean name
+     */
+    public static final String DEFAULT_RETRY_CALLBACK = "defaultRetryCallback";
+
+    /**
      * Creates thread pool task executor bean.
      *
      * @param redeliveryProperties - redelivery properties
@@ -67,5 +87,35 @@ public class RedeliveryCoreAutoConfiguration {
     @Bean(JSON_REQUEST_MESSAGE_CONVERTER)
     public RequestMessageConverter requestMessageConverter(ObjectMapper objectMapper) {
         return new JsonRequestMessageConverter(objectMapper);
+    }
+
+    /**
+     * Creates default exception strategy bean.
+     *
+     * @return default exception strategy bean
+     */
+    @Bean(DEFAULT_EXCEPTION_STRATEGY)
+    public ExceptionStrategy exceptionStrategy() {
+        return new DefaultExceptionStrategy();
+    }
+
+    /**
+     * Creates feign exception strategy bean.
+     *
+     * @return feign exception strategy bean
+     */
+    @Bean(FEIGN_EXCEPTION_STRATEGY)
+    public ExceptionStrategy feignExceptionStrategy() {
+        return new FeignExceptionStrategy();
+    }
+
+    /**
+     * Creates default retry callback.
+     *
+     * @return default retry callback
+     */
+    @Bean(DEFAULT_RETRY_CALLBACK)
+    public RetryCallback retryCallback() {
+        return new DefaultRetryCallback();
     }
 }

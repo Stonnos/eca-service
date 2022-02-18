@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import static com.ecaservice.core.redelivery.config.RedeliveryCoreAutoConfiguration.FEIGN_EXCEPTION_STRATEGY;
+
 /**
  * @author Roman Batygin
  */
@@ -24,7 +26,7 @@ public class EmailRequestSender {
      * @param emailRequest - email request
      */
     @Retry(value = "emailRequest", messageConverter = "emailRequestConverter",
-            exceptionStrategy = "feignExceptionStrategy")
+            exceptionStrategy = FEIGN_EXCEPTION_STRATEGY)
     public void sendEmail(EmailRequest emailRequest) {
         log.info("Starting to sent email request with code [{}]", emailRequest.getTemplateCode());
         var emailResponse = emailClient.sendEmail(emailRequest);
