@@ -34,7 +34,7 @@ import static com.ecaservice.server.util.Utils.getFirstClassifierReport;
 import static com.ecaservice.server.util.Utils.isValid;
 
 /**
- * Implements service for saving evaluation results by sending request to ERS web - service.
+ * Implements service for saving evaluation results by sending request to ERS service.
  *
  * @author Roman Batygin
  */
@@ -44,8 +44,8 @@ import static com.ecaservice.server.util.Utils.isValid;
 public class ErsRequestService {
 
     private final ErsClient ersClient;
+    private final ErsRequestSender ersRequestSender;
     private final EvaluationResultsService evaluationResultsService;
-    private final ErsRetryRequestCacheService ersRetryRequestCacheService;
     private final ErsRequestRepository ersRequestRepository;
     private final ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository;
     private final ClassifierReportMapper classifierReportMapper;
@@ -79,25 +79,19 @@ public class ErsRequestService {
     public void saveEvaluationResults(EvaluationResultsRequest evaluationResultsRequest, ErsRequest ersRequest) {
         try {
             ersRequest.setRequestDate(LocalDateTime.now());
-            log.info("Starting to send evaluation results to ERS with request [{}]", ersRequest.getRequestId());
-            var resultsResponse = ersClient.save(evaluationResultsRequest);
-            log.info("Received success response for requestId [{}] from ERS.", resultsResponse.getRequestId());
+            ersRequestSender.send(evaluationResultsRequest);
             ersRequest.setResponseStatus(ErsResponseStatus.SUCCESS);
             ersRequestRepository.save(ersRequest);
-            ersRetryRequestCacheService.evictIfAbsent(ersRequest);
         } catch (FeignException.ServiceUnavailable | RetryableException ex) {
             log.error("Service unavailable error [{}] while sending evaluation results: {}",
                     ex.getClass().getSimpleName(), ex.getMessage());
             ersErrorHandler.handleErrorRequest(ersRequest, ErsResponseStatus.SERVICE_UNAVAILABLE, ex.getMessage());
-            ersRetryRequestCacheService.putIfAbsent(ersRequest, evaluationResultsRequest);
         } catch (FeignException.BadRequest ex) {
             log.error("Bad request error while sending evaluation results: {}", ex.getMessage());
             ersErrorHandler.handleBadRequest(ersRequest, ex);
-            ersRetryRequestCacheService.evictIfAbsent(ersRequest);
         } catch (Exception ex) {
             log.error("Unknown error while sending evaluation results: {}", ex.getMessage());
             ersErrorHandler.handleErrorRequest(ersRequest, ErsResponseStatus.ERROR, ex.getMessage());
-            ersRetryRequestCacheService.evictIfAbsent(ersRequest);
         }
     }
 
