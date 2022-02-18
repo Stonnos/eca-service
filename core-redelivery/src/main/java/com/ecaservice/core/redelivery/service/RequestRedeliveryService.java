@@ -6,6 +6,7 @@ import com.ecaservice.core.redelivery.entity.RetryRequest;
 import com.ecaservice.core.redelivery.repository.RetryRequestRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -34,7 +35,8 @@ public class RequestRedeliveryService {
     @TryLocked(lockName = "processNotSentRetryRequests", lockRegistry = REDELIVERY_LOCK_REGISTRY)
     public void processNotSentRequests() {
         log.debug("Starting redeliver requests");
-        var ids = retryRequestRepository.getNotSentRequestIds();
+        var pageRequest = PageRequest.of(0, redeliveryProperties.getMaxRequests());
+        var ids = retryRequestRepository.getNotSentRequestIds(pageRequest);
         if (!CollectionUtils.isEmpty(ids)) {
             log.info("Found [{}] not sent requests", ids.size());
             processWithPagination(ids, retryRequestRepository::findByIdIn,
