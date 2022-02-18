@@ -42,6 +42,7 @@ public class ErsErrorHandler {
         ersRequest.setResponseStatus(responseStatus);
         ersRequest.setDetails(errorMessage);
         ersRequestRepository.save(ersRequest);
+        log.info("Ers request [{}] has been updated with status [{}]", ersRequest.getRequestId(), responseStatus);
     }
 
     /**
@@ -58,6 +59,8 @@ public class ErsErrorHandler {
             handleValidationError(ersRequest, ersErrorCode);
             ersRequest.setDetails(badRequestEx.getMessage());
             ersRequestRepository.save(ersRequest);
+            log.info("Ers request [{}] has been updated with status [{}]", ersRequest.getRequestId(),
+                    ersRequest.getResponseStatus());
             return ersErrorCode;
         } catch (Exception ex) {
             log.error("Got error while handling bad request with status [{}] for request id [{}]",
