@@ -145,8 +145,8 @@ public class RetryService {
             ReflectionUtils.invokeMethod(retryMethod, targetBean, request);
             log.info("Retry request [{}] with id [{}] has been sent", retryRequest.getRequestType(),
                     retryRequest.getId());
-            retryRequestCacheService.delete(retryRequest);
             retryCallback.onSuccess(retryContext);
+            retryRequestCacheService.delete(retryRequest);
         } catch (Exception ex) {
             log.error("Error while retry request with id [{}]: {}", retryRequest.getId(),
                     ex.getMessage());
@@ -155,8 +155,8 @@ public class RetryService {
             if (exceptionStrategy.notFatal(ex)) {
                 handleNotFatalError(retryRequest, retryContext, retryCallback, ex);
             } else {
-                retryRequestCacheService.delete(retryRequest);
                 retryCallback.onError(retryContext, ex);
+                retryRequestCacheService.delete(retryRequest);
             }
         }
     }
@@ -178,12 +178,12 @@ public class RetryService {
         if (retryRequest.getMaxRetries() > 0 && retryRequest.getRetries() + 1 >= retryRequest.getMaxRetries()) {
             log.info("Exceeded retry request [{}] with id [{}]", retryRequest.getRequestType(),
                     retryRequest.getId());
-            retryRequestCacheService.delete(retryRequest);
             retryCallback.onRetryExhausted(retryContext);
+            retryRequestCacheService.delete(retryRequest);
         } else {
+            retryCallback.onError(retryContext, ex);
             retryRequest.setRetries(retryRequest.getRetries() + 1);
             retryRequestRepository.save(retryRequest);
-            retryCallback.onError(retryContext, ex);
         }
     }
 }
