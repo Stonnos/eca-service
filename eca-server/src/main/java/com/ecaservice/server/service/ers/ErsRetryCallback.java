@@ -6,14 +6,10 @@ import com.ecaservice.core.redelivery.model.RetryContext;
 import com.ecaservice.server.model.entity.ErsRequest;
 import com.ecaservice.server.model.entity.ErsResponseStatus;
 import com.ecaservice.server.repository.ErsRequestRepository;
-import feign.FeignException;
-import feign.RetryableException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
-
-import java.util.stream.Stream;
 
 /**
  * Ers retry callback.
@@ -24,11 +20,6 @@ import java.util.stream.Stream;
 @Component
 @RequiredArgsConstructor
 public class ErsRetryCallback implements RetryCallback {
-
-    private final Class<?>[] notFatalExceptions = new Class<?>[] {
-            FeignException.ServiceUnavailable.class,
-            RetryableException.class
-    };
 
     private final ErsErrorHandler ersErrorHandler;
     private final ErsRequestRepository ersRequestRepository;
@@ -54,25 +45,12 @@ public class ErsRetryCallback implements RetryCallback {
     @Override
     public void onError(RetryContext retryContext, Exception ex) {
         var ersRequest = getErsRequest(retryContext);
-        log.info("Starting to handle ers error request [{}]", ersRequest.getRequestId());
-        if (notFatal(ex)) {
-            ersErrorHandler.handleErrorRequest(ersRequest, ErsResponseStatus.SERVICE_UNAVAILABLE, ex.getMessage());
-        } else if (ex instanceof FeignException.BadRequest) {
-            FeignException.BadRequest badRequest = (FeignException.BadRequest) ex;
-            ersErrorHandler.handleBadRequest(ersRequest, badRequest);
-        } else {
-            ersErrorHandler.handleErrorRequest(ersRequest, ErsResponseStatus.ERROR, ex.getMessage());
-        }
+        ersErrorHandler.handleError(ersRequest, ex);
     }
 
     private ErsRequest getErsRequest(RetryContext retryContext) {
         Assert.notNull(retryContext.getRequestId(), "Expected not empty ers request id");
         return ersRequestRepository.findByRequestId(retryContext.getRequestId())
                 .orElseThrow(() -> new EntityNotFoundException(ErsRequest.class, retryContext.getRequestId()));
-    }
-
-    private boolean notFatal(Exception ex) {
-        return Stream.of(notFatalExceptions)
-                .anyMatch(notFatalException -> notFatalException.isAssignableFrom(ex.getClass()));
     }
 }
