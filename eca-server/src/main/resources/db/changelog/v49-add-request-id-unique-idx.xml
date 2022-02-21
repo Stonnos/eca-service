@@ -38,4 +38,22 @@
         <addUniqueConstraint tableName="evaluation_log" columnNames="request_id"
                              constraintName="evaluation_log_request_id_unique_idx"/>
     </changeSet>
+
+    <changeSet id="5" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment_results_request"/>
+            <columnExists tableName="experiment_results_request" columnName="experiment_results_id"/>
+        </preConditions>
+        <addUniqueConstraint tableName="experiment_results_request" columnNames="experiment_results_id"
+                             constraintName="experiment_results_request_experiment_results_id_unique_idx"/>
+    </changeSet>
+
+    <changeSet id="6" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_results_request"/>
+            <columnExists tableName="evaluation_results_request" columnName="evaluation_log_id"/>
+        </preConditions>
+        <addUniqueConstraint tableName="evaluation_results_request" columnNames="evaluation_log_id"
+                             constraintName="evaluation_results_request_evaluation_log_id_unique_idx"/>
+    </changeSet>
 </databaseChangeLog>
