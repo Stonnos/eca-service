@@ -3,6 +3,7 @@ package com.ecaservice.mail.service;
 import com.ecaservice.common.web.crypto.EncryptorBase64AdapterService;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.mail.config.MailConfig;
+import com.ecaservice.mail.exception.DuplicateRequestIdException;
 import com.ecaservice.mail.mapping.EmailRequestMapper;
 import com.ecaservice.mail.model.Email;
 import com.ecaservice.mail.model.TemplateEntity;
@@ -17,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.ecaservice.common.web.util.LogHelper.TX_ID;
@@ -57,7 +57,7 @@ public class EmailService {
         requestIdsMap.putIfAbsent(emailRequest.getRequestId(), new Object());
         synchronized (requestIdsMap.get(emailRequest.getRequestId())) {
             if (emailRepository.existsByUuid(emailRequest.getRequestId())) {
-                throw new RuntimeException();
+                throw new DuplicateRequestIdException(emailRequest.getRequestId());
             }
             email = emailRequestMapper.map(emailRequest, mailConfig);
             email.setSubject(templateEntity.getSubject());
