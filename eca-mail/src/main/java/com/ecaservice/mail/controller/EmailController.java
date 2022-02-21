@@ -79,6 +79,7 @@ public class EmailController {
     )
     @PostMapping(value = "/email-request")
     public EmailResponse saveRequest(@Valid @RequestBody EmailRequest emailRequest) {
+        log.debug("Received email request: {}", emailRequest);
         Email email = emailService.saveEmail(emailRequest);
         return emailRequestMapper.map(email);
     }

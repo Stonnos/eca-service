@@ -16,6 +16,14 @@ import java.util.List;
 public interface EmailRepository extends JpaRepository<Email, Long> {
 
     /**
+     * Check email existing with specified uuid.
+     *
+     * @param uuid - request uuid
+     * @return {@code true} if email with specified request id exists, otherwise {@link false}
+     */
+   boolean existsByUuid(String uuid);
+
+    /**
      * Finds not sent emails by statuses.
      *
      * @param statuses - {@link EmailStatus} collection
