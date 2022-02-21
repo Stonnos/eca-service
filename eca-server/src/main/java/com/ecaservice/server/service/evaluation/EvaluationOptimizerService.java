@@ -61,13 +61,10 @@ public class EvaluationOptimizerService {
     }
 
     private ClassifierOptionsResult getOptimalClassifierOptions(ClassifierOptionsRequest classifierOptionsRequest) {
-        String dataMd5Hash = classifierOptionsRequest.getDataHash();
         if (isUseClassifierOptionsCache()) {
-            return classifierOptionsCacheService.getOptimalClassifierOptionsFromCache(classifierOptionsRequest,
-                    dataMd5Hash);
+            return classifierOptionsCacheService.getOptimalClassifierOptionsFromCache(classifierOptionsRequest);
         } else {
-            return classifierOptionsCacheService.getOptimalClassifierOptionsFromErs(classifierOptionsRequest,
-                    dataMd5Hash);
+            return classifierOptionsCacheService.getOptimalClassifierOptionsFromErs(classifierOptionsRequest);
         }
     }
 
