@@ -18,6 +18,7 @@
             **/entity/**/*,
             **/config/**/*,
             **/model/**/*,
+            **/annotation/**/*,
             **/exception/**/*
         </sonar.coverage.exclusions>
     </properties>
@@ -54,7 +55,7 @@
         </dependency>
         <dependency>
             <groupId>eca.service</groupId>
-            <artifactId>common-web</artifactId>
+            <artifactId>core-redelivery</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

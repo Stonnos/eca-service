@@ -22,6 +22,7 @@
         <module>eca-audit-transport</module>
         <module>eca-web-transport</module>
         <module>eca-report-model</module>
+        <module>core-redelivery</module>
         <module>core-audit</module>
         <module>core-filter</module>
         <module>swagger-core</module>
@@ -334,6 +335,7 @@
                         <exclude>**/exception/**/*</exclude>
                         <exclude>**/util/**/*</exclude>
                         <exclude>**/specification/**/*</exclude>
+                        <exclude>**/annotation/**/*</exclude>
                         <exclude>**/fetcher/**/*</exclude>
                         <exclude>**/metrics/**/*</exclude>
                         <exclude>**/doc/**/*</exclude>

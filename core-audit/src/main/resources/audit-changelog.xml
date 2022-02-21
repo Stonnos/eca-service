@@ -122,4 +122,14 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="drop_audit_event_request_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="audit_event_request"/>
+        </preConditions>
+        <dropTable tableName="audit_event_request"/>
+    </changeSet>
+
+    <!-- Includes redelivery lib changelog file -->
+    <include file="redelivery-changelog.xml" relativeToChangelogFile="true"/>
+
 </databaseChangeLog>

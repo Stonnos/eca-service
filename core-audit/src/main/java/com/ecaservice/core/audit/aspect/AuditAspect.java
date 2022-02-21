@@ -1,6 +1,7 @@
 package com.ecaservice.core.audit.aspect;
 
 import com.ecaservice.audit.dto.EventType;
+import com.ecaservice.common.web.expression.SpelExpressionHelper;
 import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.core.audit.annotation.Audits;
 import com.ecaservice.core.audit.event.AuditEvent;
@@ -14,9 +15,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.expression.ExpressionParser;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
-import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -40,7 +38,7 @@ public class AuditAspect {
 
     private final ApplicationEventPublisher applicationEventPublisher;
     private final AuditEventInitiator auditEventInitiator;
-    private final ExpressionParser expressionParser = new SpelExpressionParser();
+    private final SpelExpressionHelper spelExpressionHelper = new SpelExpressionHelper();
 
     /**
      * Wrapper to audit service method.
@@ -111,12 +109,7 @@ public class AuditAspect {
     }
 
     private String parseMethodParameterExpression(String expression, ProceedingJoinPoint joinPoint) {
-        StandardEvaluationContext context = new StandardEvaluationContext();
-        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
-        String[] methodParameters = methodSignature.getParameterNames();
-        Object[] args = joinPoint.getArgs();
-        IntStream.range(0, methodParameters.length).forEach(i -> context.setVariable(methodParameters[i], args[i]));
-        Object value = expressionParser.parseExpression(expression).getValue(context, Object.class);
+        Object value = spelExpressionHelper.parseExpression(joinPoint, expression);
         return String.valueOf(value);
     }
 
@@ -125,8 +118,7 @@ public class AuditAspect {
             return String.valueOf(methodResult);
         } else {
             String expr = StringUtils.substringAfter(expression, String.format("%s.", RESULT_EXPRESSION_PREFIX));
-            StandardEvaluationContext context = new StandardEvaluationContext(methodResult);
-            Object val = expressionParser.parseExpression(expr).getValue(context, Object.class);
+            Object val = spelExpressionHelper.parseExpression(methodResult, expr);
             return String.valueOf(val);
         }
     }

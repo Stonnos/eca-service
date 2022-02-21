@@ -30,6 +30,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-integration</artifactId>
         </dependency>
+        <dependency>
+            <groupId>eca.service</groupId>
+            <artifactId>common-web</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

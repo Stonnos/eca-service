@@ -1,6 +1,5 @@
 package com.ecaservice.oauth.integration;
 
-import com.ecaservice.core.mail.client.entity.EmailRequestEntity;
 import com.ecaservice.core.mail.client.service.EmailRequestSender;
 import com.ecaservice.notification.dto.EmailRequest;
 import com.ecaservice.oauth.TestHelperUtils;
@@ -36,7 +35,6 @@ import javax.inject.Inject;
 import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 
@@ -166,8 +164,7 @@ abstract class AbstractUserIT {
     }
 
     String getHttpRequestParamFromEmailUrlVariable(String template, String variable, String tokenRequestParam) {
-        verify(emailRequestSender, atLeastOnce())
-                .sendEmail(emailRequestArgumentCaptor.capture(), any(EmailRequestEntity.class));
+        verify(emailRequestSender, atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
         EmailRequest emailRequest = emailRequestArgumentCaptor.getValue();
         assertThat(emailRequest).isNotNull();
         assertThat(emailRequest.getTemplateCode()).isEqualTo(template);
@@ -181,8 +178,7 @@ abstract class AbstractUserIT {
     }
 
     String getVariableFromEmail(String template, String variable) {
-        verify(emailRequestSender, atLeastOnce())
-                .sendEmail(emailRequestArgumentCaptor.capture(), any(EmailRequestEntity.class));
+        verify(emailRequestSender, atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
         EmailRequest emailRequest = emailRequestArgumentCaptor.getValue();
         assertThat(emailRequest).isNotNull();
         assertThat(emailRequest.getTemplateCode()).isEqualTo(template);

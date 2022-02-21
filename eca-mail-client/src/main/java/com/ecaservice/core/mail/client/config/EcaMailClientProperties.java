@@ -34,21 +34,6 @@ public class EcaMailClientProperties {
     private Integer threadPoolSize = DEFAULT_THREAD_POOL_SIZE;
 
     /**
-     * Page size (used for pagination)
-     */
-    private Integer pageSize = DEFAULT_PAGE_SIZE;
-
-    /**
-     * Enabled redelivery?
-     */
-    private Boolean redelivery;
-
-    /**
-     * Redelivery interval in millis
-     */
-    private Long redeliveryIntervalMillis = DEFAULT_REDELIVERY_INTERVAL_MILLIS;
-
-    /**
      * Encrypt properties
      */
     private EncryptProperties encrypt = new EncryptProperties();

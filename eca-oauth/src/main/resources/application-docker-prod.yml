@@ -23,8 +23,10 @@ app:
 mail:
   client:
     enabled: true
-    redelivery: true
-    redeliveryIntervalMillis: 15000
+
+redelivery:
+  enabled: true
+  redeliveryIntervalMillis: 15000
 
 ## Swagger properties
 open-api:

@@ -33,8 +33,8 @@ import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.ers.ErsClient;
 import com.ecaservice.server.service.ers.ErsErrorHandler;
+import com.ecaservice.server.service.ers.ErsRequestSender;
 import com.ecaservice.server.service.ers.ErsRequestService;
-import com.ecaservice.server.service.ers.ErsRetryRequestCacheService;
 import com.ecaservice.server.service.evaluation.initializers.ClassifierInitializerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.ensemble.forests.DecisionTreeType;
@@ -86,7 +86,7 @@ class EvaluationOptimizerServiceIT extends AbstractJpaTest {
     @MockBean
     private EvaluationResultsService evaluationResultsService;
     @MockBean
-    private ErsRetryRequestCacheService ersRetryRequestCacheService;
+    private ErsRequestSender ersRequestSender;
     @Inject
     private ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository;
     @Inject

@@ -18,7 +18,6 @@ import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.EvaluationResultsRequestEntity;
 import com.ecaservice.server.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.server.repository.ErsRequestRepository;
-import com.ecaservice.server.repository.ErsRetryRequestRepository;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.evaluation.EvaluationResultsService;
@@ -39,6 +38,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -47,8 +47,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({ClassifierReportMapperImpl.class, ErsResponseStatusMapperImpl.class, ErsRetryRequestCacheService.class,
-        ErsErrorHandler.class})
+@Import({ClassifierReportMapperImpl.class, ErsResponseStatusMapperImpl.class, ErsErrorHandler.class})
 class ErsRequestServiceTest extends AbstractJpaTest {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -58,15 +57,13 @@ class ErsRequestServiceTest extends AbstractJpaTest {
     @Mock
     private ErsClient ersClient;
     @Mock
+    private ErsRequestSender ersRequestSender;
+    @Mock
     private EvaluationResultsService evaluationResultsService;
     @Inject
     private ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository;
     @Inject
-    private ErsRetryRequestRepository ersRetryRequestRepository;
-    @Inject
     private ErsErrorHandler ersErrorHandler;
-    @Inject
-    private ErsRetryRequestCacheService ersRetryRequestCacheService;
     @Inject
     private ClassifierReportMapper classifierReportMapper;
     @Inject
@@ -80,16 +77,16 @@ class ErsRequestServiceTest extends AbstractJpaTest {
 
     @Override
     public void init() throws Exception {
-        ersRequestService = new ErsRequestService(ersClient, evaluationResultsService, ersRetryRequestCacheService,
-                ersRequestRepository, classifierOptionsRequestModelRepository, classifierReportMapper, ersErrorHandler,
-                ersResponseStatusMapper);
+        ersRequestService =
+                new ErsRequestService(ersClient, ersRequestSender, evaluationResultsService, ersRequestRepository,
+                        classifierOptionsRequestModelRepository, classifierReportMapper, ersErrorHandler,
+                        ersResponseStatusMapper);
         evaluationResults =
                 new EvaluationResults(new KNearestNeighbours(), new Evaluation(TestHelperUtils.loadInstances()));
     }
 
     @Override
     public void deleteAll() {
-        ersRetryRequestRepository.deleteAll();
         ersRequestRepository.deleteAll();
         evaluationLogRepository.deleteAll();
     }
@@ -114,21 +111,18 @@ class ErsRequestServiceTest extends AbstractJpaTest {
         EvaluationResultsRequestEntity actual = (EvaluationResultsRequestEntity) ersRequest;
         assertThat(actual.getEvaluationLog()).isNotNull();
         assertThat(actual.getEvaluationLog().getId()).isEqualTo(evaluationLog.getId());
-        assertThat(ersRetryRequestRepository.count()).isZero();
     }
 
     @Test
     void testSendingWithServiceUnavailable() {
         FeignException.ServiceUnavailable serviceUnavailable = mock(FeignException.ServiceUnavailable.class);
         internalTestErrorStatus(serviceUnavailable, ErsResponseStatus.SERVICE_UNAVAILABLE);
-        assertThat(ersRetryRequestRepository.count()).isOne();
     }
 
     @Test
     void testSendingWithErrorStatus() {
         FeignException.BadRequest badRequest = mock(FeignException.BadRequest.class);
         internalTestErrorStatus(badRequest, ErsResponseStatus.ERROR);
-        assertThat(ersRetryRequestRepository.count()).isZero();
     }
 
     @Test
@@ -139,7 +133,6 @@ class ErsRequestServiceTest extends AbstractJpaTest {
         when(badRequest.contentUTF8()).thenReturn(
                 OBJECT_MAPPER.writeValueAsString(Collections.singletonList(validationError)));
         internalTestErrorStatus(badRequest, ErsResponseStatus.DUPLICATE_REQUEST_ID);
-        assertThat(ersRetryRequestRepository.count()).isZero();
     }
 
     @Test
@@ -155,7 +148,7 @@ class ErsRequestServiceTest extends AbstractJpaTest {
         EvaluationLog evaluationLog = TestHelperUtils.createEvaluationLog();
         evaluationLogRepository.save(evaluationLog);
         when(evaluationResultsService.proceed(evaluationResults)).thenReturn(new EvaluationResultsRequest());
-        when(ersClient.save(any(EvaluationResultsRequest.class))).thenThrow(ex);
+        doThrow(ex).when(ersRequestSender).send(any(EvaluationResultsRequest.class));
         EvaluationResultsRequestEntity requestEntity = new EvaluationResultsRequestEntity();
         requestEntity.setEvaluationLog(evaluationLog);
         ersRequestService.saveEvaluationResults(evaluationResults, requestEntity);
