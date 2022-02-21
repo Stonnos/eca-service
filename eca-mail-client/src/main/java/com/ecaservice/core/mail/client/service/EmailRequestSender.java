@@ -26,7 +26,7 @@ public class EmailRequestSender {
      * @param emailRequest - email request
      */
     @Retry(value = "emailRequest", messageConverter = "emailRequestConverter",
-            exceptionStrategy = FEIGN_EXCEPTION_STRATEGY)
+            exceptionStrategy = FEIGN_EXCEPTION_STRATEGY, requestIdKey = "#emailRequest.requestId")
     public void sendEmail(EmailRequest emailRequest) {
         log.info("Starting to sent email request with code [{}]", emailRequest.getTemplateCode());
         var emailResponse = emailClient.sendEmail(emailRequest);
