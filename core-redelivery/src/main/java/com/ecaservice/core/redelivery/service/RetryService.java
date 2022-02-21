@@ -7,7 +7,6 @@ import com.ecaservice.core.redelivery.converter.RequestMessageConverter;
 import com.ecaservice.core.redelivery.entity.RetryRequest;
 import com.ecaservice.core.redelivery.error.ExceptionStrategy;
 import com.ecaservice.core.redelivery.model.MethodInfo;
-import com.ecaservice.core.redelivery.model.MethodsInfo;
 import com.ecaservice.core.redelivery.model.RetryContext;
 import com.ecaservice.core.redelivery.repository.RetryRequestRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,12 +21,13 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * Сервис для повторной отправки запросов.
@@ -73,10 +73,7 @@ public class RetryService {
                         String.format("No one method found annotated with [%s], code [%s]", Retry.class.getSimpleName(),
                                 retryRequest.getRequestType()));
             }
-            int retryMethodsSize = retryMethods.values()
-                    .stream()
-                    .mapToInt(methodsInfo -> methodsInfo.getMethods().size())
-                    .sum();
+            int retryMethodsSize = retryMethods.size();
             log.debug("Found [{}] methods annotated with [{}], code [{}]", retryMethodsSize,
                     Retry.class.getSimpleName(), retryRequest.getRequestType());
             if (retryMethodsSize > 1) {
@@ -84,9 +81,9 @@ public class RetryService {
                         String.format("[%d] methods found annotated with [%s], code [%s]", retryMethodsSize,
                                 Retry.class.getSimpleName(), retryRequest.getRequestType()));
             }
-            var retryMethodsInfo = retryMethods.values().iterator().next();
-            Object retryBean = retryMethodsInfo.getBean();
-            var retryMethod = retryMethodsInfo.getMethods().iterator().next();
+            var retryMethodInfo = retryMethods.iterator().next();
+            Object retryBean = retryMethodInfo.getBean();
+            var retryMethod = retryMethodInfo.getMethod();
             if (retryMethod.getParameters().length == 0) {
                 throw new IllegalStateException(
                         String.format("[%s#%s] annotated with [%s], code [%s], has no input parameters",
@@ -105,8 +102,8 @@ public class RetryService {
         return methodInfo;
     }
 
-    private Map<String, MethodsInfo> getAllRetryMethodsWithCode(Map<String, Object> beans, String code) {
-        Map<String, MethodsInfo> methodsInfoMap = new HashMap<>();
+    private List<MethodInfo> getAllRetryMethodsWithCode(Map<String, Object> beans, String code) {
+        List<MethodInfo> result = newArrayList();
         for (var entry : beans.entrySet()) {
             Class<?> targetClass = AopUtils.getTargetClass(entry.getValue());
             var methods = ReflectionUtils.getDeclaredMethods(targetClass);
@@ -114,10 +111,10 @@ public class RetryService {
             log.debug("Found [{}] methods with code [{}] annotated with [{}] for bean [{}]", retryMethods.size(),
                     code, Retry.class.getSimpleName(), entry.getValue().getClass().getSimpleName());
             if (!CollectionUtils.isEmpty(retryMethods)) {
-                methodsInfoMap.put(entry.getKey(), new MethodsInfo(entry.getValue(), retryMethods));
+                retryMethods.forEach(method -> result.add(new MethodInfo(entry.getValue(), method)));
             }
         }
-        return methodsInfoMap;
+        return result;
     }
 
     private List<Method> getRetryMethods(Method[] methods, String code) {

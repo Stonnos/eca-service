@@ -7,14 +7,21 @@ import lombok.NoArgsConstructor;
 import java.lang.reflect.Method;
 
 /**
- * Данные о методе бина.
+ * Method info.
+ * @author Roman Batygin
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class MethodInfo {
 
+    /**
+     * Spring bean object
+     */
     private Object bean;
 
+    /**
+     * Method
+     */
     private Method method;
 }
