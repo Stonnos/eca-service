@@ -29,4 +29,13 @@
         </preConditions>
         <addNotNullConstraint tableName="ers_request" columnName="response_status"/>
     </changeSet>
+
+    <changeSet id="4" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_log"/>
+            <columnExists tableName="evaluation_log" columnName="request_id"/>
+        </preConditions>
+        <addUniqueConstraint tableName="evaluation_log" columnNames="request_id"
+                             constraintName="evaluation_log_request_id_unique_idx"/>
+    </changeSet>
 </databaseChangeLog>
