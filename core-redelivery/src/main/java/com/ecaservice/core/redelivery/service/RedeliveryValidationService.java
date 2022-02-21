@@ -57,7 +57,7 @@ public class RedeliveryValidationService {
                                 redeliverAnnotation.value(), Retry.class.getSimpleName()));
             }
         }
-        log.info("Redelivery annotations has been passed");
+        log.info("Redelivery annotations validation has been passed");
     }
 
     private List<Method> getAllRetryMethods(Map<String, Object> beans) {
