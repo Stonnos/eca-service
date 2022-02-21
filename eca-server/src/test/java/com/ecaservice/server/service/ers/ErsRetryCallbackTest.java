@@ -74,6 +74,7 @@ class ErsRetryCallbackTest extends AbstractJpaTest {
         evaluationLogRepository.save(evaluationLog);
         var requestEntity = new EvaluationResultsRequestEntity();
         requestEntity.setRequestId(UUID.randomUUID().toString());
+        requestEntity.setResponseStatus(ErsResponseStatus.SERVICE_UNAVAILABLE);
         requestEntity.setEvaluationLog(evaluationLog);
         return ersRequestRepository.save(requestEntity);
     }

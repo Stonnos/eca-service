@@ -326,6 +326,7 @@ public class TestHelperUtils {
      */
     public static ClassifierOptionsRequest createClassifierOptionsRequest(EvaluationMethod evaluationMethod) {
         ClassifierOptionsRequest request = new ClassifierOptionsRequest();
+        request.setRequestId(UUID.randomUUID().toString());
         request.setRelationName(RELATION_NAME);
         String dataMd5Hash = DigestUtils.md5DigestAsHex(STRUCTURE.getBytes(StandardCharsets.UTF_8));
         request.setDataHash(dataMd5Hash);

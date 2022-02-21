@@ -84,7 +84,7 @@ class EvaluationResultsControllerTest {
     void testFindOptimalClassifierOptions() throws Exception {
         ClassifierOptionsRequest request = createClassifierOptionsRequest(EvaluationMethod.CROSS_VALIDATION);
         ClassifierOptionsResponse response = new ClassifierOptionsResponse();
-        response.setRequestId(UUID.randomUUID().toString());
+        response.setRequestId(request.getRequestId());
         when(classifierOptionsRequestService.findClassifierOptions(request)).thenReturn(response);
         mockMvc.perform(post(OPTIMAL_CLASSIFIER_OPTIONS_REQUEST_URL)
                 .content(objectMapper.writeValueAsString(request))

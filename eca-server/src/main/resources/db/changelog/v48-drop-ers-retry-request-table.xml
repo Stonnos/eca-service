@@ -7,7 +7,7 @@
 
     <changeSet id="1" author="roman.batygin@mail.ru" context="schema">
         <preConditions onFail="MARK_RAN">
-                <tableExists tableName="ers_retry_request"/>
+            <tableExists tableName="ers_retry_request"/>
         </preConditions>
         <dropTable tableName="ers_retry_request"/>
     </changeSet>
