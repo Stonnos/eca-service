@@ -291,19 +291,19 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
-|id                         |bigint           |+|+|+                                 |Идентификатор записи (первичный ключ)
-|request_id                 |varchar(255)     |-|+|-                                 |Уникальный UUID запроса
-|creation_date              |timestamp        |-|+|-                                 |Дата создания запроса
-|start_date                 |timestamp        |-|-|-                                 |Дата начала построения модели
-|end_date                   |timestamp        |-|-|-                                 |Дата завершения построения модели
-|request_status             |varchar(255)     |-|+|-                                 |Статус запроса
-|evaluation_method          |varchar(255)     |-|+|-                                 |Метод оценки точности
-|num_folds                  |integer          |-|-|-                                 |Число блоков для k * V - блочной кросс проверки на тестовой выборке
-|num_tests                  |integer          |-|-|-                                 |Число тестов для k * V - блочной кросс проверки на тестовой выборке
-|seed                       |integer          |-|-|-                                 |Начальное значение (seed) для генератор псевдослучайных чисел
-|instances_info_id          |bigint           |-|+|+                                 |Внешний ключ, ID обучающей выборки
-|classifier_info_id         |bigint           |-|+|+                                 |Внешний ключ, ID информации о классификаторе
-|error_message              |text             |-|-|-                                 |Текст ошибки
+|id                         |bigint           |+|+|+                                    |Идентификатор записи (первичный ключ)
+|request_id                 |varchar(255)     |+|+|evaluation_log_request_id_unique_idx |Уникальный UUID запроса
+|creation_date              |timestamp        |-|+|-                                    |Дата создания запроса
+|start_date                 |timestamp        |-|-|-                                    |Дата начала построения модели
+|end_date                   |timestamp        |-|-|-                                    |Дата завершения построения модели
+|request_status             |varchar(255)     |-|+|-                                    |Статус запроса
+|evaluation_method          |varchar(255)     |-|+|-                                    |Метод оценки точности
+|num_folds                  |integer          |-|-|-                                    |Число блоков для k * V - блочной кросс проверки на тестовой выборке
+|num_tests                  |integer          |-|-|-                                    |Число тестов для k * V - блочной кросс проверки на тестовой выборке
+|seed                       |integer          |-|-|-                                    |Начальное значение (seed) для генератор псевдослучайных чисел
+|instances_info_id          |bigint           |-|+|+                                    |Внешний ключ, ID обучающей выборки
+|classifier_info_id         |bigint           |-|+|+                                    |Внешний ключ, ID информации о классификаторе
+|error_message              |text             |-|-|-                                    |Текст ошибки
 |===
 
 ==== Таблица 3.13 - 'experiment' - содержит данные о заявках на построение экспрериментов
@@ -311,7 +311,7 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                           |bigint           |+|+|+                                 |Идентификатор записи (первичный ключ)
-|request_id                   |varchar(255)     |-|+|-                                 |Уникальный UUID заявки
+|request_id                   |varchar(255)     |+|+|+                                 |Уникальный UUID заявки
 |creation_date                |timestamp        |-|+|-                                 |Дата создания заявки
 |start_date                   |timestamp        |-|-|-                                 |Дата начала построения эксперимента
 |end_date                     |timestamp        |-|-|-                                 |Дата завершения построения эксперимента
@@ -361,8 +361,8 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                           |bigint           |+|+|+                         |Идентификатор записи (первичный ключ)
 |request_date                 |timestamp        |-|-|-                         |Дата запроса
-|request_id                   |varchar(255)     |-|-|-                         |Уникальный UUID запроса
-|response_status              |varchar(255)     |-|-|-                         |Статус ответа от eca-ers
+|request_id                   |varchar(255)     |+|+|ers_request_id_unique_idx |Уникальный UUID запроса
+|response_status              |varchar(255)     |-|+|-                         |Статус ответа от eca-ers
 |details                      |text             |-|-|-                         |Детальная информация об ошибке
 |===
 
@@ -370,17 +370,17 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
-|id                           |bigint           |+|+|fk_evaluation_results_id  |Идентификатор записи (первичный ключ) и внешний ключ на ers_request
-|evaluation_log_id            |bigint           |-|+|fk_evaluation_log         |Внешний ключ, ID evaluation_log
+|id                           |bigint           |+|+|fk_evaluation_results_id                                 |Идентификатор записи (первичный ключ) и внешний ключ на ers_request
+|evaluation_log_id            |bigint           |+|+|fk_evaluation_log, evaluation_log_request_id_unique_idx  |Внешний ключ, ID evaluation_log
 |===
 
 ==== Таблица 3.18 - 'experiment_results_request' - данные запросов в eca-ers для сохранения результатов экспериментов
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
-|id                           |bigint           |+|+|fk_experiment_results_id                              |Идентификатор записи (первичный ключ) и внешний ключ на ers_request
-|experiment_results_id        |bigint           |-|+|fk_experiment_results_request_experiment_results_id   |Внешний ключ, ID experiment_results
-|request_source               |varchar(255)     |-|-|-                                                     |Источник запроса
+|id                           |bigint           |+|+|fk_experiment_results_id                                                                                           |Идентификатор записи (первичный ключ) и внешний ключ на ers_request
+|experiment_results_id        |bigint           |+|+|fk_experiment_results_request_experiment_results_id, experiment_results_request_experiment_results_id_unique_idx   |Внешний ключ, ID experiment_results
+|request_source               |varchar(255)     |-|-|-                                                                                                                  |Источник запроса
 |===
 
 ==== Таблица 3.19 - 'classifier_options_request_model' - содержит информацию о запросах в eca-ers на нахождение оптимальных настроек классификаторов
@@ -573,26 +573,26 @@ image::./images/eca-ers-db-schema.png[alt=Схема базы данных eca-e
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
-|id                               |bigint           |+|+|+                       |Идентификатор записи (первичный ключ)
-|evaluation_method                |varchar(255)     |-|+|-                       |Метод оценки точности
-|num_folds                        |integer          |-|-|-                       |Число блоков для k * V - блочной кросс проверки на тестовой выборке
-|num_tests                        |integer          |-|-|-                       |Число тестов для k * V - блочной кросс проверки на тестовой выборке
-|seed                             |integer          |-|-|-                       |Начальное значение (seed) для генератор псевдослучайных чисел
-|request_id                       |varchar(255)     |-|+|-                       |Уникальный UUID запроса
-|save_date                        |timestamp        |-|+|-                       |Дата сохранения результатов
-|instances_info_id                |bigint           |-|+|+                       |Внешний ключ данных об обучающей выборке
-|classifier_options_info_id       |bigint           |-|+|+                       |Внешний ключ данных о классификаторе
-|num_test_instances               |integer          |-|-|-                       |Число объектов тестовых данных
-|num_correct                      |integer          |-|-|-                       |Число верно классифицированных объектов
-|num_incorrect                    |integer          |-|-|-                       |Число неверно классифицированных объектов
-|pct_correct                      |numeric(19,4)    |-|-|-                       |Доля верно классифицированных объектов
-|pct_incorrect                    |numeric(19,4)    |-|-|-                       |Доля неверно классифицированных объектов
-|mean_abs_error                   |numeric(19,4)    |-|-|-                       |Средняя абсолютная ошибка классификации
-|root_mean_squared_error          |numeric(19,4)    |-|-|-                       |Среднеквадратическая ошибка классификации
-|max_auc                          |numeric(19,4)    |-|-|-                       |Максимальное значение показателя AUC среди всех классов
-|variance_error                   |numeric(19,4)    |-|-|-                       |Дисперсия ошибки классификатора
-|confidence_interval_lower_bound  |numeric(19,4)    |-|-|-                       |Нижняя граница 95% доверительного интервала ошибки классификатора
-|confidence_interval_upper_bound  |numeric(19,4)    |-|-|-                       |Верхняя граница 95% доверительного интервала ошибки классификатора
+|id                               |bigint           |+|+|+                                              |Идентификатор записи (первичный ключ)
+|evaluation_method                |varchar(255)     |-|+|-                                              |Метод оценки точности
+|num_folds                        |integer          |-|-|-                                              |Число блоков для k * V - блочной кросс проверки на тестовой выборке
+|num_tests                        |integer          |-|-|-                                              |Число тестов для k * V - блочной кросс проверки на тестовой выборке
+|seed                             |integer          |-|-|-                                              |Начальное значение (seed) для генератор псевдослучайных чисел
+|request_id                       |varchar(255)     |+|+|evaluation_results_info_request_id_unique_idx  |Уникальный UUID запроса
+|save_date                        |timestamp        |-|+|-                                              |Дата сохранения результатов
+|instances_info_id                |bigint           |-|+|+                                              |Внешний ключ данных об обучающей выборке
+|classifier_options_info_id       |bigint           |-|+|+                                              |Внешний ключ данных о классификаторе
+|num_test_instances               |integer          |-|-|-                                              |Число объектов тестовых данных
+|num_correct                      |integer          |-|-|-                                              |Число верно классифицированных объектов
+|num_incorrect                    |integer          |-|-|-                                              |Число неверно классифицированных объектов
+|pct_correct                      |numeric(19,4)    |-|-|-                                              |Доля верно классифицированных объектов
+|pct_incorrect                    |numeric(19,4)    |-|-|-                                              |Доля неверно классифицированных объектов
+|mean_abs_error                   |numeric(19,4)    |-|-|-                                              |Средняя абсолютная ошибка классификации
+|root_mean_squared_error          |numeric(19,4)    |-|-|-                                              |Среднеквадратическая ошибка классификации
+|max_auc                          |numeric(19,4)    |-|-|-                                              |Максимальное значение показателя AUC среди всех классов
+|variance_error                   |numeric(19,4)    |-|-|-                                              |Дисперсия ошибки классификатора
+|confidence_interval_lower_bound  |numeric(19,4)    |-|-|-                                              |Нижняя граница 95% доверительного интервала ошибки классификатора
+|confidence_interval_upper_bound  |numeric(19,4)    |-|-|-                                              |Верхняя граница 95% доверительного интервала ошибки классификатора
 |===
 
 ==== Таблица 3.34 - 'classification_costs_info' - содержит данные о результатах классификации
@@ -672,7 +672,7 @@ image::./images/eca-mail-db-schema.png[alt=Схема базы данных eca-
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                      |bigint           |+|+|+                       |Идентификатор записи (первичный ключ)
-|uuid                    |varchar(255)     |-|+|-                       |Уникальный UUID запроса
+|uuid                    |varchar(255)     |+|+|email_uuid_unique_idx   |Уникальный UUID запроса
 |sender                  |varchar(255)     |-|+|-                       |Адрес отправителя
 |receiver                |varchar(255)     |-|+|-                       |Адрес получателя
 |subject                 |varchar(255)     |-|+|-                       |Тема письма
@@ -791,43 +791,18 @@ image::./images/eca-audit-log-db-schema.png[alt=Схема базы данных
 
 Таблица содержит уникальный индекс audit_event_template_code_id_event_type_unique_index на поля audit_code_id, event_type
 
-==== Таблица 3.47 - 'audit_event_request' - содержит данные о запросах с событиями аудита
+=== 3.14 Описание служебных таблиц redelivery
+
+Таблица 3.47 - 'retry_request' - содержит данные запросов для повторной отправки
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
-|id                      |bigint           |+|+|+                              |Идентификатор записи (первичный ключ)
-|event_id                |varchar(255)     |-|+|-                              |Внешний ID события
-|message                 |text             |-|+|-                              |Текст сообщения
-|initiator               |varchar(255)     |-|+|-                              |Источник события, например имя пользователя
-|event_type              |varchar(255)     |-|+|-                              |Тип события
-|group_code              |varchar(255)     |-|+|-                              |Код группы событий
-|group_title             |varchar(255)     |-|-|-                              |Описание группы событий
-|audit_code              |varchar(255)     |-|+|-                              |Код события
-|audit_code_title        |varchar(255)     |-|-|-                              |Описание кода события
-|event_date              |timestamp        |-|+|-                              |Дата наступления события
-|event_status            |varchar(255)     |-|+|-                              |Статус отправки события в сервис аудита (SENT, NOT_SENT, ERROR)
-|details                 |text             |-|-|-                              |Дополнительная информация, например текст ошибки
-|sent_date               |timestamp        |-|-|-                              |Дата отправки события в сервис аудита
-|correlation_id          |varchar(255)     |-|-|-                              |ID корреляции
-|===
-
-=== 3.14 Описание служебных таблиц для отправки почты
-
-==== Таблица 3.48 - 'email_request' - содержит данные о запросах в сервис eca-mail
-[cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
-|===
-|Название колонки|Тип|Unique|Not NULL|Индекс|Описание
-|id                      |bigint           |+|+|+                              |ID (первичный ключ)
-|receiver                |varchar(255)     |-|+|-                              |Email получателя
-|template_code           |varchar(255)     |-|+|-                              |Технический код шаблона сообщения
-|priority                |integer          |-|-|-                              |Приоритет отправки
-|created                 |timestamp        |-|+|-                              |Дата создания запроса
-|request_json            |varchar(2000)    |-|+|-                              |Структура запроса в сервис eca-mail в формате json
-|encrypted               |boolean          |-|-|-                              |Флаг равен true, если структура запроса (requestJson) хранится в зашифрованном виде
-|request_status          |varchar(255)     |-|+|-                              |Статус отправки (SENT, NOT_SENT, ERROR, EXCEEDED)
-|request_id              |varchar(255)     |-|-|-                              |UUID запроса в eca-mail
-|sent_date               |timestamp        |-|-|-                              |Дата успешной отправки запроса в eca-mail
-|expired_at              |timestamp        |-|-|-                              |Дата истечения срока действия кэша запроса
-|tx_id                   |varchar(255)     |-|-|-                              |Идентификатор для кросс системного логирования
-|details                 |text             |-|-|-                              |Доп. информация, например текст ошибки
+|id                                  |bigint           |+|+|+                                   |Идентификатор записи (первичный ключ)
+|request_type                        |varchar(255)     |-|+|-                                   |Тип запроса (код)
+|request                             |text             |-|+|-                                   |Тело запроса
+|request_id                          |varchar(255)     |-|-|-                                   |Уникальный идентификатор запроса (внешний интеграционный ID)
+|tx_id                               |varchar(255)     |-|-|-                                   |Идентификатор для кросс системного логирования
+|retries                             |integer          |-|-|-                                   |Счетчик числа попыток повторной отправки запроса
+|max_retries                         |integer          |-|-|-                                   |Макс. число попыток повторной отправки запроса
+|created_at                          |timestamp        |-|+|-                                   |Дата создания записи
 |===
