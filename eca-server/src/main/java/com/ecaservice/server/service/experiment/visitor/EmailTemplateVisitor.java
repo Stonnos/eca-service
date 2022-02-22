@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
+import java.util.UUID;
 
 import static com.ecaservice.notification.util.Priority.MEDIUM;
 import static com.ecaservice.server.util.Utils.buildExperimentDownloadUrl;
@@ -68,6 +69,7 @@ public class EmailTemplateVisitor implements RequestStatusVisitor<EmailRequest, 
 
     private EmailRequest createEmailCommonRequest(Experiment experiment, String templateCode) {
         EmailRequest emailRequest = new EmailRequest();
+        emailRequest.setRequestId(UUID.randomUUID().toString());
         emailRequest.setReceiver(experiment.getEmail());
         emailRequest.setTemplateCode(templateCode);
         Map<String, String> variablesMap = createCommonVariablesMap(experiment);

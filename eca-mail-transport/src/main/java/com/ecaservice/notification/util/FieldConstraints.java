@@ -33,4 +33,15 @@ public class FieldConstraints {
      * Max. variables size
      */
     public static final int MAX_VARIABLES_SIZE = 50;
+
+    /**
+     * UUID max size.
+     */
+    public static final int UUID_MAX_SIZE = 36;
+
+    /**
+     * UUID pattern.
+     */
+    public static final String UUID_PATTERN =
+            "^[0-9a-f]{8}-[0-9a-f]{4}-[34][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$";
 }

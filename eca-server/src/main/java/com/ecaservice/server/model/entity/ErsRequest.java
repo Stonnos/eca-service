@@ -29,7 +29,7 @@ public class ErsRequest {
     private Long id;
 
     /**
-     * Web - service request date
+     * Request date
      */
     @Column(name = "request_date")
     private LocalDateTime requestDate;
@@ -37,14 +37,14 @@ public class ErsRequest {
     /**
      * Request id
      */
-    @Column(name = "request_id")
+    @Column(name = "request_id", unique = true, nullable = false)
     private String requestId;
 
     /**
      * Response status from web - service
      */
     @Enumerated(EnumType.STRING)
-    @Column(name = "response_status")
+    @Column(name = "response_status", nullable = false)
     private ErsResponseStatus responseStatus;
 
     /**

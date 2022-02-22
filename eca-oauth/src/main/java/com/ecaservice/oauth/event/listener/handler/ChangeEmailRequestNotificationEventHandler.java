@@ -46,9 +46,4 @@ public class ChangeEmailRequestNotificationEventHandler
         templateVariables.put(VALIDITY_HOURS_KEY, String.valueOf(validityHours));
         return templateVariables;
     }
-
-    @Override
-    public Long getRequestCacheDurationInMinutes() {
-        return appProperties.getChangeEmail().getValidityMinutes();
-    }
 }

@@ -36,6 +36,7 @@ public abstract class ClassifierOptionsRequestModelMapper {
     @Mapping(source = "evaluationMethodReport.numFolds", target = "numFolds")
     @Mapping(source = "evaluationMethodReport.numTests", target = "numTests")
     @Mapping(source = "evaluationMethodReport.seed", target = "seed")
+    @Mapping(source = "dataHash", target = "dataMd5Hash")
     public abstract ClassifierOptionsRequestModel map(ClassifierOptionsRequest classifierOptionsRequest);
 
     /**

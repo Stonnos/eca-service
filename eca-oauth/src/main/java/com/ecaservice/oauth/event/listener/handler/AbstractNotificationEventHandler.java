@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.UUID;
 
 import static com.ecaservice.notification.util.Priority.MEDIUM;
 
@@ -44,6 +45,7 @@ public abstract class AbstractNotificationEventHandler<T extends AbstractNotific
      */
     public EmailRequest handle(T event) {
         EmailRequest emailRequest = new EmailRequest();
+        emailRequest.setRequestId(UUID.randomUUID().toString());
         emailRequest.setTemplateCode(getTemplateCode());
         emailRequest.setReceiver(event.getReceiver());
         emailRequest.setVariables(createVariables(event));
@@ -68,14 +70,5 @@ public abstract class AbstractNotificationEventHandler<T extends AbstractNotific
      */
     Map<String, String> createVariables(T event) {
         return Collections.emptyMap();
-    }
-
-    /**
-     * Gets request cache duration in minutes.
-     *
-     * @return request cache duration in minutes
-     */
-    public Long getRequestCacheDurationInMinutes() {
-        return null;
     }
 }

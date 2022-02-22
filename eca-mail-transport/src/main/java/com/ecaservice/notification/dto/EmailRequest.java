@@ -9,6 +9,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.Map;
 
@@ -16,6 +17,8 @@ import static com.ecaservice.notification.util.FieldConstraints.EMAIL_MAX_SIZE;
 import static com.ecaservice.notification.util.FieldConstraints.EMAIL_REGEX;
 import static com.ecaservice.notification.util.FieldConstraints.MAX_LENGTH_255;
 import static com.ecaservice.notification.util.FieldConstraints.MAX_VARIABLES_SIZE;
+import static com.ecaservice.notification.util.FieldConstraints.UUID_MAX_SIZE;
+import static com.ecaservice.notification.util.FieldConstraints.UUID_PATTERN;
 import static com.ecaservice.notification.util.FieldConstraints.VALUE_1;
 import static com.ecaservice.notification.util.Priority.HIGHEST;
 import static com.ecaservice.notification.util.Priority.LOW;
@@ -26,6 +29,15 @@ import static com.ecaservice.notification.util.Priority.LOW;
 @Data
 @Schema(description = "Email request")
 public class EmailRequest {
+
+    /**
+     * Request id
+     */
+    @NotBlank
+    @Pattern(regexp = UUID_PATTERN)
+    @Size(min = VALUE_1, max = UUID_MAX_SIZE)
+    @Schema(description = "Request id", example = "1d2de514-3a87-4620-9b97-c260e24340de", required = true)
+    private String requestId;
 
     /**
      * Receiver email

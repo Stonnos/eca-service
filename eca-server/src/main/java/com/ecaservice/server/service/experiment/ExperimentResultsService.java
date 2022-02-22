@@ -144,9 +144,9 @@ public class ExperimentResultsService {
 
     private EvaluationResultsDto getEvaluationResults(ExperimentResultsEntity experimentResultsEntity) {
         ExperimentResultsRequest experimentResultsRequest =
-                experimentResultsRequestRepository.findByExperimentResultsAndResponseStatusEquals(
-                        experimentResultsEntity, ErsResponseStatus.SUCCESS);
-        if (experimentResultsRequest != null) {
+                experimentResultsRequestRepository.findByExperimentResults(experimentResultsEntity);
+        if (experimentResultsRequest != null &&
+                ErsResponseStatus.SUCCESS.equals(experimentResultsRequest.getResponseStatus())) {
             return ersService.getEvaluationResultsFromErs(experimentResultsRequest.getRequestId());
         } else {
             return buildEvaluationResultsDto(EvaluationResultsStatus.RESULTS_NOT_SENT);

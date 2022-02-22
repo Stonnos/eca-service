@@ -23,6 +23,6 @@ public class EvaluationResultsRequestEntity extends ErsRequest {
      * Linked evaluation log
      */
     @OneToOne
-    @JoinColumn(name = "evaluation_log_id", nullable = false)
+    @JoinColumn(name = "evaluation_log_id", nullable = false, unique = true)
     private EvaluationLog evaluationLog;
 }

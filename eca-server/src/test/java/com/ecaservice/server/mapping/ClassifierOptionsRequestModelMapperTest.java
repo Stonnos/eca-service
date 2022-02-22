@@ -22,6 +22,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 /**
  * Unit tests for checking {@link ClassifierOptionsRequestModelMapper} functionality.
  *
@@ -42,10 +44,12 @@ class ClassifierOptionsRequestModelMapperTest {
     void testMapClassifierOptionsRequest() {
         ClassifierOptionsRequest request = TestHelperUtils.createClassifierOptionsRequest();
         ClassifierOptionsRequestModel requestModel = classifierOptionsRequestModelMapper.map(request);
-        Assertions.assertThat(requestModel.getEvaluationMethod()).isEqualTo(EvaluationMethod.CROSS_VALIDATION);
-        Assertions.assertThat(requestModel.getNumFolds()).isEqualTo(requestModel.getNumFolds());
-        Assertions.assertThat(requestModel.getNumTests()).isEqualTo(requestModel.getNumTests());
-        Assertions.assertThat(requestModel.getSeed()).isEqualTo(requestModel.getSeed());
+        assertThat(requestModel.getEvaluationMethod()).isEqualTo(EvaluationMethod.CROSS_VALIDATION);
+        assertThat(requestModel.getNumFolds()).isEqualTo(request.getEvaluationMethodReport().getNumFolds().intValue());
+        assertThat(requestModel.getNumTests()).isEqualTo(request.getEvaluationMethodReport().getNumTests().intValue());
+        assertThat(requestModel.getSeed()).isEqualTo(request.getEvaluationMethodReport().getSeed().intValue());
+        assertThat(requestModel.getRelationName()).isEqualTo(request.getRelationName());
+        assertThat(requestModel.getDataMd5Hash()).isEqualTo(request.getDataHash());
     }
 
     @Test
@@ -55,22 +59,22 @@ class ClassifierOptionsRequestModelMapperTest {
                         ErsResponseStatus.SUCCESS,
                         Collections.singletonList(TestHelperUtils.createClassifierOptionsResponseModel(OPTIONS)));
         ClassifierOptionsRequestDto classifierOptionsRequestDto = classifierOptionsRequestModelMapper.map(requestModel);
-        Assertions.assertThat(classifierOptionsRequestDto).isNotNull();
-        Assertions.assertThat(classifierOptionsRequestDto.getRequestDate()).isEqualTo(requestModel.getRequestDate());
-        Assertions.assertThat(classifierOptionsRequestDto.getRequestId()).isEqualTo(requestModel.getRequestId());
-        Assertions.assertThat(classifierOptionsRequestDto.getResponseStatus().getDescription()).isEqualTo(
+        assertThat(classifierOptionsRequestDto).isNotNull();
+        assertThat(classifierOptionsRequestDto.getRequestDate()).isEqualTo(requestModel.getRequestDate());
+        assertThat(classifierOptionsRequestDto.getRequestId()).isEqualTo(requestModel.getRequestId());
+        assertThat(classifierOptionsRequestDto.getResponseStatus().getDescription()).isEqualTo(
                 requestModel.getResponseStatus().getDescription());
-        Assertions.assertThat(classifierOptionsRequestDto.getResponseStatus().getValue()).isEqualTo(
+        assertThat(classifierOptionsRequestDto.getResponseStatus().getValue()).isEqualTo(
                 requestModel.getResponseStatus().name());
-        Assertions.assertThat(classifierOptionsRequestDto.getRelationName()).isEqualTo(requestModel.getRelationName());
-        Assertions.assertThat(classifierOptionsRequestDto.getNumFolds()).isEqualTo(requestModel.getNumFolds());
-        Assertions.assertThat(classifierOptionsRequestDto.getNumTests()).isEqualTo(requestModel.getNumTests());
-        Assertions.assertThat(classifierOptionsRequestDto.getSeed()).isEqualTo(requestModel.getSeed());
-        Assertions.assertThat(classifierOptionsRequestDto.getEvaluationMethod().getDescription()).isEqualTo(
+        assertThat(classifierOptionsRequestDto.getRelationName()).isEqualTo(requestModel.getRelationName());
+        assertThat(classifierOptionsRequestDto.getNumFolds()).isEqualTo(requestModel.getNumFolds());
+        assertThat(classifierOptionsRequestDto.getNumTests()).isEqualTo(requestModel.getNumTests());
+        assertThat(classifierOptionsRequestDto.getSeed()).isEqualTo(requestModel.getSeed());
+        assertThat(classifierOptionsRequestDto.getEvaluationMethod().getDescription()).isEqualTo(
                 requestModel.getEvaluationMethod().getDescription());
-        Assertions.assertThat(classifierOptionsRequestDto.getEvaluationMethod().getValue()).isEqualTo(
+        assertThat(classifierOptionsRequestDto.getEvaluationMethod().getValue()).isEqualTo(
                 requestModel.getEvaluationMethod().name());
-        Assertions.assertThat(classifierOptionsRequestDto.getClassifierOptionsResponseModels()).hasSize(1);
+        assertThat(classifierOptionsRequestDto.getClassifierOptionsResponseModels()).hasSize(1);
     }
 
     @Test
@@ -83,7 +87,7 @@ class ClassifierOptionsRequestModelMapperTest {
                         ErsResponseStatus.SUCCESS, Collections.emptyList());
         List<ClassifierOptionsRequestDto> classifierOptionsRequestDtoList = classifierOptionsRequestModelMapper.map
                 (Arrays.asList(requestModel, requestModel1));
-        Assertions.assertThat(classifierOptionsRequestDtoList).hasSize(2);
+        assertThat(classifierOptionsRequestDtoList).hasSize(2);
     }
 
     @Test
@@ -95,16 +99,16 @@ class ClassifierOptionsRequestModelMapperTest {
                         Collections.singletonList(responseModel));
         ClassifierOptionsRequestBean classifierOptionsRequestBean =
                 classifierOptionsRequestModelMapper.mapToBean(requestModel);
-        Assertions.assertThat(classifierOptionsRequestBean).isNotNull();
-        Assertions.assertThat(classifierOptionsRequestBean.getRequestDate()).isNotNull();
-        Assertions.assertThat(classifierOptionsRequestBean.getEvaluationMethod()).isNotNull();
-        Assertions.assertThat(classifierOptionsRequestBean.getRelationName()).isEqualTo(requestModel.getRelationName());
-        Assertions.assertThat(classifierOptionsRequestBean.getRequestId()).isEqualTo(requestModel.getRequestId());
-        Assertions.assertThat(classifierOptionsRequestBean.getResponseStatus()).isEqualTo(
+        assertThat(classifierOptionsRequestBean).isNotNull();
+        assertThat(classifierOptionsRequestBean.getRequestDate()).isNotNull();
+        assertThat(classifierOptionsRequestBean.getEvaluationMethod()).isNotNull();
+        assertThat(classifierOptionsRequestBean.getRelationName()).isEqualTo(requestModel.getRelationName());
+        assertThat(classifierOptionsRequestBean.getRequestId()).isEqualTo(requestModel.getRequestId());
+        assertThat(classifierOptionsRequestBean.getResponseStatus()).isEqualTo(
                 requestModel.getResponseStatus().getDescription());
-        Assertions.assertThat(classifierOptionsRequestBean.getClassifierName()).isEqualTo(
+        assertThat(classifierOptionsRequestBean.getClassifierName()).isEqualTo(
                 responseModel.getClassifierName());
-        Assertions.assertThat(classifierOptionsRequestBean.getClassifierOptions()).isEqualTo(
+        assertThat(classifierOptionsRequestBean.getClassifierOptions()).isEqualTo(
                 responseModel.getOptions());
     }
 }

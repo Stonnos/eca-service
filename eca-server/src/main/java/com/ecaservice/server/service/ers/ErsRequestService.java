@@ -123,10 +123,10 @@ public class ErsRequestService {
         requestModel.setRequestDate(LocalDateTime.now());
         ClassifierOptionsResult classifierOptionsResult = new ClassifierOptionsResult();
         try {
-            log.info("Sending request to find classifier optimal options for data '{}'.",
-                    classifierOptionsRequest.getRelationName());
+            log.info("Sending request [{}] to find classifier optimal options for data '{}'.",
+                    classifierOptionsRequest.getRequestId(), classifierOptionsRequest.getRelationName());
             ClassifierOptionsResponse response = ersClient.getClassifierOptions(classifierOptionsRequest);
-            log.info("Received response with requestId = {}, for data '{}'", response.getRequestId(),
+            log.info("Received response for request id [{}], data [{}]", response.getRequestId(),
                     classifierOptionsRequest.getRelationName());
             handleClassifierOptionsResponse(classifierOptionsRequest, response, requestModel, classifierOptionsResult);
         } catch (FeignException.ServiceUnavailable | RetryableException ex) {
@@ -150,7 +150,6 @@ public class ErsRequestService {
                                                  ClassifierOptionsResponse response,
                                                  ClassifierOptionsRequestModel requestModel,
                                                  ClassifierOptionsResult classifierOptionsResult) {
-        requestModel.setRequestId(response.getRequestId());
         ClassifierReport classifierReport = getFirstClassifierReport(response);
         if (!isValid(classifierReport)) {
             ersErrorHandler.handleErrorRequest(requestModel, ErsResponseStatus.ERROR,

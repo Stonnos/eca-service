@@ -3,6 +3,7 @@ package com.ecaservice.mail.service;
 import com.ecaservice.common.web.crypto.EncryptorBase64AdapterService;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.mail.config.MailConfig;
+import com.ecaservice.mail.exception.DuplicateRequestIdException;
 import com.ecaservice.mail.mapping.EmailRequestMapper;
 import com.ecaservice.mail.model.Email;
 import com.ecaservice.mail.model.TemplateEntity;
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.getMdc;
@@ -40,6 +41,8 @@ public class EmailService {
     private final EmailRepository emailRepository;
     private final TemplateRepository templateRepository;
 
+    private final ConcurrentHashMap<String, Object> requestIdsMap = new ConcurrentHashMap<>();
+
     /**
      * Saves email request.
      *
@@ -47,21 +50,27 @@ public class EmailService {
      * @return email response
      */
     public Email saveEmail(@ValidEmailRequest EmailRequest emailRequest) {
-        String uuid = UUID.randomUUID().toString();
-        log.info("Received email request with uuid '{}'.", uuid);
+        log.info("Received email request with uuid '{}'.", emailRequest.getRequestId());
         TemplateEntity templateEntity = templateRepository.findByCode(emailRequest.getTemplateCode())
                 .orElseThrow(() -> new EntityNotFoundException(TemplateEntity.class, emailRequest.getTemplateCode()));
-        String txId = getMdc(TX_ID);
-        Email email = emailRequestMapper.map(emailRequest, mailConfig);
-        email.setSubject(templateEntity.getSubject());
-        String message = templateProcessorService.process(emailRequest.getTemplateCode(), emailRequest.getVariables());
-        String encodedMessage = encryptorBase64AdapterService.encrypt(message);
-        email.setMessage(encodedMessage);
-        email.setUuid(uuid);
-        email.setTxId(txId);
-        email.setSaveDate(LocalDateTime.now());
-        emailRepository.save(email);
-        log.info("Email request with uuid '{}' has been saved.", uuid);
+        Email email;
+        requestIdsMap.putIfAbsent(emailRequest.getRequestId(), new Object());
+        synchronized (requestIdsMap.get(emailRequest.getRequestId())) {
+            if (emailRepository.existsByUuid(emailRequest.getRequestId())) {
+                throw new DuplicateRequestIdException(emailRequest.getRequestId());
+            }
+            email = emailRequestMapper.map(emailRequest, mailConfig);
+            email.setSubject(templateEntity.getSubject());
+            String message = templateProcessorService.process(emailRequest.getTemplateCode(), emailRequest.getVariables());
+            String encodedMessage = encryptorBase64AdapterService.encrypt(message);
+            email.setMessage(encodedMessage);
+            email.setUuid(emailRequest.getRequestId());
+            email.setTxId(getMdc(TX_ID));
+            email.setSaveDate(LocalDateTime.now());
+            emailRepository.save(email);
+            log.info("Email request with uuid '{}' has been saved.", emailRequest.getRequestId());
+        }
+        requestIdsMap.remove(emailRequest.getRequestId());
         return email;
     }
 }
