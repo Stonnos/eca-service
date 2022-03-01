@@ -13,7 +13,12 @@
     <packaging>jar</packaging>
 
     <properties>
-        <sonar.coverage.exclusions>**/*.*</sonar.coverage.exclusions>
+        <sonar.coverage.exclusions>
+            **/config/**/*,
+            **/annotation/**/*,
+            **/model/**/*,
+            **/exception/**/*
+        </sonar.coverage.exclusions>
     </properties>
 
     <dependencies>
@@ -34,6 +39,12 @@
             <groupId>eca.service</groupId>
             <artifactId>common-web</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>eca.service</groupId>
+            <artifactId>core-test</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
