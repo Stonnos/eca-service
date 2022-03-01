@@ -1,7 +1,7 @@
 package com.ecaservice.core.lock.fallback;
 
 /**
- * Fallback interface.
+ * Fallback interface in case if lock can't be acquire.
  *
  * @author Roman Batygin
  */
