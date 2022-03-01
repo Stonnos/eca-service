@@ -1,7 +1,7 @@
 package com.ecaservice.core.lock.annotation;
 
 import com.ecaservice.core.lock.aspect.LockExecutionAspect;
-import com.ecaservice.core.lock.fallback.DefaultFallbackHandler;
+import com.ecaservice.core.lock.config.CoreLockConfiguration;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.Documented;
@@ -18,6 +18,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Import({LockExecutionAspect.class, DefaultFallbackHandler.class})
+@Import({LockExecutionAspect.class, CoreLockConfiguration.class})
 public @interface EnableLocks {
 }
