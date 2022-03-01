@@ -3,6 +3,7 @@ package com.ecaservice.core.aspect;
 import com.ecaservice.core.config.TestLockConfiguration;
 import com.ecaservice.core.lock.aspect.LockExecutionAspect;
 import com.ecaservice.core.test.TestCounterService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -38,6 +39,11 @@ class LockExecutionAspectTest {
     @Inject
     private TestCounterService testCounterService;
 
+    @BeforeEach
+    void init() {
+        testCounterService.clear();
+    }
+
     @Test
     void testLock() throws InterruptedException {
         final CountDownLatch finishedLatch = new CountDownLatch(NUM_THREADS);
@@ -56,5 +62,25 @@ class LockExecutionAspectTest {
         finishedLatch.await();
         executorService.shutdownNow();
         assertThat(testCounterService.get(KEY)).isEqualTo(NUM_THREADS * VALUE * NUM_ITS);
+    }
+
+    @Test
+    void testTryLock() throws InterruptedException {
+        final CountDownLatch finishedLatch = new CountDownLatch(NUM_THREADS);
+        ExecutorService executorService = Executors.newFixedThreadPool(NUM_THREADS);
+        for (int i = 0; i < NUM_THREADS; i++) {
+            executorService.submit(() -> {
+                try {
+                   testCounterService.tryIncrement(KEY, VALUE);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                } finally {
+                    finishedLatch.countDown();
+                }
+            });
+        }
+        finishedLatch.await();
+        executorService.shutdownNow();
+        assertThat(testCounterService.get(KEY)).isEqualTo(VALUE);
     }
 }

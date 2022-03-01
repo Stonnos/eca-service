@@ -1,5 +1,6 @@
 package com.ecaservice.core.config;
 
+import com.ecaservice.core.lock.fallback.DefaultFallbackHandler;
 import com.ecaservice.core.test.TestCounterService;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -19,5 +20,10 @@ public class TestLockConfiguration {
     @Bean(DEFAULT_LOCK_REGISTRY)
     public LockRegistry defaultLockRegistry() {
         return new DefaultLockRegistry();
+    }
+
+    @Bean
+    public DefaultFallbackHandler defaultFallbackHandler() {
+        return new DefaultFallbackHandler();
     }
 }
