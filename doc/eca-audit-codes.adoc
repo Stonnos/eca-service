@@ -17,6 +17,8 @@
 |Действия пользователя в личном кабинете
 |CLASSIFIERS_CONFIGURATIONS_ACTIONS
 |Действия с конфигурациями классификаторов
+|EVALUATION_REQUESTS_ACTIONS
+|Действия с заявками на построение моделей
 |===
 
 == 2. Описание кодов событий аудита
@@ -96,4 +98,13 @@
 |DELETE_CLASSIFIER_OPTIONS
 |Удаление настроек классификатора из конфигурации
 |CLASSIFIERS_CONFIGURATIONS_ACTIONS
+|GENERATE_CONFIGURATION_REPORT
+|Выгрузка отчета для конфигурации с настройками классификаторов
+|CLASSIFIERS_CONFIGURATIONS_ACTIONS
+|CREATE_EXPERIMENT_REQUEST
+|Создание заявки на эксперимент
+|EVALUATION_REQUESTS_ACTIONS
+|GENERATE_EVALUATION_REQUESTS_REPORT
+|Выгрузка отчета по заявкам
+|EVALUATION_REQUESTS_ACTIONS
 |===

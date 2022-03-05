@@ -45,6 +45,7 @@ import java.io.IOException;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
+import static com.ecaservice.server.config.audit.AuditCodes.GENERATE_CONFIGURATION_REPORT;
 import static com.ecaservice.server.config.audit.AuditCodes.SET_ACTIVE_CONFIGURATION;
 import static com.ecaservice.server.controller.doc.ApiExamples.CLASSIFIERS_CONFIGURATION_DETAILS_RESPONSE_JSON;
 import static com.ecaservice.server.controller.doc.ApiExamples.COPY_CLASSIFIERS_CONFIGURATION_BAD_REQUEST_RESPONSE_JSON;
@@ -410,6 +411,7 @@ public class ClassifiersConfigurationController {
      * @param httpServletResponse - http servlet response
      * @throws IOException in case of I/O error
      */
+    @Audit(value = GENERATE_CONFIGURATION_REPORT, correlationIdKey = "#id")
     @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
             description = "Downloads classifiers configuration report in xlsx format",

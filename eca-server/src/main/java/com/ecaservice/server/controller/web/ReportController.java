@@ -1,6 +1,7 @@
 package com.ecaservice.server.controller.web;
 
 import com.ecaservice.common.web.dto.ValidationErrorDto;
+import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.report.data.fetcher.AbstractBaseReportDataFetcher;
 import com.ecaservice.report.model.BaseReportBean;
 import com.ecaservice.report.model.ReportType;
@@ -34,6 +35,7 @@ import java.util.List;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
+import static com.ecaservice.server.config.audit.AuditCodes.GENERATE_EVALUATION_REQUESTS_REPORT;
 import static com.ecaservice.server.util.ReportHelper.download;
 import static com.ecaservice.web.dto.doc.CommonApiExamples.INVALID_PAGE_REQUEST_RESPONSE_JSON;
 import static com.ecaservice.web.dto.doc.CommonApiExamples.SIMPLE_PAGE_REQUEST_JSON;
@@ -62,6 +64,7 @@ public class ReportController {
      * @param httpServletResponse - http servlet response
      * @throws IOException in case of I/O error
      */
+    @Audit(value = GENERATE_EVALUATION_REQUESTS_REPORT)
     @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
             description = "Downloads specified base report in xlsx format",

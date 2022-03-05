@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v5-insert-filter-templates.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Insert audit group EVALUATION_REQUESTS_ACTIONS to dictionary-->
+    <changeSet id="1" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from filter_dictionary where id = 1
+            </sqlCheck>
+            <sqlCheck expectedResult="0">
+                select count(*) from filter_dictionary_value where filter_dictionary_id = 1 and value = 'EVALUATION_REQUESTS_ACTIONS'
+            </sqlCheck>
+        </preConditions>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Действия с заявками на построение моделей"/>
+            <column name="value" value="EVALUATION_REQUESTS_ACTIONS"/>
+            <column name="filter_dictionary_id" valueNumeric="1"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
