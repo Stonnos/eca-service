@@ -54,4 +54,9 @@ public class AuditCodes {
      * Generates evaluation requests report
      */
     public static final String GENERATE_EVALUATION_REQUESTS_REPORT = "GENERATE_EVALUATION_REQUESTS_REPORT";
+
+    /**
+     * Generates classifiers configuration report.
+     */
+    public static final String GENERATE_CONFIGURATION_REPORT = "GENERATE_CONFIGURATION_REPORT";
 }
