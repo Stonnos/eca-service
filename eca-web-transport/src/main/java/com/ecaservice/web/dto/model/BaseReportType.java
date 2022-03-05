@@ -23,12 +23,7 @@ public enum BaseReportType {
     /**
      * Classifier options requests report
      */
-    CLASSIFIERS_OPTIONS_REQUESTS("Отчет по оптимальным настройкам классификаторов"),
-
-    /**
-     * Classifiers configuration report
-     */
-    CLASSIFIERS_CONFIGURATION("Отчет по конфигурации с настройками классификаторов");
+    CLASSIFIERS_OPTIONS_REQUESTS("Отчет по оптимальным настройкам классификаторов");
 
     private final String description;
 
