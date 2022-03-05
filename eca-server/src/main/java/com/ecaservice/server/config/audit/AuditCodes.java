@@ -44,4 +44,14 @@ public class AuditCodes {
      * Deletes classifier options
      */
     public static final String DELETE_CLASSIFIER_OPTIONS = "DELETE_CLASSIFIER_OPTIONS";
+
+    /**
+     * Creates experiment request
+     */
+    public static final String CREATE_EXPERIMENT_REQUEST = "CREATE_EXPERIMENT_REQUEST";
+
+    /**
+     * Generates evaluation requests report
+     */
+    public static final String GENERATE_EVALUATION_REQUESTS_REPORT = "GENERATE_EVALUATION_REQUESTS_REPORT";
 }
