@@ -6,6 +6,6 @@ SET_ACTIVE_CONFIGURATION;Установка активной конфигура�
 COPY_CONFIGURATION;Создание копии конфигурации с настройками классификаторов;true;CLASSIFIERS_CONFIGURATIONS_ACTIONS
 ADD_CLASSIFIER_OPTIONS;Добавление настроек классификатора в конфигурацию;true;CLASSIFIERS_CONFIGURATIONS_ACTIONS
 DELETE_CLASSIFIER_OPTIONS;Удаление настроек классификатора из конфигурации;true;CLASSIFIERS_CONFIGURATIONS_ACTIONS
-GENERATE_CONFIGURATION_REPORT;Выгрузка отчета по конфигурации с настройками классификаторов;true;CLASSIFIERS_CONFIGURATIONS_ACTIONS
+GENERATE_CONFIGURATION_REPORT;Выгрузка отчета для конфигурации с настройками классификаторов;true;CLASSIFIERS_CONFIGURATIONS_ACTIONS
 CREATE_EXPERIMENT_REQUEST;Создание заявки на эксперимент;true;EVALUATION_REQUESTS_ACTIONS
 GENERATE_EVALUATION_REQUESTS_REPORT;Выгрузка отчета по заявкам;true;EVALUATION_REQUESTS_ACTIONS
