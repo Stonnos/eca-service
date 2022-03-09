@@ -4,6 +4,7 @@ import com.ecaservice.test.common.model.MatchResult;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -28,27 +29,27 @@ public class EvaluationResultsDetailsMatch {
     /**
      * Expected test instances number
      */
-    private Integer numTestInstances;
+    private BigInteger expectedNumTestInstances;
 
     /**
      * Actual test instances number
      */
-    private Integer actualTestInstances;
+    private BigInteger actualNumTestInstances;
 
     /**
      * Test instances number match result
      */
-    private MatchResult testInstancesMatchResult;
+    private MatchResult numTestInstancesMatchResult;
 
     /**
      * Expected correctly classified instances number
      */
-    private Integer expectedNumCorrect;
+    private BigInteger expectedNumCorrect;
 
     /**
      * Actual correctly classified instances number
      */
-    private Integer actualNumCorrect;
+    private BigInteger actualNumCorrect;
 
     /**
      * Correctly classified instances number match result
@@ -58,12 +59,12 @@ public class EvaluationResultsDetailsMatch {
     /**
      * Expected incorrectly classified instances number
      */
-    private Integer expectedNumIncorrect;
+    private BigInteger expectedNumIncorrect;
 
     /**
      * Actual incorrectly classified instances number
      */
-    private Integer actualNumIncorrect;
+    private BigInteger actualNumIncorrect;
 
     /**
      * Incorrectly classified instances number match result
