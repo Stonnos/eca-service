@@ -9,16 +9,18 @@ spring:
     jdbc-url: jdbc:postgresql://localhost:5432/eca_auto_tests
     username: postgres
     password: postgres
-    ddlAuto: update
-    databasePlatform: org.hibernate.dialect.PostgreSQL9Dialect
+    jpa:
+      ddlAuto: update
+      databasePlatform: org.hibernate.dialect.PostgreSQL9Dialect
   ## Eca server datasource properties
   ecaserverdatasource:
     driver-class-name: org.postgresql.Driver
     jdbc-url: jdbc:postgresql://localhost:5432/eca
     username: postgres
     password: postgres
-    ddlAuto: validate
-    databasePlatform: org.hibernate.dialect.PostgreSQL9Dialect
+    jpa:
+      ddlAuto: validate
+      databasePlatform: org.hibernate.dialect.PostgreSQL9Dialect
   cache:
     cache-names: instances
     caffeine:
