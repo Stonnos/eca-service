@@ -2,6 +2,7 @@ package com.ecaservice.auto.test.config.db;
 
 import com.ecaservice.auto.test.entity.autotest.BaseEntity;
 import com.ecaservice.auto.test.entity.ecaserver.AbstractEvaluationEntity;
+import com.ecaservice.auto.test.repository.ecaserver.EvaluationLogRepository;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
@@ -26,7 +27,7 @@ import javax.sql.DataSource;
 @EnableJpaRepositories(
         entityManagerFactoryRef = EcaServerDataSourceConfiguration.ECA_SERVER_ENTITY_MANAGER_FACTORY,
         transactionManagerRef = EcaServerDataSourceConfiguration.ECA_SERVER_TRANSACTION_MANAGER,
-        basePackageClasses = BaseEntity.class
+        basePackageClasses = EvaluationLogRepository.class
 )
 public class EcaServerDataSourceConfiguration extends AbstractDataSourceConfiguration {
 
