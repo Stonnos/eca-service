@@ -4,7 +4,6 @@ import com.ecaservice.auto.test.entity.autotest.BaseEntity;
 import com.ecaservice.auto.test.repository.autotest.AutoTestsJobRepository;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -22,6 +21,7 @@ import javax.sql.DataSource;
  * @author Roman Batygin
  */
 @Configuration
+@ConfigurationProperties(prefix = "spring.datasource.jpa")
 @EnableTransactionManagement
 @EnableJpaRepositories(
         entityManagerFactoryRef = EcaAutoTestsDataSourceConfiguration.ECA_AUTO_TESTS_ENTITY_MANAGER_FACTORY,
@@ -50,17 +50,15 @@ public class EcaAutoTestsDataSourceConfiguration extends AbstractDataSourceConfi
     /**
      * Creates entity manager factory bean.
      *
-     * @param builder    - entity manager factory builder
      * @param dataSource - data source
      * @return entity manager factory bean
      */
     @Override
     @Primary
     @Bean(ECA_AUTO_TESTS_ENTITY_MANAGER_FACTORY)
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory(EntityManagerFactoryBuilder builder,
-                                                                       @Qualifier(ECA_AUTO_TESTS_DATASOURCE)
-                                                                               DataSource dataSource) {
-        return super.entityManagerFactory(builder, dataSource);
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory(
+            @Qualifier(ECA_AUTO_TESTS_DATASOURCE) DataSource dataSource) {
+        return super.entityManagerFactory(dataSource);
     }
 
     /**

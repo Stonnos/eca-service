@@ -1,14 +1,11 @@
 package com.ecaservice.auto.test.config.db;
 
-import com.ecaservice.auto.test.entity.autotest.BaseEntity;
 import com.ecaservice.auto.test.entity.ecaserver.AbstractEvaluationEntity;
 import com.ecaservice.auto.test.repository.ecaserver.EvaluationLogRepository;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -23,6 +20,7 @@ import javax.sql.DataSource;
  * @author Roman Batygin
  */
 @Configuration
+@ConfigurationProperties(prefix = "spring.ecaserverdatasource.jpa")
 @EnableTransactionManagement
 @EnableJpaRepositories(
         entityManagerFactoryRef = EcaServerDataSourceConfiguration.ECA_SERVER_ENTITY_MANAGER_FACTORY,
@@ -41,7 +39,6 @@ public class EcaServerDataSourceConfiguration extends AbstractDataSourceConfigur
      * @return datasource bean
      */
     @Override
-    @Primary
     @Bean(ECA_SERVER_DATASOURCE)
     @ConfigurationProperties(prefix = "spring.ecaserverdatasource")
     public DataSource dataSource() {
@@ -51,17 +48,14 @@ public class EcaServerDataSourceConfiguration extends AbstractDataSourceConfigur
     /**
      * Creates entity manager factory bean.
      *
-     * @param builder    - entity manager factory builder
      * @param dataSource - data source
      * @return entity manager factory bean
      */
     @Override
-    @Primary
     @Bean(ECA_SERVER_ENTITY_MANAGER_FACTORY)
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory(EntityManagerFactoryBuilder builder,
-                                                                       @Qualifier(ECA_SERVER_DATASOURCE)
-                                                                               DataSource dataSource) {
-        return super.entityManagerFactory(builder, dataSource);
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory(
+            @Qualifier(ECA_SERVER_DATASOURCE) DataSource dataSource) {
+        return super.entityManagerFactory(dataSource);
     }
 
     /**
@@ -71,7 +65,6 @@ public class EcaServerDataSourceConfiguration extends AbstractDataSourceConfigur
      * @return transaction manager bean
      */
     @Override
-    @Primary
     @Bean(ECA_SERVER_TRANSACTION_MANAGER)
     public PlatformTransactionManager transactionManager(
             @Qualifier(ECA_SERVER_ENTITY_MANAGER_FACTORY) EntityManagerFactory entityManagerFactory) {
