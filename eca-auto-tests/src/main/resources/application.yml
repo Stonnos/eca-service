@@ -3,15 +3,21 @@ spring:
     name: eca-auto-tests
   jmx:
     default-domain: eca-auto-tests
-  ## Datasource properties
+  ## Auto tests datasource properties
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/eca_auto_tests
+    jdbc-url: jdbc:postgresql://localhost:5432/eca_auto_tests
+    username: postgres
+    password: postgres
+  ## Auto tests datasource properties
+  ecaserverdatasource:
+    driver-class-name: org.postgresql.Driver
+    jdbc-url: jdbc:postgresql://localhost:5432/eca
     username: postgres
     password: postgres
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     database-platform: org.hibernate.dialect.PostgreSQL9Dialect
   cache:
     cache-names: instances
