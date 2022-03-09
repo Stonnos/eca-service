@@ -3,6 +3,8 @@ package com.ecaservice.auto.test.model.evaluation;
 import com.ecaservice.test.common.model.MatchResult;
 import lombok.Data;
 
+import java.math.BigInteger;
+
 /**
  * Confusion matrix details match.
  *
@@ -44,12 +46,12 @@ public class ConfusionMatrixDetailsMatch {
     /**
      * Expected instances number
      */
-    private Integer expectedNumInstances;
+    private BigInteger expectedNumInstances;
 
     /**
      * Actual instances number
      */
-    private Integer actualNumInstances;
+    private BigInteger actualNumInstances;
 
     /**
      * Instances number match result
