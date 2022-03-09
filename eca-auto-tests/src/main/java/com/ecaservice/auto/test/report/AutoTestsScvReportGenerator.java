@@ -1,9 +1,9 @@
 package com.ecaservice.auto.test.report;
 
 import com.ecaservice.auto.test.config.AutoTestsProperties;
-import com.ecaservice.auto.test.entity.AutoTestsJobEntity;
-import com.ecaservice.auto.test.entity.ExperimentRequestEntity;
-import com.ecaservice.auto.test.repository.ExperimentRequestRepository;
+import com.ecaservice.auto.test.entity.autotest.AutoTestsJobEntity;
+import com.ecaservice.auto.test.entity.autotest.ExperimentRequestEntity;
+import com.ecaservice.auto.test.repository.autotest.ExperimentRequestRepository;
 import com.ecaservice.test.common.report.AbstractCsvTestResultsReportGenerator;
 import com.ecaservice.test.common.report.TestResultsCounter;
 import lombok.RequiredArgsConstructor;

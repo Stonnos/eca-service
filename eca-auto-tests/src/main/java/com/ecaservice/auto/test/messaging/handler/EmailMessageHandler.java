@@ -1,10 +1,10 @@
 package com.ecaservice.auto.test.messaging.handler;
 
-import com.ecaservice.auto.test.entity.ExperimentRequestEntity;
-import com.ecaservice.auto.test.entity.ExperimentRequestStageType;
+import com.ecaservice.auto.test.entity.autotest.ExperimentRequestEntity;
+import com.ecaservice.auto.test.entity.autotest.ExperimentRequestStageType;
 import com.ecaservice.auto.test.model.EmailMessage;
 import com.ecaservice.auto.test.model.EmailTypeVisitor;
-import com.ecaservice.auto.test.repository.ExperimentRequestRepository;
+import com.ecaservice.auto.test.repository.autotest.ExperimentRequestRepository;
 import com.ecaservice.auto.test.service.ExperimentRequestService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

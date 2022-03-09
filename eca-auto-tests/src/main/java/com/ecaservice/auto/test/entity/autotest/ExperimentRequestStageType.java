@@ -1,4 +1,4 @@
-package com.ecaservice.auto.test.entity;
+package com.ecaservice.auto.test.entity.autotest;
 
 import eca.core.DescriptiveEnum;
 import lombok.RequiredArgsConstructor;

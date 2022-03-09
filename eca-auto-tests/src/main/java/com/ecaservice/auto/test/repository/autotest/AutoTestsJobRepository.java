@@ -1,7 +1,7 @@
-package com.ecaservice.auto.test.repository;
+package com.ecaservice.auto.test.repository.autotest;
 
-import com.ecaservice.auto.test.entity.AutoTestsJobEntity;
-import com.ecaservice.auto.test.entity.ExperimentRequestStageType;
+import com.ecaservice.auto.test.entity.autotest.AutoTestsJobEntity;
+import com.ecaservice.auto.test.entity.autotest.ExperimentRequestStageType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

@@ -1,4 +1,4 @@
-package com.ecaservice.auto.test.entity;
+package com.ecaservice.auto.test.entity.autotest;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

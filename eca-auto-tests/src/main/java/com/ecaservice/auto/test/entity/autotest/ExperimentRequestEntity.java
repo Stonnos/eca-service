@@ -1,4 +1,4 @@
-package com.ecaservice.auto.test.entity;
+package com.ecaservice.auto.test.entity.autotest;
 
 import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.test.common.model.MatchResult;

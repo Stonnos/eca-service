@@ -1,7 +1,7 @@
 package com.ecaservice.auto.test.service;
 
-import com.ecaservice.auto.test.entity.AutoTestsJobEntity;
-import com.ecaservice.auto.test.repository.AutoTestsJobRepository;
+import com.ecaservice.auto.test.entity.autotest.AutoTestsJobEntity;
+import com.ecaservice.auto.test.repository.autotest.AutoTestsJobRepository;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.test.common.model.ExecutionStatus;
 import lombok.RequiredArgsConstructor;

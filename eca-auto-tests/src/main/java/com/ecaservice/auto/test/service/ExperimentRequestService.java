@@ -1,9 +1,9 @@
 package com.ecaservice.auto.test.service;
 
 import com.ecaservice.auto.test.config.AutoTestsProperties;
-import com.ecaservice.auto.test.entity.ExperimentRequestEntity;
-import com.ecaservice.auto.test.entity.ExperimentRequestStageType;
-import com.ecaservice.auto.test.repository.ExperimentRequestRepository;
+import com.ecaservice.auto.test.entity.autotest.ExperimentRequestEntity;
+import com.ecaservice.auto.test.entity.autotest.ExperimentRequestStageType;
+import com.ecaservice.auto.test.repository.autotest.ExperimentRequestRepository;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.test.common.model.ExecutionStatus;
 import com.ecaservice.test.common.model.MatchResult;

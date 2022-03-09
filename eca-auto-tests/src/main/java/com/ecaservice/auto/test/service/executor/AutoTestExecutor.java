@@ -1,12 +1,12 @@
 package com.ecaservice.auto.test.service.executor;
 
 import com.ecaservice.auto.test.config.mail.MailProperties;
-import com.ecaservice.auto.test.entity.AutoTestsJobEntity;
-import com.ecaservice.auto.test.entity.ExperimentRequestEntity;
-import com.ecaservice.auto.test.entity.ExperimentRequestStageType;
+import com.ecaservice.auto.test.entity.autotest.AutoTestsJobEntity;
+import com.ecaservice.auto.test.entity.autotest.ExperimentRequestEntity;
+import com.ecaservice.auto.test.entity.autotest.ExperimentRequestStageType;
 import com.ecaservice.auto.test.model.ExperimentTestDataModel;
-import com.ecaservice.auto.test.repository.AutoTestsJobRepository;
-import com.ecaservice.auto.test.repository.ExperimentRequestRepository;
+import com.ecaservice.auto.test.repository.autotest.AutoTestsJobRepository;
+import com.ecaservice.auto.test.repository.autotest.ExperimentRequestRepository;
 import com.ecaservice.auto.test.service.AutoTestWorkerService;
 import com.ecaservice.auto.test.service.ExperimentTestDataProvider;
 import com.ecaservice.base.model.ExperimentRequest;

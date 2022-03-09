@@ -1,10 +1,10 @@
 package com.ecaservice.auto.test.scheduler;
 
 import com.ecaservice.auto.test.config.AutoTestsProperties;
-import com.ecaservice.auto.test.entity.ExperimentRequestEntity;
-import com.ecaservice.auto.test.entity.ExperimentRequestStageType;
-import com.ecaservice.auto.test.repository.AutoTestsJobRepository;
-import com.ecaservice.auto.test.repository.ExperimentRequestRepository;
+import com.ecaservice.auto.test.entity.autotest.ExperimentRequestEntity;
+import com.ecaservice.auto.test.entity.autotest.ExperimentRequestStageType;
+import com.ecaservice.auto.test.repository.autotest.AutoTestsJobRepository;
+import com.ecaservice.auto.test.repository.autotest.ExperimentRequestRepository;
 import com.ecaservice.auto.test.service.ExperimentRequestService;
 import com.ecaservice.auto.test.service.api.EcaServerClient;
 import com.ecaservice.auto.test.service.executor.AutoTestExecutor;

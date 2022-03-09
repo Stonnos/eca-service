@@ -1,8 +1,8 @@
 package com.ecaservice.auto.test.service;
 
-import com.ecaservice.auto.test.entity.ExperimentRequestEntity;
-import com.ecaservice.auto.test.entity.ExperimentRequestStageType;
-import com.ecaservice.auto.test.repository.ExperimentRequestRepository;
+import com.ecaservice.auto.test.entity.autotest.ExperimentRequestEntity;
+import com.ecaservice.auto.test.entity.autotest.ExperimentRequestStageType;
+import com.ecaservice.auto.test.repository.autotest.ExperimentRequestRepository;
 import com.ecaservice.auto.test.service.rabbit.RabbitSender;
 import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
