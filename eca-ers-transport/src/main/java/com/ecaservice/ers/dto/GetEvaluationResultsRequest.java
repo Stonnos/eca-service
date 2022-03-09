@@ -1,7 +1,9 @@
 package com.ecaservice.ers.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
@@ -17,6 +19,8 @@ import static com.ecaservice.ers.dto.Constraints.UUID_PATTERN;
  * @author Roman Batygin
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Schema(description = "Get evaluation results request model")
 public class GetEvaluationResultsRequest {
 

@@ -60,6 +60,7 @@ auto-tests:
   experimentsDataPath: classpath*:experiments/**/*.json
   requestTimeoutInSeconds: 1200
   ecaServerBaseUrl: http://localhost:8080/eca-server
+  ecaErsBaseUrl: http://localhost:8080/eca-ers
   expectedResultsSize: 5
 
 server:

@@ -61,6 +61,12 @@ public class AutoTestsProperties {
     private String ecaServerBaseUrl;
 
     /**
+     * Eca ers base url
+     */
+    @NotEmpty
+    private String ecaErsBaseUrl;
+
+    /**
      * Expected experiment results size
      */
     @NotNull
