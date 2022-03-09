@@ -21,6 +21,6 @@ public class AbstractEvaluationEntity {
     /**
      * Request unique identifier
      */
-    @Column(name = "request_id", nullable = false, unique = true)
+    @Column(name = "request_id", nullable = false, unique = true, updatable = false)
     private String requestId;
 }
