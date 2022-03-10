@@ -5,23 +5,15 @@ import com.ecaservice.auto.test.entity.autotest.ExperimentRequestEntity;
 import com.ecaservice.auto.test.entity.autotest.ExperimentRequestStageType;
 import com.ecaservice.auto.test.repository.autotest.AutoTestsJobRepository;
 import com.ecaservice.auto.test.repository.autotest.ExperimentRequestRepository;
-import com.ecaservice.auto.test.service.ExperimentRequestService;
-import com.ecaservice.auto.test.service.api.EcaServerClient;
+import com.ecaservice.auto.test.service.ExperimentResultsProcessor;
 import com.ecaservice.auto.test.service.executor.AutoTestExecutor;
 import com.ecaservice.test.common.model.ExecutionStatus;
 import com.ecaservice.test.common.model.TestResult;
-import eca.dataminer.AbstractExperiment;
-import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.SerializationUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -43,12 +35,9 @@ public class AutoTestScheduler {
             ExperimentRequestStageType.EXCEEDED
     );
 
-    private static final String SLASH_SEPARATOR = "/";
-
     private final AutoTestsProperties autoTestsProperties;
     private final AutoTestExecutor autoTestExecutor;
-    private final ExperimentRequestService experimentRequestService;
-    private final EcaServerClient ecaServerClient;
+    private final ExperimentResultsProcessor experimentResultsProcessor;
     private final AutoTestsJobRepository autoTestsJobRepository;
     private final ExperimentRequestRepository experimentRequestRepository;
 
@@ -117,28 +106,6 @@ public class AutoTestScheduler {
     }
 
     private void processFinishedRequests(List<ExperimentRequestEntity> experimentRequestEntities) {
-        experimentRequestEntities.forEach(experimentRequestEntity -> {
-            try {
-                AbstractExperiment<?> experimentHistory = downloadExperimentHistory(experimentRequestEntity);
-                experimentRequestService.processExperimentHistory(experimentRequestEntity, experimentHistory);
-            } catch (Exception ex) {
-                log.error("There was an error while process finished experiment request [{}]: {}",
-                        experimentRequestEntity.getRequestId(), ex.getMessage());
-                experimentRequestService.finishWithError(experimentRequestEntity, ex.getMessage());
-            }
-        });
-    }
-
-    private AbstractExperiment<?> downloadExperimentHistory(ExperimentRequestEntity experimentRequestEntity)
-            throws IOException {
-        log.info("Starting to download experiment [{}] history",
-                experimentRequestEntity.getRequestId());
-        String token = StringUtils.substringAfterLast(experimentRequestEntity.getDownloadUrl(),
-                SLASH_SEPARATOR);
-        Resource modelResource = ecaServerClient.downloadModel(token);
-        @Cleanup InputStream inputStream = modelResource.getInputStream();
-        AbstractExperiment<?> experimentHistory = SerializationUtils.deserialize(inputStream);
-        log.info("Experiment [{}] history has been downloaded", experimentRequestEntity.getRequestId());
-        return experimentHistory;
+        experimentRequestEntities.forEach(experimentResultsProcessor::compareAndMatchExperimentResults);
     }
 }

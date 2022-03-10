@@ -1,12 +1,13 @@
 package com.ecaservice.auto.test.entity.autotest;
 
+import com.ecaservice.auto.test.model.evaluation.EvaluationResultsDetailsMatch;
 import com.ecaservice.base.model.ExperimentType;
-import com.ecaservice.test.common.model.MatchResult;
 import com.ecaservice.test.common.model.TestResult;
 import eca.core.evaluation.EvaluationMethod;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,6 +16,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.util.List;
 
 /**
  * Experiment request persistence entity.
@@ -148,21 +150,9 @@ public class ExperimentRequestEntity extends BaseEntity {
     private int totalNotFound;
 
     /**
-     * Expected experiment results size
+     * Evaluation results details.
      */
-    @Column(name = "expected_results_size")
-    private int expectedResultsSize;
-
-    /**
-     * Actual experiment results size
-     */
-    @Column(name = "actual_results_size")
-    private int actualResultsSize;
-
-    /**
-     * Experiment results size match result
-     */
-    @Enumerated(EnumType.STRING)
-    @Column(name = "results_size_match_result")
-    private MatchResult resultsSizeMatchResult;
+    @Type(type = "jsonb")
+    @Column(name = "evaluation_result_details", columnDefinition = "jsonb")
+    private List<EvaluationResultsDetailsMatch> evaluationResultDetails;
 }

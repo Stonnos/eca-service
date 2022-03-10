@@ -50,9 +50,6 @@ public class AutoTestsScvReportGenerator extends AbstractCsvTestResultsReportGen
             "finished request email received",
             "error request email received",
             "timeout request email received",
-            "expected request status",
-            "actual request status",
-            "request status match result",
             "details"
     };
 
@@ -111,9 +108,6 @@ public class AutoTestsScvReportGenerator extends AbstractCsvTestResultsReportGen
                             experimentRequestEntity.isFinishedStatusEmailReceived(),
                             experimentRequestEntity.isErrorStatusEmailReceived(),
                             experimentRequestEntity.isTimeoutStatusEmailReceived(),
-                            experimentRequestEntity.getExpectedResultsSize(),
-                            experimentRequestEntity.getActualResultsSize(),
-                            experimentRequestEntity.getResultsSizeMatchResult(),
                             experimentRequestEntity.getDetails()
                     ));
                 }
