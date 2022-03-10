@@ -60,7 +60,7 @@ public class ExperimentResultsProcessor {
             var evaluationResultsDetailsMatches =
                     compareAndMatchResults(experimentRequestEntity, experimentHistory, experimentEvaluationResults,
                             matcher);
-            experimentRequestEntity.setEvaluationResultDetails(evaluationResultsDetailsMatches);
+            experimentRequestEntity.setExperimentResultDetails(evaluationResultsDetailsMatches);
             populateFinalTestResults(experimentRequestEntity, matcher);
             experimentRequestRepository.save(experimentRequestEntity);
             log.info("Got experiment request [{}] test result: {}",
