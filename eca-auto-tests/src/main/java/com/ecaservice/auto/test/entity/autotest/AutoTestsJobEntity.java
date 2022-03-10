@@ -6,6 +6,8 @@ import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Table;
 
 /**
@@ -25,4 +27,11 @@ public class AutoTestsJobEntity extends BaseEntity {
      */
     @Column(name = "job_uuid", nullable = false)
     private String jobUuid;
+
+    /**
+     * Auto test type
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "auto_test_type", nullable = false)
+    private AutoTestType autoTestType;
 }
