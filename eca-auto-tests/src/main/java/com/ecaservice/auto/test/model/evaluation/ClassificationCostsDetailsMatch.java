@@ -102,49 +102,4 @@ public class ClassificationCostsDetailsMatch {
      * AUC value match result
      */
     private MatchResult aucValueMatchResult;
-
-    /**
-     * Expected optimal point specificity value
-     */
-    private BigDecimal expectedSpecificity;
-
-    /**
-     * Actual optimal point specificity value
-     */
-    private BigDecimal actualSpecificity;
-
-    /**
-     * Optimal point specificity value match result
-     */
-    private MatchResult specificityMatchResult;
-
-    /**
-     * Expected optimal point sensitivity value
-     */
-    private BigDecimal expectedSensitivity;
-
-    /**
-     * Actual optimal point sensitivity value
-     */
-    private BigDecimal actualSensitivity;
-
-    /**
-     * Optimal point sensitivity value match result
-     */
-    private MatchResult sensitivityMatchResult;
-
-    /**
-     * Expected optimal point threshold value
-     */
-    private BigDecimal expectedThresholdValue;
-
-    /**
-     * Actual optimal point threshold value
-     */
-    private BigDecimal actualThresholdValue;
-
-    /**
-     * Optimal point threshold value match result
-     */
-    private MatchResult thresholdValueMatchResult;
 }

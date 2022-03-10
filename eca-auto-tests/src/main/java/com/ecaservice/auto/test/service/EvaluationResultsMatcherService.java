@@ -1,9 +1,12 @@
 package com.ecaservice.auto.test.service;
 
+import com.ecaservice.auto.test.model.evaluation.ClassificationCostsDetailsMatch;
 import com.ecaservice.auto.test.model.evaluation.ConfusionMatrixDetailsMatch;
 import com.ecaservice.auto.test.model.evaluation.EvaluationResultsDetailsMatch;
+import com.ecaservice.ers.dto.ClassificationCostsReport;
 import com.ecaservice.ers.dto.ConfusionMatrixReport;
 import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
+import com.ecaservice.ers.dto.RocCurveReport;
 import com.ecaservice.ers.dto.StatisticsReport;
 import com.ecaservice.test.common.model.MatchResult;
 import com.ecaservice.test.common.service.TestResultsMatcher;
@@ -13,12 +16,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 import weka.core.Attribute;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -41,8 +46,14 @@ public class EvaluationResultsMatcherService {
     private static final String CONFUSION_MATRIX_ERROR_MESSAGE_FORMAT =
             "Invalid confusion matrix for ERS evaluation results [%s]. Expected only one confusion matrix item " +
                     "with actual class value [%s], predicted class value [%s]";
+    private static final String CLASSIFICATION_COSTS_ERROR_MESSAGE_FORMAT =
+            "Invalid classification costs for ERS evaluation results [%s]. Expected only one classification costs " +
+                    "item with class value [%s]";
     private static final String INVALID_CONFUSION_MATRIX_SIZE_FORMAT =
             "Invalid confusion matrix size for ERS evaluation results [%s]. Expected [%d] items, actual [%d] items";
+    private static final String INVALID_CLASSIFICATION_COSTS_SIZE_FORMAT =
+            "Invalid classification costs report size for ERS evaluation results [%s]. Expected [%d] items, actual " +
+                    "[%d] items";
 
     /**
      * Compares and matches evaluation results.
@@ -59,6 +70,8 @@ public class EvaluationResultsMatcherService {
         var evaluationResultsDetailsMatch = new EvaluationResultsDetailsMatch();
         var evaluation = evaluationResults.getEvaluation();
         compareAndMatchCommonStatistics(evaluation, evaluationResultsResponse.getStatistics(), matcher,
+                evaluationResultsDetailsMatch);
+        compareAndMatchClassificationCosts(evaluation, evaluationResultsResponse, matcher,
                 evaluationResultsDetailsMatch);
         compareAndMatchConfusionMatrix(evaluation, evaluationResultsResponse, matcher, evaluationResultsDetailsMatch);
         log.info("ERS evaluation results [{}] comparison has been finished", evaluationResultsResponse.getRequestId());
@@ -175,6 +188,10 @@ public class EvaluationResultsMatcherService {
         double[][] confusionMatrix = evaluation.confusionMatrix();
         List<ConfusionMatrixReport> confusionMatrixReports = evaluationResultsResponse.getConfusionMatrix();
         Attribute classAttribute = evaluation.getData().classAttribute();
+        if (CollectionUtils.isEmpty(confusionMatrixReports)) {
+            throw new IllegalStateException(String.format("Got empty confusion matrix report for ERS request [%s]",
+                    evaluationResultsResponse.getRequestId()));
+        }
         int expectedConfusionMatrixDimension = confusionMatrix.length * confusionMatrix[0].length;
         if (!Objects.equals(expectedConfusionMatrixDimension, confusionMatrixReports.size())) {
             String errorMessage =
@@ -195,7 +212,8 @@ public class EvaluationResultsMatcherService {
                                     .collect(Collectors.toList());
                             Assert.state(reports.size() == 1,
                                     String.format(CONFUSION_MATRIX_ERROR_MESSAGE_FORMAT,
-                                    evaluationResultsResponse.getRequestId(), actualClassValue, predictedClassValue));
+                                            evaluationResultsResponse.getRequestId(), actualClassValue,
+                                            predictedClassValue));
                             var confusionMatrixReport = reports.iterator().next();
                             var confusionMatrixDetailsMatch =
                                     compareAndMatchConfusionMatrix(actualClassValue, predictedClassValue,
@@ -234,5 +252,103 @@ public class EvaluationResultsMatcherService {
         confusionMatrixDetailsMatch.setNumInstancesMatchResult(numInstancesMatchResult);
 
         return confusionMatrixDetailsMatch;
+    }
+
+    private void compareAndMatchClassificationCosts(Evaluation evaluation,
+                                                    GetEvaluationResultsResponse evaluationResultsResponse,
+                                                    TestResultsMatcher matcher,
+                                                    EvaluationResultsDetailsMatch evaluationResultsDetailsMatch) {
+        List<ClassificationCostsReport> classificationCostsReports = evaluationResultsResponse.getClassificationCosts();
+        Attribute classAttribute = evaluation.getData().classAttribute();
+        if (CollectionUtils.isEmpty(classificationCostsReports)) {
+            throw new IllegalStateException(String.format("Got empty classification costs report for ERS request [%s]",
+                    evaluationResultsResponse.getRequestId()));
+        }
+        if (!Objects.equals(classificationCostsReports.size(), classAttribute.numValues())) {
+            String errorMessage =
+                    String.format(INVALID_CLASSIFICATION_COSTS_SIZE_FORMAT, evaluationResultsResponse.getRequestId(),
+                            classAttribute.numValues(), classificationCostsReports.size());
+            throw new IllegalStateException(errorMessage);
+        }
+        List<ClassificationCostsDetailsMatch> classificationCostsDetailsMatches = newArrayList();
+        IntStream.range(0, classAttribute.numValues()).forEach(i -> {
+            String classValue = classAttribute.value(i);
+            var reports = classificationCostsReports.stream()
+                    .filter(classificationCostsReport -> classValue.equals(classificationCostsReport.getClassValue()))
+                    .collect(Collectors.toList());
+            Assert.state(reports.size() == 1,
+                    String.format(CLASSIFICATION_COSTS_ERROR_MESSAGE_FORMAT, evaluationResultsResponse.getRequestId(),
+                            classValue));
+            var classificationCostsReport = reports.iterator().next();
+            var classificationCostsDetailsMatch = compareAndMatchClassificationCosts(evaluation, classValue, i,
+                    matcher, classificationCostsReport);
+            classificationCostsDetailsMatches.add(classificationCostsDetailsMatch);
+        });
+        evaluationResultsDetailsMatch.setClassificationCostsDetails(classificationCostsDetailsMatches);
+    }
+
+    private ClassificationCostsDetailsMatch compareAndMatchClassificationCosts(Evaluation evaluation,
+                                                                               String expectedClassValue,
+                                                                               int classIndex,
+                                                                               TestResultsMatcher matcher,
+                                                                               ClassificationCostsReport classificationCostsReport) {
+        var classificationCostsDetailsMatch = new ClassificationCostsDetailsMatch();
+        String actualClassValue = classificationCostsReport.getClassValue();
+        MatchResult classValueMatchResult = matcher.compareAndMatch(expectedClassValue, actualClassValue);
+
+        BigDecimal expectedFalseNegativeRate = getScaledValue(evaluation.falseNegativeRate(classIndex), SCALE);
+        BigDecimal actualFalseNegativeRate = getScaledValue(classificationCostsReport.getFalseNegativeRate(), SCALE);
+        MatchResult falseNegativeRateMatchResult = matcher.compareAndMatch(expectedFalseNegativeRate,
+                actualFalseNegativeRate);
+
+        BigDecimal expectedFalsePositiveRate = getScaledValue(evaluation.falsePositiveRate(classIndex), SCALE);
+        BigDecimal actualFalsePositiveRate = getScaledValue(classificationCostsReport.getFalsePositiveRate(), SCALE);
+        MatchResult falsePositiveRateMatchResult =
+                matcher.compareAndMatch(expectedFalsePositiveRate, actualFalsePositiveRate);
+
+        BigDecimal expectedTrueNegativeRate = getScaledValue(evaluation.trueNegativeRate(classIndex), SCALE);
+        BigDecimal actualTrueNegativeRate = getScaledValue(classificationCostsReport.getTrueNegativeRate(), SCALE);
+        MatchResult trueNegativeRateMatchResult =
+                matcher.compareAndMatch(expectedTrueNegativeRate, actualTrueNegativeRate);
+
+        BigDecimal expectedTruePositiveRate = getScaledValue(evaluation.truePositiveRate(classIndex), SCALE);
+        BigDecimal actualTruePositiveRate = getScaledValue(classificationCostsReport.getTruePositiveRate(), SCALE);
+        MatchResult truePositiveRateMatchResult =
+                matcher.compareAndMatch(expectedTruePositiveRate, actualTruePositiveRate);
+
+        classificationCostsDetailsMatch.setExpectedClassValue(expectedClassValue);
+        classificationCostsDetailsMatch.setActualClassValue(actualClassValue);
+        classificationCostsDetailsMatch.setClassValueMatchResult(classValueMatchResult);
+        classificationCostsDetailsMatch.setExpectedFalseNegativeRate(expectedFalseNegativeRate);
+        classificationCostsDetailsMatch.setActualFalseNegativeRate(actualFalseNegativeRate);
+        classificationCostsDetailsMatch.setFalseNegativeRateMatchResult(falseNegativeRateMatchResult);
+        classificationCostsDetailsMatch.setExpectedFalsePositiveRate(expectedFalsePositiveRate);
+        classificationCostsDetailsMatch.setActualFalsePositiveRate(actualFalsePositiveRate);
+        classificationCostsDetailsMatch.setFalsePositiveRateMatchResult(falsePositiveRateMatchResult);
+        classificationCostsDetailsMatch.setExpectedTrueNegativeRate(expectedTrueNegativeRate);
+        classificationCostsDetailsMatch.setActualTrueNegativeRate(actualTrueNegativeRate);
+        classificationCostsDetailsMatch.setTrueNegativeRateMatchResult(trueNegativeRateMatchResult);
+        classificationCostsDetailsMatch.setExpectedTruePositiveRate(expectedTruePositiveRate);
+        classificationCostsDetailsMatch.setActualTruePositiveRate(actualTruePositiveRate);
+        classificationCostsDetailsMatch.setTruePositiveRateMatchResult(truePositiveRateMatchResult);
+        compareAndMatchRocCurveReport(evaluation, classIndex, matcher, classificationCostsReport,
+                classificationCostsDetailsMatch);
+        return classificationCostsDetailsMatch;
+    }
+
+    private void compareAndMatchRocCurveReport(Evaluation evaluation,
+                                               int classIndex,
+                                               TestResultsMatcher matcher,
+                                               ClassificationCostsReport classificationCostsReport,
+                                               ClassificationCostsDetailsMatch classificationCostsDetailsMatch) {
+        var rocCurveReport = Optional.ofNullable(classificationCostsReport.getRocCurve());
+        BigDecimal expectedAucValue = getScaledValue(evaluation.areaUnderROC(classIndex), SCALE);
+        BigDecimal actualAucValue =
+                getScaledValue(rocCurveReport.map(RocCurveReport::getAucValue).orElse(null), SCALE);
+        MatchResult aucValueMatchResult = matcher.compareAndMatch(expectedAucValue, actualAucValue);
+
+        classificationCostsDetailsMatch.setExpectedAucValue(expectedAucValue);
+        classificationCostsDetailsMatch.setActualAucValue(actualAucValue);
+        classificationCostsDetailsMatch.setAucValueMatchResult(aucValueMatchResult);
     }
 }
