@@ -40,7 +40,9 @@
    * open-api.apiAuth.scopes - список scopes
 4) queue - настройки очередей rabbit mq
    * queue.experimentRequestQueue - очередь запросов на создание заявок на эксперимент
-   * queue.experimentReplyToQueue - очередь ответов от eca - server
+   * queue.experimentReplyToQueue - очередь ответов от eca - server для экспериментов
+   * queue.evaluationRequestQueue - очередь запросов на построение моделей классификаторов
+   * queue.evaluationReplyToQueue - очередь ответов от eca - server для моделей классификаторов
 5) mail - настройки интеграции с почтой
   * mail.userName - логин пользователя
   * mail.password - пароль пользователя

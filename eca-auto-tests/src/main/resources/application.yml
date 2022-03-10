@@ -50,8 +50,10 @@ mail:
   enabled: false
 
 queue:
-  experimentReplyToQueue: experiment-response-queue
   experimentRequestQueue: experiment-request-queue
+  experimentReplyToQueue: experiment-response-queue
+  evaluationRequestQueue: evaluation-request-queue
+  evaluationReplyToQueue: evaluation-response-queue
 
 auto-tests:
   pageSize: 25
