@@ -68,6 +68,7 @@ public class EvaluationResultsMatcherService {
         log.info("Starting to compare and match ERS evaluation results with request id [{}]",
                 evaluationResultsResponse.getRequestId());
         var evaluationResultsDetailsMatch = new EvaluationResultsDetailsMatch();
+        evaluationResultsDetailsMatch.setRequestId(evaluationResultsResponse.getRequestId());
         var evaluation = evaluationResults.getEvaluation();
         compareAndMatchCommonStatistics(evaluation, evaluationResultsResponse.getStatistics(), matcher,
                 evaluationResultsDetailsMatch);

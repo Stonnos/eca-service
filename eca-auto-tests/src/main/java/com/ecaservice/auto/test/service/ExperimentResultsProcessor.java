@@ -103,6 +103,7 @@ public class ExperimentResultsProcessor {
             var evaluationResultsDetailsMatch =
                     evaluationResultsMatcherService.compareAndMatch(evaluationResults, evaluationResultsResponse,
                             matcher);
+            evaluationResultsDetailsMatch.setResultIndex(i);
             evaluationResultsDetailsMatches.add(evaluationResultsDetailsMatch);
         });
         return evaluationResultsDetailsMatches;

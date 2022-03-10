@@ -22,6 +22,11 @@ public class EvaluationResultsDetailsMatch {
     private String requestId;
 
     /**
+     * Evaluation results index
+     */
+    private Integer resultIndex;
+
+    /**
      * Creation date
      */
     private LocalDateTime created;
