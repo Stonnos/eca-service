@@ -3,7 +3,7 @@ package com.ecaservice.auto.test.service.executor;
 import com.ecaservice.auto.test.config.mail.MailProperties;
 import com.ecaservice.auto.test.entity.autotest.AutoTestsJobEntity;
 import com.ecaservice.auto.test.entity.autotest.ExperimentRequestEntity;
-import com.ecaservice.auto.test.entity.autotest.ExperimentRequestStageType;
+import com.ecaservice.auto.test.entity.autotest.RequestStageType;
 import com.ecaservice.auto.test.model.ExperimentTestDataModel;
 import com.ecaservice.auto.test.repository.autotest.AutoTestsJobRepository;
 import com.ecaservice.auto.test.repository.autotest.ExperimentRequestRepository;
@@ -97,7 +97,7 @@ public class AutoTestExecutor {
         experimentRequestEntity.setCorrelationId(UUID.randomUUID().toString());
         experimentRequestEntity.setExperimentType(experimentRequest.getExperimentType());
         experimentRequestEntity.setEvaluationMethod(experimentRequest.getEvaluationMethod());
-        experimentRequestEntity.setStageType(ExperimentRequestStageType.READY);
+        experimentRequestEntity.setStageType(RequestStageType.READY);
         experimentRequestEntity.setTestResult(TestResult.UNKNOWN);
         experimentRequestEntity.setExecutionStatus(ExecutionStatus.NEW);
         experimentRequestEntity.setJob(autoTestsJobEntity);

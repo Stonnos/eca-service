@@ -67,7 +67,7 @@ public class ExperimentRequestEntity extends BaseEntity {
      */
     @Enumerated(EnumType.STRING)
     @Column(name = "stage_type")
-    private ExperimentRequestStageType stageType;
+    private RequestStageType stageType;
 
     /**
      * Test result

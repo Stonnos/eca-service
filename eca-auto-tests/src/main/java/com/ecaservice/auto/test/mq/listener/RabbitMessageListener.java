@@ -1,7 +1,7 @@
 package com.ecaservice.auto.test.mq.listener;
 
 import com.ecaservice.auto.test.entity.autotest.ExperimentRequestEntity;
-import com.ecaservice.auto.test.entity.autotest.ExperimentRequestStageType;
+import com.ecaservice.auto.test.entity.autotest.RequestStageType;
 import com.ecaservice.auto.test.repository.autotest.ExperimentRequestRepository;
 import com.ecaservice.auto.test.service.ExperimentRequestService;
 import com.ecaservice.base.model.ExperimentResponse;
@@ -43,7 +43,7 @@ public class RabbitMessageListener {
             log.warn("Can't find request entity with correlation id [{}]", correlationId);
             return;
         }
-        if (ExperimentRequestStageType.EXCEEDED.equals(experimentRequestEntity.getStageType())) {
+        if (RequestStageType.EXCEEDED.equals(experimentRequestEntity.getStageType())) {
             log.warn("Can't handle message from MQ. Got exceeded request entity with correlation id [{}]",
                     correlationId);
         } else {
@@ -56,13 +56,13 @@ public class RabbitMessageListener {
                                         String correlationId) {
         experimentRequestEntity.setRequestId(experimentResponse.getRequestId());
         if (TechnicalStatus.IN_PROGRESS.equals(experimentResponse.getStatus())) {
-            experimentRequestEntity.setStageType(ExperimentRequestStageType.REQUEST_CREATED);
+            experimentRequestEntity.setStageType(RequestStageType.REQUEST_CREATED);
             experimentRequestRepository.save(experimentRequestEntity);
             log.info("Experiment request [{}] has been created for correlation id [{}]",
                     experimentResponse.getRequestId(),
                     correlationId);
         } else if (TechnicalStatus.SUCCESS.equals(experimentResponse.getStatus())) {
-            experimentRequestEntity.setStageType(ExperimentRequestStageType.REQUEST_FINISHED);
+            experimentRequestEntity.setStageType(RequestStageType.REQUEST_FINISHED);
             experimentRequestEntity.setDownloadUrl(experimentResponse.getDownloadUrl());
             experimentRequestRepository.save(experimentRequestEntity);
             log.info("Experiment request [{}] has been finished for correlation id [{}]",

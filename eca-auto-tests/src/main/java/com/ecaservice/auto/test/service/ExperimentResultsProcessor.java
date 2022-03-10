@@ -1,7 +1,7 @@
 package com.ecaservice.auto.test.service;
 
 import com.ecaservice.auto.test.entity.autotest.ExperimentRequestEntity;
-import com.ecaservice.auto.test.entity.autotest.ExperimentRequestStageType;
+import com.ecaservice.auto.test.entity.autotest.RequestStageType;
 import com.ecaservice.auto.test.model.evaluation.EvaluationResultsDetailsMatch;
 import com.ecaservice.auto.test.repository.autotest.ExperimentRequestRepository;
 import com.ecaservice.auto.test.service.api.EcaServerClient;
@@ -83,7 +83,7 @@ public class ExperimentResultsProcessor {
             experimentRequestEntity.setTestResult(TestResult.FAILED);
         }
         experimentRequestEntity.setExecutionStatus(ExecutionStatus.FINISHED);
-        experimentRequestEntity.setStageType(ExperimentRequestStageType.COMPLETED);
+        experimentRequestEntity.setStageType(RequestStageType.COMPLETED);
         experimentRequestEntity.setFinished(LocalDateTime.now());
     }
 

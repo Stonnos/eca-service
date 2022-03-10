@@ -2,7 +2,7 @@ package com.ecaservice.auto.test.scheduler;
 
 import com.ecaservice.auto.test.config.AutoTestsProperties;
 import com.ecaservice.auto.test.entity.autotest.ExperimentRequestEntity;
-import com.ecaservice.auto.test.entity.autotest.ExperimentRequestStageType;
+import com.ecaservice.auto.test.entity.autotest.RequestStageType;
 import com.ecaservice.auto.test.repository.autotest.AutoTestsJobRepository;
 import com.ecaservice.auto.test.repository.autotest.ExperimentRequestRepository;
 import com.ecaservice.auto.test.service.ExperimentResultsProcessor;
@@ -29,10 +29,10 @@ import static com.ecaservice.common.web.util.PageHelper.processWithPagination;
 @RequiredArgsConstructor
 public class AutoTestScheduler {
 
-    private static final List<ExperimentRequestStageType> FINISHED_STAGES = List.of(
-            ExperimentRequestStageType.COMPLETED,
-            ExperimentRequestStageType.ERROR,
-            ExperimentRequestStageType.EXCEEDED
+    private static final List<RequestStageType> FINISHED_STAGES = List.of(
+            RequestStageType.COMPLETED,
+            RequestStageType.ERROR,
+            RequestStageType.EXCEEDED
     );
 
     private final AutoTestsProperties autoTestsProperties;
@@ -75,7 +75,7 @@ public class AutoTestScheduler {
         processWithPagination(exceededIds, experimentRequestRepository::findByIdIn, pageContent ->
                 pageContent.forEach(experimentRequestEntity -> {
                     experimentRequestEntity.setExecutionStatus(ExecutionStatus.ERROR);
-                    experimentRequestEntity.setStageType(ExperimentRequestStageType.EXCEEDED);
+                    experimentRequestEntity.setStageType(RequestStageType.EXCEEDED);
                     experimentRequestEntity.setTestResult(TestResult.ERROR);
                     experimentRequestEntity.setDetails(String.format("Request timeout exceeded after [%d] seconds!",
                             autoTestsProperties.getRequestTimeoutInSeconds()));

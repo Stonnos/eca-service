@@ -1,7 +1,7 @@
 package com.ecaservice.auto.test.service;
 
 import com.ecaservice.auto.test.entity.autotest.ExperimentRequestEntity;
-import com.ecaservice.auto.test.entity.autotest.ExperimentRequestStageType;
+import com.ecaservice.auto.test.entity.autotest.RequestStageType;
 import com.ecaservice.auto.test.repository.autotest.ExperimentRequestRepository;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.test.common.model.ExecutionStatus;
@@ -42,7 +42,7 @@ public class ExperimentRequestService {
      * @param errorMessage            - error message
      */
     public void finishWithError(ExperimentRequestEntity experimentRequestEntity, String errorMessage) {
-        experimentRequestEntity.setStageType(ExperimentRequestStageType.ERROR);
+        experimentRequestEntity.setStageType(RequestStageType.ERROR);
         experimentRequestEntity.setTestResult(TestResult.ERROR);
         experimentRequestEntity.setExecutionStatus(ExecutionStatus.ERROR);
         experimentRequestEntity.setDetails(errorMessage);

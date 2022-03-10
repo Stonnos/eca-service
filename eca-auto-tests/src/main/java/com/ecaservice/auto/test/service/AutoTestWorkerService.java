@@ -1,7 +1,7 @@
 package com.ecaservice.auto.test.service;
 
 import com.ecaservice.auto.test.entity.autotest.ExperimentRequestEntity;
-import com.ecaservice.auto.test.entity.autotest.ExperimentRequestStageType;
+import com.ecaservice.auto.test.entity.autotest.RequestStageType;
 import com.ecaservice.auto.test.repository.autotest.ExperimentRequestRepository;
 import com.ecaservice.auto.test.service.rabbit.RabbitSender;
 import com.ecaservice.base.model.ExperimentRequest;
@@ -41,7 +41,7 @@ public class AutoTestWorkerService {
         try {
             experimentRequestEntity.setStarted(LocalDateTime.now());
             rabbitSender.sendExperimentRequest(experimentRequest, experimentRequestEntity.getCorrelationId());
-            experimentRequestEntity.setStageType(ExperimentRequestStageType.REQUEST_SENT);
+            experimentRequestEntity.setStageType(RequestStageType.REQUEST_SENT);
             experimentRequestEntity.setExecutionStatus(ExecutionStatus.IN_PROGRESS);
             log.info("Experiment request with correlation id [{}] has been sent",
                     experimentRequestEntity.getCorrelationId());
@@ -56,7 +56,7 @@ public class AutoTestWorkerService {
 
     private void handleErrorRequest(ExperimentRequestEntity evaluationRequestEntity, Exception ex) {
         evaluationRequestEntity.setTestResult(TestResult.ERROR);
-        evaluationRequestEntity.setStageType(ExperimentRequestStageType.ERROR);
+        evaluationRequestEntity.setStageType(RequestStageType.ERROR);
         evaluationRequestEntity.setExecutionStatus(ExecutionStatus.ERROR);
         evaluationRequestEntity.setDetails(ex.getMessage());
         evaluationRequestEntity.setFinished(LocalDateTime.now());
