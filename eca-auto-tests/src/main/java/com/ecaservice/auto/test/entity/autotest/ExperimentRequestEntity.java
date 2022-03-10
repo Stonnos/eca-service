@@ -3,11 +3,14 @@ package com.ecaservice.auto.test.entity.autotest;
 import com.ecaservice.auto.test.model.evaluation.EvaluationResultsDetailsMatch;
 import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.test.common.model.TestResult;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import eca.core.evaluation.EvaluationMethod;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -28,6 +31,9 @@ import java.util.List;
 @ToString(callSuper = true)
 @Entity
 @Table(name = "experiment_request")
+@TypeDefs({
+        @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
+})
 public class ExperimentRequestEntity extends BaseEntity {
 
     /**
