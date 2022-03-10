@@ -79,6 +79,6 @@ public class ExperimentRequestEntity extends BaseEvaluationRequestEntity {
      * Experiment results details.
      */
     @Type(type = "jsonb")
-    @Column(name = "experiment_result_details", columnDefinition = "jsonb")
+    @Column(name = "experiment_results_details", columnDefinition = "jsonb")
     private List<EvaluationResultsDetailsMatch> experimentResultDetails;
 }
