@@ -27,6 +27,7 @@
    * auto-tests.delaySeconds - интервал между запусками scheduler для обработки тестов
    * auto-tests.schedulerPoolSize - размер пула потоков для шедулера
    * auto-tests.ecaServerBaseUrl - базовый url eca-server
+   * auto-tests.ecaErsBaseUrl - базовый url eca-ers
 3) open-api - настройки Swagger
    * open-api.tokenBaseUrl - базовый url - сервера авторизации
    * open-api.projectVersion - версия API
