@@ -31,7 +31,7 @@ public interface AutoTestsJobRepository extends JpaRepository<AutoTestsJobEntity
      * @return tests ids list
      */
     @Query("select t.id from AutoTestsJobEntity t where t.executionStatus = 'IN_PROGRESS' and " +
-            "not exists (select er.id from ExperimentRequestEntity er where er.job = t " +
+            "not exists (select er.id from BaseEvaluationRequestEntity er where er.job = t " +
             "and er.stageType not in (:finishedStages)) order by t.created")
     List<Long> findFinishedJobs(@Param("finishedStages") Collection<RequestStageType> finishedStages);
 
@@ -41,7 +41,7 @@ public interface AutoTestsJobRepository extends JpaRepository<AutoTestsJobEntity
      * @param ids - ids list
      * @return evaluation requests page
      */
-    List<AutoTestsJobEntity> findByIdIn(Collection<Long> ids);
+    List<AutoTestsJobEntity> findByIdInOrderByCreated(Collection<Long> ids);
 
     /**
      * Finds auto tests job by uuid.

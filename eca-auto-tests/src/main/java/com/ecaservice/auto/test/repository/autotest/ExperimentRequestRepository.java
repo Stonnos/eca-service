@@ -2,7 +2,6 @@ package com.ecaservice.auto.test.repository.autotest;
 
 import com.ecaservice.auto.test.entity.autotest.AutoTestsJobEntity;
 import com.ecaservice.auto.test.entity.autotest.ExperimentRequestEntity;
-import com.ecaservice.auto.test.entity.autotest.RequestStageType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -47,17 +46,6 @@ public interface ExperimentRequestRepository extends JpaRepository<ExperimentReq
     Page<ExperimentRequestEntity> findAllByJob(AutoTestsJobEntity autoTestsJobEntity, Pageable pageable);
 
     /**
-     * Finds exceeded requests ids.
-     *
-     * @param dateTime - date time value
-     * @return requests ids list
-     */
-    @Query("select er.id from ExperimentRequestEntity er where er.stageType not in (:finishedStages)" +
-            "and er.started < :dateTime order by er.started")
-    List<Long> findExceededRequestIds(@Param("dateTime") LocalDateTime dateTime,
-                                      @Param("finishedStages") Collection<RequestStageType> finishedStages);
-
-    /**
      * Finds finished requests ids.
      *
      * @return requests ids list
@@ -89,5 +77,5 @@ public interface ExperimentRequestRepository extends JpaRepository<ExperimentReq
      * @param ids - ids list
      * @return experiment requests page
      */
-    List<ExperimentRequestEntity> findByIdIn(Collection<Long> ids);
+    List<ExperimentRequestEntity> findByIdInOrderByCreated(Collection<Long> ids);
 }

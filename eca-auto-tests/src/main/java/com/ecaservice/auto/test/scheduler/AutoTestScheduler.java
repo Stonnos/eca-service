@@ -4,6 +4,7 @@ import com.ecaservice.auto.test.config.AutoTestsProperties;
 import com.ecaservice.auto.test.entity.autotest.ExperimentRequestEntity;
 import com.ecaservice.auto.test.entity.autotest.RequestStageType;
 import com.ecaservice.auto.test.repository.autotest.AutoTestsJobRepository;
+import com.ecaservice.auto.test.repository.autotest.BaseEvaluationRequestRepository;
 import com.ecaservice.auto.test.repository.autotest.ExperimentRequestRepository;
 import com.ecaservice.auto.test.service.EvaluationResultsProcessor;
 import com.ecaservice.auto.test.service.executor.AutoTestExecutor;
@@ -40,6 +41,7 @@ public class AutoTestScheduler {
     private final EvaluationResultsProcessor evaluationResultsProcessor;
     private final AutoTestsJobRepository autoTestsJobRepository;
     private final ExperimentRequestRepository experimentRequestRepository;
+    private final BaseEvaluationRequestRepository baseEvaluationRequestRepository;
 
     /**
      * Processes new auto tests.
@@ -48,20 +50,20 @@ public class AutoTestScheduler {
     public void startNewTestsJobs() {
         log.trace("Starting to processed new tests jobs");
         List<Long> testIds = autoTestsJobRepository.findNewTests();
-        processWithPagination(testIds, autoTestsJobRepository::findByIdIn,
+        processWithPagination(testIds, autoTestsJobRepository::findByIdInOrderByCreated,
                 pageContent -> pageContent.forEach(autoTestExecutor::runTests), autoTestsProperties.getPageSize());
         log.trace("New tests has been processed jobs");
     }
 
     /**
-     * Processes finished requests.
+     * Processes finished experiment requests.
      */
     @Scheduled(fixedDelayString = "${auto-tests.delaySeconds}000")
-    public void processFinishedRequests() {
+    public void processFinishedExperimentRequests() {
         log.trace("Starting to processed finished requests");
         List<Long> finishedIds = experimentRequestRepository.findFinishedRequests();
-        processWithPagination(finishedIds, experimentRequestRepository::findByIdIn, this::processFinishedRequests,
-                autoTestsProperties.getPageSize());
+        processWithPagination(finishedIds, experimentRequestRepository::findByIdInOrderByCreated,
+                this::processFinishedRequests, autoTestsProperties.getPageSize());
     }
 
     /**
@@ -71,17 +73,17 @@ public class AutoTestScheduler {
     public void processExceededRequests() {
         log.trace("Starting to processed exceeded requests");
         LocalDateTime exceededTime = LocalDateTime.now().minusSeconds(autoTestsProperties.getRequestTimeoutInSeconds());
-        List<Long> exceededIds = experimentRequestRepository.findExceededRequestIds(exceededTime, FINISHED_STAGES);
-        processWithPagination(exceededIds, experimentRequestRepository::findByIdIn, pageContent ->
-                pageContent.forEach(experimentRequestEntity -> {
-                    experimentRequestEntity.setExecutionStatus(ExecutionStatus.ERROR);
-                    experimentRequestEntity.setStageType(RequestStageType.EXCEEDED);
-                    experimentRequestEntity.setTestResult(TestResult.ERROR);
-                    experimentRequestEntity.setDetails(String.format("Request timeout exceeded after [%d] seconds!",
+        List<Long> exceededIds = baseEvaluationRequestRepository.findExceededRequestIds(exceededTime, FINISHED_STAGES);
+        processWithPagination(exceededIds, baseEvaluationRequestRepository::findByIdInOrderByCreated, pageContent ->
+                pageContent.forEach(requestEntity -> {
+                    requestEntity.setExecutionStatus(ExecutionStatus.ERROR);
+                    requestEntity.setStageType(RequestStageType.EXCEEDED);
+                    requestEntity.setTestResult(TestResult.ERROR);
+                    requestEntity.setDetails(String.format("Request timeout exceeded after [%d] seconds!",
                             autoTestsProperties.getRequestTimeoutInSeconds()));
-                    experimentRequestEntity.setFinished(LocalDateTime.now());
-                    experimentRequestRepository.save(experimentRequestEntity);
-                    log.info("Exceeded request with correlation id [{}]", experimentRequestEntity.getCorrelationId());
+                    requestEntity.setFinished(LocalDateTime.now());
+                    baseEvaluationRequestRepository.save(requestEntity);
+                    log.info("Exceeded request with correlation id [{}]", requestEntity.getCorrelationId());
                 }), autoTestsProperties.getPageSize()
         );
         log.trace("Exceeded requests has been processed");
@@ -94,7 +96,7 @@ public class AutoTestScheduler {
     public void processFinishedTestJobs() {
         log.trace("Starting to processed finished tests jobs");
         List<Long> testIds = autoTestsJobRepository.findFinishedJobs(FINISHED_STAGES);
-        processWithPagination(testIds, autoTestsJobRepository::findByIdIn, pageContent ->
+        processWithPagination(testIds, autoTestsJobRepository::findByIdInOrderByCreated, pageContent ->
                 pageContent.forEach(autoTestsJobEntity -> {
                     autoTestsJobEntity.setExecutionStatus(ExecutionStatus.FINISHED);
                     autoTestsJobEntity.setFinished(LocalDateTime.now());
