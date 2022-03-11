@@ -31,7 +31,6 @@ public class ExperimentAutoTestRunner extends AbstractAutoTestRunner<ExperimentR
     private final MailProperties mailProperties;
     private final InstancesLoader instancesLoader;
     private final ExperimentTestDataProvider experimentTestDataProvider;
-    private final AutoTestWorkerService autoTestWorkerService;
 
     private final PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 
@@ -39,23 +38,23 @@ public class ExperimentAutoTestRunner extends AbstractAutoTestRunner<ExperimentR
      * Constructor with spring dependencies injection.
      *
      * @param autoTestJobService              - auto test job service
+     * @param autoTestWorkerService           - auto test worker service
      * @param baseEvaluationRequestRepository - base evaluation request repository
      * @param mailProperties                  - mail properties
      * @param instancesLoader                 - instances loader
      * @param experimentTestDataProvider      - experiment test data provider
-     * @param autoTestWorkerService           - auto test worker service
      */
     public ExperimentAutoTestRunner(AutoTestJobService autoTestJobService,
+                                    AutoTestWorkerService autoTestWorkerService,
                                     BaseEvaluationRequestRepository baseEvaluationRequestRepository,
                                     MailProperties mailProperties,
                                     InstancesLoader instancesLoader,
-                                    ExperimentTestDataProvider experimentTestDataProvider,
-                                    AutoTestWorkerService autoTestWorkerService) {
-        super(AutoTestType.EXPERIMENT_REQUEST_PROCESS, autoTestJobService, baseEvaluationRequestRepository);
+                                    ExperimentTestDataProvider experimentTestDataProvider) {
+        super(AutoTestType.EXPERIMENT_REQUEST_PROCESS, autoTestJobService, autoTestWorkerService,
+                baseEvaluationRequestRepository);
         this.mailProperties = mailProperties;
         this.instancesLoader = instancesLoader;
         this.experimentTestDataProvider = experimentTestDataProvider;
-        this.autoTestWorkerService = autoTestWorkerService;
     }
 
     @Override
@@ -76,11 +75,6 @@ public class ExperimentAutoTestRunner extends AbstractAutoTestRunner<ExperimentR
                 .stream()
                 .map(this::createExperimentRequest)
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    protected void sendRequest(ExperimentRequestEntity requestEntity, ExperimentRequest request) {
-        autoTestWorkerService.sendRequest(requestEntity.getId(), request);
     }
 
     private ExperimentRequest createExperimentRequest(ExperimentTestDataModel experimentTestDataModel) {

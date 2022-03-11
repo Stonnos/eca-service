@@ -6,6 +6,8 @@ import com.ecaservice.auto.test.entity.autotest.BaseEvaluationRequestEntity;
 import com.ecaservice.auto.test.entity.autotest.RequestStageType;
 import com.ecaservice.auto.test.repository.autotest.BaseEvaluationRequestRepository;
 import com.ecaservice.auto.test.service.AutoTestJobService;
+import com.ecaservice.auto.test.service.AutoTestWorkerService;
+import com.ecaservice.base.model.EcaRequest;
 import com.ecaservice.test.common.model.ExecutionStatus;
 import com.ecaservice.test.common.model.TestResult;
 import lombok.Getter;
@@ -25,11 +27,12 @@ import java.util.UUID;
  */
 @Slf4j
 @RequiredArgsConstructor
-public abstract class AbstractAutoTestRunner<E extends BaseEvaluationRequestEntity, R> {
+public abstract class AbstractAutoTestRunner<E extends BaseEvaluationRequestEntity, R extends EcaRequest> {
 
     @Getter
     private final AutoTestType autoTestType;
     private final AutoTestJobService autoTestJobService;
+    private final AutoTestWorkerService autoTestWorkerService;
     private final BaseEvaluationRequestRepository baseEvaluationRequestRepository;
 
     /**
@@ -48,18 +51,10 @@ public abstract class AbstractAutoTestRunner<E extends BaseEvaluationRequestEnti
     protected abstract List<R> prepareAndBuildRequests();
 
     /**
-     * Sends request.
-     *
-     * @param requestEntity - request entity
-     * @param request       - request object
-     */
-    protected abstract void sendRequest(E requestEntity, R request);
-
-    /**
      * Checks that auto test can be run.
      *
      * @param autoTestsJobEntity - auto tests entity
-     * @return {@code true} if auto tests can be run, itherwise {@code false}
+     * @return {@code true} if auto tests can be run, otherwise {@code false}
      */
     public boolean canRun(AutoTestsJobEntity autoTestsJobEntity) {
         return autoTestType.equals(autoTestsJobEntity.getAutoTestType());
@@ -76,7 +71,7 @@ public abstract class AbstractAutoTestRunner<E extends BaseEvaluationRequestEnti
             requests.forEach(request -> {
                 E requestEntity = createRequestEntity(request);
                 populateAndSaveRequestEntity(requestEntity, autoTestsJobEntity);
-                sendRequest(requestEntity, request);
+                autoTestWorkerService.sendRequest(requestEntity.getId(), request);
             });
         } catch (Exception ex) {
             log.error("There was an error while sending requests for job [{}]: {}", autoTestsJobEntity.getJobUuid(),

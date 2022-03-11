@@ -5,13 +5,17 @@ import com.ecaservice.auto.test.entity.autotest.ExperimentRequestEntity;
 import com.ecaservice.auto.test.entity.autotest.RequestStageType;
 import com.ecaservice.auto.test.repository.autotest.BaseEvaluationRequestRepository;
 import com.ecaservice.auto.test.service.rabbit.RabbitSender;
+import com.ecaservice.base.model.EcaRequest;
 import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.base.model.ExperimentRequest;
+import com.ecaservice.base.model.InstancesRequest;
+import com.ecaservice.base.model.visitor.EcaRequestVisitor;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.test.common.model.ExecutionStatus;
 import com.ecaservice.test.common.model.TestResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -33,21 +37,26 @@ public class AutoTestWorkerService {
     /**
      * Sends experiment test request to mq.
      *
-     * @param testId            - test id
-     * @param experimentRequest - experiment request
+     * @param testId     - test id
+     * @param ecaRequest - eca request
      */
-    public void sendRequest(long testId, ExperimentRequest experimentRequest) {
-        internalSendRequest(testId, experimentRequest, rabbitSender::sendExperimentRequest);
-    }
+    public void sendRequest(long testId, EcaRequest ecaRequest) {
+        ecaRequest.visit(new EcaRequestVisitor() {
+            @Override
+            public void visitEvaluationRequest(EvaluationRequest evaluationRequest) {
+                internalSendRequest(testId, evaluationRequest, rabbitSender::sendEvaluationRequest);
+            }
 
-    /**
-     * Sends evaluation test request to mq.
-     *
-     * @param testId            - test id
-     * @param evaluationRequest - evaluation request
-     */
-    public void sendRequest(long testId, EvaluationRequest evaluationRequest) {
-        internalSendRequest(testId, evaluationRequest, rabbitSender::sendEvaluationRequest);
+            @Override
+            public void visitExperimentRequest(ExperimentRequest experimentRequest) {
+                internalSendRequest(testId, experimentRequest, rabbitSender::sendExperimentRequest);
+            }
+
+            @Override
+            public void visitInstancesRequest(InstancesRequest instancesRequest) {
+                throw new NotImplementedException("Instances request sending not implemented");
+            }
+        });
     }
 
     private <R> void internalSendRequest(long testId, R request, BiConsumer<R, String> sender) {

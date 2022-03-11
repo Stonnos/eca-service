@@ -30,7 +30,6 @@ public class ClassifierAutoTestRunner extends AbstractAutoTestRunner<EvaluationR
 
     private final InstancesLoader instancesLoader;
     private final ClassifierTestDataProvider classifierTestDataProvider;
-    private final AutoTestWorkerService autoTestWorkerService;
 
     private final PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 
@@ -38,20 +37,20 @@ public class ClassifierAutoTestRunner extends AbstractAutoTestRunner<EvaluationR
      * Constructor with spring dependencies injection.
      *
      * @param autoTestJobService              - auto test job service
+     * @param autoTestWorkerService           - auto test worker service
      * @param baseEvaluationRequestRepository - base evaluation request repository
      * @param instancesLoader                 - instances loader
      * @param classifierTestDataProvider      - classifier test data provider
-     * @param autoTestWorkerService           - auto test worker service
      */
     public ClassifierAutoTestRunner(AutoTestJobService autoTestJobService,
+                                    AutoTestWorkerService autoTestWorkerService,
                                     BaseEvaluationRequestRepository baseEvaluationRequestRepository,
                                     InstancesLoader instancesLoader,
-                                    ClassifierTestDataProvider classifierTestDataProvider,
-                                    AutoTestWorkerService autoTestWorkerService) {
-        super(AutoTestType.EVALUATION_REQUEST_PROCESS, autoTestJobService, baseEvaluationRequestRepository);
+                                    ClassifierTestDataProvider classifierTestDataProvider) {
+        super(AutoTestType.EVALUATION_REQUEST_PROCESS, autoTestJobService, autoTestWorkerService,
+                baseEvaluationRequestRepository);
         this.instancesLoader = instancesLoader;
         this.classifierTestDataProvider = classifierTestDataProvider;
-        this.autoTestWorkerService = autoTestWorkerService;
     }
 
     @Override
@@ -71,11 +70,6 @@ public class ClassifierAutoTestRunner extends AbstractAutoTestRunner<EvaluationR
                 .stream()
                 .map(this::createEvaluationRequest)
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    protected void sendRequest(EvaluationRequestEntity requestEntity, EvaluationRequest request) {
-        autoTestWorkerService.sendRequest(requestEntity.getId(), request);
     }
 
     private EvaluationRequest createEvaluationRequest(ClassifierTestDataModel classifierTestDataModel) {
