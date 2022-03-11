@@ -1,7 +1,9 @@
 package com.ecaservice.auto.test.service;
 
+import com.ecaservice.auto.test.entity.autotest.BaseEvaluationRequestEntity;
 import com.ecaservice.auto.test.entity.autotest.ExperimentRequestEntity;
 import com.ecaservice.auto.test.entity.autotest.RequestStageType;
+import com.ecaservice.auto.test.repository.autotest.BaseEvaluationRequestRepository;
 import com.ecaservice.auto.test.repository.autotest.ExperimentRequestRepository;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.test.common.model.ExecutionStatus;
@@ -20,8 +22,9 @@ import java.time.LocalDateTime;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ExperimentRequestService {
+public class EvaluationRequestService {
 
+    private final BaseEvaluationRequestRepository baseEvaluationRequestRepository;
     private final ExperimentRequestRepository experimentRequestRepository;
 
     /**
@@ -36,18 +39,18 @@ public class ExperimentRequestService {
     }
 
     /**
-     * Finish experiment auto test with error.
+     * Finish request entity test with error.
      *
-     * @param experimentRequestEntity - experiment auto entity
-     * @param errorMessage            - error message
+     * @param requestEntity - request entity
+     * @param errorMessage  - error message
      */
-    public void finishWithError(ExperimentRequestEntity experimentRequestEntity, String errorMessage) {
-        experimentRequestEntity.setStageType(RequestStageType.ERROR);
-        experimentRequestEntity.setTestResult(TestResult.ERROR);
-        experimentRequestEntity.setExecutionStatus(ExecutionStatus.ERROR);
-        experimentRequestEntity.setDetails(errorMessage);
-        experimentRequestEntity.setFinished(LocalDateTime.now());
-        experimentRequestRepository.save(experimentRequestEntity);
-        log.debug("Experiment auto test [{}] has been finished with error", experimentRequestEntity.getId());
+    public void finishWithError(BaseEvaluationRequestEntity requestEntity, String errorMessage) {
+        requestEntity.setStageType(RequestStageType.ERROR);
+        requestEntity.setTestResult(TestResult.ERROR);
+        requestEntity.setExecutionStatus(ExecutionStatus.ERROR);
+        requestEntity.setDetails(errorMessage);
+        requestEntity.setFinished(LocalDateTime.now());
+        baseEvaluationRequestRepository.save(requestEntity);
+        log.debug("Evaluation auto test [{}] has been finished with error", requestEntity.getId());
     }
 }

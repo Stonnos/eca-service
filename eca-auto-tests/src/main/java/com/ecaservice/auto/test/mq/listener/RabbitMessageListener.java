@@ -3,7 +3,7 @@ package com.ecaservice.auto.test.mq.listener;
 import com.ecaservice.auto.test.entity.autotest.ExperimentRequestEntity;
 import com.ecaservice.auto.test.entity.autotest.RequestStageType;
 import com.ecaservice.auto.test.repository.autotest.ExperimentRequestRepository;
-import com.ecaservice.auto.test.service.ExperimentRequestService;
+import com.ecaservice.auto.test.service.EvaluationRequestService;
 import com.ecaservice.base.model.ExperimentResponse;
 import com.ecaservice.base.model.MessageError;
 import com.ecaservice.base.model.TechnicalStatus;
@@ -25,7 +25,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RabbitMessageListener {
 
-    private final ExperimentRequestService experimentRequestService;
+    private final EvaluationRequestService evaluationRequestService;
     private final ExperimentRequestRepository experimentRequestRepository;
 
     /**
@@ -75,7 +75,7 @@ public class RabbitMessageListener {
                     .map(messageErrors -> messageErrors.iterator().next())
                     .map(MessageError::getMessage)
                     .orElse(null);
-            experimentRequestService.finishWithError(experimentRequestEntity, errorMessage);
+            evaluationRequestService.finishWithError(experimentRequestEntity, errorMessage);
         }
         log.info("Message [{}] response has been processed", experimentRequestEntity.getCorrelationId());
     }

@@ -5,7 +5,7 @@ import com.ecaservice.auto.test.entity.autotest.RequestStageType;
 import com.ecaservice.auto.test.model.EmailMessage;
 import com.ecaservice.auto.test.model.EmailTypeVisitor;
 import com.ecaservice.auto.test.repository.autotest.ExperimentRequestRepository;
-import com.ecaservice.auto.test.service.ExperimentRequestService;
+import com.ecaservice.auto.test.service.EvaluationRequestService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -25,7 +25,7 @@ import static com.ecaservice.auto.test.config.mail.Channels.MAIL_HANDLE_CHANNEL;
 @RequiredArgsConstructor
 public class EmailMessageHandler {
 
-    private final ExperimentRequestService experimentRequestService;
+    private final EvaluationRequestService evaluationRequestService;
     private final ExperimentRequestRepository experimentRequestRepository;
 
     /**
@@ -37,7 +37,7 @@ public class EmailMessageHandler {
     public void handleMessage(EmailMessage emailMessage) {
         log.info("Starting to process email message [{}] for experiment [{}]",
                 emailMessage.getEmailType(), emailMessage.getRequestId());
-        var experimentRequestEntity = experimentRequestService.getByRequestId(emailMessage.getRequestId());
+        var experimentRequestEntity = evaluationRequestService.getByRequestId(emailMessage.getRequestId());
         if (RequestStageType.EXCEEDED.equals(experimentRequestEntity.getStageType())) {
             log.warn("Can't handle email message. Got exceeded request entity with request id [{}]",
                     experimentRequestEntity.getRequestId());
