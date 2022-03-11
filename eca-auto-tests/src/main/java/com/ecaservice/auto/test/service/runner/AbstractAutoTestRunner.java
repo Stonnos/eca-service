@@ -66,13 +66,17 @@ public abstract class AbstractAutoTestRunner<E extends BaseEvaluationRequestEnti
      * @param autoTestsJobEntity - auto tests entity
      */
     public void run(AutoTestsJobEntity autoTestsJobEntity) {
+        log.info("Starting to sent auto test [{}] requests", autoTestsJobEntity.getJobUuid());
         try {
             List<R> requests = prepareAndBuildRequests();
+            log.info("[{}] test data has been prepared for auto test [{}]", requests.size(),
+                    autoTestsJobEntity.getJobUuid());
             requests.forEach(request -> {
                 E requestEntity = createSpecificRequestEntity(request);
                 populateAndSaveRequestEntityCommonData(requestEntity, request, autoTestsJobEntity);
                 autoTestWorkerService.sendRequest(requestEntity.getId(), request);
             });
+            log.info("All auto test [{}] requests has been sent", autoTestsJobEntity.getJobUuid());
         } catch (Exception ex) {
             log.error("There was an error while sending requests for job [{}]: {}", autoTestsJobEntity.getJobUuid(),
                     ex.getMessage());
