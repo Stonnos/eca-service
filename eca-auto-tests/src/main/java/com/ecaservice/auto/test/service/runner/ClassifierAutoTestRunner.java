@@ -21,6 +21,8 @@ import weka.core.Instances;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.ecaservice.auto.test.util.Utils.toJson;
+
 /**
  * Classifier auto tests runner.
  *
@@ -62,6 +64,9 @@ public class ClassifierAutoTestRunner extends AbstractAutoTestRunner<EvaluationR
     @Override
     protected EvaluationRequestEntity createSpecificRequestEntity(EvaluationRequest evaluationRequest) {
         EvaluationRequestEntity evaluationRequestEntity = new EvaluationRequestEntity();
+        evaluationRequestEntity.setClassifierName(evaluationRequest.getClassifier().getClass().getSimpleName());
+        var classifierOptions = classifierOptionsAdapter.convert(evaluationRequest.getClassifier());
+        evaluationRequestEntity.setClassifierOptions(toJson(classifierOptions));
         evaluationRequestEntity.setEvaluationMethod(evaluationRequest.getEvaluationMethod());
         return evaluationRequestEntity;
     }
