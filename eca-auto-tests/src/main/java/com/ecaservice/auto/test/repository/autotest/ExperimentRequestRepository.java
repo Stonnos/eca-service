@@ -27,7 +27,7 @@ public interface ExperimentRequestRepository extends JpaRepository<ExperimentReq
      * @param correlationId - correlation id
      * @return experiment request entity
      */
-    ExperimentRequestEntity findByCorrelationId(String correlationId);
+    Optional<ExperimentRequestEntity> findByCorrelationId(String correlationId);
 
     /**
      * Finds experiment request by request id

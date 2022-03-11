@@ -7,6 +7,7 @@ import com.ecaservice.auto.test.service.EvaluationRequestService;
 import com.ecaservice.base.model.ExperimentResponse;
 import com.ecaservice.base.model.MessageError;
 import com.ecaservice.base.model.TechnicalStatus;
+import com.ecaservice.common.web.exception.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
@@ -16,20 +17,20 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 /**
- * Implements rabbit message listener.
+ * Implements experiment message listener.
  *
  * @author Roman Batygin
  */
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class RabbitMessageListener {
+public class ExperimentMessageListener {
 
     private final EvaluationRequestService evaluationRequestService;
     private final ExperimentRequestRepository experimentRequestRepository;
 
     /**
-     * Handles response messages from eca - server.
+     * Handles experiment response message from eca - server.
      *
      * @param experimentResponse - experiment response
      * @param message            - original message
@@ -38,13 +39,10 @@ public class RabbitMessageListener {
     public void handleMessage(ExperimentResponse experimentResponse, Message message) {
         String correlationId = message.getMessageProperties().getCorrelationId();
         log.info("Received MQ message with correlation id [{}]", correlationId);
-        var experimentRequestEntity = experimentRequestRepository.findByCorrelationId(correlationId);
-        if (experimentRequestEntity == null) {
-            log.warn("Can't find request entity with correlation id [{}]", correlationId);
-            return;
-        }
+        var experimentRequestEntity = experimentRequestRepository.findByCorrelationId(correlationId)
+                .orElseThrow(() -> new EntityNotFoundException(ExperimentRequestEntity.class, correlationId));
         if (RequestStageType.EXCEEDED.equals(experimentRequestEntity.getStageType())) {
-            log.warn("Can't handle message from MQ. Got exceeded request entity with correlation id [{}]",
+            log.warn("Can't handle message from MQ. Got exceeded experiment request entity with correlation id [{}]",
                     correlationId);
         } else {
             internalHandleResponse(experimentRequestEntity, experimentResponse, correlationId);
