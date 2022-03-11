@@ -1,0 +1,17 @@
+{
+  "trainDataPath": "classpath:/data/credit.xlsx",
+  "classifierOptions": {
+    "type": "extra_trees",
+    "numIterations": 10,
+    "numThreads": 4,
+    "minObj": 2,
+    "maxDepth": 0,
+    "decisionTreeType": "C45",
+    "numRandomSplits": 15,
+    "useBootstrapSamples": false
+  },
+  "evaluationMethod": "CROSS_VALIDATION",
+  "numFolds": 10,
+  "numTests": 1,
+  "seed": 1
+}

@@ -1,0 +1,13 @@
+{
+  "trainDataPath": "classpath:/data/credit.xlsx",
+  "classifierOptions": {
+    "type": "knn",
+    "numNeighbours": 10,
+    "distanceType": "EUCLID",
+    "weight": 1.0
+  },
+  "evaluationMethod": "CROSS_VALIDATION",
+  "numFolds": 10,
+  "numTests": 1,
+  "seed": 1
+}

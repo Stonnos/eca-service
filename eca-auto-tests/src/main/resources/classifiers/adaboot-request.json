@@ -1,0 +1,33 @@
+{
+  "trainDataPath": "classpath:/data/credit.xlsx",
+  "classifierOptions": {
+    "type": "ada_boost",
+    "numIterations": 10,
+    "minError": 0.0,
+    "maxError": 0.5,
+    "classifierOptions": [
+      {
+        "type": "decision_tree",
+        "decisionTreeType": "CART",
+        "minObj": 2,
+        "maxDepth": 0,
+        "randomTree": false,
+        "useBinarySplits": true,
+        "useRandomSplits": false
+      },
+      {
+        "type": "decision_tree",
+        "decisionTreeType": "C45",
+        "minObj": 2,
+        "maxDepth": 0,
+        "randomTree": false,
+        "useBinarySplits": false,
+        "useRandomSplits": false
+      }
+    ]
+  },
+  "evaluationMethod": "CROSS_VALIDATION",
+  "numFolds": 10,
+  "numTest": 1,
+  "seed": 1
+}
