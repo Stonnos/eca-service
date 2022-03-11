@@ -28,6 +28,6 @@
   },
   "evaluationMethod": "CROSS_VALIDATION",
   "numFolds": 10,
-  "numTest": 1,
+  "numTests": 1,
   "seed": 1
 }
