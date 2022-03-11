@@ -7,11 +7,14 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.Table;
 
 /**
  * Base evaluation request persistence entity.
@@ -21,8 +24,10 @@ import javax.persistence.MappedSuperclass;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-@MappedSuperclass
-public abstract class BaseEvaluationRequestEntity extends BaseEntity {
+@Entity
+@Table(name = "base_evaluation_request")
+@Inheritance(strategy = InheritanceType.JOINED)
+public class BaseEvaluationRequestEntity extends BaseEntity {
 
     /**
      * Request id from eca - server
