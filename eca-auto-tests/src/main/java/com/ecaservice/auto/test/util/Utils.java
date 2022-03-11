@@ -1,5 +1,7 @@
 package com.ecaservice.auto.test.util;
 
+import com.ecaservice.base.model.EcaResponse;
+import com.ecaservice.base.model.MessageError;
 import lombok.experimental.UtilityClass;
 
 import java.math.BigDecimal;
@@ -38,6 +40,19 @@ public class Utils {
     public static BigDecimal getScaledValue(BigDecimal decimal, int scale) {
         return Optional.ofNullable(decimal)
                 .map(d -> d.setScale(scale, RoundingMode.HALF_UP))
+                .orElse(null);
+    }
+
+    /**
+     * Gets first response error message.
+     *
+     * @param ecaResponse - eca response
+     * @return error message
+     */
+    public static String getFirstErrorMessage(EcaResponse ecaResponse) {
+        return Optional.ofNullable(ecaResponse.getErrors())
+                .map(messageErrors -> messageErrors.iterator().next())
+                .map(MessageError::getMessage)
                 .orElse(null);
     }
 }

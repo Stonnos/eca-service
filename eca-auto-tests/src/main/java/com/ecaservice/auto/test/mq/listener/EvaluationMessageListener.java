@@ -6,7 +6,6 @@ import com.ecaservice.auto.test.repository.autotest.EvaluationRequestRepository;
 import com.ecaservice.auto.test.service.EvaluationRequestService;
 import com.ecaservice.auto.test.service.EvaluationResultsProcessor;
 import com.ecaservice.base.model.EvaluationResponse;
-import com.ecaservice.base.model.MessageError;
 import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +14,7 @@ import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
+import static com.ecaservice.auto.test.util.Utils.getFirstErrorMessage;
 
 /**
  * Implements rabbit message listener.
@@ -62,10 +61,7 @@ public class EvaluationMessageListener {
             log.info("Got error response [{}] for evaluation request [{}], correlation id [{}]",
                     evaluationResponse.getStatus(),
                     evaluationResponse.getRequestId(), correlationId);
-            String errorMessage = Optional.ofNullable(evaluationResponse.getErrors())
-                    .map(messageErrors -> messageErrors.iterator().next())
-                    .map(MessageError::getMessage)
-                    .orElse(null);
+            String errorMessage = getFirstErrorMessage(evaluationResponse);
             evaluationRequestService.finishWithError(evaluationRequestEntity, errorMessage);
         }
         log.info("Message [{}] response has been processed", evaluationRequestEntity.getCorrelationId());
