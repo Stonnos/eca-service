@@ -27,11 +27,6 @@ public class EvaluationResultsDetailsMatch {
     private Integer resultIndex;
 
     /**
-     * Creation date
-     */
-    private LocalDateTime created;
-
-    /**
      * Expected test instances number
      */
     private BigInteger expectedNumTestInstances;
