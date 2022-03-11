@@ -5,7 +5,7 @@ import com.ecaservice.auto.test.entity.autotest.ExperimentRequestEntity;
 import com.ecaservice.auto.test.entity.autotest.RequestStageType;
 import com.ecaservice.auto.test.repository.autotest.AutoTestsJobRepository;
 import com.ecaservice.auto.test.repository.autotest.ExperimentRequestRepository;
-import com.ecaservice.auto.test.service.ExperimentResultsProcessor;
+import com.ecaservice.auto.test.service.EvaluationResultsProcessor;
 import com.ecaservice.auto.test.service.executor.AutoTestExecutor;
 import com.ecaservice.test.common.model.ExecutionStatus;
 import com.ecaservice.test.common.model.TestResult;
@@ -37,7 +37,7 @@ public class AutoTestScheduler {
 
     private final AutoTestsProperties autoTestsProperties;
     private final AutoTestExecutor autoTestExecutor;
-    private final ExperimentResultsProcessor experimentResultsProcessor;
+    private final EvaluationResultsProcessor evaluationResultsProcessor;
     private final AutoTestsJobRepository autoTestsJobRepository;
     private final ExperimentRequestRepository experimentRequestRepository;
 
@@ -106,6 +106,6 @@ public class AutoTestScheduler {
     }
 
     private void processFinishedRequests(List<ExperimentRequestEntity> experimentRequestEntities) {
-        experimentRequestEntities.forEach(experimentResultsProcessor::compareAndMatchExperimentResults);
+        experimentRequestEntities.forEach(evaluationResultsProcessor::compareAndMatchExperimentResults);
     }
 }

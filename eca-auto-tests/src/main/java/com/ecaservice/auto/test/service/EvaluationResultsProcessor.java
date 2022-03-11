@@ -35,7 +35,7 @@ import static com.google.common.collect.Lists.newArrayList;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ExperimentResultsProcessor {
+public class EvaluationResultsProcessor {
 
     private static final String SLASH_SEPARATOR = "/";
 

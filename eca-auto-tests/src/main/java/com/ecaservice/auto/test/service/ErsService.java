@@ -1,11 +1,15 @@
 package com.ecaservice.auto.test.service;
 
+import com.ecaservice.auto.test.entity.ecaserver.ErsEvaluationResultsRequestEntity;
 import com.ecaservice.auto.test.entity.ecaserver.ErsExperimentResultsRequest;
+import com.ecaservice.auto.test.entity.ecaserver.EvaluationLog;
 import com.ecaservice.auto.test.entity.ecaserver.Experiment;
 import com.ecaservice.auto.test.entity.ecaserver.ExperimentResultsEntity;
-import com.ecaservice.auto.test.exception.ErsExperimentResultsRequestsNotFoundException;
+import com.ecaservice.auto.test.exception.ErsResultsRequestsNotFoundException;
 import com.ecaservice.auto.test.exception.ExperimentResultsNotFoundException;
+import com.ecaservice.auto.test.repository.ecaserver.ErsEvaluationResultsRequestRepository;
 import com.ecaservice.auto.test.repository.ecaserver.ErsExperimentResultsRequestRepository;
+import com.ecaservice.auto.test.repository.ecaserver.EvaluationLogRepository;
 import com.ecaservice.auto.test.repository.ecaserver.ExperimentRepository;
 import com.ecaservice.auto.test.repository.ecaserver.ExperimentResultsRepository;
 import com.ecaservice.auto.test.service.api.ErsClient;
@@ -39,11 +43,15 @@ public class ErsService {
     public static final String FETCHED_ERS_EXPERIMENT_RESULTS_LOG_MESSAGE =
             "Evaluation results [{}] has been fetched from ERS for experiment [{}]. Index in experiment history: [{}]";
     private static final String SUCCESS = "SUCCESS";
+    private static final String ERS_EVALUATION_RESULTS_ERROR_MESSAGE_FORMAT =
+            "Found ERS evaluation results [%s] with error status [%s] for evaluation log [%s]";
 
     private final ErsClient ersClient;
     private final ExperimentRepository experimentRepository;
     private final ExperimentResultsRepository experimentResultsRepository;
     private final ErsExperimentResultsRequestRepository ersExperimentResultsRequestRepository;
+    private final EvaluationLogRepository evaluationLogRepository;
+    private final ErsEvaluationResultsRequestRepository ersEvaluationResultsRequestRepository;
 
     /**
      * Gets experiment evaluation results from ERS.
@@ -67,6 +75,33 @@ public class ErsService {
         return evaluationResultsMap;
     }
 
+    /**
+     * Gets evaluation results from ERS.
+     *
+     * @param requestId - request id from eca - server
+     * @return ERS evaluation results
+     */
+    public GetEvaluationResultsResponse getEvaluationResults(String requestId) {
+        log.info("Starting to get ERS evaluation results for evaluation log [{}]", requestId);
+        var evaluationLog = evaluationLogRepository.findByRequestId(requestId)
+                .orElseThrow(() -> new EntityNotFoundException(EvaluationLog.class, requestId));
+        var ersEvaluationResultsRequest = ersEvaluationResultsRequestRepository.findByEvaluationLog(evaluationLog)
+                .orElseThrow(() -> new EntityNotFoundException(ErsEvaluationResultsRequestEntity.class,
+                        String.format("Evaluation log id [%d]", evaluationLog.getId())));
+        if (!SUCCESS.equals(ersEvaluationResultsRequest.getResponseStatus())) {
+            String errorMessage = String.format(ERS_EVALUATION_RESULTS_ERROR_MESSAGE_FORMAT,
+                    ersEvaluationResultsRequest.getRequestId(), ersEvaluationResultsRequest.getResponseStatus(),
+                    requestId);
+            throw new ErsResultsRequestsNotFoundException(errorMessage);
+        }
+        log.info("Starting to get evaluation results [{}] report from ERS", ersEvaluationResultsRequest.getRequestId());
+        var evaluationResultRequest = new GetEvaluationResultsRequest(ersEvaluationResultsRequest.getRequestId());
+        var evaluationResultsResponse = ersClient.getEvaluationResults(evaluationResultRequest);
+        log.info("Evaluation results [{}] report has been fetched from ERS",
+                ersEvaluationResultsRequest.getRequestId());
+        return evaluationResultsResponse;
+    }
+
     private List<ErsExperimentResultsRequest> getErsExperimentResultsRequests(
             List<ExperimentResultsEntity> experimentResults, String experimentRequestId) {
         var ersExperimentResultsRequests =
@@ -84,7 +119,7 @@ public class ErsService {
             String errorMessage =
                     String.format("Ers experiment [%s] results requests not found for experiment results ids: %s",
                             experimentRequestId, notFoundIds);
-            throw new ErsExperimentResultsRequestsNotFoundException(errorMessage);
+            throw new ErsResultsRequestsNotFoundException(errorMessage);
         }
         var errorRequestIds = ersExperimentResultsRequests.stream()
                 .filter(ersExperimentResultsRequest -> !SUCCESS.equals(
@@ -93,7 +128,7 @@ public class ErsService {
         if (!CollectionUtils.isEmpty(errorRequestIds)) {
             String errorMessage = String.format("Found ers experiment [%s] results requests ids with error status: %s",
                     experimentRequestId, errorRequestIds);
-            throw new ErsExperimentResultsRequestsNotFoundException(errorMessage);
+            throw new ErsResultsRequestsNotFoundException(errorMessage);
         }
         return ersExperimentResultsRequests;
     }
