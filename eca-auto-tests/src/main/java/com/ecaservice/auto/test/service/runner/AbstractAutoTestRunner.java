@@ -36,12 +36,12 @@ public abstract class AbstractAutoTestRunner<E extends BaseEvaluationRequestEnti
     private final BaseEvaluationRequestRepository baseEvaluationRequestRepository;
 
     /**
-     * Creates request entity.
+     * Creates request entity with specific data.
      *
      * @param request - request object
      * @return request entity
      */
-    protected abstract E createRequestEntity(R request);
+    protected abstract E createSpecificRequestEntity(R request);
 
     /**
      * Prepares test requests data.
@@ -69,8 +69,8 @@ public abstract class AbstractAutoTestRunner<E extends BaseEvaluationRequestEnti
         try {
             List<R> requests = prepareAndBuildRequests();
             requests.forEach(request -> {
-                E requestEntity = createRequestEntity(request);
-                populateAndSaveRequestEntity(requestEntity, autoTestsJobEntity);
+                E requestEntity = createSpecificRequestEntity(request);
+                populateAndSaveRequestEntityCommonData(requestEntity, request, autoTestsJobEntity);
                 autoTestWorkerService.sendRequest(requestEntity.getId(), request);
             });
         } catch (Exception ex) {
@@ -80,14 +80,17 @@ public abstract class AbstractAutoTestRunner<E extends BaseEvaluationRequestEnti
         }
     }
 
-    private void populateAndSaveRequestEntity(E experimentRequestEntity,
-                                              AutoTestsJobEntity autoTestsJobEntity) {
-        experimentRequestEntity.setCorrelationId(UUID.randomUUID().toString());
-        experimentRequestEntity.setStageType(RequestStageType.READY);
-        experimentRequestEntity.setTestResult(TestResult.UNKNOWN);
-        experimentRequestEntity.setExecutionStatus(ExecutionStatus.NEW);
-        experimentRequestEntity.setJob(autoTestsJobEntity);
-        experimentRequestEntity.setCreated(LocalDateTime.now());
-        baseEvaluationRequestRepository.save(experimentRequestEntity);
+    private void populateAndSaveRequestEntityCommonData(E requestEntity, R request,
+                                                        AutoTestsJobEntity autoTestsJobEntity) {
+        requestEntity.setNumAttributes(request.getData().numAttributes());
+        requestEntity.setNumInstances(request.getData().numInstances());
+        requestEntity.setRelationName(request.getData().relationName());
+        requestEntity.setCorrelationId(UUID.randomUUID().toString());
+        requestEntity.setStageType(RequestStageType.READY);
+        requestEntity.setTestResult(TestResult.UNKNOWN);
+        requestEntity.setExecutionStatus(ExecutionStatus.NEW);
+        requestEntity.setJob(autoTestsJobEntity);
+        requestEntity.setCreated(LocalDateTime.now());
+        baseEvaluationRequestRepository.save(requestEntity);
     }
 }

@@ -22,6 +22,7 @@
 1) spring.datasource - настройки БД для хранения информации
 2) auto-tests — настройки параметров для тестов:
    * auto-tests.requestTimeoutInSeconds - таймаут для обработки одного запроса сервером eca - server
+   * auto-tests.classifiersDataPath - относительный путь к директории (в resources) с тестовыми данными для моделей классификаторов
    * auto-tests.experimentsDataPath - относительный путь к директории (в resources) с тестовыми данными для экспериментов
    * auto-tests.pageSize - размер страницы для постраничной обработки
    * auto-tests.delaySeconds - интервал между запусками scheduler для обработки тестов

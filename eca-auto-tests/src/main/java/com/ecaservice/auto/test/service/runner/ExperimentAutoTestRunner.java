@@ -58,14 +58,10 @@ public class ExperimentAutoTestRunner extends AbstractAutoTestRunner<ExperimentR
     }
 
     @Override
-    protected ExperimentRequestEntity createRequestEntity(ExperimentRequest experimentRequest) {
+    protected ExperimentRequestEntity createSpecificRequestEntity(ExperimentRequest experimentRequest) {
         ExperimentRequestEntity experimentRequestEntity = new ExperimentRequestEntity();
         experimentRequestEntity.setExperimentType(experimentRequest.getExperimentType());
         experimentRequestEntity.setEvaluationMethod(experimentRequest.getEvaluationMethod());
-        Instances instances = experimentRequest.getData();
-        experimentRequestEntity.setRelationName(instances.relationName());
-        experimentRequestEntity.setNumAttributes(instances.numAttributes());
-        experimentRequestEntity.setNumInstances(instances.numInstances());
         return experimentRequestEntity;
     }
 

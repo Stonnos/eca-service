@@ -54,13 +54,9 @@ public class ClassifierAutoTestRunner extends AbstractAutoTestRunner<EvaluationR
     }
 
     @Override
-    protected EvaluationRequestEntity createRequestEntity(EvaluationRequest evaluationRequest) {
+    protected EvaluationRequestEntity createSpecificRequestEntity(EvaluationRequest evaluationRequest) {
         EvaluationRequestEntity evaluationRequestEntity = new EvaluationRequestEntity();
         evaluationRequestEntity.setEvaluationMethod(evaluationRequest.getEvaluationMethod());
-        Instances instances = evaluationRequest.getData();
-        evaluationRequestEntity.setRelationName(instances.relationName());
-        evaluationRequestEntity.setNumAttributes(instances.numAttributes());
-        evaluationRequestEntity.setNumInstances(instances.numInstances());
         return evaluationRequestEntity;
     }
 
