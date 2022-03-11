@@ -1,9 +1,11 @@
 package com.ecaservice.auto.test.service;
 
+import com.ecaservice.auto.test.entity.autotest.BaseEvaluationRequestEntity;
 import com.ecaservice.auto.test.entity.autotest.ExperimentRequestEntity;
 import com.ecaservice.auto.test.entity.autotest.RequestStageType;
-import com.ecaservice.auto.test.repository.autotest.ExperimentRequestRepository;
+import com.ecaservice.auto.test.repository.autotest.BaseEvaluationRequestRepository;
 import com.ecaservice.auto.test.service.rabbit.RabbitSender;
+import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.test.common.model.ExecutionStatus;
@@ -13,9 +15,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.function.BiConsumer;
 
 /**
- * Test worker service.
+ * Auto test worker service.
  *
  * @author Roman Batygin
  */
@@ -25,40 +28,52 @@ import java.time.LocalDateTime;
 public class AutoTestWorkerService {
 
     private final RabbitSender rabbitSender;
-    private final ExperimentRequestRepository experimentRequestRepository;
+    private final BaseEvaluationRequestRepository baseEvaluationRequestRepository;
 
     /**
-     * Sends experiment test request to broker.
+     * Sends experiment test request to mq.
      *
      * @param testId            - test id
      * @param experimentRequest - experiment request
      */
     public void sendRequest(long testId, ExperimentRequest experimentRequest) {
-        var experimentRequestEntity = experimentRequestRepository.findById(testId)
+        internalSendRequest(testId, experimentRequest, rabbitSender::sendExperimentRequest);
+    }
+
+    /**
+     * Sends evaluation test request to mq.
+     *
+     * @param testId            - test id
+     * @param evaluationRequest - evaluation request
+     */
+    public void sendRequest(long testId, EvaluationRequest evaluationRequest) {
+        internalSendRequest(testId, evaluationRequest, rabbitSender::sendEvaluationRequest);
+    }
+
+    private <R> void internalSendRequest(long testId, R request, BiConsumer<R, String> sender) {
+        var baseEvaluationRequestEntity = baseEvaluationRequestRepository.findById(testId)
                 .orElseThrow(() -> new EntityNotFoundException(ExperimentRequestEntity.class, testId));
-        log.info("Starting to send experiment request with correlation id [{}]",
-                experimentRequestEntity.getCorrelationId());
+        log.info("Starting to send request with correlation id [{}]", baseEvaluationRequestEntity.getCorrelationId());
         try {
-            experimentRequestEntity.setStarted(LocalDateTime.now());
-            rabbitSender.sendExperimentRequest(experimentRequest, experimentRequestEntity.getCorrelationId());
-            experimentRequestEntity.setStageType(RequestStageType.REQUEST_SENT);
-            experimentRequestEntity.setExecutionStatus(ExecutionStatus.IN_PROGRESS);
-            log.info("Experiment request with correlation id [{}] has been sent",
-                    experimentRequestEntity.getCorrelationId());
+            baseEvaluationRequestEntity.setStarted(LocalDateTime.now());
+            sender.accept(request, baseEvaluationRequestEntity.getCorrelationId());
+            baseEvaluationRequestEntity.setStageType(RequestStageType.REQUEST_SENT);
+            baseEvaluationRequestEntity.setExecutionStatus(ExecutionStatus.IN_PROGRESS);
+            log.info("Request with correlation id [{}] has been sent", baseEvaluationRequestEntity.getCorrelationId());
         } catch (Exception ex) {
             log.error("Unknown error while sending request with correlation id [{}]: {}",
-                    experimentRequestEntity.getCorrelationId(), ex.getMessage());
-            handleErrorRequest(experimentRequestEntity, ex);
+                    baseEvaluationRequestEntity.getCorrelationId(), ex.getMessage());
+            handleErrorRequest(baseEvaluationRequestEntity, ex);
         } finally {
-            experimentRequestRepository.save(experimentRequestEntity);
+            baseEvaluationRequestRepository.save(baseEvaluationRequestEntity);
         }
     }
 
-    private void handleErrorRequest(ExperimentRequestEntity evaluationRequestEntity, Exception ex) {
-        evaluationRequestEntity.setTestResult(TestResult.ERROR);
-        evaluationRequestEntity.setStageType(RequestStageType.ERROR);
-        evaluationRequestEntity.setExecutionStatus(ExecutionStatus.ERROR);
-        evaluationRequestEntity.setDetails(ex.getMessage());
-        evaluationRequestEntity.setFinished(LocalDateTime.now());
+    private void handleErrorRequest(BaseEvaluationRequestEntity baseEvaluationRequestEntity, Exception ex) {
+        baseEvaluationRequestEntity.setTestResult(TestResult.ERROR);
+        baseEvaluationRequestEntity.setStageType(RequestStageType.ERROR);
+        baseEvaluationRequestEntity.setExecutionStatus(ExecutionStatus.ERROR);
+        baseEvaluationRequestEntity.setDetails(ex.getMessage());
+        baseEvaluationRequestEntity.setFinished(LocalDateTime.now());
     }
 }

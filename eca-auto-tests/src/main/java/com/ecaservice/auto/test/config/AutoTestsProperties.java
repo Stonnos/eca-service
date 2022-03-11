@@ -29,6 +29,12 @@ public class AutoTestsProperties {
     private String experimentsDataPath;
 
     /**
+     * Classifiers data path
+     */
+    @NotEmpty
+    private String classifiersDataPath;
+
+    /**
      * Page size for paging processing
      */
     @NotNull
