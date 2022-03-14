@@ -62,14 +62,14 @@ public class ExperimentRequestProcessor {
         experimentProgressService.start(experiment);
         setInProgressStatus(experiment);
         AbstractExperiment<?> experimentHistory = experimentService.processExperiment(experiment);
+        if (RequestStatus.FINISHED.equals(experiment.getRequestStatus())) {
+            eventPublisher.publishEvent(new ExperimentFinishedEvent(this, experiment, experimentHistory));
+        }
         if (Channel.QUEUE.equals(experiment.getChannel())) {
             eventPublisher.publishEvent(new ExperimentResponseEvent(this, experiment));
         }
         eventPublisher.publishEvent(new ExperimentWebPushEvent(this, experiment));
         eventPublisher.publishEvent(new ExperimentEmailEvent(this, experiment));
-        if (RequestStatus.FINISHED.equals(experiment.getRequestStatus())) {
-            eventPublisher.publishEvent(new ExperimentFinishedEvent(this, experiment, experimentHistory));
-        }
         experimentProgressService.finish(experiment);
         log.info("New experiment [{}] has been processed", experiment.getRequestId());
     }
