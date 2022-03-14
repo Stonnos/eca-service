@@ -1,5 +1,5 @@
 {
-  "trainDataPath": "classpath:/data/iris.xls",
+  "trainDataPath": "classpath:/data/credit.xlsx",
   "classifierOptions": {
     "type": "logistic",
     "maxIts": 200,
