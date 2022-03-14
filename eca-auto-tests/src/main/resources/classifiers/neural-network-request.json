@@ -1,0 +1,14 @@
+{
+  "trainDataPath": "classpath:/data/credit.xlsx",
+  "classifierOptions": {
+    "type": "neural_network",
+    "hiddenLayer": "7,8",
+    "activationFunctionOptions": {
+      "activationFunctionType": "LOGISTIC"
+    }
+  },
+  "evaluationMethod": "CROSS_VALIDATION",
+  "numFolds": 10,
+  "numTests": 1,
+  "seed": 1
+}

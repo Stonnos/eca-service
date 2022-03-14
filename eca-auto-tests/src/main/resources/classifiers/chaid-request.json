@@ -1,0 +1,19 @@
+{
+  "trainDataPath": "classpath:/data/credit.xlsx",
+  "classifierOptions": {
+    "type": "decision_tree",
+    "decisionTreeType": "CHAID",
+    "minObj": 2,
+    "maxDepth": 0,
+    "randomTree": false,
+    "useBinarySplits": true,
+    "useRandomSplits": false,
+    "additionalOptions": {
+      "alphaValue": "0.05"
+    }
+  },
+  "evaluationMethod": "CROSS_VALIDATION",
+  "numFolds": 10,
+  "numTests": 1,
+  "seed": 1
+}

@@ -29,6 +29,12 @@ public class AutoTestsProperties {
     private String experimentsDataPath;
 
     /**
+     * Classifiers data path
+     */
+    @NotEmpty
+    private String classifiersDataPath;
+
+    /**
      * Page size for paging processing
      */
     @NotNull
@@ -61,8 +67,8 @@ public class AutoTestsProperties {
     private String ecaServerBaseUrl;
 
     /**
-     * Expected experiment results size
+     * Eca ers base url
      */
-    @NotNull
-    private Integer expectedResultsSize;
+    @NotEmpty
+    private String ecaErsBaseUrl;
 }

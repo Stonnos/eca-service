@@ -1,4 +1,4 @@
-package com.ecaservice.auto.test.entity;
+package com.ecaservice.auto.test.entity.autotest;
 
 import eca.core.DescriptiveEnum;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
  * @author Roman Batygin
  */
 @RequiredArgsConstructor
-public enum ExperimentRequestStageType implements DescriptiveEnum {
+public enum RequestStageType implements DescriptiveEnum {
 
     /**
      * Ready request
@@ -22,19 +22,19 @@ public enum ExperimentRequestStageType implements DescriptiveEnum {
     REQUEST_SENT("Запрос отправлен"),
 
     /**
-     * Response received from mq
+     * Request created
      */
-    REQUEST_CREATED("Заявка на эксперимент успешно создана"),
+    REQUEST_CREATED("Заявка успешно создана"),
 
     /**
      * Request finished
      */
-    REQUEST_FINISHED("Эксперимент успешно завершен"),
+    REQUEST_FINISHED("Заявка успешно завершена"),
 
     /**
      * Request processing completed
      */
-    COMPLETED("Результаты эксперимента успешно обработаны"),
+    COMPLETED("Результаты успешно обработаны"),
 
     /**
      * Request exceeded

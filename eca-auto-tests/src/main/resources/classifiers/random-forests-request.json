@@ -1,0 +1,15 @@
+{
+  "trainDataPath": "classpath:/data/credit.xlsx",
+  "classifierOptions": {
+    "type": "RandomForestsOptions",
+    "numIterations": 10,
+    "numThreads": 4,
+    "minObj": 2,
+    "maxDepth": 0,
+    "decisionTreeType": "CART"
+  },
+  "evaluationMethod": "CROSS_VALIDATION",
+  "numFolds": 10,
+  "numTests": 1,
+  "seed": 1
+}

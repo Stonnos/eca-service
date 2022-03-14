@@ -3,16 +3,24 @@ spring:
     name: eca-auto-tests
   jmx:
     default-domain: eca-auto-tests
-  ## Datasource properties
+  ## Auto tests datasource properties
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/eca_auto_tests
+    jdbc-url: jdbc:postgresql://localhost:5432/eca_auto_tests
     username: postgres
     password: postgres
-  jpa:
-    hibernate:
-      ddl-auto: update
-    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+    jpa:
+      ddlAuto: update
+      databasePlatform: org.hibernate.dialect.PostgreSQL9Dialect
+  ## Eca server datasource properties
+  ecaserverdatasource:
+    driver-class-name: org.postgresql.Driver
+    jdbc-url: jdbc:postgresql://localhost:5432/eca
+    username: postgres
+    password: postgres
+    jpa:
+      ddlAuto: validate
+      databasePlatform: org.hibernate.dialect.PostgreSQL9Dialect
   cache:
     cache-names: instances
     caffeine:
@@ -42,17 +50,20 @@ mail:
   enabled: false
 
 queue:
-  experimentReplyToQueue: experiment-response-queue
   experimentRequestQueue: experiment-request-queue
+  experimentReplyToQueue: experiment-response-queue
+  evaluationRequestQueue: evaluation-request-queue
+  evaluationReplyToQueue: evaluation-response-queue
 
 auto-tests:
   pageSize: 25
   schedulerPoolSize: 1
   delaySeconds: 2
   experimentsDataPath: classpath*:experiments/**/*.json
+  classifiersDataPath: classpath*:classifiers/**/*.json
   requestTimeoutInSeconds: 1200
   ecaServerBaseUrl: http://localhost:8080/eca-server
-  expectedResultsSize: 5
+  ecaErsBaseUrl: http://localhost:8080/eca-ers
 
 server:
   port: 8093

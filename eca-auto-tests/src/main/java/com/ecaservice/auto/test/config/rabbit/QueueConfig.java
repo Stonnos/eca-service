@@ -27,4 +27,16 @@ public class QueueConfig {
      */
     @NotEmpty
     private String experimentReplyToQueue;
+
+    /**
+     * Evaluation request queue name
+     */
+    @NotEmpty
+    private String evaluationRequestQueue;
+
+    /**
+     * Evaluation response queue name
+     */
+    @NotEmpty
+    private String evaluationReplyToQueue;
 }

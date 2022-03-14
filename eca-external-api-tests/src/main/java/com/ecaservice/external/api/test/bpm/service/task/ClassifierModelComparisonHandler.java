@@ -71,17 +71,15 @@ public class ClassifierModelComparisonHandler extends ComparisonTaskHandler {
                                                  ClassificationModel classificationModel,
                                                  TestResultsMatcher matcher) {
         log.debug("Compare classifier model result for test [{}]", autoTestEntity.getId());
-        BigDecimal expectedPctCorrect = getScaledValue(evaluationResponseDto,
-                EvaluationResponseDto::getPctCorrect);
-        BigDecimal actualPctCorrect = getScaledValue(classificationModel, Evaluation::pctCorrect);
+        BigDecimal expectedPctCorrect = getScaledValue(classificationModel, Evaluation::pctCorrect);
+        BigDecimal actualPctCorrect = getScaledValue(evaluationResponseDto, EvaluationResponseDto::getPctCorrect);
         MatchResult pctCorrectMatchResult = matcher.compareAndMatch(expectedPctCorrect, actualPctCorrect);
-        BigDecimal expectedPctIncorrect = getScaledValue(evaluationResponseDto,
-                EvaluationResponseDto::getPctIncorrect);
-        BigDecimal actualPctIncorrect = getScaledValue(classificationModel, Evaluation::pctIncorrect);
+        BigDecimal expectedPctIncorrect = getScaledValue(classificationModel, Evaluation::pctIncorrect);
+        BigDecimal actualPctIncorrect = getScaledValue(evaluationResponseDto, EvaluationResponseDto::getPctIncorrect);
         MatchResult pctIncorrectMatchResult = matcher.compareAndMatch(expectedPctIncorrect, actualPctIncorrect);
-        BigDecimal expectedMeanAbsoluteError = getScaledValue(evaluationResponseDto,
-                EvaluationResponseDto::getMeanAbsoluteError);
-        BigDecimal actualMeanAbsoluteError = getScaledValue(classificationModel, Evaluation::meanAbsoluteError);
+        BigDecimal expectedMeanAbsoluteError = getScaledValue(classificationModel, Evaluation::meanAbsoluteError);
+        BigDecimal actualMeanAbsoluteError =
+                getScaledValue(evaluationResponseDto, EvaluationResponseDto::getMeanAbsoluteError);
         MatchResult meanAbsoluteErrorMatchResult =
                 matcher.compareAndMatch(expectedMeanAbsoluteError, actualMeanAbsoluteError);
 

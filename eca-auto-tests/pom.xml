@@ -14,6 +14,7 @@
 
     <properties>
         <commons.csv.version>1.8</commons.csv.version>
+        <jsonb.support.version>2.14.0</jsonb.support.version>
         <sonar.coverage.exclusions>**/*.*</sonar.coverage.exclusions>
     </properties>
 
@@ -73,6 +74,12 @@
 
         <dependency>
             <groupId>eca.service</groupId>
+            <artifactId>eca-ers-transport</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>eca.service</groupId>
             <artifactId>swagger-core</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -84,6 +91,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.vladmihalcea</groupId>
+            <artifactId>hibernate-types-52</artifactId>
+            <version>${jsonb.support.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
         </dependency>
@@ -91,6 +104,12 @@
         <dependency>
             <groupId>eca.service</groupId>
             <artifactId>eca-tests-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>eca.service</groupId>
+            <artifactId>classifiers-options-adapter</artifactId>
             <version>${project.version}</version>
         </dependency>
 
