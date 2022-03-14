@@ -6,12 +6,10 @@ import com.ecaservice.auto.test.entity.autotest.AutoTestsJobEntity;
 import com.ecaservice.auto.test.entity.autotest.EvaluationRequestEntity;
 import com.ecaservice.auto.test.repository.autotest.BaseEvaluationRequestRepository;
 import com.ecaservice.auto.test.repository.autotest.EvaluationRequestRepository;
-import com.ecaservice.test.common.report.TestResultsCounter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVPrinter;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
@@ -19,10 +17,10 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import static com.ecaservice.test.common.util.Utils.totalTime;
+import static com.ecaservice.test.common.util.ZipUtils.writeAndFlushNextEntry;
 
 /**
  * Evaluation auto tests report generator service.
@@ -31,7 +29,8 @@ import static com.ecaservice.test.common.util.Utils.totalTime;
  */
 @Slf4j
 @Component
-public class EvaluationAutoTestsScvReportGenerator extends AbstractAutoTestsScvReportGenerator {
+public class EvaluationAutoTestsScvReportGenerator
+        extends AbstractAutoTestsScvReportGenerator<EvaluationRequestEntity> {
 
     private static final String[] TEST_RESULTS_HEADERS = {
             "classifier name",
@@ -57,7 +56,6 @@ public class EvaluationAutoTestsScvReportGenerator extends AbstractAutoTestsScvR
 
     private static final String EVALUATION_RESULTS_JSON_FILE_NAME_FORMAT = "evaluation-results-%s.json";
 
-    private final AutoTestsProperties autoTestsProperties;
     private final ObjectMapper objectMapper;
     private final EvaluationRequestRepository evaluationRequestRepository;
 
@@ -73,8 +71,7 @@ public class EvaluationAutoTestsScvReportGenerator extends AbstractAutoTestsScvR
                                                  AutoTestsProperties autoTestsProperties,
                                                  ObjectMapper objectMapper,
                                                  EvaluationRequestRepository evaluationRequestRepository) {
-        super(AutoTestType.EVALUATION_REQUEST_PROCESS, baseEvaluationRequestRepository);
-        this.autoTestsProperties = autoTestsProperties;
+        super(AutoTestType.EVALUATION_REQUEST_PROCESS, autoTestsProperties, baseEvaluationRequestRepository);
         this.objectMapper = objectMapper;
         this.evaluationRequestRepository = evaluationRequestRepository;
     }
@@ -85,72 +82,45 @@ public class EvaluationAutoTestsScvReportGenerator extends AbstractAutoTestsScvR
     }
 
     @Override
-    protected void printReportTestResults(CSVPrinter printer, AutoTestsJobEntity jobEntity,
-                                          TestResultsCounter testResultsCounter) throws IOException {
-        Pageable pageRequest = PageRequest.of(0, autoTestsProperties.getPageSize());
-        Page<EvaluationRequestEntity> page;
-        do {
-            page = evaluationRequestRepository.findAllByJob(jobEntity, pageRequest);
-            if (page == null || !page.hasContent()) {
-                log.trace("No one entity has been fetched");
-                break;
-            } else {
-                for (var evaluationRequestEntity : page.getContent()) {
-                    evaluationRequestEntity.getTestResult().apply(testResultsCounter);
-                    printer.printRecord(Arrays.asList(
-                            evaluationRequestEntity.getClassifierName(),
-                            evaluationRequestEntity.getRequestId(),
-                            evaluationRequestEntity.getClassifierOptions(),
-                            evaluationRequestEntity.getEvaluationMethod().getDescription(),
-                            evaluationRequestEntity.getNumFolds(),
-                            evaluationRequestEntity.getNumTests(),
-                            evaluationRequestEntity.getSeed(),
-                            evaluationRequestEntity.getStarted(),
-                            evaluationRequestEntity.getFinished(),
-                            totalTime(evaluationRequestEntity.getStarted(), evaluationRequestEntity.getFinished()),
-                            evaluationRequestEntity.getTestResult(),
-                            evaluationRequestEntity.getExecutionStatus(),
-                            evaluationRequestEntity.getTotalMatched(),
-                            evaluationRequestEntity.getTotalNotMatched(),
-                            evaluationRequestEntity.getTotalNotFound(),
-                            evaluationRequestEntity.getRelationName(),
-                            evaluationRequestEntity.getNumInstances(),
-                            evaluationRequestEntity.getNumAttributes(),
-                            evaluationRequestEntity.getDetails()
-                    ));
-                }
-            }
-            pageRequest = page.nextPageable();
-        } while (page.hasNext());
+    protected Page<EvaluationRequestEntity> getNextPage(AutoTestsJobEntity autoTestsJobEntity, Pageable pageable) {
+        return evaluationRequestRepository.findAllByJob(autoTestsJobEntity, pageable);
     }
 
     @Override
-    protected void printAdditionalReportData(ZipOutputStream zipOutputStream,
-                                             OutputStreamWriter outputStreamWriter,
-                                             AutoTestsJobEntity autoTestsJobEntity) throws IOException {
-        Pageable pageRequest = PageRequest.of(0, autoTestsProperties.getPageSize());
-        Page<EvaluationRequestEntity> page;
-        do {
-            page = evaluationRequestRepository.findAllByJob(autoTestsJobEntity, pageRequest);
-            if (page == null || !page.hasContent()) {
-                log.trace("No one entity has been fetched");
-                break;
-            } else {
-                for (var evaluationRequestEntity : page.getContent()) {
-                    if (Objects.nonNull(evaluationRequestEntity.getEvaluationResultsDetails())) {
-                        String fileName = String.format(EVALUATION_RESULTS_JSON_FILE_NAME_FORMAT,
-                                evaluationRequestEntity.getRequestId());
-                        log.info("Starting to write file [{}] into zip archive", fileName);
-                        zipOutputStream.putNextEntry(new ZipEntry(fileName));
-                        String json =
-                                objectMapper.writeValueAsString(evaluationRequestEntity.getEvaluationResultsDetails());
-                        outputStreamWriter.write(json);
-                        flush(outputStreamWriter, zipOutputStream);
-                        log.info("File [{}] has been written into zip archive", fileName);
-                    }
-                }
-            }
-            pageRequest = page.nextPageable();
-        } while (page.hasNext());
+    protected void printCsvRecord(CSVPrinter printer, EvaluationRequestEntity evaluationRequestEntity)
+            throws IOException {
+        printer.printRecord(Arrays.asList(
+                evaluationRequestEntity.getClassifierName(),
+                evaluationRequestEntity.getRequestId(),
+                evaluationRequestEntity.getClassifierOptions(),
+                evaluationRequestEntity.getEvaluationMethod().getDescription(),
+                evaluationRequestEntity.getNumFolds(),
+                evaluationRequestEntity.getNumTests(),
+                evaluationRequestEntity.getSeed(),
+                evaluationRequestEntity.getStarted(),
+                evaluationRequestEntity.getFinished(),
+                totalTime(evaluationRequestEntity.getStarted(), evaluationRequestEntity.getFinished()),
+                evaluationRequestEntity.getTestResult(),
+                evaluationRequestEntity.getExecutionStatus(),
+                evaluationRequestEntity.getTotalMatched(),
+                evaluationRequestEntity.getTotalNotMatched(),
+                evaluationRequestEntity.getTotalNotFound(),
+                evaluationRequestEntity.getRelationName(),
+                evaluationRequestEntity.getNumInstances(),
+                evaluationRequestEntity.getNumAttributes(),
+                evaluationRequestEntity.getDetails()
+        ));
+    }
+
+    @Override
+    protected void printAdditionalRecord(ZipOutputStream zipOutputStream, OutputStreamWriter outputStreamWriter,
+                                         EvaluationRequestEntity evaluationRequestEntity) throws IOException {
+        if (Objects.nonNull(evaluationRequestEntity.getEvaluationResultsDetails())) {
+            String fileName = String.format(EVALUATION_RESULTS_JSON_FILE_NAME_FORMAT,
+                    evaluationRequestEntity.getRequestId());
+            String json =
+                    objectMapper.writeValueAsString(evaluationRequestEntity.getEvaluationResultsDetails());
+            writeAndFlushNextEntry(zipOutputStream, outputStreamWriter, fileName, json);
+        }
     }
 }

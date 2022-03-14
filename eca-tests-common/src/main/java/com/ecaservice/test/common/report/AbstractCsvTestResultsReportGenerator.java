@@ -12,6 +12,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import static com.ecaservice.test.common.util.ZipUtils.flush;
+
 /**
  * Csv report generator.
  *
@@ -35,13 +37,13 @@ public abstract class AbstractCsvTestResultsReportGenerator<T> implements TestRe
         @Cleanup var resultsPrinter = new CSVPrinter(writer, CSVFormat.EXCEL.withHeader(getResultsReportHeaders())
                 .withDelimiter(HEADER_DELIMITER));
         printReportTestResults(resultsPrinter, data, counter);
-        flush(writer, zipOutputStream);
+        flush(zipOutputStream, writer);
 
         zipOutputStream.putNextEntry(new ZipEntry(TEST_RUN_TOTALS_CSV));
         @Cleanup var totalPrinter = new CSVPrinter(writer, CSVFormat.EXCEL.withHeader(getTotalReportHeaders())
                 .withDelimiter(HEADER_DELIMITER));
         printReportTotal(totalPrinter, data, counter);
-        flush(writer, zipOutputStream);
+        flush(zipOutputStream, writer);
 
         printAdditionalReportData(zipOutputStream, writer, data);
     }
@@ -61,10 +63,4 @@ public abstract class AbstractCsvTestResultsReportGenerator<T> implements TestRe
 
     protected abstract void printReportTotal(CSVPrinter csvPrinter, T data, TestResultsCounter testResultsCounter)
             throws IOException;
-
-    protected final void flush(OutputStreamWriter writer, ZipOutputStream zipOutputStream) throws IOException {
-        writer.flush();
-        zipOutputStream.flush();
-        zipOutputStream.closeEntry();
-    }
 }
