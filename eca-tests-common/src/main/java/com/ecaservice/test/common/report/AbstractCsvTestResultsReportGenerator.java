@@ -35,17 +35,20 @@ public abstract class AbstractCsvTestResultsReportGenerator<T> implements TestRe
         @Cleanup var resultsPrinter = new CSVPrinter(writer, CSVFormat.EXCEL.withHeader(getResultsReportHeaders())
                 .withDelimiter(HEADER_DELIMITER));
         printReportTestResults(resultsPrinter, data, counter);
-        writer.flush();
-        zipOutputStream.flush();
-        zipOutputStream.closeEntry();
+        flush(writer, zipOutputStream);
 
         zipOutputStream.putNextEntry(new ZipEntry(TEST_RUN_TOTALS_CSV));
         @Cleanup var totalPrinter = new CSVPrinter(writer, CSVFormat.EXCEL.withHeader(getTotalReportHeaders())
                 .withDelimiter(HEADER_DELIMITER));
         printReportTotal(totalPrinter, data, counter);
-        writer.flush();
-        zipOutputStream.flush();
-        zipOutputStream.closeEntry();
+        flush(writer, zipOutputStream);
+
+        printAdditionalReportData(writer, data);
+        flush(writer, zipOutputStream);
+    }
+
+    protected void printAdditionalReportData(OutputStreamWriter outputStreamWriter, T data) {
+        //empty implementation
     }
 
     protected abstract String[] getResultsReportHeaders();
@@ -57,4 +60,10 @@ public abstract class AbstractCsvTestResultsReportGenerator<T> implements TestRe
 
     protected abstract void printReportTotal(CSVPrinter csvPrinter, T data, TestResultsCounter testResultsCounter)
             throws IOException;
+
+    private void flush(OutputStreamWriter writer, ZipOutputStream zipOutputStream) throws IOException {
+        writer.flush();
+        zipOutputStream.flush();
+        zipOutputStream.closeEntry();
+    }
 }
