@@ -1,12 +1,12 @@
 package com.ecaservice.auto.test.report;
 
 import com.ecaservice.auto.test.config.AutoTestsProperties;
+import com.ecaservice.auto.test.entity.autotest.AutoTestType;
 import com.ecaservice.auto.test.entity.autotest.AutoTestsJobEntity;
 import com.ecaservice.auto.test.entity.autotest.ExperimentRequestEntity;
+import com.ecaservice.auto.test.repository.autotest.BaseEvaluationRequestRepository;
 import com.ecaservice.auto.test.repository.autotest.ExperimentRequestRepository;
-import com.ecaservice.test.common.report.AbstractCsvTestResultsReportGenerator;
 import com.ecaservice.test.common.report.TestResultsCounter;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVPrinter;
 import org.springframework.data.domain.Page;
@@ -15,20 +15,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import static com.ecaservice.test.common.util.Utils.totalTime;
 
 /**
- * Auto tests report generator service.
+ * Experiment auto tests report generator service.
  *
  * @author Roman Batygin
  */
 @Slf4j
 @Component
-@RequiredArgsConstructor
-public class AutoTestsScvReportGenerator extends AbstractCsvTestResultsReportGenerator<AutoTestsJobEntity> {
+public class ExperimentAutoTestsScvReportGenerator extends AbstractAutoTestsScvReportGenerator {
 
     private static final String[] TEST_RESULTS_HEADERS = {
             "experiment type",
@@ -53,26 +51,27 @@ public class AutoTestsScvReportGenerator extends AbstractCsvTestResultsReportGen
             "details"
     };
 
-    private static final String[] HEADERS_TOTALS = {
-            "job uuid",
-            "status",
-            "total time",
-            "success",
-            "failed",
-            "errors"
-    };
-
     private final AutoTestsProperties autoTestsProperties;
     private final ExperimentRequestRepository experimentRequestRepository;
+
+    /**
+     * Constructor with spring dependencies injection.
+     *
+     * @param baseEvaluationRequestRepository - base evaluation request repository
+     * @param autoTestsProperties             - auto test properties
+     * @param experimentRequestRepository     - experiment request repository
+     */
+    public ExperimentAutoTestsScvReportGenerator(BaseEvaluationRequestRepository baseEvaluationRequestRepository,
+                                                 AutoTestsProperties autoTestsProperties,
+                                                 ExperimentRequestRepository experimentRequestRepository) {
+        super(AutoTestType.EXPERIMENT_REQUEST_PROCESS, baseEvaluationRequestRepository);
+        this.autoTestsProperties = autoTestsProperties;
+        this.experimentRequestRepository = experimentRequestRepository;
+    }
 
     @Override
     protected String[] getResultsReportHeaders() {
         return TEST_RESULTS_HEADERS;
-    }
-
-    @Override
-    protected String[] getTotalReportHeaders() {
-        return HEADERS_TOTALS;
     }
 
     @Override
@@ -114,21 +113,5 @@ public class AutoTestsScvReportGenerator extends AbstractCsvTestResultsReportGen
             }
             pageRequest = page.nextPageable();
         } while (page.hasNext());
-    }
-
-    @Override
-    protected void printReportTotal(CSVPrinter printer, AutoTestsJobEntity jobEntity,
-                                    TestResultsCounter testResultsCounter) throws IOException {
-        LocalDateTime started = experimentRequestRepository.getMinStartedDate(jobEntity).orElse(jobEntity.getStarted());
-        LocalDateTime finished =
-                experimentRequestRepository.getMaxFinishedDate(jobEntity).orElse(jobEntity.getFinished());
-        printer.printRecord(Arrays.asList(
-                jobEntity.getJobUuid(),
-                jobEntity.getExecutionStatus(),
-                totalTime(started, finished),
-                testResultsCounter.getPassed(),
-                testResultsCounter.getFailed(),
-                testResultsCounter.getErrors())
-        );
     }
 }
