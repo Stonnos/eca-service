@@ -68,6 +68,9 @@ public class ClassifierAutoTestRunner extends AbstractAutoTestRunner<EvaluationR
         var classifierOptions = classifierOptionsAdapter.convert(evaluationRequest.getClassifier());
         evaluationRequestEntity.setClassifierOptions(toJson(classifierOptions));
         evaluationRequestEntity.setEvaluationMethod(evaluationRequest.getEvaluationMethod());
+        evaluationRequestEntity.setNumFolds(evaluationRequest.getNumFolds());
+        evaluationRequestEntity.setNumTests(evaluationRequest.getNumTests());
+        evaluationRequestEntity.setSeed(evaluationRequest.getSeed());
         return evaluationRequestEntity;
     }
 
