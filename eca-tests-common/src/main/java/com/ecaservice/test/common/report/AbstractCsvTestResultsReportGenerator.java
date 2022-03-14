@@ -43,11 +43,12 @@ public abstract class AbstractCsvTestResultsReportGenerator<T> implements TestRe
         printReportTotal(totalPrinter, data, counter);
         flush(writer, zipOutputStream);
 
-        printAdditionalReportData(writer, data);
-        flush(writer, zipOutputStream);
+        printAdditionalReportData(zipOutputStream, writer, data);
     }
 
-    protected void printAdditionalReportData(OutputStreamWriter outputStreamWriter, T data) {
+    protected void printAdditionalReportData(ZipOutputStream zipOutputStream,
+                                             OutputStreamWriter outputStreamWriter,
+                                             T data) throws IOException {
         //empty implementation
     }
 
@@ -61,7 +62,7 @@ public abstract class AbstractCsvTestResultsReportGenerator<T> implements TestRe
     protected abstract void printReportTotal(CSVPrinter csvPrinter, T data, TestResultsCounter testResultsCounter)
             throws IOException;
 
-    private void flush(OutputStreamWriter writer, ZipOutputStream zipOutputStream) throws IOException {
+    protected final void flush(OutputStreamWriter writer, ZipOutputStream zipOutputStream) throws IOException {
         writer.flush();
         zipOutputStream.flush();
         zipOutputStream.closeEntry();
