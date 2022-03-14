@@ -27,12 +27,13 @@ public class AutoTestJobService {
     /**
      * Creates experiment auto tests job.
      *
+     * @param autoTestType - auto test type
      * @return auto tests job entity
      */
-    public AutoTestsJobEntity createExperimentsAutoTestsJob() {
+    public AutoTestsJobEntity createExperimentsAutoTestsJob(AutoTestType autoTestType) {
         var autoTestsJobEntity = new AutoTestsJobEntity();
         autoTestsJobEntity.setJobUuid(UUID.randomUUID().toString());
-        autoTestsJobEntity.setAutoTestType(AutoTestType.EXPERIMENT_REQUEST_PROCESS);
+        autoTestsJobEntity.setAutoTestType(autoTestType);
         autoTestsJobEntity.setExecutionStatus(ExecutionStatus.NEW);
         autoTestsJobEntity.setCreated(LocalDateTime.now());
         return autoTestsJobRepository.save(autoTestsJobEntity);

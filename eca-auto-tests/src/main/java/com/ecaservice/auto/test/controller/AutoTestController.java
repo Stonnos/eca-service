@@ -1,5 +1,6 @@
 package com.ecaservice.auto.test.controller;
 
+import com.ecaservice.auto.test.entity.autotest.AutoTestType;
 import com.ecaservice.auto.test.report.AutoTestsScvReportGenerator;
 import com.ecaservice.auto.test.service.AutoTestJobService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
@@ -38,19 +40,21 @@ public class AutoTestController {
     private final AutoTestsScvReportGenerator autoTestsScvReportGenerator;
 
     /**
-     * Creates experiment requests auto tests job.
+     * Creates auto tests job.
      *
+     * @param autoTestType - auto test type
      * @return load test uuid
      */
     @Operation(
-            description = "Creates experiment requests tests job",
-            summary = "Creates experiment requests tests job"
+            description = "Creates auto tests job",
+            summary = "Creates auto tests job"
     )
     @PostMapping(value = "/create")
-    public String createExperimentsAutoTestsJob() {
-        log.info("Request to create auto tests job for experiment requests");
-        var autoTestsJobEntity = autoTestJobService.createExperimentsAutoTestsJob();
-        log.info("Experiment requests auto test job has been created with uuid [{}]", autoTestsJobEntity.getJobUuid());
+    public String createAutoTestsJob(@Parameter(description = "Auto test type", required = true)
+                                     @RequestParam AutoTestType autoTestType) {
+        log.info("Request to create auto tests [{}] job", autoTestType);
+        var autoTestsJobEntity = autoTestJobService.createExperimentsAutoTestsJob(autoTestType);
+        log.info("Auto test [{}] job has been created with uuid [{}]", autoTestType, autoTestsJobEntity.getJobUuid());
         return autoTestsJobEntity.getJobUuid();
     }
 
