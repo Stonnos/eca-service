@@ -54,7 +54,8 @@ public class ExperimentAutoTestsScvReportGenerator
             "timeout request email received",
             "details"
     };
-    public static final String EXPERIMENT_RESULTS_JSON_FILE_NAME_FORMAT = "experiment-results-%s-(%d).json";
+
+    private static final String EXPERIMENT_RESULTS_JSON_FILE_NAME_FORMAT = "experiment-results-%s-(%d).json";
 
     private final ObjectMapper objectMapper;
     private final ExperimentRequestRepository experimentRequestRepository;
