@@ -36,7 +36,7 @@ import java.util.List;
 public class AutoTestController {
 
     private static final String ATTACHMENT_FORMAT = "attachment; filename=%s";
-    private static final String AUTO_TEST_REPORT_NAME = "auto-tests-report%s.zip";
+    private static final String AUTO_TEST_REPORT_NAME = "auto-tests-report-%s.zip";
 
     private final AutoTestJobService autoTestJobService;
     private final List<AbstractAutoTestsScvReportGenerator> autoTestsScvReportGenerators;
@@ -67,6 +67,7 @@ public class AutoTestController {
      * @param httpServletResponse - http servlet response
      * @throws IOException in case of I/O error
      */
+    @SuppressWarnings("unchecked")
     @Operation(
             description = "Downloads auto tests report zip file",
             summary = "Downloads auto tests report zip file"
