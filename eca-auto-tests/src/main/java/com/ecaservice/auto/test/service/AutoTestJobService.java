@@ -51,6 +51,18 @@ public class AutoTestJobService {
     }
 
     /**
+     * Success completes auto test job.
+     *
+     * @param autoTestsJobEntity - auto tests job
+     */
+    public void finish(AutoTestsJobEntity autoTestsJobEntity) {
+        autoTestsJobEntity.setExecutionStatus(ExecutionStatus.FINISHED);
+        autoTestsJobEntity.setFinished(LocalDateTime.now());
+        autoTestsJobRepository.save(autoTestsJobEntity);
+        log.info("Auto tests job [{}] has been finished", autoTestsJobEntity.getJobUuid());
+    }
+
+    /**
      * Finishes auto tests job with error
      *
      * @param autoTestsJobEntity - auto tests job entity

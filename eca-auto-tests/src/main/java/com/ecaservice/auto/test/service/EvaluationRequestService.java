@@ -1,5 +1,6 @@
 package com.ecaservice.auto.test.service;
 
+import com.ecaservice.auto.test.config.AutoTestsProperties;
 import com.ecaservice.auto.test.entity.autotest.BaseEvaluationRequestEntity;
 import com.ecaservice.auto.test.entity.autotest.ExperimentRequestEntity;
 import com.ecaservice.auto.test.entity.autotest.RequestStageType;
@@ -24,6 +25,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class EvaluationRequestService {
 
+    private final AutoTestsProperties autoTestsProperties;
     private final BaseEvaluationRequestRepository baseEvaluationRequestRepository;
     private final ExperimentRequestRepository experimentRequestRepository;
 
@@ -52,5 +54,21 @@ public class EvaluationRequestService {
         requestEntity.setFinished(LocalDateTime.now());
         baseEvaluationRequestRepository.save(requestEntity);
         log.debug("Evaluation auto test [{}] has been finished with error", requestEntity.getId());
+    }
+
+    /**
+     * Exceeds request.
+     *
+     * @param requestEntity - request entity
+     */
+    public void exceed(BaseEvaluationRequestEntity requestEntity) {
+        requestEntity.setExecutionStatus(ExecutionStatus.ERROR);
+        requestEntity.setStageType(RequestStageType.EXCEEDED);
+        requestEntity.setTestResult(TestResult.ERROR);
+        requestEntity.setDetails(String.format("Request timeout exceeded after [%d] seconds!",
+                autoTestsProperties.getRequestTimeoutInSeconds()));
+        requestEntity.setFinished(LocalDateTime.now());
+        baseEvaluationRequestRepository.save(requestEntity);
+        log.info("Exceeded request with correlation id [{}]", requestEntity.getCorrelationId());
     }
 }

@@ -6,10 +6,10 @@ import com.ecaservice.auto.test.entity.autotest.RequestStageType;
 import com.ecaservice.auto.test.repository.autotest.AutoTestsJobRepository;
 import com.ecaservice.auto.test.repository.autotest.BaseEvaluationRequestRepository;
 import com.ecaservice.auto.test.repository.autotest.ExperimentRequestRepository;
+import com.ecaservice.auto.test.service.AutoTestJobService;
+import com.ecaservice.auto.test.service.EvaluationRequestService;
 import com.ecaservice.auto.test.service.EvaluationResultsProcessor;
 import com.ecaservice.auto.test.service.executor.AutoTestExecutor;
-import com.ecaservice.test.common.model.ExecutionStatus;
-import com.ecaservice.test.common.model.TestResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -38,6 +38,8 @@ public class AutoTestScheduler {
 
     private final AutoTestsProperties autoTestsProperties;
     private final AutoTestExecutor autoTestExecutor;
+    private final AutoTestJobService autoTestJobService;
+    private final EvaluationRequestService evaluationRequestService;
     private final EvaluationResultsProcessor evaluationResultsProcessor;
     private final AutoTestsJobRepository autoTestsJobRepository;
     private final ExperimentRequestRepository experimentRequestRepository;
@@ -75,16 +77,7 @@ public class AutoTestScheduler {
         LocalDateTime exceededTime = LocalDateTime.now().minusSeconds(autoTestsProperties.getRequestTimeoutInSeconds());
         List<Long> exceededIds = baseEvaluationRequestRepository.findExceededRequestIds(exceededTime, FINISHED_STAGES);
         processWithPagination(exceededIds, baseEvaluationRequestRepository::findByIdInOrderByCreated, pageContent ->
-                pageContent.forEach(requestEntity -> {
-                    requestEntity.setExecutionStatus(ExecutionStatus.ERROR);
-                    requestEntity.setStageType(RequestStageType.EXCEEDED);
-                    requestEntity.setTestResult(TestResult.ERROR);
-                    requestEntity.setDetails(String.format("Request timeout exceeded after [%d] seconds!",
-                            autoTestsProperties.getRequestTimeoutInSeconds()));
-                    requestEntity.setFinished(LocalDateTime.now());
-                    baseEvaluationRequestRepository.save(requestEntity);
-                    log.info("Exceeded request with correlation id [{}]", requestEntity.getCorrelationId());
-                }), autoTestsProperties.getPageSize()
+                pageContent.forEach(evaluationRequestService::exceed), autoTestsProperties.getPageSize()
         );
         log.trace("Exceeded requests has been processed");
     }
@@ -97,12 +90,7 @@ public class AutoTestScheduler {
         log.trace("Starting to processed finished tests jobs");
         List<Long> testIds = autoTestsJobRepository.findFinishedJobs(FINISHED_STAGES);
         processWithPagination(testIds, autoTestsJobRepository::findByIdInOrderByCreated, pageContent ->
-                pageContent.forEach(autoTestsJobEntity -> {
-                    autoTestsJobEntity.setExecutionStatus(ExecutionStatus.FINISHED);
-                    autoTestsJobEntity.setFinished(LocalDateTime.now());
-                    autoTestsJobRepository.save(autoTestsJobEntity);
-                    log.info("Auto tests job [{}] has been finished", autoTestsJobEntity.getJobUuid());
-                }), autoTestsProperties.getPageSize()
+                pageContent.forEach(autoTestJobService::finish), autoTestsProperties.getPageSize()
         );
         log.trace("Finished tests jobs has been processed");
     }
