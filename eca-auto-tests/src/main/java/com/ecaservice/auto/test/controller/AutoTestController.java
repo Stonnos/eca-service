@@ -58,7 +58,7 @@ public class AutoTestController {
     public AutoTestsJobDto createAutoTestsJob(@Parameter(description = "Auto test type", required = true)
                                               @RequestParam AutoTestType autoTestType) {
         log.info("Request to create auto tests [{}] job", autoTestType);
-        var autoTestsJobEntity = autoTestJobService.createExperimentsAutoTestsJob(autoTestType);
+        var autoTestsJobEntity = autoTestJobService.createAutoTestsJob(autoTestType);
         var autoTestsJobDto = autoTestsMapper.map(autoTestsJobEntity);
         log.info("Auto test [{}] job has been created with uuid [{}]", autoTestType, autoTestsJobDto.getJobUuid());
         return autoTestsJobDto;

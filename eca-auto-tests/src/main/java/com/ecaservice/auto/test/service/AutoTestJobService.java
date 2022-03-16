@@ -30,7 +30,7 @@ public class AutoTestJobService {
      * @param autoTestType - auto test type
      * @return auto tests job entity
      */
-    public AutoTestsJobEntity createExperimentsAutoTestsJob(AutoTestType autoTestType) {
+    public AutoTestsJobEntity createAutoTestsJob(AutoTestType autoTestType) {
         var autoTestsJobEntity = new AutoTestsJobEntity();
         autoTestsJobEntity.setJobUuid(UUID.randomUUID().toString());
         autoTestsJobEntity.setAutoTestType(autoTestType);
