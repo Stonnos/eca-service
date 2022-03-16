@@ -48,19 +48,20 @@ public class AutoTestController {
      * Creates auto tests job.
      *
      * @param autoTestType - auto test type
-     * @return load test uuid
+     * @return auto tests job dto
      */
     @Operation(
             description = "Creates auto tests job",
             summary = "Creates auto tests job"
     )
     @PostMapping(value = "/create")
-    public String createAutoTestsJob(@Parameter(description = "Auto test type", required = true)
-                                     @RequestParam AutoTestType autoTestType) {
+    public AutoTestsJobDto createAutoTestsJob(@Parameter(description = "Auto test type", required = true)
+                                              @RequestParam AutoTestType autoTestType) {
         log.info("Request to create auto tests [{}] job", autoTestType);
         var autoTestsJobEntity = autoTestJobService.createExperimentsAutoTestsJob(autoTestType);
-        log.info("Auto test [{}] job has been created with uuid [{}]", autoTestType, autoTestsJobEntity.getJobUuid());
-        return autoTestsJobEntity.getJobUuid();
+        var autoTestsJobDto = autoTestsMapper.map(autoTestsJobEntity);
+        log.info("Auto test [{}] job has been created with uuid [{}]", autoTestType, autoTestsJobDto.getJobUuid());
+        return autoTestsJobDto;
     }
 
     /**
