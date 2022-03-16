@@ -1,7 +1,9 @@
 package com.ecaservice.auto.test.controller;
 
+import com.ecaservice.auto.test.dto.AutoTestsJobDto;
 import com.ecaservice.auto.test.entity.autotest.AutoTestType;
 import com.ecaservice.auto.test.entity.autotest.AutoTestsJobEntity;
+import com.ecaservice.auto.test.mapping.AutoTestsMapper;
 import com.ecaservice.auto.test.report.AbstractAutoTestsScvReportGenerator;
 import com.ecaservice.auto.test.service.AutoTestJobService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,6 +41,7 @@ public class AutoTestController {
     private static final String AUTO_TEST_REPORT_NAME = "auto-tests-report-%s.zip";
 
     private final AutoTestJobService autoTestJobService;
+    private final AutoTestsMapper autoTestsMapper;
     private final List<AbstractAutoTestsScvReportGenerator> autoTestsScvReportGenerators;
 
     /**
@@ -58,6 +61,26 @@ public class AutoTestController {
         var autoTestsJobEntity = autoTestJobService.createExperimentsAutoTestsJob(autoTestType);
         log.info("Auto test [{}] job has been created with uuid [{}]", autoTestType, autoTestsJobEntity.getJobUuid());
         return autoTestsJobEntity.getJobUuid();
+    }
+
+    /**
+     * Gets auto tests job details.
+     *
+     * @param jobUuid - job uuid
+     * @return auto tests job details
+     */
+    @Operation(
+            description = "Gets auto tests job details",
+            summary = "Gets auto tests job details"
+    )
+    @GetMapping(value = "/details/{jobUuid}")
+    public AutoTestsJobDto getAutoTestsJobDetails(@Parameter(description = "Job uuid", required = true)
+                                                  @PathVariable String jobUuid) {
+        log.info("Gets auto tests job details: {}", jobUuid);
+        var autoTestsJobEntity = autoTestJobService.getJob(jobUuid);
+        var autoTestsJobDto = autoTestsMapper.map(autoTestsJobEntity);
+        log.info("Auto tests job dto has been fetched: {}", jobUuid);
+        return autoTestsJobDto;
     }
 
     /**
