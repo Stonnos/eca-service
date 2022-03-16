@@ -25,7 +25,7 @@ public class AutoTestsJobEntity extends BaseEntity {
     /**
      * Auto tests job uuid
      */
-    @Column(name = "job_uuid", nullable = false)
+    @Column(name = "job_uuid", nullable = false, unique = true)
     private String jobUuid;
 
     /**
