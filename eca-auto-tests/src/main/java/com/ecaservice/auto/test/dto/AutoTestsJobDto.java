@@ -64,6 +64,24 @@ public class AutoTestsJobDto {
     private ExecutionStatus executionStatus;
 
     /**
+     * Success tests
+     */
+    @Schema(description = "Success tests")
+    private Integer success;
+
+    /**
+     * Failed tests
+     */
+    @Schema(description = "Failed tests")
+    private Integer failed;
+
+    /**
+     * Errors tests
+     */
+    @Schema(description = "Errors tests")
+    private Integer errors;
+
+    /**
      * Details string
      */
     @Schema(description = "Details string")
