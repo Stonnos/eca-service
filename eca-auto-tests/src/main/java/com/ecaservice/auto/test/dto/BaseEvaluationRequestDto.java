@@ -3,6 +3,7 @@ package com.ecaservice.auto.test.dto;
 import com.ecaservice.test.common.model.ExecutionStatus;
 import com.ecaservice.test.common.model.TestResult;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import eca.core.evaluation.EvaluationMethod;
@@ -19,6 +20,11 @@ import static com.ecaservice.auto.test.dto.FieldConstraints.DATE_TIME_PATTERN;
  * @author Roman Batygin
  */
 @Data
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = EvaluationRequestDto.class),
+        @JsonSubTypes.Type(value = ExperimentRequestDto.class)
+})
+@Schema(description = "Base evaluation request dto")
 public abstract class BaseEvaluationRequestDto {
 
     /**

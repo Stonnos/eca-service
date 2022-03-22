@@ -2,8 +2,6 @@ package com.ecaservice.auto.test.mapping;
 
 import com.ecaservice.auto.test.dto.BaseEvaluationRequestDto;
 import com.ecaservice.auto.test.entity.autotest.BaseEvaluationRequestEntity;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.MappingTarget;
 
@@ -16,10 +14,18 @@ import static com.ecaservice.test.common.util.Utils.totalTime;
  * @param <T> - target evaluation request dto
  * @author Roman Batygin
  */
-@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class BaseEvaluationRequestMapper<S extends BaseEvaluationRequestEntity, T extends BaseEvaluationRequestDto> {
 
     private final Class<S> type;
+
+    /**
+     * Constructor with parameters.
+     *
+     * @param type - evaluation request type
+     */
+    protected BaseEvaluationRequestMapper(Class<S> type) {
+        this.type = type;
+    }
 
     /**
      * Can map evaluation request entity.
