@@ -3,7 +3,6 @@ package com.ecaservice.auto.test.controller;
 import com.ecaservice.auto.test.dto.AutoTestsJobDto;
 import com.ecaservice.auto.test.entity.autotest.AutoTestType;
 import com.ecaservice.auto.test.entity.autotest.AutoTestsJobEntity;
-import com.ecaservice.auto.test.mapping.AutoTestsMapper;
 import com.ecaservice.auto.test.report.AbstractAutoTestsScvReportGenerator;
 import com.ecaservice.auto.test.service.AutoTestJobService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -41,7 +40,6 @@ public class AutoTestController {
     private static final String AUTO_TEST_REPORT_NAME = "auto-tests-report-%s.zip";
 
     private final AutoTestJobService autoTestJobService;
-    private final AutoTestsMapper autoTestsMapper;
     private final List<AbstractAutoTestsScvReportGenerator> autoTestsScvReportGenerators;
 
     /**
@@ -58,8 +56,7 @@ public class AutoTestController {
     public AutoTestsJobDto createAutoTestsJob(@Parameter(description = "Auto test type", required = true)
                                               @RequestParam AutoTestType autoTestType) {
         log.info("Request to create auto tests [{}] job", autoTestType);
-        var autoTestsJobEntity = autoTestJobService.createAutoTestsJob(autoTestType);
-        var autoTestsJobDto = autoTestsMapper.map(autoTestsJobEntity);
+        var autoTestsJobDto = autoTestJobService.createAutoTestsJob(autoTestType);
         log.info("Auto test [{}] job has been created with uuid [{}]", autoTestType, autoTestsJobDto.getJobUuid());
         return autoTestsJobDto;
     }
@@ -78,8 +75,7 @@ public class AutoTestController {
     public AutoTestsJobDto getAutoTestsJobDetails(@Parameter(description = "Job uuid", required = true)
                                                   @PathVariable String jobUuid) {
         log.info("Gets auto tests job details: {}", jobUuid);
-        var autoTestsJobEntity = autoTestJobService.getJob(jobUuid);
-        var autoTestsJobDto = autoTestsMapper.map(autoTestsJobEntity);
+        var autoTestsJobDto = autoTestJobService.getJobDetails(jobUuid);
         log.info("Auto tests job dto has been fetched: {}", jobUuid);
         return autoTestsJobDto;
     }

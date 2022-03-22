@@ -55,4 +55,12 @@ public interface BaseEvaluationRequestRepository extends JpaRepository<BaseEvalu
      */
     @Query("select min(er.started) from ExperimentRequestEntity er where er.job = :job")
     Optional<LocalDateTime> getMinStartedDate(@Param("job") AutoTestsJobEntity autoTestsJobEntity);
+
+    /**
+     * Gets evaluation requests list for specified job.
+     *
+     * @param autoTestsJobEntity - auto tests job
+     * @return evaluation requests list
+     */
+    List<BaseEvaluationRequestEntity> findAllByJob(AutoTestsJobEntity autoTestsJobEntity);
 }

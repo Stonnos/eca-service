@@ -5,10 +5,12 @@ import com.ecaservice.test.common.model.ExecutionStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static com.ecaservice.auto.test.dto.FieldConstraints.DATE_TIME_PATTERN;
 
@@ -80,6 +82,12 @@ public class AutoTestsJobDto {
      */
     @Schema(description = "Errors tests")
     private Integer errors;
+
+    /**
+     * Evaluation requests list
+     */
+    @ArraySchema(schema = @Schema(description = "Evaluation requests"))
+    private List<BaseEvaluationRequestDto> requests;
 
     /**
      * Details string

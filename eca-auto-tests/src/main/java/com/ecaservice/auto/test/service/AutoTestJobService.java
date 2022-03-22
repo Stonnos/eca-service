@@ -1,16 +1,25 @@
 package com.ecaservice.auto.test.service;
 
+import com.ecaservice.auto.test.dto.AutoTestsJobDto;
+import com.ecaservice.auto.test.dto.BaseEvaluationRequestDto;
 import com.ecaservice.auto.test.entity.autotest.AutoTestType;
 import com.ecaservice.auto.test.entity.autotest.AutoTestsJobEntity;
+import com.ecaservice.auto.test.entity.autotest.BaseEvaluationRequestEntity;
+import com.ecaservice.auto.test.mapping.AutoTestsMapper;
+import com.ecaservice.auto.test.mapping.BaseEvaluationRequestMapper;
 import com.ecaservice.auto.test.repository.autotest.AutoTestsJobRepository;
+import com.ecaservice.auto.test.repository.autotest.BaseEvaluationRequestRepository;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.test.common.model.ExecutionStatus;
+import com.ecaservice.test.common.report.TestResultsCounter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Auto test service.
@@ -22,21 +31,25 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AutoTestJobService {
 
+    private final AutoTestsMapper autoTestsMapper;
+    private final List<BaseEvaluationRequestMapper> evaluationRequestMappers;
     private final AutoTestsJobRepository autoTestsJobRepository;
+    private final BaseEvaluationRequestRepository baseEvaluationRequestRepository;
 
     /**
      * Creates experiment auto tests job.
      *
      * @param autoTestType - auto test type
-     * @return auto tests job entity
+     * @return auto tests job dto
      */
-    public AutoTestsJobEntity createAutoTestsJob(AutoTestType autoTestType) {
+    public AutoTestsJobDto createAutoTestsJob(AutoTestType autoTestType) {
         var autoTestsJobEntity = new AutoTestsJobEntity();
         autoTestsJobEntity.setJobUuid(UUID.randomUUID().toString());
         autoTestsJobEntity.setAutoTestType(autoTestType);
         autoTestsJobEntity.setExecutionStatus(ExecutionStatus.NEW);
         autoTestsJobEntity.setCreated(LocalDateTime.now());
-        return autoTestsJobRepository.save(autoTestsJobEntity);
+        autoTestsJobRepository.save(autoTestsJobEntity);
+        return autoTestsMapper.map(autoTestsJobEntity);
     }
 
     /**
@@ -48,6 +61,25 @@ public class AutoTestJobService {
     public AutoTestsJobEntity getJob(String jobUuid) {
         return autoTestsJobRepository.findByJobUuid(jobUuid)
                 .orElseThrow(() -> new EntityNotFoundException(AutoTestsJobEntity.class, jobUuid));
+    }
+
+    /**
+     * Gets auto tests job details.
+     *
+     * @param jobUuid - job uuid
+     * @return auto tests job dto
+     */
+    public AutoTestsJobDto getJobDetails(String jobUuid) {
+        log.info("Starting to get auto tests [{}] job details", jobUuid);
+        var autoTestsJobEntity = getJob(jobUuid);
+        var autoTestsJobDto = autoTestsMapper.map(autoTestsJobEntity);
+        var counter = new TestResultsCounter();
+        var evaluationRequests = getEvaluationRequests(autoTestsJobEntity, counter);
+        autoTestsJobDto.setRequests(evaluationRequests);
+        autoTestsJobDto.setSuccess(counter.getPassed());
+        autoTestsJobDto.setFailed(counter.getFailed());
+        autoTestsJobDto.setErrors(counter.getErrors());
+        return autoTestsJobDto;
     }
 
     /**
@@ -73,5 +105,27 @@ public class AutoTestJobService {
         autoTestsJobEntity.setExecutionStatus(ExecutionStatus.ERROR);
         autoTestsJobEntity.setFinished(LocalDateTime.now());
         autoTestsJobRepository.save(autoTestsJobEntity);
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<BaseEvaluationRequestDto> getEvaluationRequests(AutoTestsJobEntity autoTestsJobEntity,
+                                                                 TestResultsCounter counter) {
+        return baseEvaluationRequestRepository.findAllByJob(autoTestsJobEntity)
+                .stream()
+                .map(request -> {
+                    var evaluationRequestDto = getMapper(request).map(request);
+                    evaluationRequestDto.getTestResult().apply(counter);
+                    return evaluationRequestDto;
+                })
+                .collect(Collectors.toList());
+    }
+
+    @SuppressWarnings("unchecked")
+    private BaseEvaluationRequestMapper getMapper(BaseEvaluationRequestEntity evaluationRequestEntity) {
+        return evaluationRequestMappers.stream()
+                .filter(mapper -> mapper.canMap(evaluationRequestEntity))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException(String.format("Can't map [%s] evaluation request",
+                        evaluationRequestEntity.getClass().getSimpleName())));
     }
 }
