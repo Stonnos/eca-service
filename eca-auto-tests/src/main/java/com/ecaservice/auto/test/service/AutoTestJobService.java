@@ -79,6 +79,7 @@ public class AutoTestJobService {
         autoTestsJobDto.setSuccess(counter.getPassed());
         autoTestsJobDto.setFailed(counter.getFailed());
         autoTestsJobDto.setErrors(counter.getErrors());
+        log.info("Fetched auto tests [{}] job details", jobUuid);
         return autoTestsJobDto;
     }
 
