@@ -60,6 +60,12 @@ public class AutoTestsJobDto {
     private LocalDateTime finished;
 
     /**
+     * Total time
+     */
+    @Schema(description = "Total time", pattern = "HH:mm:ss:SSSS", example = "00:00:35:5467")
+    private String totalTime;
+
+    /**
      * Test execution status
      */
     @Schema(description = "Test execution status")

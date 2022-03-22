@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.ecaservice.test.common.util.Utils.totalTime;
+
 /**
  * Auto test service.
  *
@@ -79,6 +81,7 @@ public class AutoTestJobService {
         autoTestsJobDto.setSuccess(counter.getPassed());
         autoTestsJobDto.setFailed(counter.getFailed());
         autoTestsJobDto.setErrors(counter.getErrors());
+        autoTestsJobDto.setTotalTime(totalTime(autoTestsJobDto.getStarted(), autoTestsJobDto.getFinished()));
         log.info("Fetched auto tests [{}] job details", jobUuid);
         return autoTestsJobDto;
     }
