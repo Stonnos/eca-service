@@ -1,5 +1,6 @@
 package com.ecaservice.auto.test.controller;
 
+import com.ecaservice.auto.test.dto.AutoTestsJobDto;
 import com.ecaservice.auto.test.entity.autotest.AutoTestType;
 import com.ecaservice.auto.test.entity.autotest.AutoTestsJobEntity;
 import com.ecaservice.auto.test.report.AbstractAutoTestsScvReportGenerator;
@@ -45,19 +46,38 @@ public class AutoTestController {
      * Creates auto tests job.
      *
      * @param autoTestType - auto test type
-     * @return load test uuid
+     * @return auto tests job dto
      */
     @Operation(
             description = "Creates auto tests job",
             summary = "Creates auto tests job"
     )
     @PostMapping(value = "/create")
-    public String createAutoTestsJob(@Parameter(description = "Auto test type", required = true)
-                                     @RequestParam AutoTestType autoTestType) {
+    public AutoTestsJobDto createAutoTestsJob(@Parameter(description = "Auto test type", required = true)
+                                              @RequestParam AutoTestType autoTestType) {
         log.info("Request to create auto tests [{}] job", autoTestType);
-        var autoTestsJobEntity = autoTestJobService.createExperimentsAutoTestsJob(autoTestType);
-        log.info("Auto test [{}] job has been created with uuid [{}]", autoTestType, autoTestsJobEntity.getJobUuid());
-        return autoTestsJobEntity.getJobUuid();
+        var autoTestsJobDto = autoTestJobService.createAutoTestsJob(autoTestType);
+        log.info("Auto test [{}] job has been created with uuid [{}]", autoTestType, autoTestsJobDto.getJobUuid());
+        return autoTestsJobDto;
+    }
+
+    /**
+     * Gets auto tests job details.
+     *
+     * @param jobUuid - job uuid
+     * @return auto tests job details
+     */
+    @Operation(
+            description = "Gets auto tests job details",
+            summary = "Gets auto tests job details"
+    )
+    @GetMapping(value = "/details/{jobUuid}")
+    public AutoTestsJobDto getAutoTestsJobDetails(@Parameter(description = "Job uuid", required = true)
+                                                  @PathVariable String jobUuid) {
+        log.info("Gets auto tests job details: {}", jobUuid);
+        var autoTestsJobDto = autoTestJobService.getJobDetails(jobUuid);
+        log.info("Auto tests job dto has been fetched: {}", jobUuid);
+        return autoTestsJobDto;
     }
 
     /**
