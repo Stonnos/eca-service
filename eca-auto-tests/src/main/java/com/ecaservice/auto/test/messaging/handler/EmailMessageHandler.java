@@ -20,6 +20,7 @@ import org.springframework.util.Assert;
 import java.time.LocalDateTime;
 
 import static com.ecaservice.auto.test.config.mail.Channels.MAIL_HANDLE_CHANNEL;
+import static com.ecaservice.test.common.util.Utils.calculateTestResult;
 
 /**
  * Email message handler.
@@ -75,6 +76,7 @@ public class EmailMessageHandler {
                 emailStepEntity.setDownloadUrlMatchResult(downloadUrlMatchResult);
             }
         });
+        emailStepEntity.setTestResult(calculateTestResult(matcher));
         emailStepEntity.setExecutionStatus(ExecutionStatus.FINISHED);
         emailStepEntity.setFinished(LocalDateTime.now());
         log.info("Email message [{}] has been processed for experiment [{}]", emailMessage.getEmailType(),
