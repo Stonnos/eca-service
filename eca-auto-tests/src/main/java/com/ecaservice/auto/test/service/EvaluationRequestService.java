@@ -4,11 +4,15 @@ import com.ecaservice.auto.test.config.AutoTestsProperties;
 import com.ecaservice.auto.test.entity.autotest.BaseEvaluationRequestEntity;
 import com.ecaservice.auto.test.entity.autotest.RequestStageType;
 import com.ecaservice.auto.test.repository.autotest.BaseEvaluationRequestRepository;
+import com.ecaservice.auto.test.repository.autotest.BaseTestStepRepository;
+import com.ecaservice.auto.test.service.step.TestStepService;
 import com.ecaservice.test.common.model.ExecutionStatus;
 import com.ecaservice.test.common.model.TestResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 
@@ -23,7 +27,9 @@ import java.time.LocalDateTime;
 public class EvaluationRequestService {
 
     private final AutoTestsProperties autoTestsProperties;
+    private final TestStepService testStepService;
     private final BaseEvaluationRequestRepository baseEvaluationRequestRepository;
+    private final BaseTestStepRepository testStepRepository;
 
     /**
      * Finish request entity test with error.
@@ -31,11 +37,13 @@ public class EvaluationRequestService {
      * @param requestEntity - request entity
      * @param errorMessage  - error message
      */
+    @Transactional
     public void finishWithError(BaseEvaluationRequestEntity requestEntity, String errorMessage) {
         requestEntity.setStageType(RequestStageType.ERROR);
         requestEntity.setTestResult(TestResult.ERROR);
         requestEntity.setExecutionStatus(ExecutionStatus.ERROR);
         requestEntity.setDetails(errorMessage);
+        finishTestStepsWithError(requestEntity, errorMessage);
         requestEntity.setFinished(LocalDateTime.now());
         baseEvaluationRequestRepository.save(requestEntity);
         log.debug("Evaluation auto test [{}] has been finished with error", requestEntity.getId());
@@ -56,5 +64,14 @@ public class EvaluationRequestService {
         requestEntity.setFinished(LocalDateTime.now());
         baseEvaluationRequestRepository.save(requestEntity);
         log.info("Exceeded request with correlation id [{}]", requestEntity.getCorrelationId());
+    }
+
+    private void finishTestStepsWithError(BaseEvaluationRequestEntity requestEntity, String errorMessage) {
+        var testSteps = testStepRepository.findAllByEvaluationRequestEntity(requestEntity);
+        if (CollectionUtils.isEmpty(testSteps)) {
+            log.info("No one additional test steps found for request [{}]", requestEntity.getRequestId());
+        } else {
+            testStepService.finishWithError(testSteps, errorMessage);
+        }
     }
 }

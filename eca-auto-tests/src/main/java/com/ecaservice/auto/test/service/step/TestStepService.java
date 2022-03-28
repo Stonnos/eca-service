@@ -64,4 +64,14 @@ public class TestStepService {
                 autoTestsProperties.getRequestTimeoutInSeconds());
         testSteps.forEach(testStepEntity -> finishWithError(testStepEntity, details));
     }
+
+    /**
+     * Finished test steps with error.
+     *
+     * @param testSteps - test steps
+     */
+    @Transactional
+    public void finishWithError(List<BaseTestStepEntity> testSteps, String errorMessage) {
+        testSteps.forEach(testStepEntity -> finishWithError(testStepEntity, errorMessage));
+    }
 }
