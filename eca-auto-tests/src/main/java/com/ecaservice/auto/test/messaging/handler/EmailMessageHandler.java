@@ -98,5 +98,8 @@ public class EmailMessageHandler {
             }
         });
         emailStepEntity.setTestResult(calculateTestResult(matcher));
+        emailStepEntity.setTotalMatched(matcher.getTotalMatched());
+        emailStepEntity.setTotalNotMatched(matcher.getTotalNotMatched());
+        emailStepEntity.setTotalNotFound(matcher.getTotalNotFound());
     }
 }

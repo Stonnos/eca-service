@@ -1,6 +1,5 @@
 package com.ecaservice.auto.test.entity.autotest;
 
-import com.ecaservice.test.common.model.TestResult;
 import eca.core.evaluation.EvaluationMethod;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -27,7 +26,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "base_evaluation_request")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class BaseEvaluationRequestEntity extends BaseEntity {
+public class BaseEvaluationRequestEntity extends BaseTestEntity {
 
     /**
      * Request id from eca - server
@@ -56,13 +55,6 @@ public class BaseEvaluationRequestEntity extends BaseEntity {
     private RequestStageType stageType;
 
     /**
-     * Test result
-     */
-    @Enumerated(EnumType.STRING)
-    @Column(name = "test_result")
-    private TestResult testResult;
-
-    /**
      * Instances name
      */
     @Column(name = "relation_name")
@@ -86,22 +78,4 @@ public class BaseEvaluationRequestEntity extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "auto_tests_job_id", nullable = false)
     private AutoTestsJobEntity job;
-
-    /**
-     * Total matched
-     */
-    @Column(name = "total_matched")
-    private int totalMatched;
-
-    /**
-     * Total not matched
-     */
-    @Column(name = "total_not_matched")
-    private int totalNotMatched;
-
-    /**
-     * Total not found
-     */
-    @Column(name = "total_not_found")
-    private int totalNotFound;
 }
