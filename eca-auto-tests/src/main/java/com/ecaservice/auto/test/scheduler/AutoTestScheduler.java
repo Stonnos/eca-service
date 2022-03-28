@@ -4,11 +4,13 @@ import com.ecaservice.auto.test.config.AutoTestsProperties;
 import com.ecaservice.auto.test.entity.autotest.ExperimentRequestEntity;
 import com.ecaservice.auto.test.repository.autotest.AutoTestsJobRepository;
 import com.ecaservice.auto.test.repository.autotest.BaseEvaluationRequestRepository;
+import com.ecaservice.auto.test.repository.autotest.BaseTestStepRepository;
 import com.ecaservice.auto.test.repository.autotest.ExperimentRequestRepository;
 import com.ecaservice.auto.test.service.AutoTestJobService;
 import com.ecaservice.auto.test.service.EvaluationRequestService;
 import com.ecaservice.auto.test.service.EvaluationResultsProcessor;
 import com.ecaservice.auto.test.service.executor.AutoTestExecutor;
+import com.ecaservice.auto.test.service.step.TestStepService;
 import com.ecaservice.test.common.model.ExecutionStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,10 +41,12 @@ public class AutoTestScheduler {
     private final AutoTestExecutor autoTestExecutor;
     private final AutoTestJobService autoTestJobService;
     private final EvaluationRequestService evaluationRequestService;
+    private final TestStepService testStepService;
     private final EvaluationResultsProcessor evaluationResultsProcessor;
     private final AutoTestsJobRepository autoTestsJobRepository;
     private final ExperimentRequestRepository experimentRequestRepository;
     private final BaseEvaluationRequestRepository baseEvaluationRequestRepository;
+    private final BaseTestStepRepository baseTestStepRepository;
 
     /**
      * Processes new auto tests.
@@ -76,6 +80,20 @@ public class AutoTestScheduler {
         List<Long> finishedIds = experimentRequestRepository.findFinishedTests(FINISHED_EXECUTION_STATUSES);
         processWithPagination(finishedIds, experimentRequestRepository::findByIdInOrderByCreated,
                 this::processFinishedTests, autoTestsProperties.getPageSize());
+    }
+
+    /**
+     * Processes exceeded test steps.
+     */
+    @Scheduled(fixedDelayString = "${auto-tests.delaySeconds}000")
+    public void processExceededTestSteps() {
+        log.trace("Starting to processed exceeded test steps");
+        LocalDateTime exceededTime = LocalDateTime.now().minusSeconds(autoTestsProperties.getRequestTimeoutInSeconds());
+        List<Long> exceededIds = baseTestStepRepository.findExceededStepIds(exceededTime, FINISHED_EXECUTION_STATUSES);
+        processWithPagination(exceededIds, baseTestStepRepository::findByIdInOrderByCreated,
+                testStepService::exceedTestSteps, autoTestsProperties.getPageSize()
+        );
+        log.trace("Exceeded test steps has been processed");
     }
 
     /**
