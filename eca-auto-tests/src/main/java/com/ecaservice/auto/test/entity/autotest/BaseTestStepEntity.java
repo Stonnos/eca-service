@@ -1,11 +1,15 @@
 package com.ecaservice.auto.test.entity.autotest;
 
+import com.ecaservice.test.common.model.TestResult;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
@@ -25,6 +29,13 @@ import javax.persistence.Table;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "step_type")
 public class BaseTestStepEntity extends BaseEntity {
+
+    /**
+     * Test result
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "test_result")
+    private TestResult testResult;
 
     /**
      * Evaluation request entity

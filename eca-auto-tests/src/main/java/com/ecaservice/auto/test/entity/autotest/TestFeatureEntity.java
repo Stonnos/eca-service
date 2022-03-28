@@ -14,6 +14,7 @@ import javax.persistence.Table;
 
 /**
  * Test feature persistence entity.
+ *
  * @author Roman Batygin
  */
 @Data

@@ -9,7 +9,6 @@ import com.ecaservice.auto.test.repository.autotest.BaseEvaluationRequestReposit
 import com.ecaservice.auto.test.service.api.EcaServerClient;
 import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
 import com.ecaservice.test.common.model.ExecutionStatus;
-import com.ecaservice.test.common.model.TestResult;
 import com.ecaservice.test.common.service.TestResultsMatcher;
 import eca.core.evaluation.EvaluationResults;
 import eca.dataminer.AbstractExperiment;
@@ -28,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 
+import static com.ecaservice.test.common.util.Utils.calculateTestResult;
 import static com.google.common.collect.Lists.newArrayList;
 
 /**
@@ -106,11 +106,7 @@ public class EvaluationResultsProcessor {
         requestEntity.setTotalMatched(matcher.getTotalMatched());
         requestEntity.setTotalNotMatched(matcher.getTotalNotMatched());
         requestEntity.setTotalNotFound(matcher.getTotalNotFound());
-        if (matcher.getTotalNotMatched() == 0 && matcher.getTotalNotFound() == 0) {
-            requestEntity.setTestResult(TestResult.PASSED);
-        } else {
-            requestEntity.setTestResult(TestResult.FAILED);
-        }
+        requestEntity.setTestResult(calculateTestResult(matcher));
         requestEntity.setExecutionStatus(ExecutionStatus.FINISHED);
         requestEntity.setStageType(RequestStageType.COMPLETED);
         requestEntity.setFinished(LocalDateTime.now());

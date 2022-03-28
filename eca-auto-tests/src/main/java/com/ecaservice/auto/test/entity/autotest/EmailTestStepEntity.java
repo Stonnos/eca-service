@@ -14,6 +14,7 @@ import javax.persistence.Enumerated;
 
 /**
  * Email test step persistence entity.
+ *
  * @author Roman Batygin
  */
 @Data
@@ -39,16 +40,19 @@ public class EmailTestStepEntity extends BaseTestStepEntity {
     /**
      * Expected download url
      */
+    @Column(name = "expected_download_url")
     private String expectedDownloadUrl;
 
     /**
      * Actual download url
      */
+    @Column(name = "actual_download_url")
     private String actualDownloadUrl;
 
     /**
      * Download url match result
      */
     @Enumerated(EnumType.STRING)
+    @Column(name = "download_url_match_result")
     private MatchResult downloadUrlMatchResult;
 }
