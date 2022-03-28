@@ -64,21 +64,7 @@ public class EmailMessageHandler {
                                 emailMessage.getEmailType())));
         emailStepEntity.setMessageReceived(true);
         try {
-            var matcher = new TestResultsMatcher();
-            emailMessage.getEmailType().handle(new EmailTypeVisitor() {
-                @Override
-                public void visitFinishedExperiment() {
-                    Assert.notNull(experimentRequestEntity.getDownloadUrl(),
-                            String.format("Expected not null download url for experiment [%s]",
-                                    experimentRequestEntity.getRequestId()));
-                    emailStepEntity.setExpectedDownloadUrl(experimentRequestEntity.getDownloadUrl());
-                    emailStepEntity.setActualDownloadUrl(emailMessage.getDownloadUrl());
-                    var downloadUrlMatchResult = matcher.compareAndMatch(experimentRequestEntity.getDownloadUrl(),
-                            emailMessage.getDownloadUrl());
-                    emailStepEntity.setDownloadUrlMatchResult(downloadUrlMatchResult);
-                }
-            });
-            emailStepEntity.setTestResult(calculateTestResult(matcher));
+            compareAndMatchResults(experimentRequestEntity, emailMessage, emailStepEntity);
             log.info("Email message [{}] has been processed for experiment [{}] with test result: [{}]",
                     emailMessage.getEmailType(), emailMessage.getRequestId(), emailStepEntity.getTestResult());
         } catch (Exception ex) {
@@ -92,5 +78,25 @@ public class EmailMessageHandler {
             emailStepEntity.setFinished(LocalDateTime.now());
             emailTestStepRepository.save(emailStepEntity);
         }
+    }
+
+    private void compareAndMatchResults(ExperimentRequestEntity experimentRequestEntity,
+                                        EmailMessage emailMessage,
+                                        EmailTestStepEntity emailStepEntity) {
+        var matcher = new TestResultsMatcher();
+        emailMessage.getEmailType().handle(new EmailTypeVisitor() {
+            @Override
+            public void visitFinishedExperiment() {
+                Assert.notNull(experimentRequestEntity.getDownloadUrl(),
+                        String.format("Expected not null download url for experiment [%s]",
+                                experimentRequestEntity.getRequestId()));
+                emailStepEntity.setExpectedDownloadUrl(experimentRequestEntity.getDownloadUrl());
+                emailStepEntity.setActualDownloadUrl(emailMessage.getDownloadUrl());
+                var downloadUrlMatchResult = matcher.compareAndMatch(experimentRequestEntity.getDownloadUrl(),
+                        emailMessage.getDownloadUrl());
+                emailStepEntity.setDownloadUrlMatchResult(downloadUrlMatchResult);
+            }
+        });
+        emailStepEntity.setTestResult(calculateTestResult(matcher));
     }
 }
