@@ -3,6 +3,7 @@ package com.ecaservice.auto.test.controller;
 import com.ecaservice.auto.test.dto.AutoTestsJobDto;
 import com.ecaservice.auto.test.entity.autotest.AutoTestType;
 import com.ecaservice.auto.test.entity.autotest.AutoTestsJobEntity;
+import com.ecaservice.auto.test.entity.autotest.TestFeature;
 import com.ecaservice.auto.test.report.AbstractAutoTestsScvReportGenerator;
 import com.ecaservice.auto.test.service.AutoTestJobService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -46,6 +47,7 @@ public class AutoTestController {
      * Creates auto tests job.
      *
      * @param autoTestType - auto test type
+     * @param features - features list
      * @return auto tests job dto
      */
     @Operation(
@@ -54,9 +56,11 @@ public class AutoTestController {
     )
     @PostMapping(value = "/create")
     public AutoTestsJobDto createAutoTestsJob(@Parameter(description = "Auto test type", required = true)
-                                              @RequestParam AutoTestType autoTestType) {
-        log.info("Request to create auto tests [{}] job", autoTestType);
-        var autoTestsJobDto = autoTestJobService.createAutoTestsJob(autoTestType);
+                                              @RequestParam AutoTestType autoTestType,
+                                              @Parameter(description = "Features")
+                                              @RequestParam(required = false) List<TestFeature> features) {
+        log.info("Request to create auto tests [{}] job with features [{}]", autoTestType, features);
+        var autoTestsJobDto = autoTestJobService.createAutoTestsJob(autoTestType, features);
         log.info("Auto test [{}] job has been created with uuid [{}]", autoTestType, autoTestsJobDto.getJobUuid());
         return autoTestsJobDto;
     }

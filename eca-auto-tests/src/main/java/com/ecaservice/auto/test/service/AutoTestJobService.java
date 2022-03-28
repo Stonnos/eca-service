@@ -11,7 +11,6 @@ import com.ecaservice.auto.test.mapping.AutoTestsMapper;
 import com.ecaservice.auto.test.mapping.BaseEvaluationRequestMapper;
 import com.ecaservice.auto.test.repository.autotest.AutoTestsJobRepository;
 import com.ecaservice.auto.test.repository.autotest.BaseEvaluationRequestRepository;
-import com.ecaservice.auto.test.repository.autotest.BaseTestStepRepository;
 import com.ecaservice.auto.test.repository.autotest.TestFeatureRepository;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.test.common.model.ExecutionStatus;
@@ -20,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -48,22 +48,18 @@ public class AutoTestJobService {
      * Creates experiment auto tests job.
      *
      * @param autoTestType - auto test type
+     * @param features     - features
      * @return auto tests job dto
      */
     @Transactional
-    public AutoTestsJobDto createAutoTestsJob(AutoTestType autoTestType) {
+    public AutoTestsJobDto createAutoTestsJob(AutoTestType autoTestType, List<TestFeature> features) {
         var autoTestsJobEntity = new AutoTestsJobEntity();
         autoTestsJobEntity.setJobUuid(UUID.randomUUID().toString());
         autoTestsJobEntity.setAutoTestType(autoTestType);
         autoTestsJobEntity.setExecutionStatus(ExecutionStatus.NEW);
         autoTestsJobEntity.setCreated(LocalDateTime.now());
         autoTestsJobRepository.save(autoTestsJobEntity);
-        //-----------
-        TestFeatureEntity testFeatureEntity = new TestFeatureEntity();
-        testFeatureEntity.setTestFeature(TestFeature.EXPERIMENT_EMAILS);
-        testFeatureEntity.setJob(autoTestsJobEntity);
-        testFeatureRepository.save(testFeatureEntity);
-        //-----------
+        saveFeatures(autoTestsJobEntity, features);
         return autoTestsMapper.map(autoTestsJobEntity);
     }
 
@@ -144,5 +140,20 @@ public class AutoTestJobService {
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException(String.format("Can't map [%s] evaluation request",
                         evaluationRequestEntity.getClass().getSimpleName())));
+    }
+
+    private void saveFeatures(AutoTestsJobEntity job, List<TestFeature> features) {
+        if (!CollectionUtils.isEmpty(features)) {
+            var featureEntities = features.stream()
+                    .map(feature -> {
+                        var testFeatureEntity = new TestFeatureEntity();
+                        testFeatureEntity.setTestFeature(feature);
+                        testFeatureEntity.setJob(job);
+                        return testFeatureEntity;
+                    })
+                    .collect(Collectors.toList());
+            testFeatureRepository.saveAll(featureEntities);
+            log.info("[{}] features has been saved for auto tests job [{}]", features, job.getJobUuid());
+        }
     }
 }
