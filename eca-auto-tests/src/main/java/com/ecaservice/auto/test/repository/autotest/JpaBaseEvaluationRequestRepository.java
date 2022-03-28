@@ -26,7 +26,7 @@ public interface JpaBaseEvaluationRequestRepository<E extends BaseEvaluationRequ
      * @param correlationId - correlation id
      * @return request entity
      */
-    Optional<E> findByCorrelationId(String correlationId);
+    E findByCorrelationId(String correlationId);
 
     /**
      * Finds request by request id

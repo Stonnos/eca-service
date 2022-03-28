@@ -10,6 +10,7 @@ import com.ecaservice.auto.test.service.AutoTestJobService;
 import com.ecaservice.auto.test.service.EvaluationRequestService;
 import com.ecaservice.auto.test.service.EvaluationResultsProcessor;
 import com.ecaservice.auto.test.service.executor.AutoTestExecutor;
+import com.ecaservice.test.common.model.ExecutionStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -34,6 +35,11 @@ public class AutoTestScheduler {
             RequestStageType.COMPLETED,
             RequestStageType.ERROR,
             RequestStageType.EXCEEDED
+    );
+
+    private static final List<ExecutionStatus> FINISHED_EXECUTION_STATUSES = List.of(
+            ExecutionStatus.FINISHED,
+            ExecutionStatus.ERROR
     );
 
     private final AutoTestsProperties autoTestsProperties;
@@ -69,6 +75,17 @@ public class AutoTestScheduler {
     }
 
     /**
+     * Processes finished experiment tests.
+     */
+    @Scheduled(fixedDelayString = "${auto-tests.delaySeconds}000")
+    public void processFinishedExperimentTests() {
+        log.trace("Starting to processed finished requests");
+        List<Long> finishedIds = experimentRequestRepository.findFinishedTests(FINISHED_EXECUTION_STATUSES);
+        processWithPagination(finishedIds, experimentRequestRepository::findByIdInOrderByCreated,
+                this::processFinishedTests, autoTestsProperties.getPageSize());
+    }
+
+    /**
      * Processes exceeded requests.
      */
     @Scheduled(fixedDelayString = "${auto-tests.delaySeconds}000")
@@ -97,5 +114,14 @@ public class AutoTestScheduler {
 
     private void processFinishedRequests(List<ExperimentRequestEntity> experimentRequestEntities) {
         experimentRequestEntities.forEach(evaluationResultsProcessor::compareAndMatchExperimentResults);
+    }
+
+    private void processFinishedTests(List<ExperimentRequestEntity> experimentRequestEntities) {
+        experimentRequestEntities.forEach(experimentRequestEntity -> {
+            experimentRequestEntity.setExecutionStatus(ExecutionStatus.FINISHED);
+            experimentRequestEntity.setFinished(LocalDateTime.now());
+            experimentRequestRepository.save(experimentRequestEntity);
+            log.info("Experiment [{}] test execution has been finished", experimentRequestEntity.getRequestId());
+        });
     }
 }

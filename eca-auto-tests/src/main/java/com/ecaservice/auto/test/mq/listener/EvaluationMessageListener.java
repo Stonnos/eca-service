@@ -40,9 +40,10 @@ public class EvaluationMessageListener {
     public void handleMessage(EvaluationResponse evaluationResponse, Message message) {
         String correlationId = message.getMessageProperties().getCorrelationId();
         log.info("Received evaluation response MQ message with correlation id [{}]", correlationId);
-        var evaluationRequestEntity = evaluationRequestRepository.findByCorrelationId(correlationId)
-                .orElseThrow(() -> new EntityNotFoundException(EvaluationRequestEntity.class, correlationId));
-        if (RequestStageType.EXCEEDED.equals(evaluationRequestEntity.getStageType())) {
+        var evaluationRequestEntity = evaluationRequestRepository.findByCorrelationId(correlationId);
+        if (evaluationRequestEntity == null) {
+            log.warn("Evaluation request entity not found with correlation id [{}]", correlationId);
+        } else if (RequestStageType.EXCEEDED.equals(evaluationRequestEntity.getStageType())) {
             log.warn("Can't handle message from MQ. Got exceeded evaluation request entity with correlation id [{}]",
                     correlationId);
         } else {

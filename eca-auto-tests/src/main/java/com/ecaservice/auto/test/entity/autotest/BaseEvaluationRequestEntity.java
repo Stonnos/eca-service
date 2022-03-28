@@ -13,7 +13,9 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.List;
 
 /**
  * Base evaluation request persistence entity.
@@ -78,4 +80,10 @@ public class BaseEvaluationRequestEntity extends BaseTestEntity {
     @ManyToOne
     @JoinColumn(name = "auto_tests_job_id", nullable = false)
     private AutoTestsJobEntity job;
+
+    /**
+     * Test steps
+     */
+    @OneToMany(mappedBy = "evaluationRequestEntity")
+    private List<BaseTestStepEntity> testSteps;
 }

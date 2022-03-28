@@ -19,6 +19,7 @@ import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -107,9 +108,16 @@ public class EvaluationResultsProcessor {
         requestEntity.setTotalNotMatched(matcher.getTotalNotMatched());
         requestEntity.setTotalNotFound(matcher.getTotalNotFound());
         requestEntity.setTestResult(calculateTestResult(matcher));
-        requestEntity.setExecutionStatus(ExecutionStatus.FINISHED);
         requestEntity.setStageType(RequestStageType.COMPLETED);
-        requestEntity.setFinished(LocalDateTime.now());
+        if (!CollectionUtils.isEmpty(requestEntity.getTestSteps())) {
+            log.info("Request [{}] has [{}] additional test steps. Wait for them to complete",
+                    requestEntity.getRequestId(), requestEntity.getTestSteps().size());
+        } else {
+            requestEntity.setExecutionStatus(ExecutionStatus.FINISHED);
+            requestEntity.setFinished(LocalDateTime.now());
+            log.info("Request [{}] has no one additional test step. Just finish execution",
+                    requestEntity.getRequestId());
+        }
         baseEvaluationRequestRepository.save(requestEntity);
     }
 
