@@ -2,7 +2,6 @@ package com.ecaservice.auto.test.scheduler;
 
 import com.ecaservice.auto.test.config.AutoTestsProperties;
 import com.ecaservice.auto.test.entity.autotest.ExperimentRequestEntity;
-import com.ecaservice.auto.test.entity.autotest.RequestStageType;
 import com.ecaservice.auto.test.repository.autotest.AutoTestsJobRepository;
 import com.ecaservice.auto.test.repository.autotest.BaseEvaluationRequestRepository;
 import com.ecaservice.auto.test.repository.autotest.ExperimentRequestRepository;
@@ -30,12 +29,6 @@ import static com.ecaservice.common.web.util.PageHelper.processWithPagination;
 @Service
 @RequiredArgsConstructor
 public class AutoTestScheduler {
-
-    private static final List<RequestStageType> FINISHED_STAGES = List.of(
-            RequestStageType.COMPLETED,
-            RequestStageType.ERROR,
-            RequestStageType.EXCEEDED
-    );
 
     private static final List<ExecutionStatus> FINISHED_EXECUTION_STATUSES = List.of(
             ExecutionStatus.FINISHED,
@@ -92,7 +85,8 @@ public class AutoTestScheduler {
     public void processExceededRequests() {
         log.trace("Starting to processed exceeded requests");
         LocalDateTime exceededTime = LocalDateTime.now().minusSeconds(autoTestsProperties.getRequestTimeoutInSeconds());
-        List<Long> exceededIds = baseEvaluationRequestRepository.findExceededRequestIds(exceededTime, FINISHED_STAGES);
+        List<Long> exceededIds =
+                baseEvaluationRequestRepository.findExceededRequestIds(exceededTime, FINISHED_EXECUTION_STATUSES);
         processWithPagination(exceededIds, baseEvaluationRequestRepository::findByIdInOrderByCreated, pageContent ->
                 pageContent.forEach(evaluationRequestService::exceed), autoTestsProperties.getPageSize()
         );
@@ -105,7 +99,7 @@ public class AutoTestScheduler {
     @Scheduled(fixedDelayString = "${auto-tests.delaySeconds}000")
     public void processFinishedTestJobs() {
         log.trace("Starting to processed finished tests jobs");
-        List<Long> testIds = autoTestsJobRepository.findFinishedJobs(FINISHED_STAGES);
+        List<Long> testIds = autoTestsJobRepository.findFinishedJobs(FINISHED_EXECUTION_STATUSES);
         processWithPagination(testIds, autoTestsJobRepository::findByIdInOrderByCreated, pageContent ->
                 pageContent.forEach(autoTestJobService::finish), autoTestsProperties.getPageSize()
         );

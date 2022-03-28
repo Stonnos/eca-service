@@ -2,6 +2,7 @@ package com.ecaservice.auto.test.repository.autotest;
 
 import com.ecaservice.auto.test.entity.autotest.AutoTestsJobEntity;
 import com.ecaservice.auto.test.entity.autotest.RequestStageType;
+import com.ecaservice.test.common.model.ExecutionStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -28,12 +29,13 @@ public interface AutoTestsJobRepository extends JpaRepository<AutoTestsJobEntity
     /**
      * Gets finished tests.
      *
+     * @param executionStatuses - finished execution statuses
      * @return tests ids list
      */
     @Query("select t.id from AutoTestsJobEntity t where t.executionStatus = 'IN_PROGRESS' and " +
             "not exists (select er.id from BaseEvaluationRequestEntity er where er.job = t " +
-            "and er.stageType not in (:finishedStages)) order by t.created")
-    List<Long> findFinishedJobs(@Param("finishedStages") Collection<RequestStageType> finishedStages);
+            "and er.executionStatus not in (:executionStatuses)) order by t.created")
+    List<Long> findFinishedJobs(@Param("executionStatuses") Collection<ExecutionStatus> executionStatuses);
 
     /**
      * Finds auto tests page with specified ids.
