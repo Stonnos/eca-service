@@ -1,16 +1,23 @@
 package com.ecaservice.auto.test.messaging.handler;
 
+import com.ecaservice.auto.test.entity.autotest.EmailTestStepEntity;
 import com.ecaservice.auto.test.entity.autotest.ExperimentRequestEntity;
 import com.ecaservice.auto.test.entity.autotest.RequestStageType;
 import com.ecaservice.auto.test.model.EmailMessage;
 import com.ecaservice.auto.test.model.EmailTypeVisitor;
-import com.ecaservice.auto.test.repository.autotest.ExperimentRequestRepository;
+import com.ecaservice.auto.test.repository.autotest.EmailTestStepRepository;
 import com.ecaservice.auto.test.service.EvaluationRequestService;
+import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.test.common.model.ExecutionStatus;
+import com.ecaservice.test.common.service.TestResultsMatcher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
+import java.time.LocalDateTime;
 
 import static com.ecaservice.auto.test.config.mail.Channels.MAIL_HANDLE_CHANNEL;
 
@@ -26,7 +33,7 @@ import static com.ecaservice.auto.test.config.mail.Channels.MAIL_HANDLE_CHANNEL;
 public class EmailMessageHandler {
 
     private final EvaluationRequestService evaluationRequestService;
-    private final ExperimentRequestRepository experimentRequestRepository;
+    private final EmailTestStepRepository emailTestStepRepository;
 
     /**
      * Processed email message.
@@ -47,33 +54,29 @@ public class EmailMessageHandler {
     }
 
     private void internalHandleMessage(EmailMessage emailMessage, ExperimentRequestEntity experimentRequestEntity) {
+
+        var emailStepEntity = emailTestStepRepository.findByEvaluationRequestEntityAndEmailType(experimentRequestEntity,
+                emailMessage.getEmailType())
+                .orElseThrow(() -> new EntityNotFoundException(EmailTestStepEntity.class,
+                        String.format("Request id [%d], email type [%s]", experimentRequestEntity.getId(),
+                                emailMessage.getEmailType())));
+        emailStepEntity.setMessageReceived(true);
+        var matcher = new TestResultsMatcher();
         emailMessage.getEmailType().handle(new EmailTypeVisitor() {
             @Override
-            public void visitNewExperiment() {
-                experimentRequestEntity.setNewStatusEmailReceived(true);
-            }
-
-            @Override
-            public void visitInProgressExperiment() {
-                experimentRequestEntity.setInProgressStatusEmailReceived(true);
-            }
-
-            @Override
             public void visitFinishedExperiment() {
-                experimentRequestEntity.setFinishedStatusEmailReceived(true);
-            }
-
-            @Override
-            public void visitErrorExperiment() {
-                experimentRequestEntity.setErrorStatusEmailReceived(true);
-            }
-
-            @Override
-            public void visitTimeoutExperiment() {
-                experimentRequestEntity.setTimeoutStatusEmailReceived(true);
+                Assert.notNull(experimentRequestEntity.getDownloadUrl(),
+                        String.format("Expected not null download url for experiment [%s]",
+                                experimentRequestEntity.getRequestId()));
+                emailStepEntity.setExpectedDownloadUrl(experimentRequestEntity.getDownloadUrl());
+                emailStepEntity.setActualDownloadUrl(emailMessage.getDownloadUrl());
+                var downloadUrlMatchResult = matcher.compareAndMatch(experimentRequestEntity.getDownloadUrl(),
+                        emailMessage.getDownloadUrl());
+                emailStepEntity.setDownloadUrlMatchResult(downloadUrlMatchResult);
             }
         });
-        experimentRequestRepository.save(experimentRequestEntity);
+        emailStepEntity.setExecutionStatus(ExecutionStatus.FINISHED);
+        emailStepEntity.setFinished(LocalDateTime.now());
         log.info("Email message [{}] has been processed for experiment [{}]", emailMessage.getEmailType(),
                 emailMessage.getRequestId());
     }
