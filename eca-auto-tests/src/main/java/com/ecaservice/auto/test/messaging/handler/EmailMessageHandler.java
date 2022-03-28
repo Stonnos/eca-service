@@ -9,6 +9,7 @@ import com.ecaservice.auto.test.repository.autotest.EmailTestStepRepository;
 import com.ecaservice.auto.test.service.EvaluationRequestService;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.test.common.model.ExecutionStatus;
+import com.ecaservice.test.common.model.TestResult;
 import com.ecaservice.test.common.service.TestResultsMatcher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -62,24 +63,34 @@ public class EmailMessageHandler {
                         String.format("Request id [%d], email type [%s]", experimentRequestEntity.getId(),
                                 emailMessage.getEmailType())));
         emailStepEntity.setMessageReceived(true);
-        var matcher = new TestResultsMatcher();
-        emailMessage.getEmailType().handle(new EmailTypeVisitor() {
-            @Override
-            public void visitFinishedExperiment() {
-                Assert.notNull(experimentRequestEntity.getDownloadUrl(),
-                        String.format("Expected not null download url for experiment [%s]",
-                                experimentRequestEntity.getRequestId()));
-                emailStepEntity.setExpectedDownloadUrl(experimentRequestEntity.getDownloadUrl());
-                emailStepEntity.setActualDownloadUrl(emailMessage.getDownloadUrl());
-                var downloadUrlMatchResult = matcher.compareAndMatch(experimentRequestEntity.getDownloadUrl(),
-                        emailMessage.getDownloadUrl());
-                emailStepEntity.setDownloadUrlMatchResult(downloadUrlMatchResult);
-            }
-        });
-        emailStepEntity.setTestResult(calculateTestResult(matcher));
-        emailStepEntity.setExecutionStatus(ExecutionStatus.FINISHED);
-        emailStepEntity.setFinished(LocalDateTime.now());
-        log.info("Email message [{}] has been processed for experiment [{}]", emailMessage.getEmailType(),
-                emailMessage.getRequestId());
+        try {
+            var matcher = new TestResultsMatcher();
+            emailMessage.getEmailType().handle(new EmailTypeVisitor() {
+                @Override
+                public void visitFinishedExperiment() {
+                    Assert.notNull(experimentRequestEntity.getDownloadUrl(),
+                            String.format("Expected not null download url for experiment [%s]",
+                                    experimentRequestEntity.getRequestId()));
+                    emailStepEntity.setExpectedDownloadUrl(experimentRequestEntity.getDownloadUrl());
+                    emailStepEntity.setActualDownloadUrl(emailMessage.getDownloadUrl());
+                    var downloadUrlMatchResult = matcher.compareAndMatch(experimentRequestEntity.getDownloadUrl(),
+                            emailMessage.getDownloadUrl());
+                    emailStepEntity.setDownloadUrlMatchResult(downloadUrlMatchResult);
+                }
+            });
+            emailStepEntity.setTestResult(calculateTestResult(matcher));
+            log.info("Email message [{}] has been processed for experiment [{}] with test result: [{}]",
+                    emailMessage.getEmailType(), emailMessage.getRequestId(), emailStepEntity.getTestResult());
+        } catch (Exception ex) {
+            log.error("Error while test step [{}] email [{}] handling for experiment request [{}]: {}",
+                    emailStepEntity.getId(), emailStepEntity.getEmailType(), experimentRequestEntity.getRequestId(),
+                    ex.getMessage());
+            emailStepEntity.setDetails(ex.getMessage());
+            emailStepEntity.setTestResult(TestResult.ERROR);
+        } finally {
+            emailStepEntity.setExecutionStatus(ExecutionStatus.FINISHED);
+            emailStepEntity.setFinished(LocalDateTime.now());
+            emailTestStepRepository.save(emailStepEntity);
+        }
     }
 }
