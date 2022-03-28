@@ -62,8 +62,7 @@ public class EmailMessageHandler {
         if (emailStepEntity == null) {
             log.warn("Email step entity not found for experiment with request id [{}], email type [{}]",
                     experimentRequestEntity.getRequestId(), emailMessage.getEmailType());
-        }
-        if (FINISHED_EXECUTION_STATUSES.contains(emailStepEntity.getExecutionStatus())) {
+        } else if (FINISHED_EXECUTION_STATUSES.contains(emailStepEntity.getExecutionStatus())) {
             log.warn("Test step [[{}], {}] already finished with status [{}] for experiment [{}]. Skipped...",
                     emailStepEntity.getId(), emailStepEntity.getEmailType(), emailStepEntity.getExecutionStatus(),
                     experimentRequestEntity.getRequestId());
