@@ -30,6 +30,7 @@ public interface ExperimentRequestRepository extends JpaBaseEvaluationRequestRep
      * @return requests ids list
      */
     @Query("select er.id from ExperimentRequestEntity er where er.stageType = 'COMPLETED' " +
+            "and er.executionStatus not in (:statuses) " +
             "and not exists (select ts.id from BaseTestStepEntity ts where ts.evaluationRequestEntity = er and " +
             "ts.executionStatus not in (:statuses)) order by er.started")
     List<Long> findFinishedTests(@Param("statuses") Collection<ExecutionStatus> statuses);

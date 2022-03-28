@@ -6,6 +6,7 @@ import com.ecaservice.auto.test.entity.autotest.ExperimentRequestEntity;
 import com.ecaservice.auto.test.entity.autotest.RequestStageType;
 import com.ecaservice.auto.test.model.evaluation.EvaluationResultsDetailsMatch;
 import com.ecaservice.auto.test.repository.autotest.BaseEvaluationRequestRepository;
+import com.ecaservice.auto.test.repository.autotest.BaseTestStepRepository;
 import com.ecaservice.auto.test.service.api.EcaServerClient;
 import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
 import com.ecaservice.test.common.model.ExecutionStatus;
@@ -19,7 +20,6 @@ import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,6 +48,7 @@ public class EvaluationResultsProcessor {
     private final ErsService ersService;
     private final EvaluationResultsMatcherService evaluationResultsMatcherService;
     private final BaseEvaluationRequestRepository baseEvaluationRequestRepository;
+    private final BaseTestStepRepository baseTestStepRepository;
 
     /**
      * Compares and matches experiment results.
@@ -109,7 +110,7 @@ public class EvaluationResultsProcessor {
         requestEntity.setTotalNotFound(matcher.getTotalNotFound());
         requestEntity.setTestResult(calculateTestResult(matcher));
         requestEntity.setStageType(RequestStageType.COMPLETED);
-        if (!CollectionUtils.isEmpty(requestEntity.getTestSteps())) {
+        if (baseTestStepRepository.existsByEvaluationRequestEntity(requestEntity)) {
             log.info("Request [{}] has [{}] additional test steps. Wait for them to complete",
                     requestEntity.getRequestId(), requestEntity.getTestSteps().size());
         } else {
