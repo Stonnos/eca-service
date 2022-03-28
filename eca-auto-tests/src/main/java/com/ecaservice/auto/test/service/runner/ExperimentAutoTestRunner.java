@@ -6,7 +6,6 @@ import com.ecaservice.auto.test.entity.autotest.BaseTestStepEntity;
 import com.ecaservice.auto.test.entity.autotest.EmailTestStepEntity;
 import com.ecaservice.auto.test.entity.autotest.ExperimentRequestEntity;
 import com.ecaservice.auto.test.entity.autotest.TestFeatureEntity;
-import com.ecaservice.auto.test.entity.autotest.TestFeatureVisitor;
 import com.ecaservice.auto.test.model.EmailType;
 import com.ecaservice.auto.test.model.ExperimentTestDataModel;
 import com.ecaservice.auto.test.repository.autotest.BaseEvaluationRequestRepository;
@@ -24,7 +23,6 @@ import org.springframework.stereotype.Service;
 import weka.core.Instances;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -40,7 +38,8 @@ import static com.google.common.collect.Lists.newArrayList;
 @Service
 public class ExperimentAutoTestRunner extends AbstractAutoTestRunner<ExperimentRequestEntity, ExperimentRequest> {
 
-    private static final List<EmailType> BLACKLIST_EMAILS = List.of(EmailType.ERROR, EmailType.TIMEOUT);
+    private static final List<EmailType> WHITELIST_EMAILS =
+            List.of(EmailType.NEW, EmailType.IN_PROGRESS, EmailType.FINISHED);
 
     private final MailProperties mailProperties;
     private final InstancesLoader instancesLoader;
@@ -94,7 +93,7 @@ public class ExperimentAutoTestRunner extends AbstractAutoTestRunner<ExperimentR
         List<BaseTestStepEntity> steps = newArrayList();
         features.forEach(testFeatureEntity -> testFeatureEntity.getTestFeature().visit(() ->
                 Stream.of(EmailType.values())
-                        .filter(emailType -> !BLACKLIST_EMAILS.contains(emailType))
+                        .filter(WHITELIST_EMAILS::contains)
                         .forEach(emailType -> {
                             var emailTestStepEntity = new EmailTestStepEntity();
                             emailTestStepEntity.setEmailType(emailType);
