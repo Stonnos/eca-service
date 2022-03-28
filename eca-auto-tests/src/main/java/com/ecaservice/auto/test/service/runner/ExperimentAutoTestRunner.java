@@ -2,13 +2,20 @@ package com.ecaservice.auto.test.service.runner;
 
 import com.ecaservice.auto.test.config.mail.MailProperties;
 import com.ecaservice.auto.test.entity.autotest.AutoTestType;
+import com.ecaservice.auto.test.entity.autotest.BaseTestStepEntity;
+import com.ecaservice.auto.test.entity.autotest.EmailTestStepEntity;
 import com.ecaservice.auto.test.entity.autotest.ExperimentRequestEntity;
+import com.ecaservice.auto.test.entity.autotest.TestFeatureEntity;
+import com.ecaservice.auto.test.entity.autotest.TestFeatureVisitor;
+import com.ecaservice.auto.test.model.EmailType;
 import com.ecaservice.auto.test.model.ExperimentTestDataModel;
 import com.ecaservice.auto.test.repository.autotest.BaseEvaluationRequestRepository;
+import com.ecaservice.auto.test.repository.autotest.BaseTestStepRepository;
 import com.ecaservice.auto.test.service.AutoTestJobService;
 import com.ecaservice.auto.test.service.AutoTestWorkerService;
 import com.ecaservice.auto.test.service.ExperimentTestDataProvider;
 import com.ecaservice.base.model.ExperimentRequest;
+import com.ecaservice.test.common.model.ExecutionStatus;
 import com.ecaservice.test.common.service.InstancesLoader;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
@@ -16,8 +23,13 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Service;
 import weka.core.Instances;
 
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * Experiment auto tests runner.
@@ -27,6 +39,8 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class ExperimentAutoTestRunner extends AbstractAutoTestRunner<ExperimentRequestEntity, ExperimentRequest> {
+
+    private static final List<EmailType> BLACKLIST_EMAILS = List.of(EmailType.ERROR, EmailType.TIMEOUT);
 
     private final MailProperties mailProperties;
     private final InstancesLoader instancesLoader;
@@ -47,11 +61,12 @@ public class ExperimentAutoTestRunner extends AbstractAutoTestRunner<ExperimentR
     public ExperimentAutoTestRunner(AutoTestJobService autoTestJobService,
                                     AutoTestWorkerService autoTestWorkerService,
                                     BaseEvaluationRequestRepository baseEvaluationRequestRepository,
+                                    BaseTestStepRepository baseTestStepRepository,
                                     MailProperties mailProperties,
                                     InstancesLoader instancesLoader,
                                     ExperimentTestDataProvider experimentTestDataProvider) {
         super(AutoTestType.EXPERIMENT_REQUEST_PROCESS, autoTestJobService, autoTestWorkerService,
-                baseEvaluationRequestRepository);
+                baseEvaluationRequestRepository, baseTestStepRepository);
         this.mailProperties = mailProperties;
         this.instancesLoader = instancesLoader;
         this.experimentTestDataProvider = experimentTestDataProvider;
@@ -71,6 +86,25 @@ public class ExperimentAutoTestRunner extends AbstractAutoTestRunner<ExperimentR
                 .stream()
                 .map(this::createExperimentRequest)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    protected List<BaseTestStepEntity> createTestSteps(ExperimentRequestEntity requestEntity,
+                                                       List<TestFeatureEntity> features) {
+        List<BaseTestStepEntity> steps = newArrayList();
+        features.forEach(testFeatureEntity -> testFeatureEntity.getTestFeature().visit(() ->
+                Stream.of(EmailType.values())
+                        .filter(emailType -> !BLACKLIST_EMAILS.contains(emailType))
+                        .forEach(emailType -> {
+                            var emailTestStepEntity = new EmailTestStepEntity();
+                            emailTestStepEntity.setEmailType(emailType);
+                            emailTestStepEntity.setExecutionStatus(ExecutionStatus.IN_PROGRESS);
+                            emailTestStepEntity.setEvaluationRequestEntity(requestEntity);
+                            emailTestStepEntity.setCreated(LocalDateTime.now());
+                            emailTestStepEntity.setStarted(LocalDateTime.now());
+                            steps.add(emailTestStepEntity);
+                        })));
+        return steps;
     }
 
     private ExperimentRequest createExperimentRequest(ExperimentTestDataModel experimentTestDataModel) {

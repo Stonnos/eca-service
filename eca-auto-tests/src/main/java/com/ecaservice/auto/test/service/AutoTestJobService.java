@@ -5,16 +5,21 @@ import com.ecaservice.auto.test.dto.BaseEvaluationRequestDto;
 import com.ecaservice.auto.test.entity.autotest.AutoTestType;
 import com.ecaservice.auto.test.entity.autotest.AutoTestsJobEntity;
 import com.ecaservice.auto.test.entity.autotest.BaseEvaluationRequestEntity;
+import com.ecaservice.auto.test.entity.autotest.TestFeature;
+import com.ecaservice.auto.test.entity.autotest.TestFeatureEntity;
 import com.ecaservice.auto.test.mapping.AutoTestsMapper;
 import com.ecaservice.auto.test.mapping.BaseEvaluationRequestMapper;
 import com.ecaservice.auto.test.repository.autotest.AutoTestsJobRepository;
 import com.ecaservice.auto.test.repository.autotest.BaseEvaluationRequestRepository;
+import com.ecaservice.auto.test.repository.autotest.BaseTestStepRepository;
+import com.ecaservice.auto.test.repository.autotest.TestFeatureRepository;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.test.common.model.ExecutionStatus;
 import com.ecaservice.test.common.report.TestResultsCounter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -37,6 +42,7 @@ public class AutoTestJobService {
     private final List<BaseEvaluationRequestMapper> evaluationRequestMappers;
     private final AutoTestsJobRepository autoTestsJobRepository;
     private final BaseEvaluationRequestRepository baseEvaluationRequestRepository;
+    private final TestFeatureRepository testFeatureRepository;
 
     /**
      * Creates experiment auto tests job.
@@ -44,6 +50,7 @@ public class AutoTestJobService {
      * @param autoTestType - auto test type
      * @return auto tests job dto
      */
+    @Transactional
     public AutoTestsJobDto createAutoTestsJob(AutoTestType autoTestType) {
         var autoTestsJobEntity = new AutoTestsJobEntity();
         autoTestsJobEntity.setJobUuid(UUID.randomUUID().toString());
@@ -51,6 +58,12 @@ public class AutoTestJobService {
         autoTestsJobEntity.setExecutionStatus(ExecutionStatus.NEW);
         autoTestsJobEntity.setCreated(LocalDateTime.now());
         autoTestsJobRepository.save(autoTestsJobEntity);
+        //-----------
+        TestFeatureEntity testFeatureEntity = new TestFeatureEntity();
+        testFeatureEntity.setTestFeature(TestFeature.EXPERIMENT_EMAILS);
+        testFeatureEntity.setJob(autoTestsJobEntity);
+        testFeatureRepository.save(testFeatureEntity);
+        //-----------
         return autoTestsMapper.map(autoTestsJobEntity);
     }
 

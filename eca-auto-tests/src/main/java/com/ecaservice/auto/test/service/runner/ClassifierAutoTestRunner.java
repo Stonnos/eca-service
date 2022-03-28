@@ -4,6 +4,7 @@ import com.ecaservice.auto.test.entity.autotest.AutoTestType;
 import com.ecaservice.auto.test.entity.autotest.EvaluationRequestEntity;
 import com.ecaservice.auto.test.model.ClassifierTestDataModel;
 import com.ecaservice.auto.test.repository.autotest.BaseEvaluationRequestRepository;
+import com.ecaservice.auto.test.repository.autotest.BaseTestStepRepository;
 import com.ecaservice.auto.test.service.AutoTestJobService;
 import com.ecaservice.auto.test.service.AutoTestWorkerService;
 import com.ecaservice.auto.test.service.ClassifierTestDataProvider;
@@ -51,11 +52,12 @@ public class ClassifierAutoTestRunner extends AbstractAutoTestRunner<EvaluationR
     public ClassifierAutoTestRunner(AutoTestJobService autoTestJobService,
                                     AutoTestWorkerService autoTestWorkerService,
                                     BaseEvaluationRequestRepository baseEvaluationRequestRepository,
+                                     BaseTestStepRepository baseTestStepRepository,
                                     InstancesLoader instancesLoader,
                                     ClassifierTestDataProvider classifierTestDataProvider,
                                     ClassifierOptionsAdapter classifierOptionsAdapter) {
         super(AutoTestType.EVALUATION_REQUEST_PROCESS, autoTestJobService, autoTestWorkerService,
-                baseEvaluationRequestRepository);
+                baseEvaluationRequestRepository, baseTestStepRepository);
         this.instancesLoader = instancesLoader;
         this.classifierTestDataProvider = classifierTestDataProvider;
         this.classifierOptionsAdapter = classifierOptionsAdapter;
