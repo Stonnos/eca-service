@@ -9,7 +9,6 @@ import org.springframework.data.repository.NoRepositoryBean;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Base repository for entities extended {@link BaseEvaluationRequestEntity} entity.
@@ -34,7 +33,7 @@ public interface JpaBaseEvaluationRequestRepository<E extends BaseEvaluationRequ
      * @param requestId - request id
      * @return request entity
      */
-    Optional<E> findByRequestId(String requestId);
+    E findByRequestId(String requestId);
 
     /**
      * Gets requests page for specified job.

@@ -5,8 +5,6 @@ import com.ecaservice.auto.test.entity.autotest.EmailTestStepEntity;
 import com.ecaservice.auto.test.model.EmailType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
-
 /**
  * Repository to manage with {@link EmailTestStepEntity} persistence entity.
  *
@@ -21,6 +19,6 @@ public interface EmailTestStepRepository extends JpaRepository<EmailTestStepEnti
      * @param emailType               - email type
      * @return email step entity
      */
-    Optional<EmailTestStepEntity> findByEvaluationRequestEntityAndEmailType(
-            BaseEvaluationRequestEntity evaluationRequestEntity, EmailType emailType);
+    EmailTestStepEntity findByEvaluationRequestEntityAndEmailType(BaseEvaluationRequestEntity evaluationRequestEntity,
+                                                                  EmailType emailType);
 }

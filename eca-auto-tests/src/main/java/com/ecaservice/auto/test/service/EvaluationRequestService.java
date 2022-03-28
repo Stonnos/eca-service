@@ -2,11 +2,8 @@ package com.ecaservice.auto.test.service;
 
 import com.ecaservice.auto.test.config.AutoTestsProperties;
 import com.ecaservice.auto.test.entity.autotest.BaseEvaluationRequestEntity;
-import com.ecaservice.auto.test.entity.autotest.ExperimentRequestEntity;
 import com.ecaservice.auto.test.entity.autotest.RequestStageType;
 import com.ecaservice.auto.test.repository.autotest.BaseEvaluationRequestRepository;
-import com.ecaservice.auto.test.repository.autotest.ExperimentRequestRepository;
-import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.test.common.model.ExecutionStatus;
 import com.ecaservice.test.common.model.TestResult;
 import lombok.RequiredArgsConstructor;
@@ -27,18 +24,6 @@ public class EvaluationRequestService {
 
     private final AutoTestsProperties autoTestsProperties;
     private final BaseEvaluationRequestRepository baseEvaluationRequestRepository;
-    private final ExperimentRequestRepository experimentRequestRepository;
-
-    /**
-     * Gets experiment request by request id.
-     *
-     * @param requestId - request id
-     * @return experiment request entity
-     */
-    public ExperimentRequestEntity getByRequestId(String requestId) {
-        return experimentRequestRepository.findByRequestId(requestId)
-                .orElseThrow(() -> new EntityNotFoundException(ExperimentRequestEntity.class, requestId));
-    }
 
     /**
      * Finish request entity test with error.
