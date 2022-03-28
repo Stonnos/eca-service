@@ -7,6 +7,7 @@ import com.ecaservice.auto.test.entity.autotest.AutoTestsJobEntity;
 import com.ecaservice.auto.test.entity.autotest.BaseEvaluationRequestEntity;
 import com.ecaservice.auto.test.entity.autotest.TestFeature;
 import com.ecaservice.auto.test.entity.autotest.TestFeatureEntity;
+import com.ecaservice.auto.test.exception.UnsupportedFeatureException;
 import com.ecaservice.auto.test.mapping.AutoTestsMapper;
 import com.ecaservice.auto.test.mapping.BaseEvaluationRequestMapper;
 import com.ecaservice.auto.test.repository.autotest.AutoTestsJobRepository;
@@ -22,7 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -53,6 +56,11 @@ public class AutoTestJobService {
      */
     @Transactional
     public AutoTestsJobDto createAutoTestsJob(AutoTestType autoTestType, List<TestFeature> features) {
+        var notSupportedFeatures = getNotSupportedFeatures(autoTestType, features);
+        if (!CollectionUtils.isEmpty(notSupportedFeatures)) {
+            throw new UnsupportedFeatureException(String.format("Features %s not supported for auto test type [%s]",
+                    notSupportedFeatures, autoTestType));
+        }
         var autoTestsJobEntity = new AutoTestsJobEntity();
         autoTestsJobEntity.setJobUuid(UUID.randomUUID().toString());
         autoTestsJobEntity.setAutoTestType(autoTestType);
@@ -155,5 +163,14 @@ public class AutoTestJobService {
             testFeatureRepository.saveAll(featureEntities);
             log.info("[{}] features has been saved for auto tests job [{}]", features, job.getJobUuid());
         }
+    }
+
+    private List<TestFeature> getNotSupportedFeatures(AutoTestType autoTestType, List<TestFeature> features) {
+        var supportedFeatures = autoTestType.getSupportedFeatures();
+        return Optional.ofNullable(features)
+                .orElse(Collections.emptyList())
+                .stream()
+                .filter(feature -> !supportedFeatures.contains(feature))
+                .collect(Collectors.toList());
     }
 }
