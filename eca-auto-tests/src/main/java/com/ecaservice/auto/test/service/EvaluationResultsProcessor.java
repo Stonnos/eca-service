@@ -111,8 +111,7 @@ public class EvaluationResultsProcessor {
         requestEntity.setTestResult(calculateTestResult(matcher));
         requestEntity.setStageType(RequestStageType.COMPLETED);
         if (baseTestStepRepository.existsByEvaluationRequestEntity(requestEntity)) {
-            log.info("Request [{}] has [{}] additional test steps. Wait for them to complete",
-                    requestEntity.getRequestId(), requestEntity.getTestSteps().size());
+            log.info("Request [{}] has additional test steps. Wait for them to complete", requestEntity.getRequestId());
         } else {
             requestEntity.setExecutionStatus(ExecutionStatus.FINISHED);
             requestEntity.setFinished(LocalDateTime.now());
