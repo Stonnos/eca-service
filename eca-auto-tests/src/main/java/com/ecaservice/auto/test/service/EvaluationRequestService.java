@@ -99,7 +99,7 @@ public class EvaluationRequestService {
     }
 
     private void finishTestStepsWithError(BaseEvaluationRequestEntity requestEntity, String errorMessage) {
-        var testSteps = testStepRepository.findAllByEvaluationRequestEntityAndAndExecutionStatusIn(requestEntity,
+        var testSteps = testStepRepository.findAllByEvaluationRequestEntityAndExecutionStatusIn(requestEntity,
                 IN_PROGRESS_STATUSES);
         if (!CollectionUtils.isEmpty(testSteps)) {
             log.info("Got additional test steps [{}] for request id [{}] to finish with error",

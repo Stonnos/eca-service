@@ -26,7 +26,7 @@ public interface BaseTestStepRepository extends JpaRepository<BaseTestStepEntity
      * @param executionStatuses       - execution statuses
      * @return test steps list
      */
-    List<BaseTestStepEntity> findAllByEvaluationRequestEntityAndAndExecutionStatusIn(
+    List<BaseTestStepEntity> findAllByEvaluationRequestEntityAndExecutionStatusIn(
             BaseEvaluationRequestEntity evaluationRequestEntity, Collection<ExecutionStatus> executionStatuses);
 
     /**
