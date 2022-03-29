@@ -32,6 +32,7 @@ import java.util.function.BiConsumer;
 public class AutoTestWorkerService {
 
     private final RabbitSender rabbitSender;
+    private final EvaluationRequestService evaluationRequestService;
     private final BaseEvaluationRequestRepository baseEvaluationRequestRepository;
 
     /**
@@ -68,21 +69,12 @@ public class AutoTestWorkerService {
             sender.accept(request, baseEvaluationRequestEntity.getCorrelationId());
             baseEvaluationRequestEntity.setStageType(RequestStageType.REQUEST_SENT);
             baseEvaluationRequestEntity.setExecutionStatus(ExecutionStatus.IN_PROGRESS);
+            baseEvaluationRequestRepository.save(baseEvaluationRequestEntity);
             log.info("Request with correlation id [{}] has been sent", baseEvaluationRequestEntity.getCorrelationId());
         } catch (Exception ex) {
             log.error("Unknown error while sending request with correlation id [{}]: {}",
                     baseEvaluationRequestEntity.getCorrelationId(), ex.getMessage());
-            handleErrorRequest(baseEvaluationRequestEntity, ex);
-        } finally {
-            baseEvaluationRequestRepository.save(baseEvaluationRequestEntity);
+            evaluationRequestService.finishWithError(baseEvaluationRequestEntity, ex.getMessage());
         }
-    }
-
-    private void handleErrorRequest(BaseEvaluationRequestEntity baseEvaluationRequestEntity, Exception ex) {
-        baseEvaluationRequestEntity.setTestResult(TestResult.ERROR);
-        baseEvaluationRequestEntity.setStageType(RequestStageType.ERROR);
-        baseEvaluationRequestEntity.setExecutionStatus(ExecutionStatus.ERROR);
-        baseEvaluationRequestEntity.setDetails(ex.getMessage());
-        baseEvaluationRequestEntity.setFinished(LocalDateTime.now());
     }
 }
