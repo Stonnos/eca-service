@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Auto test service.
@@ -25,6 +26,11 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 public class EvaluationRequestService {
+
+    private static final List<ExecutionStatus> IN_PROGRESS_STATUSES = List.of(
+            ExecutionStatus.NEW,
+            ExecutionStatus.IN_PROGRESS
+    );
 
     private final AutoTestsProperties autoTestsProperties;
     private final TestStepService testStepService;
@@ -67,10 +73,11 @@ public class EvaluationRequestService {
     }
 
     private void finishTestStepsWithError(BaseEvaluationRequestEntity requestEntity, String errorMessage) {
-        var testSteps = testStepRepository.findAllByEvaluationRequestEntity(requestEntity);
-        if (CollectionUtils.isEmpty(testSteps)) {
-            log.info("No one additional test steps found for request [{}]", requestEntity.getRequestId());
-        } else {
+        var testSteps = testStepRepository.findAllByEvaluationRequestEntityAndAndExecutionStatusIn(requestEntity,
+                IN_PROGRESS_STATUSES);
+        if (!CollectionUtils.isEmpty(testSteps)) {
+            log.info("Got additional test steps [{}] for request id [{}] to finish with error",
+                    requestEntity.getRequestId(), testSteps.size());
             testStepService.finishWithError(testSteps, errorMessage);
         }
     }

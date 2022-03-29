@@ -6,10 +6,8 @@ import com.ecaservice.auto.test.entity.autotest.ExperimentRequestEntity;
 import com.ecaservice.auto.test.entity.autotest.RequestStageType;
 import com.ecaservice.auto.test.model.evaluation.EvaluationResultsDetailsMatch;
 import com.ecaservice.auto.test.repository.autotest.BaseEvaluationRequestRepository;
-import com.ecaservice.auto.test.repository.autotest.BaseTestStepRepository;
 import com.ecaservice.auto.test.service.api.EcaServerClient;
 import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
-import com.ecaservice.test.common.model.ExecutionStatus;
 import com.ecaservice.test.common.service.TestResultsMatcher;
 import eca.core.evaluation.EvaluationResults;
 import eca.dataminer.AbstractExperiment;
@@ -23,7 +21,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
@@ -48,7 +45,6 @@ public class EvaluationResultsProcessor {
     private final ErsService ersService;
     private final EvaluationResultsMatcherService evaluationResultsMatcherService;
     private final BaseEvaluationRequestRepository baseEvaluationRequestRepository;
-    private final BaseTestStepRepository baseTestStepRepository;
 
     /**
      * Compares and matches experiment results.
@@ -110,14 +106,6 @@ public class EvaluationResultsProcessor {
         requestEntity.setTotalNotFound(matcher.getTotalNotFound());
         requestEntity.setTestResult(calculateTestResult(matcher));
         requestEntity.setStageType(RequestStageType.COMPLETED);
-        if (baseTestStepRepository.existsByEvaluationRequestEntity(requestEntity)) {
-            log.info("Request [{}] has additional test steps. Wait for them to complete", requestEntity.getRequestId());
-        } else {
-            requestEntity.setExecutionStatus(ExecutionStatus.FINISHED);
-            requestEntity.setFinished(LocalDateTime.now());
-            log.info("Request [{}] has no one additional test step. Just finish execution",
-                    requestEntity.getRequestId());
-        }
         baseEvaluationRequestRepository.save(requestEntity);
     }
 

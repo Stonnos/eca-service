@@ -19,20 +19,14 @@ import java.util.List;
 public interface BaseTestStepRepository extends JpaRepository<BaseTestStepEntity, Long> {
 
     /**
-     * Checks test steps existing for specified evaluation request entity.
-     *
-     * @param evaluationRequestEntity - evaluation request entity
-     * @return {@code true} if test steps existing, otherwise {@code false}
-     */
-    boolean existsByEvaluationRequestEntity(BaseEvaluationRequestEntity evaluationRequestEntity);
-
-    /**
      * Finds all test steps for specified evaluation request.
      *
      * @param evaluationRequestEntity - evaluation request entity
+     * @param executionStatuses       - execution statuses
      * @return test steps list
      */
-    List<BaseTestStepEntity> findAllByEvaluationRequestEntity(BaseEvaluationRequestEntity evaluationRequestEntity);
+    List<BaseTestStepEntity> findAllByEvaluationRequestEntityAndAndExecutionStatusIn(
+            BaseEvaluationRequestEntity evaluationRequestEntity, Collection<ExecutionStatus> executionStatuses);
 
     /**
      * Finds exceeded steps ids.
