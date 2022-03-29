@@ -3,6 +3,7 @@ package com.ecaservice.auto.test.service;
 import com.ecaservice.auto.test.config.AutoTestsProperties;
 import com.ecaservice.auto.test.entity.autotest.BaseEvaluationRequestEntity;
 import com.ecaservice.auto.test.entity.autotest.RequestStageType;
+import com.ecaservice.auto.test.projections.TestResultProjection;
 import com.ecaservice.auto.test.repository.autotest.BaseEvaluationRequestRepository;
 import com.ecaservice.auto.test.repository.autotest.BaseTestStepRepository;
 import com.ecaservice.auto.test.service.step.TestStepService;
@@ -16,6 +17,9 @@ import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static com.ecaservice.auto.test.util.Utils.calculateFinalTestResult;
+import static com.ecaservice.auto.test.util.Utils.sum;
 
 /**
  * Auto test service.
@@ -36,6 +40,28 @@ public class EvaluationRequestService {
     private final TestStepService testStepService;
     private final BaseEvaluationRequestRepository baseEvaluationRequestRepository;
     private final BaseTestStepRepository testStepRepository;
+
+    /**
+     * Calculates final test result and finishes test execution.
+     *
+     * @param requestEntity - request entity
+     */
+    public void complete(BaseEvaluationRequestEntity requestEntity) {
+        var testSteps = testStepRepository.getTestResults(requestEntity);
+        TestResult testResult = calculateFinalTestResult(testSteps);
+        int totalMatched = sum(testSteps, TestResultProjection::getTotalMatched);
+        int totalNotMatched = sum(testSteps, TestResultProjection::getTotalNotMatched);
+        int totalNotFound = sum(testSteps, TestResultProjection::getTotalNotFound);
+        requestEntity.setTotalMatched(totalMatched);
+        requestEntity.setTotalNotMatched(totalNotMatched);
+        requestEntity.setTotalNotFound(totalNotFound);
+        requestEntity.setTestResult(testResult);
+        requestEntity.setExecutionStatus(ExecutionStatus.FINISHED);
+        requestEntity.setFinished(LocalDateTime.now());
+        baseEvaluationRequestRepository.save(requestEntity);
+        log.info("Evaluation request [{}] test has been finished with result: {}", requestEntity.getRequestId(),
+                requestEntity.getTestResult());
+    }
 
     /**
      * Finish request entity test with error.

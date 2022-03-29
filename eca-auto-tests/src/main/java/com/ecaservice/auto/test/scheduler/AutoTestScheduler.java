@@ -81,7 +81,7 @@ public class AutoTestScheduler {
         log.trace("Starting to process finished requests");
         List<Long> finishedIds = baseEvaluationRequestRepository.findFinishedTests(FINISHED_EXECUTION_STATUSES);
         processWithPagination(finishedIds, baseEvaluationRequestRepository::findByIdInOrderByCreated,
-                this::processFinishedTests, autoTestsProperties.getPageSize());
+                this::processFinishedEvaluationRequestsTests, autoTestsProperties.getPageSize());
     }
 
     /**
@@ -132,12 +132,7 @@ public class AutoTestScheduler {
         );
     }
 
-    private void processFinishedTests(List<BaseEvaluationRequestEntity> requestEntities) {
-        requestEntities.forEach(requestEntity -> {
-            requestEntity.setExecutionStatus(ExecutionStatus.FINISHED);
-            requestEntity.setFinished(LocalDateTime.now());
-            baseEvaluationRequestRepository.save(requestEntity);
-            log.info("Evaluation request [{}] test execution has been finished", requestEntity.getRequestId());
-        });
+    private void processFinishedEvaluationRequestsTests(List<BaseEvaluationRequestEntity> requestEntities) {
+        requestEntities.forEach(evaluationRequestService::complete);
     }
 }
