@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-public class EvaluationResultsTestStepHandler extends AbstractTestStepHandler<EvaluationResultsTestStepEvent> {
+public class EvaluationResultsTestStepHandler implements AbstractTestStepHandler<EvaluationResultsTestStepEvent> {
 
     private final ErsService ersService;
     private final EvaluationResultsMatcherService evaluationResultsMatcherService;
@@ -31,7 +31,6 @@ public class EvaluationResultsTestStepHandler extends AbstractTestStepHandler<Ev
     public EvaluationResultsTestStepHandler(ErsService ersService,
                                             EvaluationResultsMatcherService evaluationResultsMatcherService,
                                             TestStepService testStepService) {
-        super(EvaluationResultsTestStepEvent.class);
         this.ersService = ersService;
         this.evaluationResultsMatcherService = evaluationResultsMatcherService;
         this.testStepService = testStepService;

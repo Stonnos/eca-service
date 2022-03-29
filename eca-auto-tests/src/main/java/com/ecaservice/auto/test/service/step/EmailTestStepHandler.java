@@ -20,7 +20,7 @@ import org.springframework.util.Assert;
 @Slf4j
 @Component
 @ConditionalOnProperty(value = "mail.enabled", havingValue = "true")
-public class EmailTestStepHandler extends AbstractTestStepHandler<EmailTestStepEvent> {
+public class EmailTestStepHandler implements AbstractTestStepHandler<EmailTestStepEvent> {
 
     private final TestStepService testStepService;
 
@@ -30,7 +30,6 @@ public class EmailTestStepHandler extends AbstractTestStepHandler<EmailTestStepE
      * @param testStepService - test step service
      */
     public EmailTestStepHandler(TestStepService testStepService) {
-        super(EmailTestStepEvent.class);
         this.testStepService = testStepService;
     }
 

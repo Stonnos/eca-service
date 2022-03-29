@@ -1,13 +1,9 @@
 package com.ecaservice.auto.test.service.step;
 
-import com.ecaservice.auto.test.entity.autotest.BaseEvaluationRequestEntity;
 import com.ecaservice.auto.test.entity.autotest.ExperimentRequestEntity;
-import com.ecaservice.auto.test.entity.autotest.RequestStageType;
 import com.ecaservice.auto.test.event.model.ExperimentResultsTestStepEvent;
 import com.ecaservice.auto.test.model.evaluation.EvaluationResultsDetailsMatch;
-import com.ecaservice.auto.test.repository.autotest.BaseEvaluationRequestRepository;
 import com.ecaservice.auto.test.service.ErsService;
-import com.ecaservice.auto.test.service.EvaluationRequestService;
 import com.ecaservice.auto.test.service.EvaluationResultsMatcherService;
 import com.ecaservice.auto.test.service.api.EcaServerClient;
 import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
@@ -27,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 
-import static com.ecaservice.test.common.util.Utils.calculateTestResult;
 import static com.google.common.collect.Lists.newArrayList;
 
 /**
@@ -37,7 +32,7 @@ import static com.google.common.collect.Lists.newArrayList;
  */
 @Slf4j
 @Component
-public class ExperimentResultsTestStepHandler extends AbstractTestStepHandler<ExperimentResultsTestStepEvent> {
+public class ExperimentResultsTestStepHandler implements AbstractTestStepHandler<ExperimentResultsTestStepEvent> {
 
     private static final String SLASH_SEPARATOR = "/";
 
@@ -58,7 +53,6 @@ public class ExperimentResultsTestStepHandler extends AbstractTestStepHandler<Ex
                                             ErsService ersService,
                                             EvaluationResultsMatcherService evaluationResultsMatcherService,
                                             TestStepService testStepService) {
-        super(ExperimentResultsTestStepEvent.class);
         this.ecaServerClient = ecaServerClient;
         this.ersService = ersService;
         this.evaluationResultsMatcherService = evaluationResultsMatcherService;
