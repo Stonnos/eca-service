@@ -1,6 +1,5 @@
 package com.ecaservice.auto.test.service;
 
-import com.ecaservice.auto.test.entity.autotest.BaseEvaluationRequestEntity;
 import com.ecaservice.auto.test.entity.autotest.ExperimentRequestEntity;
 import com.ecaservice.auto.test.entity.autotest.RequestStageType;
 import com.ecaservice.auto.test.repository.autotest.BaseEvaluationRequestRepository;
@@ -12,7 +11,6 @@ import com.ecaservice.base.model.InstancesRequest;
 import com.ecaservice.base.model.visitor.EcaRequestVisitor;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.test.common.model.ExecutionStatus;
-import com.ecaservice.test.common.model.TestResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.NotImplementedException;
