@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotEmpty;
 import java.io.IOException;
 import java.util.List;
 
@@ -32,6 +34,7 @@ import java.util.List;
  */
 @Tag(name = "API for auto tests execution")
 @Slf4j
+@Validated
 @RestController
 @RequestMapping("/auto-tests")
 @RequiredArgsConstructor
@@ -58,7 +61,7 @@ public class AutoTestController {
     public AutoTestsJobDto createAutoTestsJob(@Parameter(description = "Auto test type", required = true)
                                               @RequestParam AutoTestType autoTestType,
                                               @Parameter(description = "Features")
-                                              @RequestParam(required = false) List<TestFeature> features) {
+                                              @RequestParam(required = false) @NotEmpty List<TestFeature> features) {
         log.info("Request to create auto tests [{}] job with features [{}]", autoTestType, features);
         var autoTestsJobDto = autoTestJobService.createAutoTestsJob(autoTestType, features);
         log.info("Auto test [{}] job has been created with uuid [{}]", autoTestType, autoTestsJobDto.getJobUuid());
