@@ -83,8 +83,8 @@ public class ExperimentResultsTestStepHandler extends AbstractTestStepHandler<Ex
             testStepService.complete(experimentResultsStep, matcher);
             log.info("Experiment [{}] results has been processed", experimentRequestEntity.getRequestId());
         } catch (Exception ex) {
-            log.error("There was an error while process experiment results [{}]: {}",
-                    experimentRequestEntity.getRequestId(), ex.getMessage());
+            log.error("There was an error while process experiment results [{}] test step [{}]: {}",
+                    experimentRequestEntity.getRequestId(), experimentResultsStep.getId(), ex.getMessage());
             testStepService.finishWithError(experimentResultsStep, ex.getMessage());
         }
     }
