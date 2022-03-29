@@ -1,7 +1,6 @@
 package com.ecaservice.auto.test.repository.autotest;
 
 import com.ecaservice.auto.test.entity.autotest.AutoTestsJobEntity;
-import com.ecaservice.auto.test.entity.autotest.RequestStageType;
 import com.ecaservice.test.common.model.ExecutionStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

@@ -6,7 +6,6 @@ import com.ecaservice.auto.test.repository.autotest.ExperimentRequestRepository;
 import com.ecaservice.auto.test.service.EvaluationRequestService;
 import com.ecaservice.base.model.ExperimentResponse;
 import com.ecaservice.base.model.TechnicalStatus;
-import com.ecaservice.common.web.exception.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
