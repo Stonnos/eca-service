@@ -11,7 +11,6 @@ import com.ecaservice.auto.test.repository.autotest.BaseEvaluationRequestReposit
 import com.ecaservice.auto.test.repository.autotest.BaseTestStepRepository;
 import com.ecaservice.auto.test.repository.autotest.EvaluationRequestRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Cleanup;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
@@ -156,34 +155,34 @@ public class EvaluationAutoTestsScvReportGenerator
 
     private void printEvaluationResultsTestResultsCsvReport(ZipOutputStream zipOutputStream,
                                                             OutputStreamWriter outputStreamWriter,
-                                                            EvaluationResultsTestStepEntity evaluationResultsTestStepEntity)
+                                                            EvaluationResultsTestStepEntity testStep)
             throws IOException {
         String fileName = String.format(EVALUATION_RESULT_TOTAL_REPORT_CSV_FILE_NAME_FORMAT,
-                evaluationResultsTestStepEntity.getEvaluationRequestEntity().getRequestId());
+                testStep.getEvaluationRequestEntity().getRequestId());
         log.info("Starting to write file [{}] into zip archive", fileName);
         zipOutputStream.putNextEntry(new ZipEntry(fileName));
         var printer = new CSVPrinter(outputStreamWriter,
                 CSVFormat.EXCEL.withHeader(getResultsReportHeaders()).withDelimiter(getHeaderDelimiter()));
         printer.printRecord(Arrays.asList(
-                evaluationResultsTestStepEntity.getEvaluationRequestEntity().getClassifierName(),
-                evaluationResultsTestStepEntity.getEvaluationRequestEntity().getRequestId(),
-                evaluationResultsTestStepEntity.getEvaluationRequestEntity().getClassifierOptions(),
-                evaluationResultsTestStepEntity.getEvaluationRequestEntity().getEvaluationMethod().getDescription(),
-                evaluationResultsTestStepEntity.getEvaluationRequestEntity().getNumFolds(),
-                evaluationResultsTestStepEntity.getEvaluationRequestEntity().getNumTests(),
-                evaluationResultsTestStepEntity.getEvaluationRequestEntity().getSeed(),
-                evaluationResultsTestStepEntity.getStarted(),
-                evaluationResultsTestStepEntity.getFinished(),
-                totalTime(evaluationResultsTestStepEntity.getStarted(), evaluationResultsTestStepEntity.getFinished()),
-                evaluationResultsTestStepEntity.getTestResult(),
-                evaluationResultsTestStepEntity.getExecutionStatus(),
-                evaluationResultsTestStepEntity.getTotalMatched(),
-                evaluationResultsTestStepEntity.getTotalNotMatched(),
-                evaluationResultsTestStepEntity.getTotalNotFound(),
-                evaluationResultsTestStepEntity.getEvaluationRequestEntity().getRelationName(),
-                evaluationResultsTestStepEntity.getEvaluationRequestEntity().getNumInstances(),
-                evaluationResultsTestStepEntity.getEvaluationRequestEntity().getNumAttributes(),
-                evaluationResultsTestStepEntity.getDetails()
+                testStep.getEvaluationRequestEntity().getClassifierName(),
+                testStep.getEvaluationRequestEntity().getRequestId(),
+                testStep.getEvaluationRequestEntity().getClassifierOptions(),
+                testStep.getEvaluationRequestEntity().getEvaluationMethod().getDescription(),
+                testStep.getEvaluationRequestEntity().getNumFolds(),
+                testStep.getEvaluationRequestEntity().getNumTests(),
+                testStep.getEvaluationRequestEntity().getSeed(),
+                testStep.getStarted(),
+                testStep.getFinished(),
+                totalTime(testStep.getStarted(), testStep.getFinished()),
+                testStep.getTestResult(),
+                testStep.getExecutionStatus(),
+                testStep.getTotalMatched(),
+                testStep.getTotalNotMatched(),
+                testStep.getTotalNotFound(),
+                testStep.getEvaluationRequestEntity().getRelationName(),
+                testStep.getEvaluationRequestEntity().getNumInstances(),
+                testStep.getEvaluationRequestEntity().getNumAttributes(),
+                testStep.getDetails()
         ));
         flush(zipOutputStream, outputStreamWriter);
         log.info("File [{}] has been written into zip archive", fileName);
