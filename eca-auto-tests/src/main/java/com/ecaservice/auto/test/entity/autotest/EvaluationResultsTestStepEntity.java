@@ -28,4 +28,9 @@ public class EvaluationResultsTestStepEntity extends BaseTestStepEntity<Evaluati
     @Type(type = "jsonb")
     @Column(name = "evaluation_results_details", columnDefinition = "jsonb")
     private EvaluationResultsDetailsMatch evaluationResultsDetails;
+
+    @Override
+    public void visit(TestStepVisitor visitor) {
+        visitor.visit(this);
+    }
 }

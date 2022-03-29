@@ -55,4 +55,9 @@ public class EmailTestStepEntity extends BaseTestStepEntity<ExperimentRequestEnt
     @Enumerated(EnumType.STRING)
     @Column(name = "download_url_match_result")
     private MatchResult downloadUrlMatchResult;
+
+    @Override
+    public void visit(TestStepVisitor visitor) {
+        visitor.visit(this);
+    }
 }
