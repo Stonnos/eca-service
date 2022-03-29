@@ -67,8 +67,7 @@ public class EmailMessageHandler {
                     emailStepEntity.getId(), emailStepEntity.getEmailType(), emailStepEntity.getExecutionStatus(),
                     experimentRequestEntity.getRequestId());
         } else {
-            applicationEventPublisher.publishEvent(
-                    new EmailTestStepEvent(this, emailMessage, emailStepEntity, experimentRequestEntity));
+            applicationEventPublisher.publishEvent(new EmailTestStepEvent(this, emailMessage, emailStepEntity));
         }
     }
 }

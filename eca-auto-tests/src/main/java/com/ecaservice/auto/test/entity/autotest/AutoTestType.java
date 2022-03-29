@@ -18,12 +18,12 @@ public enum AutoTestType {
     /**
      * Experiment request process test
      */
-    EXPERIMENT_REQUEST_PROCESS(Collections.singletonList(TestFeature.EXPERIMENT_EMAILS)),
+    EXPERIMENT_REQUEST_PROCESS(List.of(TestFeature.EVALUATION_RESULTS, TestFeature.EXPERIMENT_EMAILS)),
 
     /**
      * Evaluation request process test
      */
-    EVALUATION_REQUEST_PROCESS(Collections.emptyList());
+    EVALUATION_REQUEST_PROCESS(Collections.singletonList(TestFeature.EVALUATION_RESULTS));
 
     /**
      * Supported features list

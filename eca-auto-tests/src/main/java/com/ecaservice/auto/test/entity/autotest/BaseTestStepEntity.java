@@ -24,12 +24,13 @@ import javax.persistence.Table;
 @Table(name = "test_step")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "step_type")
-public class BaseTestStepEntity extends BaseTestEntity {
+public class BaseTestStepEntity<E extends BaseEvaluationRequestEntity> extends BaseTestEntity {
 
     /**
      * Evaluation request entity
      */
-    @ManyToOne
+    @ToString.Exclude
+    @ManyToOne(targetEntity = BaseEvaluationRequestEntity.class)
     @JoinColumn(name = "evaluation_request_id", nullable = false)
-    private BaseEvaluationRequestEntity evaluationRequestEntity;
+    private E evaluationRequestEntity;
 }

@@ -5,7 +5,10 @@ import com.ecaservice.auto.test.entity.autotest.AutoTestType;
 import com.ecaservice.auto.test.entity.autotest.BaseTestStepEntity;
 import com.ecaservice.auto.test.entity.autotest.EmailTestStepEntity;
 import com.ecaservice.auto.test.entity.autotest.ExperimentRequestEntity;
+import com.ecaservice.auto.test.entity.autotest.ExperimentResultsTestStepEntity;
+import com.ecaservice.auto.test.entity.autotest.TestFeature;
 import com.ecaservice.auto.test.entity.autotest.TestFeatureEntity;
+import com.ecaservice.auto.test.entity.autotest.TestFeatureVisitor;
 import com.ecaservice.auto.test.model.EmailType;
 import com.ecaservice.auto.test.model.ExperimentTestDataModel;
 import com.ecaservice.auto.test.repository.autotest.BaseEvaluationRequestRepository;
@@ -23,6 +26,7 @@ import org.springframework.stereotype.Service;
 import weka.core.Instances;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -91,19 +95,42 @@ public class ExperimentAutoTestRunner extends AbstractAutoTestRunner<ExperimentR
     protected List<BaseTestStepEntity> createTestSteps(ExperimentRequestEntity requestEntity,
                                                        List<TestFeatureEntity> features) {
         List<BaseTestStepEntity> steps = newArrayList();
-        features.forEach(testFeatureEntity -> testFeatureEntity.getTestFeature().visit(() ->
-                Stream.of(EmailType.values())
+        features.forEach(testFeatureEntity -> {
+            var nextSteps = internalCreateTestSteps(requestEntity, testFeatureEntity.getTestFeature());
+            steps.addAll(nextSteps);
+        });
+        return steps;
+    }
+
+    private List<BaseTestStepEntity> internalCreateTestSteps(ExperimentRequestEntity requestEntity,
+                                                             TestFeature feature) {
+        return feature.visit(new TestFeatureVisitor<>() {
+            @Override
+            public List<BaseTestStepEntity> visitExperimentEmailsFeature() {
+                return Stream.of(EmailType.values())
                         .filter(WHITELIST_EMAILS::contains)
-                        .forEach(emailType -> {
+                        .map(emailType -> {
                             var emailTestStepEntity = new EmailTestStepEntity();
                             emailTestStepEntity.setEmailType(emailType);
                             emailTestStepEntity.setExecutionStatus(ExecutionStatus.IN_PROGRESS);
                             emailTestStepEntity.setEvaluationRequestEntity(requestEntity);
                             emailTestStepEntity.setCreated(LocalDateTime.now());
                             emailTestStepEntity.setStarted(LocalDateTime.now());
-                            steps.add(emailTestStepEntity);
-                        })));
-        return steps;
+                            return emailTestStepEntity;
+                        })
+                        .collect(Collectors.toList());
+            }
+
+            @Override
+            public List<BaseTestStepEntity> visitEvaluationResults() {
+                var experimentResultsTestStepEntity = new ExperimentResultsTestStepEntity();
+                experimentResultsTestStepEntity.setExecutionStatus(ExecutionStatus.IN_PROGRESS);
+                experimentResultsTestStepEntity.setEvaluationRequestEntity(requestEntity);
+                experimentResultsTestStepEntity.setCreated(LocalDateTime.now());
+                experimentResultsTestStepEntity.setStarted(LocalDateTime.now());
+                return Collections.singletonList(experimentResultsTestStepEntity);
+            }
+        });
     }
 
     private ExperimentRequest createExperimentRequest(ExperimentTestDataModel experimentTestDataModel) {

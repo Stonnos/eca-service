@@ -64,4 +64,16 @@ public interface BaseEvaluationRequestRepository extends JpaRepository<BaseEvalu
      * @return evaluation requests list
      */
     List<BaseEvaluationRequestEntity> findAllByJob(AutoTestsJobEntity autoTestsJobEntity);
+
+    /**
+     * Finds finished test ids.
+     *
+     * @param statuses - final execution statuses for test steps
+     * @return requests ids list
+     */
+    @Query("select er.id from BaseEvaluationRequestEntity er where er.stageType = 'REQUEST_FINISHED' " +
+            "and er.executionStatus not in (:statuses) " +
+            "and not exists (select ts.id from BaseTestStepEntity ts where ts.evaluationRequestEntity = er and " +
+            "ts.executionStatus not in (:statuses)) order by er.started")
+    List<Long> findFinishedTests(@Param("statuses") Collection<ExecutionStatus> statuses);
 }

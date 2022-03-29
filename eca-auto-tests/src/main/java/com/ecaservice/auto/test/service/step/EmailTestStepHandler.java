@@ -12,8 +12,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
-import static com.ecaservice.test.common.util.Utils.calculateTestResult;
-
 /**
  * Email test step handler.
  *
@@ -41,13 +39,14 @@ public class EmailTestStepHandler extends AbstractTestStepHandler<EmailTestStepE
     public void handle(EmailTestStepEvent event) {
         var emailMessage = event.getEmailMessage();
         var emailStepEntity = event.getEmailTestStepEntity();
-        var experimentRequestEntity = event.getExperimentRequestEntity();
+        var experimentRequestEntity = emailStepEntity.getEvaluationRequestEntity();
         log.info("Starting to handle email step [[{}], {}] for experiment with request id [{}]",
                 emailStepEntity.getId(), emailStepEntity.getEmailType(), experimentRequestEntity.getRequestId());
         try {
             emailStepEntity.setMessageReceived(true);
-            compareAndMatchResults(experimentRequestEntity, emailMessage, emailStepEntity);
-            testStepService.complete(emailStepEntity);
+            var matcher = new TestResultsMatcher();
+            compareAndMatchResults(experimentRequestEntity, emailMessage, emailStepEntity, matcher);
+            testStepService.complete(emailStepEntity, matcher);
             log.info("Email message [{}] has been processed for experiment [{}] with test result: [{}]",
                     emailMessage.getEmailType(), emailMessage.getRequestId(), emailStepEntity.getTestResult());
         } catch (Exception ex) {
@@ -60,8 +59,8 @@ public class EmailTestStepHandler extends AbstractTestStepHandler<EmailTestStepE
 
     private void compareAndMatchResults(ExperimentRequestEntity experimentRequestEntity,
                                         EmailMessage emailMessage,
-                                        EmailTestStepEntity emailStepEntity) {
-        var matcher = new TestResultsMatcher();
+                                        EmailTestStepEntity emailStepEntity,
+                                        TestResultsMatcher matcher) {
         emailMessage.getEmailType().handle(new EmailTypeVisitor() {
             @Override
             public void visitFinishedExperiment() {
@@ -75,9 +74,5 @@ public class EmailTestStepHandler extends AbstractTestStepHandler<EmailTestStepE
                 emailStepEntity.setDownloadUrlMatchResult(downloadUrlMatchResult);
             }
         });
-        emailStepEntity.setTestResult(calculateTestResult(matcher));
-        emailStepEntity.setTotalMatched(matcher.getTotalMatched());
-        emailStepEntity.setTotalNotMatched(matcher.getTotalNotMatched());
-        emailStepEntity.setTotalNotFound(matcher.getTotalNotFound());
     }
 }

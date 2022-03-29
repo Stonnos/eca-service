@@ -1,6 +1,7 @@
 package com.ecaservice.auto.test.entity.autotest;
 
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -36,6 +37,7 @@ public class TestFeatureEntity {
     /**
      * Auto tests job
      */
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "auto_tests_job_id", nullable = false)
     private AutoTestsJobEntity job;

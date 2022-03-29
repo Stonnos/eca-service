@@ -8,12 +8,22 @@ package com.ecaservice.auto.test.entity.autotest;
 public enum TestFeature {
 
     /**
+     * Checks evaluation results
+     */
+    EVALUATION_RESULTS {
+        @Override
+        public <T> T visit(TestFeatureVisitor<T> visitor) {
+            return visitor.visitEvaluationResults();
+        }
+    },
+
+    /**
      * Checks experiment email notifications
      */
     EXPERIMENT_EMAILS {
         @Override
-        public void visit(TestFeatureVisitor visitor) {
-            visitor.visitExperimentEmailsFeature();
+        public <T> T visit(TestFeatureVisitor<T> visitor) {
+            return visitor.visitExperimentEmailsFeature();
         }
     };
 
@@ -21,6 +31,8 @@ public enum TestFeature {
      * Calls visitor.
      *
      * @param visitor - visitor interface
+     * @param <T>     - result generic type
+     * @return result
      */
-    public abstract void visit(TestFeatureVisitor visitor);
+    public abstract <T> T visit(TestFeatureVisitor<T> visitor);
 }

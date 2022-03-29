@@ -22,13 +22,13 @@ import javax.persistence.Enumerated;
 @ToString(callSuper = true)
 @Entity
 @DiscriminatorValue("EMAIL_STEP")
-public class EmailTestStepEntity extends BaseTestStepEntity {
+public class EmailTestStepEntity extends BaseTestStepEntity<ExperimentRequestEntity> {
 
     /**
      * Email type
      */
     @Enumerated(EnumType.STRING)
-    @Column(name = "email_type", nullable = false)
+    @Column(name = "email_type")
     private EmailType emailType;
 
     /**
