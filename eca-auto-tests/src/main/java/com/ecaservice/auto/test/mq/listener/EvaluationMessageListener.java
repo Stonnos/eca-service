@@ -57,8 +57,9 @@ public class EvaluationMessageListener {
                                         EvaluationResponse evaluationResponse,
                                         String correlationId) {
         evaluationRequestEntity.setRequestId(evaluationResponse.getRequestId());
-        evaluationRequestRepository.save(evaluationRequestEntity);
         if (TechnicalStatus.SUCCESS.equals(evaluationResponse.getStatus())) {
+            evaluationRequestEntity.setStageType(RequestStageType.REQUEST_FINISHED);
+            evaluationRequestRepository.save(evaluationRequestEntity);
             handleSuccessResponse(evaluationRequestEntity, evaluationResponse);
         } else {
             log.info("Got error response [{}] for evaluation request [{}], correlation id [{}]",
