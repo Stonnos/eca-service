@@ -1,7 +1,6 @@
 package com.ecaservice.auto.test.dto;
 
 import com.ecaservice.auto.test.entity.autotest.AutoTestType;
-import com.ecaservice.auto.test.entity.autotest.TestFeature;
 import com.ecaservice.test.common.model.ExecutionStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -40,7 +39,7 @@ public class AutoTestsJobDto {
      * Features list
      */
     @ArraySchema(schema = @Schema(description = "Features"))
-    private List<TestFeature> features;
+    private List<TestFeatureDto> features;
 
     /**
      * Created date
