@@ -54,7 +54,10 @@ public class EvaluationRequestService {
         log.info("Gets evaluation request details for request id [{}]", requestId);
         var evaluationRequestEntity = baseEvaluationRequestRepository.findByRequestId(requestId)
                 .orElseThrow(() -> new EntityNotFoundException(BaseEvaluationRequestEntity.class, requestId));
+        var testSteps = testStepRepository.findAllByEvaluationRequestEntity(evaluationRequestEntity);
         var evaluationRequestDto = evaluationRequestAdapter.proceed(evaluationRequestEntity);
+        evaluationRequestDto.setTestSteps(evaluationRequestAdapter.proceed(testSteps));
+        log.info("Fetched evaluation request details for request id [{}]", requestId);
         return evaluationRequestDto;
     }
 
