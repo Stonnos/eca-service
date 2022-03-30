@@ -1,11 +1,13 @@
 package com.ecaservice.auto.test.controller;
 
 import com.ecaservice.auto.test.dto.AutoTestsJobDto;
+import com.ecaservice.auto.test.dto.BaseEvaluationRequestDto;
 import com.ecaservice.auto.test.entity.autotest.AutoTestType;
 import com.ecaservice.auto.test.entity.autotest.AutoTestsJobEntity;
 import com.ecaservice.auto.test.entity.autotest.TestFeature;
 import com.ecaservice.auto.test.report.AbstractAutoTestsScvReportGenerator;
 import com.ecaservice.auto.test.service.AutoTestJobService;
+import com.ecaservice.auto.test.service.EvaluationRequestService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -44,20 +46,21 @@ public class AutoTestController {
     private static final String AUTO_TEST_REPORT_NAME = "auto-tests-report-%s.zip";
 
     private final AutoTestJobService autoTestJobService;
+    private final EvaluationRequestService evaluationRequestService;
     private final List<AbstractAutoTestsScvReportGenerator> autoTestsScvReportGenerators;
 
     /**
      * Creates auto tests job.
      *
      * @param autoTestType - auto test type
-     * @param features - features list
+     * @param features     - features list
      * @return auto tests job dto
      */
     @Operation(
             description = "Creates auto tests job",
             summary = "Creates auto tests job"
     )
-    @PostMapping(value = "/create")
+    @PostMapping(value = "/create-job")
     public AutoTestsJobDto createAutoTestsJob(@Parameter(description = "Auto test type", required = true)
                                               @RequestParam AutoTestType autoTestType,
                                               @Parameter(description = "Features")
@@ -78,13 +81,30 @@ public class AutoTestController {
             description = "Gets auto tests job details",
             summary = "Gets auto tests job details"
     )
-    @GetMapping(value = "/details/{jobUuid}")
+    @GetMapping(value = "/job-details/{jobUuid}")
     public AutoTestsJobDto getAutoTestsJobDetails(@Parameter(description = "Job uuid", required = true)
                                                   @PathVariable String jobUuid) {
         log.info("Gets auto tests job details: {}", jobUuid);
         var autoTestsJobDto = autoTestJobService.getJobDetails(jobUuid);
         log.info("Auto tests job dto has been fetched: {}", jobUuid);
         return autoTestsJobDto;
+    }
+
+    /**
+     * Gets evaluation request test details.
+     *
+     * @param requestId - request id
+     * @return evaluation request test details dto
+     */
+    @Operation(
+            description = "Gets evaluation request test details",
+            summary = "Gets evaluation request test details"
+    )
+    @GetMapping(value = "/evaluation-details/{requestId}")
+    public BaseEvaluationRequestDto getEvaluationRequestDetails(
+            @Parameter(description = "Request id", required = true) @PathVariable String requestId) {
+        log.info("Gets evaluation request test details: {}", requestId);
+        return evaluationRequestService.getEvaluationRequestDetails(requestId);
     }
 
     /**
