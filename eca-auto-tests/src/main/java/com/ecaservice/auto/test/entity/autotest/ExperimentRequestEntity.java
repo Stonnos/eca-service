@@ -40,36 +40,6 @@ public class ExperimentRequestEntity extends BaseEvaluationRequestEntity {
     private ExperimentType experimentType;
 
     /**
-     * Experiment NEW status email received?
-     */
-    @Column(name = "new_status_email_received")
-    private boolean newStatusEmailReceived;
-
-    /**
-     * Experiment IN_PROGRESS status email received?
-     */
-    @Column(name = "in_progress_status_email_received")
-    private boolean inProgressStatusEmailReceived;
-
-    /**
-     * Experiment FINISHED status email received?
-     */
-    @Column(name = "finished_status_email_received")
-    private boolean finishedStatusEmailReceived;
-
-    /**
-     * Experiment ERROR status email received?
-     */
-    @Column(name = "error_status_email_received")
-    private boolean errorStatusEmailReceived;
-
-    /**
-     * Experiment TIMEOUT status email received?
-     */
-    @Column(name = "timeout_status_email_received")
-    private boolean timeoutStatusEmailReceived;
-
-    /**
      * Experiment download url
      */
     @Column(name = "download_url")
