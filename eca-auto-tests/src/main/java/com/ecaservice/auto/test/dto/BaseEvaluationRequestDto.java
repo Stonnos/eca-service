@@ -2,10 +2,13 @@ package com.ecaservice.auto.test.dto;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import eca.core.evaluation.EvaluationMethod;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+
+import java.util.List;
 
 /**
  * Base evaluation request dto.
@@ -17,9 +20,7 @@ import lombok.ToString;
 @ToString(callSuper = true)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = EvaluationRequestDto.class),
-        @JsonSubTypes.Type(value = ExperimentRequestDto.class),
-        @JsonSubTypes.Type(value = EvaluationRequestExtendedDto.class),
-        @JsonSubTypes.Type(value = ExperimentRequestExtendedDto.class)
+        @JsonSubTypes.Type(value = ExperimentRequestDto.class)
 })
 @Schema(description = "Base evaluation request dto")
 public abstract class BaseEvaluationRequestDto extends BaseTestDto {
@@ -59,4 +60,10 @@ public abstract class BaseEvaluationRequestDto extends BaseTestDto {
      */
     @Schema(description = "Attributes number")
     private Integer numAttributes;
+
+    /**
+     * Test steps
+     */
+    @ArraySchema(schema = @Schema(description = "Test steps"))
+    private List<BaseTestStepDto> testSteps;
 }
