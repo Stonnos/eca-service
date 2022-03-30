@@ -36,6 +36,12 @@ public class AutoTestsJobDto {
     private AutoTestType autoTestType;
 
     /**
+     * Features list
+     */
+    @ArraySchema(schema = @Schema(description = "Features"))
+    private List<TestFeatureDto> features;
+
+    /**
      * Created date
      */
     @JsonFormat(pattern = DATE_TIME_PATTERN)

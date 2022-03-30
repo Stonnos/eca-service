@@ -9,7 +9,7 @@ import org.mapstruct.Mapper;
  *
  * @author Roman Batygin
  */
-@Mapper
+@Mapper(uses = TestFeatureMapper.class)
 public interface AutoTestsMapper {
 
     /**

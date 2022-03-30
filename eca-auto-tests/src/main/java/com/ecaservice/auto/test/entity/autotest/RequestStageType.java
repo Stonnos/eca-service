@@ -32,11 +32,6 @@ public enum RequestStageType implements DescriptiveEnum {
     REQUEST_FINISHED("Заявка успешно завершена"),
 
     /**
-     * Request processing completed
-     */
-    COMPLETED("Результаты успешно обработаны"),
-
-    /**
      * Request exceeded
      */
     EXCEEDED("Истелко время ожидания обработки заявки"),

@@ -1,15 +1,19 @@
 package com.ecaservice.auto.test.util;
 
+import com.ecaservice.auto.test.projections.TestResultProjection;
 import com.ecaservice.base.model.EcaResponse;
 import com.ecaservice.base.model.MessageError;
 import com.ecaservice.classifier.options.model.ClassifierOptions;
+import com.ecaservice.test.common.model.TestResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.experimental.UtilityClass;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 import java.util.Optional;
+import java.util.function.ToIntFunction;
 
 /**
  * Utility class.
@@ -73,5 +77,31 @@ public class Utils {
                 .map(messageErrors -> messageErrors.iterator().next())
                 .map(MessageError::getMessage)
                 .orElse(null);
+    }
+
+    /**
+     * Calculates final test result.
+     *
+     * @param testResults - test results
+     * @return test result
+     */
+    public static TestResult calculateFinalTestResult(List<TestResultProjection> testResults) {
+        if (testResults.stream().allMatch(testResult -> TestResult.PASSED.equals(testResult.getTestResult()))) {
+            return TestResult.PASSED;
+        }
+        return TestResult.FAILED;
+    }
+
+    /**
+     * Calculates sum for specified field.
+     *
+     * @param testResults - test results
+     * @param function    - field function
+     * @return sum value
+     */
+    public static int sum(List<TestResultProjection> testResults, ToIntFunction<TestResultProjection> function) {
+        return testResults.stream()
+                .mapToInt(function)
+                .sum();
     }
 }

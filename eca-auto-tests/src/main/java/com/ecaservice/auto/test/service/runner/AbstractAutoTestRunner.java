@@ -3,8 +3,11 @@ package com.ecaservice.auto.test.service.runner;
 import com.ecaservice.auto.test.entity.autotest.AutoTestType;
 import com.ecaservice.auto.test.entity.autotest.AutoTestsJobEntity;
 import com.ecaservice.auto.test.entity.autotest.BaseEvaluationRequestEntity;
+import com.ecaservice.auto.test.entity.autotest.BaseTestStepEntity;
 import com.ecaservice.auto.test.entity.autotest.RequestStageType;
+import com.ecaservice.auto.test.entity.autotest.TestFeatureEntity;
 import com.ecaservice.auto.test.repository.autotest.BaseEvaluationRequestRepository;
+import com.ecaservice.auto.test.repository.autotest.BaseTestStepRepository;
 import com.ecaservice.auto.test.service.AutoTestJobService;
 import com.ecaservice.auto.test.service.AutoTestWorkerService;
 import com.ecaservice.base.model.EcaRequest;
@@ -13,8 +16,10 @@ import com.ecaservice.test.common.model.TestResult;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,6 +39,7 @@ public abstract class AbstractAutoTestRunner<E extends BaseEvaluationRequestEnti
     private final AutoTestJobService autoTestJobService;
     private final AutoTestWorkerService autoTestWorkerService;
     private final BaseEvaluationRequestRepository baseEvaluationRequestRepository;
+    private final BaseTestStepRepository baseTestStepRepository;
 
     /**
      * Creates request entity with specific data.
@@ -49,6 +55,17 @@ public abstract class AbstractAutoTestRunner<E extends BaseEvaluationRequestEnti
      * @return test requests list
      */
     protected abstract List<R> prepareAndBuildRequests();
+
+    /**
+     * Creates additional test steps entities.
+     *
+     * @param requestEntity - request entity
+     * @param features      - features list
+     * @return test steps list
+     */
+    protected List<BaseTestStepEntity> createTestSteps(E requestEntity, List<TestFeatureEntity> features) {
+        return Collections.emptyList();
+    }
 
     /**
      * Checks that auto test can be run.
@@ -74,6 +91,7 @@ public abstract class AbstractAutoTestRunner<E extends BaseEvaluationRequestEnti
             requests.forEach(request -> {
                 E requestEntity = createSpecificRequestEntity(request);
                 populateAndSaveRequestEntityCommonData(requestEntity, request, autoTestsJobEntity);
+                populateAndSaveAdditionalTestSteps(autoTestsJobEntity, requestEntity);
                 autoTestWorkerService.sendRequest(requestEntity.getId(), request);
             });
             log.info("All auto test [{}] requests has been sent", autoTestsJobEntity.getJobUuid());
@@ -96,5 +114,19 @@ public abstract class AbstractAutoTestRunner<E extends BaseEvaluationRequestEnti
         requestEntity.setJob(autoTestsJobEntity);
         requestEntity.setCreated(LocalDateTime.now());
         baseEvaluationRequestRepository.save(requestEntity);
+    }
+
+    private void populateAndSaveAdditionalTestSteps(AutoTestsJobEntity autoTestsJobEntity,
+                                                    E requestEntity) {
+        if (CollectionUtils.isEmpty(autoTestsJobEntity.getFeatures())) {
+            log.info(
+                    "No one feature has been specified for auto tests job [{}], request correlation id [{}]. Skipped...",
+                    autoTestsJobEntity.getJobUuid(), requestEntity.getCorrelationId());
+        } else {
+            var testSteps = createTestSteps(requestEntity, autoTestsJobEntity.getFeatures());
+            baseTestStepRepository.saveAll(testSteps);
+            log.info("[{}] additional test steps has been saved for request correlation id [{}]", testSteps.size(),
+                    requestEntity.getCorrelationId());
+        }
     }
 }

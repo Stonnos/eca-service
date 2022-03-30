@@ -1,5 +1,7 @@
 package com.ecaservice.test.common.util;
 
+import com.ecaservice.test.common.model.TestResult;
+import com.ecaservice.test.common.service.TestResultsMatcher;
 import lombok.experimental.UtilityClass;
 
 import java.time.Instant;
@@ -35,5 +37,18 @@ public class Utils {
             return TIME_FORMATTER.format(totalTime);
         }
         return null;
+    }
+
+    /**
+     * Calculates test result.
+     *
+     * @param matcher - matcher object
+     * @return test result
+     */
+    public static TestResult calculateTestResult(TestResultsMatcher matcher) {
+        if (matcher.getTotalNotMatched() == 0 && matcher.getTotalNotFound() == 0) {
+            return TestResult.PASSED;
+        }
+        return TestResult.FAILED;
     }
 }

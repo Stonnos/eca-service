@@ -1,29 +1,24 @@
-package com.ecaservice.auto.test.service;
+package com.ecaservice.auto.test.service.step;
 
-import com.ecaservice.auto.test.entity.autotest.BaseEvaluationRequestEntity;
-import com.ecaservice.auto.test.entity.autotest.EvaluationRequestEntity;
 import com.ecaservice.auto.test.entity.autotest.ExperimentRequestEntity;
-import com.ecaservice.auto.test.entity.autotest.RequestStageType;
+import com.ecaservice.auto.test.event.model.ExperimentResultsTestStepEvent;
 import com.ecaservice.auto.test.model.evaluation.EvaluationResultsDetailsMatch;
-import com.ecaservice.auto.test.repository.autotest.BaseEvaluationRequestRepository;
+import com.ecaservice.auto.test.service.ErsService;
+import com.ecaservice.auto.test.service.EvaluationResultsMatcherService;
 import com.ecaservice.auto.test.service.api.EcaServerClient;
 import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
-import com.ecaservice.test.common.model.ExecutionStatus;
-import com.ecaservice.test.common.model.TestResult;
 import com.ecaservice.test.common.service.TestResultsMatcher;
-import eca.core.evaluation.EvaluationResults;
 import eca.dataminer.AbstractExperiment;
 import lombok.Cleanup;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.event.EventListener;
 import org.springframework.core.io.Resource;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
@@ -31,55 +26,44 @@ import java.util.stream.IntStream;
 import static com.google.common.collect.Lists.newArrayList;
 
 /**
- * Evaluation results processor service.
+ * Experiment results test step handler.
  *
  * @author Roman Batygin
  */
 @Slf4j
-@Service
-@RequiredArgsConstructor
-public class EvaluationResultsProcessor {
+@Component
+public class ExperimentResultsTestStepHandler implements AbstractTestStepHandler<ExperimentResultsTestStepEvent> {
 
     private static final String SLASH_SEPARATOR = "/";
 
     private final EcaServerClient ecaServerClient;
-    private final EvaluationRequestService evaluationRequestService;
     private final ErsService ersService;
     private final EvaluationResultsMatcherService evaluationResultsMatcherService;
-    private final BaseEvaluationRequestRepository baseEvaluationRequestRepository;
+    private final TestStepService testStepService;
 
     /**
-     * Compares and matches experiment results.
+     * Constructor with spring dependency injection.
      *
-     * @param evaluationRequestEntity - experiment request entity
+     * @param ecaServerClient                 - eca server client
+     * @param ersService                      - ers service
+     * @param evaluationResultsMatcherService - evaluation results matcher service
+     * @param testStepService                 - test step service
      */
-    public void compareAndMatchEvaluationResults(EvaluationRequestEntity evaluationRequestEntity,
-                                                 EvaluationResults evaluationResults) {
-        log.info("Starting to compare and match evaluation [{}] results", evaluationRequestEntity.getRequestId());
-        try {
-            TestResultsMatcher matcher = new TestResultsMatcher();
-            var evaluationResultsResponse = ersService.getEvaluationResults(evaluationRequestEntity.getRequestId());
-            var evaluationResultsDetailsMatch =
-                    evaluationResultsMatcherService.compareAndMatch(evaluationResults, evaluationResultsResponse,
-                            matcher);
-            evaluationRequestEntity.setEvaluationResultsDetails(evaluationResultsDetailsMatch);
-            populateAndSaveFinalTestResults(evaluationRequestEntity, matcher);
-            log.info("Got evaluation request [{}] test result: {}",
-                    evaluationRequestEntity.getRequestId(), evaluationRequestEntity.getTestResult());
-            log.info("Evaluation [{}] results has been processed", evaluationRequestEntity.getRequestId());
-        } catch (Exception ex) {
-            log.error("There was an error while process evaluation results [{}]: {}",
-                    evaluationRequestEntity.getRequestId(), ex.getMessage());
-            evaluationRequestService.finishWithError(evaluationRequestEntity, ex.getMessage());
-        }
+    public ExperimentResultsTestStepHandler(EcaServerClient ecaServerClient,
+                                            ErsService ersService,
+                                            EvaluationResultsMatcherService evaluationResultsMatcherService,
+                                            TestStepService testStepService) {
+        this.ecaServerClient = ecaServerClient;
+        this.ersService = ersService;
+        this.evaluationResultsMatcherService = evaluationResultsMatcherService;
+        this.testStepService = testStepService;
     }
 
-    /**
-     * Compares and matches experiment results.
-     *
-     * @param experimentRequestEntity - experiment request entity
-     */
-    public void compareAndMatchExperimentResults(ExperimentRequestEntity experimentRequestEntity) {
+    @Override
+    @EventListener
+    public void handle(ExperimentResultsTestStepEvent event) {
+        var experimentResultsStep = event.getExperimentResultsTestStepEntity();
+        var experimentRequestEntity = experimentResultsStep.getEvaluationRequestEntity();
         log.info("Starting to compare and match experiment [{}] results", experimentRequestEntity.getRequestId());
         try {
             TestResultsMatcher matcher = new TestResultsMatcher();
@@ -89,32 +73,14 @@ public class EvaluationResultsProcessor {
             var evaluationResultsDetailsMatches =
                     compareAndMatchResults(experimentRequestEntity, experimentHistory, experimentEvaluationResults,
                             matcher);
-            experimentRequestEntity.setExperimentResultDetails(evaluationResultsDetailsMatches);
-            populateAndSaveFinalTestResults(experimentRequestEntity, matcher);
-            log.info("Got experiment request [{}] test result: {}",
-                    experimentRequestEntity.getRequestId(), experimentRequestEntity.getTestResult());
+            experimentResultsStep.setExperimentResultDetails(evaluationResultsDetailsMatches);
+            testStepService.complete(experimentResultsStep, matcher);
             log.info("Experiment [{}] results has been processed", experimentRequestEntity.getRequestId());
         } catch (Exception ex) {
-            log.error("There was an error while process experiment results [{}]: {}",
-                    experimentRequestEntity.getRequestId(), ex.getMessage());
-            evaluationRequestService.finishWithError(experimentRequestEntity, ex.getMessage());
+            log.error("There was an error while process experiment results [{}] test step [{}]: {}",
+                    experimentRequestEntity.getRequestId(), experimentResultsStep.getId(), ex.getMessage());
+            testStepService.finishWithError(experimentResultsStep, ex.getMessage());
         }
-    }
-
-    private void populateAndSaveFinalTestResults(BaseEvaluationRequestEntity requestEntity,
-                                                 TestResultsMatcher matcher) {
-        requestEntity.setTotalMatched(matcher.getTotalMatched());
-        requestEntity.setTotalNotMatched(matcher.getTotalNotMatched());
-        requestEntity.setTotalNotFound(matcher.getTotalNotFound());
-        if (matcher.getTotalNotMatched() == 0 && matcher.getTotalNotFound() == 0) {
-            requestEntity.setTestResult(TestResult.PASSED);
-        } else {
-            requestEntity.setTestResult(TestResult.FAILED);
-        }
-        requestEntity.setExecutionStatus(ExecutionStatus.FINISHED);
-        requestEntity.setStageType(RequestStageType.COMPLETED);
-        requestEntity.setFinished(LocalDateTime.now());
-        baseEvaluationRequestRepository.save(requestEntity);
     }
 
     private List<EvaluationResultsDetailsMatch> compareAndMatchResults(ExperimentRequestEntity experimentRequestEntity,

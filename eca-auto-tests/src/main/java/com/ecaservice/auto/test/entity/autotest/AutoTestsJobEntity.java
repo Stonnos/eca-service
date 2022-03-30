@@ -8,7 +8,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.List;
 
 /**
  * Auto tests job persistence entity.
@@ -34,4 +37,10 @@ public class AutoTestsJobEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "auto_test_type", nullable = false)
     private AutoTestType autoTestType;
+
+    /**
+     * Additional test features
+     */
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "job")
+    private List<TestFeatureEntity> features;
 }

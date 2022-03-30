@@ -1,14 +1,21 @@
 package com.ecaservice.auto.test.service.runner;
 
 import com.ecaservice.auto.test.entity.autotest.AutoTestType;
+import com.ecaservice.auto.test.entity.autotest.BaseTestStepEntity;
 import com.ecaservice.auto.test.entity.autotest.EvaluationRequestEntity;
+import com.ecaservice.auto.test.entity.autotest.EvaluationResultsTestStepEntity;
+import com.ecaservice.auto.test.entity.autotest.TestFeature;
+import com.ecaservice.auto.test.entity.autotest.TestFeatureEntity;
+import com.ecaservice.auto.test.entity.autotest.TestFeatureVisitor;
 import com.ecaservice.auto.test.model.ClassifierTestDataModel;
 import com.ecaservice.auto.test.repository.autotest.BaseEvaluationRequestRepository;
+import com.ecaservice.auto.test.repository.autotest.BaseTestStepRepository;
 import com.ecaservice.auto.test.service.AutoTestJobService;
 import com.ecaservice.auto.test.service.AutoTestWorkerService;
 import com.ecaservice.auto.test.service.ClassifierTestDataProvider;
 import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
+import com.ecaservice.test.common.model.ExecutionStatus;
 import com.ecaservice.test.common.service.InstancesLoader;
 import eca.core.evaluation.EvaluationMethod;
 import lombok.extern.slf4j.Slf4j;
@@ -18,10 +25,13 @@ import org.springframework.stereotype.Service;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
 
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.ecaservice.auto.test.util.Utils.toJson;
+import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * Classifier auto tests runner.
@@ -51,11 +61,12 @@ public class ClassifierAutoTestRunner extends AbstractAutoTestRunner<EvaluationR
     public ClassifierAutoTestRunner(AutoTestJobService autoTestJobService,
                                     AutoTestWorkerService autoTestWorkerService,
                                     BaseEvaluationRequestRepository baseEvaluationRequestRepository,
+                                    BaseTestStepRepository baseTestStepRepository,
                                     InstancesLoader instancesLoader,
                                     ClassifierTestDataProvider classifierTestDataProvider,
                                     ClassifierOptionsAdapter classifierOptionsAdapter) {
         super(AutoTestType.EVALUATION_REQUEST_PROCESS, autoTestJobService, autoTestWorkerService,
-                baseEvaluationRequestRepository);
+                baseEvaluationRequestRepository, baseTestStepRepository);
         this.instancesLoader = instancesLoader;
         this.classifierTestDataProvider = classifierTestDataProvider;
         this.classifierOptionsAdapter = classifierOptionsAdapter;
@@ -80,6 +91,32 @@ public class ClassifierAutoTestRunner extends AbstractAutoTestRunner<EvaluationR
                 .stream()
                 .map(this::createEvaluationRequest)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    protected List<BaseTestStepEntity> createTestSteps(EvaluationRequestEntity requestEntity,
+                                                       List<TestFeatureEntity> features) {
+        List<BaseTestStepEntity> steps = newArrayList();
+        features.forEach(testFeatureEntity -> {
+            var nextSteps = internalCreateTestSteps(requestEntity, testFeatureEntity.getTestFeature());
+            steps.addAll(nextSteps);
+        });
+        return steps;
+    }
+
+    private List<BaseTestStepEntity> internalCreateTestSteps(EvaluationRequestEntity requestEntity,
+                                                             TestFeature feature) {
+        return feature.visit(new TestFeatureVisitor<>() {
+            @Override
+            public List<BaseTestStepEntity> visitEvaluationResults() {
+                var evaluationResultsTestStepEntity = new EvaluationResultsTestStepEntity();
+                evaluationResultsTestStepEntity.setExecutionStatus(ExecutionStatus.IN_PROGRESS);
+                evaluationResultsTestStepEntity.setEvaluationRequestEntity(requestEntity);
+                evaluationResultsTestStepEntity.setCreated(LocalDateTime.now());
+                evaluationResultsTestStepEntity.setStarted(LocalDateTime.now());
+                return Collections.singletonList(evaluationResultsTestStepEntity);
+            }
+        });
     }
 
     private EvaluationRequest createEvaluationRequest(ClassifierTestDataModel classifierTestDataModel) {

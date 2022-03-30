@@ -1,17 +1,21 @@
 package com.ecaservice.auto.test.scheduler;
 
 import com.ecaservice.auto.test.config.AutoTestsProperties;
-import com.ecaservice.auto.test.entity.autotest.ExperimentRequestEntity;
-import com.ecaservice.auto.test.entity.autotest.RequestStageType;
+import com.ecaservice.auto.test.entity.autotest.BaseEvaluationRequestEntity;
+import com.ecaservice.auto.test.entity.autotest.ExperimentResultsTestStepEntity;
+import com.ecaservice.auto.test.event.model.ExperimentResultsTestStepEvent;
 import com.ecaservice.auto.test.repository.autotest.AutoTestsJobRepository;
 import com.ecaservice.auto.test.repository.autotest.BaseEvaluationRequestRepository;
-import com.ecaservice.auto.test.repository.autotest.ExperimentRequestRepository;
+import com.ecaservice.auto.test.repository.autotest.BaseTestStepRepository;
+import com.ecaservice.auto.test.repository.autotest.ExperimentResultsTestStepRepository;
 import com.ecaservice.auto.test.service.AutoTestJobService;
 import com.ecaservice.auto.test.service.EvaluationRequestService;
-import com.ecaservice.auto.test.service.EvaluationResultsProcessor;
 import com.ecaservice.auto.test.service.executor.AutoTestExecutor;
+import com.ecaservice.auto.test.service.step.TestStepService;
+import com.ecaservice.test.common.model.ExecutionStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -30,20 +34,21 @@ import static com.ecaservice.common.web.util.PageHelper.processWithPagination;
 @RequiredArgsConstructor
 public class AutoTestScheduler {
 
-    private static final List<RequestStageType> FINISHED_STAGES = List.of(
-            RequestStageType.COMPLETED,
-            RequestStageType.ERROR,
-            RequestStageType.EXCEEDED
+    private static final List<ExecutionStatus> FINISHED_EXECUTION_STATUSES = List.of(
+            ExecutionStatus.FINISHED,
+            ExecutionStatus.ERROR
     );
 
     private final AutoTestsProperties autoTestsProperties;
+    private final ApplicationEventPublisher applicationEventPublisher;
     private final AutoTestExecutor autoTestExecutor;
     private final AutoTestJobService autoTestJobService;
     private final EvaluationRequestService evaluationRequestService;
-    private final EvaluationResultsProcessor evaluationResultsProcessor;
+    private final TestStepService testStepService;
     private final AutoTestsJobRepository autoTestsJobRepository;
-    private final ExperimentRequestRepository experimentRequestRepository;
     private final BaseEvaluationRequestRepository baseEvaluationRequestRepository;
+    private final BaseTestStepRepository baseTestStepRepository;
+    private final ExperimentResultsTestStepRepository experimentResultsTestStepRepository;
 
     /**
      * Processes new auto tests.
@@ -58,14 +63,39 @@ public class AutoTestScheduler {
     }
 
     /**
-     * Processes finished experiment requests.
+     * Processes experiment results test steps.
      */
     @Scheduled(fixedDelayString = "${auto-tests.delaySeconds}000")
-    public void processFinishedExperimentRequests() {
-        log.trace("Starting to processed finished requests");
-        List<Long> finishedIds = experimentRequestRepository.findFinishedRequests();
-        processWithPagination(finishedIds, experimentRequestRepository::findByIdInOrderByCreated,
-                this::processFinishedRequests, autoTestsProperties.getPageSize());
+    public void processExperimentResultsTestSteps() {
+        log.trace("Starting to process experiment results test steps");
+        List<Long> ids = experimentResultsTestStepRepository.findStepsToCompareResults();
+        processWithPagination(ids, experimentResultsTestStepRepository::findByIdInOrderByCreated,
+                this::processExperimentResultsSteps, autoTestsProperties.getPageSize());
+    }
+
+    /**
+     * Processes finished evaluation requests tests.
+     */
+    @Scheduled(fixedDelayString = "${auto-tests.delaySeconds}000")
+    public void processFinishedEvaluationRequestsTests() {
+        log.trace("Starting to process finished requests");
+        List<Long> finishedIds = baseEvaluationRequestRepository.findFinishedTests(FINISHED_EXECUTION_STATUSES);
+        processWithPagination(finishedIds, baseEvaluationRequestRepository::findByIdInOrderByCreated,
+                this::processFinishedEvaluationRequestsTests, autoTestsProperties.getPageSize());
+    }
+
+    /**
+     * Processes exceeded test steps.
+     */
+    @Scheduled(fixedDelayString = "${auto-tests.delaySeconds}000")
+    public void processExceededTestSteps() {
+        log.trace("Starting to processed exceeded test steps");
+        LocalDateTime exceededTime = LocalDateTime.now().minusSeconds(autoTestsProperties.getRequestTimeoutInSeconds());
+        List<Long> exceededIds = baseTestStepRepository.findExceededStepIds(exceededTime, FINISHED_EXECUTION_STATUSES);
+        processWithPagination(exceededIds, baseTestStepRepository::findByIdInOrderByCreated,
+                testStepService::exceedTestSteps, autoTestsProperties.getPageSize()
+        );
+        log.trace("Exceeded test steps has been processed");
     }
 
     /**
@@ -75,7 +105,8 @@ public class AutoTestScheduler {
     public void processExceededRequests() {
         log.trace("Starting to processed exceeded requests");
         LocalDateTime exceededTime = LocalDateTime.now().minusSeconds(autoTestsProperties.getRequestTimeoutInSeconds());
-        List<Long> exceededIds = baseEvaluationRequestRepository.findExceededRequestIds(exceededTime, FINISHED_STAGES);
+        List<Long> exceededIds =
+                baseEvaluationRequestRepository.findExceededRequestIds(exceededTime, FINISHED_EXECUTION_STATUSES);
         processWithPagination(exceededIds, baseEvaluationRequestRepository::findByIdInOrderByCreated, pageContent ->
                 pageContent.forEach(evaluationRequestService::exceed), autoTestsProperties.getPageSize()
         );
@@ -88,14 +119,20 @@ public class AutoTestScheduler {
     @Scheduled(fixedDelayString = "${auto-tests.delaySeconds}000")
     public void processFinishedTestJobs() {
         log.trace("Starting to processed finished tests jobs");
-        List<Long> testIds = autoTestsJobRepository.findFinishedJobs(FINISHED_STAGES);
+        List<Long> testIds = autoTestsJobRepository.findFinishedJobs(FINISHED_EXECUTION_STATUSES);
         processWithPagination(testIds, autoTestsJobRepository::findByIdInOrderByCreated, pageContent ->
                 pageContent.forEach(autoTestJobService::finish), autoTestsProperties.getPageSize()
         );
         log.trace("Finished tests jobs has been processed");
     }
 
-    private void processFinishedRequests(List<ExperimentRequestEntity> experimentRequestEntities) {
-        experimentRequestEntities.forEach(evaluationResultsProcessor::compareAndMatchExperimentResults);
+    private void processExperimentResultsSteps(List<ExperimentResultsTestStepEntity> steps) {
+        steps.forEach(step ->
+                applicationEventPublisher.publishEvent(new ExperimentResultsTestStepEvent(this, step))
+        );
+    }
+
+    private void processFinishedEvaluationRequestsTests(List<BaseEvaluationRequestEntity> requestEntities) {
+        requestEntities.forEach(evaluationRequestService::complete);
     }
 }

@@ -6,7 +6,6 @@ import com.ecaservice.auto.test.repository.autotest.ExperimentRequestRepository;
 import com.ecaservice.auto.test.service.EvaluationRequestService;
 import com.ecaservice.base.model.ExperimentResponse;
 import com.ecaservice.base.model.TechnicalStatus;
-import com.ecaservice.common.web.exception.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
@@ -38,9 +37,10 @@ public class ExperimentMessageListener {
     public void handleMessage(ExperimentResponse experimentResponse, Message message) {
         String correlationId = message.getMessageProperties().getCorrelationId();
         log.info("Received MQ message with correlation id [{}]", correlationId);
-        var experimentRequestEntity = experimentRequestRepository.findByCorrelationId(correlationId)
-                .orElseThrow(() -> new EntityNotFoundException(ExperimentRequestEntity.class, correlationId));
-        if (RequestStageType.EXCEEDED.equals(experimentRequestEntity.getStageType())) {
+        var experimentRequestEntity = experimentRequestRepository.findByCorrelationId(correlationId);
+        if (experimentRequestEntity == null) {
+            log.warn("Experiment request entity not found with correlation id [{}]", correlationId);
+        } else if (RequestStageType.EXCEEDED.equals(experimentRequestEntity.getStageType())) {
             log.warn("Can't handle message from MQ. Got exceeded experiment request entity with correlation id [{}]",
                     correlationId);
         } else {
