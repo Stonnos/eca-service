@@ -76,4 +76,12 @@ public interface BaseEvaluationRequestRepository extends JpaRepository<BaseEvalu
             "and not exists (select ts.id from BaseTestStepEntity ts where ts.evaluationRequestEntity = er and " +
             "ts.executionStatus not in (:statuses)) order by er.started")
     List<Long> findFinishedTests(@Param("statuses") Collection<ExecutionStatus> statuses);
+
+    /**
+     * Finds request by request id
+     *
+     * @param requestId - request id
+     * @return request entity
+     */
+    Optional<BaseEvaluationRequestEntity> findByRequestId(String requestId);
 }

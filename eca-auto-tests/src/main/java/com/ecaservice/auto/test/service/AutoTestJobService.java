@@ -4,12 +4,10 @@ import com.ecaservice.auto.test.dto.AutoTestsJobDto;
 import com.ecaservice.auto.test.dto.BaseEvaluationRequestDto;
 import com.ecaservice.auto.test.entity.autotest.AutoTestType;
 import com.ecaservice.auto.test.entity.autotest.AutoTestsJobEntity;
-import com.ecaservice.auto.test.entity.autotest.BaseEvaluationRequestEntity;
 import com.ecaservice.auto.test.entity.autotest.TestFeature;
 import com.ecaservice.auto.test.entity.autotest.TestFeatureEntity;
 import com.ecaservice.auto.test.exception.UnsupportedFeatureException;
 import com.ecaservice.auto.test.mapping.AutoTestsMapper;
-import com.ecaservice.auto.test.mapping.BaseEvaluationRequestMapper;
 import com.ecaservice.auto.test.repository.autotest.AutoTestsJobRepository;
 import com.ecaservice.auto.test.repository.autotest.BaseEvaluationRequestRepository;
 import com.ecaservice.auto.test.repository.autotest.TestFeatureRepository;
@@ -42,7 +40,7 @@ import static com.ecaservice.test.common.util.Utils.totalTime;
 public class AutoTestJobService {
 
     private final AutoTestsMapper autoTestsMapper;
-    private final List<BaseEvaluationRequestMapper> evaluationRequestMappers;
+    private final EvaluationRequestAdapter evaluationRequestAdapter;
     private final AutoTestsJobRepository autoTestsJobRepository;
     private final BaseEvaluationRequestRepository baseEvaluationRequestRepository;
     private final TestFeatureRepository testFeatureRepository;
@@ -128,26 +126,16 @@ public class AutoTestJobService {
         autoTestsJobRepository.save(autoTestsJobEntity);
     }
 
-    @SuppressWarnings("unchecked")
     private List<BaseEvaluationRequestDto> getEvaluationRequests(AutoTestsJobEntity autoTestsJobEntity,
                                                                  TestResultsCounter counter) {
         return baseEvaluationRequestRepository.findAllByJob(autoTestsJobEntity)
                 .stream()
                 .map(request -> {
-                    var evaluationRequestDto = getMapper(request).map(request);
+                    var evaluationRequestDto = evaluationRequestAdapter.proceed(request);
                     evaluationRequestDto.getTestResult().apply(counter);
                     return evaluationRequestDto;
                 })
                 .collect(Collectors.toList());
-    }
-
-    @SuppressWarnings("unchecked")
-    private BaseEvaluationRequestMapper getMapper(BaseEvaluationRequestEntity evaluationRequestEntity) {
-        return evaluationRequestMappers.stream()
-                .filter(mapper -> mapper.canMap(evaluationRequestEntity))
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException(String.format("Can't map [%s] evaluation request",
-                        evaluationRequestEntity.getClass().getSimpleName())));
     }
 
     private void saveFeatures(AutoTestsJobEntity job, List<TestFeature> features) {

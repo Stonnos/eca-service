@@ -1,12 +1,14 @@
 package com.ecaservice.auto.test.service;
 
 import com.ecaservice.auto.test.config.AutoTestsProperties;
+import com.ecaservice.auto.test.dto.BaseEvaluationRequestDto;
 import com.ecaservice.auto.test.entity.autotest.BaseEvaluationRequestEntity;
 import com.ecaservice.auto.test.entity.autotest.RequestStageType;
 import com.ecaservice.auto.test.projections.TestResultProjection;
 import com.ecaservice.auto.test.repository.autotest.BaseEvaluationRequestRepository;
 import com.ecaservice.auto.test.repository.autotest.BaseTestStepRepository;
 import com.ecaservice.auto.test.service.step.TestStepService;
+import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.test.common.model.ExecutionStatus;
 import com.ecaservice.test.common.model.TestResult;
 import lombok.RequiredArgsConstructor;
@@ -38,8 +40,23 @@ public class EvaluationRequestService {
 
     private final AutoTestsProperties autoTestsProperties;
     private final TestStepService testStepService;
+    private final EvaluationRequestAdapter evaluationRequestAdapter;
     private final BaseEvaluationRequestRepository baseEvaluationRequestRepository;
     private final BaseTestStepRepository testStepRepository;
+
+    /**
+     * Gets evaluation request details by request id.
+     *
+     * @param requestId - request id from eca - server
+     * @return evaluation request details dto
+     */
+    public BaseEvaluationRequestDto getEvaluationRequestDetails(String requestId) {
+        log.info("Gets evaluation request details for request id [{}]", requestId);
+        var evaluationRequestEntity = baseEvaluationRequestRepository.findByRequestId(requestId)
+                .orElseThrow(() -> new EntityNotFoundException(BaseEvaluationRequestEntity.class, requestId));
+        var evaluationRequestDto = evaluationRequestAdapter.proceed(evaluationRequestEntity);
+        return evaluationRequestDto;
+    }
 
     /**
      * Calculates final test result and finishes test execution.
