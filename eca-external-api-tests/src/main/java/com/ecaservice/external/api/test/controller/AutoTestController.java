@@ -1,6 +1,7 @@
 package com.ecaservice.external.api.test.controller;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.external.api.test.dto.AutoTestsJobDto;
 import com.ecaservice.external.api.test.entity.JobEntity;
 import com.ecaservice.external.api.test.report.ExternalApiTestResultsCsvReportGenerator;
 import com.ecaservice.external.api.test.repository.JobRepository;
@@ -45,18 +46,34 @@ public class AutoTestController {
     /**
      * Creates auto tests job.
      *
-     * @return job uuid
+     * @return auto tests job dto
      */
     @Operation(
             description = "Creates auto tests job",
             summary = "Creates auto tests job"
     )
     @PostMapping(value = "/create-job")
-    public String createJob() {
+    public AutoTestsJobDto createJob() {
         log.info("Received auto tests request");
-        JobEntity jobEntity = jobService.createAndSaveNewJob();
-        log.info("Auto tests job has been created with uuid [{}]", jobEntity.getJobUuid());
-        return jobEntity.getJobUuid();
+        var jobDto = jobService.createAndSaveNewJob();
+        log.info("Auto tests job has been created with uuid [{}]", jobDto.getJobUuid());
+        return jobDto;
+    }
+
+    /**
+     * Gets auto tests job details.
+     *
+     * @param jobUuid - job uuid
+     */
+    @Operation(
+            description = "Gets auto tests job details",
+            summary = "Gets auto tests job details"
+    )
+    @GetMapping(value = "/details/{jobUuid}")
+    public AutoTestsJobDto getDetails(
+            @Parameter(description = "Job uuid", required = true) @PathVariable String jobUuid) {
+        log.info("Request auto tests [{}] job details", jobUuid);
+        return jobService.getDetails(jobUuid);
     }
 
     /**
