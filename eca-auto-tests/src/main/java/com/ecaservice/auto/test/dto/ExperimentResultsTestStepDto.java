@@ -1,6 +1,7 @@
 package com.ecaservice.auto.test.dto;
 
 import com.ecaservice.auto.test.model.evaluation.EvaluationResultsDetailsMatch;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,6 +22,6 @@ public class ExperimentResultsTestStepDto extends BaseTestStepDto {
     /**
      * Experiment results details matches
      */
-    @Schema(description = "Experiment results details matches")
+    @ArraySchema(schema = @Schema(description = "Experiment results details matches"))
     private List<EvaluationResultsDetailsMatch> experimentResultDetails;
 }
