@@ -10,8 +10,6 @@ import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 
-import java.util.List;
-
 import static com.ecaservice.test.common.util.Utils.totalTime;
 
 /**
@@ -37,14 +35,6 @@ public interface AutoTestMapper {
      * @return auto tests dto
      */
     AutoTestDto map(AutoTestEntity autoTestEntity);
-
-    /**
-     * Maps auto tests list to dto models list.
-     *
-     * @param autoTests - auto tests list
-     * @return auto tests dto list
-     */
-    List<AutoTestDto> map(List<AutoTestEntity> autoTests);
 
     /**
      * Maps total time.
