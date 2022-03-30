@@ -1,7 +1,5 @@
 package com.ecaservice.external.api.test.bpm.service.task;
 
-import com.ecaservice.external.api.dto.EvaluationResponseDto;
-import com.ecaservice.external.api.dto.ResponseDto;
 import com.ecaservice.external.api.test.bpm.model.TaskType;
 import com.ecaservice.external.api.test.model.TestDataModel;
 import com.ecaservice.external.api.test.service.api.ExternalApiClient;

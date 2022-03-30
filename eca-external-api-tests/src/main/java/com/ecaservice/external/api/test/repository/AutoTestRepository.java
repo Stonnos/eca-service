@@ -21,4 +21,12 @@ public interface AutoTestRepository extends JpaRepository<AutoTestEntity, Long> 
      * @return auto tests entities page
      */
     Page<AutoTestEntity> findAllByJob(JobEntity jobEntity, Pageable pageable);
+
+    /**
+     * Finds all auto tests by job.
+     *
+     * @param jobEntity - job entity
+     * @return auto tests entities page
+     */
+    Page<AutoTestEntity> findAllByJob(JobEntity jobEntity);
 }
