@@ -25,5 +25,6 @@ public abstract class EvaluationRequestMapper
      * @return evaluation request dto
      */
     @Mapping(source = "evaluationMethod.description", target = "evaluationMethodDescription")
+    @Mapping(target = "testSteps", ignore = true)
     public abstract EvaluationRequestDto map(EvaluationRequestEntity evaluationRequestEntity);
 }

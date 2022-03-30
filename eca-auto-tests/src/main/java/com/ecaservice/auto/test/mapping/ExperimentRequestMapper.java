@@ -26,5 +26,6 @@ public abstract class ExperimentRequestMapper
      */
     @Mapping(source = "evaluationMethod.description", target = "evaluationMethodDescription")
     @Mapping(source = "experimentType.description", target = "experimentTypeDescription")
+    @Mapping(target = "testSteps", ignore = true)
     public abstract ExperimentRequestDto map(ExperimentRequestEntity experimentRequestEntity);
 }

@@ -29,7 +29,7 @@ public class EvaluationRequestAdapter {
      */
     @SuppressWarnings("unchecked")
     public BaseEvaluationRequestDto proceed(BaseEvaluationRequestEntity evaluationRequestEntity) {
-        return getMapper(evaluationRequestEntity).map(evaluationRequestEntity);
+        return (BaseEvaluationRequestDto) getMapper(evaluationRequestEntity).map(evaluationRequestEntity);
     }
 
     @SuppressWarnings("unchecked")
