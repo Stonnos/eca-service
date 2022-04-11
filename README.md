@@ -130,4 +130,4 @@ docker cp application.war container_name:/
 
 Для поднятия версии всех модулей необходимо выполнить команду:
 
-mvn versions:set -DnewVersion=version
+mvn versions:set -DnewVersion=version -DgenerateBackupPoms=false
