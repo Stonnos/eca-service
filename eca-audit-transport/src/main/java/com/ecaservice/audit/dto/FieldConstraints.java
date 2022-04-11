@@ -29,4 +29,15 @@ public class FieldConstraints {
      * Local date time max length
      */
     public static final int LOCAL_DATE_TIME_MAX_LENGTH = 19;
+
+    /**
+     * UUID max size.
+     */
+    public static final int UUID_MAX_SIZE = 36;
+
+    /**
+     * UUID pattern.
+     */
+    public static final String UUID_PATTERN =
+            "^[0-9a-f]{8}-[0-9a-f]{4}-[34][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$";
 }

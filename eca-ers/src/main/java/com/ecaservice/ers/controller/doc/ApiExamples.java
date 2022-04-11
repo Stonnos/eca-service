@@ -13,7 +13,8 @@ public class ApiExamples {
     /**
      * Get evaluation results response json
      */
-    public static final String GET_OPTIMAL_CLASSIFIER_OPTIONS_REQUEST_JSON = "{\"relationName\": \"Glass\", " +
+    public static final String GET_OPTIMAL_CLASSIFIER_OPTIONS_REQUEST_JSON = "{\"requestId\": " +
+            "\"f8cecbf7-405b-403b-9a94-f51e8fb73ed8\", \"relationName\": \"Glass\", " +
             "\"dataHash\": \"2aeb5c41423c895995e8cb304fe30b2d\", \"evaluationMethodReport\": {\"evaluationMethod\": " +
             "\"CROSS_VALIDATION\", \"numFolds\": 10, \"numTests\": 1, \"seed\": 1}, \"sortFields\": null}";
 

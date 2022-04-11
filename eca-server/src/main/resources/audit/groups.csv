@@ -1,2 +1,3 @@
 id;title
 CLASSIFIERS_CONFIGURATIONS_ACTIONS;Действия с конфигурациями классификаторов
+EVALUATION_REQUESTS_ACTIONS;Действия с заявками на построение моделей

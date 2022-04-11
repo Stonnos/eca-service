@@ -119,6 +119,7 @@ export class InstancesFields {
 
 export class AuditLogFields {
   public static readonly EVENT_ID: string = "eventId";
+  public static readonly CORRELATION_ID: string = "correlationId";
   public static readonly EVENT_DATE: string = "eventDate";
   public static readonly GROUP_TITLE: string = "groupTitle";
   public static readonly CODE_TITLE: string = "codeTitle";

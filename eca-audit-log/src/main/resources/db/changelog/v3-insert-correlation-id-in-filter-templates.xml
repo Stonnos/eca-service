@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v3-insert-correlation-id-in-filter-templates.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Insert correlation id in global filter template for audit_log entity -->
+    <changeSet id="1" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_filter_template"/>
+            <tableExists tableName="global_filter_field"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from global_filter_template where id = 1
+            </sqlCheck>
+            <sqlCheck expectedResult="0">
+                select count(*) from global_filter_field where global_filter_template_id = 1 and field_name = 'correlationId'
+            </sqlCheck>
+        </preConditions>
+        <insert tableName="global_filter_field">
+            <column name="field_name" value="correlationId"/>
+            <column name="global_filter_template_id" valueNumeric="1"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="2" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from filter_template where id = 1
+            </sqlCheck>
+        </preConditions>
+        <update tableName="filter_field">
+            <column name="field_order" valueComputed="field_order + 1"/>
+            <where>field_order >= 1</where>
+        </update>
+    </changeSet>
+
+    <!-- Insert correlation id in filter template for audit_log entity -->
+    <changeSet id="3" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from filter_template where id = 1
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="filter_field">
+            <column name="field_name" value="correlationId"/>
+            <column name="description" value="ID корреляции"/>
+            <column name="field_order" valueNumeric="1"/>
+            <column name="filter_field_type" value="TEXT"/>
+            <column name="match_mode" value="LIKE"/>
+            <column name="filter_template_id" valueNumeric="1"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

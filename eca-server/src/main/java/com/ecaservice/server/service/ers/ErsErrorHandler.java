@@ -7,6 +7,7 @@ import com.ecaservice.server.model.entity.ErsRequest;
 import com.ecaservice.server.model.entity.ErsResponseStatus;
 import com.ecaservice.server.repository.ErsRequestRepository;
 import feign.FeignException;
+import feign.RetryableException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,11 @@ import static com.ecaservice.common.web.util.ValidationErrorHelper.retrieveValid
 @RequiredArgsConstructor
 public class ErsErrorHandler {
 
+    private final Class<?>[] notFatalExceptions = new Class<?>[] {
+            FeignException.ServiceUnavailable.class,
+            RetryableException.class
+    };
+
     private final ErsResponseStatusMapper ersResponseStatusMapper;
     private final ErsRequestRepository ersRequestRepository;
 
@@ -42,6 +48,25 @@ public class ErsErrorHandler {
         ersRequest.setResponseStatus(responseStatus);
         ersRequest.setDetails(errorMessage);
         ersRequestRepository.save(ersRequest);
+        log.info("Ers request [{}] has been updated with status [{}]", ersRequest.getRequestId(), responseStatus);
+    }
+
+    /**
+     * Handles error request.
+     *
+     * @param ersRequest - ers request
+     * @param ex         - exception
+     */
+    public void handleError(ErsRequest ersRequest, Exception ex) {
+        log.info("Starting to handle ers error request [{}]", ersRequest.getRequestId());
+        if (notFatal(ex)) {
+            handleErrorRequest(ersRequest, ErsResponseStatus.SERVICE_UNAVAILABLE, ex.getMessage());
+        } else if (ex instanceof FeignException.BadRequest) {
+            FeignException.BadRequest badRequest = (FeignException.BadRequest) ex;
+            handleBadRequest(ersRequest, badRequest);
+        } else {
+            handleErrorRequest(ersRequest, ErsResponseStatus.ERROR, ex.getMessage());
+        }
     }
 
     /**
@@ -58,6 +83,8 @@ public class ErsErrorHandler {
             handleValidationError(ersRequest, ersErrorCode);
             ersRequest.setDetails(badRequestEx.getMessage());
             ersRequestRepository.save(ersRequest);
+            log.info("Ers request [{}] has been updated with status [{}]", ersRequest.getRequestId(),
+                    ersRequest.getResponseStatus());
             return ersErrorCode;
         } catch (Exception ex) {
             log.error("Got error while handling bad request with status [{}] for request id [{}]",
@@ -85,5 +112,10 @@ public class ErsErrorHandler {
         } else {
             ersRequest.setResponseStatus(ersResponseStatusMapper.map(ersErrorCode));
         }
+    }
+
+    private boolean notFatal(Exception ex) {
+        return Stream.of(notFatalExceptions)
+                .anyMatch(notFatalException -> notFatalException.isAssignableFrom(ex.getClass()));
     }
 }

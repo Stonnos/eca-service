@@ -8,14 +8,18 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 import static com.ecaservice.audit.dto.FieldConstraints.DATE_TIME_PATTERN;
 import static com.ecaservice.audit.dto.FieldConstraints.LOCAL_DATE_TIME_MAX_LENGTH;
 import static com.ecaservice.audit.dto.FieldConstraints.MAX_LENGTH_255;
+import static com.ecaservice.audit.dto.FieldConstraints.UUID_MAX_SIZE;
+import static com.ecaservice.audit.dto.FieldConstraints.UUID_PATTERN;
 import static com.ecaservice.audit.dto.FieldConstraints.VALUE_1;
 
 /**
@@ -30,10 +34,18 @@ public class AuditEventRequest {
     /**
      * Audit event id.
      */
-    @NotEmpty
-    @Size(min = VALUE_1, max = MAX_LENGTH_255)
+    @NotBlank
+    @Pattern(regexp = UUID_PATTERN)
+    @Size(min = VALUE_1, max = UUID_MAX_SIZE)
     @Schema(description = "Audit event id")
     private String eventId;
+
+    /**
+     * Correlation id.
+     */
+    @Size(max = MAX_LENGTH_255)
+    @Schema(description = "Correlation id")
+    private String correlationId;
 
     /**
      * Audit message

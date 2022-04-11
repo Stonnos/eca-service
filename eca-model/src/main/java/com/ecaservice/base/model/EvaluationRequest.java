@@ -4,6 +4,7 @@ import com.ecaservice.base.model.databind.ClassifierDeserializer;
 import com.ecaservice.base.model.databind.ClassifierSerializer;
 import com.ecaservice.base.model.databind.InstancesDeserializer;
 import com.ecaservice.base.model.databind.InstancesSerializer;
+import com.ecaservice.base.model.visitor.EcaRequestVisitor;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import eca.core.evaluation.EvaluationMethod;
@@ -19,7 +20,7 @@ import javax.validation.constraints.NotNull;
  * @author Roman Batygin
  */
 @Data
-public class EvaluationRequest {
+public class EvaluationRequest implements EcaRequest {
 
     /**
      * Classifier model
@@ -57,4 +58,9 @@ public class EvaluationRequest {
      * Seed value for k * V cross - validation method
      */
     private Integer seed;
+
+    @Override
+    public void visit(EcaRequestVisitor ecaRequestVisitor) {
+        ecaRequestVisitor.visitEvaluationRequest(this);
+    }
 }

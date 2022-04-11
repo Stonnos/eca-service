@@ -24,6 +24,7 @@
 [source,json]
 ----
 {
+  "requestId": "7c798c0e-251f-41cb-82b0-e8a371718b60",
   "receiver": "test@mail.ru",
   "templateCode": "NEW_EXPERIMENT",
   "variables": {
@@ -39,6 +40,11 @@
 
 |===
 |Название поля/атрибута|Тип|Обязательное|Описание|Комментарий
+|requestId
+|string
+|+
+|Уникальный идентификатор запроса
+|
 |receiver
 |string
 |+

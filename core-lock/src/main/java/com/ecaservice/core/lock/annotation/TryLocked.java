@@ -1,12 +1,11 @@
 package com.ecaservice.core.lock.annotation;
 
-import com.ecaservice.core.lock.fallback.DefaultFallbackHandler;
-import com.ecaservice.core.lock.fallback.FallbackHandler;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import static com.ecaservice.core.lock.config.CoreLockConfiguration.DEFAULT_FALLBACK_HANDLER;
 
 /**
  * Annotated method must be try locked. In this implementation, if the thread cannot acquire the lock,
@@ -40,10 +39,9 @@ public @interface TryLocked {
     String lockRegistry() default "redisLockRegistry";
 
     /**
-     * Fallback class in case if lock can't be acquire. The fallback class must
-     * implement the interface annotated by this annotation and be a valid spring bean.
+     * The bean name of the custom {@link com.ecaservice.core.lock.fallback.FallbackHandler}.
      *
      * @return fallback class
      */
-    Class<? extends FallbackHandler> fallback() default DefaultFallbackHandler.class;
+    String fallback() default DEFAULT_FALLBACK_HANDLER;
 }

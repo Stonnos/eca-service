@@ -32,7 +32,7 @@ public interface EvaluationRequestRepository extends JpaRepository<EvaluationReq
     /**
      * Finds evaluation request with correlation id and stage.
      *
-     * @param correlationId    - correlation id
+     * @param correlationId - correlation id
      * @return evaluation request entity
      */
     EvaluationRequestEntity findByCorrelationId(String correlationId);
@@ -50,11 +50,10 @@ public interface EvaluationRequestRepository extends JpaRepository<EvaluationReq
     /**
      * Finds evaluation requests page with specified ids.
      *
-     * @param ids      - ids list
-     * @param pageable - pageable object
+     * @param ids - ids list
      * @return evaluation requests page
      */
-    Page<EvaluationRequestEntity> findByIdIn(Collection<Long> ids, Pageable pageable);
+    List<EvaluationRequestEntity> findByIdIn(Collection<Long> ids);
 
     /**
      * Gets max evaluation request finished date for specified load test.

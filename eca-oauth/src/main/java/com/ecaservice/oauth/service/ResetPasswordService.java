@@ -49,7 +49,7 @@ public class ResetPasswordService {
      * @param createResetPasswordRequest - reset password request data
      * @return reset password request token
      */
-    @Audit(value = CREATE_RESET_PASSWORD_REQUEST, targetInitiator = "login")
+    @Audit(value = CREATE_RESET_PASSWORD_REQUEST, initiatorKey = "#result.login")
     public TokenModel createResetPasswordRequest(CreateResetPasswordRequest createResetPasswordRequest) {
         UserEntity userEntity = userEntityRepository.findByEmail(createResetPasswordRequest.getEmail())
                 .orElseThrow(() -> new IllegalStateException(
@@ -84,7 +84,7 @@ public class ResetPasswordService {
      *
      * @param resetPasswordRequest - reset password request
      */
-    @Audit(value = RESET_PASSWORD, targetInitiator = "userEntity.login")
+    @Audit(value = RESET_PASSWORD, initiatorKey = "#result.userEntity.login")
     @Transactional
     public ResetPasswordRequestEntity resetPassword(ResetPasswordRequest resetPasswordRequest) {
         log.info("Starting to reset password for token [{}]", mask(resetPasswordRequest.getToken()));

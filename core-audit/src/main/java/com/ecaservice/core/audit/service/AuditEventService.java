@@ -1,7 +1,6 @@
 package com.ecaservice.core.audit.service;
 
 import com.ecaservice.audit.dto.AuditEventRequest;
-import com.ecaservice.core.audit.entity.AuditEventRequestEntity;
 import com.ecaservice.core.audit.event.AuditEvent;
 import com.ecaservice.core.audit.mapping.AuditMapper;
 import com.ecaservice.core.audit.model.AuditEventTemplateModel;
@@ -47,11 +46,11 @@ public class AuditEventService {
                         auditEvent.getEventType(), auditEvent.getAuditContextParams());
                 AuditEventRequest auditEventRequest = auditMapper.map(auditEventTemplate);
                 auditEventRequest.setEventId(eventId);
+                auditEventRequest.setCorrelationId(auditEvent.getCorrelationId());
                 auditEventRequest.setMessage(message);
                 auditEventRequest.setInitiator(auditEvent.getInitiator());
                 auditEventRequest.setEventDate(LocalDateTime.now());
-                AuditEventRequestEntity auditEventRequestEntity = auditMapper.map(auditEventRequest);
-                auditEventSender.sendAuditEvent(auditEventRequest, auditEventRequestEntity);
+                auditEventSender.sendAuditEvent(auditEventRequest);
             }
         } catch (Exception ex) {
             log.error("There was an error while process audit event [{}]: {}", eventId, ex.getMessage());

@@ -3,6 +3,7 @@ package com.ecaservice.audit.service;
 import com.ecaservice.audit.AbstractJpaTest;
 import com.ecaservice.audit.config.EcaAuditLogConfig;
 import com.ecaservice.audit.entity.AuditLogEntity;
+import com.ecaservice.audit.exception.DuplicateEventIdException;
 import com.ecaservice.audit.mapping.AuditLogMapperImpl;
 import com.ecaservice.audit.repository.AuditLogRepository;
 import com.ecaservice.core.filter.exception.FieldNotFoundException;
@@ -18,6 +19,11 @@ import org.springframework.data.domain.Page;
 import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.ecaservice.audit.TestHelperUtils.createAuditEventRequest;
 import static com.ecaservice.audit.TestHelperUtils.createAuditLog;
@@ -41,6 +47,7 @@ class AuditLogServiceTest extends AbstractJpaTest {
 
     private static final int PAGE_NUMBER = 0;
     private static final int PAGE_SIZE = 10;
+    private static final int NUM_THREADS = 2;
     private static final String INVALID_FIELD_NAME = "abc.field1.field2";
 
     @Inject
@@ -64,6 +71,38 @@ class AuditLogServiceTest extends AbstractJpaTest {
         var actual = auditLogRepository.findById(auditLog.getId()).orElse(null);
         assertThat(actual).isNotNull();
         assertThat(actual.getEventId()).isEqualTo(auditEventRequest.getEventId());
+        assertThat(actual.getCorrelationId()).isEqualTo(auditEventRequest.getCorrelationId());
+    }
+
+    @Test
+    void testSaveAuditLogShouldThrowDuplicateEventIdException() {
+        var auditEventRequest = createAuditEventRequest();
+        var auditLog = auditLogService.save(auditEventRequest);
+        assertThat(auditLog).isNotNull();
+        assertThrows(DuplicateEventIdException.class, () -> auditLogService.save(auditEventRequest));
+    }
+
+    @Test
+    void testDuplicateEventIdInMultiThreadEnvironment() throws Exception {
+        var hasDuplicateEventIdError = new AtomicBoolean();
+        var auditEventRequest = createAuditEventRequest();
+        final CountDownLatch finishedLatch = new CountDownLatch(NUM_THREADS);
+        ExecutorService executorService = Executors.newFixedThreadPool(NUM_THREADS);
+        for (int i = 0; i < NUM_THREADS; i++) {
+            executorService.submit(() -> {
+                try {
+                    auditLogService.save(auditEventRequest);
+                } catch (DuplicateEventIdException ex) {
+                    hasDuplicateEventIdError.set(true);
+                } finally {
+                    finishedLatch.countDown();
+                }
+            });
+        }
+        finishedLatch.await();
+        executorService.shutdownNow();
+        assertThat(hasDuplicateEventIdError.get()).isTrue();
+        assertThat(auditLogRepository.count()).isOne();
     }
 
     /**

@@ -19,7 +19,7 @@ import { AuditLogsComponent } from "../audit-logs/components/audit-logs.componen
 import { ConfirmChangeEmailComponent } from "../update-user-email/components/confirm-change-email/confirm-change-email.component";
 import { TemplatesListComponent } from "../email-templates/components/templates-list/templates-list.component";
 import { InstancesDetailsComponent } from "../instances-details/components/instances-details.component";
-import {CreateResetPasswordRequestComponent} from "../change-password/components/create-reset-password-request/create-reset-password-request.component";
+import { CreateResetPasswordRequestComponent } from "../change-password/components/create-reset-password-request/create-reset-password-request.component";
 
 const routes: Routes = [
   {

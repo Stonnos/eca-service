@@ -12,6 +12,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import static com.ecaservice.test.common.util.ZipUtils.flush;
+
 /**
  * Csv report generator.
  *
@@ -31,26 +33,38 @@ public abstract class AbstractCsvTestResultsReportGenerator<T> implements TestRe
         @Cleanup var zipOutputStream = new ZipOutputStream(outputStream);
         @Cleanup var writer = new OutputStreamWriter(zipOutputStream, StandardCharsets.UTF_8);
 
+        log.info("Starting to write file [{}] into zip archive", TEST_RUN_LOGS_CSV);
         zipOutputStream.putNextEntry(new ZipEntry(TEST_RUN_LOGS_CSV));
-        var resultsPrinter = new CSVPrinter(writer, CSVFormat.EXCEL.withHeader(getResultsReportHeaders())
-                .withDelimiter(HEADER_DELIMITER));
+        @Cleanup var resultsPrinter = new CSVPrinter(writer, CSVFormat.EXCEL.withHeader(getResultsReportHeaders())
+                .withDelimiter(getHeaderDelimiter()));
         printReportTestResults(resultsPrinter, data, counter);
-        writer.flush();
-        zipOutputStream.flush();
-        zipOutputStream.closeEntry();
+        flush(zipOutputStream, writer);
+        log.info("File [{}] has been written into zip archive", TEST_RUN_LOGS_CSV);
 
+        log.info("Starting to write file [{}] into zip archive", TEST_RUN_TOTALS_CSV);
         zipOutputStream.putNextEntry(new ZipEntry(TEST_RUN_TOTALS_CSV));
-        var totalPrinter = new CSVPrinter(writer, CSVFormat.EXCEL.withHeader(getTotalReportHeaders())
-                .withDelimiter(HEADER_DELIMITER));
+        @Cleanup var totalPrinter = new CSVPrinter(writer, CSVFormat.EXCEL.withHeader(getTotalReportHeaders())
+                .withDelimiter(getHeaderDelimiter()));
         printReportTotal(totalPrinter, data, counter);
-        writer.flush();
-        zipOutputStream.flush();
-        zipOutputStream.closeEntry();
+        flush(zipOutputStream, writer);
+        log.info("File [{}] has been written into zip archive", TEST_RUN_TOTALS_CSV);
+
+        printAdditionalReportData(zipOutputStream, writer, data);
+    }
+
+    protected void printAdditionalReportData(ZipOutputStream zipOutputStream,
+                                             OutputStreamWriter outputStreamWriter,
+                                             T data) throws IOException {
+        //empty implementation
     }
 
     protected abstract String[] getResultsReportHeaders();
 
     protected abstract String[] getTotalReportHeaders();
+
+    protected char getHeaderDelimiter() {
+        return HEADER_DELIMITER;
+    }
 
     protected abstract void printReportTestResults(CSVPrinter csvPrinter, T data,
                                                    TestResultsCounter testResultsCounter) throws IOException;

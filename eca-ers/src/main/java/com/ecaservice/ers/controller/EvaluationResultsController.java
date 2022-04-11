@@ -175,8 +175,8 @@ public class EvaluationResultsController {
     @PostMapping(value = "/optimal-classifier-options")
     public ClassifierOptionsResponse findClassifierOptions(
             @Valid @RequestBody ClassifierOptionsRequest classifierOptionsRequest) {
-        log.info("Received request to find optimal classifiers options for data [{}]",
-                classifierOptionsRequest.getRelationName());
+        log.info("Received request [{}] to find optimal classifiers options for data [{}]",
+                classifierOptionsRequest.getRequestId(), classifierOptionsRequest.getRelationName());
         return classifierOptionsRequestService.findClassifierOptions(classifierOptionsRequest);
     }
 }

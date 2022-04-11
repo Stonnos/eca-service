@@ -16,6 +16,11 @@ public class AuditLogBean {
     private String eventId;
 
     /**
+     * Correlation id.
+     */
+    private String correlationId;
+
+    /**
      * Audit message
      */
     private String message;

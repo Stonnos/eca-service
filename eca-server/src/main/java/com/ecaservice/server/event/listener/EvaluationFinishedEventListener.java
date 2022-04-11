@@ -12,10 +12,7 @@ import com.ecaservice.server.service.ers.ErsRequestService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-
-import static com.ecaservice.server.config.EcaServiceConfiguration.ECA_THREAD_POOL_TASK_EXECUTOR;
 
 /**
  * Event listener that occurs after evaluation is finished.
@@ -35,7 +32,6 @@ public class EvaluationFinishedEventListener {
      *
      * @param evaluationFinishedEvent - evaluation finished event
      */
-    @Async(ECA_THREAD_POOL_TASK_EXECUTOR)
     @EventListener
     public void handleEvaluationFinishedEvent(EvaluationFinishedEvent evaluationFinishedEvent) {
         EvaluationResponse evaluationResponse = evaluationFinishedEvent.getEvaluationResponse();

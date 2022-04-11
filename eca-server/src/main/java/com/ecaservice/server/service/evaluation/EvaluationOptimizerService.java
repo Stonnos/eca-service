@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
 
+import java.util.UUID;
+
 import static com.ecaservice.server.util.ClassifierOptionsHelper.parseOptions;
 import static com.ecaservice.server.util.Utils.buildEvaluationErrorResponse;
 
@@ -49,6 +51,7 @@ public class EvaluationOptimizerService {
                 data.relationName());
         ClassifierOptionsRequest classifierOptionsRequest =
                 classifierOptionsRequestMapper.map(instancesRequest, crossValidationConfig);
+        classifierOptionsRequest.setRequestId(UUID.randomUUID().toString());
         ClassifierOptionsResult classifierOptionsResult = getOptimalClassifierOptions(classifierOptionsRequest);
         if (!classifierOptionsResult.isFound()) {
             return buildEvaluationErrorResponse(classifierOptionsResult.getErrorCode());
@@ -58,13 +61,10 @@ public class EvaluationOptimizerService {
     }
 
     private ClassifierOptionsResult getOptimalClassifierOptions(ClassifierOptionsRequest classifierOptionsRequest) {
-        String dataMd5Hash = classifierOptionsRequest.getDataHash();
         if (isUseClassifierOptionsCache()) {
-            return classifierOptionsCacheService.getOptimalClassifierOptionsFromCache(classifierOptionsRequest,
-                    dataMd5Hash);
+            return classifierOptionsCacheService.getOptimalClassifierOptionsFromCache(classifierOptionsRequest);
         } else {
-            return classifierOptionsCacheService.getOptimalClassifierOptionsFromErs(classifierOptionsRequest,
-                    dataMd5Hash);
+            return classifierOptionsCacheService.getOptimalClassifierOptionsFromErs(classifierOptionsRequest);
         }
     }
 

@@ -46,6 +46,7 @@ public class TestHelperUtils {
      */
     public static EmailRequest createEmailRequest() {
         EmailRequest emailRequest = new EmailRequest();
+        emailRequest.setRequestId(UUID.randomUUID().toString());
         emailRequest.setReceiver(RECEIVER_MAIL_RU);
         emailRequest.setTemplateCode(TEST_TEMPLATE_CODE);
         emailRequest.setVariables(newHashMap());

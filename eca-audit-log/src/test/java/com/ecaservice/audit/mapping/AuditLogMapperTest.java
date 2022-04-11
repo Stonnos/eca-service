@@ -29,6 +29,7 @@ class AuditLogMapperTest {
         var auditLog = auditLogMapper.map(auditEventRequest);
         assertThat(auditLog).isNotNull();
         assertThat(auditLog.getEventId()).isEqualTo(auditEventRequest.getEventId());
+        assertThat(auditLog.getCorrelationId()).isEqualTo(auditEventRequest.getCorrelationId());
         assertThat(auditLog.getEventType()).isEqualTo(auditEventRequest.getEventType());
         assertThat(auditLog.getEventDate()).isEqualTo(auditEventRequest.getEventDate());
         assertThat(auditLog.getMessage()).isEqualTo(auditEventRequest.getMessage());
@@ -44,6 +45,7 @@ class AuditLogMapperTest {
         var auditLogDto = auditLogMapper.map(auditLog);
         assertThat(auditLogDto).isNotNull();
         assertThat(auditLogDto.getEventId()).isEqualTo(auditLog.getEventId());
+        assertThat(auditLogDto.getCorrelationId()).isEqualTo(auditLog.getCorrelationId());
         assertThat(auditLogDto.getEventDate()).isEqualTo(auditLog.getEventDate());
         assertThat(auditLogDto.getMessage()).isEqualTo(auditLog.getMessage());
         assertThat(auditLogDto.getCode()).isEqualTo(auditLog.getCode());
@@ -64,5 +66,6 @@ class AuditLogMapperTest {
         assertThat(auditLogBean.getCodeTitle()).isEqualTo(auditLog.getCodeTitle());
         assertThat(auditLogBean.getGroupCode()).isEqualTo(auditLog.getGroupCode());
         assertThat(auditLogBean.getGroupTitle()).isEqualTo(auditLog.getGroupTitle());
+        assertThat(auditLogBean.getCorrelationId()).isEqualTo(auditLog.getCorrelationId());
     }
 }

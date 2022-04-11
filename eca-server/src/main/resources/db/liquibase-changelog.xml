@@ -55,4 +55,6 @@
     <include file="../mail-client-changelog.xml" relativeToChangelogFile="true"/>
     <include file="db/changelog/v46-drop-experiment-sent-date-column.xml"/>
     <include file="db/changelog/v47-create-ers-retry-request-table.xml"/>
+    <include file="db/changelog/v48-drop-ers-retry-request-table.xml"/>
+    <include file="db/changelog/v49-add-request-id-unique-idx.xml"/>
 </databaseChangeLog>

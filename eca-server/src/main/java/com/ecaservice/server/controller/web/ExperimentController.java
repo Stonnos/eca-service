@@ -4,6 +4,7 @@ import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.common.web.dto.ValidationErrorDto;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.server.event.model.ExperimentEmailEvent;
 import com.ecaservice.server.mapping.ExperimentMapper;
 import com.ecaservice.server.mapping.ExperimentProgressMapper;
@@ -72,6 +73,7 @@ import java.util.stream.Collectors;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
+import static com.ecaservice.server.config.audit.AuditCodes.CREATE_EXPERIMENT_REQUEST;
 import static com.ecaservice.server.controller.doc.ApiExamples.CREATE_EXPERIMENT_RESULT_RESPONSE_JSON;
 import static com.ecaservice.server.controller.doc.ApiExamples.EXPERIMENTS_PAGE_REQUEST_JSON;
 import static com.ecaservice.server.controller.doc.ApiExamples.EXPERIMENTS_PAGE_RESPONSE_JSON;
@@ -204,6 +206,7 @@ public class ExperimentController {
      * @param evaluationMethod - evaluation method
      * @return create experiment results dto
      */
+    @Audit(value = CREATE_EXPERIMENT_REQUEST, correlationIdKey = "#result.requestId")
     @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
             description = "Creates experiment request with specified options",

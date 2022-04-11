@@ -221,6 +221,7 @@ a|
 [source,json]
 ----
 {
+  "requestId" : "1d2de514-3a87-4620-9b97-c260e24340de",
   "receiver" : "test@mail.ru",
   "templateCode" : "NEW_EXPERIMENT",
   "variables" : {
@@ -902,6 +903,25 @@ __string__
 [width=100%]
 |===
 |*Name*|*Description*|*Schema*
+|*requestId**
+|Request id
+a|
+__string__
+
+
+*Min. length*: 1
+
+*Max. length*: 36
+
+
+
+
+
+
+
+*Pattern*: `^[0-9a-f]{8}-[0-9a-f]{4}-[34][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`
+
+
 |*receiver**
 |Receiver email
 a|

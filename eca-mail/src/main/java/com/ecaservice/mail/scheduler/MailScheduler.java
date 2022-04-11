@@ -69,9 +69,9 @@ public class MailScheduler {
         if (failedAttemptsToSent >= mailConfig.getMaxFailedAttemptsToSent()) {
             email.setStatus(EmailStatus.EXCEEDED);
         } else {
-            email.setFailedAttemptsToSent(failedAttemptsToSent);
             email.setStatus(EmailStatus.NOT_SENT);
             email.setErrorMessage(errorMessage);
         }
+        email.setFailedAttemptsToSent(failedAttemptsToSent);
     }
 }

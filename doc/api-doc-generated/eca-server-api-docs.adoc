@@ -28,9 +28,9 @@ a|
 
 __Grant type:__ password
 
-__Token url:__ http://localhost:8080/oauth/token
+__Token url:__ http://localhost:8080/eca-oauth/oauth/token
 
-__Refresh token url:__ http://localhost:8080/oauth/token
+__Refresh token url:__ http://localhost:8080/eca-oauth/oauth/token
 
 
 __Scopes__:
@@ -231,8 +231,6 @@ __string__
 * EVALUATION_LOGS
 
 * CLASSIFIERS_OPTIONS_REQUESTS
-
-* CLASSIFIERS_CONFIGURATION
 |===
 
 *Api responses*

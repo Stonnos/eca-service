@@ -1,5 +1,6 @@
 package com.ecaservice.core.lock.aspect;
 
+import com.ecaservice.common.web.expression.SpelExpressionHelper;
 import com.ecaservice.core.lock.annotation.Locked;
 import com.ecaservice.core.lock.annotation.TryLocked;
 import com.ecaservice.core.lock.fallback.FallbackHandler;
@@ -8,18 +9,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationContext;
 import org.springframework.dao.CannotAcquireLockException;
-import org.springframework.expression.ExpressionParser;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
-import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.integration.support.locks.LockRegistry;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-
-import java.util.stream.IntStream;
 
 /**
  * Aspect for lock execution.
@@ -34,7 +29,7 @@ public class LockExecutionAspect {
 
     private static final String LOCK_KEY_FORMAT = "%s-%s";
 
-    private final ExpressionParser expressionParser = new SpelExpressionParser();
+    private final SpelExpressionHelper spelExpressionHelper = new SpelExpressionHelper();
 
     private final ApplicationContext applicationContext;
 
@@ -86,7 +81,8 @@ public class LockExecutionAspect {
         LockService lockService = new LockService(lockRegistry);
         try {
             if (!lockService.tryLock(lockKey)) {
-                FallbackHandler fallbackHandler = applicationContext.getBean(tryLocked.fallback());
+                FallbackHandler fallbackHandler =
+                        applicationContext.getBean(tryLocked.fallback(), FallbackHandler.class);
                 fallbackHandler.fallback(lockKey);
             } else {
                 joinPoint.proceed();
@@ -106,12 +102,7 @@ public class LockExecutionAspect {
         if (!StringUtils.hasText(lockKey)) {
             return lockName;
         } else {
-            StandardEvaluationContext context = new StandardEvaluationContext();
-            MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
-            String[] methodParameters = methodSignature.getParameterNames();
-            Object[] args = joinPoint.getArgs();
-            IntStream.range(0, methodParameters.length).forEach(i -> context.setVariable(methodParameters[i], args[i]));
-            Object value = expressionParser.parseExpression(lockKey).getValue(context, Object.class);
+            Object value = spelExpressionHelper.parseExpression(joinPoint, lockKey);
             return String.format(LOCK_KEY_FORMAT, lockName, value);
         }
     }

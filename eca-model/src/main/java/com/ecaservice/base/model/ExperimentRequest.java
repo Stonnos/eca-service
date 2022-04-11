@@ -2,6 +2,7 @@ package com.ecaservice.base.model;
 
 import com.ecaservice.base.model.databind.InstancesDeserializer;
 import com.ecaservice.base.model.databind.InstancesSerializer;
+import com.ecaservice.base.model.visitor.EcaRequestVisitor;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import eca.core.evaluation.EvaluationMethod;
@@ -23,7 +24,7 @@ import static com.ecaservice.base.model.util.FieldConstraints.FIRST_NAME_MAX_SIZ
  * @author Roman Batygin
  */
 @Data
-public class ExperimentRequest {
+public class ExperimentRequest implements EcaRequest {
 
     /**
      * First name
@@ -60,4 +61,8 @@ public class ExperimentRequest {
     @NotNull
     private EvaluationMethod evaluationMethod;
 
+    @Override
+    public void visit(EcaRequestVisitor ecaRequestVisitor) {
+        ecaRequestVisitor.visitExperimentRequest(this);
+    }
 }

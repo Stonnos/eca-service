@@ -3,8 +3,6 @@ package com.ecaservice.server.repository;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.projections.RequestStatusStatistics;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -42,11 +40,10 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
     /**
      * Gets experiments page with specified ids.
      *
-     * @param ids      - experiment ids
-     * @param pageable - pageable object
+     * @param ids - experiment ids
      * @return experiments page
      */
-    Page<Experiment> findByIdIn(Collection<Long> ids, Pageable pageable);
+    List<Experiment> findByIdIn(Collection<Long> ids);
 
     /**
      * Finds experiments models to delete.

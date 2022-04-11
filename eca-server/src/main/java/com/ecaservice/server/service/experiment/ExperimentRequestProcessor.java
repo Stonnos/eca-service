@@ -22,8 +22,8 @@ import java.util.List;
 import static com.ecaservice.common.web.util.LogHelper.EV_REQUEST_ID;
 import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.putMdc;
+import static com.ecaservice.common.web.util.PageHelper.processWithPagination;
 import static com.ecaservice.server.config.EcaServiceConfiguration.EXPERIMENT_REDIS_LOCK_REGISTRY_BEAN;
-import static com.ecaservice.server.util.PageHelper.processWithPagination;
 
 /**
  * Experiment request processor.
@@ -62,14 +62,14 @@ public class ExperimentRequestProcessor {
         experimentProgressService.start(experiment);
         setInProgressStatus(experiment);
         AbstractExperiment<?> experimentHistory = experimentService.processExperiment(experiment);
+        if (RequestStatus.FINISHED.equals(experiment.getRequestStatus())) {
+            eventPublisher.publishEvent(new ExperimentFinishedEvent(this, experiment, experimentHistory));
+        }
         if (Channel.QUEUE.equals(experiment.getChannel())) {
             eventPublisher.publishEvent(new ExperimentResponseEvent(this, experiment));
         }
         eventPublisher.publishEvent(new ExperimentWebPushEvent(this, experiment));
         eventPublisher.publishEvent(new ExperimentEmailEvent(this, experiment));
-        if (RequestStatus.FINISHED.equals(experiment.getRequestStatus())) {
-            eventPublisher.publishEvent(new ExperimentFinishedEvent(this, experiment, experimentHistory));
-        }
         experimentProgressService.finish(experiment);
         log.info("New experiment [{}] has been processed", experiment.getRequestId());
     }

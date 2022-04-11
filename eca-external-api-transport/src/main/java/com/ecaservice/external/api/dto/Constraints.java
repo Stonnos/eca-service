@@ -2,8 +2,6 @@ package com.ecaservice.external.api.dto;
 
 import lombok.experimental.UtilityClass;
 
-import javax.xml.validation.Schema;
-
 /**
  * Constraints utility class.
  *

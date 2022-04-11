@@ -32,6 +32,12 @@ public class AuditLogDto {
     private String eventId;
 
     /**
+     * Correlation id.
+     */
+    @Schema(description = "Correlation id", example = "202876", maxLength = MAX_LENGTH_255)
+    private String correlationId;
+
+    /**
      * Audit message
      */
     @Schema(description = "Audit message", example = "Some action")

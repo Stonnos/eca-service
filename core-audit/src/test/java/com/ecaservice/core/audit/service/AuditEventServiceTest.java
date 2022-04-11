@@ -2,7 +2,6 @@ package com.ecaservice.core.audit.service;
 
 import com.ecaservice.audit.dto.AuditEventRequest;
 import com.ecaservice.core.audit.AbstractJpaTest;
-import com.ecaservice.core.audit.entity.AuditEventRequestEntity;
 import com.ecaservice.core.audit.entity.AuditEventTemplateEntity;
 import com.ecaservice.core.audit.event.AuditEvent;
 import com.ecaservice.core.audit.mapping.AuditMapperImpl;
@@ -19,10 +18,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
 import javax.inject.Inject;
+import java.util.UUID;
 
 import static com.ecaservice.core.audit.TestHelperUtils.createAuditEventTemplateEntity;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -79,16 +78,16 @@ class AuditEventServiceTest extends AbstractJpaTest {
         var contextParams = new AuditContextParams();
         when(auditTemplateProcessorService.process(auditCode, auditEventTemplateEntity.getEventType(),
                 contextParams)).thenReturn(MESSAGE);
-        var auditEvent =
-                new AuditEvent(this, auditCode, auditEventTemplateEntity.getEventType(), INITIATOR, contextParams);
+        var auditEvent = new AuditEvent(this, auditCode, auditEventTemplateEntity.getEventType(),
+                UUID.randomUUID().toString(), INITIATOR, contextParams);
         auditEventService.audit(auditEvent);
-        verify(auditEventSender, atLeastOnce()).sendAuditEvent(auditEventRequestArgumentCaptor.capture(),
-                any(AuditEventRequestEntity.class));
+        verify(auditEventSender, atLeastOnce()).sendAuditEvent(auditEventRequestArgumentCaptor.capture());
         var auditEventRequest = auditEventRequestArgumentCaptor.getValue();
         assertThat(auditEventRequest).isNotNull();
         assertThat(auditEventRequest.getEventId()).isNotNull();
         assertThat(auditEventRequest.getEventDate()).isNotNull();
-        assertThat(auditEventRequest.getInitiator()).isEqualTo(INITIATOR);
+        assertThat(auditEventRequest.getInitiator()).isEqualTo(auditEvent.getInitiator());
+        assertThat(auditEventRequest.getCorrelationId()).isEqualTo(auditEvent.getCorrelationId());
         assertThat(auditEventRequest.getMessage()).isEqualTo(MESSAGE);
     }
 }

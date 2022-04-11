@@ -6,6 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 /**
  * Repository to manage with {@link AutoTestEntity} persistence entity.
  *
@@ -21,4 +23,12 @@ public interface AutoTestRepository extends JpaRepository<AutoTestEntity, Long> 
      * @return auto tests entities page
      */
     Page<AutoTestEntity> findAllByJob(JobEntity jobEntity, Pageable pageable);
+
+    /**
+     * Finds all auto tests by job.
+     *
+     * @param jobEntity - job entity
+     * @return auto tests entities page
+     */
+    List<AutoTestEntity> findAllByJob(JobEntity jobEntity);
 }

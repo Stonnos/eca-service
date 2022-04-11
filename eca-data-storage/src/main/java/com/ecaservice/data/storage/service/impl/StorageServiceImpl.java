@@ -67,7 +67,7 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    @Audit(SAVE_INSTANCES)
+    @Audit(value = SAVE_INSTANCES, correlationIdKey = "#result.id")
     public InstancesEntity saveData(Instances instances, String tableName) {
         log.info("Starting to save instances into table [{}]", tableName);
         if (tableNameService.tableExists(tableName)) {
@@ -80,7 +80,7 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    @Audit(DELETE_INSTANCES)
+    @Audit(value = DELETE_INSTANCES, correlationIdKey = "#id")
     @Transactional
     public String deleteData(long id) {
         log.info("Starting to delete instances with id [{}]", id);
@@ -116,7 +116,7 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    @Audit(RENAME_INSTANCES)
+    @Audit(value = RENAME_INSTANCES, correlationIdKey = "#id")
     @Transactional
     public String renameData(long id, String newName) {
         log.info("Starting to rename instances [{}] with new name [{}]", id, newName);

@@ -6,7 +6,6 @@ import com.ecaservice.oauth.service.mail.dictionary.Templates;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.time.Duration;
 import java.util.Collections;
 import java.util.Map;
 
@@ -42,10 +41,5 @@ public class TfaCodeNotificationEventHandler extends AbstractNotificationEventHa
     @Override
     int getPriority() {
         return HIGHEST;
-    }
-
-    @Override
-    public Long getRequestCacheDurationInMinutes() {
-        return Duration.ofSeconds(tfaConfig.getCodeValiditySeconds()).toMinutes();
     }
 }

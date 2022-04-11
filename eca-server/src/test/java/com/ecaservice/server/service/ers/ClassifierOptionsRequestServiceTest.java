@@ -105,13 +105,16 @@ class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
     @Test
     void testFilterByRequestId() {
         ClassifierOptionsRequestModel requestModel = new ClassifierOptionsRequestModel();
+        requestModel.setResponseStatus(ErsResponseStatus.SUCCESS);
         requestModel.setRequestId(UUID.randomUUID().toString());
         classifierOptionsRequestModelRepository.save(requestModel);
         ClassifierOptionsRequestModel requestModel2 = new ClassifierOptionsRequestModel();
         requestModel2.setRequestId(UUID.randomUUID().toString());
+        requestModel2.setResponseStatus(ErsResponseStatus.SUCCESS);
         classifierOptionsRequestModelRepository.save(requestModel2);
         ClassifierOptionsRequestModel requestModel3 = new ClassifierOptionsRequestModel();
         requestModel3.setRequestId(UUID.randomUUID().toString());
+        requestModel3.setResponseStatus(ErsResponseStatus.SUCCESS);
         classifierOptionsRequestModelRepository.save(requestModel3);
         PageRequestDto pageRequestDto =
                 new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, ClassifierOptionsRequestModel_.REQUEST_ID, false, null,

@@ -19,4 +19,5 @@
     <include file="db/changelog/v12-changed-create-user-template-subject.xml"/>
     <include file="db/changelog/v13-update-new-user-template.xml"/>
     <include file="db/changelog/v14-update-reset-password-templates.xml"/>
+    <include file="db/changelog/v15-add-uuid-unique-idx.xml"/>
 </databaseChangeLog>

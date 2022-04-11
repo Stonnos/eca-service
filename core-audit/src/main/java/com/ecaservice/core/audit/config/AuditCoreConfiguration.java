@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 import java.util.concurrent.Executor;
 
@@ -38,14 +37,6 @@ public class AuditCoreConfiguration {
      * Audit event thread pool task executor bean
      */
     public static final String AUDIT_EVENT_THREAD_POOL_TASK_EXECUTOR = "auditEventThreadPoolTaskExecutor";
-    /**
-     * Audit thread pool task scheduler executor bean
-     */
-    public static final String AUDIT_THREAD_POOL_TASK_SCHEDULER = "auditThreadPoolTaskScheduler";
-    /**
-     * Audit lock registry bean
-     */
-    public static final String AUDIT_LOCK_REGISTRY = "auditLockRegistry";
 
     /**
      * Creates thread pool task executor bean.
@@ -60,16 +51,5 @@ public class AuditCoreConfiguration {
         executor.setCorePoolSize(auditProperties.getThreadPoolSize());
         executor.setMaxPoolSize(auditProperties.getThreadPoolSize());
         return executor;
-    }
-
-    /**
-     * Creates audit thread pool task scheduler bean.
-     *
-     * @return audit thread pool task scheduler bean
-     */
-    @Bean(name = AUDIT_THREAD_POOL_TASK_SCHEDULER)
-    @ConditionalOnProperty(value = "audit.redelivery", havingValue = "true")
-    public ThreadPoolTaskScheduler auditThreadPoolTaskScheduler() {
-        return new ThreadPoolTaskScheduler();
     }
 }

@@ -51,6 +51,7 @@ public class TestHelperUtils {
     public static AuditEventRequest createAuditEventRequest() {
         var auditEventRequest = new AuditEventRequest();
         auditEventRequest.setEventId(UUID.randomUUID().toString());
+        auditEventRequest.setCorrelationId(UUID.randomUUID().toString());
         auditEventRequest.setEventType(EventType.SUCCESS);
         auditEventRequest.setInitiator(INITIATOR);
         auditEventRequest.setCode(CODE);

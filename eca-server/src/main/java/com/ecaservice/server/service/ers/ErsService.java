@@ -11,6 +11,7 @@ import com.ecaservice.web.dto.model.EvaluationResultsStatus;
 import eca.core.evaluation.EvaluationResults;
 import eca.dataminer.AbstractExperiment;
 import feign.FeignException;
+import feign.RetryableException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -64,7 +65,7 @@ public class ErsService {
             evaluationResultsDto.setEvaluationResultsStatus(new EnumDto(evaluationResultsStatus.name(),
                     evaluationResultsStatus.getDescription()));
             return evaluationResultsDto;
-        } catch (FeignException.ServiceUnavailable ex) {
+        } catch (FeignException.ServiceUnavailable | RetryableException ex) {
             log.error("Service unavailable error while fetching evaluation results for request id [{}]: {}", requestId,
                     ex.getMessage());
             evaluationResultsStatus = EvaluationResultsStatus.ERS_SERVICE_UNAVAILABLE;

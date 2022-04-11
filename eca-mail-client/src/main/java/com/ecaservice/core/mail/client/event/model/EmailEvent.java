@@ -2,7 +2,6 @@ package com.ecaservice.core.mail.client.event.model;
 
 import com.ecaservice.notification.dto.EmailRequest;
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.context.ApplicationEvent;
 
 /**
@@ -17,13 +16,6 @@ public class EmailEvent extends ApplicationEvent {
      */
     @Getter
     private final EmailRequest emailRequest;
-
-    /**
-     * Email request cache duration in minutes
-     */
-    @Getter
-    @Setter
-    private Long requestCacheDurationInMinutes;
 
     /**
      * Create a new {@code ApplicationEvent}.
