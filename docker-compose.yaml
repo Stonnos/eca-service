@@ -71,7 +71,6 @@ services:
       AUDIT_ASYNCEVENTS: ${AUDIT_ASYNC_EVENTS}
       AUDIT_THREADPOOLSIZE: ${AUDIT_THREAD_POOL_SIZE}
       REDELIVERY_ENABLED: "true"
-      ERS_REDELIVERY: "true"
       OPENAPI_BASEPATH: "/eca-server"
     networks:
       - default
