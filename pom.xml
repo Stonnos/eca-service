@@ -79,7 +79,7 @@
         <eca.version>6.9.0</eca.version>
         <h2.version>1.4.199</h2.version>
         <postresql.version>42.3.3</postresql.version>
-        <liquibase.version>3.7.0</liquibase.version>
+        <liquibase.version>4.8.0</liquibase.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <docker-maven-plugin.version>1.4.13</docker-maven-plugin.version>
         <maven-processor-plugin.version>3.3.3</maven-processor-plugin.version>
