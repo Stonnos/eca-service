@@ -1,4 +1,4 @@
-package com.ecaservice.server.model.entity;
+package com.ecaservice.core.form.template.entity;
 
 import lombok.Data;
 
@@ -15,14 +15,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * Classifier template persistence entity.
+ * Form template persistence entity.
  *
  * @author Roman Batygin
  */
 @Data
 @Entity
-@Table(name = "classifier_template")
-public class ClassifierTemplateEntity {
+@Table(name = "form_template")
+public class FormTemplateEntity {
 
     @Id
     @GeneratedValue
@@ -52,5 +52,5 @@ public class ClassifierTemplateEntity {
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "template_id", nullable = false)
     @OrderBy("fieldOrder")
-    private List<ClassifierFieldEntity> fields;
+    private List<FormFieldEntity> fields;
 }

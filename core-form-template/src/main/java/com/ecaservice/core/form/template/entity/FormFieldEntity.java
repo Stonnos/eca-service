@@ -1,4 +1,4 @@
-package com.ecaservice.server.model.entity;
+package com.ecaservice.core.form.template.entity;
 
 import lombok.Data;
 
@@ -14,14 +14,14 @@ import javax.persistence.Table;
 import java.math.BigDecimal;
 
 /**
- * Classifier template field persistence entity.
+ * Form field template persistence entity.
  *
  * @author Roman Batygin
  */
 @Data
 @Entity
-@Table(name = "classifier_field")
-public class ClassifierFieldEntity {
+@Table(name = "form_field")
+public class FormFieldEntity {
 
     @Id
     @GeneratedValue

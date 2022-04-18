@@ -25,6 +25,7 @@
         <module>core-redelivery</module>
         <module>core-audit</module>
         <module>core-filter</module>
+        <module>core-form-template</module>
         <module>swagger-core</module>
         <module>oauth2-core</module>
         <module>rabbit-core</module>
