@@ -1,5 +1,6 @@
 package com.ecaservice.core.form.template.entity;
 
+import com.ecaservice.web.dto.model.FieldType;
 import lombok.Data;
 
 import javax.persistence.Column;
