@@ -17,9 +17,6 @@
             <column name="group_name" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="created" type="timestamp">
-                <constraints nullable="false"/>
-            </column>
         </createTable>
     </changeSet>
 
@@ -46,9 +43,6 @@
                 <constraints nullable="false"/>
             </column>
             <column name="template_title" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="created" type="timestamp">
                 <constraints nullable="false"/>
             </column>
             <column name="group_id" type="bigint">

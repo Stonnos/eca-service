@@ -10,7 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -26,12 +25,6 @@ public class FormTemplateGroupEntity {
     @Id
     @GeneratedValue
     private Long id;
-
-    /**
-     * Creation date
-     */
-    @Column(nullable = false)
-    private LocalDateTime created;
 
     /**
      * Group name

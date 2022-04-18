@@ -11,7 +11,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -27,12 +26,6 @@ public class FormTemplateEntity {
     @Id
     @GeneratedValue
     private Long id;
-
-    /**
-     * Template creation date
-     */
-    @Column(nullable = false)
-    private LocalDateTime created;
 
     /**
      * Template name
