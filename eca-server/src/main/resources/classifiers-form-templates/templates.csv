@@ -4,4 +4,3 @@ id;template_name;template_title;group_id
 3;j48;Алгоритм J48;1
 4;decision_tree;Дерево решений;1
 5;neural_network;Нейронная сеть (Многослойный персептрон);1
-
