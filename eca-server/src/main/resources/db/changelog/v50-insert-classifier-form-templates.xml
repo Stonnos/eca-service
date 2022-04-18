@@ -27,4 +27,26 @@
                 file="classifiers-form-templates/templates.csv"/>
     </changeSet>
 
+    <changeSet author="roman.batygin@mail.ru" id="insert_classifier_form_field_dictionaries" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="form_field_dictionary"/>
+        </preConditions>
+        <loadUpdateData
+                tableName="form_field_dictionary"
+                primaryKey="id"
+                separator=";"
+                file="classifiers-form-templates/form-field-dictionaries.csv"/>
+    </changeSet>
+
+    <changeSet author="roman.batygin@mail.ru" id="insert_classifier_form_field_dictionaries_values" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="form_field_dictionary_value"/>
+        </preConditions>
+        <loadUpdateData
+                tableName="form_field_dictionary_value"
+                primaryKey="id"
+                separator=";"
+                file="classifiers-form-templates/form-field-dictionaries-values.csv"/>
+    </changeSet>
+
 </databaseChangeLog>
