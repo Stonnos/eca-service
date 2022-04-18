@@ -37,7 +37,7 @@ public class FormTemplateEntity {
     /**
      * Template name
      */
-    @Column(name = "template_name", nullable = false)
+    @Column(name = "template_name", nullable = false, unique = true)
     private String templateName;
 
     /**
