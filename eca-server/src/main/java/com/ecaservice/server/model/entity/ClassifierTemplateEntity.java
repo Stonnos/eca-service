@@ -31,8 +31,8 @@ public class ClassifierTemplateEntity {
     /**
      * Template creation date
      */
-    @Column(name = "creation_date", nullable = false)
-    private LocalDateTime creationDate;
+    @Column(nullable = false)
+    private LocalDateTime created;
 
     /**
      * Template name
