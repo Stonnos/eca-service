@@ -57,4 +57,5 @@
     <include file="db/changelog/v47-create-ers-retry-request-table.xml"/>
     <include file="db/changelog/v48-drop-ers-retry-request-table.xml"/>
     <include file="db/changelog/v49-add-request-id-unique-idx.xml"/>
+    <include file="../form-template-changelog.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

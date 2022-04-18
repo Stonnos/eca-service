@@ -121,6 +121,7 @@
                              referencedTableName="form_field_dictionary" referencedColumnNames="id"
                              nullable="true"/>
             </column>
+            <column name="default_value" type="varchar(255)"/>
         </createTable>
     </changeSet>
 
