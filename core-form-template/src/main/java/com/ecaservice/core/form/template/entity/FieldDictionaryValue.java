@@ -9,13 +9,13 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- * Field value persistence entity. Using for reference field type
+ * Field dictionary value persistence entity. Using for reference field type
  *
  * @author Roman Batygin
  */
 @Data
 @Entity
-@Table(name = "field_dictionary_value")
+@Table(name = "form_field_dictionary_value")
 public class FieldDictionaryValue {
 
     @Id

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="create_form_template" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="form_template"/>
+            </not>
+        </preConditions>
+        <createTable tableName="form_template">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="template_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="template_title" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_form_field_dictionary" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="form_field_dictionary"/>
+            </not>
+        </preConditions>
+        <createTable tableName="form_field_dictionary">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_form_field" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="form_template"/>
+            <tableExists tableName="form_field_dictionary"/>
+            <not>
+                <tableExists tableName="form_field"/>
+            </not>
+        </preConditions>
+        <createTable tableName="form_field">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="field_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="field_order" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="field_type" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="min_value" type="numeric(19,2)"/>
+            <column name="max_value" type="numeric(19,2)"/>
+            <column name="max_length" type="integer"/>
+            <column name="pattern" type="varchar(255)"/>
+            <column name="template_id" type="bigint">
+                <constraints foreignKeyName="fk_form_template_id"
+                             referencedTableName="form_template" referencedColumnNames="id"
+                             nullable="false"/>
+            </column>
+            <column name="dictionary_id" type="bigint">
+                <constraints foreignKeyName="fk_form_field_dictionary_id"
+                             referencedTableName="form_field_dictionary" referencedColumnNames="id"
+                             nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_form_field_dictionary_value" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="form_field_dictionary"/>
+            <not>
+                <tableExists tableName="form_field_dictionary_value"/>
+            </not>
+        </preConditions>
+        <createTable tableName="form_field_dictionary_value">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="label" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="dictionary_id" type="bigint">
+                <constraints foreignKeyName="fk_form_field_dictionary_value_dictionary_id"
+                             referencedTableName="form_field_dictionary" referencedColumnNames="id"
+                             nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

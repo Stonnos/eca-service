@@ -19,7 +19,7 @@ import java.util.List;
  */
 @Data
 @Entity
-@Table(name = "field_dictionary")
+@Table(name = "form_field_dictionary")
 public class FieldDictionary {
 
     @Id
