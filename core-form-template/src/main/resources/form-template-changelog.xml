@@ -4,6 +4,34 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
+    <changeSet id="create_form_templates_group" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="form_template_group"/>
+            </not>
+        </preConditions>
+        <createTable tableName="form_template_group">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="group_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="add_form_template_group_name_unique_index" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="form_template_group"/>
+            <columnExists tableName="form_template_group" columnName="group_name"/>
+        </preConditions>
+        <addUniqueConstraint tableName="form_template_group" columnNames="group_name"
+                             constraintName="form_template_group_name_unique_idx"/>
+    </changeSet>
+
     <changeSet id="create_form_template" author="roman.batygin@mail.ru" context="schema">
         <preConditions onFail="MARK_RAN">
             <not>
@@ -22,6 +50,11 @@
             </column>
             <column name="created" type="timestamp">
                 <constraints nullable="false"/>
+            </column>
+            <column name="group_id" type="bigint">
+                <constraints foreignKeyName="fk_form_template_group_id"
+                             referencedTableName="form_template_group" referencedColumnNames="id"
+                             nullable="false"/>
             </column>
         </createTable>
     </changeSet>
