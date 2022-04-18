@@ -2,7 +2,9 @@ package com.ecaservice.core.form.template.service;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.form.template.entity.FormTemplateEntity;
+import com.ecaservice.core.form.template.entity.FormTemplateGroupEntity;
 import com.ecaservice.core.form.template.mapping.FormTemplateMapper;
+import com.ecaservice.core.form.template.repository.FormTemplateGroupRepository;
 import com.ecaservice.core.form.template.repository.FormTemplateRepository;
 import com.ecaservice.web.dto.model.FormTemplateDto;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.ecaservice.core.form.template.config.CacheNames.FORM_TEMPLATES_CACHE_NAME;
+import static com.ecaservice.core.form.template.config.CacheNames.FORM_TEMPLATES_GROUP_CACHE_NAME;
 import static com.ecaservice.core.form.template.config.CacheNames.FORM_TEMPLATE_CACHE_NAME;
 
 /**
@@ -26,6 +28,7 @@ import static com.ecaservice.core.form.template.config.CacheNames.FORM_TEMPLATE_
 public class FormTemplateProvider {
 
     private final FormTemplateMapper formTemplateMapper;
+    private final FormTemplateGroupRepository formTemplateGroupRepository;
     private final FormTemplateRepository formTemplateRepository;
 
     /**
@@ -43,14 +46,17 @@ public class FormTemplateProvider {
     }
 
     /**
-     * Gets form templates.
+     * Gets form templates for specified group.
      *
+     * @param groupName - group name
      * @return form templates
      */
-    @Cacheable(FORM_TEMPLATES_CACHE_NAME)
-    public List<FormTemplateDto> getTemplates() {
-        log.debug("Gets form templates");
-        var templates = formTemplateRepository.findAll();
+    @Cacheable(FORM_TEMPLATES_GROUP_CACHE_NAME)
+    public List<FormTemplateDto> getTemplates(String groupName) {
+        log.debug("Gets form templates for group [{}]", groupName);
+        var templates = formTemplateGroupRepository.findByGroupName(groupName)
+                .map(FormTemplateGroupEntity::getTemplates)
+                .orElseThrow(() -> new EntityNotFoundException(FormTemplateGroupEntity.class, groupName));
         log.debug("[{}] form templates has been fetched", templates.size());
         return formTemplateMapper.mapTemplates(templates);
     }
