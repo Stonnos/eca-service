@@ -26,6 +26,14 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="add_form_template_name_unique_index" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="form_template"/>
+            <columnExists tableName="form_template" columnName="template_name"/>
+        </preConditions>
+        <addUniqueConstraint tableName="form_template" columnNames="template_name" constraintName="form_template_name_unique_idx"/>
+    </changeSet>
+
     <changeSet id="create_form_field_dictionary" author="roman.batygin@mail.ru" context="schema">
         <preConditions onFail="MARK_RAN">
             <not>
@@ -81,6 +89,16 @@
                              nullable="true"/>
             </column>
         </createTable>
+    </changeSet>
+
+    <changeSet id="add_form_field_name__template_id_unique_index" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="form_field"/>
+            <columnExists tableName="form_field" columnName="field_name"/>
+            <columnExists tableName="form_field" columnName="template_id"/>
+        </preConditions>
+        <addUniqueConstraint tableName="form_field" columnNames="field_name, template_id"
+                             constraintName="form_field_name_template_id_unique_idx"/>
     </changeSet>
 
     <changeSet id="create_form_field_dictionary_value" author="roman.batygin@mail.ru" context="schema">

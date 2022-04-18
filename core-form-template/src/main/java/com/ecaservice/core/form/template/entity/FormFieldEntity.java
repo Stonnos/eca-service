@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import java.math.BigDecimal;
 
 /**
@@ -20,7 +21,8 @@ import java.math.BigDecimal;
  */
 @Data
 @Entity
-@Table(name = "form_field")
+@Table(name = "form_field", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"field_name", "template_id"}, name = "form_field_name_template_id_unique_idx")})
 public class FormFieldEntity {
 
     @Id
