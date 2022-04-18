@@ -25,7 +25,7 @@ public class FilterFieldDto {
     /**
      * Field description
      */
-    @Schema(description = "Field description", example = "Field sescription", maxLength = MAX_LENGTH_255)
+    @Schema(description = "Field description", example = "Field description", maxLength = MAX_LENGTH_255)
     private String description;
 
     /**
