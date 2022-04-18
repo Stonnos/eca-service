@@ -29,6 +29,14 @@ public interface FormTemplateMapper {
     FormTemplateDto map(FormTemplateEntity templateEntity);
 
     /**
+     * Maps form templates entities to dto models list
+     *
+     * @param templates - form templates entities
+     * @return form templates dto list
+     */
+    List<FormTemplateDto> mapTemplates(List<FormTemplateEntity> templates);
+
+    /**
      * Maps field entity to its dto model.
      *
      * @param formFieldEntity - form field entity
