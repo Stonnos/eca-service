@@ -55,7 +55,7 @@ public class AppConfiguration {
 ----
 spring:
   cache:
-    cache-names: form-template
+    cache-names: form-template, form-templates-group
     caffeine:
       spec: maximumSize=100, expireAfterWrite=18000s
 ----
