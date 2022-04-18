@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v42-insert-audit-codes-and-events.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet author="roman.batygin@mail.ru" id="insert_classifier_form_templates_group" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="form_template_group"/>
+        </preConditions>
+        <loadUpdateData
+                tableName="form_template_group"
+                primaryKey="id"
+                separator=";"
+                file="classifiers-form-templates/templates-group.csv"/>
+    </changeSet>
+
+    <changeSet author="roman.batygin@mail.ru" id="insert_classifier_form_templates" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="form_template"/>
+        </preConditions>
+        <loadUpdateData
+                tableName="form_template"
+                primaryKey="id"
+                separator=";"
+                file="classifiers-form-templates/templates.csv"/>
+    </changeSet>
+
+</databaseChangeLog>
