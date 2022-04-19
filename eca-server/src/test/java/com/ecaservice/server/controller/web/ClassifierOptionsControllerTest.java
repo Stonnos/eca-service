@@ -40,7 +40,6 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -56,7 +55,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ClassifierOptionsControllerTest extends PageRequestControllerTest {
 
     private static final String BASE_URL = "/experiment/classifiers-options";
-    private static final String ACTIVE_OPTIONS_URL = BASE_URL + "/active-options";
     private static final String PAGE_URL = BASE_URL + "/page";
     private static final String DELETE_URL = BASE_URL + "/delete";
     private static final String SAVE_URL = BASE_URL + "/save";
@@ -73,27 +71,6 @@ class ClassifierOptionsControllerTest extends PageRequestControllerTest {
 
     @Inject
     private ClassifierOptionsDatabaseModelMapper classifierOptionsDatabaseModelMapper;
-
-    @Test
-    void testGetActiveOptionsUnauthorized() throws Exception {
-        mockMvc.perform(get(ACTIVE_OPTIONS_URL))
-                .andExpect(status().isUnauthorized());
-    }
-
-    @Test
-    void testGetActiveOptionsOk() throws Exception {
-        ClassifiersConfiguration classifiersConfiguration = createClassifiersConfiguration();
-        List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels = Collections.singletonList(
-                TestHelperUtils.createClassifierOptionsDatabaseModel(OPTIONS, classifiersConfiguration));
-        List<ClassifierOptionsDto> classifierOptionsDtoList =
-                classifierOptionsDatabaseModelMapper.map(classifierOptionsDatabaseModels);
-        when(classifierOptionsService.getActiveClassifiersOptions()).thenReturn(classifierOptionsDatabaseModels);
-        mockMvc.perform(get(ACTIVE_OPTIONS_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(objectMapper.writeValueAsString(classifierOptionsDtoList)));
-    }
 
     @Test
     void testGetClassifiersOptionsPageUnauthorized() throws Exception {

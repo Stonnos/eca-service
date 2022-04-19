@@ -2,7 +2,6 @@ package com.ecaservice.server.controller.web;
 
 import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.common.web.dto.ValidationErrorDto;
-import com.ecaservice.server.mapping.ClassifierOptionsDatabaseModelMapper;
 import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.server.service.classifiers.ClassifierOptionsService;
 import com.ecaservice.web.dto.model.ClassifierOptionsDto;
@@ -26,7 +25,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,11 +36,9 @@ import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.io.InputStream;
-import java.util.List;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
-import static com.ecaservice.server.controller.doc.ApiExamples.GET_CLASSIFIERS_OPTIONS_LIST_RESPONSE_JSON;
 import static com.ecaservice.server.controller.doc.ApiExamples.GET_CLASSIFIERS_OPTIONS_PAGE_RESPONSE_JSON;
 import static com.ecaservice.server.controller.doc.ApiExamples.SAVE_CLASSIFIER_OPTIONS_RESPONSE_JSON;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.parseOptions;
@@ -66,44 +62,6 @@ import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 public class ClassifierOptionsController {
 
     private final ClassifierOptionsService classifierOptionsService;
-    private final ClassifierOptionsDatabaseModelMapper classifierOptionsDatabaseModelMapper;
-
-    /**
-     * Finds active classifiers options configs.
-     *
-     * @return response entity
-     */
-    @PreAuthorize("#oauth2.hasScope('web')")
-    @Operation(
-            description = "Finds active classifiers options configs",
-            summary = "Finds active classifiers options configs",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
-            responses = {
-                    @ApiResponse(description = "OK", responseCode = "200",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    examples = {
-                                            @ExampleObject(value = GET_CLASSIFIERS_OPTIONS_LIST_RESPONSE_JSON),
-                                    },
-                                    array = @ArraySchema(schema = @Schema(implementation = ClassifierOptionsDto.class))
-                            )
-                    ),
-                    @ApiResponse(description = "Not authorized", responseCode = "401",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
-                                    }
-                            )
-                    )
-            }
-    )
-    @GetMapping(value = "/active-options")
-    public List<ClassifierOptionsDto> getActiveClassifiersOptions() {
-        List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels =
-                classifierOptionsService.getActiveClassifiersOptions();
-        return classifierOptionsDatabaseModelMapper.map(classifierOptionsDatabaseModels);
-    }
 
     /**
      * Finds classifiers options configs page.

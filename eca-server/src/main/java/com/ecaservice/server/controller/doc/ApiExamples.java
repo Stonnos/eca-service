@@ -103,13 +103,6 @@ public class ApiExamples {
             "\"createdBy\": \"admin\", \"config\": \"Json config\"}], \"page\": 0, \"totalCount\": 1}";
 
     /**
-     * Classifiers options list response json
-     */
-    public static final String GET_CLASSIFIERS_OPTIONS_LIST_RESPONSE_JSON =
-            "[{\"id\": 1, \"optionsName\": \"DecisionTreeOptions\", \"creationDate\": \"2021-07-01 14:00:00\", " +
-                    "\"createdBy\": \"admin\", \"config\": \"Json config\"}]";
-
-    /**
      * Save classifiers options response json
      */
     public static final String SAVE_CLASSIFIER_OPTIONS_RESPONSE_JSON =
