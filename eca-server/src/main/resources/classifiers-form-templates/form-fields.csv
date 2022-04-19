@@ -24,6 +24,6 @@ id;field_name;description;field_order;field_type;min_value;max_value;max_length;
 23;minError;Допустимая ошибка:;4;DECIMAL;0;1;;;;0.00001;5
 24;activationFunctionOptions.activationFunctionType;Активационная функция нейронов скрытого слоя:;5;REFERENCE;;;;;3;LOGISTIC;5
 25;activationFunctionOptions.coefficient;Значение коэффициента:;6;DECIMAL;0;1;;;;1;5
-25;backPropagationOptions.learningRate;Коэффициент скорости обучения:;7;DECIMAL;0;1;;;;0.1;5
-26;backPropagationOptions.momentum;Коэффициент момента:;8;DECIMAL;0;1;;;;0.2;5
-27;seed;Начальное значение (seed):;9;INTEGER;0;2147483647;;;;1;5
+26;backPropagationOptions.learningRate;Коэффициент скорости обучения:;7;DECIMAL;0;1;;;;0.1;5
+27;backPropagationOptions.momentum;Коэффициент момента:;8;DECIMAL;0;1;;;;0.2;5
+28;seed;Начальное значение (seed):;9;INTEGER;0;2147483647;;;;1;5
