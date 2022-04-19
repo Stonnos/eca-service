@@ -21,6 +21,7 @@ import static com.ecaservice.server.TestHelperUtils.createDecisionTreeOptions;
 import static com.ecaservice.server.TestHelperUtils.createJ48Options;
 import static com.ecaservice.server.TestHelperUtils.createKNearestNeighboursOptions;
 import static com.ecaservice.server.TestHelperUtils.createLogisticOptions;
+import static com.ecaservice.server.TestHelperUtils.createNeuralNetworkOptions;
 import static com.ecaservice.server.TestHelperUtils.loadClassifiersTemplates;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -37,24 +38,33 @@ class ClassifiersTemplateServiceTest {
 
     private static final String CLASSIFIERS = "classifiers";
 
-    public static final int LOGISTIC_MAX_ITS_IDX = 0;
-    public static final int LOGISTIC_USE_CONJUGATE_GRADIENT_DESCENT_IDX = 1;
-    public static final int KNN_DISTANCE_IDX = 2;
-    public static final int KNN_NUM_NEIGHBOURS_IDX = 0;
-    public static final int KNN_WEIGHT_IDX = 1;
-    public static final int J48_MIN_OBJ_IDX = 0;
-    public static final int J48_BINARY_SPLIT_IDX = 1;
-    public static final int J48_UNPRUNED_IDX = 2;
-    public static final int J48_NUM_FOLDS_IDX = 3;
-    public static final int DECISION_TREE_TYPE_IDX = 0;
-    public static final int DECISION_TREE_MIN_OBJ_IDX = 1;
-    public static final int DECISION_TREE_MAX_DEPTH_IDX = 2;
-    public static final int DECISION_TREE__USE_BINARY_SPLITS_IDX = 3;
-    public static final int DECISION_TREE_RANDOM_TREE_IDX = 4;
-    public static final int DECISION_TREE_NUM_RANDOM_ATTRS_IDX = 5;
-    public static final int DECISION_TREE_USE_RANDOM_SPLITS_IDX = 6;
-    public static final int DECISION_TREE_NUM_RANDOM_SPLITS_IDX = 7;
-    public static final int DECISION_TREE_SEED_IDX = 8;
+    private static final int LOGISTIC_MAX_ITS_IDX = 0;
+    private static final int LOGISTIC_USE_CONJUGATE_GRADIENT_DESCENT_IDX = 1;
+    private static final int KNN_DISTANCE_IDX = 2;
+    private static final int KNN_NUM_NEIGHBOURS_IDX = 0;
+    private static final int KNN_WEIGHT_IDX = 1;
+    private static final int J48_MIN_OBJ_IDX = 0;
+    private static final int J48_BINARY_SPLIT_IDX = 1;
+    private static final int J48_UNPRUNED_IDX = 2;
+    private static final int J48_NUM_FOLDS_IDX = 3;
+    private static final int DECISION_TREE_TYPE_IDX = 0;
+    private static final int DECISION_TREE_MIN_OBJ_IDX = 1;
+    private static final int DECISION_TREE_MAX_DEPTH_IDX = 2;
+    private static final int DECISION_TREE__USE_BINARY_SPLITS_IDX = 3;
+    private static final int DECISION_TREE_RANDOM_TREE_IDX = 4;
+    private static final int DECISION_TREE_NUM_RANDOM_ATTRS_IDX = 5;
+    private static final int NETWORK_SEED_IDX = 8;
+    private static final int DECISION_TREE_USE_RANDOM_SPLITS_IDX = 6;
+    private static final int DECISION_TREE_NUM_RANDOM_SPLITS_IDX = 7;
+    private static final int DECISION_TREE_SEED_IDX = 8;
+    private static final int NETWORK_HIDDEN_LAYER_IDX = 2;
+    private static final int NETWORK_NUM_ITS_IDX = 3;
+    private static final int NETWORK_MIN_ERROR_IDX = 4;
+    private static final int NETWORK_AF_TYPE_IDX = 5;
+    private static final int NETWORK_LEARNING_RATE_IDX = 6;
+    private static final int NETWORK_MOMENTUM_IDX = 7;
+    private static final int NETWORK_NUM_IN_NEURONS_IDX = 0;
+    private static final int NETWORK_NUM_OUT_NEURONS_IDX = 1;
 
     @MockBean
     private FormTemplateProvider formTemplateProvider;
@@ -202,6 +212,56 @@ class ClassifiersTemplateServiceTest {
                 default:
                     fail(String.format("Can't assert input options at index [%d] for classifier [%s]", i,
                             decisionTreeOptions.getClass().getSimpleName()));
+            }
+        });
+    }
+
+    @Test
+    void testParseNeuralNetworkOptions() throws JsonProcessingException {
+        var neuralNetworkOptions = createNeuralNetworkOptions();
+        var inputOptions = parseInputOptions(neuralNetworkOptions);
+        assertThat(inputOptions).isNotEmpty();
+        IntStream.range(0, inputOptions.size()).forEach(i -> {
+            switch (i) {
+                case NETWORK_NUM_IN_NEURONS_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(neuralNetworkOptions.getNumInNeurons()));
+                    break;
+                case NETWORK_NUM_OUT_NEURONS_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(neuralNetworkOptions.getNumOutNeurons()));
+                    break;
+                case NETWORK_HIDDEN_LAYER_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            neuralNetworkOptions.getHiddenLayer());
+                    break;
+                case NETWORK_NUM_ITS_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(neuralNetworkOptions.getNumIterations()));
+                    break;
+                case NETWORK_MIN_ERROR_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(neuralNetworkOptions.getMinError()));
+                    break;
+                case NETWORK_AF_TYPE_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            neuralNetworkOptions.getActivationFunctionOptions().getActivationFunctionType().name());
+                    break;
+                case NETWORK_LEARNING_RATE_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(neuralNetworkOptions.getBackPropagationOptions().getLearningRate()));
+                    break;
+                case NETWORK_MOMENTUM_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(neuralNetworkOptions.getBackPropagationOptions().getMomentum()));
+                    break;
+                case NETWORK_SEED_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(neuralNetworkOptions.getSeed()));
+                    break;
+                default:
+                    fail(String.format("Can't assert input options at index [%d] for classifier [%s]", i,
+                            neuralNetworkOptions.getClass().getSimpleName()));
             }
         });
     }
