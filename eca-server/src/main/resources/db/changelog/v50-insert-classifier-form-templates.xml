@@ -49,4 +49,15 @@
                 file="classifiers-form-templates/form-field-dictionaries-values.csv"/>
     </changeSet>
 
+    <changeSet author="roman.batygin@mail.ru" id="insert_classifiers_form_fields" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="form_field"/>
+        </preConditions>
+        <loadUpdateData
+                tableName="form_field"
+                primaryKey="id"
+                separator=";"
+                file="classifiers-form-templates/form-fields.csv"/>
+    </changeSet>
+
 </databaseChangeLog>
