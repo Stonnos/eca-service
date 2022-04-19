@@ -10,12 +10,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.ecaservice.common.web.util.BeanUtil.invokeGetter;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.parseOptions;
-import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * Classifiers template service.
@@ -58,14 +56,13 @@ public class ClassifiersTemplateService {
     }
 
     private List<InputOptionDto> processInputOptions(ClassifierOptions classifierOptions) {
-        //FIXME how to get template name
-        var template = formTemplateProvider.getTemplate("x");
+        var template = formTemplateProvider.getTemplate(classifierOptions.getClass().getSimpleName());
         return template.getFields()
                 .stream()
                 .map(formFieldDto -> {
                     var optionValue = invokeGetter(classifierOptions, formFieldDto.getFieldName());
                     if (optionValue == null) {
-                        log.debug("Got null value for field [{}] of type [{}]", formFieldDto.getFieldName(),
+                        log.debug("Got null value for field [{}] of type [{}]. Skipped...", formFieldDto.getFieldName(),
                                 classifierOptions.getClass().getSimpleName());
                         return null;
                     }

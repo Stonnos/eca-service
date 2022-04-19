@@ -1,6 +1,6 @@
 id;template_name;template_title;group_id
-1;knn;Алгоритм k - взвешенных ближайших соседей;1
-2;logistic;Логистическая регрессия;1
-3;j48;Алгоритм J48;1
-4;decision_tree;Дерево решений;1
-5;neural_network;Нейронная сеть (Многослойный персептрон);1
+1;KNearestNeighboursOptions;Алгоритм k - взвешенных ближайших соседей;1
+2;LogisticOptions;Логистическая регрессия;1
+3;J48Options;Алгоритм J48;1
+4;DecisionTreeOptions;Дерево решений;1
+5;NeuralNetworkOptions;Нейронная сеть (Многослойный персептрон);1
