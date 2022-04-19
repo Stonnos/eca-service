@@ -13,6 +13,7 @@ import com.ecaservice.server.repository.ClassifierOptionsDatabaseModelRepository
 import com.ecaservice.server.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.UserService;
+import com.ecaservice.web.dto.model.InputOptionDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.google.common.collect.Sets;
 import org.junit.jupiter.api.Test;
@@ -30,6 +31,7 @@ import static com.ecaservice.server.TestHelperUtils.createClassifiersConfigurati
 import static com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel_.CREATION_DATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 /**
@@ -53,6 +55,8 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
     private ClassifiersConfigurationRepository classifiersConfigurationRepository;
     @MockBean
     private UserService userService;
+    @MockBean
+    private ClassifiersTemplateService classifiersTemplateService;
     @Inject
     private ClassifierOptionsService classifierOptionsService;
 
@@ -69,6 +73,8 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
 
     @Test
     void testGetClassifiersOptionsPage() {
+        when(classifiersTemplateService.processInputOptions(anyString()))
+                .thenReturn(Collections.singletonList(new InputOptionDto()));
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = saveClassifierOptions(true);
         PageRequestDto pageRequestDto =
                 new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, CREATION_DATE, false, null,
@@ -78,6 +84,9 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
                         pageRequestDto);
         assertThat(classifierOptionsDatabaseModelPage).isNotNull();
         assertThat(classifierOptionsDatabaseModelPage.getTotalCount()).isOne();
+        var classifierOptionsDto = classifierOptionsDatabaseModelPage.getContent().iterator().next();
+        assertThat(classifierOptionsDto).isNotNull();
+        assertThat(classifierOptionsDto.getInputOptions()).hasSize(1);
     }
 
     @Test
