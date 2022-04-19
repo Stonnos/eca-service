@@ -22,7 +22,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -159,12 +158,7 @@ public class ClassifierOptionsController {
             @Valid @RequestBody PageRequestDto pageRequestDto) {
         log.info("Received classifiers options page request: {}, configuration id [{}]", pageRequestDto,
                 configurationId);
-        Page<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels =
-                classifierOptionsService.getNextPage(configurationId, pageRequestDto);
-        List<ClassifierOptionsDto> classifierOptionsDtoList =
-                classifierOptionsDatabaseModelMapper.map(classifierOptionsDatabaseModels.getContent());
-        return PageDto.of(classifierOptionsDtoList, pageRequestDto.getPage(),
-                classifierOptionsDatabaseModels.getTotalElements());
+        return classifierOptionsService.getNextPage(configurationId, pageRequestDto);
     }
 
     /**

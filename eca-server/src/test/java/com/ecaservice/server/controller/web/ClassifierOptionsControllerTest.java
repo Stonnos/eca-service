@@ -1,8 +1,8 @@
 package com.ecaservice.server.controller.web;
 
-import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.classifier.options.model.LogisticOptions;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.mapping.ClassifierOptionsDatabaseModelMapper;
 import com.ecaservice.server.mapping.ClassifierOptionsDatabaseModelMapperImpl;
 import com.ecaservice.server.mapping.DateTimeConverter;
@@ -150,7 +150,7 @@ class ClassifierOptionsControllerTest extends PageRequestControllerTest {
                 PageDto.of(classifierOptionsDatabaseModelMapper.map(classifierOptionsDatabaseModels), PAGE_NUMBER,
                         TOTAL_ELEMENTS);
         when(page.getContent()).thenReturn(classifierOptionsDatabaseModels);
-        when(classifierOptionsService.getNextPage(anyLong(), any(PageRequestDto.class))).thenReturn(page);
+        when(classifierOptionsService.getNextPage(anyLong(), any(PageRequestDto.class))).thenReturn(pageDto);
         mockMvc.perform(post(PAGE_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(CONFIGURATION_ID_PARAM, String.valueOf(CONFIGURATION_ID))

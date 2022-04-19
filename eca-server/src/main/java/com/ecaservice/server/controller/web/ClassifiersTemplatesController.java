@@ -1,6 +1,6 @@
 package com.ecaservice.server.controller.web;
 
-import com.ecaservice.core.form.template.service.FormTemplateProvider;
+import com.ecaservice.server.service.classifiers.ClassifiersTemplateService;
 import com.ecaservice.web.dto.model.FormTemplateDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -38,9 +38,7 @@ import static com.ecaservice.web.dto.doc.CommonApiExamples.UNAUTHORIZED_RESPONSE
 @RequiredArgsConstructor
 public class ClassifiersTemplatesController {
 
-    private static final String CLASSIFIERS_GROUP = "classifiers";
-
-    private final FormTemplateProvider formTemplateProvider;
+    private final ClassifiersTemplateService classifiersTemplateService;
 
     /**
      * Gets classifiers form templates.
@@ -75,8 +73,6 @@ public class ClassifiersTemplatesController {
     @GetMapping(value = "/list")
     public List<FormTemplateDto> getClassifiersTemplates() {
         log.info("Request classifiers templates");
-        var classifierTemplates = formTemplateProvider.getTemplates(CLASSIFIERS_GROUP);
-        log.info("[{}] classifiers form templates has been fetched", classifierTemplates.size());
-        return classifierTemplates;
+        return classifiersTemplateService.getClassifiersTemplates();
     }
 }

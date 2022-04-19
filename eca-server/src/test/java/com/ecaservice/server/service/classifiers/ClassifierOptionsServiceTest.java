@@ -1,10 +1,12 @@
 package com.ecaservice.server.service.classifiers;
 
-import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.classifier.options.model.AdaBoostOptions;
 import com.ecaservice.classifier.options.model.LogisticOptions;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
+import com.ecaservice.server.mapping.ClassifierOptionsDatabaseModelMapperImpl;
+import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.server.model.entity.ClassifiersConfiguration;
 import com.ecaservice.server.repository.ClassifierOptionsDatabaseModelRepository;
@@ -16,7 +18,6 @@ import com.google.common.collect.Sets;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.Page;
 
 import javax.inject.Inject;
 import java.util.Arrays;
@@ -36,7 +37,8 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({AppProperties.class, ClassifierOptionsService.class})
+@Import({AppProperties.class, ClassifierOptionsService.class, ClassifierOptionsDatabaseModelMapperImpl.class,
+        DateTimeConverter.class})
 class ClassifierOptionsServiceTest extends AbstractJpaTest {
 
     private static final int PAGE_NUMBER = 0;
@@ -71,11 +73,11 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
         PageRequestDto pageRequestDto =
                 new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, CREATION_DATE, false, null,
                         Collections.emptyList());
-        Page<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModelPage =
+        var classifierOptionsDatabaseModelPage =
                 classifierOptionsService.getNextPage(classifierOptionsDatabaseModel.getConfiguration().getId(),
                         pageRequestDto);
         assertThat(classifierOptionsDatabaseModelPage).isNotNull();
-        assertThat(classifierOptionsDatabaseModelPage.getTotalElements()).isOne();
+        assertThat(classifierOptionsDatabaseModelPage.getTotalCount()).isOne();
     }
 
     @Test

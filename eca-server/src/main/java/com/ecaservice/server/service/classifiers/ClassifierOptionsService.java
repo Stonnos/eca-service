@@ -4,15 +4,17 @@ import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.server.config.AppProperties;
+import com.ecaservice.server.mapping.ClassifierOptionsDatabaseModelMapper;
 import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.server.model.entity.ClassifiersConfiguration;
 import com.ecaservice.server.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.server.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.server.service.UserService;
+import com.ecaservice.web.dto.model.ClassifierOptionsDto;
+import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +45,8 @@ public class ClassifierOptionsService {
 
     private final AppProperties appProperties;
     private final UserService userService;
+    private final ClassifiersTemplateService classifiersTemplateService;
+    private final ClassifierOptionsDatabaseModelMapper classifierOptionsDatabaseModelMapper;
     private final ClassifiersConfigurationRepository classifiersConfigurationRepository;
     private final ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;
 
@@ -103,12 +107,23 @@ public class ClassifierOptionsService {
      * @param pageRequestDto  - page request dto
      * @return classifiers options page
      */
-    public Page<ClassifierOptionsDatabaseModel> getNextPage(long configurationId, PageRequestDto pageRequestDto) {
+    public PageDto<ClassifierOptionsDto> getNextPage(long configurationId, PageRequestDto pageRequestDto) {
         var classifiersConfiguration = getConfigurationById(configurationId);
         var sort = buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
         var pageSize = Integer.min(pageRequestDto.getSize(), appProperties.getMaxPageSize());
-        return classifierOptionsDatabaseModelRepository.findAllByConfiguration(classifiersConfiguration,
-                PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
+        var classifierOptionsPage =
+                classifierOptionsDatabaseModelRepository.findAllByConfiguration(classifiersConfiguration,
+                        PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
+        var classifierOptionsDtoList = classifierOptionsPage.getContent()
+                .stream()
+                .map(classifierOptionsDatabaseModel -> {
+                    var classifierOptionsDto = classifierOptionsDatabaseModelMapper.map(classifierOptionsDatabaseModel);
+                    var inputOptions = classifiersTemplateService.processInputOptions(classifierOptionsDto.getConfig());
+                    classifierOptionsDto.setInputOptions(inputOptions);
+                    return classifierOptionsDto;
+                })
+                .collect(Collectors.toList());
+        return PageDto.of(classifierOptionsDtoList, pageRequestDto.getPage(), classifierOptionsPage.getTotalElements());
     }
 
     /**
