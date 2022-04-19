@@ -1,0 +1,436 @@
+[
+  {
+    "templateName": "KNearestNeighboursOptions",
+    "templateTitle": "Алгоритм k - взвешенных ближайших соседей",
+    "fields": [
+      {
+        "fieldName": "numNeighbours",
+        "description": "Число ближайших соседей:",
+        "fieldOrder": 0,
+        "fieldType": "INTEGER",
+        "minValue": 1,
+        "maxValue": 2147483647,
+        "maxLength": null,
+        "pattern": null,
+        "dictionary": null,
+        "defaultValue": "10"
+      },
+      {
+        "fieldName": "weight",
+        "description": "Вес ближайшего соседа:",
+        "fieldOrder": 1,
+        "fieldType": "DECIMAL",
+        "minValue": 0.5,
+        "maxValue": 1,
+        "maxLength": null,
+        "pattern": null,
+        "dictionary": null,
+        "defaultValue": "1"
+      },
+      {
+        "fieldName": "distanceType",
+        "description": "Функция расстояния:",
+        "fieldOrder": 2,
+        "fieldType": "REFERENCE",
+        "minValue": null,
+        "maxValue": null,
+        "maxLength": null,
+        "pattern": null,
+        "dictionary": {
+          "name": "distanceType",
+          "values": [
+            {
+              "label": "Евкилидово расстояние",
+              "value": "EUCLID"
+            },
+            {
+              "label": "Квадрат Евклидова расстояни",
+              "value": "SQUARE_EUCLID"
+            },
+            {
+              "label": "Манхеттенское расстояние",
+              "value": "MANHATTAN"
+            },
+            {
+              "label": "Расстояние Чебышева",
+              "value": "CHEBYSHEV"
+            }
+          ]
+        },
+        "defaultValue": "EUCLID"
+      }
+    ]
+  },
+  {
+    "templateName": "LogisticOptions",
+    "templateTitle": "Логистическая регрессия",
+    "fields": [
+      {
+        "fieldName": "maxIts",
+        "description": "Максимальное число итераций для поиска минимума функции -Log(Likelihood):",
+        "fieldOrder": 0,
+        "fieldType": "INTEGER",
+        "minValue": 1,
+        "maxValue": 2147483647,
+        "maxLength": null,
+        "pattern": null,
+        "dictionary": null,
+        "defaultValue": "200"
+      },
+      {
+        "fieldName": "useConjugateGradientDescent",
+        "description": "Использовать метод сопряженных градиентов:",
+        "fieldOrder": 1,
+        "fieldType": "BOOLEAN",
+        "minValue": null,
+        "maxValue": null,
+        "maxLength": null,
+        "pattern": null,
+        "dictionary": null,
+        "defaultValue": "false"
+      }
+    ]
+  },
+  {
+    "templateName": "J48Options",
+    "templateTitle": "Алгоритм J48",
+    "fields": [
+      {
+        "fieldName": "minNumObj",
+        "description": "Минимальное число объектов в листе:",
+        "fieldOrder": 0,
+        "fieldType": "INTEGER",
+        "minValue": 0,
+        "maxValue": 2147483647,
+        "maxLength": null,
+        "pattern": null,
+        "dictionary": null,
+        "defaultValue": "2"
+      },
+      {
+        "fieldName": "binarySplits",
+        "description": "Бинарное дерево:",
+        "fieldOrder": 1,
+        "fieldType": "BOOLEAN",
+        "minValue": null,
+        "maxValue": null,
+        "maxLength": null,
+        "pattern": null,
+        "dictionary": null,
+        "defaultValue": "false"
+      },
+      {
+        "fieldName": "unpruned",
+        "description": "Неусеченное дерево:",
+        "fieldOrder": 2,
+        "fieldType": "BOOLEAN",
+        "minValue": null,
+        "maxValue": null,
+        "maxLength": null,
+        "pattern": null,
+        "dictionary": null,
+        "defaultValue": "false"
+      },
+      {
+        "fieldName": "numFolds",
+        "description": "Количество блоков:",
+        "fieldOrder": 3,
+        "fieldType": "INTEGER",
+        "minValue": 2,
+        "maxValue": 100,
+        "maxLength": null,
+        "pattern": null,
+        "dictionary": null,
+        "defaultValue": "3"
+      }
+    ]
+  },
+  {
+    "templateName": "DecisionTreeOptions",
+    "templateTitle": "Дерево решений",
+    "fields": [
+      {
+        "fieldName": "decisionTreeType",
+        "description": "Алгоритм построения дерева:",
+        "fieldOrder": 0,
+        "fieldType": "REFERENCE",
+        "minValue": null,
+        "maxValue": null,
+        "maxLength": null,
+        "pattern": null,
+        "dictionary": {
+          "name": "decisionTreeType",
+          "values": [
+            {
+              "label": "Алгоритм CART",
+              "value": "CART"
+            },
+            {
+              "label": "Алгоритм ID3",
+              "value": "ID3"
+            },
+            {
+              "label": "Алгоритм C4.5",
+              "value": "C45"
+            },
+            {
+              "label": "Алгоритм CHAID",
+              "value": "CHAID"
+            }
+          ]
+        },
+        "defaultValue": "CART"
+      },
+      {
+        "fieldName": "minObj",
+        "description": "Минимальное число объектов в листе:",
+        "fieldOrder": 1,
+        "fieldType": "INTEGER",
+        "minValue": 0,
+        "maxValue": 2147483647,
+        "maxLength": null,
+        "pattern": null,
+        "dictionary": null,
+        "defaultValue": "2"
+      },
+      {
+        "fieldName": "maxDepth",
+        "description": "Максимальная глубина дерева:",
+        "fieldOrder": 2,
+        "fieldType": "INTEGER",
+        "minValue": 0,
+        "maxValue": 2147483647,
+        "maxLength": null,
+        "pattern": null,
+        "dictionary": null,
+        "defaultValue": "0"
+      },
+      {
+        "fieldName": "useBinarySplits",
+        "description": "Бинарное дерево:",
+        "fieldOrder": 3,
+        "fieldType": "BOOLEAN",
+        "minValue": null,
+        "maxValue": null,
+        "maxLength": null,
+        "pattern": null,
+        "dictionary": null,
+        "defaultValue": "false"
+      },
+      {
+        "fieldName": "randomTree",
+        "description": "Случайное дерево:",
+        "fieldOrder": 4,
+        "fieldType": "BOOLEAN",
+        "minValue": null,
+        "maxValue": null,
+        "maxLength": null,
+        "pattern": null,
+        "dictionary": null,
+        "defaultValue": "false"
+      },
+      {
+        "fieldName": "numRandomAttr",
+        "description": "Число случайных атрибутов:",
+        "fieldOrder": 5,
+        "fieldType": "INTEGER",
+        "minValue": 0,
+        "maxValue": 2147483647,
+        "maxLength": null,
+        "pattern": null,
+        "dictionary": null,
+        "defaultValue": "0"
+      },
+      {
+        "fieldName": "useRandomSplits",
+        "description": "Случайные расщепления атрибута",
+        "fieldOrder": 6,
+        "fieldType": "BOOLEAN",
+        "minValue": null,
+        "maxValue": null,
+        "maxLength": null,
+        "pattern": null,
+        "dictionary": null,
+        "defaultValue": "false"
+      },
+      {
+        "fieldName": "numRandomSplits",
+        "description": "Число случайных расщеплений атрибута:",
+        "fieldOrder": 7,
+        "fieldType": "INTEGER",
+        "minValue": 0,
+        "maxValue": 2147483647,
+        "maxLength": null,
+        "pattern": null,
+        "dictionary": null,
+        "defaultValue": "0"
+      },
+      {
+        "fieldName": "seed",
+        "description": "Начальное значение (seed):",
+        "fieldOrder": 8,
+        "fieldType": "INTEGER",
+        "minValue": 0,
+        "maxValue": 2147483647,
+        "maxLength": null,
+        "pattern": null,
+        "dictionary": null,
+        "defaultValue": "1"
+      }
+    ]
+  },
+  {
+    "templateName": "NeuralNetworkOptions",
+    "templateTitle": "Нейронная сеть (Многослойный персептрон)",
+    "fields": [
+      {
+        "fieldName": "numInNeurons",
+        "description": "Количество нейронов во входном слое:",
+        "fieldOrder": 0,
+        "fieldType": "INTEGER",
+        "minValue": 1,
+        "maxValue": 2147483647,
+        "maxLength": null,
+        "pattern": null,
+        "dictionary": null,
+        "defaultValue": null
+      },
+      {
+        "fieldName": "numOutNeurons",
+        "description": "Количество нейронов в выходном слое:",
+        "fieldOrder": 1,
+        "fieldType": "INTEGER",
+        "minValue": 2,
+        "maxValue": 2147483647,
+        "maxLength": null,
+        "pattern": null,
+        "dictionary": null,
+        "defaultValue": null
+      },
+      {
+        "fieldName": "hiddenLayer",
+        "description": "Структура скрытого слоя:",
+        "fieldOrder": 2,
+        "fieldType": "TEXT",
+        "minValue": null,
+        "maxValue": null,
+        "maxLength": 255,
+        "pattern": "^([0-9],?)+$",
+        "dictionary": null,
+        "defaultValue": null
+      },
+      {
+        "fieldName": "numIterations",
+        "description": "Число итераций:",
+        "fieldOrder": 3,
+        "fieldType": "INTEGER",
+        "minValue": 1,
+        "maxValue": 2147483647,
+        "maxLength": null,
+        "pattern": null,
+        "dictionary": null,
+        "defaultValue": "1000000"
+      },
+      {
+        "fieldName": "minError",
+        "description": "Допустимая ошибка:",
+        "fieldOrder": 4,
+        "fieldType": "DECIMAL",
+        "minValue": 0,
+        "maxValue": 1,
+        "maxLength": null,
+        "pattern": null,
+        "dictionary": null,
+        "defaultValue": "0.00001"
+      },
+      {
+        "fieldName": "activationFunctionOptions.activationFunctionType",
+        "description": "Активационная функция нейронов скрытого слоя:",
+        "fieldOrder": 5,
+        "fieldType": "REFERENCE",
+        "minValue": null,
+        "maxValue": null,
+        "maxLength": null,
+        "pattern": null,
+        "dictionary": {
+          "name": "activationFunctionType",
+          "values": [
+            {
+              "label": "Логистическая",
+              "value": "LOGISTIC"
+            },
+            {
+              "label": "Гиперболический тангенс",
+              "value": "HYPERBOLIC_TANGENT"
+            },
+            {
+              "label": "Тригонометрический синус",
+              "value": "SINUSOID"
+            },
+            {
+              "label": "Экспоненциальная",
+              "value": "EXPONENTIAL"
+            },
+            {
+              "label": "Функция SoftSign",
+              "value": "SOFT_SIGN"
+            },
+            {
+              "label": "Функция ISRU",
+              "value": "INVERSE_SQUARE_ROOT_UNIT"
+            }
+          ]
+        },
+        "defaultValue": "LOGISTIC"
+      },
+      {
+        "fieldName": "activationFunctionOptions.coefficient",
+        "description": "Значение коэффициента:",
+        "fieldOrder": 6,
+        "fieldType": "DECIMAL",
+        "minValue": 0,
+        "maxValue": 1,
+        "maxLength": null,
+        "pattern": null,
+        "dictionary": null,
+        "defaultValue": "1"
+      },
+      {
+        "fieldName": "backPropagationOptions.learningRate",
+        "description": "Коэффициент скорости обучения:",
+        "fieldOrder": 7,
+        "fieldType": "DECIMAL",
+        "minValue": 0,
+        "maxValue": 1,
+        "maxLength": null,
+        "pattern": null,
+        "dictionary": null,
+        "defaultValue": "0.1"
+      },
+      {
+        "fieldName": "backPropagationOptions.momentum",
+        "description": "Коэффициент момента:",
+        "fieldOrder": 8,
+        "fieldType": "DECIMAL",
+        "minValue": 0,
+        "maxValue": 1,
+        "maxLength": null,
+        "pattern": null,
+        "dictionary": null,
+        "defaultValue": "0.2"
+      },
+      {
+        "fieldName": "seed",
+        "description": "Начальное значение (seed):",
+        "fieldOrder": 9,
+        "fieldType": "INTEGER",
+        "minValue": 0,
+        "maxValue": 2147483647,
+        "maxLength": null,
+        "pattern": null,
+        "dictionary": null,
+        "defaultValue": "1"
+      }
+    ]
+  }
+]

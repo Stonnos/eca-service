@@ -52,8 +52,11 @@ import com.ecaservice.web.dto.model.EvaluationResultsStatus;
 import com.ecaservice.web.dto.model.FilterDictionaryDto;
 import com.ecaservice.web.dto.model.FilterFieldDto;
 import com.ecaservice.web.dto.model.FilterFieldType;
+import com.ecaservice.web.dto.model.FormTemplateDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationMethod;
 import eca.core.evaluation.EvaluationResults;
@@ -66,6 +69,7 @@ import eca.ensemble.forests.DecisionTreeType;
 import eca.ensemble.sampling.SamplingMethod;
 import eca.metrics.KNearestNeighbours;
 import eca.trees.CART;
+import lombok.Cleanup;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import org.springframework.amqp.core.MessageProperties;
@@ -108,6 +112,7 @@ public class TestHelperUtils {
     private static final String TRAINING_DATA_ABSOLUTE_PATH = "/home/data";
     private static final String EXPERIMENT_ABSOLUTE_PATH = "/home/experiment";
     private static final String DATA_PATH = "data/iris.xls";
+    private static final String CLASSIFIERS_TEMPLATES_JSON = "classifiers-templates.json";
     private static final int NUM_OBJ = 2;
     private static final double KNN_WEIGHT = 0.55d;
     private static final int NUM_NEIGHBOURS = 25;
@@ -140,6 +145,8 @@ public class TestHelperUtils {
     private static final String CONFIGURATION_NAME = "configuration";
     private static final int ITERATIONS = 1;
 
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
     /**
      * Creates page request dto.
      *
@@ -171,6 +178,22 @@ public class TestHelperUtils {
             XLSLoader dataLoader = new XLSLoader();
             dataLoader.setSource(new FileResource(new File(classLoader.getResource(DATA_PATH).getFile())));
             return dataLoader.loadInstances();
+        } catch (Exception ex) {
+            throw new IllegalStateException(ex.getMessage());
+        }
+    }
+
+    /**
+     * Loads classifiers templates.
+     *
+     * @return classifiers templates
+     */
+    public static List<FormTemplateDto> loadClassifiersTemplates() {
+        try {
+            ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+            @Cleanup var inputStream = classLoader.getResourceAsStream(CLASSIFIERS_TEMPLATES_JSON);
+            return OBJECT_MAPPER.readValue(inputStream, new TypeReference<>() {
+            });
         } catch (Exception ex) {
             throw new IllegalStateException(ex.getMessage());
         }
