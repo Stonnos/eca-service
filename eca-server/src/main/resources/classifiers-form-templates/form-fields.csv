@@ -17,3 +17,13 @@ id;field_name;description;field_order;field_type;min_value;max_value;max_length;
 16;useRandomSplits;Случайные расщепления атрибута;6;BOOLEAN;;;;;;false;4
 17;numRandomSplits;Число случайных расщеплений атрибута:;7;INTEGER;0;2147483647;;;;0;4
 18;seed;Начальное значение (seed):;8;INTEGER;0;2147483647;;;;1;4
+19;numInNeurons;Количество нейронов во входном слое:;0;INTEGER;1;2147483647;;;;;5
+20;numOutNeurons;Количество нейронов в выходном слое:;1;INTEGER;2;2147483647;;;;;5
+21;hiddenLayer;Структура скрытого слоя:;2;TEXT;;;255;^([0-9],?)+$;;;5
+22;numIterations;Число итераций:;3;INTEGER;1;2147483647;;;;1000000;5
+23;minError;Допустимая ошибка:;4;DECIMAL;0;1;;;;0.00001;5
+24;activationFunctionOptions.activationFunctionType;Активационная функция нейронов скрытого слоя:;5;REFERENCE;;;;;3;LOGISTIC;5
+25;activationFunctionOptions.coefficient;Значение коэффициента:;6;DECIMAL;0;1;;;;1;5
+25;backPropagationOptions.learningRate;Коэффициент скорости обучения:;7;DECIMAL;0;1;;;;0.1;5
+26;backPropagationOptions.momentum;Коэффициент момента:;8;DECIMAL;0;1;;;;0.2;5
+27;seed;Начальное значение (seed):;9;INTEGER;0;2147483647;;;;1;5
