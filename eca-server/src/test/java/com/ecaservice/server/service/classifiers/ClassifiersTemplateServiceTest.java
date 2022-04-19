@@ -17,6 +17,7 @@ import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import static com.ecaservice.server.TestHelperUtils.createDecisionTreeOptions;
 import static com.ecaservice.server.TestHelperUtils.createJ48Options;
 import static com.ecaservice.server.TestHelperUtils.createKNearestNeighboursOptions;
 import static com.ecaservice.server.TestHelperUtils.createLogisticOptions;
@@ -45,6 +46,15 @@ class ClassifiersTemplateServiceTest {
     public static final int J48_BINARY_SPLIT_IDX = 1;
     public static final int J48_UNPRUNED_IDX = 2;
     public static final int J48_NUM_FOLDS_IDX = 3;
+    public static final int DECISION_TREE_TYPE_IDX = 0;
+    public static final int DECISION_TREE_MIN_OBJ_IDX = 1;
+    public static final int DECISION_TREE_MAX_DEPTH_IDX = 2;
+    public static final int DECISION_TREE__USE_BINARY_SPLITS_IDX = 3;
+    public static final int DECISION_TREE_RANDOM_TREE_IDX = 4;
+    public static final int DECISION_TREE_NUM_RANDOM_ATTRS_IDX = 5;
+    public static final int DECISION_TREE_USE_RANDOM_SPLITS_IDX = 6;
+    public static final int DECISION_TREE_NUM_RANDOM_SPLITS_IDX = 7;
+    public static final int DECISION_TREE_SEED_IDX = 8;
 
     @MockBean
     private FormTemplateProvider formTemplateProvider;
@@ -91,7 +101,7 @@ class ClassifiersTemplateServiceTest {
     }
 
     @Test
-    void testParseKnn() throws JsonProcessingException {
+    void testParseKnnOptions() throws JsonProcessingException {
         var kNearestNeighboursOptions = createKNearestNeighboursOptions();
         var inputOptions = parseInputOptions(kNearestNeighboursOptions);
         assertThat(inputOptions).isNotEmpty();
@@ -117,7 +127,7 @@ class ClassifiersTemplateServiceTest {
     }
 
     @Test
-    void testParseJ48() throws JsonProcessingException {
+    void testParseJ48Options() throws JsonProcessingException {
         var j48Options = createJ48Options();
         var inputOptions = parseInputOptions(j48Options);
         assertThat(inputOptions).isNotEmpty();
@@ -142,6 +152,56 @@ class ClassifiersTemplateServiceTest {
                 default:
                     fail(String.format("Can't assert input options at index [%d] for classifier [%s]", i,
                             j48Options.getClass().getSimpleName()));
+            }
+        });
+    }
+
+    @Test
+    void testParseDecisionTreeOptions() throws JsonProcessingException {
+        var decisionTreeOptions = createDecisionTreeOptions();
+        var inputOptions = parseInputOptions(decisionTreeOptions);
+        assertThat(inputOptions).isNotEmpty();
+        IntStream.range(0, inputOptions.size()).forEach(i -> {
+            switch (i) {
+                case DECISION_TREE_TYPE_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            decisionTreeOptions.getDecisionTreeType().name());
+                    break;
+                case DECISION_TREE_MIN_OBJ_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(decisionTreeOptions.getMinObj()));
+                    break;
+                case DECISION_TREE_MAX_DEPTH_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(decisionTreeOptions.getMaxDepth()));
+                    break;
+                case DECISION_TREE__USE_BINARY_SPLITS_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(decisionTreeOptions.getUseBinarySplits()));
+                    break;
+                case DECISION_TREE_RANDOM_TREE_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(decisionTreeOptions.getRandomTree()));
+                    break;
+                case DECISION_TREE_NUM_RANDOM_ATTRS_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(decisionTreeOptions.getNumRandomAttr()));
+                    break;
+                case DECISION_TREE_USE_RANDOM_SPLITS_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(decisionTreeOptions.getUseRandomSplits()));
+                    break;
+                case DECISION_TREE_NUM_RANDOM_SPLITS_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(decisionTreeOptions.getNumRandomSplits()));
+                    break;
+                case DECISION_TREE_SEED_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(decisionTreeOptions.getSeed()));
+                    break;
+                default:
+                    fail(String.format("Can't assert input options at index [%d] for classifier [%s]", i,
+                            decisionTreeOptions.getClass().getSimpleName()));
             }
         });
     }

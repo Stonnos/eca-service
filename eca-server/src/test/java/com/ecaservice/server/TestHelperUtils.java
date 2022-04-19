@@ -425,6 +425,7 @@ public class TestHelperUtils {
      */
     public static DecisionTreeOptions createDecisionTreeOptions() {
         DecisionTreeOptions decisionTreeOptions = new DecisionTreeOptions();
+        decisionTreeOptions.setDecisionTreeType(DecisionTreeType.CART);
         decisionTreeOptions.setMaxDepth(MAX_DEPTH);
         decisionTreeOptions.setMinObj(NUM_OBJ);
         decisionTreeOptions.setNumRandomAttr(NUM_RANDOM_ATTR);
