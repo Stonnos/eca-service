@@ -11,7 +11,6 @@
 
     <artifactId>core-form-template</artifactId>
     <properties>
-        <hibernate-validator.version>6.0.18.Final</hibernate-validator.version>
         <sonar.coverage.exclusions>
             **/entity/**/*,
             **/config/**/*,
@@ -38,11 +37,6 @@
             <groupId>eca.service</groupId>
             <artifactId>common-web</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>${hibernate-validator.version}</version>
         </dependency>
         <dependency>
             <groupId>eca.service</groupId>
