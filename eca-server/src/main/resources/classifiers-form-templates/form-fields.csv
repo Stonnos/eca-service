@@ -7,7 +7,7 @@ id;field_name;description;field_order;field_type;min_value;max_value;max_length;
 6;minNumObj;Минимальное число объектов в листе:;0;INTEGER;0;2147483647;NULL;NULL;NULL;2;3
 7;binarySplits;Бинарное дерево:;1;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;3
 8;unpruned;Неусеченное дерево:;2;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;3
-9;numFolds;Количество блоков:;3;INTEGER;3;100;NULL;NULL;NULL;2;3
+9;numFolds;Количество блоков:;3;INTEGER;2;100;NULL;NULL;NULL;3;3
 10;decisionTreeType;Алгоритм построения дерева:;0;REFERENCE;NULL;NULL;NULL;NULL;2;CART;4
 11;minObj;Минимальное число объектов в листе:;1;INTEGER;0;2147483647;NULL;NULL;NULL;2;4
 12;maxDepth;Максимальная глубина дерева:;2;INTEGER;0;2147483647;NULL;NULL;NULL;0;4
