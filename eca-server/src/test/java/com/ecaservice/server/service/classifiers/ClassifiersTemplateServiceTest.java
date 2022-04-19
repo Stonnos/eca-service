@@ -17,6 +17,7 @@ import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import static com.ecaservice.server.TestHelperUtils.createJ48Options;
 import static com.ecaservice.server.TestHelperUtils.createKNearestNeighboursOptions;
 import static com.ecaservice.server.TestHelperUtils.createLogisticOptions;
 import static com.ecaservice.server.TestHelperUtils.loadClassifiersTemplates;
@@ -40,6 +41,10 @@ class ClassifiersTemplateServiceTest {
     public static final int KNN_DISTANCE_IDX = 2;
     public static final int KNN_NUM_NEIGHBOURS_IDX = 0;
     public static final int KNN_WEIGHT_IDX = 1;
+    public static final int J48_MIN_OBJ_IDX = 0;
+    public static final int J48_BINARY_SPLIT_IDX = 1;
+    public static final int J48_UNPRUNED_IDX = 2;
+    public static final int J48_NUM_FOLDS_IDX = 3;
 
     @MockBean
     private FormTemplateProvider formTemplateProvider;
@@ -107,6 +112,36 @@ class ClassifiersTemplateServiceTest {
                 default:
                     fail(String.format("Can't assert input options at index [%d] for classifier [%s]", i,
                             kNearestNeighboursOptions.getClass().getSimpleName()));
+            }
+        });
+    }
+
+    @Test
+    void testParseJ48() throws JsonProcessingException {
+        var j48Options = createJ48Options();
+        var inputOptions = parseInputOptions(j48Options);
+        assertThat(inputOptions).isNotEmpty();
+        IntStream.range(0, inputOptions.size()).forEach(i -> {
+            switch (i) {
+                case J48_MIN_OBJ_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(j48Options.getMinNumObj()));
+                    break;
+                case J48_BINARY_SPLIT_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(j48Options.getBinarySplits()));
+                    break;
+                case J48_UNPRUNED_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(j48Options.getUnpruned()));
+                    break;
+                case J48_NUM_FOLDS_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(j48Options.getNumFolds()));
+                    break;
+                default:
+                    fail(String.format("Can't assert input options at index [%d] for classifier [%s]", i,
+                            j48Options.getClass().getSimpleName()));
             }
         });
     }
