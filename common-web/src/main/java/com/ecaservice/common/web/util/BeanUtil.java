@@ -45,8 +45,8 @@ public class BeanUtil {
                 String.format("Property descriptor not found for property [%s] of bean [%s]", propertyName,
                         bean.getClass().getSimpleName()));
         var readMethod = propertyDescriptor.getReadMethod();
-        Assert.notNull(readMethod, String.format("Read method not found for property [%s] of bean [%s]", propertyName
-                , bean.getClass().getSimpleName()));
+        Assert.notNull(readMethod, String.format("Read method not found for property [%s] of bean [%s]", propertyName,
+                bean.getClass().getSimpleName()));
         return ReflectionUtils.invokeMethod(readMethod, bean);
     }
 }
