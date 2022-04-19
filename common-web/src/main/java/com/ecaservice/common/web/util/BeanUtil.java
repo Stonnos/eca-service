@@ -32,6 +32,9 @@ public class BeanUtil {
         Object methodResult = bean;
         for (var node : path) {
             methodResult = internalInvokeGetter(methodResult, node.getName());
+            if (methodResult == null) {
+                return null;
+            }
         }
         return methodResult;
     }
@@ -44,6 +47,6 @@ public class BeanUtil {
         var readMethod = propertyDescriptor.getReadMethod();
         Assert.notNull(readMethod, String.format("Read method not found for property [%s] of bean [%s]", propertyName
                 , bean.getClass().getSimpleName()));
-        return ReflectionUtils.invokeMethod(readMethod, propertyName);
+        return ReflectionUtils.invokeMethod(readMethod, bean);
     }
 }
