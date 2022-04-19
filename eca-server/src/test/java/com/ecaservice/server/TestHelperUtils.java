@@ -68,6 +68,7 @@ import eca.dataminer.AutomatedKNearestNeighbours;
 import eca.ensemble.forests.DecisionTreeType;
 import eca.ensemble.sampling.SamplingMethod;
 import eca.metrics.KNearestNeighbours;
+import eca.metrics.distances.DistanceType;
 import eca.trees.CART;
 import lombok.Cleanup;
 import lombok.SneakyThrows;
@@ -475,6 +476,7 @@ public class TestHelperUtils {
      */
     public static KNearestNeighboursOptions createKNearestNeighboursOptions() {
         KNearestNeighboursOptions options = new KNearestNeighboursOptions();
+        options.setDistanceType(DistanceType.EUCLID);
         options.setNumNeighbours(NUM_NEIGHBOURS);
         options.setWeight(KNN_WEIGHT);
         return options;
@@ -930,7 +932,7 @@ public class TestHelperUtils {
      *
      * @return logistic options
      */
-    public LogisticOptions createLogisticOptions() {
+    public static LogisticOptions createLogisticOptions() {
         LogisticOptions logisticOptions = new LogisticOptions();
         logisticOptions.setMaxIts(NUM_ITERATIONS);
         logisticOptions.setUseConjugateGradientDescent(false);
