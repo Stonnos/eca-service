@@ -7,7 +7,6 @@ import { ClassifierOptionsService } from "../services/classifier-options.service
 import { ConfirmationService, MessageService } from "primeng/api";
 import { BaseListComponent } from "../../common/lists/base-list.component";
 import { OverlayPanel} from "primeng/primeng";
-import { JsonPipe } from "@angular/common";
 import { Observable } from "rxjs/internal/Observable";
 import { ClassifierOptionsFields } from "../../common/util/field-names";
 import { FieldService } from "../../common/services/field.service";
@@ -18,8 +17,6 @@ import { ExperimentTabUtils } from "../../experiments-tabs/model/experiment-tab.
 import { finalize } from "rxjs/internal/operators";
 import { Utils } from "../../common/util/utils";
 import { OperationType }  from "../../common/model/operation-type.enum";
-
-declare var Prism: any;
 
 @Component({
   selector: 'app-classifiers-configuration-details',
@@ -75,12 +72,6 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
   public onSelect(event, classifierOptionsDto: ClassifierOptionsDto, overlayPanel: OverlayPanel) {
     this.selectedOptions = classifierOptionsDto;
     overlayPanel.toggle(event);
-  }
-
-  public getFormattedJsonConfig(): string {
-    const configObj = JSON.parse(this.selectedOptions.config);
-    const json = new JsonPipe().transform(configObj);
-    return Prism.highlight(json, Prism.languages['json']);
   }
 
   public isDeleteAllowed(): boolean {

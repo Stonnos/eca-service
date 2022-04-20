@@ -69,9 +69,10 @@
     </ng-template>
   </p-table>
   <p-overlayPanel #configsPanel [showCloseIcon]="true">
-    <p-panel *ngIf="selectedOptions">
-      <pre class="json-config"><code class="language-json" [innerHTML]="getFormattedJsonConfig()"></code></pre>
-    </p-panel>
+    <app-classifier-options-details *ngIf="selectedOptions"
+                                    [jsonOptions]="selectedOptions.config"
+                                    [inputOptions]="selectedOptions.inputOptions">
+    </app-classifier-options-details>
   </p-overlayPanel>
 </div>
 

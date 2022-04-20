@@ -14,6 +14,7 @@ import { EditableInputTextComponent } from "./editable-input-text/editable-input
 import { InfoPanelComponent } from "./info-panel/info-panel.component";
 import { ErrorHandler } from "./services/error-handler";
 import { WebAppService } from "./services/web-app.service";
+import { ClassifierOptionsDetails } from "./classifier-options-details/classifier-options-details";
 
 @NgModule({
   imports: [
@@ -28,7 +29,8 @@ import { WebAppService } from "./services/web-app.service";
     EqualValidator,
     ConfirmDialogComponent,
     EditableInputTextComponent,
-    InfoPanelComponent
+    InfoPanelComponent,
+    ClassifierOptionsDetails
   ],
   exports: [
     RequestStatusComponent,
@@ -37,7 +39,8 @@ import { WebAppService } from "./services/web-app.service";
     EqualValidator,
     ConfirmDialogComponent,
     EditableInputTextComponent,
-    InfoPanelComponent
+    InfoPanelComponent,
+    ClassifierOptionsDetails
   ],
   providers: [
     FieldService,
