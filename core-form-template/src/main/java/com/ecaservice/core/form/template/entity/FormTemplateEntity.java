@@ -2,6 +2,7 @@ package com.ecaservice.core.form.template.entity;
 
 import lombok.Data;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -42,7 +43,7 @@ public class FormTemplateEntity {
     /**
      * Fields list
      */
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "template_id", nullable = false)
     @OrderBy("fieldOrder")
     private List<FormFieldEntity> fields;
