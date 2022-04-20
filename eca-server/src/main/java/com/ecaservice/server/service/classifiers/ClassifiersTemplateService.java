@@ -2,11 +2,16 @@ package com.ecaservice.server.service.classifiers;
 
 import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.core.form.template.service.FormTemplateProvider;
+import com.ecaservice.web.dto.model.FieldDictionaryDto;
+import com.ecaservice.web.dto.model.FieldDictionaryValueDto;
+import com.ecaservice.web.dto.model.FieldType;
+import com.ecaservice.web.dto.model.FormFieldDto;
 import com.ecaservice.web.dto.model.FormTemplateDto;
 import com.ecaservice.web.dto.model.InputOptionDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -60,7 +65,7 @@ public class ClassifiersTemplateService {
         return template.getFields()
                 .stream()
                 .map(formFieldDto -> {
-                    var optionValue = invokeGetter(classifierOptions, formFieldDto.getFieldName());
+                    var optionValue = getValue(classifierOptions, formFieldDto);
                     if (optionValue == null) {
                         log.debug("Got null value for field [{}] of type [{}]. Skipped...", formFieldDto.getFieldName(),
                                 classifierOptions.getClass().getSimpleName());
@@ -68,10 +73,36 @@ public class ClassifiersTemplateService {
                     }
                     InputOptionDto inputOptionDto = new InputOptionDto();
                     inputOptionDto.setOptionName(formFieldDto.getDescription());
-                    inputOptionDto.setOptionValue(String.valueOf(optionValue));
+                    inputOptionDto.setOptionValue(optionValue);
                     return inputOptionDto;
                 })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
+    }
+
+    private String getValue(ClassifierOptions classifierOptions, FormFieldDto formFieldDto) {
+        var optionValue = invokeGetter(classifierOptions, formFieldDto.getFieldName());
+        if (optionValue == null) {
+            return null;
+        }
+        if (FieldType.REFERENCE.equals(formFieldDto.getFieldType()) && formFieldDto.getDictionary() != null) {
+            log.debug("Gets field [{}] value from dictionary for code [{}]", formFieldDto.getFieldName(), optionValue);
+            return getLabelFromDictionary(formFieldDto.getDictionary(), String.valueOf(optionValue));
+        }
+        return String.valueOf(optionValue);
+    }
+
+    private String getLabelFromDictionary(FieldDictionaryDto fieldDictionary, String code) {
+        if (CollectionUtils.isEmpty(fieldDictionary.getValues())) {
+            log.debug("Dictionary [{}] has empty values", fieldDictionary.getName());
+            return null;
+        }
+        return fieldDictionary.getValues()
+                .stream()
+                .filter(fieldDictionaryValue -> fieldDictionaryValue.getValue().equals(code))
+                .map(FieldDictionaryValueDto::getLabel)
+                .findFirst()
+                .orElse(null);
+
     }
 }

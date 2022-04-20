@@ -119,7 +119,7 @@ class ClassifiersTemplateServiceTest {
             switch (i) {
                 case KNN_DISTANCE_IDX:
                     assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
-                            kNearestNeighboursOptions.getDistanceType().name());
+                            kNearestNeighboursOptions.getDistanceType().getDescription());
                     break;
                 case KNN_NUM_NEIGHBOURS_IDX:
                     assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
@@ -175,7 +175,7 @@ class ClassifiersTemplateServiceTest {
             switch (i) {
                 case DECISION_TREE_TYPE_IDX:
                     assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
-                            decisionTreeOptions.getDecisionTreeType().name());
+                            decisionTreeOptions.getDecisionTreeType().getDescription());
                     break;
                 case DECISION_TREE_MIN_OBJ_IDX:
                     assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
@@ -245,7 +245,7 @@ class ClassifiersTemplateServiceTest {
                     break;
                 case NETWORK_AF_TYPE_IDX:
                     assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
-                            neuralNetworkOptions.getActivationFunctionOptions().getActivationFunctionType().name());
+                            neuralNetworkOptions.getActivationFunctionOptions().getActivationFunctionType().getDescription());
                     break;
                 case NETWORK_LEARNING_RATE_IDX:
                     assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
