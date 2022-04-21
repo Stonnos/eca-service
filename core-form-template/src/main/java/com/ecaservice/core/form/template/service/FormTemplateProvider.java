@@ -32,17 +32,17 @@ public class FormTemplateProvider {
     private final FormTemplateRepository formTemplateRepository;
 
     /**
-     * Gets form template by name.
+     * Gets form template by class.
      *
-     * @param templateName - template name
+     * @param objectClass - object class
      * @return form template dto
      */
     @Cacheable(FORM_TEMPLATE_CACHE_NAME)
-    public FormTemplateDto getTemplate(String templateName) {
-        log.debug("Gets form template [{}]", templateName);
-        return formTemplateRepository.findByTemplateName(templateName)
+    public FormTemplateDto getTemplateByClass(String objectClass) {
+        log.debug("Gets form template for object class [{}]", objectClass);
+        return formTemplateRepository.findByObjectClass(objectClass)
                 .map(formTemplateMapper::map)
-                .orElseThrow(() -> new EntityNotFoundException(FormTemplateEntity.class, templateName));
+                .orElseThrow(() -> new EntityNotFoundException(FormTemplateEntity.class, objectClass));
     }
 
     /**

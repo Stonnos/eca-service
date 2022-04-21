@@ -51,7 +51,7 @@ class FormTemplateProviderTest extends AbstractJpaTest {
     @Test
     void testGetTemplate() {
         var template = formTemplateGroupEntity.getTemplates().iterator().next();
-        var templateDto = formTemplateProvider.getTemplate(template.getTemplateName());
+        var templateDto = formTemplateProvider.getTemplateByClass(template.getObjectClass());
         assertThat(templateDto).isNotNull();
         assertThat(templateDto.getTemplateName()).isEqualTo(templateDto.getTemplateName());
         assertThat(templateDto.getFields()).hasSameSizeAs(template.getFields());
@@ -59,7 +59,7 @@ class FormTemplateProviderTest extends AbstractJpaTest {
 
     @Test
     void testGetTemplateShouldThrowEntityNotFoundException() {
-        assertThrows(EntityNotFoundException.class, () -> formTemplateProvider.getTemplate(INVALID_CODE));
+        assertThrows(EntityNotFoundException.class, () -> formTemplateProvider.getTemplateByClass(INVALID_CODE));
     }
 
     @Test

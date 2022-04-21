@@ -269,7 +269,7 @@ class ClassifiersTemplateServiceTest {
     private List<InputOptionDto> parseInputOptions(ClassifierOptions classifierOptions) throws JsonProcessingException {
         String templateName = classifierOptions.getClass().getSimpleName();
         var templateDto = getTemplate(templateName);
-        when(formTemplateProvider.getTemplate(templateName)).thenReturn(templateDto);
+        when(formTemplateProvider.getTemplateByClass(templateName)).thenReturn(templateDto);
         var json = objectMapper.writeValueAsString(classifierOptions);
         return classifiersTemplateService.processInputOptions(json);
     }

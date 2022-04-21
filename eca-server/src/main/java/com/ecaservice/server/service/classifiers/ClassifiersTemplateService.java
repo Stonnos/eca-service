@@ -61,7 +61,7 @@ public class ClassifiersTemplateService {
     }
 
     private List<InputOptionDto> processInputOptions(ClassifierOptions classifierOptions) {
-        var template = formTemplateProvider.getTemplate(classifierOptions.getClass().getSimpleName());
+        var template = formTemplateProvider.getTemplateByClass(classifierOptions.getClass().getSimpleName());
         return template.getFields()
                 .stream()
                 .map(formFieldDto -> {

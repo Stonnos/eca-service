@@ -13,10 +13,10 @@ import java.util.Optional;
 public interface FormTemplateRepository extends JpaRepository<FormTemplateEntity, Long> {
 
     /**
-     * Finds form template by name.
+     * Finds form template by class.
      *
-     * @param templateName - template name
+     * @param objectClass - object class
      * @return form template entity
      */
-    Optional<FormTemplateEntity> findByTemplateName(String templateName);
+    Optional<FormTemplateEntity> findByObjectClass(String objectClass);
 }
