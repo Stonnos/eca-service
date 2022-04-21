@@ -36,8 +36,8 @@
             <label class="field-label">{{ formField.label }}</label>
             <input type="number"
                    pInputText
-                   #field="ngModel"
                    name="{{ formField.name }}"
+                   #field="ngModel"
                    [(ngModel)]="formField.currentValue"
                    [maxLength]="formField.maxLength"
                    [minNumber]="formField.min"
@@ -50,9 +50,9 @@
           </ng-container>
           <ng-container *ngSwitchCase="'DECIMAL'">
             <label class="field-label">{{ formField.label }}</label>
-            <input pInputText
-                   type="text"
-                   pKeyFilter="num"
+            <input type="number"
+                   pInputText
+                   step="any"
                    name="{{ formField.name }}"
                    #field="ngModel"
                    [(ngModel)]="formField.currentValue"
