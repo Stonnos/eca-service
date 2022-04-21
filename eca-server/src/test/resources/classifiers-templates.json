@@ -1,7 +1,9 @@
 [
   {
-    "templateName": "KNearestNeighboursOptions",
+    "templateName": "KNN",
     "templateTitle": "Алгоритм k - взвешенных ближайших соседей",
+    "objectClass": "KNearestNeighboursOptions",
+    "objectType": "knn",
     "fields": [
       {
         "fieldName": "numNeighbours",
@@ -62,8 +64,10 @@
     ]
   },
   {
-    "templateName": "LogisticOptions",
+    "templateName": "LOGISTIC",
     "templateTitle": "Логистическая регрессия",
+    "objectClass": "LogisticOptions",
+    "objectType": "logistic",
     "fields": [
       {
         "fieldName": "maxIts",
@@ -92,8 +96,10 @@
     ]
   },
   {
-    "templateName": "J48Options",
+    "templateName": "J48",
     "templateTitle": "Алгоритм J48",
+    "objectClass": "J48Options",
+    "objectType": "j48",
     "fields": [
       {
         "fieldName": "minNumObj",
@@ -146,8 +152,10 @@
     ]
   },
   {
-    "templateName": "DecisionTreeOptions",
+    "templateName": "DECISION_TREE",
     "templateTitle": "Дерево решений",
+    "objectClass": "DecisionTreeOptions",
+    "objectType": "decision_tree",
     "fields": [
       {
         "fieldName": "decisionTreeType",
@@ -280,8 +288,10 @@
     ]
   },
   {
-    "templateName": "NeuralNetworkOptions",
+    "templateName": "NEURAL_NETWORK",
     "templateTitle": "Нейронная сеть (Многослойный персептрон)",
+    "objectClass": "NeuralNetworkOptions",
+    "objectType": "neural_network",
     "fields": [
       {
         "fieldName": "numInNeurons",

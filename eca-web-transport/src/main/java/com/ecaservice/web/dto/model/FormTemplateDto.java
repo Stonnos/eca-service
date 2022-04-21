@@ -30,6 +30,12 @@ public class FormTemplateDto {
     private String templateTitle;
 
     /**
+     * Object class
+     */
+    @Schema(description = "Object class", example = "Object", maxLength = MAX_LENGTH_255)
+    private String objectClass;
+
+    /**
      * Object type
      */
     @Schema(description = "Object type", example = "object_type", maxLength = MAX_LENGTH_255)
