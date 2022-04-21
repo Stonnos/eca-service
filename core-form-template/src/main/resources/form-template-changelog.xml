@@ -42,6 +42,8 @@
             <column name="template_name" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
+            <column name="object_class" type="varchar(255)"/>
+            <column name="object_type" type="varchar(255)"/>
             <column name="template_title" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>

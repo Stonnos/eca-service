@@ -30,6 +30,12 @@ public class FormTemplateDto {
     private String templateTitle;
 
     /**
+     * Object type
+     */
+    @Schema(description = "Object type", example = "object_type", maxLength = MAX_LENGTH_255)
+    private String objectType;
+
+    /**
      * Fields list
      */
     @ArraySchema(schema = @Schema(description = "Form fields list"))

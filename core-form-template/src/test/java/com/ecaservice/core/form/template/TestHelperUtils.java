@@ -84,6 +84,8 @@ public class TestHelperUtils {
         var formTemplateEntity = new FormTemplateEntity();
         formTemplateEntity.setTemplateName(TEMPLATE_NAME);
         formTemplateEntity.setTemplateTitle(TEMPLATE_TITLE);
+        formTemplateEntity.setObjectClass(Object.class.getSimpleName());
+        formTemplateEntity.setObjectType(Object.class.getTypeName());
         formTemplateEntity.setFields(IntStream.range(0, FORM_TEMPLATE_FIELDS)
                 .mapToObj(i -> createFormFieldEntity(String.valueOf(i), i))
                 .collect(Collectors.toList())

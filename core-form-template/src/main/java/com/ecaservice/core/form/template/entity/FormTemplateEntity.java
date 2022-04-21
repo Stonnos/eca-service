@@ -35,6 +35,18 @@ public class FormTemplateEntity {
     private String templateName;
 
     /**
+     * Object class
+     */
+    @Column(name = "object_class")
+    private String objectClass;
+
+    /**
+     * Object type
+     */
+    @Column(name = "object_type")
+    private String objectType;
+
+    /**
      * Template title
      */
     @Column(name = "template_title", nullable = false)

@@ -69,6 +69,7 @@ class FormTemplateMapperTest {
         assertThat(formTemplateDto).isNotNull();
         assertThat(formTemplateDto.getTemplateName()).isEqualTo(formTemplateEntity.getTemplateName());
         assertThat(formTemplateDto.getTemplateTitle()).isEqualTo(formTemplateEntity.getTemplateTitle());
+        assertThat(formTemplateDto.getObjectType()).isEqualTo(formTemplateDto.getObjectType());
         assertThat(formTemplateDto.getFields()).hasSameSizeAs(formTemplateEntity.getFields());
     }
 }
