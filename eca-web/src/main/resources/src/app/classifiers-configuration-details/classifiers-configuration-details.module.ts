@@ -10,15 +10,15 @@ import { UploadClassifierOptionsDialogModule } from "../upload-classifier-option
 import { SharedModule } from "../common/shared.module";
 
 @NgModule({
-    imports: [
-        CommonModule,
-        FormsModule,
-        UiComponentsModule,
-        ClassifiersConfigurationMenuModule,
-        CreateClassifiersConfigurationModule,
-        UploadClassifierOptionsDialogModule,
-        SharedModule
-    ],
+  imports: [
+    CommonModule,
+    FormsModule,
+    UiComponentsModule,
+    ClassifiersConfigurationMenuModule,
+    CreateClassifiersConfigurationModule,
+    UploadClassifierOptionsDialogModule,
+    SharedModule
+  ],
   declarations: [
     ClassifiersConfigurationDetailsComponent
   ],
