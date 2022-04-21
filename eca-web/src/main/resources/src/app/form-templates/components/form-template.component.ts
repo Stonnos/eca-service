@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormField } from "../model/form-template.model";
 import { BaseCreateDialogComponent } from "../../common/dialog/base-create-dialog.component";
+import { FormTemplateDto } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 
 @Component({
   selector: 'app-form-template',
@@ -8,6 +9,9 @@ import { BaseCreateDialogComponent } from "../../common/dialog/base-create-dialo
   styleUrls: ['./form-template.component.scss']
 })
 export class FormTemplateComponent extends BaseCreateDialogComponent<FormField[]> implements OnInit {
+
+  @Input()
+  public template: FormTemplateDto;
 
   public ngOnInit(): void {
   }
@@ -37,7 +41,7 @@ export class FormTemplateComponent extends BaseCreateDialogComponent<FormField[]
 
   public submit() {
     this.submitted = true;
-    let classifierOptions = { type: 'decision_tree' };
+    let classifierOptions = { type: this.template.objectType };
     this.item.forEach((formField: FormField) => {
       const fields: string[] = formField.name.split(".");
       if (fields.length == 1) {
