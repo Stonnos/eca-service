@@ -1,0 +1,93 @@
+<form novalidate class="form d-flex flex-column justify-content-center m-auto" (keydown.enter)="submit()">
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-10 mx-auto mb-4">
+      <div *ngFor="let formField of item" class="ui-g-12 ui-md-12">
+        <div [ngSwitch]="formField.fieldType">
+          <ng-container *ngSwitchCase="'REFERENCE'">
+            <div class="form-group">
+              <label class="field-label">{{ formField.label }}</label>
+              <p-dropdown
+                name="{{ formField.name }}"
+                [options]="formField.values"
+                placeholder="Выбрать"
+                optionLabel="label"
+                [showClear]="true"
+                [(ngModel)]="formField.currentValue"
+                [style]="{'width':'100%'}">
+              </p-dropdown>
+            </div>
+          </ng-container>
+          <ng-container *ngSwitchCase="'TEXT'">
+            <label class="field-label">{{ formField.label }}</label>
+            <input pInputText
+                   type="text"
+                   #field="ngModel"
+                   name="{{ formField.name }}"
+                   [(ngModel)]="formField.currentValue"
+                   [maxLength]="formField.maxLength"
+                   [pattern]="formField.pattern"/>
+            <div class="text-danger error-message" *ngIf="field.invalid && (field.dirty || field.touched || submitted)">
+              <div *ngFor="let error of getValidationErrors(field, formField)">
+                <span>{{ error }}</span>
+              </div>
+            </div>
+          </ng-container>
+          <ng-container *ngSwitchCase="'INTEGER'">
+            <label class="field-label">{{ formField.label }}</label>
+            <input type="number"
+                   pInputText
+                   #field="ngModel"
+                   name="{{ formField.name }}"
+                   [(ngModel)]="formField.currentValue"
+                   [maxLength]="formField.maxLength"
+                   [minNumber]="formField.min"
+                   [maxNumber]="formField.max"/>
+            <div class="text-danger error-message" *ngIf="field.invalid && (field.dirty || field.touched || submitted)">
+              <div *ngFor="let error of getValidationErrors(field, formField)">
+                <span>{{ error }}</span>
+              </div>
+            </div>
+          </ng-container>
+          <ng-container *ngSwitchCase="'DECIMAL'">
+            <label class="field-label">{{ formField.label }}</label>
+            <input pInputText
+                   type="text"
+                   pKeyFilter="num"
+                   name="{{ formField.name }}"
+                   #field="ngModel"
+                   [(ngModel)]="formField.currentValue"
+                   [maxLength]="formField.maxLength"
+                   [minNumber]="formField.min"
+                   [maxNumber]="formField.max"/>
+            <div class="text-danger error-message" *ngIf="field.invalid && (field.dirty || field.touched || submitted)">
+              <div *ngFor="let error of getValidationErrors(field, formField)">
+                <span>{{ error }}</span>
+              </div>
+            </div>
+          </ng-container>
+          <ng-container *ngSwitchCase="'BOOLEAN'">
+            <p-checkbox class="form-checkbox"
+                        binary="true"
+                        name="{{ formField.name }}"
+                        label="{{ formField.label }}"
+                        [(ngModel)]="formField.currentValue">
+            </p-checkbox>
+          </ng-container>
+          <ng-container *ngSwitchDefault>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+<div class="ui-g ui-fluid">
+  <div class="ui-g-10 mx-auto mb-4">
+    <button
+      pButton
+      label="Добавить"
+      type="button"
+      (click)="submit()"
+      class="ml-auto">
+    </button>
+  </div>
+</div>

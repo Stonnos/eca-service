@@ -15,6 +15,8 @@ import { InfoPanelComponent } from "./info-panel/info-panel.component";
 import { ErrorHandler } from "./services/error-handler";
 import { WebAppService } from "./services/web-app.service";
 import { ClassifierOptionsDetails } from "./classifier-options-details/classifier-options-details";
+import { MinNumberValidator } from "./validators/min-validator.directive";
+import { MaxNumberValidator } from "./validators/max-validator.directive";
 
 @NgModule({
   imports: [
@@ -27,6 +29,8 @@ import { ClassifierOptionsDetails } from "./classifier-options-details/classifie
     SearchQueryComponent,
     UploadTrainingDataComponent,
     EqualValidator,
+    MinNumberValidator,
+    MaxNumberValidator,
     ConfirmDialogComponent,
     EditableInputTextComponent,
     InfoPanelComponent,
@@ -37,6 +41,8 @@ import { ClassifierOptionsDetails } from "./classifier-options-details/classifie
     SearchQueryComponent,
     UploadTrainingDataComponent,
     EqualValidator,
+    MinNumberValidator,
+    MaxNumberValidator,
     ConfirmDialogComponent,
     EditableInputTextComponent,
     InfoPanelComponent,
