@@ -17,6 +17,8 @@ export class FormTemplatesMapper {
       formField.min = formFieldDto.minValue;
       formField.max = formFieldDto.maxValue;
       formField.pattern = formFieldDto.pattern;
+      formField.invalidPatternMessage = formFieldDto.invalidPatternMessage;
+      formField.placeholder = formFieldDto.placeHolder;
       formField.defaultValue = formFieldDto.defaultValue;
       if (formFieldDto.fieldType == FilterFieldType.REFERENCE && formFieldDto.dictionary &&
         formFieldDto.dictionary.values && formFieldDto.dictionary.values.length > 0) {

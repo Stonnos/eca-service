@@ -25,7 +25,11 @@ export class FormTemplateComponent extends BaseCreateDialogComponent<FormField[]
             messages.push(`Заполните поле`);
             break;
           case 'pattern':
-            messages.push(`Значение не соответствует паттерну ${formField.pattern}`);
+            if (formField.invalidPatternMessage) {
+              messages.push(formField.invalidPatternMessage);
+            } else {
+              messages.push(`Значение не соответствует паттерну ${formField.pattern}`);
+            }
             break;
           case 'minNumber':
             messages.push(`Значение должно быть больше либо равно ${formField.min}`);

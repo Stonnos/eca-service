@@ -13,6 +13,8 @@ export class FormField {
   pattern: string;
   defaultValue: string;
   currentValue: any;
+  invalidPatternMessage: string;
+  placeholder: string;
   values: SelectItem[] = [];
 
   constructor(name: string, label: string, fieldType: FieldType) {
