@@ -118,6 +118,7 @@ spring:
 |invalid_pattern_message    |varchar(255)     |-|-|-                                 |Текст ошибки при несоответствии значения регулярному выражению (pattern)
 |dictionary_id              |bigint           |-|-|fk_form_field_dictionary_id       |Внешний ключ, ID словаря (заполняется для полей типа REFERENCE)
 |template_id                |bigint           |-|+|fk_form_template_id               |Внешний ключ, ID шаблона
+|place_holder               |varchar(255)     |-|-|-                                 |Значение для подсказки ввода
 |default_value              |varchar(255)     |-|-|-                                 |Значение по умолчанию для поля
 |===
 

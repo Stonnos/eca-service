@@ -80,6 +80,12 @@ public class FormFieldDto {
     private FieldDictionaryDto dictionary;
 
     /**
+     * Place holder message
+     */
+    @Schema(description = "Place holder message", maxLength = MAX_LENGTH_255)
+    private String placeHolder;
+
+    /**
      * Default value
      */
     @Schema(description = "Default value", maxLength = MAX_LENGTH_255)

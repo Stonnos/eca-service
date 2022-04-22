@@ -85,6 +85,12 @@ public class FormFieldEntity {
     private String invalidPatternMessage;
 
     /**
+     * Place holder message
+     */
+    @Column(name = "place_holder")
+    private String placeHolder;
+
+    /**
      * Field dictionary values
      */
     @ManyToOne
