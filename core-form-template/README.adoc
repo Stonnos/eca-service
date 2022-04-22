@@ -115,6 +115,7 @@ spring:
 |max_value                  |numeric(19,2)    |-|-|-                                 |Макс. значение (заполняется для числовых полей INTEGER, DECIMAL)
 |max_length                 |integer          |-|-|-                                 |Макс. длина поля
 |pattern                    |varchar(255)     |-|-|-                                 |Регулярное выражение для поля
+|invalid_pattern_message    |varchar(255)     |-|-|-                                 |Текст ошибки при несоответствии значения регулярному выражению (pattern)
 |dictionary_id              |bigint           |-|-|fk_form_field_dictionary_id       |Внешний ключ, ID словаря (заполняется для полей типа REFERENCE)
 |template_id                |bigint           |-|+|fk_form_template_id               |Внешний ключ, ID шаблона
 |default_value              |varchar(255)     |-|-|-                                 |Значение по умолчанию для поля

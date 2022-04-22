@@ -68,6 +68,12 @@ public class FormFieldDto {
     private String pattern;
 
     /**
+     * Invalid pattern message
+     */
+    @Schema(description = "Invalid pattern message", maxLength = MAX_LENGTH_255)
+    private String invalidPatternMessage;
+
+    /**
      * Field dictionary
      */
     @Schema(description = "Field dictionary")

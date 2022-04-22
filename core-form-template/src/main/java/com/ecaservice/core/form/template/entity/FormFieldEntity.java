@@ -79,6 +79,12 @@ public class FormFieldEntity {
     private String pattern;
 
     /**
+     * Invalid pattern message
+     */
+    @Column(name = "invalid_pattern_message")
+    private String invalidPatternMessage;
+
+    /**
      * Field dictionary values
      */
     @ManyToOne

@@ -107,6 +107,7 @@
             <column name="max_value" type="numeric(19,2)"/>
             <column name="max_length" type="integer"/>
             <column name="pattern" type="varchar(255)"/>
+            <column name="invalid_pattern_message" type="varchar(255)"/>
             <column name="template_id" type="bigint">
                 <constraints foreignKeyName="fk_form_template_id"
                              referencedTableName="form_template" referencedColumnNames="id"
