@@ -17,13 +17,11 @@ id;field_name;description;field_order;field_type;min_value;max_value;max_length;
 16;useRandomSplits;Случайные расщепления атрибута;6;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;4
 17;numRandomSplits;Число случайных расщеплений атрибута:;7;INTEGER;0;2147483647;NULL;NULL;NULL;0;4
 18;seed;Начальное значение (seed):;8;INTEGER;0;2147483647;NULL;NULL;NULL;1;4
-19;numInNeurons;Количество нейронов во входном слое:;0;INTEGER;1;2147483647;NULL;NULL;NULL;NULL;5
-20;numOutNeurons;Количество нейронов в выходном слое:;1;INTEGER;2;2147483647;NULL;NULL;NULL;NULL;5
-21;hiddenLayer;Структура скрытого слоя:;2;TEXT;NULL;NULL;255;^([1-9],?)+$;NULL;NULL;5
-22;numIterations;Число итераций:;3;INTEGER;1;2147483647;NULL;NULL;NULL;1000000;5
-23;minError;Допустимая ошибка:;4;DECIMAL;0;1;NULL;NULL;NULL;0.00001;5
-24;activationFunctionOptions.activationFunctionType;Активационная функция нейронов скрытого слоя:;5;REFERENCE;NULL;NULL;NULL;NULL;3;LOGISTIC;5
-25;activationFunctionOptions.coefficient;Значение коэффициента:;6;DECIMAL;0;1;NULL;NULL;NULL;1;5
-26;backPropagationOptions.learningRate;Коэффициент скорости обучения:;7;DECIMAL;0;1;NULL;NULL;NULL;0.1;5
-27;backPropagationOptions.momentum;Коэффициент момента:;8;DECIMAL;0;1;NULL;NULL;NULL;0.2;5
-28;seed;Начальное значение (seed):;9;INTEGER;0;2147483647;NULL;NULL;NULL;1;5
+19;hiddenLayer;Структура скрытого слоя:;0;TEXT;NULL;NULL;255;^([1-9],?)+$;NULL;NULL;5
+20;numIterations;Число итераций:;1;INTEGER;1;2147483647;NULL;NULL;NULL;1000000;5
+21;minError;Допустимая ошибка:;2;DECIMAL;0;1;NULL;NULL;NULL;0.00001;5
+22;activationFunctionOptions.activationFunctionType;Активационная функция нейронов скрытого слоя:;3;REFERENCE;NULL;NULL;NULL;NULL;3;LOGISTIC;5
+23;activationFunctionOptions.coefficient;Значение коэффициента:;4;DECIMAL;0;1;NULL;NULL;NULL;1;5
+24;backPropagationOptions.learningRate;Коэффициент скорости обучения:;5;DECIMAL;0;1;NULL;NULL;NULL;0.1;5
+25;backPropagationOptions.momentum;Коэффициент момента:;6;DECIMAL;0;1;NULL;NULL;NULL;0.2;5
+26;seed;Начальное значение (seed):;7;INTEGER;0;2147483647;NULL;NULL;NULL;1;5

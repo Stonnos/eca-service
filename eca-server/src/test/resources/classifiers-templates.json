@@ -294,33 +294,9 @@
     "objectType": "neural_network",
     "fields": [
       {
-        "fieldName": "numInNeurons",
-        "description": "Количество нейронов во входном слое:",
-        "fieldOrder": 0,
-        "fieldType": "INTEGER",
-        "minValue": 1,
-        "maxValue": 2147483647,
-        "maxLength": null,
-        "pattern": null,
-        "dictionary": null,
-        "defaultValue": null
-      },
-      {
-        "fieldName": "numOutNeurons",
-        "description": "Количество нейронов в выходном слое:",
-        "fieldOrder": 1,
-        "fieldType": "INTEGER",
-        "minValue": 2,
-        "maxValue": 2147483647,
-        "maxLength": null,
-        "pattern": null,
-        "dictionary": null,
-        "defaultValue": null
-      },
-      {
         "fieldName": "hiddenLayer",
         "description": "Структура скрытого слоя:",
-        "fieldOrder": 2,
+        "fieldOrder": 0,
         "fieldType": "TEXT",
         "minValue": null,
         "maxValue": null,
@@ -332,7 +308,7 @@
       {
         "fieldName": "numIterations",
         "description": "Число итераций:",
-        "fieldOrder": 3,
+        "fieldOrder": 1,
         "fieldType": "INTEGER",
         "minValue": 1,
         "maxValue": 2147483647,
@@ -344,7 +320,7 @@
       {
         "fieldName": "minError",
         "description": "Допустимая ошибка:",
-        "fieldOrder": 4,
+        "fieldOrder": 2,
         "fieldType": "DECIMAL",
         "minValue": 0,
         "maxValue": 1,
@@ -356,7 +332,7 @@
       {
         "fieldName": "activationFunctionOptions.activationFunctionType",
         "description": "Активационная функция нейронов скрытого слоя:",
-        "fieldOrder": 5,
+        "fieldOrder": 3,
         "fieldType": "REFERENCE",
         "minValue": null,
         "maxValue": null,
@@ -396,7 +372,7 @@
       {
         "fieldName": "activationFunctionOptions.coefficient",
         "description": "Значение коэффициента:",
-        "fieldOrder": 6,
+        "fieldOrder": 4,
         "fieldType": "DECIMAL",
         "minValue": 0,
         "maxValue": 1,
@@ -408,7 +384,7 @@
       {
         "fieldName": "backPropagationOptions.learningRate",
         "description": "Коэффициент скорости обучения:",
-        "fieldOrder": 7,
+        "fieldOrder": 5,
         "fieldType": "DECIMAL",
         "minValue": 0,
         "maxValue": 1,
@@ -420,7 +396,7 @@
       {
         "fieldName": "backPropagationOptions.momentum",
         "description": "Коэффициент момента:",
-        "fieldOrder": 8,
+        "fieldOrder": 6,
         "fieldType": "DECIMAL",
         "minValue": 0,
         "maxValue": 1,
@@ -432,7 +408,7 @@
       {
         "fieldName": "seed",
         "description": "Начальное значение (seed):",
-        "fieldOrder": 9,
+        "fieldOrder": 7,
         "fieldType": "INTEGER",
         "minValue": 0,
         "maxValue": 2147483647,
