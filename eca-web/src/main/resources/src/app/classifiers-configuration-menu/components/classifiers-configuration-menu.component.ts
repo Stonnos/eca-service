@@ -47,57 +47,12 @@ export class ClassifiersConfigurationMenuComponent implements OnInit, OnChanges 
 
   private initMenu() {
     if (this.classifiersConfiguration) {
-      this.uploadClassifiersOptionsMenu = {
-        label: 'Загрузить классификаторы из файла',
-        icon: 'pi pi-upload',
-        styleClass: 'menu-item',
-        visible: !this.classifiersConfiguration.buildIn,
-        command: () => {
-          this.onUploadClassifiers.emit(this.classifiersConfiguration);
-        }
-      };
-      this.setActiveMenuItem = {
-        label: 'Сделать активной',
-        icon: 'pi pi-tag',
-        styleClass: 'menu-item',
-        visible: !this.classifiersConfiguration.active && this.classifiersConfiguration.classifiersOptionsCount > 0,
-        command: () => {
-          this.onSetActive.emit(this.classifiersConfiguration);
-        }
-      };
-      this.deleteMenuItem = {
-        label: 'Удалить',
-        icon: 'pi pi-fw pi-trash',
-        styleClass: 'menu-item',
-        visible: !this.classifiersConfiguration.buildIn && !this.classifiersConfiguration.active,
-        command: () => {
-          this.onDelete.emit(this.classifiersConfiguration);
-        }
-      };
-      this.renameMenuItem = {
-        label: 'Переименовать',
-        icon: 'pi pi-fw pi-pencil',
-        styleClass: 'menu-item',
-        command: () => {
-          this.onRename.emit(this.classifiersConfiguration);
-        }
-      };
-      this.copyMenuItem = {
-        label: 'Копировать',
-        icon: 'pi pi-fw pi-copy',
-        styleClass: 'menu-item',
-        command: () => {
-          this.onCopy.emit(this.classifiersConfiguration);
-        }
-      };
-      this.downloadReportMenu = {
-        label: 'Сформировать отчет',
-        icon: 'pi pi-file',
-        styleClass: 'menu-item',
-        command: () => {
-          this.onDownloadReport.emit(this.classifiersConfiguration);
-        }
-      };
+      this.initUploadClassifierOptionsMenuItem();
+      this.initSetActiveConfigurationMenuItem();
+      this.initDeleteConfigurationMenuItem();
+      this.initRenameConfigurationMenuItem();
+      this.initCopyConfigurationMenuItem();
+      this.initDownloadConfigurationReportMenuItem();
       const items: MenuItem[] = [
         this.renameMenuItem,
         this.deleteMenuItem,
@@ -117,11 +72,81 @@ export class ClassifiersConfigurationMenuComponent implements OnInit, OnChanges 
     }
   }
 
+  private initUploadClassifierOptionsMenuItem(): void {
+    this.uploadClassifiersOptionsMenu = {
+      label: 'Загрузить классификаторы из файла',
+      icon: 'pi pi-upload',
+      styleClass: 'menu-item',
+      visible: !this.classifiersConfiguration.buildIn,
+      command: () => {
+        this.onUploadClassifiers.emit(this.classifiersConfiguration);
+      }
+    };
+  }
+
+  private initSetActiveConfigurationMenuItem(): void {
+    this.setActiveMenuItem = {
+      label: 'Сделать активной',
+      icon: 'pi pi-tag',
+      styleClass: 'menu-item',
+      visible: !this.classifiersConfiguration.active && this.classifiersConfiguration.classifiersOptionsCount > 0,
+      command: () => {
+        this.onSetActive.emit(this.classifiersConfiguration);
+      }
+    };
+  }
+
+  private initDeleteConfigurationMenuItem(): void {
+    this.deleteMenuItem = {
+      label: 'Удалить',
+      icon: 'pi pi-fw pi-trash',
+      styleClass: 'menu-item',
+      visible: !this.classifiersConfiguration.buildIn && !this.classifiersConfiguration.active,
+      command: () => {
+        this.onDelete.emit(this.classifiersConfiguration);
+      }
+    };
+  }
+
+  private initRenameConfigurationMenuItem(): void {
+    this.renameMenuItem = {
+      label: 'Переименовать',
+      icon: 'pi pi-fw pi-pencil',
+      styleClass: 'menu-item',
+      command: () => {
+        this.onRename.emit(this.classifiersConfiguration);
+      }
+    };
+  }
+
+  private initCopyConfigurationMenuItem(): void {
+    this.copyMenuItem = {
+      label: 'Копировать',
+      icon: 'pi pi-fw pi-copy',
+      styleClass: 'menu-item',
+      command: () => {
+        this.onCopy.emit(this.classifiersConfiguration);
+      }
+    };
+  }
+
+  private initDownloadConfigurationReportMenuItem(): void {
+    this.downloadReportMenu = {
+      label: 'Сформировать отчет',
+      icon: 'pi pi-file',
+      styleClass: 'menu-item',
+      command: () => {
+        this.onDownloadReport.emit(this.classifiersConfiguration);
+      }
+    };
+  }
+
   private appendClassifierOptionsAddMenu(items: MenuItem[]): void {
     if (this.templates && this.templates.length > 0) {
       const classifiersItems: MenuItem[] = this.templates.map((template: FormTemplateDto) => {
         return {
           label: template.templateTitle,
+          styleClass: 'classifier-menu-item',
           command: () => {
             console.log(template);
           }
