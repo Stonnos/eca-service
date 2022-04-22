@@ -18,7 +18,7 @@ import { OperationType } from "../../common/model/operation-type.enum";
 import { FormTemplatesService } from "../../form-templates/services/form-templates.service";
 import { FormTemplatesMapper } from "../../form-templates/services/form-templates.mapper";
 import { FormField } from "../../form-templates/model/form-template.model";
-import {ClassifierOptionsService} from "../../classifiers-configuration-details/services/classifier-options.service";
+import { ClassifierOptionsService } from "../../classifiers-configuration-details/services/classifier-options.service";
 
 @Component({
   selector: 'app-classifiers-configurations',
