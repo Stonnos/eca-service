@@ -10,10 +10,19 @@ import { FormTemplateDto } from "../../../../../../../target/generated-sources/t
 })
 export class FormTemplateComponent extends BaseCreateDialogComponent<FormField[]> implements OnInit {
 
+  private static readonly DEFAULT_PLACEHOLDER = 'Введите значение';
+
   @Input()
   public template: FormTemplateDto;
 
   public ngOnInit(): void {
+  }
+
+  public getPlaceholder(formField: FormField): string {
+    if (formField.placeholder) {
+      return formField.placeholder;
+    }
+    return FormTemplateComponent.DEFAULT_PLACEHOLDER;
   }
 
   public getValidationErrors(state: any, formField: FormField): string[] {

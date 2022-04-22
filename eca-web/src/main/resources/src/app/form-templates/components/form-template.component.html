@@ -34,7 +34,7 @@
                      #field="ngModel"
                      name="{{ formField.name }}"
                      [(ngModel)]="formField.currentValue"
-                     [placeholder]="formField.placeholder"
+                     [placeholder]="getPlaceholder(formField)"
                      [maxLength]="formField.maxLength"
                      [pattern]="formField.pattern"/>
               <div class="text-danger error-message" *ngIf="field.invalid && (field.dirty || field.touched || submitted)">
@@ -50,7 +50,7 @@
                      name="{{ formField.name }}"
                      #field="ngModel"
                      [(ngModel)]="formField.currentValue"
-                     [placeholder]="formField.placeholder"
+                     [placeholder]="getPlaceholder(formField)"
                      [maxLength]="formField.maxLength"
                      [minNumber]="formField.min"
                      [maxNumber]="formField.max"/>
@@ -68,7 +68,7 @@
                      name="{{ formField.name }}"
                      #field="ngModel"
                      [(ngModel)]="formField.currentValue"
-                     [placeholder]="formField.placeholder"
+                     [placeholder]="getPlaceholder(formField)"
                      [maxLength]="formField.maxLength"
                      [minNumber]="formField.min"
                      [maxNumber]="formField.max"/>
