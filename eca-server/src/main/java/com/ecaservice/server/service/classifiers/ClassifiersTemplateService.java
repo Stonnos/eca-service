@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 
 import static com.ecaservice.common.web.util.BeanUtil.invokeGetter;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.parseOptions;
+import static com.ecaservice.server.util.Utils.formatValue;
 
 /**
  * Classifiers template service.
@@ -99,7 +100,7 @@ public class ClassifiersTemplateService {
             log.debug("Gets field [{}] value from dictionary for code [{}]", formFieldDto.getFieldName(), optionValue);
             return getLabelFromDictionary(formFieldDto.getDictionary(), String.valueOf(optionValue));
         }
-        return String.valueOf(optionValue);
+        return formatValue(optionValue);
     }
 
     private String getLabelFromDictionary(FieldDictionaryDto fieldDictionary, String code) {
