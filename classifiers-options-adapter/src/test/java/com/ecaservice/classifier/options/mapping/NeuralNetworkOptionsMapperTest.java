@@ -66,7 +66,7 @@ class NeuralNetworkOptionsMapperTest {
         assertThat(neuralNetwork.getMultilayerPerceptron().getNumIterations()).isEqualTo(
                 neuralNetworkOptions.getNumIterations());
         assertThat(neuralNetwork.getMultilayerPerceptron().getMinError()).isEqualTo(
-                neuralNetworkOptions.getMinError());
+                neuralNetworkOptions.getMinError().doubleValue());
         assertThat(neuralNetwork.getMultilayerPerceptron().getHiddenLayer()).isEqualTo(
                 neuralNetworkOptions.getHiddenLayer());
         assertThat(neuralNetwork.getMultilayerPerceptron().getLearningAlgorithm()).isInstanceOf(BackPropagation.class);

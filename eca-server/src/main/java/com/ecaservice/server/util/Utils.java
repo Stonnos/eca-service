@@ -21,7 +21,6 @@ import eca.core.evaluation.EvaluationMethod;
 import eca.text.NumericFormatFactory;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -316,10 +315,9 @@ public class Utils {
         if (Objects.isNull(value)) {
             return null;
         }
-        String strValue = String.valueOf(value);
-        if (NumberUtils.isParsable(strValue)) {
-            return DECIMAL_FORMAT.format(strValue);
+        if (value instanceof Number) {
+            return DECIMAL_FORMAT.format(value);
         }
-        return strValue;
+        return String.valueOf(value);
     }
 }

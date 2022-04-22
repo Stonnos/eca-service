@@ -39,7 +39,7 @@ class NeuralNetworkMapperTest {
         Assertions.assertThat(options.getHiddenLayer()).isEqualTo(
                 neuralNetwork.getMultilayerPerceptron().getHiddenLayer());
         Assertions.assertThat(options.getSeed()).isEqualTo(neuralNetwork.getSeed());
-        Assertions.assertThat(options.getMinError()).isEqualTo(neuralNetwork.getMultilayerPerceptron().getMinError());
+        Assertions.assertThat(options.getMinError().doubleValue()).isEqualTo(neuralNetwork.getMultilayerPerceptron().getMinError());
         Assertions.assertThat(options.getNumIterations()).isEqualTo(
                 neuralNetwork.getMultilayerPerceptron().getNumIterations());
         Assertions.assertThat(options.getActivationFunctionOptions()).isNotNull();

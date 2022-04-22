@@ -6,6 +6,7 @@ import com.ecaservice.web.dto.model.FormTemplateDto;
 import com.ecaservice.web.dto.model.InputOptionDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import eca.text.NumericFormatFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +15,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -37,7 +39,7 @@ import static org.mockito.Mockito.when;
 class ClassifiersTemplateServiceTest {
 
     private static final String CLASSIFIERS = "classifiers";
-
+    private static final DecimalFormat DECIMAL_FORMAT = NumericFormatFactory.getInstance(Integer.MAX_VALUE);
     private static final int LOGISTIC_MAX_ITS_IDX = 0;
     private static final int LOGISTIC_USE_CONJUGATE_GRADIENT_DESCENT_IDX = 1;
     private static final int KNN_DISTANCE_IDX = 2;
@@ -125,7 +127,7 @@ class ClassifiersTemplateServiceTest {
                     break;
                 case KNN_WEIGHT_IDX:
                     assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
-                            String.valueOf(kNearestNeighboursOptions.getWeight()));
+                            DECIMAL_FORMAT.format(kNearestNeighboursOptions.getWeight()));
                     break;
                 default:
                     fail(String.format("Can't assert input options at index [%d] for classifier [%s]", i,
@@ -231,7 +233,7 @@ class ClassifiersTemplateServiceTest {
                     break;
                 case NETWORK_MIN_ERROR_IDX:
                     assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
-                            String.valueOf(neuralNetworkOptions.getMinError()));
+                            DECIMAL_FORMAT.format(neuralNetworkOptions.getMinError()));
                     break;
                 case NETWORK_AF_TYPE_IDX:
                     assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
@@ -239,11 +241,11 @@ class ClassifiersTemplateServiceTest {
                     break;
                 case NETWORK_LEARNING_RATE_IDX:
                     assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
-                            String.valueOf(neuralNetworkOptions.getBackPropagationOptions().getLearningRate()));
+                            DECIMAL_FORMAT.format(neuralNetworkOptions.getBackPropagationOptions().getLearningRate()));
                     break;
                 case NETWORK_MOMENTUM_IDX:
                     assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
-                            String.valueOf(neuralNetworkOptions.getBackPropagationOptions().getMomentum()));
+                            DECIMAL_FORMAT.format(neuralNetworkOptions.getBackPropagationOptions().getMomentum()));
                     break;
                 case NETWORK_SEED_IDX:
                     assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
