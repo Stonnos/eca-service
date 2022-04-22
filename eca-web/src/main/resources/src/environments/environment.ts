@@ -12,7 +12,8 @@ export const environment = {
   webAppUrl: `http://${window.location.hostname}:${window.location.port}`,
   wsUrl: `ws://${window.location.hostname}:8099/socket`,
   clientId: "eca_web",
-  secret: "web_secret"
+  secret: "web_secret",
+  debug: true
 };
 
 /*
