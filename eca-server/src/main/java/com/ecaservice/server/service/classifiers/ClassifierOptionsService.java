@@ -20,7 +20,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -40,6 +42,7 @@ import static com.ecaservice.server.util.ClassifierOptionsHelper.isEnsembleClass
  */
 @Slf4j
 @Service
+@Validated
 @RequiredArgsConstructor
 public class ClassifierOptionsService {
 
@@ -59,7 +62,7 @@ public class ClassifierOptionsService {
     @Audit(value = ADD_CLASSIFIER_OPTIONS, correlationIdKey = "#configurationId")
     @Transactional
     public ClassifierOptionsDatabaseModel saveClassifierOptions(long configurationId,
-                                                                ClassifierOptions classifierOptions) {
+                                                                @Valid ClassifierOptions classifierOptions) {
         var classifiersConfiguration = getConfigurationById(configurationId);
         Assert.state(!classifiersConfiguration.isBuildIn(),
                 "Can't add classifier options to build in configuration!");

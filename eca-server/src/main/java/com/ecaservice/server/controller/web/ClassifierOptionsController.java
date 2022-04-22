@@ -120,15 +120,15 @@ public class ClassifierOptionsController {
     }
 
     /**
-     * Saves new classifier options for specified configuration.
+     * Uploads new classifier options file for specified configuration.
      *
      * @param configurationId        - configuration id
      * @param classifiersOptionsFile - classifier options file
      */
     @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
-            description = "Saves new classifier options for specified configuration",
-            summary = "Saves new classifier options for specified configuration",
+            description = "Uploads new classifier options file for specified configuration",
+            summary = "Uploads new classifier options file for specified configuration",
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200",
@@ -138,6 +138,15 @@ public class ClassifierOptionsController {
                                             @ExampleObject(value = SAVE_CLASSIFIER_OPTIONS_RESPONSE_JSON),
                                     },
                                     schema = @Schema(implementation = CreateClassifierOptionsResultDto.class)
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = DATA_NOT_FOUND_RESPONSE_JSON),
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
                     ),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
@@ -150,14 +159,14 @@ public class ClassifierOptionsController {
                     )
             }
     )
-    @PostMapping(value = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public CreateClassifierOptionsResultDto save(
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public CreateClassifierOptionsResultDto upload(
             @Parameter(description = "Configuration id", example = "1", required = true)
             @Min(VALUE_1) @Max(Long.MAX_VALUE)
             @RequestParam long configurationId,
             @Parameter(description = "Classifiers options file", required = true)
             @RequestParam MultipartFile classifiersOptionsFile) {
-        log.info("Received request to save classifier options for configuration id [{}], options file [{}]",
+        log.info("Received request to upload classifier options for configuration id [{}], options file [{}]",
                 configurationId, classifiersOptionsFile.getOriginalFilename());
         CreateClassifierOptionsResultDto classifierOptionsResultDto = new CreateClassifierOptionsResultDto();
         classifierOptionsResultDto.setSourceFileName(classifiersOptionsFile.getOriginalFilename());
@@ -174,6 +183,49 @@ public class ClassifierOptionsController {
             classifierOptionsResultDto.setErrorMessage(ex.getMessage());
         }
         return classifierOptionsResultDto;
+    }
+
+    /**
+     * Adds new classifier options for specified configuration.
+     *
+     * @param configurationId   - configuration id
+     * @param classifierOptions - classifier options
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @Operation(
+            description = "Adds new classifier options for specified configuration",
+            summary = "Adds new classifier options for specified configuration",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = DATA_NOT_FOUND_RESPONSE_JSON),
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
+                            )
+                    )
+            }
+    )
+    @PostMapping(value = "/add")
+    public void addClassifierOptions(
+            @Parameter(description = "Configuration id", example = "1", required = true)
+            @Min(VALUE_1) @Max(Long.MAX_VALUE)
+            @RequestParam long configurationId,
+            @RequestBody ClassifierOptions classifierOptions) {
+        log.info("Received request to save classifier options {} for configuration id [{}]", classifierOptions,
+                configurationId);
+        classifierOptionsService.saveClassifierOptions(configurationId, classifierOptions);
     }
 
     /**
