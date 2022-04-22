@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import {
-  ClassifiersConfigurationDto
+  ClassifiersConfigurationDto, FormTemplateDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { MenuItem } from "primeng/api";
 
@@ -16,11 +16,14 @@ export class ClassifiersConfigurationMenuComponent implements OnInit, OnChanges 
   public copyMenuItem: MenuItem;
   public renameMenuItem: MenuItem;
   public uploadClassifiersOptionsMenu: MenuItem;
+  public addClassifiersOptionsMenu: MenuItem;
   public downloadReportMenu: MenuItem;
   public optionsMenu: MenuItem[] = [];
 
   @Input()
   public classifiersConfiguration: ClassifiersConfigurationDto;
+  @Input()
+  public templates: FormTemplateDto[] = [];
 
   @Output()
   public onUploadClassifiers: EventEmitter<ClassifiersConfigurationDto> = new EventEmitter<ClassifiersConfigurationDto>();
@@ -45,7 +48,7 @@ export class ClassifiersConfigurationMenuComponent implements OnInit, OnChanges 
   private initMenu() {
     if (this.classifiersConfiguration) {
       this.uploadClassifiersOptionsMenu = {
-        label: 'Загрузить классификаторы',
+        label: 'Загрузить классификаторы из файла',
         icon: 'pi pi-upload',
         styleClass: 'menu-item',
         visible: !this.classifiersConfiguration.buildIn,
@@ -95,20 +98,43 @@ export class ClassifiersConfigurationMenuComponent implements OnInit, OnChanges 
           this.onDownloadReport.emit(this.classifiersConfiguration);
         }
       };
+      const items: MenuItem[] = [
+        this.renameMenuItem,
+        this.deleteMenuItem,
+        this.copyMenuItem,
+        this.setActiveMenuItem,
+        this.uploadClassifiersOptionsMenu,
+        this.downloadReportMenu
+      ];
+      this.appendClassifierOptionsAddMenu(items);
       this.optionsMenu = [
         {
           icon: 'pi pi-fw pi-cog',
           styleClass: 'main-menu-item',
-          items: [
-            this.renameMenuItem,
-            this.deleteMenuItem,
-            this.copyMenuItem,
-            this.setActiveMenuItem,
-            this.uploadClassifiersOptionsMenu,
-            this.downloadReportMenu
-          ]
+          items: items
         }
       ];
+    }
+  }
+
+  private appendClassifierOptionsAddMenu(items: MenuItem[]): void {
+    if (this.templates && this.templates.length > 0) {
+      const classifiersItems: MenuItem[] = this.templates.map((template: FormTemplateDto) => {
+        return {
+          label: template.templateTitle,
+          command: () => {
+            console.log(template);
+          }
+        };
+      });
+      this.addClassifiersOptionsMenu = {
+        label: 'Добавить классификатор',
+        icon: 'pi pi-plus',
+        styleClass: 'menu-item',
+        visible: !this.classifiersConfiguration.buildIn,
+        items: classifiersItems
+      };
+      items.push(this.addClassifiersOptionsMenu);
     }
   }
 }

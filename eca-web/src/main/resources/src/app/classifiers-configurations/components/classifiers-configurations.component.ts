@@ -1,6 +1,6 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import {
-  ClassifiersConfigurationDto, PageDto,
+  ClassifiersConfigurationDto, FormTemplateDto, PageDto,
   PageRequestDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ConfirmationService, MessageService } from "primeng/api";
@@ -15,6 +15,7 @@ import { Router } from "@angular/router";
 import { RouterPaths } from "../../routing/router-paths";
 import { Utils } from "../../common/util/utils";
 import { OperationType } from "../../common/model/operation-type.enum";
+import { FormTemplatesService } from "../../form-templates/services/form-templates.service";
 
 @Component({
   selector: 'app-classifiers-configurations',
@@ -29,8 +30,11 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
   public editClassifiersConfigurationDialogVisibility: boolean = false;
   public uploadClassifiersOptionsDialogVisibility: boolean = false;
 
+  public templates: FormTemplateDto[] = [];
+
   public constructor(private injector: Injector,
                      private classifiersConfigurationsService: ClassifiersConfigurationsService,
+                     private formTemplatesService: FormTemplatesService,
                      private confirmationService: ConfirmationService,
                      private router: Router) {
     super(injector.get(MessageService), injector.get(FieldService));
@@ -41,6 +45,7 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
   }
 
   public ngOnInit() {
+    this.getClassifiersTemplates();
   }
 
   public getNextPageAsObservable(pageRequest: PageRequestDto): Observable<PageDto<ClassifiersConfigurationDto>> {
@@ -222,6 +227,18 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
       .subscribe({
         next: () => {
           this.reloadPageWithLoader();
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
+  }
+
+  private getClassifiersTemplates(): void {
+    this.formTemplatesService.getClassifiersFormTemplates()
+      .subscribe({
+        next: (templates: FormTemplateDto[]) => {
+          this.templates = templates;
         },
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });

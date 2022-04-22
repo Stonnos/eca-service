@@ -44,6 +44,7 @@
         <td>
           <app-classifiers-configuration-menu
             [classifiersConfiguration]="item"
+            [templates]="templates"
             (onDelete)="onDeleteClassifiersConfiguration($event)"
             (onSetActive)="onSetActiveClassifiersConfiguration($event)"
             (onUploadClassifiers)="showUploadClassifiersOptionsDialogVisibility($event)"

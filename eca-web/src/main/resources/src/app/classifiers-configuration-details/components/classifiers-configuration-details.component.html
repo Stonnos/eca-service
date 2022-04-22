@@ -23,6 +23,7 @@
         <app-classifiers-configuration-menu
           class="ml-5"
           [classifiersConfiguration]="classifiersConfiguration"
+          [templates]="templates"
           (onSetActive)="onSetActiveClassifiersConfiguration($event)"
           (onDelete)="onDeleteClassifiersConfiguration($event)"
           (onRename)="showEditClassifiersConfigurationDialog($event)"

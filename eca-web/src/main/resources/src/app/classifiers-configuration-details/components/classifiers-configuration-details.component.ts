@@ -1,6 +1,6 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import {
-  ClassifierOptionsDto, ClassifiersConfigurationDto, PageDto,
+  ClassifierOptionsDto, ClassifiersConfigurationDto, FormTemplateDto, PageDto,
   PageRequestDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ClassifierOptionsService } from "../services/classifier-options.service";
@@ -17,6 +17,7 @@ import { ExperimentTabUtils } from "../../experiments-tabs/model/experiment-tab.
 import { finalize } from "rxjs/internal/operators";
 import { Utils } from "../../common/util/utils";
 import { OperationType }  from "../../common/model/operation-type.enum";
+import { FormTemplatesService } from "../../form-templates/services/form-templates.service";
 
 @Component({
   selector: 'app-classifiers-configuration-details',
@@ -36,9 +37,12 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
   public editClassifiersConfigurationDialogVisibility: boolean = false;
   public uploadClassifiersOptionsDialogVisibility: boolean = false;
 
+  public templates: FormTemplateDto[] = [];
+
   public constructor(private injector: Injector,
                      private classifierOptionsService: ClassifierOptionsService,
                      private classifiersConfigurationService: ClassifiersConfigurationsService,
+                     private formTemplatesService: FormTemplatesService,
                      private route: ActivatedRoute,
                      private confirmationService: ConfirmationService,
                      private router: Router) {
@@ -51,6 +55,7 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
 
   public ngOnInit() {
     this.getClassifiersConfigurationDetails();
+    this.getClassifiersTemplates();
   }
 
   public getClassifiersConfigurationDetails(): void {
@@ -216,6 +221,18 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
 
   public hasMoreThanOneOptionsForActiveConfiguration(): boolean {
     return !this.classifiersConfiguration.active || this.items.length > 1;
+  }
+
+  private getClassifiersTemplates(): void {
+    this.formTemplatesService.getClassifiersFormTemplates()
+      .subscribe({
+        next: (templates: FormTemplateDto[]) => {
+          this.templates = templates;
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
   }
 
   private initColumns() {
