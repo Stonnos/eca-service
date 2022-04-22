@@ -362,4 +362,11 @@ public class ApiExamples {
             "\"RESULTS_NOT_FOUND\"}]}}, {\"fieldName\": \"requestDate\", \"description\": " +
             "\"Дата отправки запроса в ERS\", \"fieldOrder\": 4, \"filterFieldType\": " +
             "\"DATE\", \"matchMode\": \"RANGE\", \"multiple\": true, \"dictionary\": null}]";
+
+    /**
+     * Classifier options json
+     */
+    public static final String CLASSIFIER_OPTIONS_JSON = "{\"type\": \"decision_tree\", \"decisionTreeType\": " +
+            "\"CART\", \"minObj\": 2, \"maxDepth\": 0, \"randomTree\": false, \"useBinarySplits\": true, " +
+            "\"useRandomSplits\": false}";
 }

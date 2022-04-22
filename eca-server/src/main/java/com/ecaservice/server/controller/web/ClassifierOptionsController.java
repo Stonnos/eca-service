@@ -39,6 +39,7 @@ import java.io.InputStream;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
+import static com.ecaservice.server.controller.doc.ApiExamples.CLASSIFIER_OPTIONS_JSON;
 import static com.ecaservice.server.controller.doc.ApiExamples.GET_CLASSIFIERS_OPTIONS_PAGE_RESPONSE_JSON;
 import static com.ecaservice.server.controller.doc.ApiExamples.SAVE_CLASSIFIER_OPTIONS_RESPONSE_JSON;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.parseOptions;
@@ -196,6 +197,11 @@ public class ClassifierOptionsController {
             description = "Adds new classifier options for specified configuration",
             summary = "Adds new classifier options for specified configuration",
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
+                    @Content(examples = {
+                            @ExampleObject(value = CLASSIFIER_OPTIONS_JSON)
+                    })
+            }),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200"),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
