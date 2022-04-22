@@ -34,6 +34,7 @@ import static com.ecaservice.server.PageRequestUtils.PAGE_NUMBER;
 import static com.ecaservice.server.PageRequestUtils.TOTAL_ELEMENTS;
 import static com.ecaservice.server.TestHelperUtils.bearerHeader;
 import static com.ecaservice.server.TestHelperUtils.createClassifiersConfiguration;
+import static com.ecaservice.server.TestHelperUtils.createDecisionTreeOptions;
 import static com.ecaservice.server.TestHelperUtils.createPageRequestDto;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -57,7 +58,8 @@ class ClassifierOptionsControllerTest extends PageRequestControllerTest {
     private static final String BASE_URL = "/experiment/classifiers-options";
     private static final String PAGE_URL = BASE_URL + "/page";
     private static final String DELETE_URL = BASE_URL + "/delete";
-    private static final String SAVE_URL = BASE_URL + "/save";
+    private static final String UPLOAD_URL = BASE_URL + "/upload";
+    private static final String ADD_URL = BASE_URL + "/add";
 
     private static final String CONFIGURATION_ID_PARAM = "configurationId";
     private static final String ID_PARAM = "id";
@@ -179,32 +181,32 @@ class ClassifierOptionsControllerTest extends PageRequestControllerTest {
     }
 
     @Test
-    void testSaveOptionsUnauthorized() throws Exception {
-        mockMvc.perform(multipart(SAVE_URL)
+    void testUploadOptionsUnauthorized() throws Exception {
+        mockMvc.perform(multipart(UPLOAD_URL)
                 .file(createClassifierOptionsFileMock())
                 .param(CONFIGURATION_ID_PARAM, String.valueOf(CONFIGURATION_ID)))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    void testSaveOptionsWithNotSpecifiedConfigurationId() throws Exception {
-        mockMvc.perform(multipart(SAVE_URL)
+    void testUploadOptionsWithNotSpecifiedConfigurationId() throws Exception {
+        mockMvc.perform(multipart(UPLOAD_URL)
                 .file(createClassifierOptionsFileMock())
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    void testSaveOptionsWithNotSpecifiedFile() throws Exception {
-        mockMvc.perform(multipart(SAVE_URL)
+    void testUploadOptionsWithNotSpecifiedFile() throws Exception {
+        mockMvc.perform(multipart(UPLOAD_URL)
                 .param(CONFIGURATION_ID_PARAM, String.valueOf(CONFIGURATION_ID))
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    void testSaveOptionsOk() throws Exception {
-        mockMvc.perform(multipart(SAVE_URL)
+    void testUploadOptionsOk() throws Exception {
+        mockMvc.perform(multipart(UPLOAD_URL)
                 .file(createClassifierOptionsFileMock())
                 .param(CONFIGURATION_ID_PARAM, String.valueOf(CONFIGURATION_ID))
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
@@ -213,15 +215,46 @@ class ClassifierOptionsControllerTest extends PageRequestControllerTest {
     }
 
     @Test
-    void testSaveInvalidOptions() throws Exception {
+    void testUploadInvalidOptions() throws Exception {
         MockMultipartFile multipartFile = new MockMultipartFile(CLASSIFIER_OPTIONS_FILE_PARAM, "test.json",
                 MimeTypeUtils.APPLICATION_JSON.toString(), "content".getBytes(StandardCharsets.UTF_8));
-        mockMvc.perform(multipart(SAVE_URL)
+        mockMvc.perform(multipart(UPLOAD_URL)
                 .file(multipartFile)
                 .param(CONFIGURATION_ID_PARAM, String.valueOf(CONFIGURATION_ID))
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void testAddOptionsUnauthorized() throws Exception {
+        var decisionTreesOptions = createDecisionTreeOptions();
+        mockMvc.perform(post(ADD_URL)
+                .content(objectMapper.writeValueAsString(decisionTreesOptions))
+                .param(CONFIGURATION_ID_PARAM, String.valueOf(CONFIGURATION_ID))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testAddOptionsWithNotSpecifiedConfigurationId() throws Exception {
+        var decisionTreesOptions = createDecisionTreeOptions();
+        mockMvc.perform(post(ADD_URL)
+                .content(objectMapper.writeValueAsString(decisionTreesOptions))
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testAddOptionsOk() throws Exception {
+        var decisionTreesOptions = createDecisionTreeOptions();
+        mockMvc.perform(post(ADD_URL)
+                .content(objectMapper.writeValueAsString(decisionTreesOptions))
+                .param(CONFIGURATION_ID_PARAM, String.valueOf(CONFIGURATION_ID))
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 
     private MockMultipartFile createClassifierOptionsFileMock() throws JsonProcessingException {
