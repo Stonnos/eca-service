@@ -71,7 +71,6 @@ export class FormTemplatesMapper {
         formField.currentValue = parseFloat(formFieldDto.defaultValue);
         break;
       case "BOOLEAN":
-        formFieldDto.defaultValue = 'true';
         formField.currentValue = Boolean(formFieldDto.defaultValue);
         break;
       default:
