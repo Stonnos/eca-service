@@ -1,27 +1,27 @@
 id;field_name;description;field_order;field_type;min_value;max_value;max_length;pattern;dictionary_id;default_value;template_id;invalid_pattern_message
-1;numNeighbours;Число ближайших соседей:;0;INTEGER;1;2147483647;NULL;NULL;NULL;10;1;NULL
-2;weight;Вес ближайшего соседа:;1;DECIMAL;0.5;1;NULL;NULL;NULL;1;1;NULL
+1;numNeighbours;Число ближайших соседей:;0;INTEGER;1;2147483647;255;NULL;NULL;10;1;NULL
+2;weight;Вес ближайшего соседа:;1;DECIMAL;0.5;1;255;NULL;NULL;1;1;NULL
 3;distanceType;Функция расстояния:;2;REFERENCE;NULL;NULL;NULL;NULL;1;EUCLID;1;NULL
-4;maxIts;Максимальное число итераций для поиска минимума функции -Log(Likelihood):;0;INTEGER;1;2147483647;NULL;NULL;NULL;200;2;NULL
+4;maxIts;Максимальное число итераций для поиска минимума функции -Log(Likelihood):;0;INTEGER;1;2147483647;255;NULL;NULL;200;2;NULL
 5;useConjugateGradientDescent;Использовать метод сопряженных градиентов:;1;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;2;NULL
-6;minNumObj;Минимальное число объектов в листе:;0;INTEGER;0;2147483647;NULL;NULL;NULL;2;3;NULL
+6;minNumObj;Минимальное число объектов в листе:;0;INTEGER;0;2147483647;255;NULL;NULL;2;3;NULL
 7;binarySplits;Бинарное дерево;1;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;3;NULL
 8;unpruned;Неусеченное дерево;2;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;3;NULL
-9;numFolds;Количество блоков:;3;INTEGER;2;100;NULL;NULL;NULL;3;3;NULL
+9;numFolds;Количество блоков:;3;INTEGER;2;100;255;NULL;NULL;3;3;NULL
 10;decisionTreeType;Алгоритм построения дерева:;0;REFERENCE;NULL;NULL;NULL;NULL;2;CART;4;NULL
-11;minObj;Минимальное число объектов в листе:;1;INTEGER;0;2147483647;NULL;NULL;NULL;2;4;NULL
-12;maxDepth;Максимальная глубина дерева:;2;INTEGER;0;2147483647;NULL;NULL;NULL;0;4;NULL
+11;minObj;Минимальное число объектов в листе:;1;INTEGER;0;2147483647;255;NULL;NULL;2;4;NULL
+12;maxDepth;Максимальная глубина дерева:;2;INTEGER;0;2147483647;255;NULL;NULL;0;4;NULL
 13;useBinarySplits;Бинарное дерево;3;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;4;NULL
 14;randomTree;Случайное дерево;4;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;4;NULL
-15;numRandomAttr;Число случайных атрибутов:;5;INTEGER;0;2147483647;NULL;NULL;NULL;0;4;NULL
+15;numRandomAttr;Число случайных атрибутов:;5;INTEGER;0;2147483647;255;NULL;NULL;0;4;NULL
 16;useRandomSplits;Случайные расщепления атрибута;6;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;4;NULL
-17;numRandomSplits;Число случайных расщеплений атрибута:;7;INTEGER;0;2147483647;NULL;NULL;NULL;0;4;NULL
-18;seed;Начальное значение (seed):;8;INTEGER;0;2147483647;NULL;NULL;NULL;1;4;NULL
+17;numRandomSplits;Число случайных расщеплений атрибута:;7;INTEGER;0;2147483647;255;NULL;NULL;0;4;NULL
+18;seed;Начальное значение (seed):;8;INTEGER;0;2147483647;255;NULL;NULL;1;4;NULL
 19;hiddenLayer;Структура скрытого слоя:;0;TEXT;NULL;NULL;255;^([1-9],?)+$;NULL;NULL;5;Неправильный формат скрытого слоя. Пример: 8,15,10
-20;numIterations;Число итераций:;1;INTEGER;1;2147483647;NULL;NULL;NULL;1000000;5;NULL
-21;minError;Допустимая ошибка:;2;DECIMAL;0;1;NULL;NULL;NULL;0.00001;5;NULL
+20;numIterations;Число итераций:;1;INTEGER;1;2147483647;255;NULL;NULL;1000000;5;NULL
+21;minError;Допустимая ошибка:;2;DECIMAL;0;1;255;NULL;NULL;0.00001;5;NULL
 22;activationFunctionOptions.activationFunctionType;Активационная функция нейронов скрытого слоя:;3;REFERENCE;NULL;NULL;NULL;NULL;3;LOGISTIC;5;NULL
-23;activationFunctionOptions.coefficient;Значение коэффициента:;4;DECIMAL;0;1;NULL;NULL;NULL;1;5;NULL
-24;backPropagationOptions.learningRate;Коэффициент скорости обучения:;5;DECIMAL;0;1;NULL;NULL;NULL;0.1;5;NULL
-25;backPropagationOptions.momentum;Коэффициент момента:;6;DECIMAL;0;1;NULL;NULL;NULL;0.2;5;NULL
-26;seed;Начальное значение (seed):;7;INTEGER;0;2147483647;NULL;NULL;NULL;1;5;NULL
+23;activationFunctionOptions.coefficient;Значение коэффициента:;4;DECIMAL;0;1;255;NULL;NULL;1;5;NULL
+24;backPropagationOptions.learningRate;Коэффициент скорости обучения:;5;DECIMAL;0;1;255;NULL;NULL;0.1;5;NULL
+25;backPropagationOptions.momentum;Коэффициент момента:;6;DECIMAL;0;1;255;NULL;NULL;0.2;5;NULL
+26;seed;Начальное значение (seed):;7;INTEGER;0;2147483647;255;NULL;NULL;1;5;NULL
