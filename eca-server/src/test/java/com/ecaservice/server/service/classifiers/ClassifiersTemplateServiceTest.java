@@ -257,19 +257,7 @@ class ClassifiersTemplateServiceTest {
     }
 
     private List<InputOptionDto> parseInputOptions(ClassifierOptions classifierOptions) throws JsonProcessingException {
-        var templateDto = getTemplate(classifierOptions);
-        when(formTemplateProvider.getTemplateByClass(classifierOptions.getClass().getSimpleName())).thenReturn(
-                templateDto);
         var json = objectMapper.writeValueAsString(classifierOptions);
         return classifiersTemplateService.processInputOptions(json);
-    }
-
-    private FormTemplateDto getTemplate(ClassifierOptions classifierOptions) {
-        String objectClass = classifierOptions.getClass().getSimpleName();
-        return templates.stream()
-                .filter(formTemplateDto -> formTemplateDto.getObjectClass().equals(objectClass))
-                .findFirst()
-                .orElseThrow(
-                        () -> new IllegalArgumentException(String.format("Can't get template [%s]", objectClass)));
     }
 }

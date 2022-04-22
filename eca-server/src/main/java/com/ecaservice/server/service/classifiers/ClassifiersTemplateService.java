@@ -61,7 +61,7 @@ public class ClassifiersTemplateService {
     }
 
     private List<InputOptionDto> processInputOptions(ClassifierOptions classifierOptions) {
-        var template = formTemplateProvider.getTemplateByClass(classifierOptions.getClass().getSimpleName());
+        var template = getTemplate(classifierOptions);
         return template.getFields()
                 .stream()
                 .map(formFieldDto -> {
@@ -78,6 +78,16 @@ public class ClassifiersTemplateService {
                 })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
+    }
+
+    private FormTemplateDto getTemplate(ClassifierOptions classifierOptions) {
+        String objectClass = classifierOptions.getClass().getSimpleName();
+        return formTemplateProvider.getTemplates(CLASSIFIERS_GROUP)
+                .stream()
+                .filter(formTemplateDto -> formTemplateDto.getObjectClass().equals(objectClass))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException(
+                        String.format("Can't find form template for class [%s]", objectClass)));
     }
 
     private String getValue(ClassifierOptions classifierOptions, FormFieldDto formFieldDto) {
