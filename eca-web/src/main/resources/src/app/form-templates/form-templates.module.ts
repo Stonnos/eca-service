@@ -5,14 +5,15 @@ import { UiComponentsModule } from "../ui-components.module";
 import { FormTemplatesService } from "./services/form-templates.service";
 import { FormTemplateComponent } from "./components/form-template.component";
 import { SharedModule } from "../common/shared.module";
+import { FormTemplatesMapper } from "./services/form-templates.mapper";
 
 @NgModule({
-    imports: [
-        CommonModule,
-        FormsModule,
-        UiComponentsModule,
-        SharedModule
-    ],
+  imports: [
+    CommonModule,
+    FormsModule,
+    UiComponentsModule,
+    SharedModule
+  ],
   declarations: [
     FormTemplateComponent
   ],
@@ -20,8 +21,9 @@ import { SharedModule } from "../common/shared.module";
     FormTemplateComponent
   ],
   providers: [
-    FormTemplatesService
+    FormTemplatesService,
+    FormTemplatesMapper
   ]
 })
-export class FilterModule {
+export class FormTemplatesModule {
 }

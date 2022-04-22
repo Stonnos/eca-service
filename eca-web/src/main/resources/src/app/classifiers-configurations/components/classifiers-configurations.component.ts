@@ -1,6 +1,6 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import {
-  ClassifiersConfigurationDto, FormTemplateDto, PageDto,
+  ClassifiersConfigurationDto, FormFieldDto, FormTemplateDto, PageDto,
   PageRequestDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ConfirmationService, MessageService } from "primeng/api";
@@ -16,6 +16,8 @@ import { RouterPaths } from "../../routing/router-paths";
 import { Utils } from "../../common/util/utils";
 import { OperationType } from "../../common/model/operation-type.enum";
 import { FormTemplatesService } from "../../form-templates/services/form-templates.service";
+import { FormTemplatesMapper } from "../../form-templates/services/form-templates.mapper";
+import { FormField } from "../../form-templates/model/form-template.model";
 
 @Component({
   selector: 'app-classifiers-configurations',
@@ -29,12 +31,17 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
   public classifiersConfiguration: ClassifiersConfigurationModel = new ClassifiersConfigurationModel();
   public editClassifiersConfigurationDialogVisibility: boolean = false;
   public uploadClassifiersOptionsDialogVisibility: boolean = false;
+  public addClassifiersOptionsDialogVisibility: boolean = false;
 
   public templates: FormTemplateDto[] = [];
+
+  public selectedTemplate: FormTemplateDto;
+  public selectedFormFields: FormField[] = [];
 
   public constructor(private injector: Injector,
                      private classifiersConfigurationsService: ClassifiersConfigurationsService,
                      private formTemplatesService: FormTemplatesService,
+                     private formTemplatesMapper: FormTemplatesMapper,
                      private confirmationService: ConfirmationService,
                      private router: Router) {
     super(injector.get(MessageService), injector.get(FieldService));
@@ -87,6 +94,14 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
     this.editClassifiersConfigurationDialogVisibility = visible;
   }
 
+  public onAddClassifierOptionsDialogVisibility(visible): void {
+    this.addClassifiersOptionsDialogVisibility = visible;
+  }
+
+  public onAddClassifierOptions(formFields: FormFieldDto[]): void {
+    console.log('On add: ' + formFields);
+  }
+
   public onEditClassifiersConfiguration(item: ClassifiersConfigurationModel): void {
     switch (item.operation) {
       case OperationType.CREATE:
@@ -121,6 +136,12 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
   public onDownloadReport(item: ClassifiersConfigurationDto): void {
     const observable = this.classifiersConfigurationsService.getClassifiersConfigurationReport(item.id);
     this.downloadReport(observable, Utils.getClassifiersConfigurationFile(item));
+  }
+
+  public onChooseClassifierOptionsTemplate(template: FormTemplateDto): void {
+    this.selectedTemplate = template;
+    this.selectedFormFields = this.formTemplatesMapper.mapToFormFields(template.fields);
+    this.addClassifiersOptionsDialogVisibility = true;
   }
 
   public onUploadedClassifiersOptions(event): void {

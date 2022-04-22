@@ -37,6 +37,8 @@ export class ClassifiersConfigurationMenuComponent implements OnInit, OnChanges 
   public onSetActive: EventEmitter<ClassifiersConfigurationDto> = new EventEmitter<ClassifiersConfigurationDto>();
   @Output()
   public onDownloadReport: EventEmitter<ClassifiersConfigurationDto> = new EventEmitter<ClassifiersConfigurationDto>();
+  @Output()
+  public onAddClassifierOptions: EventEmitter<FormTemplateDto> = new EventEmitter<FormTemplateDto>();
 
   public ngOnInit() {
   }
@@ -148,7 +150,7 @@ export class ClassifiersConfigurationMenuComponent implements OnInit, OnChanges 
           label: template.templateTitle,
           styleClass: 'classifier-menu-item',
           command: () => {
-            console.log(template);
+            this.onAddClassifierOptions.emit(template);
           }
         };
       });
