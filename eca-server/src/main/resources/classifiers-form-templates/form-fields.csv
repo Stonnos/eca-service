@@ -15,7 +15,7 @@ id;field_name;description;field_order;field_type;min_value;max_value;max_length;
 14;randomTree;Случайное дерево;4;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;4;NULL;NULL
 15;numRandomAttr;Число случайных атрибутов:;5;INTEGER;0;2147483647;255;NULL;NULL;0;4;NULL;NULL
 16;useRandomSplits;Случайные расщепления атрибута;6;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;4;NULL;NULL
-17;numRandomSplits;Число случайных расщеплений атрибута:;7;INTEGER;0;2147483647;255;NULL;NULL;0;4;NULL;NULL
+17;numRandomSplits;Число случайных расщеплений атрибута:;7;INTEGER;1;2147483647;255;NULL;NULL;0;4;NULL;NULL
 18;seed;Начальное значение (seed):;8;INTEGER;0;2147483647;255;NULL;NULL;1;4;NULL;NULL
 19;hiddenLayer;Структура скрытого слоя:;0;TEXT;NULL;NULL;255;^([1-9],?)+$;NULL;NULL;5;Неправильный формат скрытого слоя. Пример: 8,15,10;Введите числа, разделенные запятой
 20;numIterations;Число итераций:;1;INTEGER;1;2147483647;255;NULL;NULL;1000000;5;NULL;NULL
