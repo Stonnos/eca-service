@@ -29,7 +29,8 @@
           (onRename)="showEditClassifiersConfigurationDialog($event)"
           (onCopy)="showCopyClassifiersConfigurationDialog($event)"
           (onUploadClassifiers)="showUploadClassifiersOptionsDialogVisibility($event)"
-          (onDownloadReport)="onDownloadReport($event)">
+          (onDownloadReport)="onDownloadReport($event)"
+          (onAddClassifierOptions)="onChooseClassifierOptionsTemplate($event)">
         </app-classifiers-configuration-menu>
       </div>
     </ng-template>
@@ -90,3 +91,10 @@
   (visibilityChange)="onUploadClassifiersOptionsDialogVisibility($event)"
   (uploaded)="onUploadedClassifiersOptions($event)">
 </app-upload-classifier-options-dialog>
+
+<app-form-template [template]="selectedTemplate"
+                   [item]="selectedFormFields"
+                   [visible]="addClassifiersOptionsDialogVisibility"
+                   (visibilityChange)="onAddClassifierOptionsDialogVisibility($event)"
+                   (itemEvent)="onAddClassifierOptions($event)">
+</app-form-template>

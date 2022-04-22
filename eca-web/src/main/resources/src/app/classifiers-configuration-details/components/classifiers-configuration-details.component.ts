@@ -1,6 +1,6 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import {
-  ClassifierOptionsDto, ClassifiersConfigurationDto, FormTemplateDto, PageDto,
+  ClassifierOptionsDto, ClassifiersConfigurationDto, FormFieldDto, FormTemplateDto, PageDto,
   PageRequestDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ClassifierOptionsService } from "../services/classifier-options.service";
@@ -18,6 +18,8 @@ import { finalize } from "rxjs/internal/operators";
 import { Utils } from "../../common/util/utils";
 import { OperationType }  from "../../common/model/operation-type.enum";
 import { FormTemplatesService } from "../../form-templates/services/form-templates.service";
+import { FormField } from "../../form-templates/model/form-template.model";
+import { FormTemplatesMapper } from "../../form-templates/services/form-templates.mapper";
 
 @Component({
   selector: 'app-classifiers-configuration-details',
@@ -36,13 +38,18 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
 
   public editClassifiersConfigurationDialogVisibility: boolean = false;
   public uploadClassifiersOptionsDialogVisibility: boolean = false;
+  public addClassifiersOptionsDialogVisibility: boolean = false;
 
   public templates: FormTemplateDto[] = [];
+
+  public selectedTemplate: FormTemplateDto;
+  public selectedFormFields: FormField[] = [];
 
   public constructor(private injector: Injector,
                      private classifierOptionsService: ClassifierOptionsService,
                      private classifiersConfigurationService: ClassifiersConfigurationsService,
                      private formTemplatesService: FormTemplatesService,
+                     private formTemplatesMapper: FormTemplatesMapper,
                      private route: ActivatedRoute,
                      private confirmationService: ConfirmationService,
                      private router: Router) {
@@ -125,6 +132,12 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
     this.downloadReport(observable, Utils.getClassifiersConfigurationFile(item));
   }
 
+  public onChooseClassifierOptionsTemplate(template: FormTemplateDto): void {
+    this.selectedTemplate = template;
+    this.selectedFormFields = this.formTemplatesMapper.mapToFormFields(template.fields);
+    this.addClassifiersOptionsDialogVisibility = true;
+  }
+
   public onSetActiveClassifiersConfiguration(item: ClassifiersConfigurationDto): void {
     this.setActiveConfiguration(item);
   }
@@ -145,6 +158,14 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
       default:
         this.messageService.add({severity: 'error', summary: 'Ошибка', detail: `Can't handle ${item.operation} operation`});
     }
+  }
+
+  public onAddClassifierOptionsDialogVisibility(visible): void {
+    this.addClassifiersOptionsDialogVisibility = visible;
+  }
+
+  public onAddClassifierOptions(formFields: FormFieldDto[]): void {
+    console.log('On add: ' + formFields);
   }
 
   private deleteConfiguration(item: ClassifiersConfigurationDto): void {
