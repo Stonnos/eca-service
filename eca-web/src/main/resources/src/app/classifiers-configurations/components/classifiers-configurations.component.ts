@@ -1,6 +1,6 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import {
-  ClassifiersConfigurationDto, FormFieldDto, FormTemplateDto, PageDto,
+  ClassifiersConfigurationDto, FormTemplateDto, PageDto,
   PageRequestDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ConfirmationService, MessageService } from "primeng/api";
@@ -18,6 +18,7 @@ import { OperationType } from "../../common/model/operation-type.enum";
 import { FormTemplatesService } from "../../form-templates/services/form-templates.service";
 import { FormTemplatesMapper } from "../../form-templates/services/form-templates.mapper";
 import { FormField } from "../../form-templates/model/form-template.model";
+import {ClassifierOptionsService} from "../../classifiers-configuration-details/services/classifier-options.service";
 
 @Component({
   selector: 'app-classifiers-configurations',
@@ -40,6 +41,7 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
 
   public constructor(private injector: Injector,
                      private classifiersConfigurationsService: ClassifiersConfigurationsService,
+                     private classifierOptionsService: ClassifierOptionsService,
                      private formTemplatesService: FormTemplatesService,
                      private formTemplatesMapper: FormTemplatesMapper,
                      private confirmationService: ConfirmationService,
@@ -98,8 +100,9 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
     this.addClassifiersOptionsDialogVisibility = visible;
   }
 
-  public onAddClassifierOptions(formFields: FormFieldDto[]): void {
-    console.log('On add: ' + formFields);
+  public onAddClassifierOptions(formFields: FormField[]): void {
+    const classifierOptions = this.formTemplatesMapper.mapToClassifierOptionsObject(formFields, this.selectedTemplate);
+    this.addClassifiersOptions(classifierOptions, this.selectedTemplate);
   }
 
   public onEditClassifiersConfiguration(item: ClassifiersConfigurationModel): void {
@@ -138,8 +141,9 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
     this.downloadReport(observable, Utils.getClassifiersConfigurationFile(item));
   }
 
-  public onChooseClassifierOptionsTemplate(template: FormTemplateDto): void {
+  public onChooseClassifierOptionsTemplate(template: FormTemplateDto, configurationDto: ClassifiersConfigurationDto): void {
     this.selectedTemplate = template;
+    this.selectedConfiguration = configurationDto;
     this.selectedFormFields = this.formTemplatesMapper.mapToFormFields(template.fields);
     this.addClassifiersOptionsDialogVisibility = true;
   }
@@ -248,6 +252,26 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
       .subscribe({
         next: () => {
           this.reloadPageWithLoader();
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
+  }
+
+  private addClassifiersOptions(classifierOptions: any, template: FormTemplateDto): void {
+    this.loading = true;
+    this.classifierOptionsService.addClassifiersOptions(this.selectedConfiguration.id, classifierOptions)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.reloadPageWithLoader();
+          this.messageService.add({ severity: 'success',
+            summary: `Добавлены настройки классификатора ${template.templateTitle}`, detail: '' });
         },
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });

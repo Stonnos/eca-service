@@ -51,7 +51,7 @@
             (onRename)="showEditClassifiersConfigurationDialog($event)"
             (onCopy)="showCopyClassifiersConfigurationDialog($event)"
             (onDownloadReport)="onDownloadReport($event)"
-            (onAddClassifierOptions)="onChooseClassifierOptionsTemplate($event)">
+            (onAddClassifierOptions)="onChooseClassifierOptionsTemplate($event, item)">
           </app-classifiers-configuration-menu>
         </td>
         <td *ngFor="let column of columns">

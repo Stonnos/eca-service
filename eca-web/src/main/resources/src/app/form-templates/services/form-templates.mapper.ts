@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {
   FilterDictionaryValueDto,
-  FormFieldDto
+  FormFieldDto, FormTemplateDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { SelectItem } from "primeng/api";
 import { FilterFieldType } from "../../common/model/filter-field-type.enum";
@@ -33,6 +33,32 @@ export class FormTemplatesMapper {
     });
   }
 
+  public mapToClassifierOptionsObject(formFields: FormField[], formTemplateDto: FormTemplateDto): any {
+    let classifierOptions = this.mapToObject(formFields);
+    classifierOptions['type'] = formTemplateDto.objectType;
+    return classifierOptions;
+  }
+
+  public mapToObject(formFields: FormField[]): any {
+    let object = {};
+    formFields.forEach((formField: FormField) => {
+      const fields: string[] = formField.name.split(".");
+      if (fields.length == 1) {
+        object[formField.name] = this.getCurrentValue(formField);
+      } else {
+        let currentProperty = object;
+        for (let i = 0; i < fields.length - 1; i++) {
+          if (!currentProperty[fields[i]]) {
+            currentProperty[fields[i]] = {};
+          }
+          currentProperty = currentProperty[fields[i]];
+        }
+        currentProperty[fields[fields.length - 1]] = this.getCurrentValue(formField);
+      }
+    });
+    return object;
+  }
+
   private setCurrentValue(formField: FormField, formFieldDto: FormFieldDto): void {
     switch (formFieldDto.fieldType) {
       case "REFERENCE":
@@ -50,6 +76,14 @@ export class FormTemplatesMapper {
         break;
       default:
         formField.currentValue = formFieldDto.defaultValue;
+    }
+  }
+
+  private getCurrentValue(formField: FormField): any {
+    if (formField.fieldType == 'REFERENCE') {
+      return formField.currentValue.value;
+    } else {
+      return formField.currentValue;
     }
   }
 }

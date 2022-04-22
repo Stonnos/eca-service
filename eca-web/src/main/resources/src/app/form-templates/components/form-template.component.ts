@@ -42,33 +42,4 @@ export class FormTemplateComponent extends BaseCreateDialogComponent<FormField[]
     }
     return messages;
   }
-
-  public submit() {
-    this.submitted = true;
-    let classifierOptions = { type: this.template.objectType };
-    this.item.forEach((formField: FormField) => {
-      const fields: string[] = formField.name.split(".");
-      if (fields.length == 1) {
-        classifierOptions[formField.name] = this.getValue(formField);
-      } else {
-        let current = classifierOptions;
-        for (let i = 0; i < fields.length - 1; i++) {
-          if (!current[fields[i]]) {
-            current[fields[i]] = {};
-          }
-          current = current[fields[i]];
-        }
-        current[fields[fields.length - 1]] = this.getValue(formField);
-      }
-    });
-    console.log(JSON.stringify(classifierOptions));
-  }
-
-  private getValue(formField: FormField): any {
-    if (formField.fieldType == 'REFERENCE') {
-      return formField.currentValue.value;
-    } else {
-      return formField.currentValue;
-    }
-  }
 }

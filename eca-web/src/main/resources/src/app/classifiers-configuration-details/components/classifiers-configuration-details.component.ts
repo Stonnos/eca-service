@@ -1,6 +1,6 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import {
-  ClassifierOptionsDto, ClassifiersConfigurationDto, FormFieldDto, FormTemplateDto, PageDto,
+  ClassifierOptionsDto, ClassifiersConfigurationDto, FormTemplateDto, PageDto,
   PageRequestDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ClassifierOptionsService } from "../services/classifier-options.service";
@@ -164,8 +164,9 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
     this.addClassifiersOptionsDialogVisibility = visible;
   }
 
-  public onAddClassifierOptions(formFields: FormFieldDto[]): void {
-    console.log('On add: ' + formFields);
+  public onAddClassifierOptions(formFields: FormField[]): void {
+    const classifierOptions = this.formTemplatesMapper.mapToClassifierOptionsObject(formFields, this.selectedTemplate);
+    this.addClassifiersOptions(classifierOptions, this.selectedTemplate);
   }
 
   private deleteConfiguration(item: ClassifiersConfigurationDto): void {
@@ -233,6 +234,26 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
         next: () => {
           this.messageService.add({ severity: 'success', summary: `Удалена настройка ${item.optionsName}`, detail: '' });
           this.reloadPageWithLoader();
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
+  }
+
+  private addClassifiersOptions(classifierOptions: any, template: FormTemplateDto): void {
+    this.loading = true;
+    this.classifierOptionsService.addClassifiersOptions(this.configurationId, classifierOptions)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.reloadPageWithLoader();
+          this.messageService.add({ severity: 'success',
+            summary: `Добавлены настройки классификатора ${template.templateTitle}`, detail: '' });
         },
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });

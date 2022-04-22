@@ -28,14 +28,25 @@ export class ClassifierOptionsService {
     return this.http.post<PageDto<ClassifierOptionsDto>>(this.serviceUrl + '/page', pageRequest, options);
   }
 
-  public saveClassifierOptions(configurationId: number, file: File): Observable<CreateClassifierOptionsResultDto> {
+  public addClassifiersOptions(configurationId: number, classifierOptions: any): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/json; charset=utf-8',
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    const params: HttpParams = new HttpParams()
+      .set('configurationId', configurationId.toString());
+    const options = { headers: headers, params: params };
+    return this.http.post(this.serviceUrl + '/add', classifierOptions, options);
+  }
+
+  public uploadClassifierOptions(configurationId: number, file: File): Observable<CreateClassifierOptionsResultDto> {
     const headers = new HttpHeaders({
       'Authorization': Utils.getBearerTokenHeader()
     });
     const formData = new FormData();
     formData.append('classifiersOptionsFile', file, file.name);
     formData.append('configurationId', configurationId.toString());
-    return this.http.post<CreateClassifierOptionsResultDto>(this.serviceUrl + '/save', formData, { headers: headers });
+    return this.http.post<CreateClassifierOptionsResultDto>(this.serviceUrl + '/upload', formData, { headers: headers });
   }
 
   public deleteClassifierOptions(id: number): Observable<any> {
