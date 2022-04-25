@@ -662,9 +662,9 @@ a|
 ----
 |===
 
-== Saves new classifier options for specified configuration
+== Uploads new classifier options file for specified configuration
 
-__POST__ */experiment/classifiers-options/save* - Saves new classifier options for specified configuration
+__POST__ */experiment/classifiers-options/upload* - Uploads new classifier options file for specified configuration
 
 *Security requirement*
 
@@ -796,6 +796,37 @@ a|
   "success" : true,
   "errorMessage" : ""
 }
+----
+|400
+|Bad request
+|*application/json*
+|
+__array__
+<<<ValidationErrorDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "DataNotFound",
+  "errorMessage" : "Entity with search key [1] not found!"
+} ]
 ----
 |401
 |Not authorized
@@ -976,6 +1007,186 @@ a|
   "fieldName" : "size",
   "code" : "Min",
   "errorMessage" : "must be greater than or equal to 1"
+} ]
+----
+|===
+
+== Adds new classifier options for specified configuration
+
+__POST__ */experiment/classifiers-options/add* - Adds new classifier options for specified configuration
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+*Request body*
+
+[width=100%]
+|===
+|*Content type*|*Required*|*Schema*|*Example*
+|*application/json*
+|true
+|
+
+
+*One of types:*
+
+* <<AdaBoostOptions>>
+
+* <<DecisionTreeOptions>>
+
+* <<ExtraTreesOptions>>
+
+* <<HeterogeneousClassifierOptions>>
+
+* <<J48Options>>
+
+* <<KNearestNeighboursOptions>>
+
+* <<LogisticOptions>>
+
+* <<NeuralNetworkOptions>>
+
+* <<RandomForestsOptions>>
+
+* <<RandomNetworkOptions>>
+
+* <<StackingOptions>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "type" : "decision_tree",
+  "decisionTreeType" : "CART",
+  "minObj" : 2,
+  "maxDepth" : 0,
+  "randomTree" : false,
+  "useBinarySplits" : true,
+  "useRandomSplits" : false
+}
+----
+|===
+
+
+*Request parameters*
+[width=100%]
+|===
+|*Name*|*Description*|*Location*|*Schema*
+|*configurationId**
+|Configuration id
+|query
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 9,223,372,036,854,775,807*
+
+
+
+
+
+
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|**/**
+|
+<<ClassifierOptionsDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+-
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|
+__array__
+<<<ValidationErrorDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "DataNotFound",
+  "errorMessage" : "Entity with search key [1] not found!"
 } ]
 ----
 |===
@@ -3509,76 +3720,6 @@ a|
 ----
 |===
 
-== Finds active classifiers options configs
-
-__GET__ */experiment/classifiers-options/active-options* - Finds active classifiers options configs
-
-*Security requirement*
-
-[cols="^50%,^50%",options="header"]
-|===
-|*Name*|*Scopes*
-|
-<<EcaAuth>>
-a|
-
-* web
-
-|===
-
-
-
-*Api responses*
-[width=100%]
-|===
-|*Code*|*Description*|*Content type*|*Schema*|*Example*
-|200
-|OK
-|*application/json*
-|
-__array__
-<<<ClassifierOptionsDto>>
->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-a|
-[source,json]
-----
-[ {
-  "id" : 1,
-  "optionsName" : "DecisionTreeOptions",
-  "creationDate" : "2021-07-01 14:00:00",
-  "createdBy" : "admin",
-  "config" : "Json config"
-} ]
-----
-|401
-|Not authorized
-|*application/json*
-|-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|===
-
 == Downloads classifiers configuration report in xlsx format
 
 __GET__ */experiment/classifiers-configurations/report/{id}* - Downloads classifiers configuration report in xlsx format
@@ -4149,6 +4290,541 @@ a|
   "code" : "DataNotFound",
   "errorMessage" : "Entity with search key [1] not found!"
 } ]
+----
+|===
+
+== Gets classifiers form templates
+
+__GET__ */classifiers/templates/list* - Gets classifiers form templates
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+__array__
+<<<FormTemplateDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+[ {
+  "templateName" : "KNN",
+  "templateTitle" : "Алгоритм k - взвешенных ближайших соседей",
+  "objectClass" : "KNearestNeighboursOptions",
+  "objectType" : "knn",
+  "fields" : [ {
+    "fieldName" : "numNeighbours",
+    "description" : "Число ближайших соседей:",
+    "fieldOrder" : 0,
+    "fieldType" : "INTEGER",
+    "minValue" : 1,
+    "minInclusive" : true,
+    "maxValue" : 2147483647,
+    "maxInclusive" : true,
+    "maxLength" : 255,
+    "pattern" : null,
+    "invalidPatternMessage" : null,
+    "dictionary" : null,
+    "placeHolder" : null,
+    "defaultValue" : "10"
+  }, {
+    "fieldName" : "weight",
+    "description" : "Вес ближайшего соседа:",
+    "fieldOrder" : 1,
+    "fieldType" : "DECIMAL",
+    "minValue" : 0.5,
+    "minInclusive" : true,
+    "maxValue" : 1,
+    "maxInclusive" : true,
+    "maxLength" : 255,
+    "pattern" : null,
+    "invalidPatternMessage" : null,
+    "dictionary" : null,
+    "placeHolder" : null,
+    "defaultValue" : "1"
+  }, {
+    "fieldName" : "distanceType",
+    "description" : "Функция расстояния:",
+    "fieldOrder" : 2,
+    "fieldType" : "REFERENCE",
+    "minValue" : null,
+    "minInclusive" : true,
+    "maxValue" : null,
+    "maxInclusive" : true,
+    "maxLength" : null,
+    "pattern" : null,
+    "invalidPatternMessage" : null,
+    "dictionary" : {
+      "name" : "distanceType",
+      "values" : [ {
+        "label" : "Евкилидово расстояние",
+        "value" : "EUCLID"
+      }, {
+        "label" : "Квадрат Евклидова расстояни",
+        "value" : "SQUARE_EUCLID"
+      }, {
+        "label" : "Манхеттенское расстояние",
+        "value" : "MANHATTAN"
+      }, {
+        "label" : "Расстояние Чебышева",
+        "value" : "CHEBYSHEV"
+      } ]
+    },
+    "placeHolder" : null,
+    "defaultValue" : "EUCLID"
+  } ]
+}, {
+  "templateName" : "LOGISTIC",
+  "templateTitle" : "Логистическая регрессия",
+  "objectClass" : "LogisticOptions",
+  "objectType" : "logistic",
+  "fields" : [ {
+    "fieldName" : "maxIts",
+    "description" : "Максимальное число итераций для поиска минимума функции -Log(Likelihood):",
+    "fieldOrder" : 0,
+    "fieldType" : "INTEGER",
+    "minValue" : 1,
+    "minInclusive" : true,
+    "maxValue" : 2147483647,
+    "maxInclusive" : true,
+    "maxLength" : 255,
+    "pattern" : null,
+    "invalidPatternMessage" : null,
+    "dictionary" : null,
+    "placeHolder" : null,
+    "defaultValue" : "200"
+  }, {
+    "fieldName" : "useConjugateGradientDescent",
+    "description" : "Использовать метод сопряженных градиентов:",
+    "fieldOrder" : 1,
+    "fieldType" : "BOOLEAN",
+    "minValue" : null,
+    "minInclusive" : true,
+    "maxValue" : null,
+    "maxInclusive" : true,
+    "maxLength" : null,
+    "pattern" : null,
+    "invalidPatternMessage" : null,
+    "dictionary" : null,
+    "placeHolder" : null,
+    "defaultValue" : "false"
+  } ]
+}, {
+  "templateName" : "J48",
+  "templateTitle" : "Алгоритм J48",
+  "objectClass" : "J48Options",
+  "objectType" : "j48",
+  "fields" : [ {
+    "fieldName" : "minNumObj",
+    "description" : "Минимальное число объектов в листе:",
+    "fieldOrder" : 0,
+    "fieldType" : "INTEGER",
+    "minValue" : 0,
+    "minInclusive" : true,
+    "maxValue" : 2147483647,
+    "maxInclusive" : true,
+    "maxLength" : 255,
+    "pattern" : null,
+    "invalidPatternMessage" : null,
+    "dictionary" : null,
+    "placeHolder" : null,
+    "defaultValue" : "2"
+  }, {
+    "fieldName" : "binarySplits",
+    "description" : "Бинарное дерево",
+    "fieldOrder" : 1,
+    "fieldType" : "BOOLEAN",
+    "minValue" : null,
+    "minInclusive" : true,
+    "maxValue" : null,
+    "maxInclusive" : true,
+    "maxLength" : null,
+    "pattern" : null,
+    "invalidPatternMessage" : null,
+    "dictionary" : null,
+    "placeHolder" : null,
+    "defaultValue" : "false"
+  }, {
+    "fieldName" : "unpruned",
+    "description" : "Неусеченное дерево",
+    "fieldOrder" : 2,
+    "fieldType" : "BOOLEAN",
+    "minValue" : null,
+    "minInclusive" : true,
+    "maxValue" : null,
+    "maxInclusive" : true,
+    "maxLength" : null,
+    "pattern" : null,
+    "invalidPatternMessage" : null,
+    "dictionary" : null,
+    "placeHolder" : null,
+    "defaultValue" : "false"
+  }, {
+    "fieldName" : "numFolds",
+    "description" : "Количество блоков:",
+    "fieldOrder" : 3,
+    "fieldType" : "INTEGER",
+    "minValue" : 2,
+    "minInclusive" : true,
+    "maxValue" : 100,
+    "maxInclusive" : true,
+    "maxLength" : 255,
+    "pattern" : null,
+    "invalidPatternMessage" : null,
+    "dictionary" : null,
+    "placeHolder" : null,
+    "defaultValue" : "3"
+  } ]
+}, {
+  "templateName" : "DECISION_TREE",
+  "templateTitle" : "Дерево решений",
+  "objectClass" : "DecisionTreeOptions",
+  "objectType" : "decision_tree",
+  "fields" : [ {
+    "fieldName" : "decisionTreeType",
+    "description" : "Алгоритм построения дерева:",
+    "fieldOrder" : 0,
+    "fieldType" : "REFERENCE",
+    "minValue" : null,
+    "minInclusive" : true,
+    "maxValue" : null,
+    "maxInclusive" : true,
+    "maxLength" : null,
+    "pattern" : null,
+    "invalidPatternMessage" : null,
+    "dictionary" : {
+      "name" : "decisionTreeType",
+      "values" : [ {
+        "label" : "Алгоритм CART",
+        "value" : "CART"
+      }, {
+        "label" : "Алгоритм ID3",
+        "value" : "ID3"
+      }, {
+        "label" : "Алгоритм C4.5",
+        "value" : "C45"
+      }, {
+        "label" : "Алгоритм CHAID",
+        "value" : "CHAID"
+      } ]
+    },
+    "placeHolder" : null,
+    "defaultValue" : "CART"
+  }, {
+    "fieldName" : "minObj",
+    "description" : "Минимальное число объектов в листе:",
+    "fieldOrder" : 1,
+    "fieldType" : "INTEGER",
+    "minValue" : 0,
+    "minInclusive" : true,
+    "maxValue" : 2147483647,
+    "maxInclusive" : true,
+    "maxLength" : 255,
+    "pattern" : null,
+    "invalidPatternMessage" : null,
+    "dictionary" : null,
+    "placeHolder" : null,
+    "defaultValue" : "2"
+  }, {
+    "fieldName" : "maxDepth",
+    "description" : "Максимальная глубина дерева:",
+    "fieldOrder" : 2,
+    "fieldType" : "INTEGER",
+    "minValue" : 0,
+    "minInclusive" : true,
+    "maxValue" : 2147483647,
+    "maxInclusive" : true,
+    "maxLength" : 255,
+    "pattern" : null,
+    "invalidPatternMessage" : null,
+    "dictionary" : null,
+    "placeHolder" : null,
+    "defaultValue" : "0"
+  }, {
+    "fieldName" : "useBinarySplits",
+    "description" : "Бинарное дерево",
+    "fieldOrder" : 3,
+    "fieldType" : "BOOLEAN",
+    "minValue" : null,
+    "minInclusive" : true,
+    "maxValue" : null,
+    "maxInclusive" : true,
+    "maxLength" : null,
+    "pattern" : null,
+    "invalidPatternMessage" : null,
+    "dictionary" : null,
+    "placeHolder" : null,
+    "defaultValue" : "false"
+  }, {
+    "fieldName" : "randomTree",
+    "description" : "Случайное дерево",
+    "fieldOrder" : 4,
+    "fieldType" : "BOOLEAN",
+    "minValue" : null,
+    "minInclusive" : true,
+    "maxValue" : null,
+    "maxInclusive" : true,
+    "maxLength" : null,
+    "pattern" : null,
+    "invalidPatternMessage" : null,
+    "dictionary" : null,
+    "placeHolder" : null,
+    "defaultValue" : "false"
+  }, {
+    "fieldName" : "numRandomAttr",
+    "description" : "Число случайных атрибутов:",
+    "fieldOrder" : 5,
+    "fieldType" : "INTEGER",
+    "minValue" : 0,
+    "minInclusive" : true,
+    "maxValue" : 2147483647,
+    "maxInclusive" : true,
+    "maxLength" : 255,
+    "pattern" : null,
+    "invalidPatternMessage" : null,
+    "dictionary" : null,
+    "placeHolder" : null,
+    "defaultValue" : "0"
+  }, {
+    "fieldName" : "useRandomSplits",
+    "description" : "Случайные расщепления атрибута",
+    "fieldOrder" : 6,
+    "fieldType" : "BOOLEAN",
+    "minValue" : null,
+    "minInclusive" : true,
+    "maxValue" : null,
+    "maxInclusive" : true,
+    "maxLength" : null,
+    "pattern" : null,
+    "invalidPatternMessage" : null,
+    "dictionary" : null,
+    "placeHolder" : null,
+    "defaultValue" : "false"
+  }, {
+    "fieldName" : "numRandomSplits",
+    "description" : "Число случайных расщеплений атрибута:",
+    "fieldOrder" : 7,
+    "fieldType" : "INTEGER",
+    "minValue" : 1,
+    "minInclusive" : true,
+    "maxValue" : 2147483647,
+    "maxInclusive" : true,
+    "maxLength" : 255,
+    "pattern" : null,
+    "invalidPatternMessage" : null,
+    "dictionary" : null,
+    "placeHolder" : null,
+    "defaultValue" : "1"
+  }, {
+    "fieldName" : "seed",
+    "description" : "Начальное значение (seed):",
+    "fieldOrder" : 8,
+    "fieldType" : "INTEGER",
+    "minValue" : 0,
+    "minInclusive" : true,
+    "maxValue" : 2147483647,
+    "maxInclusive" : true,
+    "maxLength" : 255,
+    "pattern" : null,
+    "invalidPatternMessage" : null,
+    "dictionary" : null,
+    "placeHolder" : null,
+    "defaultValue" : "1"
+  } ]
+}, {
+  "templateName" : "NEURAL_NETWORK",
+  "templateTitle" : "Нейронная сеть (Многослойный персептрон)",
+  "objectClass" : "NeuralNetworkOptions",
+  "objectType" : "neural_network",
+  "fields" : [ {
+    "fieldName" : "hiddenLayer",
+    "description" : "Структура скрытого слоя:",
+    "fieldOrder" : 0,
+    "fieldType" : "TEXT",
+    "minValue" : null,
+    "minInclusive" : true,
+    "maxValue" : null,
+    "maxInclusive" : true,
+    "maxLength" : 255,
+    "pattern" : "^([1-9],?)+$",
+    "invalidPatternMessage" : "Неправильный формат скрытого слоя. Пример: 8,15,10",
+    "dictionary" : null,
+    "placeHolder" : "Введите числа, разделенные запятой",
+    "defaultValue" : null
+  }, {
+    "fieldName" : "numIterations",
+    "description" : "Число итераций:",
+    "fieldOrder" : 1,
+    "fieldType" : "INTEGER",
+    "minValue" : 1,
+    "minInclusive" : true,
+    "maxValue" : 2147483647,
+    "maxInclusive" : true,
+    "maxLength" : 255,
+    "pattern" : null,
+    "invalidPatternMessage" : null,
+    "dictionary" : null,
+    "placeHolder" : null,
+    "defaultValue" : "1000000"
+  }, {
+    "fieldName" : "minError",
+    "description" : "Допустимая ошибка:",
+    "fieldOrder" : 2,
+    "fieldType" : "DECIMAL",
+    "minValue" : 0,
+    "minInclusive" : true,
+    "maxValue" : 1,
+    "maxInclusive" : true,
+    "maxLength" : 255,
+    "pattern" : null,
+    "invalidPatternMessage" : null,
+    "dictionary" : null,
+    "placeHolder" : null,
+    "defaultValue" : "0.00001"
+  }, {
+    "fieldName" : "activationFunctionOptions.activationFunctionType",
+    "description" : "Активационная функция нейронов скрытого слоя:",
+    "fieldOrder" : 3,
+    "fieldType" : "REFERENCE",
+    "minValue" : null,
+    "minInclusive" : true,
+    "maxValue" : null,
+    "maxInclusive" : true,
+    "maxLength" : null,
+    "pattern" : null,
+    "invalidPatternMessage" : null,
+    "dictionary" : {
+      "name" : "activationFunctionType",
+      "values" : [ {
+        "label" : "Логистическая",
+        "value" : "LOGISTIC"
+      }, {
+        "label" : "Гиперболический тангенс",
+        "value" : "HYPERBOLIC_TANGENT"
+      }, {
+        "label" : "Тригонометрический синус",
+        "value" : "SINUSOID"
+      }, {
+        "label" : "Экспоненциальная",
+        "value" : "EXPONENTIAL"
+      }, {
+        "label" : "Функция SoftSign",
+        "value" : "SOFT_SIGN"
+      }, {
+        "label" : "Функция ISRU",
+        "value" : "INVERSE_SQUARE_ROOT_UNIT"
+      } ]
+    },
+    "placeHolder" : null,
+    "defaultValue" : "LOGISTIC"
+  }, {
+    "fieldName" : "activationFunctionOptions.coefficient",
+    "description" : "Значение коэффициента:",
+    "fieldOrder" : 4,
+    "fieldType" : "DECIMAL",
+    "minValue" : 0,
+    "minInclusive" : false,
+    "maxValue" : 2147483647,
+    "maxInclusive" : true,
+    "maxLength" : 255,
+    "pattern" : null,
+    "invalidPatternMessage" : null,
+    "dictionary" : null,
+    "placeHolder" : null,
+    "defaultValue" : "1"
+  }, {
+    "fieldName" : "backPropagationOptions.learningRate",
+    "description" : "Коэффициент скорости обучения:",
+    "fieldOrder" : 5,
+    "fieldType" : "DECIMAL",
+    "minValue" : 0,
+    "minInclusive" : false,
+    "maxValue" : 1,
+    "maxInclusive" : true,
+    "maxLength" : 255,
+    "pattern" : null,
+    "invalidPatternMessage" : null,
+    "dictionary" : null,
+    "placeHolder" : null,
+    "defaultValue" : "0.1"
+  }, {
+    "fieldName" : "backPropagationOptions.momentum",
+    "description" : "Коэффициент момента:",
+    "fieldOrder" : 6,
+    "fieldType" : "DECIMAL",
+    "minValue" : 0,
+    "minInclusive" : true,
+    "maxValue" : 1,
+    "maxInclusive" : false,
+    "maxLength" : 255,
+    "pattern" : null,
+    "invalidPatternMessage" : null,
+    "dictionary" : null,
+    "placeHolder" : null,
+    "defaultValue" : "0.2"
+  }, {
+    "fieldName" : "seed",
+    "description" : "Начальное значение (seed):",
+    "fieldOrder" : 7,
+    "fieldType" : "INTEGER",
+    "minValue" : 0,
+    "minInclusive" : true,
+    "maxValue" : 2147483647,
+    "maxInclusive" : true,
+    "maxLength" : 255,
+    "pattern" : null,
+    "invalidPatternMessage" : null,
+    "dictionary" : null,
+    "placeHolder" : null,
+    "defaultValue" : "1"
+  } ]
+} ]
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
 ----
 |===
 
@@ -5312,6 +5988,25 @@ __string__
 
 
 
+|*optionsDescription**
+|Options description
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
 |*creationDate**
 |Creation date
 a|
@@ -5354,6 +6049,27 @@ __string__
 |Json config
 a|
 __string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*inputOptions*
+|-
+a|
+__array__
+<<<InputOptionDto>>
+>
 
 
 
@@ -5433,6 +6149,1991 @@ __(int64)__
 *Minimum*: 0*
 
 *Maximum*: 9,223,372,036,854,775,807*
+
+
+
+
+
+
+
+
+|===
+=== InputOptionDto
+:table-caption: Table
+.Classifier input option model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*optionName*
+|Input option name
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*optionValue*
+|Input option value
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|===
+=== ActivationFunctionOptions
+:table-caption: Table
+.Activation function options
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*activationFunctionType*
+|Activation function type
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* LOGISTIC
+
+* HYPERBOLIC_TANGENT
+
+* SINUSOID
+
+* EXPONENTIAL
+
+* SOFT_SIGN
+
+* INVERSE_SQUARE_ROOT_UNIT
+|*coefficient*
+|Activation function coefficient value
+a|
+__number__
+__(double)__
+
+
+
+
+
+
+*Minimum*: 0
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|===
+=== AdaBoostOptions
+:table-caption: Table
+.AdaBoost classifier options
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*type**
+|-
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*numIterations*
+|Iterations number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*numThreads*
+|Threads number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 10*
+
+
+
+
+
+
+
+
+|*seed*
+|Seed value for random generator
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: -2,147,483,648*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*minError*
+|Classifier min. error threshold
+a|
+__number__
+__(double)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 0.5*
+
+
+
+
+
+
+
+
+|*maxError*
+|Classifier max. error threshold
+a|
+__number__
+__(double)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 0.5*
+
+
+
+
+
+
+
+
+|*classifierOptions**
+|-
+a|
+__array__
+<<<ClassifierOptions>>
+>
+
+
+
+
+
+
+
+
+*Min. items*: 1
+
+*Max. items*: 25
+
+
+
+
+|===
+=== BackPropagationOptions
+:table-caption: Table
+.Back propagation learning algorithm options
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*learningRate*
+|Learning rate value
+a|
+__number__
+__(double)__
+
+
+
+
+
+
+*Minimum*: 0
+
+*Maximum*: 1*
+
+
+
+
+
+
+
+
+|*momentum*
+|Momentum coefficient value
+a|
+__number__
+__(double)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 1
+
+
+
+
+
+
+
+
+|===
+=== ClassifierOptions
+:table-caption: Table
+.Component ClassifierOptions
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*type**
+|-
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== DecisionTreeOptions
+:table-caption: Table
+.Decision tree classifier options
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*type**
+|-
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*decisionTreeType*
+|Decision tree algorithm
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* CART
+
+* ID3
+
+* C45
+
+* CHAID
+|*minObj*
+|Minimum objects number per leaf
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*maxDepth*
+|Maximum tree depth
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*randomTree*
+|Random tree flag
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*numRandomAttr*
+|Random attributes number at each split for random tree
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*useBinarySplits*
+|Binary tree flag
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*useRandomSplits*
+|Use random splits flag
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*numRandomSplits*
+|Random splits number at each node split
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*seed*
+|Seed value for random generator
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: -2,147,483,648*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*additionalOptions*
+|Additional options map
+a|
+__object__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== ExtraTreesOptions
+:table-caption: Table
+.Extra trees classifier options
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*type**
+|-
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*numIterations*
+|Iterations number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*numThreads*
+|Threads number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 10*
+
+
+
+
+
+
+
+
+|*seed*
+|Seed value for random generator
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: -2,147,483,648*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*numRandomAttr*
+|Random attributes number at each node split
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*minObj*
+|Min. objects per leaf
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*maxDepth*
+|Maximum tree depth
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*decisionTreeType*
+|Decision tree algorithm
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* CART
+
+* ID3
+
+* C45
+
+* CHAID
+|*numRandomSplits*
+|Number of random splits
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*useBootstrapSamples*
+|Use bootstrap samples flag
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== HeterogeneousClassifierOptions
+:table-caption: Table
+.Heterogeneous classifier options
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*type**
+|-
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*numIterations*
+|Iterations number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*numThreads*
+|Threads number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 10*
+
+
+
+
+
+
+
+
+|*seed*
+|Seed value for random generator
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: -2,147,483,648*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*minError*
+|Classifier min. error threshold
+a|
+__number__
+__(double)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 0.5*
+
+
+
+
+
+
+
+
+|*maxError*
+|Classifier max. error threshold
+a|
+__number__
+__(double)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 0.5*
+
+
+
+
+
+
+
+
+|*classifierOptions**
+|-
+a|
+__array__
+<<<ClassifierOptions>>
+>
+
+
+
+
+
+
+
+
+*Min. items*: 1
+
+*Max. items*: 25
+
+
+
+
+|*useWeightedVotes*
+|Use weighted votes method
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*useRandomClassifier*
+|Use random classifier at each iteration
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*samplingMethod*
+|Sampling method at each iteration
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* INITIAL
+
+* BAGGING
+
+* RANDOM
+
+* RANDOM_BAGGING
+|*useRandomSubspaces*
+|Use random subspaces
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== J48Options
+:table-caption: Table
+.J48 algorithm classifier options
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*type**
+|-
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*minNumObj*
+|Minimum objects number per leaf
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*binarySplits*
+|Binary tree flag
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*unpruned*
+|Unpruned tree flag
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*numFolds*
+|Folds number for tree pruning procedure
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 2*
+
+*Maximum*: 100*
+
+
+
+
+
+
+
+
+|===
+=== KNearestNeighboursOptions
+:table-caption: Table
+.K - nearest neighbours classifier options
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*type**
+|-
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*numNeighbours*
+|Neighbours number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*weight*
+|Neighbour's weight value
+a|
+__number__
+__(double)__
+
+
+
+
+
+
+*Minimum*: 0.5*
+
+*Maximum*: 1*
+
+
+
+
+
+
+
+
+|*distanceType*
+|Distance function type
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* EUCLID
+
+* SQUARE_EUCLID
+
+* MANHATTAN
+
+* CHEBYSHEV
+|===
+=== LogisticOptions
+:table-caption: Table
+.Logistic regression classifier options
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*type**
+|-
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*maxIts*
+|Maximum iterations number for optimization method
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*useConjugateGradientDescent*
+|Use conjugate gradient descent method
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== NeuralNetworkOptions
+:table-caption: Table
+.Neural network classifier options
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*type**
+|-
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*numInNeurons*
+|Neurons number in input layer
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*numOutNeurons*
+|Neurons number in output layer
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 2*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*hiddenLayer*
+|Hidden layer structure
+a|
+__string__
+
+
+*Min. length*: 0
+
+*Max. length*: 255
+
+
+
+
+
+
+
+*Pattern*: `^([0-9],?)+$`
+
+
+|*seed*
+|Seed value for random generator
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: -2,147,483,648*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*numIterations*
+|Max. its for learning
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*minError*
+|Min. error for optimization algorithm
+a|
+__number__
+__(double)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 1*
+
+
+
+
+
+
+
+
+|*activationFunctionOptions*
+|-
+a|
+<<ActivationFunctionOptions>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*backPropagationOptions*
+|-
+a|
+<<BackPropagationOptions>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== RandomForestsOptions
+:table-caption: Table
+.Random forests classifier options
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*type**
+|-
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*numIterations*
+|Iterations number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*numThreads*
+|Threads number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 10*
+
+
+
+
+
+
+
+
+|*seed*
+|Seed value for random generator
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: -2,147,483,648*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*numRandomAttr*
+|Random attributes number at each node split
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*minObj*
+|Min. objects per leaf
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*maxDepth*
+|Maximum tree depth
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*decisionTreeType*
+|Decision tree algorithm
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* CART
+
+* ID3
+
+* C45
+
+* CHAID
+|===
+=== RandomNetworkOptions
+:table-caption: Table
+.Random networks classifier options
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*type**
+|-
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*numIterations*
+|Iterations number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*numThreads*
+|Threads number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 10*
+
+
+
+
+
+
+
+
+|*seed*
+|Seed value for random generator
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: -2,147,483,648*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*minError*
+|Classifier min. error threshold
+a|
+__number__
+__(double)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 0.5*
+
+
+
+
+
+
+
+
+|*maxError*
+|Classifier max. error threshold
+a|
+__number__
+__(double)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 0.5*
+
+
+
+
+
+
+
+
+|*useBootstrapSamples*
+|Use bootstrap samples
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== StackingOptions
+:table-caption: Table
+.Stacking classifier options
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*type**
+|-
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*useCrossValidation*
+|Use cross - validation method for meta data building
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*numFolds*
+|Folds number for V - cross validation method
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 2*
+
+*Maximum*: 100*
+
+
+
+
+
+
+
+
+|*seed*
+|Seed value for random generator
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: -2,147,483,648*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*classifierOptions**
+|-
+a|
+__array__
+<<<ClassifierOptions>>
+>
+
+
+
+
+
+
+
+
+*Min. items*: 1
+
+*Max. items*: 25
+
+
+
+
+|*metaClassifierOptions**
+|-
+a|
+<<ClassifierOptions>>
+
+
+
+
+
+
+
 
 
 
@@ -6081,51 +8782,6 @@ __(int64)__
 *Minimum*: 0*
 
 *Maximum*: 9,223,372,036,854,775,807*
-
-
-
-
-
-
-
-
-|===
-=== InputOptionDto
-:table-caption: Table
-.Classifier input option model
-[width=100%]
-|===
-|*Name*|*Description*|*Schema*
-|*optionName*
-|Input option name
-a|
-__string__
-
-
-
-
-*Max. length*: 255
-
-
-
-
-
-
-
-
-
-
-|*optionValue*
-|Input option value
-a|
-__string__
-
-
-
-
-*Max. length*: 255
-
-
 
 
 
@@ -8146,6 +10802,496 @@ a|
 |-
 a|
 <<EvaluationResultsDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== FieldDictionaryDto
+:table-caption: Table
+.Field dictionary model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*name*
+|Field dictionary name
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*values*
+|-
+a|
+__array__
+<<<FieldDictionaryValueDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== FieldDictionaryValueDto
+:table-caption: Table
+.Field dictionary value model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*label*
+|Field dictionary field label
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*value*
+|Field dictionary field value
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|===
+=== FormFieldDto
+:table-caption: Table
+.Form field model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*fieldName*
+|Field name
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*description*
+|Field description
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*fieldOrder*
+|Field order
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*fieldType*
+|Form field type
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* TEXT
+
+* REFERENCE
+
+* INTEGER
+
+* DECIMAL
+
+* BOOLEAN
+|*minValue*
+|Minimum value
+a|
+__number__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*minInclusive*
+|Min. value inclusive?
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*maxValue*
+|Maximum value
+a|
+__number__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*maxInclusive*
+|Max. value inclusive?
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*maxLength*
+|Maximum value length
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*pattern*
+|Pattern value
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*invalidPatternMessage*
+|Invalid pattern message
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*dictionary*
+|-
+a|
+<<FieldDictionaryDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*placeHolder*
+|Place holder message
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*defaultValue*
+|Default value
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|===
+=== FormTemplateDto
+:table-caption: Table
+.Form template model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*templateName*
+|Template name
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*templateTitle*
+|Template title
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*objectClass*
+|Object class
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*objectType*
+|Object type
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*fields*
+|-
+a|
+__array__
+<<<FormFieldDto>>
+>
 
 
 
