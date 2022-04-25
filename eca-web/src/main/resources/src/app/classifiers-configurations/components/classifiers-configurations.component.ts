@@ -1,5 +1,6 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import {
+  ClassifierOptionsDto,
   ClassifiersConfigurationDto, FormTemplateDto, PageDto,
   PageRequestDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
@@ -102,7 +103,7 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
 
   public onAddClassifierOptions(formFields: FormField[]): void {
     const classifierOptions = this.formTemplatesMapper.mapToClassifierOptionsObject(formFields, this.selectedTemplate);
-    this.addClassifiersOptions(classifierOptions, this.selectedTemplate);
+    this.addClassifiersOptions(classifierOptions);
   }
 
   public onEditClassifiersConfiguration(item: ClassifiersConfigurationModel): void {
@@ -259,7 +260,7 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
       });
   }
 
-  private addClassifiersOptions(classifierOptions: any, template: FormTemplateDto): void {
+  private addClassifiersOptions(classifierOptions: any): void {
     this.loading = true;
     this.classifierOptionsService.addClassifiersOptions(this.selectedConfiguration.id, classifierOptions)
       .pipe(
@@ -268,10 +269,10 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
         })
       )
       .subscribe({
-        next: () => {
+        next: (classifierOptionsDto: ClassifierOptionsDto) => {
           this.reloadPageWithLoader();
           this.messageService.add({ severity: 'success',
-            summary: `Добавлены настройки классификатора ${template.templateTitle}`, detail: '' });
+            summary: `Добавлены настройки классификатора "${classifierOptionsDto.optionsDescription}"`, detail: '' });
         },
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });

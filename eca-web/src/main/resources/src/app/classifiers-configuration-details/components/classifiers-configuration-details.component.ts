@@ -56,7 +56,7 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
     super(injector.get(MessageService), injector.get(FieldService));
     this.configurationId = this.route.snapshot.params.id;
     this.defaultSortField = ClassifierOptionsFields.CREATION_DATE;
-    this.linkColumns = [ClassifierOptionsFields.OPTIONS_NAME];
+    this.linkColumns = [ClassifierOptionsFields.OPTIONS_DESCRIPTION];
     this.initColumns();
   }
 
@@ -166,7 +166,7 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
 
   public onAddClassifierOptions(formFields: FormField[]): void {
     const classifierOptions = this.formTemplatesMapper.mapToClassifierOptionsObject(formFields, this.selectedTemplate);
-    this.addClassifiersOptions(classifierOptions, this.selectedTemplate);
+    this.addClassifiersOptions(classifierOptions);
   }
 
   private deleteConfiguration(item: ClassifiersConfigurationDto): void {
@@ -232,7 +232,7 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
       )
       .subscribe({
         next: () => {
-          this.messageService.add({ severity: 'success', summary: `Удалена настройка ${item.optionsName}`, detail: '' });
+          this.messageService.add({ severity: 'success', summary: `Удалены настройки классификатора "${item.optionsDescription}"`, detail: '' });
           this.reloadPageWithLoader();
         },
         error: (error) => {
@@ -241,7 +241,7 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
       });
   }
 
-  private addClassifiersOptions(classifierOptions: any, template: FormTemplateDto): void {
+  private addClassifiersOptions(classifierOptions: any): void {
     this.loading = true;
     this.classifierOptionsService.addClassifiersOptions(this.configurationId, classifierOptions)
       .pipe(
@@ -250,10 +250,11 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
         })
       )
       .subscribe({
-        next: () => {
+        next: (classifierOptionsDto: ClassifierOptionsDto) => {
+          this.lastCreatedId = classifierOptionsDto.id;
           this.reloadPageWithLoader();
           this.messageService.add({ severity: 'success',
-            summary: `Добавлены настройки классификатора ${template.templateTitle}`, detail: '' });
+            summary: `Добавлены настройки классификатора "${classifierOptionsDto.optionsDescription}"`, detail: '' });
         },
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
@@ -280,7 +281,7 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
   private initColumns() {
     this.columns = [
       { name: ClassifierOptionsFields.ID, label: "#" },
-      { name: ClassifierOptionsFields.OPTIONS_NAME, label: "Настройки классификатора" },
+      { name: ClassifierOptionsFields.OPTIONS_DESCRIPTION, label: "Настройки классификатора" },
       { name: ClassifierOptionsFields.CREATION_DATE, label: "Дата создания настроек" },
       { name: ClassifierOptionsFields.CREATED_BY, label: "Пользователь" }
     ];
