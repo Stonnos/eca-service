@@ -38,6 +38,7 @@ import java.io.InputStream;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
+import static com.ecaservice.server.controller.doc.ApiExamples.CLASSIFIERS_OPTIONS_RESPONSE_JSON;
 import static com.ecaservice.server.controller.doc.ApiExamples.CLASSIFIER_OPTIONS_JSON;
 import static com.ecaservice.server.controller.doc.ApiExamples.GET_CLASSIFIERS_OPTIONS_PAGE_RESPONSE_JSON;
 import static com.ecaservice.server.controller.doc.ApiExamples.SAVE_CLASSIFIER_OPTIONS_RESPONSE_JSON;
@@ -203,7 +204,14 @@ public class ClassifierOptionsController {
                     })
             }),
             responses = {
-                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = CLASSIFIERS_OPTIONS_RESPONSE_JSON),
+                                    },
+                                    schema = @Schema(implementation = ClassifierOptionsDto.class)
+                            )),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,

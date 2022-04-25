@@ -954,6 +954,7 @@ a|
   "content" : [ {
     "id" : 1,
     "optionsName" : "DecisionTreeOptions",
+    "optionsDescription" : "Decision tree",
     "creationDate" : "2021-07-01 14:00:00",
     "createdBy" : "admin",
     "config" : "Json config"
@@ -1126,7 +1127,7 @@ __(int64)__
 |*Code*|*Description*|*Content type*|*Schema*|*Example*
 |200
 |OK
-|**/**
+|*application/json*
 |
 <<ClassifierOptionsDto>>
 
@@ -1145,7 +1146,17 @@ __(int64)__
 
 
 a|
--
+[source,json]
+----
+{
+  "id" : 1,
+  "optionsName" : "DecisionTreeOptions",
+  "optionsDescription" : "Decision tree",
+  "creationDate" : "2021-07-01 14:00:00",
+  "createdBy" : "admin",
+  "config" : "Json config"
+}
+----
 |401
 |Not authorized
 |*application/json*

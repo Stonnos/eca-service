@@ -99,8 +99,17 @@ public class ApiExamples {
      * Classifiers options page response json
      */
     public static final String GET_CLASSIFIERS_OPTIONS_PAGE_RESPONSE_JSON = "{\"content\": [{\"id\": 1, " +
-            "\"optionsName\": \"DecisionTreeOptions\", \"creationDate\": \"2021-07-01 14:00:00\", " +
+            "\"optionsName\": \"DecisionTreeOptions\", \"optionsDescription\": \"Decision tree\", " +
+            "\"creationDate\": \"2021-07-01 14:00:00\", " +
             "\"createdBy\": \"admin\", \"config\": \"Json config\"}], \"page\": 0, \"totalCount\": 1}";
+
+    /**
+     * Classifiers options response json
+     */
+    public static final String CLASSIFIERS_OPTIONS_RESPONSE_JSON =
+            "{\"id\": 1, \"optionsName\": \"DecisionTreeOptions\", \"optionsDescription\": \"Decision tree\", " +
+            "\"creationDate\": \"2021-07-01 14:00:00\", " +
+            "\"createdBy\": \"admin\", \"config\": \"Json config\"}";
 
     /**
      * Save classifiers options response json
