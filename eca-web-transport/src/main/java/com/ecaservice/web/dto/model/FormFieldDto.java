@@ -49,10 +49,22 @@ public class FormFieldDto {
     private BigDecimal minValue;
 
     /**
+     * Min. value inclusive?
+     */
+    @Schema(description = "Min. value inclusive?")
+    private boolean minInclusive;
+
+    /**
      * Max. value
      */
     @Schema(description = "Maximum value", minimum = ZERO_VALUE_STRING, maximum = MAX_INTEGER_VALUE_STRING)
     private BigDecimal maxValue;
+
+    /**
+     * Max. value inclusive?
+     */
+    @Schema(description = "Max. value inclusive?")
+    private boolean maxInclusive;
 
     /**
      * Max length value

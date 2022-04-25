@@ -104,7 +104,9 @@
                 <constraints nullable="false"/>
             </column>
             <column name="min_value" type="numeric(19,2)"/>
+            <column name="min_inclusive" type="boolean" defaultValueBoolean="true"/>
             <column name="max_value" type="numeric(19,2)"/>
+            <column name="max_inclusive" type="boolean" defaultValueBoolean="true"/>
             <column name="max_length" type="integer"/>
             <column name="pattern" type="varchar(255)"/>
             <column name="invalid_pattern_message" type="varchar(255)"/>

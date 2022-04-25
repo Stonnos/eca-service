@@ -112,7 +112,9 @@ spring:
 |field_order                |integer          |-|+|-                                 |Порядок отображения поля
 |field_type                 |varchar(255)     |-|+|-                                 |Тип поля для отображения, например TEXT, REFERENCE, DECIMAL, INTEGER, BOOLEAN.
 |min_value                  |numeric(19,2)    |-|-|-                                 |Мин. значение (заполняется для числовых полей INTEGER, DECIMAL)
+|min_inclusive              |boolean          |-|-|-                                 |Флаг для включения нижней границы
 |max_value                  |numeric(19,2)    |-|-|-                                 |Макс. значение (заполняется для числовых полей INTEGER, DECIMAL)
+|max_inclusive              |boolean          |-|-|-                                 |Флаг для включения верхней границы
 |max_length                 |integer          |-|-|-                                 |Макс. длина поля
 |pattern                    |varchar(255)     |-|-|-                                 |Регулярное выражение для поля
 |invalid_pattern_message    |varchar(255)     |-|-|-                                 |Текст ошибки при несоответствии значения регулярному выражению (pattern)

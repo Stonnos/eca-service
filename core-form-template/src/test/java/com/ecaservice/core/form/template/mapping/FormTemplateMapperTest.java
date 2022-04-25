@@ -58,6 +58,8 @@ class FormTemplateMapperTest {
         assertThat(formFieldDto.getMaxLength()).isEqualTo(formFieldEntity.getMaxLength());
         assertThat(formFieldDto.getPattern()).isEqualTo(formFieldEntity.getPattern());
         assertThat(formFieldDto.getMinValue()).isEqualTo(formFieldEntity.getMinValue());
+        assertThat(formFieldDto.isMinInclusive()).isEqualTo(formFieldEntity.isMinInclusive());
+        assertThat(formFieldDto.isMaxInclusive()).isEqualTo(formFieldEntity.isMaxInclusive());
         assertThat(formFieldDto.getMaxValue()).isEqualTo(formFieldEntity.getMaxValue());
         assertThat(formFieldDto.getDefaultValue()).isEqualTo(formFieldEntity.getDefaultValue());
     }

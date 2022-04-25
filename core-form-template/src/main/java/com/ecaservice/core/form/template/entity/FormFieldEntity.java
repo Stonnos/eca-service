@@ -62,10 +62,22 @@ public class FormFieldEntity {
     private BigDecimal minValue;
 
     /**
+     * Min. value inclusive?
+     */
+    @Column(name = "min_inclusive")
+    private boolean minInclusive;
+
+    /**
      * Max. value
      */
     @Column(name = "max_value")
     private BigDecimal maxValue;
+
+    /**
+     * Max. value inclusive?
+     */
+    @Column(name = "max_inclusive")
+    private boolean maxInclusive;
 
     /**
      * Max length value
