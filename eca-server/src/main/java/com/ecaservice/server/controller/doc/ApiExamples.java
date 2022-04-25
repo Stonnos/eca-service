@@ -369,4 +369,133 @@ public class ApiExamples {
     public static final String CLASSIFIER_OPTIONS_JSON = "{\"type\": \"decision_tree\", \"decisionTreeType\": " +
             "\"CART\", \"minObj\": 2, \"maxDepth\": 0, \"randomTree\": false, \"useBinarySplits\": true, " +
             "\"useRandomSplits\": false}";
+
+    /**
+     * Classifiers templates forms response json
+     */
+    public static final String CLASSIFIERS_TEMPLATES_RESPONSE_JSON = "[{\"templateName\": \"KNN\", \"templateTitle\":" +
+            " \"Алгоритм k - взвешенных ближайших соседей\", \"objectClass\": \"KNearestNeighboursOptions\", " +
+            "\"objectType\": \"knn\", \"fields\": [{\"fieldName\": \"numNeighbours\", \"description\": " +
+            "\"Число ближайших соседей:\", \"fieldOrder\": 0, \"fieldType\": \"INTEGER\", \"minValue\": 1, " +
+            "\"minInclusive\": true, \"maxValue\": 2147483647, \"maxInclusive\": true, \"maxLength\": 255, " +
+            "\"pattern\": null, \"invalidPatternMessage\": null, \"dictionary\": null, \"placeHolder\": null, " +
+            "\"defaultValue\": \"10\"}, {\"fieldName\": \"weight\", \"description\": \"Вес ближайшего соседа:\", " +
+            "\"fieldOrder\": 1, \"fieldType\": \"DECIMAL\", \"minValue\": 0.5, \"minInclusive\": true, " +
+            "\"maxValue\": 1, \"maxInclusive\": true, \"maxLength\": 255, \"pattern\": null, " +
+            "\"invalidPatternMessage\": null, \"dictionary\": null, \"placeHolder\": null, " +
+            "\"defaultValue\": \"1\"}, {\"fieldName\": \"distanceType\", \"description\": " +
+            "\"Функция расстояния:\", \"fieldOrder\": 2, \"fieldType\": \"REFERENCE\", " +
+            "\"minValue\": null, \"minInclusive\": true, \"maxValue\": null, \"maxInclusive\": true, " +
+            "\"maxLength\": null, \"pattern\": null, \"invalidPatternMessage\": null, \"dictionary\": " +
+            "{\"name\": \"distanceType\", \"values\": [{\"label\": \"Евкилидово расстояние\", \"value\": " +
+            "\"EUCLID\"}, {\"label\": \"Квадрат Евклидова расстояни\", \"value\": \"SQUARE_EUCLID\"}, " +
+            "{\"label\": \"Манхеттенское расстояние\", \"value\": \"MANHATTAN\"}, {\"label\": " +
+            "\"Расстояние Чебышева\", \"value\": \"CHEBYSHEV\"}]}, \"placeHolder\": null, \"defaultValue\": " +
+            "\"EUCLID\"}]}, {\"templateName\": \"LOGISTIC\", \"templateTitle\": \"Логистическая регрессия\", " +
+            "\"objectClass\": \"LogisticOptions\", \"objectType\": \"logistic\", \"fields\": [{\"fieldName\": " +
+            "\"maxIts\", \"description\": \"Максимальное число итераций для поиска минимума функции " +
+            "-Log(Likelihood):\", \"fieldOrder\": 0, \"fieldType\": \"INTEGER\", \"minValue\": 1, " +
+            "\"minInclusive\": true, \"maxValue\": 2147483647, \"maxInclusive\": true, \"maxLength\": 255, " +
+            "\"pattern\": null, \"invalidPatternMessage\": null, \"dictionary\": null, \"placeHolder\": null, " +
+            "\"defaultValue\": \"200\"}, {\"fieldName\": \"useConjugateGradientDescent\", \"description\": " +
+            "\"Использовать метод сопряженных градиентов:\", \"fieldOrder\": 1, \"fieldType\": \"BOOLEAN\", " +
+            "\"minValue\": null, \"minInclusive\": true, \"maxValue\": null, \"maxInclusive\": true, " +
+            "\"maxLength\": null, \"pattern\": null, \"invalidPatternMessage\": null, \"dictionary\": null, " +
+            "\"placeHolder\": null, \"defaultValue\": \"false\"}]}, {\"templateName\": \"J48\", \"templateTitle\": " +
+            "\"Алгоритм J48\", \"objectClass\": \"J48Options\", \"objectType\": \"j48\", \"fields\": " +
+            "[{\"fieldName\": \"minNumObj\", \"description\": \"Минимальное число объектов в листе:\", " +
+            "\"fieldOrder\": 0, \"fieldType\": \"INTEGER\", \"minValue\": 0, \"minInclusive\": true, " +
+            "\"maxValue\": 2147483647, \"maxInclusive\": true, \"maxLength\": 255, \"pattern\": null, " +
+            "\"invalidPatternMessage\": null, \"dictionary\": null, \"placeHolder\": null, \"defaultValue\": " +
+            "\"2\"}, {\"fieldName\": \"binarySplits\", \"description\": \"Бинарное дерево\", \"fieldOrder\": 1, " +
+            "\"fieldType\": \"BOOLEAN\", \"minValue\": null, \"minInclusive\": true, \"maxValue\": null, " +
+            "\"maxInclusive\": true, \"maxLength\": null, \"pattern\": null, \"invalidPatternMessage\": null," +
+            " \"dictionary\": null, \"placeHolder\": null, \"defaultValue\": \"false\"}, {\"fieldName\": " +
+            "\"unpruned\", \"description\": \"Неусеченное дерево\", \"fieldOrder\": 2, \"fieldType\": " +
+            "\"BOOLEAN\", \"minValue\": null, \"minInclusive\": true, \"maxValue\": null, \"maxInclusive\": true, " +
+            "\"maxLength\": null, \"pattern\": null, \"invalidPatternMessage\": null, \"dictionary\": null, " +
+            "\"placeHolder\": null, \"defaultValue\": \"false\"}, {\"fieldName\": \"numFolds\", \"description\": " +
+            "\"Количество блоков:\", \"fieldOrder\": 3, \"fieldType\": \"INTEGER\", \"minValue\": 2, " +
+            "\"minInclusive\": true, \"maxValue\": 100, \"maxInclusive\": true, \"maxLength\": 255, \"pattern\": null, " +
+            "\"invalidPatternMessage\": null, \"dictionary\": null, \"placeHolder\": null, \"defaultValue\": " +
+            "\"3\"}]}, {\"templateName\": \"DECISION_TREE\", \"templateTitle\": \"Дерево решений\", \"objectClass\": " +
+            "\"DecisionTreeOptions\", \"objectType\": \"decision_tree\", \"fields\": [{\"fieldName\": " +
+            "\"decisionTreeType\", \"description\": \"Алгоритм построения дерева:\", \"fieldOrder\": 0, " +
+            "\"fieldType\": \"REFERENCE\", \"minValue\": null, \"minInclusive\": true, \"maxValue\": null, " +
+            "\"maxInclusive\": true, \"maxLength\": null, \"pattern\": null, \"invalidPatternMessage\": null, " +
+            "\"dictionary\": {\"name\": \"decisionTreeType\", \"values\": [{\"label\": \"Алгоритм CART\", " +
+            "\"value\": \"CART\"}, {\"label\": \"Алгоритм ID3\", \"value\": \"ID3\"}, {\"label\": \"Алгоритм C4.5\", " +
+            "\"value\": \"C45\"}, {\"label\": \"Алгоритм CHAID\", \"value\": \"CHAID\"}]}, \"placeHolder\": null, " +
+            "\"defaultValue\": \"CART\"}, {\"fieldName\": \"minObj\", \"description\": " +
+            "\"Минимальное число объектов в листе:\", \"fieldOrder\": 1, \"fieldType\": \"INTEGER\", " +
+            "\"minValue\": 0, \"minInclusive\": true, \"maxValue\": 2147483647, \"maxInclusive\": true, " +
+            "\"maxLength\": 255, \"pattern\": null, \"invalidPatternMessage\": null, \"dictionary\": null, " +
+            "\"placeHolder\": null, \"defaultValue\": \"2\"}, {\"fieldName\": \"maxDepth\", \"description\": " +
+            "\"Максимальная глубина дерева:\", \"fieldOrder\": 2, \"fieldType\": \"INTEGER\", \"minValue\": 0, " +
+            "\"minInclusive\": true, \"maxValue\": 2147483647, \"maxInclusive\": true, \"maxLength\": 255, " +
+            "\"pattern\": null, \"invalidPatternMessage\": null, \"dictionary\": null, \"placeHolder\": null, " +
+            "\"defaultValue\": \"0\"}, {\"fieldName\": \"useBinarySplits\", \"description\": \"Бинарное дерево\", " +
+            "\"fieldOrder\": 3, \"fieldType\": \"BOOLEAN\", \"minValue\": null, \"minInclusive\": true, " +
+            "\"maxValue\": null, \"maxInclusive\": true, \"maxLength\": null, \"pattern\": null, " +
+            "\"invalidPatternMessage\": null, \"dictionary\": null, \"placeHolder\": null, \"defaultValue\": " +
+            "\"false\"}, {\"fieldName\": \"randomTree\", \"description\": \"Случайное дерево\", \"fieldOrder\": 4, " +
+            "\"fieldType\": \"BOOLEAN\", \"minValue\": null, \"minInclusive\": true, \"maxValue\": null, " +
+            "\"maxInclusive\": true, \"maxLength\": null, \"pattern\": null, \"invalidPatternMessage\": null, " +
+            "\"dictionary\": null, \"placeHolder\": null, \"defaultValue\": \"false\"}, {\"fieldName\": " +
+            "\"numRandomAttr\", \"description\": \"Число случайных атрибутов:\", \"fieldOrder\": 5, \"fieldType\": " +
+            "\"INTEGER\", \"minValue\": 0, \"minInclusive\": true, \"maxValue\": 2147483647, \"maxInclusive\": true, " +
+            "\"maxLength\": 255, \"pattern\": null, \"invalidPatternMessage\": null, \"dictionary\": null, " +
+            "\"placeHolder\": null, \"defaultValue\": \"0\"}, {\"fieldName\": \"useRandomSplits\", \"description\": " +
+            "\"Случайные расщепления атрибута\", \"fieldOrder\": 6, \"fieldType\": \"BOOLEAN\", \"minValue\": null, " +
+            "\"minInclusive\": true, \"maxValue\": null, \"maxInclusive\": true, \"maxLength\": null, " +
+            "\"pattern\": null, \"invalidPatternMessage\": null, \"dictionary\": null, \"placeHolder\": null, " +
+            "\"defaultValue\": \"false\"}, {\"fieldName\": \"numRandomSplits\", \"description\": " +
+            "\"Число случайных расщеплений атрибута:\", \"fieldOrder\": 7, \"fieldType\": \"INTEGER\", " +
+            "\"minValue\": 1, \"minInclusive\": true, \"maxValue\": 2147483647, \"maxInclusive\": true, " +
+            "\"maxLength\": 255, \"pattern\": null, \"invalidPatternMessage\": null, \"dictionary\": null, " +
+            "\"placeHolder\": null, \"defaultValue\": \"1\"}, {\"fieldName\": \"seed\", \"description\": " +
+            "\"Начальное значение (seed):\", \"fieldOrder\": 8, \"fieldType\": \"INTEGER\", \"minValue\": 0, " +
+            "\"minInclusive\": true, \"maxValue\": 2147483647, \"maxInclusive\": true, \"maxLength\": 255, " +
+            "\"pattern\": null, \"invalidPatternMessage\": null, \"dictionary\": null, \"placeHolder\": null, " +
+            "\"defaultValue\": \"1\"}]}, {\"templateName\": \"NEURAL_NETWORK\", \"templateTitle\": " +
+            "\"Нейронная сеть (Многослойный персептрон)\", \"objectClass\": \"NeuralNetworkOptions\", " +
+            "\"objectType\": \"neural_network\", \"fields\": [{\"fieldName\": \"hiddenLayer\", " +
+            "\"description\": \"Структура скрытого слоя:\", \"fieldOrder\": 0, \"fieldType\": \"TEXT\", " +
+            "\"minValue\": null, \"minInclusive\": true, \"maxValue\": null, \"maxInclusive\": true, " +
+            "\"maxLength\": 255, \"pattern\": \"^([1-9],?)+$\", \"invalidPatternMessage\": " +
+            "\"Неправильный формат скрытого слоя. Пример: 8,15,10\", \"dictionary\": null, \"placeHolder\": " +
+            "\"Введите числа, разделенные запятой\", \"defaultValue\": null}, {\"fieldName\": \"numIterations\", " +
+            "\"description\": \"Число итераций:\", \"fieldOrder\": 1, \"fieldType\": \"INTEGER\", \"minValue\": 1, " +
+            "\"minInclusive\": true, \"maxValue\": 2147483647, \"maxInclusive\": true, \"maxLength\": 255, " +
+            "\"pattern\": null, \"invalidPatternMessage\": null, \"dictionary\": null, \"placeHolder\": null, " +
+            "\"defaultValue\": \"1000000\"}, {\"fieldName\": \"minError\", \"description\": \"Допустимая ошибка:\", " +
+            "\"fieldOrder\": 2, \"fieldType\": \"DECIMAL\", \"minValue\": 0, \"minInclusive\": true, " +
+            "\"maxValue\": 1, \"maxInclusive\": true, \"maxLength\": 255, \"pattern\": null, " +
+            "\"invalidPatternMessage\": null, \"dictionary\": null, \"placeHolder\": null, \"defaultValue\": " +
+            "\"0.00001\"}, {\"fieldName\": \"activationFunctionOptions.activationFunctionType\", \"description\": " +
+            "\"Активационная функция нейронов скрытого слоя:\", \"fieldOrder\": 3, \"fieldType\": \"REFERENCE\", " +
+            "\"minValue\": null, \"minInclusive\": true, \"maxValue\": null, \"maxInclusive\": true, " +
+            "\"maxLength\": null, \"pattern\": null, \"invalidPatternMessage\": null, \"dictionary\": {\"name\": " +
+            "\"activationFunctionType\", \"values\": [{\"label\": \"Логистическая\", \"value\": \"LOGISTIC\"}, " +
+            "{\"label\": \"Гиперболический тангенс\", \"value\": \"HYPERBOLIC_TANGENT\"}, {\"label\": " +
+            "\"Тригонометрический синус\", \"value\": \"SINUSOID\"}, {\"label\": \"Экспоненциальная\", " +
+            "\"value\": \"EXPONENTIAL\"}, {\"label\": \"Функция SoftSign\", \"value\": \"SOFT_SIGN\"}, " +
+            "{\"label\": \"Функция ISRU\", \"value\": \"INVERSE_SQUARE_ROOT_UNIT\"}]}, \"placeHolder\": null, " +
+            "\"defaultValue\": \"LOGISTIC\"}, {\"fieldName\": \"activationFunctionOptions.coefficient\", " +
+            "\"description\": \"Значение коэффициента:\", \"fieldOrder\": 4, \"fieldType\": \"DECIMAL\", " +
+            "\"minValue\": 0, \"minInclusive\": false, \"maxValue\": 2147483647, \"maxInclusive\": true, " +
+            "\"maxLength\": 255, \"pattern\": null, \"invalidPatternMessage\": null, \"dictionary\": null, " +
+            "\"placeHolder\": null, \"defaultValue\": \"1\"}, {\"fieldName\": " +
+            "\"backPropagationOptions.learningRate\", \"description\": \"Коэффициент скорости обучения:\", " +
+            "\"fieldOrder\": 5, \"fieldType\": \"DECIMAL\", \"minValue\": 0, \"minInclusive\": false, " +
+            "\"maxValue\": 1, \"maxInclusive\": true, \"maxLength\": 255, \"pattern\": null, " +
+            "\"invalidPatternMessage\": null, \"dictionary\": null, \"placeHolder\": null, \"defaultValue\": " +
+            "\"0.1\"}, {\"fieldName\": \"backPropagationOptions.momentum\", \"description\": " +
+            "\"Коэффициент момента:\", \"fieldOrder\": 6, \"fieldType\": \"DECIMAL\", \"minValue\": 0, " +
+            "\"minInclusive\": true, \"maxValue\": 1, \"maxInclusive\": false, \"maxLength\": 255, " +
+            "\"pattern\": null, \"invalidPatternMessage\": null, \"dictionary\": null, \"placeHolder\": null, " +
+            "\"defaultValue\": \"0.2\"}, {\"fieldName\": \"seed\", \"description\": \"Начальное значение (seed):\", " +
+            "\"fieldOrder\": 7, \"fieldType\": \"INTEGER\", \"minValue\": 0, \"minInclusive\": true, \"maxValue\": " +
+            "2147483647, \"maxInclusive\": true, \"maxLength\": 255, \"pattern\": null, " +
+            "\"invalidPatternMessage\": null, \"dictionary\": null, \"placeHolder\": null, \"defaultValue\": \"1\"}]}]";
 }

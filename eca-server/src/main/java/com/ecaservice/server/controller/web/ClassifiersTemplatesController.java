@@ -23,6 +23,7 @@ import java.util.List;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
+import static com.ecaservice.server.controller.doc.ApiExamples.CLASSIFIERS_TEMPLATES_RESPONSE_JSON;
 import static com.ecaservice.web.dto.doc.CommonApiExamples.UNAUTHORIZED_RESPONSE_JSON;
 
 /**
@@ -58,7 +59,7 @@ public class ClassifiersTemplatesController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = ""),
+                                            @ExampleObject(value = CLASSIFIERS_TEMPLATES_RESPONSE_JSON),
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = FormTemplateDto.class))
                             )
