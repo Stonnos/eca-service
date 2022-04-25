@@ -14,6 +14,7 @@ import com.ecaservice.server.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.UserService;
 import com.ecaservice.web.dto.model.ClassifierOptionsDto;
+import com.ecaservice.web.dto.model.FormTemplateDto;
 import com.ecaservice.web.dto.model.InputOptionDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.google.common.collect.Sets;
@@ -64,6 +65,7 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
     @Override
     public void init() {
         when(userService.getCurrentUser()).thenReturn(USER_NAME);
+        when(classifiersTemplateService.getTemplateByClass(anyString())).thenReturn(new FormTemplateDto());
     }
 
     @Override
