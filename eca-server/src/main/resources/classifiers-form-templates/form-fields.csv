@@ -21,7 +21,7 @@ id;field_name;description;field_order;field_type;min_value;max_value;max_length;
 20;numIterations;Число итераций:;1;INTEGER;1;2147483647;255;NULL;NULL;1000000;5;NULL;NULL;true;true
 21;minError;Допустимая ошибка:;2;DECIMAL;0;1;255;NULL;NULL;0.00001;5;NULL;NULL;true;true
 22;activationFunctionOptions.activationFunctionType;Активационная функция нейронов скрытого слоя:;3;REFERENCE;NULL;NULL;NULL;NULL;3;LOGISTIC;5;NULL;NULL;true;true
-23;activationFunctionOptions.coefficient;Значение коэффициента:;4;DECIMAL;0;1;255;NULL;NULL;1;5;NULL;NULL;false;true
+23;activationFunctionOptions.coefficient;Значение коэффициента:;4;DECIMAL;0;2147483647;255;NULL;NULL;1;5;NULL;NULL;false;true
 24;backPropagationOptions.learningRate;Коэффициент скорости обучения:;5;DECIMAL;0;1;255;NULL;NULL;0.1;5;NULL;NULL;false;true
 25;backPropagationOptions.momentum;Коэффициент момента:;6;DECIMAL;0;1;255;NULL;NULL;0.2;5;NULL;NULL;true;false
 26;seed;Начальное значение (seed):;7;INTEGER;0;2147483647;255;NULL;NULL;1;5;NULL;NULL;true;true
