@@ -53,7 +53,9 @@
                      [placeholder]="getPlaceholder(formField)"
                      [maxLength]="formField.maxLength"
                      [minNumber]="formField.min"
-                     [maxNumber]="formField.max"/>
+                     [minInclusive]="formField.minInclusive"
+                     [maxNumber]="formField.max"
+                     [maxInclusive]="formField.maxInclusive"/>
               <div class="text-danger error-message" *ngIf="field.invalid && (field.dirty || field.touched || submitted)">
                 <div *ngFor="let error of getValidationErrors(field, formField)">
                   <span>{{ error }}</span>
@@ -70,8 +72,10 @@
                      [(ngModel)]="formField.currentValue"
                      [placeholder]="getPlaceholder(formField)"
                      [maxLength]="formField.maxLength"
+                     [minInclusive]="formField.minInclusive"
                      [minNumber]="formField.min"
-                     [maxNumber]="formField.max"/>
+                     [maxNumber]="formField.max"
+                     [maxInclusive]="formField.maxInclusive"/>
               <div class="text-danger error-message" *ngIf="field.invalid && (field.dirty || field.touched || submitted)">
                 <div *ngFor="let error of getValidationErrors(field, formField)">
                   <span>{{ error }}</span>

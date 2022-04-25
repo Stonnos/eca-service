@@ -15,7 +15,9 @@ export class FormTemplatesMapper {
       const formField = new FormField(formFieldDto.fieldName, formFieldDto.description, formFieldDto.fieldType);
       formField.maxLength = formFieldDto.maxLength;
       formField.min = formFieldDto.minValue;
+      formField.minInclusive = formFieldDto.minInclusive;
       formField.max = formFieldDto.maxValue;
+      formField.maxInclusive = formFieldDto.maxInclusive;
       formField.pattern = formFieldDto.pattern;
       formField.invalidPatternMessage = formFieldDto.invalidPatternMessage;
       formField.placeholder = formFieldDto.placeHolder;

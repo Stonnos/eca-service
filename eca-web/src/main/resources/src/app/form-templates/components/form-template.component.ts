@@ -41,10 +41,18 @@ export class FormTemplateComponent extends BaseCreateDialogComponent<FormField[]
             }
             break;
           case 'minNumber':
-            messages.push(`Значение должно быть больше либо равно ${formField.min}`);
+            if (formField.minInclusive) {
+              messages.push(`Значение должно быть больше либо равно ${formField.min}`);
+            } else {
+              messages.push(`Значение должно быть больше ${formField.min}`);
+            }
             break;
           case 'maxNumber':
-            messages.push(`Значение должно быть меньше либо равно ${formField.max}`);
+            if (formField.maxInclusive) {
+              messages.push(`Значение должно быть меньше либо равно ${formField.max}`);
+            } else {
+              messages.push(`Значение должно быть меньше ${formField.max}`);
+            }
             break;
         }
       }

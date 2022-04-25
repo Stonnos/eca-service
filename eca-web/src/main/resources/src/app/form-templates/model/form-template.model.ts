@@ -9,7 +9,9 @@ export class FormField {
   fieldType: FieldType;
   maxLength: number;
   min: number;
+  minInclusive: boolean;
   max: number;
+  maxInclusive: boolean;
   pattern: string;
   defaultValue: string;
   currentValue: any;

@@ -9,9 +9,18 @@ export class MaxNumberValidator implements Validator {
 
   @Input()
   public maxNumber: number;
+  @Input()
+  public maxInclusive: boolean;
 
   public validate(control: FormControl): {[key: string]: any} {
     let value = control.value;
-    return this.maxNumber != null && value != null && value > this.maxNumber ? {"maxNumber": true} : null;
+    if (this.maxNumber != null && value != null) {
+      if (this.maxInclusive) {
+        return value > this.maxNumber ? {"maxNumber": true} : null;
+      } else {
+        return value >= this.maxNumber ? {"maxNumber": true} : null;
+      }
+    }
+    return null;
   }
 }

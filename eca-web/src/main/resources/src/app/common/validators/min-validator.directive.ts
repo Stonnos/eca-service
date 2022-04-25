@@ -9,9 +9,18 @@ export class MinNumberValidator implements Validator {
 
   @Input()
   public minNumber: number;
+  @Input()
+  public minInclusive: boolean;
 
   public validate(control: FormControl): {[key: string]: any} {
     let value = control.value;
-    return this.minNumber != null && value != null && value < this.minNumber ? {"minNumber": true} : null;
+    if (this.minNumber != null && value != null) {
+      if (this.minInclusive) {
+        return value < this.minNumber ? {"minNumber": true} : null;
+      } else {
+        return value <= this.minNumber ? {"minNumber": true} : null;
+      }
+    }
+    return null;
   }
 }
