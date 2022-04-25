@@ -41,9 +41,6 @@ public class ClassifiersTemplatesController {
 
     private final ClassifiersTemplateService classifiersTemplateService;
 
-    //TODO Добавить пример ответа в open api
-    //TODO обновить документацию api
-
     /**
      * Gets classifiers form templates.
      *
