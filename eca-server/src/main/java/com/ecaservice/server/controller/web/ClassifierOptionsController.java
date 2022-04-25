@@ -2,6 +2,7 @@ package com.ecaservice.server.controller.web;
 
 import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.common.web.dto.ValidationErrorDto;
+import com.ecaservice.server.mapping.ClassifierOptionsDatabaseModelMapper;
 import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.server.service.classifiers.ClassifierOptionsService;
 import com.ecaservice.web.dto.model.ClassifierOptionsDto;
@@ -63,6 +64,7 @@ import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 public class ClassifierOptionsController {
 
     private final ClassifierOptionsService classifierOptionsService;
+    private final ClassifierOptionsDatabaseModelMapper classifierOptionsDatabaseModelMapper;
 
     /**
      * Finds classifiers options configs page.
@@ -191,6 +193,7 @@ public class ClassifierOptionsController {
      *
      * @param configurationId   - configuration id
      * @param classifierOptions - classifier options
+     * @return classifier options dto
      */
     @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
@@ -224,14 +227,16 @@ public class ClassifierOptionsController {
             }
     )
     @PostMapping(value = "/add")
-    public void addClassifierOptions(
+    public ClassifierOptionsDto addClassifierOptions(
             @Parameter(description = "Configuration id", example = "1", required = true)
             @Min(VALUE_1) @Max(Long.MAX_VALUE)
             @RequestParam long configurationId,
             @RequestBody ClassifierOptions classifierOptions) {
         log.info("Received request to save classifier options {} for configuration id [{}]", classifierOptions,
                 configurationId);
-        classifierOptionsService.saveClassifierOptions(configurationId, classifierOptions);
+        var classifierOptionsDatabaseModel =
+                classifierOptionsService.saveClassifierOptions(configurationId, classifierOptions);
+        return classifierOptionsDatabaseModelMapper.map(classifierOptionsDatabaseModel);
     }
 
     /**
