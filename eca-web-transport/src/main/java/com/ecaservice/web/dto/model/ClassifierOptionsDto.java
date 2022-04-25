@@ -35,6 +35,12 @@ public class ClassifierOptionsDto {
     private String optionsName;
 
     /**
+     * Options description
+     */
+    @Schema(description = "Options description", required = true, example = "Decision tree", maxLength = MAX_LENGTH_255)
+    private String optionsDescription;
+
+    /**
      * Creation date
      */
     @Schema(description = "Creation date", required = true, type = "string", example = "2021-07-01 14:00:00",

@@ -2,8 +2,6 @@ package com.ecaservice.server.controller.web;
 
 import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.common.web.dto.ValidationErrorDto;
-import com.ecaservice.server.mapping.ClassifierOptionsDatabaseModelMapper;
-import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.server.service.classifiers.ClassifierOptionsService;
 import com.ecaservice.web.dto.model.ClassifierOptionsDto;
 import com.ecaservice.web.dto.model.ClassifiersOptionsPageDto;
@@ -64,7 +62,6 @@ import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 public class ClassifierOptionsController {
 
     private final ClassifierOptionsService classifierOptionsService;
-    private final ClassifierOptionsDatabaseModelMapper classifierOptionsDatabaseModelMapper;
 
     /**
      * Finds classifiers options configs page.
@@ -176,9 +173,9 @@ public class ClassifierOptionsController {
         try {
             @Cleanup InputStream inputStream = classifiersOptionsFile.getInputStream();
             ClassifierOptions classifierOptions = parseOptions(inputStream);
-            ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel =
+            var classifierOptionsDto =
                     classifierOptionsService.saveClassifierOptions(configurationId, classifierOptions);
-            classifierOptionsResultDto.setId(classifierOptionsDatabaseModel.getId());
+            classifierOptionsResultDto.setId(classifierOptionsDto.getId());
             classifierOptionsResultDto.setSuccess(true);
         } catch (Exception ex) {
             log.error("There was an error while classifier options saving for configuration id [{}], options file [{}]",
@@ -234,9 +231,7 @@ public class ClassifierOptionsController {
             @RequestBody ClassifierOptions classifierOptions) {
         log.info("Received request to save classifier options {} for configuration id [{}]", classifierOptions,
                 configurationId);
-        var classifierOptionsDatabaseModel =
-                classifierOptionsService.saveClassifierOptions(configurationId, classifierOptions);
-        return classifierOptionsDatabaseModelMapper.map(classifierOptionsDatabaseModel);
+        return classifierOptionsService.saveClassifierOptions(configurationId, classifierOptions);
     }
 
     /**

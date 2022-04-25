@@ -13,6 +13,7 @@ import com.ecaservice.server.repository.ClassifierOptionsDatabaseModelRepository
 import com.ecaservice.server.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.UserService;
+import com.ecaservice.web.dto.model.ClassifierOptionsDto;
 import com.ecaservice.web.dto.model.InputOptionDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.google.common.collect.Sets;
@@ -180,10 +181,10 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
         classifiersConfiguration.setBuildIn(false);
         classifiersConfigurationRepository.save(classifiersConfiguration);
         LogisticOptions logisticOptions = TestHelperUtils.createLogisticOptions();
-        ClassifierOptionsDatabaseModel saved =
+        ClassifierOptionsDto classifierOptionsDto =
                 classifierOptionsService.saveClassifierOptions(classifiersConfiguration.getId(), logisticOptions);
         ClassifierOptionsDatabaseModel actual =
-                classifierOptionsDatabaseModelRepository.findById(saved.getId()).orElse(null);
+                classifierOptionsDatabaseModelRepository.findById(classifierOptionsDto.getId()).orElse(null);
         assertThat(actual).isNotNull();
         assertThat(actual.getOptionsName()).isEqualTo(logisticOptions.getClass().getSimpleName());
         assertThat(actual.getConfigMd5Hash()).isNotNull();

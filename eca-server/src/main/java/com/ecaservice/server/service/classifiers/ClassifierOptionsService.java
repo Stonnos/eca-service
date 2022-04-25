@@ -61,8 +61,8 @@ public class ClassifierOptionsService {
      */
     @Audit(value = ADD_CLASSIFIER_OPTIONS, correlationIdKey = "#configurationId")
     @Transactional
-    public ClassifierOptionsDatabaseModel saveClassifierOptions(long configurationId,
-                                                                @Valid ClassifierOptions classifierOptions) {
+    public ClassifierOptionsDto saveClassifierOptions(long configurationId,
+                                                      @Valid ClassifierOptions classifierOptions) {
         var classifiersConfiguration = getConfigurationById(configurationId);
         Assert.state(!classifiersConfiguration.isBuildIn(),
                 "Can't add classifier options to build in configuration!");
@@ -75,7 +75,7 @@ public class ClassifierOptionsService {
         classifiersConfigurationRepository.save(classifiersConfiguration);
         log.info("New classifier options [{}, id {}] has been saved for configuration [{}]", saved.getOptionsName(),
                 saved.getId(), configurationId);
-        return saved;
+        return internalPopulateClassifierOptions(saved);
     }
 
     /**
@@ -119,12 +119,7 @@ public class ClassifierOptionsService {
                         PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
         var classifierOptionsDtoList = classifierOptionsPage.getContent()
                 .stream()
-                .map(classifierOptionsDatabaseModel -> {
-                    var classifierOptionsDto = classifierOptionsDatabaseModelMapper.map(classifierOptionsDatabaseModel);
-                    var inputOptions = classifiersTemplateService.processInputOptions(classifierOptionsDto.getConfig());
-                    classifierOptionsDto.setInputOptions(inputOptions);
-                    return classifierOptionsDto;
-                })
+                .map(this::internalPopulateClassifierOptions)
                 .collect(Collectors.toList());
         return PageDto.of(classifierOptionsDtoList, pageRequestDto.getPage(), classifierOptionsPage.getTotalElements());
     }
@@ -192,4 +187,13 @@ public class ClassifierOptionsService {
                 classifierOptionsDatabaseModelRepository.countByConfiguration(classifiersConfiguration) > 1L;
     }
 
+    private ClassifierOptionsDto internalPopulateClassifierOptions(
+            ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel) {
+        var classifierOptionsDto = classifierOptionsDatabaseModelMapper.map(classifierOptionsDatabaseModel);
+        var inputOptions = classifiersTemplateService.processInputOptions(classifierOptionsDto.getConfig());
+        var template = classifiersTemplateService.getTemplateByClass(classifierOptionsDto.getOptionsName());
+        classifierOptionsDto.setOptionsDescription(template.getTemplateTitle());
+        classifierOptionsDto.setInputOptions(inputOptions);
+        return classifierOptionsDto;
+    }
 }

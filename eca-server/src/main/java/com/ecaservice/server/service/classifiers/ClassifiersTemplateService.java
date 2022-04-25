@@ -61,8 +61,25 @@ public class ClassifiersTemplateService {
         return inputOptions;
     }
 
+    /**
+     * Gets classifier template by class.
+     *
+     * @param objectClass - classifier class
+     * @return form template dto
+     */
+    public FormTemplateDto getTemplateByClass(String objectClass) {
+        log.debug("Gets classifier template by class [{}]", objectClass);
+        return formTemplateProvider.getTemplates(CLASSIFIERS_GROUP)
+                .stream()
+                .filter(formTemplateDto -> formTemplateDto.getObjectClass().equals(objectClass))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException(
+                        String.format("Can't find form template for class [%s]", objectClass)));
+    }
+
     private List<InputOptionDto> processInputOptions(ClassifierOptions classifierOptions) {
-        var template = getTemplate(classifierOptions);
+        String objectClass = classifierOptions.getClass().getSimpleName();
+        var template = getTemplateByClass(objectClass);
         return template.getFields()
                 .stream()
                 .map(formFieldDto -> {
@@ -79,16 +96,6 @@ public class ClassifiersTemplateService {
                 })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
-    }
-
-    private FormTemplateDto getTemplate(ClassifierOptions classifierOptions) {
-        String objectClass = classifierOptions.getClass().getSimpleName();
-        return formTemplateProvider.getTemplates(CLASSIFIERS_GROUP)
-                .stream()
-                .filter(formTemplateDto -> formTemplateDto.getObjectClass().equals(objectClass))
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException(
-                        String.format("Can't find form template for class [%s]", objectClass)));
     }
 
     private String getValue(ClassifierOptions classifierOptions, FormFieldDto formFieldDto) {
@@ -114,6 +121,5 @@ public class ClassifiersTemplateService {
                 .map(FieldDictionaryValueDto::getLabel)
                 .findFirst()
                 .orElse(null);
-
     }
 }
