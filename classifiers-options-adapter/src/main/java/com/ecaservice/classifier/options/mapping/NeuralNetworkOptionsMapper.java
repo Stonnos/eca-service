@@ -81,7 +81,7 @@ public abstract class NeuralNetworkOptionsMapper extends ClassifierOptionsMapper
             neuralNetwork.getMultilayerPerceptron().setNumOutNeurons(networkOptions.getNumOutNeurons());
         }
         if (networkOptions.getMinError() != null) {
-            neuralNetwork.getMultilayerPerceptron().setMinError(networkOptions.getMinError().doubleValue());
+            neuralNetwork.getMultilayerPerceptron().setMinError(networkOptions.getMinError());
         }
         if (networkOptions.getNumIterations() != null) {
             neuralNetwork.getMultilayerPerceptron().setNumIterations(networkOptions.getNumIterations());

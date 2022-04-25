@@ -51,7 +51,7 @@ public class TestHelperUtils {
     private static final int MAX_DEPTH = 10;
     private static final int NUM_ITERATIONS = 5;
     private static final int NUM_THREADS = 2;
-    private static final BigDecimal MIN_ERROR = BigDecimal.valueOf(0.00001d);
+    private static final double MIN_ERROR = 0.00001d;
     private static final int NUM_IN_NEURONS = 10;
     private static final int NUM_OUT_NEURONS = 12;
     private static final double LEARNING_RATE = 0.01d;

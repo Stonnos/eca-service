@@ -77,7 +77,7 @@ public class NeuralNetworkOptions extends ClassifierOptions {
     @DecimalMin(DECIMAL_VALUE_0_STRING)
     @DecimalMax(DECIMAL_VALUE_1_STRING)
     @Schema(description = "Min. error for optimization algorithm")
-    private BigDecimal minError;
+    private Double minError;
 
     /**
      * Activation function options

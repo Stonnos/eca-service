@@ -31,7 +31,7 @@ public class ActivationFunctionOptions implements Serializable {
      * Activation function coefficient value
      */
     @DecimalMin(value = DECIMAL_VALUE_0_STRING, inclusive = false)
-    @DecimalMax(value = INTEGER_MAX_VALUE_STRING, inclusive = false)
+    @DecimalMax(value = INTEGER_MAX_VALUE_STRING)
     @Schema(description = "Activation function coefficient value")
     private Double coefficient;
 }
