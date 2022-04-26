@@ -233,6 +233,7 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
       .subscribe({
         next: () => {
           this.messageService.add({ severity: 'success', summary: `Удалены настройки классификатора "${item.optionsDescription}"`, detail: '' });
+          this.getClassifiersConfigurationDetails();
           this.reloadPageWithLoader();
         },
         error: (error) => {
@@ -252,9 +253,10 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
       .subscribe({
         next: (classifierOptionsDto: ClassifierOptionsDto) => {
           this.lastCreatedId = classifierOptionsDto.id;
-          this.reloadPageWithLoader();
           this.messageService.add({ severity: 'success',
             summary: `Добавлены настройки классификатора "${classifierOptionsDto.optionsDescription}"`, detail: '' });
+          this.getClassifiersConfigurationDetails();
+          this.reloadPageWithLoader();
         },
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
