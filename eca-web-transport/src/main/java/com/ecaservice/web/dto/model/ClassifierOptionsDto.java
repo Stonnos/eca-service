@@ -3,10 +3,12 @@ package com.ecaservice.web.dto.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static com.ecaservice.web.dto.util.FieldConstraints.DATE_TIME_PATTERN;
 import static com.ecaservice.web.dto.util.FieldConstraints.LOCAL_DATE_TIME_MAX_LENGTH;
@@ -33,6 +35,12 @@ public class ClassifierOptionsDto {
     private String optionsName;
 
     /**
+     * Options description
+     */
+    @Schema(description = "Options description", required = true, example = "Decision tree", maxLength = MAX_LENGTH_255)
+    private String optionsDescription;
+
+    /**
      * Creation date
      */
     @Schema(description = "Creation date", required = true, type = "string", example = "2021-07-01 14:00:00",
@@ -52,4 +60,10 @@ public class ClassifierOptionsDto {
      */
     @Schema(description = "Json config", required = true, example = "Json config")
     private String config;
+
+    /**
+     * Classifier input options list
+     */
+    @ArraySchema(schema = @Schema(description = "Classifier input options list"))
+    private List<InputOptionDto> inputOptions;
 }

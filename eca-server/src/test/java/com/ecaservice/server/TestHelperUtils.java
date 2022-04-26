@@ -5,6 +5,7 @@ import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.base.model.TechnicalStatus;
+import com.ecaservice.classifier.options.model.ActivationFunctionOptions;
 import com.ecaservice.classifier.options.model.AdaBoostOptions;
 import com.ecaservice.classifier.options.model.BackPropagationOptions;
 import com.ecaservice.classifier.options.model.ClassifierOptions;
@@ -52,8 +53,11 @@ import com.ecaservice.web.dto.model.EvaluationResultsStatus;
 import com.ecaservice.web.dto.model.FilterDictionaryDto;
 import com.ecaservice.web.dto.model.FilterFieldDto;
 import com.ecaservice.web.dto.model.FilterFieldType;
+import com.ecaservice.web.dto.model.FormTemplateDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationMethod;
 import eca.core.evaluation.EvaluationResults;
@@ -65,7 +69,10 @@ import eca.dataminer.AutomatedKNearestNeighbours;
 import eca.ensemble.forests.DecisionTreeType;
 import eca.ensemble.sampling.SamplingMethod;
 import eca.metrics.KNearestNeighbours;
+import eca.metrics.distances.DistanceType;
+import eca.neural.functions.ActivationFunctionType;
 import eca.trees.CART;
+import lombok.Cleanup;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import org.springframework.amqp.core.MessageProperties;
@@ -108,6 +115,7 @@ public class TestHelperUtils {
     private static final String TRAINING_DATA_ABSOLUTE_PATH = "/home/data";
     private static final String EXPERIMENT_ABSOLUTE_PATH = "/home/experiment";
     private static final String DATA_PATH = "data/iris.xls";
+    private static final String CLASSIFIERS_TEMPLATES_JSON = "classifiers-templates.json";
     private static final int NUM_OBJ = 2;
     private static final double KNN_WEIGHT = 0.55d;
     private static final int NUM_NEIGHBOURS = 25;
@@ -140,6 +148,8 @@ public class TestHelperUtils {
     private static final String CONFIGURATION_NAME = "configuration";
     private static final int ITERATIONS = 1;
 
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
     /**
      * Creates page request dto.
      *
@@ -171,6 +181,22 @@ public class TestHelperUtils {
             XLSLoader dataLoader = new XLSLoader();
             dataLoader.setSource(new FileResource(new File(classLoader.getResource(DATA_PATH).getFile())));
             return dataLoader.loadInstances();
+        } catch (Exception ex) {
+            throw new IllegalStateException(ex.getMessage());
+        }
+    }
+
+    /**
+     * Loads classifiers templates.
+     *
+     * @return classifiers templates
+     */
+    public static List<FormTemplateDto> loadClassifiersTemplates() {
+        try {
+            ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+            @Cleanup var inputStream = classLoader.getResourceAsStream(CLASSIFIERS_TEMPLATES_JSON);
+            return OBJECT_MAPPER.readValue(inputStream, new TypeReference<>() {
+            });
         } catch (Exception ex) {
             throw new IllegalStateException(ex.getMessage());
         }
@@ -401,6 +427,7 @@ public class TestHelperUtils {
      */
     public static DecisionTreeOptions createDecisionTreeOptions() {
         DecisionTreeOptions decisionTreeOptions = new DecisionTreeOptions();
+        decisionTreeOptions.setDecisionTreeType(DecisionTreeType.CART);
         decisionTreeOptions.setMaxDepth(MAX_DEPTH);
         decisionTreeOptions.setMinObj(NUM_OBJ);
         decisionTreeOptions.setNumRandomAttr(NUM_RANDOM_ATTR);
@@ -425,6 +452,8 @@ public class TestHelperUtils {
         neuralNetworkOptions.setMinError(MIN_ERROR);
         neuralNetworkOptions.setNumInNeurons(NUM_IN_NEURONS);
         neuralNetworkOptions.setNumOutNeurons(NUM_OUT_NEURONS);
+        neuralNetworkOptions.setActivationFunctionOptions(new ActivationFunctionOptions());
+        neuralNetworkOptions.getActivationFunctionOptions().setActivationFunctionType(ActivationFunctionType.LOGISTIC);
         neuralNetworkOptions.setBackPropagationOptions(new BackPropagationOptions());
         neuralNetworkOptions.getBackPropagationOptions().setMomentum(MOMENTUM);
         neuralNetworkOptions.getBackPropagationOptions().setLearningRate(LEARNING_RATE);
@@ -452,6 +481,7 @@ public class TestHelperUtils {
      */
     public static KNearestNeighboursOptions createKNearestNeighboursOptions() {
         KNearestNeighboursOptions options = new KNearestNeighboursOptions();
+        options.setDistanceType(DistanceType.EUCLID);
         options.setNumNeighbours(NUM_NEIGHBOURS);
         options.setWeight(KNN_WEIGHT);
         return options;
@@ -907,7 +937,7 @@ public class TestHelperUtils {
      *
      * @return logistic options
      */
-    public LogisticOptions createLogisticOptions() {
+    public static LogisticOptions createLogisticOptions() {
         LogisticOptions logisticOptions = new LogisticOptions();
         logisticOptions.setMaxIts(NUM_ITERATIONS);
         logisticOptions.setUseConjugateGradientDescent(false);

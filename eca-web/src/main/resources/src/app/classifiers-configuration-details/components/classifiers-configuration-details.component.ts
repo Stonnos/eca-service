@@ -1,13 +1,12 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import {
-  ClassifierOptionsDto, ClassifiersConfigurationDto, PageDto,
+  ClassifierOptionsDto, ClassifiersConfigurationDto, FormTemplateDto, PageDto,
   PageRequestDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ClassifierOptionsService } from "../services/classifier-options.service";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { BaseListComponent } from "../../common/lists/base-list.component";
 import { OverlayPanel} from "primeng/primeng";
-import { JsonPipe } from "@angular/common";
 import { Observable } from "rxjs/internal/Observable";
 import { ClassifierOptionsFields } from "../../common/util/field-names";
 import { FieldService } from "../../common/services/field.service";
@@ -18,8 +17,9 @@ import { ExperimentTabUtils } from "../../experiments-tabs/model/experiment-tab.
 import { finalize } from "rxjs/internal/operators";
 import { Utils } from "../../common/util/utils";
 import { OperationType }  from "../../common/model/operation-type.enum";
-
-declare var Prism: any;
+import { FormTemplatesService } from "../../form-templates/services/form-templates.service";
+import { FormField } from "../../form-templates/model/form-template.model";
+import { FormTemplatesMapper } from "../../form-templates/services/form-templates.mapper";
 
 @Component({
   selector: 'app-classifiers-configuration-details',
@@ -38,22 +38,31 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
 
   public editClassifiersConfigurationDialogVisibility: boolean = false;
   public uploadClassifiersOptionsDialogVisibility: boolean = false;
+  public addClassifiersOptionsDialogVisibility: boolean = false;
+
+  public templates: FormTemplateDto[] = [];
+
+  public selectedTemplate: FormTemplateDto;
+  public selectedFormFields: FormField[] = [];
 
   public constructor(private injector: Injector,
                      private classifierOptionsService: ClassifierOptionsService,
                      private classifiersConfigurationService: ClassifiersConfigurationsService,
+                     private formTemplatesService: FormTemplatesService,
+                     private formTemplatesMapper: FormTemplatesMapper,
                      private route: ActivatedRoute,
                      private confirmationService: ConfirmationService,
                      private router: Router) {
     super(injector.get(MessageService), injector.get(FieldService));
     this.configurationId = this.route.snapshot.params.id;
     this.defaultSortField = ClassifierOptionsFields.CREATION_DATE;
-    this.linkColumns = [ClassifierOptionsFields.OPTIONS_NAME];
+    this.linkColumns = [ClassifierOptionsFields.OPTIONS_DESCRIPTION];
     this.initColumns();
   }
 
   public ngOnInit() {
     this.getClassifiersConfigurationDetails();
+    this.getClassifiersTemplates();
   }
 
   public getClassifiersConfigurationDetails(): void {
@@ -75,12 +84,6 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
   public onSelect(event, classifierOptionsDto: ClassifierOptionsDto, overlayPanel: OverlayPanel) {
     this.selectedOptions = classifierOptionsDto;
     overlayPanel.toggle(event);
-  }
-
-  public getFormattedJsonConfig(): string {
-    const configObj = JSON.parse(this.selectedOptions.config);
-    const json = new JsonPipe().transform(configObj);
-    return Prism.highlight(json, Prism.languages['json']);
   }
 
   public isDeleteAllowed(): boolean {
@@ -129,6 +132,12 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
     this.downloadReport(observable, Utils.getClassifiersConfigurationFile(item));
   }
 
+  public onChooseClassifierOptionsTemplate(template: FormTemplateDto): void {
+    this.selectedTemplate = template;
+    this.selectedFormFields = this.formTemplatesMapper.mapToFormFields(template.fields);
+    this.addClassifiersOptionsDialogVisibility = true;
+  }
+
   public onSetActiveClassifiersConfiguration(item: ClassifiersConfigurationDto): void {
     this.setActiveConfiguration(item);
   }
@@ -149,6 +158,15 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
       default:
         this.messageService.add({severity: 'error', summary: 'Ошибка', detail: `Can't handle ${item.operation} operation`});
     }
+  }
+
+  public onAddClassifierOptionsDialogVisibility(visible): void {
+    this.addClassifiersOptionsDialogVisibility = visible;
+  }
+
+  public onAddClassifierOptions(formFields: FormField[]): void {
+    const classifierOptions = this.formTemplatesMapper.mapToClassifierOptionsObject(formFields, this.selectedTemplate);
+    this.addClassifiersOptions(classifierOptions);
   }
 
   private deleteConfiguration(item: ClassifiersConfigurationDto): void {
@@ -214,7 +232,30 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
       )
       .subscribe({
         next: () => {
-          this.messageService.add({ severity: 'success', summary: `Удалена настройка ${item.optionsName}`, detail: '' });
+          this.messageService.add({ severity: 'success', summary: `Удалены настройки классификатора "${item.optionsDescription}"`, detail: '' });
+          this.getClassifiersConfigurationDetails();
+          this.reloadPageWithLoader();
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
+  }
+
+  private addClassifiersOptions(classifierOptions: any): void {
+    this.loading = true;
+    this.classifierOptionsService.addClassifiersOptions(this.configurationId, classifierOptions)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe({
+        next: (classifierOptionsDto: ClassifierOptionsDto) => {
+          this.lastCreatedId = classifierOptionsDto.id;
+          this.messageService.add({ severity: 'success',
+            summary: `Добавлены настройки классификатора "${classifierOptionsDto.optionsDescription}"`, detail: '' });
+          this.getClassifiersConfigurationDetails();
           this.reloadPageWithLoader();
         },
         error: (error) => {
@@ -227,10 +268,22 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
     return !this.classifiersConfiguration.active || this.items.length > 1;
   }
 
+  private getClassifiersTemplates(): void {
+    this.formTemplatesService.getClassifiersFormTemplates()
+      .subscribe({
+        next: (templates: FormTemplateDto[]) => {
+          this.templates = templates;
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
+  }
+
   private initColumns() {
     this.columns = [
       { name: ClassifierOptionsFields.ID, label: "#" },
-      { name: ClassifierOptionsFields.OPTIONS_NAME, label: "Настройки классификатора" },
+      { name: ClassifierOptionsFields.OPTIONS_DESCRIPTION, label: "Настройки классификатора" },
       { name: ClassifierOptionsFields.CREATION_DATE, label: "Дата создания настроек" },
       { name: ClassifierOptionsFields.CREATED_BY, label: "Пользователь" }
     ];

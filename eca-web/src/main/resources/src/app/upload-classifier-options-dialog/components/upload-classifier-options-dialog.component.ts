@@ -92,7 +92,7 @@ export class UploadClassifierOptionsDialogComponent implements OnInit {
     const observables: Observable<CreateClassifierOptionsResultDto>[] = [];
     for (let fileName in event.files) {
       const file: File = event.files[fileName];
-      observables.push(this.classifierOptionsService.saveClassifierOptions(this.configurationId, file));
+      observables.push(this.classifierOptionsService.uploadClassifierOptions(this.configurationId, file));
     }
     return observables;
   }

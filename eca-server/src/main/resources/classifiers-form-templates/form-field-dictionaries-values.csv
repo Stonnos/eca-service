@@ -1,0 +1,15 @@
+id;label;value;dictionary_id
+1;Евкилидово расстояние;EUCLID;1
+2;Квадрат Евклидова расстояни;SQUARE_EUCLID;1
+3;Манхеттенское расстояние;MANHATTAN;1
+4;Расстояние Чебышева;CHEBYSHEV;1
+5;Алгоритм CART;CART;2
+6;Алгоритм ID3;ID3;2
+7;Алгоритм C4.5;C45;2
+8;Алгоритм CHAID;CHAID;2
+9;Логистическая;LOGISTIC;3
+10;Гиперболический тангенс;HYPERBOLIC_TANGENT;3
+11;Тригонометрический синус;SINUSOID;3
+12;Экспоненциальная;EXPONENTIAL;3
+13;Функция SoftSign;SOFT_SIGN;3
+14;Функция ISRU;INVERSE_SQUARE_ROOT_UNIT;3

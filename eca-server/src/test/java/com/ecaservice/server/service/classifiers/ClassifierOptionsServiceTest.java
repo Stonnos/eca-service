@@ -1,22 +1,26 @@
 package com.ecaservice.server.service.classifiers;
 
-import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.classifier.options.model.AdaBoostOptions;
 import com.ecaservice.classifier.options.model.LogisticOptions;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
+import com.ecaservice.server.mapping.ClassifierOptionsDatabaseModelMapperImpl;
+import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.server.model.entity.ClassifiersConfiguration;
 import com.ecaservice.server.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.server.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.UserService;
+import com.ecaservice.web.dto.model.ClassifierOptionsDto;
+import com.ecaservice.web.dto.model.FormTemplateDto;
+import com.ecaservice.web.dto.model.InputOptionDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.google.common.collect.Sets;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.Page;
 
 import javax.inject.Inject;
 import java.util.Arrays;
@@ -29,6 +33,7 @@ import static com.ecaservice.server.TestHelperUtils.createClassifiersConfigurati
 import static com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel_.CREATION_DATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 /**
@@ -36,7 +41,8 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({AppProperties.class, ClassifierOptionsService.class})
+@Import({AppProperties.class, ClassifierOptionsService.class, ClassifierOptionsDatabaseModelMapperImpl.class,
+        DateTimeConverter.class})
 class ClassifierOptionsServiceTest extends AbstractJpaTest {
 
     private static final int PAGE_NUMBER = 0;
@@ -51,12 +57,15 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
     private ClassifiersConfigurationRepository classifiersConfigurationRepository;
     @MockBean
     private UserService userService;
+    @MockBean
+    private ClassifiersTemplateService classifiersTemplateService;
     @Inject
     private ClassifierOptionsService classifierOptionsService;
 
     @Override
     public void init() {
         when(userService.getCurrentUser()).thenReturn(USER_NAME);
+        when(classifiersTemplateService.getTemplateByClass(anyString())).thenReturn(new FormTemplateDto());
     }
 
     @Override
@@ -67,15 +76,20 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
 
     @Test
     void testGetClassifiersOptionsPage() {
+        when(classifiersTemplateService.processInputOptions(anyString()))
+                .thenReturn(Collections.singletonList(new InputOptionDto()));
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = saveClassifierOptions(true);
         PageRequestDto pageRequestDto =
                 new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, CREATION_DATE, false, null,
                         Collections.emptyList());
-        Page<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModelPage =
+        var classifierOptionsDatabaseModelPage =
                 classifierOptionsService.getNextPage(classifierOptionsDatabaseModel.getConfiguration().getId(),
                         pageRequestDto);
         assertThat(classifierOptionsDatabaseModelPage).isNotNull();
-        assertThat(classifierOptionsDatabaseModelPage.getTotalElements()).isOne();
+        assertThat(classifierOptionsDatabaseModelPage.getTotalCount()).isOne();
+        var classifierOptionsDto = classifierOptionsDatabaseModelPage.getContent().iterator().next();
+        assertThat(classifierOptionsDto).isNotNull();
+        assertThat(classifierOptionsDto.getInputOptions()).hasSize(1);
     }
 
     @Test
@@ -169,10 +183,10 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
         classifiersConfiguration.setBuildIn(false);
         classifiersConfigurationRepository.save(classifiersConfiguration);
         LogisticOptions logisticOptions = TestHelperUtils.createLogisticOptions();
-        ClassifierOptionsDatabaseModel saved =
+        ClassifierOptionsDto classifierOptionsDto =
                 classifierOptionsService.saveClassifierOptions(classifiersConfiguration.getId(), logisticOptions);
         ClassifierOptionsDatabaseModel actual =
-                classifierOptionsDatabaseModelRepository.findById(saved.getId()).orElse(null);
+                classifierOptionsDatabaseModelRepository.findById(classifierOptionsDto.getId()).orElse(null);
         assertThat(actual).isNotNull();
         assertThat(actual.getOptionsName()).isEqualTo(logisticOptions.getClass().getSimpleName());
         assertThat(actual.getConfigMd5Hash()).isNotNull();

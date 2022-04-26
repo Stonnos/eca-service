@@ -4,21 +4,25 @@ import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.server.config.AppProperties;
+import com.ecaservice.server.mapping.ClassifierOptionsDatabaseModelMapper;
 import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.server.model.entity.ClassifiersConfiguration;
 import com.ecaservice.server.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.server.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.server.service.UserService;
+import com.ecaservice.web.dto.model.ClassifierOptionsDto;
+import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -38,11 +42,14 @@ import static com.ecaservice.server.util.ClassifierOptionsHelper.isEnsembleClass
  */
 @Slf4j
 @Service
+@Validated
 @RequiredArgsConstructor
 public class ClassifierOptionsService {
 
     private final AppProperties appProperties;
     private final UserService userService;
+    private final ClassifiersTemplateService classifiersTemplateService;
+    private final ClassifierOptionsDatabaseModelMapper classifierOptionsDatabaseModelMapper;
     private final ClassifiersConfigurationRepository classifiersConfigurationRepository;
     private final ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;
 
@@ -54,8 +61,8 @@ public class ClassifierOptionsService {
      */
     @Audit(value = ADD_CLASSIFIER_OPTIONS, correlationIdKey = "#configurationId")
     @Transactional
-    public ClassifierOptionsDatabaseModel saveClassifierOptions(long configurationId,
-                                                                ClassifierOptions classifierOptions) {
+    public ClassifierOptionsDto saveClassifierOptions(long configurationId,
+                                                      @Valid ClassifierOptions classifierOptions) {
         var classifiersConfiguration = getConfigurationById(configurationId);
         Assert.state(!classifiersConfiguration.isBuildIn(),
                 "Can't add classifier options to build in configuration!");
@@ -68,7 +75,7 @@ public class ClassifierOptionsService {
         classifiersConfigurationRepository.save(classifiersConfiguration);
         log.info("New classifier options [{}, id {}] has been saved for configuration [{}]", saved.getOptionsName(),
                 saved.getId(), configurationId);
-        return saved;
+        return internalPopulateClassifierOptions(saved);
     }
 
     /**
@@ -103,12 +110,18 @@ public class ClassifierOptionsService {
      * @param pageRequestDto  - page request dto
      * @return classifiers options page
      */
-    public Page<ClassifierOptionsDatabaseModel> getNextPage(long configurationId, PageRequestDto pageRequestDto) {
+    public PageDto<ClassifierOptionsDto> getNextPage(long configurationId, PageRequestDto pageRequestDto) {
         var classifiersConfiguration = getConfigurationById(configurationId);
         var sort = buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
         var pageSize = Integer.min(pageRequestDto.getSize(), appProperties.getMaxPageSize());
-        return classifierOptionsDatabaseModelRepository.findAllByConfiguration(classifiersConfiguration,
-                PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
+        var classifierOptionsPage =
+                classifierOptionsDatabaseModelRepository.findAllByConfiguration(classifiersConfiguration,
+                        PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
+        var classifierOptionsDtoList = classifierOptionsPage.getContent()
+                .stream()
+                .map(this::internalPopulateClassifierOptions)
+                .collect(Collectors.toList());
+        return PageDto.of(classifierOptionsDtoList, pageRequestDto.getPage(), classifierOptionsPage.getTotalElements());
     }
 
     /**
@@ -174,4 +187,13 @@ public class ClassifierOptionsService {
                 classifierOptionsDatabaseModelRepository.countByConfiguration(classifiersConfiguration) > 1L;
     }
 
+    private ClassifierOptionsDto internalPopulateClassifierOptions(
+            ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel) {
+        var classifierOptionsDto = classifierOptionsDatabaseModelMapper.map(classifierOptionsDatabaseModel);
+        var inputOptions = classifiersTemplateService.processInputOptions(classifierOptionsDto.getConfig());
+        var template = classifiersTemplateService.getTemplateByClass(classifierOptionsDto.getOptionsName());
+        classifierOptionsDto.setOptionsDescription(template.getTemplateTitle());
+        classifierOptionsDto.setInputOptions(inputOptions);
+        return classifierOptionsDto;
+    }
 }

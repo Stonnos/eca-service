@@ -44,12 +44,14 @@
         <td>
           <app-classifiers-configuration-menu
             [classifiersConfiguration]="item"
+            [templates]="templates"
             (onDelete)="onDeleteClassifiersConfiguration($event)"
             (onSetActive)="onSetActiveClassifiersConfiguration($event)"
             (onUploadClassifiers)="showUploadClassifiersOptionsDialogVisibility($event)"
             (onRename)="showEditClassifiersConfigurationDialog($event)"
             (onCopy)="showCopyClassifiersConfigurationDialog($event)"
-            (onDownloadReport)="onDownloadReport($event)">
+            (onDownloadReport)="onDownloadReport($event)"
+            (onAddClassifierOptions)="onChooseClassifierOptionsTemplate($event, item)">
           </app-classifiers-configuration-menu>
         </td>
         <td *ngFor="let column of columns">
@@ -95,3 +97,10 @@
   (visibilityChange)="onUploadClassifiersOptionsDialogVisibility($event)"
   (uploaded)="onUploadedClassifiersOptions($event)">
 </app-upload-classifier-options-dialog>
+
+<app-form-template [template]="selectedTemplate"
+                   [item]="selectedFormFields"
+                   [visible]="addClassifiersOptionsDialogVisibility"
+                   (visibilityChange)="onAddClassifierOptionsDialogVisibility($event)"
+                   (itemEvent)="onAddClassifierOptions($event)">
+</app-form-template>

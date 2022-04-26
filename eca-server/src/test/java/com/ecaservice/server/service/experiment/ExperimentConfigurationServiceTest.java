@@ -3,12 +3,15 @@ package com.ecaservice.server.service.experiment;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.exception.ClassifierOptionsException;
+import com.ecaservice.server.mapping.ClassifierOptionsDatabaseModelMapperImpl;
+import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.server.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.server.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.UserService;
 import com.ecaservice.server.service.classifiers.ClassifierOptionsService;
+import com.ecaservice.server.service.classifiers.ClassifiersTemplateService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -28,11 +31,14 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  *
  * @author Roman Batygin
  */
-@Import({ExperimentConfig.class, AppProperties.class, ClassifierOptionsService.class})
+@Import({ExperimentConfig.class, AppProperties.class, ClassifierOptionsService.class,
+        ClassifierOptionsDatabaseModelMapperImpl.class, DateTimeConverter.class})
 class ExperimentConfigurationServiceTest extends AbstractJpaTest {
 
     @MockBean
     private UserService userService;
+    @MockBean
+    private ClassifiersTemplateService classifiersTemplateService;
     @Inject
     private ClassifierOptionsService classifierOptionsService;
     @Inject

@@ -23,12 +23,14 @@
         <app-classifiers-configuration-menu
           class="ml-5"
           [classifiersConfiguration]="classifiersConfiguration"
+          [templates]="templates"
           (onSetActive)="onSetActiveClassifiersConfiguration($event)"
           (onDelete)="onDeleteClassifiersConfiguration($event)"
           (onRename)="showEditClassifiersConfigurationDialog($event)"
           (onCopy)="showCopyClassifiersConfigurationDialog($event)"
           (onUploadClassifiers)="showUploadClassifiersOptionsDialogVisibility($event)"
-          (onDownloadReport)="onDownloadReport($event)">
+          (onDownloadReport)="onDownloadReport($event)"
+          (onAddClassifierOptions)="onChooseClassifierOptionsTemplate($event)">
         </app-classifiers-configuration-menu>
       </div>
     </ng-template>
@@ -43,7 +45,7 @@
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-item>
-      <tr>
+      <tr [ngClass]="{'item-blink': isBlink(item)}">
         <td *ngFor="let column of columns">
           <a class="link" [routerLink]="" *ngIf="isLink(column.name)" (click)="onSelect($event, item, configsPanel)">
             {{ getColumnValue(column.name, item) }}
@@ -69,9 +71,10 @@
     </ng-template>
   </p-table>
   <p-overlayPanel #configsPanel [showCloseIcon]="true">
-    <p-panel *ngIf="selectedOptions">
-      <pre class="json-config"><code class="language-json" [innerHTML]="getFormattedJsonConfig()"></code></pre>
-    </p-panel>
+    <app-classifier-options-details *ngIf="selectedOptions"
+                                    [jsonOptions]="selectedOptions.config"
+                                    [inputOptions]="selectedOptions.inputOptions">
+    </app-classifier-options-details>
   </p-overlayPanel>
 </div>
 
@@ -88,3 +91,10 @@
   (visibilityChange)="onUploadClassifiersOptionsDialogVisibility($event)"
   (uploaded)="onUploadedClassifiersOptions($event)">
 </app-upload-classifier-options-dialog>
+
+<app-form-template [template]="selectedTemplate"
+                   [item]="selectedFormFields"
+                   [visible]="addClassifiersOptionsDialogVisibility"
+                   (visibilityChange)="onAddClassifierOptionsDialogVisibility($event)"
+                   (itemEvent)="onAddClassifierOptions($event)">
+</app-form-template>

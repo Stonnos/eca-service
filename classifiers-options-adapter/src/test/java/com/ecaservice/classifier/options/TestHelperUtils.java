@@ -27,6 +27,7 @@ import eca.trees.DecisionTreeClassifier;
 import eca.trees.J48;
 import lombok.experimental.UtilityClass;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
