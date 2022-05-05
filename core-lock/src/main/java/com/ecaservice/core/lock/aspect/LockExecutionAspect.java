@@ -65,7 +65,6 @@ public class LockExecutionAspect {
             lockMeterService.trackSuccessLock(locked.lockName());
             Object result = joinPoint.proceed();
             unlock(lockService, lockKey, locked.lockName());
-            lockMeterService.trackSuccessUnlock(locked.lockName());
             return result;
         } catch (CannotAcquireLockException ex) {
             log.error("Acquire lock error: {}", ex.getMessage());
