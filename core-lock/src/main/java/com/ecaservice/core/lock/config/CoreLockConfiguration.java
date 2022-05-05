@@ -3,6 +3,7 @@ package com.ecaservice.core.lock.config;
 import com.ecaservice.core.lock.fallback.DefaultFallbackHandler;
 import com.ecaservice.core.lock.fallback.FallbackHandler;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -11,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
  * @author Roman Batygin
  */
 @Configuration
+@ComponentScan({"com.ecaservice.core.lock"})
 public class CoreLockConfiguration {
 
     /**
