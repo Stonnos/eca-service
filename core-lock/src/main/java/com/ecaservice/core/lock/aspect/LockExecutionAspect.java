@@ -4,7 +4,7 @@ import com.ecaservice.common.web.expression.SpelExpressionHelper;
 import com.ecaservice.core.lock.annotation.Locked;
 import com.ecaservice.core.lock.exception.CannotUnlockException;
 import com.ecaservice.core.lock.fallback.FallbackHandler;
-import com.ecaservice.core.lock.service.LockMeterService;
+import com.ecaservice.core.lock.metrics.LockMeterService;
 import com.ecaservice.core.lock.service.LockService;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;

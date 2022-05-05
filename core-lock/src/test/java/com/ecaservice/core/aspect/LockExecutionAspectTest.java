@@ -2,7 +2,7 @@ package com.ecaservice.core.aspect;
 
 import com.ecaservice.core.config.TestLockConfiguration;
 import com.ecaservice.core.lock.aspect.LockExecutionAspect;
-import com.ecaservice.core.lock.service.LockMeterService;
+import com.ecaservice.core.lock.metrics.LockMeterService;
 import com.ecaservice.core.test.TestCounterService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package com.ecaservice.core.lock.service;
+package com.ecaservice.core.lock.metrics;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;
