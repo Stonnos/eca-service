@@ -59,7 +59,6 @@ public class LockExecutionAspect {
         String lockKey = getLockKey(joinPoint, locked.lockName(), locked.key());
         LockRegistry lockRegistry = applicationContext.getBean(locked.lockRegistry(), LockRegistry.class);
         LockService lockService = new LockService(lockRegistry);
-        Object result = null;
         try {
             if (!locked.waitForLock()) {
                 if (!lockService.tryLock(lockKey)) {
@@ -72,28 +71,29 @@ public class LockExecutionAspect {
                 lockService.lock(lockKey);
             }
             lockMeterService.trackSuccessLock(locked.lockName());
-            result = joinPoint.proceed();
-            lockService.unlock(lockKey);
-            lockMeterService.trackSuccessUnlock(locked.lockName());
+            Object result = joinPoint.proceed();
+            unlock(lockService, locked.lockName(), lockKey);
+            return result;
         } catch (CannotAcquireLockException ex) {
             log.error("Acquire lock error: {}", ex.getMessage());
             lockMeterService.trackAcquireLockError(locked.lockName());
             throw ex;
-        } catch (CannotUnlockException ex) {
-            log.error("There was an error while release lock with key [{}]: {}", lockKey, ex.getMessage());
-            lockMeterService.trackUnlockError(locked.lockName());
         } catch (Exception ex) {
             log.error("There was an error while around method [{}] with Locked: {}",
                     joinPoint.getSignature().getName(), ex.getMessage());
-            try {
-                lockService.unlock(lockKey);
-                lockMeterService.trackSuccessUnlock(locked.lockName());
-            } catch (CannotUnlockException e) {
-                lockMeterService.trackUnlockError(locked.lockName());
-            }
+            unlock(lockService, locked.lockName(), lockKey);
             throw ex;
         }
-        return result;
+    }
+
+    private void unlock(LockService lockService, String lockName, String key) {
+        try {
+            lockService.unlock(key);
+            lockMeterService.trackSuccessUnlock(lockName);
+        } catch (CannotUnlockException e) {
+            log.error("There was an error while release lock with key [{}]: {}", key, e.getMessage());
+            lockMeterService.trackUnlockError(lockName);
+        }
     }
 
     private String getLockKey(ProceedingJoinPoint joinPoint, String lockName, String lockKey) {
