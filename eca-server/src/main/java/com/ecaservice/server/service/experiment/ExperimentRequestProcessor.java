@@ -1,6 +1,6 @@
 package com.ecaservice.server.service.experiment;
 
-import com.ecaservice.core.lock.annotation.TryLocked;
+import com.ecaservice.core.lock.annotation.Locked;
 import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.event.model.ExperimentEmailEvent;
 import com.ecaservice.server.event.model.ExperimentFinishedEvent;
@@ -48,7 +48,8 @@ public class ExperimentRequestProcessor {
      *
      * @param id - experiment id
      */
-    @TryLocked(lockName = "experiment", key = "#id", lockRegistry = EXPERIMENT_REDIS_LOCK_REGISTRY_BEAN)
+    @Locked(lockName = "experiment", key = "#id", lockRegistry = EXPERIMENT_REDIS_LOCK_REGISTRY_BEAN,
+            waitForLock = false)
     public void processNewExperiment(Long id) {
         var experiment = experimentService.getById(id);
         if (!RequestStatus.NEW.equals(experiment.getRequestStatus())) {
@@ -77,7 +78,8 @@ public class ExperimentRequestProcessor {
     /**
      * Removes experiments model files from disk.
      */
-    @TryLocked(lockName = EXPERIMENTS_CRON_JOB_KEY, lockRegistry = EXPERIMENT_REDIS_LOCK_REGISTRY_BEAN)
+    @Locked(lockName = EXPERIMENTS_CRON_JOB_KEY, lockRegistry = EXPERIMENT_REDIS_LOCK_REGISTRY_BEAN,
+            waitForLock = false)
     public void removeExperimentsModels() {
         log.info("Starting to remove experiments models.");
         LocalDateTime dateTime = LocalDateTime.now().minusDays(experimentConfig.getNumberOfDaysForStorage());
@@ -91,7 +93,8 @@ public class ExperimentRequestProcessor {
     /**
      * Removes experiments training data files from disk.
      */
-    @TryLocked(lockName = EXPERIMENTS_CRON_JOB_KEY, lockRegistry = EXPERIMENT_REDIS_LOCK_REGISTRY_BEAN)
+    @Locked(lockName = EXPERIMENTS_CRON_JOB_KEY, lockRegistry = EXPERIMENT_REDIS_LOCK_REGISTRY_BEAN,
+            waitForLock = false)
     public void removeExperimentsTrainingData() {
         log.info("Starting to remove experiments training data.");
         LocalDateTime dateTime = LocalDateTime.now().minusDays(experimentConfig.getNumberOfDaysForStorage());

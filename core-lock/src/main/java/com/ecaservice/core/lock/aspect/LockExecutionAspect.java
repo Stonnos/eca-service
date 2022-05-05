@@ -2,7 +2,6 @@ package com.ecaservice.core.lock.aspect;
 
 import com.ecaservice.common.web.expression.SpelExpressionHelper;
 import com.ecaservice.core.lock.annotation.Locked;
-import com.ecaservice.core.lock.annotation.TryLocked;
 import com.ecaservice.core.lock.exception.CannotUnlockException;
 import com.ecaservice.core.lock.fallback.FallbackHandler;
 import com.ecaservice.core.lock.service.LockMeterService;
@@ -62,7 +61,16 @@ public class LockExecutionAspect {
         LockService lockService = new LockService(lockRegistry);
         Object result = null;
         try {
-            lockService.lock(lockKey);
+            if (!locked.waitForLock()) {
+                if (!lockService.tryLock(lockKey)) {
+                    lockMeterService.trackFailedLock(locked.lockName());
+                    var fallbackHandler = applicationContext.getBean(locked.fallback(), FallbackHandler.class);
+                    fallbackHandler.fallback(lockKey);
+                    return null;
+                }
+            } else {
+                lockService.lock(lockKey);
+            }
             lockMeterService.trackSuccessLock(locked.lockName());
             result = joinPoint.proceed();
             lockService.unlock(lockKey);
@@ -77,49 +85,12 @@ public class LockExecutionAspect {
         } catch (Exception ex) {
             log.error("There was an error while around method [{}] with Locked: {}",
                     joinPoint.getSignature().getName(), ex.getMessage());
-            lockService.unlock(lockKey);
-            lockMeterService.trackSuccessUnlock(locked.lockName());
-            throw ex;
-        }
-        return result;
-    }
-
-    /**
-     * Wrapper for service method to perform try lock.
-     *
-     * @param joinPoint - give reflective access to the processed method
-     * @param tryLocked - try locked annotation
-     */
-    @Around("execution(@com.ecaservice.core.lock.annotation.TryLocked * * (..)) && @annotation(tryLocked)")
-    public Object around(ProceedingJoinPoint joinPoint, TryLocked tryLocked) throws Throwable {
-        String lockKey = getLockKey(joinPoint, tryLocked.lockName(), tryLocked.key());
-        LockRegistry lockRegistry = applicationContext.getBean(tryLocked.lockRegistry(), LockRegistry.class);
-        LockService lockService = new LockService(lockRegistry);
-        Object result = null;
-        try {
-            if (!lockService.tryLock(lockKey)) {
-                lockMeterService.trackFailedLock(tryLocked.lockName());
-                FallbackHandler fallbackHandler =
-                        applicationContext.getBean(tryLocked.fallback(), FallbackHandler.class);
-                fallbackHandler.fallback(lockKey);
-            } else {
-                lockMeterService.trackSuccessLock(tryLocked.lockName());
-                result = joinPoint.proceed();
+            try {
                 lockService.unlock(lockKey);
-                lockMeterService.trackSuccessUnlock(tryLocked.lockName());
+                lockMeterService.trackSuccessUnlock(locked.lockName());
+            } catch (CannotUnlockException e) {
+                lockMeterService.trackUnlockError(locked.lockName());
             }
-        } catch (CannotAcquireLockException ex) {
-            log.error("Acquire lock error: {}", ex.getMessage());
-            lockMeterService.trackAcquireLockError(tryLocked.lockName());
-            throw ex;
-        } catch (CannotUnlockException ex) {
-            log.error("There was an error while release lock with key [{}]: {}", lockKey, ex.getMessage());
-            lockMeterService.trackUnlockError(tryLocked.lockName());
-        } catch (Exception ex) {
-            log.error("There was an error while around method [{}] with TryLocked: {}",
-                    joinPoint.getSignature().getName(), ex.getMessage());
-            lockService.unlock(lockKey);
-            lockMeterService.trackSuccessUnlock(tryLocked.lockName());
             throw ex;
         }
         return result;
