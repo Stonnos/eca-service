@@ -3,7 +3,9 @@ package com.ecaservice.core.lock.aspect;
 import com.ecaservice.common.web.expression.SpelExpressionHelper;
 import com.ecaservice.core.lock.annotation.Locked;
 import com.ecaservice.core.lock.annotation.TryLocked;
+import com.ecaservice.core.lock.exception.CannotUnlockException;
 import com.ecaservice.core.lock.fallback.FallbackHandler;
+import com.ecaservice.core.lock.service.LockMeterService;
 import com.ecaservice.core.lock.service.LockService;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -32,14 +34,18 @@ public class LockExecutionAspect {
     private final SpelExpressionHelper spelExpressionHelper = new SpelExpressionHelper();
 
     private final ApplicationContext applicationContext;
+    private final LockMeterService lockMeterService;
 
     /**
      * Constructor with spring dependency injection.
      *
      * @param applicationContext - spring application context bean
+     * @param lockMeterService   - lock meter service bean
      */
-    public LockExecutionAspect(ApplicationContext applicationContext) {
+    public LockExecutionAspect(ApplicationContext applicationContext,
+                               LockMeterService lockMeterService) {
         this.applicationContext = applicationContext;
+        this.lockMeterService = lockMeterService;
     }
 
     /**
@@ -56,14 +62,19 @@ public class LockExecutionAspect {
         LockService lockService = new LockService(lockRegistry);
         try {
             lockService.lock(lockKey);
+            lockMeterService.trackSuccessLock(locked.lockName());
             Object result = joinPoint.proceed();
-            lockService.unlock(lockKey);
+            unlock(lockService, lockKey, locked.lockName());
+            lockMeterService.trackSuccessUnlock(locked.lockName());
             return result;
         } catch (CannotAcquireLockException ex) {
             log.error("Acquire lock error: {}", ex.getMessage());
+            lockMeterService.trackAcquireLockError(locked.lockName());
             throw ex;
         } catch (Exception ex) {
-            lockService.unlock(lockKey);
+            log.error("There was an error while around method [{}] with Locked: {}",
+                    joinPoint.getSignature().getName(), ex.getMessage());
+            unlock(lockService, lockKey, locked.lockName());
             throw ex;
         }
     }
@@ -75,26 +86,42 @@ public class LockExecutionAspect {
      * @param tryLocked - try locked annotation
      */
     @Around("execution(@com.ecaservice.core.lock.annotation.TryLocked * * (..)) && @annotation(tryLocked)")
-    public void around(ProceedingJoinPoint joinPoint, TryLocked tryLocked) throws Throwable {
+    public Object around(ProceedingJoinPoint joinPoint, TryLocked tryLocked) throws Throwable {
         String lockKey = getLockKey(joinPoint, tryLocked.lockName(), tryLocked.key());
         LockRegistry lockRegistry = applicationContext.getBean(tryLocked.lockRegistry(), LockRegistry.class);
         LockService lockService = new LockService(lockRegistry);
+        Object result = null;
         try {
             if (!lockService.tryLock(lockKey)) {
+                lockMeterService.trackFailedLock(tryLocked.lockName());
                 FallbackHandler fallbackHandler =
                         applicationContext.getBean(tryLocked.fallback(), FallbackHandler.class);
                 fallbackHandler.fallback(lockKey);
             } else {
-                joinPoint.proceed();
-                lockService.unlock(lockKey);
+                lockMeterService.trackSuccessLock(tryLocked.lockName());
+                result = joinPoint.proceed();
+                unlock(lockService, lockKey, tryLocked.lockName());
             }
         } catch (CannotAcquireLockException ex) {
             log.error("Acquire lock error: {}", ex.getMessage());
+            lockMeterService.trackAcquireLockError(tryLocked.lockName());
             throw ex;
         } catch (Exception ex) {
-            log.error("There was an error: {}", ex.getMessage());
-            lockService.unlock(lockKey);
+            log.error("There was an error while around method [{}] with TryLocked: {}",
+                    joinPoint.getSignature().getName(), ex.getMessage());
+            unlock(lockService, lockKey, tryLocked.lockName());
             throw ex;
+        }
+        return result;
+    }
+
+    private void unlock(LockService lockService, String lockName, String lockKey) {
+        try {
+            lockService.unlock(lockKey);
+            lockMeterService.trackSuccessUnlock(lockName);
+        } catch (CannotUnlockException ex) {
+            log.error("There was an error while release lock with key [{}]: {}", lockKey, ex.getMessage());
+            lockMeterService.trackUnlockError(lockName);
         }
     }
 
