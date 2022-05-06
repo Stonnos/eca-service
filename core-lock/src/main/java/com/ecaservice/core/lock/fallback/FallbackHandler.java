@@ -1,7 +1,7 @@
 package com.ecaservice.core.lock.fallback;
 
 /**
- * Fallback interface in case if lock can't be acquire.
+ * Fallback interface in case if lock can't be acquire, because the monitor is busy.
  *
  * @author Roman Batygin
  */

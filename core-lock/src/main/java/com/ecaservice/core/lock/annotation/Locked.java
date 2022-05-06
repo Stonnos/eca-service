@@ -45,6 +45,7 @@ public @interface Locked {
 
     /**
      * The bean name of the custom {@link com.ecaservice.core.lock.fallback.FallbackHandler}.
+     * Fallback call used when {@link Locked#waitForLock()} value is set to false
      *
      * @return fallback class
      */
