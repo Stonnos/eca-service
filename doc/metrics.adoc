@@ -99,44 +99,64 @@ a|`eca_mail_sending_message_success_total{application="eca-mail",} 0.0`
 |*eca_mail_sending_message_error_total*
 |Счетчик числа ошибок при отправке email сообщений
 a|`eca_mail_sending_message_error_total{application="eca-mail",} 0.0`
+|*core_lock_success_total{application="appName",lockName="processNotSentRetryRequests",}*
 |Счетчик числа успешных блокировок processNotSentRetryRequests (для application: eca-server, eca-oauth, eca-data-storage)
 a|`core_lock_success_total{application="appName",lockName="processNotSentRetryRequests",} 2.0`
+|*core_unlock_success_total{application="appName",lockName="processNotSentRetryRequests",}*
 |Счетчик числа успешных операций снятия блокировок processNotSentRetryRequests (для application: eca-server, eca-oauth, eca-data-storage)
 a|`core_unlock_success_total{application="appName",lockName="processNotSentRetryRequests",} 2.0`
+|*core_lock_failed_total{application="appName",lockName="processNotSentRetryRequests",}*
 |Счетчик числа операций, которые не смогли получить блокировку processNotSentRetryRequests по причине data condition (для application: eca-server, eca-oauth, eca-data-storage)
 a|`core_lock_failed_total{application="appName",lockName="processNotSentRetryRequests",} 2.0`
+|*core_lock_acquire_error_total{application="appName",lockName="processNotSentRetryRequests",}*
 |Счетчик числа ошибок при получении блокировки processNotSentRetryRequests (для application: eca-server, eca-oauth, eca-data-storage)
 a|`core_lock_acquire_error_total{application="appName",lockName="processNotSentRetryRequests",} 2.0`
+|*core_unlock_error_total{application="appName",lockName="processNotSentRetryRequests",}*
 |Счетчик числа ошибок при попытке снять блокировку processNotSentRetryRequests (для application: eca-server, eca-oauth, eca-data-storage)
 a|`core_unlock_error_total{application="appName",lockName="processNotSentRetryRequests",} 2.0`
+|*core_lock_success_total{application="eca-server",lockName="experimentsCronJob",}*
 |Счетчик числа успешных блокировок experimentsCronJob (очистка данных эксперимента)
 a|`core_lock_success_total{application="eca-server",lockName="experimentsCronJob",} 2.0`
+|*core_unlock_success_total{application="eca-server",lockName="experimentsCronJob",}*
 |Счетчик числа успешных операций снятия блокировок experimentsCronJob
 a|`core_unlock_success_total{application="eca-server",lockName="experimentsCronJob",} 2.0`
+|*core_lock_failed_total{application="eca-server",lockName="experimentsCronJob",}*
 |Счетчик числа операций, которые не смогли получить блокировку experimentsCronJob по причине data condition
 a|`core_lock_failed_total{application="eca-server",lockName="experimentsCronJob",} 2.0`
+|*core_lock_acquire_error_total{application="eca-server",lockName="experimentsCronJob",}*
 |Счетчик числа ошибок при получении блокировки experimentsCronJob
 a|`core_lock_acquire_error_total{application="eca-server",lockName="experimentsCronJob",} 2.0`
+|*core_unlock_error_total{application="eca-server",lockName="experimentsCronJob",}*
 |Счетчик числа ошибок при попытке снять блокировку experimentsCronJob
 a|`core_unlock_error_total{application="eca-server",lockName="experimentsCronJob",} 2.0`
+|*core_lock_success_total{application="eca-server",lockName="setActiveClassifiersConfiguration",}*
 |Счетчик числа успешных блокировок setActiveClassifiersConfiguration (установка активной конфигурации классификаторов для эксперимента)
 a|`core_lock_success_total{application="eca-server",lockName="setActiveClassifiersConfiguration",} 2.0`
+|*core_unlock_success_total{application="eca-server",lockName="setActiveClassifiersConfiguration",}*
 |Счетчик числа успешных операций снятия блокировок setActiveClassifiersConfiguration
 a|`core_unlock_success_total{application="eca-server",lockName="setActiveClassifiersConfiguration",} 2.0`
+|*core_lock_acquire_error_total{application="eca-server",lockName="setActiveClassifiersConfiguration",}*
 |Счетчик числа ошибок при получении блокировки setActiveClassifiersConfiguration
 a|`core_lock_acquire_error_total{application="eca-server",lockName="setActiveClassifiersConfiguration",} 2.0`
+|*core_unlock_error_total{application="eca-server",lockName="setActiveClassifiersConfiguration",}*
 |Счетчик числа ошибок при попытке снять блокировку setActiveClassifiersConfiguration
 a|`core_unlock_error_total{application="eca-server",lockName="setActiveClassifiersConfiguration",} 2.0`
+|*core_lock_success_total{application="eca-server",lockName="experiment",}*
 |Счетчик числа успешных блокировок experiment (обработка заявки на эксперимент)
 a|`core_lock_success_total{application="eca-server",lockName="experiment",} 2.0`
+|*core_unlock_success_total{application="eca-server",lockName="experiment",}*
 |Счетчик числа успешных операций снятия блокировок experiment
 a|`core_unlock_success_total{application="eca-server",lockName="experiment",} 2.0`
+|*core_lock_failed_total{application="eca-server",lockName="experiment",}*
 |Счетчик числа операций, которые не смогли получить блокировку experiment по причине data condition
 a|`core_lock_failed_total{application="eca-server",lockName="experiment",} 2.0`
+|*core_lock_acquire_error_total{application="eca-server",lockName="experiment",}*
 |Счетчик числа ошибок при получении блокировки experiment
 a|`core_lock_acquire_error_total{application="eca-server",lockName="experiment",} 2.0`
+|*core_unlock_error_total{application="eca-server",lockName="experiment",}*
 |Счетчик числа ошибок при попытке снять блокировку experiment
 a|`core_unlock_error_total{application="eca-server",lockName="experiment",} 2.0`
+|**
 |===
 
 == 3. Метрики Feign http клиента
