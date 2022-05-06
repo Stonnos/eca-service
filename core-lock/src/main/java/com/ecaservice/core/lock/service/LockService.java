@@ -1,5 +1,6 @@
 package com.ecaservice.core.lock.service;
 
+import com.ecaservice.core.lock.exception.CannotUnlockException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.integration.support.locks.LockRegistry;
@@ -41,7 +42,7 @@ public class LockService {
             lock.unlock();
             log.debug("Lock [{}] has been unlocked", lockKey);
         } catch (Exception ex) {
-            log.error("There was an error while release lock with key [{}]: {}", lockKey, ex.getMessage());
+            throw new CannotUnlockException(ex.getMessage());
         }
     }
 

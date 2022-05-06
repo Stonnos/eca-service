@@ -1,6 +1,6 @@
 package com.ecaservice.core.redelivery.service;
 
-import com.ecaservice.core.lock.annotation.TryLocked;
+import com.ecaservice.core.lock.annotation.Locked;
 import com.ecaservice.core.redelivery.config.RedeliveryProperties;
 import com.ecaservice.core.redelivery.entity.RetryRequest;
 import com.ecaservice.core.redelivery.repository.RetryRequestRepository;
@@ -32,7 +32,7 @@ public class RequestRedeliveryService {
     /**
      * Retries all not sent requests.
      */
-    @TryLocked(lockName = "processNotSentRetryRequests", lockRegistry = REDELIVERY_LOCK_REGISTRY)
+    @Locked(lockName = "processNotSentRetryRequests", lockRegistry = REDELIVERY_LOCK_REGISTRY, waitForLock = false)
     public void processNotSentRequests() {
         log.debug("Starting redeliver requests");
         var pageRequest = PageRequest.of(0, redeliveryProperties.getMaxRequests());

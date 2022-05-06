@@ -1,6 +1,5 @@
 package com.ecaservice.core.lock.annotation;
 
-import com.ecaservice.core.lock.aspect.LockExecutionAspect;
 import com.ecaservice.core.lock.config.CoreLockConfiguration;
 import org.springframework.context.annotation.Import;
 
@@ -18,6 +17,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Import({LockExecutionAspect.class, CoreLockConfiguration.class})
+@Import(CoreLockConfiguration.class)
 public @interface EnableLocks {
 }

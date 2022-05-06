@@ -2,8 +2,9 @@ package com.ecaservice.core.lock.aspect;
 
 import com.ecaservice.common.web.expression.SpelExpressionHelper;
 import com.ecaservice.core.lock.annotation.Locked;
-import com.ecaservice.core.lock.annotation.TryLocked;
+import com.ecaservice.core.lock.exception.CannotUnlockException;
 import com.ecaservice.core.lock.fallback.FallbackHandler;
+import com.ecaservice.core.lock.metrics.LockMeterService;
 import com.ecaservice.core.lock.service.LockService;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -32,14 +33,18 @@ public class LockExecutionAspect {
     private final SpelExpressionHelper spelExpressionHelper = new SpelExpressionHelper();
 
     private final ApplicationContext applicationContext;
+    private final LockMeterService lockMeterService;
 
     /**
      * Constructor with spring dependency injection.
      *
      * @param applicationContext - spring application context bean
+     * @param lockMeterService   - lock meter service bean
      */
-    public LockExecutionAspect(ApplicationContext applicationContext) {
+    public LockExecutionAspect(ApplicationContext applicationContext,
+                               LockMeterService lockMeterService) {
         this.applicationContext = applicationContext;
+        this.lockMeterService = lockMeterService;
     }
 
     /**
@@ -55,46 +60,39 @@ public class LockExecutionAspect {
         LockRegistry lockRegistry = applicationContext.getBean(locked.lockRegistry(), LockRegistry.class);
         LockService lockService = new LockService(lockRegistry);
         try {
-            lockService.lock(lockKey);
+            if (!locked.waitForLock()) {
+                if (!lockService.tryLock(lockKey)) {
+                    lockMeterService.trackFailedLock(locked.lockName());
+                    var fallbackHandler = applicationContext.getBean(locked.fallback(), FallbackHandler.class);
+                    fallbackHandler.fallback(lockKey);
+                    return null;
+                }
+            } else {
+                lockService.lock(lockKey);
+            }
+            lockMeterService.trackSuccessLock(locked.lockName());
             Object result = joinPoint.proceed();
-            lockService.unlock(lockKey);
+            unlock(lockService, locked.lockName(), lockKey);
             return result;
         } catch (CannotAcquireLockException ex) {
             log.error("Acquire lock error: {}", ex.getMessage());
+            lockMeterService.trackAcquireLockError(locked.lockName());
             throw ex;
         } catch (Exception ex) {
-            lockService.unlock(lockKey);
+            log.error("There was an error while around method [{}] with Locked: {}",
+                    joinPoint.getSignature().getName(), ex.getMessage());
+            unlock(lockService, locked.lockName(), lockKey);
             throw ex;
         }
     }
 
-    /**
-     * Wrapper for service method to perform try lock.
-     *
-     * @param joinPoint - give reflective access to the processed method
-     * @param tryLocked - try locked annotation
-     */
-    @Around("execution(@com.ecaservice.core.lock.annotation.TryLocked * * (..)) && @annotation(tryLocked)")
-    public void around(ProceedingJoinPoint joinPoint, TryLocked tryLocked) throws Throwable {
-        String lockKey = getLockKey(joinPoint, tryLocked.lockName(), tryLocked.key());
-        LockRegistry lockRegistry = applicationContext.getBean(tryLocked.lockRegistry(), LockRegistry.class);
-        LockService lockService = new LockService(lockRegistry);
+    private void unlock(LockService lockService, String lockName, String key) {
         try {
-            if (!lockService.tryLock(lockKey)) {
-                FallbackHandler fallbackHandler =
-                        applicationContext.getBean(tryLocked.fallback(), FallbackHandler.class);
-                fallbackHandler.fallback(lockKey);
-            } else {
-                joinPoint.proceed();
-                lockService.unlock(lockKey);
-            }
-        } catch (CannotAcquireLockException ex) {
-            log.error("Acquire lock error: {}", ex.getMessage());
-            throw ex;
-        } catch (Exception ex) {
-            log.error("There was an error: {}", ex.getMessage());
-            lockService.unlock(lockKey);
-            throw ex;
+            lockService.unlock(key);
+            lockMeterService.trackSuccessUnlock(lockName);
+        } catch (CannotUnlockException e) {
+            log.error("There was an error while release lock with key [{}]: {}", key, e.getMessage());
+            lockMeterService.trackUnlockError(lockName);
         }
     }
 

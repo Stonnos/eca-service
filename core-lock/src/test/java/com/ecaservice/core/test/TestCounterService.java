@@ -1,7 +1,6 @@
 package com.ecaservice.core.test;
 
 import com.ecaservice.core.lock.annotation.Locked;
-import com.ecaservice.core.lock.annotation.TryLocked;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
@@ -23,7 +22,7 @@ public class TestCounterService {
         counters.put(key, current);
     }
 
-    @TryLocked(lockName = "counter", key = "#key", lockRegistry = DEFAULT_LOCK_REGISTRY)
+    @Locked(lockName = "counter", key = "#key", lockRegistry = DEFAULT_LOCK_REGISTRY, waitForLock = false)
     public void tryIncrement(String key, int value) throws InterruptedException {
         Thread.sleep(DELAY);
         counters.put(key, value);
