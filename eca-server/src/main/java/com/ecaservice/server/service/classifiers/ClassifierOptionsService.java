@@ -191,7 +191,7 @@ public class ClassifierOptionsService {
             ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel) {
         var classifierOptionsDto = classifierOptionsDatabaseModelMapper.map(classifierOptionsDatabaseModel);
         var inputOptions = classifiersTemplateService.processInputOptions(classifierOptionsDto.getConfig());
-        var template = classifiersTemplateService.getTemplateByClass(classifierOptionsDto.getOptionsName());
+        var template = classifiersTemplateService.getClassifierTemplateByClass(classifierOptionsDto.getOptionsName());
         classifierOptionsDto.setOptionsDescription(template.getTemplateTitle());
         classifierOptionsDto.setInputOptions(inputOptions);
         return classifierOptionsDto;

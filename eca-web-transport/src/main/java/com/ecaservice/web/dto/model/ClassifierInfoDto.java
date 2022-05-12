@@ -1,5 +1,6 @@
 package com.ecaservice.web.dto.model;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -25,6 +26,12 @@ public class ClassifierInfoDto {
     /**
      * Classifier input options map
      */
-    @Schema(description = "Classifier input options list")
+    @ArraySchema(schema = @Schema(description = "Classifier input options list"))
     private List<InputOptionDto> inputOptions;
+
+    /**
+     * Individual classifiers
+     */
+    @ArraySchema(schema = @Schema(description = "Individual classifiers"))
+    private List<ClassifierInfoDto> individualClassifiers;
 }

@@ -65,7 +65,7 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
     @Override
     public void init() {
         when(userService.getCurrentUser()).thenReturn(USER_NAME);
-        when(classifiersTemplateService.getTemplateByClass(anyString())).thenReturn(new FormTemplateDto());
+        when(classifiersTemplateService.getClassifierTemplateByClass(anyString())).thenReturn(new FormTemplateDto());
     }
 
     @Override
