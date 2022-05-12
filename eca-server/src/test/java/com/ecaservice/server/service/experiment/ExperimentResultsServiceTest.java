@@ -1,5 +1,6 @@
 package com.ecaservice.server.service.experiment;
 
+import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.mapping.ClassifierInfoMapperImpl;
 import com.ecaservice.server.mapping.DateTimeConverter;
@@ -47,6 +48,8 @@ class ExperimentResultsServiceTest extends AbstractJpaTest {
 
     @Mock
     private ErsService ersService;
+    @Mock
+    private ClassifierOptionsAdapter classifierOptionsAdapter;
     @Inject
     private ExperimentResultsRequestRepository experimentResultsRequestRepository;
     @Inject
@@ -60,8 +63,9 @@ class ExperimentResultsServiceTest extends AbstractJpaTest {
 
     @Override
     public void init() {
-        experimentResultsService = new ExperimentResultsService(ersService, experimentResultsMapper,
-                experimentResultsEntityRepository, experimentResultsRequestRepository);
+        experimentResultsService =
+                new ExperimentResultsService(ersService, experimentResultsMapper, classifierOptionsAdapter,
+                        experimentResultsEntityRepository, experimentResultsRequestRepository);
     }
 
     @Override

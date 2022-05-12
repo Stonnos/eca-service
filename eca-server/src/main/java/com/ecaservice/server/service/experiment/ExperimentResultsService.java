@@ -1,5 +1,6 @@
 package com.ecaservice.server.service.experiment;
 
+import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.server.mapping.ExperimentResultsMapper;
 import com.ecaservice.server.model.entity.ErsResponseStatus;
 import com.ecaservice.server.model.entity.Experiment;
@@ -21,11 +22,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import weka.classifiers.AbstractClassifier;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static com.ecaservice.server.util.ClassifierOptionsHelper.toJsonString;
 import static com.ecaservice.server.util.Utils.buildEvaluationResultsDto;
 
 /**
@@ -40,6 +43,7 @@ public class ExperimentResultsService {
 
     private final ErsService ersService;
     private final ExperimentResultsMapper experimentResultsMapper;
+    private final ClassifierOptionsAdapter classifierOptionsAdapter;
     private final ExperimentResultsEntityRepository experimentResultsEntityRepository;
     private final ExperimentResultsRequestRepository experimentResultsRequestRepository;
 
@@ -59,6 +63,9 @@ public class ExperimentResultsService {
                     EvaluationResults evaluationResults = evaluationResultsList.get(i);
                     ExperimentResultsEntity experimentResultsEntity =
                             experimentResultsMapper.map(evaluationResults);
+                    var classifierOptions =
+                            classifierOptionsAdapter.convert((AbstractClassifier) evaluationResults.getClassifier());
+                    experimentResultsEntity.getClassifierInfo().setClassifierOptions(toJsonString(classifierOptions));
                     experimentResultsEntity.setExperiment(experiment);
                     experimentResultsEntity.setResultsIndex(i);
                     return experimentResultsEntity;

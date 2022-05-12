@@ -5,6 +5,7 @@ import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.base.model.MessageError;
 import com.ecaservice.base.model.TechnicalStatus;
+import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.mapping.EvaluationLogMapper;
 import com.ecaservice.server.model.entity.EvaluationLog;
@@ -15,6 +16,7 @@ import com.ecaservice.server.service.evaluation.initializers.ClassifierInitializ
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import weka.classifiers.AbstractClassifier;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -27,6 +29,7 @@ import static com.ecaservice.common.web.util.LogHelper.EV_REQUEST_ID;
 import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.putMdc;
 import static com.ecaservice.common.web.util.LogHelper.putMdcIfAbsent;
+import static com.ecaservice.server.util.ClassifierOptionsHelper.toJsonString;
 import static com.ecaservice.server.util.Utils.error;
 
 /**
@@ -45,6 +48,7 @@ public class EvaluationRequestService {
     private final EvaluationLogRepository evaluationLogRepository;
     private final EvaluationLogMapper evaluationLogMapper;
     private final ClassifierInitializerService classifierInitializerService;
+    private final ClassifierOptionsAdapter classifierOptionsAdapter;
 
     /**
      * Processes input request and returns classification results.
@@ -61,6 +65,7 @@ public class EvaluationRequestService {
                 evaluationRequest.getData().relationName());
         classifierInitializerService.initialize(evaluationRequest.getClassifier(), evaluationRequest.getData());
         EvaluationLog evaluationLog = evaluationLogMapper.map(evaluationRequest, crossValidationConfig);
+        processClassifierOptions(evaluationRequest.getClassifier(), evaluationLog);
         evaluationLog.setRequestStatus(RequestStatus.IN_PROGRESS);
         evaluationLog.setRequestId(requestId);
         evaluationLog.setCreationDate(LocalDateTime.now());
@@ -92,6 +97,11 @@ public class EvaluationRequestService {
             evaluationLogRepository.save(evaluationLog);
         }
         return evaluationResponse;
+    }
+
+    private void processClassifierOptions(AbstractClassifier classifier, EvaluationLog evaluationLog) {
+        var classifierOptions = classifierOptionsAdapter.convert(classifier);
+        evaluationLog.getClassifierInfo().setClassifierOptions(toJsonString(classifierOptions));
     }
 
     private void handleError(EvaluationLog evaluationLog, EvaluationResponse evaluationResponse, String errorMessage) {
