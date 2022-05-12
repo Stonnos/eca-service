@@ -5,7 +5,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet author="roman.batygin@mail.ru" id="insert_classifier_form_templates_group" context="data">
+    <changeSet author="roman.batygin@mail.ru" id="insert_classifier_form_templates_group_2" context="data">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="form_template_group"/>
         </preConditions>
@@ -16,7 +16,7 @@
                 file="classifiers-form-templates/templates-group.csv"/>
     </changeSet>
 
-    <changeSet author="roman.batygin@mail.ru" id="insert_classifier_form_templates" context="data">
+    <changeSet author="roman.batygin@mail.ru" id="insert_classifier_form_templates_2" context="data">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="form_template"/>
         </preConditions>
@@ -27,7 +27,7 @@
                 file="classifiers-form-templates/templates.csv"/>
     </changeSet>
 
-    <changeSet author="roman.batygin@mail.ru" id="insert_classifier_form_field_dictionaries" context="data">
+    <changeSet author="roman.batygin@mail.ru" id="insert_classifier_form_field_dictionaries_2" context="data">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="form_field_dictionary"/>
         </preConditions>
@@ -38,7 +38,7 @@
                 file="classifiers-form-templates/form-field-dictionaries.csv"/>
     </changeSet>
 
-    <changeSet author="roman.batygin@mail.ru" id="insert_classifier_form_field_dictionaries_values" context="data">
+    <changeSet author="roman.batygin@mail.ru" id="insert_classifier_form_field_dictionaries_values_2" context="data">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="form_field_dictionary_value"/>
         </preConditions>
@@ -49,7 +49,7 @@
                 file="classifiers-form-templates/form-field-dictionaries-values.csv"/>
     </changeSet>
 
-    <changeSet author="roman.batygin@mail.ru" id="insert_classifiers_form_fields" context="data">
+    <changeSet author="roman.batygin@mail.ru" id="insert_classifiers_form_fields_2" context="data">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="form_field"/>
         </preConditions>
