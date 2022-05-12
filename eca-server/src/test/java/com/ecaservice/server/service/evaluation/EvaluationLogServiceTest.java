@@ -1,8 +1,9 @@
 package com.ecaservice.server.service.evaluation;
 
-import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
+import com.ecaservice.server.mapping.ClassifierInfoMapper;
 import com.ecaservice.server.mapping.ClassifierInfoMapperImpl;
 import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.mapping.EvaluationLogMapper;
@@ -17,6 +18,7 @@ import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.repository.EvaluationResultsRequestEntityRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
+import com.ecaservice.server.service.classifiers.ClassifiersTemplateService;
 import com.ecaservice.server.service.ers.ErsService;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
@@ -70,18 +72,24 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
     private AppProperties appProperties;
     @Inject
     private EvaluationLogMapper evaluationLogMapper;
+    @Inject
+    private ClassifierInfoMapper classifierInfoMapper;
 
     @Mock
     private FilterService filterService;
     @Mock
     private ErsService ersService;
+    @Mock
+    private ClassifiersTemplateService classifiersTemplateService;
 
     private EvaluationLogService evaluationLogService;
 
     @Override
     public void init() {
-        evaluationLogService = new EvaluationLogService(appProperties, filterService, evaluationLogMapper, ersService,
-                evaluationLogRepository, evaluationResultsRequestEntityRepository);
+        evaluationLogService =
+                new EvaluationLogService(appProperties, filterService, evaluationLogMapper, classifierInfoMapper,
+                        classifiersTemplateService, ersService, evaluationLogRepository,
+                        evaluationResultsRequestEntityRepository);
     }
 
     @Override
@@ -145,7 +153,8 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
         evaluationLog4.getClassifierInfo().setClassifierName(NeuralNetwork.class.getSimpleName());
         evaluationLogRepository.save(evaluationLog4);
         PageRequestDto pageRequestDto =
-                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, CLASSIFIER_INFO_CLASSIFIER_NAME, false, null, newArrayList());
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, CLASSIFIER_INFO_CLASSIFIER_NAME, false, null,
+                        newArrayList());
         pageRequestDto.getFilters().add(new FilterRequestDto(EvaluationLog_.REQUEST_STATUS,
                 Collections.singletonList(RequestStatus.FINISHED.name()), MatchMode.EQUALS));
         pageRequestDto.getFilters().add(
@@ -172,7 +181,8 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
         evaluationLog1.getInstancesInfo().setRelationName("Relation");
         evaluationLogRepository.save(evaluationLog1);
         PageRequestDto pageRequestDto =
-                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, CLASSIFIER_INFO_CLASSIFIER_NAME, false, null, newArrayList());
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, CLASSIFIER_INFO_CLASSIFIER_NAME, false, null,
+                        newArrayList());
         pageRequestDto.getFilters().add(
                 new FilterRequestDto(INSTANCES_INFO_RELATION_NAME, Collections.singletonList("Dat"), MatchMode.LIKE));
         Page<EvaluationLog> evaluationLogPage = evaluationLogService.getNextPage(pageRequestDto);

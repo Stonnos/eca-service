@@ -5,6 +5,7 @@ import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.report.model.BaseReportBean;
 import com.ecaservice.report.model.EvaluationLogBean;
 import com.ecaservice.server.config.AppProperties;
+import com.ecaservice.server.mapping.ClassifierInfoMapper;
 import com.ecaservice.server.mapping.ClassifierInfoMapperImpl;
 import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.mapping.EvaluationLogMapper;
@@ -16,6 +17,7 @@ import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.repository.EvaluationResultsRequestEntityRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
+import com.ecaservice.server.service.classifiers.ClassifiersTemplateService;
 import com.ecaservice.server.service.ers.ErsService;
 import com.ecaservice.server.service.evaluation.EvaluationLogService;
 import com.ecaservice.web.dto.model.FilterRequestDto;
@@ -52,11 +54,15 @@ class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
     private FilterService filterService;
     @Mock
     private ErsService ersService;
+    @Mock
+    private ClassifiersTemplateService classifiersTemplateService;
 
     @Inject
     private AppProperties appProperties;
     @Inject
     private EvaluationLogMapper evaluationLogMapper;
+    @Inject
+    private ClassifierInfoMapper classifierInfoMapper;
     @Inject
     private EvaluationLogRepository evaluationLogRepository;
     @Inject
@@ -67,8 +73,9 @@ class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
     @Override
     public void init() {
         EvaluationLogService evaluationLogService =
-                new EvaluationLogService(appProperties, filterService, evaluationLogMapper, ersService,
-                        evaluationLogRepository, evaluationResultsRequestEntityRepository);
+                new EvaluationLogService(appProperties, filterService, evaluationLogMapper, classifierInfoMapper,
+                        classifiersTemplateService, ersService, evaluationLogRepository,
+                        evaluationResultsRequestEntityRepository);
         evaluationLogsBaseReportDataFetcher =
                 new EvaluationLogsBaseReportDataFetcher(filterService, evaluationLogService, evaluationLogMapper);
     }
