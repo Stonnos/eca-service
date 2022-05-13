@@ -18,8 +18,10 @@ import com.ecaservice.server.service.classifiers.ClassifiersTemplateService;
 import com.ecaservice.server.service.ers.ErsService;
 import com.ecaservice.web.dto.model.ClassifierInfoDto;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
+import com.ecaservice.web.dto.model.EvaluationLogDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
+import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +33,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.server.model.entity.AbstractEvaluationEntity_.CREATION_DATE;
@@ -64,6 +67,26 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
                 pageRequestDto.getFilters());
         int pageSize = Integer.min(pageRequestDto.getSize(), appProperties.getMaxPageSize());
         return evaluationLogRepository.findAll(filter, PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
+    }
+
+    /**
+     * Gets evaluation logs page.
+     *
+     * @param pageRequestDto - pafe request dto
+     * @return evaluation logs page
+     */
+    public PageDto<EvaluationLogDto> getEvaluationLogsPage(PageRequestDto pageRequestDto) {
+        var evaluationLogsPage = getNextPage(pageRequestDto);
+        List<EvaluationLogDto> evaluationLogDtoList = evaluationLogsPage.getContent()
+                .stream()
+                .map(evaluationLog -> {
+                    var evaluationLogDto = evaluationLogMapper.map(evaluationLog);
+                    var classifierInfoDto = populateClassifierInfo(evaluationLog);
+                    evaluationLogDto.setClassifierInfo(classifierInfoDto);
+                    return evaluationLogDto;
+                })
+                .collect(Collectors.toList());
+        return PageDto.of(evaluationLogDtoList, pageRequestDto.getPage(), evaluationLogsPage.getTotalElements());
     }
 
     /**
