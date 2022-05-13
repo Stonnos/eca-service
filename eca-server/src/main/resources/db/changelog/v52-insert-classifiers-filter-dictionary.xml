@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v52-insert-classifiers-filter-dictionary.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Insert classifiers dictionary-->
+    <changeSet id="1" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from filter_dictionary where id = 5
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="filter_dictionary">
+            <column name="id" valueNumeric="5"/>
+            <column name="name" value="classifier"/>
+        </insert>
+
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Алгоритм CART"/>
+            <column name="value" value="CART"/>
+            <column name="filter_dictionary_id" valueNumeric="5"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Алгоритм C4.5"/>
+            <column name="value" value="C45"/>
+            <column name="filter_dictionary_id" valueNumeric="5"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Алгоритм ID3"/>
+            <column name="value" value="ID3"/>
+            <column name="filter_dictionary_id" valueNumeric="5"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Алгоритм CHAID"/>
+            <column name="value" value="CHAID"/>
+            <column name="filter_dictionary_id" valueNumeric="5"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Алгоритм J48"/>
+            <column name="value" value="J48"/>
+            <column name="filter_dictionary_id" valueNumeric="5"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Нейронная сеть (Многослойный персептрон)"/>
+            <column name="value" value="NeuralNetwork"/>
+            <column name="filter_dictionary_id" valueNumeric="5"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Алгоритм k - взвешенных ближайших соседей"/>
+            <column name="value" value="KNearestNeighbours"/>
+            <column name="filter_dictionary_id" valueNumeric="5"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Логистическая регрессия"/>
+            <column name="value" value="Logistic"/>
+            <column name="filter_dictionary_id" valueNumeric="5"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Алгоритм AdaBoost"/>
+            <column name="value" value="AdaBoostClassifier"/>
+            <column name="filter_dictionary_id" valueNumeric="5"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Неоднородный ансамблевый алгоритм"/>
+            <column name="value" value="HeterogeneousClassifier"/>
+            <column name="filter_dictionary_id" valueNumeric="5"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Модифицированный неоднородный ансамблевый алгоритм"/>
+            <column name="value" value="ModifiedHeterogeneousClassifier"/>
+            <column name="filter_dictionary_id" valueNumeric="5"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Алгоритм Stacking"/>
+            <column name="value" value="StackingClassifier"/>
+            <column name="filter_dictionary_id" valueNumeric="5"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Алгоритм Случайные леса"/>
+            <column name="value" value="RandomForests"/>
+            <column name="filter_dictionary_id" valueNumeric="5"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Алгоритм Extra trees"/>
+            <column name="value" value="ExtraTreesClassifier"/>
+            <column name="filter_dictionary_id" valueNumeric="5"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Алгоритм Случайные сети"/>
+            <column name="value" value="RandomNetworks"/>
+            <column name="filter_dictionary_id" valueNumeric="5"/>
+        </insert>
+    </changeSet>
+
+    <!-- Changed classifier name field type -->
+    <changeSet id="2" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_field"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from filter_field where filter_template_id = 2 and field_name = 'classifierInfo.classifierName'
+            </sqlCheck>
+        </preConditions>
+        <update tableName="filter_field">
+            <column name="filter_field_type" value="REFERENCE"/>
+            <column name="filter_dictionary_id" valueNumeric="5"/>
+            <column name="match_mode" value="EQUALS"/>
+            <column name="multiple" valueBoolean="true"/>
+            <where>filter_template_id = 2 and field_name = 'classifierInfo.classifierName'</where>
+        </update>
+    </changeSet>
+
+</databaseChangeLog>
