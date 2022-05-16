@@ -1,7 +1,9 @@
 package com.ecaservice.web.dto.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
 
@@ -11,6 +13,8 @@ import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
  * @author Roman Batygin
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Schema(description = "Filter dictionary value model")
 public class FilterDictionaryValueDto {
 

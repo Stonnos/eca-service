@@ -38,7 +38,8 @@ public class ClassifierNameFilterFieldCustomizer extends FilterFieldCustomizer {
     public Predicate toPredicate(Root<?> root, CriteriaBuilder criteriaBuilder, String value) {
         var classifiersDictionary = filterService.getFilterDictionary(CLASSIFIER_DICTIONARY_NAME);
         var classifierNames = classifiersDictionary.getValues().stream()
-                .filter(filterDictionaryValueDto -> filterDictionaryValueDto.getLabel().contains(value))
+                .filter(filterDictionaryValueDto -> filterDictionaryValueDto.getLabel().toLowerCase().contains(
+                        value.toLowerCase()))
                 .map(FilterDictionaryValueDto::getValue)
                 .collect(Collectors.toList());
         Expression<?> expression = buildExpression(root, getFieldName());

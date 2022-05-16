@@ -22,6 +22,8 @@ import com.ecaservice.server.service.ers.ErsService;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
+import com.ecaservice.web.dto.model.FilterDictionaryDto;
+import com.ecaservice.web.dto.model.FilterDictionaryValueDto;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -62,6 +64,9 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
     private static final int PAGE_SIZE = 10;
     private static final String INSTANCES_INFO_RELATION_NAME = "instancesInfo.relationName";
     private static final String CLASSIFIER_INFO_CLASSIFIER_NAME = "classifierInfo.classifierName";
+    private static final String CLASSIFIERS_DICTIONARY = "classifier";
+    private static final String CART_DESCRIPTION = "Алгоритм CART";
+    private static final String C45_DESCRIPTION = "Алгоритм C45";
 
     @Inject
     private EvaluationLogRepository evaluationLogRepository;
@@ -211,6 +216,7 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
         when(filterService.getGlobalFilterFields(FilterTemplateType.EVALUATION_LOG.name())).thenReturn(
                 Arrays.asList(CLASSIFIER_INFO_CLASSIFIER_NAME, EvaluationLog_.REQUEST_ID,
                         INSTANCES_INFO_RELATION_NAME));
+        mockClassifiersDictionary();
         Page<EvaluationLog> evaluationLogPage = evaluationLogService.getNextPage(pageRequestDto);
         assertThat(evaluationLogPage).isNotNull();
         assertThat(evaluationLogPage.getTotalElements()).isOne();
@@ -305,5 +311,14 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
         evaluationLogRepository.save(evaluationLog);
         evaluationResultsRequestEntityRepository.save(evaluationResultsRequestEntity);
         return evaluationLog;
+    }
+
+    private void mockClassifiersDictionary() {
+        var classifiersDictionary = new FilterDictionaryDto();
+        classifiersDictionary.setValues(newArrayList());
+        classifiersDictionary.getValues().add(
+                new FilterDictionaryValueDto(CART_DESCRIPTION, CART.class.getSimpleName()));
+        classifiersDictionary.getValues().add(new FilterDictionaryValueDto(C45_DESCRIPTION, C45.class.getSimpleName()));
+        when(filterService.getFilterDictionary(CLASSIFIERS_DICTIONARY)).thenReturn(classifiersDictionary);
     }
 }
