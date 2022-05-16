@@ -27,6 +27,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.ecaservice.core.filter.util.FilterUtils.buildExpression;
 import static com.ecaservice.core.filter.util.ReflectionUtils.getFieldType;
 import static com.ecaservice.core.filter.util.Utils.parseDate;
 import static com.ecaservice.core.filter.util.Utils.splitByPointSeparator;
@@ -225,16 +226,6 @@ public abstract class AbstractFilter<T> implements Specification<T> {
             predicate = criteriaBuilder.and(predicate, upperBoundPredicate);
         }
         return predicate;
-    }
-
-    private <E> Expression<E> buildExpression(Root<T> root, String fieldName) {
-        String[] fieldLevels = splitByPointSeparator(fieldName);
-        if (fieldLevels != null && fieldLevels.length > 1) {
-            Join<T, ?> join = root.join(fieldLevels[0]);
-            return join.get(fieldLevels[1]);
-        } else {
-            return root.get(fieldName);
-        }
     }
 
     private Predicate buildSinglePredicateForGlobalFilter(Root<T> root, CriteriaBuilder criteriaBuilder, String field,
