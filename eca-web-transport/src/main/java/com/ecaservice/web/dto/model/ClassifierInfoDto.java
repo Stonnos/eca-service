@@ -30,6 +30,12 @@ public class ClassifierInfoDto {
     private String classifierDescription;
 
     /**
+     * Classifier options json config
+     */
+    @Schema(description = "Classifier options json config", required = true, example = "Json config")
+    private String classifierOptionsJson;
+
+    /**
      * Is meta classifier (used for stacking algorithms)
      */
     @Schema(description = "Is meta classifier (used for stacking algorithms)")
