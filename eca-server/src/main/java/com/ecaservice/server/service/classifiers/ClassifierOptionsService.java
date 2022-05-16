@@ -49,6 +49,7 @@ public class ClassifierOptionsService {
     private final AppProperties appProperties;
     private final UserService userService;
     private final ClassifierOptionsProcessor classifierOptionsProcessor;
+    private final ClassifiersTemplateProvider classifiersTemplateProvider;
     private final ClassifierOptionsDatabaseModelMapper classifierOptionsDatabaseModelMapper;
     private final ClassifiersConfigurationRepository classifiersConfigurationRepository;
     private final ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;
@@ -191,7 +192,9 @@ public class ClassifierOptionsService {
             ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel) {
         var classifierOptionsDto = classifierOptionsDatabaseModelMapper.map(classifierOptionsDatabaseModel);
         var inputOptions = classifierOptionsProcessor.processInputOptions(classifierOptionsDto.getConfig());
-       // classifierOptionsDto.setOptionsDescription(template.getTemplateTitle());
+        var classifierFormTemplate =
+                classifiersTemplateProvider.getClassifierTemplateByClass(classifierOptionsDto.getOptionsName());
+        classifierOptionsDto.setOptionsDescription(classifierFormTemplate.getTemplateTitle());
         classifierOptionsDto.setInputOptions(inputOptions);
         return classifierOptionsDto;
     }
