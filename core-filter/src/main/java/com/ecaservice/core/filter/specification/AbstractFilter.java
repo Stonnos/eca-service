@@ -3,6 +3,7 @@ package com.ecaservice.core.filter.specification;
 import com.ecaservice.web.dto.MatchModeVisitor;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.Assert;
@@ -64,6 +65,13 @@ public abstract class AbstractFilter<T> implements Specification<T> {
      */
     @Getter
     private List<FilterRequestDto> filters;
+
+    /**
+     * Global filter fields customizers
+     */
+    @Getter
+    @Setter
+    private List<FilterFieldCustomizer> globalFilterFieldsCustomizers;
 
     protected AbstractFilter(Class<T> clazz, String searchQuery, List<String> globalFilterFields,
                              List<FilterRequestDto> filters) {
@@ -231,20 +239,32 @@ public abstract class AbstractFilter<T> implements Specification<T> {
 
     private Predicate buildSinglePredicateForGlobalFilter(Root<T> root, CriteriaBuilder criteriaBuilder, String field,
                                                           String value) {
-        Class<?> fieldClazz = getFieldType(field, clazz);
-        if (fieldClazz.isEnum()) {
-            return buildGlobalFilterPredicateForEnumField(fieldClazz, root, field, value);
-        } else if (String.class.isAssignableFrom(fieldClazz)) {
-            Expression<String> expression = buildExpression(root, field);
-            return criteriaBuilder.like(criteriaBuilder.lower(expression),
-                    MessageFormat.format(LIKE_FORMAT, value));
-        } else if (Long.class.isAssignableFrom(fieldClazz)) {
-            return buildGlobalFilterPredicateForNumericField(root, criteriaBuilder, field, value);
+        var filterFieldCustomizer = getGlobalFilterFieldCustomizer(field);
+        if (filterFieldCustomizer != null) {
+            return filterFieldCustomizer.toPredicate(root, criteriaBuilder, value);
         } else {
-            throw new IllegalStateException(
-                    String.format("Can't build LIKE predicate for filter field [%s] of class %s", field,
-                            clazz.getName()));
+            Class<?> fieldClazz = getFieldType(field, clazz);
+            if (fieldClazz.isEnum()) {
+                return buildGlobalFilterPredicateForEnumField(fieldClazz, root, field, value);
+            } else if (String.class.isAssignableFrom(fieldClazz)) {
+                Expression<String> expression = buildExpression(root, field);
+                return criteriaBuilder.like(criteriaBuilder.lower(expression),
+                        MessageFormat.format(LIKE_FORMAT, value));
+            } else if (Long.class.isAssignableFrom(fieldClazz)) {
+                return buildGlobalFilterPredicateForNumericField(root, criteriaBuilder, field, value);
+            } else {
+                throw new IllegalStateException(
+                        String.format("Can't build LIKE predicate for filter field [%s] of class %s", field,
+                                clazz.getName()));
+            }
         }
+    }
+
+    private FilterFieldCustomizer getGlobalFilterFieldCustomizer(String field) {
+        return globalFilterFieldsCustomizers.stream()
+                .filter(filterFieldCustomizer -> filterFieldCustomizer.canHandle(field))
+                .findFirst()
+                .orElse(null);
     }
 
     private boolean enumDescriptionContainsSearchTerm(Method method, Object enumValue, String value) {
