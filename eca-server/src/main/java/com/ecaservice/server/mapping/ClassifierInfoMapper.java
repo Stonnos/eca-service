@@ -43,6 +43,15 @@ public abstract class ClassifierInfoMapper {
     @Mapping(source = "classifierInputOptions", target = "inputOptions")
     public abstract ClassifierInfoDto map(ClassifierInfo classifierInfo);
 
+    /**
+     * Updates classifier info dto.
+     *
+     * @param classifierInfo    - classifier info entity
+     * @param classifierInfoDto - classifier info dto
+     */
+    @Mapping(target = "inputOptions", ignore = true)
+    public abstract void update(ClassifierInfo classifierInfo, @MappingTarget ClassifierInfoDto classifierInfoDto);
+
     @AfterMapping
     protected void postMappingOptions(ClassifierInfo classifierInfo,
                                       @MappingTarget ClassifierInfoDto classifierInfoDto) {

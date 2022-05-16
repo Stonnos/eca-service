@@ -72,8 +72,7 @@ public class ClassifierOptionsProcessor {
         if (StringUtils.isNotEmpty(classifierInfo.getClassifierOptions())) {
             var classifierOptions = parseOptions(classifierInfo.getClassifierOptions());
             classifierInfoDto = internalProcessClassifierInfo(classifierOptions);
-            classifierInfoDto.setClassifierName(classifierInfo.getClassifierName());
-            classifierInfoDto.setClassifierOptionsJson(classifierInfo.getClassifierOptions());
+            classifierInfoMapper.update(classifierInfo, classifierInfoDto);
         } else {
             //Returns classifiers options list (for old data)
             classifierInfoDto = classifierInfoMapper.map(classifierInfo);
