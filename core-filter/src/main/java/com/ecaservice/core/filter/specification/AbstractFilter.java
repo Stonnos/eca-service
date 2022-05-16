@@ -252,6 +252,9 @@ public abstract class AbstractFilter<T> implements Specification<T> {
     }
 
     private FilterFieldCustomizer getGlobalFilterFieldCustomizer(String field) {
+        if (CollectionUtils.isEmpty(globalFilterFieldsCustomizers)) {
+            return null;
+        }
         return globalFilterFieldsCustomizers.stream()
                 .filter(filterFieldCustomizer -> filterFieldCustomizer.canHandle(field))
                 .findFirst()

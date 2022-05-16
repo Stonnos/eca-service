@@ -1,6 +1,7 @@
 package com.ecaservice.core.filter.specification;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -15,6 +16,7 @@ import javax.persistence.criteria.Root;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class FilterFieldCustomizer {
 
+    @Getter
     private final String fieldName;
 
     /**

@@ -1,6 +1,7 @@
 package com.ecaservice.server.service.evaluation;
 
 import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.specification.FilterFieldCustomizer;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.filter.EvaluationLogFilter;
 import com.ecaservice.server.mapping.EvaluationLogMapper;
@@ -28,6 +29,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -36,6 +38,7 @@ import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.server.model.entity.AbstractEvaluationEntity_.CREATION_DATE;
 import static com.ecaservice.server.util.Utils.buildEvaluationResultsDto;
 import static com.ecaservice.server.util.Utils.toRequestStatusStatisticsMap;
+import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * Evaluation log service.
@@ -55,12 +58,23 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
     private final EvaluationLogRepository evaluationLogRepository;
     private final EvaluationResultsRequestEntityRepository evaluationResultsRequestEntityRepository;
 
+    private final List<FilterFieldCustomizer> globalFilterFieldCustomizers = newArrayList();
+
+    /**
+     * Initialization method.
+     */
+    @PostConstruct
+    public void initialize() {
+        globalFilterFieldCustomizers.add(new ClassifierNameFilterFieldCustomizer(filterService));
+    }
+
     @Override
     public Page<EvaluationLog> getNextPage(PageRequestDto pageRequestDto) {
         Sort sort = buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
         List<String> globalFilterFields = filterService.getGlobalFilterFields(FilterTemplateType.EVALUATION_LOG.name());
-        EvaluationLogFilter filter = new EvaluationLogFilter(pageRequestDto.getSearchQuery(), globalFilterFields,
+        var filter = new EvaluationLogFilter(pageRequestDto.getSearchQuery(), globalFilterFields,
                 pageRequestDto.getFilters());
+        filter.setGlobalFilterFieldsCustomizers(globalFilterFieldCustomizers);
         int pageSize = Integer.min(pageRequestDto.getSize(), appProperties.getMaxPageSize());
         return evaluationLogRepository.findAll(filter, PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
     }

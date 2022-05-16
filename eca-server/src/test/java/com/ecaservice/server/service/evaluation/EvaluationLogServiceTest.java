@@ -85,6 +85,7 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
         evaluationLogService =
                 new EvaluationLogService(appProperties, filterService, evaluationLogMapper, classifierOptionsProcessor,
                         ersService, evaluationLogRepository, evaluationResultsRequestEntityRepository);
+        evaluationLogService.initialize();
     }
 
     @Override
