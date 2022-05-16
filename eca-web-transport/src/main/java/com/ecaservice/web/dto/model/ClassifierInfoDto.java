@@ -24,6 +24,18 @@ public class ClassifierInfoDto {
     private String classifierName;
 
     /**
+     * Classifier description
+     */
+    @Schema(description = "Classifier description", example = "CART", maxLength = MAX_LENGTH_255)
+    private String classifierDescription;
+
+    /**
+     * Is meta classifier (used for stacking algorithms)
+     */
+    @Schema(description = "Is meta classifier (used for stacking algorithms)")
+    private boolean metaClassifier;
+
+    /**
      * Classifier input options map
      */
     @ArraySchema(schema = @Schema(description = "Classifier input options list"))
