@@ -48,6 +48,37 @@
               </div>
             </div>
           </ng-container>
+          <p-fieldset *ngIf="evaluationLogDetails?.classifierInfo?.individualClassifiers?.length > 0"
+                      legend="Базовые классификаторы"
+                      [toggleable]="true"
+                      [collapsed]="true"
+                      class="classifiers-details-fieldset">
+            <ng-container *ngFor="let individualClassifier of evaluationLogDetails?.classifierInfo?.individualClassifiers">
+              <div class="ui-g">
+                <div class="ui-g-12 text-left individual-classifier-header text-wrap mt-2 mb-2">
+                  <div *ngIf="!individualClassifier.metaClassifier">
+                    {{ individualClassifier.classifierDescription }}
+                  </div>
+                  <div *ngIf="individualClassifier.metaClassifier">
+                    {{ individualClassifier.classifierDescription }}
+                    <div class="ml-2 meta-classifier bg-info text-white text-bold">
+                      Мета классификатор
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <ng-container *ngFor="let option of individualClassifier?.inputOptions">
+                <div class="ui-g">
+                  <div class="ui-g-6 text-left text-bold text-wrap">
+                    {{ option.optionName }}
+                  </div>
+                  <div class="ui-g-6 text-left text-wrap">
+                    {{ option.optionValue }}
+                  </div>
+                </div>
+              </ng-container>
+            </ng-container>
+          </p-fieldset>
         </p-fieldset>
       </div>
     </div>
