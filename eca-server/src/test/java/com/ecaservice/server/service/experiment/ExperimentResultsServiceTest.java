@@ -16,6 +16,7 @@ import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.server.repository.ExperimentResultsRequestRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
+import com.ecaservice.server.service.classifiers.ClassifierOptionsProcessor;
 import com.ecaservice.server.service.ers.ErsService;
 import com.ecaservice.web.dto.model.ErsReportStatus;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
@@ -49,6 +50,8 @@ class ExperimentResultsServiceTest extends AbstractJpaTest {
     @Mock
     private ErsService ersService;
     @Mock
+    private ClassifierOptionsProcessor classifierOptionsProcessor;
+    @Mock
     private ClassifierOptionsAdapter classifierOptionsAdapter;
     @Inject
     private ExperimentResultsRequestRepository experimentResultsRequestRepository;
@@ -64,8 +67,9 @@ class ExperimentResultsServiceTest extends AbstractJpaTest {
     @Override
     public void init() {
         experimentResultsService =
-                new ExperimentResultsService(ersService, experimentResultsMapper, classifierOptionsAdapter,
-                        experimentResultsEntityRepository, experimentResultsRequestRepository);
+                new ExperimentResultsService(ersService, classifierOptionsProcessor, experimentResultsMapper,
+                        classifierOptionsAdapter, experimentResultsEntityRepository,
+                        experimentResultsRequestRepository);
     }
 
     @Override

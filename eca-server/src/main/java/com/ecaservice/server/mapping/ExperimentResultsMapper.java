@@ -36,6 +36,7 @@ public abstract class ExperimentResultsMapper {
      * @param experimentResultsEntity - experiment results entity
      * @return experiment results dto
      */
+    @Mapping(target = "classifierInfo", ignore = true)
     public abstract ExperimentResultsDto map(ExperimentResultsEntity experimentResultsEntity);
 
     /**
@@ -45,6 +46,7 @@ public abstract class ExperimentResultsMapper {
      * @return experiment results details dto
      */
     @Mapping(source = "experiment", target = "experimentDto")
+    @Mapping(target = "classifierInfo", ignore = true)
     public abstract ExperimentResultsDetailsDto mapDetails(ExperimentResultsEntity experimentResultsEntity);
 
     @AfterMapping

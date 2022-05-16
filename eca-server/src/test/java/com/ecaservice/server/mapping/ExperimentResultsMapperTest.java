@@ -69,10 +69,6 @@ class ExperimentResultsMapperTest {
         assertThat(experimentResultsDto.getId()).isEqualTo(experimentResultsEntity.getId());
         assertThat(experimentResultsDto.getResultsIndex()).isEqualTo(experimentResultsEntity.getResultsIndex());
         assertThat(experimentResultsDto.getPctCorrect()).isEqualTo(experimentResultsEntity.getPctCorrect());
-        assertThat(experimentResultsDto.getClassifierInfo()).isNotNull();
-        assertThat(experimentResultsDto.getClassifierInfo().getClassifierName()).isEqualTo(
-                experimentResultsEntity.getClassifierInfo().getClassifierName());
-        assertThat(experimentResultsDto.getClassifierInfo().getInputOptions()).hasSameSizeAs(
-                experimentResultsEntity.getClassifierInfo().getClassifierInputOptions());
+        assertThat(experimentResultsDto.getClassifierInfo()).isNull();
     }
 }
