@@ -14,7 +14,6 @@ import com.ecaservice.server.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.UserService;
 import com.ecaservice.web.dto.model.ClassifierOptionsDto;
-import com.ecaservice.web.dto.model.FormTemplateDto;
 import com.ecaservice.web.dto.model.InputOptionDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.google.common.collect.Sets;
@@ -58,14 +57,14 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
     @MockBean
     private UserService userService;
     @MockBean
-    private ClassifiersTemplateService classifiersTemplateService;
+    private ClassifierOptionsProcessor classifierOptionsProcessor;
     @Inject
     private ClassifierOptionsService classifierOptionsService;
 
     @Override
     public void init() {
         when(userService.getCurrentUser()).thenReturn(USER_NAME);
-        when(classifiersTemplateService.getClassifierTemplateByClass(anyString())).thenReturn(new FormTemplateDto());
+      //  when(classifierOptionsProcessor.getClassifierTemplateByClass(anyString())).thenReturn(new FormTemplateDto());
     }
 
     @Override
@@ -76,7 +75,7 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
 
     @Test
     void testGetClassifiersOptionsPage() {
-        when(classifiersTemplateService.processInputOptions(anyString()))
+        when(classifierOptionsProcessor.processInputOptions(anyString()))
                 .thenReturn(Collections.singletonList(new InputOptionDto()));
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = saveClassifierOptions(true);
         PageRequestDto pageRequestDto =

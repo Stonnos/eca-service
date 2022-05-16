@@ -6,7 +6,6 @@ import com.ecaservice.classifier.options.model.StackingOptions;
 import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.server.mapping.ClassifierInfoMapper;
 import com.ecaservice.server.model.entity.ClassifierInfo;
-import com.ecaservice.server.service.classifiers.ClassifiersTemplateService;
 import com.ecaservice.web.dto.model.ClassifierInfoDto;
 import com.ecaservice.web.dto.model.FieldDictionaryDto;
 import com.ecaservice.web.dto.model.FieldDictionaryValueDto;
@@ -38,13 +37,28 @@ import static com.ecaservice.server.util.Utils.formatValue;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ClassifierInfoService {
+public class ClassifierOptionsProcessor {
 
     private static final String CLASSIFIER_DICTIONARY_NAME = "classifier";
 
     private final ClassifierInfoMapper classifierInfoMapper;
-    private final ClassifiersTemplateService classifiersTemplateService;
+    private final ClassifiersTemplateProvider classifiersTemplateProvider;
     private final FilterService filterService;
+
+    /**
+     * Processes classifier input options json string to human readable format.
+     *
+     * @param classifierOptionsJson - classifier options json
+     * @return classifier options list
+     */
+    public List<InputOptionDto> processInputOptions(String classifierOptionsJson) {
+        log.debug("Starting to process classifier options json [{}]", classifierOptionsJson);
+        var classifierOptions = parseOptions(classifierOptionsJson);
+        var template = getTemplate(classifierOptions);
+        var inputOptions = processInputOptions(template, classifierOptions);
+        log.debug("Classifier options json has been processed with result: {}", inputOptions);
+        return inputOptions;
+    }
 
     /**
      * Processes classifier input options json string to classifier info.
@@ -102,10 +116,10 @@ public class ClassifierInfoService {
 
     private FormTemplateDto getTemplate(ClassifierOptions classifierOptions) {
         if (isEnsembleClassifierOptions(classifierOptions)) {
-            return classifiersTemplateService.getEnsembleClassifierTemplateByClass(
+            return classifiersTemplateProvider.getEnsembleClassifierTemplateByClass(
                     classifierOptions.getClass().getSimpleName());
         } else {
-            return classifiersTemplateService.getClassifierTemplateByClass(
+            return classifiersTemplateProvider.getClassifierTemplateByClass(
                     classifierOptions.getClass().getSimpleName());
         }
     }

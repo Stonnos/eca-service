@@ -1,6 +1,7 @@
 package com.ecaservice.server.service.classifiers;
 
 import com.ecaservice.classifier.options.model.ClassifierOptions;
+import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.core.form.template.service.FormTemplateProvider;
 import com.ecaservice.web.dto.model.FormTemplateDto;
 import com.ecaservice.web.dto.model.InputOptionDto;
@@ -30,13 +31,13 @@ import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests for {@link ClassifiersTemplateService} class.
+ * Unit tests for {@link ClassifiersTemplateProvider} class.
  *
  * @author Roman Batygin
  */
 @ExtendWith(SpringExtension.class)
-@Import(ClassifiersTemplateService.class)
-class ClassifiersTemplateServiceTest {
+@Import({ClassifiersTemplateProvider.class, ClassifierOptionsProcessor.class})
+class ClassifierOptionsProcessorTest {
 
     private static final String CLASSIFIERS = "classifiers";
     private static final DecimalFormat DECIMAL_FORMAT = NumericFormatFactory.getInstance(Integer.MAX_VALUE);
@@ -68,9 +69,11 @@ class ClassifiersTemplateServiceTest {
 
     @MockBean
     private FormTemplateProvider formTemplateProvider;
+    @MockBean
+    private FilterService filterService;
 
     @Inject
-    private ClassifiersTemplateService classifiersTemplateService;
+    private ClassifierOptionsProcessor classifierOptionsProcessor;
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -80,12 +83,6 @@ class ClassifiersTemplateServiceTest {
     void init() {
         templates = loadClassifiersTemplates();
         when(formTemplateProvider.getTemplates(CLASSIFIERS)).thenReturn(templates);
-    }
-
-    @Test
-    void testGetTemplates() {
-        var result = classifiersTemplateService.getClassifiersTemplates();
-        assertThat(result).hasSameSizeAs(templates);
     }
 
     @Test
@@ -260,6 +257,6 @@ class ClassifiersTemplateServiceTest {
 
     private List<InputOptionDto> parseInputOptions(ClassifierOptions classifierOptions) throws JsonProcessingException {
         var json = objectMapper.writeValueAsString(classifierOptions);
-        return classifiersTemplateService.processInputOptions(json);
+        return classifierOptionsProcessor.processInputOptions(json);
     }
 }

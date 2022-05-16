@@ -12,7 +12,7 @@ import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.projections.RequestStatusStatistics;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.repository.EvaluationResultsRequestEntityRepository;
-import com.ecaservice.server.service.classifiers.ClassifierInfoService;
+import com.ecaservice.server.service.classifiers.ClassifierOptionsProcessor;
 import com.ecaservice.server.service.PageRequestService;
 import com.ecaservice.server.service.ers.ErsService;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
@@ -50,7 +50,7 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
     private final AppProperties appProperties;
     private final FilterService filterService;
     private final EvaluationLogMapper evaluationLogMapper;
-    private final ClassifierInfoService classifierInfoService;
+    private final ClassifierOptionsProcessor classifierOptionsProcessor;
     private final ErsService ersService;
     private final EvaluationLogRepository evaluationLogRepository;
     private final EvaluationResultsRequestEntityRepository evaluationResultsRequestEntityRepository;
@@ -78,7 +78,7 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
                 .map(evaluationLog -> {
                     var evaluationLogDto = evaluationLogMapper.map(evaluationLog);
                     var classifierInfoDto =
-                            classifierInfoService.processClassifierInfo(evaluationLog.getClassifierInfo());
+                            classifierOptionsProcessor.processClassifierInfo(evaluationLog.getClassifierInfo());
                     evaluationLogDto.setClassifierInfo(classifierInfoDto);
                     return evaluationLogDto;
                 })
@@ -94,7 +94,7 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
      */
     public EvaluationLogDetailsDto getEvaluationLogDetails(EvaluationLog evaluationLog) {
         var evaluationLogDetailsDto = evaluationLogMapper.mapDetails(evaluationLog);
-        var classifierInfoDto = classifierInfoService.processClassifierInfo(evaluationLog.getClassifierInfo());
+        var classifierInfoDto = classifierOptionsProcessor.processClassifierInfo(evaluationLog.getClassifierInfo());
         evaluationLogDetailsDto.setClassifierInfo(classifierInfoDto);
         evaluationLogDetailsDto.setEvaluationResultsDto(getEvaluationResults(evaluationLog));
         return evaluationLogDetailsDto;

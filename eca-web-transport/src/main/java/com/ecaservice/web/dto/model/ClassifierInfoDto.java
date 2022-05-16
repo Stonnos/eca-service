@@ -36,7 +36,7 @@ public class ClassifierInfoDto {
     private boolean metaClassifier;
 
     /**
-     * Classifier input options map
+     * Classifier input options list
      */
     @ArraySchema(schema = @Schema(description = "Classifier input options list"))
     private List<InputOptionDto> inputOptions;

@@ -17,7 +17,7 @@ import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.repository.EvaluationResultsRequestEntityRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
-import com.ecaservice.server.service.classifiers.ClassifierInfoService;
+import com.ecaservice.server.service.classifiers.ClassifierOptionsProcessor;
 import com.ecaservice.server.service.ers.ErsService;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
@@ -77,13 +77,13 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
     @Mock
     private ErsService ersService;
     @Mock
-    private ClassifierInfoService classifierInfoService;
+    private ClassifierOptionsProcessor classifierOptionsProcessor;
     private EvaluationLogService evaluationLogService;
 
     @Override
     public void init() {
         evaluationLogService =
-                new EvaluationLogService(appProperties, filterService, evaluationLogMapper, classifierInfoService,
+                new EvaluationLogService(appProperties, filterService, evaluationLogMapper, classifierOptionsProcessor,
                         ersService, evaluationLogRepository, evaluationResultsRequestEntityRepository);
     }
 
