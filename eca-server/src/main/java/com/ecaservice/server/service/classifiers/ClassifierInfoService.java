@@ -64,12 +64,14 @@ public class ClassifierInfoService {
         }
         var classifierName = getClassifierNameLabel(classifierInfo.getClassifierName());
         classifierInfoDto.setClassifierName(classifierName);
+        classifierInfoDto.setClassifierDescription(classifierName);
         return classifierInfoDto;
     }
 
     private ClassifierInfoDto internalProcessClassifierInfo(ClassifierOptions classifierOptions) {
         ClassifierInfoDto classifierInfoDto = new ClassifierInfoDto();
         var template = getTemplate(classifierOptions);
+        classifierInfoDto.setClassifierName(template.getTemplateTitle());
         classifierInfoDto.setClassifierName(template.getTemplateTitle());
         var inputOptions = processInputOptions(template, classifierOptions);
         classifierInfoDto.setInputOptions(inputOptions);
@@ -92,6 +94,7 @@ public class ClassifierInfoService {
                 var individualClassifiers = processClassifiers(stackingOptions.getClassifierOptions());
                 classifierInfoDto.setIndividualClassifiers(individualClassifiers);
                 var metaClassifierInfo = internalProcessClassifierInfo(stackingOptions.getMetaClassifierOptions());
+                metaClassifierInfo.setMetaClassifier(true);
                 classifierInfoDto.getIndividualClassifiers().add(metaClassifierInfo);
             }
         }
