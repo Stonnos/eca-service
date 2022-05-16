@@ -3,6 +3,7 @@ package com.ecaservice.server.service.classifiers;
 import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.core.form.template.service.FormTemplateProvider;
+import com.ecaservice.server.mapping.ClassifierInfoMapperImpl;
 import com.ecaservice.web.dto.model.FormTemplateDto;
 import com.ecaservice.web.dto.model.InputOptionDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -36,7 +37,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @ExtendWith(SpringExtension.class)
-@Import({ClassifiersTemplateProvider.class, ClassifierOptionsProcessor.class})
+@Import({ClassifiersTemplateProvider.class, ClassifierOptionsProcessor.class, ClassifierInfoMapperImpl.class})
 class ClassifierOptionsProcessorTest {
 
     private static final String CLASSIFIERS = "classifiers";
