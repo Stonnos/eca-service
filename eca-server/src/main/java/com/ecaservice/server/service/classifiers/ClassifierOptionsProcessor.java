@@ -72,12 +72,13 @@ public class ClassifierOptionsProcessor {
         if (StringUtils.isNotEmpty(classifierInfo.getClassifierOptions())) {
             var classifierOptions = parseOptions(classifierInfo.getClassifierOptions());
             classifierInfoDto = internalProcessClassifierInfo(classifierOptions);
+            classifierInfoDto.setClassifierName(classifierInfo.getClassifierName());
+            classifierInfoDto.setClassifierOptionsJson(classifierInfo.getClassifierOptions());
         } else {
             //Returns classifiers options list (for old data)
             classifierInfoDto = classifierInfoMapper.map(classifierInfo);
         }
         var classifierName = getClassifierNameLabel(classifierInfo.getClassifierName());
-        classifierInfoDto.setClassifierName(classifierName);
         classifierInfoDto.setClassifierDescription(classifierName);
         return classifierInfoDto;
     }
@@ -85,8 +86,8 @@ public class ClassifierOptionsProcessor {
     private ClassifierInfoDto internalProcessClassifierInfo(ClassifierOptions classifierOptions) {
         ClassifierInfoDto classifierInfoDto = new ClassifierInfoDto();
         var template = getTemplate(classifierOptions);
-        classifierInfoDto.setClassifierName(template.getTemplateTitle());
-        classifierInfoDto.setClassifierName(template.getTemplateTitle());
+        classifierInfoDto.setClassifierName(template.getObjectClass());
+        classifierInfoDto.setClassifierDescription(template.getTemplateTitle());
         var inputOptions = processInputOptions(template, classifierOptions);
         classifierInfoDto.setInputOptions(inputOptions);
         customizeClassifierInfo(classifierInfoDto, classifierOptions);
