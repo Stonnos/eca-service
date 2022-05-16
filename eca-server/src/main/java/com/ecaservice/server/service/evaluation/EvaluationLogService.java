@@ -3,7 +3,6 @@ package com.ecaservice.server.service.evaluation;
 import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.filter.EvaluationLogFilter;
-import com.ecaservice.server.mapping.ClassifierInfoMapper;
 import com.ecaservice.server.mapping.EvaluationLogMapper;
 import com.ecaservice.server.model.entity.ErsResponseStatus;
 import com.ecaservice.server.model.entity.EvaluationLog;
@@ -13,10 +12,9 @@ import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.projections.RequestStatusStatistics;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.repository.EvaluationResultsRequestEntityRepository;
+import com.ecaservice.server.service.classifiers.ClassifierInfoService;
 import com.ecaservice.server.service.PageRequestService;
-import com.ecaservice.server.service.classifiers.ClassifiersTemplateService;
 import com.ecaservice.server.service.ers.ErsService;
-import com.ecaservice.web.dto.model.ClassifierInfoDto;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import com.ecaservice.web.dto.model.EvaluationLogDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
@@ -25,7 +23,6 @@ import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -53,8 +50,7 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
     private final AppProperties appProperties;
     private final FilterService filterService;
     private final EvaluationLogMapper evaluationLogMapper;
-    private final ClassifierInfoMapper classifierInfoMapper;
-    private final ClassifiersTemplateService classifiersTemplateService;
+    private final ClassifierInfoService classifierInfoService;
     private final ErsService ersService;
     private final EvaluationLogRepository evaluationLogRepository;
     private final EvaluationResultsRequestEntityRepository evaluationResultsRequestEntityRepository;
@@ -81,7 +77,8 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
                 .stream()
                 .map(evaluationLog -> {
                     var evaluationLogDto = evaluationLogMapper.map(evaluationLog);
-                    var classifierInfoDto = populateClassifierInfo(evaluationLog);
+                    var classifierInfoDto =
+                            classifierInfoService.processClassifierInfo(evaluationLog.getClassifierInfo());
                     evaluationLogDto.setClassifierInfo(classifierInfoDto);
                     return evaluationLogDto;
                 })
@@ -97,7 +94,7 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
      */
     public EvaluationLogDetailsDto getEvaluationLogDetails(EvaluationLog evaluationLog) {
         var evaluationLogDetailsDto = evaluationLogMapper.mapDetails(evaluationLog);
-        var classifierInfoDto = populateClassifierInfo(evaluationLog);
+        var classifierInfoDto = classifierInfoService.processClassifierInfo(evaluationLog.getClassifierInfo());
         evaluationLogDetailsDto.setClassifierInfo(classifierInfoDto);
         evaluationLogDetailsDto.setEvaluationResultsDto(getEvaluationResults(evaluationLog));
         return evaluationLogDetailsDto;
@@ -111,16 +108,6 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
     public Map<RequestStatus, Long> getRequestStatusesStatistics() {
         List<RequestStatusStatistics> requestStatusStatistics = evaluationLogRepository.getRequestStatusesStatistics();
         return toRequestStatusStatisticsMap(requestStatusStatistics);
-    }
-
-    private ClassifierInfoDto populateClassifierInfo(EvaluationLog evaluationLog) {
-        if (StringUtils.isNotEmpty(evaluationLog.getClassifierInfo().getClassifierOptions())) {
-            return classifiersTemplateService.processClassifierInfo(
-                    evaluationLog.getClassifierInfo().getClassifierOptions());
-        } else {
-            //Returns classifiers options list (for old data)
-            return classifierInfoMapper.map(evaluationLog.getClassifierInfo());
-        }
     }
 
     private EvaluationResultsDto getEvaluationResults(EvaluationLog evaluationLog) {

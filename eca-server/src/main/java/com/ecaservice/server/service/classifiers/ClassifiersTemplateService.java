@@ -1,10 +1,7 @@
 package com.ecaservice.server.service.classifiers;
 
-import com.ecaservice.classifier.options.model.AbstractHeterogeneousClassifierOptions;
 import com.ecaservice.classifier.options.model.ClassifierOptions;
-import com.ecaservice.classifier.options.model.StackingOptions;
 import com.ecaservice.core.form.template.service.FormTemplateProvider;
-import com.ecaservice.web.dto.model.ClassifierInfoDto;
 import com.ecaservice.web.dto.model.FieldDictionaryDto;
 import com.ecaservice.web.dto.model.FieldDictionaryValueDto;
 import com.ecaservice.web.dto.model.FieldType;
@@ -69,37 +66,6 @@ public class ClassifiersTemplateService {
     }
 
     /**
-     * Processes classifier input options json string to classifier info.
-     *
-     * @param classifierOptionsJson - classifier options json
-     * @return classifier info
-     */
-    public ClassifierInfoDto processClassifierInfo(String classifierOptionsJson) {
-        log.debug("Starting to process classifier options json [{}]", classifierOptionsJson);
-        var classifierOptions = parseOptions(classifierOptionsJson);
-        return processClassifierInfo(classifierOptions);
-    }
-
-    /**
-     * Processes classifier input options json string to classifier info.
-     *
-     * @param classifierOptions - classifier options
-     * @return classifier info
-     */
-    public ClassifierInfoDto processClassifierInfo(ClassifierOptions classifierOptions) {
-        log.debug("Starting to process classifier options class [{}]", classifierOptions.getClass().getSimpleName());
-        ClassifierInfoDto classifierInfoDto = new ClassifierInfoDto();
-        var template = getTemplate(classifierOptions);
-        classifierInfoDto.setClassifierName(template.getTemplateTitle());
-        var inputOptions = processInputOptions(template, classifierOptions);
-        classifierInfoDto.setInputOptions(inputOptions);
-        customizeClassifierInfo(classifierInfoDto, classifierOptions);
-        log.debug("Classifier options class [{}] has been processed with result: {}",
-                classifierOptions.getClass().getSimpleName(), classifierInfoDto);
-        return classifierInfoDto;
-    }
-
-    /**
      * Gets classifier template by class.
      *
      * @param objectClass - classifier class
@@ -117,24 +83,6 @@ public class ClassifiersTemplateService {
      */
     public FormTemplateDto getEnsembleClassifierTemplateByClass(String objectClass) {
         return getTemplate(ENSEMBLE_CLASSIFIERS_GROUP, objectClass);
-    }
-
-    private void customizeClassifierInfo(ClassifierInfoDto classifierInfoDto, ClassifierOptions classifierOptions) {
-        if (isEnsembleClassifierOptions(classifierOptions)) {
-            if (classifierOptions instanceof AbstractHeterogeneousClassifierOptions) {
-                //Populates heterogeneous ensemble individual classifiers options
-                var heterogeneousClassifierOptions = (AbstractHeterogeneousClassifierOptions) classifierOptions;
-                var individualClassifiers = processClassifiers(heterogeneousClassifierOptions.getClassifierOptions());
-                classifierInfoDto.setIndividualClassifiers(individualClassifiers);
-            } else if (classifierOptions instanceof StackingOptions) {
-                //Populates stacking individual classifiers options
-                var stackingOptions = (StackingOptions) classifierOptions;
-                var individualClassifiers = processClassifiers(stackingOptions.getClassifierOptions());
-                classifierInfoDto.setIndividualClassifiers(individualClassifiers);
-                var metaClassifierInfo = processClassifierInfo(stackingOptions.getMetaClassifierOptions());
-                classifierInfoDto.getIndividualClassifiers().add(metaClassifierInfo);
-            }
-        }
     }
 
     private FormTemplateDto getTemplate(String groupName, String objectClass) {
@@ -198,11 +146,5 @@ public class ClassifiersTemplateService {
                 .map(FieldDictionaryValueDto::getLabel)
                 .findFirst()
                 .orElse(null);
-    }
-
-    private List<ClassifierInfoDto> processClassifiers(List<ClassifierOptions> classifierOptions) {
-        return classifierOptions.stream()
-                .map(this::processClassifierInfo)
-                .collect(Collectors.toList());
     }
 }
