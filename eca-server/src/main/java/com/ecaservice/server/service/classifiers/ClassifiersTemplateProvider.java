@@ -36,6 +36,18 @@ public class ClassifiersTemplateProvider {
     }
 
     /**
+     * Gets ensemble classifiers form templates.
+     *
+     * @return form templates list
+     */
+    public List<FormTemplateDto> getEnsembleClassifiersTemplates() {
+        log.info("Request ensemble classifiers templates");
+        var classifierTemplates = formTemplateProvider.getTemplates(ENSEMBLE_CLASSIFIERS_GROUP);
+        log.info("[{}] ensemble classifiers form templates has been fetched", classifierTemplates.size());
+        return classifierTemplates;
+    }
+
+    /**
      * Gets classifier template by class.
      *
      * @param objectClass - classifier class

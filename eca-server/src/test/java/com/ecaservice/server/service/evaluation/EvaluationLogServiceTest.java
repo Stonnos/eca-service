@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.ecaservice.server.service.filter.dictionary.FilterDictionaries.CLASSIFIER_NAME;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -64,7 +65,6 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
     private static final int PAGE_SIZE = 10;
     private static final String INSTANCES_INFO_RELATION_NAME = "instancesInfo.relationName";
     private static final String CLASSIFIER_INFO_CLASSIFIER_NAME = "classifierInfo.classifierName";
-    private static final String CLASSIFIERS_DICTIONARY = "classifier";
     private static final String CART_DESCRIPTION = "Алгоритм CART";
     private static final String C45_DESCRIPTION = "Алгоритм C45";
 
@@ -319,6 +319,6 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
         classifiersDictionary.getValues().add(
                 new FilterDictionaryValueDto(CART_DESCRIPTION, CART.class.getSimpleName()));
         classifiersDictionary.getValues().add(new FilterDictionaryValueDto(C45_DESCRIPTION, C45.class.getSimpleName()));
-        when(filterService.getFilterDictionary(CLASSIFIERS_DICTIONARY)).thenReturn(classifiersDictionary);
+        when(filterService.getFilterDictionary(CLASSIFIER_NAME)).thenReturn(classifiersDictionary);
     }
 }

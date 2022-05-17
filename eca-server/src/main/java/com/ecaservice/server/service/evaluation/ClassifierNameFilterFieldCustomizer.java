@@ -11,6 +11,7 @@ import javax.persistence.criteria.Root;
 import java.util.stream.Collectors;
 
 import static com.ecaservice.core.filter.util.FilterUtils.buildExpression;
+import static com.ecaservice.server.service.filter.dictionary.FilterDictionaries.CLASSIFIER_NAME;
 
 /**
  * Classifier name filter field customizer.
@@ -19,7 +20,6 @@ import static com.ecaservice.core.filter.util.FilterUtils.buildExpression;
  */
 public class ClassifierNameFilterFieldCustomizer extends FilterFieldCustomizer {
 
-    private static final String CLASSIFIER_DICTIONARY_NAME = "classifier";
     private static final String CLASSIFIER_NAME_FIELD = "classifierInfo.classifierName";
 
     private final FilterService filterService;
@@ -36,7 +36,7 @@ public class ClassifierNameFilterFieldCustomizer extends FilterFieldCustomizer {
 
     @Override
     public Predicate toPredicate(Root<?> root, CriteriaBuilder criteriaBuilder, String value) {
-        var classifiersDictionary = filterService.getFilterDictionary(CLASSIFIER_DICTIONARY_NAME);
+        var classifiersDictionary = filterService.getFilterDictionary(CLASSIFIER_NAME);
         var classifierNames = classifiersDictionary.getValues().stream()
                 .filter(filterDictionaryValueDto -> filterDictionaryValueDto.getLabel().toLowerCase().contains(
                         value.toLowerCase()))

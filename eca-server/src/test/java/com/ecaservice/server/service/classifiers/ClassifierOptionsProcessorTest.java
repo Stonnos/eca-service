@@ -84,6 +84,7 @@ class ClassifierOptionsProcessorTest {
     void init() {
         templates = loadClassifiersTemplates();
         when(formTemplateProvider.getTemplates(CLASSIFIERS)).thenReturn(templates);
+        classifierOptionsProcessor.initializeCache();
     }
 
     @Test

@@ -19,4 +19,9 @@ public class FilterDictionaries {
      * Experiment type dictionary name
      */
     public static final String EXPERIMENT_TYPE = "experimentType";
+
+    /**
+     * Classifiers dictionary name
+     */
+    public static final String CLASSIFIER_NAME = "classifier";
 }

@@ -17,17 +17,26 @@ import com.ecaservice.web.dto.model.InputOptionDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.validator.internal.engine.path.PathImpl;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ReflectionUtils;
 
+import javax.annotation.PostConstruct;
+import javax.validation.Path;
+import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static com.ecaservice.common.web.util.BeanUtil.invokeGetter;
+import static com.ecaservice.server.service.filter.dictionary.FilterDictionaries.CLASSIFIER_NAME;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.isEnsembleClassifierOptions;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.parseOptions;
 import static com.ecaservice.server.util.Utils.formatValue;
+import static com.google.common.collect.Maps.newHashMap;
 
 /**
  * Service for processing classifier info.
@@ -39,11 +48,22 @@ import static com.ecaservice.server.util.Utils.formatValue;
 @RequiredArgsConstructor
 public class ClassifierOptionsProcessor {
 
-    private static final String CLASSIFIER_DICTIONARY_NAME = "classifier";
+    private static final String METHOD_KEY_FORMAT = "%s#%s";
 
     private final ClassifierInfoMapper classifierInfoMapper;
     private final ClassifiersTemplateProvider classifiersTemplateProvider;
     private final FilterService filterService;
+
+    private Map<String, Method> gettersCache = newHashMap();
+
+    /**
+     * Initializes cache.
+     */
+    @PostConstruct
+    public void initializeCache() {
+        classifiersTemplateProvider.getClassifiersTemplates().forEach(this::cachePutTemplate);
+        classifiersTemplateProvider.getEnsembleClassifiersTemplates().forEach(this::cachePutTemplate);
+    }
 
     /**
      * Processes classifier input options json string to human readable format.
@@ -157,7 +177,7 @@ public class ClassifierOptionsProcessor {
     }
 
     private String getClassifierNameLabel(String classifierName) {
-        var classifiersDictionary = filterService.getFilterDictionary(CLASSIFIER_DICTIONARY_NAME);
+        var classifiersDictionary = filterService.getFilterDictionary(CLASSIFIER_NAME);
         return classifiersDictionary.getValues()
                 .stream()
                 .filter(fieldDictionaryValue -> fieldDictionaryValue.getValue().equals(classifierName))
@@ -183,5 +203,41 @@ public class ClassifierOptionsProcessor {
         return classifierOptions.stream()
                 .map(this::internalProcessClassifierInfo)
                 .collect(Collectors.toList());
+    }
+
+    private Object invokeGetter(Object bean, String propertyName) {
+        Path path = PathImpl.createPathFromString(propertyName);
+        Object methodResult = bean;
+        for (var node : path) {
+            String key = String.format(METHOD_KEY_FORMAT, methodResult.getClass().getSimpleName(), node.getName());
+            Method readMethod = gettersCache.get(key);
+            Assert.notNull(readMethod, String.format("Method [%s] not found", key));
+            methodResult = ReflectionUtils.invokeMethod(readMethod, methodResult);
+            if (methodResult == null) {
+                return null;
+            }
+        }
+        return methodResult;
+    }
+
+    private void cachePutTemplate(FormTemplateDto templateDto) {
+        log.info("Starting to initialize classifiers templates [{}] cache", templateDto.getTemplateName());
+        templateDto.getFields().forEach(formFieldDto -> {
+            Path path = PathImpl.createPathFromString(formFieldDto.getFieldName());
+            try {
+                Class<?> currentClazz = Class.forName(
+                        String.format("%s.%s", ClassifierOptions.class.getPackageName(), templateDto.getObjectClass()));
+                for (var node : path) {
+                    var propertyDescriptor = BeanUtils.getPropertyDescriptor(currentClazz, node.getName());
+                    var readMethod = propertyDescriptor.getReadMethod();
+                    String key = String.format(METHOD_KEY_FORMAT, currentClazz.getSimpleName(), node.getName());
+                    gettersCache.putIfAbsent(key, readMethod);
+                    currentClazz = propertyDescriptor.getPropertyType();
+                }
+            } catch (ClassNotFoundException e) {
+                throw new IllegalStateException(e.getMessage());
+            }
+        });
+        log.info("Classifiers templates [{}] cache has been initialized", templateDto.getTemplateName());
     }
 }
