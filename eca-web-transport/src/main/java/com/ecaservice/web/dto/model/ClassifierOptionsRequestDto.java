@@ -3,10 +3,12 @@ package com.ecaservice.web.dto.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static com.ecaservice.web.dto.util.FieldConstraints.DATE_TIME_PATTERN;
 import static com.ecaservice.web.dto.util.FieldConstraints.LOCAL_DATE_TIME_MAX_LENGTH;
@@ -17,6 +19,7 @@ import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
 import static com.ecaservice.web.dto.util.FieldConstraints.MINIMUM_NUM_FOLDS_STRING;
 import static com.ecaservice.web.dto.util.FieldConstraints.MINIMUM_NUM_TESTS_STRING;
 import static com.ecaservice.web.dto.util.FieldConstraints.MIN_INTEGER_VALUE_STRING;
+import static com.ecaservice.web.dto.util.FieldConstraints.OPTIMAL_CLASSIFIER_OPTIONS_RESPONSES_MAX_ITEMS;
 import static com.ecaservice.web.dto.util.FieldConstraints.UUID_MAX_LENGTH;
 
 /**
@@ -82,8 +85,9 @@ public class ClassifierOptionsRequestDto {
     private EnumDto responseStatus;
 
     /**
-     * Optimal classifier info
+     * Classifiers options response models.
      */
-    @Schema(description = "Optimal classifier info")
-    private ClassifierInfoDto optimalClassifierInfo;
+    @ArraySchema(schema = @Schema(description = "Classifiers options response models"),
+            maxItems = OPTIMAL_CLASSIFIER_OPTIONS_RESPONSES_MAX_ITEMS)
+    private List<ClassifierOptionsResponseDto> classifierOptionsResponseModels;
 }

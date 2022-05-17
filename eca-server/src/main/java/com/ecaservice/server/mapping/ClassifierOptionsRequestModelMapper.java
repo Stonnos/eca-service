@@ -22,7 +22,7 @@ import static com.ecaservice.server.util.Utils.getEvaluationMethodDescription;
  *
  * @author Roman Batygin
  */
-@Mapper(uses = {ErsEvaluationMethodMapper.class, DateTimeConverter.class},
+@Mapper(uses = {ErsEvaluationMethodMapper.class, ClassifierOptionsResponseModelMapper.class, DateTimeConverter.class},
         injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public abstract class ClassifierOptionsRequestModelMapper {
 
@@ -46,7 +46,6 @@ public abstract class ClassifierOptionsRequestModelMapper {
      * @return classifier options request dto model
      */
     @Mapping(target = "evaluationMethod", ignore = true)
-    @Mapping(target = "optimalClassifierInfo", ignore = true)
     public abstract ClassifierOptionsRequestDto map(ClassifierOptionsRequestModel classifierOptionsRequestModel);
 
     /**
@@ -67,6 +66,15 @@ public abstract class ClassifierOptionsRequestModelMapper {
      * @return classifier options request beans list
      */
     public abstract List<ClassifierOptionsRequestBean> mapToBeans(
+            List<ClassifierOptionsRequestModel> classifierOptionsRequestModels);
+
+    /**
+     * Maps classifiers options requests models entities to its dto models.
+     *
+     * @param classifierOptionsRequestModels - classifiers options requests models entities
+     * @return classifiers options requests dto models
+     */
+    public abstract List<ClassifierOptionsRequestDto> map(
             List<ClassifierOptionsRequestModel> classifierOptionsRequestModels);
 
     @AfterMapping
