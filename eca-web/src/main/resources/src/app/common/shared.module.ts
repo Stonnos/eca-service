@@ -17,6 +17,7 @@ import { WebAppService } from "./services/web-app.service";
 import { ClassifierOptionsDetails } from "./classifier-options-details/classifier-options-details";
 import { MinNumberValidator } from "./validators/min-validator.directive";
 import { MaxNumberValidator } from "./validators/max-validator.directive";
+import { ClassifierOptionsInfo } from "./classifier-options-info/classifier-options-info";
 
 @NgModule({
   imports: [
@@ -34,7 +35,8 @@ import { MaxNumberValidator } from "./validators/max-validator.directive";
     ConfirmDialogComponent,
     EditableInputTextComponent,
     InfoPanelComponent,
-    ClassifierOptionsDetails
+    ClassifierOptionsDetails,
+    ClassifierOptionsInfo
   ],
   exports: [
     RequestStatusComponent,
@@ -46,7 +48,8 @@ import { MaxNumberValidator } from "./validators/max-validator.directive";
     ConfirmDialogComponent,
     EditableInputTextComponent,
     InfoPanelComponent,
-    ClassifierOptionsDetails
+    ClassifierOptionsDetails,
+    ClassifierOptionsInfo
   ],
   providers: [
     FieldService,
