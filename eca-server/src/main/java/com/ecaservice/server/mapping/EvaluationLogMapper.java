@@ -15,7 +15,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-import java.util.List;
 import java.util.Optional;
 
 import static com.ecaservice.server.util.Utils.getEvaluationMethodDescription;
@@ -82,17 +81,9 @@ public abstract class EvaluationLogMapper extends AbstractEvaluationMapper {
     @Mapping(source = "creationDate", target = "creationDate", qualifiedByName = "formatLocalDateTime")
     @Mapping(source = "startDate", target = "startDate", qualifiedByName = "formatLocalDateTime")
     @Mapping(source = "endDate", target = "endDate", qualifiedByName = "formatLocalDateTime")
-    @Mapping(source = "classifierInfo.classifierName", target = "classifierName")
     @Mapping(source = "instancesInfo.relationName", target = "relationName")
+    @Mapping(target = "classifierName", ignore = true)
     public abstract EvaluationLogBean mapToBean(EvaluationLog evaluationLog);
-
-    /**
-     * Maps evaluation logs entities to evaluation log reports beans.
-     *
-     * @param evaluationLogs - evaluation logs entities list
-     * @return evaluation logs beans list
-     */
-    public abstract List<EvaluationLogBean> mapToBeans(List<EvaluationLog> evaluationLogs);
 
     @AfterMapping
     protected void mapData(EvaluationRequest evaluationRequest, @MappingTarget EvaluationLog evaluationLog) {

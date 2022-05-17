@@ -14,6 +14,9 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.ecaservice.server.service.filter.dictionary.FilterDictionaries.CLASSIFIER_NAME;
 
 /**
  * Evaluation logs data fetcher for base report.
@@ -50,6 +53,15 @@ public class EvaluationLogsBaseReportDataFetcher extends
 
     @Override
     protected List<EvaluationLogBean> convertToBeans(Page<EvaluationLog> page) {
-        return evaluationLogMapper.mapToBeans(page.getContent());
+        return page.getContent()
+                .stream()
+                .map(evaluationLog -> {
+                    var evaluationLogBean = evaluationLogMapper.mapToBean(evaluationLog);
+                    var classifierName = getDictionaryLabelByCode(CLASSIFIER_NAME,
+                            evaluationLog.getClassifierInfo().getClassifierName());
+                    evaluationLogBean.setClassifierName(classifierName);
+                    return evaluationLogBean;
+                })
+                .collect(Collectors.toList());
     }
 }

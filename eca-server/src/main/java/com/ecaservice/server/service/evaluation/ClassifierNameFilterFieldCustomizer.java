@@ -37,7 +37,8 @@ public class ClassifierNameFilterFieldCustomizer extends FilterFieldCustomizer {
     @Override
     public Predicate toPredicate(Root<?> root, CriteriaBuilder criteriaBuilder, String value) {
         var classifiersDictionary = filterService.getFilterDictionary(CLASSIFIER_NAME);
-        var classifierNames = classifiersDictionary.getValues().stream()
+        var classifierNames = classifiersDictionary.getValues()
+                .stream()
                 .filter(filterDictionaryValueDto -> filterDictionaryValueDto.getLabel().toLowerCase().contains(
                         value.toLowerCase()))
                 .map(FilterDictionaryValueDto::getValue)

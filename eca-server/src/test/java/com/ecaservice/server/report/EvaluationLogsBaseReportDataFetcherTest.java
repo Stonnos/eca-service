@@ -35,7 +35,10 @@ import java.util.List;
 import static com.ecaservice.server.AssertionUtils.assertBaseReportBean;
 import static com.ecaservice.server.PageRequestUtils.PAGE_NUMBER;
 import static com.ecaservice.server.PageRequestUtils.PAGE_SIZE;
+import static com.ecaservice.server.TestHelperUtils.createFilterDictionaryDto;
+import static com.ecaservice.server.service.filter.dictionary.FilterDictionaries.CLASSIFIER_NAME;
 import static com.google.common.collect.Lists.newArrayList;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit tests that checks EvaluationLogsBaseReportDataFetcher functionality {@see EvaluationLogsBaseReportDataFetcher}.
@@ -74,6 +77,7 @@ class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
                         ersService, evaluationLogRepository, evaluationResultsRequestEntityRepository);
         evaluationLogsBaseReportDataFetcher =
                 new EvaluationLogsBaseReportDataFetcher(filterService, evaluationLogService, evaluationLogMapper);
+        when(filterService.getFilterDictionary(CLASSIFIER_NAME)).thenReturn(createFilterDictionaryDto());
     }
 
     @Override
