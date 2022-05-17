@@ -133,8 +133,6 @@ class EvaluationLogMapperTest {
         assertThat(evaluationLogDto.getRequestStatus().getValue()).isEqualTo(
                 evaluationLog.getRequestStatus().name());
         assertThat(evaluationLogDto.getRequestId()).isEqualTo(evaluationLog.getRequestId());
-        assertThat(evaluationLogDto.getClassifierInfo().getInputOptions()).hasSameSizeAs(
-                evaluationLog.getClassifierInfo().getClassifierInputOptions());
         assertThat(evaluationLogDto.getNumFolds()).isEqualTo(evaluationLog.getNumFolds());
         assertThat(evaluationLogDto.getNumTests()).isEqualTo(evaluationLog.getNumTests());
         assertThat(evaluationLogDto.getSeed()).isEqualTo(evaluationLog.getSeed());
