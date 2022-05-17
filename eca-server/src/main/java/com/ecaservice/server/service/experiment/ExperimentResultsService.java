@@ -85,11 +85,15 @@ public class ExperimentResultsService {
      * @return experiment results details dto
      */
     public ExperimentResultsDetailsDto getExperimentResultsDetails(ExperimentResultsEntity experimentResultsEntity) {
+        log.info("Starting to get experiment [{}] result details [{}]",
+                experimentResultsEntity.getExperiment().getRequestId(), experimentResultsEntity.getId());
         ExperimentResultsDetailsDto experimentResultsDetailsDto =
                 experimentResultsMapper.mapDetails(experimentResultsEntity);
         experimentResultsDetailsDto.setClassifierInfo(
                 classifierOptionsProcessor.processClassifierInfo(experimentResultsEntity.getClassifierInfo()));
         experimentResultsDetailsDto.setEvaluationResultsDto(getEvaluationResults(experimentResultsEntity));
+        log.info("Experiment [{}] result details [{}] has been fetched",
+                experimentResultsEntity.getExperiment().getRequestId(), experimentResultsEntity.getId());
         return experimentResultsDetailsDto;
     }
 
