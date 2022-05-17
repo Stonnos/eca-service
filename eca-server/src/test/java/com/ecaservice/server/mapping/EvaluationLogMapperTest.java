@@ -46,7 +46,6 @@ class EvaluationLogMapperTest {
         assertThat(evaluationLog).isNotNull();
         assertThat(evaluationLog.getEvaluationMethod()).isEqualTo(evaluationRequest.getEvaluationMethod());
         assertThat(evaluationLog.getClassifierInfo()).isNotNull();
-        assertThat(evaluationLog.getClassifierInfo().getClassifierInputOptions()).isNotNull();
         assertThat(evaluationLog.getInstancesInfo().getRelationName()).isEqualTo(
                 evaluationRequest.getData().relationName());
         assertThat(evaluationLog.getInstancesInfo().getClassName()).isEqualTo(
@@ -121,9 +120,7 @@ class EvaluationLogMapperTest {
 
     private void assertEvaluationLogDto(EvaluationLogDto evaluationLogDto, EvaluationLog evaluationLog) {
         assertThat(evaluationLogDto).isNotNull();
-        assertThat(evaluationLogDto.getClassifierInfo()).isNotNull();
-        assertThat(evaluationLogDto.getClassifierInfo().getClassifierName()).isEqualTo(
-                evaluationLog.getClassifierInfo().getClassifierName());
+        assertThat(evaluationLogDto.getClassifierInfo()).isNull();
         assertThat(evaluationLogDto.getCreationDate()).isEqualTo(evaluationLog.getCreationDate());
         assertThat(evaluationLogDto.getStartDate()).isEqualTo(evaluationLog.getStartDate());
         assertThat(evaluationLogDto.getEndDate()).isEqualTo(evaluationLog.getEndDate());

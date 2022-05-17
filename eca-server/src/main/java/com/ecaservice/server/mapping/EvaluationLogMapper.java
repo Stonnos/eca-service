@@ -53,6 +53,7 @@ public abstract class EvaluationLogMapper extends AbstractEvaluationMapper {
     @Mapping(target = "numFolds", ignore = true)
     @Mapping(target = "numTests", ignore = true)
     @Mapping(target = "seed", ignore = true)
+    @Mapping(target = "classifierInfo", ignore = true)
     public abstract EvaluationLogDto map(EvaluationLog evaluationLog);
 
     /**
@@ -67,6 +68,7 @@ public abstract class EvaluationLogMapper extends AbstractEvaluationMapper {
     @Mapping(target = "numFolds", ignore = true)
     @Mapping(target = "numTests", ignore = true)
     @Mapping(target = "seed", ignore = true)
+    @Mapping(target = "classifierInfo", ignore = true)
     public abstract EvaluationLogDetailsDto mapDetails(EvaluationLog evaluationLog);
 
     /**
