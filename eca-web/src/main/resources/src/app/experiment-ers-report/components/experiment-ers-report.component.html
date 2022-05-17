@@ -66,15 +66,7 @@
 
 <p-overlayPanel #classifierInfoPanel [showCloseIcon]="true" appendTo="body">
   <p-panel class="classifier-info-panel">
-    <ng-container *ngFor="let option of selectedExperimentResults?.classifierInfo?.inputOptions">
-      <div class="ui-g">
-        <div class="ui-g-6 text-right text-bold text-wrap">
-          {{ option.optionName }}
-        </div>
-        <div class="ui-g-6 text-left text-wrap">
-          {{ option.optionValue }}
-        </div>
-      </div>
-    </ng-container>
+    <app-classifier-options-info [classifierInfo]="selectedExperimentResults?.classifierInfo">
+    </app-classifier-options-info>
   </p-panel>
 </p-overlayPanel>
