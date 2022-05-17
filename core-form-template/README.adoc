@@ -24,8 +24,6 @@
 [source,java]
 ----
 @EnableFormTemplates
-// Подключить библиотеку spring кэша
-@EnableCaching
 // Если в вашем модуле есть JPA сущности, то указать путь для сканирования
 @EntityScan(basePackageClasses = MyEntity.class)
 // Если в вашем модуле есть JPA репозитории, то указать путь для сканирования
@@ -47,17 +45,6 @@ public class AppConfiguration {
     <!-- your change sets -->
     <include file="../form-template-changelog.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
-----
-
-Также можно настроить параметры кэша. Ниже приведен пример файла application.yml с настройками кэша от caffeine:
-
-[source,yml]
-----
-spring:
-  cache:
-    cache-names: form-templates-group
-    caffeine:
-      spec: maximumSize=100, expireAfterWrite=18000s
 ----
 
 == 2. Описание таблиц библиотеки шаблонов
