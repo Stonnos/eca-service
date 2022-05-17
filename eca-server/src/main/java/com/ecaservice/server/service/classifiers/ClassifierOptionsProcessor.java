@@ -81,17 +81,17 @@ public class ClassifierOptionsProcessor {
     }
 
     /**
-     * Processes classifier input options json string to classifier info.
+     * Processes classifier info to classifier info dto.
      *
-     * @param classifierInfo - classifier options
-     * @return classifier info
+     * @param classifierInfo - classifier info
+     * @return classifier info dto
      */
     public ClassifierInfoDto processClassifierInfo(ClassifierInfo classifierInfo) {
         log.debug("Starting to process classifier info [{}]", classifierInfo.getClassifierName());
         ClassifierInfoDto classifierInfoDto;
         if (StringUtils.isNotEmpty(classifierInfo.getClassifierOptions())) {
             var classifierOptions = parseOptions(classifierInfo.getClassifierOptions());
-            classifierInfoDto = internalProcessClassifierInfo(classifierOptions);
+            classifierInfoDto = processClassifierInfo(classifierOptions);
             classifierInfoDto.setClassifierName(classifierInfo.getClassifierName());
             classifierInfoDto.setClassifierOptionsJson(classifierInfo.getClassifierOptions());
         } else {
@@ -103,7 +103,13 @@ public class ClassifierOptionsProcessor {
         return classifierInfoDto;
     }
 
-    private ClassifierInfoDto internalProcessClassifierInfo(ClassifierOptions classifierOptions) {
+    /**
+     * Processes classifier input options to classifier info dto.
+     *
+     * @param classifierOptions - classifier options
+     * @return classifier info dto
+     */
+    public ClassifierInfoDto processClassifierInfo(ClassifierOptions classifierOptions) {
         ClassifierInfoDto classifierInfoDto = new ClassifierInfoDto();
         var template = getTemplate(classifierOptions);
         classifierInfoDto.setClassifierName(template.getObjectClass());
@@ -128,7 +134,7 @@ public class ClassifierOptionsProcessor {
                 var stackingOptions = (StackingOptions) classifierOptions;
                 var individualClassifiers = processClassifiers(stackingOptions.getClassifierOptions());
                 classifierInfoDto.setIndividualClassifiers(individualClassifiers);
-                var metaClassifierInfo = internalProcessClassifierInfo(stackingOptions.getMetaClassifierOptions());
+                var metaClassifierInfo = processClassifierInfo(stackingOptions.getMetaClassifierOptions());
                 metaClassifierInfo.setMetaClassifier(true);
                 classifierInfoDto.getIndividualClassifiers().add(metaClassifierInfo);
             }
@@ -201,7 +207,7 @@ public class ClassifierOptionsProcessor {
 
     private List<ClassifierInfoDto> processClassifiers(List<ClassifierOptions> classifierOptions) {
         return classifierOptions.stream()
-                .map(this::internalProcessClassifierInfo)
+                .map(this::processClassifierInfo)
                 .collect(Collectors.toList());
     }
 

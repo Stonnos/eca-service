@@ -1,16 +1,14 @@
 package com.ecaservice.server.mapping;
 
 
-import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import com.ecaservice.report.model.ClassifierOptionsRequestBean;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.server.model.entity.ClassifierOptionsResponseModel;
 import com.ecaservice.server.model.entity.ErsResponseStatus;
 import com.ecaservice.web.dto.model.ClassifierOptionsRequestDto;
 import eca.core.evaluation.EvaluationMethod;
-import org.apache.commons.lang3.StringUtils;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.context.annotation.Import;
@@ -18,9 +16,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -30,8 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Roman Batygin
  */
 @ExtendWith(SpringExtension.class)
-@Import({ClassifierOptionsRequestModelMapperImpl.class, ErsEvaluationMethodMapperImpl.class,
-        ClassifierOptionsResponseModelMapperImpl.class, DateTimeConverter.class})
+@Import({ClassifierOptionsRequestModelMapperImpl.class, ErsEvaluationMethodMapperImpl.class, DateTimeConverter.class})
 class ClassifierOptionsRequestModelMapperTest {
 
     private static final String DATA_MD5_HASH = "hash";
@@ -74,20 +69,6 @@ class ClassifierOptionsRequestModelMapperTest {
                 requestModel.getEvaluationMethod().getDescription());
         assertThat(classifierOptionsRequestDto.getEvaluationMethod().getValue()).isEqualTo(
                 requestModel.getEvaluationMethod().name());
-        assertThat(classifierOptionsRequestDto.getClassifierOptionsResponseModels()).hasSize(1);
-    }
-
-    @Test
-    void testMapClassifierOptionsRequestModels() {
-        ClassifierOptionsRequestModel requestModel =
-                TestHelperUtils.createClassifierOptionsRequestModel(StringUtils.EMPTY, LocalDateTime.now(),
-                        ErsResponseStatus.SUCCESS, Collections.emptyList());
-        ClassifierOptionsRequestModel requestModel1 =
-                TestHelperUtils.createClassifierOptionsRequestModel(StringUtils.EMPTY, LocalDateTime.now(),
-                        ErsResponseStatus.SUCCESS, Collections.emptyList());
-        List<ClassifierOptionsRequestDto> classifierOptionsRequestDtoList = classifierOptionsRequestModelMapper.map
-                (Arrays.asList(requestModel, requestModel1));
-        assertThat(classifierOptionsRequestDtoList).hasSize(2);
     }
 
     @Test

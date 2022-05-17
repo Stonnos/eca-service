@@ -1,14 +1,19 @@
 package com.ecaservice.server.service.ers;
 
-import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
+import com.ecaservice.server.mapping.ClassifierOptionsRequestModelMapper;
+import com.ecaservice.server.mapping.ClassifierOptionsRequestModelMapperImpl;
+import com.ecaservice.server.mapping.DateTimeConverter;
+import com.ecaservice.server.mapping.ErsEvaluationMethodMapperImpl;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestModel_;
 import com.ecaservice.server.model.entity.ErsResponseStatus;
 import com.ecaservice.server.model.entity.FilterTemplateType;
 import com.ecaservice.server.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
+import com.ecaservice.server.service.classifiers.ClassifierOptionsProcessor;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -37,7 +42,8 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import(AppProperties.class)
+@Import({AppProperties.class, ClassifierOptionsRequestModelMapperImpl.class, ErsEvaluationMethodMapperImpl.class,
+        DateTimeConverter.class})
 class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
 
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -49,16 +55,21 @@ class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
     private ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository;
     @Inject
     private AppProperties appProperties;
+    @Inject
+    private ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper;
     @Mock
     private FilterService filterService;
+    @Mock
+    private ClassifierOptionsProcessor classifierOptionsProcessor;
 
 
     private ClassifierOptionsRequestService classifierOptionsRequestService;
 
     @Override
     public void init() {
-        classifierOptionsRequestService = new ClassifierOptionsRequestService(appProperties, filterService,
-                classifierOptionsRequestModelRepository);
+        classifierOptionsRequestService =
+                new ClassifierOptionsRequestService(appProperties, classifierOptionsRequestModelMapper,
+                        classifierOptionsProcessor, filterService, classifierOptionsRequestModelRepository);
     }
 
     @Override
