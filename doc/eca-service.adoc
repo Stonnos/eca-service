@@ -177,6 +177,7 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                      |bigint           |+|+|+                              |Идентификатор записи (первичный ключ)
 |classifier_name         |varchar(255)     |-|+|-                              |Название классификатора
+|classifier_options      |text             |-|-|-                              |Настройки классификатора в формате json
 |===
 
 ==== Таблица 3.{counter:db-table-id} - 'classifier_input_options' - содержит данные о входных параметрах классификатора
