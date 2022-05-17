@@ -147,7 +147,7 @@ public class ApiExamples {
                     "\"description\": \"V-блочная кросс-проверка\"}, \"numFolds\": 10, \"numTests\": 1, " +
                     "\"seed\": 1, \"evaluationTotalTime\": \"00:00:00:11\", \"classifierInfo\": " +
                     "{\"classifierName\": \"CART\", " +
-                    "\"classifierDescription\": \"Алгоритм CART\"" +
+                    "\"classifierDescription\": \"Алгоритм CART\", " +
                     "\"classifierOptionsJson\": null, \"metaClassifier\": false, " +
                     "\"individualClassifiers\": null, " +
                     "\"inputOptions\": [{\"optionName\": \"Iterations number\", " +
