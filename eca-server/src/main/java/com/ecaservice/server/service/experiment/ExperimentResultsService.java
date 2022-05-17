@@ -24,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StopWatch;
 import weka.classifiers.AbstractClassifier;
 
 import java.util.List;
@@ -100,6 +101,7 @@ public class ExperimentResultsService {
      * @return ERS report dto
      */
     public ExperimentErsReportDto getErsReport(Experiment experiment) {
+        log.info("Starting to fetch experiment [{}] ERS report", experiment.getRequestId());
         ExperimentErsReportDto experimentErsReportDto = new ExperimentErsReportDto();
         experimentErsReportDto.setExperimentRequestId(experiment.getRequestId());
         //Gets experiment results list
@@ -109,6 +111,8 @@ public class ExperimentResultsService {
         experimentErsReportDto.setExperimentResults(experimentResultsDtoList);
         populateSentFlag(experimentErsReportDto, experimentResultsEntityList);
         populateErsReportStatus(experiment, experimentErsReportDto);
+        log.info("Experiment [{}] ERS report has been fetched with status [{}]", experiment.getRequestId(),
+                experimentErsReportDto.getErsReportStatus().getValue());
         return experimentErsReportDto;
     }
 
