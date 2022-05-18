@@ -26,6 +26,7 @@ import java.util.stream.IntStream;
 import static com.ecaservice.server.TestHelperUtils.createAdaBoostOptions;
 import static com.ecaservice.server.TestHelperUtils.createClassifierInfo;
 import static com.ecaservice.server.TestHelperUtils.createDecisionTreeOptions;
+import static com.ecaservice.server.TestHelperUtils.createExtraTreesOptions;
 import static com.ecaservice.server.TestHelperUtils.createFilterDictionaryDto;
 import static com.ecaservice.server.TestHelperUtils.createHeterogeneousClassifierOptions;
 import static com.ecaservice.server.TestHelperUtils.createJ48Options;
@@ -103,6 +104,15 @@ class ClassifierOptionsProcessorTest {
     private static final int RANDOM_FORESTS_NUM_RANDOM_ATTR_IDX = 4;
     private static final int RANDOM_FORESTS_NUM_THREADS_IDX = 5;
     private static final int RANDOM_FORESTS_SEED_IDX = 6;
+    private static final int EXTRA_TREES_TREE_TYPE_IDX = 0;
+    private static final int EXTRA_TREES_NUM_ITS_IDX = 1;
+    private static final int EXTRA_TREES_MIN_OBJ_IDX = 2;
+    private static final int EXTRA_TREES_MAX_DEPTH_IDX = 3;
+    private static final int EXTRA_TREES_NUM_RANDOM_ATTR_IDX = 4;
+    private static final int EXTRA_TREES_NUM_THREADS_IDX = 5;
+    private static final int EXTRA_TREES_NUM_RANDOM_SPLITS_IDX = 6;
+    private static final int EXTRA_TREES_USE_BOOTSTRAP_SAMPLES_IDX = 7;
+    private static final int EXTRA_TREES_SEED_IDX = 8;
 
     @MockBean
     private FormTemplateProvider formTemplateProvider;
@@ -460,6 +470,58 @@ class ClassifierOptionsProcessorTest {
                 default:
                     fail(String.format("Can't assert input options at index [%d] for classifier [%s]", i,
                             randomForestsOptions.getClass().getSimpleName()));
+            }
+        });
+    }
+
+    @Test
+    void testParseExtraTrees() {
+        var extraTreesOptions = createExtraTreesOptions(DecisionTreeType.CART);
+        var classifierInfoDto = processClassifierOptions(extraTreesOptions);
+        assertThat(classifierInfoDto).isNotNull();
+        assertThat(classifierInfoDto.getInputOptions()).isNotEmpty();
+        var inputOptions = classifierInfoDto.getInputOptions();
+        IntStream.range(0, classifierInfoDto.getInputOptions().size()).forEach(i -> {
+            switch (i) {
+                case EXTRA_TREES_TREE_TYPE_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(extraTreesOptions.getDecisionTreeType().getDescription()));
+                    break;
+                case EXTRA_TREES_NUM_ITS_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(extraTreesOptions.getNumIterations()));
+                    break;
+                case EXTRA_TREES_MIN_OBJ_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(extraTreesOptions.getMinObj()));
+                    break;
+                case EXTRA_TREES_MAX_DEPTH_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(extraTreesOptions.getMaxDepth()));
+                    break;
+                case EXTRA_TREES_NUM_RANDOM_ATTR_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(extraTreesOptions.getNumRandomAttr()));
+                    break;
+                case EXTRA_TREES_NUM_THREADS_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(extraTreesOptions.getNumThreads()));
+                    break;
+                case EXTRA_TREES_NUM_RANDOM_SPLITS_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(extraTreesOptions.getNumRandomSplits()));
+                    break;
+                case EXTRA_TREES_USE_BOOTSTRAP_SAMPLES_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(extraTreesOptions.getUseBootstrapSamples()));
+                    break;
+                case EXTRA_TREES_SEED_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(extraTreesOptions.getSeed()));
+                    break;
+                default:
+                    fail(String.format("Can't assert input options at index [%d] for classifier [%s]", i,
+                            extraTreesOptions.getClass().getSimpleName()));
             }
         });
     }

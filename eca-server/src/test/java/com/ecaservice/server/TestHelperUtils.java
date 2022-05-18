@@ -539,6 +539,7 @@ public class TestHelperUtils {
         options.setNumRandomAttr(NUM_RANDOM_ATTR);
         options.setNumIterations(NUM_ITERATIONS);
         options.setSeed(SEED);
+        options.setNumThreads(NUM_THREADS);
         options.setUseBootstrapSamples(true);
         options.setNumRandomSplits(NUM_RANDOM_SPLITS);
         return options;
