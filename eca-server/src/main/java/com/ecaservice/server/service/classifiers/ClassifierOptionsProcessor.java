@@ -1,5 +1,6 @@
 package com.ecaservice.server.service.classifiers;
 
+import com.ecaservice.classifier.options.config.ClassifiersOptionsConfig;
 import com.ecaservice.classifier.options.model.AbstractHeterogeneousClassifierOptions;
 import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.classifier.options.model.StackingOptions;
@@ -14,6 +15,7 @@ import com.ecaservice.web.dto.model.FilterDictionaryValueDto;
 import com.ecaservice.web.dto.model.FormFieldDto;
 import com.ecaservice.web.dto.model.FormTemplateDto;
 import com.ecaservice.web.dto.model.InputOptionDto;
+import eca.text.NumericFormatFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -27,6 +29,7 @@ import org.springframework.util.ReflectionUtils;
 import javax.annotation.PostConstruct;
 import javax.validation.Path;
 import java.lang.reflect.Method;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -35,7 +38,6 @@ import java.util.stream.Collectors;
 import static com.ecaservice.server.service.filter.dictionary.FilterDictionaries.CLASSIFIER_NAME;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.isEnsembleClassifierOptions;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.parseOptions;
-import static com.ecaservice.server.util.Utils.formatValue;
 import static com.google.common.collect.Maps.newHashMap;
 
 /**
@@ -50,19 +52,27 @@ public class ClassifierOptionsProcessor {
 
     private static final String METHOD_KEY_FORMAT = "%s#%s";
 
+    private static final double TEN = 10d;
+
+    private static final DecimalFormat DEFAULT_DECIMAL_FORMAT = NumericFormatFactory.getInstance(Integer.MAX_VALUE);
+
     private final ClassifierInfoMapper classifierInfoMapper;
     private final ClassifiersTemplateProvider classifiersTemplateProvider;
     private final FilterService filterService;
+    private final ClassifiersOptionsConfig classifiersOptionsConfig;
+
+    private DecimalFormat decimalFormat;
 
     private Map<String, Method> gettersCache = newHashMap();
 
     /**
-     * Initializes cache.
+     * Initialization method.
      */
     @PostConstruct
-    public void initializeCache() {
+    public void initialize() {
         classifiersTemplateProvider.getClassifiersTemplates().forEach(this::cachePutTemplate);
         classifiersTemplateProvider.getEnsembleClassifiersTemplates().forEach(this::cachePutTemplate);
+        decimalFormat = NumericFormatFactory.getInstance(classifiersOptionsConfig.getMaximumFractionDigits());
     }
 
     /**
@@ -174,6 +184,22 @@ public class ClassifierOptionsProcessor {
             return getLabelFromDictionary(formFieldDto.getDictionary(), String.valueOf(optionValue));
         }
         return formatValue(optionValue);
+    }
+
+    private String formatValue(Object value) {
+        if (Objects.isNull(value)) {
+            return null;
+        }
+        if (value instanceof Number) {
+            var numberValue = (Number) value;
+            double accuracy = Math.pow(TEN, -decimalFormat.getMaximumFractionDigits());
+            if (numberValue.doubleValue() < accuracy) {
+                // Not round number value
+                return DEFAULT_DECIMAL_FORMAT.format(numberValue);
+            }
+            return decimalFormat.format(numberValue);
+        }
+        return String.valueOf(value);
     }
 
     private String getClassifierNameLabel(String classifierName) {

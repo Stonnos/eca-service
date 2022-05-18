@@ -1,5 +1,6 @@
 package com.ecaservice.server.service.classifiers;
 
+import com.ecaservice.classifier.options.config.ClassifiersOptionsConfig;
 import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.core.form.template.service.FormTemplateProvider;
@@ -14,8 +15,10 @@ import eca.text.NumericFormatFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
@@ -48,7 +51,10 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @ExtendWith(SpringExtension.class)
-@Import({ClassifiersTemplateProvider.class, ClassifierOptionsProcessor.class, ClassifierInfoMapperImpl.class})
+@EnableConfigurationProperties
+@TestPropertySource("classpath:application.properties")
+@Import({ClassifiersTemplateProvider.class, ClassifierOptionsProcessor.class, ClassifierInfoMapperImpl.class,
+        ClassifiersOptionsConfig.class})
 class ClassifierOptionsProcessorTest {
 
     private static final String CLASSIFIERS = "classifiers";
@@ -131,7 +137,7 @@ class ClassifierOptionsProcessorTest {
         when(formTemplateProvider.getTemplates(CLASSIFIERS)).thenReturn(templates);
         when(formTemplateProvider.getTemplates(ENSEMBLE_CLASSIFIERS)).thenReturn(ensembleTemplates);
         when(filterService.getFilterDictionary(CLASSIFIER_NAME)).thenReturn(createFilterDictionaryDto());
-        classifierOptionsProcessor.initializeCache();
+        classifierOptionsProcessor.initialize();
     }
 
     @Test
