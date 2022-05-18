@@ -170,4 +170,16 @@
                              constraintName="form_field_dictionary_value_dictionary_id_unique_idx"/>
     </changeSet>
 
+    <changeSet id="add_form_field_read_only_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="form_field"/>
+            <not>
+                <columnExists tableName="form_field" columnName="read_only"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="form_field">
+            <column name="read_only" type="boolean" defaultValueBoolean="false"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

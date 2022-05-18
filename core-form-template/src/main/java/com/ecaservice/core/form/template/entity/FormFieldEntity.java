@@ -114,4 +114,11 @@ public class FormFieldEntity {
      */
     @Column(name = "default_value")
     private String defaultValue;
+
+    /**
+     * Read only?
+     */
+    @Column(name = "read_only")
+    private boolean readOnly;
+
 }

@@ -102,4 +102,10 @@ public class FormFieldDto {
      */
     @Schema(description = "Default value", maxLength = MAX_LENGTH_255)
     private String defaultValue;
+
+    /**
+     * Read only?
+     */
+    @Schema(description = "Read only?")
+    private boolean readOnly;
 }
