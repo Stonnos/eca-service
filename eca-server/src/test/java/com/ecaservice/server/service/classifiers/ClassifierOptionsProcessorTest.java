@@ -60,13 +60,15 @@ class ClassifierOptionsProcessorTest {
     private static final int DECISION_TREE_USE_RANDOM_SPLITS_IDX = 6;
     private static final int DECISION_TREE_NUM_RANDOM_SPLITS_IDX = 7;
     private static final int DECISION_TREE_SEED_IDX = 8;
-    private static final int NETWORK_HIDDEN_LAYER_IDX = 0;
-    private static final int NETWORK_NUM_ITS_IDX = 1;
-    private static final int NETWORK_MIN_ERROR_IDX = 2;
-    private static final int NETWORK_AF_TYPE_IDX = 3;
-    private static final int NETWORK_LEARNING_RATE_IDX = 4;
-    private static final int NETWORK_MOMENTUM_IDX = 5;
-    private static final int NETWORK_SEED_IDX = 6;
+    private static final int NETWORK_NUM_IN_NEURONS = 0;
+    private static final int NETWORK_NUM_OUT_NEURONS = 1;
+    private static final int NETWORK_HIDDEN_LAYER_IDX = 2;
+    private static final int NETWORK_NUM_ITS_IDX = 3;
+    private static final int NETWORK_MIN_ERROR_IDX = 4;
+    private static final int NETWORK_AF_TYPE_IDX = 5;
+    private static final int NETWORK_LEARNING_RATE_IDX = 6;
+    private static final int NETWORK_MOMENTUM_IDX = 7;
+    private static final int NETWORK_SEED_IDX = 8;
 
     @MockBean
     private FormTemplateProvider formTemplateProvider;
@@ -222,6 +224,14 @@ class ClassifierOptionsProcessorTest {
         assertThat(inputOptions).isNotEmpty();
         IntStream.range(0, inputOptions.size()).forEach(i -> {
             switch (i) {
+                case NETWORK_NUM_IN_NEURONS:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(neuralNetworkOptions.getNumInNeurons()));
+                    break;
+                case NETWORK_NUM_OUT_NEURONS:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(neuralNetworkOptions.getNumOutNeurons()));
+                    break;
                 case NETWORK_HIDDEN_LAYER_IDX:
                     assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
                             neuralNetworkOptions.getHiddenLayer());
