@@ -4,6 +4,7 @@ import com.ecaservice.classifier.options.config.ClassifiersOptionsConfig;
 import com.ecaservice.classifier.options.model.AbstractHeterogeneousClassifierOptions;
 import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.classifier.options.model.StackingOptions;
+import com.ecaservice.common.web.expression.SpelExpressionHelper;
 import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.server.mapping.ClassifierInfoMapper;
 import com.ecaservice.server.model.entity.ClassifierInfo;
@@ -19,26 +20,18 @@ import eca.text.NumericFormatFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.validator.internal.engine.path.PathImpl;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.ReflectionUtils;
 
 import javax.annotation.PostConstruct;
-import javax.validation.Path;
-import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.ecaservice.server.service.filter.dictionary.FilterDictionaries.CLASSIFIER_NAME;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.isEnsembleClassifierOptions;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.parseOptions;
-import static com.google.common.collect.Maps.newHashMap;
 
 /**
  * Service for processing classifier info.
@@ -50,8 +43,6 @@ import static com.google.common.collect.Maps.newHashMap;
 @RequiredArgsConstructor
 public class ClassifierOptionsProcessor {
 
-    private static final String METHOD_KEY_FORMAT = "%s#%s";
-
     private static final double TEN = 10d;
 
     private static final DecimalFormat DEFAULT_DECIMAL_FORMAT = NumericFormatFactory.getInstance(Integer.MAX_VALUE);
@@ -60,18 +51,15 @@ public class ClassifierOptionsProcessor {
     private final ClassifiersTemplateProvider classifiersTemplateProvider;
     private final FilterService filterService;
     private final ClassifiersOptionsConfig classifiersOptionsConfig;
+    private final SpelExpressionHelper spelExpressionHelper = new SpelExpressionHelper();
 
     private DecimalFormat decimalFormat;
-
-    private Map<String, Method> gettersCache = newHashMap();
 
     /**
      * Initialization method.
      */
     @PostConstruct
     public void initialize() {
-        classifiersTemplateProvider.getClassifiersTemplates().forEach(this::cachePutTemplate);
-        classifiersTemplateProvider.getEnsembleClassifiersTemplates().forEach(this::cachePutTemplate);
         decimalFormat = NumericFormatFactory.getInstance(classifiersOptionsConfig.getMaximumFractionDigits());
     }
 
@@ -175,7 +163,7 @@ public class ClassifierOptionsProcessor {
     }
 
     private String getValue(ClassifierOptions classifierOptions, FormFieldDto formFieldDto) {
-        var optionValue = invokeGetter(classifierOptions, formFieldDto.getFieldName());
+        var optionValue = spelExpressionHelper.parseExpression(classifierOptions, formFieldDto.getFieldName());
         if (optionValue == null) {
             return null;
         }
@@ -229,41 +217,5 @@ public class ClassifierOptionsProcessor {
         return classifierOptions.stream()
                 .map(this::internalProcessClassifierInfo)
                 .collect(Collectors.toList());
-    }
-
-    private Object invokeGetter(Object bean, String propertyName) {
-        Path path = PathImpl.createPathFromString(propertyName);
-        Object methodResult = bean;
-        for (var node : path) {
-            String key = String.format(METHOD_KEY_FORMAT, methodResult.getClass().getSimpleName(), node.getName());
-            Method readMethod = gettersCache.get(key);
-            Assert.notNull(readMethod, String.format("Method [%s] not found", key));
-            methodResult = ReflectionUtils.invokeMethod(readMethod, methodResult);
-            if (methodResult == null) {
-                return null;
-            }
-        }
-        return methodResult;
-    }
-
-    private void cachePutTemplate(FormTemplateDto templateDto) {
-        log.info("Starting to initialize classifiers templates [{}] cache", templateDto.getTemplateName());
-        templateDto.getFields().forEach(formFieldDto -> {
-            Path path = PathImpl.createPathFromString(formFieldDto.getFieldName());
-            try {
-                Class<?> currentClazz = Class.forName(
-                        String.format("%s.%s", ClassifierOptions.class.getPackageName(), templateDto.getObjectClass()));
-                for (var node : path) {
-                    var propertyDescriptor = BeanUtils.getPropertyDescriptor(currentClazz, node.getName());
-                    var readMethod = propertyDescriptor.getReadMethod();
-                    String key = String.format(METHOD_KEY_FORMAT, currentClazz.getSimpleName(), node.getName());
-                    gettersCache.putIfAbsent(key, readMethod);
-                    currentClazz = propertyDescriptor.getPropertyType();
-                }
-            } catch (ClassNotFoundException e) {
-                throw new IllegalStateException(e.getMessage());
-            }
-        });
-        log.info("Classifiers templates [{}] cache has been initialized", templateDto.getTemplateName());
     }
 }
