@@ -519,6 +519,7 @@ public class TestHelperUtils {
         options.setMinObj(NUM_OBJ);
         options.setMaxDepth(MAX_DEPTH);
         options.setNumRandomAttr(NUM_RANDOM_ATTR);
+        options.setNumThreads(NUM_THREADS);
         options.setNumIterations(NUM_ITERATIONS);
         options.setSeed(SEED);
         return options;

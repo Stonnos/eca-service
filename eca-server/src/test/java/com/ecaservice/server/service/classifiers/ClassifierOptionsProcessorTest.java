@@ -9,6 +9,7 @@ import com.ecaservice.web.dto.model.FormTemplateDto;
 import com.ecaservice.web.dto.model.InputOptionDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import eca.ensemble.forests.DecisionTreeType;
 import eca.text.NumericFormatFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,6 +32,7 @@ import static com.ecaservice.server.TestHelperUtils.createJ48Options;
 import static com.ecaservice.server.TestHelperUtils.createKNearestNeighboursOptions;
 import static com.ecaservice.server.TestHelperUtils.createLogisticOptions;
 import static com.ecaservice.server.TestHelperUtils.createNeuralNetworkOptions;
+import static com.ecaservice.server.TestHelperUtils.createRandomForestsOptions;
 import static com.ecaservice.server.TestHelperUtils.createStackingOptions;
 import static com.ecaservice.server.TestHelperUtils.loadClassifiersTemplates;
 import static com.ecaservice.server.TestHelperUtils.loadEnsembleClassifiersTemplates;
@@ -94,6 +96,13 @@ class ClassifierOptionsProcessorTest {
     private static final int STACKING_USE_CV_IDX = 0;
     private static final int STACKING_NUM_FOLDS_IDX = 1;
     private static final int STACKING_SEED_IDX = 2;
+    private static final int RANDOM_FORESTS_TREE_TYPE_IDX = 0;
+    private static final int RANDOM_FORESTS_NUM_ITS_IDX = 1;
+    private static final int RANDOM_FORESTS_MIN_OBJ_IDX = 2;
+    private static final int RANDOM_FORESTS_MAX_DEPTH_IDX = 3;
+    private static final int RANDOM_FORESTS_NUM_RANDOM_ATTR_IDX = 4;
+    private static final int RANDOM_FORESTS_NUM_THREADS_IDX = 5;
+    private static final int RANDOM_FORESTS_SEED_IDX = 6;
 
     @MockBean
     private FormTemplateProvider formTemplateProvider;
@@ -407,6 +416,50 @@ class ClassifierOptionsProcessorTest {
                 default:
                     fail(String.format("Can't assert input options at index [%d] for classifier [%s]", i,
                             stackingOptions.getClass().getSimpleName()));
+            }
+        });
+    }
+
+    @Test
+    void testParseRandomForests() {
+        var randomForestsOptions = createRandomForestsOptions(DecisionTreeType.CART);
+        var classifierInfoDto = processClassifierOptions(randomForestsOptions);
+        assertThat(classifierInfoDto).isNotNull();
+        assertThat(classifierInfoDto.getInputOptions()).isNotEmpty();
+        var inputOptions = classifierInfoDto.getInputOptions();
+        IntStream.range(0, classifierInfoDto.getInputOptions().size()).forEach(i -> {
+            switch (i) {
+                case RANDOM_FORESTS_TREE_TYPE_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(randomForestsOptions.getDecisionTreeType().getDescription()));
+                    break;
+                case RANDOM_FORESTS_NUM_ITS_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(randomForestsOptions.getNumIterations()));
+                    break;
+                case RANDOM_FORESTS_MIN_OBJ_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(randomForestsOptions.getMinObj()));
+                    break;
+                case RANDOM_FORESTS_MAX_DEPTH_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(randomForestsOptions.getMaxDepth()));
+                    break;
+                case RANDOM_FORESTS_NUM_RANDOM_ATTR_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(randomForestsOptions.getNumRandomAttr()));
+                    break;
+                case RANDOM_FORESTS_NUM_THREADS_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(randomForestsOptions.getNumThreads()));
+                    break;
+                case RANDOM_FORESTS_SEED_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(randomForestsOptions.getSeed()));
+                    break;
+                default:
+                    fail(String.format("Can't assert input options at index [%d] for classifier [%s]", i,
+                            randomForestsOptions.getClass().getSimpleName()));
             }
         });
     }
