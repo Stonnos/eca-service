@@ -1836,6 +1836,10 @@ a|
     "evaluationTotalTime" : "00:00:00:11",
     "classifierInfo" : {
       "classifierName" : "CART",
+      "classifierDescription" : "Алгоритм CART",
+      "classifierOptionsJson" : null,
+      "metaClassifier" : false,
+      "individualClassifiers" : null,
       "inputOptions" : [ {
         "optionName" : "Iterations number",
         "optionValue" : "100"
@@ -3137,6 +3141,10 @@ a|
   "id" : 1,
   "classifierInfo" : {
     "classifierName" : "CART",
+    "classifierDescription" : "Алгоритм CART",
+    "classifierOptionsJson" : null,
+    "metaClassifier" : false,
+    "individualClassifiers" : null,
     "inputOptions" : [ {
       "optionName" : "Iterations number",
       "optionValue" : "100"
@@ -3523,6 +3531,10 @@ a|
     "id" : 1,
     "classifierInfo" : {
       "classifierName" : "CART",
+      "classifierDescription" : "Алгоритм CART",
+      "classifierOptionsJson" : null,
+      "metaClassifier" : false,
+      "individualClassifiers" : null,
       "inputOptions" : [ {
         "optionName" : "Iterations number",
         "optionValue" : "100"
@@ -4126,6 +4138,10 @@ a|
   "evaluationTotalTime" : "00:00:00:11",
   "classifierInfo" : {
     "classifierName" : "CART",
+    "classifierDescription" : "Алгоритм CART",
+    "classifierOptionsJson" : null,
+    "metaClassifier" : false,
+    "individualClassifiers" : null,
     "inputOptions" : [ {
       "optionName" : "Iterations number",
       "optionValue" : "100"
@@ -8442,11 +8458,89 @@ __string__
 
 
 
+|*classifierDescription*
+|Classifier description
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*classifierOptionsJson**
+|Classifier options json config
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*metaClassifier*
+|Is meta classifier (used for stacking algorithms)
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 |*inputOptions*
-|Classifier input options list
+|-
 a|
 __array__
 <<<InputOptionDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*individualClassifiers*
+|-
+a|
+__array__
+<<<ClassifierInfoDto>>
 >
 
 
@@ -11204,6 +11298,25 @@ __string__
 
 
 *Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*readOnly*
+|Read only?
+a|
+__boolean__
+
+
+
+
+
 
 
 
