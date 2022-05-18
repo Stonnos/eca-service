@@ -4,6 +4,7 @@ import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.core.form.template.service.FormTemplateProvider;
 import com.ecaservice.server.mapping.ClassifierInfoMapperImpl;
+import com.ecaservice.web.dto.model.ClassifierInfoDto;
 import com.ecaservice.web.dto.model.FormTemplateDto;
 import com.ecaservice.web.dto.model.InputOptionDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -21,12 +22,19 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import static com.ecaservice.server.TestHelperUtils.createAdaBoostOptions;
+import static com.ecaservice.server.TestHelperUtils.createClassifierInfo;
 import static com.ecaservice.server.TestHelperUtils.createDecisionTreeOptions;
+import static com.ecaservice.server.TestHelperUtils.createFilterDictionaryDto;
+import static com.ecaservice.server.TestHelperUtils.createHeterogeneousClassifierOptions;
 import static com.ecaservice.server.TestHelperUtils.createJ48Options;
 import static com.ecaservice.server.TestHelperUtils.createKNearestNeighboursOptions;
 import static com.ecaservice.server.TestHelperUtils.createLogisticOptions;
 import static com.ecaservice.server.TestHelperUtils.createNeuralNetworkOptions;
+import static com.ecaservice.server.TestHelperUtils.createStackingOptions;
 import static com.ecaservice.server.TestHelperUtils.loadClassifiersTemplates;
+import static com.ecaservice.server.TestHelperUtils.loadEnsembleClassifiersTemplates;
+import static com.ecaservice.server.service.filter.dictionary.FilterDictionaries.CLASSIFIER_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.when;
@@ -41,6 +49,7 @@ import static org.mockito.Mockito.when;
 class ClassifierOptionsProcessorTest {
 
     private static final String CLASSIFIERS = "classifiers";
+    private static final String ENSEMBLE_CLASSIFIERS = "ensembleClassifiers";
     private static final DecimalFormat DECIMAL_FORMAT = NumericFormatFactory.getInstance(Integer.MAX_VALUE);
     private static final int LOGISTIC_MAX_ITS_IDX = 0;
     private static final int LOGISTIC_USE_CONJUGATE_GRADIENT_DESCENT_IDX = 1;
@@ -69,6 +78,22 @@ class ClassifierOptionsProcessorTest {
     private static final int NETWORK_LEARNING_RATE_IDX = 6;
     private static final int NETWORK_MOMENTUM_IDX = 7;
     private static final int NETWORK_SEED_IDX = 8;
+    private static final int ADA_BOOST_NUM_ITS_IDX = 0;
+    private static final int ADA_BOOST_MIN_ERROR_IDX = 1;
+    private static final int ADA_BOOST_MAX_ERROR_IDX = 2;
+    private static final int ADA_BOOST_SEED_IDX = 3;
+    private static final int HEC_NUM_ITS_IDX = 0;
+    private static final int HEC_NUM_THREADS_IDX = 1;
+    private static final int HEC_MIN_ERROR_IDX = 2;
+    private static final int HEC_MAX_ERROR_IDX = 3;
+    private static final int HEC_USE_WEIGHTED_VOTES_IDX = 4;
+    private static final int HEC_USE_RANDOM_CLASSIFIER_IDX = 5;
+    private static final int HEC_SAMPLING_METHOD_IDX = 6;
+    private static final int HEC_USE_RANDOM_SUBSPACES_IDX = 7;
+    private static final int HEC_SEED_IDX = 8;
+    private static final int STACKING_USE_CV_IDX = 0;
+    private static final int STACKING_NUM_FOLDS_IDX = 1;
+    private static final int STACKING_SEED_IDX = 2;
 
     @MockBean
     private FormTemplateProvider formTemplateProvider;
@@ -80,12 +105,13 @@ class ClassifierOptionsProcessorTest {
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    private List<FormTemplateDto> templates;
-
     @BeforeEach
     void init() {
-        templates = loadClassifiersTemplates();
+        List<FormTemplateDto> templates = loadClassifiersTemplates();
+        List<FormTemplateDto> ensembleTemplates = loadEnsembleClassifiersTemplates();
         when(formTemplateProvider.getTemplates(CLASSIFIERS)).thenReturn(templates);
+        when(formTemplateProvider.getTemplates(ENSEMBLE_CLASSIFIERS)).thenReturn(ensembleTemplates);
+        when(filterService.getFilterDictionary(CLASSIFIER_NAME)).thenReturn(createFilterDictionaryDto());
         classifierOptionsProcessor.initializeCache();
     }
 
@@ -267,8 +293,131 @@ class ClassifierOptionsProcessorTest {
         });
     }
 
+    @Test
+    void testParseAdaBoost() {
+        var adaBoostOptions = createAdaBoostOptions();
+        var classifierInfoDto = processClassifierOptions(adaBoostOptions);
+        assertThat(classifierInfoDto).isNotNull();
+        assertThat(classifierInfoDto.getInputOptions()).isNotEmpty();
+        var inputOptions = classifierInfoDto.getInputOptions();
+        assertThat(classifierInfoDto.getIndividualClassifiers()).hasSameSizeAs(
+                adaBoostOptions.getClassifierOptions());
+        IntStream.range(0, classifierInfoDto.getInputOptions().size()).forEach(i -> {
+            switch (i) {
+                case ADA_BOOST_NUM_ITS_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(adaBoostOptions.getNumIterations()));
+                    break;
+                case ADA_BOOST_MIN_ERROR_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            DECIMAL_FORMAT.format(adaBoostOptions.getMinError()));
+                    break;
+                case ADA_BOOST_MAX_ERROR_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            DECIMAL_FORMAT.format(adaBoostOptions.getMaxError()));
+                    break;
+                case ADA_BOOST_SEED_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(adaBoostOptions.getSeed()));
+                    break;
+                default:
+                    fail(String.format("Can't assert input options at index [%d] for classifier [%s]", i,
+                            adaBoostOptions.getClass().getSimpleName()));
+            }
+        });
+    }
+
+    @Test
+    void testParseHeterogeneousClassifier() {
+        var heterogeneousClassifierOptions = createHeterogeneousClassifierOptions(true);
+        var classifierInfoDto = processClassifierOptions(heterogeneousClassifierOptions);
+        assertThat(classifierInfoDto).isNotNull();
+        assertThat(classifierInfoDto.getInputOptions()).isNotEmpty();
+        var inputOptions = classifierInfoDto.getInputOptions();
+        assertThat(classifierInfoDto.getIndividualClassifiers()).hasSameSizeAs(
+                heterogeneousClassifierOptions.getClassifierOptions());
+        IntStream.range(0, classifierInfoDto.getInputOptions().size()).forEach(i -> {
+            switch (i) {
+                case HEC_NUM_ITS_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(heterogeneousClassifierOptions.getNumIterations()));
+                    break;
+                case HEC_NUM_THREADS_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(heterogeneousClassifierOptions.getNumThreads()));
+                    break;
+                case HEC_MIN_ERROR_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            DECIMAL_FORMAT.format(heterogeneousClassifierOptions.getMinError()));
+                    break;
+                case HEC_MAX_ERROR_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            DECIMAL_FORMAT.format(heterogeneousClassifierOptions.getMaxError()));
+                    break;
+                case HEC_USE_WEIGHTED_VOTES_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(heterogeneousClassifierOptions.getUseWeightedVotes()));
+                    break;
+                case HEC_USE_RANDOM_CLASSIFIER_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(heterogeneousClassifierOptions.getUseRandomClassifier()));
+                    break;
+                case HEC_SAMPLING_METHOD_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            heterogeneousClassifierOptions.getSamplingMethod().getDescription());
+                    break;
+                case HEC_USE_RANDOM_SUBSPACES_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(heterogeneousClassifierOptions.getUseRandomSubspaces()));
+                    break;
+                case HEC_SEED_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(heterogeneousClassifierOptions.getSeed()));
+                    break;
+                default:
+                    fail(String.format("Can't assert input options at index [%d] for classifier [%s]", i,
+                            heterogeneousClassifierOptions.getClass().getSimpleName()));
+            }
+        });
+    }
+
+    @Test
+    void testParseStacking() {
+        var stackingOptions = createStackingOptions();
+        var classifierInfoDto = processClassifierOptions(stackingOptions);
+        assertThat(classifierInfoDto).isNotNull();
+        assertThat(classifierInfoDto.getInputOptions()).isNotEmpty();
+        var inputOptions = classifierInfoDto.getInputOptions();
+        assertThat(classifierInfoDto.getIndividualClassifiers()).hasSize(
+                stackingOptions.getClassifierOptions().size() + 1);
+        IntStream.range(0, classifierInfoDto.getInputOptions().size()).forEach(i -> {
+            switch (i) {
+                case STACKING_USE_CV_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(stackingOptions.getUseCrossValidation()));
+                    break;
+                case STACKING_NUM_FOLDS_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(stackingOptions.getNumFolds()));
+                    break;
+                case STACKING_SEED_IDX:
+                    assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
+                            String.valueOf(stackingOptions.getSeed()));
+                    break;
+                default:
+                    fail(String.format("Can't assert input options at index [%d] for classifier [%s]", i,
+                            stackingOptions.getClass().getSimpleName()));
+            }
+        });
+    }
+
     private List<InputOptionDto> parseInputOptions(ClassifierOptions classifierOptions) throws JsonProcessingException {
         var json = objectMapper.writeValueAsString(classifierOptions);
         return classifierOptionsProcessor.processInputOptions(json);
+    }
+
+    private ClassifierInfoDto processClassifierOptions(ClassifierOptions classifierOptions) {
+        var classifierInfo = createClassifierInfo(classifierOptions);
+        return classifierOptionsProcessor.processClassifierInfo(classifierInfo);
     }
 }
