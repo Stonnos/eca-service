@@ -194,7 +194,7 @@ public class ClassifierOptionsProcessor {
             var numberValue = (Number) value;
             double accuracy = Math.pow(TEN, -decimalFormat.getMaximumFractionDigits());
             if (numberValue.doubleValue() < accuracy) {
-                // Not round number value
+                // Not round number value if value < accuracy
                 return DEFAULT_DECIMAL_FORMAT.format(numberValue);
             }
             return decimalFormat.format(numberValue);
