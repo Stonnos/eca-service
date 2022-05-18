@@ -217,9 +217,9 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
                 Arrays.asList(CLASSIFIER_INFO_CLASSIFIER_NAME, EvaluationLog_.REQUEST_ID,
                         INSTANCES_INFO_RELATION_NAME));
         mockClassifiersDictionary();
-        Page<EvaluationLog> evaluationLogPage = evaluationLogService.getNextPage(pageRequestDto);
+        var evaluationLogPage = evaluationLogService.getEvaluationLogsPage(pageRequestDto);
         assertThat(evaluationLogPage).isNotNull();
-        assertThat(evaluationLogPage.getTotalElements()).isOne();
+        assertThat(evaluationLogPage.getTotalCount()).isOne();
     }
 
     @Test
