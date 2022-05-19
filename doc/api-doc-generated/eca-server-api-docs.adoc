@@ -6745,6 +6745,28 @@ __(int32)__
 
 
 
+|*alpha*
+|Alpha value for chi square test
+a|
+__number__
+__(double)__
+
+
+
+
+
+
+*Minimum*: 0
+
+*Maximum*: 1
+
+
+
+
+
+
+
+
 |*additionalOptions*
 |Additional options map
 a|

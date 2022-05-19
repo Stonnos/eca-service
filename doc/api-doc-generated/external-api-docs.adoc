@@ -1389,7 +1389,7 @@ __(double)__
 
 *Minimum*: 0
 
-*Maximum*: 2,147,483,647
+*Maximum*: 2,147,483,647*
 
 
 
@@ -1845,6 +1845,28 @@ __(int32)__
 *Minimum*: -2,147,483,648*
 
 *Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*alpha*
+|Alpha value for chi square test
+a|
+__number__
+__(double)__
+
+
+
+
+
+
+*Minimum*: 0
+
+*Maximum*: 1
 
 
 
