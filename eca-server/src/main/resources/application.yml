@@ -149,9 +149,6 @@ cache:
     filter-dictionaries:
       expireAfterWriteSeconds: 18000
       maxSize: 100
-    form-templates-group:
-      expireAfterWriteSeconds: 18000
-      maxSize: 100
 
 auth-server:
   baseUrl: http://localhost:8085/eca-oauth

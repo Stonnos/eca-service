@@ -1,10 +1,11 @@
 package com.ecaservice.server.service.evaluation;
 
-import com.ecaservice.server.AssertionUtils;
-import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.base.model.TechnicalStatus;
+import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
+import com.ecaservice.server.AssertionUtils;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.configuation.ExecutorConfiguration;
 import com.ecaservice.server.mapping.ClassifierInfoMapperImpl;
@@ -56,6 +57,8 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
 
     @Mock
     private ClassifierInitializerService classifierInitializerService;
+    @Mock
+    private ClassifierOptionsAdapter classifierOptionsAdapter;
 
     private EvaluationRequestService evaluationRequestService;
 
@@ -63,7 +66,8 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
     public void init() {
         evaluationRequestService =
                 new EvaluationRequestService(crossValidationConfig, calculationExecutorService, evaluationService,
-                        evaluationLogRepository, evaluationLogMapper, classifierInitializerService);
+                        evaluationLogRepository, evaluationLogMapper, classifierInitializerService,
+                        classifierOptionsAdapter);
     }
 
     @Override
@@ -91,7 +95,8 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
         CalculationExecutorServiceImpl executorService = mock(CalculationExecutorServiceImpl.class);
         EvaluationRequestService service =
                 new EvaluationRequestService(crossValidationConfig, executorService, evaluationService,
-                        evaluationLogRepository, evaluationLogMapper, classifierInitializerService);
+                        evaluationLogRepository, evaluationLogMapper, classifierInitializerService,
+                        classifierOptionsAdapter);
         doThrow(new RuntimeException("Error")).when(executorService)
                 .execute(any(), anyLong(), any(TimeUnit.class));
         EvaluationResponse evaluationResponse = service.processRequest(request);
@@ -123,7 +128,8 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
         CalculationExecutorServiceImpl executorService = mock(CalculationExecutorServiceImpl.class);
         EvaluationRequestService service =
                 new EvaluationRequestService(crossValidationConfig, executorService, evaluationService,
-                        evaluationLogRepository, evaluationLogMapper, classifierInitializerService);
+                        evaluationLogRepository, evaluationLogMapper, classifierInitializerService,
+                        classifierOptionsAdapter);
         doThrow(TimeoutException.class).when(executorService).execute(any(), anyLong(), any(TimeUnit.class));
         EvaluationResponse evaluationResponse = service.processRequest(request);
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.TIMEOUT);

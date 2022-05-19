@@ -121,6 +121,16 @@ public abstract class AbstractBaseReportDataFetcher<E, B> {
         }
     }
 
+    protected String getDictionaryLabelByCode(String dictionaryName, String code) {
+        return filterService.getFilterDictionary(dictionaryName)
+                .getValues()
+                .stream()
+                .filter(filterDictionaryValueDto -> filterDictionaryValueDto.getValue().equals(code))
+                .map(FilterDictionaryValueDto::getLabel)
+                .findFirst()
+                .orElse(null);
+    }
+
     private String getValuesFromDictionary(List<String> values, FilterDictionaryDto filterDictionaryDto) {
         List<String> resultValues = filterDictionaryDto.getValues()
                 .stream()

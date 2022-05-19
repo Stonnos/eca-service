@@ -25,7 +25,7 @@ export class ExperimentErsReportComponent implements OnInit, FieldLink {
   @Input()
   public experimentProgress: ExperimentProgressDto;
 
-  public linkColumns: string[] = [ExperimentResultsFields.RESULTS_INDEX, ExperimentResultsFields.CLASSIFIER_NAME];
+  public linkColumns: string[] = [ExperimentResultsFields.RESULTS_INDEX, ExperimentResultsFields.CLASSIFIER_DESCRIPTION];
   public experimentResultsColumns: any[] = [];
 
   public selectedExperimentResults: ExperimentResultsDto;
@@ -51,7 +51,7 @@ export class ExperimentErsReportComponent implements OnInit, FieldLink {
       case ExperimentResultsFields.RESULTS_INDEX:
         this.router.navigate([RouterPaths.EXPERIMENT_RESULTS_DETAILS_URL, experimentResults.id]);
         break;
-      case ExperimentResultsFields.CLASSIFIER_NAME:
+      case ExperimentResultsFields.CLASSIFIER_DESCRIPTION:
         this.selectedExperimentResults = experimentResults;
         overlayPanel.toggle(event);
         break;
@@ -71,7 +71,7 @@ export class ExperimentErsReportComponent implements OnInit, FieldLink {
   private initExperimentResultsColumns() {
     this.experimentResultsColumns = [
       { name: ExperimentResultsFields.RESULTS_INDEX, label: "№" },
-      { name: ExperimentResultsFields.CLASSIFIER_NAME, label: "Классификатор" },
+      { name: ExperimentResultsFields.CLASSIFIER_DESCRIPTION, label: "Классификатор" },
       { name: ExperimentResultsFields.PCT_CORRECT, label: "Точность, %" },
       { name: ExperimentResultsFields.SENT, label: "Статус отправки результатов в ERS" }
     ];

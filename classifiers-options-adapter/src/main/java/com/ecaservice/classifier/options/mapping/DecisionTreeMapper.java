@@ -1,7 +1,6 @@
 package com.ecaservice.classifier.options.mapping;
 
 import com.ecaservice.classifier.options.model.DecisionTreeOptions;
-import com.ecaservice.classifier.options.model.OptionsVariables;
 import eca.ensemble.forests.DecisionTreeType;
 import eca.trees.C45;
 import eca.trees.CART;
@@ -12,7 +11,9 @@ import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 
-import java.util.Collections;
+import java.util.Map;
+
+import static com.google.common.collect.Maps.newLinkedHashMap;
 
 /**
  * Implements mapping decision tree classifier to its options model.
@@ -22,25 +23,26 @@ import java.util.Collections;
 @Mapper
 public abstract class DecisionTreeMapper extends AbstractClassifierMapper<DecisionTreeClassifier, DecisionTreeOptions> {
 
+    private final Map<Class<?>, DecisionTreeType> decisionTreeTypeMap = newLinkedHashMap();
+
     protected DecisionTreeMapper() {
         super(DecisionTreeClassifier.class);
+        decisionTreeTypeMap.put(CART.class, DecisionTreeType.CART);
+        decisionTreeTypeMap.put(C45.class, DecisionTreeType.C45);
+        decisionTreeTypeMap.put(ID3.class, DecisionTreeType.ID3);
+        decisionTreeTypeMap.put(CHAID.class, DecisionTreeType.CHAID);
     }
 
     @AfterMapping
     protected void mapDecisionTreeType(DecisionTreeClassifier classifier, @MappingTarget DecisionTreeOptions options) {
-        DecisionTreeType decisionTreeType;
-        if (classifier instanceof CART) {
-            decisionTreeType = DecisionTreeType.CART;
-        } else if (classifier instanceof C45) {
-            decisionTreeType = DecisionTreeType.C45;
-        } else if (classifier instanceof ID3) {
-            decisionTreeType = DecisionTreeType.ID3;
-        } else if (classifier instanceof CHAID) {
-            decisionTreeType = DecisionTreeType.CHAID;
-        } else {
-            throw new IllegalArgumentException(
-                    String.format("Unsupported decision tree type: %s!", classifier.getClass().getSimpleName()));
-        }
+        DecisionTreeType decisionTreeType = decisionTreeTypeMap
+                .entrySet()
+                .stream()
+                .filter(entry -> entry.getKey().isAssignableFrom(classifier.getClass()))
+                .map(Map.Entry::getValue)
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException(
+                        String.format("Unsupported decision tree type: %s!", classifier.getClass().getSimpleName())));
         options.setDecisionTreeType(decisionTreeType);
     }
 
@@ -48,8 +50,7 @@ public abstract class DecisionTreeMapper extends AbstractClassifierMapper<Decisi
     protected void mapAdditionalOptions(DecisionTreeClassifier classifier, @MappingTarget DecisionTreeOptions options) {
         if (classifier instanceof CHAID) {
             CHAID chaid = (CHAID) classifier;
-            options.setAdditionalOptions(
-                    Collections.singletonMap(OptionsVariables.ALPHA, String.valueOf(chaid.getAlpha())));
+            options.setAlpha(chaid.getAlpha());
         }
     }
 }

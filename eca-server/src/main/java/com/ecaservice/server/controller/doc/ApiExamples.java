@@ -127,7 +127,11 @@ public class ApiExamples {
                     "\"description\": \"Завершена\"}, \"evaluationMethod\": {\"value\": \"CROSS_VALIDATION\", " +
                     "\"description\": \"V-блочная кросс-проверка\"}, \"numFolds\": 10, \"numTests\": 1, " +
                     "\"seed\": 1, \"evaluationTotalTime\": \"00:00:00:11\", \"classifierInfo\": " +
-                    "{\"classifierName\": \"CART\", \"inputOptions\": [{\"optionName\": \"Iterations number\", " +
+                    "{\"classifierName\": \"CART\", " +
+                    "\"classifierDescription\": \"Алгоритм CART\", " +
+                    "\"classifierOptionsJson\": null, \"metaClassifier\": false, " +
+                    "\"individualClassifiers\": null, " +
+                    "\"inputOptions\": [{\"optionName\": \"Iterations number\", " +
                     "\"optionValue\": \"100\"}]}, \"instancesInfo\": {\"relationName\": \"iris\", " +
                     "\"numInstances\": 150, \"numAttributes\": 5, \"numClasses\": 4, \"className\": " +
                     "\"class\"}}], \"page\": 0, \"totalCount\": 1}";
@@ -142,7 +146,11 @@ public class ApiExamples {
                     "\"description\": \"Завершена\"}, \"evaluationMethod\": {\"value\": \"CROSS_VALIDATION\", " +
                     "\"description\": \"V-блочная кросс-проверка\"}, \"numFolds\": 10, \"numTests\": 1, " +
                     "\"seed\": 1, \"evaluationTotalTime\": \"00:00:00:11\", \"classifierInfo\": " +
-                    "{\"classifierName\": \"CART\", \"inputOptions\": [{\"optionName\": \"Iterations number\", " +
+                    "{\"classifierName\": \"CART\", " +
+                    "\"classifierDescription\": \"Алгоритм CART\", " +
+                    "\"classifierOptionsJson\": null, \"metaClassifier\": false, " +
+                    "\"individualClassifiers\": null, " +
+                    "\"inputOptions\": [{\"optionName\": \"Iterations number\", " +
                     "\"optionValue\": \"100\"}]}, \"instancesInfo\": {\"relationName\": \"iris\", " +
                     "\"numInstances\": 150, \"numAttributes\": 5, \"numClasses\": 4, \"className\": " +
                     "\"class\"}, \"evaluationResultsDto\": {\"evaluationResultsStatus\": {\"value\": " +
@@ -225,7 +233,11 @@ public class ApiExamples {
      * Experiment results details response json
      */
     public static final String EXPERIMENT_RESULTS_DETAILS_RESPONSE_JSON =
-            "{\"id\": 1, \"classifierInfo\": {\"classifierName\": \"CART\", \"inputOptions\": [{\"optionName\": " +
+            "{\"id\": 1, \"classifierInfo\": {\"classifierName\": \"CART\", " +
+                    "\"classifierDescription\": \"Алгоритм CART\", " +
+                    "\"classifierOptionsJson\": null, \"metaClassifier\": false, " +
+                    "\"individualClassifiers\": null, " +
+                    "\"inputOptions\": [{\"optionName\": " +
                     "\"Iterations number\", \"optionValue\": \"100\"}]}, \"resultsIndex\": 0, \"pctCorrect\": 99, " +
                     "\"sent\": true, \"experimentDto\": {\"id\": 1, \"requestId\": " +
                     "\"1d2de514-3a87-4620-9b97-c260e24340de\", \"creationDate\": \"2021-07-01 14:00:00\", " +
@@ -254,7 +266,11 @@ public class ApiExamples {
     public static final String EXPERIMENT_ERS_REPORT_RESPONSE_JSON =
             "{\"experimentRequestId\": \"1d2de514-3a87-4620-9b97-c260e24340de\", \"classifiersCount\": 1, " +
                     "\"sentClassifiersCount\": 1, \"experimentResults\": [{\"id\": 1, " +
-                    "\"classifierInfo\": {\"classifierName\": \"CART\", \"inputOptions\": " +
+                    "\"classifierInfo\": {\"classifierName\": \"CART\", " +
+                    "\"classifierDescription\": \"Алгоритм CART\", " +
+                    "\"classifierOptionsJson\": null, \"metaClassifier\": false, " +
+                    "\"individualClassifiers\": null, " +
+                    "\"inputOptions\": " +
                     "[{\"optionName\": \"Iterations number\", \"optionValue\": \"100\"}]}, " +
                     "\"resultsIndex\": 0, \"pctCorrect\": 99, \"sent\": true}], \"ersReportStatus\": " +
                     "{\"value\": \"SUCCESS_SENT\", \"description\": " +

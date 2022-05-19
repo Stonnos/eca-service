@@ -2,7 +2,6 @@ package com.ecaservice.server.controller.web;
 
 import com.ecaservice.common.web.dto.ValidationErrorDto;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
-import com.ecaservice.server.mapping.EvaluationLogMapper;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.service.evaluation.EvaluationLogService;
@@ -23,7 +22,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -37,8 +35,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
@@ -66,7 +62,6 @@ import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 public class EvaluationController {
 
     private final EvaluationLogService evaluationLogService;
-    private final EvaluationLogMapper evaluationLogMapper;
     private final EvaluationLogRepository evaluationLogRepository;
 
     /**
@@ -117,12 +112,7 @@ public class EvaluationController {
     @PostMapping(value = "/list")
     public PageDto<EvaluationLogDto> getEvaluationLogs(@Valid @RequestBody PageRequestDto pageRequestDto) {
         log.info("Received evaluation logs page request: {}", pageRequestDto);
-        Page<EvaluationLog> evaluationLogs = evaluationLogService.getNextPage(pageRequestDto);
-        List<EvaluationLogDto> evaluationLogDtoList = evaluationLogs.getContent()
-                .stream()
-                .map(evaluationLogMapper::map)
-                .collect(Collectors.toList());
-        return PageDto.of(evaluationLogDtoList, pageRequestDto.getPage(), evaluationLogs.getTotalElements());
+        return evaluationLogService.getEvaluationLogsPage(pageRequestDto);
     }
 
     /**

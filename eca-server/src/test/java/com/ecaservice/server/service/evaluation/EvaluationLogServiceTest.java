@@ -1,7 +1,7 @@
 package com.ecaservice.server.service.evaluation;
 
-import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.mapping.ClassifierInfoMapperImpl;
 import com.ecaservice.server.mapping.DateTimeConverter;
@@ -17,10 +17,13 @@ import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.repository.EvaluationResultsRequestEntityRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
+import com.ecaservice.server.service.classifiers.ClassifierOptionsProcessor;
 import com.ecaservice.server.service.ers.ErsService;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
+import com.ecaservice.web.dto.model.FilterDictionaryDto;
+import com.ecaservice.web.dto.model.FilterDictionaryValueDto;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -43,6 +46,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.ecaservice.server.service.filter.dictionary.FilterDictionaries.CLASSIFIER_NAME;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -61,6 +65,8 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
     private static final int PAGE_SIZE = 10;
     private static final String INSTANCES_INFO_RELATION_NAME = "instancesInfo.relationName";
     private static final String CLASSIFIER_INFO_CLASSIFIER_NAME = "classifierInfo.classifierName";
+    private static final String CART_DESCRIPTION = "Алгоритм CART";
+    private static final String C45_DESCRIPTION = "Алгоритм C45";
 
     @Inject
     private EvaluationLogRepository evaluationLogRepository;
@@ -75,13 +81,16 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
     private FilterService filterService;
     @Mock
     private ErsService ersService;
-
+    @Mock
+    private ClassifierOptionsProcessor classifierOptionsProcessor;
     private EvaluationLogService evaluationLogService;
 
     @Override
     public void init() {
-        evaluationLogService = new EvaluationLogService(appProperties, filterService, evaluationLogMapper, ersService,
-                evaluationLogRepository, evaluationResultsRequestEntityRepository);
+        evaluationLogService =
+                new EvaluationLogService(appProperties, filterService, evaluationLogMapper, classifierOptionsProcessor,
+                        ersService, evaluationLogRepository, evaluationResultsRequestEntityRepository);
+        evaluationLogService.initialize();
     }
 
     @Override
@@ -145,7 +154,8 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
         evaluationLog4.getClassifierInfo().setClassifierName(NeuralNetwork.class.getSimpleName());
         evaluationLogRepository.save(evaluationLog4);
         PageRequestDto pageRequestDto =
-                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, CLASSIFIER_INFO_CLASSIFIER_NAME, false, null, newArrayList());
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, CLASSIFIER_INFO_CLASSIFIER_NAME, false, null,
+                        newArrayList());
         pageRequestDto.getFilters().add(new FilterRequestDto(EvaluationLog_.REQUEST_STATUS,
                 Collections.singletonList(RequestStatus.FINISHED.name()), MatchMode.EQUALS));
         pageRequestDto.getFilters().add(
@@ -172,7 +182,8 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
         evaluationLog1.getInstancesInfo().setRelationName("Relation");
         evaluationLogRepository.save(evaluationLog1);
         PageRequestDto pageRequestDto =
-                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, CLASSIFIER_INFO_CLASSIFIER_NAME, false, null, newArrayList());
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, CLASSIFIER_INFO_CLASSIFIER_NAME, false, null,
+                        newArrayList());
         pageRequestDto.getFilters().add(
                 new FilterRequestDto(INSTANCES_INFO_RELATION_NAME, Collections.singletonList("Dat"), MatchMode.LIKE));
         Page<EvaluationLog> evaluationLogPage = evaluationLogService.getNextPage(pageRequestDto);
@@ -205,9 +216,10 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
         when(filterService.getGlobalFilterFields(FilterTemplateType.EVALUATION_LOG.name())).thenReturn(
                 Arrays.asList(CLASSIFIER_INFO_CLASSIFIER_NAME, EvaluationLog_.REQUEST_ID,
                         INSTANCES_INFO_RELATION_NAME));
-        Page<EvaluationLog> evaluationLogPage = evaluationLogService.getNextPage(pageRequestDto);
+        mockClassifiersDictionary();
+        var evaluationLogPage = evaluationLogService.getEvaluationLogsPage(pageRequestDto);
         assertThat(evaluationLogPage).isNotNull();
-        assertThat(evaluationLogPage.getTotalElements()).isOne();
+        assertThat(evaluationLogPage.getTotalCount()).isOne();
     }
 
     @Test
@@ -299,5 +311,14 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
         evaluationLogRepository.save(evaluationLog);
         evaluationResultsRequestEntityRepository.save(evaluationResultsRequestEntity);
         return evaluationLog;
+    }
+
+    private void mockClassifiersDictionary() {
+        var classifiersDictionary = new FilterDictionaryDto();
+        classifiersDictionary.setValues(newArrayList());
+        classifiersDictionary.getValues().add(
+                new FilterDictionaryValueDto(CART_DESCRIPTION, CART.class.getSimpleName()));
+        classifiersDictionary.getValues().add(new FilterDictionaryValueDto(C45_DESCRIPTION, C45.class.getSimpleName()));
+        when(filterService.getFilterDictionary(CLASSIFIER_NAME)).thenReturn(classifiersDictionary);
     }
 }

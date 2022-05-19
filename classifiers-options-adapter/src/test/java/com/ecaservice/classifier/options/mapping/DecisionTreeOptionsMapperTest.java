@@ -53,11 +53,21 @@ class DecisionTreeOptionsMapperTest {
     }
 
     @Test
-    void testMapChaid() {
+    void testMapChaidWithAlphaInAdditionalOptions() {
         DecisionTreeOptions decisionTreeOptions = TestHelperUtils.createDecisionTreeOptions();
         decisionTreeOptions.setDecisionTreeType(DecisionTreeType.CHAID);
         decisionTreeOptions.setAdditionalOptions(
                 Collections.singletonMap(OptionsVariables.ALPHA, String.valueOf(ALPHA_VALUE)));
+        DecisionTreeClassifier decisionTreeClassifier = decisionTreeOptionsMapper.map(decisionTreeOptions);
+        assertThat(decisionTreeClassifier).isInstanceOf(CHAID.class);
+        assertThat(((CHAID) decisionTreeClassifier).getAlpha()).isEqualTo(ALPHA_VALUE);
+    }
+
+    @Test
+    void testMapChaid() {
+        DecisionTreeOptions decisionTreeOptions = TestHelperUtils.createDecisionTreeOptions();
+        decisionTreeOptions.setDecisionTreeType(DecisionTreeType.CHAID);
+        decisionTreeOptions.setAlpha(ALPHA_VALUE);
         DecisionTreeClassifier decisionTreeClassifier = decisionTreeOptionsMapper.map(decisionTreeOptions);
         assertThat(decisionTreeClassifier).isInstanceOf(CHAID.class);
         assertThat(((CHAID) decisionTreeClassifier).getAlpha()).isEqualTo(ALPHA_VALUE);

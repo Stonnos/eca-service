@@ -1,7 +1,7 @@
 package com.ecaservice.server.controller.web;
 
-import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.mapping.ClassifierInfoMapperImpl;
 import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.mapping.EvaluationLogMapper;
@@ -12,22 +12,18 @@ import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.service.evaluation.EvaluationLogService;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
-import com.ecaservice.web.dto.model.EvaluationLogDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
 import javax.inject.Inject;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -134,22 +130,20 @@ class EvaluationControllerTest extends PageRequestControllerTest {
 
     @Test
     void testGetEvaluationLogsOk() throws Exception {
-        Page<EvaluationLog> evaluationLogPage = Mockito.mock(Page.class);
-        when(evaluationLogPage.getTotalElements()).thenReturn(TOTAL_ELEMENTS);
-        List<EvaluationLog> evaluationLogs = Collections.singletonList(TestHelperUtils.createEvaluationLog());
-        PageDto<EvaluationLogDto> expected =
-                PageDto.of(evaluationLogs.stream().map(evaluationLogMapper::map).collect(Collectors.toList()),
-                        PAGE_NUMBER,
-                        TOTAL_ELEMENTS);
-        when(evaluationLogPage.getContent()).thenReturn(evaluationLogs);
-        when(evaluationLogService.getNextPage(any(PageRequestDto.class))).thenReturn(evaluationLogPage);
+        var evaluationLogs = Collections.singletonList(TestHelperUtils.createEvaluationLog());
+        var evaluationLogsDtoList = evaluationLogs
+                .stream()
+                .map(evaluationLogMapper::map)
+                .collect(Collectors.toList());
+        var pageDto = PageDto.of(evaluationLogsDtoList, PAGE_NUMBER, TOTAL_ELEMENTS);
+        when(evaluationLogService.getEvaluationLogsPage(any(PageRequestDto.class))).thenReturn(pageDto);
         mockMvc.perform(post(LIST_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .content(objectMapper.writeValueAsString(createPageRequestDto()))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(objectMapper.writeValueAsString(expected)));
+                .andExpect(content().json(objectMapper.writeValueAsString(pageDto)));
     }
 
     @Test

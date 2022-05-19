@@ -18,7 +18,6 @@ import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
 import eca.core.evaluation.EvaluationMethod;
-import eca.text.NumericFormatFactory;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.FileSystemResource;
@@ -29,7 +28,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 
 import java.io.File;
-import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -37,7 +35,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.TreeMap;
 import java.util.UUID;
@@ -52,8 +49,6 @@ import static com.ecaservice.server.util.ClassifierOptionsHelper.isParsableOptio
  */
 @UtilityClass
 public class Utils {
-
-    private static final DecimalFormat DECIMAL_FORMAT = NumericFormatFactory.getInstance(Integer.MAX_VALUE);
 
     private static final String DOWNLOAD_PATH_FORMAT = "%s/eca-api/experiment/download/%s";
     private static final String ATTACHMENT = "attachment";
@@ -303,21 +298,5 @@ public class Utils {
         requestEntity.setCreationDate(LocalDateTime.now());
         requestEntity.setSource(source);
         return requestEntity;
-    }
-
-    /**
-     * Formats object value to string.
-     *
-     * @param value - value
-     * @return string value
-     */
-    public static String formatValue(Object value) {
-        if (Objects.isNull(value)) {
-            return null;
-        }
-        if (value instanceof Number) {
-            return DECIMAL_FORMAT.format(value);
-        }
-        return String.valueOf(value);
     }
 }

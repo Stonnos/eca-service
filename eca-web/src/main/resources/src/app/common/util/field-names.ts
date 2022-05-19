@@ -23,6 +23,7 @@ export class ExperimentFields {
 export class EvaluationLogFields {
   public static readonly REQUEST_ID: string = "requestId";
   public static readonly CLASSIFIER_NAME: string = "classifierInfo.classifierName";
+  public static readonly CLASSIFIER_DESCRIPTION: string = "classifierInfo.classifierDescription";
   public static readonly REQUEST_STATUS_DESCRIPTION: string = "requestStatus.description";
   public static readonly REQUEST_STATUS: string = "requestStatus";
   public static readonly RELATION_NAME: string = "instancesInfo.relationName";
@@ -91,7 +92,7 @@ export class ClassificationCostsFields {
 
 export class ExperimentResultsFields {
   public static readonly RESULTS_INDEX: string = "resultsIndex";
-  public static readonly CLASSIFIER_NAME: string = "classifierInfo.classifierName";
+  public static readonly CLASSIFIER_DESCRIPTION: string = "classifierInfo.classifierDescription";
   public static readonly PCT_CORRECT: string = "pctCorrect";
   public static readonly SENT: string = "sent";
 }

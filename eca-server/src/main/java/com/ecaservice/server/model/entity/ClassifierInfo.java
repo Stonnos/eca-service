@@ -1,6 +1,7 @@
 package com.ecaservice.server.model.entity;
 
 import lombok.Data;
+import org.checkerframework.checker.units.qual.C;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -26,8 +27,17 @@ public class ClassifierInfo {
     @GeneratedValue
     private Long id;
 
+    /**
+     * Classifier name
+     */
     @Column(name = "classifier_name", nullable = false)
     private String classifierName;
+
+    /**
+     * Classifier options json
+     */
+    @Column(name = "classifier_options", columnDefinition = "text")
+    private String classifierOptions;
 
     /**
      * Classifier input options list

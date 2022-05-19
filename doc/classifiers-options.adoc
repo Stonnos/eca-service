@@ -42,8 +42,7 @@
   "useBinarySplits": true,
   "useRandomSplits": false,
   "numRandomSplits": 1,
-  "seed": 1,
-  "additionalOptions": null
+  "seed": 1
 }
 ----
 
@@ -58,7 +57,7 @@
 * useRandomSplits - использование случайных расщеплений вкл./выкл.
 * numRandomSplits - число случайных расщеплений
 * seed - начальное значение для генератора псевдослучайных чисел
-* additionalOptions - дополнительные настройки
+* alpha - уровень значимости &alpha;
 
 === 2.2 Формат json конфигурации алгоритма C45
 
@@ -76,8 +75,7 @@
   "useBinarySplits": false,
   "useRandomSplits": false,
   "numRandomSplits": 1,
-  "seed": 1,
-  "additionalOptions": null
+  "seed": 1
 }
 ----
 
@@ -97,8 +95,7 @@
   "useBinarySplits": true,
   "useRandomSplits": false,
   "numRandomSplits": 1,
-  "seed": 1,
-  "additionalOptions": null
+  "seed": 1
 }
 ----
 
@@ -119,15 +116,9 @@
   "useRandomSplits": false,
   "numRandomSplits": 1,
   "seed": 1,
-  "additionalOptions": {
-    "alphaValue": "0.05"
-  }
+  "alpha": 0.05
 }
 ----
-
-где
-
-* alphaValue - уровень значимости &alpha;
 
 === 2.5 Формат json конфигурации алгоритма J48
 

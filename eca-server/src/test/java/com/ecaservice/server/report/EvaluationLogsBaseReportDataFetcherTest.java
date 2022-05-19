@@ -1,9 +1,9 @@
 package com.ecaservice.server.report;
 
-import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.report.model.BaseReportBean;
 import com.ecaservice.report.model.EvaluationLogBean;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.mapping.ClassifierInfoMapperImpl;
 import com.ecaservice.server.mapping.DateTimeConverter;
@@ -16,6 +16,7 @@ import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.repository.EvaluationResultsRequestEntityRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
+import com.ecaservice.server.service.classifiers.ClassifierOptionsProcessor;
 import com.ecaservice.server.service.ers.ErsService;
 import com.ecaservice.server.service.evaluation.EvaluationLogService;
 import com.ecaservice.web.dto.model.FilterRequestDto;
@@ -34,7 +35,10 @@ import java.util.List;
 import static com.ecaservice.server.AssertionUtils.assertBaseReportBean;
 import static com.ecaservice.server.PageRequestUtils.PAGE_NUMBER;
 import static com.ecaservice.server.PageRequestUtils.PAGE_SIZE;
+import static com.ecaservice.server.TestHelperUtils.createFilterDictionaryDto;
+import static com.ecaservice.server.service.filter.dictionary.FilterDictionaries.CLASSIFIER_NAME;
 import static com.google.common.collect.Lists.newArrayList;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit tests that checks EvaluationLogsBaseReportDataFetcher functionality {@see EvaluationLogsBaseReportDataFetcher}.
@@ -52,6 +56,8 @@ class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
     private FilterService filterService;
     @Mock
     private ErsService ersService;
+    @Mock
+    private ClassifierOptionsProcessor classifierOptionsProcessor;
 
     @Inject
     private AppProperties appProperties;
@@ -67,10 +73,11 @@ class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
     @Override
     public void init() {
         EvaluationLogService evaluationLogService =
-                new EvaluationLogService(appProperties, filterService, evaluationLogMapper, ersService,
-                        evaluationLogRepository, evaluationResultsRequestEntityRepository);
+                new EvaluationLogService(appProperties, filterService, evaluationLogMapper, classifierOptionsProcessor,
+                        ersService, evaluationLogRepository, evaluationResultsRequestEntityRepository);
         evaluationLogsBaseReportDataFetcher =
                 new EvaluationLogsBaseReportDataFetcher(filterService, evaluationLogService, evaluationLogMapper);
+        when(filterService.getFilterDictionary(CLASSIFIER_NAME)).thenReturn(createFilterDictionaryDto());
     }
 
     @Override

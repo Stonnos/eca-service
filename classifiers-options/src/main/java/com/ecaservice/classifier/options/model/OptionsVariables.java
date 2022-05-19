@@ -10,5 +10,9 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class OptionsVariables {
 
+    /**
+     * Chi square alpha value
+     */
+    @Deprecated
     public static final String ALPHA = "alphaValue";
 }

@@ -62,6 +62,7 @@ class FormTemplateMapperTest {
         assertThat(formFieldDto.isMaxInclusive()).isEqualTo(formFieldEntity.isMaxInclusive());
         assertThat(formFieldDto.getMaxValue()).isEqualTo(formFieldEntity.getMaxValue());
         assertThat(formFieldDto.getDefaultValue()).isEqualTo(formFieldEntity.getDefaultValue());
+        assertThat(formFieldDto.isReadOnly()).isEqualTo(formFieldEntity.isReadOnly());
     }
 
     @Test

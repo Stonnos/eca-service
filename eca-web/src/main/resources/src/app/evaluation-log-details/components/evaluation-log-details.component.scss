@@ -12,6 +12,33 @@
   }
 }
 
+.classifiers-details-fieldset::ng-deep {
+
+  .ui-fieldset {
+    margin: 3px 3px 3px 3px;
+    border: 0.5px solid darkgrey;
+  }
+
+  .ui-fieldset-legend {
+    font-weight: bold;
+    font-size: 14px;
+    border: 0.5px solid;
+  }
+}
+
+.individual-classifier-header {
+  font-weight: bold;
+  text-decoration: underline;
+  font-size: 15px;
+}
+
+.meta-classifier {
+  border-radius: 4px;
+  width: 200px;
+  text-align: center;
+  display: inline-block;
+}
+
 .app-progress-spinner::ng-deep {
   .ui-progress-spinner {
     position: fixed;

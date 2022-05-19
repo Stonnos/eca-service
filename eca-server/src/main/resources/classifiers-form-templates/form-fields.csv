@@ -1,27 +1,81 @@
-id;field_name;description;field_order;field_type;min_value;max_value;max_length;pattern;dictionary_id;default_value;template_id;invalid_pattern_message;place_holder;min_inclusive;max_inclusive
-1;numNeighbours;Число ближайших соседей:;0;INTEGER;1;2147483647;255;NULL;NULL;10;1;NULL;NULL;true;true
-2;weight;Вес ближайшего соседа:;1;DECIMAL;0.5;1;255;NULL;NULL;1;1;NULL;NULL;true;true
-3;distanceType;Функция расстояния:;2;REFERENCE;NULL;NULL;NULL;NULL;1;EUCLID;1;NULL;NULL;true;true
-4;maxIts;Максимальное число итераций для поиска минимума функции -Log(Likelihood):;0;INTEGER;1;2147483647;255;NULL;NULL;200;2;NULL;NULL;true;true
-5;useConjugateGradientDescent;Использовать метод сопряженных градиентов:;1;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;2;NULL;NULL;true;true
-6;minNumObj;Минимальное число объектов в листе:;0;INTEGER;0;2147483647;255;NULL;NULL;2;3;NULL;NULL;true;true
-7;binarySplits;Бинарное дерево;1;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;3;NULL;NULL;true;true
-8;unpruned;Неусеченное дерево;2;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;3;NULL;NULL;true;true
-9;numFolds;Количество блоков:;3;INTEGER;2;100;255;NULL;NULL;3;3;NULL;NULL;true;true
-10;decisionTreeType;Алгоритм построения дерева:;0;REFERENCE;NULL;NULL;NULL;NULL;2;CART;4;NULL;NULL;true;true
-11;minObj;Минимальное число объектов в листе:;1;INTEGER;0;2147483647;255;NULL;NULL;2;4;NULL;NULL;true;true
-12;maxDepth;Максимальная глубина дерева:;2;INTEGER;0;2147483647;255;NULL;NULL;0;4;NULL;NULL;true;true
-13;useBinarySplits;Бинарное дерево;3;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;4;NULL;NULL;true;true
-14;randomTree;Случайное дерево;4;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;4;NULL;NULL;true;true
-15;numRandomAttr;Число случайных атрибутов:;5;INTEGER;0;2147483647;255;NULL;NULL;0;4;NULL;NULL;true;true
-16;useRandomSplits;Случайные расщепления атрибута;6;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;4;NULL;NULL;true;true
-17;numRandomSplits;Число случайных расщеплений атрибута:;7;INTEGER;1;2147483647;255;NULL;NULL;1;4;NULL;NULL;true;true
-18;seed;Начальное значение (seed):;8;INTEGER;0;2147483647;255;NULL;NULL;1;4;NULL;NULL;true;true
-19;hiddenLayer;Структура скрытого слоя:;0;TEXT;NULL;NULL;255;^([1-9],?)+$;NULL;NULL;5;Неправильный формат скрытого слоя. Пример: 8,15,10;Введите числа, разделенные запятой;true;true
-20;numIterations;Число итераций:;1;INTEGER;1;2147483647;255;NULL;NULL;1000000;5;NULL;NULL;true;true
-21;minError;Допустимая ошибка:;2;DECIMAL;0;1;255;NULL;NULL;0.00001;5;NULL;NULL;true;true
-22;activationFunctionOptions.activationFunctionType;Активационная функция нейронов скрытого слоя:;3;REFERENCE;NULL;NULL;NULL;NULL;3;LOGISTIC;5;NULL;NULL;true;true
-23;activationFunctionOptions.coefficient;Значение коэффициента:;4;DECIMAL;0;2147483647;255;NULL;NULL;1;5;NULL;NULL;false;true
-24;backPropagationOptions.learningRate;Коэффициент скорости обучения:;5;DECIMAL;0;1;255;NULL;NULL;0.1;5;NULL;NULL;false;true
-25;backPropagationOptions.momentum;Коэффициент момента:;6;DECIMAL;0;1;255;NULL;NULL;0.2;5;NULL;NULL;true;false
-26;seed;Начальное значение (seed):;7;INTEGER;0;2147483647;255;NULL;NULL;1;5;NULL;NULL;true;true
+id;field_name;description;field_order;field_type;min_value;max_value;max_length;pattern;dictionary_id;default_value;template_id;invalid_pattern_message;place_holder;min_inclusive;max_inclusive;read_only
+1;numNeighbours;Число ближайших соседей;0;INTEGER;1;2147483647;255;NULL;NULL;10;1;NULL;NULL;true;true;false
+2;weight;Вес ближайшего соседа;1;DECIMAL;0.5;1;255;NULL;NULL;1;1;NULL;NULL;true;true;false
+3;distanceType;Функция расстояния;2;REFERENCE;NULL;NULL;NULL;NULL;1;EUCLID;1;NULL;NULL;true;true;false
+
+4;maxIts;Максимальное число итераций;0;INTEGER;1;2147483647;255;NULL;NULL;200;2;NULL;NULL;true;true;false
+5;useConjugateGradientDescent;Использовать метод сопряженных градиентов;1;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;2;NULL;NULL;true;true;false
+
+6;minNumObj;Минимальное число объектов в листе;0;INTEGER;0;2147483647;255;NULL;NULL;2;3;NULL;NULL;true;true;false
+7;binarySplits;Бинарное дерево;1;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;3;NULL;NULL;true;true;false
+8;unpruned;Неусеченное дерево;2;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;3;NULL;NULL;true;true;false
+9;numFolds;Количество блоков;3;INTEGER;2;100;255;NULL;NULL;3;3;NULL;NULL;true;true;false
+
+10;decisionTreeType;Алгоритм построения дерева;0;REFERENCE;NULL;NULL;NULL;NULL;2;CART;4;NULL;NULL;true;true;false
+11;minObj;Минимальное число объектов в листе;1;INTEGER;0;2147483647;255;NULL;NULL;2;4;NULL;NULL;true;true;false
+12;maxDepth;Максимальная глубина дерева;2;INTEGER;0;2147483647;255;NULL;NULL;0;4;NULL;NULL;true;true;false
+13;useBinarySplits;Бинарное дерево;3;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;4;NULL;NULL;true;true;false
+14;randomTree;Случайное дерево;4;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;4;NULL;NULL;true;true;false
+15;numRandomAttr;Число случайных атрибутов;5;INTEGER;0;2147483647;255;NULL;NULL;0;4;NULL;NULL;true;true;false
+16;useRandomSplits;Случайные расщепления атрибута;6;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;4;NULL;NULL;true;true;false
+17;numRandomSplits;Число случайных расщеплений атрибута;7;INTEGER;1;2147483647;255;NULL;NULL;1;4;NULL;NULL;true;true;false
+18;seed;Начальное значение (seed);8;INTEGER;0;2147483647;255;NULL;NULL;1;4;NULL;NULL;true;true;false
+
+19;hiddenLayer;Структура скрытого слоя;2;TEXT;NULL;NULL;255;^([1-9],?)+$;NULL;NULL;5;Неправильный формат скрытого слоя. Пример 8,15,10;Введите числа, разделенные запятой;true;true;false
+20;numIterations;Число итераций;3;INTEGER;1;2147483647;255;NULL;NULL;1000000;5;NULL;NULL;true;true;false
+21;minError;Допустимая ошибка;4;DECIMAL;0;1;255;NULL;NULL;0.00001;5;NULL;NULL;true;true;false
+22;activationFunctionOptions.activationFunctionType;Активационная функция нейронов скрытого слоя;5;REFERENCE;NULL;NULL;NULL;NULL;3;LOGISTIC;5;NULL;NULL;true;true;false
+23;activationFunctionOptions.coefficient;Значение коэффициента;6;DECIMAL;0;2147483647;255;NULL;NULL;1;5;NULL;NULL;false;true;false
+24;backPropagationOptions.learningRate;Коэффициент скорости обучения;7;DECIMAL;0;1;255;NULL;NULL;0.1;5;NULL;NULL;false;true;false
+25;backPropagationOptions.momentum;Коэффициент момента;8;DECIMAL;0;1;255;NULL;NULL;0.2;5;NULL;NULL;true;false;false
+26;seed;Начальное значение (seed);9;INTEGER;0;2147483647;255;NULL;NULL;1;5;NULL;NULL;true;true;false
+
+27;numIterations;Число итераций;0;INTEGER;1;2147483647;255;NULL;NULL;10;6;NULL;NULL;true;true;false
+28;numThreads;Число потоков;1;INTEGER;1;10;255;NULL;NULL;1;6;NULL;NULL;true;true;false
+29;minError;Минимальная допустимая ошибка классификатора;2;DECIMAL;0;0.5;255;NULL;NULL;0;6;NULL;NULL;true;true;false
+30;maxError;Максимальная допустимая ошибка классификатора;3;DECIMAL;0;0.5;255;NULL;NULL;0.5;6;NULL;NULL;true;true;false
+31;seed;Начальное значение (seed);4;INTEGER;0;2147483647;255;NULL;NULL;1;6;NULL;NULL;true;true;false
+
+32;numIterations;Число итераций;0;INTEGER;1;2147483647;255;NULL;NULL;10;7;NULL;NULL;true;true;false
+33;numThreads;Число потоков;1;INTEGER;1;10;255;NULL;NULL;1;7;NULL;NULL;true;true;false
+34;minError;Минимальная допустимая ошибка классификатора;2;DECIMAL;0;0.5;255;NULL;NULL;0;7;NULL;NULL;true;true;false
+35;maxError;Максимальная допустимая ошибка классификатора;3;DECIMAL;0;0.5;255;NULL;NULL;0.5;7;NULL;NULL;true;true;false
+36;useWeightedVotes;Метод взвешенного голосования;4;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;7;NULL;NULL;true;true;false
+37;useRandomClassifier;Случайный классификатор;5;BOOLEAN;NULL;NULL;NULL;NULL;NULL;true;7;NULL;NULL;true;true;false
+38;samplingMethod;Формирование обучающих выборок;6;REFERENCE;NULL;NULL;NULL;NULL;4;INITIAL;7;NULL;NULL;true;true;false
+39;useRandomSubspaces;Использование метода случайных подпространств;7;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;7;NULL;NULL;true;true;false
+40;seed;Начальное значение (seed);8;INTEGER;0;2147483647;255;NULL;NULL;1;7;NULL;NULL;true;true;false
+
+41;decisionTreeType;Алгоритм построения дерева;0;REFERENCE;NULL;NULL;NULL;NULL;2;CART;8;NULL;NULL;true;true;false
+42;numIterations;Число деревьев;1;INTEGER;1;2147483647;255;NULL;NULL;10;8;NULL;NULL;true;true;false
+43;minObj;Минимальное число объектов в листе;2;INTEGER;0;2147483647;255;NULL;NULL;2;8;NULL;NULL;true;true;false
+44;maxDepth;Максимальная глубина дерева;3;INTEGER;0;2147483647;255;NULL;NULL;0;8;NULL;NULL;true;true;false
+45;numRandomAttr;Число случайных атрибутов;4;INTEGER;0;2147483647;255;NULL;NULL;0;8;NULL;NULL;true;true;false
+46;numThreads;Число потоков;5;INTEGER;1;10;255;NULL;NULL;1;8;NULL;NULL;true;true;false
+47;seed;Начальное значение (seed);6;INTEGER;0;2147483647;255;NULL;NULL;1;8;NULL;NULL;true;true;false
+
+48;decisionTreeType;Алгоритм построения дерева;0;REFERENCE;NULL;NULL;NULL;NULL;2;CART;9;NULL;NULL;true;true;false
+49;numIterations;Число деревьев;1;INTEGER;1;2147483647;255;NULL;NULL;10;9;NULL;NULL;true;true;false
+50;minObj;Минимальное число объектов в листе;2;INTEGER;0;2147483647;255;NULL;NULL;2;9;NULL;NULL;true;true;false
+51;maxDepth;Максимальная глубина дерева;3;INTEGER;0;2147483647;255;NULL;NULL;0;9;NULL;NULL;true;true;false
+52;numRandomAttr;Число случайных атрибутов;4;INTEGER;0;2147483647;255;NULL;NULL;0;9;NULL;NULL;true;true;false
+53;numThreads;Число потоков;5;INTEGER;1;10;255;NULL;NULL;1;9;NULL;NULL;true;true;false
+54;numRandomSplits;Число случайных расщеплений атрибута;6;INTEGER;1;2147483647;255;NULL;NULL;1;9;NULL;NULL;true;true;false
+55;useBootstrapSamples;Использование бутстрэп - выборок;7;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;9;NULL;NULL;true;true;false
+56;seed;Начальное значение (seed);8;INTEGER;0;2147483647;255;NULL;NULL;1;9;NULL;NULL;true;true;false
+
+57;useCrossValidation;Использование V - блочной кросс - проверки для формирования мета - признаков;0;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;10;NULL;NULL;true;true;false
+58;numFolds;Количество блоков;1;INTEGER;2;100;255;NULL;NULL;10;10;NULL;NULL;true;true;false
+59;seed;Начальное значение (seed);2;INTEGER;0;2147483647;255;NULL;NULL;1;10;NULL;NULL;true;true;false
+
+60;numIterations;Число итераций;0;INTEGER;1;2147483647;255;NULL;NULL;10;11;NULL;NULL;true;true;false
+61;numThreads;Число потоков;1;INTEGER;1;10;255;NULL;NULL;1;11;NULL;NULL;true;true;false
+62;minError;Минимальная допустимая ошибка классификатора;2;DECIMAL;0;0.5;255;NULL;NULL;0;11;NULL;NULL;true;true;false
+63;maxError;Максимальная допустимая ошибка классификатора;3;DECIMAL;0;0.5;255;NULL;NULL;0.5;11;NULL;NULL;true;true;false
+64;useBootstrapSamples;Использование бутстрэп - выборок;4;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;11;NULL;NULL;true;true;false
+65;seed;Начальное значение (seed);5;INTEGER;0;2147483647;255;NULL;NULL;1;11;NULL;NULL;true;true;false
+
+66;numInNeurons;Количество нейронов во входном слое;0;INTEGER;1;2147483647;NULL;NULL;NULL;NULL;5;NULL;NULL;true;true;true
+67;numOutNeurons;Количество нейронов в выходном слое;1;INTEGER;2;2147483647;NULL;NULL;NULL;NULL;5;NULL;NULL;true;true;true
+
+68;alpha;Уровень значимости для теста хи - квадрат;9;DECIMAL;0;1;255;NULL;NULL;0.05;4;NULL;NULL;true;true;true

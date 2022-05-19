@@ -37,16 +37,26 @@ public class ClassifierOptionsHelper {
      */
     public static ClassifierOptionsDatabaseModel createClassifierOptionsDatabaseModel(
             ClassifierOptions classifierOptions, ClassifiersConfiguration classifiersConfiguration) {
+        ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = new ClassifierOptionsDatabaseModel();
+        classifierOptionsDatabaseModel.setOptionsName(classifierOptions.getClass().getSimpleName());
+        String config = toJsonString(classifierOptions);
+        classifierOptionsDatabaseModel.setConfigMd5Hash(
+                DigestUtils.md5DigestAsHex(config.getBytes(StandardCharsets.UTF_8)));
+        classifierOptionsDatabaseModel.setConfig(config);
+        classifierOptionsDatabaseModel.setCreationDate(LocalDateTime.now());
+        classifierOptionsDatabaseModel.setConfiguration(classifiersConfiguration);
+        return classifierOptionsDatabaseModel;
+    }
+
+    /**
+     * Converts classifier options to json string.
+     *
+     * @param classifierOptions - classifier options
+     * @return classifier options json string
+     */
+    public static String toJsonString(ClassifierOptions classifierOptions) {
         try {
-            ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = new ClassifierOptionsDatabaseModel();
-            classifierOptionsDatabaseModel.setOptionsName(classifierOptions.getClass().getSimpleName());
-            String config = objectMapper.writeValueAsString(classifierOptions);
-            classifierOptionsDatabaseModel.setConfigMd5Hash(
-                    DigestUtils.md5DigestAsHex(config.getBytes(StandardCharsets.UTF_8)));
-            classifierOptionsDatabaseModel.setConfig(config);
-            classifierOptionsDatabaseModel.setCreationDate(LocalDateTime.now());
-            classifierOptionsDatabaseModel.setConfiguration(classifiersConfiguration);
-            return classifierOptionsDatabaseModel;
+            return objectMapper.writeValueAsString(classifierOptions);
         } catch (IOException ex) {
             throw new ClassifierOptionsException(
                     String.format("There was an error while parsing object [%s]: %s", classifierOptions,

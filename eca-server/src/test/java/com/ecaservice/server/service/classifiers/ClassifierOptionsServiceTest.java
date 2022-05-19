@@ -58,14 +58,16 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
     @MockBean
     private UserService userService;
     @MockBean
-    private ClassifiersTemplateService classifiersTemplateService;
+    private ClassifierOptionsProcessor classifierOptionsProcessor;
+    @MockBean
+    private ClassifiersTemplateProvider classifiersTemplateProvider;
     @Inject
     private ClassifierOptionsService classifierOptionsService;
 
     @Override
     public void init() {
         when(userService.getCurrentUser()).thenReturn(USER_NAME);
-        when(classifiersTemplateService.getTemplateByClass(anyString())).thenReturn(new FormTemplateDto());
+        when(classifiersTemplateProvider.getClassifierTemplateByClass(anyString())).thenReturn(new FormTemplateDto());
     }
 
     @Override
@@ -76,7 +78,7 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
 
     @Test
     void testGetClassifiersOptionsPage() {
-        when(classifiersTemplateService.processInputOptions(anyString()))
+        when(classifierOptionsProcessor.processInputOptions(anyString()))
                 .thenReturn(Collections.singletonList(new InputOptionDto()));
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = saveClassifierOptions(true);
         PageRequestDto pageRequestDto =

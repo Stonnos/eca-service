@@ -34,16 +34,8 @@
         </p-fieldset>
 
         <p-fieldset legend="Входные параметры классификатора" class="details-fieldset">
-          <ng-container *ngFor="let option of experimentResultsDetailsDto?.classifierInfo?.inputOptions">
-            <div class="ui-g">
-              <div class="ui-g-6 text-left text-bold text-wrap">
-                {{ option.optionName }}
-              </div>
-              <div class="ui-g-6 text-left text-wrap">
-                {{ option.optionValue }}
-              </div>
-            </div>
-          </ng-container>
+          <app-classifier-options-info [classifierInfo]="experimentResultsDetailsDto?.classifierInfo">
+          </app-classifier-options-info>
         </p-fieldset>
       </div>
     </div>

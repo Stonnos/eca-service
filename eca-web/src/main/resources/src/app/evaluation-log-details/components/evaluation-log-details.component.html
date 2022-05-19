@@ -9,7 +9,7 @@
     <div class="col">
       <div class="details-panel">
         <h6 class="ml-4 mt-2 mb-2">Информация о классификаторе
-          - {{ evaluationLogDetails?.classifierInfo?.classifierName }}</h6>
+          - {{ evaluationLogDetails?.classifierInfo?.classifierDescription }}</h6>
       </div>
     </div>
   </div>
@@ -38,16 +38,8 @@
         </p-fieldset>
 
         <p-fieldset legend="Входные параметры классификатора" class="details-fieldset">
-          <ng-container *ngFor="let option of evaluationLogDetails?.classifierInfo?.inputOptions">
-            <div class="ui-g">
-              <div class="ui-g-6 text-left text-bold text-wrap">
-                {{ option.optionName }}
-              </div>
-              <div class="ui-g-6 text-left text-wrap">
-                {{ option.optionValue }}
-              </div>
-            </div>
-          </ng-container>
+          <app-classifier-options-info [classifierInfo]="evaluationLogDetails?.classifierInfo">
+          </app-classifier-options-info>
         </p-fieldset>
       </div>
     </div>

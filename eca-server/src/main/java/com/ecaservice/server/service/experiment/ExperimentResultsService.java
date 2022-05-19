@@ -1,5 +1,6 @@
 package com.ecaservice.server.service.experiment;
 
+import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.server.mapping.ExperimentResultsMapper;
 import com.ecaservice.server.model.entity.ErsResponseStatus;
 import com.ecaservice.server.model.entity.Experiment;
@@ -8,6 +9,7 @@ import com.ecaservice.server.model.entity.ExperimentResultsRequest;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.server.repository.ExperimentResultsRequestRepository;
+import com.ecaservice.server.service.classifiers.ClassifierOptionsProcessor;
 import com.ecaservice.server.service.ers.ErsService;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.ErsReportStatus;
@@ -15,17 +17,20 @@ import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
 import com.ecaservice.web.dto.model.ExperimentErsReportDto;
 import com.ecaservice.web.dto.model.ExperimentResultsDetailsDto;
+import com.ecaservice.web.dto.model.ExperimentResultsDto;
 import eca.core.evaluation.EvaluationResults;
 import eca.dataminer.AbstractExperiment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import weka.classifiers.AbstractClassifier;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static com.ecaservice.server.util.ClassifierOptionsHelper.toJsonString;
 import static com.ecaservice.server.util.Utils.buildEvaluationResultsDto;
 
 /**
@@ -39,7 +44,9 @@ import static com.ecaservice.server.util.Utils.buildEvaluationResultsDto;
 public class ExperimentResultsService {
 
     private final ErsService ersService;
+    private final ClassifierOptionsProcessor classifierOptionsProcessor;
     private final ExperimentResultsMapper experimentResultsMapper;
+    private final ClassifierOptionsAdapter classifierOptionsAdapter;
     private final ExperimentResultsEntityRepository experimentResultsEntityRepository;
     private final ExperimentResultsRequestRepository experimentResultsRequestRepository;
 
@@ -59,6 +66,9 @@ public class ExperimentResultsService {
                     EvaluationResults evaluationResults = evaluationResultsList.get(i);
                     ExperimentResultsEntity experimentResultsEntity =
                             experimentResultsMapper.map(evaluationResults);
+                    var classifierOptions =
+                            classifierOptionsAdapter.convert((AbstractClassifier) evaluationResults.getClassifier());
+                    experimentResultsEntity.getClassifierInfo().setClassifierOptions(toJsonString(classifierOptions));
                     experimentResultsEntity.setExperiment(experiment);
                     experimentResultsEntity.setResultsIndex(i);
                     return experimentResultsEntity;
@@ -75,9 +85,15 @@ public class ExperimentResultsService {
      * @return experiment results details dto
      */
     public ExperimentResultsDetailsDto getExperimentResultsDetails(ExperimentResultsEntity experimentResultsEntity) {
+        log.info("Starting to get experiment [{}] result details [{}]",
+                experimentResultsEntity.getExperiment().getRequestId(), experimentResultsEntity.getId());
         ExperimentResultsDetailsDto experimentResultsDetailsDto =
                 experimentResultsMapper.mapDetails(experimentResultsEntity);
+        experimentResultsDetailsDto.setClassifierInfo(
+                classifierOptionsProcessor.processClassifierInfo(experimentResultsEntity.getClassifierInfo()));
         experimentResultsDetailsDto.setEvaluationResultsDto(getEvaluationResults(experimentResultsEntity));
+        log.info("Experiment [{}] result details [{}] has been fetched",
+                experimentResultsEntity.getExperiment().getRequestId(), experimentResultsEntity.getId());
         return experimentResultsDetailsDto;
     }
 
@@ -88,15 +104,37 @@ public class ExperimentResultsService {
      * @return ERS report dto
      */
     public ExperimentErsReportDto getErsReport(Experiment experiment) {
+        log.info("Starting to fetch experiment [{}] ERS report", experiment.getRequestId());
         ExperimentErsReportDto experimentErsReportDto = new ExperimentErsReportDto();
         experimentErsReportDto.setExperimentRequestId(experiment.getRequestId());
         //Gets experiment results list
         List<ExperimentResultsEntity> experimentResultsEntityList =
                 experimentResultsEntityRepository.findByExperimentOrderByResultsIndex(experiment);
-        experimentErsReportDto.setExperimentResults(experimentResultsEntityList
+        var experimentResultsDtoList = mapToExperimentResultsDtoList(experimentResultsEntityList);
+        experimentErsReportDto.setExperimentResults(experimentResultsDtoList);
+        populateSentFlag(experimentErsReportDto, experimentResultsEntityList);
+        populateErsReportStatus(experiment, experimentErsReportDto);
+        log.info("Experiment [{}] ERS report has been fetched with status [{}]", experiment.getRequestId(),
+                experimentErsReportDto.getErsReportStatus().getValue());
+        return experimentErsReportDto;
+    }
+
+    private List<ExperimentResultsDto> mapToExperimentResultsDtoList(
+            List<ExperimentResultsEntity> experimentResultsEntityList) {
+        return experimentResultsEntityList
                 .stream()
-                .map(experimentResultsMapper::map)
-                .collect(Collectors.toList()));
+                .map(experimentResultsEntity -> {
+                    var experimentResultsDto = experimentResultsMapper.map(experimentResultsEntity);
+                    var classifierInfoDto = classifierOptionsProcessor.processClassifierInfo(
+                            experimentResultsEntity.getClassifierInfo());
+                    experimentResultsDto.setClassifierInfo(classifierInfoDto);
+                    return experimentResultsDto;
+                })
+                .collect(Collectors.toList());
+    }
+
+    private void populateSentFlag(ExperimentErsReportDto experimentErsReportDto,
+                                  List<ExperimentResultsEntity> experimentResultsEntityList) {
         if (!CollectionUtils.isEmpty(experimentResultsEntityList)) {
             experimentErsReportDto.setClassifiersCount(experimentResultsEntityList.size());
             List<Long> experimentResultsIds = experimentResultsEntityList
@@ -107,11 +145,10 @@ public class ExperimentResultsService {
                     experimentResultsEntityRepository.findSentResultsIds(experimentResultsIds);
             experimentErsReportDto.setSentClassifiersCount(sentResultsIds.size());
             //Set sent flag for each experiment results
-            experimentErsReportDto.getExperimentResults().forEach(experimentResultsDto -> experimentResultsDto.setSent(
-                    sentResultsIds.contains(experimentResultsDto.getId())));
+            experimentErsReportDto.getExperimentResults().forEach(experimentResultsDto ->
+                    experimentResultsDto.setSent(sentResultsIds.contains(experimentResultsDto.getId()))
+            );
         }
-        populateErsReportStatus(experiment, experimentErsReportDto);
-        return experimentErsReportDto;
     }
 
     private void populateErsReportStatus(Experiment experiment, ExperimentErsReportDto experimentErsReportDto) {

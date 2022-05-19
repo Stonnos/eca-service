@@ -13,3 +13,7 @@ id;label;value;dictionary_id
 12;Экспоненциальная;EXPONENTIAL;3
 13;Функция SoftSign;SOFT_SIGN;3
 14;Функция ISRU;INVERSE_SQUARE_ROOT_UNIT;3
+15;Использование исходной выборки;INITIAL;4
+16;Бутстрэп выборки;BAGGING;4
+17;Случайные подвыборки;RANDOM;4
+18;Бутстрэп выборки случайного размера;RANDOM_BAGGING;4

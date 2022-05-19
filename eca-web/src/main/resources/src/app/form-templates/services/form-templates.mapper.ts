@@ -11,7 +11,7 @@ import { FormField } from "../model/form-template.model";
 export class FormTemplatesMapper {
 
   public mapToFormFields(formFields: FormFieldDto[]): FormField[] {
-    return formFields.map((formFieldDto: FormFieldDto) => {
+    return formFields.filter((formFieldDto: FormFieldDto) => !formFieldDto.readOnly).map((formFieldDto: FormFieldDto) => {
       const formField = new FormField(formFieldDto.fieldName, formFieldDto.description, formFieldDto.fieldType);
       formField.maxLength = formFieldDto.maxLength;
       formField.min = formFieldDto.minValue;

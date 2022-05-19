@@ -1,5 +1,6 @@
 package com.ecaservice.web.dto.model;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -23,8 +24,32 @@ public class ClassifierInfoDto {
     private String classifierName;
 
     /**
-     * Classifier input options map
+     * Classifier description
      */
-    @Schema(description = "Classifier input options list")
+    @Schema(description = "Classifier description", example = "CART", maxLength = MAX_LENGTH_255)
+    private String classifierDescription;
+
+    /**
+     * Classifier options json config
+     */
+    @Schema(description = "Classifier options json config", required = true, example = "Json config")
+    private String classifierOptionsJson;
+
+    /**
+     * Is meta classifier (used for stacking algorithms)
+     */
+    @Schema(description = "Is meta classifier (used for stacking algorithms)")
+    private boolean metaClassifier;
+
+    /**
+     * Classifier input options list
+     */
+    @ArraySchema(schema = @Schema(description = "Classifier input options list"))
     private List<InputOptionDto> inputOptions;
+
+    /**
+     * Individual classifiers
+     */
+    @ArraySchema(schema = @Schema(description = "Individual classifiers"))
+    private List<ClassifierInfoDto> individualClassifiers;
 }

@@ -1,5 +1,6 @@
 package com.ecaservice.server.service.experiment;
 
+import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.mapping.ClassifierInfoMapperImpl;
 import com.ecaservice.server.mapping.DateTimeConverter;
@@ -15,6 +16,7 @@ import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.server.repository.ExperimentResultsRequestRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
+import com.ecaservice.server.service.classifiers.ClassifierOptionsProcessor;
 import com.ecaservice.server.service.ers.ErsService;
 import com.ecaservice.web.dto.model.ErsReportStatus;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
@@ -47,6 +49,10 @@ class ExperimentResultsServiceTest extends AbstractJpaTest {
 
     @Mock
     private ErsService ersService;
+    @Mock
+    private ClassifierOptionsProcessor classifierOptionsProcessor;
+    @Mock
+    private ClassifierOptionsAdapter classifierOptionsAdapter;
     @Inject
     private ExperimentResultsRequestRepository experimentResultsRequestRepository;
     @Inject
@@ -60,8 +66,10 @@ class ExperimentResultsServiceTest extends AbstractJpaTest {
 
     @Override
     public void init() {
-        experimentResultsService = new ExperimentResultsService(ersService, experimentResultsMapper,
-                experimentResultsEntityRepository, experimentResultsRequestRepository);
+        experimentResultsService =
+                new ExperimentResultsService(ersService, classifierOptionsProcessor, experimentResultsMapper,
+                        classifierOptionsAdapter, experimentResultsEntityRepository,
+                        experimentResultsRequestRepository);
     }
 
     @Override

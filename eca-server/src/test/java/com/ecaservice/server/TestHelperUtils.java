@@ -92,6 +92,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import static com.ecaservice.server.util.ClassifierOptionsHelper.toJsonString;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newEnumMap;
 
@@ -116,6 +117,8 @@ public class TestHelperUtils {
     private static final String EXPERIMENT_ABSOLUTE_PATH = "/home/experiment";
     private static final String DATA_PATH = "data/iris.xls";
     private static final String CLASSIFIERS_TEMPLATES_JSON = "classifiers-templates.json";
+    private static final String ENSEMBLE_CLASSIFIER_TEMPLATES_JSON = "ensemble-classifiers-templates.json";
+
     private static final int NUM_OBJ = 2;
     private static final double KNN_WEIGHT = 0.55d;
     private static final int NUM_NEIGHBOURS = 25;
@@ -147,6 +150,7 @@ public class TestHelperUtils {
     private static final String OPTION_VALUE = "value";
     private static final String CONFIGURATION_NAME = "configuration";
     private static final int ITERATIONS = 1;
+    private static final int NUM_THREADS = 3;
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
@@ -192,14 +196,18 @@ public class TestHelperUtils {
      * @return classifiers templates
      */
     public static List<FormTemplateDto> loadClassifiersTemplates() {
-        try {
-            ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-            @Cleanup var inputStream = classLoader.getResourceAsStream(CLASSIFIERS_TEMPLATES_JSON);
-            return OBJECT_MAPPER.readValue(inputStream, new TypeReference<>() {
-            });
-        } catch (Exception ex) {
-            throw new IllegalStateException(ex.getMessage());
-        }
+        return loadConfig(CLASSIFIERS_TEMPLATES_JSON, new TypeReference<>() {
+        });
+    }
+
+    /**
+     * Loads ensemble classifiers templates.
+     *
+     * @return classifiers templates
+     */
+    public static List<FormTemplateDto> loadEnsembleClassifiersTemplates() {
+        return loadConfig(ENSEMBLE_CLASSIFIER_TEMPLATES_JSON, new TypeReference<>() {
+        });
     }
 
     /**
@@ -371,6 +379,18 @@ public class TestHelperUtils {
     }
 
     /**
+     * Create classifier info.
+     *
+     * @param classifierOptions - classifier options
+     * @return classifier info
+     */
+    public static ClassifierInfo createClassifierInfo(ClassifierOptions classifierOptions) {
+        ClassifierInfo classifierInfo = createClassifierInfo();
+        classifierInfo.setClassifierOptions(toJsonString(classifierOptions));
+        return classifierInfo;
+    }
+
+    /**
      * Creates evaluation log.
      *
      * @return evaluation log
@@ -499,6 +519,7 @@ public class TestHelperUtils {
         options.setMinObj(NUM_OBJ);
         options.setMaxDepth(MAX_DEPTH);
         options.setNumRandomAttr(NUM_RANDOM_ATTR);
+        options.setNumThreads(NUM_THREADS);
         options.setNumIterations(NUM_ITERATIONS);
         options.setSeed(SEED);
         return options;
@@ -518,6 +539,7 @@ public class TestHelperUtils {
         options.setNumRandomAttr(NUM_RANDOM_ATTR);
         options.setNumIterations(NUM_ITERATIONS);
         options.setSeed(SEED);
+        options.setNumThreads(NUM_THREADS);
         options.setUseBootstrapSamples(true);
         options.setNumRandomSplits(NUM_RANDOM_SPLITS);
         return options;
@@ -563,6 +585,7 @@ public class TestHelperUtils {
         HeterogeneousClassifierOptions options = new HeterogeneousClassifierOptions();
         options.setUseRandomSubspaces(useRandomSubspaces);
         options.setSeed(SEED);
+        options.setNumThreads(NUM_THREADS);
         options.setNumIterations(NUM_ITERATIONS);
         options.setUseWeightedVotes(true);
         options.setSamplingMethod(SamplingMethod.BAGGING);
@@ -982,5 +1005,15 @@ public class TestHelperUtils {
                 .replyTo(REPLY_TO)
                 .correlationId(UUID.randomUUID().toString())
                 .build();
+    }
+
+    private static <T> T loadConfig(String path, TypeReference<T> tTypeReference) {
+        try {
+            ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+            @Cleanup var inputStream = classLoader.getResourceAsStream(path);
+            return OBJECT_MAPPER.readValue(inputStream, tTypeReference);
+        } catch (Exception ex) {
+            throw new IllegalStateException(ex.getMessage());
+        }
     }
 }

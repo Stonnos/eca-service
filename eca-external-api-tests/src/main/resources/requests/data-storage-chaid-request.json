@@ -11,9 +11,7 @@
       "randomTree": false,
       "useBinarySplits": true,
       "useRandomSplits": false,
-      "additionalOptions": {
-        "alphaValue": "0.05"
-      }
+      "alpha": 0.05
     },
     "evaluationMethod": "CROSS_VALIDATION",
     "numFolds": 10,

@@ -59,4 +59,6 @@
     <include file="db/changelog/v49-add-request-id-unique-idx.xml"/>
     <include file="../form-template-changelog.xml" relativeToChangelogFile="true"/>
     <include file="db/changelog/v50-insert-classifier-form-templates.xml"/>
+    <include file="db/changelog/v51-add-classifier-options-column.xml"/>
+    <include file="db/changelog/v52-insert-classifiers-filter-dictionary.xml"/>
 </databaseChangeLog>
