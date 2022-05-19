@@ -23,22 +23,19 @@ import static com.google.common.collect.Maps.newLinkedHashMap;
 @Mapper
 public abstract class DecisionTreeMapper extends AbstractClassifierMapper<DecisionTreeClassifier, DecisionTreeOptions> {
 
-    private static final Map<Class<?>, DecisionTreeType> DECISION_TREE_TYPE_MAP = newLinkedHashMap(
-            Map.of(
-                    CART.class, DecisionTreeType.CART,
-                    C45.class, DecisionTreeType.C45,
-                    ID3.class, DecisionTreeType.ID3,
-                    CHAID.class, DecisionTreeType.CHAID
-            )
-    );
+    private final Map<Class<?>, DecisionTreeType> decisionTreeTypeMap = newLinkedHashMap();
 
     protected DecisionTreeMapper() {
         super(DecisionTreeClassifier.class);
+        decisionTreeTypeMap.put(CART.class, DecisionTreeType.CART);
+        decisionTreeTypeMap.put(C45.class, DecisionTreeType.C45);
+        decisionTreeTypeMap.put(ID3.class, DecisionTreeType.ID3);
+        decisionTreeTypeMap.put(CHAID.class, DecisionTreeType.CHAID);
     }
 
     @AfterMapping
     protected void mapDecisionTreeType(DecisionTreeClassifier classifier, @MappingTarget DecisionTreeOptions options) {
-        DecisionTreeType decisionTreeType = DECISION_TREE_TYPE_MAP
+        DecisionTreeType decisionTreeType = decisionTreeTypeMap
                 .entrySet()
                 .stream()
                 .filter(entry -> entry.getKey().isAssignableFrom(classifier.getClass()))
