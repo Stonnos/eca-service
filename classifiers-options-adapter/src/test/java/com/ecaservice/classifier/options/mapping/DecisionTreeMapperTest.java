@@ -2,17 +2,17 @@ package com.ecaservice.classifier.options.mapping;
 
 import com.ecaservice.classifier.options.TestHelperUtils;
 import com.ecaservice.classifier.options.model.DecisionTreeOptions;
-import com.ecaservice.classifier.options.model.OptionsVariables;
 import eca.ensemble.forests.DecisionTreeType;
 import eca.trees.CHAID;
 import eca.trees.DecisionTreeClassifier;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Unit tests for checking {@link DecisionTreeMapper} functionality.
@@ -30,24 +30,33 @@ class DecisionTreeMapperTest {
     void testMapDecisionTree() {
         DecisionTreeClassifier treeClassifier = TestHelperUtils.createDecisionTreeClassifier(DecisionTreeType.C45);
         DecisionTreeOptions options = decisionTreeMapper.map(treeClassifier);
-        Assertions.assertThat(options.getSeed()).isEqualTo(treeClassifier.getSeed());
-        Assertions.assertThat(options.getNumRandomSplits()).isEqualTo(treeClassifier.getNumRandomSplits());
-        Assertions.assertThat(options.getMinObj()).isEqualTo(treeClassifier.getMinObj());
-        Assertions.assertThat(options.getMaxDepth()).isEqualTo(treeClassifier.getMaxDepth());
-        Assertions.assertThat(options.getNumRandomAttr()).isEqualTo(treeClassifier.getNumRandomAttr());
-        Assertions.assertThat(options.getRandomTree()).isEqualTo(treeClassifier.isRandomTree());
-        Assertions.assertThat(options.getUseBinarySplits()).isEqualTo(treeClassifier.getUseBinarySplits());
-        Assertions.assertThat(options.getUseRandomSplits()).isEqualTo(treeClassifier.isUseRandomSplits());
-        Assertions.assertThat(options.getDecisionTreeType()).isEqualTo(DecisionTreeType.C45);
+        assertThat(options.getSeed()).isEqualTo(treeClassifier.getSeed());
+        assertThat(options.getNumRandomSplits()).isEqualTo(treeClassifier.getNumRandomSplits());
+        assertThat(options.getMinObj()).isEqualTo(treeClassifier.getMinObj());
+        assertThat(options.getMaxDepth()).isEqualTo(treeClassifier.getMaxDepth());
+        assertThat(options.getNumRandomAttr()).isEqualTo(treeClassifier.getNumRandomAttr());
+        assertThat(options.getRandomTree()).isEqualTo(treeClassifier.isRandomTree());
+        assertThat(options.getUseBinarySplits()).isEqualTo(treeClassifier.getUseBinarySplits());
+        assertThat(options.getUseRandomSplits()).isEqualTo(treeClassifier.isUseRandomSplits());
+        assertThat(options.getDecisionTreeType()).isEqualTo(DecisionTreeType.C45);
     }
 
     @Test
     void testMapChaid() {
         DecisionTreeClassifier treeClassifier = TestHelperUtils.createDecisionTreeClassifier(DecisionTreeType.CHAID);
         DecisionTreeOptions options = decisionTreeMapper.map(treeClassifier);
-        Assertions.assertThat(options.getDecisionTreeType()).isEqualTo(DecisionTreeType.CHAID);
-        Assertions.assertThat(options.getAdditionalOptions()).isNotEmpty();
-        Assertions.assertThat(Double.valueOf(options.getAdditionalOptions().get(OptionsVariables.ALPHA))).isEqualTo(
-                ((CHAID) treeClassifier).getAlpha());
+        assertThat(options.getDecisionTreeType()).isEqualTo(DecisionTreeType.CHAID);
+        assertThat(options.getAdditionalOptions()).isNull();
+        assertThat(options.getAlpha()).isEqualTo(((CHAID) treeClassifier).getAlpha());
+    }
+
+    @Test
+    void testMapDecisionTreeType() {
+        for (var decisionTreeType : DecisionTreeType.values()) {
+            DecisionTreeClassifier treeClassifier = TestHelperUtils.createDecisionTreeClassifier(decisionTreeType);
+            DecisionTreeOptions options = decisionTreeMapper.map(treeClassifier);
+            assertThat(options).isNotNull();
+            assertThat(options.getDecisionTreeType()).isEqualTo(decisionTreeType);
+        }
     }
 }

@@ -4,6 +4,7 @@ import com.ecaservice.classifier.options.model.DecisionTreeOptions;
 import com.ecaservice.classifier.options.model.OptionsVariables;
 import eca.trees.CHAID;
 import eca.trees.DecisionTreeClassifier;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.InjectionStrategy;
@@ -16,6 +17,7 @@ import org.springframework.util.CollectionUtils;
  *
  * @author Roman Batygin
  */
+@Slf4j
 @Mapper(uses = DecisionTreeFactory.class, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public abstract class DecisionTreeOptionsMapper
         extends ClassifierOptionsMapper<DecisionTreeOptions, DecisionTreeClassifier> {
@@ -25,11 +27,21 @@ public abstract class DecisionTreeOptionsMapper
     }
 
     @AfterMapping
-    protected void mapChaid(DecisionTreeOptions options, @MappingTarget DecisionTreeClassifier classifier) {
-        if (classifier instanceof CHAID && !CollectionUtils.isEmpty(options.getAdditionalOptions())) {
-            String alphaStr = options.getAdditionalOptions().get(OptionsVariables.ALPHA);
-            if (NumberUtils.isCreatable(alphaStr)) {
-                ((CHAID) classifier).setAlpha(Double.parseDouble(alphaStr));
+    protected void mapAdditionalOptions(DecisionTreeOptions options, @MappingTarget DecisionTreeClassifier classifier) {
+        if (classifier instanceof CHAID) {
+            CHAID chaid = (CHAID) classifier;
+            if (options.getAlpha() != null) {
+                chaid.setAlpha(options.getAlpha());
+                log.debug("CHAID alpha value has been mapped from alpha field");
+            } else if (!CollectionUtils.isEmpty(options.getAdditionalOptions())) {
+                //Get alpha value from map (for backward compatibility)
+                String alphaStr = options.getAdditionalOptions().get(OptionsVariables.ALPHA);
+                if (!NumberUtils.isCreatable(alphaStr)) {
+                    log.warn("Can't set CHAID alpha. Alpha value [{}] isn't numeric", alphaStr);
+                } else {
+                    ((CHAID) classifier).setAlpha(Double.parseDouble(alphaStr));
+                    log.debug("CHAID alpha value has been mapped from additionalOptions map");
+                }
             }
         }
     }
