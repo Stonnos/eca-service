@@ -69,14 +69,4 @@ public class Constraints {
      * Max individual classifiers
      */
     public static final int MAX_INDIVIDUAL_CLASSIFIERS = 25;
-
-    /**
-     * Alpha min value
-     */
-    public static final String ALPHA_MIN_VALUE = "0.001";
-
-    /**
-     * Alpha max value
-     */
-    public static final String ALPHA_MAX_VALUE = "0.999";
 }

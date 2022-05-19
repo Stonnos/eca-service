@@ -11,8 +11,8 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.util.Map;
 
-import static com.ecaservice.classifier.options.model.Constraints.ALPHA_MAX_VALUE;
-import static com.ecaservice.classifier.options.model.Constraints.ALPHA_MIN_VALUE;
+import static com.ecaservice.classifier.options.model.Constraints.DECIMAL_VALUE_0_STRING;
+import static com.ecaservice.classifier.options.model.Constraints.DECIMAL_VALUE_1_STRING;
 import static com.ecaservice.classifier.options.model.Constraints.MAX_LENGTH_255;
 import static com.ecaservice.classifier.options.model.Constraints.VALUE_1;
 import static com.ecaservice.classifier.options.model.Constraints.ZERO_VALUE;
@@ -94,8 +94,8 @@ public class DecisionTreeOptions extends ClassifierOptions {
     /**
      * Alpha value for chi square test
      */
-    @DecimalMin(ALPHA_MIN_VALUE)
-    @DecimalMax(ALPHA_MAX_VALUE)
+    @DecimalMin(value = DECIMAL_VALUE_0_STRING, inclusive = false)
+    @DecimalMax(value = DECIMAL_VALUE_1_STRING, inclusive = false)
     @Schema(description = "Alpha value for chi square test")
     private Double alpha;
 

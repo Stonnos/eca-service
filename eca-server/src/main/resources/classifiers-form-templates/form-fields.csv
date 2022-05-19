@@ -77,3 +77,5 @@ id;field_name;description;field_order;field_type;min_value;max_value;max_length;
 
 66;numInNeurons;Количество нейронов во входном слое;0;INTEGER;1;2147483647;NULL;NULL;NULL;NULL;5;NULL;NULL;true;true;true
 67;numOutNeurons;Количество нейронов в выходном слое;1;INTEGER;2;2147483647;NULL;NULL;NULL;NULL;5;NULL;NULL;true;true;true
+
+68;alpha;Уровень значимости для теста хи - квадрат;9;DECIMAL;0;1;255;NULL;NULL;0.05;4;NULL;NULL;true;true;true
