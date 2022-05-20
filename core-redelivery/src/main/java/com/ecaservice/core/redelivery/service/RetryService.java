@@ -33,7 +33,9 @@ import java.util.stream.Stream;
 import static com.google.common.collect.Lists.newArrayList;
 
 /**
- * Сервис для повторной отправки запросов.
+ * Retry service.
+ *
+ * @author Roman Batygin
  */
 @Slf4j
 @Service
@@ -183,14 +185,18 @@ public class RetryService {
             retryRequestCacheService.delete(retryRequest);
         } else {
             retryCallback.onError(retryContext, ex);
-            retryRequest.setRetries(retryRequest.getRetries() + 1);
-            var retryStrategy = getRetryStrategy(retry);
-            long nextRetryIntervalMillis =
-                    retryStrategy.calculateNextRetryIntervalMillis(retryContext.getCurrentRetries());
-            LocalDateTime nextRetryAt = LocalDateTime.now().plus(nextRetryIntervalMillis, ChronoUnit.MILLIS);
-            retryRequest.setRetryAt(nextRetryAt);
-            retryRequestRepository.save(retryRequest);
+            updateErrorRetryRequest(retryRequest, retry);
         }
+    }
+
+    private void updateErrorRetryRequest(RetryRequest retryRequest, Retry retry) {
+        retryRequest.setRetries(retryRequest.getRetries() + 1);
+        var retryStrategy = getRetryStrategy(retry);
+        long nextRetryIntervalMillis =
+                retryStrategy.calculateNextRetryIntervalMillis(retryRequest.getRetries());
+        LocalDateTime nextRetryAt = LocalDateTime.now().plus(nextRetryIntervalMillis, ChronoUnit.MILLIS);
+        retryRequest.setRetryAt(nextRetryAt);
+        retryRequestRepository.save(retryRequest);
     }
 
     private RetryStrategy getRetryStrategy(Retry retry) {
