@@ -64,6 +64,7 @@ class RetryRequestCacheServiceTest extends AbstractJpaTest {
         retryRequestCacheService.save(RetryRequestModel.builder()
                 .requestType(REQUEST_TYPE)
                 .requestId(requestId)
+                .request(REQUEST)
                 .maxRetries(0)
                 .minRetryInterval(MIN_RETRY_INTERVAL)
                 .build()
