@@ -3,9 +3,6 @@ package com.ecaservice.core.redelivery.strategy;
 import com.ecaservice.core.redelivery.strategy.function.RetryFunction;
 import lombok.Data;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-
 /**
  * Default retry strategy.
  *
@@ -31,6 +28,6 @@ public class DefaultRetryStrategy implements RetryStrategy {
             return 0L;
         }
         int nextRetriesRowIdx = iteration / getMaxRetriesInRow() + 1;
-        return getMinRetryIntervalMillis() * getRetryFunction().calculateShiftFactor(nextRetriesRowIdx);
+        return getMinRetryIntervalMillis() * retryFunction.calculateShiftFactor(nextRetriesRowIdx);
     }
 }

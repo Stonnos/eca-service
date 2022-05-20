@@ -1,9 +1,5 @@
 package com.ecaservice.core.redelivery.strategy;
 
-import com.ecaservice.core.redelivery.strategy.function.RetryFunction;
-
-import java.time.LocalDateTime;
-
 /**
  * Retry strategy interface.
  *
@@ -31,13 +27,6 @@ public interface RetryStrategy {
      * @return min retry interval in millis
      */
     long getMinRetryIntervalMillis();
-
-    /**
-     * Gets retry function.
-     *
-     * @return retry function
-     */
-    RetryFunction getRetryFunction();
 
     /**
      * Gets next retry interval millis.

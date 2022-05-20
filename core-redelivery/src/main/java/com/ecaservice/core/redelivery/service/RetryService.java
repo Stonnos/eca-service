@@ -9,6 +9,7 @@ import com.ecaservice.core.redelivery.error.ExceptionStrategy;
 import com.ecaservice.core.redelivery.model.MethodInfo;
 import com.ecaservice.core.redelivery.model.RetryContext;
 import com.ecaservice.core.redelivery.repository.RetryRequestRepository;
+import com.ecaservice.core.redelivery.strategy.RetryStrategy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopProxyUtils;
@@ -21,6 +22,8 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Method;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -150,7 +153,7 @@ public class RetryService {
             var exceptionStrategy =
                     applicationContext.getBean(retryAnnotation.exceptionStrategy(), ExceptionStrategy.class);
             if (exceptionStrategy.notFatal(ex)) {
-                handleNotFatalError(retryRequest, retryContext, retryCallback, ex);
+                handleNotFatalError(retryRequest, retryContext, retryCallback, retryAnnotation, ex);
             } else {
                 retryCallback.onError(retryContext, ex);
                 retryRequestCacheService.delete(retryRequest);
@@ -171,6 +174,7 @@ public class RetryService {
     private void handleNotFatalError(RetryRequest retryRequest,
                                      RetryContext retryContext,
                                      RetryCallback retryCallback,
+                                     Retry retry,
                                      Exception ex) {
         if (retryRequest.getMaxRetries() > 0 && retryRequest.getRetries() + 1 >= retryRequest.getMaxRetries()) {
             log.info("Exceeded retry request [{}] with id [{}]", retryRequest.getRequestType(),
@@ -180,7 +184,16 @@ public class RetryService {
         } else {
             retryCallback.onError(retryContext, ex);
             retryRequest.setRetries(retryRequest.getRetries() + 1);
+            var retryStrategy = getRetryStrategy(retry);
+            long nextRetryIntervalMillis =
+                    retryStrategy.calculateNextRetryIntervalMillis(retryContext.getCurrentRetries());
+            LocalDateTime nextRetryAt = LocalDateTime.now().plus(nextRetryIntervalMillis, ChronoUnit.MILLIS);
+            retryRequest.setRetryAt(nextRetryAt);
             retryRequestRepository.save(retryRequest);
         }
+    }
+
+    private RetryStrategy getRetryStrategy(Retry retry) {
+        return applicationContext.getBean(retry.retryStrategy(), RetryStrategy.class);
     }
 }
