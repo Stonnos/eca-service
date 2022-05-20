@@ -20,9 +20,12 @@ public class DefaultRetryStrategy implements RetryStrategy {
     private RetryFunction retryFunction;
 
     @Override
-    public Long calculateNextRetryIntervalMillis(int iteration) {
+    public long calculateNextRetryIntervalMillis(int iteration) {
         if (iteration >= getMaxRetries()) {
-            return null;
+            String errorMessage =
+                    String.format("Can't calculate next retry interval: iteration >= maxRetries [%d >= %d]", iteration,
+                            getMaxRetries());
+            throw new IllegalStateException(errorMessage);
         }
         if (iteration % getMaxRetriesInRow() != 0) {
             return 0L;

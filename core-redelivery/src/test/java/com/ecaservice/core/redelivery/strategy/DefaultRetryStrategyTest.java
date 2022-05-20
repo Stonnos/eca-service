@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for {@link DefaultRetryStrategy} class.
@@ -41,5 +42,10 @@ class DefaultRetryStrategyTest {
                 assertThat(nextRetryIntervalMillis).isEqualTo(expected);
             }
         }
+    }
+
+    @Test
+    void testCalculateNextRetryIntervalMillisShouldThrowIllegalStateException() {
+        assertThrows(IllegalStateException.class, () -> retryStrategy.calculateNextRetryIntervalMillis(MAX_RETRIES));
     }
 }

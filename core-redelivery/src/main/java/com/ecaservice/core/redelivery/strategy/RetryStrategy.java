@@ -34,5 +34,5 @@ public interface RetryStrategy {
      * @param iteration - iteration (retry number)
      * @return next retry interval millis
      */
-    Long calculateNextRetryIntervalMillis(int iteration);
+    long calculateNextRetryIntervalMillis(int iteration);
 }
