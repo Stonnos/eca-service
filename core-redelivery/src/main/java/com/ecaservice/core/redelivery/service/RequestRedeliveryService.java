@@ -10,6 +10,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.time.LocalDateTime;
+
 import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.putMdc;
 import static com.ecaservice.common.web.util.PageHelper.processWithPagination;
@@ -36,7 +38,7 @@ public class RequestRedeliveryService {
     public void processNotSentRequests() {
         log.debug("Starting redeliver requests");
         var pageRequest = PageRequest.of(0, redeliveryProperties.getMaxRequests());
-        var ids = retryRequestRepository.getNotSentRequestIds(pageRequest);
+        var ids = retryRequestRepository.getNotSentRequestIds(LocalDateTime.now(), pageRequest);
         if (!CollectionUtils.isEmpty(ids)) {
             log.info("Found [{}] not sent requests", ids.size());
             processWithPagination(ids, retryRequestRepository::findByIdIn,
