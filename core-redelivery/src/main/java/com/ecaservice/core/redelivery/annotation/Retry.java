@@ -11,6 +11,7 @@ import java.lang.annotation.Target;
 
 import static com.ecaservice.core.redelivery.config.RedeliveryCoreAutoConfiguration.DEFAULT_EXCEPTION_STRATEGY;
 import static com.ecaservice.core.redelivery.config.RedeliveryCoreAutoConfiguration.DEFAULT_RETRY_CALLBACK;
+import static com.ecaservice.core.redelivery.config.RedeliveryCoreAutoConfiguration.DEFAULT_RETRY_STRATEGY;
 import static com.ecaservice.core.redelivery.config.RedeliveryCoreAutoConfiguration.JSON_REQUEST_MESSAGE_CONVERTER;
 
 /**
@@ -53,11 +54,11 @@ public @interface Retry {
     String exceptionStrategy() default DEFAULT_EXCEPTION_STRATEGY;
 
     /**
-     * Maximum retries. Value <= 0 means unlimited retries.
+     * The bean name of the custom {@link com.ecaservice.core.redelivery.strategy.RetryStrategy}.
      *
-     * @return maximum retries
+     * @return retry strategy bean name
      */
-    int maxRetries() default -1;
+    String retryStrategy() default DEFAULT_RETRY_STRATEGY;
 
     /**
      * The bean name of the custom {@link RetryCallback}.

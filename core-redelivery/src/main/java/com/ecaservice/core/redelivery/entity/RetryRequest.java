@@ -63,4 +63,10 @@ public class RetryRequest {
      */
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
+
+    /**
+     * Next retry date
+     */
+    @Column(name = "retry_at")
+    private LocalDateTime retryAt;
 }

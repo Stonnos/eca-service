@@ -30,4 +30,16 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="add_retry_at_column_in_retry_request_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="retry_request"/>
+            <not>
+                <columnExists tableName="retry_request" columnName="retry_at"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="retry_request">
+            <column name="retry_at" type="timestamp"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

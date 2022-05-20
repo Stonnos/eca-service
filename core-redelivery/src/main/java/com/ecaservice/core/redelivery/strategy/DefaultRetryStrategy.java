@@ -14,25 +14,23 @@ import java.time.temporal.ChronoUnit;
 @Data
 public class DefaultRetryStrategy implements RetryStrategy {
 
-    private long maxRetries;
+    private int maxRetries;
 
-    private long maxRetriesInRow;
+    private int maxRetriesInRow;
 
     private long minRetryIntervalMillis;
 
     private RetryFunction retryFunction;
 
     @Override
-    public LocalDateTime getNextRetryDate(long iteration) {
+    public Long calculateNextRetryIntervalMillis(int iteration) {
         if (iteration >= getMaxRetries()) {
             return null;
         }
         if (iteration % getMaxRetriesInRow() != 0) {
-            return LocalDateTime.now();
+            return 0L;
         }
-        long nextRetriesRowIdx = iteration / getMaxRetriesInRow() + 1L;
-        long nextRetryIntervalMillis =
-                getMinRetryIntervalMillis() * retryFunction.calculateShiftFactor(nextRetriesRowIdx);
-        return LocalDateTime.now().plus(nextRetryIntervalMillis, ChronoUnit.MILLIS);
+        int nextRetriesRowIdx = iteration / getMaxRetriesInRow() + 1;
+        return getMinRetryIntervalMillis() * getRetryFunction().calculateShiftFactor(nextRetriesRowIdx);
     }
 }

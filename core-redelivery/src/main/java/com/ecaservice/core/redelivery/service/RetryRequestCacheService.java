@@ -1,12 +1,14 @@
 package com.ecaservice.core.redelivery.service;
 
 import com.ecaservice.core.redelivery.entity.RetryRequest;
+import com.ecaservice.core.redelivery.model.RetryRequestModel;
 import com.ecaservice.core.redelivery.repository.RetryRequestRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.getMdc;
@@ -26,22 +28,21 @@ public class RetryRequestCacheService {
     /**
      * Saves retry request into db.
      *
-     * @param requestType - request type (code)
-     * @param requestId   - request id
-     * @param request     - request body
-     * @param maxRetries  - maximum retries
+     * @param retryRequestModel - retry request model
      */
-    public void save(String requestType, String requestId, String request, int maxRetries) {
-        log.info("Starting to save retry request [{}] into db cache", requestType);
+    public void save(RetryRequestModel retryRequestModel) {
+        log.info("Starting to save retry request [{}] into db cache", retryRequestModel);
         var retryRequest = new RetryRequest();
-        retryRequest.setRequestType(requestType);
-        retryRequest.setRequestId(requestId);
-        retryRequest.setRequest(request);
+        retryRequest.setRequestType(retryRequestModel.getRequestType());
+        retryRequest.setRequestId(retryRequestModel.getRequestId());
+        retryRequest.setRequest(retryRequestModel.getRequest());
         retryRequest.setTxId(getMdc(TX_ID));
-        retryRequest.setMaxRetries(maxRetries);
+        retryRequest.setMaxRetries(retryRequestModel.getMaxRetries());
+        LocalDateTime retryAt = LocalDateTime.now().plus(retryRequestModel.getMinRetryInterval(), ChronoUnit.MILLIS);
+        retryRequest.setRetryAt(retryAt);
         retryRequest.setCreatedAt(LocalDateTime.now());
         retryRequestRepository.save(retryRequest);
-        log.info("Retry request [{}] has been saved into db cache", requestType);
+        log.info("Retry request [{}] has been saved into db cache", retryRequestModel);
     }
 
     /**

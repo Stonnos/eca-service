@@ -16,14 +16,14 @@ public interface RetryStrategy {
      *
      * @return max retries
      */
-    long getMaxRetries();
+    int getMaxRetries();
 
     /**
      * Gets max retries in row.
      *
      * @return max retries in row
      */
-    long getMaxRetriesInRow();
+    int getMaxRetriesInRow();
 
     /**
      * Gets min retry interval in millis.
@@ -40,10 +40,10 @@ public interface RetryStrategy {
     RetryFunction getRetryFunction();
 
     /**
-     * Gets next retry date.
+     * Gets next retry interval millis.
      *
      * @param iteration - iteration (retry number)
-     * @return next retry date
+     * @return next retry interval millis
      */
-    LocalDateTime getNextRetryDate(long iteration);
+    Long calculateNextRetryIntervalMillis(int iteration);
 }
