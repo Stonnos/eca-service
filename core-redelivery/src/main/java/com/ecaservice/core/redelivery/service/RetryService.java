@@ -191,12 +191,16 @@ public class RetryService {
 
     private void updateErrorRetryRequest(RetryRequest retryRequest, Retry retry) {
         retryRequest.setRetries(retryRequest.getRetries() + 1);
+        LocalDateTime nextRetryAt = calculateNextRetryAt(retryRequest, retry);
+        retryRequest.setRetryAt(nextRetryAt);
+        retryRequestRepository.save(retryRequest);
+    }
+
+    private LocalDateTime calculateNextRetryAt(RetryRequest retryRequest, Retry retry) {
         var retryStrategy = getRetryStrategy(retry);
         long nextRetryIntervalMillis =
                 retryStrategy.calculateNextRetryIntervalMillis(retryRequest.getRetries());
-        LocalDateTime nextRetryAt = LocalDateTime.now().plus(nextRetryIntervalMillis, ChronoUnit.MILLIS);
-        retryRequest.setRetryAt(nextRetryAt);
-        retryRequestRepository.save(retryRequest);
+        return LocalDateTime.now().plus(nextRetryIntervalMillis, ChronoUnit.MILLIS);
     }
 
     private RetryStrategy getRetryStrategy(Retry retry) {
