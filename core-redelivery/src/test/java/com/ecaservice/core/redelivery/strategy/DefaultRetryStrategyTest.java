@@ -34,7 +34,7 @@ class DefaultRetryStrategyTest {
         for (int i = 0; i < MAX_RETRIES; i++) {
             long nextRetryIntervalMillis = retryStrategy.calculateNextRetryIntervalMillis(i);
             if (i % MAX_RETRIES_IN_ROW != 0) {
-                assertThat(nextRetryIntervalMillis).isZero();
+                assertThat(nextRetryIntervalMillis).isEqualTo(MIN_RETRY_INTERVAL_MILLIS);
             } else {
                 int iteration = i / MAX_RETRIES_IN_ROW + 1;
                 long expected =
