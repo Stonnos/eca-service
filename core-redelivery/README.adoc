@@ -171,6 +171,7 @@ public class LockConfiguration {
 |retries                             |integer          |-|-|-                                   |Счетчик числа попыток повторной отправки запроса
 |max_retries                         |integer          |-|-|-                                   |Макс. число попыток повторной отправки запроса
 |created_at                          |timestamp        |-|+|-                                   |Дата создания записи
+|retry_at                            |timestamp        |-|-|-                                   |Дата следующей попытки
 |===
 
 == 4. Примеры использования
