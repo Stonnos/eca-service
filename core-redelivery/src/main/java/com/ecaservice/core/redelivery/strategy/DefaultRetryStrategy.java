@@ -27,9 +27,6 @@ public class DefaultRetryStrategy implements RetryStrategy {
                             getMaxRetries());
             throw new IllegalStateException(errorMessage);
         }
-        if (iteration % getMaxRetriesInRow() != 0) {
-            return minRetryIntervalMillis;
-        }
         int nextRetriesRowIdx = iteration / maxRetriesInRow + 1;
         return minRetryIntervalMillis * retryFunction.calculateShiftFactor(nextRetriesRowIdx);
     }

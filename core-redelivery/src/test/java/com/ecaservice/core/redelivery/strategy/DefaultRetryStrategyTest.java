@@ -33,14 +33,10 @@ class DefaultRetryStrategyTest {
     void testCalculateNextRetryIntervalMillis() {
         for (int i = 0; i < MAX_RETRIES; i++) {
             long nextRetryIntervalMillis = retryStrategy.calculateNextRetryIntervalMillis(i);
-            if (i % MAX_RETRIES_IN_ROW != 0) {
-                assertThat(nextRetryIntervalMillis).isEqualTo(MIN_RETRY_INTERVAL_MILLIS);
-            } else {
-                int iteration = i / MAX_RETRIES_IN_ROW + 1;
-                long expected =
-                        MIN_RETRY_INTERVAL_MILLIS * retryStrategy.getRetryFunction().calculateShiftFactor(iteration);
-                assertThat(nextRetryIntervalMillis).isEqualTo(expected);
-            }
+            int iteration = i / MAX_RETRIES_IN_ROW + 1;
+            long expected =
+                    MIN_RETRY_INTERVAL_MILLIS * retryStrategy.getRetryFunction().calculateShiftFactor(iteration);
+            assertThat(nextRetryIntervalMillis).isEqualTo(expected);
         }
     }
 
