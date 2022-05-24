@@ -1,22 +1,27 @@
 package com.ecaservice.core.redelivery.strategy;
 
 import com.ecaservice.core.redelivery.strategy.function.RetryFunction;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Default retry strategy.
  *
  * @author Roman Batygin
  */
-@Data
 public class DefaultRetryStrategy implements RetryStrategy {
 
+    @Setter
+    @Getter
     private int maxRetries;
-
+    @Setter
+    @Getter
     private int maxRetriesInRow;
-
+    @Setter
+    @Getter
     private long minRetryIntervalMillis;
-
+    @Setter
+    @Getter
     private RetryFunction retryFunction;
 
     @Override
