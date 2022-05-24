@@ -31,7 +31,8 @@ public class RetryRequestCacheService {
      * @param retryRequestModel - retry request model
      */
     public void save(RetryRequestModel retryRequestModel) {
-        log.info("Starting to save retry request [{}] into db cache", retryRequestModel);
+        log.info("Starting to save retry request [{}] with request ID [{}] into db cache",
+                retryRequestModel.getRequestType(), retryRequestModel.getRequestId());
         var retryRequest = new RetryRequest();
         retryRequest.setRequestType(retryRequestModel.getRequestType());
         retryRequest.setRequestId(retryRequestModel.getRequestId());
@@ -42,7 +43,8 @@ public class RetryRequestCacheService {
         retryRequest.setRetryAt(retryAt);
         retryRequest.setCreatedAt(LocalDateTime.now());
         retryRequestRepository.save(retryRequest);
-        log.info("Retry request [{}] has been saved into db cache", retryRequestModel);
+        log.info("Retry request [{}] with request ID [{}]has been saved into db cache",
+                retryRequestModel.getRequestType(), retryRequestModel.getRequestId());
     }
 
     /**
