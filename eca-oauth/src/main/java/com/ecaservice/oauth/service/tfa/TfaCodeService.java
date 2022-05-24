@@ -5,12 +5,12 @@ import com.ecaservice.oauth.entity.TfaCodeEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.repository.TfaCodeRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
+import com.ecaservice.oauth.service.SerializationHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.common.exceptions.InvalidGrantException;
 import org.springframework.security.oauth2.common.util.RandomValueStringGenerator;
-import org.springframework.security.oauth2.common.util.SerializationUtils;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
 import org.springframework.stereotype.Service;
@@ -33,10 +33,10 @@ import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 public class TfaCodeService implements AuthorizationCodeServices {
 
     private final TfaConfig tfaConfig;
+    private final SerializationHelper serializationHelper;
     private final UserEntityRepository userEntityRepository;
     private final TfaCodeRepository tfaCodeRepository;
-
-    private RandomValueStringGenerator generator = new RandomValueStringGenerator();
+    private final RandomValueStringGenerator generator = new RandomValueStringGenerator();
 
     /**
      * Initialization method
@@ -65,7 +65,7 @@ public class TfaCodeService implements AuthorizationCodeServices {
         if (tfaCodeEntity == null) {
             throw new InvalidGrantException(String.format("Invalid authorization code: %s", code));
         }
-        OAuth2Authentication authentication = SerializationUtils.deserialize(tfaCodeEntity.getAuthentication());
+        OAuth2Authentication authentication = serializationHelper.deserialize(tfaCodeEntity.getAuthentication());
         tfaCodeRepository.delete(tfaCodeEntity);
         return authentication;
     }
@@ -84,7 +84,7 @@ public class TfaCodeService implements AuthorizationCodeServices {
         String code = generator.generate();
         var tfaCodeEntity = new TfaCodeEntity();
         tfaCodeEntity.setToken(md5Hex(code));
-        tfaCodeEntity.setAuthentication(SerializationUtils.serialize(authentication));
+        tfaCodeEntity.setAuthentication(serializationHelper.serialize(authentication));
         tfaCodeEntity.setExpireDate(LocalDateTime.now().plusSeconds(tfaConfig.getCodeValiditySeconds()));
         tfaCodeEntity.setUserEntity(userEntity);
         tfaCodeRepository.save(tfaCodeEntity);

@@ -13,8 +13,6 @@ import com.ecaservice.oauth.repository.ChangeEmailRequestRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Import;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
@@ -36,7 +34,6 @@ class ChangeEmailServiceTest extends AbstractJpaTest {
 
     private static final String NEW_EMAIL = "newemail@mail.ru";
     private static final long INVALID_USER_ID = 1000L;
-    private static final String PASSWORD = "pa66word!";
     private static final String TOKEN = "token";
 
     @Inject
@@ -48,12 +45,10 @@ class ChangeEmailServiceTest extends AbstractJpaTest {
     @Inject
     private ChangeEmailService changeEmailService;
 
-    private PasswordEncoder passwordEncoder;
     private UserEntity userEntity;
 
     @Override
     public void init() {
-        passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         userEntity = createAndSaveUser();
     }
 
@@ -162,7 +157,6 @@ class ChangeEmailServiceTest extends AbstractJpaTest {
 
     private UserEntity createAndSaveUser() {
         UserEntity userEntity = createUserEntity();
-        userEntity.setEmail(passwordEncoder.encode(PASSWORD));
         userEntity.setRoles(Collections.emptySet());
         return userEntityRepository.save(userEntity);
     }
