@@ -16,7 +16,7 @@ public class RedeliveryProperties {
     private static final long DEFAULT_REDELIVERY_INTERVAL_MILLIS = 60000L;
     private static final int DEFAULT_PAGE_SIZE = 5;
     private static final int DEFAULT_MAX_REQUESTS = 50;
-    private static final int DEFAULT_MAX_RETRIES_IN_ROW = 25;
+    private static final int DEFAULT_MAX_RETRIES_IN_ROW = 5;
     private static final long DEFAULT_MIN_RETRY_INTERVAL_MILLIS = 30000L;
 
     /**
