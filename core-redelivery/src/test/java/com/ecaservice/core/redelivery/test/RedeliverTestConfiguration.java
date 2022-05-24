@@ -8,7 +8,7 @@ import com.ecaservice.core.redelivery.error.DefaultExceptionStrategy;
 import com.ecaservice.core.redelivery.error.ExceptionStrategy;
 import com.ecaservice.core.redelivery.strategy.DefaultRetryStrategy;
 import com.ecaservice.core.redelivery.strategy.RetryStrategy;
-import com.ecaservice.core.redelivery.strategy.function.RetryNonlinearFunction;
+import com.ecaservice.core.redelivery.strategy.function.RetryDegreeFunction;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -46,7 +46,7 @@ public class RedeliverTestConfiguration {
         strategy.setMaxRetries(MAX_RETRIES);
         strategy.setMaxRetriesInRow(MAX_RETRIES_IN_ROW);
         strategy.setMinRetryIntervalMillis(MIN_RETRY_INTERVAL_MILLIS);
-        strategy.setRetryFunction(new RetryNonlinearFunction());
+        strategy.setRetryFunction(new RetryDegreeFunction());
         return strategy;
     }
 }

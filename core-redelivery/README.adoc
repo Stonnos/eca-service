@@ -91,7 +91,7 @@ public class AppConfiguration {
         ## currentRetries in (10, 20], MinRetryIntervalMillis = 30000 * 2^2 = 120000
         ## currentRetries in (21, 30], MinRetryIntervalMillis = 30000 * 2^3 = 240000
         ## ...
-        retryStrategy.setRetryFunction(new RetryNonlinearFunction());
+        retryStrategy.setRetryFunction(new RetryDegreeFunction());
         return retryStrategy;
     }
 }

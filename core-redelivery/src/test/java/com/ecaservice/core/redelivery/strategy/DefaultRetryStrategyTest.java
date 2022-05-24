@@ -1,6 +1,6 @@
 package com.ecaservice.core.redelivery.strategy;
 
-import com.ecaservice.core.redelivery.strategy.function.RetryNonlinearFunction;
+import com.ecaservice.core.redelivery.strategy.function.RetryDegreeFunction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +26,7 @@ class DefaultRetryStrategyTest {
         retryStrategy.setMaxRetries(MAX_RETRIES);
         retryStrategy.setMaxRetriesInRow(MAX_RETRIES_IN_ROW);
         retryStrategy.setMinRetryIntervalMillis(MIN_RETRY_INTERVAL_MILLIS);
-        retryStrategy.setRetryFunction(new RetryNonlinearFunction());
+        retryStrategy.setRetryFunction(new RetryDegreeFunction());
     }
 
     @Test

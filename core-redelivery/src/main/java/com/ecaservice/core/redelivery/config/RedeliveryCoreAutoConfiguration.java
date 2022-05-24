@@ -11,7 +11,7 @@ import com.ecaservice.core.redelivery.error.FeignExceptionStrategy;
 import com.ecaservice.core.redelivery.repository.RetryRequestRepository;
 import com.ecaservice.core.redelivery.strategy.DefaultRetryStrategy;
 import com.ecaservice.core.redelivery.strategy.RetryStrategy;
-import com.ecaservice.core.redelivery.strategy.function.RetryNonlinearFunction;
+import com.ecaservice.core.redelivery.strategy.function.RetryDegreeFunction;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -139,7 +139,7 @@ public class RedeliveryCoreAutoConfiguration {
         retryStrategy.setMaxRetries(redeliveryProperties.getRetryStrategy().getMaxRetries());
         retryStrategy.setMaxRetriesInRow(redeliveryProperties.getRetryStrategy().getMaxRetriesInRow());
         retryStrategy.setMinRetryIntervalMillis(redeliveryProperties.getRetryStrategy().getMinRetryIntervalMillis());
-        retryStrategy.setRetryFunction(new RetryNonlinearFunction());
+        retryStrategy.setRetryFunction(new RetryDegreeFunction());
         return retryStrategy;
     }
 }
