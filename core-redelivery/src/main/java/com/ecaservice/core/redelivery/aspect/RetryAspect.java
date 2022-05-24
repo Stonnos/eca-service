@@ -4,7 +4,9 @@ import com.ecaservice.common.web.expression.SpelExpressionHelper;
 import com.ecaservice.core.redelivery.annotation.Retry;
 import com.ecaservice.core.redelivery.converter.RequestMessageConverter;
 import com.ecaservice.core.redelivery.error.ExceptionStrategy;
+import com.ecaservice.core.redelivery.model.RetryRequestModel;
 import com.ecaservice.core.redelivery.service.RetryRequestCacheService;
+import com.ecaservice.core.redelivery.strategy.RetryStrategy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -62,10 +64,22 @@ public class RetryAspect {
                     applicationContext.getBean(retry.messageConverter(), RequestMessageConverter.class);
             var convertedRequest = requestMessageConverter.convert(request);
             String requestId = getRequestId(joinPoint, retry);
-            retryRequestCacheService.save(retry.value(), requestId, convertedRequest, retry.maxRetries());
+            var retryStrategy = getRetryStrategy(retry);
+            var retryRequestModel = RetryRequestModel.builder()
+                    .requestType(retry.value())
+                    .requestId(requestId)
+                    .request(convertedRequest)
+                    .maxRetries(retryStrategy.getMaxRetries())
+                    .minRetryInterval(retryStrategy.getMinRetryIntervalMillis())
+                    .build();
+            retryRequestCacheService.save(retryRequestModel);
         } catch (Exception ex) {
             log.error("Can's save retry request [{}]: {}", retry.value(), ex.getMessage());
         }
+    }
+
+    private RetryStrategy getRetryStrategy(Retry retry) {
+        return applicationContext.getBean(retry.retryStrategy(), RetryStrategy.class);
     }
 
     private void handleError(Retry retry, ProceedingJoinPoint joinPoint, Object request, Exception exception) {

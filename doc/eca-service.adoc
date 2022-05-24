@@ -736,6 +736,7 @@ image::./images/eca-audit-log-db-schema.png[alt=Схема базы данных
 |retries                             |integer          |-|-|-                                   |Счетчик числа попыток повторной отправки запроса
 |max_retries                         |integer          |-|-|-                                   |Макс. число попыток повторной отправки запроса
 |created_at                          |timestamp        |-|+|-                                   |Дата создания записи
+|retry_at                            |timestamp        |-|-|-                                   |Дата следующей попытки
 |===
 
 === 3.15 Описание служебных таблиц form-templates

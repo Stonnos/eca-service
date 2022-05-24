@@ -9,6 +9,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
 import javax.inject.Inject;
+import java.time.LocalDateTime;
 import java.util.stream.IntStream;
 
 import static com.ecaservice.core.redelivery.TestHelperUtils.createRetryRequest;
@@ -25,6 +26,7 @@ import static org.mockito.Mockito.verify;
 class RequestRedeliveryServiceTest extends AbstractJpaTest {
 
     private static final int REQUESTS_SIZE = 10;
+    private static final long SECONDS = 60000L;
 
     @MockBean
     private RetryService retryService;
@@ -42,6 +44,9 @@ class RequestRedeliveryServiceTest extends AbstractJpaTest {
     @Test
     void testProcessRequests() {
         IntStream.range(0, REQUESTS_SIZE).forEach(i -> createAndSaveRetryRequest());
+        var futureRetryRequest = createRetryRequest();
+        futureRetryRequest.setRetryAt(LocalDateTime.now().plusSeconds(SECONDS));
+        retryRequestRepository.save(futureRetryRequest);
         requestRedeliveryService.processNotSentRequests();
         verify(retryService, times(REQUESTS_SIZE)).retry(any(RetryRequest.class));
     }

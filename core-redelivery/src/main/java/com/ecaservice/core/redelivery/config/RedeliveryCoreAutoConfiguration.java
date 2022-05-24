@@ -9,6 +9,9 @@ import com.ecaservice.core.redelivery.error.DefaultExceptionStrategy;
 import com.ecaservice.core.redelivery.error.ExceptionStrategy;
 import com.ecaservice.core.redelivery.error.FeignExceptionStrategy;
 import com.ecaservice.core.redelivery.repository.RetryRequestRepository;
+import com.ecaservice.core.redelivery.strategy.DefaultRetryStrategy;
+import com.ecaservice.core.redelivery.strategy.RetryStrategy;
+import com.ecaservice.core.redelivery.strategy.function.RetryDegreeFunction;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -65,6 +68,11 @@ public class RedeliveryCoreAutoConfiguration {
     public static final String DEFAULT_RETRY_CALLBACK = "defaultRetryCallback";
 
     /**
+     * Default retry strategy bean
+     */
+    public static final String DEFAULT_RETRY_STRATEGY = "defaultRetryStrategy";
+
+    /**
      * Creates thread pool task executor bean.
      *
      * @param redeliveryProperties - redelivery properties
@@ -117,5 +125,21 @@ public class RedeliveryCoreAutoConfiguration {
     @Bean(DEFAULT_RETRY_CALLBACK)
     public RetryCallback retryCallback() {
         return new DefaultRetryCallback();
+    }
+
+    /**
+     * Default retry strategy bean.
+     *
+     * @param redeliveryProperties - redelivery properties
+     * @return retry strategy bean
+     */
+    @Bean(DEFAULT_RETRY_STRATEGY)
+    public RetryStrategy retryStrategy(RedeliveryProperties redeliveryProperties) {
+        var retryStrategy = new DefaultRetryStrategy();
+        retryStrategy.setMaxRetries(redeliveryProperties.getRetryStrategy().getMaxRetries());
+        retryStrategy.setMaxRetriesInRow(redeliveryProperties.getRetryStrategy().getMaxRetriesInRow());
+        retryStrategy.setMinRetryIntervalMillis(redeliveryProperties.getRetryStrategy().getMinRetryIntervalMillis());
+        retryStrategy.setRetryFunction(new RetryDegreeFunction());
+        return retryStrategy;
     }
 }

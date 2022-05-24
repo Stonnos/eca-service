@@ -9,6 +9,7 @@ import com.ecaservice.core.redelivery.error.ExceptionStrategy;
 import com.ecaservice.core.redelivery.model.MethodInfo;
 import com.ecaservice.core.redelivery.model.RetryContext;
 import com.ecaservice.core.redelivery.repository.RetryRequestRepository;
+import com.ecaservice.core.redelivery.strategy.RetryStrategy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopProxyUtils;
@@ -21,6 +22,8 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Method;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,7 +33,9 @@ import java.util.stream.Stream;
 import static com.google.common.collect.Lists.newArrayList;
 
 /**
- * Сервис для повторной отправки запросов.
+ * Retry service.
+ *
+ * @author Roman Batygin
  */
 @Slf4j
 @Service
@@ -150,7 +155,7 @@ public class RetryService {
             var exceptionStrategy =
                     applicationContext.getBean(retryAnnotation.exceptionStrategy(), ExceptionStrategy.class);
             if (exceptionStrategy.notFatal(ex)) {
-                handleNotFatalError(retryRequest, retryContext, retryCallback, ex);
+                handleNotFatalError(retryRequest, retryContext, retryCallback, retryAnnotation, ex);
             } else {
                 retryCallback.onError(retryContext, ex);
                 retryRequestCacheService.delete(retryRequest);
@@ -171,6 +176,7 @@ public class RetryService {
     private void handleNotFatalError(RetryRequest retryRequest,
                                      RetryContext retryContext,
                                      RetryCallback retryCallback,
+                                     Retry retry,
                                      Exception ex) {
         if (retryRequest.getMaxRetries() > 0 && retryRequest.getRetries() + 1 >= retryRequest.getMaxRetries()) {
             log.info("Exceeded retry request [{}] with id [{}]", retryRequest.getRequestType(),
@@ -179,8 +185,25 @@ public class RetryService {
             retryRequestCacheService.delete(retryRequest);
         } else {
             retryCallback.onError(retryContext, ex);
-            retryRequest.setRetries(retryRequest.getRetries() + 1);
-            retryRequestRepository.save(retryRequest);
+            updateErrorRetryRequest(retryRequest, retry);
         }
+    }
+
+    private void updateErrorRetryRequest(RetryRequest retryRequest, Retry retry) {
+        retryRequest.setRetries(retryRequest.getRetries() + 1);
+        LocalDateTime nextRetryAt = calculateNextRetryAt(retryRequest, retry);
+        retryRequest.setRetryAt(nextRetryAt);
+        retryRequestRepository.save(retryRequest);
+    }
+
+    private LocalDateTime calculateNextRetryAt(RetryRequest retryRequest, Retry retry) {
+        var retryStrategy = getRetryStrategy(retry);
+        long nextRetryIntervalMillis =
+                retryStrategy.calculateNextRetryIntervalMillis(retryRequest.getRetries());
+        return LocalDateTime.now().plus(nextRetryIntervalMillis, ChronoUnit.MILLIS);
+    }
+
+    private RetryStrategy getRetryStrategy(Retry retry) {
+        return applicationContext.getBean(retry.retryStrategy(), RetryStrategy.class);
     }
 }
