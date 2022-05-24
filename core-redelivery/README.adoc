@@ -38,10 +38,10 @@ redelivery:
   retryStrategy:
     ## Макс. число попыток повторной отправки данных
     maxRetries: 1000
-    ## Макс. число попыток повторной отправки данных в пределах одной итерации
-    maxRetriesInRow: 10
     ## Мин. значение интервала между попытками повторной отправки данных
     minRetryIntervalMillis: 30000
+    ## Макс. число попыток повторной отправки данных с заданным временным интервалом
+    maxRetriesInRow: 10
 ----
 
 Добавить java конфигурацию, если необходимо
@@ -80,16 +80,17 @@ public class AppConfiguration {
         var retryStrategy = new DefaultRetryStrategy();
         // Задаем макс. число попыток повторной отправки данных
         retryStrategy.setMaxRetries(1000);
-        // Задаем макс. число попыток повторной отправки данных в пределах одной итерации
+        // Задаем макс. число попыток повторной отправки данных с заданным временным интервалом
         retryStrategy.setMaxRetriesInRow(10);
+        // Задаем начальное мин. значение интервала между попытками повторной отправки данных
         retryStrategy.setMinRetryIntervalMillis(30000L);
         // Задаем нелинейную функцию увеличения времени между попытками повторной отправки данных.
-        // После каждых MaxRetriesInRow - попыток значение временного интервала будет увеличиваться нелинейно.
-        // Пример: MaxRetriesInRow = 10, MinRetryIntervalMillis = 30000, Функция временного интервала y = 2^x, где x - номер итерации.
+        // После каждых maxRetriesInRow - попыток значение временного интервала будет увеличиваться нелинейно.
+        // Пример: maxRetriesInRow = 10, MinRetryIntervalMillis = 30000, Функция временного интервала y = 2^x, где x = currentRetries/maxRetriesInRow
         // Значения временных интервалов для текущего номера попытки (currentRetries):
-        // currentRetries in [1, 10], MinRetryIntervalMillis = 30000
-        // currentRetries in (10, 20], MinRetryIntervalMillis = 30000 * 2^2 = 120000
-        // currentRetries in (21, 30], MinRetryIntervalMillis = 30000 * 2^3 = 240000
+        // currentRetries in [1, 10], MinRetryIntervalMillis = 30000 * 2^0 = 30000
+        // currentRetries in (10, 20], MinRetryIntervalMillis = 30000 * 2^1 = 60000
+        // currentRetries in (21, 30], MinRetryIntervalMillis = 30000 * 2^2 = 120000
         // ...
         retryStrategy.setRetryFunction(new RetryDegreeFunction());
         return retryStrategy;
