@@ -3,11 +3,11 @@ package com.ecaservice.oauth.entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.hibernate.annotations.Type;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.persistence.Table;
-import java.time.LocalDateTime;
 
 /**
  * Two - factor authentication code persistence entity.
@@ -22,8 +22,9 @@ import java.time.LocalDateTime;
 public class TfaCodeEntity extends TokenEntity {
 
     /**
-     * Code confirmation date
+     * Authentication serialized object
      */
-    @Column(name = "confirmation_date")
-    private LocalDateTime confirmationDate;
+    @Lob
+    @Type(type = "org.hibernate.type.BinaryType")
+    private byte[] authentication;
 }
