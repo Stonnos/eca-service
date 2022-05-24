@@ -2,6 +2,7 @@ package com.ecaservice.oauth.service.tfa;
 
 import com.ecaservice.oauth.AbstractJpaTest;
 import com.ecaservice.oauth.config.TfaConfig;
+import com.ecaservice.oauth.entity.TfaCodeEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.repository.TfaCodeRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
@@ -14,6 +15,7 @@ import org.springframework.security.oauth2.common.exceptions.InvalidGrantExcepti
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 
 import javax.inject.Inject;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.UUID;
 
@@ -33,6 +35,7 @@ import static org.mockito.Mockito.when;
 class TfaCodeServiceTest extends AbstractJpaTest {
 
     private static final String USER = "user";
+    private static final String TEST_TOKEN = "testToken";
 
     @MockBean
     private SerializationHelper serializationHelper;
@@ -67,6 +70,7 @@ class TfaCodeServiceTest extends AbstractJpaTest {
 
     @Test
     void testCreateAuthorizationCode() {
+        createAndSaveTfaCode(userEntity);
         String code = tfaCodeService.createAuthorizationCode(oAuth2Authentication);
         assertThat(code).hasSize(tfaConfig.getCodeLength());
         assertThat(tfaCodeRepository.count()).isOne();
@@ -95,5 +99,14 @@ class TfaCodeServiceTest extends AbstractJpaTest {
         UserEntity userEntity = createUserEntity();
         userEntity.setRoles(Collections.emptySet());
         return userEntityRepository.save(userEntity);
+    }
+
+    private void createAndSaveTfaCode(UserEntity userEntity) {
+        var tfaCodeEntity = new TfaCodeEntity();
+        tfaCodeEntity.setUserEntity(userEntity);
+        tfaCodeEntity.setToken(md5Hex(TEST_TOKEN));
+        tfaCodeEntity.setAuthentication(new byte[0]);
+        tfaCodeEntity.setExpireDate(LocalDateTime.now().plusSeconds(tfaConfig.getCodeValiditySeconds()));
+        tfaCodeRepository.save(tfaCodeEntity);
     }
 }
