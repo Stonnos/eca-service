@@ -32,7 +32,7 @@ public class DefaultRetryStrategy implements RetryStrategy {
                             getMaxRetries());
             throw new IllegalStateException(errorMessage);
         }
-        int nextRetriesRowIdx = iteration / maxRetriesInRow + 1;
+        int nextRetriesRowIdx = iteration / maxRetriesInRow;
         return minRetryIntervalMillis * retryFunction.calculateShiftFactor(nextRetriesRowIdx);
     }
 }
