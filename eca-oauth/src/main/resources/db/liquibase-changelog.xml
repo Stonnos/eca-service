@@ -31,4 +31,5 @@
     <include file="db/changelog/v22-rename-password-date-column.xml"/>
     <include file="db/changelog/v23-encode-client-secrets.xml"/>
     <include file="db/changelog/v24-insert-eca-tech-credentials.xml"/>
+    <include file="db/changelog/v25-create-tfa-code-table.xml"/>
 </databaseChangeLog>

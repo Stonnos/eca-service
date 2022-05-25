@@ -1,78 +1,94 @@
 package com.ecaservice.oauth.service.tfa;
 
 import com.ecaservice.oauth.config.TfaConfig;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.ecaservice.oauth.entity.TfaCodeEntity;
+import com.ecaservice.oauth.entity.UserEntity;
+import com.ecaservice.oauth.repository.TfaCodeRepository;
+import com.ecaservice.oauth.repository.UserEntityRepository;
+import com.ecaservice.oauth.service.SerializationHelper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.common.exceptions.InvalidGrantException;
 import org.springframework.security.oauth2.common.util.RandomValueStringGenerator;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
+import java.time.LocalDateTime;
+
+import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 
 /**
  * TFA code service.
  *
  * @author Roman Batygin
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TfaCodeService implements AuthorizationCodeServices {
 
     private final TfaConfig tfaConfig;
-
-    private Cache<String, OAuth2Authentication> codesCache;
-
-    private Map<String, Object> monitorsMap = new ConcurrentHashMap<>();
-
-    private RandomValueStringGenerator generator = new RandomValueStringGenerator();
+    private final SerializationHelper serializationHelper;
+    private final UserEntityRepository userEntityRepository;
+    private final TfaCodeRepository tfaCodeRepository;
+    private final RandomValueStringGenerator generator = new RandomValueStringGenerator();
 
     /**
-     * Initialize cache.
+     * Initialization method
      */
     @PostConstruct
     public void initialize() {
-        this.codesCache = CacheBuilder.newBuilder()
-                .expireAfterWrite(tfaConfig.getCodeValiditySeconds(), TimeUnit.SECONDS)
-                .build();
         this.generator.setLength(tfaConfig.getCodeLength());
     }
 
     @Override
+    @Transactional
     public String createAuthorizationCode(OAuth2Authentication authentication) {
-        String code = generator.generate();
         String user = authentication.getName();
-        monitorsMap.putIfAbsent(user, new Object());
-        synchronized (monitorsMap.get(user)) {
-            //Invalidate previous code
-            invalidatePreviousCode(user);
-            codesCache.put(code, authentication);
+        var userEntity = userEntityRepository.findUser(user);
+        if (userEntity == null) {
+            throw new UsernameNotFoundException(String.format("User with login [%s] doesn't exists!", user));
         }
-        monitorsMap.remove(user);
+        //Invalidate previous code
+        invalidatePreviousCodes(userEntity);
+        String code = generator.generate();
+        saveNewCode(code, userEntity, authentication);
         return code;
     }
 
     @Override
     public OAuth2Authentication consumeAuthorizationCode(String code) {
-        OAuth2Authentication authentication = codesCache.getIfPresent(code);
-        if (authentication == null) {
+        var tfaCodeEntity = tfaCodeRepository.findByTokenAndExpireDateAfter(md5Hex(code), LocalDateTime.now());
+        if (tfaCodeEntity == null) {
             throw new InvalidGrantException(String.format("Invalid authorization code: %s", code));
         }
-        codesCache.invalidate(code);
+        OAuth2Authentication authentication = serializationHelper.deserialize(tfaCodeEntity.getAuthentication());
+        tfaCodeRepository.delete(tfaCodeEntity);
         return authentication;
     }
 
-    private void invalidatePreviousCode(String user) {
-        codesCache.asMap().entrySet()
-                .stream()
-                .filter(entry -> entry.getValue().getName().equals(user))
-                .map(Map.Entry::getKey)
-                .findFirst()
-                .ifPresent(oldCode -> codesCache.invalidate(oldCode));
+    private void invalidatePreviousCodes(UserEntity userEntity) {
+        var previousCodes = tfaCodeRepository.findActiveCodes(userEntity, LocalDateTime.now());
+        if (!CollectionUtils.isEmpty(previousCodes)) {
+            log.info("Found [{}] active tfa codes for user [{}]", previousCodes.size(), userEntity.getId());
+            tfaCodeRepository.deleteAll(previousCodes);
+            log.info("[{}] active tfa codes has been invalidated for user [{}]", previousCodes.size(),
+                    userEntity.getId());
+        }
+    }
+
+    private void saveNewCode(String code, UserEntity userEntity, OAuth2Authentication authentication) {
+        var tfaCodeEntity = new TfaCodeEntity();
+        tfaCodeEntity.setToken(md5Hex(code));
+        tfaCodeEntity.setAuthentication(serializationHelper.serialize(authentication));
+        tfaCodeEntity.setExpireDate(LocalDateTime.now().plusSeconds(tfaConfig.getCodeValiditySeconds()));
+        tfaCodeEntity.setUserEntity(userEntity);
+        tfaCodeRepository.save(tfaCodeEntity);
+        log.info("New tfa code has been generated for user [{}]", userEntity.getId());
     }
 }

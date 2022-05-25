@@ -26,4 +26,14 @@ public class TfaConfig {
      * Tfa enabled global setting
      */
     private Boolean enabled;
+
+    /**
+     * Page size (used for pagination)
+     */
+    private Integer pageSize;
+
+    /**
+     * Scheduler delay in seconds
+     */
+    private Integer delaySeconds;
 }
