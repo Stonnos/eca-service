@@ -56,7 +56,9 @@ public class TfaCodeService implements AuthorizationCodeServices {
         }
         //Invalidate previous code
         invalidatePreviousCodes(userEntity);
-        return generateAndSaveNewCode(userEntity, authentication);
+        String code = generator.generate();
+        saveNewCode(code, userEntity, authentication);
+        return code;
     }
 
     @Override
@@ -80,8 +82,7 @@ public class TfaCodeService implements AuthorizationCodeServices {
         }
     }
 
-    private String generateAndSaveNewCode(UserEntity userEntity, OAuth2Authentication authentication) {
-        String code = generator.generate();
+    private void saveNewCode(String code, UserEntity userEntity, OAuth2Authentication authentication) {
         var tfaCodeEntity = new TfaCodeEntity();
         tfaCodeEntity.setToken(md5Hex(code));
         tfaCodeEntity.setAuthentication(serializationHelper.serialize(authentication));
@@ -89,6 +90,5 @@ public class TfaCodeService implements AuthorizationCodeServices {
         tfaCodeEntity.setUserEntity(userEntity);
         tfaCodeRepository.save(tfaCodeEntity);
         log.info("New tfa code has been generated for user [{}]", userEntity.getId());
-        return code;
     }
 }
