@@ -42,7 +42,7 @@ public interface TfaCodeRepository extends JpaRepository<TfaCodeEntity, Long> {
      * @param date - date bound
      * @return expired codes ids
      */
-    @Query("select tc from TfaCodeEntity tc where tc.expireDate < :date")
+    @Query("select tc.id from TfaCodeEntity tc where tc.expireDate < :date")
     List<Long> getExpiredCodeIds(@Param("date") LocalDateTime date);
 
     /**
