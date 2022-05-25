@@ -71,6 +71,8 @@ tfa:
   codeValiditySeconds: 120
   codeLength: 6
   enabled: true
+  pageSize: 25
+  delaySeconds: 300
 
 ## Swagger properties
 open-api:
