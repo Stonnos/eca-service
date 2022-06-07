@@ -59,11 +59,17 @@ public class StorageServiceImpl implements StorageService {
 
     @Override
     public Page<InstancesEntity> getNextPage(PageRequestDto pageRequestDto) {
+        log.info("Gets instances next page: {}", pageRequestDto);
         Sort sort = buildSort(pageRequestDto.getSortField(), CREATED, pageRequestDto.isAscending());
         InstancesFilter filter = new InstancesFilter(pageRequestDto.getSearchQuery(), INSTANCES_GLOBAL_FILTER_FIELDS,
                 pageRequestDto.getFilters());
         int pageSize = Integer.min(pageRequestDto.getSize(), ecaDsConfig.getMaxPageSize());
-        return instancesRepository.findAll(filter, PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
+        var instancesPage =
+                instancesRepository.findAll(filter, PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
+        log.info("Instances page [{} of {}] with size [{}] has been fetched for page request [{}]",
+                instancesPage.getNumber(), instancesPage.getTotalPages(), instancesPage.getNumberOfElements(),
+                pageRequestDto);
+        return instancesPage;
     }
 
     @Override

@@ -44,11 +44,16 @@ public class TemplateService {
      * @return entities page
      */
     public Page<TemplateEntity> getNextPage(PageRequestDto pageRequestDto) {
+        log.info("Gets email templates next page: {}", pageRequestDto);
         Sort sort = buildSort(pageRequestDto.getSortField(), CREATED, pageRequestDto.isAscending());
         TemplateFilter filter =
                 new TemplateFilter(pageRequestDto.getSearchQuery(), TEMPLATE_GLOBAL_FILTER_FIELDS,
                         pageRequestDto.getFilters());
         int pageSize = Integer.min(pageRequestDto.getSize(), mailConfig.getMaxPageSize());
-        return templateRepository.findAll(filter, PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
+        var templatesPage = templateRepository.findAll(filter, PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
+        log.info("Email templates page [{} of {}] with size [{}] has been fetched for page request [{}]",
+                templatesPage.getNumber(), templatesPage.getTotalPages(), templatesPage.getNumberOfElements(),
+                pageRequestDto);
+        return templatesPage;
     }
 }

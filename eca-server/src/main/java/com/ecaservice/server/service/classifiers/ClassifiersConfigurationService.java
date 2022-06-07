@@ -159,14 +159,18 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
 
     @Override
     public Page<ClassifiersConfiguration> getNextPage(PageRequestDto pageRequestDto) {
+        log.info("Gets classifiers configurations next page: {}", pageRequestDto);
         var sort = buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
         var globalFilterFields =
                 filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIERS_CONFIGURATION.name());
         var filter = new ClassifiersConfigurationFilter(pageRequestDto.getSearchQuery(),
                 globalFilterFields, pageRequestDto.getFilters());
         var pageSize = Integer.min(pageRequestDto.getSize(), appProperties.getMaxPageSize());
-        return classifiersConfigurationRepository.findAll(filter,
+        var nextPage = classifiersConfigurationRepository.findAll(filter,
                 PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
+        log.info("Classifiers configurations page [{} of {}] with size [{}] has been fetched for page request [{}]",
+                nextPage.getNumber(), nextPage.getTotalPages(), nextPage.getNumberOfElements(), pageRequestDto);
+        return nextPage;
     }
 
     /**

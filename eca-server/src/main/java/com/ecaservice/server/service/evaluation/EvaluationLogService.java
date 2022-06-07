@@ -70,13 +70,19 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
 
     @Override
     public Page<EvaluationLog> getNextPage(PageRequestDto pageRequestDto) {
+        log.info("Gets evaluation logs next page: {}", pageRequestDto);
         Sort sort = buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
         List<String> globalFilterFields = filterService.getGlobalFilterFields(FilterTemplateType.EVALUATION_LOG.name());
         var filter = new EvaluationLogFilter(pageRequestDto.getSearchQuery(), globalFilterFields,
                 pageRequestDto.getFilters());
         filter.setGlobalFilterFieldsCustomizers(globalFilterFieldCustomizers);
         int pageSize = Integer.min(pageRequestDto.getSize(), appProperties.getMaxPageSize());
-        return evaluationLogRepository.findAll(filter, PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
+        var evaluationLogsPage =
+                evaluationLogRepository.findAll(filter, PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
+        log.info("Evaluation logs page [{} of {}] with size [{}] has been fetched for page request [{}]",
+                evaluationLogsPage.getNumber(), evaluationLogsPage.getTotalPages(),
+                evaluationLogsPage.getNumberOfElements(), pageRequestDto);
+        return evaluationLogsPage;
     }
 
     /**

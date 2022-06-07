@@ -206,12 +206,18 @@ public class ExperimentService implements PageRequestService<Experiment> {
 
     @Override
     public Page<Experiment> getNextPage(PageRequestDto pageRequestDto) {
+        log.info("Gets experiments next page: {}", pageRequestDto);
         Sort sort = buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
         List<String> globalFilterFields = filterService.getGlobalFilterFields(FilterTemplateType.EXPERIMENT.name());
         ExperimentFilter filter =
                 new ExperimentFilter(pageRequestDto.getSearchQuery(), globalFilterFields, pageRequestDto.getFilters());
         int pageSize = Integer.min(pageRequestDto.getSize(), appProperties.getMaxPageSize());
-        return experimentRepository.findAll(filter, PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
+        var experimentsPage =
+                experimentRepository.findAll(filter, PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
+        log.info("Experiments page [{} of {}] with size [{}] has been fetched for page request [{}]",
+                experimentsPage.getNumber(), experimentsPage.getTotalPages(), experimentsPage.getNumberOfElements(),
+                pageRequestDto);
+        return experimentsPage;
     }
 
     /**
