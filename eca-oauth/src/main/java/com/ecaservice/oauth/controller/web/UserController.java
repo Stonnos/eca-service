@@ -125,6 +125,7 @@ public class UserController {
     )
     @GetMapping(value = "/user-info")
     public UserDto getUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        log.info("Request get current user [{}]", userDetails.getId());
         UserEntity userEntity = userService.getById(userDetails.getId());
         UserDto userDto = userMapper.map(userEntity);
         userDto.setPhotoId(userPhotoRepository.getUserPhotoId(userEntity));
@@ -155,10 +156,11 @@ public class UserController {
     )
     @PostMapping(value = "/logout")
     public void logout(Principal authentication) {
-        log.info("Logout user: [{}]", authentication.getName());
+        log.info("Request to logout user: [{}]", authentication.getName());
         OAuth2Authentication oAuth2Authentication = (OAuth2Authentication) authentication;
         OAuth2AccessToken auth2AccessToken = tokenServices.getAccessToken(oAuth2Authentication);
         tokenServices.revokeToken(auth2AccessToken.getValue());
+        log.info("User [{}] has been logout", authentication.getName());
     }
 
     /**
