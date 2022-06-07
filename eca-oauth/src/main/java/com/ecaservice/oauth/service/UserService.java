@@ -20,6 +20,7 @@ import com.ecaservice.oauth.repository.UserEntityRepository;
 import com.ecaservice.oauth.repository.UserPhotoRepository;
 import com.ecaservice.user.dto.UserInfoDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.UserDto;
 import com.google.common.collect.Sets;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -129,6 +130,21 @@ public class UserService {
         log.debug("Gets user by id [{}]", id);
         return userEntityRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(UserEntity.class, id));
+    }
+
+    /**
+     * Gets user details by id.
+     *
+     * @param id - user id
+     * @return - user dto
+     */
+    public UserDto getUserDetails(long id) {
+        log.info("Gets user [{}] details", id);
+        UserEntity userEntity = getById(id);
+        UserDto userDto = userMapper.map(userEntity);
+        userDto.setPhotoId(userPhotoRepository.getUserPhotoId(userEntity));
+        log.info("User [{}] details has been fetched", id);
+        return userDto;
     }
 
     /**

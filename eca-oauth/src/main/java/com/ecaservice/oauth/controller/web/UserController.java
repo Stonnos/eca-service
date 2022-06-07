@@ -125,11 +125,8 @@ public class UserController {
     )
     @GetMapping(value = "/user-info")
     public UserDto getUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        log.info("Request get current user [{}]", userDetails.getId());
-        UserEntity userEntity = userService.getById(userDetails.getId());
-        UserDto userDto = userMapper.map(userEntity);
-        userDto.setPhotoId(userPhotoRepository.getUserPhotoId(userEntity));
-        return userDto;
+        log.debug("Request get current user [{}]", userDetails.getId());
+        return userService.getUserDetails(userDetails.getId());
     }
 
     /**
