@@ -18,6 +18,7 @@ import com.ecaservice.oauth.mapping.UserMapper;
 import com.ecaservice.oauth.repository.RoleRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import com.ecaservice.oauth.repository.UserPhotoRepository;
+import com.ecaservice.user.dto.UserInfoDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.google.common.collect.Sets;
 import lombok.RequiredArgsConstructor;
@@ -125,8 +126,22 @@ public class UserService {
      * @return - user entity
      */
     public UserEntity getById(long id) {
+        log.debug("Gets user by id [{}]", id);
         return userEntityRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(UserEntity.class, id));
+    }
+
+    /**
+     * Gets user info dto by login.
+     *
+     * @param login - user login
+     * @return user info dto
+     */
+    public UserInfoDto getUserInfo(String login) {
+        log.info("Gets user info by login [{}]", login);
+        var user = userEntityRepository.findByLogin(login)
+                .orElseThrow(() -> new EntityNotFoundException(UserEntity.class, login));
+        return userMapper.mapToUserInfo(user);
     }
 
     /**

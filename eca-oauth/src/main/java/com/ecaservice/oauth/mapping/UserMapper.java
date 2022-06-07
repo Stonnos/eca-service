@@ -3,6 +3,7 @@ package com.ecaservice.oauth.mapping;
 import com.ecaservice.oauth.dto.CreateUserDto;
 import com.ecaservice.oauth.dto.UpdateUserInfoDto;
 import com.ecaservice.oauth.entity.UserEntity;
+import com.ecaservice.user.dto.UserInfoDto;
 import com.ecaservice.user.model.UserDetailsImpl;
 import com.ecaservice.web.dto.model.UserDto;
 import org.mapstruct.AfterMapping;
@@ -54,6 +55,14 @@ public interface UserMapper {
     @Mapping(source = "login", target = "userName")
     @Mapping(source = "roles", target = "authorities")
     UserDetailsImpl mapDetails(UserEntity userEntity);
+
+    /**
+     * Maps user entity to user info dto.
+     *
+     * @param userEntity - user entity
+     * @return user info dto
+     */
+    UserInfoDto mapToUserInfo(UserEntity userEntity);
 
     /**
      * Maps user entities to its dto model list.
