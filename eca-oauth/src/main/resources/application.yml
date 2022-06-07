@@ -86,6 +86,8 @@ open-api:
   apiAuth:
     PASSWORD:
       scopes: web
+    CLIENT_CREDENTIALS:
+      scopes: internal-api
 
 springdoc:
   packages-to-exclude: org.springframework.security.oauth2.provider.endpoint
