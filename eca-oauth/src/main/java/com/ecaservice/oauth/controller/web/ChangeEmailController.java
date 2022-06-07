@@ -1,10 +1,9 @@
-package com.ecaservice.oauth.controller;
+package com.ecaservice.oauth.controller.web;
 
 import com.ecaservice.common.web.dto.ValidationErrorDto;
-import com.ecaservice.oauth.dto.ChangePasswordRequest;
-import com.ecaservice.oauth.event.model.ChangePasswordRequestNotificationEvent;
-import com.ecaservice.oauth.event.model.PasswordChangedNotificationEvent;
-import com.ecaservice.oauth.service.ChangePasswordService;
+import com.ecaservice.oauth.event.model.ChangeEmailRequestNotificationEvent;
+import com.ecaservice.oauth.event.model.EmailChangedNotificationEvent;
+import com.ecaservice.oauth.service.ChangeEmailService;
 import com.ecaservice.user.model.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -23,55 +22,50 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
-import static com.ecaservice.oauth.controller.doc.ApiExamples.CHANGE_PASSWORD_REQUEST_JSON;
-import static com.ecaservice.oauth.controller.doc.ApiExamples.INVALID_PASSWORD_RESPONSE_JSON;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.INVALID_TOKEN_RESPONSE_JSON;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.UNAUTHORIZED_RESPONSE_JSON;
+import static com.ecaservice.oauth.controller.doc.ApiExamples.UNIQUE_EMAIL_RESPONSE_JSON;
+import static com.ecaservice.oauth.util.FieldConstraints.EMAIL_MAX_SIZE;
+import static com.ecaservice.oauth.util.FieldConstraints.EMAIL_REGEX;
 import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
 /**
- * Implements change password REST API.
+ * Implements change email REST API.
  *
  * @author Roman Batygin
  */
 @Slf4j
-@Tag(name = "Change password API")
+@Tag(name = "Change email API")
 @Validated
 @RestController
-@RequestMapping("/password/change")
+@RequestMapping("/email/change")
 @RequiredArgsConstructor
-public class ChangePasswordController {
+public class ChangeEmailController {
 
-    private final ChangePasswordService changePasswordService;
+    private final ChangeEmailService changeEmailService;
     private final ApplicationEventPublisher applicationEventPublisher;
 
     /**
-     * Creates change password request.
+     * Creates change email request.
      *
-     * @param userDetails           - user details
-     * @param changePasswordRequest - change password request
+     * @param userDetails - user details
+     * @param newEmail    - new email
      */
     @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
-            description = "Creates change password request",
-            summary = "Creates change password request",
+            description = "Creates change email request",
+            summary = "Creates change email request",
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
-                    @Content(examples = {
-                            @ExampleObject(value = CHANGE_PASSWORD_REQUEST_JSON)
-                    })
-            }),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200"),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
@@ -86,30 +80,33 @@ public class ChangePasswordController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = INVALID_PASSWORD_RESPONSE_JSON),
-                                    }
+                                            @ExampleObject(value = UNIQUE_EMAIL_RESPONSE_JSON),
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
                     )
             }
     )
     @PostMapping(value = "/request")
-    public void createChangePasswordRequest(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                            @Valid @RequestBody ChangePasswordRequest changePasswordRequest) {
-        log.info("Received change password request for user [{}]", userDetails.getId());
-        var tokenModel = changePasswordService.createChangePasswordRequest(userDetails.getId(), changePasswordRequest);
-        log.info("Change password request [{}] has been created for user [{}]", tokenModel.getTokenId(),
+    public void createChangeEmailRequest(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                         @Parameter(description = "User email", required = true)
+                                         @Email(regexp = EMAIL_REGEX)
+                                         @Size(min = VALUE_1, max = EMAIL_MAX_SIZE) @RequestParam String newEmail) {
+        log.info("Received change email request for user [{}]", userDetails.getId());
+        var tokenModel = changeEmailService.createChangeEmailRequest(userDetails.getId(), newEmail);
+        log.info("Change email request [{}] has been created for user [{}]", tokenModel.getTokenId(),
                 userDetails.getId());
-        applicationEventPublisher.publishEvent(new ChangePasswordRequestNotificationEvent(this, tokenModel));
+        applicationEventPublisher.publishEvent(new ChangeEmailRequestNotificationEvent(this, tokenModel, newEmail));
     }
 
     /**
-     * Confirms change password request.
+     * Confirms change email request.
      *
      * @param token - token value
      */
     @Operation(
-            description = "Confirms change password request",
-            summary = "Confirms change password request",
+            description = "Confirms change email request",
+            summary = "Confirms change email request",
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200"),
                     @ApiResponse(description = "Bad request", responseCode = "400",
@@ -124,12 +121,12 @@ public class ChangePasswordController {
             }
     )
     @PostMapping(value = "/confirm")
-    public void confirmChangePasswordRequest(
+    public void confirmChangeEmailRequest(
             @Size(min = VALUE_1, max = MAX_LENGTH_255)
             @Parameter(description = "Token value", required = true) @RequestParam String token) {
-        log.info("Received change password request confirmation");
-        var changePasswordRequest = changePasswordService.changePassword(token);
+        log.info("Received change email request confirmation");
+        var changeEmailRequest = changeEmailService.changeEmail(token);
         applicationEventPublisher.publishEvent(
-                new PasswordChangedNotificationEvent(this, changePasswordRequest.getUserEntity()));
+                new EmailChangedNotificationEvent(this, changeEmailRequest.getUserEntity()));
     }
 }

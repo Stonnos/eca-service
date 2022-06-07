@@ -62,12 +62,19 @@ public class ApiExamples {
     /**
      * User info response json
      */
-    public static final String USER_INFO_RESPONSE_JSON = "{\"id\": 1, \"login\": \"admin\", \"email\": \"test@mail" +
+    public static final String USER_DTO_RESPONSE_JSON = "{\"id\": 1, \"login\": \"admin\", \"email\": \"test@mail" +
             ".ru\", \"firstName\": \"Ivan\", \"lastName\": \"Ivanov\", \"middleName\": \"Ivanovich\", \"fullName\": " +
             "\"Ivanov Ivan Ivanovich\", \"creationDate\": \"2021-07-01 14:00:00\", \"tfaEnabled\": true, " +
-            "\"locked\": true, \"photoId\": 1, \"passwordChangeDate\": \"2021-07-01 14:00:00\", \"roles\": " +
+            "\"locked\": false, \"photoId\": 1, \"passwordChangeDate\": \"2021-07-01 14:00:00\", \"roles\": " +
             "[{\"roleName\": \"ROLE_SUPER_ADMIN\", \"description\": \"Administrator\"}], " +
             "\"lockAllowed\": \"false\"}";
+
+    /**
+     * User info response json
+     */
+    public static final String USER_INFO_RESPONSE_JSON = "{\"login\": \"admin\", \"email\": \"test@mail" +
+            ".ru\", \"firstName\": \"Ivan\", \"lastName\": \"Ivanov\", \"middleName\": \"Ivanovich\", \"fullName\": " +
+            "\"Ivanov Ivan Ivanovich\", \"locked\": false} ";
 
     /**
      * Users page response json
@@ -75,7 +82,7 @@ public class ApiExamples {
     public static final String USERS_PAGE_RESPONSE_JSON = "{\"content\": [{\"id\": 1, \"login\": \"admin\", " +
             "\"email\": \"test@mail.ru\", \"firstName\": \"Ivan\", \"lastName\": \"Ivanov\", \"middleName\": " +
             "\"Ivanovich\", \"fullName\": \"Ivanov Ivan Ivanovich\", \"creationDate\": \"2021-07-01 14:00:00\", " +
-            "\"tfaEnabled\": true, \"locked\": true, \"photoId\": 1, \"passwordChangeDate\": \"2021-07-01 14:00:00\"" +
+            "\"tfaEnabled\": true, \"locked\": false, \"photoId\": 1, \"passwordChangeDate\": \"2021-07-01 14:00:00\"" +
             ", \"roles\": [{\"roleName\": \"ROLE_SUPER_ADMIN\", \"description\": \"Administrator\"}]," +
             "\"lockAllowed\": \"false\"}], " +
             "\"page\": 0, \"totalCount\": 1}";

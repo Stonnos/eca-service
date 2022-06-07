@@ -1,4 +1,4 @@
-package com.ecaservice.oauth.controller;
+package com.ecaservice.oauth.controller.web;
 
 import com.ecaservice.common.web.dto.ValidationErrorDto;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
@@ -69,7 +69,7 @@ import static com.ecaservice.oauth.controller.doc.ApiExamples.UNAUTHORIZED_RESPO
 import static com.ecaservice.oauth.controller.doc.ApiExamples.UNIQUE_LOGIN_RESPONSE_JSON;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.UPDATE_USER_INFO_REQUEST_JSON;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.USERS_PAGE_RESPONSE_JSON;
-import static com.ecaservice.oauth.controller.doc.ApiExamples.USER_INFO_RESPONSE_JSON;
+import static com.ecaservice.oauth.controller.doc.ApiExamples.USER_DTO_RESPONSE_JSON;
 import static com.ecaservice.oauth.util.Utils.buildAttachmentResponse;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
@@ -108,7 +108,7 @@ public class UserController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = USER_INFO_RESPONSE_JSON),
+                                            @ExampleObject(value = USER_DTO_RESPONSE_JSON),
                                     },
                                     schema = @Schema(implementation = UserDto.class)
                             )
@@ -281,7 +281,7 @@ public class UserController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = USER_INFO_RESPONSE_JSON),
+                                            @ExampleObject(value = USER_DTO_RESPONSE_JSON),
                                     },
                                     schema = @Schema(implementation = UserDto.class)
                             )
