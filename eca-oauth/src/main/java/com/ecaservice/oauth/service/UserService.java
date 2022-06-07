@@ -138,12 +138,12 @@ public class UserService {
      * @param id - user id
      * @return - user dto
      */
-    public UserDto getUserDetails(long id) {
-        log.info("Gets user [{}] details", id);
+    public UserDto getUserInfo(long id) {
+        log.info("Gets user [{}] info", id);
         UserEntity userEntity = getById(id);
         UserDto userDto = userMapper.map(userEntity);
         userDto.setPhotoId(userPhotoRepository.getUserPhotoId(userEntity));
-        log.info("User [{}] details has been fetched", id);
+        log.info("User [{}] info has been fetched", id);
         return userDto;
     }
 

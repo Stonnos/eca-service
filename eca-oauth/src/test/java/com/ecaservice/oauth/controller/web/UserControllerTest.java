@@ -317,7 +317,7 @@ class UserControllerTest extends AbstractControllerTest {
         UserEntity userEntity = createUserEntity();
         userEntity.setId(USER_ID);
         UserDto expected = userMapper.map(userEntity);
-        when(userService.getUserDetails(USER_ID)).thenReturn(expected);
+        when(userService.getUserInfo(USER_ID)).thenReturn(expected);
         mockMvc.perform(get(GET_USER_INFO_URL)
                 .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk())

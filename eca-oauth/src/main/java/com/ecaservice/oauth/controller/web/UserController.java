@@ -126,7 +126,7 @@ public class UserController {
     @GetMapping(value = "/user-info")
     public UserDto getUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         log.debug("Request get current user [{}]", userDetails.getId());
-        return userService.getUserDetails(userDetails.getId());
+        return userService.getUserInfo(userDetails.getId());
     }
 
     /**

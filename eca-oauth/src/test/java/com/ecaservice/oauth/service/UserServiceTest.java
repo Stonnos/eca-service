@@ -142,7 +142,7 @@ class UserServiceTest extends AbstractJpaTest {
     @Test
     void testGetUserDetails() {
         UserEntity userEntity = createAndSaveUser();
-        var userDto = userService.getUserDetails(userEntity.getId());
+        var userDto = userService.getUserInfo(userEntity.getId());
         assertThat(userDto).isNotNull();
         assertThat(userDto.getLogin()).isEqualTo(userEntity.getLogin());
         assertThat(userDto.getEmail()).isEqualTo(userEntity.getEmail());
