@@ -30,7 +30,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -54,7 +53,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.security.Principal;
-import java.util.List;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
@@ -255,9 +253,7 @@ public class UserController {
     @PostMapping(value = "/list")
     public PageDto<UserDto> getUsers(@Valid @RequestBody PageRequestDto pageRequestDto) {
         log.info("Received users page request: {}", pageRequestDto);
-        Page<UserEntity> usersPage = userService.getNextPage(pageRequestDto);
-        List<UserDto> userDtoList = userMapper.map(usersPage.getContent());
-        return PageDto.of(userDtoList, pageRequestDto.getPage(), usersPage.getTotalElements());
+        return userService.getUsersPage(pageRequestDto);
     }
 
     /**

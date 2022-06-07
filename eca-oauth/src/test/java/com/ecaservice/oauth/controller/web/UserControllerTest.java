@@ -18,12 +18,10 @@ import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.UserDto;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -210,12 +208,9 @@ class UserControllerTest extends AbstractControllerTest {
 
     @Test
     void testGetUsersPage() throws Exception {
-        Page<UserEntity> userEntityPage = Mockito.mock(Page.class);
-        when(userEntityPage.getTotalElements()).thenReturn(TOTAL_ELEMENTS);
         List<UserEntity> userEntityList = Collections.singletonList(createUserEntity());
         PageDto<UserDto> expected = PageDto.of(userMapper.map(userEntityList), PAGE_NUMBER, TOTAL_ELEMENTS);
-        when(userEntityPage.getContent()).thenReturn(userEntityList);
-        when(userService.getNextPage(any(PageRequestDto.class))).thenReturn(userEntityPage);
+        when(userService.getUsersPage(any(PageRequestDto.class))).thenReturn(expected);
         mockMvc.perform(post(LIST_URL)
                 .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .content(objectMapper.writeValueAsString(createPageRequestDto()))
