@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.ecaservice.web.push.controller.doc.ApiExamples.EXPERIMENT_REQUEST_JSON;
-
 /**
  * Implements REST API for sending web pushes.
  *
@@ -42,7 +40,10 @@ public class WebPushController {
             summary = "Send web push with experiment changes",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
-                            @ExampleObject(value = EXPERIMENT_REQUEST_JSON)
+                            @ExampleObject(
+                                    name = "ExperimentRequest",
+                                    ref = "#/components/examples/ExperimentRequest"
+                            )
                     })
             }),
             responses = {
