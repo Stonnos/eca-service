@@ -1,0 +1,11 @@
+{
+  "payload": [
+    {
+      "fieldName": "trainingData",
+      "code": "ValidTrainData",
+      "errorMessage": "Invalid train data extension. Must be one of xls, xlsx, csv, arff, json, xml, txt, data, docx"
+    }
+  ],
+  "responseCode": "VALIDATION_ERROR",
+  "errorDescription": "Validation errors"
+}

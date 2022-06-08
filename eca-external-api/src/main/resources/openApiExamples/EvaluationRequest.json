@@ -1,0 +1,12 @@
+{
+  "trainDataUrl": "http://kt.ijs.si/Branax/Repository/WEKA/Iris.xls",
+  "classifierOptions": {
+    "type": "logistic",
+    "maxIts": 200,
+    "useConjugateGradientDescent": false
+  },
+  "evaluationMethod": "CROSS_VALIDATION",
+  "numFolds": 10,
+  "numTests": 1,
+  "seed": 1
+}
