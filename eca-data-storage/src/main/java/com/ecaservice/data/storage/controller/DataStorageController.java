@@ -53,17 +53,6 @@ import java.util.List;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
-import static com.ecaservice.data.storage.controller.doc.ApiExamples.ATTRIBUTES_LIST_RESPONSE_JSON;
-import static com.ecaservice.data.storage.controller.doc.ApiExamples.CREATE_INSTANCES_RESPONSE_JSON;
-import static com.ecaservice.data.storage.controller.doc.ApiExamples.INSTANCES_DATA_PAGE_RESPONSE_JSON;
-import static com.ecaservice.data.storage.controller.doc.ApiExamples.INSTANCES_DETAILS_RESPONSE_JSON;
-import static com.ecaservice.data.storage.controller.doc.ApiExamples.INSTANCES_PAGE_RESPONSE_JSON;
-import static com.ecaservice.data.storage.controller.doc.ApiExamples.INSTANCES_REPORTS_RESPONSE_JSON;
-import static com.ecaservice.data.storage.controller.doc.ApiExamples.UNIQUE_TABLE_ERROR_RESPONSE_JSON;
-import static com.ecaservice.web.dto.doc.CommonApiExamples.DATA_NOT_FOUND_RESPONSE_JSON;
-import static com.ecaservice.web.dto.doc.CommonApiExamples.INVALID_PAGE_REQUEST_RESPONSE_JSON;
-import static com.ecaservice.web.dto.doc.CommonApiExamples.SIMPLE_PAGE_REQUEST_JSON;
-import static com.ecaservice.web.dto.doc.CommonApiExamples.UNAUTHORIZED_RESPONSE_JSON;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
 /**
@@ -101,7 +90,10 @@ public class DataStorageController {
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
-                            @ExampleObject(value = SIMPLE_PAGE_REQUEST_JSON)
+                            @ExampleObject(
+                                    name = "PageRequest",
+                                    ref = "#/components/examples/PageRequest"
+                            )
                     })
             }),
             responses = {
@@ -109,7 +101,10 @@ public class DataStorageController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = INSTANCES_PAGE_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "InstancesPageResponse",
+                                                    ref = "#/components/examples/InstancesPageResponse"
+                                            ),
                                     },
                                     schema = @Schema(implementation = InstancesPageDto.class)
                             )
@@ -118,7 +113,10 @@ public class DataStorageController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
                                     }
                             )
                     ),
@@ -126,7 +124,10 @@ public class DataStorageController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = INVALID_PAGE_REQUEST_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "BadPageRequestResponse",
+                                                    ref = "#/components/examples/BadPageRequestResponse"
+                                            ),
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
@@ -158,7 +159,10 @@ public class DataStorageController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = CREATE_INSTANCES_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "CreateInstancesResponse",
+                                                    ref = "#/components/examples/CreateInstancesResponse"
+                                            ),
                                     },
                                     schema = @Schema(implementation = CreateInstancesResultDto.class)
                             )
@@ -167,7 +171,10 @@ public class DataStorageController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
                                     }
                             )
                     ),
@@ -175,7 +182,10 @@ public class DataStorageController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNIQUE_TABLE_ERROR_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "UniqueTableNameErrorCodeResponse",
+                                                    ref = "#/components/examples/UniqueTableNameErrorCodeResponse"
+                                            ),
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
@@ -216,7 +226,10 @@ public class DataStorageController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = INSTANCES_DETAILS_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "InstancesDetailsResponse",
+                                                    ref = "#/components/examples/InstancesDetailsResponse"
+                                            ),
                                     },
                                     schema = @Schema(implementation = InstancesDto.class)
                             )
@@ -225,7 +238,10 @@ public class DataStorageController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
                                     }
                             )
                     ),
@@ -233,7 +249,10 @@ public class DataStorageController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = DATA_NOT_FOUND_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "DataNotFoundResponse",
+                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                            ),
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
@@ -266,7 +285,10 @@ public class DataStorageController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
                                     }
                             )
                     ),
@@ -274,7 +296,10 @@ public class DataStorageController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNIQUE_TABLE_ERROR_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "UniqueTableNameErrorCodeResponse",
+                                                    ref = "#/components/examples/UniqueTableNameErrorCodeResponse"
+                                            ),
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
@@ -306,7 +331,10 @@ public class DataStorageController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
                                     }
                             )
                     ),
@@ -314,7 +342,10 @@ public class DataStorageController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = DATA_NOT_FOUND_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "DataNotFoundResponse",
+                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                            ),
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
@@ -341,7 +372,10 @@ public class DataStorageController {
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
-                            @ExampleObject(value = SIMPLE_PAGE_REQUEST_JSON)
+                            @ExampleObject(
+                                    name = "PageRequest",
+                                    ref = "#/components/examples/PageRequest"
+                            )
                     })
             }),
             responses = {
@@ -349,7 +383,10 @@ public class DataStorageController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = INSTANCES_DATA_PAGE_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "DataPageResponse",
+                                                    ref = "#/components/examples/DataPageResponse"
+                                            ),
                                     },
                                     schema = @Schema(implementation = DataListPageDto.class)
                             )
@@ -358,7 +395,10 @@ public class DataStorageController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
                                     }
                             )
                     ),
@@ -366,7 +406,10 @@ public class DataStorageController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = INVALID_PAGE_REQUEST_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "BadPageRequestResponse",
+                                                    ref = "#/components/examples/BadPageRequestResponse"
+                                            ),
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
@@ -398,7 +441,10 @@ public class DataStorageController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = ATTRIBUTES_LIST_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "AttributesListResponse",
+                                                    ref = "#/components/examples/AttributesListResponse"
+                                            ),
                                     },
                                     array = @ArraySchema(schema = @Schema(type = "string"))
                             )
@@ -407,7 +453,10 @@ public class DataStorageController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
                                     }
                             )
                     ),
@@ -415,7 +464,10 @@ public class DataStorageController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = DATA_NOT_FOUND_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "DataNotFoundResponse",
+                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                            ),
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
@@ -444,7 +496,10 @@ public class DataStorageController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = INSTANCES_REPORTS_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "InstancesReportsInfoResponse",
+                                                    ref = "#/components/examples/InstancesReportsInfoResponse"
+                                            ),
                                     },
                                     array = @ArraySchema(
                                             schema = @Schema(implementation = InstancesReportInfoDto.class))
@@ -454,7 +509,10 @@ public class DataStorageController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
                                     }
                             )
                     )
@@ -488,7 +546,10 @@ public class DataStorageController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
                                     }
                             )
                     ),
@@ -496,7 +557,10 @@ public class DataStorageController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = DATA_NOT_FOUND_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "DataNotFoundResponse",
+                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                            ),
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )

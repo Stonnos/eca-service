@@ -1,0 +1,14 @@
+{
+  "content": [
+    {
+      "id": 1,
+      "tableName": "iris",
+      "numInstances": 150,
+      "numAttributes": 5,
+      "created": "2021-07-01 14:00:00",
+      "createdBy": "admin"
+    }
+  ],
+  "page": 0,
+  "totalCount": 1
+}
