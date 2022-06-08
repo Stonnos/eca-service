@@ -32,10 +32,6 @@ import java.util.List;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
-import static com.ecaservice.mail.controller.docs.ApiExamples.EMAIL_TEMPLATES_PAGE_RESPONSE_JSON;
-import static com.ecaservice.web.dto.doc.CommonApiExamples.INVALID_PAGE_REQUEST_RESPONSE_JSON;
-import static com.ecaservice.web.dto.doc.CommonApiExamples.SIMPLE_PAGE_REQUEST_JSON;
-import static com.ecaservice.web.dto.doc.CommonApiExamples.UNAUTHORIZED_RESPONSE_JSON;
 
 /**
  * Email template API for web application.
@@ -66,7 +62,10 @@ public class TemplateController {
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
-                            @ExampleObject(value = SIMPLE_PAGE_REQUEST_JSON)
+                            @ExampleObject(
+                                    name = "TemplatesPageRequest",
+                                    ref = "#/components/examples/TemplatesPageRequest"
+                            )
                     })
             }),
             responses = {
@@ -74,7 +73,10 @@ public class TemplateController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = EMAIL_TEMPLATES_PAGE_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "TemplatesPageResponse",
+                                                    ref = "#/components/examples/TemplatesPageResponse"
+                                            ),
                                     },
                                     schema = @Schema(implementation = EmailTemplatesPageDto.class)
                             )
@@ -83,7 +85,10 @@ public class TemplateController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
                                     }
                             )
                     ),
@@ -91,7 +96,10 @@ public class TemplateController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = INVALID_PAGE_REQUEST_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "BadPageRequestResponse",
+                                                    ref = "#/components/examples/BadPageRequestResponse"
+                                            ),
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )

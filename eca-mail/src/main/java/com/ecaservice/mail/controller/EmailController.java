@@ -23,10 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
-import static com.ecaservice.mail.controller.docs.ApiExamples.EMAIL_REQUEST_JSON;
-import static com.ecaservice.mail.controller.docs.ApiExamples.EMAIL_RESPONSE_JSON;
-import static com.ecaservice.mail.controller.docs.ApiExamples.INVALID_TEMPLATE_CODE_RESPONSE_JSON;
-
 /**
  * Implements REST API for email application.
  *
@@ -53,7 +49,10 @@ public class EmailController {
             summary = "Saves email request to sent",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
-                            @ExampleObject(value = EMAIL_REQUEST_JSON)
+                            @ExampleObject(
+                                    name = "EmailRequest",
+                                    ref = "#/components/examples/EmailRequest"
+                            )
                     })
             }),
             responses = {
@@ -61,7 +60,10 @@ public class EmailController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = EMAIL_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "EmailResponse",
+                                                    ref = "#/components/examples/EmailResponse"
+                                            ),
                                     },
                                     schema = @Schema(implementation = EmailResponse.class)
                             )
@@ -70,7 +72,10 @@ public class EmailController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = INVALID_TEMPLATE_CODE_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "InvalidTemplateCodeResponse",
+                                                    ref = "#/components/examples/InvalidTemplateCodeResponse"
+                                            ),
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
