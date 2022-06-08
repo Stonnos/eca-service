@@ -3,6 +3,7 @@ package com.ecaservice.oauth.controller.internal;
 import com.ecaservice.oauth.service.UserService;
 import com.ecaservice.user.dto.UserInfoDto;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -19,10 +20,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.constraints.Size;
+
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_INTERNAL_API;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.UNAUTHORIZED_RESPONSE_JSON;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.USER_INFO_RESPONSE_JSON;
+import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
+import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
 /**
  * Implements internal API for users.
@@ -71,8 +76,10 @@ public class UserApiController {
             }
     )
     @GetMapping(value = "/user-info")
-    public UserInfoDto getUserInfo(@RequestParam String login) {
-       log.debug("Request get user info by login [{}]", login);
-       return userService.getUserInfo(login);
+    public UserInfoDto getUserInfo(@Parameter(description = "User login", required = true)
+                                   @Size(min = VALUE_1, max = MAX_LENGTH_255)
+                                   @RequestParam String login) {
+        log.debug("Request get user info by login [{}]", login);
+        return userService.getUserInfo(login);
     }
 }
