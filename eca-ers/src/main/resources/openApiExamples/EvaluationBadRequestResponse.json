@@ -1,0 +1,27 @@
+[
+  {
+    "fieldName": "requestId",
+    "code": "Pattern",
+    "errorMessage": "must match \"^[0-9a-f]{8}-[0-9a-f]{4}-[34][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$\""
+  },
+  {
+    "fieldName": "instances.structure",
+    "code": "NotBlank",
+    "errorMessage": "must not be blank"
+  },
+  {
+    "fieldName": "requestId",
+    "code": "NotBlank",
+    "errorMessage": "must not be blank"
+  },
+  {
+    "fieldName": "instances.relationName",
+    "code": "NotBlank",
+    "errorMessage": "must not be blank"
+  },
+  {
+    "fieldName": "classifierReport.classifierName",
+    "code": "NotBlank",
+    "errorMessage": "must not be blank"
+  }
+]

@@ -1,0 +1,337 @@
+{
+  "requestId": "04b1373f-7838-4535-b65a-88c088830879",
+  "instances": {
+    "structure": "<data structure>",
+    "relationName": "Glass",
+    "numInstances": 214,
+    "numAttributes": 10,
+    "numClasses": 6,
+    "className": "Type"
+  },
+  "classifierReport": {
+    "type": "ClassifierReport",
+    "classifierName": "ExtraTreesClassifier",
+    "classifierDescription": null,
+    "options": "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}",
+    "classifierInputOptions": [
+      {
+        "key": "Число потоков",
+        "value": "6"
+      },
+      {
+        "key": "Формирование обучающих выборок:",
+        "value": "Исходное обучающее множество"
+      },
+      {
+        "key": "Алгоритм построения дерева решений:",
+        "value": "ID3"
+      },
+      {
+        "key": "Число деревьев:",
+        "value": "20"
+      },
+      {
+        "key": "Максиальная глубина дерева:",
+        "value": "0"
+      },
+      {
+        "key": "Число случайных атрибутов:",
+        "value": "5"
+      },
+      {
+        "key": "Число случайных расщеплений атрибута:",
+        "value": "6"
+      },
+      {
+        "key": "Минимальное число объектов в листе:",
+        "value": "2"
+      },
+      {
+        "key": "Начальное значение (Seed)",
+        "value": "1"
+      }
+    ],
+    "metaClassifier": false
+  },
+  "evaluationMethodReport": {
+    "evaluationMethod": "CROSS_VALIDATION",
+    "numFolds": 10,
+    "numTests": 1,
+    "seed": 1
+  },
+  "statistics": {
+    "numTestInstances": 214,
+    "numCorrect": 172,
+    "numIncorrect": 42,
+    "pctCorrect": 80.3738,
+    "pctIncorrect": 19.6262,
+    "meanAbsoluteError": 0.1189,
+    "rootMeanSquaredError": 0.2315,
+    "maxAucValue": 0.9984,
+    "varianceError": 0.0044,
+    "confidenceIntervalLowerBound": 0.149,
+    "confidenceIntervalUpperBound": 0.2435
+  },
+  "classificationCosts": [
+    {
+      "classValue": "build wind float",
+      "truePositiveRate": 0.9143,
+      "falsePositiveRate": 0.125,
+      "trueNegativeRate": 0.875,
+      "falseNegativeRate": 0.0857,
+      "rocCurve": {
+        "aucValue": 0.9314,
+        "specificity": 0.8611,
+        "sensitivity": 0.9429,
+        "thresholdValue": 0.4138
+      }
+    },
+    {
+      "classValue": "build wind non-float",
+      "truePositiveRate": 0.8289,
+      "falsePositiveRate": 0.1087,
+      "trueNegativeRate": 0.8913,
+      "falseNegativeRate": 0.1711,
+      "rocCurve": {
+        "aucValue": 0.9111,
+        "specificity": 0.9493,
+        "sensitivity": 0.75,
+        "thresholdValue": 0.4907
+      }
+    },
+    {
+      "classValue": "containers",
+      "truePositiveRate": 0.7692,
+      "falsePositiveRate": 0.0149,
+      "trueNegativeRate": 0.9851,
+      "falseNegativeRate": 0.2308,
+      "rocCurve": {
+        "aucValue": 0.9862,
+        "specificity": 0.9701,
+        "sensitivity": 0.9231,
+        "thresholdValue": 0.2746
+      }
+    },
+    {
+      "classValue": "headlamps",
+      "truePositiveRate": 0.8276,
+      "falsePositiveRate": 0.0162,
+      "trueNegativeRate": 0.9838,
+      "falseNegativeRate": 0.1724,
+      "rocCurve": {
+        "aucValue": 0.9607,
+        "specificity": 0.9459,
+        "sensitivity": 0.9655,
+        "thresholdValue": 0.1461
+      }
+    },
+    {
+      "classValue": "tableware",
+      "truePositiveRate": 0.7778,
+      "falsePositiveRate": 0.0049,
+      "trueNegativeRate": 0.9951,
+      "falseNegativeRate": 0.2222,
+      "rocCurve": {
+        "aucValue": 0.9984,
+        "specificity": 0.9951,
+        "sensitivity": 1,
+        "thresholdValue": 0.3342
+      }
+    },
+    {
+      "classValue": "vehic wind float",
+      "truePositiveRate": 0.2353,
+      "falsePositiveRate": 0.0102,
+      "trueNegativeRate": 0.9898,
+      "falseNegativeRate": 0.7647,
+      "rocCurve": {
+        "aucValue": 0.9252,
+        "specificity": 0.7513,
+        "sensitivity": 1,
+        "thresholdValue": 0.084
+      }
+    }
+  ],
+  "confusionMatrix": [
+    {
+      "actualClass": "tableware",
+      "predictedClass": "build wind float",
+      "numInstances": 0
+    },
+    {
+      "actualClass": "build wind non-float",
+      "predictedClass": "build wind float",
+      "numInstances": 8
+    },
+    {
+      "actualClass": "vehic wind float",
+      "predictedClass": "containers",
+      "numInstances": 0
+    },
+    {
+      "actualClass": "vehic wind float",
+      "predictedClass": "build wind non-float",
+      "numInstances": 4
+    },
+    {
+      "actualClass": "build wind float",
+      "predictedClass": "build wind non-float",
+      "numInstances": 5
+    },
+    {
+      "actualClass": "build wind non-float",
+      "predictedClass": "build wind non-float",
+      "numInstances": 63
+    },
+    {
+      "actualClass": "build wind non-float",
+      "predictedClass": "containers",
+      "numInstances": 2
+    },
+    {
+      "actualClass": "build wind float",
+      "predictedClass": "headlamps",
+      "numInstances": 0
+    },
+    {
+      "actualClass": "headlamps",
+      "predictedClass": "build wind float",
+      "numInstances": 1
+    },
+    {
+      "actualClass": "headlamps",
+      "predictedClass": "tableware",
+      "numInstances": 0
+    },
+    {
+      "actualClass": "containers",
+      "predictedClass": "headlamps",
+      "numInstances": 1
+    },
+    {
+      "actualClass": "headlamps",
+      "predictedClass": "build wind non-float",
+      "numInstances": 3
+    },
+    {
+      "actualClass": "headlamps",
+      "predictedClass": "containers",
+      "numInstances": 1
+    },
+    {
+      "actualClass": "tableware",
+      "predictedClass": "build wind non-float",
+      "numInstances": 1
+    },
+    {
+      "actualClass": "containers",
+      "predictedClass": "build wind non-float",
+      "numInstances": 2
+    },
+    {
+      "actualClass": "headlamps",
+      "predictedClass": "headlamps",
+      "numInstances": 24
+    },
+    {
+      "actualClass": "containers",
+      "predictedClass": "build wind float",
+      "numInstances": 0
+    },
+    {
+      "actualClass": "vehic wind float",
+      "predictedClass": "tableware",
+      "numInstances": 0
+    },
+    {
+      "actualClass": "vehic wind float",
+      "predictedClass": "headlamps",
+      "numInstances": 0
+    },
+    {
+      "actualClass": "build wind float",
+      "predictedClass": "build wind float",
+      "numInstances": 64
+    },
+    {
+      "actualClass": "containers",
+      "predictedClass": "containers",
+      "numInstances": 10
+    },
+    {
+      "actualClass": "containers",
+      "predictedClass": "vehic wind float",
+      "numInstances": 0
+    },
+    {
+      "actualClass": "tableware",
+      "predictedClass": "containers",
+      "numInstances": 0
+    },
+    {
+      "actualClass": "build wind non-float",
+      "predictedClass": "tableware",
+      "numInstances": 1
+    },
+    {
+      "actualClass": "build wind float",
+      "predictedClass": "containers",
+      "numInstances": 0
+    },
+    {
+      "actualClass": "tableware",
+      "predictedClass": "vehic wind float",
+      "numInstances": 0
+    },
+    {
+      "actualClass": "build wind float",
+      "predictedClass": "tableware",
+      "numInstances": 0
+    },
+    {
+      "actualClass": "vehic wind float",
+      "predictedClass": "vehic wind float",
+      "numInstances": 4
+    },
+    {
+      "actualClass": "build wind float",
+      "predictedClass": "vehic wind float",
+      "numInstances": 1
+    },
+    {
+      "actualClass": "vehic wind float",
+      "predictedClass": "build wind float",
+      "numInstances": 9
+    },
+    {
+      "actualClass": "build wind non-float",
+      "predictedClass": "headlamps",
+      "numInstances": 1
+    },
+    {
+      "actualClass": "containers",
+      "predictedClass": "tableware",
+      "numInstances": 0
+    },
+    {
+      "actualClass": "build wind non-float",
+      "predictedClass": "vehic wind float",
+      "numInstances": 1
+    },
+    {
+      "actualClass": "tableware",
+      "predictedClass": "headlamps",
+      "numInstances": 1
+    },
+    {
+      "actualClass": "tableware",
+      "predictedClass": "tableware",
+      "numInstances": 7
+    },
+    {
+      "actualClass": "headlamps",
+      "predictedClass": "vehic wind float",
+      "numInstances": 0
+    }
+  ]
+}
