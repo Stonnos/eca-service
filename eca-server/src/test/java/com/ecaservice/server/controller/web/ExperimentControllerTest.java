@@ -1,9 +1,9 @@
 package com.ecaservice.server.controller.web;
 
-import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.mapping.ExperimentMapper;
 import com.ecaservice.server.mapping.ExperimentMapperImpl;
@@ -14,11 +14,13 @@ import com.ecaservice.server.model.entity.ExperimentProgressEntity;
 import com.ecaservice.server.model.entity.ExperimentResultsEntity;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.repository.ExperimentResultsEntityRepository;
+import com.ecaservice.server.service.UserService;
 import com.ecaservice.server.service.auth.UsersClient;
 import com.ecaservice.server.service.experiment.DataService;
 import com.ecaservice.server.service.experiment.ExperimentProgressService;
 import com.ecaservice.server.service.experiment.ExperimentResultsService;
 import com.ecaservice.server.service.experiment.ExperimentService;
+import com.ecaservice.user.dto.UserInfoDto;
 import com.ecaservice.web.dto.model.ChartDataDto;
 import com.ecaservice.web.dto.model.CreateExperimentResultDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
@@ -29,7 +31,6 @@ import com.ecaservice.web.dto.model.ExperimentResultsDetailsDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
-import com.ecaservice.web.dto.model.UserDto;
 import eca.core.evaluation.EvaluationMethod;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -93,7 +94,10 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     private static final long EXPERIMENT_RESULTS_ID = 1L;
     private static final int PROGRESS_VALUE = 100;
     private static final long ID = 1L;
+    private static final String USER = "user";
 
+    @MockBean
+    private UserService userService;
     @MockBean
     private ExperimentService experimentService;
     @MockBean
@@ -188,7 +192,8 @@ class ExperimentControllerTest extends PageRequestControllerTest {
                 .requestId(experiment.getRequestId())
                 .build();
         expected.setId(experiment.getId());
-        when(usersClient.getUserInfo()).thenReturn(new UserDto());
+        when(userService.getCurrentUser()).thenReturn(USER);
+        when(usersClient.getUserInfo(USER)).thenReturn(new UserInfoDto());
         when(experimentService.createExperiment(any(ExperimentRequest.class), any(MsgProperties.class)))
                 .thenReturn(experiment);
         mockMvc.perform(multipart(CREATE_EXPERIMENT_URL)

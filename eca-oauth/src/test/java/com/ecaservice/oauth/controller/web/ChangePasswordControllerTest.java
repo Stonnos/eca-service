@@ -1,4 +1,4 @@
-package com.ecaservice.oauth.controller;
+package com.ecaservice.oauth.controller.web;
 
 import com.ecaservice.common.web.annotation.EnableGlobalExceptionHandler;
 import com.ecaservice.oauth.dto.ChangePasswordRequest;

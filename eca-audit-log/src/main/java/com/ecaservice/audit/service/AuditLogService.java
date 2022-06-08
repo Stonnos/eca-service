@@ -71,11 +71,17 @@ public class AuditLogService {
      * @return audit logs page
      */
     public Page<AuditLogEntity> getNextPage(PageRequestDto pageRequestDto) {
+        log.info("Gets audit logs next page: {}", pageRequestDto);
         Sort sort = buildSort(pageRequestDto.getSortField(), EVENT_DATE, pageRequestDto.isAscending());
         List<String> globalFilterFields = filterService.getGlobalFilterFields(AUDIT_LOG_TEMPLATE);
         AuditLogFilter filter = new AuditLogFilter(pageRequestDto.getSearchQuery(), globalFilterFields,
                 pageRequestDto.getFilters());
         int pageSize = Integer.min(pageRequestDto.getSize(), ecaAuditLogConfig.getMaxPageSize());
-        return auditLogRepository.findAll(filter, PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
+        var auditLogsPage =
+                auditLogRepository.findAll(filter, PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
+        log.info("Audit logs page [{} of {}] with size [{}] has been fetched for page request [{}]",
+                auditLogsPage.getNumber(), auditLogsPage.getTotalPages(), auditLogsPage.getNumberOfElements(),
+                pageRequestDto);
+        return auditLogsPage;
     }
 }

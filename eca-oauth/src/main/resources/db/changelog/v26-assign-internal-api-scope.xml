@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v26-assign-internal-api-scope.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="oauth_client_details"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from oauth_client_details where client_id = 'eca_service_tech'
+            </sqlCheck>
+        </preConditions>
+        <update tableName="oauth_client_details">
+            <column name="scope" value="internal-api"/>
+            <where>client_id = 'eca_service_tech'</where>
+        </update>
+    </changeSet>
+</databaseChangeLog>

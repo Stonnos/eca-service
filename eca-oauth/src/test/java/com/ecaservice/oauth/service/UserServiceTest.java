@@ -20,6 +20,7 @@ import com.ecaservice.oauth.repository.UserEntityRepository;
 import com.ecaservice.oauth.repository.UserPhotoRepository;
 import com.ecaservice.user.model.Role;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.UserDto;
 import com.google.common.collect.Sets;
 import org.apache.commons.io.FilenameUtils;
 import org.junit.jupiter.api.Test;
@@ -127,6 +128,32 @@ class UserServiceTest extends AbstractJpaTest {
     }
 
     @Test
+    void testGetUserInfo() {
+        UserEntity userEntity = createAndSaveUser();
+        var userInfoDto = userService.getUserInfo(userEntity.getLogin());
+        assertThat(userInfoDto).isNotNull();
+        assertThat(userInfoDto.getLogin()).isEqualTo(userEntity.getLogin());
+        assertThat(userInfoDto.getEmail()).isEqualTo(userEntity.getEmail());
+        assertThat(userInfoDto.getFirstName()).isEqualTo(userEntity.getFirstName());
+        assertThat(userInfoDto.getFirstName()).isEqualTo(userEntity.getFirstName());
+        assertThat(userInfoDto.getLastName()).isEqualTo(userEntity.getLastName());
+        assertThat(userInfoDto.getMiddleName()).isEqualTo(userEntity.getMiddleName());
+    }
+
+    @Test
+    void testGetUserDetails() {
+        UserEntity userEntity = createAndSaveUser();
+        var userDto = userService.getUserInfo(userEntity.getId());
+        assertThat(userDto).isNotNull();
+        assertThat(userDto.getLogin()).isEqualTo(userEntity.getLogin());
+        assertThat(userDto.getEmail()).isEqualTo(userEntity.getEmail());
+        assertThat(userDto.getFirstName()).isEqualTo(userEntity.getFirstName());
+        assertThat(userDto.getFirstName()).isEqualTo(userEntity.getFirstName());
+        assertThat(userDto.getLastName()).isEqualTo(userEntity.getLastName());
+        assertThat(userDto.getMiddleName()).isEqualTo(userEntity.getMiddleName());
+    }
+
+    @Test
     void testGetUsersPage() {
         UserEntity userEntity = createAndSaveUser();
         PageRequestDto pageRequestDto =
@@ -149,10 +176,10 @@ class UserServiceTest extends AbstractJpaTest {
                         PASSWORD);
         PageRequestDto pageRequestDto =
                 new PageRequestDto(PAGE, SIZE, FULL_NAME, true, null, Collections.emptyList());
-        Page<UserEntity> usersPage = userService.getNextPage(pageRequestDto);
+        var usersPage = userService.getUsersPage(pageRequestDto);
         assertThat(usersPage).isNotNull();
         assertThat(usersPage.getContent()).hasSize(3);
-        Iterator<UserEntity> iterator = usersPage.iterator();
+        Iterator<UserDto> iterator = usersPage.getContent().iterator();
         assertThat(iterator.next().getId()).isEqualTo(third.getId());
         assertThat(iterator.next().getId()).isEqualTo(second.getId());
         assertThat(iterator.next().getId()).isEqualTo(first.getId());
@@ -167,7 +194,7 @@ class UserServiceTest extends AbstractJpaTest {
         userService.createUser(createUserDto("user3", "test3@mail.ru", "Ivan", "Alaev", "Petrovich"), PASSWORD);
         PageRequestDto pageRequestDto =
                 new PageRequestDto(PAGE, SIZE, CREATION_DATE, true, "ev Petr Petr", Collections.emptyList());
-        Page<UserEntity> usersPage = userService.getNextPage(pageRequestDto);
+        var usersPage = userService.getUsersPage(pageRequestDto);
         assertThat(usersPage).isNotNull();
         assertThat(usersPage.getContent()).hasSize(1);
         assertThat(usersPage.getContent().iterator().next().getId()).isEqualTo(second.getId());

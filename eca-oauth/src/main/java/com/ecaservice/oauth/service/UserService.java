@@ -15,10 +15,14 @@ import com.ecaservice.oauth.exception.UserLockNotAllowedException;
 import com.ecaservice.oauth.exception.UserLockedException;
 import com.ecaservice.oauth.filter.UserFilter;
 import com.ecaservice.oauth.mapping.UserMapper;
+import com.ecaservice.oauth.projection.UserPhotoIdProjection;
 import com.ecaservice.oauth.repository.RoleRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import com.ecaservice.oauth.repository.UserPhotoRepository;
+import com.ecaservice.user.dto.UserInfoDto;
+import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.UserDto;
 import com.google.common.collect.Sets;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +38,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.oauth.config.audit.AuditCodes.CREATE_USER;
@@ -73,17 +78,34 @@ public class UserService {
     private final UserPhotoRepository userPhotoRepository;
 
     /**
-     * Gets the next page for specified page request.
+     * Gets users next page for specified page request.
      *
      * @param pageRequestDto - page request
-     * @return entities page
+     * @return users entities page
      */
     public Page<UserEntity> getNextPage(PageRequestDto pageRequestDto) {
+        log.info("Gets users next page: {}", pageRequestDto);
         Sort sort = buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
         UserFilter filter =
                 new UserFilter(pageRequestDto.getSearchQuery(), USER_GLOBAL_FILTER_FIELDS, pageRequestDto.getFilters());
         int pageSize = Integer.min(pageRequestDto.getSize(), appProperties.getMaxPageSize());
-        return userEntityRepository.findAll(filter, PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
+        var usersPage = userEntityRepository.findAll(filter, PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
+        log.info("Users page [{} of {}] with size [{}] has been fetched for page request [{}]", usersPage.getNumber(),
+                usersPage.getTotalPages(), usersPage.getNumberOfElements(), pageRequestDto);
+        return usersPage;
+    }
+
+    /**
+     * Gets users next page for specified page request.
+     *
+     * @param pageRequestDto - page request
+     * @return users dto page
+     */
+    public PageDto<UserDto> getUsersPage(PageRequestDto pageRequestDto) {
+        var usersPage = getNextPage(pageRequestDto);
+        var userDtoList = userMapper.map(usersPage.getContent());
+        populateUsersPhotoIds(usersPage.getContent(), userDtoList);
+        return PageDto.of(userDtoList, pageRequestDto.getPage(), usersPage.getTotalElements());
     }
 
     /**
@@ -125,8 +147,37 @@ public class UserService {
      * @return - user entity
      */
     public UserEntity getById(long id) {
+        log.debug("Gets user by id [{}]", id);
         return userEntityRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(UserEntity.class, id));
+    }
+
+    /**
+     * Gets user details by id.
+     *
+     * @param id - user id
+     * @return - user dto
+     */
+    public UserDto getUserInfo(long id) {
+        log.info("Gets user [{}] info", id);
+        UserEntity userEntity = getById(id);
+        UserDto userDto = userMapper.map(userEntity);
+        userDto.setPhotoId(userPhotoRepository.getUserPhotoId(userEntity));
+        log.info("User [{}] info has been fetched", id);
+        return userDto;
+    }
+
+    /**
+     * Gets user info dto by login.
+     *
+     * @param login - user login
+     * @return user info dto
+     */
+    public UserInfoDto getUserInfo(String login) {
+        log.info("Gets user info by login [{}]", login);
+        var user = userEntityRepository.findByLogin(login)
+                .orElseThrow(() -> new EntityNotFoundException(UserEntity.class, login));
+        return userMapper.mapToUserInfo(user);
     }
 
     /**
@@ -259,5 +310,12 @@ public class UserService {
         } catch (IOException ex) {
             throw new FileProcessingException(ex.getMessage());
         }
+    }
+
+    private void populateUsersPhotoIds(List<UserEntity> userEntities, List<UserDto> userDtoList) {
+        var userPhotoIdsMap = userPhotoRepository.getUserPhotoIds(userEntities)
+                .stream()
+                .collect(Collectors.toMap(UserPhotoIdProjection::getUserId, UserPhotoIdProjection::getId));
+        userDtoList.forEach(userDto -> userDto.setPhotoId(userPhotoIdsMap.get(userDto.getId())));
     }
 }

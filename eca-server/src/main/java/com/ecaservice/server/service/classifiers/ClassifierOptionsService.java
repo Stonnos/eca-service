@@ -112,6 +112,7 @@ public class ClassifierOptionsService {
      * @return classifiers options page
      */
     public PageDto<ClassifierOptionsDto> getNextPage(long configurationId, PageRequestDto pageRequestDto) {
+        log.info("Gets classifiers configuration [{}] options next page: {}", configurationId, pageRequestDto);
         var classifiersConfiguration = getConfigurationById(configurationId);
         var sort = buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
         var pageSize = Integer.min(pageRequestDto.getSize(), appProperties.getMaxPageSize());
@@ -122,6 +123,9 @@ public class ClassifierOptionsService {
                 .stream()
                 .map(this::internalPopulateClassifierOptions)
                 .collect(Collectors.toList());
+        log.info("Configuration [{}] options page [{} of {}] with size [{}] has been fetched for page request [{}]",
+                configurationId, classifierOptionsPage.getNumber(), classifierOptionsPage.getTotalPages(),
+                classifierOptionsPage.getNumberOfElements(), pageRequestDto);
         return PageDto.of(classifierOptionsDtoList, pageRequestDto.getPage(), classifierOptionsPage.getTotalElements());
     }
 

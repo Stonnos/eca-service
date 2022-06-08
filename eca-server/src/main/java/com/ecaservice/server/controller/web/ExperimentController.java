@@ -15,11 +15,13 @@ import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentProgressEntity;
 import com.ecaservice.server.model.entity.ExperimentResultsEntity;
 import com.ecaservice.server.repository.ExperimentResultsEntityRepository;
+import com.ecaservice.server.service.UserService;
 import com.ecaservice.server.service.auth.UsersClient;
 import com.ecaservice.server.service.experiment.DataService;
 import com.ecaservice.server.service.experiment.ExperimentProgressService;
 import com.ecaservice.server.service.experiment.ExperimentResultsService;
 import com.ecaservice.server.service.experiment.ExperimentService;
+import com.ecaservice.user.dto.UserInfoDto;
 import com.ecaservice.web.dto.model.ChartDataDto;
 import com.ecaservice.web.dto.model.CreateExperimentResultDto;
 import com.ecaservice.web.dto.model.ExperimentDto;
@@ -30,7 +32,6 @@ import com.ecaservice.web.dto.model.ExperimentsPageDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
-import com.ecaservice.web.dto.model.UserDto;
 import eca.core.evaluation.EvaluationMethod;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -110,6 +111,7 @@ public class ExperimentController {
     private static final String EXPERIMENT_TRAINING_DATA_FILE_NOT_FOUND_FORMAT =
             "Experiment training data file for id = '%d' not found!";
 
+    private final UserService userService;
     private final ExperimentService experimentService;
     private final ExperimentResultsService experimentResultsService;
     private final ExperimentMapper experimentMapper;
@@ -240,9 +242,10 @@ public class ExperimentController {
                     EvaluationMethod evaluationMethod) {
         log.info("Received experiment request for data '{}', experiment type {}, evaluation method {}",
                 trainingData.getOriginalFilename(), experimentType, evaluationMethod);
-        UserDto userDto = usersClient.getUserInfo();
+        var user = userService.getCurrentUser();
+        var userInfoDto = usersClient.getUserInfo(user);
         ExperimentRequest experimentRequest =
-                createExperimentRequest(trainingData, userDto, experimentType, evaluationMethod);
+                createExperimentRequest(trainingData, userInfoDto, experimentType, evaluationMethod);
         MsgProperties msgProperties = MsgProperties.builder()
                 .channel(Channel.WEB)
                 .build();
@@ -595,12 +598,12 @@ public class ExperimentController {
     }
 
     private ExperimentRequest createExperimentRequest(MultipartFile trainingData,
-                                                      UserDto userDto,
+                                                      UserInfoDto userInfoDto,
                                                       ExperimentType experimentType,
                                                       EvaluationMethod evaluationMethod) {
         ExperimentRequest experimentRequest = new ExperimentRequest();
-        experimentRequest.setFirstName(userDto.getFirstName());
-        experimentRequest.setEmail(userDto.getEmail());
+        experimentRequest.setFirstName(userInfoDto.getFirstName());
+        experimentRequest.setEmail(userInfoDto.getEmail());
         Instances data = dataService.load(new MultipartFileResource(trainingData));
         experimentRequest.setData(data);
         experimentRequest.setExperimentType(experimentType);

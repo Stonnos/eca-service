@@ -33,6 +33,14 @@ public interface UserEntityRepository extends JpaRepository<UserEntity, Long>, J
     Optional<UserEntity> findByEmail(String email);
 
     /**
+     * Finds user by login.
+     *
+     * @param login - user login
+     * @return user entity
+     */
+    Optional<UserEntity> findByLogin(String login);
+
+    /**
      * Checks user existing with specified login.
      *
      * @param login - user login

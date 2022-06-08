@@ -31,6 +31,7 @@ public class OpenApi30Configuration {
     public static final String ECA_AUTHENTICATION_SECURITY_SCHEME = "EcaAuth";
 
     public static final String SCOPE_WEB = "web";
+    public static final String SCOPE_INTERNAL_API = "internal-api";
 
     private static final String ECA_AUTHENTICATION_SECURITY_DESCRIPTION = "Oauth2 authentication";
     private static final String BEARER_ACCESS_TOKEN = "Authorization: Bearer <access token>";

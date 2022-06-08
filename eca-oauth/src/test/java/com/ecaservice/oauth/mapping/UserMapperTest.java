@@ -3,6 +3,7 @@ package com.ecaservice.oauth.mapping;
 import com.ecaservice.oauth.dto.CreateUserDto;
 import com.ecaservice.oauth.dto.UpdateUserInfoDto;
 import com.ecaservice.oauth.entity.UserEntity;
+import com.ecaservice.user.dto.UserInfoDto;
 import com.ecaservice.user.model.UserDetailsImpl;
 import com.ecaservice.web.dto.model.UserDto;
 import org.junit.jupiter.api.Test;
@@ -80,5 +81,18 @@ class UserMapperTest {
         assertThat(userEntity.getFirstName()).isEqualTo(updateUserInfoDto.getFirstName());
         assertThat(userEntity.getLastName()).isEqualTo(updateUserInfoDto.getLastName());
         assertThat(userEntity.getMiddleName()).isEqualTo(updateUserInfoDto.getMiddleName());
+    }
+
+    @Test
+    void testMapUserEntityToUserInfoDto() {
+        UserEntity userEntity = createUserEntity();
+        UserInfoDto userInfoDto = userMapper.mapToUserInfo(userEntity);
+        assertThat(userInfoDto).isNotNull();
+        assertThat(userInfoDto.getLogin()).isEqualTo(userEntity.getLogin());
+        assertThat(userInfoDto.getEmail()).isEqualTo(userEntity.getEmail());
+        assertThat(userInfoDto.getFirstName()).isEqualTo(userEntity.getFirstName());
+        assertThat(userInfoDto.getLastName()).isEqualTo(userEntity.getLastName());
+        assertThat(userInfoDto.getMiddleName()).isEqualTo(userEntity.getMiddleName());
+        assertThat(userInfoDto.isLocked()).isEqualTo(userEntity.isLocked());
     }
 }

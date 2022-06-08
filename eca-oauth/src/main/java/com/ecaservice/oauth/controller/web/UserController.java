@@ -1,4 +1,4 @@
-package com.ecaservice.oauth.controller;
+package com.ecaservice.oauth.controller.web;
 
 import com.ecaservice.common.web.dto.ValidationErrorDto;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
@@ -30,7 +30,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -54,7 +53,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.security.Principal;
-import java.util.List;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
@@ -69,7 +67,7 @@ import static com.ecaservice.oauth.controller.doc.ApiExamples.UNAUTHORIZED_RESPO
 import static com.ecaservice.oauth.controller.doc.ApiExamples.UNIQUE_LOGIN_RESPONSE_JSON;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.UPDATE_USER_INFO_REQUEST_JSON;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.USERS_PAGE_RESPONSE_JSON;
-import static com.ecaservice.oauth.controller.doc.ApiExamples.USER_INFO_RESPONSE_JSON;
+import static com.ecaservice.oauth.controller.doc.ApiExamples.USER_DTO_RESPONSE_JSON;
 import static com.ecaservice.oauth.util.Utils.buildAttachmentResponse;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
@@ -108,7 +106,7 @@ public class UserController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = USER_INFO_RESPONSE_JSON),
+                                            @ExampleObject(value = USER_DTO_RESPONSE_JSON),
                                     },
                                     schema = @Schema(implementation = UserDto.class)
                             )
@@ -125,10 +123,8 @@ public class UserController {
     )
     @GetMapping(value = "/user-info")
     public UserDto getUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        UserEntity userEntity = userService.getById(userDetails.getId());
-        UserDto userDto = userMapper.map(userEntity);
-        userDto.setPhotoId(userPhotoRepository.getUserPhotoId(userEntity));
-        return userDto;
+        log.debug("Request get current user [{}]", userDetails.getId());
+        return userService.getUserInfo(userDetails.getId());
     }
 
     /**
@@ -155,10 +151,11 @@ public class UserController {
     )
     @PostMapping(value = "/logout")
     public void logout(Principal authentication) {
-        log.info("Logout user: [{}]", authentication.getName());
+        log.info("Request to logout user: [{}]", authentication.getName());
         OAuth2Authentication oAuth2Authentication = (OAuth2Authentication) authentication;
         OAuth2AccessToken auth2AccessToken = tokenServices.getAccessToken(oAuth2Authentication);
         tokenServices.revokeToken(auth2AccessToken.getValue());
+        log.info("User [{}] has been logout", authentication.getName());
     }
 
     /**
@@ -256,9 +253,7 @@ public class UserController {
     @PostMapping(value = "/list")
     public PageDto<UserDto> getUsers(@Valid @RequestBody PageRequestDto pageRequestDto) {
         log.info("Received users page request: {}", pageRequestDto);
-        Page<UserEntity> usersPage = userService.getNextPage(pageRequestDto);
-        List<UserDto> userDtoList = userMapper.map(usersPage.getContent());
-        return PageDto.of(userDtoList, pageRequestDto.getPage(), usersPage.getTotalElements());
+        return userService.getUsersPage(pageRequestDto);
     }
 
     /**
@@ -281,7 +276,7 @@ public class UserController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = USER_INFO_RESPONSE_JSON),
+                                            @ExampleObject(value = USER_DTO_RESPONSE_JSON),
                                     },
                                     schema = @Schema(implementation = UserDto.class)
                             )

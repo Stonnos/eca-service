@@ -38,6 +38,20 @@ __Scopes__:
 
 * web
 
+
+*Flow*
+
+__Grant type:__ client_credentials
+
+__Token url:__ http://localhost:8080/eca-oauth/oauth/token
+
+
+
+__Scopes__:
+
+
+* internal-api
+
 |===
 
 == Updates info for current authenticated user
@@ -653,7 +667,7 @@ a|
     "fullName" : "Ivanov Ivan Ivanovich",
     "creationDate" : "2021-07-01 14:00:00",
     "tfaEnabled" : true,
-    "locked" : true,
+    "locked" : false,
     "photoId" : 1,
     "passwordChangeDate" : "2021-07-01 14:00:00",
     "roles" : [ {
@@ -820,7 +834,7 @@ a|
   "fullName" : "Ivanov Ivan Ivanovich",
   "creationDate" : "2021-07-01 14:00:00",
   "tfaEnabled" : true,
-  "locked" : true,
+  "locked" : false,
   "photoId" : 1,
   "passwordChangeDate" : "2021-07-01 14:00:00",
   "roles" : [ {
@@ -1496,7 +1510,7 @@ a|
   "fullName" : "Ivanov Ivan Ivanovich",
   "creationDate" : "2021-07-01 14:00:00",
   "tfaEnabled" : true,
-  "locked" : true,
+  "locked" : false,
   "photoId" : 1,
   "passwordChangeDate" : "2021-07-01 14:00:00",
   "roles" : [ {
@@ -1636,6 +1650,101 @@ a|
   "code" : "DataNotFound",
   "errorMessage" : "Entity with search key [1] not found!"
 } ]
+----
+|===
+
+== Gets user info
+
+__GET__ */api/internal/users/user-info* - Gets user info
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* internal-api
+
+|===
+
+
+*Request parameters*
+[width=100%]
+|===
+|*Name*|*Description*|*Location*|*Schema*
+|*login**
+|User login
+|query
+a|
+__string__
+
+
+*Min. length*: 1
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+<<UserInfoDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "login" : "admin",
+  "email" : "test@mail.ru",
+  "firstName" : "Ivan",
+  "lastName" : "Ivanov",
+  "middleName" : "Ivanovich",
+  "fullName" : "Ivanov Ivan Ivanovich",
+  "locked" : false
+}
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
 ----
 |===
 
@@ -2650,6 +2759,146 @@ __string__
 *Min. length*: 1
 
 *Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|===
+=== UserInfoDto
+:table-caption: Table
+.User model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*login*
+|User login
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*email*
+|User email
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*firstName*
+|User first name
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*lastName*
+|User last name
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*middleName*
+|User middle name
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*fullName*
+|User full name
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*locked*
+|Account locked
+a|
+__boolean__
+
+
+
+
+
 
 
 
