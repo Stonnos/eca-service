@@ -1,0 +1,27 @@
+[
+  {
+    "fieldName": "groupCode",
+    "code": "NotEmpty",
+    "errorMessage": "must not be empty"
+  },
+  {
+    "fieldName": "initiator",
+    "code": "NotEmpty",
+    "errorMessage": "must not be empty"
+  },
+  {
+    "fieldName": "message",
+    "code": "NotEmpty",
+    "errorMessage": "must not be empty"
+  },
+  {
+    "fieldName": "eventId",
+    "code": "NotEmpty",
+    "errorMessage": "must not be empty"
+  },
+  {
+    "fieldName": "code",
+    "code": "NotEmpty",
+    "errorMessage": "must not be empty"
+  }
+]

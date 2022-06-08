@@ -20,9 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
-import static com.ecaservice.audit.controller.doc.ApiExamples.AUDIT_EVENT_BAD_REQUEST_RESPONSE_JSON;
-import static com.ecaservice.audit.controller.doc.ApiExamples.AUDIT_EVENT_REQUEST_JSON;
-
 /**
  * Implements REST API for audit events.
  *
@@ -47,7 +44,10 @@ public class AuditEventController {
             summary = "Saves audit event into database",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
-                            @ExampleObject(value = AUDIT_EVENT_REQUEST_JSON)
+                            @ExampleObject(
+                                    name = "AuditRequest",
+                                    ref = "#/components/examples/AuditRequest"
+                            )
                     })
             }),
             responses = {
@@ -56,7 +56,10 @@ public class AuditEventController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = AUDIT_EVENT_BAD_REQUEST_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "AuditEventBadRequestResponse",
+                                                    ref = "#/components/examples/AuditEventBadRequestResponse"
+                                            ),
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )

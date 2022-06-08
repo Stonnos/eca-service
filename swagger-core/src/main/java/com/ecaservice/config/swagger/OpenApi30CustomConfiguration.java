@@ -1,6 +1,5 @@
 package com.ecaservice.config.swagger;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.examples.Example;
@@ -17,7 +16,6 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.stream.Stream;
 
 import static com.google.common.collect.Maps.newHashMap;
@@ -74,8 +72,7 @@ public class OpenApi30CustomConfiguration {
         try {
             log.info("Starting to read Open API example from file [{}]", fileName);
             @Cleanup var inputStream = resource.getInputStream();
-            var exampleValue = objectMapper.readValue(inputStream, new TypeReference<Map<Object, Object>>() {
-            });
+            var exampleValue = objectMapper.readValue(inputStream, Object.class);
             String exampleKey = FilenameUtils.getBaseName(fileName);
             addExample(openAPI, exampleKey, exampleValue);
             log.info("Open API example has been read from file [{}]", fileName);
