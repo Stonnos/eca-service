@@ -120,6 +120,7 @@
                     <include>application-docker-prod.yml</include>
                     <include>logback-spring.xml</include>
                     <include>menu-bar.json</include>
+                    <include>openApiExamples/**</include>
                 </includes>
             </resource>
             <resource>
