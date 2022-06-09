@@ -30,10 +30,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
-import static com.ecaservice.oauth.controller.doc.ApiExamples.CREATE_RESET_PASSWORD_REQUEST_JSON;
-import static com.ecaservice.oauth.controller.doc.ApiExamples.INVALID_TOKEN_RESPONSE_JSON;
-import static com.ecaservice.oauth.controller.doc.ApiExamples.RESET_PASSWORD_REQUEST_JSON;
-import static com.ecaservice.oauth.controller.doc.ApiExamples.USER_EMAIL_RESPONSE_JSON;
 import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
@@ -65,7 +61,10 @@ public class ResetPasswordController {
             summary = "Creates reset password request",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
-                            @ExampleObject(value = CREATE_RESET_PASSWORD_REQUEST_JSON)
+                            @ExampleObject(
+                                    name = "CreateResetPasswordRequest",
+                                    ref = "#/components/examples/CreateResetPasswordRequest"
+                            )
                     })
             }),
             responses = {
@@ -74,7 +73,10 @@ public class ResetPasswordController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = USER_EMAIL_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "EmailNotFoundErrorCode",
+                                                    ref = "#/components/examples/EmailNotFoundErrorCode"
+                                            ),
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
@@ -130,7 +132,10 @@ public class ResetPasswordController {
             summary = "Reset password with specified token",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
-                            @ExampleObject(value = RESET_PASSWORD_REQUEST_JSON)
+                            @ExampleObject(
+                                    name = "ResetPassword",
+                                    ref = "#/components/examples/ResetPassword"
+                            )
                     })
             }),
             responses = {
@@ -139,7 +144,10 @@ public class ResetPasswordController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = INVALID_TOKEN_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "InvalidTokenErrorCode",
+                                                    ref = "#/components/examples/InvalidTokenErrorCode"
+                                            ),
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )

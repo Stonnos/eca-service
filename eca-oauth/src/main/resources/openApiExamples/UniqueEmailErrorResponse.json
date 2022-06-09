@@ -1,0 +1,7 @@
+[
+  {
+    "fieldName": "email",
+    "code": "UniqueEmail",
+    "errorMessage": "Can't set user email because its exists"
+  }
+]

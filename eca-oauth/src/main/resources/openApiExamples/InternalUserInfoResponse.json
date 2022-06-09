@@ -1,0 +1,9 @@
+{
+  "login": "admin",
+  "email": "test@mail.ru",
+  "firstName": "Ivan",
+  "lastName": "Ivanov",
+  "middleName": "Ivanovich",
+  "fullName": "Ivanov Ivan Ivanovich",
+  "locked": false
+}

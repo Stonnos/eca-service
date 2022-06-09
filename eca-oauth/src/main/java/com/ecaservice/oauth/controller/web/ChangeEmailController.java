@@ -31,9 +31,6 @@ import javax.validation.constraints.Size;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
-import static com.ecaservice.oauth.controller.doc.ApiExamples.INVALID_TOKEN_RESPONSE_JSON;
-import static com.ecaservice.oauth.controller.doc.ApiExamples.UNAUTHORIZED_RESPONSE_JSON;
-import static com.ecaservice.oauth.controller.doc.ApiExamples.UNIQUE_EMAIL_RESPONSE_JSON;
 import static com.ecaservice.oauth.util.FieldConstraints.EMAIL_MAX_SIZE;
 import static com.ecaservice.oauth.util.FieldConstraints.EMAIL_REGEX;
 import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
@@ -72,7 +69,10 @@ public class ChangeEmailController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
                                     }
                             )
                     ),
@@ -80,7 +80,10 @@ public class ChangeEmailController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNIQUE_EMAIL_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "UniqueEmailErrorResponse",
+                                                    ref = "#/components/examples/UniqueEmailErrorResponse"
+                                            ),
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
@@ -113,7 +116,10 @@ public class ChangeEmailController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = INVALID_TOKEN_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "InvalidTokenErrorCode",
+                                                    ref = "#/components/examples/InvalidTokenErrorCode"
+                                            ),
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )

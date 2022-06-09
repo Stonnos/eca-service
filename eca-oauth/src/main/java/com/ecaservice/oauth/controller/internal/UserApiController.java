@@ -24,8 +24,6 @@ import javax.validation.constraints.Size;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_INTERNAL_API;
-import static com.ecaservice.oauth.controller.doc.ApiExamples.UNAUTHORIZED_RESPONSE_JSON;
-import static com.ecaservice.oauth.controller.doc.ApiExamples.USER_INFO_RESPONSE_JSON;
 import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
@@ -60,7 +58,10 @@ public class UserApiController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = USER_INFO_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "InternalUserInfoResponse",
+                                                    ref = "#/components/examples/InternalUserInfoResponse"
+                                            ),
                                     },
                                     schema = @Schema(implementation = UserInfoDto.class)
                             )
@@ -69,7 +70,10 @@ public class UserApiController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
                                     }
                             )
                     )

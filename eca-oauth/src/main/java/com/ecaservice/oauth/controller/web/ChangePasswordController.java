@@ -33,10 +33,6 @@ import javax.validation.constraints.Size;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
-import static com.ecaservice.oauth.controller.doc.ApiExamples.CHANGE_PASSWORD_REQUEST_JSON;
-import static com.ecaservice.oauth.controller.doc.ApiExamples.INVALID_PASSWORD_RESPONSE_JSON;
-import static com.ecaservice.oauth.controller.doc.ApiExamples.INVALID_TOKEN_RESPONSE_JSON;
-import static com.ecaservice.oauth.controller.doc.ApiExamples.UNAUTHORIZED_RESPONSE_JSON;
 import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
@@ -69,7 +65,10 @@ public class ChangePasswordController {
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
-                            @ExampleObject(value = CHANGE_PASSWORD_REQUEST_JSON)
+                            @ExampleObject(
+                                    name = "ChangePasswordRequest",
+                                    ref = "#/components/examples/ChangePasswordRequest"
+                            )
                     })
             }),
             responses = {
@@ -78,7 +77,10 @@ public class ChangePasswordController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
                                     }
                             )
                     ),
@@ -86,7 +88,10 @@ public class ChangePasswordController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = INVALID_PASSWORD_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "InvalidPasswordErrorResponse",
+                                                    ref = "#/components/examples/InvalidPasswordErrorResponse"
+                                            ),
                                     }
                             )
                     )
@@ -116,7 +121,10 @@ public class ChangePasswordController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = INVALID_TOKEN_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "InvalidTokenErrorCode",
+                                                    ref = "#/components/examples/InvalidTokenErrorCode"
+                                            ),
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
