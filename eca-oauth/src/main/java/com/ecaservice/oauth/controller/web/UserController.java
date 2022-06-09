@@ -56,18 +56,6 @@ import java.security.Principal;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
-import static com.ecaservice.oauth.controller.doc.ApiExamples.ACCESS_DENIED_RESPONSE_JSON;
-import static com.ecaservice.oauth.controller.doc.ApiExamples.CREATE_USER_REQUEST_JSON;
-import static com.ecaservice.oauth.controller.doc.ApiExamples.DATA_NOT_FOUND_RESPONSE_JSON;
-import static com.ecaservice.oauth.controller.doc.ApiExamples.INVALID_PAGE_REQUEST_RESPONSE_JSON;
-import static com.ecaservice.oauth.controller.doc.ApiExamples.INVALID_TFA_REQUEST_RESPONSE_JSON;
-import static com.ecaservice.oauth.controller.doc.ApiExamples.INVALID_UPDATE_USER_INFO_REQUEST_RESPONSE_JSON;
-import static com.ecaservice.oauth.controller.doc.ApiExamples.SIMPLE_PAGE_REQUEST_JSON;
-import static com.ecaservice.oauth.controller.doc.ApiExamples.UNAUTHORIZED_RESPONSE_JSON;
-import static com.ecaservice.oauth.controller.doc.ApiExamples.UNIQUE_LOGIN_RESPONSE_JSON;
-import static com.ecaservice.oauth.controller.doc.ApiExamples.UPDATE_USER_INFO_REQUEST_JSON;
-import static com.ecaservice.oauth.controller.doc.ApiExamples.USERS_PAGE_RESPONSE_JSON;
-import static com.ecaservice.oauth.controller.doc.ApiExamples.USER_DTO_RESPONSE_JSON;
 import static com.ecaservice.oauth.util.Utils.buildAttachmentResponse;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
@@ -106,7 +94,10 @@ public class UserController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = USER_DTO_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "UserDtoResponse",
+                                                    ref = "#/components/examples/UserDtoResponse"
+                                            ),
                                     },
                                     schema = @Schema(implementation = UserDto.class)
                             )
@@ -115,7 +106,10 @@ public class UserController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
                                     }
                             )
                     )
@@ -143,7 +137,10 @@ public class UserController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
                                     }
                             )
                     )
@@ -174,7 +171,10 @@ public class UserController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
                                     }
                             )
                     ),
@@ -182,7 +182,10 @@ public class UserController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = INVALID_TFA_REQUEST_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "InvalidTfaOperationResponse",
+                                                    ref = "#/components/examples/InvalidTfaOperationResponse"
+                                            ),
                                     }
                             ))
             }
@@ -210,7 +213,10 @@ public class UserController {
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
-                            @ExampleObject(value = SIMPLE_PAGE_REQUEST_JSON)
+                            @ExampleObject(
+                                    name = "PageRequest",
+                                    ref = "#/components/examples/PageRequest"
+                            )
                     })
             }),
             responses = {
@@ -218,7 +224,10 @@ public class UserController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = USERS_PAGE_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "UsersPageResponse",
+                                                    ref = "#/components/examples/UsersPageResponse"
+                                            ),
                                     },
                                     schema = @Schema(implementation = UsersPageDto.class)
                             )
@@ -227,7 +236,10 @@ public class UserController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
                                     }
                             )
                     ),
@@ -235,7 +247,10 @@ public class UserController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = ACCESS_DENIED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "AccessDeniedResponse",
+                                                    ref = "#/components/examples/AccessDeniedResponse"
+                                            ),
                                     }
                             )
                     ),
@@ -243,7 +258,10 @@ public class UserController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = INVALID_PAGE_REQUEST_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "BadPageRequestResponse",
+                                                    ref = "#/components/examples/BadPageRequestResponse"
+                                            ),
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
@@ -268,7 +286,10 @@ public class UserController {
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
-                            @ExampleObject(value = CREATE_USER_REQUEST_JSON)
+                            @ExampleObject(
+                                    name = "CreateUserRequest",
+                                    ref = "#/components/examples/CreateUserRequest"
+                            )
                     })
             }),
             responses = {
@@ -276,7 +297,10 @@ public class UserController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = USER_DTO_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "UserDtoResponse",
+                                                    ref = "#/components/examples/UserDtoResponse"
+                                            ),
                                     },
                                     schema = @Schema(implementation = UserDto.class)
                             )
@@ -285,7 +309,10 @@ public class UserController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
                                     }
                             )
                     ),
@@ -293,14 +320,20 @@ public class UserController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = ACCESS_DENIED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "AccessDeniedResponse",
+                                                    ref = "#/components/examples/AccessDeniedResponse"
+                                            ),
                                     }
                             )),
                     @ApiResponse(description = "Bad request", responseCode = "400",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNIQUE_LOGIN_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "UniqueLoginErrorResponse",
+                                                    ref = "#/components/examples/UniqueLoginErrorResponse"
+                                            ),
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
@@ -330,7 +363,10 @@ public class UserController {
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
-                            @ExampleObject(value = UPDATE_USER_INFO_REQUEST_JSON)
+                            @ExampleObject(
+                                    name = "UpdateUserInfoRequest",
+                                    ref = "#/components/examples/UpdateUserInfoRequest"
+                            )
                     })
             }),
             responses = {
@@ -339,7 +375,10 @@ public class UserController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
                                     }
                             )
                     ),
@@ -347,7 +386,10 @@ public class UserController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = INVALID_UPDATE_USER_INFO_REQUEST_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "UpdateUserInfoBadRequestResponse",
+                                                    ref = "#/components/examples/UpdateUserInfoBadRequestResponse"
+                                            ),
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
@@ -378,7 +420,10 @@ public class UserController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
                                     }
                             )
                     ),
@@ -409,7 +454,10 @@ public class UserController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
                                     }
                             )
                     ),
@@ -417,7 +465,10 @@ public class UserController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = DATA_NOT_FOUND_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "DataNotFoundResponse",
+                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                            ),
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
@@ -449,7 +500,10 @@ public class UserController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
                                     }
                             )
                     ),
@@ -457,7 +511,10 @@ public class UserController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = DATA_NOT_FOUND_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "DataNotFoundResponse",
+                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                            ),
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
@@ -487,7 +544,10 @@ public class UserController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
                                     }
                             )
                     ),
@@ -495,7 +555,10 @@ public class UserController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = ACCESS_DENIED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "AccessDeniedResponse",
+                                                    ref = "#/components/examples/AccessDeniedResponse"
+                                            ),
                                     }
                             )
                     ),
@@ -530,7 +593,10 @@ public class UserController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
                                     }
                             )
                     ),
@@ -538,7 +604,10 @@ public class UserController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = ACCESS_DENIED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "AccessDeniedResponse",
+                                                    ref = "#/components/examples/AccessDeniedResponse"
+                                            ),
                                     }
                             )
                     ),
