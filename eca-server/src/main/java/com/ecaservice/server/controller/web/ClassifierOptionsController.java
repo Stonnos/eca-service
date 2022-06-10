@@ -38,15 +38,7 @@ import java.io.InputStream;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
-import static com.ecaservice.server.controller.doc.ApiExamples.CLASSIFIERS_OPTIONS_RESPONSE_JSON;
-import static com.ecaservice.server.controller.doc.ApiExamples.CLASSIFIER_OPTIONS_JSON;
-import static com.ecaservice.server.controller.doc.ApiExamples.GET_CLASSIFIERS_OPTIONS_PAGE_RESPONSE_JSON;
-import static com.ecaservice.server.controller.doc.ApiExamples.SAVE_CLASSIFIER_OPTIONS_RESPONSE_JSON;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.parseOptions;
-import static com.ecaservice.web.dto.doc.CommonApiExamples.DATA_NOT_FOUND_RESPONSE_JSON;
-import static com.ecaservice.web.dto.doc.CommonApiExamples.INVALID_PAGE_REQUEST_RESPONSE_JSON;
-import static com.ecaservice.web.dto.doc.CommonApiExamples.SIMPLE_PAGE_REQUEST_JSON;
-import static com.ecaservice.web.dto.doc.CommonApiExamples.UNAUTHORIZED_RESPONSE_JSON;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
 /**
@@ -77,7 +69,10 @@ public class ClassifierOptionsController {
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
-                            @ExampleObject(value = SIMPLE_PAGE_REQUEST_JSON)
+                            @ExampleObject(
+                                    name = "PageRequest",
+                                    ref = "#/components/examples/PageRequest"
+                            )
                     })
             }),
             responses = {
@@ -85,7 +80,10 @@ public class ClassifierOptionsController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = GET_CLASSIFIERS_OPTIONS_PAGE_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "ClassifierOptionsPageResponse",
+                                                    ref = "#/components/examples/ClassifierOptionsPageResponse"
+                                            ),
                                     },
                                     schema = @Schema(implementation = ClassifiersOptionsPageDto.class)
                             )
@@ -94,7 +92,10 @@ public class ClassifierOptionsController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            )
                                     }
                             )
                     ),
@@ -102,7 +103,10 @@ public class ClassifierOptionsController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = INVALID_PAGE_REQUEST_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "BadPageRequestResponse",
+                                                    ref = "#/components/examples/BadPageRequestResponse"
+                                            )
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
@@ -136,7 +140,10 @@ public class ClassifierOptionsController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = SAVE_CLASSIFIER_OPTIONS_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "UploadClassifierOptionsResponse",
+                                                    ref = "#/components/examples/UploadClassifierOptionsResponse"
+                                            )
                                     },
                                     schema = @Schema(implementation = CreateClassifierOptionsResultDto.class)
                             )
@@ -145,7 +152,10 @@ public class ClassifierOptionsController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = DATA_NOT_FOUND_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "DataNotFoundResponse",
+                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                            )
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
@@ -154,7 +164,10 @@ public class ClassifierOptionsController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            )
                                     }
                             )
                     )
@@ -200,7 +213,10 @@ public class ClassifierOptionsController {
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
-                            @ExampleObject(value = CLASSIFIER_OPTIONS_JSON)
+                            @ExampleObject(
+                                    name = "AddClassifierOptionsRequest",
+                                    ref = "#/components/examples/AddClassifierOptionsRequest"
+                            )
                     })
             }),
             responses = {
@@ -208,7 +224,10 @@ public class ClassifierOptionsController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = CLASSIFIERS_OPTIONS_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "ClassifierOptionsDetailsResponse",
+                                                    ref = "#/components/examples/ClassifierOptionsDetailsResponse"
+                                            )
                                     },
                                     schema = @Schema(implementation = ClassifierOptionsDto.class)
                             )),
@@ -216,7 +235,10 @@ public class ClassifierOptionsController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            )
                                     }
                             )
                     ),
@@ -224,7 +246,10 @@ public class ClassifierOptionsController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = DATA_NOT_FOUND_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "DataNotFoundResponse",
+                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                            )
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
@@ -258,7 +283,10 @@ public class ClassifierOptionsController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            )
                                     }
                             )
                     ),
@@ -266,7 +294,10 @@ public class ClassifierOptionsController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = DATA_NOT_FOUND_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "DataNotFoundResponse",
+                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                            )
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )

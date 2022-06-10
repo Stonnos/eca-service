@@ -1,0 +1,45 @@
+{
+  "content": [
+    {
+      "id": 1,
+      "requestId": "1d2de514-3a87-4620-9b97-c260e24340de",
+      "creationDate": "2021-07-01 14:00:00",
+      "startDate": "2021-07-01 14:00:01",
+      "endDate": "2021-07-01 14:00:12",
+      "requestStatus": {
+        "value": "FINISHED",
+        "description": "Завершена"
+      },
+      "evaluationMethod": {
+        "value": "CROSS_VALIDATION",
+        "description": "V-блочная кросс-проверка"
+      },
+      "numFolds": 10,
+      "numTests": 1,
+      "seed": 1,
+      "evaluationTotalTime": "00:00:00:11",
+      "classifierInfo": {
+        "classifierName": "CART",
+        "classifierDescription": "Алгоритм CART",
+        "classifierOptionsJson": null,
+        "metaClassifier": false,
+        "individualClassifiers": null,
+        "inputOptions": [
+          {
+            "optionName": "Iterations number",
+            "optionValue": "100"
+          }
+        ]
+      },
+      "instancesInfo": {
+        "relationName": "iris",
+        "numInstances": 150,
+        "numAttributes": 5,
+        "numClasses": 4,
+        "className": "class"
+      }
+    }
+  ],
+  "page": 0,
+  "totalCount": 1
+}

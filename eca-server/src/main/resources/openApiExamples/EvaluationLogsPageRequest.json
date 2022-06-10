@@ -1,0 +1,30 @@
+{
+  "page": 0,
+  "size": 25,
+  "sortField": "creationDate",
+  "ascending": false,
+  "searchQuery": "",
+  "filters": [
+    {
+      "name": "evaluationMethod",
+      "values": [
+        "CROSS_VALIDATION"
+      ],
+      "matchMode": "EQUALS"
+    },
+    {
+      "name": "requestStatus",
+      "values": [
+        "FINISHED"
+      ],
+      "matchMode": "EQUALS"
+    },
+    {
+      "name": "creationDate",
+      "values": [
+        "2021-07-12"
+      ],
+      "matchMode": "RANGE"
+    }
+  ]
+}

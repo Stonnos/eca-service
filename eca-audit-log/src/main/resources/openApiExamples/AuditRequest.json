@@ -1,0 +1,12 @@
+{
+  "eventId": "a01ebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+  "correlationId": "202786",
+  "message": "Audit message",
+  "initiator": "user",
+  "eventType": "START",
+  "groupCode": "GROUP_CODE",
+  "groupTitle": "",
+  "code": "AUDIT_CODE",
+  "codeTitle": "",
+  "eventDate": "2021-07-16 07:57:11"
+}

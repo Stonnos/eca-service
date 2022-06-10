@@ -1,0 +1,63 @@
+[
+  {
+    "fieldName": "eventId",
+    "description": "ID события",
+    "fieldOrder": 0,
+    "filterFieldType": "TEXT",
+    "matchMode": "LIKE",
+    "multiple": false,
+    "dictionary": null
+  },
+  {
+    "fieldName": "correlationId",
+    "description": "ID корреляции",
+    "fieldOrder": 1,
+    "filterFieldType": "TEXT",
+    "matchMode": "LIKE",
+    "multiple": false,
+    "dictionary": null
+  },
+  {
+    "fieldName": "groupCode",
+    "description": "Группа событий",
+    "fieldOrder": 2,
+    "filterFieldType": "REFERENCE",
+    "matchMode": "EQUALS",
+    "multiple": false,
+    "dictionary": {
+      "name": "auditGroup",
+      "values": [
+        {
+          "label": "Действия пользователя в личном кабинете",
+          "value": "USER_PROFILE_ACTIONS"
+        },
+        {
+          "label": "Действия с конфигурациями классификаторов",
+          "value": "CLASSIFIERS_CONFIGURATIONS_ACTIONS"
+        },
+        {
+          "label": "Действия с обучающими выборками",
+          "value": "DATA_STORAGE_ACTIONS"
+        }
+      ]
+    }
+  },
+  {
+    "fieldName": "initiator",
+    "description": "Инициатор события",
+    "fieldOrder": 3,
+    "filterFieldType": "TEXT",
+    "matchMode": "LIKE",
+    "multiple": false,
+    "dictionary": null
+  },
+  {
+    "fieldName": "eventDate",
+    "description": "Дата события",
+    "fieldOrder": 4,
+    "filterFieldType": "DATE",
+    "matchMode": "RANGE",
+    "multiple": true,
+    "dictionary": null
+  }
+]

@@ -155,7 +155,6 @@ a|
 [source,json]
 ----
 [ {
-  "fieldName" : null,
   "code" : "UniqueTableName",
   "errorMessage" : "Table with name [iris] already exists!"
 } ]
@@ -331,7 +330,6 @@ a|
 [source,json]
 ----
 [ {
-  "fieldName" : null,
   "code" : "UniqueTableName",
   "errorMessage" : "Table with name [iris] already exists!"
 } ]
@@ -871,7 +869,6 @@ a|
 [source,json]
 ----
 [ {
-  "fieldName" : null,
   "code" : "DataNotFound",
   "errorMessage" : "Entity with search key [1] not found!"
 } ]
@@ -999,7 +996,6 @@ a|
 [source,json]
 ----
 [ {
-  "fieldName" : null,
   "code" : "DataNotFound",
   "errorMessage" : "Entity with search key [1] not found!"
 } ]
@@ -1122,7 +1118,6 @@ a|
 [source,json]
 ----
 [ {
-  "fieldName" : null,
   "code" : "DataNotFound",
   "errorMessage" : "Entity with search key [1] not found!"
 } ]
@@ -1224,7 +1219,6 @@ a|
 [source,json]
 ----
 [ {
-  "fieldName" : null,
   "code" : "DataNotFound",
   "errorMessage" : "Entity with search key [1] not found!"
 } ]

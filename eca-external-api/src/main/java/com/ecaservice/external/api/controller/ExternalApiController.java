@@ -50,16 +50,6 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
-import static com.ecaservice.external.api.controller.docs.ApiExamples.EVALUATION_REQUEST_JSON;
-import static com.ecaservice.external.api.controller.docs.ApiExamples.EVALUATION_REQUEST_RESPONSE_JSON;
-import static com.ecaservice.external.api.controller.docs.ApiExamples.EVALUATION_STATUS_RESPONSE_JSON;
-import static com.ecaservice.external.api.controller.docs.ApiExamples.INSTANCES_REQUEST_JSON;
-import static com.ecaservice.external.api.controller.docs.ApiExamples.INVALID_EVALUATION_REQUEST_RESPONSE_JSON;
-import static com.ecaservice.external.api.controller.docs.ApiExamples.INVALID_INSTANCES_REQUEST_RESPONSE_JSON;
-import static com.ecaservice.external.api.controller.docs.ApiExamples.INVALID_TRAIN_DATA_RESPONSE_JSON;
-import static com.ecaservice.external.api.controller.docs.ApiExamples.UNAUTHORIZED_RESPONSE_JSON;
-import static com.ecaservice.external.api.controller.docs.ApiExamples.UPLOAD_INSTANCES_RESPONSE_JSON;
-import static com.ecaservice.external.api.controller.docs.ApiExamples.VALIDATION_ERROR_RESPONSE_JSON;
 import static com.ecaservice.external.api.dto.Constraints.MAX_LENGTH_255;
 import static com.ecaservice.external.api.dto.Constraints.MIN_LENGTH_1;
 import static com.ecaservice.external.api.util.Constants.DATA_URL_PREFIX;
@@ -107,7 +97,10 @@ public class ExternalApiController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UPLOAD_INSTANCES_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "UploadTrainDataResponse",
+                                                    ref = "#/components/examples/UploadTrainDataResponse"
+                                            ),
                                     },
                                     schema = @Schema(implementation = InstancesResponseDto.class)
                             )
@@ -116,7 +109,10 @@ public class ExternalApiController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
                                     }
                             )
                     ),
@@ -124,7 +120,10 @@ public class ExternalApiController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = INVALID_TRAIN_DATA_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "UploadTrainDataBadRequestResponse",
+                                                    ref = "#/components/examples/UploadTrainDataBadRequestResponse"
+                                            ),
                                     },
                                     schema = @Schema(implementation = ValidationErrorResponsePayloadDto.class)
                             )
@@ -156,7 +155,10 @@ public class ExternalApiController {
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_EXTERNAL_API),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
-                            @ExampleObject(value = EVALUATION_REQUEST_JSON)
+                            @ExampleObject(
+                                    name = "EvaluationRequest",
+                                    ref = "#/components/examples/EvaluationRequest"
+                            )
                     })
             }),
             responses = {
@@ -164,7 +166,10 @@ public class ExternalApiController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = EVALUATION_REQUEST_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "EvaluationResponse",
+                                                    ref = "#/components/examples/EvaluationResponse"
+                                            ),
                                     },
                                     schema = @Schema(implementation = EvaluationResponsePayloadDto.class)
                             )
@@ -173,7 +178,10 @@ public class ExternalApiController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
                                     }
                             )
                     ),
@@ -181,7 +189,10 @@ public class ExternalApiController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = INVALID_EVALUATION_REQUEST_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "EvaluationBadRequestResponse",
+                                                    ref = "#/components/examples/EvaluationBadRequestResponse"
+                                            ),
                                     },
                                     schema = @Schema(implementation = ValidationErrorResponsePayloadDto.class)
                             )
@@ -212,7 +223,10 @@ public class ExternalApiController {
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_EXTERNAL_API),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
-                            @ExampleObject(value = INSTANCES_REQUEST_JSON)
+                            @ExampleObject(
+                                    name = "OptimalEvaluationRequest",
+                                    ref = "#/components/examples/OptimalEvaluationRequest"
+                            )
                     })
             }),
             responses = {
@@ -220,7 +234,10 @@ public class ExternalApiController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = EVALUATION_REQUEST_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "EvaluationResponse",
+                                                    ref = "#/components/examples/EvaluationResponse"
+                                            ),
                                     },
                                     schema = @Schema(implementation = EvaluationResponsePayloadDto.class)
                             )
@@ -229,7 +246,10 @@ public class ExternalApiController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
                                     }
                             )
                     ),
@@ -237,7 +257,10 @@ public class ExternalApiController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = INVALID_INSTANCES_REQUEST_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "OptimalEvaluationBadRequestResponse",
+                                                    ref = "#/components/examples/OptimalEvaluationBadRequestResponse"
+                                            ),
                                     },
                                     schema = @Schema(implementation = ValidationErrorResponsePayloadDto.class)
                             )
@@ -268,7 +291,10 @@ public class ExternalApiController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = EVALUATION_STATUS_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "EvaluationStatusResponse",
+                                                    ref = "#/components/examples/EvaluationStatusResponse"
+                                            ),
                                     },
                                     schema = @Schema(implementation = EvaluationResponsePayloadDto.class)
                             )
@@ -277,7 +303,10 @@ public class ExternalApiController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
                                     }
                             )
                     ),
@@ -285,7 +314,10 @@ public class ExternalApiController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = VALIDATION_ERROR_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "DataNotFoundResponse",
+                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                            ),
                                     },
                                     schema = @Schema(implementation = ValidationErrorResponsePayloadDto.class)
                             )
@@ -319,7 +351,10 @@ public class ExternalApiController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
                                     }
                             )
                     ),
@@ -327,7 +362,10 @@ public class ExternalApiController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = VALIDATION_ERROR_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "DataNotFoundResponse",
+                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                            ),
                                     },
                                     schema = @Schema(implementation = ValidationErrorResponsePayloadDto.class)
                             )

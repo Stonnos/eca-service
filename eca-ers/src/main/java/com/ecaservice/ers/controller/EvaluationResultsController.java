@@ -26,16 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
-import static com.ecaservice.ers.controller.doc.ApiExamples.EVALUATION_RESULTS_BAD_REQUEST_RESPONSE_JSON;
-import static com.ecaservice.ers.controller.doc.ApiExamples.EVALUATION_RESULTS_REQUEST_JSON;
-import static com.ecaservice.ers.controller.doc.ApiExamples.EVALUATION_RESULTS_RESPONSE_JSON;
-import static com.ecaservice.ers.controller.doc.ApiExamples.GET_EVALUATION_RESULTS_BAD_REQUEST_RESPONSE_JSON;
-import static com.ecaservice.ers.controller.doc.ApiExamples.GET_EVALUATION_RESULTS_REQUEST_JSON;
-import static com.ecaservice.ers.controller.doc.ApiExamples.GET_EVALUATION_RESULTS_RESPONSE_JSON;
-import static com.ecaservice.ers.controller.doc.ApiExamples.GET_OPTIMAL_CLASSIFIER_OPTIONS_BAD_REQUEST_RESPONSE_JSON;
-import static com.ecaservice.ers.controller.doc.ApiExamples.GET_OPTIMAL_CLASSIFIER_OPTIONS_REQUEST_JSON;
-import static com.ecaservice.ers.controller.doc.ApiExamples.GET_OPTIMAL_CLASSIFIER_OPTIONS_RESPONSE_JSON;
-
 /**
  * Evaluation results service controller.
  *
@@ -62,7 +52,10 @@ public class EvaluationResultsController {
             summary = "Saves evaluation results report",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
-                            @ExampleObject(value = EVALUATION_RESULTS_REQUEST_JSON)
+                            @ExampleObject(
+                                    name = "EvaluationRequest",
+                                    ref = "#/components/examples/EvaluationRequest"
+                            )
                     })
             }),
             responses = {
@@ -70,7 +63,10 @@ public class EvaluationResultsController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = EVALUATION_RESULTS_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "EvaluationResponse",
+                                                    ref = "#/components/examples/EvaluationResponse"
+                                            ),
                                     },
                                     schema = @Schema(implementation = EvaluationResultsResponse.class)
                             )
@@ -80,7 +76,9 @@ public class EvaluationResultsController {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
                                             @ExampleObject(
-                                                    value = EVALUATION_RESULTS_BAD_REQUEST_RESPONSE_JSON),
+                                                    name = "EvaluationBadRequestResponse",
+                                                    ref = "#/components/examples/EvaluationBadRequestResponse"
+                                            ),
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
@@ -104,7 +102,10 @@ public class EvaluationResultsController {
             summary = "Gets evaluation results simple report",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
-                            @ExampleObject(value = GET_EVALUATION_RESULTS_REQUEST_JSON)
+                            @ExampleObject(
+                                    name = "GetEvaluationResultsRequest",
+                                    ref = "#/components/examples/GetEvaluationResultsRequest"
+                            )
                     })
             }),
             responses = {
@@ -112,7 +113,10 @@ public class EvaluationResultsController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = GET_EVALUATION_RESULTS_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "GetEvaluationResultsResponse",
+                                                    ref = "#/components/examples/GetEvaluationResultsResponse"
+                                            ),
                                     },
                                     schema = @Schema(implementation = GetEvaluationResultsResponse.class)
                             )
@@ -122,7 +126,9 @@ public class EvaluationResultsController {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
                                             @ExampleObject(
-                                                    value = GET_EVALUATION_RESULTS_BAD_REQUEST_RESPONSE_JSON),
+                                                    name = "GetEvaluationResultsBadRequestResponse",
+                                                    ref = "#/components/examples/GetEvaluationResultsBadRequestResponse"
+                                            ),
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
@@ -147,7 +153,10 @@ public class EvaluationResultsController {
             summary = "Endpoint for searching optimal classifiers options for specified request",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
-                            @ExampleObject(value = GET_OPTIMAL_CLASSIFIER_OPTIONS_REQUEST_JSON)
+                            @ExampleObject(
+                                    name = "GetOptimalClassifierOptionsRequest",
+                                    ref = "#/components/examples/GetOptimalClassifierOptionsRequest"
+                            )
                     })
             }),
             responses = {
@@ -155,7 +164,10 @@ public class EvaluationResultsController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = GET_OPTIMAL_CLASSIFIER_OPTIONS_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "GetOptimalClassifierOptionsResponse",
+                                                    ref = "#/components/examples/GetOptimalClassifierOptionsResponse"
+                                            ),
                                     },
                                     schema = @Schema(implementation = ClassifierOptionsResponse.class)
                             )
@@ -165,7 +177,9 @@ public class EvaluationResultsController {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
                                             @ExampleObject(
-                                                    value = GET_OPTIMAL_CLASSIFIER_OPTIONS_BAD_REQUEST_RESPONSE_JSON),
+                                                    name = "GetOptimalClassifierOptionsBadRequestResponse",
+                                                    ref = "#/components/examples/GetOptimalClassifierOptionsBadRequestResponse"
+                                            ),
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )

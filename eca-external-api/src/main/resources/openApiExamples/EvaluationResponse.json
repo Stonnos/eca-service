@@ -1,0 +1,16 @@
+{
+  "payload": {
+    "requestId": "1cbe6c49-8432-4c81-9afa-90f04a803fed",
+    "evaluationStatus": "IN_PROGRESS",
+    "errorCode": null,
+    "modelUrl": null,
+    "numTestInstances": null,
+    "numCorrect": null,
+    "numIncorrect": null,
+    "pctCorrect": null,
+    "pctIncorrect": null,
+    "meanAbsoluteError": null
+  },
+  "responseCode": "SUCCESS",
+  "errorDescription": null
+}

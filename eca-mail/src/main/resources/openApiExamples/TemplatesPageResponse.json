@@ -1,0 +1,22 @@
+{
+  "content": [
+    {
+      "id": 1,
+      "created": "2021-07-01 14:00:00",
+      "code": "NEW_EXPERIMENT",
+      "description": "New experiment",
+      "subject": "New experiment request",
+      "body": "some body",
+      "parameters": [
+        {
+          "id": 1,
+          "created": "2021-07-01 14:00:00",
+          "parameterName": "requestId",
+          "description": "Experiment request id"
+        }
+      ]
+    }
+  ],
+  "page": 0,
+  "totalCount": 1
+}

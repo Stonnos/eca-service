@@ -19,7 +19,6 @@
             **/config/**/*,
             **/exception/**/*,
             **/util/**/*,
-            **/doc/**/*,
             **/EcaMailApplication.java
         </sonar.coverage.exclusions>
     </properties>

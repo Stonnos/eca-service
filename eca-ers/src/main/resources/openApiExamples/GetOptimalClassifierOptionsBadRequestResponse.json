@@ -1,0 +1,17 @@
+[
+  {
+    "fieldName": "evaluationMethodReport.evaluationMethod",
+    "code": "NotNull",
+    "errorMessage": "must not be null"
+  },
+  {
+    "fieldName": "dataHash",
+    "code": "NotBlank",
+    "errorMessage": "must not be blank"
+  },
+  {
+    "fieldName": "relationName",
+    "code": "NotBlank",
+    "errorMessage": "must not be blank"
+  }
+]

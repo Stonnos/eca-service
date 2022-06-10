@@ -345,7 +345,6 @@
                         <exclude>**/annotation/**/*</exclude>
                         <exclude>**/fetcher/**/*</exclude>
                         <exclude>**/metrics/**/*</exclude>
-                        <exclude>**/doc/**/*</exclude>
                     </excludes>
                 </configuration>
                 <executions>

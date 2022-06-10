@@ -39,17 +39,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
-import static com.ecaservice.audit.controller.doc.ApiExamples.AUDIT_LOGS_PAGE_REQUEST_JSON;
-import static com.ecaservice.audit.controller.doc.ApiExamples.AUDIT_LOGS_PAGE_RESPONSE_JSON;
-import static com.ecaservice.audit.controller.doc.ApiExamples.AUDIT_LOG_FILTER_RESPONSE_JSON;
 import static com.ecaservice.audit.dictionary.FilterDictionaries.AUDIT_LOG_TEMPLATE;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
 import static com.ecaservice.report.ReportGenerator.generateReport;
-import static com.ecaservice.web.dto.doc.CommonApiExamples.ACCESS_DENIED_RESPONSE_JSON;
-import static com.ecaservice.web.dto.doc.CommonApiExamples.DATA_NOT_FOUND_RESPONSE_JSON;
-import static com.ecaservice.web.dto.doc.CommonApiExamples.INVALID_PAGE_REQUEST_RESPONSE_JSON;
-import static com.ecaservice.web.dto.doc.CommonApiExamples.UNAUTHORIZED_RESPONSE_JSON;
 
 /**
  * Audit log API for web application.
@@ -84,7 +77,10 @@ public class AuditLogController {
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
-                            @ExampleObject(value = AUDIT_LOGS_PAGE_REQUEST_JSON)
+                            @ExampleObject(
+                                    name = "AuditLogsPageRequest",
+                                    ref = "#/components/examples/AuditLogsPageRequest"
+                            )
                     })
             }),
             responses = {
@@ -92,7 +88,10 @@ public class AuditLogController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = AUDIT_LOGS_PAGE_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "AuditLogsResponse",
+                                                    ref = "#/components/examples/AuditLogsResponse"
+                                            ),
                                     },
                                     schema = @Schema(implementation = AuditLogsPageDto.class)
                             )
@@ -101,7 +100,10 @@ public class AuditLogController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
                                     }
                             )
                     ),
@@ -109,7 +111,10 @@ public class AuditLogController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = ACCESS_DENIED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "AccessDeniedResponse",
+                                                    ref = "#/components/examples/AccessDeniedResponse"
+                                            ),
                                     }
                             )
                     ),
@@ -117,7 +122,10 @@ public class AuditLogController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = INVALID_PAGE_REQUEST_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "BadPageRequestResponse",
+                                                    ref = "#/components/examples/BadPageRequestResponse"
+                                            ),
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
@@ -147,7 +155,10 @@ public class AuditLogController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = AUDIT_LOG_FILTER_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "AuditFilterFieldsResponse",
+                                                    ref = "#/components/examples/AuditFilterFieldsResponse"
+                                            ),
                                     }
                             )
                     ),
@@ -155,7 +166,10 @@ public class AuditLogController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
                                     }
                             )
                     ),
@@ -163,7 +177,10 @@ public class AuditLogController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = ACCESS_DENIED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "AccessDeniedResponse",
+                                                    ref = "#/components/examples/AccessDeniedResponse"
+                                            ),
                                     }
                             )
                     ),
@@ -171,7 +188,10 @@ public class AuditLogController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = DATA_NOT_FOUND_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "DataNotFoundResponse",
+                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                            ),
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
@@ -197,7 +217,10 @@ public class AuditLogController {
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
-                            @ExampleObject(value = AUDIT_LOGS_PAGE_REQUEST_JSON)
+                            @ExampleObject(
+                                    name = "AuditLogsPageRequest",
+                                    ref = "#/components/examples/AuditLogsPageRequest"
+                            )
                     })
             }),
             responses = {
@@ -206,7 +229,10 @@ public class AuditLogController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
                                     }
                             )
                     ),
@@ -214,7 +240,10 @@ public class AuditLogController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = ACCESS_DENIED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "AccessDeniedResponse",
+                                                    ref = "#/components/examples/AccessDeniedResponse"
+                                            ),
                                     }
                             )
                     ),
@@ -222,7 +251,10 @@ public class AuditLogController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = INVALID_PAGE_REQUEST_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "BadPageRequestResponse",
+                                                    ref = "#/components/examples/BadPageRequestResponse"
+                                            ),
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )

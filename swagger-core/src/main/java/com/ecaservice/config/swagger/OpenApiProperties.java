@@ -19,6 +19,7 @@ import java.util.Map;
 public class OpenApiProperties {
 
     private static final String DEFAULT_BASE_PATH = "/";
+    private static final String DEFAULT_OPEN_API_EXAMPLES_LOCATION = "classpath*:openApiExamples/**/*.json";
 
     /**
      * Project version
@@ -54,6 +55,11 @@ public class OpenApiProperties {
      */
     @NotEmpty
     private String basePath = DEFAULT_BASE_PATH;
+
+    /**
+     * Open api examples location
+     */
+    private String examplesLocation = DEFAULT_OPEN_API_EXAMPLES_LOCATION;
 
     /**
      * Open api auth properties map

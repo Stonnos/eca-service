@@ -1,0 +1,92 @@
+[
+  {
+    "fieldName": "requestId",
+    "description": "UUID заявки",
+    "fieldOrder": 0,
+    "filterFieldType": "TEXT",
+    "matchMode": "LIKE",
+    "multiple": false,
+    "dictionary": null
+  },
+  {
+    "fieldName": "classifierInfo.classifierName",
+    "description": "Классификатор",
+    "fieldOrder": 1,
+    "filterFieldType": "TEXT",
+    "matchMode": "LIKE",
+    "multiple": false,
+    "dictionary": null
+  },
+  {
+    "fieldName": "instancesInfo.relationName",
+    "description": "Обучающая выборка",
+    "fieldOrder": 2,
+    "filterFieldType": "TEXT",
+    "matchMode": "LIKE",
+    "multiple": false,
+    "dictionary": null
+  },
+  {
+    "fieldName": "evaluationMethod",
+    "description": "Метод оценки точности",
+    "fieldOrder": 3,
+    "filterFieldType": "REFERENCE",
+    "matchMode": "EQUALS",
+    "multiple": false,
+    "dictionary": {
+      "name": "evaluationMethod",
+      "values": [
+        {
+          "label": "Использование обучающего множества",
+          "value": "TRAINING_DATA"
+        },
+        {
+          "label": "V-блочная кросс-проверка",
+          "value": "CROSS_VALIDATION"
+        }
+      ]
+    }
+  },
+  {
+    "fieldName": "requestStatus",
+    "description": "Статус заявки",
+    "fieldOrder": 4,
+    "filterFieldType": "REFERENCE",
+    "matchMode": "EQUALS",
+    "multiple": false,
+    "dictionary": {
+      "name": "requestStatus",
+      "values": [
+        {
+          "label": "Новая",
+          "value": "NEW"
+        },
+        {
+          "label": "Завершена",
+          "value": "FINISHED"
+        },
+        {
+          "label": "Ошибка",
+          "value": "ERROR"
+        },
+        {
+          "label": "Таймаут",
+          "value": "TIMEOUT"
+        },
+        {
+          "label": "В работе",
+          "value": "IN_PROGRESS"
+        }
+      ]
+    }
+  },
+  {
+    "fieldName": "creationDate",
+    "description": "Дата создания заявки",
+    "fieldOrder": 5,
+    "filterFieldType": "DATE",
+    "matchMode": "RANGE",
+    "multiple": true,
+    "dictionary": null
+  }
+]

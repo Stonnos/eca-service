@@ -1,0 +1,7 @@
+[
+  {
+    "fieldName": "configurationName",
+    "code": "NotBlank",
+    "errorMessage": "must not be blank"
+  }
+]

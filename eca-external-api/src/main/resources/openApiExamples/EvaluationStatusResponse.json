@@ -1,0 +1,16 @@
+{
+  "payload": {
+    "requestId": "1cbe6c49-8432-4c81-9afa-90f04a803fed",
+    "evaluationStatus": "FINISHED",
+    "errorCode": null,
+    "modelUrl": "http://localhost:8080/external-api/download-model/1cbe6c49-8432-4c81-9afa-90f04a803fed",
+    "numTestInstances": 150,
+    "numCorrect": 144,
+    "numIncorrect": 6,
+    "pctCorrect": 96,
+    "pctIncorrect": 4,
+    "meanAbsoluteError": 0.02869334024628254
+  },
+  "responseCode": "SUCCESS",
+  "errorDescription": null
+}

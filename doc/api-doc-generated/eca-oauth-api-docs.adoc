@@ -437,7 +437,6 @@ a|
 [source,json]
 ----
 [ {
-  "fieldName" : null,
   "code" : "InvalidOperation",
   "errorMessage" : "Tfa is already enabled for user"
 } ]
@@ -895,8 +894,7 @@ a|
 ----
 [ {
   "fieldName" : "login",
-  "code" : "UniqueLogin",
-  "errorMessage" : null
+  "code" : "UniqueLogin"
 } ]
 ----
 |===
@@ -1025,7 +1023,6 @@ a|
 [source,json]
 ----
 [ {
-  "fieldName" : null,
   "code" : "InvalidToken",
   "errorMessage" : "Invalid token"
 } ]
@@ -1109,8 +1106,7 @@ a|
 ----
 [ {
   "fieldName" : "email",
-  "code" : "UserEmail",
-  "errorMessage" : null
+  "code" : "UserEmail"
 } ]
 ----
 |===
@@ -1198,7 +1194,6 @@ a|
 [source,json]
 ----
 [ {
-  "fieldName" : null,
   "code" : "InvalidPassword",
   "errorMessage" : "Invalid password"
 } ]
@@ -1273,7 +1268,6 @@ a|
 [source,json]
 ----
 [ {
-  "fieldName" : null,
   "code" : "InvalidToken",
   "errorMessage" : "Invalid token"
 } ]
@@ -1447,7 +1441,6 @@ a|
 [source,json]
 ----
 [ {
-  "fieldName" : null,
   "code" : "InvalidToken",
   "errorMessage" : "Invalid token"
 } ]
@@ -1646,7 +1639,6 @@ a|
 [source,json]
 ----
 [ {
-  "fieldName" : null,
   "code" : "DataNotFound",
   "errorMessage" : "Entity with search key [1] not found!"
 } ]
@@ -1815,7 +1807,6 @@ a|
 [source,json]
 ----
 [ {
-  "fieldName" : null,
   "code" : "DataNotFound",
   "errorMessage" : "Entity with search key [1] not found!"
 } ]

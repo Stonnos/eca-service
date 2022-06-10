@@ -22,8 +22,6 @@ import java.util.List;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
-import static com.ecaservice.web.controller.doc.ApiExamples.MENU_BAR_RESPONSE_JSON;
-import static com.ecaservice.web.dto.doc.CommonApiExamples.UNAUTHORIZED_RESPONSE_JSON;
 
 /**
  * API for web application.
@@ -54,7 +52,10 @@ public class WebController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = MENU_BAR_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "MenuItemsResponse",
+                                                    ref = "#/components/examples/MenuItemsResponse"
+                                            ),
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = MenuItemDto.class))
                             )
@@ -63,7 +64,10 @@ public class WebController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
                                     }
                             )
                     )

@@ -823,7 +823,6 @@ a|
 [source,json]
 ----
 [ {
-  "fieldName" : null,
   "code" : "DataNotFound",
   "errorMessage" : "Entity with search key [1] not found!"
 } ]
@@ -1195,7 +1194,6 @@ a|
 [source,json]
 ----
 [ {
-  "fieldName" : null,
   "code" : "DataNotFound",
   "errorMessage" : "Entity with search key [1] not found!"
 } ]
@@ -1297,7 +1295,6 @@ a|
 [source,json]
 ----
 [ {
-  "fieldName" : null,
   "code" : "DataNotFound",
   "errorMessage" : "Entity with search key [1] not found!"
 } ]
@@ -1837,9 +1834,7 @@ a|
     "classifierInfo" : {
       "classifierName" : "CART",
       "classifierDescription" : "Алгоритм CART",
-      "classifierOptionsJson" : null,
       "metaClassifier" : false,
-      "individualClassifiers" : null,
       "inputOptions" : [ {
         "optionName" : "Iterations number",
         "optionValue" : "100"
@@ -2130,16 +2125,14 @@ a|
   "fieldOrder" : 0,
   "filterFieldType" : "TEXT",
   "matchMode" : "LIKE",
-  "multiple" : false,
-  "dictionary" : null
+  "multiple" : false
 }, {
   "fieldName" : "email",
   "description" : "Email заявки",
   "fieldOrder" : 1,
   "filterFieldType" : "TEXT",
   "matchMode" : "LIKE",
-  "multiple" : false,
-  "dictionary" : null
+  "multiple" : false
 }, {
   "fieldName" : "evaluationMethod",
   "description" : "Метод оценки точности",
@@ -2227,8 +2220,7 @@ a|
   "fieldOrder" : 5,
   "filterFieldType" : "DATE",
   "matchMode" : "RANGE",
-  "multiple" : true,
-  "dictionary" : null
+  "multiple" : true
 } ]
 ----
 |401
@@ -2391,24 +2383,21 @@ a|
   "fieldOrder" : 0,
   "filterFieldType" : "TEXT",
   "matchMode" : "LIKE",
-  "multiple" : false,
-  "dictionary" : null
+  "multiple" : false
 }, {
   "fieldName" : "classifierInfo.classifierName",
   "description" : "Классификатор",
   "fieldOrder" : 1,
   "filterFieldType" : "TEXT",
   "matchMode" : "LIKE",
-  "multiple" : false,
-  "dictionary" : null
+  "multiple" : false
 }, {
   "fieldName" : "instancesInfo.relationName",
   "description" : "Обучающая выборка",
   "fieldOrder" : 2,
   "filterFieldType" : "TEXT",
   "matchMode" : "LIKE",
-  "multiple" : false,
-  "dictionary" : null
+  "multiple" : false
 }, {
   "fieldName" : "evaluationMethod",
   "description" : "Метод оценки точности",
@@ -2458,8 +2447,7 @@ a|
   "fieldOrder" : 5,
   "filterFieldType" : "DATE",
   "matchMode" : "RANGE",
-  "multiple" : true,
-  "dictionary" : null
+  "multiple" : true
 } ]
 ----
 |401
@@ -2601,16 +2589,14 @@ a|
   "fieldOrder" : 0,
   "filterFieldType" : "TEXT",
   "matchMode" : "LIKE",
-  "multiple" : false,
-  "dictionary" : null
+  "multiple" : false
 }, {
   "fieldName" : "relationName",
   "description" : "Обучающая выборка",
   "fieldOrder" : 1,
   "filterFieldType" : "TEXT",
   "matchMode" : "LIKE",
-  "multiple" : false,
-  "dictionary" : null
+  "multiple" : false
 }, {
   "fieldName" : "evaluationMethod",
   "description" : "Метод оценки точности",
@@ -2660,8 +2646,7 @@ a|
   "fieldOrder" : 4,
   "filterFieldType" : "DATE",
   "matchMode" : "RANGE",
-  "multiple" : true,
-  "dictionary" : null
+  "multiple" : true
 } ]
 ----
 |401
@@ -2790,7 +2775,6 @@ a|
 [source,json]
 ----
 [ {
-  "fieldName" : null,
   "code" : "DataNotFound",
   "errorMessage" : "Entity with search key [1] not found!"
 } ]
@@ -3056,7 +3040,6 @@ a|
 [source,json]
 ----
 [ {
-  "fieldName" : null,
   "code" : "DataNotFound",
   "errorMessage" : "Entity with search key [1] not found!"
 } ]
@@ -3142,9 +3125,7 @@ a|
   "classifierInfo" : {
     "classifierName" : "CART",
     "classifierDescription" : "Алгоритм CART",
-    "classifierOptionsJson" : null,
     "metaClassifier" : false,
-    "individualClassifiers" : null,
     "inputOptions" : [ {
       "optionName" : "Iterations number",
       "optionValue" : "100"
@@ -3248,7 +3229,6 @@ a|
 [source,json]
 ----
 [ {
-  "fieldName" : null,
   "code" : "DataNotFound",
   "errorMessage" : "Entity with search key [1] not found!"
 } ]
@@ -3442,7 +3422,6 @@ a|
 [source,json]
 ----
 [ {
-  "fieldName" : null,
   "code" : "DataNotFound",
   "errorMessage" : "Entity with search key [1] not found!"
 } ]
@@ -3532,9 +3511,7 @@ a|
     "classifierInfo" : {
       "classifierName" : "CART",
       "classifierDescription" : "Алгоритм CART",
-      "classifierOptionsJson" : null,
       "metaClassifier" : false,
-      "individualClassifiers" : null,
       "inputOptions" : [ {
         "optionName" : "Iterations number",
         "optionValue" : "100"
@@ -3588,7 +3565,6 @@ a|
 [source,json]
 ----
 [ {
-  "fieldName" : null,
   "code" : "DataNotFound",
   "errorMessage" : "Entity with search key [1] not found!"
 } ]
@@ -3736,7 +3712,6 @@ a|
 [source,json]
 ----
 [ {
-  "fieldName" : null,
   "code" : "DataNotFound",
   "errorMessage" : "Entity with search key [1] not found!"
 } ]
@@ -3838,7 +3813,6 @@ a|
 [source,json]
 ----
 [ {
-  "fieldName" : null,
   "code" : "DataNotFound",
   "errorMessage" : "Entity with search key [1] not found!"
 } ]
@@ -3968,7 +3942,6 @@ a|
 [source,json]
 ----
 [ {
-  "fieldName" : null,
   "code" : "DataNotFound",
   "errorMessage" : "Entity with search key [1] not found!"
 } ]
@@ -4139,9 +4112,7 @@ a|
   "classifierInfo" : {
     "classifierName" : "CART",
     "classifierDescription" : "Алгоритм CART",
-    "classifierOptionsJson" : null,
     "metaClassifier" : false,
-    "individualClassifiers" : null,
     "inputOptions" : [ {
       "optionName" : "Iterations number",
       "optionValue" : "100"
@@ -4221,7 +4192,6 @@ a|
 [source,json]
 ----
 [ {
-  "fieldName" : null,
   "code" : "DataNotFound",
   "errorMessage" : "Entity with search key [1] not found!"
 } ]
@@ -4313,7 +4283,6 @@ a|
 [source,json]
 ----
 [ {
-  "fieldName" : null,
   "code" : "DataNotFound",
   "errorMessage" : "Entity with search key [1] not found!"
 } ]
@@ -4375,46 +4344,35 @@ a|
   "objectType" : "knn",
   "fields" : [ {
     "fieldName" : "numNeighbours",
-    "description" : "Число ближайших соседей:",
+    "description" : "Число ближайших соседей",
     "fieldOrder" : 0,
     "fieldType" : "INTEGER",
-    "minValue" : 1,
+    "minValue" : 1.0,
     "minInclusive" : true,
-    "maxValue" : 2147483647,
+    "maxValue" : 2.147483647E9,
     "maxInclusive" : true,
     "maxLength" : 255,
-    "pattern" : null,
-    "invalidPatternMessage" : null,
-    "dictionary" : null,
-    "placeHolder" : null,
-    "defaultValue" : "10"
+    "defaultValue" : "10",
+    "readOnly" : false
   }, {
     "fieldName" : "weight",
-    "description" : "Вес ближайшего соседа:",
+    "description" : "Вес ближайшего соседа",
     "fieldOrder" : 1,
     "fieldType" : "DECIMAL",
     "minValue" : 0.5,
     "minInclusive" : true,
-    "maxValue" : 1,
+    "maxValue" : 1.0,
     "maxInclusive" : true,
     "maxLength" : 255,
-    "pattern" : null,
-    "invalidPatternMessage" : null,
-    "dictionary" : null,
-    "placeHolder" : null,
-    "defaultValue" : "1"
+    "defaultValue" : "1",
+    "readOnly" : false
   }, {
     "fieldName" : "distanceType",
-    "description" : "Функция расстояния:",
+    "description" : "Функция расстояния",
     "fieldOrder" : 2,
     "fieldType" : "REFERENCE",
-    "minValue" : null,
     "minInclusive" : true,
-    "maxValue" : null,
     "maxInclusive" : true,
-    "maxLength" : null,
-    "pattern" : null,
-    "invalidPatternMessage" : null,
     "dictionary" : {
       "name" : "distanceType",
       "values" : [ {
@@ -4431,8 +4389,8 @@ a|
         "value" : "CHEBYSHEV"
       } ]
     },
-    "placeHolder" : null,
-    "defaultValue" : "EUCLID"
+    "defaultValue" : "EUCLID",
+    "readOnly" : false
   } ]
 }, {
   "templateName" : "LOGISTIC",
@@ -4441,34 +4399,25 @@ a|
   "objectType" : "logistic",
   "fields" : [ {
     "fieldName" : "maxIts",
-    "description" : "Максимальное число итераций для поиска минимума функции -Log(Likelihood):",
+    "description" : "Максимальное число итераций",
     "fieldOrder" : 0,
     "fieldType" : "INTEGER",
-    "minValue" : 1,
+    "minValue" : 1.0,
     "minInclusive" : true,
-    "maxValue" : 2147483647,
+    "maxValue" : 2.147483647E9,
     "maxInclusive" : true,
     "maxLength" : 255,
-    "pattern" : null,
-    "invalidPatternMessage" : null,
-    "dictionary" : null,
-    "placeHolder" : null,
-    "defaultValue" : "200"
+    "defaultValue" : "200",
+    "readOnly" : false
   }, {
     "fieldName" : "useConjugateGradientDescent",
-    "description" : "Использовать метод сопряженных градиентов:",
+    "description" : "Использовать метод сопряженных градиентов",
     "fieldOrder" : 1,
     "fieldType" : "BOOLEAN",
-    "minValue" : null,
     "minInclusive" : true,
-    "maxValue" : null,
     "maxInclusive" : true,
-    "maxLength" : null,
-    "pattern" : null,
-    "invalidPatternMessage" : null,
-    "dictionary" : null,
-    "placeHolder" : null,
-    "defaultValue" : "false"
+    "defaultValue" : "false",
+    "readOnly" : false
   } ]
 }, {
   "templateName" : "J48",
@@ -4477,64 +4426,46 @@ a|
   "objectType" : "j48",
   "fields" : [ {
     "fieldName" : "minNumObj",
-    "description" : "Минимальное число объектов в листе:",
+    "description" : "Минимальное число объектов в листе",
     "fieldOrder" : 0,
     "fieldType" : "INTEGER",
-    "minValue" : 0,
+    "minValue" : 0.0,
     "minInclusive" : true,
-    "maxValue" : 2147483647,
+    "maxValue" : 2.147483647E9,
     "maxInclusive" : true,
     "maxLength" : 255,
-    "pattern" : null,
-    "invalidPatternMessage" : null,
-    "dictionary" : null,
-    "placeHolder" : null,
-    "defaultValue" : "2"
+    "defaultValue" : "2",
+    "readOnly" : false
   }, {
     "fieldName" : "binarySplits",
     "description" : "Бинарное дерево",
     "fieldOrder" : 1,
     "fieldType" : "BOOLEAN",
-    "minValue" : null,
     "minInclusive" : true,
-    "maxValue" : null,
     "maxInclusive" : true,
-    "maxLength" : null,
-    "pattern" : null,
-    "invalidPatternMessage" : null,
-    "dictionary" : null,
-    "placeHolder" : null,
-    "defaultValue" : "false"
+    "defaultValue" : "false",
+    "readOnly" : false
   }, {
     "fieldName" : "unpruned",
     "description" : "Неусеченное дерево",
     "fieldOrder" : 2,
     "fieldType" : "BOOLEAN",
-    "minValue" : null,
     "minInclusive" : true,
-    "maxValue" : null,
     "maxInclusive" : true,
-    "maxLength" : null,
-    "pattern" : null,
-    "invalidPatternMessage" : null,
-    "dictionary" : null,
-    "placeHolder" : null,
-    "defaultValue" : "false"
+    "defaultValue" : "false",
+    "readOnly" : false
   }, {
     "fieldName" : "numFolds",
-    "description" : "Количество блоков:",
+    "description" : "Количество блоков",
     "fieldOrder" : 3,
     "fieldType" : "INTEGER",
-    "minValue" : 2,
+    "minValue" : 2.0,
     "minInclusive" : true,
-    "maxValue" : 100,
+    "maxValue" : 100.0,
     "maxInclusive" : true,
     "maxLength" : 255,
-    "pattern" : null,
-    "invalidPatternMessage" : null,
-    "dictionary" : null,
-    "placeHolder" : null,
-    "defaultValue" : "3"
+    "defaultValue" : "3",
+    "readOnly" : false
   } ]
 }, {
   "templateName" : "DECISION_TREE",
@@ -4543,16 +4474,11 @@ a|
   "objectType" : "decision_tree",
   "fields" : [ {
     "fieldName" : "decisionTreeType",
-    "description" : "Алгоритм построения дерева:",
+    "description" : "Алгоритм построения дерева",
     "fieldOrder" : 0,
     "fieldType" : "REFERENCE",
-    "minValue" : null,
     "minInclusive" : true,
-    "maxValue" : null,
     "maxInclusive" : true,
-    "maxLength" : null,
-    "pattern" : null,
-    "invalidPatternMessage" : null,
     "dictionary" : {
       "name" : "decisionTreeType",
       "values" : [ {
@@ -4569,128 +4495,95 @@ a|
         "value" : "CHAID"
       } ]
     },
-    "placeHolder" : null,
-    "defaultValue" : "CART"
+    "defaultValue" : "CART",
+    "readOnly" : false
   }, {
     "fieldName" : "minObj",
-    "description" : "Минимальное число объектов в листе:",
+    "description" : "Минимальное число объектов в листе",
     "fieldOrder" : 1,
     "fieldType" : "INTEGER",
-    "minValue" : 0,
+    "minValue" : 0.0,
     "minInclusive" : true,
-    "maxValue" : 2147483647,
+    "maxValue" : 2.147483647E9,
     "maxInclusive" : true,
     "maxLength" : 255,
-    "pattern" : null,
-    "invalidPatternMessage" : null,
-    "dictionary" : null,
-    "placeHolder" : null,
-    "defaultValue" : "2"
+    "defaultValue" : "2",
+    "readOnly" : false
   }, {
     "fieldName" : "maxDepth",
-    "description" : "Максимальная глубина дерева:",
+    "description" : "Максимальная глубина дерева",
     "fieldOrder" : 2,
     "fieldType" : "INTEGER",
-    "minValue" : 0,
+    "minValue" : 0.0,
     "minInclusive" : true,
-    "maxValue" : 2147483647,
+    "maxValue" : 2.147483647E9,
     "maxInclusive" : true,
     "maxLength" : 255,
-    "pattern" : null,
-    "invalidPatternMessage" : null,
-    "dictionary" : null,
-    "placeHolder" : null,
-    "defaultValue" : "0"
+    "defaultValue" : "0",
+    "readOnly" : false
   }, {
     "fieldName" : "useBinarySplits",
     "description" : "Бинарное дерево",
     "fieldOrder" : 3,
     "fieldType" : "BOOLEAN",
-    "minValue" : null,
     "minInclusive" : true,
-    "maxValue" : null,
     "maxInclusive" : true,
-    "maxLength" : null,
-    "pattern" : null,
-    "invalidPatternMessage" : null,
-    "dictionary" : null,
-    "placeHolder" : null,
-    "defaultValue" : "false"
+    "defaultValue" : "false",
+    "readOnly" : false
   }, {
     "fieldName" : "randomTree",
     "description" : "Случайное дерево",
     "fieldOrder" : 4,
     "fieldType" : "BOOLEAN",
-    "minValue" : null,
     "minInclusive" : true,
-    "maxValue" : null,
     "maxInclusive" : true,
-    "maxLength" : null,
-    "pattern" : null,
-    "invalidPatternMessage" : null,
-    "dictionary" : null,
-    "placeHolder" : null,
-    "defaultValue" : "false"
+    "defaultValue" : "false",
+    "readOnly" : false
   }, {
     "fieldName" : "numRandomAttr",
-    "description" : "Число случайных атрибутов:",
+    "description" : "Число случайных атрибутов",
     "fieldOrder" : 5,
     "fieldType" : "INTEGER",
-    "minValue" : 0,
+    "minValue" : 0.0,
     "minInclusive" : true,
-    "maxValue" : 2147483647,
+    "maxValue" : 2.147483647E9,
     "maxInclusive" : true,
     "maxLength" : 255,
-    "pattern" : null,
-    "invalidPatternMessage" : null,
-    "dictionary" : null,
-    "placeHolder" : null,
-    "defaultValue" : "0"
+    "defaultValue" : "0",
+    "readOnly" : false
   }, {
     "fieldName" : "useRandomSplits",
     "description" : "Случайные расщепления атрибута",
     "fieldOrder" : 6,
     "fieldType" : "BOOLEAN",
-    "minValue" : null,
     "minInclusive" : true,
-    "maxValue" : null,
     "maxInclusive" : true,
-    "maxLength" : null,
-    "pattern" : null,
-    "invalidPatternMessage" : null,
-    "dictionary" : null,
-    "placeHolder" : null,
-    "defaultValue" : "false"
+    "defaultValue" : "false",
+    "readOnly" : false
   }, {
     "fieldName" : "numRandomSplits",
-    "description" : "Число случайных расщеплений атрибута:",
+    "description" : "Число случайных расщеплений атрибута",
     "fieldOrder" : 7,
     "fieldType" : "INTEGER",
-    "minValue" : 1,
+    "minValue" : 1.0,
     "minInclusive" : true,
-    "maxValue" : 2147483647,
+    "maxValue" : 2.147483647E9,
     "maxInclusive" : true,
     "maxLength" : 255,
-    "pattern" : null,
-    "invalidPatternMessage" : null,
-    "dictionary" : null,
-    "placeHolder" : null,
-    "defaultValue" : "1"
+    "defaultValue" : "1",
+    "readOnly" : false
   }, {
     "fieldName" : "seed",
-    "description" : "Начальное значение (seed):",
+    "description" : "Начальное значение (seed)",
     "fieldOrder" : 8,
     "fieldType" : "INTEGER",
-    "minValue" : 0,
+    "minValue" : 0.0,
     "minInclusive" : true,
-    "maxValue" : 2147483647,
+    "maxValue" : 2.147483647E9,
     "maxInclusive" : true,
     "maxLength" : 255,
-    "pattern" : null,
-    "invalidPatternMessage" : null,
-    "dictionary" : null,
-    "placeHolder" : null,
-    "defaultValue" : "1"
+    "defaultValue" : "1",
+    "readOnly" : false
   } ]
 }, {
   "templateName" : "NEURAL_NETWORK",
@@ -4698,62 +4591,68 @@ a|
   "objectClass" : "NeuralNetworkOptions",
   "objectType" : "neural_network",
   "fields" : [ {
-    "fieldName" : "hiddenLayer",
-    "description" : "Структура скрытого слоя:",
+    "fieldName" : "numInNeurons",
+    "description" : "Количество нейронов во входном слое",
     "fieldOrder" : 0,
-    "fieldType" : "TEXT",
-    "minValue" : null,
+    "fieldType" : "INTEGER",
+    "minValue" : 1.0,
     "minInclusive" : true,
-    "maxValue" : null,
+    "maxValue" : 2.147483647E9,
+    "maxInclusive" : true,
+    "readOnly" : true
+  }, {
+    "fieldName" : "numOutNeurons",
+    "description" : "Количество нейронов в выходном слое",
+    "fieldOrder" : 1,
+    "fieldType" : "INTEGER",
+    "minValue" : 2.0,
+    "minInclusive" : true,
+    "maxValue" : 2.147483647E9,
+    "maxInclusive" : true,
+    "readOnly" : true
+  }, {
+    "fieldName" : "hiddenLayer",
+    "description" : "Структура скрытого слоя",
+    "fieldOrder" : 2,
+    "fieldType" : "TEXT",
+    "minInclusive" : true,
     "maxInclusive" : true,
     "maxLength" : 255,
     "pattern" : "^([1-9],?)+$",
-    "invalidPatternMessage" : "Неправильный формат скрытого слоя. Пример: 8,15,10",
-    "dictionary" : null,
+    "invalidPatternMessage" : "Неправильный формат скрытого слоя. Пример 8,15,10",
     "placeHolder" : "Введите числа, разделенные запятой",
-    "defaultValue" : null
+    "readOnly" : false
   }, {
     "fieldName" : "numIterations",
-    "description" : "Число итераций:",
-    "fieldOrder" : 1,
+    "description" : "Число итераций",
+    "fieldOrder" : 3,
     "fieldType" : "INTEGER",
-    "minValue" : 1,
+    "minValue" : 1.0,
     "minInclusive" : true,
-    "maxValue" : 2147483647,
+    "maxValue" : 2.147483647E9,
     "maxInclusive" : true,
     "maxLength" : 255,
-    "pattern" : null,
-    "invalidPatternMessage" : null,
-    "dictionary" : null,
-    "placeHolder" : null,
-    "defaultValue" : "1000000"
+    "defaultValue" : "1000000",
+    "readOnly" : false
   }, {
     "fieldName" : "minError",
-    "description" : "Допустимая ошибка:",
-    "fieldOrder" : 2,
+    "description" : "Допустимая ошибка",
+    "fieldOrder" : 4,
     "fieldType" : "DECIMAL",
-    "minValue" : 0,
+    "minValue" : 0.0,
     "minInclusive" : true,
-    "maxValue" : 1,
+    "maxValue" : 1.0,
     "maxInclusive" : true,
     "maxLength" : 255,
-    "pattern" : null,
-    "invalidPatternMessage" : null,
-    "dictionary" : null,
-    "placeHolder" : null,
-    "defaultValue" : "0.00001"
+    "defaultValue" : "0.00001",
+    "readOnly" : false
   }, {
     "fieldName" : "activationFunctionOptions.activationFunctionType",
-    "description" : "Активационная функция нейронов скрытого слоя:",
-    "fieldOrder" : 3,
+    "description" : "Активационная функция нейронов скрытого слоя",
+    "fieldOrder" : 5,
     "fieldType" : "REFERENCE",
-    "minValue" : null,
     "minInclusive" : true,
-    "maxValue" : null,
     "maxInclusive" : true,
-    "maxLength" : null,
-    "pattern" : null,
-    "invalidPatternMessage" : null,
     "dictionary" : {
       "name" : "activationFunctionType",
       "values" : [ {
@@ -4776,68 +4675,56 @@ a|
         "value" : "INVERSE_SQUARE_ROOT_UNIT"
       } ]
     },
-    "placeHolder" : null,
-    "defaultValue" : "LOGISTIC"
+    "defaultValue" : "LOGISTIC",
+    "readOnly" : false
   }, {
     "fieldName" : "activationFunctionOptions.coefficient",
-    "description" : "Значение коэффициента:",
-    "fieldOrder" : 4,
-    "fieldType" : "DECIMAL",
-    "minValue" : 0,
-    "minInclusive" : false,
-    "maxValue" : 2147483647,
-    "maxInclusive" : true,
-    "maxLength" : 255,
-    "pattern" : null,
-    "invalidPatternMessage" : null,
-    "dictionary" : null,
-    "placeHolder" : null,
-    "defaultValue" : "1"
-  }, {
-    "fieldName" : "backPropagationOptions.learningRate",
-    "description" : "Коэффициент скорости обучения:",
-    "fieldOrder" : 5,
-    "fieldType" : "DECIMAL",
-    "minValue" : 0,
-    "minInclusive" : false,
-    "maxValue" : 1,
-    "maxInclusive" : true,
-    "maxLength" : 255,
-    "pattern" : null,
-    "invalidPatternMessage" : null,
-    "dictionary" : null,
-    "placeHolder" : null,
-    "defaultValue" : "0.1"
-  }, {
-    "fieldName" : "backPropagationOptions.momentum",
-    "description" : "Коэффициент момента:",
+    "description" : "Значение коэффициента",
     "fieldOrder" : 6,
     "fieldType" : "DECIMAL",
-    "minValue" : 0,
-    "minInclusive" : true,
-    "maxValue" : 1,
-    "maxInclusive" : false,
-    "maxLength" : 255,
-    "pattern" : null,
-    "invalidPatternMessage" : null,
-    "dictionary" : null,
-    "placeHolder" : null,
-    "defaultValue" : "0.2"
-  }, {
-    "fieldName" : "seed",
-    "description" : "Начальное значение (seed):",
-    "fieldOrder" : 7,
-    "fieldType" : "INTEGER",
-    "minValue" : 0,
-    "minInclusive" : true,
-    "maxValue" : 2147483647,
+    "minValue" : 0.0,
+    "minInclusive" : false,
+    "maxValue" : 2.147483647E9,
     "maxInclusive" : true,
     "maxLength" : 255,
-    "pattern" : null,
-    "invalidPatternMessage" : null,
-    "dictionary" : null,
-    "placeHolder" : null,
-    "defaultValue" : "1"
+    "defaultValue" : "1",
+    "readOnly" : false
+  }, {
+    "fieldName" : "backPropagationOptions.learningRate",
+    "description" : "Коэффициент скорости обучения",
+    "fieldOrder" : 7,
+    "fieldType" : "DECIMAL",
+    "minValue" : 0.0,
+    "minInclusive" : false,
+    "maxValue" : 1.0,
+    "maxInclusive" : true,
+    "maxLength" : 255,
+    "defaultValue" : "0.1",
+    "readOnly" : false
+  }, {
+    "fieldName" : "backPropagationOptions.momentum",
+    "description" : "Коэффициент момента",
+    "fieldOrder" : 8,
+    "fieldType" : "DECIMAL",
+    "minValue" : 0.0,
+    "minInclusive" : true,
+    "maxValue" : 1.0,
+    "maxInclusive" : false,
+    "maxLength" : 255,
+    "defaultValue" : "0.2",
+    "readOnly" : false
+  }, {
+    "fieldName" : "seed",
+    "description" : "Начальное значение (seed)",
+    "fieldOrder" : 9,
+    "fieldType" : "INTEGER",
+    "minValue" : 0.0,
+    "minInclusive" : true,
+    "maxValue" : 2.147483647E9,
+    "maxInclusive" : true,
+    "maxLength" : 255,
+    "defaultValue" : "1",
+    "readOnly" : false
   } ]
 } ]
 ----
@@ -4950,7 +4837,6 @@ a|
 [source,json]
 ----
 [ {
-  "fieldName" : null,
   "code" : "DataNotFound",
   "errorMessage" : "Entity with search key [1] not found!"
 } ]
@@ -5052,7 +4938,6 @@ a|
 [source,json]
 ----
 [ {
-  "fieldName" : null,
   "code" : "DataNotFound",
   "errorMessage" : "Entity with search key [1] not found!"
 } ]
