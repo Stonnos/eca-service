@@ -15,7 +15,6 @@
     <properties>
         <sonar.coverage.exclusions>
             **/config/**/*,
-            **/doc/**/*,
             **/EcaWebPushApplication.java
         </sonar.coverage.exclusions>
     </properties>

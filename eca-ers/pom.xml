@@ -17,7 +17,6 @@
         <sonar.coverage.exclusions>
             **/config/*,
             **/exception/*,
-            **/doc/**/*,
             **/util/*,
             **/EcaErsApplication.java
         </sonar.coverage.exclusions>
