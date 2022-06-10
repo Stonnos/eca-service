@@ -1,0 +1,28 @@
+{
+  "content": [
+    {
+      "requestDate": "2021-07-01 14:00:00",
+      "requestId": "1d2de514-3a87-4620-9b97-c260e24340de",
+      "relationName": "glass",
+      "evaluationMethod": {
+        "value": "CROSS_VALIDATION",
+        "description": "V-блочная кросс-проверка"
+      },
+      "numFolds": 10,
+      "numTests": 1,
+      "seed": 1,
+      "responseStatus": {
+        "value": "SUCCESS",
+        "description": "Успешно"
+      },
+      "classifierOptionsResponseModels": [
+        {
+          "classifierName": "CART",
+          "options": "json config"
+        }
+      ]
+    }
+  ],
+  "page": 0,
+  "totalCount": 1
+}

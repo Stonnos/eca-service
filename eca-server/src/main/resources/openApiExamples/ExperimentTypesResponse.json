@@ -1,0 +1,41 @@
+{
+  "name": "experimentType",
+  "values": [
+    {
+      "label": "Нейронные сети",
+      "value": "NEURAL_NETWORKS"
+    },
+    {
+      "label": "Алгоритм AdaBoost",
+      "value": "ADA_BOOST"
+    },
+    {
+      "label": "Алгоритм Stacking",
+      "value": "STACKING"
+    },
+    {
+      "label": "Случайные леса",
+      "value": "RANDOM_FORESTS"
+    },
+    {
+      "label": "Алгоритм Stacking CV",
+      "value": "STACKING_CV"
+    },
+    {
+      "label": "Деревья решений",
+      "value": "DECISION_TREE"
+    },
+    {
+      "label": "Неоднородный ансамбль",
+      "value": "HETEROGENEOUS_ENSEMBLE"
+    },
+    {
+      "label": "Мод. неоднородный ансамбль",
+      "value": "MODIFIED_HETEROGENEOUS_ENSEMBLE"
+    },
+    {
+      "label": "Алгоритм KNN",
+      "value": "KNN"
+    }
+  ]
+}

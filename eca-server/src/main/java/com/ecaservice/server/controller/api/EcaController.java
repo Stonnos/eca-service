@@ -30,7 +30,6 @@ import static com.ecaservice.common.web.util.MaskUtils.mask;
 import static com.ecaservice.server.util.ExperimentUtils.getExperimentFile;
 import static com.ecaservice.server.util.Utils.buildAttachmentResponse;
 import static com.ecaservice.server.util.Utils.existsFile;
-import static com.ecaservice.web.dto.doc.CommonApiExamples.DATA_NOT_FOUND_RESPONSE_JSON;
 import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
@@ -63,7 +62,10 @@ public class EcaController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = DATA_NOT_FOUND_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "DataNotFoundResponse",
+                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                            )
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )

@@ -1,0 +1,30 @@
+{
+  "experimentRequestId": "1d2de514-3a87-4620-9b97-c260e24340de",
+  "classifiersCount": 1,
+  "sentClassifiersCount": 1,
+  "experimentResults": [
+    {
+      "id": 1,
+      "classifierInfo": {
+        "classifierName": "CART",
+        "classifierDescription": "Алгоритм CART",
+        "classifierOptionsJson": null,
+        "metaClassifier": false,
+        "individualClassifiers": null,
+        "inputOptions": [
+          {
+            "optionName": "Iterations number",
+            "optionValue": "100"
+          }
+        ]
+      },
+      "resultsIndex": 0,
+      "pctCorrect": 99,
+      "sent": true
+    }
+  ],
+  "ersReportStatus": {
+    "value": "SUCCESS_SENT",
+    "description": "Результаты эксперимента были успешно отправлены в ERS сервис"
+  }
+}

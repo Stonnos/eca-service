@@ -1,0 +1,76 @@
+{
+  "id": 1,
+  "classifierInfo": {
+    "classifierName": "CART",
+    "classifierDescription": "Алгоритм CART",
+    "classifierOptionsJson": null,
+    "metaClassifier": false,
+    "individualClassifiers": null,
+    "inputOptions": [
+      {
+        "optionName": "Iterations number",
+        "optionValue": "100"
+      }
+    ]
+  },
+  "resultsIndex": 0,
+  "pctCorrect": 99,
+  "sent": true,
+  "experimentDto": {
+    "id": 1,
+    "requestId": "1d2de514-3a87-4620-9b97-c260e24340de",
+    "creationDate": "2021-07-01 14:00:00",
+    "startDate": "2021-07-01 14:00:30",
+    "endDate": "2021-07-01 14:02:13",
+    "requestStatus": {
+      "value": "FINISHED",
+      "description": "Завершена"
+    },
+    "evaluationMethod": {
+      "value": "CROSS_VALIDATION",
+      "description": "V-блочная кросс-проверка"
+    },
+    "numFolds": 10,
+    "numTests": 1,
+    "seed": 1,
+    "evaluationTotalTime": "00:00:1:43",
+    "firstName": "Roman",
+    "email": "test@mail.ru",
+    "experimentAbsolutePath": "experiment_1d2de514-3a87-4620-9b97-c260e24340de.model",
+    "trainingDataAbsolutePath": "data_1d2de514-3a87-4620-9b97-c260e24340de.xls",
+    "deletedDate": "2021-07-14 14:00:00",
+    "experimentType": {
+      "value": "RANDOM_FORESTS",
+      "description": "Случайные леса"
+    }
+  },
+  "evaluationResultsDto": {
+    "evaluationResultsStatus": {
+      "value": "SUCCESS",
+      "description": "Успешно"
+    },
+    "evaluationStatisticsDto": {
+      "numTestInstances": 150,
+      "numCorrect": 146,
+      "numIncorrect": 4,
+      "pctCorrect": 96,
+      "pctIncorrect": 4,
+      "meanAbsoluteError": 0.29,
+      "rootMeanSquaredError": 0.01,
+      "maxAucValue": 0.89,
+      "varianceError": 0.0012,
+      "confidenceIntervalLowerBound": 0.01,
+      "confidenceIntervalUpperBound": 0.035
+    },
+    "classificationCosts": [
+      {
+        "classValue": "Iris-setosa",
+        "truePositiveRate": 0.75,
+        "falsePositiveRate": 0.25,
+        "trueNegativeRate": 0.5,
+        "falseNegativeRate": 0.5,
+        "aucValue": 0.9
+      }
+    ]
+  }
+}

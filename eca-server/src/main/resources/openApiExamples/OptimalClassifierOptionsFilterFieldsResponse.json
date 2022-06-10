@@ -1,0 +1,83 @@
+[
+  {
+    "fieldName": "requestId",
+    "description": "UUID заявки",
+    "fieldOrder": 0,
+    "filterFieldType": "TEXT",
+    "matchMode": "LIKE",
+    "multiple": false,
+    "dictionary": null
+  },
+  {
+    "fieldName": "relationName",
+    "description": "Обучающая выборка",
+    "fieldOrder": 1,
+    "filterFieldType": "TEXT",
+    "matchMode": "LIKE",
+    "multiple": false,
+    "dictionary": null
+  },
+  {
+    "fieldName": "evaluationMethod",
+    "description": "Метод оценки точности",
+    "fieldOrder": 2,
+    "filterFieldType": "REFERENCE",
+    "matchMode": "EQUALS",
+    "multiple": false,
+    "dictionary": {
+      "name": "evaluationMethod",
+      "values": [
+        {
+          "label": "Использование обучающего множества",
+          "value": "TRAINING_DATA"
+        },
+        {
+          "label": "V-блочная кросс-проверка",
+          "value": "CROSS_VALIDATION"
+        }
+      ]
+    }
+  },
+  {
+    "fieldName": "responseStatus",
+    "description": "Статус ответа от ERS",
+    "fieldOrder": 3,
+    "filterFieldType": "REFERENCE",
+    "matchMode": "EQUALS",
+    "multiple": false,
+    "dictionary": {
+      "name": "ersResponseStatus",
+      "values": [
+        {
+          "label": "Успешно",
+          "value": "SUCCESS"
+        },
+        {
+          "label": "Заявка с таким UUID уже существует",
+          "value": "DUPLICATE_REQUEST_ID"
+        },
+        {
+          "label": "Ошибка",
+          "value": "ERROR"
+        },
+        {
+          "label": "Не найдена обучающая выборка",
+          "value": "DATA_NOT_FOUND"
+        },
+        {
+          "label": "Не найдены оптимальные конфигурации моделей",
+          "value": "RESULTS_NOT_FOUND"
+        }
+      ]
+    }
+  },
+  {
+    "fieldName": "requestDate",
+    "description": "Дата отправки запроса в ERS",
+    "fieldOrder": 4,
+    "filterFieldType": "DATE",
+    "matchMode": "RANGE",
+    "multiple": true,
+    "dictionary": null
+  }
+]

@@ -25,12 +25,6 @@ import java.util.List;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
-import static com.ecaservice.server.controller.doc.ApiExamples.CLASSIFIER_OPTIONS_REQUESTS_FILTER_TEMPLATE_JSON;
-import static com.ecaservice.server.controller.doc.ApiExamples.EVALUATION_LOGS_FILTER_TEMPLATE_JSON;
-import static com.ecaservice.server.controller.doc.ApiExamples.EVALUATION_METHODS_RESPONSE_JSON;
-import static com.ecaservice.server.controller.doc.ApiExamples.EXPERIMENT_FILTER_FIELDS_TEMPLATE_JSON;
-import static com.ecaservice.server.controller.doc.ApiExamples.EXPERIMENT_TYPES_RESPONSE_JSON;
-import static com.ecaservice.web.dto.doc.CommonApiExamples.UNAUTHORIZED_RESPONSE_JSON;
 
 /**
  * Filter templates controller for web application.
@@ -61,7 +55,10 @@ public class FilterTemplateController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = EXPERIMENT_FILTER_FIELDS_TEMPLATE_JSON),
+                                            @ExampleObject(
+                                                    name = "ExperimentFilterFieldsResponse",
+                                                    ref = "#/components/examples/ExperimentFilterFieldsResponse"
+                                            )
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = FilterFieldDto.class))
                             )
@@ -70,7 +67,10 @@ public class FilterTemplateController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            )
                                     }
                             )
                     )
@@ -96,7 +96,10 @@ public class FilterTemplateController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = EVALUATION_LOGS_FILTER_TEMPLATE_JSON),
+                                            @ExampleObject(
+                                                    name = "EvaluationLogFilterFieldsResponse",
+                                                    ref = "#/components/examples/EvaluationLogFilterFieldsResponse"
+                                            )
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = FilterFieldDto.class))
                             )
@@ -105,7 +108,10 @@ public class FilterTemplateController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            )
                                     }
                             )
                     )
@@ -131,7 +137,10 @@ public class FilterTemplateController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = CLASSIFIER_OPTIONS_REQUESTS_FILTER_TEMPLATE_JSON),
+                                            @ExampleObject(
+                                                    name = "OptimalClassifierOptionsFilterFieldsResponse",
+                                                    ref = "#/components/examples/OptimalClassifierOptionsFilterFieldsResponse"
+                                            )
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = FilterFieldDto.class))
                             )
@@ -140,7 +149,10 @@ public class FilterTemplateController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            )
                                     }
                             )
                     )
@@ -166,7 +178,10 @@ public class FilterTemplateController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = EXPERIMENT_TYPES_RESPONSE_JSON)
+                                            @ExampleObject(
+                                                    name = "ExperimentTypesResponse",
+                                                    ref = "#/components/examples/ExperimentTypesResponse"
+                                            )
                                     },
                                     schema = @Schema(implementation = FilterDictionaryDto.class)
                             )
@@ -175,7 +190,10 @@ public class FilterTemplateController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            )
                                     }
                             )
                     )
@@ -201,7 +219,10 @@ public class FilterTemplateController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = EVALUATION_METHODS_RESPONSE_JSON)
+                                            @ExampleObject(
+                                                    name = "EvaluationMethodsResponse",
+                                                    ref = "#/components/examples/EvaluationMethodsResponse"
+                                            )
                                     },
                                     schema = @Schema(implementation = FilterDictionaryDto.class)
                             )
@@ -210,7 +231,10 @@ public class FilterTemplateController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            )
                                     }
                             )
                     )

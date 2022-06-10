@@ -1,0 +1,30 @@
+{
+  "page": 0,
+  "size": 25,
+  "sortField": "requestDate",
+  "ascending": false,
+  "searchQuery": "",
+  "filters": [
+    {
+      "name": "evaluationMethod",
+      "values": [
+        "CROSS_VALIDATION"
+      ],
+      "matchMode": "EQUALS"
+    },
+    {
+      "name": "responseStatus",
+      "values": [
+        "SUCCESS"
+      ],
+      "matchMode": "EQUALS"
+    },
+    {
+      "name": "requestDate",
+      "values": [
+        "2021-07-16"
+      ],
+      "matchMode": "RANGE"
+    }
+  ]
+}

@@ -75,22 +75,10 @@ import java.util.stream.Collectors;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
 import static com.ecaservice.server.config.audit.AuditCodes.CREATE_EXPERIMENT_REQUEST;
-import static com.ecaservice.server.controller.doc.ApiExamples.CREATE_EXPERIMENT_RESULT_RESPONSE_JSON;
-import static com.ecaservice.server.controller.doc.ApiExamples.EXPERIMENTS_PAGE_REQUEST_JSON;
-import static com.ecaservice.server.controller.doc.ApiExamples.EXPERIMENTS_PAGE_RESPONSE_JSON;
-import static com.ecaservice.server.controller.doc.ApiExamples.EXPERIMENT_DETAILS_RESPONSE_JSON;
-import static com.ecaservice.server.controller.doc.ApiExamples.EXPERIMENT_ERS_REPORT_RESPONSE_JSON;
-import static com.ecaservice.server.controller.doc.ApiExamples.EXPERIMENT_PROGRESS_RESPONSE_JSON;
-import static com.ecaservice.server.controller.doc.ApiExamples.EXPERIMENT_RESULTS_DETAILS_RESPONSE_JSON;
-import static com.ecaservice.server.controller.doc.ApiExamples.EXPERIMENT_TYPES_STATISTICS_RESPONSE_JSON;
-import static com.ecaservice.server.controller.doc.ApiExamples.REQUESTS_STATUSES_STATISTICS_RESPONSE_JSON;
 import static com.ecaservice.server.util.ExperimentUtils.getExperimentFile;
 import static com.ecaservice.server.util.Utils.buildAttachmentResponse;
 import static com.ecaservice.server.util.Utils.existsFile;
 import static com.ecaservice.server.util.Utils.toRequestStatusesStatistics;
-import static com.ecaservice.web.dto.doc.CommonApiExamples.DATA_NOT_FOUND_RESPONSE_JSON;
-import static com.ecaservice.web.dto.doc.CommonApiExamples.INVALID_PAGE_REQUEST_RESPONSE_JSON;
-import static com.ecaservice.web.dto.doc.CommonApiExamples.UNAUTHORIZED_RESPONSE_JSON;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
 /**
@@ -138,7 +126,10 @@ public class ExperimentController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            )
                                     }
                             )
                     ),
@@ -146,7 +137,10 @@ public class ExperimentController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = DATA_NOT_FOUND_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "DataNotFoundResponse",
+                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                            )
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
@@ -177,7 +171,10 @@ public class ExperimentController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            )
                                     }
                             )
                     ),
@@ -185,7 +182,10 @@ public class ExperimentController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = DATA_NOT_FOUND_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "DataNotFoundResponse",
+                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                            )
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
@@ -219,7 +219,10 @@ public class ExperimentController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = CREATE_EXPERIMENT_RESULT_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "CreateExperimentResponse",
+                                                    ref = "#/components/examples/CreateExperimentResponse"
+                                            )
                                     },
                                     schema = @Schema(implementation = CreateExperimentResultDto.class)
                             )
@@ -228,7 +231,10 @@ public class ExperimentController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            )
                                     }
                             )
                     )
@@ -271,7 +277,10 @@ public class ExperimentController {
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
-                            @ExampleObject(value = EXPERIMENTS_PAGE_REQUEST_JSON)
+                            @ExampleObject(
+                                    name = "ExperimentsPageRequest",
+                                    ref = "#/components/examples/ExperimentsPageRequest"
+                            )
                     })
             }),
             responses = {
@@ -279,7 +288,10 @@ public class ExperimentController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = EXPERIMENTS_PAGE_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "ExperimentsPageResponse",
+                                                    ref = "#/components/examples/ExperimentsPageResponse"
+                                            ),
                                     },
                                     schema = @Schema(implementation = ExperimentsPageDto.class)
                             )
@@ -288,7 +300,10 @@ public class ExperimentController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            )
                                     }
                             )
                     ),
@@ -296,7 +311,10 @@ public class ExperimentController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = INVALID_PAGE_REQUEST_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "BadPageRequestResponse",
+                                                    ref = "#/components/examples/BadPageRequestResponse"
+                                            )
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
@@ -327,7 +345,10 @@ public class ExperimentController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = EXPERIMENT_DETAILS_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "ExperimentDetailsResponse",
+                                                    ref = "#/components/examples/ExperimentDetailsResponse"
+                                            )
                                     },
                                     schema = @Schema(implementation = ExperimentDto.class)
                             )
@@ -336,7 +357,10 @@ public class ExperimentController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            )
                                     }
                             )
                     ),
@@ -344,7 +368,10 @@ public class ExperimentController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = DATA_NOT_FOUND_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "DataNotFoundResponse",
+                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                            )
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
@@ -376,7 +403,10 @@ public class ExperimentController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = EXPERIMENT_RESULTS_DETAILS_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "ExperimentResultsDetailsResponse",
+                                                    ref = "#/components/examples/ExperimentResultsDetailsResponse"
+                                            )
                                     },
                                     schema = @Schema(implementation = ExperimentResultsDetailsDto.class)
                             )
@@ -385,7 +415,10 @@ public class ExperimentController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            )
                                     }
                             )
                     ),
@@ -393,7 +426,10 @@ public class ExperimentController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = DATA_NOT_FOUND_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "DataNotFoundResponse",
+                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                            )
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
@@ -425,7 +461,10 @@ public class ExperimentController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = REQUESTS_STATUSES_STATISTICS_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "RequestStatusStatisticsResponse",
+                                                    ref = "#/components/examples/RequestStatusStatisticsResponse"
+                                            )
                                     },
                                     schema = @Schema(implementation = RequestStatusStatisticsDto.class)
                             )
@@ -434,7 +473,10 @@ public class ExperimentController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            )
                                     }
                             )
                     )
@@ -464,7 +506,10 @@ public class ExperimentController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = EXPERIMENT_ERS_REPORT_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "ExperimentErsReportResponse",
+                                                    ref = "#/components/examples/ExperimentErsReportResponse"
+                                            )
                                     },
                                     schema = @Schema(implementation = ExperimentErsReportDto.class)
                             )
@@ -473,7 +518,10 @@ public class ExperimentController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            )
                                     }
                             )
                     ),
@@ -481,7 +529,10 @@ public class ExperimentController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = DATA_NOT_FOUND_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "DataNotFoundResponse",
+                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                            )
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
@@ -514,7 +565,10 @@ public class ExperimentController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = EXPERIMENT_TYPES_STATISTICS_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "ExperimentsStatisticsResponse",
+                                                    ref = "#/components/examples/ExperimentsStatisticsResponse"
+                                            )
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ChartDataDto.class))
                             )
@@ -523,7 +577,10 @@ public class ExperimentController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            )
                                     }
                             )
                     )
@@ -563,7 +620,10 @@ public class ExperimentController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = EXPERIMENT_PROGRESS_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "ExperimentProgressResponse",
+                                                    ref = "#/components/examples/ExperimentProgressResponse"
+                                            )
                                     },
                                     schema = @Schema(implementation = ExperimentProgressDto.class)
                             )
@@ -572,7 +632,10 @@ public class ExperimentController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            )
                                     }
                             )
                     ),
@@ -580,7 +643,10 @@ public class ExperimentController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = DATA_NOT_FOUND_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "DataNotFoundResponse",
+                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                            )
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )

@@ -38,14 +38,7 @@ import javax.validation.constraints.Min;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
-import static com.ecaservice.server.controller.doc.ApiExamples.EVALUATION_LOGS_PAGE_REQUEST_JSON;
-import static com.ecaservice.server.controller.doc.ApiExamples.EVALUATION_LOGS_PAGE_RESPONSE_JSON;
-import static com.ecaservice.server.controller.doc.ApiExamples.EVALUATION_LOG_DETAILS_RESPONSE_JSON;
-import static com.ecaservice.server.controller.doc.ApiExamples.REQUESTS_STATUSES_STATISTICS_RESPONSE_JSON;
 import static com.ecaservice.server.util.Utils.toRequestStatusesStatistics;
-import static com.ecaservice.web.dto.doc.CommonApiExamples.DATA_NOT_FOUND_RESPONSE_JSON;
-import static com.ecaservice.web.dto.doc.CommonApiExamples.INVALID_PAGE_REQUEST_RESPONSE_JSON;
-import static com.ecaservice.web.dto.doc.CommonApiExamples.UNAUTHORIZED_RESPONSE_JSON;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
 /**
@@ -77,7 +70,10 @@ public class EvaluationController {
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
-                            @ExampleObject(value = EVALUATION_LOGS_PAGE_REQUEST_JSON)
+                            @ExampleObject(
+                                    name = "EvaluationLogsPageRequest",
+                                    ref = "#/components/examples/EvaluationLogsPageRequest"
+                            )
                     })
             }),
             responses = {
@@ -85,7 +81,10 @@ public class EvaluationController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = EVALUATION_LOGS_PAGE_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "EvaluationLogsPageResponse",
+                                                    ref = "#/components/examples/EvaluationLogsPageResponse"
+                                            )
                                     },
                                     schema = @Schema(implementation = EvaluationLogsPageDto.class)
                             )
@@ -94,7 +93,10 @@ public class EvaluationController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            )
                                     }
                             )
                     ),
@@ -102,7 +104,10 @@ public class EvaluationController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = INVALID_PAGE_REQUEST_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "BadPageRequestResponse",
+                                                    ref = "#/components/examples/BadPageRequestResponse"
+                                            )
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
@@ -131,7 +136,10 @@ public class EvaluationController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = EVALUATION_LOG_DETAILS_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "EvaluationLogDetailsResponse",
+                                                    ref = "#/components/examples/EvaluationLogDetailsResponse"
+                                            )
                                     },
                                     schema = @Schema(implementation = EvaluationLogDetailsDto.class)
                             )
@@ -140,7 +148,10 @@ public class EvaluationController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            )
                                     }
                             )
                     ),
@@ -148,7 +159,10 @@ public class EvaluationController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = DATA_NOT_FOUND_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "DataNotFoundResponse",
+                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                            )
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
@@ -180,7 +194,10 @@ public class EvaluationController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = REQUESTS_STATUSES_STATISTICS_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "RequestStatusStatisticsResponse",
+                                                    ref = "#/components/examples/RequestStatusStatisticsResponse"
+                                            )
                                     },
                                     schema = @Schema(implementation = RequestStatusStatisticsDto.class)
                             )
@@ -189,7 +206,10 @@ public class EvaluationController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            )
                                     }
                             )
                     )

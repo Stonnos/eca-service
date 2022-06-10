@@ -37,9 +37,6 @@ import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTIC
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
 import static com.ecaservice.server.config.audit.AuditCodes.GENERATE_EVALUATION_REQUESTS_REPORT;
 import static com.ecaservice.server.util.ReportHelper.download;
-import static com.ecaservice.web.dto.doc.CommonApiExamples.INVALID_PAGE_REQUEST_RESPONSE_JSON;
-import static com.ecaservice.web.dto.doc.CommonApiExamples.SIMPLE_PAGE_REQUEST_JSON;
-import static com.ecaservice.web.dto.doc.CommonApiExamples.UNAUTHORIZED_RESPONSE_JSON;
 
 /**
  * Controller for reports downloading.
@@ -72,7 +69,10 @@ public class ReportController {
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
-                            @ExampleObject(value = SIMPLE_PAGE_REQUEST_JSON)
+                            @ExampleObject(
+                                    name = "PageRequest",
+                                    ref = "#/components/examples/PageRequest"
+                            )
                     })
             }),
             responses = {
@@ -81,7 +81,10 @@ public class ReportController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = UNAUTHORIZED_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            )
                                     }
                             )
                     ),
@@ -89,7 +92,10 @@ public class ReportController {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @ExampleObject(value = INVALID_PAGE_REQUEST_RESPONSE_JSON),
+                                            @ExampleObject(
+                                                    name = "BadPageRequestResponse",
+                                                    ref = "#/components/examples/BadPageRequestResponse"
+                                            )
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
