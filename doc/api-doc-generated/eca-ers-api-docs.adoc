@@ -54,7 +54,6 @@ a|
   "classifierReport" : {
     "type" : "ClassifierReport",
     "classifierName" : "ExtraTreesClassifier",
-    "classifierDescription" : null,
     "options" : "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}",
     "classifierInputOptions" : [ {
       "key" : "Число деревьев:",
@@ -126,7 +125,7 @@ a|
     "rocCurve" : {
       "aucValue" : 0.9252015527022992,
       "specificity" : 0.751269035532995,
-      "sensitivity" : 1.0,
+      "sensitivity" : 1,
       "thresholdValue" : 0.08396763793615986
     }
   }, {
@@ -138,7 +137,7 @@ a|
     "rocCurve" : {
       "aucValue" : 0.9983739837398374,
       "specificity" : 0.9951219512195122,
-      "sensitivity" : 1.0,
+      "sensitivity" : 1,
       "thresholdValue" : 0.33422619047619045
     }
   }, {
@@ -489,7 +488,6 @@ a|
   "classifierReport" : {
     "type" : "ClassifierReport",
     "classifierName" : "ExtraTreesClassifier",
-    "classifierDescription" : null,
     "options" : "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}",
     "classifierInputOptions" : [ {
       "key" : "Число потоков",
@@ -597,7 +595,7 @@ a|
     "rocCurve" : {
       "aucValue" : 0.9984,
       "specificity" : 0.9951,
-      "sensitivity" : 1.0,
+      "sensitivity" : 1,
       "thresholdValue" : 0.3342
     }
   }, {
@@ -609,7 +607,7 @@ a|
     "rocCurve" : {
       "aucValue" : 0.9252,
       "specificity" : 0.7513,
-      "sensitivity" : 1.0,
+      "sensitivity" : 1,
       "thresholdValue" : 0.084
     }
   } ],
@@ -834,8 +832,7 @@ a|
     "numFolds" : 10,
     "numTests" : 1,
     "seed" : 1
-  },
-  "sortFields" : null
+  }
 }
 ----
 |===
@@ -874,7 +871,6 @@ a|
   "classifierReports" : [ {
     "type" : "ClassifierReport",
     "classifierName" : "ExtraTreesClassifier",
-    "classifierDescription" : null,
     "options" : "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}",
     "classifierInputOptions" : [ {
       "key" : "Число потоков",
@@ -908,7 +904,6 @@ a|
   }, {
     "type" : "ClassifierReport",
     "classifierName" : "ExtraTreesClassifier",
-    "classifierDescription" : null,
     "options" : "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}",
     "classifierInputOptions" : [ {
       "key" : "Число потоков",

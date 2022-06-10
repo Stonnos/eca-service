@@ -497,16 +497,14 @@ a|
   "fieldOrder" : 0,
   "filterFieldType" : "TEXT",
   "matchMode" : "LIKE",
-  "multiple" : false,
-  "dictionary" : null
+  "multiple" : false
 }, {
   "fieldName" : "correlationId",
   "description" : "ID корреляции",
   "fieldOrder" : 1,
   "filterFieldType" : "TEXT",
   "matchMode" : "LIKE",
-  "multiple" : false,
-  "dictionary" : null
+  "multiple" : false
 }, {
   "fieldName" : "groupCode",
   "description" : "Группа событий",
@@ -533,16 +531,14 @@ a|
   "fieldOrder" : 3,
   "filterFieldType" : "TEXT",
   "matchMode" : "LIKE",
-  "multiple" : false,
-  "dictionary" : null
+  "multiple" : false
 }, {
   "fieldName" : "eventDate",
   "description" : "Дата события",
   "fieldOrder" : 4,
   "filterFieldType" : "DATE",
   "matchMode" : "RANGE",
-  "multiple" : true,
-  "dictionary" : null
+  "multiple" : true
 } ]
 ----
 |401
@@ -595,7 +591,6 @@ a|
 [source,json]
 ----
 [ {
-  "fieldName" : null,
   "code" : "DataNotFound",
   "errorMessage" : "Entity with search key [1] not found!"
 } ]

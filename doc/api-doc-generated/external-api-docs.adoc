@@ -144,8 +144,7 @@ a|
     "dataId" : "2a35bffe-27ad-4a50-a7e0-8c871cfd7cc5",
     "dataUrl" : "data://2a35bffe-27ad-4a50-a7e0-8c871cfd7cc5"
   },
-  "responseCode" : "SUCCESS",
-  "errorDescription" : null
+  "responseCode" : "SUCCESS"
 }
 ----
 |401
@@ -277,18 +276,9 @@ a|
 {
   "payload" : {
     "requestId" : "1cbe6c49-8432-4c81-9afa-90f04a803fed",
-    "evaluationStatus" : "IN_PROGRESS",
-    "errorCode" : null,
-    "modelUrl" : null,
-    "numTestInstances" : null,
-    "numCorrect" : null,
-    "numIncorrect" : null,
-    "pctCorrect" : null,
-    "pctIncorrect" : null,
-    "meanAbsoluteError" : null
+    "evaluationStatus" : "IN_PROGRESS"
   },
-  "responseCode" : "SUCCESS",
-  "errorDescription" : null
+  "responseCode" : "SUCCESS"
 }
 ----
 |401
@@ -429,18 +419,9 @@ a|
 {
   "payload" : {
     "requestId" : "1cbe6c49-8432-4c81-9afa-90f04a803fed",
-    "evaluationStatus" : "IN_PROGRESS",
-    "errorCode" : null,
-    "modelUrl" : null,
-    "numTestInstances" : null,
-    "numCorrect" : null,
-    "numIncorrect" : null,
-    "pctCorrect" : null,
-    "pctIncorrect" : null,
-    "meanAbsoluteError" : null
+    "evaluationStatus" : "IN_PROGRESS"
   },
-  "responseCode" : "SUCCESS",
-  "errorDescription" : null
+  "responseCode" : "SUCCESS"
 }
 ----
 |401
@@ -569,7 +550,6 @@ a|
   "payload" : {
     "requestId" : "1cbe6c49-8432-4c81-9afa-90f04a803fed",
     "evaluationStatus" : "FINISHED",
-    "errorCode" : null,
     "modelUrl" : "http://localhost:8080/external-api/download-model/1cbe6c49-8432-4c81-9afa-90f04a803fed",
     "numTestInstances" : 150,
     "numCorrect" : 144,
@@ -578,8 +558,7 @@ a|
     "pctIncorrect" : 4,
     "meanAbsoluteError" : 0.02869334024628254
   },
-  "responseCode" : "SUCCESS",
-  "errorDescription" : null
+  "responseCode" : "SUCCESS"
 }
 ----
 |401
@@ -619,7 +598,6 @@ a|
 ----
 {
   "payload" : [ {
-    "fieldName" : null,
     "code" : "DataNotFound",
     "errorMessage" : "Entity with search key [1] not found!"
   } ],
@@ -737,7 +715,6 @@ a|
 ----
 {
   "payload" : [ {
-    "fieldName" : null,
     "code" : "DataNotFound",
     "errorMessage" : "Entity with search key [1] not found!"
   } ],
