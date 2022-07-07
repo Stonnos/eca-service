@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v55-insert-classifiers-configuration-history-filter-template.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Insert classifiers configuration action types dictionary -->
+    <changeSet id="insert-classifiers-configuration-action-types-dictionary" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from filter_dictionary where id = 6
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="filter_dictionary">
+            <column name="id" valueNumeric="1"/>
+            <column name="name" value="classifiersConfigurationActionType"/>
+        </insert>
+
+        <!-- Insert action type values -->
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Создана новая конфигурация"/>
+            <column name="value" value="CREATE_CONFIGURATION"/>
+            <column name="filter_dictionary_id" valueNumeric="6"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Данные конфигурации изменены"/>
+            <column name="value" value="UPDATE_CONFIGURATION"/>
+            <column name="filter_dictionary_id" valueNumeric="6"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Конфигурация сделана активной"/>
+            <column name="value" value="SET_ACTIVE"/>
+            <column name="filter_dictionary_id" valueNumeric="6"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Добавлены новые настройки классификатора"/>
+            <column name="value" value="ADD_CLASSIFIER_OPTIONS"/>
+            <column name="filter_dictionary_id" valueNumeric="6"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Удалены настройки классификатора"/>
+            <column name="value" value="REMOVE_CLASSIFIER_OPTIONS"/>
+            <column name="filter_dictionary_id" valueNumeric="6"/>
+        </insert>
+    </changeSet>
+
+    <!-- Insert classifiers configuration history filter template -->
+    <changeSet id="insert-classifiers-configuration-history-filter-template" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from filter_template where id = 4
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="filter_template">
+            <column name="id" valueNumeric="4"/>
+            <column name="template_name" value="Фильтр истории конфигурации классификаторов"/>
+            <column name="template_type" value="CLASSIFIERS_CONFIGURATION_HISTORY"/>
+            <column name="created" valueDate="now()"/>
+        </insert>
+
+        <insert tableName="filter_field">
+            <column name="field_name" value="createdBy"/>
+            <column name="description" value="Пользователь"/>
+            <column name="field_order" valueNumeric="0"/>
+            <column name="filter_field_type" value="TEXT"/>
+            <column name="match_mode" value="LIKE"/>
+            <column name="filter_template_id" valueNumeric="4"/>
+        </insert>
+
+        <insert tableName="filter_field">
+            <column name="field_name" value="actionType"/>
+            <column name="description" value="Тип события"/>
+            <column name="field_order" valueNumeric="1"/>
+            <column name="filter_field_type" value="REFERENCE"/>
+            <column name="match_mode" value="EQUALS"/>
+            <column name="filter_template_id" valueNumeric="4"/>
+            <column name="filter_dictionary_id" valueNumeric="6"/>
+        </insert>
+
+        <insert tableName="filter_field">
+            <column name="field_name" value="createdAt"/>
+            <column name="description" value="Дата события"/>
+            <column name="field_order" valueNumeric="2"/>
+            <column name="filter_field_type" value="DATE"/>
+            <column name="match_mode" value="RANGE"/>
+            <column name="multiple" valueBoolean="true"/>
+            <column name="filter_template_id" valueNumeric="6"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>
