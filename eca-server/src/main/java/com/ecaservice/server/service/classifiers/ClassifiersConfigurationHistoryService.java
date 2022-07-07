@@ -62,7 +62,7 @@ public class ClassifiersConfigurationHistoryService {
      *
      * @param classifierOptionsDatabaseModel - classifier options entity
      */
-    public void saveAddClassifierOptions(ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel) {
+    public void saveAddClassifierOptionsAction(ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel) {
         saveToHistory(ClassifiersConfigurationActionType.ADD_CLASSIFIER_OPTIONS,
                 classifierOptionsDatabaseModel.getConfiguration());
     }
@@ -72,7 +72,7 @@ public class ClassifiersConfigurationHistoryService {
      *
      * @param classifierOptionsDatabaseModel - classifier options entity
      */
-    public void saveRemoveClassifierOptions(ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel) {
+    public void saveRemoveClassifierOptionsAction(ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel) {
         saveToHistory(ClassifiersConfigurationActionType.REMOVE_CLASSIFIER_OPTIONS,
                 classifierOptionsDatabaseModel.getConfiguration());
     }

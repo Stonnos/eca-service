@@ -77,7 +77,7 @@ public class ClassifierOptionsService {
         classifiersConfigurationRepository.save(classifiersConfiguration);
         log.info("New classifier options [{}, id {}] has been saved for configuration [{}]", saved.getOptionsName(),
                 saved.getId(), configurationId);
-        classifiersConfigurationHistoryService.saveAddClassifierOptions(saved);
+        classifiersConfigurationHistoryService.saveAddClassifierOptionsAction(saved);
         return internalPopulateClassifierOptions(saved);
     }
 
@@ -103,7 +103,7 @@ public class ClassifierOptionsService {
         classifiersConfiguration.setUpdated(LocalDateTime.now());
         classifiersConfigurationRepository.save(classifiersConfiguration);
         log.info("Classifier options with id [{}] has been deleted", classifierOptionsDatabaseModel.getId());
-        classifiersConfigurationHistoryService.saveRemoveClassifierOptions(classifierOptionsDatabaseModel);
+        classifiersConfigurationHistoryService.saveRemoveClassifierOptionsAction(classifierOptionsDatabaseModel);
         return classifierOptionsDatabaseModel;
     }
 
