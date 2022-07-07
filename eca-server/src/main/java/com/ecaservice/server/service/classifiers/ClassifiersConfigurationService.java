@@ -104,7 +104,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
                 String.format("Can't delete build in configuration [%d]!", id));
         Assert.state(!classifiersConfiguration.isActive(),
                 String.format("Can't delete active configuration [%d]!", id));
-        classifiersConfigurationHistoryService.removeHistory(classifiersConfiguration);
+        classifiersConfigurationHistoryService.deleteHistory(classifiersConfiguration);
         classifiersConfigurationRepository.delete(classifiersConfiguration);
         log.info("Classifiers configuration [{}] has been deleted", id);
     }

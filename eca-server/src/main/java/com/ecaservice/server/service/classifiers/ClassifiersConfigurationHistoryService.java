@@ -78,14 +78,14 @@ public class ClassifiersConfigurationHistoryService {
     }
 
     /**
-     * Removes classifiers configuration history.
+     * Deletes classifiers configuration history.
      *
      * @param classifiersConfiguration - classifiers configuration entity
      */
-    public void removeHistory(ClassifiersConfiguration classifiersConfiguration) {
-        log.info("Starting to remove classifiers configuration [{}] history", classifiersConfiguration.getId());
+    public void deleteHistory(ClassifiersConfiguration classifiersConfiguration) {
+        log.info("Deletes to remove classifiers configuration [{}] history", classifiersConfiguration.getId());
         var deleted = classifiersConfigurationHistoryRepository.deleteAllByConfiguration(classifiersConfiguration);
-        log.info("[{}] history rows has been removed from classifiers configuration [{}]", deleted, classifiersConfiguration.getId());
+        log.info("[{}] history rows has been deleted from classifiers configuration [{}]", deleted, classifiersConfiguration.getId());
     }
 
     /**
