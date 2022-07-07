@@ -27,6 +27,11 @@
             <column name="created_by" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
+            <column name="configuration_id" type="bigint">
+                <constraints foreignKeyName="fk_classifiers_configuration__history_configuration_id"
+                             referencedTableName="classifiers_configuration"
+                             referencedColumnNames="id" nullable="false"/>
+            </column>
         </createTable>
     </changeSet>
 </databaseChangeLog>
