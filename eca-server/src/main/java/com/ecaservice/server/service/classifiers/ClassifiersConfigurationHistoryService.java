@@ -92,11 +92,11 @@ public class ClassifiersConfigurationHistoryService {
         var globalFilterFields =
                 filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIERS_CONFIGURATION_HISTORY.name());
         var sort = buildSort(pageRequestDto.getSortField(), CREATED_AT, pageRequestDto.isAscending());
-        var filter = new ClassifiersConfigurationHistoryFilter(pageRequestDto.getSearchQuery(), globalFilterFields,
-                pageRequestDto.getFilters());
+        var filter = new ClassifiersConfigurationHistoryFilter(classifiersConfiguration,
+                pageRequestDto.getSearchQuery(), globalFilterFields, pageRequestDto.getFilters());
         var pageSize = Integer.min(pageRequestDto.getSize(), appProperties.getMaxPageSize());
-        var nextPage = classifiersConfigurationHistoryRepository.findAllByConfiguration(classifiersConfiguration,
-                filter, PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
+        var nextPage = classifiersConfigurationHistoryRepository.findAll(filter,
+                PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
         var classifiersConfigurationHistoryDtoList = classifiersConfigurationHistoryMapper.map(nextPage.getContent());
         log.info("Configurations history page [{} of {}] with size [{}] has been fetched for page request [{}]",
                 nextPage.getNumber(), nextPage.getTotalPages(), nextPage.getNumberOfElements(), pageRequestDto);

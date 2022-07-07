@@ -227,9 +227,9 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
         assertThat(configurationsPage.getContent()).isNotNull().hasSize(2);
 
         //Assert configurations dto
-        Map<Long, ClassifiersConfigurationDto> classifiersConfigurationDtoMap =
-                configurationsPage.getContent().stream().collect(
-                        Collectors.toMap(ClassifiersConfigurationDto::getId, Function.identity()));
+        Map<Long, ClassifiersConfigurationDto> classifiersConfigurationDtoMap = configurationsPage.getContent()
+                .stream()
+                .collect(Collectors.toMap(ClassifiersConfigurationDto::getId, Function.identity()));
         ClassifiersConfigurationDto actualFirst = classifiersConfigurationDtoMap.get(firstConfiguration.getId());
         assertThat(actualFirst.getId()).isEqualTo(firstConfiguration.getId());
         assertThat(actualFirst.getClassifiersOptionsCount()).isEqualTo(2);

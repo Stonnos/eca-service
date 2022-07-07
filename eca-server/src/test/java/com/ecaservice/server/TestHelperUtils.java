@@ -1,61 +1,15 @@
 package com.ecaservice.server;
 
-import com.ecaservice.base.model.EvaluationRequest;
-import com.ecaservice.base.model.EvaluationResponse;
-import com.ecaservice.base.model.ExperimentRequest;
-import com.ecaservice.base.model.ExperimentType;
-import com.ecaservice.base.model.TechnicalStatus;
-import com.ecaservice.classifier.options.model.ActivationFunctionOptions;
-import com.ecaservice.classifier.options.model.AdaBoostOptions;
-import com.ecaservice.classifier.options.model.BackPropagationOptions;
-import com.ecaservice.classifier.options.model.ClassifierOptions;
-import com.ecaservice.classifier.options.model.DecisionTreeOptions;
-import com.ecaservice.classifier.options.model.ExtraTreesOptions;
-import com.ecaservice.classifier.options.model.HeterogeneousClassifierOptions;
-import com.ecaservice.classifier.options.model.J48Options;
-import com.ecaservice.classifier.options.model.KNearestNeighboursOptions;
-import com.ecaservice.classifier.options.model.LogisticOptions;
-import com.ecaservice.classifier.options.model.NeuralNetworkOptions;
-import com.ecaservice.classifier.options.model.RandomForestsOptions;
-import com.ecaservice.classifier.options.model.StackingOptions;
-import com.ecaservice.ers.dto.ClassificationCostsReport;
-import com.ecaservice.ers.dto.ClassifierOptionsRequest;
-import com.ecaservice.ers.dto.ClassifierOptionsResponse;
-import com.ecaservice.ers.dto.ClassifierReport;
-import com.ecaservice.ers.dto.EvaluationMethodReport;
-import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
-import com.ecaservice.ers.dto.RocCurveReport;
-import com.ecaservice.ers.dto.StatisticsReport;
+import com.ecaservice.base.model.*;
+import com.ecaservice.classifier.options.model.*;
+import com.ecaservice.ers.dto.*;
 import com.ecaservice.report.model.BaseReportBean;
 import com.ecaservice.server.model.MsgProperties;
-import com.ecaservice.server.model.entity.Channel;
-import com.ecaservice.server.model.entity.ClassifierInfo;
-import com.ecaservice.server.model.entity.ClassifierInputOptions;
-import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
-import com.ecaservice.server.model.entity.ClassifierOptionsRequestEntity;
-import com.ecaservice.server.model.entity.ClassifierOptionsRequestModel;
-import com.ecaservice.server.model.entity.ClassifierOptionsResponseModel;
-import com.ecaservice.server.model.entity.ClassifiersConfiguration;
-import com.ecaservice.server.model.entity.ErsResponseStatus;
-import com.ecaservice.server.model.entity.EvaluationLog;
-import com.ecaservice.server.model.entity.Experiment;
-import com.ecaservice.server.model.entity.ExperimentResultsEntity;
-import com.ecaservice.server.model.entity.ExperimentResultsRequest;
-import com.ecaservice.server.model.entity.InstancesInfo;
-import com.ecaservice.server.model.entity.RequestStatus;
+import com.ecaservice.server.model.entity.*;
 import com.ecaservice.server.model.evaluation.ClassifierOptionsRequestSource;
 import com.ecaservice.server.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.server.model.experiment.InitializationParams;
-import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
-import com.ecaservice.web.dto.model.EnumDto;
-import com.ecaservice.web.dto.model.EvaluationResultsDto;
-import com.ecaservice.web.dto.model.EvaluationResultsStatus;
-import com.ecaservice.web.dto.model.FilterDictionaryDto;
-import com.ecaservice.web.dto.model.FilterFieldDto;
-import com.ecaservice.web.dto.model.FilterFieldType;
-import com.ecaservice.web.dto.model.FormTemplateDto;
-import com.ecaservice.web.dto.model.MatchMode;
-import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.core.evaluation.Evaluation;
@@ -84,12 +38,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static com.ecaservice.server.util.ClassifierOptionsHelper.toJsonString;
@@ -153,6 +102,7 @@ public class TestHelperUtils {
     private static final int NUM_THREADS = 3;
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    public static final String MESSAGE_TEXT = "Message text";
 
     /**
      * Creates page request dto.
@@ -333,6 +283,27 @@ public class TestHelperUtils {
                 DigestUtils.md5DigestAsHex(config.getBytes(StandardCharsets.UTF_8)));
         classifierOptionsDatabaseModel.setCreationDate(LocalDateTime.now());
         return classifierOptionsDatabaseModel;
+    }
+
+    /**
+     * Creates classifiers configuration history entity.
+     *
+     * @param classifiersConfiguration - classifiers configuration entity
+     * @param actionType               - action type
+     * @param createdAt                - created at
+     * @return classifiers configuration history entity
+     */
+    public static ClassifiersConfigurationHistoryEntity createClassifiersConfigurationHistory(
+            ClassifiersConfiguration classifiersConfiguration,
+            ClassifiersConfigurationActionType actionType,
+            LocalDateTime createdAt) {
+        var classifiersConfigurationHistoryEntity = new ClassifiersConfigurationHistoryEntity();
+        classifiersConfigurationHistoryEntity.setActionType(actionType);
+        classifiersConfigurationHistoryEntity.setConfiguration(classifiersConfiguration);
+        classifiersConfigurationHistoryEntity.setMessageText(MESSAGE_TEXT);
+        classifiersConfigurationHistoryEntity.setCreatedAt(createdAt);
+        classifiersConfigurationHistoryEntity.setCreatedBy(CREATED_BY);
+        return classifiersConfigurationHistoryEntity;
     }
 
     /**
