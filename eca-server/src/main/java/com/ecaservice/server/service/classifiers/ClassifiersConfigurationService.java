@@ -56,6 +56,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
     private final ClassifiersConfigurationMapper classifiersConfigurationMapper;
     private final ClassifierOptionsDatabaseModelMapper classifierOptionsDatabaseModelMapper;
     private final AppProperties appProperties;
+    private final ClassifiersConfigurationHistoryService classifiersConfigurationHistoryService;
     private final ClassifiersConfigurationRepository classifiersConfigurationRepository;
     private final ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;
 
@@ -66,6 +67,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
      * @return classifiers configuration entity
      */
     @Audit(value = ADD_CONFIGURATION, correlationIdKey = "#result.id")
+    @Transactional
     public ClassifiersConfiguration save(CreateClassifiersConfigurationDto configurationDto) {
         log.info("Starting to save new classifiers configuration [{}]", configurationDto.getConfigurationName());
         var classifiersConfiguration = classifiersConfigurationMapper.map(configurationDto);
@@ -73,6 +75,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
         classifiersConfiguration.setCreationDate(LocalDateTime.now());
         var savedConfiguration = classifiersConfigurationRepository.save(classifiersConfiguration);
         log.info("Classifiers configuration [{}] has been saved", savedConfiguration.getConfigurationName());
+        classifiersConfigurationHistoryService.saveCreateConfigurationAction(savedConfiguration);
         return savedConfiguration;
     }
 
@@ -132,6 +135,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
         log.info("Classifiers configuration [{}] copy [{}] has been created with new id [{}]",
                 classifiersConfiguration.getId(), classifiersConfigurationCopy.getConfigurationName(),
                 classifiersConfigurationCopy.getId());
+        classifiersConfigurationHistoryService.saveCreateConfigurationAction(classifiersConfigurationCopy);
         return classifiersConfigurationCopy;
     }
 
@@ -141,6 +145,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
      * @param id - configuration id
      */
     @Locked(lockName = "setActiveClassifiersConfiguration")
+    @Transactional
     public void setActive(long id) {
         log.info("Request to set classifiers configuration [{}] as active", id);
         var classifiersConfiguration = getById(id);
@@ -154,6 +159,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
             classifiersConfiguration.setActive(true);
             classifiersConfigurationRepository.saveAll(Arrays.asList(classifiersConfiguration, activeConfiguration));
             log.info("Classifiers configuration [{}] has been set as active.", classifiersConfiguration.getId());
+            classifiersConfigurationHistoryService.saveSetActiveConfigurationAction(classifiersConfiguration);
         }
     }
 
