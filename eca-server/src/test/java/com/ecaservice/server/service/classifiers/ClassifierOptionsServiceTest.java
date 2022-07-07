@@ -3,9 +3,11 @@ package com.ecaservice.server.service.classifiers;
 import com.ecaservice.classifier.options.model.AdaBoostOptions;
 import com.ecaservice.classifier.options.model.LogisticOptions;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.mapping.ClassifierOptionsDatabaseModelMapperImpl;
+import com.ecaservice.server.mapping.ClassifiersConfigurationHistoryMapperImpl;
 import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.server.model.entity.ClassifiersConfiguration;
@@ -44,7 +46,8 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import({AppProperties.class, ClassifierOptionsService.class, ClassifierOptionsDatabaseModelMapperImpl.class,
-        DateTimeConverter.class, ClassifiersConfigurationHistoryService.class})
+        DateTimeConverter.class, ClassifiersConfigurationHistoryService.class,
+        ClassifiersConfigurationHistoryMapperImpl.class})
 class ClassifierOptionsServiceTest extends AbstractJpaTest {
 
     private static final int PAGE_NUMBER = 0;
@@ -61,6 +64,8 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
     private ClassifiersConfigurationRepository classifiersConfigurationRepository;
     @MockBean
     private UserService userService;
+    @MockBean
+    private FilterService filterService;
     @MockBean
     private ClassifierOptionsProcessor classifierOptionsProcessor;
     @MockBean
