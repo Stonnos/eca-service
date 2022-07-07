@@ -102,6 +102,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
      * @param id - classifiers configuration id
      */
     @Audit(value = DELETE_CONFIGURATION, correlationIdKey = "#id")
+    @Transactional
     public void delete(long id) {
         log.info("Starting to delete classifiers configuration [{}]", id);
         var classifiersConfiguration = getById(id);
@@ -109,6 +110,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
                 String.format("Can't delete build in configuration [%d]!", id));
         Assert.state(!classifiersConfiguration.isActive(),
                 String.format("Can't delete active configuration [%d]!", id));
+        classifiersConfigurationHistoryService.removeHistory(classifiersConfiguration);
         classifiersConfigurationRepository.delete(classifiersConfiguration);
         log.info("Classifiers configuration [{}] has been deleted", id);
     }

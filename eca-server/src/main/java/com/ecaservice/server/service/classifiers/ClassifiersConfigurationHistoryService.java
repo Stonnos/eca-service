@@ -78,6 +78,17 @@ public class ClassifiersConfigurationHistoryService {
     }
 
     /**
+     * Removes classifiers configuration history.
+     *
+     * @param classifiersConfiguration - classifiers configuration entity
+     */
+    public void removeHistory(ClassifiersConfiguration classifiersConfiguration) {
+        log.info("Starting to remove classifiers configuration [{}] history", classifiersConfiguration.getId());
+        var deleted = classifiersConfigurationHistoryRepository.deleteAllByConfiguration(classifiersConfiguration);
+        log.info("[{}] history rows has been removed from classifiers configuration [{}]", deleted, classifiersConfiguration.getId());
+    }
+
+    /**
      * Gets classifiers configuration history with specified filtering params.
      *
      * @param configurationId - configuration id

@@ -1,9 +1,9 @@
 package com.ecaservice.server.service.classifiers;
 
-import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.report.model.ClassifiersConfigurationBean;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.mapping.ClassifierOptionsDatabaseModelMapperImpl;
 import com.ecaservice.server.mapping.ClassifiersConfigurationHistoryMapperImpl;
@@ -17,11 +17,7 @@ import com.ecaservice.server.repository.ClassifiersConfigurationHistoryRepositor
 import com.ecaservice.server.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.UserService;
-import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
-import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
-import com.ecaservice.web.dto.model.PageDto;
-import com.ecaservice.web.dto.model.PageRequestDto;
-import com.ecaservice.web.dto.model.UpdateClassifiersConfigurationDto;
+import com.ecaservice.web.dto.model.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -130,11 +126,14 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
     @Test
     void testDeleteConfiguration() {
         ClassifiersConfiguration classifiersConfiguration = saveConfiguration(false, false);
+        var classifiersConfigurationHistory = TestHelperUtils.createClassifiersConfigurationHistory(classifiersConfiguration, ClassifiersConfigurationActionType.CREATE_CONFIGURATION, LocalDateTime.now());
+        classifiersConfigurationHistoryRepository.save(classifiersConfigurationHistory);
         classifiersConfigurationService.delete(classifiersConfiguration.getId());
         ClassifiersConfiguration actualConfiguration =
                 classifiersConfigurationRepository.findById(classifiersConfiguration.getId()).orElse(null);
         assertThat(actualConfiguration).isNull();
         assertThat(classifierOptionsDatabaseModelRepository.count()).isZero();
+        assertThat(classifiersConfigurationHistoryRepository.count()).isZero();
     }
 
     @Test
