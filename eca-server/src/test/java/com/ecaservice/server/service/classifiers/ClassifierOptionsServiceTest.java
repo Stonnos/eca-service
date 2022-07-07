@@ -9,7 +9,9 @@ import com.ecaservice.server.mapping.ClassifierOptionsDatabaseModelMapperImpl;
 import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.server.model.entity.ClassifiersConfiguration;
+import com.ecaservice.server.model.entity.ClassifiersConfigurationActionType;
 import com.ecaservice.server.repository.ClassifierOptionsDatabaseModelRepository;
+import com.ecaservice.server.repository.ClassifiersConfigurationHistoryRepository;
 import com.ecaservice.server.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.UserService;
@@ -54,6 +56,8 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
     @Inject
     private ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;
     @Inject
+    private ClassifiersConfigurationHistoryRepository classifiersConfigurationHistoryRepository;
+    @Inject
     private ClassifiersConfigurationRepository classifiersConfigurationRepository;
     @MockBean
     private UserService userService;
@@ -73,6 +77,7 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
     @Override
     public void deleteAll() {
         classifierOptionsDatabaseModelRepository.deleteAll();
+        classifiersConfigurationHistoryRepository.deleteAll();
         classifiersConfigurationRepository.deleteAll();
     }
 
@@ -151,6 +156,8 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
                 classifierOptionsDatabaseModel.getConfiguration().getId()).orElse(null);
         assertThat(actualConfiguration).isNotNull();
         assertThat(actualConfiguration.getUpdated()).isNotNull();
+        verifyClassifiersConfigurationHistory(classifiersConfiguration,
+                ClassifiersConfigurationActionType.REMOVE_CLASSIFIER_OPTIONS);
     }
 
     @Test
@@ -196,6 +203,8 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
         assertThat(actual.getCreationDate()).isNotNull();
         assertThat(actual.getConfiguration().getUpdated()).isNotNull();
         assertThat(actual.getCreatedBy()).isEqualTo(USER_NAME);
+        verifyClassifiersConfigurationHistory(actual.getConfiguration(),
+                ClassifiersConfigurationActionType.ADD_CLASSIFIER_OPTIONS);
     }
 
     @Test
@@ -304,6 +313,17 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
         assertThat(classifierOptionsDatabaseModelRepository.existsById(latestFirst.getId())).isFalse();
         assertThat(classifierOptionsDatabaseModelRepository.existsById(latestSecond.getId())).isTrue();
         assertThat(classifierOptionsDatabaseModelRepository.existsById(newFirst.getId())).isTrue();
+    }
+
+    private void verifyClassifiersConfigurationHistory(ClassifiersConfiguration classifiersConfiguration,
+                                                       ClassifiersConfigurationActionType expectedActionType) {
+        var classifiersConfigurationHistoryList = classifiersConfigurationHistoryRepository.findAll();
+        assertThat(classifiersConfigurationHistoryList).hasSize(1);
+        var classifiersConfigurationHistory = classifiersConfigurationHistoryList.iterator().next();
+        assertThat(classifiersConfigurationHistory.getConfiguration().getId())
+                .isEqualTo(classifiersConfiguration.getId());
+        assertThat(classifiersConfigurationHistory.getCreatedBy()).isEqualTo(USER_NAME);
+        assertThat(classifiersConfigurationHistory.getActionType()).isEqualTo(expectedActionType);
     }
 
     private ClassifierOptionsDatabaseModel saveClassifierOptions(boolean buildIn) {
