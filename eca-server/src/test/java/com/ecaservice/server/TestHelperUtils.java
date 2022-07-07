@@ -334,6 +334,21 @@ public class TestHelperUtils {
     }
 
     /**
+     * Creates classifiers configuration history dto.
+     *
+     * @return classifiers configuration history dto
+     */
+    public static ClassifiersConfigurationHistoryDto createClassifiersConfigurationHistoryDto() {
+        var classifiersConfigurationHistoryDto = new ClassifiersConfigurationHistoryDto();
+        classifiersConfigurationHistoryDto.setCreatedAt(LocalDateTime.now());
+        classifiersConfigurationHistoryDto.setCreatedBy(CREATED_BY);
+        classifiersConfigurationHistoryDto.setMessageText(MESSAGE_TEXT);
+        var actionType = ClassifiersConfigurationActionType.CREATE_CONFIGURATION;
+        classifiersConfigurationHistoryDto.setActionType(new EnumDto(actionType.name(), actionType.getDescription()));
+        return classifiersConfigurationHistoryDto;
+    }
+
+    /**
      * Create classifier info.
      *
      * @return classifier info
