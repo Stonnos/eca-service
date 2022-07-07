@@ -14,7 +14,7 @@
         </preConditions>
 
         <insert tableName="filter_dictionary">
-            <column name="id" valueNumeric="1"/>
+            <column name="id" valueNumeric="6"/>
             <column name="name" value="classifiersConfigurationActionType"/>
         </insert>
 
@@ -87,7 +87,7 @@
             <column name="filter_field_type" value="DATE"/>
             <column name="match_mode" value="RANGE"/>
             <column name="multiple" valueBoolean="true"/>
-            <column name="filter_template_id" valueNumeric="6"/>
+            <column name="filter_template_id" valueNumeric="4"/>
         </insert>
     </changeSet>
 
