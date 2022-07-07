@@ -42,7 +42,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import({AppProperties.class, ClassifierOptionsService.class, ClassifierOptionsDatabaseModelMapperImpl.class,
-        DateTimeConverter.class})
+        DateTimeConverter.class, ClassifiersConfigurationHistoryService.class})
 class ClassifierOptionsServiceTest extends AbstractJpaTest {
 
     private static final int PAGE_NUMBER = 0;

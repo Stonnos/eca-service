@@ -43,7 +43,8 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import({ClassifiersConfigurationService.class, ClassifiersConfigurationMapperImpl.class, AppProperties.class,
-        DateTimeConverter.class, ClassifierOptionsDatabaseModelMapperImpl.class})
+        DateTimeConverter.class, ClassifierOptionsDatabaseModelMapperImpl.class,
+        ClassifiersConfigurationHistoryService.class})
 class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
 
     private static final String TEST_CONFIG = "test_config";
