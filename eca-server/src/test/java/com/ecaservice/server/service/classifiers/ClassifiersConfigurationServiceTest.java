@@ -1,6 +1,7 @@
 package com.ecaservice.server.service.classifiers;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.common.web.exception.InvalidOperationException;
 import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.report.model.ClassifiersConfigurationBean;
 import com.ecaservice.server.TestHelperUtils;
@@ -188,6 +189,12 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
         newActive.setConfigurationName(TEST_CONFIGURATION_NAME);
         classifiersConfigurationRepository.save(newActive);
         assertThrows(IllegalStateException.class, () -> classifiersConfigurationService.setActive(newActive.getId()));
+    }
+
+    @Test
+    void testSetAlreadyActiveConfiguration() {
+        ClassifiersConfiguration active = saveConfiguration(true, false);
+        assertThrows(InvalidOperationException.class, () -> classifiersConfigurationService.setActive(active.getId()));
     }
 
     @Test

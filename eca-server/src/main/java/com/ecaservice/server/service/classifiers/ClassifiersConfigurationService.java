@@ -1,6 +1,7 @@
 package com.ecaservice.server.service.classifiers;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.common.web.exception.InvalidOperationException;
 import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.core.lock.annotation.Locked;
@@ -16,11 +17,7 @@ import com.ecaservice.server.repository.ClassifierOptionsDatabaseModelRepository
 import com.ecaservice.server.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.server.service.PageRequestService;
 import com.ecaservice.server.service.UserService;
-import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
-import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
-import com.ecaservice.web.dto.model.PageDto;
-import com.ecaservice.web.dto.model.PageRequestDto;
-import com.ecaservice.web.dto.model.UpdateClassifiersConfigurationDto;
+import com.ecaservice.web.dto.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -35,10 +32,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
-import static com.ecaservice.server.config.audit.AuditCodes.ADD_CONFIGURATION;
-import static com.ecaservice.server.config.audit.AuditCodes.COPY_CONFIGURATION;
-import static com.ecaservice.server.config.audit.AuditCodes.DELETE_CONFIGURATION;
-import static com.ecaservice.server.config.audit.AuditCodes.RENAME_CONFIGURATION;
+import static com.ecaservice.server.config.audit.AuditCodes.*;
 import static com.ecaservice.server.model.entity.BaseEntity_.CREATION_DATE;
 
 /**
@@ -156,7 +150,9 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
         Assert.state(classifierOptionsDatabaseModelRepository.countByConfiguration(classifiersConfiguration) > 0L,
                 String.format("Can't set configuration [%d] as active, because its has no one classifiers options!",
                         classifiersConfiguration.getId()));
-        if (!classifiersConfiguration.getId().equals(activeConfiguration.getId())) {
+        if (classifiersConfiguration.getId().equals(activeConfiguration.getId())) {
+            throw new InvalidOperationException(String.format("Classifiers configuration [%d] is already active!", id));
+        } else {
             activeConfiguration.setActive(false);
             classifiersConfiguration.setActive(true);
             classifiersConfigurationRepository.saveAll(Arrays.asList(classifiersConfiguration, activeConfiguration));
