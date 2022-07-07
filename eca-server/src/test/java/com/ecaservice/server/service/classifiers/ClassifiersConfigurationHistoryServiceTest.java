@@ -83,7 +83,7 @@ class ClassifiersConfigurationHistoryServiceTest extends AbstractJpaTest {
         assertThat(nextPage.getTotalCount()).isOne();
         assertThat(nextPage.getContent()).hasSize(1);
         var next = nextPage.getContent().iterator().next();
-        assertThat(next.getActionType().getValue()).isEqualTo(ClassifiersConfigurationActionType.CREATE_CONFIGURATION);
+        assertThat(next.getActionType().getValue()).isEqualTo(ClassifiersConfigurationActionType.CREATE_CONFIGURATION.name());
     }
 
     private ClassifiersConfiguration createAndSaveConfiguration() {
