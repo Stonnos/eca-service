@@ -28,7 +28,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="configuration_id" type="bigint">
-                <constraints foreignKeyName="fk_classifiers_configuration__history_configuration_id"
+                <constraints foreignKeyName="fk_classifiers_configuration_history_configuration_id"
                              referencedTableName="classifiers_configuration"
                              referencedColumnNames="id" nullable="false"/>
             </column>
