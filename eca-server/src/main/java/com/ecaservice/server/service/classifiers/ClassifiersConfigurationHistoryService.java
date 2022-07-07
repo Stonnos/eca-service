@@ -72,7 +72,7 @@ public class ClassifiersConfigurationHistoryService {
         classifiersConfigurationHistory.setMessageText(actionType.getDescription());
         classifiersConfigurationHistory.setConfiguration(classifiersConfiguration);
         classifiersConfigurationHistory.setCreatedBy(userService.getCurrentUser());
-        classifiersConfigurationHistory.setCreationDate(LocalDateTime.now());
+        classifiersConfigurationHistory.setCreatedAt(LocalDateTime.now());
         classifiersConfigurationHistoryRepository.save(classifiersConfigurationHistory);
         log.info("Classifiers configuration [{}] action [{}] has been saved to history",
                 classifiersConfiguration.getId(), actionType);

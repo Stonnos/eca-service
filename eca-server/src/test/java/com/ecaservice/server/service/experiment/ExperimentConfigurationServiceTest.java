@@ -12,6 +12,7 @@ import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.UserService;
 import com.ecaservice.server.service.classifiers.ClassifierOptionsProcessor;
 import com.ecaservice.server.service.classifiers.ClassifierOptionsService;
+import com.ecaservice.server.service.classifiers.ClassifiersConfigurationHistoryService;
 import com.ecaservice.server.service.classifiers.ClassifiersTemplateProvider;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -33,7 +34,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * @author Roman Batygin
  */
 @Import({ExperimentConfig.class, AppProperties.class, ClassifierOptionsService.class,
-        ClassifierOptionsDatabaseModelMapperImpl.class, DateTimeConverter.class})
+        ClassifierOptionsDatabaseModelMapperImpl.class, DateTimeConverter.class,
+        ClassifiersConfigurationHistoryService.class})
 class ExperimentConfigurationServiceTest extends AbstractJpaTest {
 
     @MockBean

@@ -1,10 +1,9 @@
 package com.ecaservice.server.model.entity;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 /**
  * Classifiers configuration history persistence entity.
@@ -12,11 +11,25 @@ import javax.persistence.*;
  * @author Roman Batygin
  */
 @Data
-@ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "classifiers_configuration_history")
-public class ClassifiersConfigurationHistoryEntity extends BaseEntity {
+public class ClassifiersConfigurationHistoryEntity {
+
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    /**
+     * Created at
+     */
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+
+    /**
+     * User name
+     */
+    @Column(name = "created_by", nullable = false)
+    private String createdBy;
 
     /**
      * Action type
