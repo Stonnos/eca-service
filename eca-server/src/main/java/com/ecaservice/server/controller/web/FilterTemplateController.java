@@ -244,4 +244,45 @@ public class FilterTemplateController {
     public FilterDictionaryDto getEvaluationMethodDictionary() {
         return filterService.getFilterDictionary(FilterDictionaries.EVALUATION_METHOD);
     }
+
+    /**
+     * Gets classifiers configuration history filter fields.
+     *
+     * @return filter fields list
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @Operation(
+            description = "Gets classifiers configuration history filter fields",
+            summary = "Gets classifiers configuration history filter fields",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "ExperimentFilterFieldsResponse",
+                                                    ref = "#/components/examples/ExperimentFilterFieldsResponse"
+                                            )
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = FilterFieldDto.class))
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            )
+                                    }
+                            )
+                    )
+            }
+    )
+    @GetMapping(value = "/classifiers-configuration-history")
+    public List<FilterFieldDto> getClassifiersConfigurationHistoryFilter() {
+        return filterService.getFilterFields(FilterTemplateType.CLASSIFIERS_CONFIGURATION_HISTORY.name());
+    }
 }
