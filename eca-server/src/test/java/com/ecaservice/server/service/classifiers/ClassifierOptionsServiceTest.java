@@ -17,6 +17,7 @@ import com.ecaservice.server.repository.ClassifiersConfigurationHistoryRepositor
 import com.ecaservice.server.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.UserService;
+import com.ecaservice.server.service.message.template.MessageTemplateProcessor;
 import com.ecaservice.web.dto.model.ClassifierOptionsDto;
 import com.ecaservice.web.dto.model.FormTemplateDto;
 import com.ecaservice.web.dto.model.InputOptionDto;
@@ -37,6 +38,7 @@ import static com.ecaservice.server.TestHelperUtils.createClassifiersConfigurati
 import static com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel_.CREATION_DATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -55,6 +57,8 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
     private static final String OPTIONS = "options";
     private static final long ID = 1L;
     private static final String USER_NAME = "user";
+    private static final String MESSAGE = "message";
+    private static final String TEMPLATE_TITLE = "title";
 
     @Inject
     private ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;
@@ -70,13 +74,18 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
     private ClassifierOptionsProcessor classifierOptionsProcessor;
     @MockBean
     private ClassifiersTemplateProvider classifiersTemplateProvider;
+    @MockBean
+    private MessageTemplateProcessor messageTemplateProcessor;
     @Inject
     private ClassifierOptionsService classifierOptionsService;
 
     @Override
     public void init() {
         when(userService.getCurrentUser()).thenReturn(USER_NAME);
-        when(classifiersTemplateProvider.getClassifierTemplateByClass(anyString())).thenReturn(new FormTemplateDto());
+        var formTemplate = new FormTemplateDto();
+        formTemplate.setTemplateTitle(TEMPLATE_TITLE);
+        when(classifiersTemplateProvider.getClassifierTemplateByClass(anyString())).thenReturn(formTemplate);
+        when(messageTemplateProcessor.process(anyString(), anyMap())).thenReturn(MESSAGE);
     }
 
     @Override

@@ -13,6 +13,7 @@ import com.ecaservice.server.model.entity.FilterTemplateType;
 import com.ecaservice.server.repository.ClassifiersConfigurationHistoryRepository;
 import com.ecaservice.server.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.server.service.UserService;
+import com.ecaservice.server.service.message.template.MessageTemplateProcessor;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationHistoryDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -22,9 +23,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.Map;
+import java.util.function.Supplier;
 
 import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.server.model.entity.ClassifiersConfigurationHistoryEntity_.CREATED_AT;
+import static com.ecaservice.server.service.message.template.MessageTemplateVariables.CLASSIFIERS_CONFIGURATION_PARAM;
+import static com.ecaservice.server.service.message.template.MessageTemplateVariables.CLASSIFIER_OPTIONS_DESCRIPTION;
+import static com.ecaservice.server.service.message.template.MessageTemplateVariables.CLASSIFIER_OPTIONS_ID;
 
 /**
  * Classifiers configuration history service.
@@ -40,6 +47,8 @@ public class ClassifiersConfigurationHistoryService {
     private final UserService userService;
     private final FilterService filterService;
     private final ClassifiersConfigurationHistoryMapper classifiersConfigurationHistoryMapper;
+    private final MessageTemplateProcessor messageTemplateProcessor;
+    private final ClassifiersTemplateProvider classifiersTemplateProvider;
     private final ClassifiersConfigurationRepository classifiersConfigurationRepository;
     private final ClassifiersConfigurationHistoryRepository classifiersConfigurationHistoryRepository;
 
@@ -49,7 +58,18 @@ public class ClassifiersConfigurationHistoryService {
      * @param classifiersConfiguration - classifiers configuration entity
      */
     public void saveCreateConfigurationAction(ClassifiersConfiguration classifiersConfiguration) {
-        saveToHistory(ClassifiersConfigurationActionType.CREATE_CONFIGURATION, classifiersConfiguration);
+        saveToHistory(ClassifiersConfigurationActionType.CREATE_CONFIGURATION, classifiersConfiguration,
+                () -> Collections.singletonMap(CLASSIFIERS_CONFIGURATION_PARAM, classifiersConfiguration));
+    }
+
+    /**
+     * Saves updated classifiers configuration to history.
+     *
+     * @param classifiersConfiguration - classifiers configuration entity
+     */
+    public void saveUpdateConfigurationAction(ClassifiersConfiguration classifiersConfiguration) {
+        saveToHistory(ClassifiersConfigurationActionType.UPDATE_CONFIGURATION, classifiersConfiguration,
+                () -> Collections.singletonMap(CLASSIFIERS_CONFIGURATION_PARAM, classifiersConfiguration));
     }
 
     /**
@@ -58,7 +78,7 @@ public class ClassifiersConfigurationHistoryService {
      * @param classifiersConfiguration - classifiers configuration entity
      */
     public void saveSetActiveConfigurationAction(ClassifiersConfiguration classifiersConfiguration) {
-        saveToHistory(ClassifiersConfigurationActionType.SET_ACTIVE, classifiersConfiguration);
+        saveToHistory(ClassifiersConfigurationActionType.SET_ACTIVE, classifiersConfiguration, Collections::emptyMap);
     }
 
     /**
@@ -68,7 +88,8 @@ public class ClassifiersConfigurationHistoryService {
      */
     public void saveAddClassifierOptionsAction(ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel) {
         saveToHistory(ClassifiersConfigurationActionType.ADD_CLASSIFIER_OPTIONS,
-                classifierOptionsDatabaseModel.getConfiguration());
+                classifierOptionsDatabaseModel.getConfiguration(),
+                () -> buildClassifierOptionsParams(classifierOptionsDatabaseModel));
     }
 
     /**
@@ -78,7 +99,8 @@ public class ClassifiersConfigurationHistoryService {
      */
     public void saveRemoveClassifierOptionsAction(ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel) {
         saveToHistory(ClassifiersConfigurationActionType.REMOVE_CLASSIFIER_OPTIONS,
-                classifierOptionsDatabaseModel.getConfiguration());
+                classifierOptionsDatabaseModel.getConfiguration(),
+                () -> buildClassifierOptionsParams(classifierOptionsDatabaseModel));
     }
 
     /**
@@ -120,13 +142,25 @@ public class ClassifiersConfigurationHistoryService {
                 nextPage.getTotalElements());
     }
 
+    private Map<String, Object> buildClassifierOptionsParams(
+            ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel) {
+        var classifierFormTemplate = classifiersTemplateProvider.getClassifierTemplateByClass(
+                classifierOptionsDatabaseModel.getOptionsName());
+        return Map.of(
+                CLASSIFIER_OPTIONS_ID, classifierOptionsDatabaseModel.getId(),
+                CLASSIFIER_OPTIONS_DESCRIPTION, classifierFormTemplate.getTemplateTitle()
+        );
+    }
+
     private void saveToHistory(ClassifiersConfigurationActionType actionType,
-                               ClassifiersConfiguration classifiersConfiguration) {
+                               ClassifiersConfiguration classifiersConfiguration,
+                               Supplier<Map<String, Object>> messageParamsSupplier) {
         log.info("Starting to save classifiers configuration [{}] action [{}] to history",
                 classifiersConfiguration.getId(), actionType);
         var classifiersConfigurationHistory = new ClassifiersConfigurationHistoryEntity();
         classifiersConfigurationHistory.setActionType(actionType);
-        classifiersConfigurationHistory.setMessageText(actionType.getDescription());
+        String messageText = messageTemplateProcessor.process(actionType.name(), messageParamsSupplier.get());
+        classifiersConfigurationHistory.setMessageText(messageText);
         classifiersConfigurationHistory.setConfiguration(classifiersConfiguration);
         classifiersConfigurationHistory.setCreatedBy(userService.getCurrentUser());
         classifiersConfigurationHistory.setCreatedAt(LocalDateTime.now());

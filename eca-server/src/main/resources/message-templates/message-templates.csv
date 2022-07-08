@@ -1,6 +1,6 @@
 id;message_text
-CREATE_CONFIGURATION;Создана конфигурация с именем ${configuration.configurationName}
-UPDATE_CONFIGURATION;Изменено название конфигурации. Новое название - ${configuration.configurationName}
+CREATE_CONFIGURATION;Создана конфигурация с именем ${classifiersConfiguration.configurationName}
+UPDATE_CONFIGURATION;Изменено название конфигурации. Новое название - ${classifiersConfiguration.configurationName}
 SET_ACTIVE;Конфигурация сделана активной
-ADD_CLASSIFIER_OPTIONS;Добавлены настройки классификатора [${optionsDescription}]. Идентификатор настроек [${optionsId}]
-REMOVE_CLASSIFIER_OPTIONS;Удалены настройки классификатора [${optionsDescription}]. Идентификатор настроек [${optionsId}]
+ADD_CLASSIFIER_OPTIONS;Добавлены настройки классификатора [${classifierOptionsDescription}]. Идентификатор настроек [${classifierOptionsId}]
+REMOVE_CLASSIFIER_OPTIONS;Удалены настройки классификатора [${classifierOptionsDescription}]. Идентификатор настроек [${classifierOptionsId}]

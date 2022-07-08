@@ -18,8 +18,10 @@ import com.ecaservice.server.repository.ClassifiersConfigurationHistoryRepositor
 import com.ecaservice.server.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.UserService;
+import com.ecaservice.server.service.message.template.MessageTemplateProcessor;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
+import com.ecaservice.web.dto.model.FormTemplateDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.UpdateClassifiersConfigurationDto;
@@ -39,6 +41,8 @@ import java.util.stream.Collectors;
 import static com.ecaservice.server.model.entity.BaseEntity_.CREATION_DATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 /**
@@ -58,6 +62,7 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
     private static final long ID = 1L;
     private static final int PAGE_NUMBER = 0;
     private static final int PAGE_SIZE = 10;
+    private static final String MESSAGE = "message";
 
     @Inject
     private ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;
@@ -71,10 +76,16 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
     private FilterService filterService;
     @MockBean
     private UserService userService;
+    @MockBean
+    private ClassifiersTemplateProvider classifiersTemplateProvider;
+    @MockBean
+    private MessageTemplateProcessor messageTemplateProcessor;
 
     @Override
     public void init() {
         when(userService.getCurrentUser()).thenReturn(USER_NAME);
+        when(classifiersTemplateProvider.getClassifierTemplateByClass(anyString())).thenReturn(new FormTemplateDto());
+        when(messageTemplateProcessor.process(anyString(), anyMap())).thenReturn(MESSAGE);
     }
 
     @Override

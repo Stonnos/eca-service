@@ -95,6 +95,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
         classifiersConfigurationRepository.save(classifiersConfiguration);
         log.info("Classifiers configuration [{}] has been updated with name [{}]", classifiersConfiguration.getId(),
                 classifiersConfiguration.getConfigurationName());
+        classifiersConfigurationHistoryService.saveUpdateConfigurationAction(classifiersConfiguration);
     }
 
     /**

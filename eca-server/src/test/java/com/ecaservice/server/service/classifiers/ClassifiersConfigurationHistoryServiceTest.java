@@ -10,6 +10,7 @@ import com.ecaservice.server.repository.ClassifiersConfigurationHistoryRepositor
 import com.ecaservice.server.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.UserService;
+import com.ecaservice.server.service.message.template.MessageTemplateProcessor;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -53,6 +54,10 @@ class ClassifiersConfigurationHistoryServiceTest extends AbstractJpaTest {
     private FilterService filterService;
     @MockBean
     private UserService userService;
+    @MockBean
+    private MessageTemplateProcessor messageTemplateProcessor;
+    @MockBean
+    private ClassifiersTemplateProvider classifiersTemplateProvider;
 
     @Override
     public void init() {

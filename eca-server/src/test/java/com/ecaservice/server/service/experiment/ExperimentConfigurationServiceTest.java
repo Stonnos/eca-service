@@ -16,6 +16,7 @@ import com.ecaservice.server.service.classifiers.ClassifierOptionsProcessor;
 import com.ecaservice.server.service.classifiers.ClassifierOptionsService;
 import com.ecaservice.server.service.classifiers.ClassifiersConfigurationHistoryService;
 import com.ecaservice.server.service.classifiers.ClassifiersTemplateProvider;
+import com.ecaservice.server.service.message.template.MessageTemplateProcessor;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -46,6 +47,8 @@ class ExperimentConfigurationServiceTest extends AbstractJpaTest {
     private FilterService filterService;
     @MockBean
     private ClassifierOptionsProcessor classifierOptionsProcessor;
+    @MockBean
+    private MessageTemplateProcessor messageTemplateProcessor;
     @MockBean
     private ClassifiersTemplateProvider classifiersTemplateProvider;
     @Inject
