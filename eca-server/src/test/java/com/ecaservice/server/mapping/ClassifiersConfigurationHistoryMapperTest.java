@@ -27,14 +27,22 @@ class ClassifiersConfigurationHistoryMapperTest {
 
     @Test
     void testMapClassifiersConfigurationHistoryEntity() {
-        var classifiersConfigurationHistoryEntity = createClassifiersConfigurationHistory(new ClassifiersConfiguration(), ClassifiersConfigurationActionType.CREATE_CONFIGURATION, LocalDateTime.now());
-        var classifiersConfigurationHistoryDto = classifiersConfigurationHistoryMapper.map(classifiersConfigurationHistoryEntity);
+        var classifiersConfigurationHistoryEntity =
+                createClassifiersConfigurationHistory(new ClassifiersConfiguration(),
+                        ClassifiersConfigurationActionType.CREATE_CONFIGURATION, LocalDateTime.now());
+        var classifiersConfigurationHistoryDto =
+                classifiersConfigurationHistoryMapper.map(classifiersConfigurationHistoryEntity);
         assertThat(classifiersConfigurationHistoryDto).isNotNull();
-        assertThat(classifiersConfigurationHistoryDto.getCreatedAt()).isEqualTo(classifiersConfigurationHistoryEntity.getCreatedAt());
-        assertThat(classifiersConfigurationHistoryDto.getCreatedBy()).isEqualTo(classifiersConfigurationHistoryEntity.getCreatedBy());
-        assertThat(classifiersConfigurationHistoryDto.getMessageText()).isEqualTo(classifiersConfigurationHistoryEntity.getMessageText());
+        assertThat(classifiersConfigurationHistoryDto.getCreatedAt()).isEqualTo(
+                classifiersConfigurationHistoryEntity.getCreatedAt());
+        assertThat(classifiersConfigurationHistoryDto.getCreatedBy()).isEqualTo(
+                classifiersConfigurationHistoryEntity.getCreatedBy());
+        assertThat(classifiersConfigurationHistoryDto.getMessageText()).isEqualTo(
+                classifiersConfigurationHistoryEntity.getMessageText());
         assertThat(classifiersConfigurationHistoryDto.getActionType()).isNotNull();
-        assertThat(classifiersConfigurationHistoryDto.getActionType().getValue()).isEqualTo(classifiersConfigurationHistoryEntity.getActionType().name());
-        assertThat(classifiersConfigurationHistoryDto.getActionType().getDescription()).isEqualTo(classifiersConfigurationHistoryEntity.getActionType().getDescription());
+        assertThat(classifiersConfigurationHistoryDto.getActionType().getValue()).isEqualTo(
+                classifiersConfigurationHistoryEntity.getActionType().name());
+        assertThat(classifiersConfigurationHistoryDto.getActionType().getDescription()).isEqualTo(
+                classifiersConfigurationHistoryEntity.getActionType().getDescription());
     }
 }

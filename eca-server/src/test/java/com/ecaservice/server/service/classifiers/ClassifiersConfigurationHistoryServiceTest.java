@@ -22,7 +22,10 @@ import java.util.List;
 
 import static com.ecaservice.server.TestHelperUtils.createClassifiersConfiguration;
 import static com.ecaservice.server.TestHelperUtils.createClassifiersConfigurationHistory;
-import static com.ecaservice.server.model.entity.ClassifiersConfigurationHistoryEntity_.*;
+import static com.ecaservice.server.model.entity.ClassifiersConfigurationHistoryEntity_.ACTION_TYPE;
+import static com.ecaservice.server.model.entity.ClassifiersConfigurationHistoryEntity_.CREATED_AT;
+import static com.ecaservice.server.model.entity.ClassifiersConfigurationHistoryEntity_.CREATED_BY;
+import static com.ecaservice.server.model.entity.ClassifiersConfigurationHistoryEntity_.MESSAGE_TEXT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -77,13 +80,15 @@ class ClassifiersConfigurationHistoryServiceTest extends AbstractJpaTest {
                 ClassifiersConfigurationActionType.SET_ACTIVE);
         var pageRequestDto =
                 new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, CREATED_AT, false, SEARCH_QUERY, Collections.emptyList());
-        var nextPage = classifiersConfigurationHistoryService.getNextPage(classifiersConfiguration.getId(), pageRequestDto);
+        var nextPage =
+                classifiersConfigurationHistoryService.getNextPage(classifiersConfiguration.getId(), pageRequestDto);
         assertThat(nextPage).isNotNull();
         assertThat(nextPage.getPage()).isEqualTo(pageRequestDto.getPage());
         assertThat(nextPage.getTotalCount()).isOne();
         assertThat(nextPage.getContent()).hasSize(1);
         var next = nextPage.getContent().iterator().next();
-        assertThat(next.getActionType().getValue()).isEqualTo(ClassifiersConfigurationActionType.CREATE_CONFIGURATION.name());
+        assertThat(next.getActionType().getValue()).isEqualTo(
+                ClassifiersConfigurationActionType.CREATE_CONFIGURATION.name());
     }
 
     private ClassifiersConfiguration createAndSaveConfiguration() {

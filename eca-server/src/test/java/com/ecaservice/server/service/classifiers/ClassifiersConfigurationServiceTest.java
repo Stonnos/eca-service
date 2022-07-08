@@ -18,7 +18,11 @@ import com.ecaservice.server.repository.ClassifiersConfigurationHistoryRepositor
 import com.ecaservice.server.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.UserService;
-import com.ecaservice.web.dto.model.*;
+import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
+import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
+import com.ecaservice.web.dto.model.PageDto;
+import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.UpdateClassifiersConfigurationDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -127,7 +131,9 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
     @Test
     void testDeleteConfiguration() {
         ClassifiersConfiguration classifiersConfiguration = saveConfiguration(false, false);
-        var classifiersConfigurationHistory = TestHelperUtils.createClassifiersConfigurationHistory(classifiersConfiguration, ClassifiersConfigurationActionType.CREATE_CONFIGURATION, LocalDateTime.now());
+        var classifiersConfigurationHistory =
+                TestHelperUtils.createClassifiersConfigurationHistory(classifiersConfiguration,
+                        ClassifiersConfigurationActionType.CREATE_CONFIGURATION, LocalDateTime.now());
         classifiersConfigurationHistoryRepository.save(classifiersConfigurationHistory);
         classifiersConfigurationService.delete(classifiersConfiguration.getId());
         ClassifiersConfiguration actualConfiguration =

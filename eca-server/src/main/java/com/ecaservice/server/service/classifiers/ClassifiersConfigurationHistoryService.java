@@ -5,7 +5,11 @@ import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.filter.ClassifiersConfigurationHistoryFilter;
 import com.ecaservice.server.mapping.ClassifiersConfigurationHistoryMapper;
-import com.ecaservice.server.model.entity.*;
+import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
+import com.ecaservice.server.model.entity.ClassifiersConfiguration;
+import com.ecaservice.server.model.entity.ClassifiersConfigurationActionType;
+import com.ecaservice.server.model.entity.ClassifiersConfigurationHistoryEntity;
+import com.ecaservice.server.model.entity.FilterTemplateType;
 import com.ecaservice.server.repository.ClassifiersConfigurationHistoryRepository;
 import com.ecaservice.server.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.server.service.UserService;
@@ -85,7 +89,8 @@ public class ClassifiersConfigurationHistoryService {
     public void deleteHistory(ClassifiersConfiguration classifiersConfiguration) {
         log.info("Deletes to remove classifiers configuration [{}] history", classifiersConfiguration.getId());
         var deleted = classifiersConfigurationHistoryRepository.deleteAllByConfiguration(classifiersConfiguration);
-        log.info("[{}] history rows has been deleted from classifiers configuration [{}]", deleted, classifiersConfiguration.getId());
+        log.info("[{}] history rows has been deleted from classifiers configuration [{}]", deleted,
+                classifiersConfiguration.getId());
     }
 
     /**
@@ -111,7 +116,8 @@ public class ClassifiersConfigurationHistoryService {
         var classifiersConfigurationHistoryDtoList = classifiersConfigurationHistoryMapper.map(nextPage.getContent());
         log.info("Configurations history page [{} of {}] with size [{}] has been fetched for page request [{}]",
                 nextPage.getNumber(), nextPage.getTotalPages(), nextPage.getNumberOfElements(), pageRequestDto);
-        return PageDto.of(classifiersConfigurationHistoryDtoList, pageRequestDto.getPage(), nextPage.getTotalElements());
+        return PageDto.of(classifiersConfigurationHistoryDtoList, pageRequestDto.getPage(),
+                nextPage.getTotalElements());
     }
 
     private void saveToHistory(ClassifiersConfigurationActionType actionType,

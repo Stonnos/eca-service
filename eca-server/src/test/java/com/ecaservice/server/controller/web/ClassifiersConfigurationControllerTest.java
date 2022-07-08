@@ -6,7 +6,11 @@ import com.ecaservice.server.mapping.ClassifiersConfigurationMapperImpl;
 import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.service.classifiers.ClassifiersConfigurationHistoryService;
 import com.ecaservice.server.service.classifiers.ClassifiersConfigurationService;
-import com.ecaservice.web.dto.model.*;
+import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
+import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
+import com.ecaservice.web.dto.model.PageDto;
+import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.UpdateClassifiersConfigurationDto;
 import com.ecaservice.web.dto.util.FieldConstraints;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
@@ -22,12 +26,18 @@ import java.util.Map;
 
 import static com.ecaservice.server.PageRequestUtils.PAGE_NUMBER;
 import static com.ecaservice.server.PageRequestUtils.TOTAL_ELEMENTS;
-import static com.ecaservice.server.TestHelperUtils.*;
+import static com.ecaservice.server.TestHelperUtils.bearerHeader;
+import static com.ecaservice.server.TestHelperUtils.createClassifiersConfigurationDto;
+import static com.ecaservice.server.TestHelperUtils.createClassifiersConfigurationHistoryDto;
+import static com.ecaservice.server.TestHelperUtils.createPageRequestDto;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -151,7 +161,8 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
     @Test
     void testGetClassifiersConfigurationHistoryPageOk() throws Exception {
         var pageDto =
-                PageDto.of(Collections.singletonList(createClassifiersConfigurationHistoryDto()), PAGE_NUMBER, TOTAL_ELEMENTS);
+                PageDto.of(Collections.singletonList(createClassifiersConfigurationHistoryDto()), PAGE_NUMBER,
+                        TOTAL_ELEMENTS);
         when(classifiersConfigurationHistoryService.getNextPage(anyLong(), any(PageRequestDto.class)))
                 .thenReturn(pageDto);
         mockMvc.perform(post(HISTORY_URL)

@@ -17,7 +17,11 @@ import com.ecaservice.server.repository.ClassifierOptionsDatabaseModelRepository
 import com.ecaservice.server.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.server.service.PageRequestService;
 import com.ecaservice.server.service.UserService;
-import com.ecaservice.web.dto.model.*;
+import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
+import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
+import com.ecaservice.web.dto.model.PageDto;
+import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.UpdateClassifiersConfigurationDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -32,7 +36,10 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
-import static com.ecaservice.server.config.audit.AuditCodes.*;
+import static com.ecaservice.server.config.audit.AuditCodes.ADD_CONFIGURATION;
+import static com.ecaservice.server.config.audit.AuditCodes.COPY_CONFIGURATION;
+import static com.ecaservice.server.config.audit.AuditCodes.DELETE_CONFIGURATION;
+import static com.ecaservice.server.config.audit.AuditCodes.RENAME_CONFIGURATION;
 import static com.ecaservice.server.model.entity.BaseEntity_.CREATION_DATE;
 
 /**

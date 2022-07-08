@@ -48,7 +48,8 @@ class ReportControllerTest extends PageRequestControllerTest {
     public void before() {
         when(experimentsBaseReportDataFetcher.getReportType()).thenReturn(ReportType.EXPERIMENTS);
         when(evaluationLogsBaseReportDataFetcher.getReportType()).thenReturn(ReportType.EVALUATION_LOGS);
-        when(classifierOptionsRequestsBaseReportDataFetcher.getReportType()).thenReturn(ReportType.CLASSIFIERS_OPTIONS_REQUESTS);
+        when(classifierOptionsRequestsBaseReportDataFetcher.getReportType()).thenReturn(
+                ReportType.CLASSIFIERS_OPTIONS_REQUESTS);
     }
 
     @Test

@@ -52,7 +52,7 @@ class ClassifierOptionsRequestControllerTest extends PageRequestControllerTest {
 
     @MockBean
     private ClassifierOptionsRequestService classifierOptionsRequestService;
-    
+
     @Inject
     private ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper;
 
