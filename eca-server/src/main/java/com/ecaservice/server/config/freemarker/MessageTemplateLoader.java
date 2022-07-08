@@ -24,7 +24,7 @@ public class MessageTemplateLoader implements TemplateLoader {
     @Override
     public Object findTemplateSource(String code) {
         log.debug("Load message template [{}] from database", code);
-        return messageTemplateService.getTemplate(code);
+        return messageTemplateService.getTemplate(code).getTemplateText();
     }
 
     @Override
