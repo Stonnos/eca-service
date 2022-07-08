@@ -18,4 +18,12 @@
             <column name="template_text" type="text"/>
         </createTable>
     </changeSet>
+
+    <changeSet id="add-message-template-text-not-null-constraint" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="message_template"/>
+            <columnExists tableName="message_template" columnName="template_text"/>
+        </preConditions>
+        <addNotNullConstraint tableName="message_template" columnName="template_text"/>
+    </changeSet>
 </databaseChangeLog>
