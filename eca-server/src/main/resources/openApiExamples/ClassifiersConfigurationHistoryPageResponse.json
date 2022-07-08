@@ -1,0 +1,66 @@
+{
+  "content": [
+    {
+      "id": 44,
+      "actionType": {
+        "value": "SET_ACTIVE",
+        "description": "Конфигурация сделана активной"
+      },
+      "messageText": "Конфигурация сделана активной",
+      "createdAt": "2022-07-08 12:26:18",
+      "createdBy": "admin"
+    },
+    {
+      "id": 43,
+      "actionType": {
+        "value": "REMOVE_CLASSIFIER_OPTIONS",
+        "description": "Удалены настройки классификатора"
+      },
+      "messageText": "Удалены настройки классификатора [Алгоритм k - взвешенных ближайших соседей]. Идентификатор настроек [39]",
+      "createdAt": "2022-07-08 12:26:16",
+      "createdBy": "admin"
+    },
+    {
+      "id": 42,
+      "actionType": {
+        "value": "ADD_CLASSIFIER_OPTIONS",
+        "description": "Добавлены новые настройки классификатора"
+      },
+      "messageText": "Добавлены настройки классификатора [Логистическая регрессия]. Идентификатор настроек [41]",
+      "createdAt": "2022-07-08 12:26:07",
+      "createdBy": "admin"
+    },
+    {
+      "id": 40,
+      "actionType": {
+        "value": "ADD_CLASSIFIER_OPTIONS",
+        "description": "Добавлены новые настройки классификатора"
+      },
+      "messageText": "Добавлены настройки классификатора [Алгоритм k - взвешенных ближайших соседей]. Идентификатор настроек [39]",
+      "createdAt": "2022-07-08 12:26:04",
+      "createdBy": "admin"
+    },
+    {
+      "id": 38,
+      "actionType": {
+        "value": "UPDATE_CONFIGURATION",
+        "description": "Данные конфигурации изменены"
+      },
+      "messageText": "Изменено название конфигурации. Новое название - Test configuration (renamed)",
+      "createdAt": "2022-07-08 12:25:58",
+      "createdBy": "admin"
+    },
+    {
+      "id": 37,
+      "actionType": {
+        "value": "CREATE_CONFIGURATION",
+        "description": "Создана новая конфигурация"
+      },
+      "messageText": "Создана конфигурация с именем Test configuration",
+      "createdAt": "2022-07-08 12:25:48",
+      "createdBy": "admin"
+    }
+  ],
+  "page": 0,
+  "totalCount": 6
+}

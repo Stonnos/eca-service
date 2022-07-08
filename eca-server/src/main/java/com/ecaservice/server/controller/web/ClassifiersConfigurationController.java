@@ -530,8 +530,8 @@ public class ClassifiersConfigurationController {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
                                             @ExampleObject(
-                                                    name = "ClassifiersConfigurationsPageResponse",
-                                                    ref = "#/components/examples/ClassifiersConfigurationsPageResponse"
+                                                    name = "ClassifiersConfigurationHistoryPageResponse",
+                                                    ref = "#/components/examples/ClassifiersConfigurationHistoryPageResponse"
                                             ),
                                     },
                                     schema = @Schema(implementation = ClassifiersConfigurationHistoryPageDto.class)

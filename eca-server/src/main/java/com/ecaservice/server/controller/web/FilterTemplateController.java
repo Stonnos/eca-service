@@ -261,8 +261,8 @@ public class FilterTemplateController {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
                                             @ExampleObject(
-                                                    name = "ExperimentFilterFieldsResponse",
-                                                    ref = "#/components/examples/ExperimentFilterFieldsResponse"
+                                                    name = "ClassifiersConfigurationHistoryFilterFieldsResponse",
+                                                    ref = "#/components/examples/ClassifiersConfigurationHistoryFilterFieldsResponse"
                                             )
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = FilterFieldDto.class))
