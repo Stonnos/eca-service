@@ -1580,6 +1580,223 @@ a|
 ----
 |===
 
+== Finds classifiers configuration history with specified options
+
+__POST__ */experiment/classifiers-configurations/history* - Finds classifiers configuration history with specified options
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+*Request body*
+
+[width=100%]
+|===
+|*Content type*|*Required*|*Schema*|*Example*
+|*application/json*
+|true
+|
+<<PageRequestDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "page" : 0,
+  "size" : 25
+}
+----
+|===
+
+
+*Request parameters*
+[width=100%]
+|===
+|*Name*|*Description*|*Location*|*Schema*
+|*configurationId**
+|Configuration id
+|query
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 9,223,372,036,854,775,807*
+
+
+
+
+
+
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+<<ClassifiersConfigurationHistoryPageDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "content" : [ {
+    "id" : 44,
+    "actionType" : {
+      "value" : "SET_ACTIVE",
+      "description" : "Конфигурация сделана активной"
+    },
+    "messageText" : "Конфигурация сделана активной",
+    "createdAt" : "2022-07-08 12:26:18",
+    "createdBy" : "admin"
+  }, {
+    "id" : 43,
+    "actionType" : {
+      "value" : "REMOVE_CLASSIFIER_OPTIONS",
+      "description" : "Удалены настройки классификатора"
+    },
+    "messageText" : "Удалены настройки классификатора [Алгоритм k - взвешенных ближайших соседей]. Идентификатор настроек [39]",
+    "createdAt" : "2022-07-08 12:26:16",
+    "createdBy" : "admin"
+  }, {
+    "id" : 42,
+    "actionType" : {
+      "value" : "ADD_CLASSIFIER_OPTIONS",
+      "description" : "Добавлены новые настройки классификатора"
+    },
+    "messageText" : "Добавлены настройки классификатора [Логистическая регрессия]. Идентификатор настроек [41]",
+    "createdAt" : "2022-07-08 12:26:07",
+    "createdBy" : "admin"
+  }, {
+    "id" : 40,
+    "actionType" : {
+      "value" : "ADD_CLASSIFIER_OPTIONS",
+      "description" : "Добавлены новые настройки классификатора"
+    },
+    "messageText" : "Добавлены настройки классификатора [Алгоритм k - взвешенных ближайших соседей]. Идентификатор настроек [39]",
+    "createdAt" : "2022-07-08 12:26:04",
+    "createdBy" : "admin"
+  }, {
+    "id" : 38,
+    "actionType" : {
+      "value" : "UPDATE_CONFIGURATION",
+      "description" : "Данные конфигурации изменены"
+    },
+    "messageText" : "Изменено название конфигурации. Новое название - Test configuration (renamed)",
+    "createdAt" : "2022-07-08 12:25:58",
+    "createdBy" : "admin"
+  }, {
+    "id" : 37,
+    "actionType" : {
+      "value" : "CREATE_CONFIGURATION",
+      "description" : "Создана новая конфигурация"
+    },
+    "messageText" : "Создана конфигурация с именем Test configuration",
+    "createdAt" : "2022-07-08 12:25:48",
+    "createdBy" : "admin"
+  } ],
+  "page" : 0,
+  "totalCount" : 6
+}
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|
+__array__
+<<<ValidationErrorDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+[ {
+  "fieldName" : "page",
+  "code" : "Min",
+  "errorMessage" : "must be greater than or equal to 0"
+}, {
+  "fieldName" : "size",
+  "code" : "Min",
+  "errorMessage" : "must be greater than or equal to 1"
+} ]
+----
+|===
+
 == Creates classifiers configuration copy
 
 __POST__ */experiment/classifiers-configurations/copy* - Creates classifiers configuration copy
@@ -2520,6 +2737,110 @@ a|
     "value" : "CROSS_VALIDATION"
   } ]
 }
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|===
+
+== Gets classifiers configuration history filter fields
+
+__GET__ */filter-templates/classifiers-configuration-history* - Gets classifiers configuration history filter fields
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+__array__
+<<<FilterFieldDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+[ {
+  "fieldName" : "createdBy",
+  "description" : "Пользователь",
+  "fieldOrder" : 0,
+  "filterFieldType" : "TEXT",
+  "matchMode" : "LIKE",
+  "multiple" : false
+}, {
+  "fieldName" : "actionType",
+  "description" : "Тип события",
+  "fieldOrder" : 1,
+  "filterFieldType" : "REFERENCE",
+  "matchMode" : "EQUALS",
+  "multiple" : true,
+  "dictionary" : {
+    "name" : "classifiersConfigurationActionType",
+    "values" : [ {
+      "label" : "Создана новая конфигурация",
+      "value" : "CREATE_CONFIGURATION"
+    }, {
+      "label" : "Данные конфигурации изменены",
+      "value" : "UPDATE_CONFIGURATION"
+    }, {
+      "label" : "Конфигурация сделана активной",
+      "value" : "SET_ACTIVE"
+    }, {
+      "label" : "Добавлены новые настройки классификатора",
+      "value" : "ADD_CLASSIFIER_OPTIONS"
+    }, {
+      "label" : "Удалены настройки классификатора",
+      "value" : "REMOVE_CLASSIFIER_OPTIONS"
+    } ]
+  }
+}, {
+  "fieldName" : "createdAt",
+  "description" : "Дата события",
+  "fieldOrder" : 2,
+  "filterFieldType" : "DATE",
+  "matchMode" : "RANGE",
+  "multiple" : true
+} ]
 ----
 |401
 |Not authorized
@@ -8279,6 +8600,183 @@ __string__
 a|
 __array__
 <<<ClassifiersConfigurationDto>>
+>
+
+
+
+
+
+
+
+
+
+
+*Max. items*: 100
+
+
+
+
+|*page*
+|Page number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*totalCount*
+|Total elements count in all pages
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 9,223,372,036,854,775,807*
+
+
+
+
+
+
+
+
+|===
+=== ClassifiersConfigurationHistoryDto
+:table-caption: Table
+.Classifiers configuration history model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*id**
+|ID
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 9,223,372,036,854,775,807*
+
+
+
+
+
+
+
+
+|*actionType**
+|-
+a|
+<<EnumDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*messageText**
+|Message text
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*createdAt**
+|Creation date
+a|
+__string__
+
+
+
+
+*Max. length*: 19
+
+
+
+
+
+
+
+
+
+
+|*createdBy**
+|User name
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|===
+=== ClassifiersConfigurationHistoryPageDto
+:table-caption: Table
+.Classifiers configuration history page dto
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*content*
+|-
+a|
+__array__
+<<<ClassifiersConfigurationHistoryDto>>
 >
 
 
