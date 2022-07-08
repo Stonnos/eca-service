@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v57-insert-message-templates.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet author="roman.batygin@mail.ru" id="insert_message_templates_1" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="message_template"/>
+        </preConditions>
+        <loadUpdateData
+                tableName="message_template"
+                primaryKey="id"
+                separator=";"
+                file="message-templates/message-templates.csv"/>
+    </changeSet>
+
+</databaseChangeLog>
