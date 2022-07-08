@@ -11,14 +11,14 @@ import org.springframework.stereotype.Service;
 import static com.ecaservice.server.config.cache.CacheNames.MESSAGE_TEMPLATES_CACHE_NAME;
 
 /**
- * Message templates provider.
+ * Message templates service.
  *
  * @author Roman Batygin
  */
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class MessageTemplateProvider {
+public class MessageTemplateService {
 
     private final MessageTemplateRepository messageTemplateRepository;
 
