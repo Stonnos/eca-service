@@ -15,7 +15,7 @@
             <column name="id" type="varchar(255)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="message_text" type="text"/>
+            <column name="template_text" type="text"/>
         </createTable>
     </changeSet>
 </databaseChangeLog>
