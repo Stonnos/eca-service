@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static com.ecaservice.core.filter.util.Utils.splitByPointSeparator;
 import static com.ecaservice.server.service.filter.dictionary.FilterDictionaries.CLASSIFIER_NAME;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.isEnsembleClassifierOptions;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.parseOptions;
@@ -47,10 +46,6 @@ public class ClassifierOptionsProcessor {
     private static final double TEN = 10d;
 
     private static final DecimalFormat DEFAULT_DECIMAL_FORMAT = NumericFormatFactory.getInstance(Integer.MAX_VALUE);
-
-    private static final String NULL_CHECK_EXPRESSION = "%s != null";
-    private static final String AND_NULL_CHECK_EXPRESSION = " && %s != null";
-    private static final String FINAL_NULL_CHECK_EXPRESSION = " ? %s : null";
 
     private final ClassifierInfoMapper classifierInfoMapper;
     private final ClassifiersTemplateProvider classifiersTemplateProvider;
@@ -167,23 +162,12 @@ public class ClassifierOptionsProcessor {
                 .collect(Collectors.toList());
     }
 
-    private String createExpression(String fieldName) {
-        var path = splitByPointSeparator(fieldName);
-        if (path.length > 1) {
-            StringBuilder expressionBuilder = new StringBuilder(String.format(NULL_CHECK_EXPRESSION, path[0]));
-            String currentFieldName = path[0];
-            for (int i = 1; i < path.length - 1; i++) {
-                currentFieldName = String.format("%s.%s", currentFieldName, path[i]);
-                expressionBuilder.append(String.format(AND_NULL_CHECK_EXPRESSION, currentFieldName));
-            }
-            expressionBuilder.append(String.format(FINAL_NULL_CHECK_EXPRESSION, fieldName));
-            return expressionBuilder.toString();
-        }
-        return fieldName;
+    private String createNullSafeExpression(String fieldName) {
+       return StringUtils.replace(fieldName, ".", "?.");
     }
 
     private String getValue(ClassifierOptions classifierOptions, FormFieldDto formFieldDto) {
-        var expression = createExpression(formFieldDto.getFieldName());
+        var expression = createNullSafeExpression(formFieldDto.getFieldName());
         var optionValue = spelExpressionHelper.parseExpression(classifierOptions, expression);
         if (optionValue == null) {
             return null;
