@@ -1,0 +1,15 @@
+<div class="container-fluid mb-5">
+  <p-tabView class="classifiers-configuration-tab">
+    <p-tabPanel header="Конфигурация" leftIcon="pi pi-info-circle" [cache]="false">
+      <ng-template pTemplate="content">
+        <app-classifiers-configuration-details>
+        </app-classifiers-configuration-details>
+      </ng-template>
+    </p-tabPanel>
+
+    <p-tabPanel header="История изменений" leftIcon="pi pi-table" [cache]="false">
+      <ng-template pTemplate="content">
+      </ng-template>
+    </p-tabPanel>
+  </p-tabView>
+</div>

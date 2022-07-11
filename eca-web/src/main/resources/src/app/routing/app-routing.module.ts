@@ -8,7 +8,6 @@ import { ExperimentTabsComponent } from "../experiments-tabs/components/experime
 import { EvaluationLogDetailsComponent } from "../evaluation-log-details/components/evaluation-log-details.component";
 import { ExperimentDetailsComponent } from "../experiment-details/components/experiment-details.component";
 import { ExperimentResultsDetailsComponent } from "../experiment-results-details/components/experiment-results-details.component";
-import { ClassifiersConfigurationDetailsComponent } from "../classifiers-configuration-details/components/classifiers-configuration-details.component";
 import { UsersListComponent } from "../users/components/users-list.component";
 import { ResetPasswordComponent } from "../change-password/components/reset-password/reset-password.component";
 import { InstancesListComponent } from "../instances/components/instances-list.component";
@@ -20,6 +19,7 @@ import { ConfirmChangeEmailComponent } from "../update-user-email/components/con
 import { TemplatesListComponent } from "../email-templates/components/templates-list/templates-list.component";
 import { InstancesDetailsComponent } from "../instances-details/components/instances-details.component";
 import { CreateResetPasswordRequestComponent } from "../change-password/components/create-reset-password-request/create-reset-password-request.component";
+import { ClassifiersConfigurationFullDetailsComponent } from "../classifiers-configuration-full-details/components/classifiers-configuration-full-details.component";
 
 const routes: Routes = [
   {
@@ -72,7 +72,7 @@ const routes: Routes = [
       },
       {
         path: 'experiments/classifiers-configuration/details/:id',
-        component: ClassifiersConfigurationDetailsComponent
+        component: ClassifiersConfigurationFullDetailsComponent
       },
       {
         path: 'profile',
