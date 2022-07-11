@@ -197,6 +197,7 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
         assertThat(actualNotActive).isNotNull();
         assertThat(actualNotActive.isActive()).isFalse();
         verifyClassifiersConfigurationHistory(actualActive, ClassifiersConfigurationActionType.SET_ACTIVE);
+        verifyClassifiersConfigurationHistory(lastActive, ClassifiersConfigurationActionType.DEACTIVATE);
     }
 
     @Test
@@ -318,7 +319,9 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
                                                        ClassifiersConfigurationActionType expectedActionType) {
         var classifiersConfigurationHistoryList = classifiersConfigurationHistoryRepository.findAll();
         var classifiersConfigurationHistory = classifiersConfigurationHistoryList.stream()
-                .filter(configurationHistoryEntity -> expectedActionType.equals(configurationHistoryEntity.getActionType()))
+                .filter(configurationHistoryEntity ->
+                        configurationHistoryEntity.getConfiguration().getId().equals(classifiersConfiguration.getId())
+                                && expectedActionType.equals(configurationHistoryEntity.getActionType()))
                 .findFirst()
                 .orElse(null);
         assertThat(classifiersConfigurationHistory).isNotNull();

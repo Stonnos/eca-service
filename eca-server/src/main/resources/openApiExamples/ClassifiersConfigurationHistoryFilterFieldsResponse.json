@@ -31,6 +31,10 @@
           "value": "SET_ACTIVE"
         },
         {
+          "label": "Конфигурация перестала быть активной",
+          "value": "DEACTIVATE"
+        },
+        {
           "label": "Добавлены новые настройки классификатора",
           "value": "ADD_CLASSIFIER_OPTIONS"
         },

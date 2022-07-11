@@ -168,6 +168,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
             classifiersConfigurationRepository.saveAll(Arrays.asList(classifiersConfiguration, activeConfiguration));
             log.info("Classifiers configuration [{}] has been set as active.", classifiersConfiguration.getId());
             classifiersConfigurationHistoryService.saveSetActiveConfigurationAction(classifiersConfiguration);
+            classifiersConfigurationHistoryService.saveDeactivateConfigurationAction(activeConfiguration);
         }
     }
 

@@ -84,6 +84,15 @@ public class ClassifiersConfigurationHistoryService {
     }
 
     /**
+     * Saves deactivate classifiers configuration to history.
+     *
+     * @param classifiersConfiguration - classifiers configuration entity
+     */
+    public void saveDeactivateConfigurationAction(ClassifiersConfiguration classifiersConfiguration) {
+        saveToHistory(ClassifiersConfigurationActionType.DEACTIVATE, classifiersConfiguration, Collections::emptyMap);
+    }
+
+    /**
      * Saves added classifiers options to history.
      *
      * @param classifierOptionsDatabaseModel - classifier options entity

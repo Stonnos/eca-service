@@ -27,6 +27,11 @@ public enum ClassifiersConfigurationActionType implements DescriptiveEnum {
     SET_ACTIVE("Конфигурация сделана активной"),
 
     /**
+     * Deactivate configuration
+     */
+    DEACTIVATE("Конфигурация перестала быть активной"),
+
+    /**
      * Add classifier options
      */
     ADD_CLASSIFIER_OPTIONS("Добавлены новые настройки классификатора"),

@@ -35,6 +35,11 @@
             <column name="filter_dictionary_id" valueNumeric="6"/>
         </insert>
         <insert tableName="filter_dictionary_value">
+            <column name="label" value="Конфигурация перестала быть активной"/>
+            <column name="value" value="DEACTIVATE"/>
+            <column name="filter_dictionary_id" valueNumeric="6"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
             <column name="label" value="Добавлены новые настройки классификатора"/>
             <column name="value" value="ADD_CLASSIFIER_OPTIONS"/>
             <column name="filter_dictionary_id" valueNumeric="6"/>
