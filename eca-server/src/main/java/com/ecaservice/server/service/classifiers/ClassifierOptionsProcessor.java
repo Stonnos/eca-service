@@ -50,7 +50,7 @@ public class ClassifierOptionsProcessor {
 
     private static final String NULL_CHECK_EXPRESSION = "%s != null";
     private static final String AND_NULL_CHECK_EXPRESSION = " && %s != null";
-    private static final String FINAL_BULL_CHECK_EXPRESSION = " ? %s : null";
+    private static final String FINAL_NULL_CHECK_EXPRESSION = " ? %s : null";
 
     private final ClassifierInfoMapper classifierInfoMapper;
     private final ClassifiersTemplateProvider classifiersTemplateProvider;
@@ -176,7 +176,7 @@ public class ClassifierOptionsProcessor {
                 currentFieldName = String.format("%s.%s", currentFieldName, path[i]);
                 expressionBuilder.append(String.format(AND_NULL_CHECK_EXPRESSION, currentFieldName));
             }
-            expressionBuilder.append(String.format(FINAL_BULL_CHECK_EXPRESSION, fieldName));
+            expressionBuilder.append(String.format(FINAL_NULL_CHECK_EXPRESSION, fieldName));
             return expressionBuilder.toString();
         }
         return fieldName;

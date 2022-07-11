@@ -8,7 +8,11 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
-import static com.ecaservice.web.dto.util.FieldConstraints.*;
+import static com.ecaservice.web.dto.util.FieldConstraints.DATE_TIME_PATTERN;
+import static com.ecaservice.web.dto.util.FieldConstraints.LOCAL_DATE_TIME_MAX_LENGTH;
+import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
+import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LONG_VALUE_STRING;
+import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1_STRING;
 
 /**
  * Classifiers configuration history dto model.
