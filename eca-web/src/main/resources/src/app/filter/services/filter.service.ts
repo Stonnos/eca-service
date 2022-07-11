@@ -69,6 +69,14 @@ export class FilterService {
     return this.http.get<FilterFieldDto[]>(this.auditLogsUrl + '/fields', { headers: headers });
   }
 
+  public getClassifiersConfigurationHistoryFilterFields(): Observable<FilterFieldDto[]> {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/json; charset=utf-8',
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    return this.http.get<FilterFieldDto[]>(this.ecaServerUrl + '/classifiers-configuration-history', { headers: headers });
+  }
+
   public mapToFilters(filterFields: FilterFieldDto[]): Filter[] {
     return filterFields.map((filter: FilterFieldDto) => {
       let values: SelectItem[] = [];
