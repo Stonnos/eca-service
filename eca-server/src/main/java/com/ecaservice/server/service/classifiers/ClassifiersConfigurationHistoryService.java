@@ -24,8 +24,10 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.server.model.entity.ClassifiersConfigurationHistoryEntity_.CREATED_AT;
@@ -93,6 +95,26 @@ public class ClassifiersConfigurationHistoryService {
     }
 
     /**
+     * Saves added classifiers options to history.
+     *
+     * @param classifierOptionsDatabaseModels - classifier options entity
+     */
+    public void saveAddClassifierOptionsAction(List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels) {
+        log.info("Starting to save classifier options list with size [{}] to history",
+                classifierOptionsDatabaseModels.size());
+        var classifierOptionsHistory = classifierOptionsDatabaseModels
+                .stream()
+                .map(classifierOptionsDatabaseModel -> createHistory(
+                        ClassifiersConfigurationActionType.ADD_CLASSIFIER_OPTIONS,
+                        classifierOptionsDatabaseModel.getConfiguration(),
+                        () -> buildClassifierOptionsParams(classifierOptionsDatabaseModel)))
+                .collect(Collectors.toList());
+        classifiersConfigurationHistoryRepository.saveAll(classifierOptionsHistory);
+        log.info("Classifier options list with size [{}] has been saved to history",
+                classifierOptionsDatabaseModels.size());
+    }
+
+    /**
      * Saves removed classifiers options to history.
      *
      * @param classifierOptionsDatabaseModel - classifier options entity
@@ -152,11 +174,9 @@ public class ClassifiersConfigurationHistoryService {
         );
     }
 
-    private void saveToHistory(ClassifiersConfigurationActionType actionType,
-                               ClassifiersConfiguration classifiersConfiguration,
-                               Supplier<Map<String, Object>> messageParamsSupplier) {
-        log.info("Starting to save classifiers configuration [{}] action [{}] to history",
-                classifiersConfiguration.getId(), actionType);
+    private ClassifiersConfigurationHistoryEntity createHistory(ClassifiersConfigurationActionType actionType,
+                                                                ClassifiersConfiguration classifiersConfiguration,
+                                                                Supplier<Map<String, Object>> messageParamsSupplier) {
         var classifiersConfigurationHistory = new ClassifiersConfigurationHistoryEntity();
         classifiersConfigurationHistory.setActionType(actionType);
         String messageText = messageTemplateProcessor.process(actionType.name(), messageParamsSupplier.get());
@@ -164,6 +184,16 @@ public class ClassifiersConfigurationHistoryService {
         classifiersConfigurationHistory.setConfiguration(classifiersConfiguration);
         classifiersConfigurationHistory.setCreatedBy(userService.getCurrentUser());
         classifiersConfigurationHistory.setCreatedAt(LocalDateTime.now());
+        return classifiersConfigurationHistory;
+    }
+
+    private void saveToHistory(ClassifiersConfigurationActionType actionType,
+                               ClassifiersConfiguration classifiersConfiguration,
+                               Supplier<Map<String, Object>> messageParamsSupplier) {
+        log.info("Starting to save classifiers configuration [{}] action [{}] to history",
+                classifiersConfiguration.getId(), actionType);
+        var classifiersConfigurationHistory =
+                createHistory(actionType, classifiersConfiguration, messageParamsSupplier);
         classifiersConfigurationHistoryRepository.save(classifiersConfigurationHistory);
         log.info("Classifiers configuration [{}] action [{}] has been saved to history",
                 classifiersConfiguration.getId(), actionType);

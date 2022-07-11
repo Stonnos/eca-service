@@ -32,6 +32,7 @@ import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -135,11 +136,12 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
         classifiersConfigurationCopy.setCreatedBy(userService.getCurrentUser());
         classifiersConfigurationCopy.setCreationDate(LocalDateTime.now());
         classifiersConfigurationRepository.save(classifiersConfigurationCopy);
-        copyClassifiersOptions(classifiersConfiguration, classifiersConfigurationCopy);
+        var classifiersOptionsCopies = copyClassifiersOptions(classifiersConfiguration, classifiersConfigurationCopy);
         log.info("Classifiers configuration [{}] copy [{}] has been created with new id [{}]",
                 classifiersConfiguration.getId(), classifiersConfigurationCopy.getConfigurationName(),
                 classifiersConfigurationCopy.getId());
         classifiersConfigurationHistoryService.saveCreateConfigurationAction(classifiersConfigurationCopy);
+        classifiersConfigurationHistoryService.saveAddClassifierOptionsAction(classifiersOptionsCopies);
         return classifiersConfigurationCopy;
     }
 
@@ -251,8 +253,9 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
                 .orElseThrow(() -> new EntityNotFoundException(ClassifiersConfiguration.class, id));
     }
 
-    private void copyClassifiersOptions(ClassifiersConfiguration classifiersConfiguration,
-                                        ClassifiersConfiguration classifiersConfigurationCopy) {
+    private List<ClassifierOptionsDatabaseModel> copyClassifiersOptions(
+            ClassifiersConfiguration classifiersConfiguration,
+            ClassifiersConfiguration classifiersConfigurationCopy) {
         log.info("Starting to copy classifiers options for configuration [{}]", classifiersConfiguration.getId());
         var classifierOptionsDatabaseModels =
                 classifierOptionsDatabaseModelRepository.findAllByConfigurationOrderByCreationDate(
@@ -274,5 +277,6 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
         classifierOptionsDatabaseModelRepository.saveAll(classifierOptionsCopies);
         log.info("[{}] classifiers options has been copied for configuration [{}]", classifierOptionsCopies.size(),
                 classifiersConfiguration.getId());
+        return classifierOptionsCopies;
     }
 }

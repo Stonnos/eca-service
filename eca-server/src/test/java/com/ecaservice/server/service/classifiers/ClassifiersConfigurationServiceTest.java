@@ -63,6 +63,7 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
     private static final int PAGE_NUMBER = 0;
     private static final int PAGE_SIZE = 10;
     private static final String MESSAGE = "message";
+    private static final String TEMPLATE_TITLE = "title";
 
     @Inject
     private ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;
@@ -84,7 +85,9 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
     @Override
     public void init() {
         when(userService.getCurrentUser()).thenReturn(USER_NAME);
-        when(classifiersTemplateProvider.getClassifierTemplateByClass(anyString())).thenReturn(new FormTemplateDto());
+        var formTemplate = new FormTemplateDto();
+        formTemplate.setTemplateTitle(TEMPLATE_TITLE);
+        when(classifiersTemplateProvider.getClassifierTemplateByClass(anyString())).thenReturn(formTemplate);
         when(messageTemplateProcessor.process(anyString(), anyMap())).thenReturn(MESSAGE);
     }
 
@@ -295,6 +298,7 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
                 classifierOptionsDatabaseModelRepository.findAllByConfigurationOrderByCreationDate(actualCopy);
         assertThat(actualOptionsCopies).hasSameSizeAs(expectedOptionsCopies);
         verifyClassifiersConfigurationHistory(copy, ClassifiersConfigurationActionType.CREATE_CONFIGURATION);
+        assertThat(classifiersConfigurationHistoryRepository.count()).isEqualTo(actualOptionsCopies.size() + 1);
     }
 
     private ClassifiersConfiguration saveConfiguration(boolean active, boolean buildIn) {
@@ -313,8 +317,11 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
     private void verifyClassifiersConfigurationHistory(ClassifiersConfiguration classifiersConfiguration,
                                                        ClassifiersConfigurationActionType expectedActionType) {
         var classifiersConfigurationHistoryList = classifiersConfigurationHistoryRepository.findAll();
-        assertThat(classifiersConfigurationHistoryList).hasSize(1);
-        var classifiersConfigurationHistory = classifiersConfigurationHistoryList.iterator().next();
+        var classifiersConfigurationHistory = classifiersConfigurationHistoryList.stream()
+                .filter(configurationHistoryEntity -> expectedActionType.equals(configurationHistoryEntity.getActionType()))
+                .findFirst()
+                .orElse(null);
+        assertThat(classifiersConfigurationHistory).isNotNull();
         assertThat(classifiersConfigurationHistory.getConfiguration().getId())
                 .isEqualTo(classifiersConfiguration.getId());
         assertThat(classifiersConfigurationHistory.getCreatedBy()).isEqualTo(USER_NAME);
