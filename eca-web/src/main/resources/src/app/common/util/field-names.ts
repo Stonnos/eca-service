@@ -140,3 +140,11 @@ export class EmailTemplateParameterFields {
   public static readonly DESCRIPTION: string = "description";
   public static readonly CREATED: string = "created";
 }
+
+export class ClassifiersConfigurationHistoryFields {
+  public static readonly ACTION_TYPE: string = "actionType";
+  public static readonly ACTION_TYPE_DESCRIPTION: string = "actionType.description";
+  public static readonly CREATED_BY: string = "createdBy";
+  public static readonly CREATED_AT: string = "createdAt";
+  public static readonly MESSAGE_TEXT: string = "messageText";
+}

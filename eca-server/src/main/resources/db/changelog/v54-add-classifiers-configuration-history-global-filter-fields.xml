@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v54-add-classifiers-configuration-history-global-filter-fields.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Insert classifiers configuration history global filter template -->
+    <changeSet id="insert-classifiers-configuration-history-global-filter-template" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_filter_template"/>
+            <sqlCheck expectedResult="0">
+                select count(*) from global_filter_template where id = 5
+            </sqlCheck>
+        </preConditions>
+        <insert tableName="global_filter_template">
+            <column name="id" valueNumeric="5"/>
+            <column name="filter_name" value="classifiersConfigurationHistoryFilter"/>
+            <column name="template_type" value="CLASSIFIERS_CONFIGURATION_HISTORY"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert-action-type-filed-to-classifiers-configuration-history-global-filter-template"
+               author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_filter_field"/>
+            <sqlCheck expectedResult="0">
+                select count(*) from global_filter_field where global_filter_template_id = 5 and field_name = 'actionType'
+            </sqlCheck>
+        </preConditions>
+        <insert tableName="global_filter_field">
+            <column name="field_name" value="actionType"/>
+            <column name="global_filter_template_id" valueNumeric="5"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert-message-text-filed-to-classifiers-configuration-history-global-filter-template"
+               author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_filter_field"/>
+            <sqlCheck expectedResult="0">
+                select count(*) from global_filter_field where global_filter_template_id = 5 and field_name = 'messageText'
+            </sqlCheck>
+        </preConditions>
+        <insert tableName="global_filter_field">
+            <column name="field_name" value="messageText"/>
+            <column name="global_filter_template_id" valueNumeric="5"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert-created_by-filed-to-classifiers-configuration-history-global-filter-template"
+               author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_filter_field"/>
+            <sqlCheck expectedResult="0">
+                select count(*) from global_filter_field where global_filter_template_id = 5 and field_name = 'createdBy'
+            </sqlCheck>
+        </preConditions>
+        <insert tableName="global_filter_field">
+            <column name="field_name" value="createdBy"/>
+            <column name="global_filter_template_id" valueNumeric="5"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,7 @@
+id;template_text
+CREATE_CONFIGURATION;Создана конфигурация с именем ${classifiersConfiguration.configurationName}
+UPDATE_CONFIGURATION;Изменено название конфигурации. Новое название - ${classifiersConfiguration.configurationName}
+SET_ACTIVE;Конфигурация сделана активной
+DEACTIVATE;Конфигурация перестала быть активной
+ADD_CLASSIFIER_OPTIONS;Добавлены настройки классификатора [${classifierOptionsDescription}]. Идентификатор настроек [${classifierOptionsId}]
+REMOVE_CLASSIFIER_OPTIONS;Удалены настройки классификатора [${classifierOptionsDescription}]. Идентификатор настроек [${classifierOptionsId}]

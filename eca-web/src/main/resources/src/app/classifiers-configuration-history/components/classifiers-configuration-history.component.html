@@ -1,0 +1,52 @@
+<div class="row search-content mt-2">
+  <div class="col-6 offset-6">
+    <app-search-query (search)="onSearch($event)">
+    </app-search-query>
+  </div>
+</div>
+<div class="row">
+  <div class="filter-sidebar">
+    <app-filter [filters]="filters" (apply)="onApplyFilter()"></app-filter>
+  </div>
+  <div class="data-table">
+    <p-table
+      class="classifiers-configuration-history-table"
+      [columns]="columns"
+      [value]="items"
+      [rows]="pageSize"
+      [paginator]="true"
+      [scrollable]="true"
+      [sortField]="defaultSortField"
+      [sortOrder]="defaultSortOrder"
+      [lazy]="true"
+      [loading]="loading"
+      (onLazyLoad)="onLazyLoad($event)">
+
+      <ng-template pTemplate="header">
+        <tr>
+          <ng-container *ngFor="let column of columns">
+            <th *ngIf="!notSortable(column.name)" [pSortableColumn]="column.name">
+              {{ column.label }}
+              <p-sortIcon [field]="column.name"></p-sortIcon>
+            </th>
+            <th *ngIf="notSortable(column.name)">{{ column.label }}</th>
+          </ng-container>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-item>
+        <tr>
+          <td *ngFor="let column of columns">
+            {{ getColumnValue(column.name, item) }}
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage" *ngIf="items.length == 0">
+        <tr>
+          <td [attr.colspan]="columns.length" class="text-center">
+            Не найдено ни одной записи
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>

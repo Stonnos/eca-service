@@ -42,6 +42,8 @@ import { AuditLogsModule } from "./audit-logs/audit-logs.module";
 import { EmailTemplatesModule } from "./email-templates/email-templates.module";
 import { InstancesDetailsModule } from "./instances-details/instances-details.module";
 import { ExportInstancesModule } from "./export-instances/export-instances.module";
+import { ClassifiersConfigurationFullDetailsModule } from "./classifiers-configuration-full-details/classifiers-configuration-full-details.module";
+import { ClassifiersConfigurationHistoryModule } from "./classifiers-configuration-history/classifiers-configuration-history.module";
 
 @NgModule({
   declarations: [
@@ -87,7 +89,9 @@ import { ExportInstancesModule } from "./export-instances/export-instances.modul
     AuditLogsModule,
     EmailTemplatesModule,
     InstancesDetailsModule,
-    ExportInstancesModule
+    ExportInstancesModule,
+    ClassifiersConfigurationHistoryModule,
+    ClassifiersConfigurationFullDetailsModule
   ],
   providers: [
     CookieService

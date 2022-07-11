@@ -1,9 +1,9 @@
 package com.ecaservice.server.controller.web;
 
-import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.oauth2.test.controller.AbstractControllerTest;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.model.entity.FilterTemplateType;
 import com.ecaservice.server.service.filter.dictionary.FilterDictionaries;
 import com.ecaservice.web.dto.model.FilterDictionaryDto;
@@ -33,9 +33,11 @@ class FilterTemplateControllerTest extends AbstractControllerTest {
 
     private static final String BASE_URL = "/filter-templates";
     private static final String EXPERIMENT_FILTER_TEMPLATE_URL = BASE_URL + "/experiment";
+    private static final String CLASSIFIERS_CONFIGURATION_HISTORY_FILTER_TEMPLATE_URL
+            = BASE_URL + "/classifiers-configuration-history";
     private static final String EVALUATION_LOG_FILTER_TEMPLATE_URL = BASE_URL + "/evaluation";
-    private static final String CLASSIFIER_OPTIONS_REQUEST_FILTER_TEMPLATE_URL =
-            BASE_URL + "/classifier-options-request";
+    private static final String CLASSIFIER_OPTIONS_REQUEST_FILTER_TEMPLATE_URL
+            = BASE_URL + "/classifier-options-request";
     private static final String EXPERIMENT_TYPES_URL = BASE_URL + "/experiment-types";
     private static final String EVALUATION_METHODS_URL = BASE_URL + "/evaluation-methods";
 
@@ -117,6 +119,24 @@ class FilterTemplateControllerTest extends AbstractControllerTest {
     @Test
     void testGetEvaluationMethodsDictionaryOk() throws Exception {
         testGetFilterDictionaryOk(EVALUATION_METHODS_URL, FilterDictionaries.EVALUATION_METHOD);
+    }
+
+    @Test
+    void testGetClassifiersConfigurationHistoryFilterTemplateUnauthorized() throws Exception {
+        mockMvc.perform(get(CLASSIFIERS_CONFIGURATION_HISTORY_FILTER_TEMPLATE_URL))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testGetClassifiersConfigurationHistoryFilterTemplateNotFound() throws Exception {
+        testGetFilterTemplateNotFound(CLASSIFIERS_CONFIGURATION_HISTORY_FILTER_TEMPLATE_URL,
+                FilterTemplateType.CLASSIFIERS_CONFIGURATION_HISTORY);
+    }
+
+    @Test
+    void testGetClassifiersConfigurationHistoryFilterTemplateOk() throws Exception {
+        testGetFilterTemplateOk(CLASSIFIERS_CONFIGURATION_HISTORY_FILTER_TEMPLATE_URL,
+                FilterTemplateType.CLASSIFIERS_CONFIGURATION_HISTORY);
     }
 
     private void testGetFilterTemplateNotFound(String templateUrl, FilterTemplateType filterTemplateType)

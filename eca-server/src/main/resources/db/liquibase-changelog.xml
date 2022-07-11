@@ -61,4 +61,9 @@
     <include file="db/changelog/v50-insert-classifier-form-templates.xml"/>
     <include file="db/changelog/v51-add-classifier-options-column.xml"/>
     <include file="db/changelog/v52-insert-classifiers-filter-dictionary.xml"/>
+    <include file="db/changelog/v53-create-classifiers-configuration-history-table.xml"/>
+    <include file="db/changelog/v54-add-classifiers-configuration-history-global-filter-fields.xml"/>
+    <include file="db/changelog/v55-insert-classifiers-configuration-history-filter-template.xml"/>
+    <include file="db/changelog/v56-create-message-template-table.xml"/>
+    <include file="db/changelog/v57-insert-message-templates.xml"/>
 </databaseChangeLog>

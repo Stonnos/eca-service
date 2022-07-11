@@ -64,7 +64,7 @@ public class AppConfiguration {
 |id                      |bigint           |+|+|+                             |Идентификатор записи (первичный ключ)
 |template_name           |varchar(255)     |+|+|form_template_name_unique_idx |Уникальный код шаблона
 |object_class            |varchar(255)     |-|-|-                             |Название класса ассоциированного с шаблоном
-|object_type             |varchar(255)     |-|-|-                             |Тип объекта ассоциированного с шаблоном
+|object_type             |varchar(255)     |-|-|-                             |Тип объекта ассоциированного с шаблоном. Можно использовать как дискриминатор для опредения класса наследника.
 |template_title          |varchar(255)     |-|+|-                             |Описание шаблона
 |group_id                |bigint           |-|+|fk_form_template_group_id     |Внешний ключ, ID группы
 |===

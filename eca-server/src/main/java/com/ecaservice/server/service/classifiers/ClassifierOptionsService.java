@@ -51,6 +51,7 @@ public class ClassifierOptionsService {
     private final ClassifierOptionsProcessor classifierOptionsProcessor;
     private final ClassifiersTemplateProvider classifiersTemplateProvider;
     private final ClassifierOptionsDatabaseModelMapper classifierOptionsDatabaseModelMapper;
+    private final ClassifiersConfigurationHistoryService classifiersConfigurationHistoryService;
     private final ClassifiersConfigurationRepository classifiersConfigurationRepository;
     private final ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;
 
@@ -76,6 +77,7 @@ public class ClassifierOptionsService {
         classifiersConfigurationRepository.save(classifiersConfiguration);
         log.info("New classifier options [{}, id {}] has been saved for configuration [{}]", saved.getOptionsName(),
                 saved.getId(), configurationId);
+        classifiersConfigurationHistoryService.saveAddClassifierOptionsAction(saved);
         return internalPopulateClassifierOptions(saved);
     }
 
@@ -101,6 +103,7 @@ public class ClassifierOptionsService {
         classifiersConfiguration.setUpdated(LocalDateTime.now());
         classifiersConfigurationRepository.save(classifiersConfiguration);
         log.info("Classifier options with id [{}] has been deleted", classifierOptionsDatabaseModel.getId());
+        classifiersConfigurationHistoryService.saveRemoveClassifierOptionsAction(classifierOptionsDatabaseModel);
         return classifierOptionsDatabaseModel;
     }
 

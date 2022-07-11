@@ -3,16 +3,21 @@ package com.ecaservice.server.service.classifiers;
 import com.ecaservice.classifier.options.model.AdaBoostOptions;
 import com.ecaservice.classifier.options.model.LogisticOptions;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.mapping.ClassifierOptionsDatabaseModelMapperImpl;
+import com.ecaservice.server.mapping.ClassifiersConfigurationHistoryMapperImpl;
 import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.server.model.entity.ClassifiersConfiguration;
+import com.ecaservice.server.model.entity.ClassifiersConfigurationActionType;
 import com.ecaservice.server.repository.ClassifierOptionsDatabaseModelRepository;
+import com.ecaservice.server.repository.ClassifiersConfigurationHistoryRepository;
 import com.ecaservice.server.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.UserService;
+import com.ecaservice.server.service.message.template.MessageTemplateProcessor;
 import com.ecaservice.web.dto.model.ClassifierOptionsDto;
 import com.ecaservice.web.dto.model.FormTemplateDto;
 import com.ecaservice.web.dto.model.InputOptionDto;
@@ -33,6 +38,7 @@ import static com.ecaservice.server.TestHelperUtils.createClassifiersConfigurati
 import static com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel_.CREATION_DATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -42,7 +48,8 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import({AppProperties.class, ClassifierOptionsService.class, ClassifierOptionsDatabaseModelMapperImpl.class,
-        DateTimeConverter.class})
+        DateTimeConverter.class, ClassifiersConfigurationHistoryService.class,
+        ClassifiersConfigurationHistoryMapperImpl.class})
 class ClassifierOptionsServiceTest extends AbstractJpaTest {
 
     private static final int PAGE_NUMBER = 0;
@@ -50,29 +57,41 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
     private static final String OPTIONS = "options";
     private static final long ID = 1L;
     private static final String USER_NAME = "user";
+    private static final String MESSAGE = "message";
+    private static final String TEMPLATE_TITLE = "title";
 
     @Inject
     private ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;
+    @Inject
+    private ClassifiersConfigurationHistoryRepository classifiersConfigurationHistoryRepository;
     @Inject
     private ClassifiersConfigurationRepository classifiersConfigurationRepository;
     @MockBean
     private UserService userService;
     @MockBean
+    private FilterService filterService;
+    @MockBean
     private ClassifierOptionsProcessor classifierOptionsProcessor;
     @MockBean
     private ClassifiersTemplateProvider classifiersTemplateProvider;
+    @MockBean
+    private MessageTemplateProcessor messageTemplateProcessor;
     @Inject
     private ClassifierOptionsService classifierOptionsService;
 
     @Override
     public void init() {
         when(userService.getCurrentUser()).thenReturn(USER_NAME);
-        when(classifiersTemplateProvider.getClassifierTemplateByClass(anyString())).thenReturn(new FormTemplateDto());
+        var formTemplate = new FormTemplateDto();
+        formTemplate.setTemplateTitle(TEMPLATE_TITLE);
+        when(classifiersTemplateProvider.getClassifierTemplateByClass(anyString())).thenReturn(formTemplate);
+        when(messageTemplateProcessor.process(anyString(), anyMap())).thenReturn(MESSAGE);
     }
 
     @Override
     public void deleteAll() {
         classifierOptionsDatabaseModelRepository.deleteAll();
+        classifiersConfigurationHistoryRepository.deleteAll();
         classifiersConfigurationRepository.deleteAll();
     }
 
@@ -151,6 +170,8 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
                 classifierOptionsDatabaseModel.getConfiguration().getId()).orElse(null);
         assertThat(actualConfiguration).isNotNull();
         assertThat(actualConfiguration.getUpdated()).isNotNull();
+        verifyClassifiersConfigurationHistory(classifiersConfiguration,
+                ClassifiersConfigurationActionType.REMOVE_CLASSIFIER_OPTIONS);
     }
 
     @Test
@@ -196,6 +217,8 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
         assertThat(actual.getCreationDate()).isNotNull();
         assertThat(actual.getConfiguration().getUpdated()).isNotNull();
         assertThat(actual.getCreatedBy()).isEqualTo(USER_NAME);
+        verifyClassifiersConfigurationHistory(actual.getConfiguration(),
+                ClassifiersConfigurationActionType.ADD_CLASSIFIER_OPTIONS);
     }
 
     @Test
@@ -304,6 +327,17 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
         assertThat(classifierOptionsDatabaseModelRepository.existsById(latestFirst.getId())).isFalse();
         assertThat(classifierOptionsDatabaseModelRepository.existsById(latestSecond.getId())).isTrue();
         assertThat(classifierOptionsDatabaseModelRepository.existsById(newFirst.getId())).isTrue();
+    }
+
+    private void verifyClassifiersConfigurationHistory(ClassifiersConfiguration classifiersConfiguration,
+                                                       ClassifiersConfigurationActionType expectedActionType) {
+        var classifiersConfigurationHistoryList = classifiersConfigurationHistoryRepository.findAll();
+        assertThat(classifiersConfigurationHistoryList).hasSize(1);
+        var classifiersConfigurationHistory = classifiersConfigurationHistoryList.iterator().next();
+        assertThat(classifiersConfigurationHistory.getConfiguration().getId())
+                .isEqualTo(classifiersConfiguration.getId());
+        assertThat(classifiersConfigurationHistory.getCreatedBy()).isEqualTo(USER_NAME);
+        assertThat(classifiersConfigurationHistory.getActionType()).isEqualTo(expectedActionType);
     }
 
     private ClassifierOptionsDatabaseModel saveClassifierOptions(boolean buildIn) {

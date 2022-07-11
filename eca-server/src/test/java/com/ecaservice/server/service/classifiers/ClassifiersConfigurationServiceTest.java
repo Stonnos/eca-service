@@ -1,21 +1,27 @@
 package com.ecaservice.server.service.classifiers;
 
-import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.common.web.exception.InvalidOperationException;
 import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.report.model.ClassifiersConfigurationBean;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.mapping.ClassifierOptionsDatabaseModelMapperImpl;
+import com.ecaservice.server.mapping.ClassifiersConfigurationHistoryMapperImpl;
 import com.ecaservice.server.mapping.ClassifiersConfigurationMapperImpl;
 import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.model.entity.ClassifiersConfiguration;
+import com.ecaservice.server.model.entity.ClassifiersConfigurationActionType;
 import com.ecaservice.server.model.entity.FilterTemplateType;
 import com.ecaservice.server.repository.ClassifierOptionsDatabaseModelRepository;
+import com.ecaservice.server.repository.ClassifiersConfigurationHistoryRepository;
 import com.ecaservice.server.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.UserService;
+import com.ecaservice.server.service.message.template.MessageTemplateProcessor;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
+import com.ecaservice.web.dto.model.FormTemplateDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.UpdateClassifiersConfigurationDto;
@@ -35,6 +41,8 @@ import java.util.stream.Collectors;
 import static com.ecaservice.server.model.entity.BaseEntity_.CREATION_DATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 /**
@@ -43,7 +51,8 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import({ClassifiersConfigurationService.class, ClassifiersConfigurationMapperImpl.class, AppProperties.class,
-        DateTimeConverter.class, ClassifierOptionsDatabaseModelMapperImpl.class})
+        DateTimeConverter.class, ClassifierOptionsDatabaseModelMapperImpl.class,
+        ClassifiersConfigurationHistoryService.class, ClassifiersConfigurationHistoryMapperImpl.class})
 class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
 
     private static final String TEST_CONFIG = "test_config";
@@ -53,9 +62,13 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
     private static final long ID = 1L;
     private static final int PAGE_NUMBER = 0;
     private static final int PAGE_SIZE = 10;
+    private static final String MESSAGE = "message";
+    private static final String TEMPLATE_TITLE = "title";
 
     @Inject
     private ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;
+    @Inject
+    private ClassifiersConfigurationHistoryRepository classifiersConfigurationHistoryRepository;
     @Inject
     private ClassifiersConfigurationRepository classifiersConfigurationRepository;
     @Inject
@@ -64,15 +77,24 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
     private FilterService filterService;
     @MockBean
     private UserService userService;
+    @MockBean
+    private ClassifiersTemplateProvider classifiersTemplateProvider;
+    @MockBean
+    private MessageTemplateProcessor messageTemplateProcessor;
 
     @Override
     public void init() {
         when(userService.getCurrentUser()).thenReturn(USER_NAME);
+        var formTemplate = new FormTemplateDto();
+        formTemplate.setTemplateTitle(TEMPLATE_TITLE);
+        when(classifiersTemplateProvider.getClassifierTemplateByClass(anyString())).thenReturn(formTemplate);
+        when(messageTemplateProcessor.process(anyString(), anyMap())).thenReturn(MESSAGE);
     }
 
     @Override
     public void deleteAll() {
         classifierOptionsDatabaseModelRepository.deleteAll();
+        classifiersConfigurationHistoryRepository.deleteAll();
         classifiersConfigurationRepository.deleteAll();
     }
 
@@ -88,6 +110,7 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
         assertThat(actual.getCreatedBy()).isEqualTo(USER_NAME);
         assertThat(actual.getCreationDate()).isNotNull();
         assertThat(actual.isBuildIn()).isFalse();
+        verifyClassifiersConfigurationHistory(actual, ClassifiersConfigurationActionType.CREATE_CONFIGURATION);
     }
 
     @Test
@@ -122,11 +145,16 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
     @Test
     void testDeleteConfiguration() {
         ClassifiersConfiguration classifiersConfiguration = saveConfiguration(false, false);
+        var classifiersConfigurationHistory =
+                TestHelperUtils.createClassifiersConfigurationHistory(classifiersConfiguration,
+                        ClassifiersConfigurationActionType.CREATE_CONFIGURATION, LocalDateTime.now());
+        classifiersConfigurationHistoryRepository.save(classifiersConfigurationHistory);
         classifiersConfigurationService.delete(classifiersConfiguration.getId());
         ClassifiersConfiguration actualConfiguration =
                 classifiersConfigurationRepository.findById(classifiersConfiguration.getId()).orElse(null);
         assertThat(actualConfiguration).isNull();
         assertThat(classifierOptionsDatabaseModelRepository.count()).isZero();
+        assertThat(classifiersConfigurationHistoryRepository.count()).isZero();
     }
 
     @Test
@@ -168,6 +196,8 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
         assertThat(actualActive.isActive()).isTrue();
         assertThat(actualNotActive).isNotNull();
         assertThat(actualNotActive.isActive()).isFalse();
+        verifyClassifiersConfigurationHistory(actualActive, ClassifiersConfigurationActionType.SET_ACTIVE);
+        verifyClassifiersConfigurationHistory(lastActive, ClassifiersConfigurationActionType.DEACTIVATE);
     }
 
     @Test
@@ -180,6 +210,12 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
         newActive.setConfigurationName(TEST_CONFIGURATION_NAME);
         classifiersConfigurationRepository.save(newActive);
         assertThrows(IllegalStateException.class, () -> classifiersConfigurationService.setActive(newActive.getId()));
+    }
+
+    @Test
+    void testSetAlreadyActiveConfiguration() {
+        ClassifiersConfiguration active = saveConfiguration(true, false);
+        assertThrows(InvalidOperationException.class, () -> classifiersConfigurationService.setActive(active.getId()));
     }
 
     @Test
@@ -218,9 +254,9 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
         assertThat(configurationsPage.getContent()).isNotNull().hasSize(2);
 
         //Assert configurations dto
-        Map<Long, ClassifiersConfigurationDto> classifiersConfigurationDtoMap =
-                configurationsPage.getContent().stream().collect(
-                        Collectors.toMap(ClassifiersConfigurationDto::getId, Function.identity()));
+        Map<Long, ClassifiersConfigurationDto> classifiersConfigurationDtoMap = configurationsPage.getContent()
+                .stream()
+                .collect(Collectors.toMap(ClassifiersConfigurationDto::getId, Function.identity()));
         ClassifiersConfigurationDto actualFirst = classifiersConfigurationDtoMap.get(firstConfiguration.getId());
         assertThat(actualFirst.getId()).isEqualTo(firstConfiguration.getId());
         assertThat(actualFirst.getClassifiersOptionsCount()).isEqualTo(2);
@@ -262,6 +298,8 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
         var actualOptionsCopies =
                 classifierOptionsDatabaseModelRepository.findAllByConfigurationOrderByCreationDate(actualCopy);
         assertThat(actualOptionsCopies).hasSameSizeAs(expectedOptionsCopies);
+        verifyClassifiersConfigurationHistory(copy, ClassifiersConfigurationActionType.CREATE_CONFIGURATION);
+        assertThat(classifiersConfigurationHistoryRepository.count()).isEqualTo(actualOptionsCopies.size() + 1);
     }
 
     private ClassifiersConfiguration saveConfiguration(boolean active, boolean buildIn) {
@@ -275,5 +313,21 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
                 TestHelperUtils.createClassifierOptionsDatabaseModel(TEST_CONFIG, classifiersConfiguration)
         ));
         return classifiersConfiguration;
+    }
+
+    private void verifyClassifiersConfigurationHistory(ClassifiersConfiguration classifiersConfiguration,
+                                                       ClassifiersConfigurationActionType expectedActionType) {
+        var classifiersConfigurationHistoryList = classifiersConfigurationHistoryRepository.findAll();
+        var classifiersConfigurationHistory = classifiersConfigurationHistoryList.stream()
+                .filter(configurationHistoryEntity ->
+                        configurationHistoryEntity.getConfiguration().getId().equals(classifiersConfiguration.getId())
+                                && expectedActionType.equals(configurationHistoryEntity.getActionType()))
+                .findFirst()
+                .orElse(null);
+        assertThat(classifiersConfigurationHistory).isNotNull();
+        assertThat(classifiersConfigurationHistory.getConfiguration().getId())
+                .isEqualTo(classifiersConfiguration.getId());
+        assertThat(classifiersConfigurationHistory.getCreatedBy()).isEqualTo(USER_NAME);
+        assertThat(classifiersConfigurationHistory.getActionType()).isEqualTo(expectedActionType);
     }
 }

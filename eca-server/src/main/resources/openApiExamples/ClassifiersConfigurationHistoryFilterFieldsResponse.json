@@ -1,0 +1,57 @@
+[
+  {
+    "fieldName": "createdBy",
+    "description": "Пользователь",
+    "fieldOrder": 0,
+    "filterFieldType": "TEXT",
+    "matchMode": "LIKE",
+    "multiple": false,
+    "dictionary": null
+  },
+  {
+    "fieldName": "actionType",
+    "description": "Тип события",
+    "fieldOrder": 1,
+    "filterFieldType": "REFERENCE",
+    "matchMode": "EQUALS",
+    "multiple": true,
+    "dictionary": {
+      "name": "classifiersConfigurationActionType",
+      "values": [
+        {
+          "label": "Создана новая конфигурация",
+          "value": "CREATE_CONFIGURATION"
+        },
+        {
+          "label": "Данные конфигурации изменены",
+          "value": "UPDATE_CONFIGURATION"
+        },
+        {
+          "label": "Конфигурация сделана активной",
+          "value": "SET_ACTIVE"
+        },
+        {
+          "label": "Конфигурация перестала быть активной",
+          "value": "DEACTIVATE"
+        },
+        {
+          "label": "Добавлены новые настройки классификатора",
+          "value": "ADD_CLASSIFIER_OPTIONS"
+        },
+        {
+          "label": "Удалены настройки классификатора",
+          "value": "REMOVE_CLASSIFIER_OPTIONS"
+        }
+      ]
+    }
+  },
+  {
+    "fieldName": "createdAt",
+    "description": "Дата события",
+    "fieldOrder": 2,
+    "filterFieldType": "DATE",
+    "matchMode": "RANGE",
+    "multiple": true,
+    "dictionary": null
+  }
+]

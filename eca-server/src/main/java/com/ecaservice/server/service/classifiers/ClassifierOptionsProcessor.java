@@ -162,8 +162,13 @@ public class ClassifierOptionsProcessor {
                 .collect(Collectors.toList());
     }
 
+    private String createNullSafeExpression(String fieldName) {
+       return StringUtils.replace(fieldName, ".", "?.");
+    }
+
     private String getValue(ClassifierOptions classifierOptions, FormFieldDto formFieldDto) {
-        var optionValue = spelExpressionHelper.parseExpression(classifierOptions, formFieldDto.getFieldName());
+        var expression = createNullSafeExpression(formFieldDto.getFieldName());
+        var optionValue = spelExpressionHelper.parseExpression(classifierOptions, expression);
         if (optionValue == null) {
             return null;
         }

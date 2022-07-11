@@ -1,6 +1,7 @@
 package com.ecaservice.server.service.classifiers;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.common.web.exception.InvalidOperationException;
 import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.core.lock.annotation.Locked;
@@ -31,6 +32,7 @@ import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -56,6 +58,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
     private final ClassifiersConfigurationMapper classifiersConfigurationMapper;
     private final ClassifierOptionsDatabaseModelMapper classifierOptionsDatabaseModelMapper;
     private final AppProperties appProperties;
+    private final ClassifiersConfigurationHistoryService classifiersConfigurationHistoryService;
     private final ClassifiersConfigurationRepository classifiersConfigurationRepository;
     private final ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;
 
@@ -66,6 +69,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
      * @return classifiers configuration entity
      */
     @Audit(value = ADD_CONFIGURATION, correlationIdKey = "#result.id")
+    @Transactional
     public ClassifiersConfiguration save(CreateClassifiersConfigurationDto configurationDto) {
         log.info("Starting to save new classifiers configuration [{}]", configurationDto.getConfigurationName());
         var classifiersConfiguration = classifiersConfigurationMapper.map(configurationDto);
@@ -73,6 +77,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
         classifiersConfiguration.setCreationDate(LocalDateTime.now());
         var savedConfiguration = classifiersConfigurationRepository.save(classifiersConfiguration);
         log.info("Classifiers configuration [{}] has been saved", savedConfiguration.getConfigurationName());
+        classifiersConfigurationHistoryService.saveCreateConfigurationAction(savedConfiguration);
         return savedConfiguration;
     }
 
@@ -91,6 +96,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
         classifiersConfigurationRepository.save(classifiersConfiguration);
         log.info("Classifiers configuration [{}] has been updated with name [{}]", classifiersConfiguration.getId(),
                 classifiersConfiguration.getConfigurationName());
+        classifiersConfigurationHistoryService.saveUpdateConfigurationAction(classifiersConfiguration);
     }
 
     /**
@@ -99,6 +105,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
      * @param id - classifiers configuration id
      */
     @Audit(value = DELETE_CONFIGURATION, correlationIdKey = "#id")
+    @Transactional
     public void delete(long id) {
         log.info("Starting to delete classifiers configuration [{}]", id);
         var classifiersConfiguration = getById(id);
@@ -106,6 +113,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
                 String.format("Can't delete build in configuration [%d]!", id));
         Assert.state(!classifiersConfiguration.isActive(),
                 String.format("Can't delete active configuration [%d]!", id));
+        classifiersConfigurationHistoryService.deleteHistory(classifiersConfiguration);
         classifiersConfigurationRepository.delete(classifiersConfiguration);
         log.info("Classifiers configuration [{}] has been deleted", id);
     }
@@ -128,10 +136,12 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
         classifiersConfigurationCopy.setCreatedBy(userService.getCurrentUser());
         classifiersConfigurationCopy.setCreationDate(LocalDateTime.now());
         classifiersConfigurationRepository.save(classifiersConfigurationCopy);
-        copyClassifiersOptions(classifiersConfiguration, classifiersConfigurationCopy);
+        var classifiersOptionsCopies = copyClassifiersOptions(classifiersConfiguration, classifiersConfigurationCopy);
         log.info("Classifiers configuration [{}] copy [{}] has been created with new id [{}]",
                 classifiersConfiguration.getId(), classifiersConfigurationCopy.getConfigurationName(),
                 classifiersConfigurationCopy.getId());
+        classifiersConfigurationHistoryService.saveCreateConfigurationAction(classifiersConfigurationCopy);
+        classifiersConfigurationHistoryService.saveAddClassifierOptionsAction(classifiersOptionsCopies);
         return classifiersConfigurationCopy;
     }
 
@@ -141,6 +151,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
      * @param id - configuration id
      */
     @Locked(lockName = "setActiveClassifiersConfiguration")
+    @Transactional
     public void setActive(long id) {
         log.info("Request to set classifiers configuration [{}] as active", id);
         var classifiersConfiguration = getById(id);
@@ -149,11 +160,15 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
         Assert.state(classifierOptionsDatabaseModelRepository.countByConfiguration(classifiersConfiguration) > 0L,
                 String.format("Can't set configuration [%d] as active, because its has no one classifiers options!",
                         classifiersConfiguration.getId()));
-        if (!classifiersConfiguration.getId().equals(activeConfiguration.getId())) {
+        if (classifiersConfiguration.getId().equals(activeConfiguration.getId())) {
+            throw new InvalidOperationException(String.format("Classifiers configuration [%d] is already active!", id));
+        } else {
             activeConfiguration.setActive(false);
             classifiersConfiguration.setActive(true);
             classifiersConfigurationRepository.saveAll(Arrays.asList(classifiersConfiguration, activeConfiguration));
             log.info("Classifiers configuration [{}] has been set as active.", classifiersConfiguration.getId());
+            classifiersConfigurationHistoryService.saveSetActiveConfigurationAction(classifiersConfiguration);
+            classifiersConfigurationHistoryService.saveDeactivateConfigurationAction(activeConfiguration);
         }
     }
 
@@ -239,8 +254,9 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
                 .orElseThrow(() -> new EntityNotFoundException(ClassifiersConfiguration.class, id));
     }
 
-    private void copyClassifiersOptions(ClassifiersConfiguration classifiersConfiguration,
-                                        ClassifiersConfiguration classifiersConfigurationCopy) {
+    private List<ClassifierOptionsDatabaseModel> copyClassifiersOptions(
+            ClassifiersConfiguration classifiersConfiguration,
+            ClassifiersConfiguration classifiersConfigurationCopy) {
         log.info("Starting to copy classifiers options for configuration [{}]", classifiersConfiguration.getId());
         var classifierOptionsDatabaseModels =
                 classifierOptionsDatabaseModelRepository.findAllByConfigurationOrderByCreationDate(
@@ -262,5 +278,6 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
         classifierOptionsDatabaseModelRepository.saveAll(classifierOptionsCopies);
         log.info("[{}] classifiers options has been copied for configuration [{}]", classifierOptionsCopies.size(),
                 classifiersConfiguration.getId());
+        return classifierOptionsCopies;
     }
 }

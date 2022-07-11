@@ -217,6 +217,26 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |configuration_id        |bigint           |-|+|fk_classifier_options_classifiers_configuration_id  |Внешний ключ classifiers_configuration
 |===
 
+==== Таблица 3.{counter:db-table-id} - 'classifiers_configuration_history' - содержит историю изменений конфигураций классификаторов
+[cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
+|===
+|Название колонки|Тип|Unique|Not NULL|Индекс|Описание
+|id                      |bigint           |+|+|+                                                      |Идентификатор записи (первичный ключ)
+|action_type             |varchar(255)     |-|+|-                                                      |Тип события
+|message_text            |text             |-|+|-                                                      |Текст сообщения
+|created_at              |timestamp        |-|+|-                                                      |Дата события
+|created_by              |varchar(255)     |-|+|-                                                      |Инициатор события (пользователь)
+|configuration_id        |bigint           |-|+|fk_classifiers_configuration_history_configuration_id  |Внешний ключ classifiers_configuration
+|===
+
+==== Таблица 3.{counter:db-table-id} - 'message_template' - содержит шаблоны для различных сообщений
+[cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
+|===
+|Название колонки|Тип|Unique|Not NULL|Индекс|Описание
+|id                      |varchar(255)     |+|+|+                              |Код шаблона (первичный ключ)
+|template_text           |text             |-|+|-                              |Текст шаблона
+|===
+
 ==== Таблица 3.{counter:db-table-id} - 'instances_info' - содержит данные об обучающих выборках
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
@@ -767,7 +787,7 @@ image::./images/eca-audit-log-db-schema.png[alt=Схема базы данных
 |id                      |bigint           |+|+|+                             |Идентификатор записи (первичный ключ)
 |template_name           |varchar(255)     |+|+|form_template_name_unique_idx |Уникальный код шаблона
 |object_class            |varchar(255)     |-|-|-                             |Название класса ассоциированного с шаблоном
-|object_type             |varchar(255)     |-|-|-                             |Тип объекта ассоциированного с шаблоном
+|object_type             |varchar(255)     |-|-|-                             |Тип объекта ассоциированного с шаблоном. Можно использовать как дискриминатор для опредения класса наследника.
 |template_title          |varchar(255)     |-|+|-                             |Описание шаблона
 |group_id                |bigint           |-|+|fk_form_template_group_id     |Внешний ключ, ID группы
 |===

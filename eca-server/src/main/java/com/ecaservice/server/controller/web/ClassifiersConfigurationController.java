@@ -6,13 +6,9 @@ import com.ecaservice.report.model.ClassifiersConfigurationBean;
 import com.ecaservice.report.model.ReportType;
 import com.ecaservice.server.mapping.ClassifiersConfigurationMapper;
 import com.ecaservice.server.model.entity.ClassifiersConfiguration;
+import com.ecaservice.server.service.classifiers.ClassifiersConfigurationHistoryService;
 import com.ecaservice.server.service.classifiers.ClassifiersConfigurationService;
-import com.ecaservice.web.dto.model.ClassifierConfigurationsPageDto;
-import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
-import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
-import com.ecaservice.web.dto.model.PageDto;
-import com.ecaservice.web.dto.model.PageRequestDto;
-import com.ecaservice.web.dto.model.UpdateClassifiersConfigurationDto;
+import com.ecaservice.web.dto.model.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -66,6 +62,7 @@ public class ClassifiersConfigurationController {
     private static final String CONFIGURATION_FILE_NAME_FORMAT = "%s configuration";
 
     private final ClassifiersConfigurationService classifiersConfigurationService;
+    private final ClassifiersConfigurationHistoryService classifiersConfigurationHistoryService;
     private final ClassifiersConfigurationMapper classifiersConfigurationMapper;
 
     /**
@@ -505,5 +502,73 @@ public class ClassifiersConfigurationController {
         String fileName =
                 String.format(CONFIGURATION_FILE_NAME_FORMAT, classifiersConfigurationBean.getConfigurationName());
         download(ReportType.CLASSIFIERS_CONFIGURATION, fileName, httpServletResponse, classifiersConfigurationBean);
+    }
+
+    /**
+     * Finds classifiers configuration history with specified options such as filter, sorting and paging.
+     *
+     * @param configurationId - configuration id
+     * @param pageRequestDto  - page request dto
+     * @return classifiers configurations page
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @Operation(
+            description = "Finds classifiers configuration history with specified options",
+            summary = "Finds classifiers configuration history with specified options",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
+                    @Content(examples = {
+                            @ExampleObject(
+                                    name = "PageRequest",
+                                    ref = "#/components/examples/PageRequest"
+                            )
+                    })
+            }),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "ClassifiersConfigurationHistoryPageResponse",
+                                                    ref = "#/components/examples/ClassifiersConfigurationHistoryPageResponse"
+                                            ),
+                                    },
+                                    schema = @Schema(implementation = ClassifiersConfigurationHistoryPageDto.class)
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            )
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "BadPageRequestResponse",
+                                                    ref = "#/components/examples/BadPageRequestResponse"
+                                            )
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
+                            )
+                    )
+            }
+    )
+    @PostMapping(value = "/history")
+    public PageDto<ClassifiersConfigurationHistoryDto> getClassifiersConfigurationHistory(
+            @Parameter(description = "Configuration id", example = "1", required = true)
+            @Min(VALUE_1) @Max(Long.MAX_VALUE)
+            @RequestParam long configurationId,
+            @Valid @RequestBody PageRequestDto pageRequestDto) {
+        log.info("Received classifiers configuration history page request: {}", pageRequestDto);
+        return classifiersConfigurationHistoryService.getNextPage(configurationId, pageRequestDto);
     }
 }

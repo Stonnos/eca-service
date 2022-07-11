@@ -4,6 +4,7 @@ import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.report.model.ClassifiersConfigurationBean;
 import com.ecaservice.server.mapping.ClassifiersConfigurationMapperImpl;
 import com.ecaservice.server.mapping.DateTimeConverter;
+import com.ecaservice.server.service.classifiers.ClassifiersConfigurationHistoryService;
 import com.ecaservice.server.service.classifiers.ClassifiersConfigurationService;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
@@ -20,13 +21,17 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import static com.ecaservice.server.PageRequestUtils.PAGE_NUMBER;
 import static com.ecaservice.server.PageRequestUtils.TOTAL_ELEMENTS;
 import static com.ecaservice.server.TestHelperUtils.bearerHeader;
 import static com.ecaservice.server.TestHelperUtils.createClassifiersConfigurationDto;
+import static com.ecaservice.server.TestHelperUtils.createClassifiersConfigurationHistoryDto;
 import static com.ecaservice.server.TestHelperUtils.createPageRequestDto;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -47,6 +52,7 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
 
     private static final String BASE_URL = "/experiment/classifiers-configurations";
     private static final String LIST_URL = BASE_URL + "/list";
+    private static final String HISTORY_URL = BASE_URL + "/history";
     private static final String DETAIL_URL = BASE_URL + "/details/{id}";
     private static final String DELETE_URL = BASE_URL + "/delete";
     private static final String SET_ACTIVE_URL = BASE_URL + "/set-active";
@@ -59,8 +65,13 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
     private static final String ID_PARAM = "id";
     private static final long ID = 1L;
 
+    private static final String CONFIGURATION_ID_PARAM = "configurationId";
+    private static final long CONFIGURATION_ID = 1L;
+
     @MockBean
     private ClassifiersConfigurationService classifiersConfigurationService;
+    @MockBean
+    private ClassifiersConfigurationHistoryService classifiersConfigurationHistoryService;
 
     @Test
     void testGetClassifiersConfigurationsPageUnauthorized() throws Exception {
@@ -105,6 +116,58 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
                 pageDto);
         mockMvc.perform(post(LIST_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .content(objectMapper.writeValueAsString(createPageRequestDto()))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(objectMapper.writeValueAsString(pageDto)));
+    }
+
+    @Test
+    void testGetClassifiersConfigurationHistoryPageUnauthorized() throws Exception {
+        testGetPageUnauthorized(HISTORY_URL, buildConfigurationIdParam());
+    }
+
+    @Test
+    void testGetClassifiersConfigurationHistoryPageWithNullPageNumber() throws Exception {
+        testGetPageWithNullPageNumber(HISTORY_URL, buildConfigurationIdParam());
+    }
+
+    @Test
+    void testGetClassifiersConfigurationHistoryPageWithNullPageSize() throws Exception {
+        testGetPageWithNullPageSize(HISTORY_URL, buildConfigurationIdParam());
+    }
+
+    @Test
+    void testGetClassifiersConfigurationHistoryPageWithZeroPageSize() throws Exception {
+        testGetPageWithZeroPageSize(HISTORY_URL, buildConfigurationIdParam());
+    }
+
+    @Test
+    void testGetClassifiersConfigurationHistoryPageWithNegativePageNumber() throws Exception {
+        testGetPageWithNegativePageNumber(HISTORY_URL, buildConfigurationIdParam());
+    }
+
+    @Test
+    void testGetClassifiersConfigurationHistoryPageWithEmptyFilterRequestName() throws Exception {
+        testGetPageWithEmptyFilterRequestName(HISTORY_URL, buildConfigurationIdParam());
+    }
+
+    @Test
+    void testGetClassifiersConfigurationHistoryPageWithNullMatchMode() throws Exception {
+        testGetPageWithNullMatchMode(HISTORY_URL, buildConfigurationIdParam());
+    }
+
+    @Test
+    void testGetClassifiersConfigurationHistoryPageOk() throws Exception {
+        var pageDto =
+                PageDto.of(Collections.singletonList(createClassifiersConfigurationHistoryDto()), PAGE_NUMBER,
+                        TOTAL_ELEMENTS);
+        when(classifiersConfigurationHistoryService.getNextPage(anyLong(), any(PageRequestDto.class)))
+                .thenReturn(pageDto);
+        mockMvc.perform(post(HISTORY_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .param(CONFIGURATION_ID_PARAM, String.valueOf(CONFIGURATION_ID))
                 .content(objectMapper.writeValueAsString(createPageRequestDto()))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -375,5 +438,10 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
                 .content(objectMapper.writeValueAsString(configurationDto))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+    }
+
+    private Map<String, List<String>> buildConfigurationIdParam() {
+        return Collections.singletonMap(CONFIGURATION_ID_PARAM,
+                Collections.singletonList(String.valueOf(CONFIGURATION_ID)));
     }
 }

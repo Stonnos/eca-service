@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v56-create-message-template-table.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="create-message-template-table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="message_template"/>
+            </not>
+        </preConditions>
+        <createTable tableName="message_template">
+            <column name="id" type="varchar(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="template_text" type="text"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="add-message-template-text-not-null-constraint" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="message_template"/>
+            <columnExists tableName="message_template" columnName="template_text"/>
+        </preConditions>
+        <addNotNullConstraint tableName="message_template" columnName="template_text"/>
+    </changeSet>
+</databaseChangeLog>

@@ -36,6 +36,8 @@ import com.ecaservice.server.model.entity.ClassifierOptionsRequestEntity;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.server.model.entity.ClassifierOptionsResponseModel;
 import com.ecaservice.server.model.entity.ClassifiersConfiguration;
+import com.ecaservice.server.model.entity.ClassifiersConfigurationActionType;
+import com.ecaservice.server.model.entity.ClassifiersConfigurationHistoryEntity;
 import com.ecaservice.server.model.entity.ErsResponseStatus;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.Experiment;
@@ -47,6 +49,7 @@ import com.ecaservice.server.model.evaluation.ClassifierOptionsRequestSource;
 import com.ecaservice.server.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.server.model.experiment.InitializationParams;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
+import com.ecaservice.web.dto.model.ClassifiersConfigurationHistoryDto;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
@@ -153,6 +156,7 @@ public class TestHelperUtils {
     private static final int NUM_THREADS = 3;
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    public static final String MESSAGE_TEXT = "Message text";
 
     /**
      * Creates page request dto.
@@ -336,6 +340,27 @@ public class TestHelperUtils {
     }
 
     /**
+     * Creates classifiers configuration history entity.
+     *
+     * @param classifiersConfiguration - classifiers configuration entity
+     * @param actionType               - action type
+     * @param createdAt                - created at
+     * @return classifiers configuration history entity
+     */
+    public static ClassifiersConfigurationHistoryEntity createClassifiersConfigurationHistory(
+            ClassifiersConfiguration classifiersConfiguration,
+            ClassifiersConfigurationActionType actionType,
+            LocalDateTime createdAt) {
+        var classifiersConfigurationHistoryEntity = new ClassifiersConfigurationHistoryEntity();
+        classifiersConfigurationHistoryEntity.setActionType(actionType);
+        classifiersConfigurationHistoryEntity.setConfiguration(classifiersConfiguration);
+        classifiersConfigurationHistoryEntity.setMessageText(MESSAGE_TEXT);
+        classifiersConfigurationHistoryEntity.setCreatedAt(createdAt);
+        classifiersConfigurationHistoryEntity.setCreatedBy(CREATED_BY);
+        return classifiersConfigurationHistoryEntity;
+    }
+
+    /**
      * Creates classifiers configuration entity.
      *
      * @return classifiers configuration entity
@@ -360,6 +385,21 @@ public class TestHelperUtils {
         classifiersConfiguration.setCreationDate(LocalDateTime.now());
         classifiersConfiguration.setBuildIn(true);
         return classifiersConfiguration;
+    }
+
+    /**
+     * Creates classifiers configuration history dto.
+     *
+     * @return classifiers configuration history dto
+     */
+    public static ClassifiersConfigurationHistoryDto createClassifiersConfigurationHistoryDto() {
+        var classifiersConfigurationHistoryDto = new ClassifiersConfigurationHistoryDto();
+        classifiersConfigurationHistoryDto.setCreatedAt(LocalDateTime.now());
+        classifiersConfigurationHistoryDto.setCreatedBy(CREATED_BY);
+        classifiersConfigurationHistoryDto.setMessageText(MESSAGE_TEXT);
+        var actionType = ClassifiersConfigurationActionType.CREATE_CONFIGURATION;
+        classifiersConfigurationHistoryDto.setActionType(new EnumDto(actionType.name(), actionType.getDescription()));
+        return classifiersConfigurationHistoryDto;
     }
 
     /**

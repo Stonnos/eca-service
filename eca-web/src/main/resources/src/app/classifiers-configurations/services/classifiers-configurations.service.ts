@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
-  ClassifiersConfigurationDto, CreateClassifiersConfigurationDto,
+  ClassifiersConfigurationDto, ClassifiersConfigurationHistoryDto, CreateClassifiersConfigurationDto,
   PageDto,
   PageRequestDto, UpdateClassifiersConfigurationDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
@@ -81,5 +81,15 @@ export class ClassifiersConfigurationsService {
     });
     const options = { headers: headers, responseType: 'blob' as 'json' };
     return this.http.get<Blob>(this.serviceUrl + '/report/' + configurationId.toString(), options);
+  }
+
+  public getClassifiersConfigurationHistory(configurationId: number, pageRequest: PageRequestDto): Observable<PageDto<ClassifiersConfigurationHistoryDto>> {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/json; charset=utf-8',
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    let params = new HttpParams().set('configurationId', configurationId.toString());
+    const options = { headers: headers, params: params };
+    return this.http.post<PageDto<ClassifiersConfigurationHistoryDto>>(this.serviceUrl + '/history', pageRequest, options);
   }
 }
