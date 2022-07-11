@@ -43,6 +43,7 @@ import { EmailTemplatesModule } from "./email-templates/email-templates.module";
 import { InstancesDetailsModule } from "./instances-details/instances-details.module";
 import { ExportInstancesModule } from "./export-instances/export-instances.module";
 import { ClassifiersConfigurationFullDetailsModule } from "./classifiers-configuration-full-details/classifiers-configuration-full-details.module";
+import { ClassifiersConfigurationHistoryModule } from "./classifiers-configuration-history/classifiers-configuration-history.module";
 
 @NgModule({
   declarations: [
@@ -89,6 +90,7 @@ import { ClassifiersConfigurationFullDetailsModule } from "./classifiers-configu
     EmailTemplatesModule,
     InstancesDetailsModule,
     ExportInstancesModule,
+    ClassifiersConfigurationHistoryModule,
     ClassifiersConfigurationFullDetailsModule
   ],
   providers: [
