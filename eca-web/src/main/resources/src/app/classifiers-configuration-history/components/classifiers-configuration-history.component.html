@@ -1,3 +1,9 @@
+<div class="row search-content mt-2">
+  <div class="col-6 offset-6">
+    <app-search-query (search)="onSearch($event)">
+    </app-search-query>
+  </div>
+</div>
 <div class="row">
   <div class="filter-sidebar">
     <app-filter [filters]="filters" (apply)="onApplyFilter()"></app-filter>
