@@ -3,11 +3,13 @@ package com.ecaservice.core.redelivery.service;
 import com.ecaservice.core.redelivery.AbstractJpaTest;
 import com.ecaservice.core.redelivery.aspect.RetryAspect;
 import com.ecaservice.core.redelivery.config.RedeliveryProperties;
+import com.ecaservice.core.redelivery.metrics.RetryMeterService;
 import com.ecaservice.core.redelivery.repository.RetryRequestRepository;
 import com.ecaservice.core.redelivery.test.RedeliverTestConfiguration;
 import com.ecaservice.core.redelivery.test.model.TestRequest;
 import com.ecaservice.core.redelivery.test.service.TestServiceA;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
@@ -33,6 +35,9 @@ class RetryServiceTest extends AbstractJpaTest {
 
     @SpyBean
     private TestServiceA testServiceA;
+
+    @MockBean
+    private RetryMeterService retryMeterService;
 
     @Inject
     private RetryRequestRepository retryRequestRepository;

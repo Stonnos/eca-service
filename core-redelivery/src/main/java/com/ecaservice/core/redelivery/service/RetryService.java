@@ -6,6 +6,7 @@ import com.ecaservice.core.redelivery.callback.RetryCallback;
 import com.ecaservice.core.redelivery.converter.RequestMessageConverter;
 import com.ecaservice.core.redelivery.entity.RetryRequest;
 import com.ecaservice.core.redelivery.error.ExceptionStrategy;
+import com.ecaservice.core.redelivery.metrics.RetryMeterService;
 import com.ecaservice.core.redelivery.model.MethodInfo;
 import com.ecaservice.core.redelivery.model.RetryContext;
 import com.ecaservice.core.redelivery.repository.RetryRequestRepository;
@@ -42,6 +43,7 @@ import static com.google.common.collect.Lists.newArrayList;
 @RequiredArgsConstructor
 public class RetryService {
 
+    private final RetryMeterService retryMeterService;
     private final RetryRequestCacheService retryRequestCacheService;
     private final ApplicationContext applicationContext;
     private final RetryRequestRepository retryRequestRepository;
@@ -149,6 +151,7 @@ public class RetryService {
                     retryRequest.getId());
             retryCallback.onSuccess(retryContext);
             retryRequestCacheService.delete(retryRequest);
+            retryMeterService.trackRetrySuccess(retryRequest.getRequestType());
         } catch (Exception ex) {
             log.error("Error while retry request with id [{}]: {}", retryRequest.getId(),
                     ex.getMessage());
@@ -159,6 +162,7 @@ public class RetryService {
             } else {
                 retryCallback.onError(retryContext, ex);
                 retryRequestCacheService.delete(retryRequest);
+                retryMeterService.trackRetryError(retryRequest.getRequestType());
             }
         }
     }
@@ -183,9 +187,11 @@ public class RetryService {
                     retryRequest.getId());
             retryCallback.onRetryExhausted(retryContext);
             retryRequestCacheService.delete(retryRequest);
+            retryMeterService.trackRetryExhausted(retryRequest.getRequestType());
         } else {
             retryCallback.onError(retryContext, ex);
             updateErrorRetryRequest(retryRequest, retry);
+            retryMeterService.trackRetryFailed(retryRequest.getRequestType());
         }
     }
 
