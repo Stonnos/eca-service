@@ -90,6 +90,8 @@ public class RetryAspect {
                 applicationContext.getBean(retry.exceptionStrategy(), ExceptionStrategy.class);
         if (exceptionStrategy.notFatal(exception)) {
             saveRequest(request, joinPoint, retry);
+        } else {
+            retryMeterService.trackRetryRequestError(retry.value());
         }
     }
 

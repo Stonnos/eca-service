@@ -19,6 +19,7 @@ public class RetryMeterService {
 
     private static final String BASE_METRIC_PREFIX = "core";
     private static final String RETRY_REQUEST_CACHE_SIZE_METRIC = BASE_METRIC_PREFIX + ".retry.request.cache.size";
+    private static final String RETRY_REQUEST_ERROR_METRIC = BASE_METRIC_PREFIX + ".retry.request.error.total";
     private static final String FAILED_RETRIES_METRIC = BASE_METRIC_PREFIX + ".retries.failed.total";
     private static final String SUCCESS_RETRIES_METRIC = BASE_METRIC_PREFIX + ".retries.success.total";
     private static final String EXHAUSTED_RETRIES_METRIC = BASE_METRIC_PREFIX + ".retries.exhausted.total";
@@ -33,6 +34,16 @@ public class RetryMeterService {
      */
     public void trackRetryRequestCacheSize(String requestType) {
         var counter = meterRegistry.counter(RETRY_REQUEST_CACHE_SIZE_METRIC, RETRY_REQUEST_TYPE_TAG, requestType);
+        counter.increment();
+    }
+
+    /**
+     * Tracks retry request error.
+     *
+     * @param requestType - request type
+     */
+    public void trackRetryRequestError(String requestType) {
+        var counter = meterRegistry.counter(RETRY_REQUEST_ERROR_METRIC, RETRY_REQUEST_TYPE_TAG, requestType);
         counter.increment();
     }
 
