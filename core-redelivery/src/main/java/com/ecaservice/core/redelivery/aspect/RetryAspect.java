@@ -4,6 +4,7 @@ import com.ecaservice.common.web.expression.SpelExpressionHelper;
 import com.ecaservice.core.redelivery.annotation.Retry;
 import com.ecaservice.core.redelivery.converter.RequestMessageConverter;
 import com.ecaservice.core.redelivery.error.ExceptionStrategy;
+import com.ecaservice.core.redelivery.metrics.RetryMeterService;
 import com.ecaservice.core.redelivery.model.RetryRequestModel;
 import com.ecaservice.core.redelivery.service.RetryRequestCacheService;
 import com.ecaservice.core.redelivery.strategy.RetryStrategy;
@@ -33,6 +34,7 @@ public class RetryAspect {
 
     private final ApplicationContext applicationContext;
     private final RetryRequestCacheService retryRequestCacheService;
+    private final RetryMeterService retryMeterService;
     private final SpelExpressionHelper spelExpressionHelper = new SpelExpressionHelper();
 
     /**
@@ -73,6 +75,7 @@ public class RetryAspect {
                     .minRetryInterval(retryStrategy.getMinRetryIntervalMillis())
                     .build();
             retryRequestCacheService.save(retryRequestModel);
+            retryMeterService.trackRetryRequestCacheSize(retryRequestModel.getRequestType());
         } catch (Exception ex) {
             log.error("Can's save retry request [{}]: {}", retry.value(), ex.getMessage());
         }
@@ -87,6 +90,8 @@ public class RetryAspect {
                 applicationContext.getBean(retry.exceptionStrategy(), ExceptionStrategy.class);
         if (exceptionStrategy.notFatal(exception)) {
             saveRequest(request, joinPoint, retry);
+        } else {
+            retryMeterService.trackRetryRequestError(retry.value());
         }
     }
 
