@@ -156,40 +156,58 @@ a|`core_lock_acquire_error_total{application="eca-server",lockName="experiment",
 |*core_unlock_error_total{application="eca-server",lockName="experiment",}*
 |Счетчик числа ошибок при попытке снять блокировку experiment
 a|`core_unlock_error_total{application="eca-server",lockName="experiment",} 2.0`
+|*core_retry_request_cache_size_total{application="appName",request_type="auditRequest",}*
 |Счетчик числа запросов, которые были сохранены в кэш для повторной отправки в сервис аудита (для application: eca-server, eca-oauth, eca-data-storage)
 a|`core_retry_request_cache_size_total{application="appName",request_type="auditRequest",} 1.0`
+|*core_retry_request_error_total{application="appName",request_type="auditRequest",}*
 |Счетчик числа ошибок для запросов, которые не были сохранены в кэш для повторной отправки в сервис аудита (для application: eca-server, eca-oauth, eca-data-storage)
 a|`core_retry_request_error_total{application="appName",request_type="auditRequest",} 0.0`
+|*core_retries_failed_total{application="appName",request_type="auditRequest",}*
 |Счетчик числа неуспешных попыток повторной отправки запросов в сервис аудита (для application: eca-server, eca-oauth, eca-data-storage)
 a|`core_retries_failed_total{application="appName",request_type="auditRequest",} 3.0`
+|*core_retries_success_total{application="appName",request_type="auditRequest",}*
 |Счетчик числа успешных попыток повторной отправки запросов в сервис аудита (для application: eca-server, eca-oauth, eca-data-storage)
 a|`core_retries_success_total{application="appName",request_type="auditRequest",} 1.0`
+|*core_retries_exhausted_total{application="appName",request_type="auditRequest",}*
 |Счетчик числа превышений лимита попыток для повторной отправки запросов в сервис аудита (для application: eca-server, eca-oauth, eca-data-storage)
 a|`core_retries_exhausted_total{application="appName",request_type="auditRequest",} 0.0`
+|*core_retries_error_total{application="appName",request_type="auditRequest",}*
 |Счетчик числа критических ошибок при повторной отправки запросов в сервис аудита (для application: eca-server, eca-oauth, eca-data-storage)
 a|`core_retries_error_total{application="appName",request_type="auditRequest",} 0.0`
+|*core_retry_request_cache_size_total{application="appName",request_type="emailRequest",}*
 |Счетчик числа запросов, которые были сохранены в кэш для повторной отправки в email сервис (для application: eca-server, eca-oauth)
 a|`core_retry_request_cache_size_total{application="appName",request_type="emailRequest",} 1.0`
+|*core_retry_request_error_total{application="appName",request_type="emailRequest",}*
 |Счетчик числа ошибок для запросов, которые не были сохранены в кэш для повторной отправки в email сервис (для application: eca-server, eca-oauth)
 a|`core_retry_request_error_total{application="appName",request_type="emailRequest",} 0.0`
+|*core_retries_failed_total{application="appName",request_type="emailRequest",}*
 |Счетчик числа неуспешных попыток повторной отправки запросов в email сервис (для application: eca-server, eca-oauth)
 a|`core_retries_failed_total{application="appName",request_type="emailRequest",} 3.0`
+|*core_retries_success_total{application="appName",request_type="emailRequest",}*
 |Счетчик числа успешных попыток повторной отправки запросов в email сервис (для application: eca-server, eca-oauth)
 a|`core_retries_success_total{application="appName",request_type="emailRequest",} 1.0`
+|*core_retries_exhausted_total{application="appName",request_type="emailRequest",}*
 |Счетчик числа превышений лимита попыток для повторной отправки запросов в email сервис (для application: eca-server, eca-oauth)
 a|`core_retries_exhausted_total{application="appName",request_type="emailRequest",} 0.0`
+|*core_retries_error_total{application="appName",request_type="emailRequest",}*
 |Счетчик числа критических ошибок при повторной отправки запросов в email сервис (для application: eca-server, eca-oauth)
 a|`core_retries_error_total{application="appName",request_type="emailRequest",} 0.0`
+|*core_retry_request_cache_size_total{application="eca-server",request_type="ersEvaluationResultsRequest",}*
 |Счетчик числа запросов, которые были сохранены в кэш для повторной отправки в ERS сервис
 a|`core_retry_request_cache_size_total{application="eca-server",request_type="ersEvaluationResultsRequest",} 1.0`
+|*core_retry_request_error_total{application="eca-server",request_type="ersEvaluationResultsRequest",}*
 |Счетчик числа ошибок для запросов, которые не были сохранены в кэш для повторной отправки в ERS сервис
 a|`core_retry_request_error_total{application="eca-server",request_type="ersEvaluationResultsRequest",} 0.0`
+|*core_retries_failed_total{application="eca-server",request_type="ersEvaluationResultsRequest",}*
 |Счетчик числа неуспешных попыток повторной отправки запросов в ERS сервис
 a|`core_retries_failed_total{application="eca-server",request_type="ersEvaluationResultsRequest",} 3.0`
+|*ore_retries_success_total{application="eca-server",request_type="ersEvaluationResultsRequest",}*
 |Счетчик числа успешных попыток повторной отправки запросов в ERS сервис
 a|`core_retries_success_total{application="eca-server",request_type="ersEvaluationResultsRequest",} 1.0`
+|*core_retries_exhausted_total{application="eca-server",request_type="ersEvaluationResultsRequest",}*
 |Счетчик числа превышений лимита попыток для повторной отправки запросов в ERS сервис
 a|`core_retries_exhausted_total{application="eca-server",request_type="ersEvaluationResultsRequest",} 0.0`
+|*core_retries_error_total{application="eca-server",request_type="ersEvaluationResultsRequest",}*
 |Счетчик числа критических ошибок при повторной отправки запросов в ERS сервис
 a|`core_retries_error_total{application="eca-server",request_type="ersEvaluationResultsRequest",} 0.0`
 |**
