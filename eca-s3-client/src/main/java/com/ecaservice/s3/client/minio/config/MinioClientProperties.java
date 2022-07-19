@@ -36,4 +36,9 @@ public class MinioClientProperties {
      * Batch size for multipart upload
      */
     private long batchSize;
+
+    /**
+     * Storage external url
+     */
+    private String externalUrl;
 }
