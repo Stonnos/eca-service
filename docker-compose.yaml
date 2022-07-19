@@ -39,6 +39,27 @@ services:
     networks:
       - default
 
+  s3-minio-storage:
+    image: minio/minio:latest
+    container_name: s3-minio-storage
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    ports:
+      - "9000:9000"
+    volumes:
+      - minio-data:/data
+    command: server /data
+
+  s3-minio-client:
+    build: ./minio/mc/
+    depends_on:
+      - s3-minio-storage
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      BUCKET_NAME: ${BUCKET_NAME}
+
   discovery-server:
     image: discovery-server
     container_name: discovery-server
