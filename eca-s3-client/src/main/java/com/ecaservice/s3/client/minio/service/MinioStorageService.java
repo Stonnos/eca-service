@@ -88,7 +88,8 @@ public class MinioStorageService {
         var url = UriComponentsBuilder.fromHttpUrl(objectPresignedUrl).build();
         var objectPresignedExternalUrl = String.format("%s/%s?%s", minioClientProperties.getExternalUrl(),
                 url.getPath(), url.getQuery());
-        log.info("External presigned url [{}] has been fetched for object path [{}]", objectPresignedUrl, objectPath);
-        return objectPresignedUrl;
+        log.info("External presigned url [{}] has been fetched for object path [{}]", objectPresignedExternalUrl,
+                objectPath);
+        return objectPresignedExternalUrl;
     }
 }
