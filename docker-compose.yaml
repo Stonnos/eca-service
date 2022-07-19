@@ -57,6 +57,7 @@ services:
     depends_on:
       - s3-minio-storage
     environment:
+      S3_MINIO_URL: ${S3_MINIO_URL}
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
       BUCKET_NAME: ${BUCKET_NAME}
