@@ -40,7 +40,7 @@ services:
       - default
 
   s3-minio-storage:
-    image: minio/minio:latest
+    image: minio/minio:${MINIO_VERSION}
     container_name: s3-minio-storage
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
@@ -48,11 +48,12 @@ services:
     ports:
       - "9000:9000"
     volumes:
-      - minio-data:/data
+      - s3-minio-data:/data
     command: server /data
 
   s3-minio-client:
     build: ./minio/mc/
+    container_name: s3-minio-client
     depends_on:
       - s3-minio-storage
     environment:
@@ -262,3 +263,5 @@ volumes:
     name: experiment-data
   classifiers-data:
     name: classifiers-data
+  s3-minio-data:
+    name: s3-minio-data
