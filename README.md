@@ -41,6 +41,7 @@
 * oauth2-core - модуль содержит конфигурационные классы для oauth2 resource server 
 * rabbit-core - модуль содержит конфигурационные классы для rabbit
 * eca-mail-client - общая библиотека для отправки email сообщений
+* eca-s3-client - общая библиотека для работы с S3 minio storage
 * classifiers-options-adapter - модуль для конвертации настроек классификаторов
 * eca-report - модуль генерации отчетов
 * eca-report-data - общая библиотека формирования данных для отчетов
