@@ -31,4 +31,9 @@ public class MinioClientProperties {
      * Bucket name
      */
     private String bucketName;
+
+    /**
+     * Batch size for multipart upload
+     */
+    private long batchSize;
 }
