@@ -47,9 +47,10 @@ services:
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
     ports:
       - "9000:9000"
+      - "9100:9100"
     volumes:
       - s3-minio-data:/data
-    command: server /data
+    command: ["server", "--console-address", ":9100", "/data"]
 
   s3-minio-client:
     build: ./minio/mc/
