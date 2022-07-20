@@ -14,7 +14,7 @@
             </not>
         </preConditions>
         <addColumn tableName="experiment">
-            <column name="experiment_download_url" type="varchar(255)"/>
+            <column name="experiment_download_url" type="varchar(1024)"/>
         </addColumn>
     </changeSet>
 

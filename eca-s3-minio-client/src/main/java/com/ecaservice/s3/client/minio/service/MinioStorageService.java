@@ -152,7 +152,7 @@ public class MinioStorageService {
         log.info("Gets presigned proxy url for object path [{}]", objectPath);
         var objectPresignedUrl = getObjectPresignedUrl(objectPath);
         var url = UriComponentsBuilder.fromHttpUrl(objectPresignedUrl).build();
-        var objectPresignedProxyUrl = String.format("%s/%s?%s", minioClientProperties.getProxyUrl(),
+        var objectPresignedProxyUrl = String.format("%s%s?%s", minioClientProperties.getProxyUrl(),
                 url.getPath(), url.getQuery());
         log.info("Proxy presigned url [{}] has been fetched for object path [{}]", objectPresignedProxyUrl,
                 objectPath);

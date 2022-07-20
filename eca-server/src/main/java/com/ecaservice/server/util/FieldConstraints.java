@@ -19,4 +19,9 @@ public class FieldConstraints {
      * Scale length
      */
     public static final int SCALE = 4;
+
+    /**
+     * Experiment download url max length
+     */
+    public static final int EXPERIMENT_DOWNLOAD_URL_MAX_LENGTH = 1024;
 }

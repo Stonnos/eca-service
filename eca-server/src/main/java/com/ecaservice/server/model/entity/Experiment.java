@@ -12,6 +12,8 @@ import javax.persistence.Index;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 
+import static com.ecaservice.server.util.FieldConstraints.EXPERIMENT_DOWNLOAD_URL_MAX_LENGTH;
+
 /**
  * Experiment persistence entity.
  *
@@ -73,7 +75,7 @@ public class Experiment extends AbstractEvaluationEntity {
     /**
      * Experiment download url
      */
-    @Column(name = "experiment_download_url")
+    @Column(name = "experiment_download_url", length = EXPERIMENT_DOWNLOAD_URL_MAX_LENGTH)
     private String experimentDownloadUrl;
 
     /**
