@@ -95,13 +95,17 @@ public class MinioStorageService {
         String bucket = minioClientProperties.getBucketName();
         log.info("Starting to remove object [{}] from s3 minio storage bucket [{}]", objectPath, bucket);
         try {
+            var stopWatch = new StopWatch();
+            stopWatch.start();
             minioClient.removeObject(
                     RemoveObjectArgs.builder()
                             .bucket(objectPath)
                             .object(objectPath)
                             .build()
             );
-            log.info("Object [{}] has been removed from s3 minio storage bucket [{}]", objectPath, bucket);
+            stopWatch.stop();
+            log.info("Object [{}] has been removed from s3 minio storage bucket [{}] for {} s.", objectPath, bucket,
+                    stopWatch.getTotalTimeSeconds());
         } catch (Exception ex) {
             log.error("There was an error while remove object [{}] from s3 minio storage bucket [{}]: {}",
                     objectPath, bucket, ex.getMessage());
@@ -118,6 +122,8 @@ public class MinioStorageService {
     public String getObjectPresignedUrl(String objectPath) {
         log.info("Gets presigned url for object path [{}]", objectPath);
         try {
+            var stopWatch = new StopWatch();
+            stopWatch.start();
             var objectPresignedUrl = minioClient.getPresignedObjectUrl(
                     GetPresignedObjectUrlArgs.builder()
                             .bucket(minioClientProperties.getBucketName())
@@ -125,7 +131,9 @@ public class MinioStorageService {
                             .method(Method.GET)
                             .build()
             );
-            log.info("Presigned url [{}] has been fetched for object path [{}]", objectPresignedUrl, objectPath);
+            stopWatch.stop();
+            log.info("Presigned url [{}] has been fetched for object path [{}]. Total time {} s", objectPresignedUrl,
+                    objectPath, stopWatch.getTotalTimeSeconds());
             return objectPresignedUrl;
         } catch (Exception ex) {
             log.error("There was an error while get presigned url for object path [{}]: {}", objectPath,
