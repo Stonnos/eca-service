@@ -135,6 +135,13 @@ ers:
   useClassifierOptionsCache: false
   classifierOptionsCacheDurationInDays: 2
 
+minio:
+  url: http://localhost:9000
+  proxyUrl: http://localhost:9000
+  accessKey: minio
+  secretKey: minio-pa66word
+  bucketName: eca-service
+
 cache:
   specs:
     evaluation-results:
