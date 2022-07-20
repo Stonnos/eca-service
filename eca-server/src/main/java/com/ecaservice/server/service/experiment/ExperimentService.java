@@ -155,6 +155,8 @@ public class ExperimentService implements PageRequestService<Experiment> {
             stopWatch.stop();
 
             experiment.setExperimentAbsolutePath(experimentPath);
+            String experimentDownloadUrl = objectStorageService.getObjectPresignedProxyUrl(experimentPath);
+            experiment.setExperimentDownloadUrl(experimentDownloadUrl);
             experiment.setRequestStatus(RequestStatus.FINISHED);
             log.info("Experiment [{}] has been successfully built!", experiment.getRequestId());
             log.info(stopWatch.prettyPrint());

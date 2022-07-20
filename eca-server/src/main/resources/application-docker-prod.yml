@@ -45,7 +45,7 @@ redelivery:
 
 minio:
   url: http://s3-minio-storage:9000
-  proxyUrl: http://localhost:8099/object-storage
+  proxyUrl: http://localhost:8098/object-storage
 
 auth-server:
   baseUrl: http://eca-oauth:8080

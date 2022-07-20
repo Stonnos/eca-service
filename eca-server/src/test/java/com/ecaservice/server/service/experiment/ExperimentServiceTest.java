@@ -78,6 +78,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
     private static final int PAGE_NUMBER = 0;
     private static final int PAGE_SIZE = 10;
     private static final long INVALID_ID = 1000L;
+    private static final String EXPERIMENT_DOWNLOAD_URL = "http://localhost:9000/experiment";
 
     @Inject
     private ExperimentRepository experimentRepository;
@@ -157,6 +158,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
     @Test
     void testProcessExperimentWithSuccessStatus() throws Exception {
         when(objectStorageService.getObject(anyString(), any())).thenReturn(data);
+        when(objectStorageService.getObjectPresignedProxyUrl(anyString())).thenReturn(EXPERIMENT_DOWNLOAD_URL);
         AbstractExperiment experimentHistory = createExperimentHistory(data);
         when(experimentProcessorService.processExperimentHistory(any(Experiment.class),
                 any(InitializationParams.class))).thenReturn(experimentHistory);
@@ -166,7 +168,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
         Experiment experiment = experiments.iterator().next();
         assertThat(experiment.getEndDate()).isNotNull();
         assertThat(experiment.getExperimentAbsolutePath()).isNotNull();
-        assertThat(experiment.getExperimentDownloadUrl()).isNotNull();
+        assertThat(experiment.getExperimentDownloadUrl()).isEqualTo(EXPERIMENT_DOWNLOAD_URL);
         assertThat(experiment.getRequestStatus()).isEqualTo(RequestStatus.FINISHED);
     }
 
