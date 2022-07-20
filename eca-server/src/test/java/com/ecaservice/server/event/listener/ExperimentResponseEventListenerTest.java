@@ -2,7 +2,6 @@ package com.ecaservice.server.event.listener;
 
 import com.ecaservice.base.model.ExperimentResponse;
 import com.ecaservice.base.model.TechnicalStatus;
-import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.event.model.ExperimentResponseEvent;
 import com.ecaservice.server.mapping.EcaResponseMapper;
 import com.ecaservice.server.mapping.EcaResponseMapperImpl;
@@ -39,11 +38,8 @@ import static org.mockito.Mockito.when;
 @Import(EcaResponseMapperImpl.class)
 class ExperimentResponseEventListenerTest {
 
-    private static final String BASE_URL = "http://localhost:8080";
     private static final String EXPERIMENT_DOWNLOAD_URL = "http://localhost:9000/experiment";
 
-    @Mock
-    private ExperimentConfig experimentConfig;
     @Mock
     private AmqpAdmin amqpAdmin;
     @Mock
@@ -60,7 +56,6 @@ class ExperimentResponseEventListenerTest {
 
     @BeforeEach
     void init() {
-        when(experimentConfig.getDownloadBaseUrl()).thenReturn(BASE_URL);
         experimentResponseEventListener =
                 new ExperimentResponseEventListener(amqpAdmin, rabbitTemplate, ecaResponseMapper);
     }

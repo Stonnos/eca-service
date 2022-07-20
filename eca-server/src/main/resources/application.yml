@@ -102,10 +102,7 @@ springdoc:
 experiment:
   resultSize: 5
   numIterations: 100
-  fileFormat: experiment_%s.model
-  storagePath: D:/experiment/
   individualClassifiersStoragePath: classpath*:classifiers/**/*.json
-  downloadBaseUrl: http://localhost:8085/eca-server
   maximumFractionDigits: ${classifiers-options.maximumFractionDigits}
   numberOfDaysForStorage: 14
   ## Each day at midnight
@@ -116,10 +113,6 @@ experiment:
   delaySeconds: 30
   ## Experiments page size
   pageSize: 10
-
-  data:
-    storagePath: D:/experiment/data/
-    fileFormat: data_%s.xlsx
   ensemble:
     numIterations: 25
     numBestClassifiers: 4

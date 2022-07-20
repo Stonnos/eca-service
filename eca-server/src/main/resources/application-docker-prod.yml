@@ -29,13 +29,6 @@ app:
 open-api:
   tokenBaseUrl: http://localhost:8080/eca-oauth
 
-## Experiment properties
-experiment:
-  storagePath: /home/experiment/
-  downloadBaseUrl: http://localhost:8080/eca-server
-  data:
-    storagePath: /home/experiment/data/
-
 mail:
   client:
     enabled: true

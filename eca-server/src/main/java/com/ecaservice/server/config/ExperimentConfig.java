@@ -23,24 +23,9 @@ public class ExperimentConfig {
     private Integer resultSize;
 
     /**
-     * Experiment file format
-     */
-    private String fileFormat;
-
-    /**
-     * Experiment storage path
-     */
-    private String storagePath;
-
-    /**
      * Individual classifiers options resource path
      */
     private String individualClassifiersStoragePath;
-
-    /**
-     * Data config
-     */
-    private DataConfig data;
 
     /**
      * Ensemble config
@@ -51,11 +36,6 @@ public class ExperimentConfig {
      * Lock config
      */
     private LockProperties lock;
-
-    /**
-     * Experiment download base url
-     */
-    private String downloadBaseUrl;
 
     /**
      * Maximum fraction digits
@@ -81,23 +61,6 @@ public class ExperimentConfig {
      * Page size for processing
      */
     private Integer pageSize;
-
-    /**
-     * Data configuration properties.
-     */
-    @Data
-    public static class DataConfig {
-
-        /**
-         * Data file format
-         */
-        private String fileFormat;
-
-        /**
-         * Data storage path
-         */
-        private String storagePath;
-    }
 
     /**
      * Ensemble configuration properties.
