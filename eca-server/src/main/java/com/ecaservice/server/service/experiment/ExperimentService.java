@@ -155,7 +155,6 @@ public class ExperimentService implements PageRequestService<Experiment> {
             stopWatch.stop();
 
             experiment.setExperimentAbsolutePath(experimentPath);
-            experiment.setToken(generateToken());
             experiment.setRequestStatus(RequestStatus.FINISHED);
             log.info("Experiment [{}] has been successfully built!", experiment.getRequestId());
             log.info(stopWatch.prettyPrint());

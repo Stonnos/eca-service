@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import static com.ecaservice.notification.util.Priority.MEDIUM;
-import static com.ecaservice.server.util.Utils.buildExperimentDownloadUrl;
 import static com.google.common.collect.Maps.newHashMap;
 
 /**
@@ -28,42 +27,42 @@ public class EmailTemplateVisitor implements RequestStatusVisitor<EmailRequest, 
     private final ExperimentConfig experimentConfig;
 
     @Override
-    public EmailRequest caseNew(Experiment parameter) {
-        return createEmailCommonRequest(parameter, Templates.NEW_EXPERIMENT);
+    public EmailRequest caseNew(Experiment experiment) {
+        return createEmailCommonRequest(experiment, Templates.NEW_EXPERIMENT);
     }
 
     @Override
-    public EmailRequest caseFinished(Experiment parameter) {
-        EmailRequest emailRequest = createEmailCommonRequest(parameter, Templates.FINISHED_EXPERIMENT);
-        String downloadUrl = buildExperimentDownloadUrl(experimentConfig.getDownloadBaseUrl(), parameter.getToken());
-        emailRequest.getVariables().put(TemplateVariablesDictionary.DOWNLOAD_URL_KEY, downloadUrl);
+    public EmailRequest caseFinished(Experiment experiment) {
+        EmailRequest emailRequest = createEmailCommonRequest(experiment, Templates.FINISHED_EXPERIMENT);
+        emailRequest.getVariables().put(TemplateVariablesDictionary.DOWNLOAD_URL_KEY,
+                experiment.getExperimentDownloadUrl());
         return emailRequest;
     }
 
     @Override
-    public EmailRequest caseTimeout(Experiment parameter) {
-        EmailRequest emailRequest = createEmailCommonRequest(parameter, Templates.TIMEOUT_EXPERIMENT);
+    public EmailRequest caseTimeout(Experiment experiment) {
+        EmailRequest emailRequest = createEmailCommonRequest(experiment, Templates.TIMEOUT_EXPERIMENT);
         emailRequest.getVariables().put(TemplateVariablesDictionary.TIMEOUT_KEY,
                 String.valueOf(experimentConfig.getTimeout()));
         return emailRequest;
     }
 
     @Override
-    public EmailRequest caseError(Experiment parameter) {
-        return createEmailCommonRequest(parameter, Templates.ERROR_EXPERIMENT);
+    public EmailRequest caseError(Experiment experiment) {
+        return createEmailCommonRequest(experiment, Templates.ERROR_EXPERIMENT);
     }
 
     @Override
-    public EmailRequest caseInProgress(Experiment parameter) {
-        return createEmailCommonRequest(parameter, Templates.IN_PROGRESS_EXPERIMENT);
+    public EmailRequest caseInProgress(Experiment experiment) {
+        return createEmailCommonRequest(experiment, Templates.IN_PROGRESS_EXPERIMENT);
     }
 
-    private Map<String, String> createCommonVariablesMap(Experiment parameter) {
+    private Map<String, String> createCommonVariablesMap(Experiment experiment) {
         Map<String, String> variablesMap = newHashMap();
-        variablesMap.put(TemplateVariablesDictionary.FIRST_NAME_KEY, parameter.getFirstName());
+        variablesMap.put(TemplateVariablesDictionary.FIRST_NAME_KEY, experiment.getFirstName());
         variablesMap.put(TemplateVariablesDictionary.EXPERIMENT_TYPE_KEY,
-                parameter.getExperimentType().getDescription());
-        variablesMap.put(TemplateVariablesDictionary.REQUEST_ID_KEY, parameter.getRequestId());
+                experiment.getExperimentType().getDescription());
+        variablesMap.put(TemplateVariablesDictionary.REQUEST_ID_KEY, experiment.getRequestId());
         return variablesMap;
     }
 

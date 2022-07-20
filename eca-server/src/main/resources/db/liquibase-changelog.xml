@@ -66,4 +66,5 @@
     <include file="db/changelog/v55-insert-classifiers-configuration-history-filter-template.xml"/>
     <include file="db/changelog/v56-create-message-template-table.xml"/>
     <include file="db/changelog/v57-insert-message-templates.xml"/>
+    <include file="db/changelog/v58-add-experiment-download-url-column.xml"/>
 </databaseChangeLog>

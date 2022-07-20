@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v58-add-experiment-download-url-column.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Add experiment_download_url column to experiment table -->
+    <changeSet id="add_experiment_download_url_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment"/>
+            <not>
+                <columnExists tableName="experiment" columnName="experiment_download_url"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="experiment">
+            <column name="experiment_download_url" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="drop_experiment_token_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment"/>
+            <columnExists tableName="experiment" columnName="token"/>
+        </preConditions>
+       <dropColumn tableName="experiment" columnName="token"/>
+    </changeSet>
+</databaseChangeLog>

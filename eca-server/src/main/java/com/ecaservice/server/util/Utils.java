@@ -50,22 +50,10 @@ import static com.ecaservice.server.util.ClassifierOptionsHelper.isParsableOptio
 @UtilityClass
 public class Utils {
 
-    private static final String DOWNLOAD_PATH_FORMAT = "%s/eca-api/experiment/download/%s";
     private static final String ATTACHMENT = "attachment";
     private static final String CV_FORMAT = "%d - блочная кросс - проверка";
     private static final String CV_EXTENDED_FORMAT = "%d×%d - блочная кросс - проверка";
     private static final long ZERO = 0L;
-
-    /**
-     * Builds experiment download url.
-     *
-     * @param baseUrl - base url
-     * @param token   - experiment token
-     * @return experiment download url
-     */
-    public static String buildExperimentDownloadUrl(String baseUrl, String token) {
-        return String.format(DOWNLOAD_PATH_FORMAT, baseUrl, token);
-    }
 
     /**
      * Creates error object.

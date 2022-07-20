@@ -4,8 +4,10 @@ import com.ecaservice.base.model.ExperimentResponse;
 import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.RequestStatus;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.ValueMapping;
 
 /**
@@ -23,6 +25,7 @@ public interface EcaResponseMapper {
      * @return experiment response model
      */
     @Mapping(source = "requestStatus", target = "status")
+    @Mapping(target = "downloadUrl", ignore = true)
     ExperimentResponse map(Experiment experiment);
 
     /**
@@ -37,4 +40,17 @@ public interface EcaResponseMapper {
     @ValueMapping(source = "TIMEOUT", target = "TIMEOUT")
     @ValueMapping(source = "ERROR", target = "ERROR")
     TechnicalStatus map(RequestStatus requestStatus);
+
+    /**
+     * Maps experiment download url.
+     *
+     * @param experiment         - experiment entity
+     * @param experimentResponse - experiment response
+     */
+    @AfterMapping
+    default void mapDownloadUrl(Experiment experiment, @MappingTarget ExperimentResponse experimentResponse) {
+        if (RequestStatus.FINISHED.equals(experiment.getRequestStatus())) {
+            experimentResponse.setDownloadUrl(experiment.getExperimentDownloadUrl());
+        }
+    }
 }

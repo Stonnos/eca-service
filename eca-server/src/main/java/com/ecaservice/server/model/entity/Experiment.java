@@ -71,9 +71,10 @@ public class Experiment extends AbstractEvaluationEntity {
     private ExperimentType experimentType;
 
     /**
-     * Unique token used to download experiment results for external API
+     * Experiment download url
      */
-    private String token;
+    @Column(name = "experiment_download_url")
+    private String experimentDownloadUrl;
 
     /**
      * Channel type
