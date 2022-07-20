@@ -3,6 +3,7 @@ package com.ecaservice.server.service.push;
 import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.mapping.ExperimentMapper;
 import com.ecaservice.server.mapping.ExperimentMapperImpl;
+import com.ecaservice.server.mapping.InstancesInfoMapperImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,7 +28,7 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(SpringExtension.class)
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
-@Import({DateTimeConverter.class, ExperimentMapperImpl.class})
+@Import({DateTimeConverter.class, ExperimentMapperImpl.class, InstancesInfoMapperImpl.class})
 class WebPushServiceTest {
 
     @Inject

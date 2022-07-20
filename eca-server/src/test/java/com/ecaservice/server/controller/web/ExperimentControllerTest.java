@@ -8,6 +8,7 @@ import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.mapping.ExperimentMapper;
 import com.ecaservice.server.mapping.ExperimentMapperImpl;
 import com.ecaservice.server.mapping.ExperimentProgressMapperImpl;
+import com.ecaservice.server.mapping.InstancesInfoMapperImpl;
 import com.ecaservice.server.model.MsgProperties;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentProgressEntity;
@@ -73,7 +74,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Roman Batygin
  */
 @WebMvcTest(controllers = ExperimentController.class)
-@Import({ExperimentMapperImpl.class, ExperimentProgressMapperImpl.class, DateTimeConverter.class})
+@Import({ExperimentMapperImpl.class, ExperimentProgressMapperImpl.class, DateTimeConverter.class,
+        InstancesInfoMapperImpl.class})
 class ExperimentControllerTest extends PageRequestControllerTest {
 
     private static final String BASE_URL = "/experiment";

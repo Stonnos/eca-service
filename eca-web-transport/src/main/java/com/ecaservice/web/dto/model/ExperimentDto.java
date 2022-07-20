@@ -36,18 +36,11 @@ public class ExperimentDto extends AbstractEvaluationDto {
     private String email;
 
     /**
-     * Experiment file absolute path
+     * Experiment file
      */
-    @Schema(description = "Experiment results file", example = "experiment_1d2de514-3a87-4620-9b97-c260e24340de.model",
+    @Schema(description = "Experiment file", example = "experiment-1d2de514-3a87-4620-9b97-c260e24340de.model",
             maxLength = MAX_LENGTH_255)
-    private String experimentAbsolutePath;
-
-    /**
-     * Training data absolute path
-     */
-    @Schema(description = "Training data file", example = "data_1d2de514-3a87-4620-9b97-c260e24340de.xls",
-            maxLength = MAX_LENGTH_255)
-    private String trainingDataAbsolutePath;
+    private String experimentPath;
 
     /**
      * Experiment files deleted date

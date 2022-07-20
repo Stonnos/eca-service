@@ -4,11 +4,14 @@ import com.ecaservice.base.model.ExperimentType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 
@@ -30,6 +33,13 @@ import static com.ecaservice.server.util.FieldConstraints.EXPERIMENT_DOWNLOAD_UR
 public class Experiment extends AbstractEvaluationEntity {
 
     /**
+     * Training data info
+     */
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "instances_info_id")
+    private InstancesInfo instancesInfo;
+
+    /**
      * First name
      */
     @Column(name = "first_name", nullable = false)
@@ -42,16 +52,16 @@ public class Experiment extends AbstractEvaluationEntity {
     private String email;
 
     /**
-     * Experiment file absolute path
+     * Experiment file path
      */
-    @Column(name = "experiment_absolute_path")
-    private String experimentAbsolutePath;
+    @Column(name = "experiment_path")
+    private String experimentPath;
 
     /**
-     * Training data absolute path
+     * Training data file path
      */
-    @Column(name = "training_data_absolute_path")
-    private String trainingDataAbsolutePath;
+    @Column(name = "training_data_path")
+    private String trainingDataPath;
 
     /**
      * Class attribute index

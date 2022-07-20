@@ -15,6 +15,7 @@ import com.ecaservice.server.exception.experiment.ExperimentException;
 import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.mapping.ExperimentMapper;
 import com.ecaservice.server.mapping.ExperimentMapperImpl;
+import com.ecaservice.server.mapping.InstancesInfoMapperImpl;
 import com.ecaservice.server.model.MsgProperties;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.Experiment_;
@@ -72,7 +73,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import({ExperimentMapperImpl.class, ExperimentConfig.class, AppProperties.class, CrossValidationConfig.class,
-        DateTimeConverter.class})
+        DateTimeConverter.class, InstancesInfoMapperImpl.class})
 class ExperimentServiceTest extends AbstractJpaTest {
 
     private static final int PAGE_NUMBER = 0;
@@ -122,7 +123,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
     @Test
     void testNullTrainingDataPath() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
-        experiment.setTrainingDataAbsolutePath(null);
+        experiment.setTrainingDataPath(null);
         experimentService.processExperiment(experiment);
         assertThat(experiment.getRequestStatus()).isEqualTo(RequestStatus.ERROR);
     }
@@ -141,7 +142,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
         assertThat(experiment.getChannel()).isEqualTo(msgProperties.getChannel());
         assertThat(experiment.getReplyTo()).isEqualTo(msgProperties.getReplyTo());
         assertThat(experiment.getCorrelationId()).isEqualTo(msgProperties.getCorrelationId());
-        assertThat(experiment.getTrainingDataAbsolutePath()).isNotNull();
+        assertThat(experiment.getTrainingDataPath()).isNotNull();
     }
 
     @Test
@@ -167,7 +168,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
         AssertionUtils.hasOneElement(experiments);
         Experiment experiment = experiments.iterator().next();
         assertThat(experiment.getEndDate()).isNotNull();
-        assertThat(experiment.getExperimentAbsolutePath()).isNotNull();
+        assertThat(experiment.getExperimentPath()).isNotNull();
         assertThat(experiment.getExperimentDownloadUrl()).isEqualTo(EXPERIMENT_DOWNLOAD_URL);
         assertThat(experiment.getRequestStatus()).isEqualTo(RequestStatus.FINISHED);
     }
@@ -204,11 +205,13 @@ class ExperimentServiceTest extends AbstractJpaTest {
     @Test
     void testSuccessRemoveExperimentModel() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
+        experiment.setExperimentDownloadUrl(EXPERIMENT_DOWNLOAD_URL);
         experimentRepository.save(experiment);
         experimentService.removeExperimentModel(experiment);
         experiment = experimentRepository.findById(experiment.getId()).orElse(null);
         assertThat(experiment).isNotNull();
-        assertThat(experiment.getExperimentAbsolutePath()).isNull();
+        assertThat(experiment.getExperimentPath()).isNull();
+        assertThat(experiment.getExperimentDownloadUrl()).isNull();
         assertThat(experiment.getDeletedDate()).isNotNull();
     }
 
@@ -219,7 +222,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
         experimentService.removeExperimentTrainingData(experiment);
         experiment = experimentRepository.findById(experiment.getId()).orElse(null);
         assertThat(experiment).isNotNull();
-        assertThat(experiment.getTrainingDataAbsolutePath()).isNull();
+        assertThat(experiment.getTrainingDataPath()).isNull();
         assertThat(experiment.getDeletedDate()).isNull();
     }
 

@@ -43,6 +43,12 @@ public abstract class AbstractEvaluationDto {
     private String requestId;
 
     /**
+     * Training data info
+     */
+    @Schema(description = "Training data info")
+    private InstancesInfoDto instancesInfo;
+
+    /**
      * Request creation date
      */
     @Schema(description = "Request creation date", type = "string", example = "2021-07-01 14:00:00",

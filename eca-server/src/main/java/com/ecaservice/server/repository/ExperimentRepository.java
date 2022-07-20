@@ -53,7 +53,7 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
      * @return experiments ids list
      */
     @Query("select exp.id from Experiment exp where " +
-            "exp.trainingDataAbsolutePath is not null and exp.creationDate < :dateTime order by exp.creationDate")
+            "exp.trainingDataPath is not null and exp.creationDate < :dateTime order by exp.creationDate")
     List<Long> findExperimentsTrainingDataToDelete(@Param("dateTime") LocalDateTime dateTime);
 
     /**

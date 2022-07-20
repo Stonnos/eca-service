@@ -7,6 +7,7 @@ import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.mapping.ExperimentMapperImpl;
 import com.ecaservice.server.mapping.ExperimentResultsMapper;
 import com.ecaservice.server.mapping.ExperimentResultsMapperImpl;
+import com.ecaservice.server.mapping.InstancesInfoMapperImpl;
 import com.ecaservice.server.model.entity.ErsResponseStatus;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentResultsEntity;
@@ -44,7 +45,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import({ExperimentResultsMapperImpl.class, ClassifierInfoMapperImpl.class, ExperimentMapperImpl.class,
-        DateTimeConverter.class})
+        DateTimeConverter.class, InstancesInfoMapperImpl.class})
 class ExperimentResultsServiceTest extends AbstractJpaTest {
 
     @Mock

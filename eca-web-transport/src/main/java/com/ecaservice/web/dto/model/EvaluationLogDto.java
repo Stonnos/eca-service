@@ -19,10 +19,4 @@ public class EvaluationLogDto extends AbstractEvaluationDto {
      */
     @Schema(description = "Classifier info")
     private ClassifierInfoDto classifierInfo;
-
-    /**
-     * Training data info
-     */
-    @Schema(description = "Training data info")
-    private InstancesInfoDto instancesInfo;
 }

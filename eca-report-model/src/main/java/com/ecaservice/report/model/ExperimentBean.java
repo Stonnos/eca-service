@@ -28,14 +28,9 @@ public class ExperimentBean extends EvaluationBean {
     private String email;
 
     /**
-     * Experiment file absolute path
+     * Experiment file
      */
-    private String experimentAbsolutePath;
-
-    /**
-     * Training data absolute path
-     */
-    private String trainingDataAbsolutePath;
+    private String experimentPath;
 
     /**
      * Experiment files deleted date

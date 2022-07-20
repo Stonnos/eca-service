@@ -110,7 +110,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
             experiment.setRequestId(requestId);
             String objectPath = String.format("experiment-train-data-%s.model", experiment.getRequestId());
             objectStorageService.uploadObject(experimentRequest.getData(), objectPath);
-            experiment.setTrainingDataAbsolutePath(objectPath);
+            experiment.setTrainingDataPath(objectPath);
             experiment.setCreationDate(LocalDateTime.now());
             return experimentRepository.save(experiment);
         } catch (Exception ex) {
@@ -128,7 +128,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
     public AbstractExperiment<?> processExperiment(final Experiment experiment) {
         log.info("Starting to built experiment [{}].", experiment.getRequestId());
         try {
-            if (StringUtils.isEmpty(experiment.getTrainingDataAbsolutePath())) {
+            if (StringUtils.isEmpty(experiment.getTrainingDataPath())) {
                 throw new ExperimentException(String.format("Training data path is not specified for experiment [%s]!",
                         experiment.getRequestId()));
             }
@@ -136,7 +136,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
             StopWatch stopWatch =
                     new StopWatch(String.format("Stop watching for experiment [%s]", experiment.getRequestId()));
             stopWatch.start(String.format("Loading data for experiment [%s]", experiment.getRequestId()));
-            Instances data = objectStorageService.getObject(experiment.getTrainingDataAbsolutePath(), Instances.class);
+            Instances data = objectStorageService.getObject(experiment.getTrainingDataPath(), Instances.class);
             data.setClassIndex(experiment.getClassIndex());
             stopWatch.stop();
 
@@ -154,7 +154,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
             objectStorageService.uploadObject(abstractExperiment, experimentPath);
             stopWatch.stop();
 
-            experiment.setExperimentAbsolutePath(experimentPath);
+            experiment.setExperimentPath(experimentPath);
             String experimentDownloadUrl = objectStorageService.getObjectPresignedProxyUrl(experimentPath);
             experiment.setExperimentDownloadUrl(experimentDownloadUrl);
             experiment.setRequestStatus(RequestStatus.FINISHED);
@@ -183,11 +183,12 @@ public class ExperimentService implements PageRequestService<Experiment> {
     @Transactional
     public void removeExperimentModel(Experiment experiment) {
         log.info("Starting to remove experiment [{}] model file", experiment.getRequestId());
-        String experimentAbsolutePath = experiment.getExperimentAbsolutePath();
-        experiment.setExperimentAbsolutePath(null);
+        String experimentPath = experiment.getExperimentPath();
+        experiment.setExperimentPath(null);
+        experiment.setExperimentDownloadUrl(null);
         experiment.setDeletedDate(LocalDateTime.now());
         experimentRepository.save(experiment);
-        objectStorageService.removeObject(experimentAbsolutePath);
+        objectStorageService.removeObject(experimentPath);
         log.info("Experiment [{}] model file has been deleted", experiment.getRequestId());
     }
 
@@ -199,10 +200,10 @@ public class ExperimentService implements PageRequestService<Experiment> {
     @Transactional
     public void removeExperimentTrainingData(Experiment experiment) {
         log.info("Starting to remove experiment [{}] training data file", experiment.getRequestId());
-        String trainingDataAbsolutePath = experiment.getTrainingDataAbsolutePath();
-        experiment.setTrainingDataAbsolutePath(null);
+        String trainingDataPath = experiment.getTrainingDataPath();
+        experiment.setTrainingDataPath(null);
         experimentRepository.save(experiment);
-        objectStorageService.removeObject(trainingDataAbsolutePath);
+        objectStorageService.removeObject(trainingDataPath);
         log.info("Experiment [{}] training data file has been deleted", experiment.getRequestId());
     }
 

@@ -1,8 +1,8 @@
 package com.ecaservice.server.mapping;
 
-import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.report.model.ExperimentBean;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.web.dto.model.ExperimentDto;
@@ -27,13 +27,12 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Roman Batygin
  */
 @ExtendWith(SpringExtension.class)
-@Import({ExperimentMapperImpl.class, CrossValidationConfig.class, DateTimeConverter.class})
+@Import({ExperimentMapperImpl.class, CrossValidationConfig.class, DateTimeConverter.class,
+        InstancesInfoMapperImpl.class})
 class ExperimentMapperTest {
-
-    private static final String TRAINING_DATA_ABSOLUTE_PATH = "/home/data.xls";
-    private static final String EXPERIMENT_ABSOLUTE_PATH = "/home/experiment.model";
-    private static final String DATA_XLS = "data.xls";
-    private static final String EXPERIMENT_MODEL = "experiment.model";
+    
+    private static final String EXPERIMENT_PATH = "/home/experiment.model";
+    private static final String DATA_PATH = "data.model";
 
     @Inject
     private CrossValidationConfig crossValidationConfig;
@@ -53,6 +52,17 @@ class ExperimentMapperTest {
         assertThat(experiment.getSeed()).isNull();
         assertThat(experiment.getExperimentType()).isEqualTo(experimentRequest.getExperimentType());
         assertThat(experiment.getClassIndex()).isEqualTo(experimentRequest.getData().classIndex());
+        assertThat(experiment.getInstancesInfo()).isNotNull();
+        assertThat(experiment.getInstancesInfo().getRelationName()).isEqualTo(
+                experimentRequest.getData().relationName());
+        assertThat(experiment.getInstancesInfo().getClassName()).isEqualTo(
+                experimentRequest.getData().classAttribute().name());
+        assertThat(experiment.getInstancesInfo().getNumAttributes().intValue()).isEqualTo(
+                experimentRequest.getData().numAttributes());
+        assertThat(experiment.getInstancesInfo().getNumClasses().intValue()).isEqualTo(
+                experimentRequest.getData().numClasses());
+        assertThat(experiment.getInstancesInfo().getNumInstances().intValue()).isEqualTo(
+                experimentRequest.getData().numInstances());
     }
 
     @Test
@@ -77,8 +87,8 @@ class ExperimentMapperTest {
         experiment.setStartDate(LocalDateTime.now().plusHours(1L));
         experiment.setEndDate(experiment.getStartDate().minusMinutes(1L));
         experiment.setDeletedDate(experiment.getEndDate().plusMinutes(1L));
-        experiment.setTrainingDataAbsolutePath(TRAINING_DATA_ABSOLUTE_PATH);
-        experiment.setExperimentAbsolutePath(EXPERIMENT_ABSOLUTE_PATH);
+        experiment.setTrainingDataPath(DATA_PATH);
+        experiment.setExperimentPath(EXPERIMENT_PATH);
         experiment.setNumFolds(crossValidationConfig.getNumFolds());
         experiment.setNumTests(crossValidationConfig.getNumTests());
         experiment.setSeed(crossValidationConfig.getSeed());
@@ -102,13 +112,13 @@ class ExperimentMapperTest {
                 experiment.getExperimentType().getDescription());
         assertThat(experimentDto.getExperimentType().getValue()).isEqualTo(
                 experiment.getExperimentType().name());
-        assertThat(experimentDto.getTrainingDataAbsolutePath()).isEqualTo(DATA_XLS);
-        assertThat(experimentDto.getExperimentAbsolutePath()).isEqualTo(EXPERIMENT_MODEL);
+        assertThat(experimentDto.getExperimentPath()).isEqualTo(experiment.getExperimentPath());
         assertThat(experimentDto.getRequestId()).isEqualTo(experiment.getRequestId());
         assertThat(experimentDto.getNumFolds()).isEqualTo(experiment.getNumFolds());
         assertThat(experimentDto.getNumTests()).isEqualTo(experiment.getNumTests());
         assertThat(experimentDto.getSeed()).isEqualTo(experiment.getSeed());
         assertThat(experimentDto.getEvaluationTotalTime()).isNotNull();
+        assertThat(experimentDto.getInstancesInfo()).isNotNull();
     }
 
     @Test
@@ -126,8 +136,8 @@ class ExperimentMapperTest {
         experiment.setStartDate(LocalDateTime.now());
         experiment.setEndDate(LocalDateTime.now());
         experiment.setDeletedDate(LocalDateTime.now());
-        experiment.setTrainingDataAbsolutePath(TRAINING_DATA_ABSOLUTE_PATH);
-        experiment.setExperimentAbsolutePath(EXPERIMENT_ABSOLUTE_PATH);
+        experiment.setTrainingDataPath(DATA_PATH);
+        experiment.setExperimentPath(EXPERIMENT_PATH);
         ExperimentBean experimentBean = experimentMapper.mapToBean(experiment);
         assertThat(experimentBean).isNotNull();
         assertThat(experimentBean.getFirstName()).isEqualTo(experiment.getFirstName());
@@ -139,9 +149,9 @@ class ExperimentMapperTest {
         assertThat(experimentBean.getEvaluationMethod()).isNotNull();
         assertThat(experimentBean.getRequestStatus()).isEqualTo(experiment.getRequestStatus().getDescription());
         assertThat(experimentBean.getExperimentType()).isEqualTo(experiment.getExperimentType().getDescription());
-        assertThat(experimentBean.getTrainingDataAbsolutePath()).isEqualTo(DATA_XLS);
-        assertThat(experimentBean.getExperimentAbsolutePath()).isEqualTo(EXPERIMENT_MODEL);
+        assertThat(experimentBean.getExperimentPath()).isEqualTo(experiment.getExperimentPath());
         assertThat(experimentBean.getRequestId()).isEqualTo(experiment.getRequestId());
         assertThat(experimentBean.getEvaluationTotalTime()).isNotNull();
+        assertThat(experimentBean.getRelationName()).isEqualTo(experiment.getInstancesInfo().getRelationName());
     }
 }
