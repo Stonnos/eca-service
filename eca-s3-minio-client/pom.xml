@@ -14,8 +14,10 @@
 
     <properties>
         <minio.version>8.2.1</minio.version>
+        <fst.version>2.57</fst.version>
         <sonar.coverage.exclusions>
             **/config/**/*,
+            **/model/**/*,
             **/exception/**/*
         </sonar.coverage.exclusions>
     </properties>
@@ -37,6 +39,11 @@
             <groupId>io.minio</groupId>
             <artifactId>minio</artifactId>
             <version>${minio.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.ruedigermoeller</groupId>
+            <artifactId>fst</artifactId>
+            <version>${fst.version}</version>
         </dependency>
         <dependency>
             <groupId>eca.service</groupId>

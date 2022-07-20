@@ -12,6 +12,7 @@ import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StopWatch;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.InputStream;
@@ -39,6 +40,8 @@ public class MinioStorageService {
         log.info("Starting to upload object [{}] to s3 minio storage bucket [{}]. Object size is [{}]",
                 uploadObject.getObjectPath(), bucket, uploadObject.getContentLength());
         try {
+            var stopWatch = new StopWatch();
+            stopWatch.start();
             @Cleanup var inputStream = uploadObject.getInputStream().get();
             var putObjectArgs = PutObjectArgs.builder()
                     .bucket(bucket)
@@ -47,8 +50,9 @@ public class MinioStorageService {
                     .stream(inputStream, uploadObject.getContentLength(), minioClientProperties.getMultipartSize())
                     .build();
             var objectWriteResponse = minioClient.putObject(putObjectArgs);
-            log.info("Object [{}] has been uploaded to s3 minio storage bucket [{}] with etag [{}]",
-                    uploadObject.getObjectPath(), bucket, objectWriteResponse.etag());
+            stopWatch.stop();
+            log.info("Object [{}] has been uploaded to s3 minio storage bucket [{}] with etag [{}]. Total time [{}] s.",
+                    uploadObject.getObjectPath(), bucket, objectWriteResponse.etag(), stopWatch.getTotalTimeSeconds());
         } catch (Exception ex) {
             log.error("There was an error while upload object [{}] to s3 minio storage bucket [{}]: {}",
                     uploadObject.getObjectPath(), bucket, ex.getMessage());
