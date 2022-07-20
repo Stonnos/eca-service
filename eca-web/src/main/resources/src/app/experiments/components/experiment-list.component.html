@@ -122,6 +122,43 @@
           </div>
         </div>
       </ng-container>
+      <ng-container *ngSwitchCase="'instancesInfo.relationName'">
+        <div class="ui-g">
+          <div class="ui-g-6 text-right text-bold text-wrap">
+            Число объектов:
+          </div>
+          <div class="ui-g-6 text-left text-wrap">
+            {{ selectedExperiment.instancesInfo.numInstances }}
+          </div>
+        </div>
+
+        <div class="ui-g">
+          <div class="ui-g-6 text-right text-bold text-wrap">
+            Число атрибутов:
+          </div>
+          <div class="ui-g-6 text-left text-wrap">
+            {{ selectedExperiment.instancesInfo.numAttributes }}
+          </div>
+        </div>
+
+        <div class="ui-g">
+          <div class="ui-g-6 text-right text-bold text-wrap">
+            Число классов:
+          </div>
+          <div class="ui-g-6 text-left text-wrap">
+            {{ selectedExperiment.instancesInfo.numClasses }}
+          </div>
+        </div>
+
+        <div class="ui-g">
+          <div class="ui-g-6 text-right text-bold text-wrap">
+            Атрибут класса:
+          </div>
+          <div class="ui-g-6 text-left text-wrap">
+            {{ selectedExperiment.instancesInfo.className }}
+          </div>
+        </div>
+      </ng-container>
       <ng-container *ngSwitchDefault>
       </ng-container>
     </ng-container>

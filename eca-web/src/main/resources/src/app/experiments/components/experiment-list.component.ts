@@ -61,9 +61,9 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
                      private router: Router) {
     super(injector.get(MessageService), injector.get(FieldService));
     this.defaultSortField = ExperimentFields.CREATION_DATE;
-    this.linkColumns = [ExperimentFields.TRAINING_DATA_PATH, ExperimentFields.EXPERIMENT_PATH,
+    this.linkColumns = [ExperimentFields.RELATION_NAME, ExperimentFields.EXPERIMENT_PATH,
       ExperimentFields.REQUEST_ID, ExperimentFields.EVALUATION_METHOD_DESCRIPTION];
-    this.notSortableColumns = [ExperimentFields.TRAINING_DATA_PATH, ExperimentFields.EXPERIMENT_PATH, ExperimentFields.EVALUATION_TOTAL_TIME];
+    this.notSortableColumns = [ExperimentFields.EVALUATION_TOTAL_TIME];
     this.initColumns();
   }
 
@@ -118,8 +118,10 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
 
   public onLink(event, column: string, experiment: ExperimentDto, overlayPanel: OverlayPanel) {
     switch (column) {
-      case ExperimentFields.TRAINING_DATA_PATH:
-        this.getExperimentTrainingDataFile(experiment);
+      case ExperimentFields.RELATION_NAME:
+        if (experiment.instancesInfo) {
+          this.toggleOverlayPanel(event, experiment, column, overlayPanel);
+        }
         break;
       case ExperimentFields.EXPERIMENT_PATH:
         this.getExperimentResultsFile(experiment);
@@ -137,24 +139,6 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
     }
   }
 
-  public getExperimentTrainingDataFile(experiment: ExperimentDto): void {
-    this.loading = true;
-    this.experimentsService.getExperimentTrainingDataFile(experiment.id)
-      .pipe(
-        finalize(() => {
-          this.loading = false;
-        })
-      )
-      .subscribe({
-        next: (blob: Blob) => {
-          saveAs(blob, experiment.trainingDataAbsolutePath);
-        },
-        error: (error) => {
-          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-        }
-      });
-  }
-
   public getExperimentResultsFile(experiment: ExperimentDto): void {
     this.loading = true;
     this.experimentsService.getExperimentResultsFile(experiment.id)
@@ -165,7 +149,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
       )
       .subscribe({
         next: (blob: Blob) => {
-          saveAs(blob, experiment.experimentAbsolutePath);
+          saveAs(blob, experiment.experimentPath);
         },
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
@@ -298,7 +282,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
       { name: ExperimentFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности", sortBy: ExperimentFields.EVALUATION_METHOD },
       { name: ExperimentFields.FIRST_NAME, label: "Имя заявки" },
       { name: ExperimentFields.EMAIL, label: "Email заявки" },
-      { name: ExperimentFields.TRAINING_DATA_PATH, label: "Обучающая выборка" },
+      { name: ExperimentFields.RELATION_NAME, label: "Обучающая выборка" },
       { name: ExperimentFields.EXPERIMENT_PATH, label: "Результаты эксперимента" },
       { name: ExperimentFields.EVALUATION_TOTAL_TIME, label: "Время построения эксперимента" },
       { name: ExperimentFields.CREATION_DATE, label: "Дата создания заявки" },
