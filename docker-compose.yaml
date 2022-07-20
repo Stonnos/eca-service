@@ -63,6 +63,16 @@ services:
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
       BUCKET_NAME: ${BUCKET_NAME}
 
+  s3-minio-nginx-proxy:
+    container_name: s3-minio-nginx-proxy
+    image: nginx:${NGINX_VERSION}
+    ports:
+      - "8098:8098"
+    volumes:
+      - ./minio-proxy/nginx/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - s3-minio-storage
+
   discovery-server:
     image: discovery-server
     container_name: discovery-server
