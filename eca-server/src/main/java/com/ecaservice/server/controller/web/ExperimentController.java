@@ -45,11 +45,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -65,19 +63,14 @@ import weka.core.Instances;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import java.io.File;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
 import static com.ecaservice.server.config.audit.AuditCodes.CREATE_EXPERIMENT_REQUEST;
-import static com.ecaservice.server.util.ExperimentUtils.getExperimentFile;
-import static com.ecaservice.server.util.Utils.buildAttachmentResponse;
-import static com.ecaservice.server.util.Utils.existsFile;
 import static com.ecaservice.server.util.Utils.toRequestStatusesStatistics;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
@@ -94,9 +87,6 @@ import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 @RequiredArgsConstructor
 public class ExperimentController {
 
-    private static final String EXPERIMENT_RESULTS_FILE_NOT_FOUND =
-            "Experiment results file for id = '%d' not found!";
-
     private final UserService userService;
     private final ExperimentService experimentService;
     private final ExperimentResultsService experimentResultsService;
@@ -107,51 +97,6 @@ public class ExperimentController {
     private final ApplicationEventPublisher eventPublisher;
     private final DataService dataService;
     private final ExperimentResultsEntityRepository experimentResultsEntityRepository;
-
-    /**
-     * Downloads experiment results by specified id.
-     *
-     * @param id - experiment id
-     */
-    @PreAuthorize("#oauth2.hasScope('web')")
-    @Operation(
-            description = "Downloads experiment results by specified id",
-            summary = "Downloads experiment results by specified id",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
-            responses = {
-                    @ApiResponse(description = "OK", responseCode = "200"),
-                    @ApiResponse(description = "Not authorized", responseCode = "401",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    examples = {
-                                            @ExampleObject(
-                                                    name = "NotAuthorizedResponse",
-                                                    ref = "#/components/examples/NotAuthorizedResponse"
-                                            )
-                                    }
-                            )
-                    ),
-                    @ApiResponse(description = "Bad request", responseCode = "400",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    examples = {
-                                            @ExampleObject(
-                                                    name = "DataNotFoundResponse",
-                                                    ref = "#/components/examples/DataNotFoundResponse"
-                                            )
-                                    },
-                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
-                            )
-                    )
-            }
-    )
-    @GetMapping(value = "/results/{id}")
-    public ResponseEntity<FileSystemResource> downloadExperiment(
-            @Parameter(description = "Experiment id", required = true)
-            @Min(VALUE_1) @Max(Long.MAX_VALUE) @PathVariable Long id) {
-        return downloadExperimentFile(id, Experiment::getExperimentAbsolutePath,
-                String.format(EXPERIMENT_RESULTS_FILE_NOT_FOUND, id));
-    }
 
     /**
      * Creates experiment request.
@@ -628,18 +573,5 @@ public class ExperimentController {
         experimentRequest.setExperimentType(experimentType);
         experimentRequest.setEvaluationMethod(evaluationMethod);
         return experimentRequest;
-    }
-
-    private ResponseEntity<FileSystemResource> downloadExperimentFile(Long id,
-                                                                      Function<Experiment, String> filePathFunction,
-                                                                      String errorMessage) {
-        Experiment experiment = experimentService.getById(id);
-        File experimentFile = getExperimentFile(experiment, filePathFunction);
-        if (!existsFile(experimentFile)) {
-            log.error(errorMessage);
-            return ResponseEntity.badRequest().build();
-        }
-        log.info("Downloads experiment file '{}' for id = '{}'", filePathFunction.apply(experiment), id);
-        return buildAttachmentResponse(experimentFile);
     }
 }

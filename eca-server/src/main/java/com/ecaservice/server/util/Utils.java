@@ -20,14 +20,8 @@ import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
 import eca.core.evaluation.EvaluationMethod;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 
-import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -156,30 +150,6 @@ public class Utils {
                 .stream()
                 .findFirst()
                 .orElse(null);
-    }
-
-    /**
-     * Creates response with attachment.
-     *
-     * @param file - file attachment
-     * @return response entity
-     */
-    public static ResponseEntity<FileSystemResource> buildAttachmentResponse(File file) {
-        FileSystemResource resource = new FileSystemResource(file);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-        headers.setContentDispositionFormData(ATTACHMENT, resource.getFilename());
-        return new ResponseEntity<>(resource, headers, HttpStatus.OK);
-    }
-
-    /**
-     * Checks file existing.
-     *
-     * @param file - file
-     * @return {@code true} if file is existing
-     */
-    public static boolean existsFile(File file) {
-        return file != null && file.isFile();
     }
 
     /**
