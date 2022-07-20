@@ -13,6 +13,11 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class MinioClientProperties {
 
     /**
+     * Default part size is 5MiB in multipart upload
+     */
+    public static final int DEFAULT_MULTIPART_SIZE = 5 * 1024 * 1024;
+
+    /**
      * Storage url
      */
     private String url;
@@ -33,9 +38,9 @@ public class MinioClientProperties {
     private String bucketName;
 
     /**
-     * Batch size for multipart upload
+     * Part size for multipart upload
      */
-    private long batchSize;
+    private long multipartSize = DEFAULT_MULTIPART_SIZE;
 
     /**
      * Storage external url
