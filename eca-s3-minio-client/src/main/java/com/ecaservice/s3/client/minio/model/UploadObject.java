@@ -29,9 +29,4 @@ public class UploadObject {
      * Content type
      */
     private String contentType;
-
-    /**
-     * Content length
-     */
-    private long contentLength;
 }

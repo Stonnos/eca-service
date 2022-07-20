@@ -38,17 +38,19 @@ public class MinioStorageService {
      */
     public void uploadObject(UploadObject uploadObject) {
         String bucket = minioClientProperties.getBucketName();
-        log.info("Starting to upload object [{}] to s3 minio storage bucket [{}]. Object size is [{}]",
-                uploadObject.getObjectPath(), bucket, uploadObject.getContentLength());
+        log.info("Starting to upload object [{}] to s3 minio storage bucket [{}]", uploadObject.getObjectPath(),
+                bucket);
         try {
             var stopWatch = new StopWatch();
             stopWatch.start();
             @Cleanup var inputStream = uploadObject.getInputStream().get();
+            long contentLength = inputStream.available();
+            log.info("Object [{}] size is {} bytes", uploadObject.getObjectPath(), contentLength);
             var putObjectArgs = PutObjectArgs.builder()
                     .bucket(bucket)
                     .object(uploadObject.getObjectPath())
                     .contentType(uploadObject.getContentType())
-                    .stream(inputStream, uploadObject.getContentLength(), minioClientProperties.getMultipartSize())
+                    .stream(inputStream, contentLength, minioClientProperties.getMultipartSize())
                     .build();
             var objectWriteResponse = minioClient.putObject(putObjectArgs);
             stopWatch.stop();

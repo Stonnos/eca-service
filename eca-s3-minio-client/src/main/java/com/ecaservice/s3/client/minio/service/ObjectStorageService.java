@@ -8,9 +8,9 @@ import org.nustaq.serialization.FSTObjectInput;
 import org.nustaq.serialization.FSTObjectOutput;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.util.FastByteArrayOutputStream;
 import org.springframework.util.StopWatch;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.Serializable;
 
@@ -38,20 +38,17 @@ public class ObjectStorageService {
         log.info("Starting to serialize object [{}]", objectPath);
         var stopWatch = new StopWatch();
         stopWatch.start();
-        @Cleanup var outputStream = new FastByteArrayOutputStream();
-        @Cleanup var out = new FSTObjectOutput(outputStream);
-        out.writeObject(object);
+        @Cleanup var fstObjectOutput = new FSTObjectOutput();
+        fstObjectOutput.writeObject(object);
         stopWatch.stop();
         log.info("Object [{}] has been serialized for {} s.", objectPath, stopWatch.getTotalTimeSeconds());
         minioStorageService.uploadObject(
                 UploadObject.builder()
                         .objectPath(objectPath)
-                        .inputStream(outputStream::getInputStream)
-                        .contentLength(outputStream.size())
+                        .inputStream(() -> new ByteArrayInputStream(fstObjectOutput.getBuffer()))
                         .contentType(MediaType.APPLICATION_OCTET_STREAM_VALUE)
                         .build()
         );
-        outputStream.reset();
     }
 
     /**
