@@ -27,7 +27,7 @@ public class ObjectStorageService {
     private final MinioStorageService minioStorageService;
 
     /**
-     * Oploads serialized object to S3 storage.
+     * Uploads serialized object to S3 storage.
      *
      * @param object     - object
      * @param objectPath - object path in S3
