@@ -43,7 +43,7 @@ public class MinioClientProperties {
     private long multipartSize = DEFAULT_MULTIPART_SIZE;
 
     /**
-     * Storage external url
+     * Storage proxy url
      */
-    private String externalUrl;
+    private String proxyUrl;
 }

@@ -109,19 +109,19 @@ public class MinioStorageService {
     }
 
     /**
-     * Gets S3 presigned external url for object.
+     * Gets S3 presigned proxy url for object.
      *
      * @param objectPath - object path
-     * @return presigned external url
+     * @return presigned proxy url
      */
-    public String getObjectPresignedExternalUrl(String objectPath) {
-        log.info("Gets presigned external url for object path [{}]", objectPath);
+    public String getObjectPresignedProxyUrl(String objectPath) {
+        log.info("Gets presigned proxy url for object path [{}]", objectPath);
         var objectPresignedUrl = getObjectPresignedUrl(objectPath);
         var url = UriComponentsBuilder.fromHttpUrl(objectPresignedUrl).build();
-        var objectPresignedExternalUrl = String.format("%s/%s?%s", minioClientProperties.getExternalUrl(),
+        var objectPresignedProxyUrl = String.format("%s/%s?%s", minioClientProperties.getProxyUrl(),
                 url.getPath(), url.getQuery());
-        log.info("External presigned url [{}] has been fetched for object path [{}]", objectPresignedExternalUrl,
+        log.info("Proxy presigned url [{}] has been fetched for object path [{}]", objectPresignedProxyUrl,
                 objectPath);
-        return objectPresignedExternalUrl;
+        return objectPresignedProxyUrl;
     }
 }

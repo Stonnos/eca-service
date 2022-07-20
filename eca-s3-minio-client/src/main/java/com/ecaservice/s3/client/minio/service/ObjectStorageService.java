@@ -79,12 +79,12 @@ public class ObjectStorageService {
     }
 
     /**
-     * Gets S3 presigned external url for object.
+     * Gets S3 presigned proxy url for object.
      *
      * @param objectPath - object path
-     * @return presigned external url
+     * @return presigned proxy url
      */
-    public String getObjectPresignedExternalUrl(String objectPath) {
-        return minioStorageService.getObjectPresignedExternalUrl(objectPath);
+    public String getObjectPresignedProxyUrl(String objectPath) {
+        return minioStorageService.getObjectPresignedProxyUrl(objectPath);
     }
 }
