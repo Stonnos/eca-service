@@ -206,16 +206,16 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
       { name: ExperimentFields.REQUEST_STATUS_DESCRIPTION, label: "Статус заявки" },
       { name: ExperimentFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности" },
       { name: ExperimentFields.EMAIL, label: "Email заявки" },
-      { name: ExperimentFields.EVALUATION_TOTAL_TIME, label: "Время построения эксперимента" },
-      { name: ExperimentFields.CREATION_DATE, label: "Дата создания заявки" },
-      { name: ExperimentFields.START_DATE, label: "Дата начала эксперимента" },
-      { name: ExperimentFields.END_DATE, label: "Дата окончания эксперимента" },
-      { name: ExperimentFields.DELETED_DATE, label: "Дата удаления результатов" },
       { name: ExperimentFields.RELATION_NAME, label: "Обучающая выборка:" },
       { name: ExperimentFields.NUM_INSTANCES, label: "Число объектов:" },
       { name: ExperimentFields.NUM_ATTRIBUTES, label: "Число атрибутов:" },
       { name: ExperimentFields.NUM_CLASSES, label: "Число классов:" },
       { name: ExperimentFields.CLASS_NAME, label: "Атрибут класса:" },
+      { name: ExperimentFields.EVALUATION_TOTAL_TIME, label: "Время построения эксперимента" },
+      { name: ExperimentFields.CREATION_DATE, label: "Дата создания заявки" },
+      { name: ExperimentFields.START_DATE, label: "Дата начала эксперимента" },
+      { name: ExperimentFields.END_DATE, label: "Дата окончания эксперимента" },
+      { name: ExperimentFields.DELETED_DATE, label: "Дата удаления результатов" },
       { name: ExperimentFields.EXPERIMENT_PATH, label: "Результаты эксперимента" }
     ];
   }

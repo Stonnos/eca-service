@@ -24,6 +24,17 @@ export class ExperimentFields {
   public static readonly CLASS_NAME: string = "instancesInfo.className";
 }
 
+export class AbstractEvaluationDtoFields {
+  public static readonly NUM_FOLDS: string = "numFolds";
+  public static readonly NUM_TESTS: string = "numTests";
+  public static readonly SEED: string = "seed";
+  public static readonly RELATION_NAME: string = "instancesInfo.relationName";
+  public static readonly NUM_INSTANCES: string = "instancesInfo.numInstances";
+  public static readonly NUM_ATTRIBUTES: string = "instancesInfo.numAttributes";
+  public static readonly NUM_CLASSES: string = "instancesInfo.numClasses";
+  public static readonly CLASS_NAME: string = "instancesInfo.className";
+}
+
 export class EvaluationLogFields {
   public static readonly REQUEST_ID: string = "requestId";
   public static readonly CLASSIFIER_NAME: string = "classifierInfo.classifierName";

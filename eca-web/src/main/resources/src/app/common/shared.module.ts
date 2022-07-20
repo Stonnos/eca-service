@@ -18,6 +18,8 @@ import { ClassifierOptionsDetails } from "./classifier-options-details/classifie
 import { MinNumberValidator } from "./validators/min-validator.directive";
 import { MaxNumberValidator } from "./validators/max-validator.directive";
 import { ClassifierOptionsInfo } from "./classifier-options-info/classifier-options-info";
+import { EvaluationMethodInfo } from "./evaluation-method-info/evaluation-method-info";
+import { InstancesInfo } from "./instances-info/instances-info";
 
 @NgModule({
   imports: [
@@ -36,7 +38,9 @@ import { ClassifierOptionsInfo } from "./classifier-options-info/classifier-opti
     EditableInputTextComponent,
     InfoPanelComponent,
     ClassifierOptionsDetails,
-    ClassifierOptionsInfo
+    ClassifierOptionsInfo,
+    EvaluationMethodInfo,
+    InstancesInfo
   ],
   exports: [
     RequestStatusComponent,
@@ -49,7 +53,9 @@ import { ClassifierOptionsInfo } from "./classifier-options-info/classifier-opti
     EditableInputTextComponent,
     InfoPanelComponent,
     ClassifierOptionsDetails,
-    ClassifierOptionsInfo
+    ClassifierOptionsInfo,
+    EvaluationMethodInfo,
+    InstancesInfo
   ],
   providers: [
     FieldService,
