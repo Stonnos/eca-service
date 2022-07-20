@@ -97,11 +97,6 @@ public class ExperimentConfig {
          * Data storage path
          */
         private String storagePath;
-
-        /**
-         * Date format
-         */
-        private String dateFormat;
     }
 
     /**
