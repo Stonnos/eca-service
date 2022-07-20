@@ -88,8 +88,6 @@ services:
   eca-server:
     image: eca-server
     container_name: eca-server
-    volumes:
-      - experiment-data:/home/experiment
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
@@ -271,8 +269,6 @@ volumes:
     name: eca-pgdata
   rabbit-data:
     name: rabbit-data
-  experiment-data:
-    name: experiment-data
   classifiers-data:
     name: classifiers-data
   s3-minio-data:
