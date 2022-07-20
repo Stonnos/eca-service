@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
         InstancesInfoMapperImpl.class})
 class ExperimentMapperTest {
     
-    private static final String EXPERIMENT_PATH = "/home/experiment.model";
+    private static final String EXPERIMENT_PATH = "experiment.model";
     private static final String DATA_PATH = "data.model";
 
     @Inject
