@@ -87,4 +87,13 @@ public class ObjectStorageService {
     public String getObjectPresignedProxyUrl(String objectPath) {
         return minioStorageService.getObjectPresignedProxyUrl(objectPath);
     }
+
+    /**
+     * Removes object from S3 storage.
+     *
+     * @param objectPath - object path
+     */
+    public void removeObject(String objectPath) {
+        minioStorageService.removeObject(objectPath);
+    }
 }

@@ -7,6 +7,7 @@ import io.minio.GetObjectArgs;
 import io.minio.GetPresignedObjectUrlArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
+import io.minio.RemoveObjectArgs;
 import io.minio.http.Method;
 import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
@@ -78,6 +79,29 @@ public class MinioStorageService {
             );
         } catch (Exception ex) {
             log.error("There was an error while download object [{}] from s3 minio storage bucket [{}]: {}",
+                    objectPath, bucket, ex.getMessage());
+            throw new ObjectStorageException(ex);
+        }
+    }
+
+    /**
+     * Removes object from S3 storage.
+     *
+     * @param objectPath - object path
+     */
+    public void removeObject(String objectPath) {
+        String bucket = minioClientProperties.getBucketName();
+        log.info("Starting to remove object [{}] from s3 minio storage bucket [{}]", objectPath, bucket);
+        try {
+            minioClient.removeObject(
+                    RemoveObjectArgs.builder()
+                            .bucket(objectPath)
+                            .object(objectPath)
+                            .build()
+            );
+            log.info("Object [{}] has been removed from s3 minio storage bucket [{}]", objectPath, bucket);
+        } catch (Exception ex) {
+            log.error("There was an error while remove object [{}] from s3 minio storage bucket [{}]: {}",
                     objectPath, bucket, ex.getMessage());
             throw new ObjectStorageException(ex);
         }
