@@ -96,8 +96,6 @@ public class ExperimentController {
 
     private static final String EXPERIMENT_RESULTS_FILE_NOT_FOUND =
             "Experiment results file for id = '%d' not found!";
-    private static final String EXPERIMENT_TRAINING_DATA_FILE_NOT_FOUND_FORMAT =
-            "Experiment training data file for id = '%d' not found!";
 
     private final UserService userService;
     private final ExperimentService experimentService;
@@ -109,51 +107,6 @@ public class ExperimentController {
     private final ApplicationEventPublisher eventPublisher;
     private final DataService dataService;
     private final ExperimentResultsEntityRepository experimentResultsEntityRepository;
-
-    /**
-     * Downloads experiment training data by specified id.
-     *
-     * @param id - experiment id
-     */
-    @PreAuthorize("#oauth2.hasScope('web')")
-    @Operation(
-            description = "Downloads experiment training data by specified id",
-            summary = "Downloads experiment training data by specified id",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
-            responses = {
-                    @ApiResponse(description = "OK", responseCode = "200"),
-                    @ApiResponse(description = "Not authorized", responseCode = "401",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    examples = {
-                                            @ExampleObject(
-                                                    name = "NotAuthorizedResponse",
-                                                    ref = "#/components/examples/NotAuthorizedResponse"
-                                            )
-                                    }
-                            )
-                    ),
-                    @ApiResponse(description = "Bad request", responseCode = "400",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    examples = {
-                                            @ExampleObject(
-                                                    name = "DataNotFoundResponse",
-                                                    ref = "#/components/examples/DataNotFoundResponse"
-                                            )
-                                    },
-                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
-                            )
-                    )
-            }
-    )
-    @GetMapping(value = "/training-data/{id}")
-    public ResponseEntity<FileSystemResource> downloadTrainingData(
-            @Parameter(description = "Experiment id", required = true)
-            @Min(VALUE_1) @Max(Long.MAX_VALUE) @PathVariable Long id) {
-        return downloadExperimentFile(id, Experiment::getTrainingDataAbsolutePath,
-                String.format(EXPERIMENT_TRAINING_DATA_FILE_NOT_FOUND_FORMAT, id));
-    }
 
     /**
      * Downloads experiment results by specified id.

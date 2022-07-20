@@ -79,7 +79,6 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     private static final String BASE_URL = "/experiment";
     private static final String DETAILS_URL = BASE_URL + "/details/{id}";
     private static final String LIST_URL = BASE_URL + "/list";
-    private static final String DOWNLOAD_TRAINING_DATA_URL = BASE_URL + "/training-data/{id}";
     private static final String DOWNLOAD_EXPERIMENT_RESULTS_URL = BASE_URL + "/results/{id}";
     private static final String CREATE_EXPERIMENT_URL = BASE_URL + "/create";
     private static final String EXPERIMENT_RESULTS_DETAILS_URL = BASE_URL + "/results/details/{id}";
@@ -119,21 +118,6 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     private final MockMultipartFile trainingData =
             new MockMultipartFile(TRAINING_DATA_PARAM, "iris.txt",
                     MimeTypeUtils.TEXT_PLAIN.toString(), "file-content".getBytes(StandardCharsets.UTF_8));
-
-    @Test
-    void testDownloadTrainingDataUnauthorized() throws Exception {
-        mockMvc.perform(get(DOWNLOAD_TRAINING_DATA_URL, ID)).andExpect(status().isUnauthorized());
-    }
-
-    @Test
-    void testDownloadTrainingDataForNotExistingExperiment() throws Exception {
-        testDownloadFileForNotExistingExperiment(DOWNLOAD_TRAINING_DATA_URL);
-    }
-
-    @Test
-    void testDownloadNotExistingTrainingDataFile() throws Exception {
-        testDownloadNotExistingExperimentFile(DOWNLOAD_TRAINING_DATA_URL);
-    }
 
     @Test
     void testDownloadExperimentResultsUnauthorized() throws Exception {
