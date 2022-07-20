@@ -1,15 +1,17 @@
 package com.ecaservice.server.service.experiment;
 
-import com.ecaservice.server.AssertionUtils;
-import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
-import com.ecaservice.common.web.exception.FileProcessingException;
 import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.s3.client.minio.exception.ObjectStorageException;
+import com.ecaservice.s3.client.minio.service.ObjectStorageService;
+import com.ecaservice.server.AssertionUtils;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.config.ExperimentConfig;
+import com.ecaservice.server.exception.experiment.ExperimentException;
 import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.mapping.ExperimentMapper;
 import com.ecaservice.server.mapping.ExperimentMapperImpl;
@@ -26,19 +28,19 @@ import com.ecaservice.server.service.evaluation.CalculationExecutorServiceImpl;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
-import eca.data.file.resource.FileResource;
 import eca.dataminer.AbstractExperiment;
-import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
+import org.springframework.test.util.ReflectionTestUtils;
 import weka.core.Instances;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -46,7 +48,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import static com.ecaservice.server.TestHelperUtils.createExperimentHistory;
@@ -55,8 +59,10 @@ import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 
@@ -78,7 +84,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
     @Inject
     private ExperimentMapper experimentMapper;
     @Mock
-    private DataService dataService;
+    private ObjectStorageService objectStorageService;
     @Inject
     private CrossValidationConfig crossValidationConfig;
     @Inject
@@ -101,9 +107,10 @@ class ExperimentServiceTest extends AbstractJpaTest {
         data = TestHelperUtils.loadInstances();
         CalculationExecutorService executorService =
                 new CalculationExecutorServiceImpl(Executors.newCachedThreadPool());
-        experimentService = new ExperimentService(experimentRepository, executorService, experimentMapper, dataService,
-                crossValidationConfig, experimentConfig, experimentProcessorService, entityManager, appProperties,
-                filterService);
+        experimentService =
+                new ExperimentService(experimentRepository, executorService, experimentMapper, objectStorageService,
+                        crossValidationConfig, experimentConfig, experimentProcessorService, entityManager,
+                        appProperties, filterService);
     }
 
     @Override
@@ -123,7 +130,6 @@ class ExperimentServiceTest extends AbstractJpaTest {
     void testSuccessExperimentRequestCreation() {
         ExperimentRequest experimentRequest = TestHelperUtils.createExperimentRequest();
         MsgProperties msgProperties = createMessageProperties();
-        doNothing().when(dataService).save(any(File.class), any(Instances.class));
         experimentService.createExperiment(experimentRequest, msgProperties);
         List<Experiment> experiments = experimentRepository.findAll();
         AssertionUtils.hasOneElement(experiments);
@@ -138,21 +144,22 @@ class ExperimentServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    void testExperimentRequestCreationWithError() {
+    void testExperimentRequestCreationWithError() throws IOException {
         ExperimentRequest experimentRequest = TestHelperUtils.createExperimentRequest();
-        doThrow(FileProcessingException.class).when(dataService).save(any(File.class), any(Instances.class));
+        doThrow(ObjectStorageException.class)
+                .when(objectStorageService)
+                .uploadObject(any(Serializable.class), anyString());
         MsgProperties msgProperties = createMessageProperties();
-        assertThrows(FileProcessingException.class,
+        assertThrows(ExperimentException.class,
                 () -> experimentService.createExperiment(experimentRequest, msgProperties));
     }
 
     @Test
     void testProcessExperimentWithSuccessStatus() throws Exception {
-        when(dataService.load(any(FileResource.class))).thenReturn(data);
+        when(objectStorageService.getObject(anyString(), any())).thenReturn(data);
         AbstractExperiment experimentHistory = createExperimentHistory(data);
         when(experimentProcessorService.processExperimentHistory(any(Experiment.class),
                 any(InitializationParams.class))).thenReturn(experimentHistory);
-        doNothing().when(dataService).saveExperimentHistory(any(File.class), any(AbstractExperiment.class));
         experimentService.processExperiment(TestHelperUtils.createExperiment(UUID.randomUUID().toString()));
         List<Experiment> experiments = experimentRepository.findAll();
         AssertionUtils.hasOneElement(experiments);
@@ -164,8 +171,8 @@ class ExperimentServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    void testProcessExperimentWithErrorStatus() {
-        when(dataService.load(any(FileResource.class))).thenThrow(new FileProcessingException(StringUtils.EMPTY));
+    void testProcessExperimentWithErrorStatus() throws Exception {
+        when(objectStorageService.getObject(anyString(), any())).thenThrow(new RuntimeException());
         experimentService.processExperiment(TestHelperUtils.createExperiment(UUID.randomUUID().toString()));
         List<Experiment> experiments = experimentRepository.findAll();
         AssertionUtils.hasOneElement(experiments);
@@ -176,12 +183,14 @@ class ExperimentServiceTest extends AbstractJpaTest {
 
     @Test
     void testProcessExperimentWithTimeoutStatus() throws Exception {
-        when(dataService.load(any(FileResource.class))).thenReturn(data);
+        when(objectStorageService.getObject(anyString(), any())).thenReturn(data);
         AbstractExperiment experimentHistory = createExperimentHistory(data);
         when(experimentProcessorService.processExperimentHistory(any(Experiment.class),
                 any(InitializationParams.class))).thenReturn(experimentHistory);
-        doThrow(TimeoutException.class).when(dataService).saveExperimentHistory(any(File.class),
-                any(AbstractExperiment.class));
+        CalculationExecutorService executorService = mock(CalculationExecutorService.class);
+        ReflectionTestUtils.setField(experimentService, "executorService", executorService);
+        doThrow(TimeoutException.class).when(executorService)
+                .execute(any(Callable.class), anyLong(), any(TimeUnit.class));
         experimentService.processExperiment(TestHelperUtils.createExperiment(UUID.randomUUID().toString()));
         List<Experiment> experiments = experimentRepository.findAll();
         AssertionUtils.hasOneElement(experiments);

@@ -4,6 +4,7 @@ import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.config.ExperimentConfig;
@@ -21,7 +22,6 @@ import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.service.PageRequestService;
 import com.ecaservice.server.service.evaluation.CalculationExecutorService;
 import com.ecaservice.web.dto.model.PageRequestDto;
-import eca.data.file.resource.FileResource;
 import eca.dataminer.AbstractExperiment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +41,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -80,7 +79,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
     private final ExperimentRepository experimentRepository;
     private final CalculationExecutorService executorService;
     private final ExperimentMapper experimentMapper;
-    private final DataService dataService;
+    private final ObjectStorageService objectStorageService;
     private final CrossValidationConfig crossValidationConfig;
     private final ExperimentConfig experimentConfig;
     private final ExperimentProcessorService experimentProcessorService;
@@ -104,16 +103,20 @@ public class ExperimentService implements PageRequestService<Experiment> {
                 experimentRequest.getEvaluationMethod(), experimentRequest.getEmail());
         Assert.notNull(msgProperties, "Expected not null message properties");
         Assert.notNull(msgProperties.getChannel(), "Expected not null channel");
-        Experiment experiment = experimentMapper.map(experimentRequest, crossValidationConfig);
-        setMessageProperties(experiment, msgProperties);
-        experiment.setRequestStatus(RequestStatus.NEW);
-        experiment.setRequestId(requestId);
-        File dataFile = new File(experimentConfig.getData().getStoragePath(),
-                String.format(experimentConfig.getData().getFileFormat(), experiment.getRequestId()));
-        dataService.save(dataFile, experimentRequest.getData());
-        experiment.setTrainingDataAbsolutePath(dataFile.getAbsolutePath());
-        experiment.setCreationDate(LocalDateTime.now());
-        return experimentRepository.save(experiment);
+        try {
+            Experiment experiment = experimentMapper.map(experimentRequest, crossValidationConfig);
+            setMessageProperties(experiment, msgProperties);
+            experiment.setRequestStatus(RequestStatus.NEW);
+            experiment.setRequestId(requestId);
+            String objectPath = String.format("experiment-train-data-%s.model", experiment.getRequestId());
+            objectStorageService.uploadObject(experimentRequest.getData(), objectPath);
+            experiment.setTrainingDataAbsolutePath(objectPath);
+            experiment.setCreationDate(LocalDateTime.now());
+            return experimentRepository.save(experiment);
+        } catch (Exception ex) {
+            log.error("There was an error while create experiment request [{}]: {}", requestId, ex.getMessage());
+            throw new ExperimentException(ex.getMessage());
+        }
     }
 
     /**
@@ -133,8 +136,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
             StopWatch stopWatch =
                     new StopWatch(String.format("Stop watching for experiment [%s]", experiment.getRequestId()));
             stopWatch.start(String.format("Loading data for experiment [%s]", experiment.getRequestId()));
-            FileResource fileResource = new FileResource(new File(experiment.getTrainingDataAbsolutePath()));
-            Instances data = dataService.load(fileResource);
+            Instances data = objectStorageService.getObject(experiment.getTrainingDataAbsolutePath(), Instances.class);
             data.setClassIndex(experiment.getClassIndex());
             stopWatch.stop();
 
@@ -148,12 +150,11 @@ public class ExperimentService implements PageRequestService<Experiment> {
             stopWatch.stop();
 
             stopWatch.start(String.format("Experiment [%s] saving", experiment.getRequestId()));
-            File experimentFile = new File(experimentConfig.getStoragePath(),
-                    String.format(experimentConfig.getFileFormat(), experiment.getRequestId()));
-            dataService.saveExperimentHistory(experimentFile, abstractExperiment);
+            String experimentPath = String.format("experiment-%s.model", experiment.getRequestId());
+            objectStorageService.uploadObject(abstractExperiment, experimentPath);
             stopWatch.stop();
 
-            experiment.setExperimentAbsolutePath(experimentFile.getAbsolutePath());
+            experiment.setExperimentAbsolutePath(experimentPath);
             experiment.setToken(generateToken());
             experiment.setRequestStatus(RequestStatus.FINISHED);
             log.info("Experiment [{}] has been successfully built!", experiment.getRequestId());
@@ -185,7 +186,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
         experiment.setExperimentAbsolutePath(null);
         experiment.setDeletedDate(LocalDateTime.now());
         experimentRepository.save(experiment);
-        dataService.delete(experimentAbsolutePath);
+        objectStorageService.removeObject(experimentAbsolutePath);
         log.info("Experiment [{}] model file has been deleted", experiment.getRequestId());
     }
 
@@ -200,7 +201,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
         String trainingDataAbsolutePath = experiment.getTrainingDataAbsolutePath();
         experiment.setTrainingDataAbsolutePath(null);
         experimentRepository.save(experiment);
-        dataService.delete(trainingDataAbsolutePath);
+        objectStorageService.removeObject(trainingDataAbsolutePath);
         log.info("Experiment [{}] training data file has been deleted", experiment.getRequestId());
     }
 
