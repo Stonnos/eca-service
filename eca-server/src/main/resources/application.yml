@@ -113,7 +113,7 @@ experiment:
   delaySeconds: 30
   ## Experiments page size
   pageSize: 10
-  experimentDownloadUrlExpirationDays: 14
+  experimentDownloadUrlExpirationDays: 7
   shortLifeUrlExpirationMinutes: 5
   ensemble:
     numIterations: 25
