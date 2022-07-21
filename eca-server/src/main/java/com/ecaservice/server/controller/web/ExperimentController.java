@@ -563,15 +563,15 @@ public class ExperimentController {
     }
 
     /**
-     * Gets experiment results content.
+     * Gets experiment results content url.
      *
      * @param id - experiment id
      * @return s3 content response dto
      */
     @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
-            description = "Gets experiment results content",
-            summary = "Gets experiment results content",
+            description = "Gets experiment results content url",
+            summary = "Gets experiment results content url",
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200",
@@ -612,11 +612,11 @@ public class ExperimentController {
             }
     )
     @GetMapping(value = "/results-content/{id}")
-    public S3ContentResponseDto getExperimentResultsContent(
+    public S3ContentResponseDto getExperimentResultsContentUrl(
             @Parameter(description = "Experiment id", required = true)
             @Min(VALUE_1) @Max(Long.MAX_VALUE) @PathVariable Long id) {
-        log.info("Received request to get experiment [{}] result content", id);
-        return null;
+        log.info("Received request to get experiment [{}] result content url", id);
+        return experimentService.getExperimentResultsContentUrl(id);
     }
 
     private ExperimentRequest createExperimentRequest(MultipartFile trainingData,

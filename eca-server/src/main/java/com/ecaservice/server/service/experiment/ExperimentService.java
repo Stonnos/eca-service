@@ -23,6 +23,7 @@ import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.service.PageRequestService;
 import com.ecaservice.server.service.evaluation.CalculationExecutorService;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.S3ContentResponseDto;
 import eca.dataminer.AbstractExperiment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -275,6 +276,28 @@ public class ExperimentService implements PageRequestService<Experiment> {
                 requestStatus -> !experimentTypesMap.containsKey(requestStatus)).forEach(
                 requestStatus -> experimentTypesMap.put(requestStatus, 0L));
         return experimentTypesMap;
+    }
+
+    /**
+     * Gets experiment results content url.
+     *
+     * @param id - experiment id
+     * @return s3 content response dto
+     */
+    public S3ContentResponseDto getExperimentResultsContentUrl(Long id) {
+        log.info("Starting to get experiment [{}] results content url", id);
+        var experiment = getById(id);
+        String contentUrl = objectStorageService.getObjectPresignedProxyUrl(
+                GetPresignedUrlObject.builder()
+                        .objectPath(experiment.getExperimentPath())
+                        .expirationTime(experimentConfig.getShortLifeUrlExpirationMinutes())
+                        .expirationTimeUnit(TimeUnit.MINUTES)
+                        .build()
+        );
+        log.info("Experiment [{}] results content url has been fetched", id);
+        return S3ContentResponseDto.builder()
+                .contentUrl(contentUrl)
+                .build();
     }
 
     private String getExperimentPresignedUrl(String experimentPath) {
