@@ -290,7 +290,7 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |experiment_path              |varchar(255)     |-|-|-                                 |Путь к объекту в S3 с результатами эксперимента
 |error_message                |text             |-|-|-                                 |Текст ошибки
 |deleted_date                 |timestamp        |-|-|-                                 |Дата удаления файлов с результатами эксперимента
-|experiment_download_url      |varchar(1024)     |-|-|-                                |Ссылка для скачивания результатов эксперимента из S3
+|experiment_download_url      |varchar(1024)    |-|-|-                                |Ссылка для скачивания результатов эксперимента из S3
 |channel_type                 |varchar(255)     |-|+|-                                 |Канал поступления заявки (QUEUE или WEB)
 |reply_to                     |varchar(255)     |-|-|-                                 |Название очереди для отправки ответных сообщений в MQ
 |correlation_id               |varchar(255)     |-|-|-                                 |Значение для корреляции запрос/ответ
