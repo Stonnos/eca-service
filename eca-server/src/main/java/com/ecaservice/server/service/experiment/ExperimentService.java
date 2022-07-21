@@ -159,7 +159,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
             stopWatch.stop();
 
             experiment.setExperimentPath(experimentPath);
-            String experimentDownloadUrl = getExperimentPresignedUrl(experimentPath);
+            String experimentDownloadUrl = getExperimentDownloadPresignedUrl(experimentPath);
             experiment.setExperimentDownloadUrl(experimentDownloadUrl);
             experiment.setRequestStatus(RequestStatus.FINISHED);
             log.info("Experiment [{}] has been successfully built!", experiment.getRequestId());
@@ -300,7 +300,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
                 .build();
     }
 
-    private String getExperimentPresignedUrl(String experimentPath) {
+    private String getExperimentDownloadPresignedUrl(String experimentPath) {
         return objectStorageService.getObjectPresignedProxyUrl(
                 GetPresignedUrlObject.builder()
                         .objectPath(experimentPath)

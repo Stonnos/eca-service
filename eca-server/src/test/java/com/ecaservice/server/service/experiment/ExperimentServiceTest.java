@@ -5,6 +5,7 @@ import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.s3.client.minio.exception.ObjectStorageException;
+import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.AssertionUtils;
 import com.ecaservice.server.TestHelperUtils;
@@ -159,7 +160,8 @@ class ExperimentServiceTest extends AbstractJpaTest {
     @Test
     void testProcessExperimentWithSuccessStatus() throws Exception {
         when(objectStorageService.getObject(anyString(), any())).thenReturn(data);
-        when(objectStorageService.getObjectPresignedProxyUrl(anyString())).thenReturn(EXPERIMENT_DOWNLOAD_URL);
+        when(objectStorageService.getObjectPresignedProxyUrl(any(GetPresignedUrlObject.class)))
+                .thenReturn(EXPERIMENT_DOWNLOAD_URL);
         AbstractExperiment experimentHistory = createExperimentHistory(data);
         when(experimentProcessorService.processExperimentHistory(any(Experiment.class),
                 any(InitializationParams.class))).thenReturn(experimentHistory);
@@ -467,5 +469,16 @@ class ExperimentServiceTest extends AbstractJpaTest {
     @Test
     void testGetExperimentShouldThrowEntityNotFoundException() {
         assertThrows(EntityNotFoundException.class, () -> experimentService.getById(INVALID_ID));
+    }
+
+    @Test
+    void testGetExperimentContentUrl() {
+        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
+        experimentRepository.save(experiment);
+        when(objectStorageService.getObjectPresignedProxyUrl(any(GetPresignedUrlObject.class)))
+                .thenReturn(EXPERIMENT_DOWNLOAD_URL);
+        var s3ContentResponseDto = experimentService.getExperimentResultsContentUrl(experiment.getId());
+        assertThat(s3ContentResponseDto).isNotNull();
+        assertThat(s3ContentResponseDto.getContentUrl()).isEqualTo(EXPERIMENT_DOWNLOAD_URL);
     }
 }
