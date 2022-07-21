@@ -286,11 +286,11 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |experiment_type              |varchar(255)     |-|+|-                                 |Тип эксперимента
 |firstName                    |varchar(255)     |-|+|-                                 |Имя пользователя
 |email                        |varchar(255)     |-|+|-                                 |Email пользователя для отправки результатов эксперимента
-|training_data_absolute_path  |varchar(255)     |-|-|-                                 |Абсолютный путь к файлу с обучающей выборкой
-|experiment_absolute_path     |varchar(255)     |-|-|-                                 |Абсолютный путь к файлу с результатами эксперимента
+|training_data_path           |varchar(255)     |-|-|-                                 |Путь к объекту в S3 с обучающей выборкой
+|experiment_path              |varchar(255)     |-|-|-                                 |Путь к объекту в S3 с результатами эксперимента
 |error_message                |text             |-|-|-                                 |Текст ошибки
 |deleted_date                 |timestamp        |-|-|-                                 |Дата удаления файлов с результатами эксперимента
-|token                        |varchar(255)     |-|-|-                                 |Токен для скачивания результатов эксперимента с сервера
+|experiment_download_url      |varchar(1024)     |-|-|-                                |Ссылка для скачивания результатов эксперимента из S3
 |channel_type                 |varchar(255)     |-|+|-                                 |Канал поступления заявки (QUEUE или WEB)
 |reply_to                     |varchar(255)     |-|-|-                                 |Название очереди для отправки ответных сообщений в MQ
 |correlation_id               |varchar(255)     |-|-|-                                 |Значение для корреляции запрос/ответ
