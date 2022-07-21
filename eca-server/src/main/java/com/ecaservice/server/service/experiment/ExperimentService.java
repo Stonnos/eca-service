@@ -76,6 +76,9 @@ import static com.google.common.collect.Lists.newArrayList;
 @RequiredArgsConstructor
 public class ExperimentService implements PageRequestService<Experiment> {
 
+    private static final String EXPERIMENT_TRAIN_DATA_PATH_FORMAT = "experiment-train-data-%s.model";
+    private static final String EXPERIMENT_PATH_FORMAT = "experiment-%s.model";
+
     private final ExperimentRepository experimentRepository;
     private final CalculationExecutorService executorService;
     private final ExperimentMapper experimentMapper;
@@ -108,7 +111,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
             setMessageProperties(experiment, msgProperties);
             experiment.setRequestStatus(RequestStatus.NEW);
             experiment.setRequestId(requestId);
-            String objectPath = String.format("experiment-train-data-%s.model", experiment.getRequestId());
+            String objectPath = String.format(EXPERIMENT_TRAIN_DATA_PATH_FORMAT, experiment.getRequestId());
             objectStorageService.uploadObject(experimentRequest.getData(), objectPath);
             experiment.setTrainingDataPath(objectPath);
             experiment.setCreationDate(LocalDateTime.now());
@@ -150,7 +153,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
             stopWatch.stop();
 
             stopWatch.start(String.format("Experiment [%s] saving", experiment.getRequestId()));
-            String experimentPath = String.format("experiment-%s.model", experiment.getRequestId());
+            String experimentPath = String.format(EXPERIMENT_PATH_FORMAT, experiment.getRequestId());
             objectStorageService.uploadObject(abstractExperiment, experimentPath);
             stopWatch.stop();
 
