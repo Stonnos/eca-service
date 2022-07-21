@@ -16,10 +16,10 @@
               {{ field.label }}
             </div>
             <div class="ui-g-6 text-left text-wrap">
-              <a [class.link]="!isLoading(field.name)"
-                 [class.disabled-link]="isLoading(field.name)"
+              <a *ngIf="isLink(field.name)"
+                 [class.link]="!loading"
+                 [class.disabled-link]="loading"
                  [routerLink]=""
-                 *ngIf="isLink(field.name)"
                  (click)="onLink(field.name)">
                 {{ getExperimentValue(field.name) }}
               </a>
@@ -37,7 +37,7 @@
                 </ng-container>
               </div>
               <p-progressBar
-                *ngIf="isLoading(field.name)"
+                *ngIf="showProgressBar(field.name)"
                 class="w-100"
                 [style]="{'height':'5px'}"
                 mode="indeterminate">

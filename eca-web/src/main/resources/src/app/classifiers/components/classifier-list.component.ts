@@ -16,7 +16,6 @@ import { RouterPaths } from "../../routing/router-paths";
 import { EvaluationLogFields } from "../../common/util/field-names";
 import { FieldService } from "../../common/services/field.service";
 import { ReportsService } from "../../common/services/report.service";
-import { Utils} from "../../common/util/utils";
 import { ReportType } from "../../common/model/report-type.enum";
 
 @Component({
@@ -82,18 +81,6 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
   public generateReport() {
     const observable = this.reportsService.getBaseReport(this.pageRequestDto, ReportType.EVALUATION_LOGS);
     this.downloadReport(observable, ClassifierListComponent.EVALUATION_LOGS_REPORT_FILE_NAME);
-  }
-
-  public getNumFolds(evaluationLog: EvaluationLogDto): number {
-    return this.fieldService.getFieldValue(EvaluationLogFields.NUM_FOLDS, evaluationLog, Utils.MISSING_VALUE);
-  }
-
-  public getNumTests(evaluationLog: EvaluationLogDto): number {
-    return this.fieldService.getFieldValue(EvaluationLogFields.NUM_TESTS, evaluationLog, Utils.MISSING_VALUE);
-  }
-
-  public getSeed(evaluationLog: EvaluationLogDto): number {
-    return this.fieldService.getFieldValue(EvaluationLogFields.SEED, evaluationLog, Utils.MISSING_VALUE);
   }
 
   public onSelect(event, evaluationLog: EvaluationLogDto, column: string, overlayPanel: OverlayPanel): void {

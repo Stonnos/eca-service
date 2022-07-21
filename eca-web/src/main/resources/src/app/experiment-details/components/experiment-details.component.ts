@@ -7,13 +7,11 @@ import {
 import { MessageService } from "primeng/api";
 import { ActivatedRoute } from "@angular/router";
 import { ExperimentsService } from "../../experiments/services/experiments.service";
-import { saveAs } from 'file-saver/dist/FileSaver';
 import { ExperimentFields } from "../../common/util/field-names";
 import { FieldLink } from "../../common/model/field-link";
 import { FieldService } from "../../common/services/field.service";
 import { Utils } from "../../common/util/utils";
 import { Subscription, timer } from "rxjs";
-import { finalize } from "rxjs/internal/operators";
 import { RequestStatus } from "../../common/model/request-status.enum";
 
 @Component({
@@ -24,9 +22,6 @@ import { RequestStatus } from "../../common/model/request-status.enum";
 export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink {
 
   private readonly id: number;
-
-  private readonly loadingFieldsMap = new Map<string, boolean>()
-    .set(ExperimentFields.EXPERIMENT_PATH, false);
 
   private readonly updateProgressInterval = 1000;
   private readonly updateStatusInterval = 3000;
@@ -40,6 +35,8 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
   public experimentProgress: ExperimentProgressDto;
 
   private updateSubscription: Subscription = new Subscription();
+
+  public loading = false;
 
   public linkColumns: string[] = [ExperimentFields.EXPERIMENT_PATH];
 
@@ -80,21 +77,11 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
   }
 
   public getExperimentResultsFile(): void {
-    this.loadingFieldsMap.set(ExperimentFields.EXPERIMENT_PATH, true);
-    this.experimentsService.getExperimentResultsFile(this.id)
-      .pipe(
-        finalize(() => {
-          this.loadingFieldsMap.set(ExperimentFields.EXPERIMENT_PATH, false);
-        })
-      )
-      .subscribe({
-        next: (blob: Blob) => {
-          saveAs(blob, this.experimentDto.experimentPath);
-        },
-        error: (error) => {
-          this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error.message});
-        }
-      });
+    this.loading = true;
+    this.experimentsService.downloadExperimentResults(this.experimentDto,
+      () => this.loading = false,
+      (error) => this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message })
+    );
   }
 
   public getExperimentErsReport(): void {
@@ -113,8 +100,8 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
     return this.linkColumns.includes(field) && this.hasValue(field);
   }
 
-  public isLoading(field: string): boolean {
-    return this.loadingFieldsMap.has(field) && this.loadingFieldsMap.get(field);
+  public showProgressBar(field: string): boolean {
+    return field == ExperimentFields.EXPERIMENT_PATH && this.loading;
   }
 
   public onLink(field: string) {

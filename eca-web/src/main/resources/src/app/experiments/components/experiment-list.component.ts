@@ -6,7 +6,6 @@ import {
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ExperimentsService } from "../services/experiments.service";
 import { MessageService } from "primeng/api";
-import { saveAs } from 'file-saver/dist/FileSaver';
 import { BaseListComponent } from "../../common/lists/base-list.component";
 import { OverlayPanel } from "primeng/primeng";
 import { Observable } from "rxjs/internal/Observable";
@@ -19,7 +18,6 @@ import { ExperimentFields } from "../../common/util/field-names";
 import { FieldService } from "../../common/services/field.service";
 import { ReportsService } from "../../common/services/report.service";
 import { EvaluationMethod } from "../../common/model/evaluation-method.enum";
-import { Utils } from "../../common/util/utils";
 import { ReportType } from "../../common/model/report-type.enum";
 import { WsService } from "../../common/websockets/ws.service";
 import { Subscription } from "rxjs";
@@ -104,18 +102,6 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
     this.downloadReport(observable, ExperimentListComponent.EXPERIMENTS_REPORT_FILE_NAME);
   }
 
-  public getNumFolds(experimentDto: ExperimentDto): number {
-    return this.fieldService.getFieldValue(ExperimentFields.NUM_FOLDS, experimentDto, Utils.MISSING_VALUE);
-  }
-
-  public getNumTests(experimentDto: ExperimentDto): number {
-    return this.fieldService.getFieldValue(ExperimentFields.NUM_TESTS, experimentDto, Utils.MISSING_VALUE);
-  }
-
-  public getSeed(experimentDto: ExperimentDto): number {
-    return this.fieldService.getFieldValue(ExperimentFields.SEED, experimentDto, Utils.MISSING_VALUE);
-  }
-
   public onLink(event, column: string, experiment: ExperimentDto, overlayPanel: OverlayPanel) {
     switch (column) {
       case ExperimentFields.RELATION_NAME:
@@ -124,7 +110,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
         }
         break;
       case ExperimentFields.EXPERIMENT_PATH:
-        this.getExperimentResultsFile(experiment);
+        this.downloadExperimentResults(experiment);
         break;
       case ExperimentFields.REQUEST_ID:
         this.router.navigate([RouterPaths.EXPERIMENT_DETAILS_URL, experiment.id]);
@@ -139,22 +125,12 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
     }
   }
 
-  public getExperimentResultsFile(experiment: ExperimentDto): void {
+  public downloadExperimentResults(experiment: ExperimentDto): void {
     this.loading = true;
-    this.experimentsService.getExperimentResultsFile(experiment.id)
-      .pipe(
-        finalize(() => {
-          this.loading = false;
-        })
-      )
-      .subscribe({
-        next: (blob: Blob) => {
-          saveAs(blob, experiment.experimentPath);
-        },
-        error: (error) => {
-          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-        }
-      });
+    this.experimentsService.downloadExperimentResults(experiment,
+      () => this.loading = false,
+      (error) => this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message })
+    );
   }
 
   public onCreateExperimentDialogVisibility(visible): void {
