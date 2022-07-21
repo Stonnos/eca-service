@@ -58,6 +58,7 @@ export abstract class BaseListComponent<T> implements FieldLink {
       .subscribe({
         next: (pageDto: PageDto<T>) => {
           this.setPage(pageDto);
+          this.postProcessPage(pageDto);
         },
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
@@ -108,6 +109,9 @@ export abstract class BaseListComponent<T> implements FieldLink {
     if (pageDto.page == 0) {
       this.table.first = 0;
     }
+  }
+
+  public postProcessPage(pageDto: PageDto<T>): void {
   }
 
   public getColumnValue(column: string, item: T) {

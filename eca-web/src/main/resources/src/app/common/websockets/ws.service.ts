@@ -1,21 +1,14 @@
-import { StompService } from "@stomp/ng2-stompjs";
+import {StompConfig, StompService} from "@stomp/ng2-stompjs";
 import { AuthenticationKeys } from "../../auth/model/auth.keys";
 import { environment } from "../../../environments/environment";
 
 export class WsService {
 
+  private wsUrl = environment.wsUrl;
   private stompService: StompService;
 
   public constructor() {
-    this.stompService = new StompService({
-      url: `${environment.wsUrl}?access_token=${localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)}`,
-      headers: {
-      },
-      heartbeat_in: 0,
-      heartbeat_out: 20000,
-      reconnect_delay: 5000,
-      debug: false
-    });
+    this.stompService = new StompService(this.getStompConfig());
   }
 
   public subscribe(queueName: string) {
@@ -24,5 +17,21 @@ export class WsService {
 
   public close(): void {
     this.stompService.disconnect();
+  }
+
+  private getStompConfig(): StompConfig {
+    return {
+      url: this.getWsEndpoint(),
+      headers: {
+      },
+      heartbeat_in: 0,
+      heartbeat_out: 20000,
+      reconnect_delay: 5000,
+      debug: false
+    };
+  }
+
+  private getWsEndpoint(): string {
+    return `${this.wsUrl}?access_token=${localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)}`;
   }
 }
