@@ -5,20 +5,17 @@ import com.ecaservice.auto.test.event.model.ExperimentResultsTestStepEvent;
 import com.ecaservice.auto.test.model.evaluation.EvaluationResultsDetailsMatch;
 import com.ecaservice.auto.test.service.ErsService;
 import com.ecaservice.auto.test.service.EvaluationResultsMatcherService;
-import com.ecaservice.auto.test.service.api.EcaServerClient;
 import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
 import com.ecaservice.test.common.service.TestResultsMatcher;
+import eca.core.ModelSerializationHelper;
+import eca.data.file.resource.UrlResource;
 import eca.dataminer.AbstractExperiment;
-import lombok.Cleanup;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.SerializationUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.event.EventListener;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
@@ -34,9 +31,6 @@ import static com.google.common.collect.Lists.newArrayList;
 @Component
 public class ExperimentResultsTestStepHandler implements AbstractTestStepHandler<ExperimentResultsTestStepEvent> {
 
-    private static final String SLASH_SEPARATOR = "/";
-
-    private final EcaServerClient ecaServerClient;
     private final ErsService ersService;
     private final EvaluationResultsMatcherService evaluationResultsMatcherService;
     private final TestStepService testStepService;
@@ -44,16 +38,13 @@ public class ExperimentResultsTestStepHandler implements AbstractTestStepHandler
     /**
      * Constructor with spring dependency injection.
      *
-     * @param ecaServerClient                 - eca server client
      * @param ersService                      - ers service
      * @param evaluationResultsMatcherService - evaluation results matcher service
      * @param testStepService                 - test step service
      */
-    public ExperimentResultsTestStepHandler(EcaServerClient ecaServerClient,
-                                            ErsService ersService,
+    public ExperimentResultsTestStepHandler(ErsService ersService,
                                             EvaluationResultsMatcherService evaluationResultsMatcherService,
                                             TestStepService testStepService) {
-        this.ecaServerClient = ecaServerClient;
         this.ersService = ersService;
         this.evaluationResultsMatcherService = evaluationResultsMatcherService;
         this.testStepService = testStepService;
@@ -109,11 +100,9 @@ public class ExperimentResultsTestStepHandler implements AbstractTestStepHandler
             throws IOException {
         log.info("Starting to download experiment [{}] history",
                 experimentRequestEntity.getRequestId());
-        String token = StringUtils.substringAfterLast(experimentRequestEntity.getDownloadUrl(),
-                SLASH_SEPARATOR);
-        Resource modelResource = ecaServerClient.downloadModel(token);
-        @Cleanup InputStream inputStream = modelResource.getInputStream();
-        AbstractExperiment<?> experimentHistory = SerializationUtils.deserialize(inputStream);
+        URL experimentUrl = new URL(experimentRequestEntity.getDownloadUrl());
+        AbstractExperiment<?> experimentHistory =
+                ModelSerializationHelper.deserialize(new UrlResource(experimentUrl), AbstractExperiment.class);
         log.info("Experiment [{}] history has been downloaded", experimentRequestEntity.getRequestId());
         return experimentHistory;
     }
