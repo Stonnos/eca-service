@@ -63,6 +63,16 @@ public class ExperimentConfig {
     private Integer pageSize;
 
     /**
+     * Experiment download url expiration in days
+     */
+    private Integer experimentDownloadUrlExpirationDays;
+
+    /**
+     * Short life url expiration in minutes
+     */
+    private Integer shortLifeUrlExpirationMinutes;
+
+    /**
      * Ensemble configuration properties.
      */
     @Data

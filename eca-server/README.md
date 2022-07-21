@@ -39,11 +39,13 @@ ECA server
    * experiment.individualClassifiersStoragePath - путь к папке в ресурсах для хранения json - конфигураций классификаторов,
    которые впоследствии будут использоваться при построении эксперимента
    * experiment.maximumFractionDigits - число десятичных знаков после запятой
-   * experiment.numberOfDaysForStorage - кол-во дней для хранения файлов с результатами экспериментов
-   * experiment.removeExperimentCron - крон выражение для удаления файлов с результатами экспериментов
+   * experiment.numberOfDaysForStorage - кол-во дней для хранения результатов экспериментов
+   * experiment.removeExperimentCron - крон выражение для удаления моделей с результатами экспериментов
    * experiment.timeout - время таймаута эксперимента в часах.
    * experiment.delaySeconds - интервал между запусками scheduler для обработки экспериметов
    * experiment.pageSize - размер страницы для постраничной обработки заявок
+   * experiment.experimentDownloadUrlExpirationDays - время жизни ссылки на скачивание результатов эксперимента
+   * experiment.shortLifeUrlExpirationMinutes - время короткоживущей ссылки на получение результатов эксперимента
    * experiment.ensemble.numIterations - число итераций для ансамблевых алгоритмов
    * experiment.ensemble.numBestClassifiers - число наилучших по точности базовых классификаторов, которые впоследствии
    будут использоваться при построении ансамбля

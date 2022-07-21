@@ -4,6 +4,7 @@ import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.config.CrossValidationConfig;
@@ -57,7 +58,6 @@ import java.util.stream.Collectors;
 import static com.ecaservice.common.web.util.LogHelper.EV_REQUEST_ID;
 import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.putMdc;
-import static com.ecaservice.common.web.util.RandomUtils.generateToken;
 import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.server.model.entity.AbstractEvaluationEntity_.CREATION_DATE;
 import static com.ecaservice.server.model.entity.Experiment_.EXPERIMENT_TYPE;
@@ -158,7 +158,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
             stopWatch.stop();
 
             experiment.setExperimentPath(experimentPath);
-            String experimentDownloadUrl = objectStorageService.getObjectPresignedProxyUrl(experimentPath);
+            String experimentDownloadUrl = getExperimentPresignedUrl(experimentPath);
             experiment.setExperimentDownloadUrl(experimentDownloadUrl);
             experiment.setRequestStatus(RequestStatus.FINISHED);
             log.info("Experiment [{}] has been successfully built!", experiment.getRequestId());
@@ -275,6 +275,16 @@ public class ExperimentService implements PageRequestService<Experiment> {
                 requestStatus -> !experimentTypesMap.containsKey(requestStatus)).forEach(
                 requestStatus -> experimentTypesMap.put(requestStatus, 0L));
         return experimentTypesMap;
+    }
+
+    private String getExperimentPresignedUrl(String experimentPath) {
+        return objectStorageService.getObjectPresignedProxyUrl(
+                GetPresignedUrlObject.builder()
+                        .objectPath(experimentPath)
+                        .expirationTime(experimentConfig.getExperimentDownloadUrlExpirationDays())
+                        .expirationTimeUnit(TimeUnit.DAYS)
+                        .build()
+        );
     }
 
     private void setMessageProperties(Experiment experiment, MsgProperties msgProperties) {

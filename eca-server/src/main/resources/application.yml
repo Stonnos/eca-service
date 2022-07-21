@@ -113,6 +113,8 @@ experiment:
   delaySeconds: 30
   ## Experiments page size
   pageSize: 10
+  experimentDownloadUrlExpirationDays: 14
+  shortLifeUrlExpirationMinutes: 5
   ensemble:
     numIterations: 25
     numBestClassifiers: 4
