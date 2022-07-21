@@ -44,7 +44,6 @@ import static com.ecaservice.server.util.ClassifierOptionsHelper.isParsableOptio
 @UtilityClass
 public class Utils {
 
-    private static final String ATTACHMENT = "attachment";
     private static final String CV_FORMAT = "%d - блочная кросс - проверка";
     private static final String CV_EXTENDED_FORMAT = "%d×%d - блочная кросс - проверка";
     private static final long ZERO = 0L;

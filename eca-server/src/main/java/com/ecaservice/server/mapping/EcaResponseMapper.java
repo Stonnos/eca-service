@@ -1,6 +1,8 @@
 package com.ecaservice.server.mapping;
 
+import com.ecaservice.base.model.ErrorCode;
 import com.ecaservice.base.model.ExperimentResponse;
+import com.ecaservice.base.model.MessageError;
 import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.RequestStatus;
@@ -9,6 +11,10 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.ValueMapping;
+
+import java.util.Collections;
+
+import static com.ecaservice.server.util.Utils.error;
 
 /**
  * Experiment response mapper.
@@ -26,6 +32,7 @@ public interface EcaResponseMapper {
      */
     @Mapping(source = "requestStatus", target = "status")
     @Mapping(target = "downloadUrl", ignore = true)
+    @Mapping(target = "errors", ignore = true)
     ExperimentResponse map(Experiment experiment);
 
     /**
@@ -42,15 +49,18 @@ public interface EcaResponseMapper {
     TechnicalStatus map(RequestStatus requestStatus);
 
     /**
-     * Maps experiment download url.
+     * Post mapping.
      *
      * @param experiment         - experiment entity
      * @param experimentResponse - experiment response
      */
     @AfterMapping
-    default void mapDownloadUrl(Experiment experiment, @MappingTarget ExperimentResponse experimentResponse) {
+    default void postMapping(Experiment experiment, @MappingTarget ExperimentResponse experimentResponse) {
         if (RequestStatus.FINISHED.equals(experiment.getRequestStatus())) {
             experimentResponse.setDownloadUrl(experiment.getExperimentDownloadUrl());
+        } else if (RequestStatus.ERROR.equals(experiment.getRequestStatus())) {
+            MessageError error = error(ErrorCode.INTERNAL_SERVER_ERROR);
+            experimentResponse.setErrors(Collections.singletonList(error));
         }
     }
 }
