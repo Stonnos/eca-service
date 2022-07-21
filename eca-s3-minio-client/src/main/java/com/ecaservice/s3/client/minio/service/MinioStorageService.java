@@ -2,6 +2,7 @@ package com.ecaservice.s3.client.minio.service;
 
 import com.ecaservice.s3.client.minio.config.MinioClientProperties;
 import com.ecaservice.s3.client.minio.exception.ObjectStorageException;
+import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.model.UploadObject;
 import io.minio.GetObjectArgs;
 import io.minio.GetPresignedObjectUrlArgs;
@@ -116,27 +117,28 @@ public class MinioStorageService {
     /**
      * Gets S3 presigned url for object.
      *
-     * @param objectPath - object path
+     * @param presignedUrlObject - presigned url object
      * @return presigned url
      */
-    public String getObjectPresignedUrl(String objectPath) {
-        log.info("Gets presigned url for object path [{}]", objectPath);
+    public String getObjectPresignedUrl(GetPresignedUrlObject presignedUrlObject) {
+        log.info("Gets presigned url for object path [{}]", presignedUrlObject.getObjectPath());
         try {
             var stopWatch = new StopWatch();
             stopWatch.start();
             var objectPresignedUrl = minioClient.getPresignedObjectUrl(
                     GetPresignedObjectUrlArgs.builder()
                             .bucket(minioClientProperties.getBucketName())
-                            .object(objectPath)
+                            .object(presignedUrlObject.getObjectPath())
+                            .expiry(presignedUrlObject.getExpirationTime(), presignedUrlObject.getExpirationTimeUnit())
                             .method(Method.GET)
                             .build()
             );
             stopWatch.stop();
             log.info("Presigned url [{}] has been fetched for object path [{}]. Total time {} s", objectPresignedUrl,
-                    objectPath, stopWatch.getTotalTimeSeconds());
+                    presignedUrlObject, stopWatch.getTotalTimeSeconds());
             return objectPresignedUrl;
         } catch (Exception ex) {
-            log.error("There was an error while get presigned url for object path [{}]: {}", objectPath,
+            log.error("There was an error while get presigned url for object path [{}]: {}", presignedUrlObject,
                     ex.getMessage());
             throw new ObjectStorageException(ex);
         }
@@ -145,17 +147,17 @@ public class MinioStorageService {
     /**
      * Gets S3 presigned proxy url for object.
      *
-     * @param objectPath - object path
+     * @param presignedUrlObject - presigned url object
      * @return presigned proxy url
      */
-    public String getObjectPresignedProxyUrl(String objectPath) {
-        log.info("Gets presigned proxy url for object path [{}]", objectPath);
-        var objectPresignedUrl = getObjectPresignedUrl(objectPath);
+    public String getObjectPresignedProxyUrl(GetPresignedUrlObject presignedUrlObject) {
+        log.info("Gets presigned proxy url for object path [{}]", presignedUrlObject.getObjectPath());
+        var objectPresignedUrl = getObjectPresignedUrl(presignedUrlObject);
         var url = UriComponentsBuilder.fromHttpUrl(objectPresignedUrl).build();
         var objectPresignedProxyUrl = String.format("%s%s?%s", minioClientProperties.getProxyUrl(),
                 url.getPath(), url.getQuery());
         log.info("Proxy presigned url [{}] has been fetched for object path [{}]", objectPresignedProxyUrl,
-                objectPath);
+                presignedUrlObject.getObjectPath());
         return objectPresignedProxyUrl;
     }
 }

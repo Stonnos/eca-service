@@ -1,5 +1,6 @@
 package com.ecaservice.s3.client.minio.service;
 
+import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.model.UploadObject;
 import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
@@ -78,11 +79,11 @@ public class ObjectStorageService {
     /**
      * Gets S3 presigned proxy url for object.
      *
-     * @param objectPath - object path
+     * @param presignedUrlObject - presigned url object
      * @return presigned proxy url
      */
-    public String getObjectPresignedProxyUrl(String objectPath) {
-        return minioStorageService.getObjectPresignedProxyUrl(objectPath);
+    public String getObjectPresignedProxyUrl(GetPresignedUrlObject presignedUrlObject) {
+        return minioStorageService.getObjectPresignedProxyUrl(presignedUrlObject);
     }
 
     /**
