@@ -32,6 +32,7 @@ import com.ecaservice.web.dto.model.ExperimentResultsDetailsDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
+import com.ecaservice.web.dto.model.S3ContentResponseDto;
 import eca.core.evaluation.EvaluationMethod;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -87,6 +88,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     private static final String REQUEST_STATUS_STATISTICS_URL = BASE_URL + "/request-statuses-statistics";
     private static final String EXPERIMENT_TYPES_STATISTICS_URL = BASE_URL + "/statistics";
     private static final String EXPERIMENT_PROGRESS_URL = BASE_URL + "/progress/{id}";
+    private static final String EXPERIMENT_RESULTS_CONTENT_URL = BASE_URL + "/results-content/{id}";
 
     private static final String EXPERIMENT_TYPE_PARAM = "experimentType";
     private static final String EVALUATION_METHOD_PARAM = "evaluationMethod";
@@ -95,6 +97,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     private static final int PROGRESS_VALUE = 100;
     private static final long ID = 1L;
     private static final String USER = "user";
+    private static final String CONTENT_URL = "http://localhost:9000/content";
 
     @MockBean
     private UserService userService;
@@ -364,5 +367,32 @@ class ExperimentControllerTest extends PageRequestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(expected)));
+    }
+
+    @Test
+    void testGetExperimentResultsContentUrlUnauthorized() throws Exception {
+        mockMvc.perform(get(EXPERIMENT_RESULTS_CONTENT_URL, ID))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testGetExperimentResultsContentUrlForNotExistingExperiment() throws Exception {
+        when(experimentService.getExperimentResultsContentUrl(ID)).thenThrow(EntityNotFoundException.class);
+        mockMvc.perform(get(EXPERIMENT_RESULTS_CONTENT_URL, ID)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testGetExperimentResultsContentUrlOk() throws Exception {
+        var s3ContentResponseDto = S3ContentResponseDto.builder()
+                .contentUrl(CONTENT_URL)
+                .build();
+        when(experimentService.getExperimentResultsContentUrl(ID)).thenReturn(s3ContentResponseDto);
+        mockMvc.perform(get(EXPERIMENT_RESULTS_CONTENT_URL, ID)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(objectMapper.writeValueAsString(s3ContentResponseDto)));
     }
 }
