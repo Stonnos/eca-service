@@ -32,6 +32,7 @@ import com.ecaservice.web.dto.model.ExperimentsPageDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
+import com.ecaservice.web.dto.model.S3ContentResponseDto;
 import eca.core.evaluation.EvaluationMethod;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -559,6 +560,63 @@ public class ExperimentController {
         Experiment experiment = experimentService.getById(id);
         ExperimentProgressEntity experimentProgressEntity = experimentProgressService.getExperimentProgress(experiment);
         return experimentProgressMapper.map(experimentProgressEntity);
+    }
+
+    /**
+     * Gets experiment results content.
+     *
+     * @param id - experiment id
+     * @return s3 content response dto
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @Operation(
+            description = "Gets experiment results content",
+            summary = "Gets experiment results content",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "GetExperimentResultsContentResponse",
+                                                    ref = "#/components/examples/GetExperimentResultsContentResponse"
+                                            )
+                                    },
+                                    schema = @Schema(implementation = S3ContentResponseDto.class)
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            )
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "DataNotFoundResponse",
+                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                            )
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
+                            )
+                    )
+            }
+    )
+    @GetMapping(value = "/results-content/{id}")
+    public S3ContentResponseDto getExperimentResultsContent(
+            @Parameter(description = "Experiment id", required = true)
+            @Min(VALUE_1) @Max(Long.MAX_VALUE) @PathVariable Long id) {
+        log.info("Received request to get experiment [{}] result content", id);
+        return null;
     }
 
     private ExperimentRequest createExperimentRequest(MultipartFile trainingData,
