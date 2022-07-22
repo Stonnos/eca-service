@@ -1,4 +1,4 @@
-import {StompConfig, StompService} from "@stomp/ng2-stompjs";
+import { StompConfig, StompService } from "@stomp/ng2-stompjs";
 import { AuthenticationKeys } from "../../auth/model/auth.keys";
 import { environment } from "../../../environments/environment";
 
@@ -21,7 +21,7 @@ export class WsService {
 
   private getStompConfig(): StompConfig {
     return {
-      url: this.getWsEndpoint(),
+      url: () => new WebSocket(this.getWsEndpoint()),
       headers: {
       },
       heartbeat_in: 0,

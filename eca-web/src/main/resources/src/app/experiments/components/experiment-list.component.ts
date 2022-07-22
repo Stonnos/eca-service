@@ -70,6 +70,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
     this.getRequestStatusesStatistics();
     this.getEvaluationMethods();
     this.getExperimentTypes();
+    this.subscribeForExperimentsUpdates();
   }
 
   public ngOnDestroy(): void {
@@ -83,10 +84,6 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
 
   public getNextPageAsObservable(pageRequest: PageRequestDto): Observable<PageDto<ExperimentDto>> {
     return this.experimentsService.getExperiments(pageRequest);
-  }
-
-  public postProcessPage(pageDto: PageDto<ExperimentDto>) {
-    this.subscribeForExperimentsUpdates();
   }
 
   public getRequestStatusesStatistics() {
@@ -213,22 +210,20 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
   }
 
   private subscribeForExperimentsUpdates(): void {
-    if (!this.experimentsUpdatesSubscriptions) {
-      this.wsService = new WsService();
-      this.experimentsUpdatesSubscriptions = this.wsService.subscribe('/queue/experiment')
-        .subscribe({
-          next: (message) => {
-            const experimentDto: ExperimentDto = JSON.parse(message.body);
-            this.lastCreatedId = experimentDto.id;
-            this.showMessage(experimentDto);
-            this.reloadPage(false);
-            this.getRequestStatusesStatistics();
-          },
-          error: (error) => {
-            this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-          }
-        });
-    }
+    this.wsService = new WsService();
+    this.experimentsUpdatesSubscriptions = this.wsService.subscribe('/queue/experiment')
+      .subscribe({
+        next: (message) => {
+          const experimentDto: ExperimentDto = JSON.parse(message.body);
+          this.lastCreatedId = experimentDto.id;
+          this.showMessage(experimentDto);
+          this.reloadPage(false);
+          this.getRequestStatusesStatistics();
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
   }
 
   private showMessage(experimentDto: ExperimentDto): void {
