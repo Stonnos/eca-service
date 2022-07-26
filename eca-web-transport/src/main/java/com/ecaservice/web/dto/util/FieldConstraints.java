@@ -21,6 +21,11 @@ public class FieldConstraints {
     public static final int MAX_LENGTH_255 = 255;
 
     /**
+     * Max string length 1024
+     */
+    public static final int MAX_LENGTH_1024 = 1024;
+
+    /**
      * UUID max length
      */
     public static final int UUID_MAX_LENGTH = 36;

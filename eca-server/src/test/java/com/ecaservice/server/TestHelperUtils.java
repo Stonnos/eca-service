@@ -107,6 +107,8 @@ import static com.google.common.collect.Maps.newEnumMap;
 @UtilityClass
 public class TestHelperUtils {
 
+    private static final String DATA_RESOURCE_PATH = "data/iris.xls";
+
     public static final int NUM_FOLDS = 3;
     public static final int NUM_TESTS = 1;
     public static final int SEED = 1;
@@ -116,9 +118,8 @@ public class TestHelperUtils {
 
     private static final String FIRST_NAME = "Roman";
     private static final String TEST_MAIL_RU = "test@mail.ru";
-    private static final String TRAINING_DATA_ABSOLUTE_PATH = "/home/data";
-    private static final String EXPERIMENT_ABSOLUTE_PATH = "/home/experiment";
-    private static final String DATA_PATH = "data/iris.xls";
+    private static final String TRAINING_DATA_PATH = "data.model";
+    private static final String EXPERIMENT_PATH = "experiment.model";
     private static final String CLASSIFIERS_TEMPLATES_JSON = "classifiers-templates.json";
     private static final String ENSEMBLE_CLASSIFIER_TEMPLATES_JSON = "ensemble-classifiers-templates.json";
 
@@ -187,7 +188,7 @@ public class TestHelperUtils {
         try {
             ClassLoader classLoader = ClassLoader.getSystemClassLoader();
             XLSLoader dataLoader = new XLSLoader();
-            dataLoader.setSource(new FileResource(new File(classLoader.getResource(DATA_PATH).getFile())));
+            dataLoader.setSource(new FileResource(new File(classLoader.getResource(DATA_RESOURCE_PATH).getFile())));
             return dataLoader.loadInstances();
         } catch (Exception ex) {
             throw new IllegalStateException(ex.getMessage());
@@ -285,13 +286,14 @@ public class TestHelperUtils {
         experiment.setCreationDate(LocalDateTime.now());
         experiment.setExperimentType(ExperimentType.KNN);
         experiment.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
-        experiment.setTrainingDataAbsolutePath(TRAINING_DATA_ABSOLUTE_PATH);
-        experiment.setExperimentAbsolutePath(EXPERIMENT_ABSOLUTE_PATH);
+        experiment.setTrainingDataPath(TRAINING_DATA_PATH);
+        experiment.setExperimentPath(EXPERIMENT_PATH);
         experiment.setRequestId(requestId);
         experiment.setChannel(Channel.QUEUE);
         experiment.setReplyTo(REPLY_TO);
         experiment.setCorrelationId(UUID.randomUUID().toString());
         experiment.setClassIndex(0);
+        experiment.setInstancesInfo(createInstancesInfo());
         return experiment;
     }
 

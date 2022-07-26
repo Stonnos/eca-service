@@ -413,8 +413,14 @@ a|
     "evaluationTotalTime" : "00:00:1:43",
     "firstName" : "Roman",
     "email" : "test@mail.ru",
-    "experimentAbsolutePath" : "experiment_1d2de514-3a87-4620-9b97-c260e24340de.model",
-    "trainingDataAbsolutePath" : "data_1d2de514-3a87-4620-9b97-c260e24340de.xls",
+    "experimentPath" : "experiment-1d2de514-3a87-4620-9b97-c260e24340de.model",
+    "instancesInfo" : {
+      "relationName" : "iris",
+      "numInstances" : 150,
+      "numAttributes" : 5,
+      "numClasses" : 4,
+      "className" : "class"
+    },
     "deletedDate" : "2021-07-14 14:00:00",
     "experimentType" : {
       "value" : "RANDOM_FORESTS",
@@ -2987,124 +2993,6 @@ a|
 ----
 |===
 
-== Downloads experiment training data by specified id
-
-__GET__ */experiment/training-data/{id}* - Downloads experiment training data by specified id
-
-*Security requirement*
-
-[cols="^50%,^50%",options="header"]
-|===
-|*Name*|*Scopes*
-|
-<<EcaAuth>>
-a|
-
-* web
-
-|===
-
-
-*Request parameters*
-[width=100%]
-|===
-|*Name*|*Description*|*Location*|*Schema*
-|*id**
-|Experiment id
-|path
-a|
-__integer__
-__(int64)__
-
-
-
-
-
-
-*Minimum*: 1*
-
-*Maximum*: 9,223,372,036,854,775,807*
-
-
-
-
-
-
-
-
-|===
-
-*Api responses*
-[width=100%]
-|===
-|*Code*|*Description*|*Content type*|*Schema*|*Example*
-|200
-|OK
-|**/**
-|
-__string__
-__(binary)__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-a|
--
-|401
-|Not authorized
-|*application/json*
-|-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|400
-|Bad request
-|*application/json*
-|
-__array__
-<<<ValidationErrorDto>>
->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-a|
-[source,json]
-----
-[ {
-  "code" : "DataNotFound",
-  "errorMessage" : "Entity with search key [1] not found!"
-} ]
-----
-|===
-
 == Gets experiment types statistics
 
 __GET__ */experiment/statistics* - Gets experiment types statistics
@@ -3252,124 +3140,6 @@ a|
 ----
 |===
 
-== Downloads experiment results by specified id
-
-__GET__ */experiment/results/{id}* - Downloads experiment results by specified id
-
-*Security requirement*
-
-[cols="^50%,^50%",options="header"]
-|===
-|*Name*|*Scopes*
-|
-<<EcaAuth>>
-a|
-
-* web
-
-|===
-
-
-*Request parameters*
-[width=100%]
-|===
-|*Name*|*Description*|*Location*|*Schema*
-|*id**
-|Experiment id
-|path
-a|
-__integer__
-__(int64)__
-
-
-
-
-
-
-*Minimum*: 1*
-
-*Maximum*: 9,223,372,036,854,775,807*
-
-
-
-
-
-
-
-
-|===
-
-*Api responses*
-[width=100%]
-|===
-|*Code*|*Description*|*Content type*|*Schema*|*Example*
-|200
-|OK
-|**/**
-|
-__string__
-__(binary)__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-a|
--
-|401
-|Not authorized
-|*application/json*
-|-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|400
-|Bad request
-|*application/json*
-|
-__array__
-<<<ValidationErrorDto>>
->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-a|
-[source,json]
-----
-[ {
-  "code" : "DataNotFound",
-  "errorMessage" : "Entity with search key [1] not found!"
-} ]
-----
-|===
-
 == Finds experiment results details with specified id
 
 __GET__ */experiment/results/details/{id}* - Finds experiment results details with specified id
@@ -3478,8 +3248,14 @@ a|
     "evaluationTotalTime" : "00:00:1:43",
     "firstName" : "Roman",
     "email" : "test@mail.ru",
-    "experimentAbsolutePath" : "experiment_1d2de514-3a87-4620-9b97-c260e24340de.model",
-    "trainingDataAbsolutePath" : "data_1d2de514-3a87-4620-9b97-c260e24340de.xls",
+    "experimentPath" : "experiment-1d2de514-3a87-4620-9b97-c260e24340de.model",
+    "instancesInfo" : {
+      "relationName" : "iris",
+      "numInstances" : 150,
+      "numAttributes" : 5,
+      "numClasses" : 4,
+      "className" : "class"
+    },
     "deletedDate" : "2021-07-14 14:00:00",
     "experimentType" : {
       "value" : "RANDOM_FORESTS",
@@ -3513,6 +3289,128 @@ a|
       "aucValue" : 0.9
     } ]
   }
+}
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|
+__array__
+<<<ValidationErrorDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+[ {
+  "code" : "DataNotFound",
+  "errorMessage" : "Entity with search key [1] not found!"
+} ]
+----
+|===
+
+== Gets experiment results content url
+
+__GET__ */experiment/results-content/{id}* - Gets experiment results content url
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+
+*Request parameters*
+[width=100%]
+|===
+|*Name*|*Description*|*Location*|*Schema*
+|*id**
+|Experiment id
+|path
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 9,223,372,036,854,775,807*
+
+
+
+
+
+
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+<<S3ContentResponseDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "contentUrl" : "http://localhost:8098/object-storage/eca-service/experiment-1e0e62b1-6d66-4ea6-92ca-f903c52b9229.model?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minio%2F20220720%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220720T120738Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=b828e7099ecdcca904db26e36a9de829aa3c7ac08e3fdd269cf75ed5dc21f38b"
 }
 ----
 |401
@@ -3989,8 +3887,14 @@ a|
   "evaluationTotalTime" : "00:00:1:43",
   "firstName" : "Roman",
   "email" : "test@mail.ru",
-  "experimentAbsolutePath" : "experiment_1d2de514-3a87-4620-9b97-c260e24340de.model",
-  "trainingDataAbsolutePath" : "data_1d2de514-3a87-4620-9b97-c260e24340de.xls",
+  "experimentPath" : "experiment-1d2de514-3a87-4620-9b97-c260e24340de.model",
+  "instancesInfo" : {
+    "relationName" : "iris",
+    "numInstances" : 150,
+    "numAttributes" : 5,
+    "numClasses" : 4,
+    "className" : "class"
+  },
   "deletedDate" : "2021-07-14 14:00:00",
   "experimentType" : {
     "value" : "RANDOM_FORESTS",
@@ -4490,97 +4394,6 @@ a|
   "error_description" : "Full authentication is required to access this resource"
 }
 ----
-|400
-|Bad request
-|*application/json*
-|
-__array__
-<<<ValidationErrorDto>>
->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-a|
-[source,json]
-----
-[ {
-  "code" : "DataNotFound",
-  "errorMessage" : "Entity with search key [1] not found!"
-} ]
-----
-|===
-
-== Downloads experiment results by token
-
-__GET__ */eca-api/experiment/download/{token}* - Downloads experiment results by token
-
-
-
-*Request parameters*
-[width=100%]
-|===
-|*Name*|*Description*|*Location*|*Schema*
-|*token**
-|Experiment token
-|path
-a|
-__string__
-
-
-*Min. length*: 1
-
-*Max. length*: 255
-
-
-
-
-
-
-
-
-
-
-|===
-
-*Api responses*
-[width=100%]
-|===
-|*Code*|*Description*|*Content type*|*Schema*|*Example*
-|200
-|OK
-|**/**
-|
-__string__
-__(binary)__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-a|
--
 |400
 |Bad request
 |*application/json*
@@ -5676,6 +5489,25 @@ __string__
 
 
 
+|*instancesInfo*
+|-
+a|
+<<InstancesInfoDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 |*creationDate*
 |Request creation date
 a|
@@ -5894,27 +5726,8 @@ __string__
 
 
 
-|*experimentAbsolutePath*
-|Experiment results file
-a|
-__string__
-
-
-
-
-*Max. length*: 255
-
-
-
-
-
-
-
-
-
-
-|*trainingDataAbsolutePath*
-|Training data file
+|*experimentPath*
+|Experiment file
 a|
 __string__
 
@@ -6034,6 +5847,117 @@ __(int64)__
 *Minimum*: 0*
 
 *Maximum*: 9,223,372,036,854,775,807*
+
+
+
+
+
+
+
+
+|===
+=== InstancesInfoDto
+:table-caption: Table
+.Classifier training data model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*relationName*
+|Instances name
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*numInstances*
+|Instances number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 2*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*numAttributes*
+|Attributes number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 2*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*numClasses*
+|Classes number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 2*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*className*
+|Class name
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
 
 
 
@@ -9013,6 +8937,25 @@ __string__
 
 
 
+|*instancesInfo*
+|-
+a|
+<<InstancesInfoDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 |*creationDate*
 |Request creation date
 a|
@@ -9212,25 +9155,6 @@ a|
 
 
 
-|*instancesInfo*
-|-
-a|
-<<InstancesInfoDto>>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 |===
 === EvaluationLogsPageDto
 :table-caption: Table
@@ -9295,117 +9219,6 @@ __(int64)__
 *Minimum*: 0*
 
 *Maximum*: 9,223,372,036,854,775,807*
-
-
-
-
-
-
-
-
-|===
-=== InstancesInfoDto
-:table-caption: Table
-.Classifier training data model
-[width=100%]
-|===
-|*Name*|*Description*|*Schema*
-|*relationName*
-|Instances name
-a|
-__string__
-
-
-
-
-*Max. length*: 255
-
-
-
-
-
-
-
-
-
-
-|*numInstances*
-|Instances number
-a|
-__integer__
-__(int32)__
-
-
-
-
-
-
-*Minimum*: 2*
-
-*Maximum*: 2,147,483,647*
-
-
-
-
-
-
-
-
-|*numAttributes*
-|Attributes number
-a|
-__integer__
-__(int32)__
-
-
-
-
-
-
-*Minimum*: 2*
-
-*Maximum*: 2,147,483,647*
-
-
-
-
-
-
-
-
-|*numClasses*
-|Classes number
-a|
-__integer__
-__(int32)__
-
-
-
-
-
-
-*Minimum*: 2*
-
-*Maximum*: 2,147,483,647*
-
-
-
-
-
-
-
-
-|*className*
-|Class name
-a|
-__string__
-
-
-
-
-*Max. length*: 255
-
-
 
 
 
@@ -10620,6 +10433,32 @@ a|
 
 
 |===
+=== S3ContentResponseDto
+:table-caption: Table
+.S3 content response
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*contentUrl*
+|Content url
+a|
+__string__
+
+
+
+
+*Max. length*: 1,024
+
+
+
+
+
+
+
+
+
+
+|===
 === RequestStatusStatisticsDto
 :table-caption: Table
 .Requests statuses statistics model
@@ -11093,6 +10932,25 @@ __string__
 
 
 
+|*instancesInfo*
+|-
+a|
+<<InstancesInfoDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 |*creationDate*
 |Request creation date
 a|
@@ -11277,25 +11135,6 @@ __string__
 |-
 a|
 <<ClassifierInfoDto>>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*instancesInfo*
-|-
-a|
-<<InstancesInfoDto>>
 
 
 

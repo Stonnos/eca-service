@@ -1,13 +1,8 @@
 package com.ecaservice.server.service.experiment;
 
 import com.ecaservice.common.web.exception.InvalidFileException;
-import eca.data.file.FileDataSaver;
 import eca.data.file.resource.FileResource;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.File;
 
@@ -18,14 +13,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  *
  * @author Roman Batygin
  */
-@ExtendWith(MockitoExtension.class)
 class DataServiceTest {
 
-    @Mock
-    private FileDataSaver fileDataSaver;
-
-    @InjectMocks
-    private DataService dataService;
+    private DataService dataService = new DataService();
 
     @Test
     void testLoadInstancesFromInvalidFile() {

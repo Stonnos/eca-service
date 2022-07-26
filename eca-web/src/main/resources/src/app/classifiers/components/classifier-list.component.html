@@ -89,69 +89,12 @@
           </app-classifier-options-info>
         </ng-container>
         <ng-container *ngSwitchCase="'evaluationMethod.description'">
-          <div class="ui-g">
-            <div class="ui-g-6 text-right text-bold text-wrap">
-              Число блоков:
-            </div>
-            <div class="ui-g-6 text-left text-wrap">
-              {{ getNumFolds(selectedEvaluationLog) }}
-            </div>
-          </div>
-
-          <div class="ui-g">
-            <div class="ui-g-6 text-right text-bold text-wrap">
-              Число проверок:
-            </div>
-            <div class="ui-g-6 text-left text-wrap">
-              {{ getNumTests(selectedEvaluationLog) }}
-            </div>
-          </div>
-
-          <div class="ui-g">
-            <div class="ui-g-6 text-right text-bold text-wrap">
-              Начальное значение (seed):
-            </div>
-            <div class="ui-g-6 text-left text-wrap">
-              {{ getSeed(selectedEvaluationLog) }}
-            </div>
-          </div>
+          <app-evaluation-method-info [item]="selectedEvaluationLog">
+          </app-evaluation-method-info>
         </ng-container>
         <ng-container *ngSwitchCase="'instancesInfo.relationName'">
-          <div class="ui-g">
-            <div class="ui-g-6 text-right text-bold text-wrap">
-              Число объектов:
-            </div>
-            <div class="ui-g-6 text-left text-wrap">
-              {{ selectedEvaluationLog.instancesInfo.numInstances }}
-            </div>
-          </div>
-
-          <div class="ui-g">
-            <div class="ui-g-6 text-right text-bold text-wrap">
-              Число атрибутов:
-            </div>
-            <div class="ui-g-6 text-left text-wrap">
-              {{ selectedEvaluationLog.instancesInfo.numAttributes }}
-            </div>
-          </div>
-
-          <div class="ui-g">
-            <div class="ui-g-6 text-right text-bold text-wrap">
-              Число классов:
-            </div>
-            <div class="ui-g-6 text-left text-wrap">
-              {{ selectedEvaluationLog.instancesInfo.numClasses }}
-            </div>
-          </div>
-
-          <div class="ui-g">
-            <div class="ui-g-6 text-right text-bold text-wrap">
-              Атрибут класса:
-            </div>
-            <div class="ui-g-6 text-left text-wrap">
-              {{ selectedEvaluationLog.instancesInfo.className }}
-            </div>
-          </div>
+          <app-instances-info [item]="selectedEvaluationLog">
+          </app-instances-info>
         </ng-container>
         <ng-container *ngSwitchDefault>
         </ng-container>

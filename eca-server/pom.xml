@@ -208,6 +208,12 @@
 
         <dependency>
             <groupId>eca.service</groupId>
+            <artifactId>eca-s3-minio-client</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>eca.service</groupId>
             <artifactId>eca-report</artifactId>
             <version>${project.version}</version>
         </dependency>

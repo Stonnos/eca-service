@@ -4,6 +4,8 @@ import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
+import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.config.ExperimentConfig;
@@ -21,7 +23,7 @@ import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.service.PageRequestService;
 import com.ecaservice.server.service.evaluation.CalculationExecutorService;
 import com.ecaservice.web.dto.model.PageRequestDto;
-import eca.data.file.resource.FileResource;
+import com.ecaservice.web.dto.model.S3ContentResponseDto;
 import eca.dataminer.AbstractExperiment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +43,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -58,7 +59,6 @@ import java.util.stream.Collectors;
 import static com.ecaservice.common.web.util.LogHelper.EV_REQUEST_ID;
 import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.putMdc;
-import static com.ecaservice.common.web.util.RandomUtils.generateToken;
 import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.server.model.entity.AbstractEvaluationEntity_.CREATION_DATE;
 import static com.ecaservice.server.model.entity.Experiment_.EXPERIMENT_TYPE;
@@ -77,10 +77,13 @@ import static com.google.common.collect.Lists.newArrayList;
 @RequiredArgsConstructor
 public class ExperimentService implements PageRequestService<Experiment> {
 
+    private static final String EXPERIMENT_TRAIN_DATA_PATH_FORMAT = "experiment-train-data-%s.model";
+    private static final String EXPERIMENT_PATH_FORMAT = "experiment-%s.model";
+
     private final ExperimentRepository experimentRepository;
     private final CalculationExecutorService executorService;
     private final ExperimentMapper experimentMapper;
-    private final DataService dataService;
+    private final ObjectStorageService objectStorageService;
     private final CrossValidationConfig crossValidationConfig;
     private final ExperimentConfig experimentConfig;
     private final ExperimentProcessorService experimentProcessorService;
@@ -104,16 +107,20 @@ public class ExperimentService implements PageRequestService<Experiment> {
                 experimentRequest.getEvaluationMethod(), experimentRequest.getEmail());
         Assert.notNull(msgProperties, "Expected not null message properties");
         Assert.notNull(msgProperties.getChannel(), "Expected not null channel");
-        Experiment experiment = experimentMapper.map(experimentRequest, crossValidationConfig);
-        setMessageProperties(experiment, msgProperties);
-        experiment.setRequestStatus(RequestStatus.NEW);
-        experiment.setRequestId(requestId);
-        File dataFile = new File(experimentConfig.getData().getStoragePath(),
-                String.format(experimentConfig.getData().getFileFormat(), experiment.getRequestId()));
-        dataService.save(dataFile, experimentRequest.getData());
-        experiment.setTrainingDataAbsolutePath(dataFile.getAbsolutePath());
-        experiment.setCreationDate(LocalDateTime.now());
-        return experimentRepository.save(experiment);
+        try {
+            Experiment experiment = experimentMapper.map(experimentRequest, crossValidationConfig);
+            setMessageProperties(experiment, msgProperties);
+            experiment.setRequestStatus(RequestStatus.NEW);
+            experiment.setRequestId(requestId);
+            String objectPath = String.format(EXPERIMENT_TRAIN_DATA_PATH_FORMAT, experiment.getRequestId());
+            objectStorageService.uploadObject(experimentRequest.getData(), objectPath);
+            experiment.setTrainingDataPath(objectPath);
+            experiment.setCreationDate(LocalDateTime.now());
+            return experimentRepository.save(experiment);
+        } catch (Exception ex) {
+            log.error("There was an error while create experiment request [{}]: {}", requestId, ex.getMessage());
+            throw new ExperimentException(ex.getMessage());
+        }
     }
 
     /**
@@ -125,7 +132,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
     public AbstractExperiment<?> processExperiment(final Experiment experiment) {
         log.info("Starting to built experiment [{}].", experiment.getRequestId());
         try {
-            if (StringUtils.isEmpty(experiment.getTrainingDataAbsolutePath())) {
+            if (StringUtils.isEmpty(experiment.getTrainingDataPath())) {
                 throw new ExperimentException(String.format("Training data path is not specified for experiment [%s]!",
                         experiment.getRequestId()));
             }
@@ -133,8 +140,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
             StopWatch stopWatch =
                     new StopWatch(String.format("Stop watching for experiment [%s]", experiment.getRequestId()));
             stopWatch.start(String.format("Loading data for experiment [%s]", experiment.getRequestId()));
-            FileResource fileResource = new FileResource(new File(experiment.getTrainingDataAbsolutePath()));
-            Instances data = dataService.load(fileResource);
+            Instances data = objectStorageService.getObject(experiment.getTrainingDataPath(), Instances.class);
             data.setClassIndex(experiment.getClassIndex());
             stopWatch.stop();
 
@@ -148,13 +154,13 @@ public class ExperimentService implements PageRequestService<Experiment> {
             stopWatch.stop();
 
             stopWatch.start(String.format("Experiment [%s] saving", experiment.getRequestId()));
-            File experimentFile = new File(experimentConfig.getStoragePath(),
-                    String.format(experimentConfig.getFileFormat(), experiment.getRequestId()));
-            dataService.saveExperimentHistory(experimentFile, abstractExperiment);
+            String experimentPath = String.format(EXPERIMENT_PATH_FORMAT, experiment.getRequestId());
+            objectStorageService.uploadObject(abstractExperiment, experimentPath);
             stopWatch.stop();
 
-            experiment.setExperimentAbsolutePath(experimentFile.getAbsolutePath());
-            experiment.setToken(generateToken());
+            experiment.setExperimentPath(experimentPath);
+            String experimentDownloadUrl = getExperimentDownloadPresignedUrl(experimentPath);
+            experiment.setExperimentDownloadUrl(experimentDownloadUrl);
             experiment.setRequestStatus(RequestStatus.FINISHED);
             log.info("Experiment [{}] has been successfully built!", experiment.getRequestId());
             log.info(stopWatch.prettyPrint());
@@ -181,11 +187,12 @@ public class ExperimentService implements PageRequestService<Experiment> {
     @Transactional
     public void removeExperimentModel(Experiment experiment) {
         log.info("Starting to remove experiment [{}] model file", experiment.getRequestId());
-        String experimentAbsolutePath = experiment.getExperimentAbsolutePath();
-        experiment.setExperimentAbsolutePath(null);
+        String experimentPath = experiment.getExperimentPath();
+        experiment.setExperimentPath(null);
+        experiment.setExperimentDownloadUrl(null);
         experiment.setDeletedDate(LocalDateTime.now());
         experimentRepository.save(experiment);
-        dataService.delete(experimentAbsolutePath);
+        objectStorageService.removeObject(experimentPath);
         log.info("Experiment [{}] model file has been deleted", experiment.getRequestId());
     }
 
@@ -197,10 +204,10 @@ public class ExperimentService implements PageRequestService<Experiment> {
     @Transactional
     public void removeExperimentTrainingData(Experiment experiment) {
         log.info("Starting to remove experiment [{}] training data file", experiment.getRequestId());
-        String trainingDataAbsolutePath = experiment.getTrainingDataAbsolutePath();
-        experiment.setTrainingDataAbsolutePath(null);
+        String trainingDataPath = experiment.getTrainingDataPath();
+        experiment.setTrainingDataPath(null);
         experimentRepository.save(experiment);
-        dataService.delete(trainingDataAbsolutePath);
+        objectStorageService.removeObject(trainingDataPath);
         log.info("Experiment [{}] training data file has been deleted", experiment.getRequestId());
     }
 
@@ -269,6 +276,38 @@ public class ExperimentService implements PageRequestService<Experiment> {
                 requestStatus -> !experimentTypesMap.containsKey(requestStatus)).forEach(
                 requestStatus -> experimentTypesMap.put(requestStatus, 0L));
         return experimentTypesMap;
+    }
+
+    /**
+     * Gets experiment results content url.
+     *
+     * @param id - experiment id
+     * @return s3 content response dto
+     */
+    public S3ContentResponseDto getExperimentResultsContentUrl(Long id) {
+        log.info("Starting to get experiment [{}] results content url", id);
+        var experiment = getById(id);
+        String contentUrl = objectStorageService.getObjectPresignedProxyUrl(
+                GetPresignedUrlObject.builder()
+                        .objectPath(experiment.getExperimentPath())
+                        .expirationTime(experimentConfig.getShortLifeUrlExpirationMinutes())
+                        .expirationTimeUnit(TimeUnit.MINUTES)
+                        .build()
+        );
+        log.info("Experiment [{}] results content url has been fetched", id);
+        return S3ContentResponseDto.builder()
+                .contentUrl(contentUrl)
+                .build();
+    }
+
+    private String getExperimentDownloadPresignedUrl(String experimentPath) {
+        return objectStorageService.getObjectPresignedProxyUrl(
+                GetPresignedUrlObject.builder()
+                        .objectPath(experimentPath)
+                        .expirationTime(experimentConfig.getExperimentDownloadUrlExpirationDays())
+                        .expirationTimeUnit(TimeUnit.DAYS)
+                        .build()
+        );
     }
 
     private void setMessageProperties(Experiment experiment, MsgProperties msgProperties) {

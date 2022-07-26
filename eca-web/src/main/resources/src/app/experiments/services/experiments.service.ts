@@ -6,12 +6,15 @@ import {
   ExperimentDto,
   PageDto,
   PageRequestDto,
-  RequestStatusStatisticsDto, ExperimentResultsDetailsDto, ExperimentProgressDto
+  RequestStatusStatisticsDto, ExperimentResultsDetailsDto, ExperimentProgressDto, S3ContentResponseDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
+import { saveAs } from 'file-saver/dist/FileSaver';
 import { Observable } from "rxjs/internal/Observable";
 import { ExperimentRequest } from "../../create-experiment/model/experiment-request.model";
 import { environment } from "../../../environments/environment";
 import { Utils } from "../../common/util/utils";
+import { catchError, finalize, switchMap } from "rxjs/internal/operators";
+import { EMPTY } from "rxjs/internal/observable/empty";
 
 @Injectable()
 export class ExperimentsService {
@@ -53,20 +56,41 @@ export class ExperimentsService {
     return this.http.get<RequestStatusStatisticsDto>(this.serviceUrl + '/request-statuses-statistics', { headers: headers });
   }
 
-  public getExperimentResultsFile(id: number): Observable<Blob> {
-    const headers = new HttpHeaders({
-      'Authorization': Utils.getBearerTokenHeader()
-    });
-    const options = { headers: headers, responseType: 'blob' as 'json' };
-    return this.http.get<Blob>(this.serviceUrl + '/results/' + id, options);
+  public downloadExperimentResults(experiment: ExperimentDto, onSuccessCallback: () => void, onErrorCallback: (error: any) => void): void {
+    this.getExperimentResultsContentUrl(experiment.id)
+      .pipe(
+        switchMap((s3ContentResponseDto: S3ContentResponseDto) => {
+          return this.downloadContent(s3ContentResponseDto.contentUrl);
+        }),
+        catchError(error => {
+          onErrorCallback(error);
+          return EMPTY;
+        }),
+        finalize(() => {
+          onSuccessCallback();
+        })
+      )
+      .subscribe({
+        next: (blob: Blob) => {
+          saveAs(blob, experiment.experimentPath);
+        },
+        error: (error) => {
+          onErrorCallback(error);
+        }
+      });
   }
 
-  public getExperimentTrainingDataFile(id: number): Observable<Blob> {
+  public downloadContent(url: string): Observable<Blob> {
+    const options = { responseType: 'blob' as 'json' };
+    return this.http.get<Blob>(url, options);
+  }
+
+  public getExperimentResultsContentUrl(id: number): Observable<S3ContentResponseDto> {
     const headers = new HttpHeaders({
+      'Content-type': 'application/json; charset=utf-8',
       'Authorization': Utils.getBearerTokenHeader()
     });
-    const options = { headers: headers, responseType: 'blob' as 'json' };
-    return this.http.get<Blob>(this.serviceUrl + '/training-data/' + id, options);
+    return this.http.get<S3ContentResponseDto>(this.serviceUrl + '/results-content/' + id, { headers: headers });
   }
 
   public getExperimentErsReport(id: number): Observable<ExperimentErsReportDto> {

@@ -8,6 +8,7 @@ import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.mapping.ExperimentMapper;
 import com.ecaservice.server.mapping.ExperimentMapperImpl;
 import com.ecaservice.server.mapping.ExperimentProgressMapperImpl;
+import com.ecaservice.server.mapping.InstancesInfoMapperImpl;
 import com.ecaservice.server.model.MsgProperties;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentProgressEntity;
@@ -31,6 +32,7 @@ import com.ecaservice.web.dto.model.ExperimentResultsDetailsDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
+import com.ecaservice.web.dto.model.S3ContentResponseDto;
 import eca.core.evaluation.EvaluationMethod;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -73,20 +75,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Roman Batygin
  */
 @WebMvcTest(controllers = ExperimentController.class)
-@Import({ExperimentMapperImpl.class, ExperimentProgressMapperImpl.class, DateTimeConverter.class})
+@Import({ExperimentMapperImpl.class, ExperimentProgressMapperImpl.class, DateTimeConverter.class,
+        InstancesInfoMapperImpl.class})
 class ExperimentControllerTest extends PageRequestControllerTest {
 
     private static final String BASE_URL = "/experiment";
     private static final String DETAILS_URL = BASE_URL + "/details/{id}";
     private static final String LIST_URL = BASE_URL + "/list";
-    private static final String DOWNLOAD_TRAINING_DATA_URL = BASE_URL + "/training-data/{id}";
-    private static final String DOWNLOAD_EXPERIMENT_RESULTS_URL = BASE_URL + "/results/{id}";
     private static final String CREATE_EXPERIMENT_URL = BASE_URL + "/create";
     private static final String EXPERIMENT_RESULTS_DETAILS_URL = BASE_URL + "/results/details/{id}";
     private static final String ERS_REPORT_URL = BASE_URL + "/ers-report/{id}";
     private static final String REQUEST_STATUS_STATISTICS_URL = BASE_URL + "/request-statuses-statistics";
     private static final String EXPERIMENT_TYPES_STATISTICS_URL = BASE_URL + "/statistics";
     private static final String EXPERIMENT_PROGRESS_URL = BASE_URL + "/progress/{id}";
+    private static final String EXPERIMENT_RESULTS_CONTENT_URL = BASE_URL + "/results-content/{id}";
 
     private static final String EXPERIMENT_TYPE_PARAM = "experimentType";
     private static final String EVALUATION_METHOD_PARAM = "evaluationMethod";
@@ -95,6 +97,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     private static final int PROGRESS_VALUE = 100;
     private static final long ID = 1L;
     private static final String USER = "user";
+    private static final String CONTENT_URL = "http://localhost:9000/content";
 
     @MockBean
     private UserService userService;
@@ -119,36 +122,6 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     private final MockMultipartFile trainingData =
             new MockMultipartFile(TRAINING_DATA_PARAM, "iris.txt",
                     MimeTypeUtils.TEXT_PLAIN.toString(), "file-content".getBytes(StandardCharsets.UTF_8));
-
-    @Test
-    void testDownloadTrainingDataUnauthorized() throws Exception {
-        mockMvc.perform(get(DOWNLOAD_TRAINING_DATA_URL, ID)).andExpect(status().isUnauthorized());
-    }
-
-    @Test
-    void testDownloadTrainingDataForNotExistingExperiment() throws Exception {
-        testDownloadFileForNotExistingExperiment(DOWNLOAD_TRAINING_DATA_URL);
-    }
-
-    @Test
-    void testDownloadNotExistingTrainingDataFile() throws Exception {
-        testDownloadNotExistingExperimentFile(DOWNLOAD_TRAINING_DATA_URL);
-    }
-
-    @Test
-    void testDownloadExperimentResultsUnauthorized() throws Exception {
-        mockMvc.perform(get(DOWNLOAD_EXPERIMENT_RESULTS_URL, ID)).andExpect(status().isUnauthorized());
-    }
-
-    @Test
-    void testDownloadExperimentResultsForNotExistingExperiment() throws Exception {
-        testDownloadFileForNotExistingExperiment(DOWNLOAD_EXPERIMENT_RESULTS_URL);
-    }
-
-    @Test
-    void testDownloadNotExistingExperimentResultsFile() throws Exception {
-        testDownloadNotExistingExperimentFile(DOWNLOAD_EXPERIMENT_RESULTS_URL);
-    }
 
     @Test
     void testGetExperimentDetailsUnauthorized() throws Exception {
@@ -396,18 +369,30 @@ class ExperimentControllerTest extends PageRequestControllerTest {
                 .andExpect(content().json(objectMapper.writeValueAsString(expected)));
     }
 
-    private void testDownloadFileForNotExistingExperiment(String url) throws Exception {
-        when(experimentService.getById(ID)).thenThrow(EntityNotFoundException.class);
-        mockMvc.perform(get(url, ID)
+    @Test
+    void testGetExperimentResultsContentUrlUnauthorized() throws Exception {
+        mockMvc.perform(get(EXPERIMENT_RESULTS_CONTENT_URL, ID))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testGetExperimentResultsContentUrlForNotExistingExperiment() throws Exception {
+        when(experimentService.getExperimentResultsContentUrl(ID)).thenThrow(EntityNotFoundException.class);
+        mockMvc.perform(get(EXPERIMENT_RESULTS_CONTENT_URL, ID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isBadRequest());
     }
 
-    private void testDownloadNotExistingExperimentFile(String url) throws Exception {
-        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
-        when(experimentService.getById(ID)).thenReturn(experiment);
-        mockMvc.perform(get(url, ID)
+    @Test
+    void testGetExperimentResultsContentUrlOk() throws Exception {
+        var s3ContentResponseDto = S3ContentResponseDto.builder()
+                .contentUrl(CONTENT_URL)
+                .build();
+        when(experimentService.getExperimentResultsContentUrl(ID)).thenReturn(s3ContentResponseDto);
+        mockMvc.perform(get(EXPERIMENT_RESULTS_CONTENT_URL, ID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(objectMapper.writeValueAsString(s3ContentResponseDto)));
     }
 }

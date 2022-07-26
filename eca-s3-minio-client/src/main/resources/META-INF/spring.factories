@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.ecaservice.s3.client.minio.config.MinioClientAutoConfiguration

@@ -16,6 +16,11 @@ public abstract class EvaluationBean {
     private String requestId;
 
     /**
+     * Training data name
+     */
+    private String relationName;
+
+    /**
      * Request creation date
      */
     private String creationDate;

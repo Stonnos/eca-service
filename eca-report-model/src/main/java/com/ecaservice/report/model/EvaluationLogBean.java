@@ -16,9 +16,4 @@ public class EvaluationLogBean extends EvaluationBean {
      * Classifier name
      */
     private String classifierName;
-
-    /**
-     * Training data name
-     */
-    private String relationName;
 }

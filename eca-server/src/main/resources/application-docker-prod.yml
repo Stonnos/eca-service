@@ -29,19 +29,16 @@ app:
 open-api:
   tokenBaseUrl: http://localhost:8080/eca-oauth
 
-## Experiment properties
-experiment:
-  storagePath: /home/experiment/
-  downloadBaseUrl: http://localhost:8080/eca-server
-  data:
-    storagePath: /home/experiment/data/
-
 mail:
   client:
     enabled: true
 
 redelivery:
   enabled: true
+
+minio:
+  url: http://s3-minio-storage:9000
+  proxyUrl: http://localhost:8098/object-storage
 
 auth-server:
   baseUrl: http://eca-oauth:8080

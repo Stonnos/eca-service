@@ -1,23 +1,24 @@
 package com.ecaservice.server.report;
 
-import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.report.model.BaseReportBean;
 import com.ecaservice.report.model.ExperimentBean;
+import com.ecaservice.s3.client.minio.service.ObjectStorageService;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.mapping.ExperimentMapper;
 import com.ecaservice.server.mapping.ExperimentMapperImpl;
+import com.ecaservice.server.mapping.InstancesInfoMapperImpl;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.Experiment_;
 import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.evaluation.CalculationExecutorService;
 import com.ecaservice.server.service.evaluation.CalculationExecutorServiceImpl;
-import com.ecaservice.server.service.experiment.DataService;
 import com.ecaservice.server.service.experiment.ExperimentProcessorService;
 import com.ecaservice.server.service.experiment.ExperimentService;
 import com.ecaservice.web.dto.model.FilterRequestDto;
@@ -48,14 +49,14 @@ import static com.google.common.collect.Lists.newArrayList;
  * @author Roman Batygin
  */
 @Import({ExperimentMapperImpl.class, ExperimentConfig.class, AppProperties.class, CrossValidationConfig.class,
-       DateTimeConverter.class})
+        DateTimeConverter.class, InstancesInfoMapperImpl.class})
 class ExperimentsBaseReportDataFetcherTest extends AbstractJpaTest {
 
     private static final List<String> DATE_RANGE_VALUES = ImmutableList.of("2018-01-01", "2018-01-07");
     private static final LocalDateTime CREATION_DATE = LocalDateTime.of(2018, 1, 5, 0, 0, 0);
 
     @Mock
-    private DataService dataService;
+    private ObjectStorageService objectStorageService;
     @Mock
     private FilterService filterService;
     @Mock
@@ -81,7 +82,7 @@ class ExperimentsBaseReportDataFetcherTest extends AbstractJpaTest {
         CalculationExecutorService executorService =
                 new CalculationExecutorServiceImpl(Executors.newCachedThreadPool());
         ExperimentService experimentService =
-                new ExperimentService(experimentRepository, executorService, experimentMapper, dataService,
+                new ExperimentService(experimentRepository, executorService, experimentMapper, objectStorageService,
                         crossValidationConfig, experimentConfig, experimentProcessorService, entityManager,
                         appProperties, filterService);
         experimentsBaseReportDataFetcher =

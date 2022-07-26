@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @ExtendWith(SpringExtension.class)
 @Import({ExperimentResultsMapperImpl.class, ClassifierInfoMapperImpl.class,
-        ExperimentMapperImpl.class, DateTimeConverter.class})
+        ExperimentMapperImpl.class, DateTimeConverter.class, InstancesInfoMapperImpl.class})
 class ExperimentResultsMapperTest {
 
     @Inject

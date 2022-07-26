@@ -23,24 +23,9 @@ public class ExperimentConfig {
     private Integer resultSize;
 
     /**
-     * Experiment file format
-     */
-    private String fileFormat;
-
-    /**
-     * Experiment storage path
-     */
-    private String storagePath;
-
-    /**
      * Individual classifiers options resource path
      */
     private String individualClassifiersStoragePath;
-
-    /**
-     * Data config
-     */
-    private DataConfig data;
 
     /**
      * Ensemble config
@@ -51,11 +36,6 @@ public class ExperimentConfig {
      * Lock config
      */
     private LockProperties lock;
-
-    /**
-     * Experiment download base url
-     */
-    private String downloadBaseUrl;
 
     /**
      * Maximum fraction digits
@@ -83,26 +63,14 @@ public class ExperimentConfig {
     private Integer pageSize;
 
     /**
-     * Data configuration properties.
+     * Experiment download url expiration in days
      */
-    @Data
-    public static class DataConfig {
+    private Integer experimentDownloadUrlExpirationDays;
 
-        /**
-         * Data file format
-         */
-        private String fileFormat;
-
-        /**
-         * Data storage path
-         */
-        private String storagePath;
-
-        /**
-         * Date format
-         */
-        private String dateFormat;
-    }
+    /**
+     * Short life url expiration in minutes
+     */
+    private Integer shortLifeUrlExpirationMinutes;
 
     /**
      * Ensemble configuration properties.

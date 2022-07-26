@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v59-insert-experiment-relation-name-in-filter-templates.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Insert instancesInfo.relationName in global filter template for experiment entity -->
+    <changeSet id="insert_experiment_relation_name_field_in_global_filter_template" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_filter_template"/>
+            <tableExists tableName="global_filter_field"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from global_filter_template where id = 1
+            </sqlCheck>
+            <sqlCheck expectedResult="0">
+                select count(*) from global_filter_field where global_filter_template_id = 1 and field_name = 'instancesInfo.relationName'
+            </sqlCheck>
+        </preConditions>
+        <insert tableName="global_filter_field">
+            <column name="field_name" value="instancesInfo.relationName"/>
+            <column name="global_filter_template_id" valueNumeric="1"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="reorder_experiment_filter_template_fields" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from filter_template where id = 1
+            </sqlCheck>
+        </preConditions>
+        <update tableName="filter_field">
+            <column name="field_order" valueComputed="field_order + 1"/>
+            <where>filter_template_id = 1 and field_order >= 2</where>
+        </update>
+    </changeSet>
+
+    <!-- Insert instancesInfo.relationName in filter template for experiment entity -->
+    <changeSet id="insert_experiment_relation_name_field_in_filter_template" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from filter_template where id = 1
+            </sqlCheck>
+            <sqlCheck expectedResult="0">
+                select count(*) from filter_field where filter_template_id = 1 and field_name = 'instancesInfo.relationName'
+            </sqlCheck>
+        </preConditions>
+        <insert tableName="filter_field">
+            <column name="field_name" value="instancesInfo.relationName"/>
+            <column name="description" value="Обучающая выборка"/>
+            <column name="field_order" valueNumeric="2"/>
+            <column name="filter_field_type" value="TEXT"/>
+            <column name="match_mode" value="LIKE"/>
+            <column name="filter_template_id" valueNumeric="1"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

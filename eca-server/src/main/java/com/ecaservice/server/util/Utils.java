@@ -20,14 +20,8 @@ import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
 import eca.core.evaluation.EvaluationMethod;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 
-import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -50,22 +44,9 @@ import static com.ecaservice.server.util.ClassifierOptionsHelper.isParsableOptio
 @UtilityClass
 public class Utils {
 
-    private static final String DOWNLOAD_PATH_FORMAT = "%s/eca-api/experiment/download/%s";
-    private static final String ATTACHMENT = "attachment";
     private static final String CV_FORMAT = "%d - блочная кросс - проверка";
     private static final String CV_EXTENDED_FORMAT = "%d×%d - блочная кросс - проверка";
     private static final long ZERO = 0L;
-
-    /**
-     * Builds experiment download url.
-     *
-     * @param baseUrl - base url
-     * @param token   - experiment token
-     * @return experiment download url
-     */
-    public static String buildExperimentDownloadUrl(String baseUrl, String token) {
-        return String.format(DOWNLOAD_PATH_FORMAT, baseUrl, token);
-    }
 
     /**
      * Creates error object.
@@ -168,30 +149,6 @@ public class Utils {
                 .stream()
                 .findFirst()
                 .orElse(null);
-    }
-
-    /**
-     * Creates response with attachment.
-     *
-     * @param file - file attachment
-     * @return response entity
-     */
-    public static ResponseEntity<FileSystemResource> buildAttachmentResponse(File file) {
-        FileSystemResource resource = new FileSystemResource(file);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-        headers.setContentDispositionFormData(ATTACHMENT, resource.getFilename());
-        return new ResponseEntity<>(resource, headers, HttpStatus.OK);
-    }
-
-    /**
-     * Checks file existing.
-     *
-     * @param file - file
-     * @return {@code true} if file is existing
-     */
-    public static boolean existsFile(File file) {
-        return file != null && file.isFile();
     }
 
     /**

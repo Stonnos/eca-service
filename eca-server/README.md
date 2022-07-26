@@ -19,7 +19,7 @@ ECA server
 * Openjdk 1.11
 * maven => 3.3.9
 * Rabbit MQ => 3
-* eca-core 6.9.0
+* eca-core 6.9.1
 * Postgres Database для хранения информации => 9.6
 
 Описание ключевой конфигурации модуля
@@ -36,17 +36,16 @@ ECA server
    основных настроек:
    * experiment.resultSize - число наилучших конфигураций классификаторов
    * experiment.numIterations - число итераций эксперимента
-   * experiment.storagePath - путь к папке на файловой системе для хранения файлов с историей экспериментов
    * experiment.individualClassifiersStoragePath - путь к папке в ресурсах для хранения json - конфигураций классификаторов,
    которые впоследствии будут использоваться при построении эксперимента
-   * experiment.downloadBaseUrl - базовый url ссылки на скачивание файла с результатами эксперимента
    * experiment.maximumFractionDigits - число десятичных знаков после запятой
-   * experiment.numberOfDaysForStorage - кол-во дней для хранения файлов с результатами экспериментов
-   * experiment.removeExperimentCron - крон выражение для удаления файлов с результатами экспериментов
+   * experiment.numberOfDaysForStorage - кол-во дней для хранения результатов экспериментов
+   * experiment.removeExperimentCron - крон выражение для удаления моделей с результатами экспериментов
    * experiment.timeout - время таймаута эксперимента в часах.
    * experiment.delaySeconds - интервал между запусками scheduler для обработки экспериметов
    * experiment.pageSize - размер страницы для постраничной обработки заявок
-   * experiment.data.storagePath - путь к папке на файловой системе для хранения файлов с исходныи данными (обучающая выборка)
+   * experiment.experimentDownloadUrlExpirationDays - время жизни ссылки на скачивание результатов эксперимента
+   * experiment.shortLifeUrlExpirationMinutes - время короткоживущей ссылки на получение результатов эксперимента
    * experiment.ensemble.numIterations - число итераций для ансамблевых алгоритмов
    * experiment.ensemble.numBestClassifiers - число наилучших по точности базовых классификаторов, которые впоследствии
    будут использоваться при построении ансамбля

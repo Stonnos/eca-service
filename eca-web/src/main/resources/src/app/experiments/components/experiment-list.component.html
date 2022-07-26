@@ -95,32 +95,12 @@
   <p-panel *ngIf="selectedExperiment && selectedColumn" class="info-panel">
     <ng-container [ngSwitch]="selectedColumn">
       <ng-container *ngSwitchCase="'evaluationMethod.description'">
-        <div class="ui-g">
-          <div class="ui-g-6 text-right text-bold text-wrap">
-            Число блоков:
-          </div>
-          <div class="ui-g-6 text-left text-wrap">
-            {{ getNumFolds(selectedExperiment) }}
-          </div>
-        </div>
-
-        <div class="ui-g">
-          <div class="ui-g-6 text-right text-bold text-wrap">
-            Число проверок:
-          </div>
-          <div class="ui-g-6 text-left text-wrap">
-            {{ getNumTests(selectedExperiment) }}
-          </div>
-        </div>
-
-        <div class="ui-g">
-          <div class="ui-g-6 text-right text-bold text-wrap">
-            Начальное значение (seed):
-          </div>
-          <div class="ui-g-6 text-left text-wrap">
-            {{ getSeed(selectedExperiment) }}
-          </div>
-        </div>
+        <app-evaluation-method-info [item]="selectedExperiment">
+        </app-evaluation-method-info>
+      </ng-container>
+      <ng-container *ngSwitchCase="'instancesInfo.relationName'">
+        <app-instances-info [item]="selectedExperiment">
+        </app-instances-info>
       </ng-container>
       <ng-container *ngSwitchDefault>
       </ng-container>

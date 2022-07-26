@@ -7,13 +7,11 @@ import {
 import { MessageService } from "primeng/api";
 import { ActivatedRoute } from "@angular/router";
 import { ExperimentsService } from "../../experiments/services/experiments.service";
-import { saveAs } from 'file-saver/dist/FileSaver';
 import { ExperimentFields } from "../../common/util/field-names";
 import { FieldLink } from "../../common/model/field-link";
 import { FieldService } from "../../common/services/field.service";
 import { Utils } from "../../common/util/utils";
 import { Subscription, timer } from "rxjs";
-import { finalize } from "rxjs/internal/operators";
 import { RequestStatus } from "../../common/model/request-status.enum";
 
 @Component({
@@ -24,10 +22,6 @@ import { RequestStatus } from "../../common/model/request-status.enum";
 export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink {
 
   private readonly id: number;
-
-  private readonly loadingFieldsMap = new Map<string, boolean>()
-    .set(ExperimentFields.TRAINING_DATA_PATH, false)
-    .set(ExperimentFields.EXPERIMENT_PATH, false);
 
   private readonly updateProgressInterval = 1000;
   private readonly updateStatusInterval = 3000;
@@ -42,7 +36,9 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
 
   private updateSubscription: Subscription = new Subscription();
 
-  public linkColumns: string[] = [ExperimentFields.TRAINING_DATA_PATH, ExperimentFields.EXPERIMENT_PATH];
+  public loading = false;
+
+  public linkColumns: string[] = [ExperimentFields.EXPERIMENT_PATH];
 
   public constructor(private experimentsService: ExperimentsService,
                      private messageService: MessageService,
@@ -80,40 +76,12 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
       });
   }
 
-  public getExperimentTrainingDataFile(): void {
-    this.loadingFieldsMap.set(ExperimentFields.TRAINING_DATA_PATH, true);
-    this.experimentsService.getExperimentTrainingDataFile(this.id)
-      .pipe(
-        finalize(() => {
-          this.loadingFieldsMap.set(ExperimentFields.TRAINING_DATA_PATH, false);
-        })
-      )
-      .subscribe({
-        next: (blob: Blob) => {
-          saveAs(blob, this.experimentDto.trainingDataAbsolutePath);
-        },
-        error: (error) => {
-          this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error.message});
-        }
-      });
-  }
-
   public getExperimentResultsFile(): void {
-    this.loadingFieldsMap.set(ExperimentFields.EXPERIMENT_PATH, true);
-    this.experimentsService.getExperimentResultsFile(this.id)
-      .pipe(
-        finalize(() => {
-          this.loadingFieldsMap.set(ExperimentFields.EXPERIMENT_PATH, false);
-        })
-      )
-      .subscribe({
-        next: (blob: Blob) => {
-          saveAs(blob, this.experimentDto.experimentAbsolutePath);
-        },
-        error: (error) => {
-          this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error.message});
-        }
-      });
+    this.loading = true;
+    this.experimentsService.downloadExperimentResults(this.experimentDto,
+      () => this.loading = false,
+      (error) => this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message })
+    );
   }
 
   public getExperimentErsReport(): void {
@@ -132,20 +100,15 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
     return this.linkColumns.includes(field) && this.hasValue(field);
   }
 
-  public isLoading(field: string): boolean {
-    return this.loadingFieldsMap.has(field) && this.loadingFieldsMap.get(field);
+  public showProgressBar(field: string): boolean {
+    return field == ExperimentFields.EXPERIMENT_PATH && this.loading;
   }
 
   public onLink(field: string) {
-    switch (field) {
-      case ExperimentFields.TRAINING_DATA_PATH:
-        this.getExperimentTrainingDataFile();
-        break;
-      case ExperimentFields.EXPERIMENT_PATH:
-        this.getExperimentResultsFile();
-        break;
-      default:
-        this.messageService.add({severity: 'error', summary: 'Ошибка', detail: `Can't handle ${field} as link`});
+    if (field === ExperimentFields.EXPERIMENT_PATH) {
+      this.getExperimentResultsFile();
+    } else {
+      this.messageService.add({severity: 'error', summary: 'Ошибка', detail: `Can't handle ${field} as link`});
     }
   }
 
@@ -230,12 +193,16 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
       { name: ExperimentFields.REQUEST_STATUS_DESCRIPTION, label: "Статус заявки" },
       { name: ExperimentFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности" },
       { name: ExperimentFields.EMAIL, label: "Email заявки" },
+      { name: ExperimentFields.RELATION_NAME, label: "Обучающая выборка:" },
+      { name: ExperimentFields.NUM_INSTANCES, label: "Число объектов:" },
+      { name: ExperimentFields.NUM_ATTRIBUTES, label: "Число атрибутов:" },
+      { name: ExperimentFields.NUM_CLASSES, label: "Число классов:" },
+      { name: ExperimentFields.CLASS_NAME, label: "Атрибут класса:" },
       { name: ExperimentFields.EVALUATION_TOTAL_TIME, label: "Время построения эксперимента" },
       { name: ExperimentFields.CREATION_DATE, label: "Дата создания заявки" },
       { name: ExperimentFields.START_DATE, label: "Дата начала эксперимента" },
       { name: ExperimentFields.END_DATE, label: "Дата окончания эксперимента" },
       { name: ExperimentFields.DELETED_DATE, label: "Дата удаления результатов" },
-      { name: ExperimentFields.TRAINING_DATA_PATH, label: "Обучающая выборка" },
       { name: ExperimentFields.EXPERIMENT_PATH, label: "Результаты эксперимента" }
     ];
   }

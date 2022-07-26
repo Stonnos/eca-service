@@ -35,7 +35,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import(ExperimentConfig.class)
 class EmailTemplateVisitorTest {
 
-    private static final String DOWNLOAD_PATH_FORMAT = "%s/eca-api/experiment/download/%s";
+    private static final String EXPERIMENT_DOWNLOAD_URL = "http://localhost:9000/experiment";
 
     @Inject
     private ExperimentConfig experimentConfig;
@@ -88,16 +88,13 @@ class EmailTemplateVisitorTest {
     @Test
     void testFinishedStatusContext() {
         Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.TEST_UUID);
-        experiment.setToken(UUID.randomUUID().toString());
+        experiment.setExperimentDownloadUrl(EXPERIMENT_DOWNLOAD_URL);
         experiment.setRequestStatus(RequestStatus.FINISHED);
         EmailRequest emailRequest = experiment.getRequestStatus().handle(emailTemplateVisitor, experiment);
         assertEmailRequest(emailRequest, experiment);
         assertThat(emailRequest.getTemplateCode()).isEqualTo(Templates.FINISHED_EXPERIMENT);
         String actualUrl = emailRequest.getVariables().get(TemplateVariablesDictionary.DOWNLOAD_URL_KEY);
-        assertThat(actualUrl)
-                .isNotNull()
-                .isEqualTo(String.format(DOWNLOAD_PATH_FORMAT, experimentConfig.getDownloadBaseUrl(),
-                        experiment.getToken()));
+        assertThat(actualUrl).isEqualTo(experiment.getExperimentDownloadUrl());
     }
 
     private void assertEmailRequest(EmailRequest emailRequest, Experiment experiment) {

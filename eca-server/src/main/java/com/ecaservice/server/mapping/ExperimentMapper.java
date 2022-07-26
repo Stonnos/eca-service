@@ -4,16 +4,15 @@ import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.report.model.ExperimentBean;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.model.entity.Experiment;
+import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.ExperimentDto;
 import eca.core.evaluation.EvaluationMethod;
-import org.apache.commons.io.FilenameUtils;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.Named;
 
 import java.util.List;
 
@@ -24,7 +23,7 @@ import static com.ecaservice.server.util.Utils.getEvaluationMethodDescription;
  *
  * @author Roman Batygin
  */
-@Mapper(uses = DateTimeConverter.class, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
+@Mapper(uses = {DateTimeConverter.class, InstancesInfoMapper.class}, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public abstract class ExperimentMapper extends AbstractEvaluationMapper {
 
     /**
@@ -45,8 +44,6 @@ public abstract class ExperimentMapper extends AbstractEvaluationMapper {
      * @param experiment - experiment entity
      * @return experiment dto model
      */
-    @Mapping(source = "experimentAbsolutePath", target = "experimentAbsolutePath", qualifiedByName = "toFileName")
-    @Mapping(source = "trainingDataAbsolutePath", target = "trainingDataAbsolutePath", qualifiedByName = "toFileName")
     @Mapping(source = "experiment", target = "evaluationTotalTime", qualifiedByName = "calculateEvaluationTotalTime")
     @Mapping(target = "evaluationMethod", ignore = true)
     @Mapping(target = "experimentType", ignore = true)
@@ -70,9 +67,8 @@ public abstract class ExperimentMapper extends AbstractEvaluationMapper {
      * @param experiment - experiment entity
      * @return experiment bean
      */
+    @Mapping(source = "instancesInfo.relationName", target = "relationName")
     @Mapping(source = "experiment", target = "evaluationTotalTime", qualifiedByName = "calculateEvaluationTotalTime")
-    @Mapping(source = "experimentAbsolutePath", target = "experimentAbsolutePath", qualifiedByName = "toFileName")
-    @Mapping(source = "trainingDataAbsolutePath", target = "trainingDataAbsolutePath", qualifiedByName = "toFileName")
     @Mapping(target = "evaluationMethod", ignore = true)
     @Mapping(source = "experimentType.description", target = "experimentType")
     @Mapping(source = "requestStatus.description", target = "requestStatus")
@@ -103,7 +99,7 @@ public abstract class ExperimentMapper extends AbstractEvaluationMapper {
     @AfterMapping
     protected void postMappingExperimentRequest(ExperimentRequest experimentRequest,
                                                 @MappingTarget Experiment experiment) {
-       experiment.setClassIndex(experimentRequest.getData().classIndex());
+        experiment.setClassIndex(experimentRequest.getData().classIndex());
     }
 
     @AfterMapping
@@ -133,8 +129,16 @@ public abstract class ExperimentMapper extends AbstractEvaluationMapper {
                 experiment.getExperimentType().getDescription()));
     }
 
-    @Named("toFileName")
-    protected String toFileName(String path) {
-        return FilenameUtils.getName(path);
+    @AfterMapping
+    protected void mapInstances(ExperimentRequest experimentRequest, @MappingTarget Experiment experiment) {
+        if (experimentRequest.getData() != null) {
+            InstancesInfo instancesInfo = new InstancesInfo();
+            instancesInfo.setRelationName(experimentRequest.getData().relationName());
+            instancesInfo.setNumInstances(experimentRequest.getData().numInstances());
+            instancesInfo.setNumAttributes(experimentRequest.getData().numAttributes());
+            instancesInfo.setNumClasses(experimentRequest.getData().numClasses());
+            instancesInfo.setClassName(experimentRequest.getData().classAttribute().name());
+            experiment.setInstancesInfo(instancesInfo);
+        }
     }
 }

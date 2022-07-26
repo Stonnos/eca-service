@@ -1,5 +1,4 @@
 FROM openjdk:11-jdk-slim
-RUN mkdir -p /home/experiment/data
 ADD wait-for-it.sh /wait-for-it.sh
 RUN chmod +x /wait-for-it.sh
 COPY target/eca-server.war eca-server.war

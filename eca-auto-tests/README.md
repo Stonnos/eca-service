@@ -14,7 +14,7 @@
 * Openjdk 1.11
 * maven => 3.3.9
 * Rabbit MQ => 3
-* eca-core 6.9.0
+* eca-core 6.9.1
 * Postgres Database для хранения информации => 9.6
 
 Описание ключевой конфигурации модуля
@@ -28,7 +28,6 @@
    * auto-tests.pageSize - размер страницы для постраничной обработки
    * auto-tests.delaySeconds - интервал между запусками scheduler для обработки тестов
    * auto-tests.schedulerPoolSize - размер пула потоков для шедулера
-   * auto-tests.ecaServerBaseUrl - базовый url eca-server
    * auto-tests.ecaErsBaseUrl - базовый url eca-ers
 3) open-api - настройки Swagger
    * open-api.tokenBaseUrl - базовый url - сервера авторизации

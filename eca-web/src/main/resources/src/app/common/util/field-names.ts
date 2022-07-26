@@ -8,8 +8,7 @@ export class ExperimentFields {
   public static readonly EVALUATION_METHOD: string = "evaluationMethod";
   public static readonly FIRST_NAME: string = "firstName";
   public static readonly EMAIL: string = "email";
-  public static readonly TRAINING_DATA_PATH: string = "trainingDataAbsolutePath";
-  public static readonly EXPERIMENT_PATH: string = "experimentAbsolutePath";
+  public static readonly EXPERIMENT_PATH: string = "experimentPath";
   public static readonly CREATION_DATE: string = "creationDate";
   public static readonly START_DATE: string = "startDate";
   public static readonly END_DATE: string = "endDate";
@@ -18,6 +17,22 @@ export class ExperimentFields {
   public static readonly NUM_TESTS: string = "numTests";
   public static readonly SEED: string = "seed";
   public static readonly EVALUATION_TOTAL_TIME: string = "evaluationTotalTime";
+  public static readonly RELATION_NAME: string = "instancesInfo.relationName";
+  public static readonly NUM_INSTANCES: string = "instancesInfo.numInstances";
+  public static readonly NUM_ATTRIBUTES: string = "instancesInfo.numAttributes";
+  public static readonly NUM_CLASSES: string = "instancesInfo.numClasses";
+  public static readonly CLASS_NAME: string = "instancesInfo.className";
+}
+
+export class AbstractEvaluationDtoFields {
+  public static readonly NUM_FOLDS: string = "numFolds";
+  public static readonly NUM_TESTS: string = "numTests";
+  public static readonly SEED: string = "seed";
+  public static readonly RELATION_NAME: string = "instancesInfo.relationName";
+  public static readonly NUM_INSTANCES: string = "instancesInfo.numInstances";
+  public static readonly NUM_ATTRIBUTES: string = "instancesInfo.numAttributes";
+  public static readonly NUM_CLASSES: string = "instancesInfo.numClasses";
+  public static readonly CLASS_NAME: string = "instancesInfo.className";
 }
 
 export class EvaluationLogFields {

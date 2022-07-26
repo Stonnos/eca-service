@@ -12,7 +12,7 @@
 * Openjdk 1.11
 * maven => 3.3.9
 * Rabbit MQ => 3
-* eca-core 6.9.0
+* eca-core 6.9.1
 * Postgres Database для хранения информации => 9.6
 * Docker, Docker-compose
 
@@ -41,6 +41,7 @@
 * oauth2-core - модуль содержит конфигурационные классы для oauth2 resource server 
 * rabbit-core - модуль содержит конфигурационные классы для rabbit
 * eca-mail-client - общая библиотека для отправки email сообщений
+* eca-s3-minio-client - общая библиотека для работы с S3 minio storage
 * classifiers-options-adapter - модуль для конвертации настроек классификаторов
 * eca-report - модуль генерации отчетов
 * eca-report-data - общая библиотека формирования данных для отчетов

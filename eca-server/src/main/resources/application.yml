@@ -102,10 +102,7 @@ springdoc:
 experiment:
   resultSize: 5
   numIterations: 100
-  fileFormat: experiment_%s.model
-  storagePath: D:/experiment/
   individualClassifiersStoragePath: classpath*:classifiers/**/*.json
-  downloadBaseUrl: http://localhost:8085/eca-server
   maximumFractionDigits: ${classifiers-options.maximumFractionDigits}
   numberOfDaysForStorage: 14
   ## Each day at midnight
@@ -116,11 +113,8 @@ experiment:
   delaySeconds: 30
   ## Experiments page size
   pageSize: 10
-
-  data:
-    storagePath: D:/experiment/data/
-    fileFormat: data_%s.xlsx
-    dateFormat: yyyy-MM-dd HH:mm:ss
+  experimentDownloadUrlExpirationDays: 7
+  shortLifeUrlExpirationMinutes: 5
   ensemble:
     numIterations: 25
     numBestClassifiers: 4
@@ -134,6 +128,13 @@ experiment:
 ers:
   useClassifierOptionsCache: false
   classifierOptionsCacheDurationInDays: 2
+
+minio:
+  url: http://localhost:9000
+  proxyUrl: http://localhost:9000
+  accessKey: minio
+  secretKey: minio-pa66word
+  bucketName: eca-service
 
 cache:
   specs:
