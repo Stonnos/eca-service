@@ -5,7 +5,6 @@ import com.ecaservice.external.api.dto.EvaluationResponseDto;
 import com.ecaservice.external.api.dto.InstancesDto;
 import com.ecaservice.external.api.dto.ResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,13 +48,4 @@ public interface ExternalApiClient {
      */
     @GetMapping(value = "/evaluation-status/{requestId}")
     ResponseDto<EvaluationResponseDto> evaluationStatus(@PathVariable String requestId);
-
-    /**
-     * Downloads model with specified request id.
-     *
-     * @param requestId - request id
-     * @return resource object
-     */
-    @GetMapping(value = "/download-model/{requestId}")
-    Resource downloadModel(@PathVariable String requestId);
 }
