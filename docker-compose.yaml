@@ -187,8 +187,6 @@ services:
   eca-external-api:
     image: eca-external-api
     container_name: eca-external-api
-    volumes:
-      - classifiers-data:/home/classifiers
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
@@ -270,7 +268,5 @@ volumes:
     name: eca-pgdata
   rabbit-data:
     name: rabbit-data
-  classifiers-data:
-    name: classifiers-data
   s3-minio-data:
     name: s3-minio-data
