@@ -97,6 +97,7 @@
         <open-api.version>1.5.9</open-api.version>
         <guava.version>30.0-jre</guava.version>
         <feign.version>11.2</feign.version>
+        <janino.version>3.1.7</janino.version>
         <jacoco-plugin.version>0.8.5</jacoco-plugin.version>
         <jacoco.minCoverage>0.70</jacoco.minCoverage>
     </properties>
@@ -233,6 +234,14 @@
             <artifactId>logstash-logback-encoder</artifactId>
             <version>${logstash-encoder.version}</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.codehaus.janino/janino -->
+        <dependency>
+            <groupId>org.codehaus.janino</groupId>
+            <artifactId>janino</artifactId>
+            <version>${janino.version}</version>
+        </dependency>
+
 
         <!-- https://mvnrepository.com/artifact/javax.validation/validation-api -->
         <dependency>
