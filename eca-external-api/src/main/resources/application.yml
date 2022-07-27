@@ -85,6 +85,13 @@ springdoc:
       client-secret: external_api_secret
     disable-swagger-default-url: true
 
+minio:
+  url: http://localhost:9000
+  proxyUrl: http://localhost:9000
+  accessKey: minio
+  secretKey: minio-pa66word
+  bucketName: eca-service
+
 auth-server:
   baseUrl: http://localhost:8085/eca-oauth
   clientId: external-api
