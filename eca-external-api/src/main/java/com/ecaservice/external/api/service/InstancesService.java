@@ -64,7 +64,7 @@ public class InstancesService {
         var instances = loadInstances(trainingData);
         objectStorageService.uploadObject(instances, dataPath);
         var instancesEntity = new InstancesEntity();
-        instancesEntity.setAbsolutePath(dataPath);
+        instancesEntity.setDataPath(dataPath);
         instancesEntity.setUuid(dataUuid);
         instancesEntity.setCreationDate(LocalDateTime.now());
         instancesRepository.save(instancesEntity);
@@ -87,7 +87,7 @@ public class InstancesService {
                 String dataUuid = StringUtils.substringAfter(url, DATA_URL_PREFIX);
                 var instancesEntity = instancesRepository.findByUuid(dataUuid)
                         .orElseThrow(() -> new EntityNotFoundException(InstancesEntity.class, dataUuid));
-                var instances = objectStorageService.getObject(instancesEntity.getAbsolutePath(), Instances.class);
+                var instances = objectStorageService.getObject(instancesEntity.getDataPath(), Instances.class);
                 log.info("Instances [{}] has been loaded from S3 storage", url);
                 return instances;
             } else {
@@ -111,7 +111,7 @@ public class InstancesService {
     public void deleteInstances(InstancesEntity instancesEntity) {
         log.info("Starting to delete instances [{}]", instancesEntity.getId());
         instancesRepository.delete(instancesEntity);
-        objectStorageService.removeObject(instancesEntity.getAbsolutePath());
+        objectStorageService.removeObject(instancesEntity.getDataPath());
         log.info("Instances [{}] has been deleted", instancesEntity.getId());
     }
 
@@ -130,7 +130,7 @@ public class InstancesService {
             String dataUuid = StringUtils.substringAfter(urlString, DATA_URL_PREFIX);
             InstancesEntity instancesEntity = instancesRepository.findByUuid(dataUuid)
                     .orElseThrow(() -> new EntityNotFoundException(InstancesEntity.class, dataUuid));
-            return new FileResource(new File(instancesEntity.getAbsolutePath()));
+            return new FileResource(new File(instancesEntity.getDataPath()));
         }
         return new UrlResource(new URL(urlString));
     }

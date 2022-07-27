@@ -64,9 +64,9 @@ class InstancesServiceTest extends AbstractJpaTest {
         assertThat(actual).isNotNull();
         assertThat(actual.getCreationDate()).isNotNull();
         assertThat(actual.getUuid()).isNotNull();
-        assertThat(actual.getAbsolutePath()).isNotNull();
+        assertThat(actual.getDataPath()).isNotNull();
         String expectedDataPath = String.format(TRAIN_DATA_MODEL_PATH_FORMAT, instancesEntity.getUuid());
-        assertThat(actual.getAbsolutePath()).isEqualTo(expectedDataPath);
+        assertThat(actual.getDataPath()).isEqualTo(expectedDataPath);
     }
 
     @Test
@@ -104,7 +104,7 @@ class InstancesServiceTest extends AbstractJpaTest {
     void testDeleteInstancesWithError() throws IOException {
         MockMultipartFile multipartFile = createInstancesMockMultipartFile();
         InstancesEntity instancesEntity = instancesService.uploadInstances(multipartFile);
-        doThrow(ProcessFileException.class).when(objectStorageService).removeObject(instancesEntity.getAbsolutePath());
+        doThrow(ProcessFileException.class).when(objectStorageService).removeObject(instancesEntity.getDataPath());
         assertThrows(ProcessFileException.class, () -> instancesService.deleteInstances(instancesEntity));
         assertThat(instancesRepository.existsById(instancesEntity.getId())).isTrue();
     }

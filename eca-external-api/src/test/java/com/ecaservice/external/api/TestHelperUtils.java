@@ -42,7 +42,7 @@ public class TestHelperUtils {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final String REPLY_TO = "reply-to";
-    private static final String ABSOLUTE_PATH = "data.csv";
+    private static final String INSTANCES_PATH = "data.model";
     private static final String TRAINING_DATA_PARAM = "trainingData";
     private static final String IRIS_XLS = "iris.xls";
     private static final String TRAIN_DATA_URL = "data://84327874";
@@ -174,7 +174,7 @@ public class TestHelperUtils {
     public static InstancesEntity createInstancesEntity(LocalDateTime creationDate) {
         InstancesEntity instancesEntity = new InstancesEntity();
         instancesEntity.setUuid(UUID.randomUUID().toString());
-        instancesEntity.setAbsolutePath(ABSOLUTE_PATH);
+        instancesEntity.setDataPath(INSTANCES_PATH);
         instancesEntity.setCreationDate(creationDate);
         return instancesEntity;
     }

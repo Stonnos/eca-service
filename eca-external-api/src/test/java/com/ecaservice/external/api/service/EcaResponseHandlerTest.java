@@ -64,7 +64,7 @@ class EcaResponseHandlerTest extends AbstractJpaTest {
         ecaResponseHandler.handleResponse(evaluationRequestEntity, evaluationResponse);
         var actual =
                 internalTestResponseHandle(evaluationRequestEntity, evaluationResponse, RequestStageType.COMPLETED);
-        assertThat(actual.getClassifierAbsolutePath()).isEqualTo(expectedClassifierPath);
+        assertThat(actual.getClassifierPath()).isEqualTo(expectedClassifierPath);
         assertThat(actual.getClassifierOptionsJson()).isNotNull();
         assertThat(actual.getClassifierDownloadUrl()).isEqualTo(CLASSIFIER_DOWNLOAD_URL);
     }

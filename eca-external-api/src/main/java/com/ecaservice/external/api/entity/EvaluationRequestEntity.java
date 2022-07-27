@@ -39,10 +39,10 @@ public class EvaluationRequestEntity extends EcaRequestEntity {
     private boolean useOptimalClassifierOptions;
 
     /**
-     * Classifier model absolute path
+     * Classifier model path
      */
-    @Column(name = "classifier_absolute_path")
-    private String classifierAbsolutePath;
+    @Column(name = "classifier_path")
+    private String classifierPath;
 
     /**
      * Classifier download url

@@ -30,10 +30,10 @@ public class InstancesEntity {
     private String uuid;
 
     /**
-     * Instances absolute path on file system
+     * Instances path in S3
      */
-    @Column(name = "absolute_path", nullable = false)
-    private String absolutePath;
+    @Column(name = "data_path", nullable = false)
+    private String dataPath;
 
     /**
      * Creation date

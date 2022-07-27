@@ -16,4 +16,20 @@
             <column name="classifier_download_url" type="varchar(1024)"/>
         </addColumn>
     </changeSet>
+
+    <changeSet id="rename-classifier-absolute-path-column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_request"/>
+            <columnExists tableName="evaluation_request" columnName="classifier_absolute_path"/>
+        </preConditions>
+        <renameColumn tableName="evaluation_request" oldColumnName="classifier_absolute_path" newColumnName="classifier_path"/>
+    </changeSet>
+
+    <changeSet id="rename-instances-absolute-path-column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="instances"/>
+            <columnExists tableName="instances" columnName="absolute_path"/>
+        </preConditions>
+        <renameColumn tableName="instances" oldColumnName="absolute_path" newColumnName="data_path"/>
+    </changeSet>
 </databaseChangeLog>

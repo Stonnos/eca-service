@@ -62,26 +62,26 @@ class EcaRequestServiceTest extends AbstractJpaTest {
     @Test
     void testDeleteClassifierModelSuccess() {
         var evaluationRequestEntity = createEvaluationRequestEntity(UUID.randomUUID().toString());
-        evaluationRequestEntity.setClassifierAbsolutePath(CLASSIFIER_ABSOLUTE_PATH);
+        evaluationRequestEntity.setClassifierPath(CLASSIFIER_ABSOLUTE_PATH);
         evaluationRequestRepository.save(evaluationRequestEntity);
         ecaRequestService.deleteClassifierModel(evaluationRequestEntity);
         var actual = evaluationRequestRepository.findById(evaluationRequestEntity.getId()).orElse(null);
         assertThat(actual).isNotNull();
-        assertThat(actual.getClassifierAbsolutePath()).isNull();
+        assertThat(actual.getClassifierPath()).isNull();
         assertThat(actual.getDeletedDate()).isNotNull();
     }
 
     @Test
     void testDeleteClassifierModelWithError() {
         var evaluationRequestEntity = createEvaluationRequestEntity(UUID.randomUUID().toString());
-        evaluationRequestEntity.setClassifierAbsolutePath(CLASSIFIER_ABSOLUTE_PATH);
+        evaluationRequestEntity.setClassifierPath(CLASSIFIER_ABSOLUTE_PATH);
         evaluationRequestRepository.save(evaluationRequestEntity);
         doThrow(ProcessFileException.class).when(objectStorageService).removeObject(CLASSIFIER_ABSOLUTE_PATH);
         assertThrows(ProcessFileException.class,
                 () -> ecaRequestService.deleteClassifierModel(evaluationRequestEntity));
         var actual = evaluationRequestRepository.findById(evaluationRequestEntity.getId()).orElse(null);
         assertThat(actual).isNotNull();
-        assertThat(actual.getClassifierAbsolutePath()).isNotNull();
+        assertThat(actual.getClassifierPath()).isNotNull();
         assertThat(actual.getDeletedDate()).isNull();
     }
 

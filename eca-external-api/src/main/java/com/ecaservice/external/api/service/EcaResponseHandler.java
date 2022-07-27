@@ -123,12 +123,12 @@ public class EcaResponseHandler {
         log.info("Starting to save model [{}] to S3 {}", evaluationRequestEntity.getCorrelationId(), classifierPath);
         objectStorageService.uploadObject(classifierModel, classifierPath);
         log.info("Model [{}] has been saved into file {}", evaluationRequestEntity.getCorrelationId(), classifierPath);
-        evaluationRequestEntity.setClassifierAbsolutePath(classifierPath);
+        evaluationRequestEntity.setClassifierPath(classifierPath);
     }
 
     private void generateClassifierModelDownloadUrl(EvaluationRequestEntity evaluationRequestEntity) {
         String classifierDownloadUrl =
-                getClassifierModelDownloadPresignedUrl(evaluationRequestEntity.getClassifierAbsolutePath());
+                getClassifierModelDownloadPresignedUrl(evaluationRequestEntity.getClassifierPath());
         evaluationRequestEntity.setClassifierDownloadUrl(classifierDownloadUrl);
     }
 
