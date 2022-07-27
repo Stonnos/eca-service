@@ -7,6 +7,7 @@ import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.exception.ProcessFileException;
 import com.ecaservice.external.api.mapping.EcaRequestMapperImpl;
 import com.ecaservice.external.api.repository.EvaluationRequestRepository;
+import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -28,10 +29,10 @@ import static org.mockito.Mockito.doThrow;
 @Import({EcaRequestService.class, EcaRequestMapperImpl.class})
 class EcaRequestServiceTest extends AbstractJpaTest {
 
-    private static final String CLASSIFIER_ABSOLUTE_PATH = "/home/roman/classifier.model";
+    private static final String CLASSIFIER_ABSOLUTE_PATH = "classifier.model";
 
     @MockBean
-    private FileDataService fileDataService;
+    private ObjectStorageService objectStorageService;
 
     @Inject
     private EvaluationRequestRepository evaluationRequestRepository;
@@ -75,7 +76,7 @@ class EcaRequestServiceTest extends AbstractJpaTest {
         var evaluationRequestEntity = createEvaluationRequestEntity(UUID.randomUUID().toString());
         evaluationRequestEntity.setClassifierAbsolutePath(CLASSIFIER_ABSOLUTE_PATH);
         evaluationRequestRepository.save(evaluationRequestEntity);
-        doThrow(ProcessFileException.class).when(fileDataService).delete(CLASSIFIER_ABSOLUTE_PATH);
+        doThrow(ProcessFileException.class).when(objectStorageService).removeObject(CLASSIFIER_ABSOLUTE_PATH);
         assertThrows(ProcessFileException.class,
                 () -> ecaRequestService.deleteClassifierModel(evaluationRequestEntity));
         var actual = evaluationRequestRepository.findById(evaluationRequestEntity.getId()).orElse(null);
