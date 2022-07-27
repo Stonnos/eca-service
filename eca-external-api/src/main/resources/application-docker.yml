@@ -25,7 +25,6 @@ open-api:
 
 external-api:
   classifiersPath: /home/classifiers/
-  trainDataPath: /home/classifiers/data/
   downloadBaseUrl: http://localhost:8080/external-api
 
 auth-server:

@@ -15,6 +15,7 @@
     <properties>
         <sonar.coverage.exclusions>
             **/entity/**/*,
+            **/model/**/*,
             **/config/**/*,
             **/exception/**/*,
             **/util/**/*,
@@ -77,6 +78,12 @@
         <dependency>
             <groupId>eca.service</groupId>
             <artifactId>oauth2-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>eca.service</groupId>
+            <artifactId>eca-s3-minio-client</artifactId>
             <version>${project.version}</version>
         </dependency>
 
