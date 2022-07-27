@@ -8,6 +8,8 @@ import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.repository.EcaRequestRepository;
+import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
+import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationMethod;
 import eca.core.evaluation.EvaluationResults;
@@ -18,10 +20,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import weka.classifiers.AbstractClassifier;
 
-import java.io.File;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import static com.ecaservice.external.api.util.Utils.toJson;
 
@@ -35,11 +37,11 @@ import static com.ecaservice.external.api.util.Utils.toJson;
 @RequiredArgsConstructor
 public class EcaResponseHandler {
 
-    private static final String MODEL_FILE_FORMAT = "%s_%s.model";
+    private static final String MODEL_PATH_FORMAT = "classifier-%s.model";
 
     private final ExternalApiConfig externalApiConfig;
     private final ClassifiersOptionsConfig classifiersOptionsConfig;
-    private final FileDataService fileDataService;
+    private final ObjectStorageService objectStorageService;
     private final ClassifierOptionsAdapter classifierOptionsAdapter;
     private final EcaRequestRepository ecaRequestRepository;
 
@@ -67,7 +69,8 @@ public class EcaResponseHandler {
                     populateEvaluationOptions(evaluationResults, evaluationRequestEntity);
                 }
                 saveEvaluationResults(evaluationResults, evaluationRequestEntity);
-                saveClassifierToFile(evaluationResults, evaluationRequestEntity);
+                uploadModelToS3(evaluationResults, evaluationRequestEntity);
+                generateClassifierModelDownloadUrl(evaluationRequestEntity);
                 evaluationRequestEntity.setRequestStage(RequestStageType.COMPLETED);
             }
             log.info("Response with correlation id [{}] has been processed",
@@ -113,21 +116,36 @@ public class EcaResponseHandler {
         evaluationRequestEntity.setMeanAbsoluteError(BigDecimal.valueOf(evaluation.meanAbsoluteError()));
     }
 
-    private void saveClassifierToFile(EvaluationResults evaluationResults,
-                                      EvaluationRequestEntity evaluationRequestEntity) throws Exception {
-        ClassificationModel classifierModel =
-                new ClassificationModel((AbstractClassifier) evaluationResults.getClassifier(),
-                        evaluationResults.getEvaluation().getData(), evaluationResults.getEvaluation(),
-                        classifiersOptionsConfig.getMaximumFractionDigits());
-        String fileName =
-                String.format(MODEL_FILE_FORMAT, evaluationResults.getClassifier().getClass().getSimpleName(),
-                        evaluationRequestEntity.getCorrelationId());
-        File classifierFile = new File(externalApiConfig.getClassifiersPath(), fileName);
-        log.info("Starting to save model [{}] into file {}", evaluationRequestEntity.getCorrelationId(),
-                classifierFile.getAbsolutePath());
-        fileDataService.saveModel(classifierModel, classifierFile);
-        log.info("Model [{}] has been saved into file {}", evaluationRequestEntity.getCorrelationId(),
-                classifierFile.getAbsolutePath());
-        evaluationRequestEntity.setClassifierAbsolutePath(classifierFile.getAbsolutePath());
+    private void uploadModelToS3(EvaluationResults evaluationResults,
+                                 EvaluationRequestEntity evaluationRequestEntity) throws Exception {
+        var classifierModel = buildClassificationModel(evaluationResults);
+        String classifierPath = String.format(MODEL_PATH_FORMAT, evaluationRequestEntity.getCorrelationId());
+        log.info("Starting to save model [{}] to S3 {}", evaluationRequestEntity.getCorrelationId(), classifierPath);
+        objectStorageService.uploadObject(classifierModel, classifierPath);
+        log.info("Model [{}] has been saved into file {}", evaluationRequestEntity.getCorrelationId(), classifierPath);
+        evaluationRequestEntity.setClassifierPath(classifierPath);
+    }
+
+    private void generateClassifierModelDownloadUrl(EvaluationRequestEntity evaluationRequestEntity) {
+        String classifierDownloadUrl =
+                getClassifierModelDownloadPresignedUrl(evaluationRequestEntity.getClassifierPath());
+        evaluationRequestEntity.setClassifierDownloadUrl(classifierDownloadUrl);
+    }
+
+    private ClassificationModel buildClassificationModel(EvaluationResults evaluationResults) {
+        var classifier = (AbstractClassifier) evaluationResults.getClassifier();
+        return new ClassificationModel(classifier, evaluationResults.getEvaluation().getData(),
+                evaluationResults.getEvaluation(), classifiersOptionsConfig.getMaximumFractionDigits());
+    }
+
+
+    private String getClassifierModelDownloadPresignedUrl(String classifierPath) {
+        return objectStorageService.getObjectPresignedProxyUrl(
+                GetPresignedUrlObject.builder()
+                        .objectPath(classifierPath)
+                        .expirationTime(externalApiConfig.getClassifierDownloadUrlExpirationDays())
+                        .expirationTimeUnit(TimeUnit.DAYS)
+                        .build()
+        );
     }
 }

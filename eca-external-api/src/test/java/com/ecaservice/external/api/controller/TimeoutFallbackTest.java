@@ -7,8 +7,8 @@ import com.ecaservice.external.api.mapping.EcaRequestMapperImpl;
 import com.ecaservice.external.api.metrics.MetricsService;
 import com.ecaservice.external.api.repository.EvaluationRequestRepository;
 import com.ecaservice.external.api.service.EcaRequestService;
-import com.ecaservice.external.api.service.FileDataService;
 import com.ecaservice.external.api.service.RequestStageHandler;
+import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -31,7 +31,7 @@ class TimeoutFallbackTest extends AbstractJpaTest {
     @MockBean
     private MetricsService metricsService;
     @MockBean
-    private FileDataService fileDataService;
+    private ObjectStorageService objectStorageService;
 
     @Inject
     private EvaluationRequestRepository evaluationRequestRepository;

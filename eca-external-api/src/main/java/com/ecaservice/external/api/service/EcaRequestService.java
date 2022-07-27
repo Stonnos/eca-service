@@ -7,6 +7,7 @@ import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.mapping.EcaRequestMapper;
 import com.ecaservice.external.api.repository.EvaluationRequestRepository;
+import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ import java.util.UUID;
 public class EcaRequestService {
 
     private final EcaRequestMapper ecaRequestMapper;
-    private final FileDataService fileDataService;
+    private final ObjectStorageService objectStorageService;
     private final EvaluationRequestRepository evaluationRequestRepository;
 
     /**
@@ -81,11 +82,11 @@ public class EcaRequestService {
     public void deleteClassifierModel(EvaluationRequestEntity evaluationRequestEntity) {
         log.info("Starting to delete evaluation request [{}] classifier model file",
                 evaluationRequestEntity.getCorrelationId());
-        String classifierAbsolutePath = evaluationRequestEntity.getClassifierAbsolutePath();
-        evaluationRequestEntity.setClassifierAbsolutePath(null);
+        String classifierPath = evaluationRequestEntity.getClassifierPath();
+        evaluationRequestEntity.setClassifierPath(null);
         evaluationRequestEntity.setDeletedDate(LocalDateTime.now());
         evaluationRequestRepository.save(evaluationRequestEntity);
-        fileDataService.delete(classifierAbsolutePath);
+        objectStorageService.removeObject(classifierPath);
         log.info("Evaluation request [{}] classifier model file has been deleted",
                 evaluationRequestEntity.getCorrelationId());
     }

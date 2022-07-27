@@ -95,25 +95,6 @@ public class AutoTestEntity extends BaseEntity {
     private MatchResult responseCodeMatchResult;
 
     /**
-     * Expected model url
-     */
-    @Column(name = "expected_model_url")
-    private String expectedModelUrl;
-
-    /**
-     * Actual model url
-     */
-    @Column(name = "actual_model_url")
-    private String actualModelUrl;
-
-    /**
-     * Model url match result
-     */
-    @Enumerated(EnumType.STRING)
-    @Column(name = "model_url_match_result")
-    private MatchResult modelUrlMatchResult;
-
-    /**
      * Expected pct correct
      */
     @Column(name = "expected_pct_correct", precision = PRECISION, scale = SCALE)

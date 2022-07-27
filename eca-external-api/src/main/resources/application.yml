@@ -50,10 +50,8 @@ external-api:
   batchSize: 25
   requestTimeoutSeconds: 60
   evaluationRequestTimeoutMinutes: 120
-  classifiersPath: D:/classifiers/
-  trainDataPath: D:/data/
-  downloadBaseUrl: http://localhost:8085/eca-external-api
   numberOfDaysForStorage: 14
+  classifierDownloadUrlExpirationDays: 7
   delaySeconds: 10
   ## Each day at midnight
   removeClassifiersCron: 0 0 0 * * *
@@ -86,6 +84,13 @@ springdoc:
       client-id: external-api
       client-secret: external_api_secret
     disable-swagger-default-url: true
+
+minio:
+  url: http://localhost:9000
+  proxyUrl: http://localhost:9000
+  accessKey: minio
+  secretKey: minio-pa66word
+  bucketName: eca-service
 
 auth-server:
   baseUrl: http://localhost:8085/eca-oauth

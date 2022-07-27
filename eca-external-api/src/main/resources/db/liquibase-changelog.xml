@@ -8,4 +8,5 @@
     <include file="db/changelog/v1-add-evaluation-results-columns.xml"/>
     <include file="db/changelog/v2-add-optimal-classifier-options-column.xml"/>
     <include file="db/changelog/v3-add-error-code-column.xml"/>
+    <include file="db/changelog/v4-add-classifier-model-download-url-column.xml"/>
 </databaseChangeLog>

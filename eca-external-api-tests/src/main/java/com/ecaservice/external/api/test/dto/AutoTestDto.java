@@ -76,24 +76,6 @@ public class AutoTestDto extends BaseTestDto {
     private MatchResult responseCodeMatchResult;
 
     /**
-     * Expected model url
-     */
-    @Schema(description = "Expected model url")
-    private String expectedModelUrl;
-
-    /**
-     * Actual model url
-     */
-    @Schema(description = "Actual model url")
-    private String actualModelUrl;
-
-    /**
-     * Model url match result
-     */
-    @Schema(description = "Model url match result")
-    private MatchResult modelUrlMatchResult;
-
-    /**
      * Expected pct correct
      */
     @Schema(description = "Expected pct correct")

@@ -23,10 +23,9 @@ eureka:
 open-api:
   tokenBaseUrl: http://localhost:8080/eca-oauth
 
-external-api:
-  classifiersPath: /home/classifiers/
-  trainDataPath: /home/classifiers/data/
-  downloadBaseUrl: http://localhost:8080/external-api
+minio:
+  url: http://s3-minio-storage:9000
+  proxyUrl: http://localhost:8098/object-storage
 
 auth-server:
   baseUrl: http://eca-oauth:8080

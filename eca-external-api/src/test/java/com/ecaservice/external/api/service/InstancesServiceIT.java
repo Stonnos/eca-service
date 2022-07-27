@@ -1,19 +1,16 @@
 package com.ecaservice.external.api.service;
 
-import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.repository.InstancesRepository;
+import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import eca.data.file.FileDataLoader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import weka.core.Instances;
-
-import javax.inject.Inject;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,7 +22,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(SpringExtension.class)
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
-@Import({ExternalApiConfig.class})
 class InstancesServiceIT {
 
     private static final String TEST_URL = "http://kt.ijs.si/Branax/Repository/WEKA/Iris.xls";
@@ -35,19 +31,15 @@ class InstancesServiceIT {
     private static final int EXPECTED_NUM_ATTRIBUTES = 5;
 
     @Mock
-    private FileDataService fileDataService;
+    private ObjectStorageService objectStorageService;
     @Mock
     private InstancesRepository instancesRepository;
-
-    @Inject
-    private ExternalApiConfig externalApiConfig;
 
     private InstancesService instancesService;
 
     @BeforeEach
     void init() {
-        instancesService =
-                new InstancesService(externalApiConfig, new FileDataLoader(), fileDataService, instancesRepository);
+        instancesService = new InstancesService(new FileDataLoader(), objectStorageService, instancesRepository);
     }
 
     @Test

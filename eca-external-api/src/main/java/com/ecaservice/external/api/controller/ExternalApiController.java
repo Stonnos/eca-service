@@ -27,9 +27,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,19 +41,15 @@ import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
-import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
-import java.util.Optional;
 import java.util.function.BiConsumer;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.external.api.dto.Constraints.MAX_LENGTH_255;
 import static com.ecaservice.external.api.dto.Constraints.MIN_LENGTH_1;
 import static com.ecaservice.external.api.util.Constants.DATA_URL_PREFIX;
-import static com.ecaservice.external.api.util.Utils.buildAttachmentResponse;
 import static com.ecaservice.external.api.util.Utils.buildResponse;
-import static com.ecaservice.external.api.util.Utils.existsFile;
 import static com.ecaservice.external.api.util.Utils.toJson;
 
 /**
@@ -333,60 +327,6 @@ public class ExternalApiController {
         var responseDto = buildResponse(ResponseCode.SUCCESS, evaluationResponseDto);
         log.debug("Got evaluation [{}] response: {}", requestId, responseDto);
         return responseDto;
-    }
-
-    /**
-     * Downloads classifier model.
-     *
-     * @param requestId - request id
-     */
-    @PreAuthorize("#oauth2.hasScope('external-api')")
-    @Operation(
-            description = "Downloads classifier model",
-            summary = "Downloads classifier model",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_EXTERNAL_API),
-            responses = {
-                    @ApiResponse(description = "OK", responseCode = "200"),
-                    @ApiResponse(description = "Not authorized", responseCode = "401",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    examples = {
-                                            @ExampleObject(
-                                                    name = "NotAuthorizedResponse",
-                                                    ref = "#/components/examples/NotAuthorizedResponse"
-                                            ),
-                                    }
-                            )
-                    ),
-                    @ApiResponse(description = "Bad request", responseCode = "400",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    examples = {
-                                            @ExampleObject(
-                                                    name = "DataNotFoundResponse",
-                                                    ref = "#/components/examples/DataNotFoundResponse"
-                                            ),
-                                    },
-                                    schema = @Schema(implementation = ValidationErrorResponsePayloadDto.class)
-                            )
-                    )
-            }
-    )
-    @GetMapping(value = "/download-model/{requestId}")
-    public ResponseEntity<FileSystemResource> downloadModel(@Parameter(description = "Request id", required = true)
-                                                            @Size(min = MIN_LENGTH_1, max = MAX_LENGTH_255)
-                                                            @PathVariable String requestId) {
-        var evaluationRequestEntity = ecaRequestService.getByCorrelationId(requestId);
-        var modelFile = Optional.ofNullable(evaluationRequestEntity.getClassifierAbsolutePath())
-                .map(File::new)
-                .orElse(null);
-        if (!existsFile(modelFile)) {
-            log.error("Classifier model file not found for request id [{}]", requestId);
-            return ResponseEntity.badRequest().build();
-        }
-        log.info("Downloads classifier model file {} for request id [{}]",
-                evaluationRequestEntity.getClassifierAbsolutePath(), evaluationRequestEntity.getCorrelationId());
-        return buildAttachmentResponse(modelFile);
     }
 
     private <T> Mono<ResponseDto<EvaluationResponseDto>> evaluateModel(BiConsumer<EcaRequestEntity, T> requestConsumer,

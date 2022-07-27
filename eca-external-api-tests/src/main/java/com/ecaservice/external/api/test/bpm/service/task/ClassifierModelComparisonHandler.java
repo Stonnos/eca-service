@@ -58,7 +58,7 @@ public class ClassifierModelComparisonHandler extends ComparisonTaskHandler {
         var responseDto = getVariable(execution, API_RESPONSE, API_RESPONSE_TYPE_REFERENCE);
         log.debug("Starting to download model for test [{}]", autoTestEntity.getId());
         ClassificationModel classificationModel =
-                externalApiService.downloadModel(responseDto.getPayload().getRequestId());
+                externalApiService.downloadModel(responseDto.getPayload().getModelUrl());
         log.debug("Classifier model has been downloaded for test [{}]", autoTestEntity.getId());
         //Compare and match classifier model fields
         compareAndMatchEvaluationFields(autoTestEntity, responseDto.getPayload(), classificationModel, matcher);

@@ -33,22 +33,12 @@ public class ExternalApiConfig {
     private Long evaluationRequestTimeoutMinutes;
 
     /**
-     * Classifiers path on file system
-     */
-    private String classifiersPath;
-
-    /**
-     * Train data path on file system
-     */
-    private String trainDataPath;
-
-    /**
-     * Models downloading base url
-     */
-    private String downloadBaseUrl;
-
-    /**
      * Days number for classifiers models files storage
      */
     private Integer numberOfDaysForStorage;
+
+    /**
+     * Classifier download url expiration in days
+     */
+    private Integer classifierDownloadUrlExpirationDays;
 }

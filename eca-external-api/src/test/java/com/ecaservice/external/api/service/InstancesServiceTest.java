@@ -1,11 +1,11 @@
 package com.ecaservice.external.api.service;
 
 import com.ecaservice.external.api.AbstractJpaTest;
-import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.entity.InstancesEntity;
 import com.ecaservice.external.api.exception.DataNotFoundException;
 import com.ecaservice.external.api.exception.ProcessFileException;
 import com.ecaservice.external.api.repository.InstancesRepository;
+import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import eca.data.file.FileDataLoader;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -22,6 +22,8 @@ import static com.ecaservice.external.api.TestHelperUtils.loadInstances;
 import static com.ecaservice.external.api.util.Constants.DATA_URL_PREFIX;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
@@ -30,10 +32,10 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({ExternalApiConfig.class, InstancesService.class})
+@Import(InstancesService.class)
 class InstancesServiceTest extends AbstractJpaTest {
 
-    private static final String FILE_PATH_FORMAT = "%siris_%s.xls";
+    private static final String TRAIN_DATA_MODEL_PATH_FORMAT = "train-data-%s.model";
     private static final String TEST_DATA_URL = "data://test-data";
     private static final String HTTP_TEST_DATA_URL = "http://test/data.csv";
 
@@ -41,13 +43,10 @@ class InstancesServiceTest extends AbstractJpaTest {
     private FileDataLoader fileDataLoader;
 
     @MockBean
-    private FileDataService fileDataService;
+    private ObjectStorageService objectStorageService;
 
     @Inject
     private InstancesRepository instancesRepository;
-
-    @Inject
-    private ExternalApiConfig externalApiConfig;
 
     @Inject
     private InstancesService instancesService;
@@ -65,10 +64,9 @@ class InstancesServiceTest extends AbstractJpaTest {
         assertThat(actual).isNotNull();
         assertThat(actual.getCreationDate()).isNotNull();
         assertThat(actual.getUuid()).isNotNull();
-        assertThat(actual.getAbsolutePath()).isNotNull();
-        String expectedDataPath =
-                String.format(FILE_PATH_FORMAT, externalApiConfig.getTrainDataPath(), instancesEntity.getUuid());
-        assertThat(actual.getAbsolutePath()).isEqualTo(expectedDataPath);
+        assertThat(actual.getDataPath()).isNotNull();
+        String expectedDataPath = String.format(TRAIN_DATA_MODEL_PATH_FORMAT, instancesEntity.getUuid());
+        assertThat(actual.getDataPath()).isEqualTo(expectedDataPath);
     }
 
     @Test
@@ -106,7 +104,7 @@ class InstancesServiceTest extends AbstractJpaTest {
     void testDeleteInstancesWithError() throws IOException {
         MockMultipartFile multipartFile = createInstancesMockMultipartFile();
         InstancesEntity instancesEntity = instancesService.uploadInstances(multipartFile);
-        doThrow(ProcessFileException.class).when(fileDataService).delete(instancesEntity.getAbsolutePath());
+        doThrow(ProcessFileException.class).when(objectStorageService).removeObject(instancesEntity.getDataPath());
         assertThrows(ProcessFileException.class, () -> instancesService.deleteInstances(instancesEntity));
         assertThat(instancesRepository.existsById(instancesEntity.getId())).isTrue();
     }
@@ -114,6 +112,7 @@ class InstancesServiceTest extends AbstractJpaTest {
     private void internalTestLoadInstances(String url) throws Exception {
         Instances expected = loadInstances();
         when(fileDataLoader.loadInstances()).thenReturn(expected);
+        when(objectStorageService.getObject(anyString(), any())).thenReturn(expected);
         Instances actual = instancesService.loadInstances(url);
         assertThat(actual).isNotNull();
         assertThat(actual.relationName()).isEqualTo(expected.relationName());
