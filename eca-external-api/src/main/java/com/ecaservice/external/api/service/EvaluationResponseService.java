@@ -18,9 +18,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class EvaluationResponseService {
 
-    private static final String MODEL_DOWNLOAD_URL_FORMAT = "%s/download-model/%s";
-
-    private final ExternalApiConfig externalApiConfig;
     private final EvaluationStatusMapper evaluationStatusMapper;
     private final EcaRequestService ecaRequestService;
 
@@ -46,8 +43,7 @@ public class EvaluationResponseService {
                     .pctCorrect(ecaRequestEntity.getPctCorrect())
                     .pctIncorrect(ecaRequestEntity.getPctIncorrect())
                     .meanAbsoluteError(ecaRequestEntity.getMeanAbsoluteError())
-                    .modelUrl(String.format(MODEL_DOWNLOAD_URL_FORMAT, externalApiConfig.getDownloadBaseUrl(),
-                            ecaRequestEntity.getCorrelationId()));
+                    .modelUrl(ecaRequestEntity.getClassifierDownloadUrl());
         }
         log.info("Evaluation [{}] response has been built", correlationId);
         return evaluationResponseDtoBuilder.build();

@@ -33,11 +33,6 @@ public class ExternalApiConfig {
     private Long evaluationRequestTimeoutMinutes;
 
     /**
-     * Models downloading base url
-     */
-    private String downloadBaseUrl;
-
-    /**
      * Days number for classifiers models files storage
      */
     private Integer numberOfDaysForStorage;

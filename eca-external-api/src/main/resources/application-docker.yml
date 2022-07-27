@@ -23,8 +23,5 @@ eureka:
 open-api:
   tokenBaseUrl: http://localhost:8080/eca-oauth
 
-external-api:
-  downloadBaseUrl: http://localhost:8080/external-api
-
 auth-server:
   baseUrl: http://eca-oauth:8080

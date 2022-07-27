@@ -1,9 +1,7 @@
 package com.ecaservice.external.api.service;
 
 import com.ecaservice.external.api.AbstractJpaTest;
-import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.dto.EvaluationStatus;
-import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.mapping.EcaRequestMapperImpl;
 import com.ecaservice.external.api.mapping.EvaluationStatusMapperImpl;
@@ -27,17 +25,15 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Roman Batygin
  */
 @ExtendWith(SpringExtension.class)
-@Import({ExternalApiConfig.class, EvaluationResponseService.class, EvaluationStatusMapperImpl.class,
+@Import({EvaluationResponseService.class, EvaluationStatusMapperImpl.class,
         EcaRequestService.class, EcaRequestMapperImpl.class})
 class EvaluationResponseServiceTest extends AbstractJpaTest {
 
-    private static final String MODEL_DOWNLOAD_URL_FORMAT = "%s/download-model/%s";
+    private static final String CLASSIFIER_DOWNLOAD_URL = "http://localhost:9000/object-storage";
 
     @MockBean
     private ObjectStorageService objectStorageService;
 
-    @Inject
-    private ExternalApiConfig externalApiConfig;
     @Inject
     private EvaluationRequestRepository evaluationRequestRepository;
     @Inject
@@ -63,17 +59,16 @@ class EvaluationResponseServiceTest extends AbstractJpaTest {
 
     @Test
     void testBuildSuccessResponse() {
-        EvaluationRequestEntity evaluationRequestEntity =
+        var evaluationRequestEntity =
                 createEvaluationRequestEntity(RequestStageType.COMPLETED, LocalDateTime.now(), LocalDateTime.now());
+        evaluationRequestEntity.setClassifierDownloadUrl(CLASSIFIER_DOWNLOAD_URL);
         evaluationRequestRepository.save(evaluationRequestEntity);
-        String expectedModelUrl = String.format(MODEL_DOWNLOAD_URL_FORMAT, externalApiConfig.getDownloadBaseUrl(),
-                evaluationRequestEntity.getCorrelationId());
         var evaluationResponseDto =
                 evaluationResponseService.processResponse(evaluationRequestEntity.getCorrelationId());
         assertThat(evaluationResponseDto).isNotNull();
         assertThat(evaluationResponseDto.getEvaluationStatus()).isEqualTo(EvaluationStatus.FINISHED);
         assertThat(evaluationResponseDto.getRequestId()).isEqualTo(
                 evaluationRequestEntity.getCorrelationId());
-        assertThat(evaluationResponseDto.getModelUrl()).isEqualTo(expectedModelUrl);
+        assertThat(evaluationResponseDto.getModelUrl()).isEqualTo(CLASSIFIER_DOWNLOAD_URL);
     }
 }

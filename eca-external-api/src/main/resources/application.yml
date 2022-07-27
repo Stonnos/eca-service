@@ -50,7 +50,6 @@ external-api:
   batchSize: 25
   requestTimeoutSeconds: 60
   evaluationRequestTimeoutMinutes: 120
-  downloadBaseUrl: http://localhost:8085/eca-external-api
   numberOfDaysForStorage: 14
   classifierDownloadUrlExpirationDays: 7
   delaySeconds: 10
