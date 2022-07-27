@@ -8,6 +8,7 @@ import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.mapping.EcaRequestMapperImpl;
 import com.ecaservice.external.api.mapping.EvaluationStatusMapperImpl;
 import com.ecaservice.external.api.repository.EvaluationRequestRepository;
+import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -33,7 +34,7 @@ class EvaluationResponseServiceTest extends AbstractJpaTest {
     private static final String MODEL_DOWNLOAD_URL_FORMAT = "%s/download-model/%s";
 
     @MockBean
-    private FileDataService fileDataService;
+    private ObjectStorageService objectStorageService;
 
     @Inject
     private ExternalApiConfig externalApiConfig;

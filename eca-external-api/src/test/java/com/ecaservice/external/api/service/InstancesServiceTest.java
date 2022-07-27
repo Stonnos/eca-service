@@ -1,7 +1,6 @@
 package com.ecaservice.external.api.service;
 
 import com.ecaservice.external.api.AbstractJpaTest;
-import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.entity.InstancesEntity;
 import com.ecaservice.external.api.exception.DataNotFoundException;
 import com.ecaservice.external.api.exception.ProcessFileException;
@@ -23,6 +22,8 @@ import static com.ecaservice.external.api.TestHelperUtils.loadInstances;
 import static com.ecaservice.external.api.util.Constants.DATA_URL_PREFIX;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
@@ -46,9 +47,6 @@ class InstancesServiceTest extends AbstractJpaTest {
 
     @Inject
     private InstancesRepository instancesRepository;
-
-    @Inject
-    private ExternalApiConfig externalApiConfig;
 
     @Inject
     private InstancesService instancesService;
@@ -114,6 +112,7 @@ class InstancesServiceTest extends AbstractJpaTest {
     private void internalTestLoadInstances(String url) throws Exception {
         Instances expected = loadInstances();
         when(fileDataLoader.loadInstances()).thenReturn(expected);
+        when(objectStorageService.getObject(anyString(), any())).thenReturn(expected);
         Instances actual = instancesService.loadInstances(url);
         assertThat(actual).isNotNull();
         assertThat(actual.relationName()).isEqualTo(expected.relationName());
