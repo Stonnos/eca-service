@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v4-add-classifier-model-download-url-column.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="add-classifier-download-url-column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_request"/>
+            <not>
+                <columnExists tableName="evaluation_request" columnName="classifier_download_url"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="evaluation_request">
+            <column name="classifier_download_url" type="varchar(1024)"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>
