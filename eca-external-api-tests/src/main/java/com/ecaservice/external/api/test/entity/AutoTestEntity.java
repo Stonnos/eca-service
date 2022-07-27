@@ -16,6 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.math.BigDecimal;
 
+import static com.ecaservice.external.api.test.util.Constraints.CLASSIFIER_DOWNLOAD_URL_MAX_LENGTH;
 import static com.ecaservice.external.api.test.util.Constraints.PRECISION;
 import static com.ecaservice.external.api.test.util.Constraints.SCALE;
 
@@ -97,13 +98,13 @@ public class AutoTestEntity extends BaseEntity {
     /**
      * Expected model url
      */
-    @Column(name = "expected_model_url")
+    @Column(name = "expected_model_url", length = CLASSIFIER_DOWNLOAD_URL_MAX_LENGTH)
     private String expectedModelUrl;
 
     /**
      * Actual model url
      */
-    @Column(name = "actual_model_url")
+    @Column(name = "actual_model_url", length = CLASSIFIER_DOWNLOAD_URL_MAX_LENGTH)
     private String actualModelUrl;
 
     /**
