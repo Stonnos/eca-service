@@ -4,9 +4,11 @@ import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.classifier.options.config.ClassifiersOptionsConfig;
+import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.repository.EcaRequestRepository;
+import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationMethod;
@@ -21,6 +23,7 @@ import weka.classifiers.AbstractClassifier;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import static com.ecaservice.external.api.util.Utils.toJson;
 
@@ -36,6 +39,7 @@ public class EcaResponseHandler {
 
     private static final String MODEL_PATH_FORMAT = "classifier-%s.model";
 
+    private final ExternalApiConfig externalApiConfig;
     private final ClassifiersOptionsConfig classifiersOptionsConfig;
     private final ObjectStorageService objectStorageService;
     private final ClassifierOptionsAdapter classifierOptionsAdapter;
@@ -66,6 +70,7 @@ public class EcaResponseHandler {
                 }
                 saveEvaluationResults(evaluationResults, evaluationRequestEntity);
                 uploadModelToS3(evaluationResults, evaluationRequestEntity);
+                generateClassifierModelDownloadUrl(evaluationRequestEntity);
                 evaluationRequestEntity.setRequestStage(RequestStageType.COMPLETED);
             }
             log.info("Response with correlation id [{}] has been processed",
@@ -121,9 +126,26 @@ public class EcaResponseHandler {
         evaluationRequestEntity.setClassifierAbsolutePath(classifierPath);
     }
 
+    private void generateClassifierModelDownloadUrl(EvaluationRequestEntity evaluationRequestEntity) {
+        String classifierDownloadUrl =
+                getClassifierModelDownloadPresignedUrl(evaluationRequestEntity.getClassifierAbsolutePath());
+        evaluationRequestEntity.setClassifierDownloadUrl(classifierDownloadUrl);
+    }
+
     private ClassificationModel buildClassificationModel(EvaluationResults evaluationResults) {
         var classifier = (AbstractClassifier) evaluationResults.getClassifier();
         return new ClassificationModel(classifier, evaluationResults.getEvaluation().getData(),
                 evaluationResults.getEvaluation(), classifiersOptionsConfig.getMaximumFractionDigits());
+    }
+
+
+    private String getClassifierModelDownloadPresignedUrl(String classifierPath) {
+        return objectStorageService.getObjectPresignedProxyUrl(
+                GetPresignedUrlObject.builder()
+                        .objectPath(classifierPath)
+                        .expirationTime(externalApiConfig.getClassifierDownloadUrlExpirationDays())
+                        .expirationTimeUnit(TimeUnit.DAYS)
+                        .build()
+        );
     }
 }

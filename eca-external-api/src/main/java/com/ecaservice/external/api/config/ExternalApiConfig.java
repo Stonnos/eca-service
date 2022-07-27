@@ -41,4 +41,9 @@ public class ExternalApiConfig {
      * Days number for classifiers models files storage
      */
     private Integer numberOfDaysForStorage;
+
+    /**
+     * Classifier download url expiration in days
+     */
+    private Integer classifierDownloadUrlExpirationDays;
 }

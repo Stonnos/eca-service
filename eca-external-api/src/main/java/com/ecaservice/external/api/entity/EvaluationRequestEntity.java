@@ -10,6 +10,7 @@ import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import static com.ecaservice.external.api.util.FieldSize.CLASSIFIER_DOWNLOAD_URL_MAX_LENGTH;
 import static com.ecaservice.external.api.util.FieldSize.PRECISION;
 import static com.ecaservice.external.api.util.FieldSize.SCALE;
 
@@ -42,6 +43,12 @@ public class EvaluationRequestEntity extends EcaRequestEntity {
      */
     @Column(name = "classifier_absolute_path")
     private String classifierAbsolutePath;
+
+    /**
+     * Classifier download url
+     */
+    @Column(name = "classifier_download_url", length = CLASSIFIER_DOWNLOAD_URL_MAX_LENGTH)
+    private String classifierDownloadUrl;
 
     /**
      * Test instances number

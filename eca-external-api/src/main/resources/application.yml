@@ -52,6 +52,7 @@ external-api:
   evaluationRequestTimeoutMinutes: 120
   downloadBaseUrl: http://localhost:8085/eca-external-api
   numberOfDaysForStorage: 14
+  classifierDownloadUrlExpirationDays: 7
   delaySeconds: 10
   ## Each day at midnight
   removeClassifiersCron: 0 0 0 * * *
