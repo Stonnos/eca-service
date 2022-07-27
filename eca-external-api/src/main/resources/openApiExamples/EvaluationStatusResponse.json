@@ -3,7 +3,7 @@
     "requestId": "1cbe6c49-8432-4c81-9afa-90f04a803fed",
     "evaluationStatus": "FINISHED",
     "errorCode": null,
-    "modelUrl": "http://localhost:8080/external-api/download-model/1cbe6c49-8432-4c81-9afa-90f04a803fed",
+    "modelUrl": "http://localhost:8098/object-storage/eca-service/classifier-0f45c641-48e1-4f8f-a461-38c27a4befc3.model?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minio%2F20220727%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220727T061714Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=2ebb2d403962381a141efaf28767fe3ef622ce1477d9bd2f914560561579325c",
     "numTestInstances": 150,
     "numCorrect": 144,
     "numIncorrect": 6,
