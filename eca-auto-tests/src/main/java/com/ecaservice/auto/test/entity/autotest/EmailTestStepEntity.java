@@ -12,6 +12,8 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
+import static com.ecaservice.auto.test.util.Constraints.DOWNLOAD_URL_MAX_LENGTH;
+
 /**
  * Email test step persistence entity.
  *
@@ -40,13 +42,13 @@ public class EmailTestStepEntity extends BaseTestStepEntity<ExperimentRequestEnt
     /**
      * Expected download url
      */
-    @Column(name = "expected_download_url")
+    @Column(name = "expected_download_url", length = DOWNLOAD_URL_MAX_LENGTH)
     private String expectedDownloadUrl;
 
     /**
      * Actual download url
      */
-    @Column(name = "actual_download_url")
+    @Column(name = "actual_download_url", length = DOWNLOAD_URL_MAX_LENGTH)
     private String actualDownloadUrl;
 
     /**

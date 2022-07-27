@@ -17,6 +17,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import java.util.List;
 
+import static com.ecaservice.auto.test.util.Constraints.DOWNLOAD_URL_MAX_LENGTH;
+
 /**
  * Experiment request persistence entity.
  *
@@ -42,7 +44,7 @@ public class ExperimentRequestEntity extends BaseEvaluationRequestEntity {
     /**
      * Experiment download url
      */
-    @Column(name = "download_url")
+    @Column(name = "download_url", length = DOWNLOAD_URL_MAX_LENGTH)
     private String downloadUrl;
 
     /**
