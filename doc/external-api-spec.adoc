@@ -217,7 +217,7 @@ curl -X POST "http://localhost:8080/external-api/uploads-train-data" -H "accept:
 |modelUrl
 |string
 |-
-|Ссылка на скачивание модели из S3
+|Ссылка на скачивание модели из S3. Ссылка действительна в течении 7 дней.
 |Заполняется при evaluationStatus = FINISHED
 |numTestInstances
 |integer
