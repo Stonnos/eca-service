@@ -24,7 +24,6 @@ open-api:
   tokenBaseUrl: http://localhost:8080/eca-oauth
 
 external-api:
-  classifiersPath: /home/classifiers/
   downloadBaseUrl: http://localhost:8080/external-api
 
 auth-server:

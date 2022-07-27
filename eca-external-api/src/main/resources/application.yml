@@ -50,7 +50,6 @@ external-api:
   batchSize: 25
   requestTimeoutSeconds: 60
   evaluationRequestTimeoutMinutes: 120
-  classifiersPath: D:/classifiers/
   downloadBaseUrl: http://localhost:8085/eca-external-api
   numberOfDaysForStorage: 14
   delaySeconds: 10

@@ -7,12 +7,12 @@ import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.repository.EvaluationRequestRepository;
+import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
 import javax.inject.Inject;
-import java.io.File;
 import java.time.LocalDateTime;
 
 import static com.ecaservice.external.api.TestHelperUtils.createEvaluationRequestEntity;
@@ -20,6 +20,7 @@ import static com.ecaservice.external.api.TestHelperUtils.errorEvaluationRespons
 import static com.ecaservice.external.api.TestHelperUtils.successEvaluationResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 
 /**
@@ -27,13 +28,13 @@ import static org.mockito.Mockito.doThrow;
  *
  * @author Roman Batygin
  */
-@Import({ExternalApiConfig.class, EcaResponseHandler.class, ClassifiersOptionsAutoConfiguration.class})
+@Import({EcaResponseHandler.class, ClassifiersOptionsAutoConfiguration.class})
 class EcaResponseHandlerTest extends AbstractJpaTest {
 
-    private static final String CLASSIFIER_MODEL_PATH_FORMAT = "%s%s_%s.model";
+    private static final String CLASSIFIER_MODEL_PATH_FORMAT = "classifier-%s.model";
 
     @MockBean
-    private FileDataService fileDataService;
+    private ObjectStorageService objectStorageService;
 
     @Inject
     private ExternalApiConfig externalApiConfig;
@@ -57,11 +58,9 @@ class EcaResponseHandlerTest extends AbstractJpaTest {
         evaluationRequestRepository.save(evaluationRequestEntity);
         EvaluationResponse evaluationResponse = successEvaluationResponse();
         String expectedClassifierPath =
-                String.format(CLASSIFIER_MODEL_PATH_FORMAT, externalApiConfig.getClassifiersPath(),
-                        evaluationResponse.getEvaluationResults().getClassifier().getClass().getSimpleName(),
-                        evaluationRequestEntity.getCorrelationId());
+                String.format(CLASSIFIER_MODEL_PATH_FORMAT, evaluationRequestEntity.getCorrelationId());
         ecaResponseHandler.handleResponse(evaluationRequestEntity, evaluationResponse);
-        EvaluationRequestEntity actual =
+        var actual =
                 internalTestResponseHandle(evaluationRequestEntity, evaluationResponse, RequestStageType.COMPLETED);
         assertThat(actual.getClassifierAbsolutePath()).isEqualTo(expectedClassifierPath);
         assertThat(actual.getClassifierOptionsJson()).isNotNull();
@@ -82,7 +81,7 @@ class EcaResponseHandlerTest extends AbstractJpaTest {
                 createEvaluationRequestEntity(RequestStageType.RESPONSE_RECEIVED, null, LocalDateTime.now());
         evaluationRequestRepository.save(evaluationRequestEntity);
         EvaluationResponse evaluationResponse = successEvaluationResponse();
-        doThrow(IllegalStateException.class).when(fileDataService).saveModel(any(), any(File.class));
+        doThrow(IllegalStateException.class).when(objectStorageService).uploadObject(any(), anyString());
         internalTestResponseHandle(evaluationRequestEntity, evaluationResponse, RequestStageType.ERROR);
     }
 
