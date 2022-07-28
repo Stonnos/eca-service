@@ -255,8 +255,11 @@ a|
 |Счетчик суммарного времи выполнения запросов к S3, параметризированный по названию метода (method)
 a|
 `s3_storage_object_request_seconds_sum{application="eca-server",method="uploadObject",} 0.261802647`
+
 `s3_storage_object_request_seconds_sum{application="eca-server",method="getObject",} 0.014323351`
+
 `s3_storage_object_request_seconds_sum{application="eca-server",method="getObjectPresignedProxyUrl",} 0.00887841`
+|===
 
 == 3. Метрики Feign http клиента
 
