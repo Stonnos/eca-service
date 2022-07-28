@@ -26,7 +26,7 @@
 minio:
   ## URL S3 minio
   url: http://localhost:9000
-  ## Прокси URL s3 minio (используется для формировании presigned url)
+  ## Прокси URL s3 minio (используется для формирования presigned url)
   proxyUrl: http://localhost:9000
   ## Логин для доступа к s3
   accessKey: minio
