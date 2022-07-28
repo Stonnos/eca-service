@@ -2,6 +2,7 @@ package com.ecaservice.s3.client.minio.service;
 
 import com.ecaservice.s3.client.minio.config.MinioClientProperties;
 import com.ecaservice.s3.client.minio.exception.ObjectStorageException;
+import com.ecaservice.s3.client.minio.metrics.MinioStorageMetricsService;
 import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.model.UploadObject;
 import io.minio.GetObjectArgs;
@@ -29,8 +30,14 @@ import java.io.InputStream;
 @RequiredArgsConstructor
 public class MinioStorageService {
 
+    private static final String UPLOAD_OBJECT_METHOD = "uploadObject";
+    private static final String DOWNLOAD_OBJECT_METHOD = "downloadObject";
+    private static final String REMOVE_OBJECT_METHOD = "removeObject";
+    private static final String GET_OBJECT_PRESIGNED_URL_METHOD = "getObjectPresignedUrl";
+
     private final MinioClientProperties minioClientProperties;
     private final MinioClient minioClient;
+    private final MinioStorageMetricsService minioStorageMetricsService;
 
     /**
      * Uploads object to S3 storage.
@@ -47,6 +54,7 @@ public class MinioStorageService {
             @Cleanup var inputStream = uploadObject.getInputStream().get();
             long contentLength = inputStream.available();
             log.info("Object [{}] size is {} bytes", uploadObject.getObjectPath(), contentLength);
+            minioStorageMetricsService.trackObjectSizeBytes(contentLength);
             var putObjectArgs = PutObjectArgs.builder()
                     .bucket(bucket)
                     .object(uploadObject.getObjectPath())
@@ -55,11 +63,13 @@ public class MinioStorageService {
                     .build();
             var objectWriteResponse = minioClient.putObject(putObjectArgs);
             stopWatch.stop();
+            minioStorageMetricsService.trackRequestSuccess(UPLOAD_OBJECT_METHOD);
             log.info("Object [{}] has been uploaded to s3 minio storage bucket [{}] with etag [{}]. Total time [{}] s.",
                     uploadObject.getObjectPath(), bucket, objectWriteResponse.etag(), stopWatch.getTotalTimeSeconds());
         } catch (Exception ex) {
             log.error("There was an error while upload object [{}] to s3 minio storage bucket [{}]: {}",
                     uploadObject.getObjectPath(), bucket, ex.getMessage());
+            minioStorageMetricsService.trackRequestError(UPLOAD_OBJECT_METHOD);
             throw new ObjectStorageException(ex);
         }
     }
@@ -74,15 +84,18 @@ public class MinioStorageService {
         String bucket = minioClientProperties.getBucketName();
         log.info("Starting to download object [{}] from s3 minio storage bucket [{}]", objectPath, bucket);
         try {
-            return minioClient.getObject(
+            var inputStream = minioClient.getObject(
                     GetObjectArgs.builder()
                             .bucket(minioClientProperties.getBucketName())
                             .object(objectPath)
                             .build()
             );
+            minioStorageMetricsService.trackRequestSuccess(DOWNLOAD_OBJECT_METHOD);
+            return inputStream;
         } catch (Exception ex) {
             log.error("There was an error while download object [{}] from s3 minio storage bucket [{}]: {}",
                     objectPath, bucket, ex.getMessage());
+            minioStorageMetricsService.trackRequestError(DOWNLOAD_OBJECT_METHOD);
             throw new ObjectStorageException(ex);
         }
     }
@@ -105,11 +118,13 @@ public class MinioStorageService {
                             .build()
             );
             stopWatch.stop();
+            minioStorageMetricsService.trackRequestSuccess(REMOVE_OBJECT_METHOD);
             log.info("Object [{}] has been removed from s3 minio storage bucket [{}] for {} s.", objectPath, bucket,
                     stopWatch.getTotalTimeSeconds());
         } catch (Exception ex) {
             log.error("There was an error while remove object [{}] from s3 minio storage bucket [{}]: {}",
                     objectPath, bucket, ex.getMessage());
+            minioStorageMetricsService.trackRequestError(REMOVE_OBJECT_METHOD);
             throw new ObjectStorageException(ex);
         }
     }
@@ -134,12 +149,14 @@ public class MinioStorageService {
                             .build()
             );
             stopWatch.stop();
+            minioStorageMetricsService.trackRequestSuccess(GET_OBJECT_PRESIGNED_URL_METHOD);
             log.info("Presigned url [{}] has been fetched for object path [{}]. Total time {} s", objectPresignedUrl,
                     presignedUrlObject, stopWatch.getTotalTimeSeconds());
             return objectPresignedUrl;
         } catch (Exception ex) {
             log.error("There was an error while get presigned url for object path [{}]: {}", presignedUrlObject,
                     ex.getMessage());
+            minioStorageMetricsService.trackRequestError(GET_OBJECT_PRESIGNED_URL_METHOD);
             throw new ObjectStorageException(ex);
         }
     }
