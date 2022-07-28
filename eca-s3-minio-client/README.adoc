@@ -1,0 +1,57 @@
+= Библиотека eca-s3-minio-client
+:toc:
+:toc-title: Оглавление
+
+== Введение
+
+В данном документе приведена инструкция для подключения библиотеки к spring boot приложению.
+
+== 1. Базовые настройки библиотеки
+
+Для начала, необходимо добавить зависимость в pom.xml
+
+[source,xml]
+----
+<dependency>
+    <groupId>eca.service</groupId>
+    <artifactId>eca-s3-minio-client</artifactId>
+    <version>${project.version}</version>
+</dependency>
+----
+
+В файле application.yml добавить настройки библиотеки
+
+[source,yml]
+----
+minio:
+  ## URL S3 minio
+  url: http://localhost:9000
+  ## Прокси URL s3 minio (используется для формировании presigned url)
+  proxyUrl: http://localhost:9000
+  ## Логин для доступа к s3
+  accessKey: minio
+  ## Пароль для доступа к s3
+  secretKey: minio-pa66word
+  ## Имя бакета
+  bucketName: eca-service
+----
+
+Для поддержки метрик добавить конфигурацию
+
+[source,java]
+----
+@Configuration
+public class MetricsConfiguration {
+
+    /**
+     * Creates timed aspect bean.
+     *
+     * @param meterRegistry - meter registry
+     * @return timed aspect bean
+     */
+    @Bean
+    public TimedAspect timedAspect(MeterRegistry meterRegistry) {
+        return new TimedAspect(meterRegistry);
+    }
+}
+----
