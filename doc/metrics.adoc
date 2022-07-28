@@ -201,7 +201,7 @@ a|`core_retry_request_error_total{application="eca-server",request_type="ersEval
 |*core_retries_failed_total{application="eca-server",request_type="ersEvaluationResultsRequest",}*
 |Счетчик числа неуспешных попыток повторной отправки запросов в ERS сервис
 a|`core_retries_failed_total{application="eca-server",request_type="ersEvaluationResultsRequest",} 3.0`
-|*ore_retries_success_total{application="eca-server",request_type="ersEvaluationResultsRequest",}*
+|*core_retries_success_total{application="eca-server",request_type="ersEvaluationResultsRequest",}*
 |Счетчик числа успешных попыток повторной отправки запросов в ERS сервис
 a|`core_retries_success_total{application="eca-server",request_type="ersEvaluationResultsRequest",} 1.0`
 |*core_retries_exhausted_total{application="eca-server",request_type="ersEvaluationResultsRequest",}*
@@ -210,7 +210,55 @@ a|`core_retries_exhausted_total{application="eca-server",request_type="ersEvalua
 |*core_retries_error_total{application="eca-server",request_type="ersEvaluationResultsRequest",}*
 |Счетчик числа критических ошибок при повторной отправки запросов в ERS сервис
 a|`core_retries_error_total{application="eca-server",request_type="ersEvaluationResultsRequest",} 0.0`
-|**
+|*s3_storage_request_success_total*
+|Счетчик числа успешных запросов в S3, параметризированный по названию метода (method)
+a|
+`s3_storage_request_success_total{application="eca-server",method="uploadObject",} 2.0`
+
+`s3_storage_request_success_total{application="eca-server",method="getObjectPresignedUrl",} 1.0`
+
+`s3_storage_request_success_total{application="eca-server",method="downloadObject",} 1.0`
+|*s3_storage_request_error_total*
+|Счетчик числа неудачных запросов в S3, параметризированный по названию метода (method)
+a|
+`s3_storage_request_error_total{application="eca-server",method="uploadObject",} 2.0`
+
+`s3_storage_request_error_total{application="eca-server",method="getObjectPresignedUrl",} 1.0`
+
+`s3_storage_request_error_total{application="eca-server",method="downloadObject",} 1.0`
+|*s3_storage_object_size_bytes_max*
+|Макс. размер объекта в байтах
+a|`s3_storage_object_size_bytes_max{application="eca-server",} 0.0`
+|*s3_storage_object_size_bytes_count*
+|Число объектов, загружаемых в S3
+a|`s3_storage_object_size_bytes_count{application="eca-server",} 2.0`
+|*s3_storage_object_size_bytes_sum*
+|Суммарное число байт, загружаемых в S3
+a|`s3_storage_object_size_bytes_sum{application="eca-server",} 1040000.0`
+|*s3_storage_object_request_seconds_max*
+|Макс. время выполнения запроса к S3
+a|
+`s3_storage_object_request_seconds_max{application="eca-server",method="uploadObject",} 0.215628113`
+
+`s3_storage_object_request_seconds_max{application="eca-server",method="getObject",} 0.014323351`
+
+`s3_storage_object_request_seconds_max{application="eca-server",method="getObjectPresignedProxyUrl",} 0.00887841`
+|*s3_storage_object_request_seconds_count*
+|Счетчик числа запросов к S3, параметризированный по названию метода (method)
+a|
+`s3_storage_object_request_seconds_count{application="eca-server",method="uploadObject",} 2.0`
+
+`s3_storage_object_request_seconds_count{application="eca-server",method="getObject",} 1.0`
+
+`s3_storage_object_request_seconds_count{application="eca-server",method="getObjectPresignedProxyUrl",} 1.0`
+|*s3_storage_object_request_seconds_sum*
+|Счетчик суммарного времи выполнения запросов к S3, параметризированный по названию метода (method)
+a|
+`s3_storage_object_request_seconds_sum{application="eca-server",method="uploadObject",} 0.261802647`
+
+`s3_storage_object_request_seconds_sum{application="eca-server",method="getObject",} 0.014323351`
+
+`s3_storage_object_request_seconds_sum{application="eca-server",method="getObjectPresignedProxyUrl",} 0.00887841`
 |===
 
 == 3. Метрики Feign http клиента
