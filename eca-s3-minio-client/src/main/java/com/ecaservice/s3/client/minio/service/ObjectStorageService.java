@@ -16,10 +16,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.Serializable;
 
-import static com.ecaservice.s3.client.minio.metrics.MetricConstants.DOWNLOAD_OBJECT_METRIC;
-import static com.ecaservice.s3.client.minio.metrics.MetricConstants.GET_PRESIGNED_URL_METRIC;
-import static com.ecaservice.s3.client.minio.metrics.MetricConstants.REMOVE_OBJECT_METRIC;
-import static com.ecaservice.s3.client.minio.metrics.MetricConstants.UPLOAD_OBJECT_METRIC;
+import static com.ecaservice.s3.client.minio.metrics.MetricConstants.OBJECT_REQUEST_METRIC;
 
 /**
  * Object storage service.
@@ -40,7 +37,7 @@ public class ObjectStorageService {
      * @param objectPath - object path in S3
      * @throws IOException in case of I/O error
      */
-    @Timed(value = UPLOAD_OBJECT_METRIC)
+    @Timed(value = OBJECT_REQUEST_METRIC)
     public void uploadObject(Serializable object, String objectPath) throws IOException {
         log.info("Starting to upload object [{}] to storage", objectPath);
         log.info("Starting to serialize object [{}]", objectPath);
@@ -69,7 +66,7 @@ public class ObjectStorageService {
      * @throws IOException            in case of I/O error
      * @throws ClassNotFoundException in case of class not found errors
      */
-    @Timed(value = DOWNLOAD_OBJECT_METRIC)
+    @Timed(value = OBJECT_REQUEST_METRIC)
     public <T> T getObject(String objectPath, Class<T> targetClazz) throws IOException, ClassNotFoundException {
         log.info("Starting to get object [{}] with class [{}] from storage", objectPath, targetClazz.getName());
         var stopWatch = new StopWatch();
@@ -90,7 +87,7 @@ public class ObjectStorageService {
      * @param presignedUrlObject - presigned url object
      * @return presigned proxy url
      */
-    @Timed(value = GET_PRESIGNED_URL_METRIC)
+    @Timed(value = OBJECT_REQUEST_METRIC)
     public String getObjectPresignedProxyUrl(GetPresignedUrlObject presignedUrlObject) {
         return minioStorageService.getObjectPresignedProxyUrl(presignedUrlObject);
     }
@@ -100,7 +97,7 @@ public class ObjectStorageService {
      *
      * @param objectPath - object path
      */
-    @Timed(value = REMOVE_OBJECT_METRIC)
+    @Timed(value = OBJECT_REQUEST_METRIC)
     public void removeObject(String objectPath) {
         minioStorageService.removeObject(objectPath);
     }
