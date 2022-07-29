@@ -1,0 +1,7 @@
+[
+  {
+    "fieldName": null,
+    "code": "InvalidMessageType",
+    "errorMessage": "Invalid message type [abc]"
+  }
+]
