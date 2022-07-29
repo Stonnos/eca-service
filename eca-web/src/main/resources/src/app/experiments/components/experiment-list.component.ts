@@ -25,6 +25,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { ValidationService } from "../../common/services/validation.service";
 import { ValidationErrorCode } from "../../common/model/validation-error-code";
 import { PushVariables } from "../../common/util/push-variables";
+import {environment} from "../../../environments/environment";
 
 @Component({
   selector: 'app-experiment-list',
@@ -214,6 +215,9 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
     this.experimentsUpdatesSubscriptions = this.wsService.subscribe('/queue/experiment')
       .subscribe({
         next: (message) => {
+          if (environment.debug) {
+            console.debug(`Received experiment web push ${message.body}`)
+          }
           const pushRequestDto: PushRequestDto = JSON.parse(message.body);
           this.lastCreatedId = pushRequestDto.additionalProperties[PushVariables.EXPERIMENT_REQUEST_ID];
           this.showMessage(pushRequestDto);

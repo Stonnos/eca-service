@@ -37,7 +37,7 @@ export class ClassifierOptionsService {
       .set('configurationId', configurationId.toString());
     const options = { headers: headers, params: params };
     if (environment.debug) {
-      console.log(`Adds classifier options ${JSON.stringify(classifierOptions)} for configuration ${configurationId}`);
+      console.debug(`Adds classifier options ${JSON.stringify(classifierOptions)} for configuration ${configurationId}`);
     }
     return this.http.post(this.serviceUrl + '/add', classifierOptions, options);
   }
