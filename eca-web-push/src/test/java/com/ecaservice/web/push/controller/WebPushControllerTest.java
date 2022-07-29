@@ -1,7 +1,7 @@
 package com.ecaservice.web.push.controller;
 
 import com.ecaservice.common.web.annotation.EnableGlobalExceptionHandler;
-import com.ecaservice.web.dto.model.ExperimentDto;
+import com.ecaservice.web.dto.model.push.PushRequestDto;
 import com.ecaservice.web.push.config.ws.QueueConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -19,7 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import javax.inject.Inject;
 
-import static com.ecaservice.web.push.TestHelperUtils.createExperimentDto;
+import static com.ecaservice.web.push.TestHelperUtils.createPushRequestDto;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
@@ -41,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class WebPushControllerTest {
 
     private static final String BASE_URL = "/push";
-    private static final String EXPERIMENT_PUSH_URL = BASE_URL + "/experiment";
+    private static final String SEND_PUSH_URL = BASE_URL + "/send";
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -57,14 +57,15 @@ class WebPushControllerTest {
     private ArgumentCaptor<String> destinationCaptor;
 
     @Test
-    void testPushExperiment() throws Exception {
-        var experimentDto = createExperimentDto();
-        mockMvc.perform(post(EXPERIMENT_PUSH_URL)
-                .content(objectMapper.writeValueAsString(experimentDto))
+    void testSendPush() throws Exception {
+        var pushRequestDto = createPushRequestDto();
+        mockMvc.perform(post(SEND_PUSH_URL)
+                .content(objectMapper.writeValueAsString(pushRequestDto))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-        verify(messagingTemplate, atLeastOnce()).convertAndSend(destinationCaptor.capture(), any(ExperimentDto.class));
+        verify(messagingTemplate, atLeastOnce()).convertAndSend(destinationCaptor.capture(), any(PushRequestDto.class));
         assertThat(destinationCaptor.getValue()).isNotNull();
-        assertThat(destinationCaptor.getValue()).isEqualTo(queueConfig.getExperimentQueue());
+        assertThat(destinationCaptor.getValue()).isEqualTo(
+                queueConfig.getBindings().get(pushRequestDto.getMessageType()));
     }
 }
