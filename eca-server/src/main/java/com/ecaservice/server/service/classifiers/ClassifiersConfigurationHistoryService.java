@@ -31,9 +31,9 @@ import java.util.stream.Collectors;
 
 import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.server.model.entity.ClassifiersConfigurationHistoryEntity_.CREATED_AT;
-import static com.ecaservice.server.service.message.template.MessageTemplateVariables.CLASSIFIERS_CONFIGURATION_PARAM;
-import static com.ecaservice.server.service.message.template.MessageTemplateVariables.CLASSIFIER_OPTIONS_DESCRIPTION;
-import static com.ecaservice.server.service.message.template.MessageTemplateVariables.CLASSIFIER_OPTIONS_ID;
+import static com.ecaservice.server.service.message.template.dictionary.MessageTemplateVariables.CLASSIFIERS_CONFIGURATION_PARAM;
+import static com.ecaservice.server.service.message.template.dictionary.MessageTemplateVariables.CLASSIFIER_OPTIONS_DESCRIPTION;
+import static com.ecaservice.server.service.message.template.dictionary.MessageTemplateVariables.CLASSIFIER_OPTIONS_ID;
 
 /**
  * Classifiers configuration history service.
