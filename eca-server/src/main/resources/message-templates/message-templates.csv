@@ -5,3 +5,8 @@ SET_ACTIVE;Конфигурация сделана активной
 DEACTIVATE;Конфигурация перестала быть активной
 ADD_CLASSIFIER_OPTIONS;Добавлены настройки классификатора [${classifierOptionsDescription}]. Идентификатор настроек [${classifierOptionsId}]
 REMOVE_CLASSIFIER_OPTIONS;Удалены настройки классификатора [${classifierOptionsDescription}]. Идентификатор настроек [${classifierOptionsId}]
+NEW_EXPERIMENT;Поступила новая заявка на эксперимент ${experiment.requestId}
+IN_PROGRESS_EXPERIMENT;Заявка на эксперимент ${experiment.requestId} поступила в работу
+FINISHED_EXPERIMENT;Эксперимент ${experiment.requestId} успешно завершен
+ERROR_EXPERIMENT;Эксперимент ${experiment.requestId} завершился с ошибкой
+TIMEOUT_EXPERIMENT;Таймаут при обработке заявки на эксперимент ${experiment.requestId}

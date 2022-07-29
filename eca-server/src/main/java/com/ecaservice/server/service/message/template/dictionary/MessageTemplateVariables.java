@@ -1,4 +1,4 @@
-package com.ecaservice.server.service.message.template;
+package com.ecaservice.server.service.message.template.dictionary;
 
 import lombok.experimental.UtilityClass;
 
@@ -24,4 +24,9 @@ public class MessageTemplateVariables {
      * Classifier options description
      */
     public static final String CLASSIFIER_OPTIONS_DESCRIPTION = "classifierOptionsDescription";
+
+    /**
+     * Experiment
+     */
+    public static final String EXPERIMENT = "experiment";
 }

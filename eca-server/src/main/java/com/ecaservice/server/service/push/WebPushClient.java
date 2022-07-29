@@ -1,6 +1,6 @@
 package com.ecaservice.server.service.push;
 
-import com.ecaservice.web.dto.model.ExperimentDto;
+import com.ecaservice.web.dto.model.push.PushRequestDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 public interface WebPushClient {
 
     /**
-     * Sends web push with experiment changes.
+     * Sends web push.
      *
-     * @param experimentDto - experiment dto
+     * @param pushRequestDto - push request dto
      */
-    @PostMapping(value = "/experiment")
-    void push(ExperimentDto experimentDto);
+    @PostMapping(value = "/send")
+    void sendPush(PushRequestDto pushRequestDto);
 }

@@ -1,0 +1,254 @@
+= Web pushes microservice
+Автор: Roman Batygin
+(roman.batygin@mail.ru)
+:toc:
+:toc-title: Table of contents
+
+== Overview
+
+API provides operations for sending web pushes
+
+
+== Send web push
+
+__POST__ */push/send* - Send web push
+
+
+*Request body*
+
+[width=100%]
+|===
+|*Content type*|*Required*|*Schema*|*Example*
+|*application/json*
+|true
+|
+<<PushRequestDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "requestId" : "1d2de514-3a87-4620-9b97-c260e24340de",
+  "messageType" : "EXPERIMENT_STATUS",
+  "messageText" : "Поступила новая заявка на эксперимент 1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
+  "additionalProperties" : {
+    "experimentId" : "1",
+    "experimentRequestId" : "1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
+    "experimentRequestStatus" : "NEW"
+  }
+}
+----
+|===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*-*
+|-
+a|
+-
+|400
+|Bad request
+|*application/json*
+|
+__array__
+<<<ValidationErrorDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+[ {
+  "code" : "InvalidMessageType",
+  "errorMessage" : "Invalid message type [abc]"
+} ]
+----
+|===
+
+
+== Components
+=== ValidationErrorDto
+:table-caption: Table
+.Validation error model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*fieldName*
+|Field name
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*code*
+|Error code
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*errorMessage*
+|Error message
+a|
+__string__
+
+
+
+
+*Max. length*: 1,000
+
+
+
+
+
+
+
+
+
+
+|===
+=== PushRequestDto
+:table-caption: Table
+.Push request
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*requestId**
+|Request id
+a|
+__string__
+
+
+*Min. length*: 1
+
+*Max. length*: 36
+
+
+
+
+
+
+
+*Pattern*: `^[0-9a-f]{8}-[0-9a-f]{4}-[34][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`
+
+
+|*messageType**
+|Message type
+a|
+__string__
+
+
+*Min. length*: 1
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* EXPERIMENT_STATUS
+|*messageText*
+|Message text
+a|
+__string__
+
+
+*Min. length*: 0
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*additionalProperties*
+|-
+a|
+__array__
+<object
+>
+
+
+
+
+
+
+
+
+*Min. items*: 0
+
+*Max. items*: 50
+
+
+
+
+|===

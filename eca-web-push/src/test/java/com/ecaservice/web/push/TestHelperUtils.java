@@ -1,10 +1,8 @@
 package com.ecaservice.web.push;
 
-import com.ecaservice.web.dto.model.EnumDto;
-import com.ecaservice.web.dto.model.ExperimentDto;
+import com.ecaservice.web.dto.model.push.PushRequestDto;
 import lombok.experimental.UtilityClass;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
@@ -15,21 +13,17 @@ import java.util.UUID;
 @UtilityClass
 public class TestHelperUtils {
 
-    private static final String FIRST_NAME = "FirstName";
-    private static final String EMAIL = "test@mail.ru";
+    public static final String EXPERIMENT_STATUS = "EXPERIMENT_STATUS";
 
     /**
-     * Creates experiment dto.
+     * Creates push request dto.
      *
-     * @return experiment dto
+     * @return push request dto
      */
-    public static ExperimentDto createExperimentDto() {
-        var experimentDto = new ExperimentDto();
-        experimentDto.setRequestId(UUID.randomUUID().toString());
-        experimentDto.setCreationDate(LocalDateTime.now());
-        experimentDto.setRequestStatus(new EnumDto());
-        experimentDto.setEmail(EMAIL);
-        experimentDto.setFirstName(FIRST_NAME);
-        return experimentDto;
+    public static PushRequestDto createPushRequestDto() {
+        var pushRequestDto = new PushRequestDto();
+        pushRequestDto.setRequestId(UUID.randomUUID().toString());
+        pushRequestDto.setMessageType(EXPERIMENT_STATUS);
+        return pushRequestDto;
     }
 }

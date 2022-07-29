@@ -23,7 +23,8 @@ auth-server:
   clientSecret: 02#eca_service_tech6
 
 queues:
-  experimentQueue: /queue/experiment
+  bindings:
+    EXPERIMENT_STATUS: /queue/experiment
 
 ## Swagger properties
 open-api:

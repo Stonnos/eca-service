@@ -2,6 +2,11 @@ package com.ecaservice.web.push.config.ws;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.validation.annotation.Validated;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import java.util.Map;
 
 /**
  * Queues properties.
@@ -9,11 +14,13 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @author Roman Batygin
  */
 @Data
+@Validated
 @ConfigurationProperties("queues")
 public class QueueConfig {
 
     /**
-     * Experiment queue
+     * Bindings map
      */
-    private String experimentQueue;
+    @NotEmpty
+    private Map<@NotBlank String, @NotBlank String> bindings;
 }
