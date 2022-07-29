@@ -36,7 +36,8 @@ public class PushRequestDto {
      */
     @NotBlank
     @Size(min = VALUE_1, max = MAX_LENGTH_255)
-    @Schema(description = "Message type", example = "EXPERIMENT_STATUS", required = true)
+    @Schema(description = "Message type", example = "EXPERIMENT_STATUS", required = true,
+            allowableValues = "EXPERIMENT_STATUS")
     private String messageType;
 
     /**
