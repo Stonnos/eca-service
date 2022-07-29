@@ -25,7 +25,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { ValidationService } from "../../common/services/validation.service";
 import { ValidationErrorCode } from "../../common/model/validation-error-code";
 import { PushVariables } from "../../common/util/push-variables";
-import {environment} from "../../../environments/environment";
+import { environment } from "../../../environments/environment";
 
 @Component({
   selector: 'app-experiment-list',
@@ -212,7 +212,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
 
   private subscribeForExperimentsUpdates(): void {
     this.wsService = new WsService();
-    this.experimentsUpdatesSubscriptions = this.wsService.subscribe('/queue/experiment')
+    this.experimentsUpdatesSubscriptions = this.wsService.subscribe(environment.experimentsQueue)
       .subscribe({
         next: (message) => {
           if (environment.debug) {
