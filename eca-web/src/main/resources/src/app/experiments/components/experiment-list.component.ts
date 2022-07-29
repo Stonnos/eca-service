@@ -216,7 +216,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
       .subscribe({
         next: (message) => {
           if (environment.debug) {
-            console.debug(`Received experiment web push ${message.body}`)
+            console.log(`Received experiment web push ${message.body}`)
           }
           const pushRequestDto: PushRequestDto = JSON.parse(message.body);
           this.lastCreatedId = pushRequestDto.additionalProperties[PushVariables.EXPERIMENT_REQUEST_ID];
