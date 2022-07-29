@@ -2,7 +2,7 @@ import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
 import {
   CreateExperimentResultDto,
   ExperimentDto, FilterDictionaryDto, FilterDictionaryValueDto, FilterFieldDto, PageDto,
-  PageRequestDto, RequestStatusStatisticsDto, ValidationErrorDto
+  PageRequestDto, PushRequestDto, RequestStatusStatisticsDto, ValidationErrorDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ExperimentsService } from "../services/experiments.service";
 import { MessageService } from "primeng/api";
@@ -21,10 +21,10 @@ import { EvaluationMethod } from "../../common/model/evaluation-method.enum";
 import { ReportType } from "../../common/model/report-type.enum";
 import { WsService } from "../../common/websockets/ws.service";
 import { Subscription } from "rxjs";
-import { RequestStatus } from "../../common/model/request-status.enum";
 import { HttpErrorResponse } from "@angular/common/http";
 import { ValidationService } from "../../common/services/validation.service";
 import { ValidationErrorCode } from "../../common/model/validation-error-code";
+import { PushVariables } from "../../common/util/push-variables";
 
 @Component({
   selector: 'app-experiment-list',
@@ -214,9 +214,9 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
     this.experimentsUpdatesSubscriptions = this.wsService.subscribe('/queue/experiment')
       .subscribe({
         next: (message) => {
-          const experimentDto: ExperimentDto = JSON.parse(message.body);
-          this.lastCreatedId = experimentDto.id;
-          this.showMessage(experimentDto);
+          const pushRequestDto: PushRequestDto = JSON.parse(message.body);
+          this.lastCreatedId = pushRequestDto.additionalProperties[PushVariables.EXPERIMENT_REQUEST_ID];
+          this.showMessage(pushRequestDto);
           this.reloadPage(false);
           this.getRequestStatusesStatistics();
         },
@@ -226,12 +226,8 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
       });
   }
 
-  private showMessage(experimentDto: ExperimentDto): void {
-    if (experimentDto.requestStatus.value == RequestStatus.NEW) {
-      this.messageService.add({ severity: 'info', summary: `Поступила новая заявка на эксперимент ${experimentDto.requestId}`, detail: '' });
-    } else if (experimentDto.requestStatus.value == RequestStatus.FINISHED) {
-      this.messageService.add({ severity: 'info', summary: `Эксперимент ${experimentDto.requestId} успешно завершен`, detail: '' });
-    }
+  private showMessage(pushRequestDto: PushRequestDto): void {
+    this.messageService.add({ severity: 'info', summary: pushRequestDto.messageText, detail: '' });
   }
 
   private handleCreateExperimentError(error): void {
