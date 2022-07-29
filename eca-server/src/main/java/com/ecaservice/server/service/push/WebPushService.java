@@ -18,6 +18,7 @@ import static com.ecaservice.server.service.message.template.dictionary.MessageT
 import static com.ecaservice.server.service.message.template.dictionary.MessageTemplateCodes.NEW_EXPERIMENT;
 import static com.ecaservice.server.service.message.template.dictionary.MessageTemplateCodes.TIMEOUT_EXPERIMENT;
 import static com.ecaservice.server.service.message.template.dictionary.MessageTemplateVariables.EXPERIMENT;
+import static com.ecaservice.server.service.push.dictionary.PushProperties.EXPERIMENT_ID_PROPERTY;
 import static com.ecaservice.server.service.push.dictionary.PushProperties.EXPERIMENT_REQUEST_ID_PROPERTY;
 import static com.ecaservice.server.service.push.dictionary.PushProperties.EXPERIMENT_REQUEST_STATUS_PROPERTY;
 import static com.ecaservice.server.service.push.dictionary.PushProperties.EXPERIMENT_STATUS_MESSAGE_TYPE;
@@ -59,6 +60,7 @@ public class WebPushService {
         String messageText = processMessageText(experiment);
         pushRequest.setMessageText(messageText);
         pushRequest.setAdditionalProperties(Map.of(
+                EXPERIMENT_ID_PROPERTY, String.valueOf(experiment.getId()),
                 EXPERIMENT_REQUEST_ID_PROPERTY, experiment.getRequestId(),
                 EXPERIMENT_REQUEST_STATUS_PROPERTY, experiment.getRequestStatus().name()
         ));

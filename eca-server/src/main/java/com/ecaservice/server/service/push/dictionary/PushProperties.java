@@ -16,6 +16,11 @@ public class PushProperties {
     public static final String EXPERIMENT_STATUS_MESSAGE_TYPE = "EXPERIMENT_STATUS";
 
     /**
+     * Experiment id property
+     */
+    public static final String EXPERIMENT_ID_PROPERTY = "experimentId";
+
+    /**
      * Experiment request id property
      */
     public static final String EXPERIMENT_REQUEST_ID_PROPERTY = "experimentRequestId";

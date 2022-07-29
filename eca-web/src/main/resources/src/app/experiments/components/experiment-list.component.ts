@@ -219,7 +219,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
             console.log(`Received experiment web push ${message.body}`)
           }
           const pushRequestDto: PushRequestDto = JSON.parse(message.body);
-          this.lastCreatedId = pushRequestDto.additionalProperties[PushVariables.EXPERIMENT_REQUEST_ID];
+          this.lastCreatedId = pushRequestDto.additionalProperties[PushVariables.EXPERIMENT_ID];
           this.showMessage(pushRequestDto);
           this.reloadPage(false);
           this.getRequestStatusesStatistics();

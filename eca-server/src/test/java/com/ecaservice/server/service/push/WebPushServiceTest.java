@@ -19,6 +19,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.UUID;
 
 import static com.ecaservice.server.TestHelperUtils.createExperiment;
+import static com.ecaservice.server.service.push.dictionary.PushProperties.EXPERIMENT_ID_PROPERTY;
 import static com.ecaservice.server.service.push.dictionary.PushProperties.EXPERIMENT_REQUEST_ID_PROPERTY;
 import static com.ecaservice.server.service.push.dictionary.PushProperties.EXPERIMENT_REQUEST_STATUS_PROPERTY;
 import static com.ecaservice.server.service.push.dictionary.PushProperties.EXPERIMENT_STATUS_MESSAGE_TYPE;
@@ -41,6 +42,7 @@ import static org.mockito.Mockito.when;
 class WebPushServiceTest {
 
     private static final String MESSAGE_TEXT = "Message text";
+    private static final long ID = 1L;
 
     @Mock
     private WebPushClient webPushClient;
@@ -60,6 +62,7 @@ class WebPushServiceTest {
     @Test
     void testSendPush() {
         var experiment = createExperiment(UUID.randomUUID().toString());
+        experiment.setId(ID);
         when(messageTemplateProcessor.process(anyString(), anyMap())).thenReturn(MESSAGE_TEXT);
         webPushService.sendWebPush(experiment);
         verify(webPushClient, atLeastOnce()).sendPush(pushRequestDtoArgumentCaptor.capture());
@@ -68,6 +71,7 @@ class WebPushServiceTest {
         assertThat(pushRequestDto.getRequestId()).isNotNull();
         assertThat(pushRequestDto.getMessageType()).isEqualTo(EXPERIMENT_STATUS_MESSAGE_TYPE);
         assertThat(pushRequestDto.getAdditionalProperties())
+                .containsEntry(EXPERIMENT_ID_PROPERTY, String.valueOf(experiment.getId()))
                 .containsEntry(EXPERIMENT_REQUEST_ID_PROPERTY, experiment.getRequestId())
                 .containsEntry(EXPERIMENT_REQUEST_STATUS_PROPERTY, experiment.getRequestStatus().name());
     }
