@@ -64,8 +64,6 @@ class ClassifierOptionsDatabaseModelMapperTest {
         assertThat(classifiersConfigurationBean.getConfig()).isEqualTo(classifierOptionsDatabaseModel.getConfig());
         assertThat(classifiersConfigurationBean.getCreatedBy()).isEqualTo(
                 classifierOptionsDatabaseModel.getCreatedBy());
-        assertThat(classifiersConfigurationBean.getOptionsName()).isEqualTo(
-                classifierOptionsDatabaseModel.getOptionsName());
         assertThat(classifiersConfigurationBean.getCreationDate()).isNotNull();
     }
 }

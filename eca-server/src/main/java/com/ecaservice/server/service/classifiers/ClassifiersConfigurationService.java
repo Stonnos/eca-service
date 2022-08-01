@@ -5,6 +5,7 @@ import com.ecaservice.common.web.exception.InvalidOperationException;
 import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.core.lock.annotation.Locked;
+import com.ecaservice.report.model.ClassifierOptionsBean;
 import com.ecaservice.report.model.ClassifiersConfigurationBean;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.filter.ClassifiersConfigurationFilter;
@@ -59,6 +60,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
     private final ClassifierOptionsDatabaseModelMapper classifierOptionsDatabaseModelMapper;
     private final AppProperties appProperties;
     private final ClassifiersConfigurationHistoryService classifiersConfigurationHistoryService;
+    private final ClassifiersTemplateProvider classifiersTemplateProvider;
     private final ClassifiersConfigurationRepository classifiersConfigurationRepository;
     private final ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;
 
@@ -238,14 +240,19 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
      * @return classifiers configuration report
      */
     public ClassifiersConfigurationBean getClassifiersConfigurationReport(long id) {
+        log.info("Starting to get classifiers configuration [{}] report data", id);
         var classifiersConfiguration = getById(id);
         var classifierOptionsDatabaseModels =
                 classifierOptionsDatabaseModelRepository.findAllByConfigurationOrderByCreationDateDesc(
                         classifiersConfiguration);
         var classifiersConfigurationBean = classifiersConfigurationMapper.mapToBean(classifiersConfiguration);
         classifiersConfigurationBean.setClassifiersOptionsCount(classifierOptionsDatabaseModels.size());
-        classifiersConfigurationBean.setClassifiersOptions(
-                classifierOptionsDatabaseModelMapper.mapToBeans(classifierOptionsDatabaseModels));
+        var classifierOptionsBeans = classifierOptionsDatabaseModels
+                .stream()
+                .map(this::internalPopulateClassifierOptionsBean)
+                .collect(Collectors.toList());
+        classifiersConfigurationBean.setClassifiersOptions(classifierOptionsBeans);
+        log.info("Classifiers configuration [{}] report data has been fetched", id);
         return classifiersConfigurationBean;
     }
 
@@ -279,5 +286,14 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
         log.info("[{}] classifiers options has been copied for configuration [{}]", classifierOptionsCopies.size(),
                 classifiersConfiguration.getId());
         return classifierOptionsCopies;
+    }
+
+    private ClassifierOptionsBean internalPopulateClassifierOptionsBean(
+            ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel) {
+        var classifierOptionsBean = classifierOptionsDatabaseModelMapper.mapToBean(classifierOptionsDatabaseModel);
+        var classifierFormTemplate = classifiersTemplateProvider.getClassifierTemplateByClass(
+                classifierOptionsDatabaseModel.getOptionsName());
+        classifierOptionsBean.setOptionsName(classifierFormTemplate.getTemplateTitle());
+        return classifierOptionsBean;
     }
 }

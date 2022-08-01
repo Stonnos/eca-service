@@ -11,3 +11,12 @@
     font-size: 16px;
   }
 }
+
+.form-template-panel::ng-deep {
+
+  .ui-panel {
+    width: 100%;
+    max-height: 500px;
+    overflow-y: scroll;
+  }
+}

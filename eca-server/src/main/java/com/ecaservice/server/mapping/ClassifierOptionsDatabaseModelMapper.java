@@ -32,15 +32,8 @@ public interface ClassifierOptionsDatabaseModelMapper {
      * @return classifier options report bean model
      */
     @Mapping(source = "creationDate", target = "creationDate", qualifiedByName = "formatLocalDateTime")
+    @Mapping(target = "optionsName", ignore = true)
     ClassifierOptionsBean mapToBean(ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel);
-
-    /**
-     * Maps classifier options database models list to report beans list.
-     *
-     * @param classifierOptionsDatabaseModels classifier options database model
-     * @return classifier options report beans
-     */
-    List<ClassifierOptionsBean> mapToBeans(List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels);
 
     /**
      * Maps classifier options database models list to dto models list.
