@@ -63,7 +63,7 @@ public class Constraints {
     /**
      * Hidden layer regex
      */
-    public static final String HIDDEN_LAYER_REGEX = "^([0-9],?)+$";
+    public static final String HIDDEN_LAYER_REGEX = "^|(([0-9],?)+)$";
 
     /**
      * Max individual classifiers
