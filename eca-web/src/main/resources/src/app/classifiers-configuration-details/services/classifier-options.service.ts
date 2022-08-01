@@ -8,6 +8,7 @@ import {
 import { Observable } from "rxjs/internal/Observable";
 import { environment } from "../../../environments/environment";
 import { Utils } from "../../common/util/utils";
+import { Logger } from "../../common/util/logging";
 
 @Injectable()
 export class ClassifierOptionsService {
@@ -36,9 +37,7 @@ export class ClassifierOptionsService {
     const params: HttpParams = new HttpParams()
       .set('configurationId', configurationId.toString());
     const options = { headers: headers, params: params };
-    if (environment.debug) {
-      console.log(`Adds classifier options ${JSON.stringify(classifierOptions)} for configuration ${configurationId}`);
-    }
+    Logger.debug(`Adds classifier options ${JSON.stringify(classifierOptions)} for configuration ${configurationId}`);
     return this.http.post(this.serviceUrl + '/add', classifierOptions, options);
   }
 

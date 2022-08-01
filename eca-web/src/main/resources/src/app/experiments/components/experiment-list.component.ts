@@ -26,6 +26,7 @@ import { ValidationService } from "../../common/services/validation.service";
 import { ValidationErrorCode } from "../../common/model/validation-error-code";
 import { PushVariables } from "../../common/util/push-variables";
 import { environment } from "../../../environments/environment";
+import { Logger } from "../../common/util/logging";
 
 @Component({
   selector: 'app-experiment-list',
@@ -215,9 +216,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
     this.experimentsUpdatesSubscriptions = this.wsService.subscribe(environment.experimentsQueue)
       .subscribe({
         next: (message) => {
-          if (environment.debug) {
-            console.log(`Received experiment web push ${message.body}`)
-          }
+          Logger.debug(`Received experiment web push ${message.body}`);
           const pushRequestDto: PushRequestDto = JSON.parse(message.body);
           this.lastCreatedId = pushRequestDto.additionalProperties[PushVariables.EXPERIMENT_ID];
           this.showMessage(pushRequestDto);

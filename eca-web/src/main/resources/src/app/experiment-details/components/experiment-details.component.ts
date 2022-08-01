@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   ExperimentDto,
   ExperimentErsReportDto,
-  ExperimentProgressDto
+  ExperimentProgressDto, PushRequestDto,
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { MessageService } from "primeng/api";
 import { ActivatedRoute } from "@angular/router";
@@ -13,6 +13,11 @@ import { FieldService } from "../../common/services/field.service";
 import { Utils } from "../../common/util/utils";
 import { Subscription, timer } from "rxjs";
 import { RequestStatus } from "../../common/model/request-status.enum";
+import { WsService } from "../../common/websockets/ws.service";
+import { environment } from "../../../environments/environment";
+import { Logger } from "../../common/util/logging";
+import { filter } from "rxjs/internal/operators";
+import { PushVariables } from "../../common/util/push-variables";
 
 @Component({
   selector: 'app-experiment-details',
@@ -24,7 +29,8 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
   private readonly id: number;
 
   private readonly updateProgressInterval = 1000;
-  private readonly updateStatusInterval = 3000;
+
+  private readonly finalRequestStatuses = ['FINISHED', 'ERROR', 'TIMEOUT'];
 
   public experimentFields: any[] = [];
 
@@ -34,11 +40,14 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
 
   public experimentProgress: ExperimentProgressDto;
 
-  private updateSubscription: Subscription = new Subscription();
-
   public loading = false;
 
   public linkColumns: string[] = [ExperimentFields.EXPERIMENT_PATH];
+
+  private wsService: WsService;
+
+  private experimentProgressSubscription: Subscription;
+  private experimentUpdatesSubscription: Subscription;
 
   public constructor(private experimentsService: ExperimentsService,
                      private messageService: MessageService,
@@ -54,7 +63,8 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
   }
 
   public ngOnDestroy(): void {
-    this.unSubscribe();
+    this.unSubscribeExperimentUpdates();
+    this.unSubscribeExperimentProgress();
   }
 
   public getExperiment(): void {
@@ -62,12 +72,13 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
       .subscribe({
         next: (experimentDto: ExperimentDto) => {
           this.experimentDto = experimentDto;
-          if (this.experimentDto.requestStatus.value == RequestStatus.NEW) {
+          if (!this.finalRequestStatuses.includes(this.experimentDto.requestStatus.value)) {
             //Subscribe for experiment status change
-            this.updateExperimentStatus();
-          } else if (this.experimentDto.requestStatus.value == RequestStatus.IN_PROGRESS) {
-            //Subscribe for experiment progress change
-            this.updateExperimentProgress();
+            this.subscribeForExperimentUpdate();
+            if (this.experimentDto.requestStatus.value == RequestStatus.IN_PROGRESS) {
+              //Subscribe for experiment progress change
+              this.subscribeForExperimentProgressUpdate();
+            }
           }
         },
         error: (error) => {
@@ -128,63 +139,83 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
     return this.fieldService.hasValue(field, this.experimentDto);
   }
 
-  private updateExperimentStatus(): void {
-    this.updateSubscription = timer(0, this.updateStatusInterval).subscribe({
-      next: () => {
-        this.experimentsService.getExperiment(this.id)
-          .subscribe({
-            next: (experimentDto: ExperimentDto) => {
-              if (this.experimentDto.requestStatus.value != experimentDto.requestStatus.value) {
-                //Update experiment data if status has been changed
-                this.experimentDto = experimentDto;
-                if (this.experimentDto.requestStatus.value == RequestStatus.IN_PROGRESS) {
-                  //Subscribe for experiment progress change
-                  this.unSubscribe();
-                  this.updateExperimentProgress();
-                } else {
-                  this.unSubscribe();
-                }
-                this.getExperimentErsReport();
-              }
-            },
-            error: (error) => {
-              this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error.message});
-            }
-          });
-      },
-      error: (error) => {
-        this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error.message});
-      }
-    });
-  }
-
-  private updateExperimentProgress(): void {
-    this.updateSubscription = timer(0, this.updateProgressInterval).subscribe({
-      next: () => {
-        this.experimentsService.getExperimentProgress(this.id)
-          .subscribe({
-            next: (experimentProgress: ExperimentProgressDto) => {
-              if (!experimentProgress.finished) {
+  private subscribeForExperimentProgressUpdate(): void {
+    if (!this.experimentProgressSubscription) {
+      Logger.debug(`Subscribe experiment ${this.experimentDto.requestId} progress change`);
+      this.experimentProgressSubscription = timer(0, this.updateProgressInterval).subscribe({
+        next: () => {
+          this.experimentsService.getExperimentProgress(this.id)
+            .subscribe({
+              next: (experimentProgress: ExperimentProgressDto) => {
                 this.experimentProgress = experimentProgress;
-              } else {
-                this.unSubscribe();
-                this.getExperiment();
-                this.getExperimentErsReport();
+                if (experimentProgress.finished) {
+                  this.unSubscribeExperimentProgress();
+                }
+              },
+              error: (error) => {
+                this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error.message});
               }
-            },
-            error: (error) => {
-              this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error.message});
-            }
-          });
-      },
-      error: (error) => {
-        this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error.message});
-      }
-    });
+            });
+        },
+        error: (error) => {
+          this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error.message});
+        }
+      });
+    }
   }
 
-  private unSubscribe(): void {
-    this.updateSubscription.unsubscribe();
+  private subscribeForExperimentUpdate(): void {
+    if (!this.experimentUpdatesSubscription) {
+      Logger.debug(`Subscribe experiment ${this.experimentDto.requestId} status change`);
+      this.wsService = new WsService();
+      this.experimentUpdatesSubscription = this.wsService.subscribe(environment.experimentsQueue)
+        .pipe(
+          filter(message => {
+            const pushRequestDto: PushRequestDto = JSON.parse(message.body);
+            const id = pushRequestDto.additionalProperties[PushVariables.EXPERIMENT_ID];
+            return this.experimentDto.id == Number(id);
+          })
+        )
+        .subscribe({
+          next: (message) => {
+            Logger.debug(`Received experiment web push ${message.body}`);
+            const pushRequestDto: PushRequestDto = JSON.parse(message.body);
+            this.handleExperimentPush(pushRequestDto);
+            this.getExperiment();
+            this.getExperimentErsReport();
+          },
+          error: (error) => {
+            this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+          }
+        });
+    }
+  }
+
+  private handleExperimentPush(pushRequestDto: PushRequestDto): void {
+    const requestStatus = pushRequestDto.additionalProperties[PushVariables.EXPERIMENT_REQUEST_STATUS];
+    if (this.finalRequestStatuses.includes(requestStatus)) {
+      this.unSubscribeExperimentUpdates();
+    }
+  }
+
+  private unSubscribeExperimentUpdates(): void {
+    if (this.experimentUpdatesSubscription) {
+      this.experimentUpdatesSubscription.unsubscribe();
+      this.experimentUpdatesSubscription = null;
+      Logger.debug(`Unsubscribe experiment ${this.experimentDto.requestId} status change`);
+    }
+    if (this.wsService) {
+      this.wsService.close();
+      this.wsService = null;
+    }
+  }
+
+  private unSubscribeExperimentProgress(): void {
+    if (this.experimentProgressSubscription) {
+      this.experimentProgressSubscription.unsubscribe();
+      this.experimentProgressSubscription = null;
+      Logger.debug(`Unsubscribe experiment ${this.experimentDto.requestId} progress change`);
+    }
   }
 
   private initExperimentFields(): void {
