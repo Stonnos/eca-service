@@ -113,7 +113,7 @@ public class MinioStorageService {
             stopWatch.start();
             minioClient.removeObject(
                     RemoveObjectArgs.builder()
-                            .bucket(objectPath)
+                            .bucket(minioClientProperties.getBucketName())
                             .object(objectPath)
                             .build()
             );
