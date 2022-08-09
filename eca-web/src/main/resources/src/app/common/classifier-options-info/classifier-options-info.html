@@ -46,19 +46,26 @@
   </p-tabPanel>
   <p-tabPanel header="JSON формат">
     <ng-template pTemplate="content">
-      <pre class="json-options-config"><code class="language-json" [innerHTML]="getFormattedJsonConfig()"></code></pre>
-      <div class="ui-g">
-        <div class="ui-g-3 ui-g-offset-9">
-          <button
-            pButton
-            label="Скачать"
-            icon="pi pi-download"
-            type="button"
-            class="load-button mr-1"
-            (click)="saveClassifierOptions()">
-          </button>
+      <ng-container *ngIf="classifierInfo?.classifierOptionsJson">
+        <pre class="json-options-config"><code class="language-json" [innerHTML]="getFormattedJsonConfig()"></code></pre>
+        <div class="ui-g">
+          <div class="ui-g-3 ui-g-offset-9">
+            <button
+              pButton
+              label="Скачать"
+              icon="pi pi-download"
+              type="button"
+              class="load-button mr-1"
+              (click)="saveClassifierOptions()">
+            </button>
+          </div>
         </div>
-      </div>
+      </ng-container>
+      <ng-container *ngIf="!classifierInfo?.classifierOptionsJson">
+        <div class="ui-g mx-auto d-flex align-items-center justify-content-center text-center text-bold text-danger">
+          Данные не найдены
+        </div>
+      </ng-container>
     </ng-template>
   </p-tabPanel>
 </p-tabView>
