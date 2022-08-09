@@ -87,9 +87,5 @@ class ClassifierOptionsRequestModelMapperTest {
         assertThat(classifierOptionsRequestBean.getRequestId()).isEqualTo(requestModel.getRequestId());
         assertThat(classifierOptionsRequestBean.getResponseStatus()).isEqualTo(
                 requestModel.getResponseStatus().getDescription());
-        assertThat(classifierOptionsRequestBean.getClassifierName()).isEqualTo(
-                responseModel.getClassifierName());
-        assertThat(classifierOptionsRequestBean.getClassifierOptions()).isEqualTo(
-                responseModel.getOptions());
     }
 }

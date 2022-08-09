@@ -3,7 +3,6 @@ package com.ecaservice.server.mapping;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import com.ecaservice.report.model.ClassifierOptionsRequestBean;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestModel;
-import com.ecaservice.server.model.entity.ClassifierOptionsResponseModel;
 import com.ecaservice.web.dto.model.ClassifierOptionsRequestDto;
 import com.ecaservice.web.dto.model.EnumDto;
 import org.mapstruct.AfterMapping;
@@ -11,9 +10,6 @@ import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.springframework.util.CollectionUtils;
-
-import java.util.List;
 
 import static com.ecaservice.server.util.Utils.getEvaluationMethodDescription;
 
@@ -57,16 +53,9 @@ public abstract class ClassifierOptionsRequestModelMapper {
     @Mapping(target = "evaluationMethod", ignore = true)
     @Mapping(source = "requestDate", target = "requestDate", qualifiedByName = "formatLocalDateTime")
     @Mapping(source = "responseStatus.description", target = "responseStatus")
+    @Mapping(target = "classifierName", ignore = true)
+    @Mapping(target = "classifierOptions", ignore = true)
     public abstract ClassifierOptionsRequestBean mapToBean(ClassifierOptionsRequestModel classifierOptionsRequestModel);
-
-    /**
-     * Maps classifier options request models entities to report beans models.
-     *
-     * @param classifierOptionsRequestModels - classifier options request models list
-     * @return classifier options request beans list
-     */
-    public abstract List<ClassifierOptionsRequestBean> mapToBeans(
-            List<ClassifierOptionsRequestModel> classifierOptionsRequestModels);
 
     @AfterMapping
     protected void mapResponseStatus(ClassifierOptionsRequestModel classifierOptionsRequestModel,
@@ -91,16 +80,5 @@ public abstract class ClassifierOptionsRequestModelMapper {
                 getEvaluationMethodDescription(requestModel.getEvaluationMethod(), requestModel.getNumFolds(),
                         requestModel.getNumTests());
         classifierOptionsRequestBean.setEvaluationMethod(evaluationMethodDescription);
-    }
-
-    @AfterMapping
-    protected void mapClassifierOptions(ClassifierOptionsRequestModel requestModel,
-                                        @MappingTarget ClassifierOptionsRequestBean classifierOptionsRequestBean) {
-        if (!CollectionUtils.isEmpty(requestModel.getClassifierOptionsResponseModels())) {
-            ClassifierOptionsResponseModel classifierOptionsResponseModel =
-                    requestModel.getClassifierOptionsResponseModels().iterator().next();
-            classifierOptionsRequestBean.setClassifierName(classifierOptionsResponseModel.getClassifierName());
-            classifierOptionsRequestBean.setClassifierOptions(classifierOptionsResponseModel.getOptions());
-        }
     }
 }
