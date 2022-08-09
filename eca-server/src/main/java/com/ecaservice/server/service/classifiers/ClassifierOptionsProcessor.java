@@ -94,9 +94,9 @@ public class ClassifierOptionsProcessor {
         } else {
             //Returns classifiers options list (for old data)
             classifierInfoDto = classifierInfoMapper.map(classifierInfo);
+            var classifierDescription = getClassifierNameLabel(classifierInfo.getClassifierName());
+            classifierInfoDto.setClassifierDescription(classifierDescription);
         }
-        var classifierDescription = getClassifierNameLabel(classifierInfo.getClassifierName());
-        classifierInfoDto.setClassifierDescription(classifierDescription);
         return classifierInfoDto;
     }
 
@@ -109,8 +109,9 @@ public class ClassifierOptionsProcessor {
     public ClassifierInfoDto processClassifierOptions(ClassifierOptions classifierOptions) {
         ClassifierInfoDto classifierInfoDto = new ClassifierInfoDto();
         var template = getTemplate(classifierOptions);
+        var classifierDescription = getClassifierNameLabel(template.getObjectClass());
         classifierInfoDto.setClassifierName(template.getObjectClass());
-        classifierInfoDto.setClassifierDescription(template.getTemplateTitle());
+        classifierInfoDto.setClassifierDescription(classifierDescription);
         classifierInfoDto.setClassifierOptionsJson(toJsonString(classifierOptions));
         var inputOptions = processInputOptions(template, classifierOptions);
         classifierInfoDto.setInputOptions(inputOptions);
