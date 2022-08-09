@@ -22,7 +22,7 @@ import static com.ecaservice.server.util.Utils.getEvaluationMethodDescription;
  *
  * @author Roman Batygin
  */
-@Mapper(uses = {ErsEvaluationMethodMapper.class, ClassifierOptionsResponseModelMapper.class, DateTimeConverter.class},
+@Mapper(uses = {ErsEvaluationMethodMapper.class, DateTimeConverter.class},
         injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public abstract class ClassifierOptionsRequestModelMapper {
 

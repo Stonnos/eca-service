@@ -3,7 +3,6 @@ package com.ecaservice.server.controller.web;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.mapping.ClassifierOptionsRequestModelMapper;
 import com.ecaservice.server.mapping.ClassifierOptionsRequestModelMapperImpl;
-import com.ecaservice.server.mapping.ClassifierOptionsResponseModelMapperImpl;
 import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.mapping.ErsEvaluationMethodMapperImpl;
 import com.ecaservice.server.model.entity.ErsResponseStatus;
@@ -37,8 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Roman Batygin
  */
 @WebMvcTest(controllers = ClassifierOptionsRequestController.class)
-@Import({ClassifierOptionsRequestModelMapperImpl.class, ErsEvaluationMethodMapperImpl.class,
-        ClassifierOptionsResponseModelMapperImpl.class, DateTimeConverter.class})
+@Import({ClassifierOptionsRequestModelMapperImpl.class, ErsEvaluationMethodMapperImpl.class, DateTimeConverter.class})
 class ClassifierOptionsRequestControllerTest extends PageRequestControllerTest {
 
     private static final String LIST_URL = "/classifiers-options-requests";

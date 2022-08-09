@@ -5,7 +5,6 @@ import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.mapping.ClassifierOptionsRequestModelMapper;
 import com.ecaservice.server.mapping.ClassifierOptionsRequestModelMapperImpl;
-import com.ecaservice.server.mapping.ClassifierOptionsResponseModelMapperImpl;
 import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.mapping.ErsEvaluationMethodMapperImpl;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestModel;
@@ -42,7 +41,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import({AppProperties.class, ClassifierOptionsRequestModelMapperImpl.class, ErsEvaluationMethodMapperImpl.class,
-        ClassifierOptionsResponseModelMapperImpl.class, DateTimeConverter.class})
+        DateTimeConverter.class})
 class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
 
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
