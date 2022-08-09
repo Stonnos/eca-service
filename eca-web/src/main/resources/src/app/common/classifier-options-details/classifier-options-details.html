@@ -1,25 +1,21 @@
 <p-tabView>
   <p-tabPanel header="Настройки классификатора">
     <ng-template pTemplate="content">
-      <p-panel class="classifier-options-panel">
-        <ng-container *ngFor="let option of inputOptions">
-          <div class="ui-g">
-            <div class="ui-g-6 text-right text-bold text-wrap">
-              {{ option.optionName }}
-            </div>
-            <div class="ui-g-6 text-left text-wrap">
-              {{ option.optionValue }}
-            </div>
+      <ng-container *ngFor="let option of inputOptions">
+        <div class="ui-g">
+          <div class="ui-g-6 text-right text-bold text-wrap">
+            {{ option.optionName }}
           </div>
-        </ng-container>
-      </p-panel>
+          <div class="ui-g-6 text-left text-wrap">
+            {{ option.optionValue }}
+          </div>
+        </div>
+      </ng-container>
     </ng-template>
   </p-tabPanel>
   <p-tabPanel header="JSON формат">
     <ng-template pTemplate="content">
-      <p-panel class="classifier-options-panel">
-        <pre class="json-config"><code class="language-json" [innerHTML]="getFormattedJsonConfig()"></code></pre>
-      </p-panel>
+      <pre class="json-config"><code class="language-json" [innerHTML]="getFormattedJsonConfig()"></code></pre>
     </ng-template>
   </p-tabPanel>
 </p-tabView>
