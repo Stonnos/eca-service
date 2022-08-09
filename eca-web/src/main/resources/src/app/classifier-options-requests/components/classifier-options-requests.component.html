@@ -66,57 +66,44 @@
     </div>
   </div>
 
-  <p-overlayPanel #infoPanel [showCloseIcon]="true">
-    <p-panel *ngIf="selectedRequest && selectedColumn">
-      <ng-container [ngSwitch]="selectedColumn">
-        <ng-container *ngSwitchCase="'classifierName'">
-          <pre class="json-config"><code class="language-json" [innerHTML]="getFormattedJsonConfig()"></code></pre>
-          <div class="ui-g">
-            <div class="ui-g-3 ui-g-offset-9">
-              <button
-                pButton
-                label="Скачать"
-                icon="pi pi-download"
-                type="button"
-                class="load-button"
-                (click)="saveClassifierOptions()">
-              </button>
-            </div>
-          </div>
-        </ng-container>
-        <ng-container *ngSwitchCase="'evaluationMethod.description'">
-          <div class="evaluation-method-content">
-            <div class="ui-g" *ngIf="selectedRequest.numFolds">
-              <div class="ui-g-6 text-right text-bold text-wrap">
-                Число блоков:
-              </div>
-              <div class="ui-g-6 text-left text-wrap">
-                {{ selectedRequest.numFolds }}
-              </div>
-            </div>
-
-            <div class="ui-g" *ngIf="selectedRequest.numTests">
-              <div class="ui-g-6 text-right text-bold text-wrap">
-                Число проверок:
-              </div>
-              <div class="ui-g-6 text-left text-wrap">
-                {{ selectedRequest.numTests }}
-              </div>
-            </div>
-
-            <div class="ui-g" *ngIf="selectedRequest.seed">
-              <div class="ui-g-6 text-right text-bold text-wrap">
-                Начальное значение (seed):
-              </div>
-              <div class="ui-g-6 text-left text-wrap">
-                {{ selectedRequest.seed }}
-              </div>
-            </div>
-          </div>
-        </ng-container>
-        <ng-container *ngSwitchDefault>
-        </ng-container>
+  <p-overlayPanel #infoPanel [showCloseIcon]="true" class="info-panel">
+    <ng-container *ngIf="selectedRequest && selectedColumn" [ngSwitch]="selectedColumn">
+      <ng-container *ngSwitchCase="'classifierName'">
+        <app-classifier-options-info [classifierInfo]="selectedRequest?.classifierInfo">
+        </app-classifier-options-info>
       </ng-container>
-    </p-panel>
+      <ng-container *ngSwitchCase="'evaluationMethod.description'">
+        <div class="evaluation-method-content">
+          <div class="ui-g" *ngIf="selectedRequest.numFolds">
+            <div class="ui-g-6 text-right text-bold text-wrap">
+              Число блоков:
+            </div>
+            <div class="ui-g-6 text-left text-wrap">
+              {{ selectedRequest.numFolds }}
+            </div>
+          </div>
+
+          <div class="ui-g" *ngIf="selectedRequest.numTests">
+            <div class="ui-g-6 text-right text-bold text-wrap">
+              Число проверок:
+            </div>
+            <div class="ui-g-6 text-left text-wrap">
+              {{ selectedRequest.numTests }}
+            </div>
+          </div>
+
+          <div class="ui-g" *ngIf="selectedRequest.seed">
+            <div class="ui-g-6 text-right text-bold text-wrap">
+              Начальное значение (seed):
+            </div>
+            <div class="ui-g-6 text-left text-wrap">
+              {{ selectedRequest.seed }}
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+      </ng-container>
+    </ng-container>
   </p-overlayPanel>
 </div>

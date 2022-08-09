@@ -32,8 +32,8 @@
 
 .info-panel::ng-deep {
 
-  .ui-panel {
-    width: 450px;
+  .ui-overlaypanel-content {
+    width: 500px;
     max-height: 500px;
     overflow-y: scroll;
   }
