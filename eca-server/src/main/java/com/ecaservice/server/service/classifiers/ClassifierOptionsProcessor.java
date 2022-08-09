@@ -94,9 +94,9 @@ public class ClassifierOptionsProcessor {
         } else {
             //Returns classifiers options list (for old data)
             classifierInfoDto = classifierInfoMapper.map(classifierInfo);
-            var classifierDescription = getClassifierNameLabel(classifierInfo.getClassifierName());
-            classifierInfoDto.setClassifierDescription(classifierDescription);
         }
+        var classifierDescription = getClassifierNameLabel(classifierInfo.getClassifierName());
+        classifierInfoDto.setClassifierDescription(classifierDescription);
         return classifierInfoDto;
     }
 
