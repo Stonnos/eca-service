@@ -48,17 +48,15 @@
     <ng-template pTemplate="content">
       <ng-container *ngIf="classifierInfo?.classifierOptionsJson">
         <pre class="json-options-config"><code class="language-json" [innerHTML]="getFormattedJsonConfig()"></code></pre>
-        <div class="ui-g">
-          <div class="ui-g-3 ui-g-offset-9">
-            <button
-              pButton
-              label="Скачать"
-              icon="pi pi-download"
-              type="button"
-              class="load-button mr-1"
-              (click)="saveClassifierOptions()">
-            </button>
-          </div>
+        <div class="ui-g mx-auto d-flex align-items-center justify-content-center">
+          <button
+            pButton
+            label="Скачать"
+            icon="pi pi-download"
+            type="button"
+            class="load-button"
+            (click)="saveClassifierOptions()">
+          </button>
         </div>
       </ng-container>
       <ng-container *ngIf="!classifierInfo?.classifierOptionsJson">
