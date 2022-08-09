@@ -15,12 +15,19 @@
         "value": "SUCCESS",
         "description": "Успешно"
       },
-      "classifierOptionsResponseModels": [
-        {
-          "classifierName": "CART",
-          "options": "json config"
-        }
-      ]
+      "classifierInfo": {
+        "classifierName": "CART",
+        "classifierDescription": "Алгоритм CART",
+        "classifierOptionsJson": null,
+        "metaClassifier": false,
+        "individualClassifiers": null,
+        "inputOptions": [
+          {
+            "optionName": "Iterations number",
+            "optionValue": "100"
+          }
+        ]
+      }
     }
   ],
   "page": 0,
