@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 import static com.ecaservice.server.service.filter.dictionary.FilterDictionaries.CLASSIFIER_NAME;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.isEnsembleClassifierOptions;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.parseOptions;
+import static com.ecaservice.server.util.ClassifierOptionsHelper.toJsonString;
 
 /**
  * Service for processing classifier info.
@@ -89,23 +90,28 @@ public class ClassifierOptionsProcessor {
         ClassifierInfoDto classifierInfoDto;
         if (StringUtils.isNotEmpty(classifierInfo.getClassifierOptions())) {
             var classifierOptions = parseOptions(classifierInfo.getClassifierOptions());
-            classifierInfoDto = internalProcessClassifierInfo(classifierOptions);
-            classifierInfoDto.setClassifierName(classifierInfo.getClassifierName());
-            classifierInfoDto.setClassifierOptionsJson(classifierInfo.getClassifierOptions());
+            classifierInfoDto = processClassifierOptions(classifierOptions);
         } else {
             //Returns classifiers options list (for old data)
             classifierInfoDto = classifierInfoMapper.map(classifierInfo);
+            var classifierDescription = getClassifierNameLabel(classifierInfo.getClassifierName());
+            classifierInfoDto.setClassifierDescription(classifierDescription);
         }
-        var classifierName = getClassifierNameLabel(classifierInfo.getClassifierName());
-        classifierInfoDto.setClassifierDescription(classifierName);
         return classifierInfoDto;
     }
 
-    private ClassifierInfoDto internalProcessClassifierInfo(ClassifierOptions classifierOptions) {
+    /**
+     * Processes classifier options.
+     *
+     * @param classifierOptions - classifier options
+     * @return classifier info dto
+     */
+    public ClassifierInfoDto processClassifierOptions(ClassifierOptions classifierOptions) {
         ClassifierInfoDto classifierInfoDto = new ClassifierInfoDto();
         var template = getTemplate(classifierOptions);
         classifierInfoDto.setClassifierName(template.getObjectClass());
         classifierInfoDto.setClassifierDescription(template.getTemplateTitle());
+        classifierInfoDto.setClassifierOptionsJson(toJsonString(classifierOptions));
         var inputOptions = processInputOptions(template, classifierOptions);
         classifierInfoDto.setInputOptions(inputOptions);
         customizeClassifierInfo(classifierInfoDto, classifierOptions);
@@ -126,7 +132,7 @@ public class ClassifierOptionsProcessor {
                 var stackingOptions = (StackingOptions) classifierOptions;
                 var individualClassifiers = processClassifiers(stackingOptions.getClassifierOptions());
                 classifierInfoDto.setIndividualClassifiers(individualClassifiers);
-                var metaClassifierInfo = internalProcessClassifierInfo(stackingOptions.getMetaClassifierOptions());
+                var metaClassifierInfo = processClassifierOptions(stackingOptions.getMetaClassifierOptions());
                 metaClassifierInfo.setMetaClassifier(true);
                 classifierInfoDto.getIndividualClassifiers().add(metaClassifierInfo);
             }
@@ -163,7 +169,7 @@ public class ClassifierOptionsProcessor {
     }
 
     private String createNullSafeExpression(String fieldName) {
-       return StringUtils.replace(fieldName, ".", "?.");
+        return StringUtils.replace(fieldName, ".", "?.");
     }
 
     private String getValue(ClassifierOptions classifierOptions, FormFieldDto formFieldDto) {
@@ -220,7 +226,7 @@ public class ClassifierOptionsProcessor {
 
     private List<ClassifierInfoDto> processClassifiers(List<ClassifierOptions> classifierOptions) {
         return classifierOptions.stream()
-                .map(this::internalProcessClassifierInfo)
+                .map(this::processClassifierOptions)
                 .collect(Collectors.toList());
     }
 }
