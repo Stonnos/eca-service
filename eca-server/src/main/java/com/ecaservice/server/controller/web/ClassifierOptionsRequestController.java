@@ -1,8 +1,6 @@
 package com.ecaservice.server.controller.web;
 
 import com.ecaservice.common.web.dto.ValidationErrorDto;
-import com.ecaservice.server.mapping.ClassifierOptionsRequestModelMapper;
-import com.ecaservice.server.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.server.service.ers.ClassifierOptionsRequestService;
 import com.ecaservice.web.dto.model.ClassifierOptionsRequestDto;
 import com.ecaservice.web.dto.model.ClassifierOptionsRequestsPageDto;
@@ -18,7 +16,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -27,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.List;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
@@ -45,7 +41,6 @@ import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
 public class ClassifierOptionsRequestController {
 
     private final ClassifierOptionsRequestService classifierOptionsRequestService;
-    private final ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper;
 
     /**
      * Finds classifiers options requests models with specified options such as filter, sorting and paging.
@@ -108,11 +103,6 @@ public class ClassifierOptionsRequestController {
     public PageDto<ClassifierOptionsRequestDto> getClassifierOptionsRequestModels(
             @Valid @RequestBody PageRequestDto pageRequestDto) {
         log.info("Received classifiers options requests models page request: {}", pageRequestDto);
-        Page<ClassifierOptionsRequestModel> classifierOptionsRequestModelPage =
-                classifierOptionsRequestService.getNextPage(pageRequestDto);
-        List<ClassifierOptionsRequestDto> classifierOptionsRequestDtoList =
-                classifierOptionsRequestModelMapper.map(classifierOptionsRequestModelPage.getContent());
-        return PageDto.of(classifierOptionsRequestDtoList, pageRequestDto.getPage(),
-                classifierOptionsRequestModelPage.getTotalElements());
+        return classifierOptionsRequestService.getClassifierOptionsRequestsPage(pageRequestDto);
     }
 }

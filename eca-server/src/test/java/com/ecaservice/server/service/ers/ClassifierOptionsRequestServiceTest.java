@@ -1,14 +1,20 @@
 package com.ecaservice.server.service.ers;
 
-import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
+import com.ecaservice.server.mapping.ClassifierOptionsRequestModelMapper;
+import com.ecaservice.server.mapping.ClassifierOptionsRequestModelMapperImpl;
+import com.ecaservice.server.mapping.ClassifierOptionsResponseModelMapperImpl;
+import com.ecaservice.server.mapping.DateTimeConverter;
+import com.ecaservice.server.mapping.ErsEvaluationMethodMapperImpl;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestModel_;
 import com.ecaservice.server.model.entity.ErsResponseStatus;
 import com.ecaservice.server.model.entity.FilterTemplateType;
 import com.ecaservice.server.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
+import com.ecaservice.server.service.classifiers.ClassifierOptionsProcessor;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -17,14 +23,12 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.context.annotation.Import;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
-import org.springframework.data.domain.Page;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -37,7 +41,8 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import(AppProperties.class)
+@Import({AppProperties.class, ClassifierOptionsRequestModelMapperImpl.class, ErsEvaluationMethodMapperImpl.class,
+        ClassifierOptionsResponseModelMapperImpl.class, DateTimeConverter.class})
 class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
 
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -49,15 +54,19 @@ class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
     private ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository;
     @Inject
     private AppProperties appProperties;
+    @Inject
+    private ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper;
     @Mock
     private FilterService filterService;
-
+    @Mock
+    private ClassifierOptionsProcessor classifierOptionsProcessor;
 
     private ClassifierOptionsRequestService classifierOptionsRequestService;
 
     @Override
     public void init() {
         classifierOptionsRequestService = new ClassifierOptionsRequestService(appProperties, filterService,
+                classifierOptionsProcessor, classifierOptionsRequestModelMapper,
                 classifierOptionsRequestModelRepository);
     }
 
@@ -96,38 +105,38 @@ class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
                 Collections.singletonList(ErsResponseStatus.SUCCESS.name()), MatchMode.EQUALS));
         when(filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST.name())).thenReturn(
                 Arrays.asList(ClassifierOptionsRequestModel_.RELATION_NAME, ClassifierOptionsRequestModel_.REQUEST_ID));
-        Page<ClassifierOptionsRequestModel> classifierOptionsRequestModelPage =
-                classifierOptionsRequestService.getNextPage(pageRequestDto);
-        assertThat(classifierOptionsRequestModelPage).isNotNull();
-        assertThat(classifierOptionsRequestModelPage.getTotalElements()).isOne();
+        var classifierOptionsRequestDtoPage =
+                classifierOptionsRequestService.getClassifierOptionsRequestsPage(pageRequestDto);
+        assertThat(classifierOptionsRequestDtoPage).isNotNull();
+        assertThat(classifierOptionsRequestDtoPage.getTotalCount()).isOne();
     }
 
     @Test
     void testFilterByRequestId() {
-        ClassifierOptionsRequestModel requestModel = new ClassifierOptionsRequestModel();
-        requestModel.setResponseStatus(ErsResponseStatus.SUCCESS);
-        requestModel.setRequestId(UUID.randomUUID().toString());
+        ClassifierOptionsRequestModel requestModel =
+                TestHelperUtils.createClassifierOptionsRequestModel(StringUtils.EMPTY, LocalDateTime.now(),
+                        ErsResponseStatus.SUCCESS, Collections.emptyList());
         classifierOptionsRequestModelRepository.save(requestModel);
-        ClassifierOptionsRequestModel requestModel2 = new ClassifierOptionsRequestModel();
-        requestModel2.setRequestId(UUID.randomUUID().toString());
-        requestModel2.setResponseStatus(ErsResponseStatus.SUCCESS);
+        ClassifierOptionsRequestModel requestModel2 =
+                TestHelperUtils.createClassifierOptionsRequestModel(StringUtils.EMPTY, LocalDateTime.now(),
+                        ErsResponseStatus.SUCCESS, Collections.emptyList());
         classifierOptionsRequestModelRepository.save(requestModel2);
-        ClassifierOptionsRequestModel requestModel3 = new ClassifierOptionsRequestModel();
-        requestModel3.setRequestId(UUID.randomUUID().toString());
-        requestModel3.setResponseStatus(ErsResponseStatus.SUCCESS);
+        ClassifierOptionsRequestModel requestModel3 =
+                TestHelperUtils.createClassifierOptionsRequestModel(StringUtils.EMPTY, LocalDateTime.now(),
+                        ErsResponseStatus.SUCCESS, Collections.emptyList());
         classifierOptionsRequestModelRepository.save(requestModel3);
         PageRequestDto pageRequestDto =
                 new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, ClassifierOptionsRequestModel_.REQUEST_ID, false, null,
                         newArrayList());
         pageRequestDto.getFilters().add(new FilterRequestDto(ClassifierOptionsRequestModel_.REQUEST_ID,
                 Collections.singletonList(requestModel2.getRequestId()), MatchMode.EQUALS));
-        Page<ClassifierOptionsRequestModel> classifierOptionsRequestModelPage =
-                classifierOptionsRequestService.getNextPage(pageRequestDto);
-        List<ClassifierOptionsRequestModel> classifierOptionsRequestModels =
-                classifierOptionsRequestModelPage.getContent();
-        assertThat(classifierOptionsRequestModelPage).isNotNull();
-        assertThat(classifierOptionsRequestModelPage.getTotalElements()).isOne();
-        assertThat(classifierOptionsRequestModels.get(0).getRequestId()).isEqualTo(requestModel2.getRequestId());
+        var classifierOptionsRequestDtoPage =
+                classifierOptionsRequestService.getClassifierOptionsRequestsPage(pageRequestDto);
+        var classifierOptionsRequestDtoList = classifierOptionsRequestDtoPage.getContent();
+        assertThat(classifierOptionsRequestDtoPage).isNotNull();
+        assertThat(classifierOptionsRequestDtoPage.getTotalCount()).isOne();
+        assertThat(classifierOptionsRequestDtoList.iterator().next().getRequestId()).isEqualTo(
+                requestModel2.getRequestId());
     }
 
     @Test
@@ -150,10 +159,10 @@ class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
                         newArrayList());
         pageRequestDto.getFilters().add(new FilterRequestDto(ClassifierOptionsRequestModel_.REQUEST_ID,
                 Arrays.asList(requestModel.getRequestId(), requestModel.getRequestId()), MatchMode.RANGE));
-        Page<ClassifierOptionsRequestModel> classifierOptionsRequestModelPage =
-                classifierOptionsRequestService.getNextPage(pageRequestDto);
-        assertThat(classifierOptionsRequestModelPage).isNotNull();
-        assertThat(classifierOptionsRequestModelPage.getTotalElements()).isOne();
+        var classifierOptionsRequestDtoPage =
+                classifierOptionsRequestService.getClassifierOptionsRequestsPage(pageRequestDto);
+        assertThat(classifierOptionsRequestDtoPage).isNotNull();
+        assertThat(classifierOptionsRequestDtoPage.getTotalCount()).isOne();
     }
 
     @Test
@@ -167,10 +176,10 @@ class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
                         newArrayList());
         pageRequestDto.getFilters().add(new FilterRequestDto(ClassifierOptionsRequestModel_.REQUEST_DATE,
                 Collections.singletonList(dateTimeFormatter.format(requestModel.getRequestDate())), MatchMode.EQUALS));
-        Page<ClassifierOptionsRequestModel> classifierOptionsRequestModelPage =
-                classifierOptionsRequestService.getNextPage(pageRequestDto);
-        assertThat(classifierOptionsRequestModelPage).isNotNull();
-        assertThat(classifierOptionsRequestModelPage.getTotalElements()).isOne();
+        var classifierOptionsRequestDtoPage =
+                classifierOptionsRequestService.getClassifierOptionsRequestsPage(pageRequestDto);
+        assertThat(classifierOptionsRequestDtoPage).isNotNull();
+        assertThat(classifierOptionsRequestDtoPage.getTotalCount()).isOne();
     }
 
     @Test
@@ -192,7 +201,7 @@ class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
                 new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, ClassifierOptionsRequestModel_.REQUEST_DATE, false, "query",
                         newArrayList());
         assertThrows(InvalidDataAccessApiUsageException.class,
-                () -> classifierOptionsRequestService.getNextPage(pageRequestDto));
+                () -> classifierOptionsRequestService.getClassifierOptionsRequestsPage(pageRequestDto));
     }
 
     private void testFilterForIllegalFieldType(FilterRequestDto filterRequestDto) {
@@ -204,6 +213,6 @@ class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
                 new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, ClassifierOptionsRequestModel_.REQUEST_DATE, false, null,
                         newArrayList());
         pageRequestDto.getFilters().add(filterRequestDto);
-        classifierOptionsRequestService.getNextPage(pageRequestDto);
+        classifierOptionsRequestService.getClassifierOptionsRequestsPage(pageRequestDto);
     }
 }

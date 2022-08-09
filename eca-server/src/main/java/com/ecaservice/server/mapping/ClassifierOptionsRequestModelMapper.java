@@ -68,15 +68,6 @@ public abstract class ClassifierOptionsRequestModelMapper {
     public abstract List<ClassifierOptionsRequestBean> mapToBeans(
             List<ClassifierOptionsRequestModel> classifierOptionsRequestModels);
 
-    /**
-     * Maps classifiers options requests models entities to its dto models.
-     *
-     * @param classifierOptionsRequestModels - classifiers options requests models entities
-     * @return classifiers options requests dto models
-     */
-    public abstract List<ClassifierOptionsRequestDto> map(
-            List<ClassifierOptionsRequestModel> classifierOptionsRequestModels);
-
     @AfterMapping
     protected void mapResponseStatus(ClassifierOptionsRequestModel classifierOptionsRequestModel,
                                      @MappingTarget ClassifierOptionsRequestDto classifierOptionsRequestDto) {
