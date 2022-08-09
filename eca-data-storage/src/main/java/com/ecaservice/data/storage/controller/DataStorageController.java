@@ -575,6 +575,7 @@ public class DataStorageController {
             @RequestParam ReportType reportType,
             HttpServletResponse httpServletResponse) throws Exception {
         log.info("Request to download instances [{}] report [{}]", id, reportType);
-        instancesReportService.generateInstancesReport(id, reportType, httpServletResponse);
+        var instancesEntity = storageService.getById(id);
+        instancesReportService.generateInstancesReport(instancesEntity, reportType, httpServletResponse);
     }
 }

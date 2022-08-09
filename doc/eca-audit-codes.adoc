@@ -77,6 +77,9 @@
 |DELETE_INSTANCES
 |Удаление таблицы с обучающей выборкой
 |DATA_STORAGE_ACTIONS
+|DOWNLOAD_INSTANCES_REPORT
+|Выгрузка обучающей выборки
+|DATA_STORAGE_ACTIONS
 |ADD_CONFIGURATION
 |Добавление новой конфигурации с настройками классификаторов
 |CLASSIFIERS_CONFIGURATIONS_ACTIONS
