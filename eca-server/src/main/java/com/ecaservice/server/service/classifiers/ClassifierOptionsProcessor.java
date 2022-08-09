@@ -91,12 +91,13 @@ public class ClassifierOptionsProcessor {
         if (StringUtils.isNotEmpty(classifierInfo.getClassifierOptions())) {
             var classifierOptions = parseOptions(classifierInfo.getClassifierOptions());
             classifierInfoDto = processClassifierOptions(classifierOptions);
+            classifierInfoDto.setClassifierName(classifierInfo.getClassifierName());
         } else {
             //Returns classifiers options list (for old data)
             classifierInfoDto = classifierInfoMapper.map(classifierInfo);
         }
-        var classifierDescription = getClassifierNameLabel(classifierInfo.getClassifierName());
-        classifierInfoDto.setClassifierDescription(classifierDescription);
+        var classifierName = getClassifierNameLabel(classifierInfo.getClassifierName());
+        classifierInfoDto.setClassifierDescription(classifierName);
         return classifierInfoDto;
     }
 
