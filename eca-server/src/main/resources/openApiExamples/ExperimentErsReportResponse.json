@@ -6,17 +6,41 @@
     {
       "id": 1,
       "classifierInfo": {
-        "classifierName": "CART",
-        "classifierDescription": "Алгоритм CART",
-        "classifierOptionsJson": null,
+        "classifierName": "RandomForests",
+        "classifierDescription": "Алгоритм Случайные леса",
+        "classifierOptionsJson": "<<json config>>",
         "metaClassifier": false,
-        "individualClassifiers": null,
         "inputOptions": [
           {
-            "optionName": "Iterations number",
-            "optionValue": "100"
+            "optionName": "Алгоритм построения дерева",
+            "optionValue": "Алгоритм CART"
+          },
+          {
+            "optionName": "Число деревьев",
+            "optionValue": "10"
+          },
+          {
+            "optionName": "Минимальное число объектов в листе",
+            "optionValue": "2"
+          },
+          {
+            "optionName": "Максимальная глубина дерева",
+            "optionValue": "0"
+          },
+          {
+            "optionName": "Число случайных атрибутов",
+            "optionValue": "3"
+          },
+          {
+            "optionName": "Число потоков",
+            "optionValue": "1"
+          },
+          {
+            "optionName": "Начальное значение (seed)",
+            "optionValue": "1"
           }
-        ]
+        ],
+        "individualClassifiers": null
       },
       "resultsIndex": 0,
       "pctCorrect": 99,
