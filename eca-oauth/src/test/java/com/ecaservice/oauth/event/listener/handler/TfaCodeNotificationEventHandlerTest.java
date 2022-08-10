@@ -1,16 +1,11 @@
 package com.ecaservice.oauth.event.listener.handler;
 
 import com.ecaservice.notification.dto.EmailRequest;
-import com.ecaservice.oauth.config.TfaConfig;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.event.model.TfaCodeNotificationEvent;
 import com.ecaservice.oauth.service.mail.dictionary.TemplateVariablesDictionary;
 import com.ecaservice.oauth.service.mail.dictionary.Templates;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import static com.ecaservice.notification.util.Priority.HIGHEST;
 import static com.ecaservice.oauth.TestHelperUtils.createUserEntity;
@@ -21,15 +16,11 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Roman Batygin
  */
-@ExtendWith(MockitoExtension.class)
 class TfaCodeNotificationEventHandlerTest {
 
     private static final String TFA_CODE = "code";
 
-    @Mock
-    private TfaConfig tfaConfig;
-    @InjectMocks
-    private TfaCodeNotificationEventHandler tfaCodeNotificationEventHandler;
+    private TfaCodeNotificationEventHandler tfaCodeNotificationEventHandler = new TfaCodeNotificationEventHandler();
 
     @Test
     void testEvent() {

@@ -164,7 +164,7 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
         List<EvaluationLog> evaluationLogs = evaluationLogPage.getContent();
         assertThat(evaluationLogPage).isNotNull();
         assertThat(evaluationLogPage.getTotalElements()).isEqualTo(2);
-        assertThat(evaluationLogs.size()).isEqualTo(2);
+        assertThat(evaluationLogs).hasSize(2);
         assertThat(evaluationLogs.get(0).getRequestId()).isEqualTo(evaluationLog.getRequestId());
         assertThat(evaluationLogs.get(1).getRequestId()).isEqualTo(evaluationLog1.getRequestId());
     }

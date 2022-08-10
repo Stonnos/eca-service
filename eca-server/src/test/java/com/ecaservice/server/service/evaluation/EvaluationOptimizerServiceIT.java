@@ -149,7 +149,7 @@ class EvaluationOptimizerServiceIT extends AbstractJpaTest {
         finishedLatch.await();
         executorService.shutdownNow();
         List<ClassifierOptionsRequestEntity> requestEntities = classifierOptionsRequestRepository.findAll();
-        assertThat(requestEntities.size()).isEqualTo(2);
+        assertThat(requestEntities).hasSize(2);
         assertThat(classifierOptionsRequestModelRepository.count()).isOne();
         assertThat(requestEntities.get(0).getSource()).isEqualTo(ClassifierOptionsRequestSource.ERS);
         assertThat(requestEntities.get(1).getSource()).isEqualTo(ClassifierOptionsRequestSource.CACHE);

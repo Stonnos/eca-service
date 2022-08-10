@@ -8,8 +8,6 @@ import com.ecaservice.external.api.model.MultipartFileResource;
 import com.ecaservice.external.api.repository.InstancesRepository;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import eca.data.file.FileDataLoader;
-import eca.data.file.resource.DataResource;
-import eca.data.file.resource.FileResource;
 import eca.data.file.resource.UrlResource;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
@@ -21,9 +19,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 import weka.core.Instances;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -115,7 +111,7 @@ public class InstancesService {
         log.info("Instances [{}] has been deleted", instancesEntity.getId());
     }
 
-    public Instances loadInstances(MultipartFile multipartFile) {
+    private Instances loadInstances(MultipartFile multipartFile) {
         try {
             var dataResource = new MultipartFileResource(multipartFile);
             fileDataLoader.setSource(dataResource);
@@ -123,15 +119,5 @@ public class InstancesService {
         } catch (Exception ex) {
             throw new ProcessFileException(ex.getMessage());
         }
-    }
-
-    private DataResource<?> createDataResource(String urlString) throws MalformedURLException {
-        if (urlString.startsWith(DATA_URL_PREFIX)) {
-            String dataUuid = StringUtils.substringAfter(urlString, DATA_URL_PREFIX);
-            InstancesEntity instancesEntity = instancesRepository.findByUuid(dataUuid)
-                    .orElseThrow(() -> new EntityNotFoundException(InstancesEntity.class, dataUuid));
-            return new FileResource(new File(instancesEntity.getDataPath()));
-        }
-        return new UrlResource(new URL(urlString));
     }
 }

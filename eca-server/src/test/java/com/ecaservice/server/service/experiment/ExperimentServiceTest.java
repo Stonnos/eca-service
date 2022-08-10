@@ -347,7 +347,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
         List<Experiment> experimentList = experiments.getContent();
         assertThat(experiments).isNotNull();
         assertThat(experiments.getTotalElements()).isEqualTo(2);
-        assertThat(experimentList.size()).isEqualTo(2);
+        assertThat(experimentList).hasSize(2);
         assertThat(experimentList.get(0).getRequestId()).isEqualTo(experiment1.getRequestId());
         assertThat(experimentList.get(1).getRequestId()).isEqualTo(experiment.getRequestId());
     }
@@ -378,7 +378,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
         List<Experiment> experimentList = experiments.getContent();
         assertThat(experiments).isNotNull();
         assertThat(experiments.getTotalElements()).isEqualTo(2);
-        assertThat(experimentList.size()).isEqualTo(2);
+        assertThat(experimentList).hasSize(2);
         assertThat(experimentList.get(0).getRequestId()).isEqualTo(experiment1.getRequestId());
         assertThat(experimentList.get(1).getRequestId()).isEqualTo(experiment.getRequestId());
     }
@@ -427,7 +427,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
         experimentList = experiments.getContent();
         assertThat(experiments).isNotNull();
         assertThat(experiments.getTotalElements()).isEqualTo(2);
-        assertThat(experimentList.size()).isEqualTo(2);
+        assertThat(experimentList).hasSize(2);
     }
 
     @Test

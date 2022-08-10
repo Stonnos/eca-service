@@ -14,7 +14,7 @@ import org.mapstruct.Mapping;
 public abstract class EvaluationRequestMapper
         extends BaseEvaluationRequestMapper<EvaluationRequestEntity, EvaluationRequestDto> {
 
-    public EvaluationRequestMapper() {
+    protected EvaluationRequestMapper() {
         super(EvaluationRequestEntity.class);
     }
 

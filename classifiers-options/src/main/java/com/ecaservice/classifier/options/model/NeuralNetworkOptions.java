@@ -12,8 +12,6 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import java.math.BigDecimal;
-
 import static com.ecaservice.classifier.options.model.Constraints.DECIMAL_VALUE_0_STRING;
 import static com.ecaservice.classifier.options.model.Constraints.DECIMAL_VALUE_1_STRING;
 import static com.ecaservice.classifier.options.model.Constraints.HIDDEN_LAYER_REGEX;
