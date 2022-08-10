@@ -49,4 +49,14 @@ public class Templates {
      * Password reset template
      */
     public static final String PASSWORD_RESET = "PASSWORD_RESET";
+
+    /**
+     * User locked template
+     */
+    public static final String USER_LOCKED = "USER_LOCKED";
+
+    /**
+     * User unlocked template
+     */
+    public static final String USER_UNLOCKED = "USER_UNLOCKED";
 }
