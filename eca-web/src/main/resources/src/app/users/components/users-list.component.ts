@@ -63,7 +63,8 @@ export class UsersListComponent extends BaseListComponent<UserDto> implements On
 
   public lockUser(user: UserDto): void {
     this.confirmationService.confirm({
-      message: 'Вы уверены?',
+      header: 'Блокировка пользователя',
+      message: `Вы уверены, что хотите заблокировать пользователя ${user.login}?`,
       acceptLabel: 'Да',
       rejectLabel: 'Нет',
       accept: () => {
@@ -74,7 +75,8 @@ export class UsersListComponent extends BaseListComponent<UserDto> implements On
 
   public unlockUser(user: UserDto): void {
     this.confirmationService.confirm({
-      message: 'Вы уверены?',
+      header: 'Снятие блокировки пользователя',
+      message: `Вы уверены, что хотите снять блокировку пользователя ${user.login}?`,
       acceptLabel: 'Да',
       rejectLabel: 'Нет',
       accept: () => {
