@@ -4,7 +4,6 @@ import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.report.model.EvaluationLogBean;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.model.entity.EvaluationLog;
-import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import com.ecaservice.web.dto.model.EvaluationLogDto;
@@ -36,6 +35,7 @@ public abstract class EvaluationLogMapper extends AbstractEvaluationMapper {
      * @return evaluation log entity
      */
     @Mapping(source = "evaluationRequest.classifier", target = "classifierInfo")
+    @Mapping(source = "evaluationRequest.data", target = "instancesInfo", qualifiedByName = "mapInstancesInfo")
     @Mapping(target = "numFolds", ignore = true)
     @Mapping(target = "numTests", ignore = true)
     @Mapping(target = "seed", ignore = true)
@@ -86,19 +86,6 @@ public abstract class EvaluationLogMapper extends AbstractEvaluationMapper {
     @Mapping(source = "instancesInfo.relationName", target = "relationName")
     @Mapping(target = "classifierName", ignore = true)
     public abstract EvaluationLogBean mapToBean(EvaluationLog evaluationLog);
-
-    @AfterMapping
-    protected void mapData(EvaluationRequest evaluationRequest, @MappingTarget EvaluationLog evaluationLog) {
-        if (evaluationRequest.getData() != null) {
-            InstancesInfo instancesInfo = new InstancesInfo();
-            instancesInfo.setRelationName(evaluationRequest.getData().relationName());
-            instancesInfo.setNumInstances(evaluationRequest.getData().numInstances());
-            instancesInfo.setNumAttributes(evaluationRequest.getData().numAttributes());
-            instancesInfo.setNumClasses(evaluationRequest.getData().numClasses());
-            instancesInfo.setClassName(evaluationRequest.getData().classAttribute().name());
-            evaluationLog.setInstancesInfo(instancesInfo);
-        }
-    }
 
     @AfterMapping
     protected void mapEvaluationMethodOptions(EvaluationRequest evaluationRequest,
