@@ -1,0 +1,44 @@
+<?xml version="1.1" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v16-insert-user-locked-templates.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Insert USER_LOCKED template -->
+    <changeSet id="insert_user_locked_template" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="template">
+            <column name="id" valueComputed="nextval('hibernate_sequence')"/>
+            <column name="created" valueDate="now()"/>
+            <column name="template_code" value="USER_LOCKED"/>
+            <column name="description" value="Сообщение о блокировке учетной записи"/>
+            <column name="template_subject" value="Блокировка учетной записи"/>
+        </insert>
+    </changeSet>
+
+    <!-- Insert USER_UNLOCKED template -->
+    <changeSet id="insert_user_unlocked_template" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="template">
+            <column name="id" valueComputed="nextval('hibernate_sequence')"/>
+            <column name="created" valueDate="now()"/>
+            <column name="template_code" value="USER_UNLOCKED"/>
+            <column name="description" value="Сообщение о снятии блокировки учетной записи"/>
+            <column name="template_subject" value="Блокировка учетной записи снята"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert_user_locked_template_body" author="roman.batygin@mail.ru" context="data">
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/user-locked-template.html"/>
+            <where>template_code = 'USER_LOCKED'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="insert_user_unlocked_template_body" author="roman.batygin@mail.ru" context="data">
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/user-unlocked-template.html"/>
+            <where>template_code = 'USER_UNLOCKED'</where>
+        </update>
+    </changeSet>
+
+</databaseChangeLog>
