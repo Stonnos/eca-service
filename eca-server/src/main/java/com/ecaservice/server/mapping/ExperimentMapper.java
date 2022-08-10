@@ -4,7 +4,6 @@ import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.report.model.ExperimentBean;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.model.entity.Experiment;
-import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.ExperimentDto;
 import eca.core.evaluation.EvaluationMethod;
@@ -33,6 +32,7 @@ public abstract class ExperimentMapper extends AbstractEvaluationMapper {
      * @param crossValidationConfig - cross - validation config
      * @return experiment entity
      */
+    @Mapping(source = "experimentRequest.data", target = "instancesInfo", qualifiedByName = "mapInstancesInfo")
     @Mapping(target = "numFolds", ignore = true)
     @Mapping(target = "numTests", ignore = true)
     @Mapping(target = "seed", ignore = true)
@@ -127,18 +127,5 @@ public abstract class ExperimentMapper extends AbstractEvaluationMapper {
                 experiment.getRequestStatus().getDescription()));
         experimentDto.setExperimentType(new EnumDto(experiment.getExperimentType().name(),
                 experiment.getExperimentType().getDescription()));
-    }
-
-    @AfterMapping
-    protected void mapInstances(ExperimentRequest experimentRequest, @MappingTarget Experiment experiment) {
-        if (experimentRequest.getData() != null) {
-            InstancesInfo instancesInfo = new InstancesInfo();
-            instancesInfo.setRelationName(experimentRequest.getData().relationName());
-            instancesInfo.setNumInstances(experimentRequest.getData().numInstances());
-            instancesInfo.setNumAttributes(experimentRequest.getData().numAttributes());
-            instancesInfo.setNumClasses(experimentRequest.getData().numClasses());
-            instancesInfo.setClassName(experimentRequest.getData().classAttribute().name());
-            experiment.setInstancesInfo(instancesInfo);
-        }
     }
 }

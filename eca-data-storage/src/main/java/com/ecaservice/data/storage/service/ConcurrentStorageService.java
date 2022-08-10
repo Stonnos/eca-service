@@ -80,8 +80,8 @@ public class ConcurrentStorageService implements StorageService {
     }
 
     @Override
-    public Instances getInstances(long id) {
-        return storageService.getInstances(id);
+    public Instances getInstances(InstancesEntity instancesEntity) {
+        return storageService.getInstances(instancesEntity);
     }
 
     @Override

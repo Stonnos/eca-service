@@ -1,6 +1,8 @@
 package com.ecaservice.data.storage.report;
 
+import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.data.storage.config.EcaDsConfig;
+import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.model.report.ReportType;
 import com.ecaservice.data.storage.service.StorageService;
 import lombok.Cleanup;
@@ -13,6 +15,8 @@ import weka.core.Instances;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
+
+import static com.ecaservice.data.storage.config.audit.AuditCodes.DOWNLOAD_INSTANCES_REPORT;
 
 /**
  * Instances report service.
@@ -33,22 +37,24 @@ public class InstancesReportService {
     /**
      * Generates instances report with specified type.
      *
-     * @param instancesId         - instances id
+     * @param instancesEntity     - instances entity
      * @param reportType          - report type
      * @param httpServletResponse - http servlet response
      * @throws Exception in case of error
      */
-    public void generateInstancesReport(long instancesId, ReportType reportType,
+    @Audit(value = DOWNLOAD_INSTANCES_REPORT, correlationIdKey = "#instancesEntity.id")
+    public void generateInstancesReport(InstancesEntity instancesEntity,
+                                        ReportType reportType,
                                         HttpServletResponse httpServletResponse) throws Exception {
-        log.info("Starting to generate report [{}] for instances with id [{}]", reportType, instancesId);
-        var instances = storageService.getInstances(instancesId);
+        log.info("Starting to generate report [{}] for instances with id [{}]", reportType, instancesEntity);
+        var instances = storageService.getInstances(instancesEntity);
         @Cleanup var outputStream = httpServletResponse.getOutputStream();
         httpServletResponse.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
         String reportName = String.format("%s.%s", instances.relationName(), reportType.getExtension());
         httpServletResponse.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format(ATTACHMENT_FORMAT, reportName));
         generateInstancesReport(instances, reportType, outputStream);
         outputStream.flush();
-        log.info("Report [{}] has been generated for instances with id [{}]", reportType, instancesId);
+        log.info("Report [{}] has been generated for instances with id [{}]", reportType, instancesEntity);
     }
 
     private void generateInstancesReport(Instances instances, ReportType reportType,

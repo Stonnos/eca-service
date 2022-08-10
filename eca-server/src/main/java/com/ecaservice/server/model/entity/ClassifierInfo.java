@@ -1,7 +1,6 @@
 package com.ecaservice.server.model.entity;
 
 import lombok.Data;
-import org.checkerframework.checker.units.qual.C;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;

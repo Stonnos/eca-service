@@ -60,7 +60,7 @@
               <div *ngIf="!isLink(column.name)">
                 <ng-container [ngSwitch]="column.name">
                   <ng-container *ngSwitchCase="'requestStatus.description'">
-                   <app-request-status [requestStatus]="item.requestStatus"></app-request-status>
+                    <app-request-status [requestStatus]="item.requestStatus"></app-request-status>
                   </ng-container>
                   <ng-container *ngSwitchDefault>
                     <span>{{ getColumnValue(column.name, item) }}</span>
@@ -81,24 +81,22 @@
     </div>
   </div>
 
-  <p-overlayPanel #infoPanel [showCloseIcon]="true">
-    <p-panel *ngIf="selectedEvaluationLog && selectedColumn" class="info-panel">
-      <ng-container [ngSwitch]="selectedColumn">
-        <ng-container *ngSwitchCase="'classifierInfo.classifierDescription'">
-          <app-classifier-options-info [classifierInfo]="selectedEvaluationLog?.classifierInfo">
-          </app-classifier-options-info>
-        </ng-container>
-        <ng-container *ngSwitchCase="'evaluationMethod.description'">
-          <app-evaluation-method-info [item]="selectedEvaluationLog">
-          </app-evaluation-method-info>
-        </ng-container>
-        <ng-container *ngSwitchCase="'instancesInfo.relationName'">
-          <app-instances-info [item]="selectedEvaluationLog">
-          </app-instances-info>
-        </ng-container>
-        <ng-container *ngSwitchDefault>
-        </ng-container>
+  <p-overlayPanel #infoPanel [showCloseIcon]="true" class="info-panel">
+    <ng-container *ngIf="selectedEvaluationLog && selectedColumn" [ngSwitch]="selectedColumn">
+      <ng-container *ngSwitchCase="'classifierInfo.classifierDescription'">
+        <app-classifier-options-info [classifierInfo]="selectedEvaluationLog?.classifierInfo">
+        </app-classifier-options-info>
       </ng-container>
-    </p-panel>
+      <ng-container *ngSwitchCase="'evaluationMethod.description'">
+        <app-evaluation-method-info [item]="selectedEvaluationLog">
+        </app-evaluation-method-info>
+      </ng-container>
+      <ng-container *ngSwitchCase="'instancesInfo.relationName'">
+        <app-instances-info [item]="selectedEvaluationLog">
+        </app-instances-info>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+      </ng-container>
+    </ng-container>
   </p-overlayPanel>
 </div>

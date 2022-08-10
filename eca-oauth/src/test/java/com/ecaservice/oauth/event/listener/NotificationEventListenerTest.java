@@ -3,6 +3,7 @@ package com.ecaservice.oauth.event.listener;
 import com.ecaservice.core.mail.client.event.model.EmailEvent;
 import com.ecaservice.oauth.config.AppProperties;
 import com.ecaservice.oauth.config.TfaConfig;
+import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.event.listener.handler.AbstractNotificationEventHandler;
 import com.ecaservice.oauth.event.model.AbstractNotificationEvent;
 import com.ecaservice.oauth.event.model.ChangeEmailRequestNotificationEvent;
@@ -13,6 +14,8 @@ import com.ecaservice.oauth.event.model.PasswordResetNotificationEvent;
 import com.ecaservice.oauth.event.model.ResetPasswordRequestNotificationEvent;
 import com.ecaservice.oauth.event.model.TfaCodeNotificationEvent;
 import com.ecaservice.oauth.event.model.UserCreatedEvent;
+import com.ecaservice.oauth.event.model.UserLockedNotificationEvent;
+import com.ecaservice.oauth.event.model.UserUnLockedNotificationEvent;
 import com.ecaservice.oauth.model.TokenModel;
 import com.ecaservice.oauth.service.mail.dictionary.Templates;
 import org.junit.jupiter.api.BeforeEach;
@@ -68,22 +71,23 @@ class NotificationEventListenerTest {
     @Captor
     private ArgumentCaptor<EmailEvent> emailRequestArgumentCaptor;
 
+    private UserEntity userEntity;
+
     @BeforeEach
     void init() {
+        userEntity = createUserEntity();
         applicationEventPublisher = mock(ApplicationEventPublisher.class);
         notificationEventListener = new NotificationEventListener(applicationEventPublisher, notificationEventHandlers);
     }
 
     @Test
     void testTfaCode() {
-        var userEntity = createUserEntity();
         var event = new TfaCodeNotificationEvent(this, userEntity, TFA_CODE);
         internalTestEvent(event, Templates.TFA_CODE, userEntity.getEmail());
     }
 
     @Test
     void testUserCreated() {
-        var userEntity = createUserEntity();
         var event = new UserCreatedEvent(this, userEntity, PASSWORD);
         internalTestEvent(event, Templates.NEW_USER, userEntity.getEmail());
     }
@@ -143,23 +147,32 @@ class NotificationEventListenerTest {
 
     @Test
     void testEmailChanged() {
-        var userEntity = createUserEntity();
         var event = new EmailChangedNotificationEvent(this, userEntity);
         internalTestEvent(event, Templates.EMAIL_CHANGED, userEntity.getEmail());
     }
 
     @Test
     void testPasswordChanged() {
-        var userEntity = createUserEntity();
         var event = new PasswordChangedNotificationEvent(this, userEntity);
         internalTestEvent(event, Templates.PASSWORD_CHANGED, userEntity.getEmail());
     }
 
     @Test
     void testPasswordReset() {
-        var userEntity = createUserEntity();
         var event = new PasswordResetNotificationEvent(this, userEntity);
         internalTestEvent(event, Templates.PASSWORD_RESET, userEntity.getEmail());
+    }
+
+    @Test
+    void testUserLocked() {
+        var event = new UserLockedNotificationEvent(this, userEntity);
+        internalTestEvent(event, Templates.USER_LOCKED, userEntity.getEmail());
+    }
+
+    @Test
+    void testUserUnLocked() {
+        var event = new UserUnLockedNotificationEvent(this, userEntity);
+        internalTestEvent(event, Templates.USER_UNLOCKED, userEntity.getEmail());
     }
 
     private void internalTestEvent(AbstractNotificationEvent event,

@@ -13,7 +13,7 @@ import org.mapstruct.Mapping;
 @Mapper
 public abstract class EmailTestStepMapper extends BaseTestStepMapper<EmailTestStepEntity, EmailTestStepDto> {
 
-    public EmailTestStepMapper() {
+    protected EmailTestStepMapper() {
         super(EmailTestStepEntity.class);
     }
 

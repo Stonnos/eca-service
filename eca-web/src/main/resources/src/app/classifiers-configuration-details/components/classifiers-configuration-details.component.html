@@ -69,7 +69,7 @@
     </tr>
   </ng-template>
 </p-table>
-<p-overlayPanel #configsPanel [showCloseIcon]="true">
+<p-overlayPanel #configsPanel [showCloseIcon]="true" class="info-panel">
   <app-classifier-options-details *ngIf="selectedOptions"
                                   [jsonOptions]="selectedOptions.config"
                                   [inputOptions]="selectedOptions.inputOptions">

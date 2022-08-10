@@ -68,7 +68,7 @@ export class ClassifierOptionsRequestsComponent extends BaseListComponent<Classi
 
   public getColumnValue(column: string, item: ClassifierOptionsRequestDto) {
     if (column == ClassifierOptionsRequestsFields.CLASSIFIER_NAME) {
-      return this.hasClassifierOptionsResponse(item) ? item.classifierOptionsResponseModels[0].classifierName : null;
+      return item.classifierInfo && item.classifierInfo.classifierDescription;
     } else {
       return super.getColumnValue(column, item);
     }
@@ -76,16 +76,12 @@ export class ClassifierOptionsRequestsComponent extends BaseListComponent<Classi
 
   public saveClassifierOptions() {
     if (this.selectedRequest) {
-      const classifierConfig = this.selectedRequest.classifierOptionsResponseModels[0].options;
+      const classifierConfig = this.selectedRequest.classifierInfo.classifierOptionsJson;
       if (classifierConfig) {
         let blob: Blob = new Blob([classifierConfig], {type: 'application/json'});
-        saveAs(blob, `${this.selectedRequest.classifierOptionsResponseModels[0].classifierName}_${this.selectedRequest.requestId}.json`);
+        saveAs(blob, `${this.selectedRequest.classifierInfo.classifierName}_${this.selectedRequest.requestId}.json`);
       }
     }
-  }
-
-  public hasClassifierOptionsResponse(item: ClassifierOptionsRequestDto): boolean {
-    return item && item.classifierOptionsResponseModels && item.classifierOptionsResponseModels.length > 0;
   }
 
   public onSelect(event, classifierOptionsRequestDto: ClassifierOptionsRequestDto, column: string, overlayPanel: OverlayPanel) {
@@ -95,8 +91,8 @@ export class ClassifierOptionsRequestsComponent extends BaseListComponent<Classi
   }
 
   public getFormattedJsonConfig(): string {
-    if (this.hasClassifierOptionsResponse(this.selectedRequest)) {
-      const classifierConfig = this.selectedRequest.classifierOptionsResponseModels[0].options;
+    if (this.selectedRequest.classifierInfo) {
+      const classifierConfig = this.selectedRequest.classifierInfo.classifierOptionsJson;
       if (classifierConfig) {
         const configObj = JSON.parse(classifierConfig);
         const json = new JsonPipe().transform(configObj);

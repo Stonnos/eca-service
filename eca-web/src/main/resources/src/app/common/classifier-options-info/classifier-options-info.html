@@ -1,41 +1,69 @@
-<ng-container *ngFor="let option of classifierInfo?.inputOptions">
-  <div class="ui-g">
-    <div class="ui-g-6 text-left text-bold text-wrap">
-      {{ option.optionName }}
-    </div>
-    <div class="ui-g-6 text-left text-wrap">
-      {{ option.optionValue }}
-    </div>
-  </div>
-</ng-container>
-<p-fieldset *ngIf="classifierInfo?.individualClassifiers?.length > 0"
-            legend="Базовые классификаторы"
-            [toggleable]="true"
-            [collapsed]="true"
-            class="classifiers-details-fieldset">
-  <ng-container *ngFor="let individualClassifier of classifierInfo?.individualClassifiers">
-    <div class="ui-g">
-      <div class="ui-g-12 text-left individual-classifier-header text-wrap mt-2 mb-2">
-        <div *ngIf="!individualClassifier.metaClassifier">
-          {{ individualClassifier.classifierDescription }}
-        </div>
-        <div *ngIf="individualClassifier.metaClassifier">
-          {{ individualClassifier.classifierDescription }}
-          <div class="meta-classifier bg-info text-white text-bold ml-1">
-            Мета классификатор
+<p-tabView>
+  <p-tabPanel header="Настройки классификатора">
+    <ng-template pTemplate="content">
+      <ng-container *ngFor="let option of classifierInfo?.inputOptions">
+        <div class="ui-g">
+          <div class="ui-g-6 text-left text-bold text-wrap">
+            {{ option.optionName }}
+          </div>
+          <div class="ui-g-6 text-left text-wrap">
+            {{ option.optionValue }}
           </div>
         </div>
-      </div>
-    </div>
-    <ng-container *ngFor="let option of individualClassifier?.inputOptions">
-      <div class="ui-g">
-        <div class="ui-g-6 text-left text-bold text-wrap">
-          {{ option.optionName }}
+      </ng-container>
+      <p-fieldset *ngIf="classifierInfo?.individualClassifiers?.length > 0"
+                  legend="Базовые классификаторы"
+                  [toggleable]="true"
+                  [collapsed]="true"
+                  class="classifiers-details-fieldset">
+        <ng-container *ngFor="let individualClassifier of classifierInfo?.individualClassifiers">
+          <div class="ui-g">
+            <div class="ui-g-12 text-left individual-classifier-header text-wrap mt-2 mb-2">
+              <div *ngIf="!individualClassifier.metaClassifier">
+                {{ individualClassifier.classifierDescription }}
+              </div>
+              <div *ngIf="individualClassifier.metaClassifier">
+                {{ individualClassifier.classifierDescription }}
+                <div class="meta-classifier bg-info text-white text-bold ml-1">
+                  Мета классификатор
+                </div>
+              </div>
+            </div>
+          </div>
+          <ng-container *ngFor="let option of individualClassifier?.inputOptions">
+            <div class="ui-g">
+              <div class="ui-g-6 text-left text-bold text-wrap">
+                {{ option.optionName }}
+              </div>
+              <div class="ui-g-6 text-left text-wrap">
+                {{ option.optionValue }}
+              </div>
+            </div>
+          </ng-container>
+        </ng-container>
+      </p-fieldset>
+    </ng-template>
+  </p-tabPanel>
+  <p-tabPanel header="JSON формат">
+    <ng-template pTemplate="content">
+      <ng-container *ngIf="classifierInfo?.classifierOptionsJson">
+        <pre class="json-options-config"><code class="language-json" [innerHTML]="getFormattedJsonConfig()"></code></pre>
+        <div class="ui-g mx-auto d-flex align-items-center justify-content-center">
+          <button
+            pButton
+            label="Скачать"
+            icon="pi pi-download"
+            type="button"
+            class="load-button"
+            (click)="saveClassifierOptions()">
+          </button>
         </div>
-        <div class="ui-g-6 text-left text-wrap">
-          {{ option.optionValue }}
+      </ng-container>
+      <ng-container *ngIf="!classifierInfo?.classifierOptionsJson">
+        <div class="ui-g mx-auto d-flex align-items-center justify-content-center text-center text-bold text-danger">
+          Данные не найдены
         </div>
-      </div>
-    </ng-container>
-  </ng-container>
-</p-fieldset>
+      </ng-container>
+    </ng-template>
+  </p-tabPanel>
+</p-tabView>

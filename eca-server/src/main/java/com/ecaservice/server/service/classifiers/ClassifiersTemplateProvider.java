@@ -1,5 +1,6 @@
 package com.ecaservice.server.service.classifiers;
 
+import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.core.form.template.service.FormTemplateProvider;
 import com.ecaservice.web.dto.model.FormTemplateDto;
 import lombok.RequiredArgsConstructor;
@@ -7,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static com.ecaservice.server.util.ClassifierOptionsHelper.isEnsembleClassifierOptions;
 
 /**
  * Classifiers templates provider.
@@ -36,18 +39,6 @@ public class ClassifiersTemplateProvider {
     }
 
     /**
-     * Gets ensemble classifiers form templates.
-     *
-     * @return form templates list
-     */
-    public List<FormTemplateDto> getEnsembleClassifiersTemplates() {
-        log.info("Request ensemble classifiers templates");
-        var classifierTemplates = formTemplateProvider.getTemplates(ENSEMBLE_CLASSIFIERS_GROUP);
-        log.info("[{}] ensemble classifiers form templates has been fetched", classifierTemplates.size());
-        return classifierTemplates;
-    }
-
-    /**
      * Gets classifier template by class.
      *
      * @param objectClass - classifier class
@@ -65,6 +56,20 @@ public class ClassifiersTemplateProvider {
      */
     public FormTemplateDto getEnsembleClassifierTemplateByClass(String objectClass) {
         return getTemplate(ENSEMBLE_CLASSIFIERS_GROUP, objectClass);
+    }
+
+    /**
+     * Gets form template for classifier options.
+     *
+     * @param classifierOptions - classifier options
+     * @return form template dto
+     */
+    public FormTemplateDto getTemplate(ClassifierOptions classifierOptions) {
+        if (isEnsembleClassifierOptions(classifierOptions)) {
+            return getEnsembleClassifierTemplateByClass(classifierOptions.getClass().getSimpleName());
+        } else {
+            return getClassifierTemplateByClass(classifierOptions.getClass().getSimpleName());
+        }
     }
 
     private FormTemplateDto getTemplate(String groupName, String objectClass) {

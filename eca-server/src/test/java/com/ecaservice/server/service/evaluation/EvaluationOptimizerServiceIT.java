@@ -15,7 +15,6 @@ import com.ecaservice.server.configuation.ExecutorConfiguration;
 import com.ecaservice.server.mapping.ClassifierInfoMapperImpl;
 import com.ecaservice.server.mapping.ClassifierOptionsRequestMapperImpl;
 import com.ecaservice.server.mapping.ClassifierOptionsRequestModelMapperImpl;
-import com.ecaservice.server.mapping.ClassifierOptionsResponseModelMapperImpl;
 import com.ecaservice.server.mapping.ClassifierReportMapperImpl;
 import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.mapping.ErsEvaluationMethodMapperImpl;
@@ -71,7 +70,7 @@ import static org.mockito.Mockito.when;
         EvaluationRequestMapperImpl.class, ClassifierOptionsRequestMapperImpl.class,
         ErsConfig.class, EvaluationLogMapperImpl.class, LockExecutionAspect.class, ErsErrorHandler.class,
         EvaluationService.class, ErsEvaluationMethodMapperImpl.class, ErsResponseStatusMapperImpl.class,
-        InstancesConverter.class, ClassifierOptionsResponseModelMapperImpl.class, ErsRequestService.class,
+        InstancesConverter.class, ErsRequestService.class,
         EvaluationOptimizerService.class, ClassifierInfoMapperImpl.class, RedisAutoConfiguration.class,
         ClassifierOptionsCacheService.class, DateTimeConverter.class, RedisLockAutoConfiguration.class})
 class EvaluationOptimizerServiceIT extends AbstractJpaTest {
@@ -150,7 +149,7 @@ class EvaluationOptimizerServiceIT extends AbstractJpaTest {
         finishedLatch.await();
         executorService.shutdownNow();
         List<ClassifierOptionsRequestEntity> requestEntities = classifierOptionsRequestRepository.findAll();
-        assertThat(requestEntities.size()).isEqualTo(2);
+        assertThat(requestEntities).hasSize(2);
         assertThat(classifierOptionsRequestModelRepository.count()).isOne();
         assertThat(requestEntities.get(0).getSource()).isEqualTo(ClassifierOptionsRequestSource.ERS);
         assertThat(requestEntities.get(1).getSource()).isEqualTo(ClassifierOptionsRequestSource.CACHE);

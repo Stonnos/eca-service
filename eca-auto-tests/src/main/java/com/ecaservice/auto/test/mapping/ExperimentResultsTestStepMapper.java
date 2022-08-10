@@ -13,7 +13,7 @@ import org.mapstruct.Mapper;
 public abstract class ExperimentResultsTestStepMapper
         extends BaseTestStepMapper<ExperimentResultsTestStepEntity, ExperimentResultsTestStepDto> {
 
-    public ExperimentResultsTestStepMapper() {
+    protected ExperimentResultsTestStepMapper() {
         super(ExperimentResultsTestStepEntity.class);
     }
 }
