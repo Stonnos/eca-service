@@ -155,10 +155,45 @@ class ChangeEmailServiceTest extends AbstractJpaTest {
         assertThrows(UserLockedException.class, () -> changeEmailService.changeEmail(TOKEN));
     }
 
+    @Test
+    void testGetChangeEmailRequestStatusForEmptyRequests() {
+        testInactiveChangeEmailRequestStatus();
+    }
+
+    @Test
+    void testGetActiveChangeEmailRequest() {
+        var changeEmailRequestEntity = createAndSaveChangeEmailRequestEntity(
+                LocalDateTime.now().plusMinutes(appProperties.getChangeEmail().getValidityMinutes()), null);
+        var changeEmailStatusDto = changeEmailService.getChangeEmailRequestStatus(userEntity.getId());
+        assertThat(changeEmailStatusDto).isNotNull();
+        assertThat(changeEmailStatusDto.isActive()).isTrue();
+        assertThat(changeEmailStatusDto.getNewEmail()).isEqualTo(changeEmailRequestEntity.getNewEmail());
+    }
+
+    @Test
+    void testGetChangeEmailRequestStatusForAlreadyConfirmedRequest() {
+        createAndSaveChangeEmailRequestEntity(
+                LocalDateTime.now().plusMinutes(appProperties.getChangeEmail().getValidityMinutes()),
+                LocalDateTime.now().minusMinutes(1L));
+        testInactiveChangeEmailRequestStatus();
+    }
+
+    @Test
+    void testGetChangeEmailRequestStatusForExpiredToken() {
+        createAndSaveChangeEmailRequestEntity(LocalDateTime.now().minusDays(1L), null);
+        testInactiveChangeEmailRequestStatus();
+    }
+
     private UserEntity createAndSaveUser() {
         UserEntity userEntity = createUserEntity();
         userEntity.setRoles(Collections.emptySet());
         return userEntityRepository.save(userEntity);
+    }
+
+    private void testInactiveChangeEmailRequestStatus() {
+        var changeEmailStatusDto = changeEmailService.getChangeEmailRequestStatus(userEntity.getId());
+        assertThat(changeEmailStatusDto).isNotNull();
+        assertThat(changeEmailStatusDto.isActive()).isFalse();
     }
 
     private ChangeEmailRequestEntity createAndSaveChangeEmailRequestEntity(LocalDateTime expireDate,
