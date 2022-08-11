@@ -85,18 +85,27 @@ class ChangeEmailControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void testConfirmChangeEmailUnauthorized() throws Exception {
+        mockMvc.perform(post(CONFIRM_URL)
+                .param(TOKEN_PARAM, TOKEN_VALUE))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
     void testConfirmChangeEmailRequest() throws Exception {
         var changeEmailRequestEntity = createChangeEmailRequestEntity(TOKEN_VALUE);
         when(changeEmailService.changeEmail(TOKEN_VALUE)).thenReturn(changeEmailRequestEntity);
         mockMvc.perform(post(CONFIRM_URL)
-                .param(TOKEN_PARAM, TOKEN_VALUE))
+                .param(TOKEN_PARAM, TOKEN_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk());
         verify(changeEmailService, atLeastOnce()).changeEmail(TOKEN_VALUE);
     }
 
     @Test
     void testConfirmChangeEmailRequestWithNullToken() throws Exception {
-        mockMvc.perform(post(CONFIRM_URL))
+        mockMvc.perform(post(CONFIRM_URL)
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isBadRequest());
     }
 }

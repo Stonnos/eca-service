@@ -95,18 +95,27 @@ class ChangePasswordControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void testConfirmChangePasswordRequestUnauthorized() throws Exception {
+        mockMvc.perform(post(CONFIRM_URL)
+                .param(TOKEN_PARAM, TOKEN_VALUE))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
     void testConfirmChangePasswordRequest() throws Exception {
         var changePasswordRequestEntity = createChangePasswordRequestEntity(TOKEN_VALUE);
         when(changePasswordService.changePassword(TOKEN_VALUE)).thenReturn(changePasswordRequestEntity);
         mockMvc.perform(post(CONFIRM_URL)
-                .param(TOKEN_PARAM, TOKEN_VALUE))
+                .param(TOKEN_PARAM, TOKEN_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk());
         verify(changePasswordService, atLeastOnce()).changePassword(TOKEN_VALUE);
     }
 
     @Test
     void testConfirmChangePasswordRequestWithNullToken() throws Exception {
-        mockMvc.perform(post(CONFIRM_URL))
+        mockMvc.perform(post(CONFIRM_URL)
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isBadRequest());
     }
 }
