@@ -165,7 +165,7 @@ export class UserProfileComponent implements OnInit {
   }
 
   public onChangeEmail(newEmail: string): void {
-    this.confirmDialogMessage = `На электронный адрес ${newEmail} отправлено письмо со ссылкой для подтверждения`;
+    this.confirmDialogMessage = `На текущий email адрес отправлено письмо со ссылкой для подтверждения изменения email адреса на ${newEmail}`;
     this.confirmDialogVisibility = true;
     this.getChangeEmailRequestStatus();
   }
@@ -289,7 +289,7 @@ export class UserProfileComponent implements OnInit {
             this.changeActiveEmailStatusMessage = [
               {
                 severity: 'info',
-                detail: `Вы отправили запрос на изменение Email. На адрес ${this.changeEmailRequestStatusDto.newEmail} было отправлено письмо со ссылкой для подтверждения`
+                detail: `Вы запросили смену текущего email адреса на адрес ${this.changeEmailRequestStatusDto.newEmail}. На ваш текущий email было отправлено письмо со ссылкой для подтверждения`
               }
             ];
           } else {
