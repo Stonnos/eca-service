@@ -1,9 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {
+  ChangeEmailRequestStatusDto,
   RoleDto, UserDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { UsersService } from "../../users/services/users.service";
-import { MenuItem, MessageService } from "primeng/api";
+import {MenuItem, Message, MessageService} from "primeng/api";
 import { UserFields } from "../../common/util/field-names";
 import { Utils } from "../../common/util/utils";
 import { FieldService } from "../../common/services/field.service";
@@ -12,6 +13,7 @@ import { FileUpload } from "primeng/primeng";
 import { finalize } from "rxjs/internal/operators";
 import { ChangePasswordRequest } from "../../change-password/model/change-password.request";
 import { UpdateUserInfoModel } from "../../users/model/update-user-info.model";
+import { ChangeEmailService } from "../../update-user-email/services/change-email.service";
 
 @Component({
   selector: 'app-user-profile',
@@ -38,6 +40,8 @@ export class UserProfileComponent implements OnInit {
 
   public loading: boolean = false;
 
+  public changeEmailRequestStatusDto: ChangeEmailRequestStatusDto;
+
   private readonly changePasswordRequestCreatedMessage: string =
     'На ваш email отправлено письмо с подтверждением смены пароля';
 
@@ -61,6 +65,8 @@ export class UserProfileComponent implements OnInit {
   public invalidFileTypeMessageSummary: string = 'Некорректный тип файла,';
   public invalidFileTypeMessageDetail: string = 'допускаются только файлы графических форматов.';
 
+  public changeActiveEmailStatusMessage: Message[] = [];
+
   private photo: Blob;
 
   @ViewChild(FileUpload, { static: true })
@@ -69,12 +75,14 @@ export class UserProfileComponent implements OnInit {
   public constructor(private usersService: UsersService,
                      private fieldService: FieldService,
                      private sanitizer: DomSanitizer,
-                     private messageService: MessageService) {
+                     private messageService: MessageService,
+                     private changeEmailService: ChangeEmailService) {
     this.initCommonFields();
   }
 
   public ngOnInit() {
     this.getUser(true);
+    this.getChangeEmailRequestStatus();
     this.initUserPhotoMenu();
   }
 
@@ -159,6 +167,7 @@ export class UserProfileComponent implements OnInit {
   public onChangeEmail(newEmail: string): void {
     this.confirmDialogMessage = `На электронный адрес ${newEmail} отправлено письмо со ссылкой для подтверждения`;
     this.confirmDialogVisibility = true;
+    this.getChangeEmailRequestStatus();
   }
 
   public updateFirstName(value: string): void {
@@ -264,6 +273,28 @@ export class UserProfileComponent implements OnInit {
       .subscribe({
         next: () => {
           this.getUser(true);
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
+  }
+
+  private getChangeEmailRequestStatus(): void {
+    this.changeEmailService.getChangeEmailRequestStatus()
+      .subscribe({
+        next: (statusDto: ChangeEmailRequestStatusDto) => {
+          this.changeEmailRequestStatusDto = statusDto;
+          if (this.changeEmailRequestStatusDto.active) {
+            this.changeActiveEmailStatusMessage = [
+              {
+                severity: 'info',
+                detail: `Вы отправили запрос на изменение Email. На адрес ${this.changeEmailRequestStatusDto.newEmail} было отправлено письмо со ссылкой для подтверждения`
+              }
+            ];
+          } else {
+            this.changeActiveEmailStatusMessage = [];
+          }
         },
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
