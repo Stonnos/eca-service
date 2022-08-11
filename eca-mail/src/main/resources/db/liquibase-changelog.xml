@@ -21,4 +21,5 @@
     <include file="db/changelog/v14-update-reset-password-templates.xml"/>
     <include file="db/changelog/v15-add-uuid-unique-idx.xml"/>
     <include file="db/changelog/v16-insert-user-locked-templates.xml"/>
+    <include file="db/changelog/v17-insert-new-email-template-parameter.xml"/>
 </databaseChangeLog>

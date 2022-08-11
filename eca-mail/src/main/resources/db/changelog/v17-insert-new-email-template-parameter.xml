@@ -1,0 +1,45 @@
+<?xml version="1.1" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v17-insert-new-email-template-parameter.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="insert_new_email_template_parameter" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="template_parameter"/>
+            <sqlCheck expectedResult="0">select count(*) from template_parameter where parameter_name = 'newEmail'</sqlCheck>
+        </preConditions>
+        <insert tableName="template_parameter">
+            <column name="id" valueComputed="nextval('hibernate_sequence')"/>
+            <column name="created" valueDate="now()"/>
+            <column name="parameter_name" value="newEmail"/>
+            <column name="description" value="Новый почтовый адрес"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert_new_email_template_parameter_into_change_email_template" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="template"/>
+            <tableExists tableName="template_parameter"/>
+            <tableExists tableName="templates_parameters"/>
+            <sqlCheck expectedResult="1">select count(*) from template where template_code = 'CHANGE_EMAIL'</sqlCheck>
+            <sqlCheck expectedResult="1">select count(*) from template_parameter where parameter_name = 'newEmail'</sqlCheck>
+        </preConditions>
+        <insert tableName="templates_parameters">
+            <column name="template_id" valueComputed="(select id from template where template_code = 'CHANGE_EMAIL')"/>
+            <column name="param_id" valueComputed="(select id from template_parameter where parameter_name = 'newEmail')"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="update_change_email_template_body_with_new_email" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="template"/>
+            <sqlCheck expectedResult="1">select count(*) from template where template_code = 'CHANGE_EMAIL'</sqlCheck>
+        </preConditions>
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/change-email-template.html"/>
+            <where>template_code = 'CHANGE_EMAIL'</where>
+        </update>
+    </changeSet>
+</databaseChangeLog>

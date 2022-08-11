@@ -177,7 +177,7 @@
 |changePasswordUrl, validityMinutes
 |CHANGE_EMAIL
 |Сообщение с подтверждением изменения Email в личном кабинете Eca - service
-|changeEmailUrl, validityHours
+|newEmail, changeEmailUrl, validityHours
 |EMAIL_CHANGED
 |Сообщение с успешным изменением Email в личном кабинете Eca - service
 |-
