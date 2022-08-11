@@ -13,6 +13,7 @@ import com.ecaservice.oauth.exception.UserLockedException;
 import com.ecaservice.oauth.model.TokenModel;
 import com.ecaservice.oauth.repository.ChangeEmailRequestRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
+import com.ecaservice.web.dto.model.ChangeEmailRequestStatusDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Optional;
 
 import static com.ecaservice.common.web.util.MaskUtils.mask;
 import static com.ecaservice.common.web.util.RandomUtils.generateToken;
@@ -79,6 +81,33 @@ public class ChangeEmailService {
     }
 
     /**
+     * Gets change email request status for specified user.
+     *
+     * @param userId - user id
+     * @return change email request status dto
+     */
+    public ChangeEmailRequestStatusDto getChangeEmailRequestStatus(Long userId) {
+        log.info("Gets change email request status for user [{}]", userId);
+        var userEntity = userEntityRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException(UserEntity.class, userId));
+        var changeEmailRequestOpt = getLastActiveChangeEmailRequest(userEntity);
+        if (changeEmailRequestOpt.isEmpty()) {
+            log.info("No one active change email request has been found for user [{}]", userId);
+            return ChangeEmailRequestStatusDto.builder()
+                    .active(false)
+                    .build();
+        } else {
+            var changeEmailRequest = changeEmailRequestOpt.get();
+            log.info("Active change email request [{}] has been found for user [{}]", changeEmailRequest.getId(),
+                    userId);
+            return ChangeEmailRequestStatusDto.builder()
+                    .active(true)
+                    .newEmail(changeEmailRequest.getNewEmail())
+                    .build();
+        }
+    }
+
+    /**
      * Change user email.
      *
      * @param token - token value
@@ -103,6 +132,12 @@ public class ChangeEmailService {
         log.info("New email has been set for user [{}], change email request id [{}]", userEntity.getId(),
                 changeEmailRequestEntity.getId());
         return changeEmailRequestEntity;
+    }
+
+    private Optional<ChangeEmailRequestEntity> getLastActiveChangeEmailRequest(UserEntity userEntity) {
+        LocalDateTime now = LocalDateTime.now();
+        return changeEmailRequestRepository.findByUserEntityAndExpireDateAfterAndConfirmationDateIsNull(userEntity,
+                now);
     }
 
     private ChangeEmailRequestEntity saveChangeEmailRequest(String newEmail,

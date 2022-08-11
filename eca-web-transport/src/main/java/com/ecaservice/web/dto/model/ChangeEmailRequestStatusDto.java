@@ -23,8 +23,8 @@ public class ChangeEmailRequestStatusDto {
     private String newEmail;
 
     /**
-     * Is request valid?
+     * Is request active?
      */
-    @Schema(description = "Is request valid (created and not expired and not confirmed)?")
-    private boolean valid;
+    @Schema(description = "Is request active (created and not expired and not confirmed)?")
+    private boolean active;
 }
