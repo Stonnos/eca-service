@@ -118,6 +118,17 @@ public class ChangePasswordController {
             summary = "Confirms change password request",
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
+                                    }
+                            )
+                    ),
                     @ApiResponse(description = "Bad request", responseCode = "400",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
