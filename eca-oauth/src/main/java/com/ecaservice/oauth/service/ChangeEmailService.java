@@ -112,7 +112,7 @@ public class ChangeEmailService {
      *
      * @param token - token value
      */
-    @Audit(value = CONFIRM_CHANGE_EMAIL_REQUEST, initiatorKey = "#result.userEntity.login")
+    @Audit(value = CONFIRM_CHANGE_EMAIL_REQUEST)
     @Transactional
     public ChangeEmailRequestEntity changeEmail(String token) {
         log.info("Starting to change email for token [{}]", mask(token));
