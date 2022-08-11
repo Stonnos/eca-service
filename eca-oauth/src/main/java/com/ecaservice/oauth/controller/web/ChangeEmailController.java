@@ -169,7 +169,8 @@ public class ChangeEmailController {
                                                     name = "ChangeEmailStatusResponse",
                                                     ref = "#/components/examples/ChangeEmailStatusResponse"
                                             ),
-                                    }
+                                    },
+                                    schema = @Schema(implementation = ChangeEmailRequestStatusDto.class)
                             )
                     ),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
