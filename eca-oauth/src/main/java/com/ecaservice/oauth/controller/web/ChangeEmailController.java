@@ -107,6 +107,7 @@ public class ChangeEmailController {
      *
      * @param token - token value
      */
+    @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
             description = "Confirms change email request",
             summary = "Confirms change email request",

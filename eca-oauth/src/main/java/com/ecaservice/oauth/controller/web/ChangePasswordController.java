@@ -112,6 +112,7 @@ public class ChangePasswordController {
      *
      * @param token - token value
      */
+    @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
             description = "Confirms change password request",
             summary = "Confirms change password request",
