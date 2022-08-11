@@ -4,7 +4,7 @@ import {
   RoleDto, UserDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { UsersService } from "../../users/services/users.service";
-import {MenuItem, Message, MessageService} from "primeng/api";
+import { MenuItem, Message, MessageService } from "primeng/api";
 import { UserFields } from "../../common/util/field-names";
 import { Utils } from "../../common/util/utils";
 import { FieldService } from "../../common/services/field.service";
