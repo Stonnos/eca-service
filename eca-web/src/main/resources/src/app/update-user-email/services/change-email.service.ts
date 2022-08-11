@@ -23,9 +23,12 @@ export class ChangeEmailService {
   }
 
   public confirmChangeEmailRequest(token: string) {
+    const headers = new HttpHeaders({
+      'Authorization': Utils.getBearerTokenHeader()
+    });
     const formData = new FormData();
     formData.append('token', token);
-    return this.http.post(this.serviceUrl + '/confirm', formData);
+    return this.http.post(this.serviceUrl + '/confirm', formData, { headers: headers });
   }
 
   public getChangeEmailRequestStatus(): Observable<ChangeEmailRequestStatusDto> {
