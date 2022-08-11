@@ -49,4 +49,9 @@ public class TemplateVariablesDictionary {
      * Change email url variable
      */
     public static final String CHANGE_EMAIL_URL_KEY = "changeEmailUrl";
+
+    /**
+     * New email
+     */
+    public static final String NEW_EMAIL = "newEmail";
 }

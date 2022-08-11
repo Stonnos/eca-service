@@ -131,7 +131,7 @@ class NotificationEventListenerTest {
                 .email(changeEmailRequestEntity.getUserEntity().getEmail())
                 .build();
         var event = new ChangeEmailRequestNotificationEvent(this, tokenModel, NEW_EMAIL);
-        internalTestEvent(event, Templates.CHANGE_EMAIL, NEW_EMAIL);
+        internalTestEvent(event, Templates.CHANGE_EMAIL, changeEmailRequestEntity.getUserEntity().getEmail());
     }
 
     @Test
