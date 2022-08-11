@@ -161,7 +161,17 @@ public class ChangeEmailController {
             summary = "Gets change email request status",
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
-                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "ChangeEmailStatusResponse",
+                                                    ref = "#/components/examples/ChangeEmailStatusResponse"
+                                            ),
+                                    }
+                            )
+                    ),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
