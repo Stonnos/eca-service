@@ -17,6 +17,7 @@
             **/entity/**/*,
             **/config/**/*,
             **/annotation/**/*,
+            **/metrics/**/*,
             **/model/**/*,
             **/exception/**/*
         </sonar.coverage.exclusions>

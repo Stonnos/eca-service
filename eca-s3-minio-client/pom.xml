@@ -18,6 +18,7 @@
         <sonar.coverage.exclusions>
             **/config/**/*,
             **/model/**/*,
+            **/metrics/**/*,
             **/exception/**/*
         </sonar.coverage.exclusions>
     </properties>
