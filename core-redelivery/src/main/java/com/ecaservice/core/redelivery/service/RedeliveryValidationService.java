@@ -47,11 +47,11 @@ public class RedeliveryValidationService {
         }
         var retryMethods = getAllRetryMethods(beans);
         log.info("Found [{}] methods annotated with [{}]", retryMethods.size(), Retry.class.getSimpleName());
-        Set<String> redeliverCodes = newHashSet();
+        Set<String> retryCodes = newHashSet();
         for (var method : retryMethods) {
             var retryAnnotation = AnnotationUtils.findAnnotation(method, Retry.class);
             Assert.notNull(retryAnnotation, "Expected not null retry annotation");
-            if (!redeliverCodes.add(retryAnnotation.value())) {
+            if (!retryCodes.add(retryAnnotation.value())) {
                 throw new IllegalArgumentException(
                         String.format("Found duplicate code [%s] for annotation [%s]. Codes must be unique",
                                 retryAnnotation.value(), Retry.class.getSimpleName()));

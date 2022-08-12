@@ -48,7 +48,7 @@ public class RetryService {
     private final ApplicationContext applicationContext;
     private final RetryRequestRepository retryRequestRepository;
 
-    private final Map<String, MethodInfo> declaredRedeliverMethodsCache = new ConcurrentHashMap<>(256);
+    private final Map<String, MethodInfo> declaredRetryMethodsCache = new ConcurrentHashMap<>(256);
 
     /**
      * Retry specified request.
@@ -65,7 +65,7 @@ public class RetryService {
     private MethodInfo getRetryMethodInfo(RetryRequest retryRequest) {
         log.debug("Starting to find method annotated with [{}], code [{}]", Retry.class.getSimpleName(),
                 retryRequest.getRequestType());
-        var methodInfo = declaredRedeliverMethodsCache.get(retryRequest.getRequestType());
+        var methodInfo = declaredRetryMethodsCache.get(retryRequest.getRequestType());
         if (methodInfo == null) {
             log.debug("Method annotated with [{}], code [{}] not found in cache", Retry.class.getSimpleName(),
                     retryRequest.getRequestType());
@@ -75,7 +75,7 @@ public class RetryService {
                         String.format("No one bean found with annotation [%s]", Retryable.class.getSimpleName()));
             }
             methodInfo = getRetryMethodInfo(beans, retryRequest);
-            declaredRedeliverMethodsCache.put(retryRequest.getRequestType(), methodInfo);
+            declaredRetryMethodsCache.put(retryRequest.getRequestType(), methodInfo);
             log.debug("Method [{}#{}] annotated with [{}], code [{}] has been put into cache",
                     methodInfo.getBean().getClass().getSimpleName(), methodInfo.getMethod().getName(),
                     Retry.class.getSimpleName(), retryRequest.getRequestType());
