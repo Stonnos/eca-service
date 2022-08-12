@@ -17,7 +17,7 @@ public class ObjectStorageTestDataProvider implements ArgumentsProvider {
     private static final int INT_VALUE = 5;
 
     @Override
-    public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) throws Exception {
+    public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
         return Stream.of(testObjectArguments());
     }
 
