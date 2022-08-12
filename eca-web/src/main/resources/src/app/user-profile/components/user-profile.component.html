@@ -100,6 +100,13 @@
                 </ng-container>
               </ng-container>
             </div>
+            <div *ngIf="field.name == 'passwordChangeDate' && changePasswordRequestStatusDto?.active"
+                 class="ui-g ml-1 mr-1 text-bold text-center">
+              <p-messages [enableService]="false"
+                          [closable]="false"
+                          [(value)]="activeChangePasswordStatusMessage">
+              </p-messages>
+            </div>
           </div>
         </p-fieldset>
 
@@ -118,7 +125,7 @@
           <div *ngIf="changeEmailRequestStatusDto?.active" class="ui-g ml-1 mr-1 text-bold text-center">
             <p-messages [enableService]="false"
                         [closable]="false"
-                        [(value)]="changeActiveEmailStatusMessage">
+                        [(value)]="activeChangeEmailStatusMessage">
             </p-messages>
           </div>
         </p-fieldset>
