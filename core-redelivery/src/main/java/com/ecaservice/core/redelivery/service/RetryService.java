@@ -74,30 +74,7 @@ public class RetryService {
                 throw new IllegalStateException(
                         String.format("No one bean found with annotation [%s]", Retryable.class.getSimpleName()));
             }
-            var retryMethods = getAllRetryMethodsWithCode(beans, retryRequest.getRequestType());
-            if (CollectionUtils.isEmpty(retryMethods)) {
-                throw new IllegalStateException(
-                        String.format("No one method found annotated with [%s], code [%s]", Retry.class.getSimpleName(),
-                                retryRequest.getRequestType()));
-            }
-            int retryMethodsSize = retryMethods.size();
-            log.debug("Found [{}] methods annotated with [{}], code [{}]", retryMethodsSize,
-                    Retry.class.getSimpleName(), retryRequest.getRequestType());
-            if (retryMethodsSize > 1) {
-                throw new IllegalStateException(
-                        String.format("[%d] methods found annotated with [%s], code [%s]", retryMethodsSize,
-                                Retry.class.getSimpleName(), retryRequest.getRequestType()));
-            }
-            var retryMethodInfo = retryMethods.iterator().next();
-            Object retryBean = retryMethodInfo.getBean();
-            var retryMethod = retryMethodInfo.getMethod();
-            if (retryMethod.getParameters().length == 0) {
-                throw new IllegalStateException(
-                        String.format("[%s#%s] annotated with [%s], code [%s], has no input parameters",
-                                retryBean.getClass().getSimpleName(), retryMethod.getName(),
-                                Retry.class.getSimpleName(), retryRequest.getRequestType()));
-            }
-            methodInfo = new MethodInfo(retryBean, retryMethod);
+            methodInfo = getRetryMethodInfo(beans, retryRequest);
             declaredRedeliverMethodsCache.put(retryRequest.getRequestType(), methodInfo);
             log.debug("Method [{}#{}] annotated with [{}], code [{}] has been put into cache",
                     methodInfo.getBean().getClass().getSimpleName(), methodInfo.getMethod().getName(),
@@ -107,6 +84,33 @@ public class RetryService {
                 methodInfo.getBean().getClass().getSimpleName(), methodInfo.getMethod().getName(),
                 Retry.class.getSimpleName(), retryRequest.getRequestType());
         return methodInfo;
+    }
+
+    private MethodInfo getRetryMethodInfo(Map<String, Object> beans, RetryRequest retryRequest) {
+        var retryMethods = getAllRetryMethodsWithCode(beans, retryRequest.getRequestType());
+        if (CollectionUtils.isEmpty(retryMethods)) {
+            throw new IllegalStateException(
+                    String.format("No one method found annotated with [%s], code [%s]", Retry.class.getSimpleName(),
+                            retryRequest.getRequestType()));
+        }
+        int retryMethodsSize = retryMethods.size();
+        log.debug("Found [{}] methods annotated with [{}], code [{}]", retryMethodsSize,
+                Retry.class.getSimpleName(), retryRequest.getRequestType());
+        if (retryMethodsSize > 1) {
+            throw new IllegalStateException(
+                    String.format("[%d] methods found annotated with [%s], code [%s]", retryMethodsSize,
+                            Retry.class.getSimpleName(), retryRequest.getRequestType()));
+        }
+        var retryMethodInfo = retryMethods.iterator().next();
+        Object retryBean = retryMethodInfo.getBean();
+        var retryMethod = retryMethodInfo.getMethod();
+        if (retryMethod.getParameters().length == 0) {
+            throw new IllegalStateException(
+                    String.format("[%s#%s] annotated with [%s], code [%s], has no input parameters",
+                            retryBean.getClass().getSimpleName(), retryMethod.getName(),
+                            Retry.class.getSimpleName(), retryRequest.getRequestType()));
+        }
+        return retryMethodInfo;
     }
 
     private List<MethodInfo> getAllRetryMethodsWithCode(Map<String, Object> beans, String code) {

@@ -49,12 +49,18 @@ public class RedeliveryValidationService {
         log.info("Found [{}] methods annotated with [{}]", retryMethods.size(), Retry.class.getSimpleName());
         Set<String> redeliverCodes = newHashSet();
         for (var method : retryMethods) {
-            var redeliverAnnotation = AnnotationUtils.findAnnotation(method, Retry.class);
-            Assert.notNull(redeliverAnnotation, "Expected not null retry annotation");
-            if (!redeliverCodes.add(redeliverAnnotation.value())) {
+            var retryAnnotation = AnnotationUtils.findAnnotation(method, Retry.class);
+            Assert.notNull(retryAnnotation, "Expected not null retry annotation");
+            if (!redeliverCodes.add(retryAnnotation.value())) {
                 throw new IllegalArgumentException(
                         String.format("Found duplicate code [%s] for annotation [%s]. Codes must be unique",
-                                redeliverAnnotation.value(), Retry.class.getSimpleName()));
+                                retryAnnotation.value(), Retry.class.getSimpleName()));
+            }
+            if (method.getParameters().length == 0) {
+                throw new IllegalStateException(
+                        String.format("[%s#%s] annotated with [%s], code [%s], has no input parameters",
+                                method.getDeclaringClass().getSimpleName(), method.getName(),
+                                Retry.class.getSimpleName(), retryAnnotation.value()));
             }
         }
         log.info("Redelivery annotations validation has been passed");
