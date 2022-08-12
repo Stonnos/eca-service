@@ -43,7 +43,7 @@ __Scopes__:
 
 __Grant type:__ client_credentials
 
-__Token url:__ http://localhost:8080/eca-oauth/oauth/token
+__Token url:__ http://eca-service:8080/eca-oauth/oauth/token
 
 
 
@@ -1242,6 +1242,18 @@ __string__
 |-
 a|
 -
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
 |400
 |Bad request
 |*application/json*
@@ -1415,6 +1427,18 @@ __string__
 |-
 a|
 -
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
 |400
 |Bad request
 |*application/json*
@@ -1642,6 +1666,135 @@ a|
   "code" : "DataNotFound",
   "errorMessage" : "Entity with search key [1] not found!"
 } ]
+----
+|===
+
+== Gets change password request status
+
+__GET__ */password/change/request-status* - Gets change password request status
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+<<ChangePasswordRequestStatusDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "active" : true
+}
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|===
+
+== Gets change email request status
+
+__GET__ */email/change/request-status* - Gets change email request status
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+<<ChangeEmailRequestStatusDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "newEmail" : "test@mail.ru",
+  "active" : true
+}
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
 ----
 |===
 
@@ -2750,6 +2903,77 @@ __string__
 *Min. length*: 1
 
 *Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|===
+=== ChangePasswordRequestStatusDto
+:table-caption: Table
+.Change password request status
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*active*
+|Is request active (created and not expired and not confirmed)?
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== ChangeEmailRequestStatusDto
+:table-caption: Table
+.Change email request status
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*newEmail*
+|New email
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*active*
+|Is request active (created and not expired and not confirmed)?
+a|
+__boolean__
+
+
+
+
+
 
 
 

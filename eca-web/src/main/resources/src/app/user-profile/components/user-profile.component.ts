@@ -1,9 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {
+  ChangeEmailRequestStatusDto, ChangePasswordRequestStatusDto,
   RoleDto, UserDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { UsersService } from "../../users/services/users.service";
-import { MenuItem, MessageService } from "primeng/api";
+import { MenuItem, Message, MessageService } from "primeng/api";
 import { UserFields } from "../../common/util/field-names";
 import { Utils } from "../../common/util/utils";
 import { FieldService } from "../../common/services/field.service";
@@ -12,6 +13,8 @@ import { FileUpload } from "primeng/primeng";
 import { finalize } from "rxjs/internal/operators";
 import { ChangePasswordRequest } from "../../change-password/model/change-password.request";
 import { UpdateUserInfoModel } from "../../users/model/update-user-info.model";
+import { ChangeEmailService } from "../../update-user-email/services/change-email.service";
+import { ChangePasswordService } from "../../change-password/services/change-password.service";
 
 @Component({
   selector: 'app-user-profile',
@@ -38,6 +41,9 @@ export class UserProfileComponent implements OnInit {
 
   public loading: boolean = false;
 
+  public changeEmailRequestStatusDto: ChangeEmailRequestStatusDto;
+  public changePasswordRequestStatusDto: ChangePasswordRequestStatusDto;
+
   private readonly changePasswordRequestCreatedMessage: string =
     'На ваш email отправлено письмо с подтверждением смены пароля';
 
@@ -61,6 +67,9 @@ export class UserProfileComponent implements OnInit {
   public invalidFileTypeMessageSummary: string = 'Некорректный тип файла,';
   public invalidFileTypeMessageDetail: string = 'допускаются только файлы графических форматов.';
 
+  public activeChangeEmailStatusMessage: Message[] = [];
+  public activeChangePasswordStatusMessage: Message[] = [];
+
   private photo: Blob;
 
   @ViewChild(FileUpload, { static: true })
@@ -69,13 +78,17 @@ export class UserProfileComponent implements OnInit {
   public constructor(private usersService: UsersService,
                      private fieldService: FieldService,
                      private sanitizer: DomSanitizer,
-                     private messageService: MessageService) {
+                     private messageService: MessageService,
+                     private changeEmailService: ChangeEmailService,
+                     private changePasswordService: ChangePasswordService) {
     this.initCommonFields();
   }
 
   public ngOnInit() {
     this.getUser(true);
     this.initUserPhotoMenu();
+    this.getChangeEmailRequestStatus();
+    this.getChangePasswordRequestStatus();
   }
 
   public hasPhoto(): boolean {
@@ -142,6 +155,7 @@ export class UserProfileComponent implements OnInit {
   public onCreateChangePasswordRequest(): void {
     this.confirmDialogMessage = this.changePasswordRequestCreatedMessage;
     this.confirmDialogVisibility = true;
+    this.getChangePasswordRequestStatus();
   }
 
   public hideConfirmDialog(): void {
@@ -157,8 +171,9 @@ export class UserProfileComponent implements OnInit {
   }
 
   public onChangeEmail(newEmail: string): void {
-    this.confirmDialogMessage = `На электронный адрес ${newEmail} отправлено письмо со ссылкой для подтверждения`;
+    this.confirmDialogMessage = `На текущий email адрес отправлено письмо со ссылкой для подтверждения изменения email адреса на ${newEmail}`;
     this.confirmDialogVisibility = true;
+    this.getChangeEmailRequestStatus();
   }
 
   public updateFirstName(value: string): void {
@@ -264,6 +279,50 @@ export class UserProfileComponent implements OnInit {
       .subscribe({
         next: () => {
           this.getUser(true);
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
+  }
+
+  private getChangeEmailRequestStatus(): void {
+    this.changeEmailService.getChangeEmailRequestStatus()
+      .subscribe({
+        next: (statusDto: ChangeEmailRequestStatusDto) => {
+          this.changeEmailRequestStatusDto = statusDto;
+          if (this.changeEmailRequestStatusDto.active) {
+            this.activeChangeEmailStatusMessage = [
+              {
+                severity: 'info',
+                detail: `Вы запросили смену текущего email адреса на адрес ${this.changeEmailRequestStatusDto.newEmail}. На ваш текущий email было отправлено письмо со ссылкой для подтверждения`
+              }
+            ];
+          } else {
+            this.activeChangeEmailStatusMessage = [];
+          }
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
+  }
+
+  private getChangePasswordRequestStatus(): void {
+    this.changePasswordService.getChangePasswordRequestStatus()
+      .subscribe({
+        next: (statusDto: ChangePasswordRequestStatusDto) => {
+          this.changePasswordRequestStatusDto = statusDto;
+          if (this.changePasswordRequestStatusDto.active) {
+            this.activeChangePasswordStatusMessage = [
+              {
+                severity: 'info',
+                detail: `Вы запросили смену пароля. На ваш текущий email было отправлено письмо со ссылкой для подтверждения`
+              }
+            ];
+          } else {
+            this.activeChangePasswordStatusMessage = [];
+          }
         },
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });

@@ -48,18 +48,21 @@
             <div class="ui-g-4 text-left text-wrap">
               <ng-container [ngSwitch]="field.name">
                 <ng-container *ngSwitchCase="'tfaEnabled'">
-                  <p-inputSwitch [(ngModel)]="tfaEnabled" (onChange)="changedTfaSwitch($event)" [readonly]="loading"></p-inputSwitch>
+                  <p-inputSwitch [(ngModel)]="tfaEnabled"
+                                 (onChange)="changedTfaSwitch($event)"
+                                 [readonly]="loading">
+                  </p-inputSwitch>
                 </ng-container>
                 <ng-container *ngSwitchCase="'firstName'">
-                 <app-editable-input-text [textId]="'firstName'"
-                                          [textName]="'firstName'"
-                                          [textDisabled]="loading"
-                                          [value]="getValue(field.name)"
-                                          (submitEvent)="updateFirstName($event)"
-                                          [maxLength]="personNameMaxLength"
-                                          [pattern]="personNameRegex"
-                                          [invalidPatternErrorMessages]="invalidPersonNameErrorMessages">
-                 </app-editable-input-text>
+                  <app-editable-input-text [textId]="'firstName'"
+                                           [textName]="'firstName'"
+                                           [textDisabled]="loading"
+                                           [value]="getValue(field.name)"
+                                           (submitEvent)="updateFirstName($event)"
+                                           [maxLength]="personNameMaxLength"
+                                           [pattern]="personNameRegex"
+                                           [invalidPatternErrorMessages]="invalidPersonNameErrorMessages">
+                  </app-editable-input-text>
                 </ng-container>
                 <ng-container *ngSwitchCase="'lastName'">
                   <app-editable-input-text [textId]="'lastName'"
@@ -91,11 +94,23 @@
             <div class="ui-g-4 text-left text-wrap">
               <ng-container [ngSwitch]="field.name">
                 <ng-container *ngSwitchCase="'passwordChangeDate'">
-                  <a class="link" [routerLink]="" (click)="showChangePasswordRequestDialog()">Изменить</a>
+                  <a [class.link]="!changePasswordRequestStatusDto || !changePasswordRequestStatusDto?.active"
+                     [class.disabled-link]="changePasswordRequestStatusDto?.active"
+                     [routerLink]=""
+                     (click)="showChangePasswordRequestDialog()">
+                    Изменить
+                  </a>
                 </ng-container>
                 <ng-container *ngSwitchDefault>
                 </ng-container>
               </ng-container>
+            </div>
+            <div *ngIf="field.name == 'passwordChangeDate' && changePasswordRequestStatusDto?.active"
+                 class="ui-g ml-1 mr-1 text-bold text-center">
+              <p-messages [enableService]="false"
+                          [closable]="false"
+                          [(value)]="activeChangePasswordStatusMessage">
+              </p-messages>
             </div>
           </div>
         </p-fieldset>
@@ -109,8 +124,19 @@
               {{ user?.email }}
             </div>
             <div class="ui-g-4 text-left text-wrap">
-              <a class="link" [routerLink]="" (click)="showChangeEmailDialog()">Изменить</a>
+              <a [class.link]="!changeEmailRequestStatusDto || !changeEmailRequestStatusDto?.active"
+                 [class.disabled-link]="changeEmailRequestStatusDto?.active"
+                 [routerLink]=""
+                 (click)="showChangeEmailDialog()">
+                Изменить
+              </a>
             </div>
+          </div>
+          <div *ngIf="changeEmailRequestStatusDto?.active" class="ui-g ml-1 mr-1 text-bold text-center">
+            <p-messages [enableService]="false"
+                        [closable]="false"
+                        [(value)]="activeChangeEmailStatusMessage">
+            </p-messages>
           </div>
         </p-fieldset>
       </div>

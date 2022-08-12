@@ -5,6 +5,7 @@ import com.ecaservice.oauth.event.model.ChangeEmailRequestNotificationEvent;
 import com.ecaservice.oauth.event.model.EmailChangedNotificationEvent;
 import com.ecaservice.oauth.service.ChangeEmailService;
 import com.ecaservice.user.model.UserDetailsImpl;
+import com.ecaservice.web.dto.model.ChangeEmailRequestStatusDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -21,6 +22,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -107,11 +109,23 @@ public class ChangeEmailController {
      *
      * @param token - token value
      */
+    @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
             description = "Confirms change email request",
             summary = "Confirms change email request",
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
+                                    }
+                            )
+                    ),
                     @ApiResponse(description = "Bad request", responseCode = "400",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -134,5 +148,48 @@ public class ChangeEmailController {
         var changeEmailRequest = changeEmailService.changeEmail(token);
         applicationEventPublisher.publishEvent(
                 new EmailChangedNotificationEvent(this, changeEmailRequest.getUserEntity()));
+    }
+
+    /**
+     * Gets change email request status.
+     *
+     * @param userDetails - user details
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @Operation(
+            description = "Gets change email request status",
+            summary = "Gets change email request status",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "ChangeEmailStatusResponse",
+                                                    ref = "#/components/examples/ChangeEmailStatusResponse"
+                                            ),
+                                    },
+                                    schema = @Schema(implementation = ChangeEmailRequestStatusDto.class)
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
+                                    }
+                            )
+                    )
+            }
+    )
+    @GetMapping(value = "/request-status")
+    public ChangeEmailRequestStatusDto getChangeEmailRequestStatus(
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        log.info("Received get change email request status for user [{}]", userDetails.getId());
+        return changeEmailService.getChangeEmailRequestStatus(userDetails.getId());
     }
 }

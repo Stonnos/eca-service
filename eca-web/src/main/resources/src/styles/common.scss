@@ -70,3 +70,10 @@
   text-decoration: none;
   pointer-events: none;
 }
+
+.disabled-link {
+  pointer-events: none;
+  color: gray;
+  opacity: 0.8;
+  text-decoration: none;
+}
