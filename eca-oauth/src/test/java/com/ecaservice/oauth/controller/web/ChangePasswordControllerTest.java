@@ -5,6 +5,7 @@ import com.ecaservice.oauth.dto.ChangePasswordRequest;
 import com.ecaservice.oauth.model.TokenModel;
 import com.ecaservice.oauth.service.ChangePasswordService;
 import com.ecaservice.oauth2.test.controller.AbstractControllerTest;
+import com.ecaservice.web.dto.model.ChangePasswordRequestStatusDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
@@ -23,7 +24,9 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -39,6 +42,7 @@ class ChangePasswordControllerTest extends AbstractControllerTest {
     private static final String TOKEN_VALUE = "tokenValue";
 
     private static final String BASE_URL = "/password/change";
+    private static final String REQUEST_STATUS_URL = BASE_URL + "/request-status";
     private static final String CONFIRM_URL = BASE_URL + "/confirm";
     private static final String REQUEST_URL = BASE_URL + "/request";
     private static final String PASSWORD = "pa66word!";
@@ -117,5 +121,25 @@ class ChangePasswordControllerTest extends AbstractControllerTest {
         mockMvc.perform(post(CONFIRM_URL)
                 .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testGetChangePasswordRequestStatusUnauthorized() throws Exception {
+        mockMvc.perform(get(REQUEST_STATUS_URL))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testGetChangePasswordRequestStatusSuccess() throws Exception {
+        var changePasswordRequestStatusDto = ChangePasswordRequestStatusDto.builder()
+                .active(false)
+                .build();
+        when(changePasswordService.getChangePasswordRequestStatus(anyLong()))
+                .thenReturn(changePasswordRequestStatusDto);
+        mockMvc.perform(get(REQUEST_STATUS_URL)
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(objectMapper.writeValueAsString(changePasswordRequestStatusDto)));
     }
 }
