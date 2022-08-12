@@ -1,10 +1,12 @@
 package com.ecaservice.s3.client.minio.service;
 
+import com.ecaservice.s3.client.minio.ObjectStorageTestDataProvider;
 import com.ecaservice.s3.client.minio.TestHelperUtils;
 import com.ecaservice.s3.client.minio.metrics.MinioStorageMetricsService;
 import com.ecaservice.s3.client.minio.model.UploadObject;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
@@ -28,8 +30,6 @@ import static org.mockito.Mockito.when;
 class ObjectStorageServiceTest {
 
     private static final String OBJECT_PATH = "/object";
-    private static final double DOUBLE_VALUE = 1.2d;
-    private static final int INT_VALUE = 5;
 
     @Mock
     private MinioStorageService minioStorageService;
@@ -42,12 +42,9 @@ class ObjectStorageServiceTest {
     @Captor
     private ArgumentCaptor<UploadObject> uploadObjectArgsArgumentCaptor;
 
-    @Test
-    void testUploadAndDownloadObject() throws IOException, ClassNotFoundException {
-        TestHelperUtils.TestObject testObject = TestHelperUtils.TestObject.builder()
-                .intValue(INT_VALUE)
-                .doubleValue(DOUBLE_VALUE)
-                .build();
+    @ParameterizedTest
+    @ArgumentsSource(ObjectStorageTestDataProvider.class)
+    void testUploadAndDownloadObject(TestHelperUtils.TestObject testObject) throws IOException, ClassNotFoundException {
         objectStorageService.uploadObject(testObject, OBJECT_PATH);
         verify(minioStorageService, atLeastOnce()).uploadObject(uploadObjectArgsArgumentCaptor.capture());
         var uploadObject = uploadObjectArgsArgumentCaptor.getValue();
