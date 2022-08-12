@@ -6,6 +6,7 @@ import com.ecaservice.oauth.event.model.ChangePasswordRequestNotificationEvent;
 import com.ecaservice.oauth.event.model.PasswordChangedNotificationEvent;
 import com.ecaservice.oauth.service.ChangePasswordService;
 import com.ecaservice.user.model.UserDetailsImpl;
+import com.ecaservice.web.dto.model.ChangePasswordRequestStatusDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -22,6 +23,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -151,5 +153,48 @@ public class ChangePasswordController {
         var changePasswordRequest = changePasswordService.changePassword(token);
         applicationEventPublisher.publishEvent(
                 new PasswordChangedNotificationEvent(this, changePasswordRequest.getUserEntity()));
+    }
+
+    /**
+     * Gets change password request status.
+     *
+     * @param userDetails - user details
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @Operation(
+            description = "Gets change password request status",
+            summary = "Gets change password request status",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "ChangePasswordStatusResponse",
+                                                    ref = "#/components/examples/ChangePasswordStatusResponse"
+                                            ),
+                                    },
+                                    schema = @Schema(implementation = ChangePasswordRequestStatusDto.class)
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
+                                    }
+                            )
+                    )
+            }
+    )
+    @GetMapping(value = "/request-status")
+    public ChangePasswordRequestStatusDto getChangePasswordRequestStatus(
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        log.info("Received get change password request status for user [{}]", userDetails.getId());
+        return changePasswordService.getChangePasswordRequestStatus(userDetails.getId());
     }
 }
