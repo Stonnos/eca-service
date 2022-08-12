@@ -1669,6 +1669,70 @@ a|
 ----
 |===
 
+== Gets change password request status
+
+__GET__ */password/change/request-status* - Gets change password request status
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+<<ChangePasswordRequestStatusDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "active" : true
+}
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|===
+
 == Gets change email request status
 
 __GET__ */email/change/request-status* - Gets change email request status
@@ -2839,6 +2903,32 @@ __string__
 *Min. length*: 1
 
 *Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|===
+=== ChangePasswordRequestStatusDto
+:table-caption: Table
+.Change password request status
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*active*
+|Is request active (created and not expired and not confirmed)?
+a|
+__boolean__
+
+
+
+
+
 
 
 
