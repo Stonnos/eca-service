@@ -6,7 +6,7 @@
 
     <groupId>eca.service</groupId>
     <artifactId>eca-service</artifactId>
-    <version>6.3</version>
+    <version>6.3.1</version>
     <modules>
         <module>core-test</module>
         <module>oauth2-test</module>
