@@ -35,13 +35,6 @@
   font-size: 12px;
 }
 
-.json-config {
-  background-color: #e6e6e6;
-  width: 500px;
-  max-height: 600px;
-  overflow-y: scroll;
-}
-
 .control-label:after {
   content: ' *';
   color: red;
@@ -76,4 +69,11 @@
   opacity: 0.5;
   text-decoration: none;
   pointer-events: none;
+}
+
+.disabled-link {
+  pointer-events: none;
+  color: gray;
+  opacity: 0.8;
+  text-decoration: none;
 }

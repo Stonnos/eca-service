@@ -8,7 +8,7 @@
   [draggable]="false"
   [resizable]="false"
   (onHide)="hide()">
-  <p-panel class="form-template-panel" [showHeader]="false">
+  <div class="form-template-panel">
     <form novalidate class="form d-flex flex-column justify-content-center m-auto" (keydown.enter)="submit()">
       <div class="ui-g ui-fluid">
         <div class="ui-g-10 mx-auto mb-4">
@@ -98,7 +98,7 @@
         </div>
       </div>
     </form>
-  </p-panel>
+  </div>
   <p-footer>
     <button
       pButton

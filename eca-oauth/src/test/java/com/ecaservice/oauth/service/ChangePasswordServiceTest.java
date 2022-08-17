@@ -185,6 +185,41 @@ class ChangePasswordServiceTest extends AbstractJpaTest {
         assertThrows(UserLockedException.class, () -> changePasswordService.changePassword(TOKEN));
     }
 
+    @Test
+    void testGetChangePasswordRequestStatusWithPreviousExpired() {
+        createAndSaveChangePasswordRequestEntity(
+                LocalDateTime.now().minusDays(appProperties.getChangePassword().getValidityMinutes()), null);
+        internalTestGetNotActiveChangePasswordRequestStatus();
+    }
+
+    @Test
+    void testGetChangePasswordRequestStatusWithPreviousConfirmed() {
+        createAndSaveChangePasswordRequestEntity(
+                LocalDateTime.now().plusMinutes(appProperties.getChangePassword().getValidityMinutes()),
+                LocalDateTime.now().minusMinutes(1L));
+        internalTestGetNotActiveChangePasswordRequestStatus();
+    }
+
+    @Test
+    void testGetChangePasswordRequestStatusWithEmptyRequests() {
+        internalTestGetNotActiveChangePasswordRequestStatus();
+    }
+
+    @Test
+    void testGetActiveChangePasswordRequestStatus() {
+        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest(PASSWORD, NEW_PASSWORD);
+        changePasswordService.createChangePasswordRequest(userEntity.getId(), changePasswordRequest);
+        var changePasswordRequestStatus = changePasswordService.getChangePasswordRequestStatus(userEntity.getId());
+        assertThat(changePasswordRequestStatus).isNotNull();
+        assertThat(changePasswordRequestStatus.isActive()).isTrue();
+    }
+
+    private void internalTestGetNotActiveChangePasswordRequestStatus() {
+        var changePasswordRequestStatus = changePasswordService.getChangePasswordRequestStatus(userEntity.getId());
+        assertThat(changePasswordRequestStatus).isNotNull();
+        assertThat(changePasswordRequestStatus.isActive()).isFalse();
+    }
+
     private UserEntity createAndSaveUser() {
         UserEntity userEntity = createUserEntity();
         userEntity.setPassword(passwordEncoder.encode(PASSWORD));

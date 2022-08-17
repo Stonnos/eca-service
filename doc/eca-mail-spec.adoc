@@ -177,7 +177,7 @@
 |changePasswordUrl, validityMinutes
 |CHANGE_EMAIL
 |Сообщение с подтверждением изменения Email в личном кабинете Eca - service
-|changeEmailUrl, validityHours
+|newEmail, changeEmailUrl, validityHours
 |EMAIL_CHANGED
 |Сообщение с успешным изменением Email в личном кабинете Eca - service
 |-
@@ -186,5 +186,11 @@
 |-
 |PASSWORD_RESET
 |Сообщение с успешным сбросом пароля в личном кабинете Eca - service
+|-
+|USER_LOCKED
+|Сообщение о блокировке учетной записи
+|-
+|USER_UNLOCKED
+|Сообщение о снятии блокировки учетной записи
 |-
 |===

@@ -24,11 +24,8 @@
   }
 }
 
-.classifier-info-panel::ng-deep {
-
-  .ui-panel {
-    width: 450px;
-    max-height: 500px;
-    overflow-y: scroll;
-  }
+.classifier-info-panel {
+  width: 500px;
+  max-height: 500px;
+  overflow-y: scroll;
 }

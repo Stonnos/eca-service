@@ -43,17 +43,18 @@ public class ObjectStorageService {
         log.info("Starting to serialize object [{}]", objectPath);
         var stopWatch = new StopWatch();
         stopWatch.start();
-        @Cleanup var fstObjectOutput = new FSTObjectOutput();
-        fstObjectOutput.writeObject(object);
-        stopWatch.stop();
-        log.info("Object [{}] has been serialized for {} s.", objectPath, stopWatch.getTotalTimeSeconds());
-        minioStorageService.uploadObject(
-                UploadObject.builder()
-                        .objectPath(objectPath)
-                        .inputStream(() -> new ByteArrayInputStream(fstObjectOutput.getBuffer()))
-                        .contentType(MediaType.APPLICATION_OCTET_STREAM_VALUE)
-                        .build()
-        );
+        try (var fstObjectOutput = new FSTObjectOutput()) {
+            fstObjectOutput.writeObject(object);
+            stopWatch.stop();
+            log.info("Object [{}] has been serialized for {} s.", objectPath, stopWatch.getTotalTimeSeconds());
+            minioStorageService.uploadObject(
+                    UploadObject.builder()
+                            .objectPath(objectPath)
+                            .inputStream(() -> new ByteArrayInputStream(fstObjectOutput.getBuffer()))
+                            .contentType(MediaType.APPLICATION_OCTET_STREAM_VALUE)
+                            .build()
+            );
+        }
     }
 
     /**

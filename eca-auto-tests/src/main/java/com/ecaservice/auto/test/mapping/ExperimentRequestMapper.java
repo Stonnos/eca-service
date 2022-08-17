@@ -14,7 +14,7 @@ import org.mapstruct.Mapping;
 public abstract class ExperimentRequestMapper
         extends BaseEvaluationRequestMapper<ExperimentRequestEntity, ExperimentRequestDto> {
 
-    public ExperimentRequestMapper() {
+    protected ExperimentRequestMapper() {
         super(ExperimentRequestEntity.class);
     }
 

@@ -28,9 +28,4 @@ public class ChangeEmailRequestNotificationEvent extends AbstractTokenNotificati
         super(source, tokenModel);
         this.newEmail = newEmail;
     }
-
-    @Override
-    public String getReceiver() {
-        return newEmail;
-    }
 }

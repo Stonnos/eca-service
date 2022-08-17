@@ -8,7 +8,6 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -29,9 +28,7 @@ import static com.ecaservice.auto.test.util.Constraints.DOWNLOAD_URL_MAX_LENGTH;
 @ToString(callSuper = true)
 @Entity
 @Table(name = "experiment_request")
-@TypeDefs({
-        @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
-})
+@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 public class ExperimentRequestEntity extends BaseEvaluationRequestEntity {
 
     /**

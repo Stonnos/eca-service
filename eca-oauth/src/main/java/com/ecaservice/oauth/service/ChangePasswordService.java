@@ -14,6 +14,7 @@ import com.ecaservice.oauth.exception.UserLockedException;
 import com.ecaservice.oauth.model.TokenModel;
 import com.ecaservice.oauth.repository.ChangePasswordRequestRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
+import com.ecaservice.web.dto.model.ChangePasswordRequestStatusDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -87,7 +88,7 @@ public class ChangePasswordService {
      *
      * @param token - token value
      */
-    @Audit(value = CONFIRM_CHANGE_PASSWORD_REQUEST, initiatorKey = "#result.userEntity.login")
+    @Audit(value = CONFIRM_CHANGE_PASSWORD_REQUEST)
     @Transactional
     public ChangePasswordRequestEntity changePassword(String token) {
         log.info("Starting to change password for token [{}]", mask(token));
@@ -108,6 +109,33 @@ public class ChangePasswordService {
         log.info("New password has been set for user [{}], change password request id [{}]", userEntity.getId(),
                 changePasswordRequestEntity.getId());
         return changePasswordRequestEntity;
+    }
+
+    /**
+     * Gets change password request status for specified user.
+     *
+     * @param userId - user id
+     * @return change password request status dto
+     */
+    public ChangePasswordRequestStatusDto getChangePasswordRequestStatus(Long userId) {
+        log.info("Gets change password request status for user [{}]", userId);
+        var userEntity = userEntityRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException(UserEntity.class, userId));
+        var changePasswordRequestEntity =
+                changePasswordRequestRepository.findByUserEntityAndExpireDateAfterAndConfirmationDateIsNull(userEntity,
+                        LocalDateTime.now());
+        if (changePasswordRequestEntity == null) {
+            log.info("No one active change password request has been found for user [{}]", userId);
+            return ChangePasswordRequestStatusDto.builder()
+                    .active(false)
+                    .build();
+        } else {
+            log.info("Active change password request [{}] has been found for user [{}]",
+                    changePasswordRequestEntity.getId(), userId);
+            return ChangePasswordRequestStatusDto.builder()
+                    .active(true)
+                    .build();
+        }
     }
 
     private boolean isValidOldPassword(UserEntity userEntity, ChangePasswordRequest changePasswordRequest) {

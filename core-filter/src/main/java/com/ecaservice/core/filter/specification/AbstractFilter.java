@@ -14,7 +14,6 @@ import org.springframework.util.ReflectionUtils;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.lang.reflect.Method;
@@ -30,7 +29,6 @@ import java.util.stream.Stream;
 import static com.ecaservice.core.filter.util.FilterUtils.buildExpression;
 import static com.ecaservice.core.filter.util.ReflectionUtils.getFieldType;
 import static com.ecaservice.core.filter.util.Utils.parseDate;
-import static com.ecaservice.core.filter.util.Utils.splitByPointSeparator;
 import static com.ecaservice.core.filter.util.Utils.valueOf;
 import static com.google.common.collect.Lists.newArrayList;
 

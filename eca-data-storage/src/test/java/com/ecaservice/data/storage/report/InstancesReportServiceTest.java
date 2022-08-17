@@ -1,6 +1,7 @@
 package com.ecaservice.data.storage.report;
 
 import com.ecaservice.data.storage.config.EcaDsConfig;
+import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.model.MockHttpServletResponseResource;
 import com.ecaservice.data.storage.model.report.ReportType;
 import com.ecaservice.data.storage.service.StorageService;
@@ -23,6 +24,7 @@ import weka.core.Instances;
 import javax.inject.Inject;
 import java.util.stream.IntStream;
 
+import static com.ecaservice.data.storage.TestHelperUtils.createInstancesEntity;
 import static com.ecaservice.data.storage.TestHelperUtils.loadInstances;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -49,18 +51,20 @@ class InstancesReportServiceTest {
     private InstancesReportService instancesReportService;
 
     private Instances instances;
+    private InstancesEntity instancesEntity;
 
     @BeforeEach
     void init() {
         instances = loadInstances();
+        instancesEntity = createInstancesEntity();
     }
 
     @Test
     void testGenerateReport() throws Exception {
         for (var reportType : ReportType.values()) {
             var httpServletResponse = new MockHttpServletResponse();
-            when(storageService.getInstances(ID)).thenReturn(instances);
-            instancesReportService.generateInstancesReport(ID, reportType, httpServletResponse);
+            when(storageService.getInstances(instancesEntity)).thenReturn(instances);
+            instancesReportService.generateInstancesReport(instancesEntity, reportType, httpServletResponse);
             assertThat(httpServletResponse.getContentType()).isEqualTo(MediaType.APPLICATION_OCTET_STREAM_VALUE);
             String expectedFileName = String.format("%s.%s", instances.relationName(), reportType.getExtension());
             String expectedContentDisposition = String.format(ATTACHMENT_FORMAT, expectedFileName);

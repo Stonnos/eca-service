@@ -55,7 +55,7 @@ class ChangeEmailRequestNotificationEventHandlerTest {
         EmailRequest actual = eventHandler.handle(changeEmailNotificationEvent);
         assertThat(actual).isNotNull();
         assertThat(actual.getTemplateCode()).isEqualTo(Templates.CHANGE_EMAIL);
-        assertThat(actual.getReceiver()).isEqualTo(NEW_EMAIL);
+        assertThat(actual.getReceiver()).isEqualTo(changeEmailRequestEntity.getUserEntity().getEmail());
         assertThat(actual.getVariables()).isNotEmpty();
         Long validityHours = appProperties.getChangeEmail().getValidityMinutes() / MINUTES_IN_HOUR;
         assertThat(actual.getVariables()).containsEntry(TemplateVariablesDictionary.VALIDITY_HOURS_KEY,

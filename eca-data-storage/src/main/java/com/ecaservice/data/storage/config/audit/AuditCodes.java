@@ -24,4 +24,9 @@ public class AuditCodes {
      * Delete instances audit code.
      */
     public static final String DELETE_INSTANCES = "DELETE_INSTANCES";
+
+    /**
+     * Downloads instances report
+     */
+    public static final String DOWNLOAD_INSTANCES_REPORT = "DOWNLOAD_INSTANCES_REPORT";
 }

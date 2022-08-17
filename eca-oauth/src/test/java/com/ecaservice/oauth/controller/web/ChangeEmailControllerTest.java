@@ -4,11 +4,13 @@ import com.ecaservice.common.web.annotation.EnableGlobalExceptionHandler;
 import com.ecaservice.oauth.model.TokenModel;
 import com.ecaservice.oauth.service.ChangeEmailService;
 import com.ecaservice.oauth2.test.controller.AbstractControllerTest;
+import com.ecaservice.web.dto.model.ChangeEmailRequestStatusDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.inject.Inject;
@@ -19,7 +21,9 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -37,6 +41,7 @@ class ChangeEmailControllerTest extends AbstractControllerTest {
     private static final String BASE_URL = "/email/change";
     private static final String CONFIRM_URL = BASE_URL + "/confirm";
     private static final String REQUEST_URL = BASE_URL + "/request";
+    private static final String REQUEST_STATUS_URL = BASE_URL + "/request-status";
     private static final String EMAIL = "test@mail.ru";
     private static final String NEW_EMAIL_PARAM = "newEmail";
     private static final String INVALID_EMAIL = "123";
@@ -85,18 +90,46 @@ class ChangeEmailControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void testConfirmChangeEmailUnauthorized() throws Exception {
+        mockMvc.perform(post(CONFIRM_URL)
+                .param(TOKEN_PARAM, TOKEN_VALUE))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
     void testConfirmChangeEmailRequest() throws Exception {
         var changeEmailRequestEntity = createChangeEmailRequestEntity(TOKEN_VALUE);
         when(changeEmailService.changeEmail(TOKEN_VALUE)).thenReturn(changeEmailRequestEntity);
         mockMvc.perform(post(CONFIRM_URL)
-                .param(TOKEN_PARAM, TOKEN_VALUE))
+                .param(TOKEN_PARAM, TOKEN_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk());
         verify(changeEmailService, atLeastOnce()).changeEmail(TOKEN_VALUE);
     }
 
     @Test
     void testConfirmChangeEmailRequestWithNullToken() throws Exception {
-        mockMvc.perform(post(CONFIRM_URL))
+        mockMvc.perform(post(CONFIRM_URL)
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testGetChangeEmailRequestStatusUnauthorized() throws Exception {
+        mockMvc.perform(get(REQUEST_STATUS_URL))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testGetChangeEmailRequestStatusSuccess() throws Exception {
+        var changeEmailRequestStatusDto = ChangeEmailRequestStatusDto.builder()
+                .active(false)
+                .build();
+        when(changeEmailService.getChangeEmailRequestStatus(anyLong())).thenReturn(changeEmailRequestStatusDto);
+        mockMvc.perform(get(REQUEST_STATUS_URL)
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(objectMapper.writeValueAsString(changeEmailRequestStatusDto)));
     }
 }

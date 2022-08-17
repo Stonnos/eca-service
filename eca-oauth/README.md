@@ -19,6 +19,7 @@
 1) spring.datasource - настройки БД для хранения информации
 2) app - общие настройки приложения
    * app.maxPageSize - максимальное число элементов на странице (используется для запросов с пагинацией)
+   * app.webExternalBaseUrl - внешний url веб приложения
    * app.resetPassword.validityMinutes - время действия токена для восстановления пароля в мин.
    * app.resetPassword.url - url для формирования ссылки для восстановления пароля
    * app.changePassword.validityMinutes - время действия токена для изменения пароля в мин.

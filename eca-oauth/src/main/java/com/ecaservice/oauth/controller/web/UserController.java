@@ -7,6 +7,8 @@ import com.ecaservice.oauth.dto.UpdateUserInfoDto;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.entity.UserPhoto;
 import com.ecaservice.oauth.event.model.UserCreatedEvent;
+import com.ecaservice.oauth.event.model.UserLockedNotificationEvent;
+import com.ecaservice.oauth.event.model.UserUnLockedNotificationEvent;
 import com.ecaservice.oauth.exception.UserLockNotAllowedException;
 import com.ecaservice.oauth.mapping.UserMapper;
 import com.ecaservice.oauth.repository.UserPhotoRepository;
@@ -574,7 +576,8 @@ public class UserController {
         if (userDetails.getId().equals(userId)) {
             throw new UserLockNotAllowedException();
         }
-        userService.lock(userId);
+        var userEntity = userService.lock(userId);
+        applicationEventPublisher.publishEvent(new UserLockedNotificationEvent(this, userEntity));
     }
 
     /**
@@ -618,6 +621,7 @@ public class UserController {
     public void unlock(@Parameter(description = "User id", example = "1", required = true)
                        @Min(VALUE_1) @Max(Long.MAX_VALUE) @RequestParam Long userId) {
         log.info("Received request for user [{}] unlocking", userId);
-        userService.unlock(userId);
+        var userEntity = userService.unlock(userId);
+        applicationEventPublisher.publishEvent(new UserUnLockedNotificationEvent(this, userEntity));
     }
 }
