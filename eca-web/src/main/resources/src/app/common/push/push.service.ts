@@ -34,14 +34,12 @@ export class PushService {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
         }
       });
-    Logger.debug('Push channel has been initialized');
     return this.messageSubscription;
   }
 
   public close() {
     this.messageSubscription.unsubscribe();
     this.wsService.close();
-    Logger.debug('Push channel has been closed');
   }
 
   public pushMessageSubscribe(predicate: (value: PushRequestDto, index: number) => boolean): Observable<PushRequestDto> {
