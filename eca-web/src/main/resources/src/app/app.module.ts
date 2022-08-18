@@ -44,10 +44,10 @@ import { InstancesDetailsModule } from "./instances-details/instances-details.mo
 import { ExportInstancesModule } from "./export-instances/export-instances.module";
 import { ClassifiersConfigurationFullDetailsModule } from "./classifiers-configuration-full-details/classifiers-configuration-full-details.module";
 import { ClassifiersConfigurationHistoryModule } from "./classifiers-configuration-history/classifiers-configuration-history.module";
-import { PushService } from "./common/push/push.service";
+import { EventHandler } from "./common/event/event.handler";
 
-export function initializeWebPushService(pushService: PushService) {
-  return () => pushService.init();
+export function eventSubscribe(eventHandler: EventHandler) {
+  return () => eventHandler.eventSubscribe();
 }
 
 @NgModule({
@@ -102,8 +102,8 @@ export function initializeWebPushService(pushService: PushService) {
     CookieService,
     {
       provide: APP_INITIALIZER,
-      useFactory: initializeWebPushService,
-      deps: [PushService],
+      useFactory: eventSubscribe,
+      deps: [EventHandler],
       multi: true
     }
   ],

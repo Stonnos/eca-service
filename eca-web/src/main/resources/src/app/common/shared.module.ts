@@ -23,6 +23,8 @@ import { InstancesInfo } from "./instances-info/instances-info";
 import { WsService } from "./websockets/ws.service";
 import { PushService } from "./push/push.service";
 import { PushMessageComponent } from "./push/push-message.component";
+import { EventService } from "./event/event.service";
+import { EventHandler } from "./event/event.handler";
 
 @NgModule({
   imports: [
@@ -69,7 +71,9 @@ import { PushMessageComponent } from "./push/push-message.component";
     ErrorHandler,
     WebAppService,
     WsService,
-    PushService
+    PushService,
+    EventService,
+    EventHandler
   ]
 })
 export class SharedModule {

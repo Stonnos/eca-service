@@ -208,7 +208,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
 
   private subscribeForExperimentsUpdates(): void {
     const filterPredicate = (pushRequestDto: PushRequestDto) => pushRequestDto.messageType == PushMessageType.EXPERIMENT_STATUS_CHANGE;
-    this.experimentsUpdatesSubscriptions = this.pushService.subscribeForWebPushMessages(filterPredicate)
+    this.experimentsUpdatesSubscriptions = this.pushService.pushMessageSubscribe(filterPredicate)
       .subscribe({
         next: (pushRequestDto: PushRequestDto) => {
           this.lastCreatedId = pushRequestDto.additionalProperties[PushVariables.EXPERIMENT_ID];

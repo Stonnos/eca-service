@@ -10,6 +10,9 @@ export class WsService {
   private stompService: StompService;
 
   public constructor() {
+  }
+
+  public init(): void {
     this.stompService = new StompService(this.getStompConfig());
   }
 
@@ -29,7 +32,7 @@ export class WsService {
       heartbeat_in: 0,
       heartbeat_out: 20000,
       reconnect_delay: 5000,
-      debug: false
+      debug: true
     };
   }
 

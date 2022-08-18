@@ -7,18 +7,22 @@ import { Logger } from "../util/logging";
 import { Observable } from "rxjs/internal/Observable";
 import { filter } from "rxjs/internal/operators";
 import { MessageService } from "primeng/api";
+import { Subscription } from "rxjs";
 
 @Injectable()
 export class PushService {
 
   private messageSubject: Subject<PushRequestDto> = new Subject<PushRequestDto>();
 
+  private messageSubscription: Subscription = new Subscription();
+
   public constructor(private wsService: WsService,
                      private messageService: MessageService) {
   }
 
   public init() {
-    return this.wsService.subscribe(environment.experimentsQueue)
+    this.wsService.init();
+    this.messageSubscription = this.wsService.subscribe(environment.experimentsQueue)
       .subscribe({
         next: (message) => {
           Logger.debug(`Received web push ${message.body}`);
@@ -30,9 +34,15 @@ export class PushService {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
         }
       });
+    return this.messageSubscription;
   }
 
-  public subscribeForWebPushMessages(predicate: (value: PushRequestDto, index: number) => boolean): Observable<PushRequestDto> {
+  public close() {
+    this.messageSubscription.unsubscribe();
+    this.wsService.close();
+  }
+
+  public pushMessageSubscribe(predicate: (value: PushRequestDto, index: number) => boolean): Observable<PushRequestDto> {
     return this.messageSubject.asObservable()
       .pipe(
         filter(predicate)

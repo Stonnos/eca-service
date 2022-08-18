@@ -5,6 +5,7 @@ import { MenuItemDto, UserDto } from "../../../../../../target/generated-sources
 import { HttpErrorResponse } from "@angular/common/http";
 import { UsersService } from "../users/services/users.service";
 import { WebAppService } from "../common/services/web-app.service";
+import { PushService } from "../common/push/push.service";
 
 @Component({
   selector: 'app-dashboard',
@@ -20,16 +21,18 @@ export class DashboardComponent implements OnInit {
 
   public userMenuItems: MenuItem[] = [];
 
-  constructor(private logoutService: LogoutService,
-              private usersService: UsersService,
-              private webAppService: WebAppService,
-              private messageService: MessageService) {
+  public constructor(private logoutService: LogoutService,
+                     private usersService: UsersService,
+                     private webAppService: WebAppService,
+                     private messageService: MessageService,
+                     private pushService: PushService) {
   }
 
   public ngOnInit() {
     this.getCurrentUser();
     this.getMenuItems();
     this.initUserMenu();
+    this.pushSubscribe();
   }
 
   public getUserLogin(): string {
@@ -99,5 +102,9 @@ export class DashboardComponent implements OnInit {
         }
       }
     ];
+  }
+
+  private pushSubscribe(): void {
+    this.pushService.init();
   }
 }

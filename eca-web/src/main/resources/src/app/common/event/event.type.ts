@@ -1,0 +1,4 @@
+export enum EventType {
+  TOKEN_REFRESHED = 'TOKEN_REFRESHED',
+  TOKEN_EXPIRED = 'TOKEN_EXPIRED'
+}

@@ -15,6 +15,8 @@ import { BehaviorSubject } from "rxjs/internal/BehaviorSubject";
 import { AuthService } from "../services/auth.service";
 import { Utils } from "../../common/util/utils";
 import { Router } from "@angular/router";
+import { EventService } from "../../common/event/event.service";
+import { EventType } from "../../common/event/event.type";
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -26,6 +28,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
   constructor(private injector: Injector,
               private logoutService: LogoutService,
+              private eventService: EventService,
               private router: Router) {
   }
 
@@ -46,11 +49,13 @@ export class AuthInterceptor implements HttpInterceptor {
           } else {
             this.refreshTokenInProgress = true;
             this.refreshTokenSubject.next(null);
+            this.eventService.publishEvent(EventType.TOKEN_EXPIRED);
             return this.injector.get(AuthService)
               .refreshToken().pipe(
                 switchMap(token => {
                   this.injector.get(AuthService).saveToken(token);
                   this.refreshTokenSubject.next(token);
+                  this.eventService.publishEvent(EventType.TOKEN_REFRESHED);
                   return next.handle(this.addAuthenticationToken(request));
                 }),
                 catchError(error => {

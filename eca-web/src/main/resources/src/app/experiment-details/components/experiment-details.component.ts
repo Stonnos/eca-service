@@ -172,7 +172,7 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
         const id = pushRequestDto.additionalProperties[PushVariables.EXPERIMENT_ID];
         return this.experimentDto.id == Number(id);
       };
-      this.experimentUpdatesSubscription = this.pushService.subscribeForWebPushMessages(filterPredicate)
+      this.experimentUpdatesSubscription = this.pushService.pushMessageSubscribe(filterPredicate)
         .subscribe({
           next: (pushRequestDto: PushRequestDto) => {
             this.handleExperimentPush(pushRequestDto);
