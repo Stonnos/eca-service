@@ -44,7 +44,9 @@ import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.oauth.config.audit.AuditCodes.CREATE_USER;
 import static com.ecaservice.oauth.config.audit.AuditCodes.DELETE_PHOTO;
 import static com.ecaservice.oauth.config.audit.AuditCodes.DISABLE_2FA;
+import static com.ecaservice.oauth.config.audit.AuditCodes.DISABLE_PUSH_NOTIFICATIONS;
 import static com.ecaservice.oauth.config.audit.AuditCodes.ENABLE_2FA;
+import static com.ecaservice.oauth.config.audit.AuditCodes.ENABLE_PUSH_NOTIFICATIONS;
 import static com.ecaservice.oauth.config.audit.AuditCodes.LOCK_USER;
 import static com.ecaservice.oauth.config.audit.AuditCodes.UNLOCK_USER;
 import static com.ecaservice.oauth.config.audit.AuditCodes.UPDATE_PERSONAL_DATA;
@@ -299,7 +301,7 @@ public class UserService {
      *
      * @param userId - user id
      */
-    //@Audit(ENABLE_2FA)
+    @Audit(ENABLE_PUSH_NOTIFICATIONS)
     public void enablePushNotifications(long userId) {
         log.info("Starting to enable push notifications for user [{}]", userId);
         UserEntity userEntity = getById(userId);
@@ -316,7 +318,7 @@ public class UserService {
      *
      * @param userId - user id
      */
-    //@Audit(DISABLE_2FA)
+    @Audit(DISABLE_PUSH_NOTIFICATIONS)
     public void disablePushNotifications(long userId) {
         log.info("Starting to disable push notifications for user [{}]", userId);
         UserEntity userEntity = getById(userId);

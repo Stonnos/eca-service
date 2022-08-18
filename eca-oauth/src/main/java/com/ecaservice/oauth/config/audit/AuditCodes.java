@@ -79,4 +79,14 @@ public class AuditCodes {
      * Confirm change email request
      */
     public static final String CONFIRM_CHANGE_EMAIL_REQUEST = "CONFIRM_CHANGE_EMAIL_REQUEST";
+
+    /**
+     * Enables push notifications
+     */
+    public static final String ENABLE_PUSH_NOTIFICATIONS = "ENABLE_PUSH_NOTIFICATIONS";
+
+    /**
+     * Disables push notifications
+     */
+    public static final String DISABLE_PUSH_NOTIFICATIONS  = "DISABLE_PUSH_NOTIFICATIONS";
 }
