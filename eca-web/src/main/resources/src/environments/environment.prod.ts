@@ -10,5 +10,6 @@ export const environment = {
   clientId: "eca_web",
   secret: "web_secret",
   experimentsQueue: "/queue/experiment",
+  pushLifeTimeMillis: 15000,
   debug: false
 };

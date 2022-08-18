@@ -56,7 +56,7 @@ export class PushService {
         severity: 'info',
         summary: pushRequestDto.messageText,
         detail: '',
-        life: 15000,
+        life: environment.pushLifeTimeMillis,
         data: pushRequestDto
       });
   }

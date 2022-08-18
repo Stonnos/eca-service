@@ -3,6 +3,7 @@ import { EventService } from "./event.service";
 import { PushService } from "../push/push.service";
 import { MessageService } from "primeng/api";
 import { EventType } from "./event.type";
+import {Logger} from "../util/logging";
 
 @Injectable()
 export class EventHandler {
@@ -16,6 +17,7 @@ export class EventHandler {
     return this.eventService.eventSubscribe()
       .subscribe({
         next: (eventType: EventType) => {
+          Logger.debug(`Received event ${eventType}`);
           switch (eventType) {
             case EventType.TOKEN_REFRESHED:
               this.pushService.init();
