@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v27-create-push-enabled-column.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Add push_enabled column to user table -->
+    <changeSet id="add_push_enabled_column_to_user_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="user_entity"/>
+            <not>
+                <columnExists tableName="user_entity" columnName="push_enabled"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="user_entity">
+            <column name="push_enabled" type="boolean" defaultValueBoolean="true"/>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

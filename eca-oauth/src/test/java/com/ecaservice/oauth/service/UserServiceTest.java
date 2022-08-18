@@ -338,6 +338,50 @@ class UserServiceTest extends AbstractJpaTest {
         assertThrows(InvalidOperationException.class, () -> userService.unlock(userId));
     }
 
+    @Test
+    void testEnablePushNotifications() {
+        UserEntity userEntity = createAndSaveUser();
+        userService.enablePushNotifications(userEntity.getId());
+        UserEntity actual = userEntityRepository.findById(userEntity.getId()).orElse(null);
+        assertThat(actual).isNotNull();
+        assertThat(actual.isPushEnabled()).isTrue();
+    }
+
+    @Test
+    void testEnablePushNotificationsShouldThrowIllegalStateException() {
+        UserEntity userEntity = createAndSaveUser();
+        userEntity.setPushEnabled(true);
+        userEntityRepository.save(userEntity);
+        assertThrows(InvalidOperationException.class, () -> userService.enablePushNotifications(userEntity.getId()));
+    }
+
+    @Test
+    void testEnablePushNotificationsForNotExistingUser() {
+        assertThrows(EntityNotFoundException.class, () -> userService.enablePushNotifications(USER_ID));
+    }
+
+    @Test
+    void testDisablePushNotifications() {
+        UserEntity userEntity = createAndSaveUser();
+        userEntity.setPushEnabled(true);
+        userEntityRepository.save(userEntity);
+        userService.disablePushNotifications(userEntity.getId());
+        UserEntity actual = userEntityRepository.findById(userEntity.getId()).orElse(null);
+        assertThat(actual).isNotNull();
+        assertThat(actual.isPushEnabled()).isFalse();
+    }
+
+    @Test
+    void testDisablePushNotificationsShouldThrowIllegalStateException() {
+        UserEntity userEntity = createAndSaveUser();
+        assertThrows(InvalidOperationException.class, () -> userService.disablePushNotifications(userEntity.getId()));
+    }
+
+    @Test
+    void testDisablePushNotificationsForNotExistingUser() {
+        assertThrows(EntityNotFoundException.class, () -> userService.disablePushNotifications(USER_ID));
+    }
+
     private UserEntity createAndSaveUser() {
         CreateUserDto createUserDto = TestHelperUtils.createUserDto();
         return userService.createUser(createUserDto, PASSWORD);
