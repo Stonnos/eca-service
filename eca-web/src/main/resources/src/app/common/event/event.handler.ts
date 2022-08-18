@@ -3,7 +3,7 @@ import { EventService } from "./event.service";
 import { PushService } from "../push/push.service";
 import { MessageService } from "primeng/api";
 import { EventType } from "./event.type";
-import {Logger} from "../util/logging";
+import { Logger } from "../util/logging";
 
 @Injectable()
 export class EventHandler {
