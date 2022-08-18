@@ -1,0 +1,27 @@
+[
+  {
+    "fieldName": "messageType",
+    "code": "NotBlank",
+    "errorMessage": "must not be blank"
+  },
+  {
+    "fieldName": "requestId",
+    "code": "Size",
+    "errorMessage": "size must be between 1 and 36"
+  },
+  {
+    "fieldName": "messageType",
+    "code": "Size",
+    "errorMessage": "size must be between 1 and 255"
+  },
+  {
+    "fieldName": "requestId",
+    "code": "NotBlank",
+    "errorMessage": "must not be blank"
+  },
+  {
+    "fieldName": "requestId",
+    "code": "Pattern",
+    "errorMessage": "must match \"^[0-9a-f]{8}-[0-9a-f]{4}-[34][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$\""
+  }
+]

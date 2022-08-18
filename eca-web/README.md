@@ -27,7 +27,7 @@
 * wsUrl - url сервера веб - сокетов (модуль eca-web-push)
 * clientId - идентификатор клиента
 * secret - секретный ключ или пароль клиента
-* experimentsQueue - название очереди для web sockets для получения статусов экспериментов
+* pushQueue - название очереди для web sockets для получения пушей
 * pushLifeTimeMillis - время жизни пуш уведомления
 * debug - вкл./выкл debug режима
 

@@ -22,7 +22,7 @@ export class PushService {
 
   public init() {
     this.wsService.init();
-    this.messageSubscription = this.wsService.subscribe(environment.experimentsQueue)
+    this.messageSubscription = this.wsService.subscribe(environment.pushQueue)
       .subscribe({
         next: (message) => {
           Logger.debug(`Received web push ${message.body}`);

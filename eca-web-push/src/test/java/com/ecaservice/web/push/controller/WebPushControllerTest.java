@@ -42,8 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class WebPushControllerTest {
 
     private static final String BASE_URL = "/push";
-    private static final String SEND_PUSH_URL = BASE_URL + "/send";
-    private static final String INVALID_MESSAGE_TYPE = "abc";
+    private static final String SEND_PUSH_URL = BASE_URL + "/send";;
     private static final int INVALID_SIZE = 256;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -68,15 +67,7 @@ class WebPushControllerTest {
                 .andExpect(status().isOk());
         verify(messagingTemplate, atLeastOnce()).convertAndSend(destinationCaptor.capture(), any(PushRequestDto.class));
         assertThat(destinationCaptor.getValue()).isNotNull();
-        assertThat(destinationCaptor.getValue()).isEqualTo(
-                queueConfig.getBindings().get(pushRequestDto.getMessageType()));
-    }
-
-    @Test
-    void testInvalidMessageTypePush() throws Exception {
-        var pushRequestDto = createPushRequestDto();
-        pushRequestDto.setMessageType(INVALID_MESSAGE_TYPE);
-        internalTestBadRequest(pushRequestDto);
+        assertThat(destinationCaptor.getValue()).isEqualTo(queueConfig.getPushQueue());
     }
 
     @Test
