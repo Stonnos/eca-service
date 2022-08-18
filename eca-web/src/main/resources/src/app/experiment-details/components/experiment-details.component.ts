@@ -13,11 +13,10 @@ import { FieldService } from "../../common/services/field.service";
 import { Utils } from "../../common/util/utils";
 import { Subscription, timer } from "rxjs";
 import { RequestStatus } from "../../common/model/request-status.enum";
-import { WsService } from "../../common/websockets/ws.service";
-import { environment } from "../../../environments/environment";
 import { Logger } from "../../common/util/logging";
-import { filter } from "rxjs/internal/operators";
 import { PushVariables } from "../../common/util/push-variables";
+import { PushService } from "../../common/push/push.service";
+import { PushMessageType } from "../../common/util/push-message.type";
 
 @Component({
   selector: 'app-experiment-details',
@@ -44,14 +43,13 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
 
   public linkColumns: string[] = [ExperimentFields.EXPERIMENT_PATH];
 
-  private wsService: WsService;
-
   private experimentProgressSubscription: Subscription;
   private experimentUpdatesSubscription: Subscription;
 
   public constructor(private experimentsService: ExperimentsService,
                      private messageService: MessageService,
                      private route: ActivatedRoute,
+                     private pushService: PushService,
                      private fieldService: FieldService) {
     this.id = this.route.snapshot.params.id;
     this.initExperimentFields();
@@ -167,19 +165,16 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
   private subscribeForExperimentUpdate(): void {
     if (!this.experimentUpdatesSubscription) {
       Logger.debug(`Subscribe experiment ${this.experimentDto.requestId} status change`);
-      this.wsService = new WsService();
-      this.experimentUpdatesSubscription = this.wsService.subscribe(environment.experimentsQueue)
-        .pipe(
-          filter(message => {
-            const pushRequestDto: PushRequestDto = JSON.parse(message.body);
-            const id = pushRequestDto.additionalProperties[PushVariables.EXPERIMENT_ID];
-            return this.experimentDto.id == Number(id);
-          })
-        )
+      const filterPredicate = (pushRequestDto: PushRequestDto) => {
+        if (pushRequestDto.messageType != PushMessageType.EXPERIMENT_STATUS_CHANGE) {
+          return false;
+        }
+        const id = pushRequestDto.additionalProperties[PushVariables.EXPERIMENT_ID];
+        return this.experimentDto.id == Number(id);
+      };
+      this.experimentUpdatesSubscription = this.pushService.subscribeForWebPushMessages(filterPredicate)
         .subscribe({
-          next: (message) => {
-            Logger.debug(`Received experiment web push ${message.body}`);
-            const pushRequestDto: PushRequestDto = JSON.parse(message.body);
+          next: (pushRequestDto: PushRequestDto) => {
             this.handleExperimentPush(pushRequestDto);
             this.getExperiment();
             this.getExperimentErsReport();
@@ -203,10 +198,6 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
       this.experimentUpdatesSubscription.unsubscribe();
       this.experimentUpdatesSubscription = null;
       Logger.debug(`Unsubscribe experiment ${this.experimentDto.requestId} status change`);
-    }
-    if (this.wsService) {
-      this.wsService.close();
-      this.wsService = null;
     }
   }
 

@@ -19,14 +19,13 @@ import { FieldService } from "../../common/services/field.service";
 import { ReportsService } from "../../common/services/report.service";
 import { EvaluationMethod } from "../../common/model/evaluation-method.enum";
 import { ReportType } from "../../common/model/report-type.enum";
-import { WsService } from "../../common/websockets/ws.service";
 import { Subscription } from "rxjs";
 import { HttpErrorResponse } from "@angular/common/http";
 import { ValidationService } from "../../common/services/validation.service";
 import { ValidationErrorCode } from "../../common/model/validation-error-code";
 import { PushVariables } from "../../common/util/push-variables";
-import { environment } from "../../../environments/environment";
-import { Logger } from "../../common/util/logging";
+import { PushService } from "../../common/push/push.service";
+import { PushMessageType } from "../../common/util/push-message.type";
 
 @Component({
   selector: 'app-experiment-list',
@@ -36,8 +35,6 @@ import { Logger } from "../../common/util/logging";
 export class ExperimentListComponent extends BaseListComponent<ExperimentDto> implements OnInit, OnDestroy {
 
   private static readonly EXPERIMENTS_REPORT_FILE_NAME = 'experiments-report.xlsx';
-
-  private wsService: WsService;
 
   private experimentsUpdatesSubscriptions: Subscription;
 
@@ -58,6 +55,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
                      private filterService: FilterService,
                      private reportsService: ReportsService,
                      private validationService: ValidationService,
+                     private pushService: PushService,
                      private router: Router) {
     super(injector.get(MessageService), injector.get(FieldService));
     this.defaultSortField = ExperimentFields.CREATION_DATE;
@@ -78,9 +76,6 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
   public ngOnDestroy(): void {
     if (this.experimentsUpdatesSubscriptions) {
       this.experimentsUpdatesSubscriptions.unsubscribe();
-    }
-    if (this.wsService) {
-      this.wsService.close();
     }
   }
 
@@ -212,14 +207,11 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
   }
 
   private subscribeForExperimentsUpdates(): void {
-    this.wsService = new WsService();
-    this.experimentsUpdatesSubscriptions = this.wsService.subscribe(environment.experimentsQueue)
+    const filterPredicate = (pushRequestDto: PushRequestDto) => pushRequestDto.messageType == PushMessageType.EXPERIMENT_STATUS_CHANGE;
+    this.experimentsUpdatesSubscriptions = this.pushService.subscribeForWebPushMessages(filterPredicate)
       .subscribe({
-        next: (message) => {
-          Logger.debug(`Received experiment web push ${message.body}`);
-          const pushRequestDto: PushRequestDto = JSON.parse(message.body);
+        next: (pushRequestDto: PushRequestDto) => {
           this.lastCreatedId = pushRequestDto.additionalProperties[PushVariables.EXPERIMENT_ID];
-          this.showMessage(pushRequestDto);
           this.reloadPage(false);
           this.getRequestStatusesStatistics();
         },
@@ -227,10 +219,6 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
         }
       });
-  }
-
-  private showMessage(pushRequestDto: PushRequestDto): void {
-    this.messageService.add({ severity: 'info', summary: pushRequestDto.messageText, detail: '' });
   }
 
   private handleCreateExperimentError(error): void {

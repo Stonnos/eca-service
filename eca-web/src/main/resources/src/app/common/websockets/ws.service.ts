@@ -1,7 +1,9 @@
 import { StompConfig, StompService } from "@stomp/ng2-stompjs";
 import { AuthenticationKeys } from "../../auth/model/auth.keys";
 import { environment } from "../../../environments/environment";
+import { Injectable } from "@angular/core";
 
+@Injectable()
 export class WsService {
 
   private wsUrl = environment.wsUrl;

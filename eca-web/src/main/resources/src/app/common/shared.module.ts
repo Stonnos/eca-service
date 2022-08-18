@@ -20,6 +20,8 @@ import { MaxNumberValidator } from "./validators/max-validator.directive";
 import { ClassifierOptionsInfo } from "./classifier-options-info/classifier-options-info";
 import { EvaluationMethodInfo } from "./evaluation-method-info/evaluation-method-info";
 import { InstancesInfo } from "./instances-info/instances-info";
+import { WsService } from "./websockets/ws.service";
+import { PushService } from "./push/push.service";
 
 @NgModule({
   imports: [
@@ -62,7 +64,9 @@ import { InstancesInfo } from "./instances-info/instances-info";
     ReportsService,
     ValidationService,
     ErrorHandler,
-    WebAppService
+    WebAppService,
+    WsService,
+    PushService
   ]
 })
 export class SharedModule {
