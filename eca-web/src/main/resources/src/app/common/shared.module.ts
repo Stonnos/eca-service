@@ -22,6 +22,7 @@ import { EvaluationMethodInfo } from "./evaluation-method-info/evaluation-method
 import { InstancesInfo } from "./instances-info/instances-info";
 import { WsService } from "./websockets/ws.service";
 import { PushService } from "./push/push.service";
+import { PushMessageComponent } from "./push/push-message.component";
 
 @NgModule({
   imports: [
@@ -42,7 +43,8 @@ import { PushService } from "./push/push.service";
     ClassifierOptionsDetails,
     ClassifierOptionsInfo,
     EvaluationMethodInfo,
-    InstancesInfo
+    InstancesInfo,
+    PushMessageComponent
   ],
   exports: [
     RequestStatusComponent,
@@ -57,7 +59,8 @@ import { PushService } from "./push/push.service";
     ClassifierOptionsDetails,
     ClassifierOptionsInfo,
     EvaluationMethodInfo,
-    InstancesInfo
+    InstancesInfo,
+    PushMessageComponent
   ],
   providers: [
     FieldService,
