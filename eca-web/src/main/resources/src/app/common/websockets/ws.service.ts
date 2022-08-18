@@ -21,7 +21,9 @@ export class WsService {
   }
 
   public close(): void {
-    this.stompService.disconnect();
+    if (this.stompService) {
+      this.stompService.disconnect();
+    }
   }
 
   private getStompConfig(): StompConfig {

@@ -53,6 +53,12 @@
                                  [readonly]="loading">
                   </p-inputSwitch>
                 </ng-container>
+                <ng-container *ngSwitchCase="'pushEnabled'">
+                  <p-inputSwitch [(ngModel)]="pushEnabled"
+                                 (onChange)="changedPushEnabledSwitch($event)"
+                                 [readonly]="loading">
+                  </p-inputSwitch>
+                </ng-container>
                 <ng-container *ngSwitchCase="'firstName'">
                   <app-editable-input-text [textId]="'firstName'"
                                            [textName]="'firstName'"

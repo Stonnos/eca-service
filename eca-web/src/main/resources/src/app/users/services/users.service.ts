@@ -108,4 +108,13 @@ export class UsersService {
     });
     return this.http.post(this.serviceUrl + '/logout', null, { headers: headers });
   }
+
+  public setPushEnabled(enabled: boolean) {
+    const headers = new HttpHeaders({
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    const formData = new FormData();
+    formData.append('enabled', enabled.toString());
+    return this.http.post(this.serviceUrl + '/push-notifications/enabled', formData, { headers: headers })
+  }
 }

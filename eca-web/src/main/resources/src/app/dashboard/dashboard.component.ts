@@ -32,7 +32,6 @@ export class DashboardComponent implements OnInit {
     this.getCurrentUser();
     this.getMenuItems();
     this.initUserMenu();
-    this.pushSubscribe();
   }
 
   public getUserLogin(): string {
@@ -43,6 +42,9 @@ export class DashboardComponent implements OnInit {
     this.usersService.getCurrentUser().subscribe({
       next: (user: UserDto) => {
         this.user = user;
+        if (user.pushEnabled) {
+          this.pushSubscribe();
+        }
       },
       error: (error) => {
         this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
@@ -55,6 +57,7 @@ export class DashboardComponent implements OnInit {
       .subscribe({
         next: () => {
           this.logoutService.logout();
+          this.pushService.close();
         },
         error: (error) => {
           this.handleLogoutError(error);
