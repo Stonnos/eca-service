@@ -16,30 +16,43 @@ export class PushService {
 
   private messageSubscription: Subscription = new Subscription();
 
+  private initialized: boolean = false;
+
   public constructor(private wsService: WsService,
                      private messageService: MessageService) {
   }
 
   public init() {
-    this.wsService.init();
-    this.messageSubscription = this.wsService.subscribe(environment.pushQueue)
-      .subscribe({
-        next: (message) => {
-          Logger.debug(`Received web push ${message.body}`);
-          const pushRequestDto: PushRequestDto = JSON.parse(message.body);
-          this.showMessage(pushRequestDto);
-          this.messageSubject.next(pushRequestDto);
-        },
-        error: (error) => {
-          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-        }
-      });
-    return this.messageSubscription;
+    if (this.initialized) {
+      Logger.debug('Push service channel has been already initialized. Skipped...');
+    } else {
+      this.wsService.init();
+      this.messageSubscription = this.wsService.subscribe(environment.pushQueue)
+        .subscribe({
+          next: (message) => {
+            Logger.debug(`Received web push ${message.body}`);
+            const pushRequestDto: PushRequestDto = JSON.parse(message.body);
+            this.showMessage(pushRequestDto);
+            this.messageSubject.next(pushRequestDto);
+          },
+          error: (error) => {
+            this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+          }
+        });
+      this.initialized = true;
+      Logger.debug('Push service channel has been initialized');
+    }
   }
 
   public close() {
-    this.messageSubscription.unsubscribe();
-    this.wsService.close();
+    if (!this.initialized) {
+      Logger.debug('Push service channel has been already closed. Skipped...');
+    } else {
+      this.messageSubscription.unsubscribe();
+      this.wsService.close();
+      this.initialized = false;
+      Logger.debug('Push service channel has been closed');
+    }
   }
 
   public pushMessageSubscribe(predicate: (value: PushRequestDto, index: number) => boolean): Observable<PushRequestDto> {
