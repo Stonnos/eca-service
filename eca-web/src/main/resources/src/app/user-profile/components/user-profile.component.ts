@@ -366,8 +366,6 @@ export class UserProfileComponent implements OnInit {
       { name: UserFields.FIRST_NAME, label: "Имя:" },
       { name: UserFields.MIDDLE_NAME, label: "Отчество:" },
       { name: UserFields.ROLES, label: "Роли:" },
-      { name: UserFields.TFA_ENABLED, label: "Двухфакторная аутентификация:" },
-      { name: UserFields.PUSH_ENABLED, label: "Пуш уведомления:" },
       { name: UserFields.PASSWORD_DATE, label: "Дата изменения пароля:" },
     ];
   }
