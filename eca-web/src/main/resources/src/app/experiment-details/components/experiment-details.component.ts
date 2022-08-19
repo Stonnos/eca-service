@@ -5,7 +5,7 @@ import {
   ExperimentProgressDto, PushRequestDto,
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { MessageService } from "primeng/api";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, NavigationEnd, Router, RouterEvent } from "@angular/router";
 import { ExperimentsService } from "../../experiments/services/experiments.service";
 import { ExperimentFields } from "../../common/util/field-names";
 import { FieldLink } from "../../common/model/field-link";
@@ -17,6 +17,7 @@ import { Logger } from "../../common/util/logging";
 import { PushVariables } from "../../common/util/push-variables";
 import { PushService } from "../../common/push/push.service";
 import { PushMessageType } from "../../common/util/push-message.type";
+import { filter } from "rxjs/internal/operators";
 
 @Component({
   selector: 'app-experiment-details',
@@ -25,7 +26,7 @@ import { PushMessageType } from "../../common/util/push-message.type";
 })
 export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink {
 
-  private readonly id: number;
+  private id: number;
 
   private readonly updateProgressInterval = 1000;
 
@@ -45,24 +46,32 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
 
   private experimentProgressSubscription: Subscription;
   private experimentUpdatesSubscription: Subscription;
+  private routeUpdateSubscription: Subscription;
 
   public constructor(private experimentsService: ExperimentsService,
                      private messageService: MessageService,
                      private route: ActivatedRoute,
                      private pushService: PushService,
+                     private router: Router,
                      private fieldService: FieldService) {
     this.id = this.route.snapshot.params.id;
     this.initExperimentFields();
   }
 
   public ngOnInit(): void {
-    this.getExperiment();
-    this.getExperimentErsReport();
+    this.getExperimentFullData();
+    this.subscribeForRouteChanges();
   }
 
   public ngOnDestroy(): void {
     this.unSubscribeExperimentUpdates();
     this.unSubscribeExperimentProgress();
+    this.routeUpdateSubscription.unsubscribe();
+  }
+
+  public getExperimentFullData(): void {
+    this.getExperiment();
+    this.getExperimentErsReport();
   }
 
   public getExperiment(): void {
@@ -135,6 +144,17 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
 
   public hasValue(field: string): boolean {
     return this.fieldService.hasValue(field, this.experimentDto);
+  }
+
+  private subscribeForRouteChanges(): void {
+    //Subscribe for route changes in current details component
+    //Used for route from experiment details to another experiment details via push
+    this.routeUpdateSubscription = this.router.events.pipe(
+      filter((event: RouterEvent) => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      this.id = this.route.snapshot.params.id;
+      this.getExperimentFullData();
+    });
   }
 
   private subscribeForExperimentProgressUpdate(): void {
