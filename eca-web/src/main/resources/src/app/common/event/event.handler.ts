@@ -19,10 +19,13 @@ export class EventHandler {
         next: (eventType: EventType) => {
           Logger.debug(`Received event ${eventType}`);
           switch (eventType) {
+            case EventType.INIT_PUSH:
             case EventType.TOKEN_REFRESHED:
               this.pushService.init();
               break;
+            case EventType.CLOSE_PUSH:
             case EventType.TOKEN_EXPIRED:
+            case EventType.LOGOUT:
               this.pushService.close();
               break;
             default:

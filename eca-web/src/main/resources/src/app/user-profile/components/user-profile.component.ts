@@ -1,7 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {
-  ChangeEmailRequestStatusDto, ChangePasswordRequestStatusDto,
-  RoleDto, UserDto
+  ChangeEmailRequestStatusDto,
+  ChangePasswordRequestStatusDto,
+  RoleDto,
+  UserDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { UsersService } from "../../users/services/users.service";
 import { MenuItem, Message, MessageService } from "primeng/api";
@@ -15,7 +17,8 @@ import { ChangePasswordRequest } from "../../change-password/model/change-passwo
 import { UpdateUserInfoModel } from "../../users/model/update-user-info.model";
 import { ChangeEmailService } from "../../update-user-email/services/change-email.service";
 import { ChangePasswordService } from "../../change-password/services/change-password.service";
-import { PushService } from "../../common/push/push.service";
+import { EventService } from "../../common/event/event.service";
+import { EventType } from "../../common/event/event.type";
 
 @Component({
   selector: 'app-user-profile',
@@ -84,7 +87,7 @@ export class UserProfileComponent implements OnInit {
                      private messageService: MessageService,
                      private changeEmailService: ChangeEmailService,
                      private changePasswordService: ChangePasswordService,
-                     private pushService: PushService) {
+                     private eventService: EventService) {
     this.initCommonFields();
   }
 
@@ -155,9 +158,9 @@ export class UserProfileComponent implements OnInit {
         next: () => {
           this.getUser(false);
           if (event.checked) {
-            this.pushService.init();
+            this.eventService.publishEvent(EventType.INIT_PUSH);
           } else {
-            this.pushService.close();
+            this.eventService.publishEvent(EventType.CLOSE_PUSH);
           }
         },
         error: (error) => {
