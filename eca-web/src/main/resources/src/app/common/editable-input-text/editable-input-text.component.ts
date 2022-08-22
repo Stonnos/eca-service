@@ -23,6 +23,9 @@ export class EditableInputTextComponent implements OnInit {
   public value: string;
 
   @Input()
+  public editableValue: string;
+
+  @Input()
   public pattern: string;
 
   @Input()
@@ -40,14 +43,11 @@ export class EditableInputTextComponent implements OnInit {
   @Output()
   public submitEvent: EventEmitter<string> = new EventEmitter<string>();
 
-  public editableValue: string = '';
-
   public editMode: boolean = false;
 
   public submitted: boolean = false;
 
   public ngOnInit() {
-    this.editableValue = this.value;
   }
 
   public mouseDown(event: Event): void {
