@@ -17,6 +17,7 @@ import { Utils } from "../../common/util/utils";
 import { Router } from "@angular/router";
 import { EventService } from "../../common/event/event.service";
 import { EventType } from "../../common/event/event.type";
+import { Logger } from "../../common/util/logging";
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -37,6 +38,7 @@ export class AuthInterceptor implements HttpInterceptor {
       if (error instanceof HttpErrorResponse) {
         if (error.status === 401) {
           if (request.url.includes(AuthInterceptor.TOKEN_URL)) {
+            Logger.debug('Refresh token expired');
             this.logoutService.logout();
             return EMPTY;
           }
@@ -47,6 +49,7 @@ export class AuthInterceptor implements HttpInterceptor {
               switchMap(() => next.handle(this.addAuthenticationToken(request)))
             );
           } else {
+            Logger.debug('Starting to refresh token');
             this.refreshTokenInProgress = true;
             this.refreshTokenSubject.next(null);
             this.eventService.publishEvent(EventType.TOKEN_EXPIRED);
@@ -55,6 +58,7 @@ export class AuthInterceptor implements HttpInterceptor {
                 switchMap(token => {
                   this.injector.get(AuthService).saveToken(token);
                   this.refreshTokenSubject.next(token);
+                  Logger.debug('Token has been refreshed');
                   this.eventService.publishEvent(EventType.TOKEN_REFRESHED);
                   return next.handle(this.addAuthenticationToken(request));
                 }),
