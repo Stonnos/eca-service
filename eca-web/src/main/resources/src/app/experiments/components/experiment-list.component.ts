@@ -26,6 +26,7 @@ import { ValidationErrorCode } from "../../common/model/validation-error-code";
 import { PushVariables } from "../../common/util/push-variables";
 import { PushService } from "../../common/push/push.service";
 import { PushMessageType } from "../../common/util/push-message.type";
+import { Logger } from "../../common/util/logging";
 
 @Component({
   selector: 'app-experiment-list',
@@ -144,11 +145,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
       )
       .subscribe({
         next: (createExperimentResultDto: CreateExperimentResultDto) => {
-          this.messageService.add({ severity: 'success',
-            summary: `Эксперимент ${createExperimentResultDto.requestId} был успешно создан`, detail: '' });
-          this.lastCreatedId = createExperimentResultDto.id;
-          this.getRequestStatusesStatistics();
-          this.reloadPageWithLoader();
+          Logger.debug(`Experiment ${createExperimentResultDto.requestId} has been created`);
         },
         error: (error) => {
           this.handleCreateExperimentError(error);
