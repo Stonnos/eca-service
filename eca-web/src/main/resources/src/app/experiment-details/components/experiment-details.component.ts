@@ -44,6 +44,8 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
 
   public linkColumns: string[] = [ExperimentFields.EXPERIMENT_PATH];
 
+  public blink = false;
+
   private experimentProgressSubscription: Subscription;
   private experimentUpdatesSubscription: Subscription;
   private routeUpdateSubscription: Subscription;
@@ -70,11 +72,12 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
   }
 
   public getExperimentFullData(): void {
-    this.getExperiment();
+    this.getExperiment(false);
     this.getExperimentErsReport();
   }
 
-  public getExperiment(): void {
+  public getExperiment(blink: boolean): void {
+    this.blink = blink;
     this.experimentsService.getExperiment(this.id)
       .subscribe({
         next: (experimentDto: ExperimentDto) => {
@@ -146,6 +149,10 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
     return this.fieldService.hasValue(field, this.experimentDto);
   }
 
+  public isRequestStatusBlink(field: string, requestStatus: string): boolean {
+    return this.blink && field == 'requestStatus.description' && this.experimentDto && this.experimentDto.requestStatus.value == requestStatus;
+  }
+
   private subscribeForRouteChanges(): void {
     //Subscribe for route changes in current details component
     //Used for route from experiment details to another experiment details via push
@@ -197,7 +204,7 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
         .subscribe({
           next: (pushRequestDto: PushRequestDto) => {
             this.handleExperimentPush(pushRequestDto);
-            this.getExperiment();
+            this.getExperiment(true);
             this.getExperimentErsReport();
           },
           error: (error) => {

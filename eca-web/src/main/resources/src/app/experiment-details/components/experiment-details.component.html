@@ -11,7 +11,12 @@
     <div class="col-5">
       <div class="h-100 details-panel">
         <p-fieldset legend="Основная информация" class="details-fieldset">
-          <div class="ui-g" *ngFor="let field of experimentFields">
+          <div class="ui-g" *ngFor="let field of experimentFields"
+               [class.new-status-blink]="isRequestStatusBlink(field.name,'NEW')"
+               [class.in-progress-status-blink]="isRequestStatusBlink(field.name,'IN_PROGRESS')"
+               [class.finished-status-blink]="isRequestStatusBlink(field.name,'FINISHED')"
+               [class.error-status-blink]="isRequestStatusBlink(field.name,'ERROR')"
+               [class.timeout-status-blink]="isRequestStatusBlink(field.name,'TIMEOUT')">
             <div class="ui-g-6 text-left text-bold text-wrap">
               {{ field.label }}
             </div>
