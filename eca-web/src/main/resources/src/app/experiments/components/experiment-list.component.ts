@@ -2,7 +2,7 @@ import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
 import {
   CreateExperimentResultDto,
   ExperimentDto, FilterDictionaryDto, FilterDictionaryValueDto, FilterFieldDto, PageDto,
-  PageRequestDto, PushRequestDto, RequestStatusStatisticsDto, ValidationErrorDto
+  PageRequestDto, PushRequestDto, RequestStatusStatisticsDto, UserDto, ValidationErrorDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ExperimentsService } from "../services/experiments.service";
 import { MessageService } from "primeng/api";
@@ -27,6 +27,7 @@ import { PushVariables } from "../../common/util/push-variables";
 import { PushService } from "../../common/push/push.service";
 import { PushMessageType } from "../../common/util/push-message.type";
 import { Logger } from "../../common/util/logging";
+import { UsersService } from "../../users/services/users.service";
 
 @Component({
   selector: 'app-experiment-list',
@@ -57,6 +58,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
                      private reportsService: ReportsService,
                      private validationService: ValidationService,
                      private pushService: PushService,
+                     private usersService: UsersService,
                      private router: Router) {
     super(injector.get(MessageService), injector.get(FieldService));
     this.defaultSortField = ExperimentFields.CREATION_DATE;
@@ -145,7 +147,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
       )
       .subscribe({
         next: (createExperimentResultDto: CreateExperimentResultDto) => {
-          Logger.debug(`Experiment ${createExperimentResultDto.requestId} has been created`);
+          this.handleExperimentCreated(createExperimentResultDto);
         },
         error: (error) => {
           this.handleCreateExperimentError(error);
@@ -232,6 +234,24 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
       }
     }
     this.messageService.add({ severity: 'error', summary: 'Не удалось создать эксперимент', detail: error.message });
+  }
+
+  private handleExperimentCreated(createExperimentResultDto: CreateExperimentResultDto): void {
+    Logger.debug(`Experiment ${createExperimentResultDto.requestId} has been created`);
+    this.usersService.getCurrentUser().subscribe({
+      next: (user: UserDto) => {
+        if (!user.pushEnabled) {
+          this.messageService.add({ severity: 'success',
+            summary: `Эксперимент ${createExperimentResultDto.requestId} был успешно создан`, detail: '' });
+          this.lastCreatedId = createExperimentResultDto.id;
+          this.getRequestStatusesStatistics();
+          this.reloadPageWithLoader();
+        }
+      },
+      error: (error) => {
+        this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+      }
+    });
   }
 
   private initColumns() {
