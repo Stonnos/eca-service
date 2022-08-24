@@ -1,8 +1,8 @@
-import {Injectable} from '@angular/core';
-import {Router} from '@angular/router';
-import {AuthenticationKeys} from "../model/auth.keys";
-import {EventService} from "../../common/event/event.service";
-import {EventType} from "../../common/event/event.type";
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthenticationKeys } from "../model/auth.keys";
+import { EventService } from "../../common/event/event.service";
+import { EventType } from "../../common/event/event.type";
 
 @Injectable()
 export class LogoutService {
