@@ -113,4 +113,10 @@ public class UserDto {
      */
     @Schema(description = "Is user lock allowed?")
     private boolean lockAllowed;
+
+    /**
+     * Web pushes enabled?
+     */
+    @Schema(description = "Web pushes enabled")
+    private boolean pushEnabled;
 }

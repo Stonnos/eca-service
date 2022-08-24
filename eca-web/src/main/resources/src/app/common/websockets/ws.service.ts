@@ -1,13 +1,18 @@
 import { StompConfig, StompService } from "@stomp/ng2-stompjs";
 import { AuthenticationKeys } from "../../auth/model/auth.keys";
 import { environment } from "../../../environments/environment";
+import { Injectable } from "@angular/core";
 
+@Injectable()
 export class WsService {
 
   private wsUrl = environment.wsUrl;
   private stompService: StompService;
 
   public constructor() {
+  }
+
+  public init(): void {
     this.stompService = new StompService(this.getStompConfig());
   }
 
@@ -27,7 +32,7 @@ export class WsService {
       heartbeat_in: 0,
       heartbeat_out: 20000,
       reconnect_delay: 5000,
-      debug: false
+      debug: environment.debug
     };
   }
 

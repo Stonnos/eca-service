@@ -283,7 +283,7 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
   private initColumns() {
     this.columns = [
       { name: ClassifierOptionsFields.ID, label: "#" },
-      { name: ClassifierOptionsFields.OPTIONS_DESCRIPTION, label: "Настройки классификатора" },
+      { name: ClassifierOptionsFields.OPTIONS_DESCRIPTION, label: "Настройки классификатора", sortBy: ClassifierOptionsFields.OPTIONS_NAME },
       { name: ClassifierOptionsFields.CREATION_DATE, label: "Дата создания настроек" },
       { name: ClassifierOptionsFields.CREATED_BY, label: "Пользователь" }
     ];

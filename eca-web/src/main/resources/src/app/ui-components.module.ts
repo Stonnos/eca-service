@@ -11,7 +11,6 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
 import { FileUploadModule } from 'primeng/fileupload';
-import { GrowlModule } from 'primeng/growl';
 import { InputTextModule } from 'primeng/inputtext';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { LightboxModule } from 'primeng/lightbox';
@@ -30,6 +29,7 @@ import { CardModule } from "primeng/card";
 import { FieldsetModule } from 'primeng/fieldset';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { PasswordStrengthMeterModule } from "angular-password-strength-meter";
+import { ToastModule } from "primeng/toast";
 
 @NgModule({
   imports: [
@@ -62,7 +62,6 @@ import { PasswordStrengthMeterModule } from "angular-password-strength-meter";
     AutoCompleteModule,
     TooltipModule,
     FileUploadModule,
-    GrowlModule,
     ProgressSpinnerModule,
     ListboxModule,
     InputSwitchModule,
@@ -71,7 +70,8 @@ import { PasswordStrengthMeterModule } from "angular-password-strength-meter";
     ScrollPanelModule,
     PasswordStrengthMeterModule,
     MenuModule,
-    EditorModule
+    EditorModule,
+    ToastModule
   ]
 })
 export class UiComponentsModule {

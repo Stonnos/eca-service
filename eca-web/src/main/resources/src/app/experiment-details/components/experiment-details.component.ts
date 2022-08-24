@@ -5,7 +5,7 @@ import {
   ExperimentProgressDto, PushRequestDto,
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { MessageService } from "primeng/api";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, NavigationEnd, Router, RouterEvent } from "@angular/router";
 import { ExperimentsService } from "../../experiments/services/experiments.service";
 import { ExperimentFields } from "../../common/util/field-names";
 import { FieldLink } from "../../common/model/field-link";
@@ -13,11 +13,11 @@ import { FieldService } from "../../common/services/field.service";
 import { Utils } from "../../common/util/utils";
 import { Subscription, timer } from "rxjs";
 import { RequestStatus } from "../../common/model/request-status.enum";
-import { WsService } from "../../common/websockets/ws.service";
-import { environment } from "../../../environments/environment";
 import { Logger } from "../../common/util/logging";
-import { filter } from "rxjs/internal/operators";
 import { PushVariables } from "../../common/util/push-variables";
+import { PushService } from "../../common/push/push.service";
+import { PushMessageType } from "../../common/util/push-message.type";
+import { filter } from "rxjs/internal/operators";
 
 @Component({
   selector: 'app-experiment-details',
@@ -26,7 +26,7 @@ import { PushVariables } from "../../common/util/push-variables";
 })
 export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink {
 
-  private readonly id: number;
+  private id: number;
 
   private readonly updateProgressInterval = 1000;
 
@@ -44,30 +44,40 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
 
   public linkColumns: string[] = [ExperimentFields.EXPERIMENT_PATH];
 
-  private wsService: WsService;
+  public blink = false;
 
   private experimentProgressSubscription: Subscription;
   private experimentUpdatesSubscription: Subscription;
+  private routeUpdateSubscription: Subscription;
 
   public constructor(private experimentsService: ExperimentsService,
                      private messageService: MessageService,
                      private route: ActivatedRoute,
+                     private pushService: PushService,
+                     private router: Router,
                      private fieldService: FieldService) {
     this.id = this.route.snapshot.params.id;
     this.initExperimentFields();
   }
 
   public ngOnInit(): void {
-    this.getExperiment();
-    this.getExperimentErsReport();
+    this.getExperimentFullData();
+    this.subscribeForRouteChanges();
   }
 
   public ngOnDestroy(): void {
     this.unSubscribeExperimentUpdates();
     this.unSubscribeExperimentProgress();
+    this.routeUpdateSubscription.unsubscribe();
   }
 
-  public getExperiment(): void {
+  public getExperimentFullData(): void {
+    this.getExperiment(false);
+    this.getExperimentErsReport();
+  }
+
+  public getExperiment(blink: boolean): void {
+    this.blink = blink;
     this.experimentsService.getExperiment(this.id)
       .subscribe({
         next: (experimentDto: ExperimentDto) => {
@@ -139,6 +149,22 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
     return this.fieldService.hasValue(field, this.experimentDto);
   }
 
+  public isRequestStatusBlink(field: string, requestStatus: string): boolean {
+    return this.blink && field == 'requestStatus.description' && this.experimentDto && this.experimentDto.requestStatus.value == requestStatus;
+  }
+
+  private subscribeForRouteChanges(): void {
+    //Subscribe for route changes in current details component
+    //Used for route from experiment details to another experiment details via push
+    this.routeUpdateSubscription = this.router.events.pipe(
+      filter((event: RouterEvent) => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      this.id = this.route.snapshot.params.id;
+      this.unSubscribeExperimentProgress();
+      this.getExperimentFullData();
+    });
+  }
+
   private subscribeForExperimentProgressUpdate(): void {
     if (!this.experimentProgressSubscription) {
       Logger.debug(`Subscribe experiment ${this.experimentDto.requestId} progress change`);
@@ -167,21 +193,18 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
   private subscribeForExperimentUpdate(): void {
     if (!this.experimentUpdatesSubscription) {
       Logger.debug(`Subscribe experiment ${this.experimentDto.requestId} status change`);
-      this.wsService = new WsService();
-      this.experimentUpdatesSubscription = this.wsService.subscribe(environment.experimentsQueue)
-        .pipe(
-          filter(message => {
-            const pushRequestDto: PushRequestDto = JSON.parse(message.body);
-            const id = pushRequestDto.additionalProperties[PushVariables.EXPERIMENT_ID];
-            return this.experimentDto.id == Number(id);
-          })
-        )
+      const filterPredicate = (pushRequestDto: PushRequestDto) => {
+        if (pushRequestDto.messageType != PushMessageType.EXPERIMENT_STATUS_CHANGE) {
+          return false;
+        }
+        const id = pushRequestDto.additionalProperties[PushVariables.EXPERIMENT_ID];
+        return this.experimentDto.id == Number(id);
+      };
+      this.experimentUpdatesSubscription = this.pushService.pushMessageSubscribe(filterPredicate)
         .subscribe({
-          next: (message) => {
-            Logger.debug(`Received experiment web push ${message.body}`);
-            const pushRequestDto: PushRequestDto = JSON.parse(message.body);
+          next: (pushRequestDto: PushRequestDto) => {
             this.handleExperimentPush(pushRequestDto);
-            this.getExperiment();
+            this.getExperiment(true);
             this.getExperimentErsReport();
           },
           error: (error) => {
@@ -204,16 +227,13 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
       this.experimentUpdatesSubscription = null;
       Logger.debug(`Unsubscribe experiment ${this.experimentDto.requestId} status change`);
     }
-    if (this.wsService) {
-      this.wsService.close();
-      this.wsService = null;
-    }
   }
 
   private unSubscribeExperimentProgress(): void {
     if (this.experimentProgressSubscription) {
       this.experimentProgressSubscription.unsubscribe();
       this.experimentProgressSubscription = null;
+      this.experimentProgress = null;
       Logger.debug(`Unsubscribe experiment ${this.experimentDto.requestId} progress change`);
     }
   }

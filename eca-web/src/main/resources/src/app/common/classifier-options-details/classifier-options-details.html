@@ -1,7 +1,7 @@
 <p-tabView>
   <p-tabPanel header="Настройки классификатора">
     <ng-template pTemplate="content">
-      <ng-container *ngFor="let option of inputOptions">
+      <ng-container *ngFor="let option of classifierOptions?.inputOptions">
         <div class="ui-g">
           <div class="ui-g-6 text-right text-bold text-wrap">
             {{ option.optionName }}
@@ -16,6 +16,16 @@
   <p-tabPanel header="JSON формат">
     <ng-template pTemplate="content">
       <pre class="json-config"><code class="language-json" [innerHTML]="getFormattedJsonConfig()"></code></pre>
+      <div class="ui-g mx-auto d-flex align-items-center justify-content-center">
+        <button
+          pButton
+          label="Скачать"
+          icon="pi pi-download"
+          type="button"
+          class="load-button"
+          (click)="saveClassifierOptions()">
+        </button>
+      </div>
     </ng-template>
   </p-tabPanel>
 </p-tabView>

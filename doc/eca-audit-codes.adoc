@@ -32,6 +32,12 @@
 |DISABLE_2FA
 |Выключение двухфакторной аутентификации
 |USER_PROFILE_ACTIONS
+|ENABLE_PUSH_NOTIFICATIONS
+|Включение пуш уведомлений
+|USER_PROFILE_ACTIONS
+|DISABLE_PUSH_NOTIFICATIONS
+|Выключение пуш уведомлений
+|USER_PROFILE_ACTIONS
 |UPDATE_PERSONAL_DATA
 |Изменение персональных данных
 |USER_PROFILE_ACTIONS

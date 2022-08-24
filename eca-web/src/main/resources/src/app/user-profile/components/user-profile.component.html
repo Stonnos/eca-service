@@ -47,17 +47,12 @@
             </div>
             <div class="ui-g-4 text-left text-wrap">
               <ng-container [ngSwitch]="field.name">
-                <ng-container *ngSwitchCase="'tfaEnabled'">
-                  <p-inputSwitch [(ngModel)]="tfaEnabled"
-                                 (onChange)="changedTfaSwitch($event)"
-                                 [readonly]="loading">
-                  </p-inputSwitch>
-                </ng-container>
                 <ng-container *ngSwitchCase="'firstName'">
                   <app-editable-input-text [textId]="'firstName'"
                                            [textName]="'firstName'"
                                            [textDisabled]="loading"
                                            [value]="getValue(field.name)"
+                                           [editableValue]="getValue(field.name)"
                                            (submitEvent)="updateFirstName($event)"
                                            [maxLength]="personNameMaxLength"
                                            [pattern]="personNameRegex"
@@ -69,6 +64,7 @@
                                            [textName]="'lastName'"
                                            [textDisabled]="loading"
                                            [value]="getValue(field.name)"
+                                           [editableValue]="getValue(field.name)"
                                            (submitEvent)="updateLastName($event)"
                                            [maxLength]="personNameMaxLength"
                                            [pattern]="personNameRegex"
@@ -80,6 +76,7 @@
                                            [textName]="'middleName'"
                                            [textDisabled]="loading"
                                            [value]="getValue(field.name)"
+                                           [editableValue]="getValue(field.name)"
                                            (submitEvent)="updateMiddleName($event)"
                                            [maxLength]="personNameMaxLength"
                                            [pattern]="personNameRegex"
@@ -137,6 +134,32 @@
                         [closable]="false"
                         [(value)]="activeChangeEmailStatusMessage">
             </p-messages>
+          </div>
+        </p-fieldset>
+        <p-fieldset legend="Безопасность" class="details-fieldset">
+          <div class="ui-g ml-1 mr-1">
+            <div class="ui-g-4 text-left text-bold text-wrap">
+              Двухфакторная аутентификация:
+            </div>
+            <div class="ui-g-4 text-left text-wrap">
+              <p-inputSwitch [(ngModel)]="tfaEnabled"
+                             (onChange)="changedTfaSwitch($event)"
+                             [readonly]="loading">
+              </p-inputSwitch>
+            </div>
+          </div>
+        </p-fieldset>
+        <p-fieldset legend="Прочее" class="details-fieldset">
+          <div class="ui-g ml-1 mr-1">
+            <div class="ui-g-4 text-left text-bold text-wrap">
+              Пуш уведомления:
+            </div>
+            <div class="ui-g-4 text-left text-wrap">
+              <p-inputSwitch [(ngModel)]="pushEnabled"
+                             (onChange)="changedPushEnabledSwitch($event)"
+                             [readonly]="loading">
+              </p-inputSwitch>
+            </div>
           </div>
         </p-fieldset>
       </div>

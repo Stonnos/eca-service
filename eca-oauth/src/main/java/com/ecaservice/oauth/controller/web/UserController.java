@@ -203,6 +203,52 @@ public class UserController {
     }
 
     /**
+     * Enable/disable push notifications for current authenticated user.
+     *
+     * @param enabled - push enabled?
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @Operation(
+            description = "Enable/disable push notifications for current authenticated user",
+            summary = "Enable/disable push notifications for current authenticated user",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "InvalidPushOperationResponse",
+                                                    ref = "#/components/examples/InvalidPushOperationResponse"
+                                            ),
+                                    }
+                            ))
+            }
+    )
+    @PostMapping(value = "/push-notifications/enabled")
+    public void enablePushNotifications(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                        @Parameter(description = "Push enabled flag", required = true)
+                                        @RequestParam boolean enabled) {
+        if (enabled) {
+            userService.enablePushNotifications(userDetails.getId());
+        } else {
+            userService.disablePushNotifications(userDetails.getId());
+        }
+    }
+
+    /**
      * Finds all users with specified options such as filter, sorting and paging.
      *
      * @param pageRequestDto - page request dto

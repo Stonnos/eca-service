@@ -443,6 +443,86 @@ a|
 ----
 |===
 
+== Enable/disable push notifications for current authenticated user
+
+__POST__ */users/push-notifications/enabled* - Enable/disable push notifications for current authenticated user
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+
+*Request parameters*
+[width=100%]
+|===
+|*Name*|*Description*|*Location*|*Schema*
+|*enabled**
+|Push enabled flag
+|query
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*-*
+|-
+a|
+-
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|-
+a|
+[source,json]
+----
+[ {
+  "code" : "InvalidOperation",
+  "errorMessage" : "Push notifications is already enabled for user"
+} ]
+----
+|===
+
 == Logout current user and revokes access/refresh token pair
 
 __POST__ */users/logout* - Logout current user and revokes access/refresh token pair
@@ -2404,6 +2484,25 @@ __array__
 
 |*lockAllowed*
 |Is user lock allowed?
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*pushEnabled*
+|Web pushes enabled
 a|
 __boolean__
 

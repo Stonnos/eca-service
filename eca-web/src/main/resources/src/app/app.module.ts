@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from "./routing/app-routing.module";
@@ -44,6 +44,11 @@ import { InstancesDetailsModule } from "./instances-details/instances-details.mo
 import { ExportInstancesModule } from "./export-instances/export-instances.module";
 import { ClassifiersConfigurationFullDetailsModule } from "./classifiers-configuration-full-details/classifiers-configuration-full-details.module";
 import { ClassifiersConfigurationHistoryModule } from "./classifiers-configuration-history/classifiers-configuration-history.module";
+import { EventHandler } from "./common/event/event.handler";
+
+export function eventSubscribe(eventHandler: EventHandler) {
+  return () => eventHandler.eventSubscribe();
+}
 
 @NgModule({
   declarations: [
@@ -94,7 +99,13 @@ import { ClassifiersConfigurationHistoryModule } from "./classifiers-configurati
     ClassifiersConfigurationFullDetailsModule
   ],
   providers: [
-    CookieService
+    CookieService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: eventSubscribe,
+      deps: [EventHandler],
+      multi: true
+    }
   ],
   bootstrap: [AppComponent]
 })

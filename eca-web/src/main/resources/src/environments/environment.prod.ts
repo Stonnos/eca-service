@@ -9,6 +9,7 @@ export const environment = {
   wsUrl: `ws://${window.location.hostname}:8099/socket`,
   clientId: "eca_web",
   secret: "web_secret",
-  experimentsQueue: "/queue/experiment",
+  pushQueue: "/push",
+  pushLifeTimeMillis: 12000,
   debug: false
 };
