@@ -71,8 +71,7 @@
 </p-table>
 <p-overlayPanel #configsPanel [showCloseIcon]="true" class="info-panel">
   <app-classifier-options-details *ngIf="selectedOptions"
-                                  [jsonOptions]="selectedOptions.config"
-                                  [inputOptions]="selectedOptions.inputOptions">
+                                  [classifierOptions]="selectedOptions">
   </app-classifier-options-details>
 </p-overlayPanel>
 

@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { JsonPipe } from "@angular/common";
-import { InputOptionDto } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
+import { ClassifierOptionsDto } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
+import { saveAs } from 'file-saver/dist/FileSaver';
 
 declare var Prism: any;
 
@@ -12,20 +13,22 @@ declare var Prism: any;
 export class ClassifierOptionsDetails implements OnInit {
 
   @Input()
-  public jsonOptions: string;
-
-  @Input()
-  public inputOptions: InputOptionDto[] = [];
+  public classifierOptions: ClassifierOptionsDto;
 
   public ngOnInit() {
   }
 
   public getFormattedJsonConfig(): string {
-    if (this.jsonOptions) {
-      const configObj = JSON.parse(this.jsonOptions);
+    if (this.classifierOptions) {
+      const configObj = JSON.parse(this.classifierOptions.config);
       const json = new JsonPipe().transform(configObj);
       return Prism.highlight(json, Prism.languages['json']);
     }
     return null;
+  }
+
+  public saveClassifierOptions() {
+    let blob: Blob = new Blob([this.classifierOptions.config], {type: 'application/json'});
+    saveAs(blob, `${this.classifierOptions.optionsName}.json`);
   }
 }
