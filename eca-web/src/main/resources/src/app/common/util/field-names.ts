@@ -70,6 +70,7 @@ export class ClassifierOptionsRequestsFields {
 
 export class ClassifierOptionsFields {
   public static readonly ID: string = "id";
+  public static readonly OPTIONS_NAME: string = "optionsName";
   public static readonly OPTIONS_DESCRIPTION: string = "optionsDescription";
   public static readonly CREATION_DATE: string = "creationDate";
   public static readonly CREATED_BY: string = "createdBy";
