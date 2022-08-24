@@ -13,3 +13,5 @@ id;event_type;message_template;audit_code_id
 12;SUCCESS;Создан запрос на сброс пароля;CREATE_RESET_PASSWORD_REQUEST
 13;SUCCESS;Пароль был сброшен;RESET_PASSWORD
 14;SUCCESS;Email адрес был изменен на [${returnValue.userEntity.email}];CONFIRM_CHANGE_EMAIL_REQUEST
+15;SUCCESS;Включены пуш уведомления;ENABLE_PUSH_NOTIFICATIONS
+16;SUCCESS;Выключены пуш уведомления;DISABLE_PUSH_NOTIFICATIONS

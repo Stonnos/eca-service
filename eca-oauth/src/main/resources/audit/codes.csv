@@ -13,3 +13,5 @@ CREATE_RESET_PASSWORD_REQUEST;Создание запроса на сброс п
 RESET_PASSWORD;Сброс пароля;true;USER_PROFILE_ACTIONS
 CREATE_CHANGE_EMAIL_REQUEST;Создание запроса на изменение Email;true;USER_PROFILE_ACTIONS
 CONFIRM_CHANGE_EMAIL_REQUEST;Подтверждение запроса на изменение Email;true;USER_PROFILE_ACTIONS
+ENABLE_PUSH_NOTIFICATIONS;Включение пуш уведомлений;true;USER_PROFILE_ACTIONS
+DISABLE_PUSH_NOTIFICATIONS;Выключение пуш уведомлений;true;USER_PROFILE_ACTIONS

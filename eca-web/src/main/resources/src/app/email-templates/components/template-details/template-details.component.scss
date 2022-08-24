@@ -11,3 +11,9 @@
     border: 1px solid;
   }
 }
+
+.template-details-panel {
+  width: 100%;
+  max-height: 600px;
+  overflow-y: scroll;
+}

@@ -20,6 +20,11 @@ import { MaxNumberValidator } from "./validators/max-validator.directive";
 import { ClassifierOptionsInfo } from "./classifier-options-info/classifier-options-info";
 import { EvaluationMethodInfo } from "./evaluation-method-info/evaluation-method-info";
 import { InstancesInfo } from "./instances-info/instances-info";
+import { WsService } from "./websockets/ws.service";
+import { PushService } from "./push/push.service";
+import { PushMessageComponent } from "./push/push-message.component";
+import { EventService } from "./event/event.service";
+import { EventHandler } from "./event/event.handler";
 
 @NgModule({
   imports: [
@@ -40,7 +45,8 @@ import { InstancesInfo } from "./instances-info/instances-info";
     ClassifierOptionsDetails,
     ClassifierOptionsInfo,
     EvaluationMethodInfo,
-    InstancesInfo
+    InstancesInfo,
+    PushMessageComponent
   ],
   exports: [
     RequestStatusComponent,
@@ -55,14 +61,19 @@ import { InstancesInfo } from "./instances-info/instances-info";
     ClassifierOptionsDetails,
     ClassifierOptionsInfo,
     EvaluationMethodInfo,
-    InstancesInfo
+    InstancesInfo,
+    PushMessageComponent
   ],
   providers: [
     FieldService,
     ReportsService,
     ValidationService,
     ErrorHandler,
-    WebAppService
+    WebAppService,
+    WsService,
+    PushService,
+    EventService,
+    EventHandler
   ]
 })
 export class SharedModule {

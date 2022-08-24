@@ -2,7 +2,7 @@ import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
 import {
   CreateExperimentResultDto,
   ExperimentDto, FilterDictionaryDto, FilterDictionaryValueDto, FilterFieldDto, PageDto,
-  PageRequestDto, PushRequestDto, RequestStatusStatisticsDto, ValidationErrorDto
+  PageRequestDto, PushRequestDto, RequestStatusStatisticsDto, UserDto, ValidationErrorDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ExperimentsService } from "../services/experiments.service";
 import { MessageService } from "primeng/api";
@@ -19,14 +19,15 @@ import { FieldService } from "../../common/services/field.service";
 import { ReportsService } from "../../common/services/report.service";
 import { EvaluationMethod } from "../../common/model/evaluation-method.enum";
 import { ReportType } from "../../common/model/report-type.enum";
-import { WsService } from "../../common/websockets/ws.service";
 import { Subscription } from "rxjs";
 import { HttpErrorResponse } from "@angular/common/http";
 import { ValidationService } from "../../common/services/validation.service";
 import { ValidationErrorCode } from "../../common/model/validation-error-code";
 import { PushVariables } from "../../common/util/push-variables";
-import { environment } from "../../../environments/environment";
+import { PushService } from "../../common/push/push.service";
+import { PushMessageType } from "../../common/util/push-message.type";
 import { Logger } from "../../common/util/logging";
+import { UsersService } from "../../users/services/users.service";
 
 @Component({
   selector: 'app-experiment-list',
@@ -36,8 +37,6 @@ import { Logger } from "../../common/util/logging";
 export class ExperimentListComponent extends BaseListComponent<ExperimentDto> implements OnInit, OnDestroy {
 
   private static readonly EXPERIMENTS_REPORT_FILE_NAME = 'experiments-report.xlsx';
-
-  private wsService: WsService;
 
   private experimentsUpdatesSubscriptions: Subscription;
 
@@ -58,6 +57,8 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
                      private filterService: FilterService,
                      private reportsService: ReportsService,
                      private validationService: ValidationService,
+                     private pushService: PushService,
+                     private usersService: UsersService,
                      private router: Router) {
     super(injector.get(MessageService), injector.get(FieldService));
     this.defaultSortField = ExperimentFields.CREATION_DATE;
@@ -78,9 +79,6 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
   public ngOnDestroy(): void {
     if (this.experimentsUpdatesSubscriptions) {
       this.experimentsUpdatesSubscriptions.unsubscribe();
-    }
-    if (this.wsService) {
-      this.wsService.close();
     }
   }
 
@@ -149,11 +147,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
       )
       .subscribe({
         next: (createExperimentResultDto: CreateExperimentResultDto) => {
-          this.messageService.add({ severity: 'success',
-            summary: `Эксперимент ${createExperimentResultDto.requestId} был успешно создан`, detail: '' });
-          this.lastCreatedId = createExperimentResultDto.id;
-          this.getRequestStatusesStatistics();
-          this.reloadPageWithLoader();
+          this.handleExperimentCreated(createExperimentResultDto);
         },
         error: (error) => {
           this.handleCreateExperimentError(error);
@@ -212,14 +206,11 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
   }
 
   private subscribeForExperimentsUpdates(): void {
-    this.wsService = new WsService();
-    this.experimentsUpdatesSubscriptions = this.wsService.subscribe(environment.experimentsQueue)
+    const filterPredicate = (pushRequestDto: PushRequestDto) => pushRequestDto.messageType == PushMessageType.EXPERIMENT_STATUS_CHANGE;
+    this.experimentsUpdatesSubscriptions = this.pushService.pushMessageSubscribe(filterPredicate)
       .subscribe({
-        next: (message) => {
-          Logger.debug(`Received experiment web push ${message.body}`);
-          const pushRequestDto: PushRequestDto = JSON.parse(message.body);
+        next: (pushRequestDto: PushRequestDto) => {
           this.lastCreatedId = pushRequestDto.additionalProperties[PushVariables.EXPERIMENT_ID];
-          this.showMessage(pushRequestDto);
           this.reloadPage(false);
           this.getRequestStatusesStatistics();
         },
@@ -227,10 +218,6 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
         }
       });
-  }
-
-  private showMessage(pushRequestDto: PushRequestDto): void {
-    this.messageService.add({ severity: 'info', summary: pushRequestDto.messageText, detail: '' });
   }
 
   private handleCreateExperimentError(error): void {
@@ -247,6 +234,24 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
       }
     }
     this.messageService.add({ severity: 'error', summary: 'Не удалось создать эксперимент', detail: error.message });
+  }
+
+  private handleExperimentCreated(createExperimentResultDto: CreateExperimentResultDto): void {
+    Logger.debug(`Experiment ${createExperimentResultDto.requestId} has been created`);
+    this.usersService.getCurrentUser().subscribe({
+      next: (user: UserDto) => {
+        if (!user.pushEnabled) {
+          this.messageService.add({ severity: 'success',
+            summary: `Эксперимент ${createExperimentResultDto.requestId} был успешно создан`, detail: '' });
+          this.lastCreatedId = createExperimentResultDto.id;
+          this.getRequestStatusesStatistics();
+          this.reloadPageWithLoader();
+        }
+      },
+      error: (error) => {
+        this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+      }
+    });
   }
 
   private initColumns() {

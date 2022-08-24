@@ -44,7 +44,9 @@ import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.oauth.config.audit.AuditCodes.CREATE_USER;
 import static com.ecaservice.oauth.config.audit.AuditCodes.DELETE_PHOTO;
 import static com.ecaservice.oauth.config.audit.AuditCodes.DISABLE_2FA;
+import static com.ecaservice.oauth.config.audit.AuditCodes.DISABLE_PUSH_NOTIFICATIONS;
 import static com.ecaservice.oauth.config.audit.AuditCodes.ENABLE_2FA;
+import static com.ecaservice.oauth.config.audit.AuditCodes.ENABLE_PUSH_NOTIFICATIONS;
 import static com.ecaservice.oauth.config.audit.AuditCodes.LOCK_USER;
 import static com.ecaservice.oauth.config.audit.AuditCodes.UNLOCK_USER;
 import static com.ecaservice.oauth.config.audit.AuditCodes.UPDATE_PERSONAL_DATA;
@@ -292,6 +294,40 @@ public class UserService {
         }
         userPhotoRepository.delete(userPhoto);
         log.info("User [{}] photo has been deleted", userId);
+    }
+
+    /**
+     * Enable push notifications for user.
+     *
+     * @param userId - user id
+     */
+    @Audit(ENABLE_PUSH_NOTIFICATIONS)
+    public void enablePushNotifications(long userId) {
+        log.info("Starting to enable push notifications for user [{}]", userId);
+        UserEntity userEntity = getById(userId);
+        if (userEntity.isPushEnabled()) {
+            throw new InvalidOperationException("Push notifications is already enabled for user");
+        }
+        userEntity.setPushEnabled(true);
+        userEntityRepository.save(userEntity);
+        log.info("Push notifications has been enabled for user [{}]", userEntity.getId());
+    }
+
+    /**
+     * Disable push notifications for user.
+     *
+     * @param userId - user id
+     */
+    @Audit(DISABLE_PUSH_NOTIFICATIONS)
+    public void disablePushNotifications(long userId) {
+        log.info("Starting to disable push notifications for user [{}]", userId);
+        UserEntity userEntity = getById(userId);
+        if (!userEntity.isPushEnabled()) {
+            throw new InvalidOperationException("Push notifications is already disabled");
+        }
+        userEntity.setPushEnabled(false);
+        userEntityRepository.save(userEntity);
+        log.info("Push notifications has been disabled for user [{}]", userEntity.getId());
     }
 
     private void populateUserRole(UserEntity userEntity) {

@@ -5,6 +5,8 @@ import { MenuItemDto, UserDto } from "../../../../../../target/generated-sources
 import { HttpErrorResponse } from "@angular/common/http";
 import { UsersService } from "../users/services/users.service";
 import { WebAppService } from "../common/services/web-app.service";
+import { EventService } from "../common/event/event.service";
+import { EventType } from "../common/event/event.type";
 
 @Component({
   selector: 'app-dashboard',
@@ -20,10 +22,11 @@ export class DashboardComponent implements OnInit {
 
   public userMenuItems: MenuItem[] = [];
 
-  constructor(private logoutService: LogoutService,
-              private usersService: UsersService,
-              private webAppService: WebAppService,
-              private messageService: MessageService) {
+  public constructor(private logoutService: LogoutService,
+                     private usersService: UsersService,
+                     private webAppService: WebAppService,
+                     private messageService: MessageService,
+                     private eventService: EventService) {
   }
 
   public ngOnInit() {
@@ -40,6 +43,9 @@ export class DashboardComponent implements OnInit {
     this.usersService.getCurrentUser().subscribe({
       next: (user: UserDto) => {
         this.user = user;
+        if (user.pushEnabled) {
+          this.eventService.publishEvent(EventType.INIT_PUSH);
+        }
       },
       error: (error) => {
         this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });

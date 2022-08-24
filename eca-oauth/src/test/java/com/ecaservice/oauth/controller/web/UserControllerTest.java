@@ -70,6 +70,7 @@ class UserControllerTest extends AbstractControllerTest {
     private static final String GET_USER_INFO_URL = BASE_URL + "/user-info";
     private static final String LOGOUT_URL = BASE_URL + "/logout";
     private static final String TFA_ENABLED_URL = BASE_URL + "/tfa";
+    private static final String PUSH_ENABLED_URL = BASE_URL + "/push-notifications/enabled";
     private static final String UPDATE_USER_INFO = BASE_URL + "/update-info";
     private static final String DELETE_PHOTO_URL = BASE_URL + "/delete-photo";
     private static final String UPLOAD_PHOTO_URL = BASE_URL + "/upload-photo";
@@ -83,6 +84,7 @@ class UserControllerTest extends AbstractControllerTest {
     private static final String USER_ID_PARAM = "userId";
     private static final long LOCK_USER_ID = 2L;
     private static final String TFA_ENABLED_PARAM = "enabled";
+    private static final String PUSH_ENABLED_PARAM = "enabled";
     private static final String INVALID_PERSON_DATA = "ивfd";
 
     private final MockMultipartFile photoFile =
@@ -476,6 +478,31 @@ class UserControllerTest extends AbstractControllerTest {
                 .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk());
         verify(userService, atLeastOnce()).updatePhoto(USER_ID, photoFile);
+    }
+
+    @Test
+    void testPushNotificationsEnabledUnauthorized() throws Exception {
+        mockMvc.perform(post(PUSH_ENABLED_URL)
+                .param(PUSH_ENABLED_PARAM, Boolean.TRUE.toString()))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testPushNotificationsEnabled() throws Exception {
+        mockMvc.perform(post(PUSH_ENABLED_URL)
+                .param(PUSH_ENABLED_PARAM, Boolean.TRUE.toString())
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                .andExpect(status().isOk());
+        verify(userService, atLeastOnce()).enablePushNotifications(USER_ID);
+    }
+
+    @Test
+    void testPushNotificationsDisabled() throws Exception {
+        mockMvc.perform(post(PUSH_ENABLED_URL)
+                .param(PUSH_ENABLED_PARAM, Boolean.FALSE.toString())
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                .andExpect(status().isOk());
+        verify(userService, atLeastOnce()).disablePushNotifications(USER_ID);
     }
 
     private void testCreateUserBadRequest(CreateUserDto createUserDto) throws Exception {
