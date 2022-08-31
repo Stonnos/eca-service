@@ -6,7 +6,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { UsersService } from "../users/services/users.service";
 import { WebAppService } from "../common/services/web-app.service";
 import { EventService } from "../common/event/event.service";
-import { EventType } from "../common/event/event.type";
+import { EventType, NotificationDto } from "../common/event/event.type";
 
 @Component({
   selector: 'app-dashboard',
@@ -22,6 +22,95 @@ export class DashboardComponent implements OnInit {
 
   public userMenuItems: MenuItem[] = [];
 
+  public virtualNotifications: NotificationDto[] = [];
+  public notifications: NotificationDto[] = [
+    {
+      messageText: "Поступила новая заявка на эксперимент 1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
+      messageType: "EXPERIMENT_STATUS",
+      createdAt: "2022-09-01 12:01:55"
+    },
+    {
+      messageText: "Поступила новая заявка на эксперимент 1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
+      messageType: "EXPERIMENT_STATUS",
+      createdAt: "2022-09-01 12:02:55"
+    },
+    {
+      messageText: "Поступила новая заявка на эксперимент 1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
+      messageType: "EXPERIMENT_STATUS",
+      createdAt: "2022-09-01 12:03:55"
+    },
+    {
+      messageText: "Поступила новая заявка на эксперимент 1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
+      messageType: "EXPERIMENT_STATUS",
+      createdAt: "2022-09-01 12:04:55"
+    },
+    {
+      messageText: "Поступила новая заявка на эксперимент 1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
+      messageType: "EXPERIMENT_STATUS",
+      createdAt: "2022-09-01 12:05:55"
+    },
+    {
+      messageText: "Поступила новая заявка на эксперимент 1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
+      messageType: "EXPERIMENT_STATUS",
+      createdAt: "2022-09-01 12:06:55"
+    },
+    {
+      messageText: "Поступила новая заявка на эксперимент 1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
+      messageType: "EXPERIMENT_STATUS",
+      createdAt: "2022-09-01 12:07:55"
+    },
+    {
+      messageText: "Поступила новая заявка на эксперимент 1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
+      messageType: "EXPERIMENT_STATUS",
+      createdAt: "2022-09-01 12:08:55"
+    },
+    {
+      messageText: "Поступила новая заявка на эксперимент 1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
+      messageType: "EXPERIMENT_STATUS",
+      createdAt: "2022-09-01 12:09:55"
+    },
+    {
+      messageText: "Поступила новая заявка на эксперимент 1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
+      messageType: "EXPERIMENT_STATUS",
+      createdAt: "2022-09-01 12:10:55"
+    },
+    {
+      messageText: "Поступила новая заявка на эксперимент 1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
+      messageType: "EXPERIMENT_STATUS",
+      createdAt: "2022-09-01 12:11:55"
+    },
+    {
+      messageText: "Поступила новая заявка на эксперимент 1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
+      messageType: "EXPERIMENT_STATUS",
+      createdAt: "2022-09-01 12:12:55"
+    },
+    {
+      messageText: "Поступила новая заявка на эксперимент 1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
+      messageType: "EXPERIMENT_STATUS",
+      createdAt: "2022-09-01 12:13:55"
+    },
+    {
+      messageText: "Поступила новая заявка на эксперимент 1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
+      messageType: "EXPERIMENT_STATUS",
+      createdAt: "2022-09-01 12:14:55"
+    },
+    {
+      messageText: "Поступила новая заявка на эксперимент 1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
+      messageType: "EXPERIMENT_STATUS",
+      createdAt: "2022-09-01 12:15:55"
+    },
+    {
+      messageText: "Поступила новая заявка на эксперимент 1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
+      messageType: "EXPERIMENT_STATUS",
+      createdAt: "2022-09-01 12:16:55"
+    },
+  ];
+
+  private first: number = 0;
+  private rows: number = 0;
+  private total: number = 16;
+  private pageSize = 5;
+
   public constructor(private logoutService: LogoutService,
                      private usersService: UsersService,
                      private webAppService: WebAppService,
@@ -29,10 +118,36 @@ export class DashboardComponent implements OnInit {
                      private eventService: EventService) {
   }
 
+  hasContent(): boolean {
+    return this.rows < this.total;
+  }
+
+  load() {
+    this.first = this.rows;
+    this.rows = this.rows + this.pageSize;
+    console.log('Laze event ' + this.first);
+    console.log('Laze event ' + this.rows);
+    //load data of required page
+    let loadedData: NotificationDto[] = this.notifications.slice(this.first, this.rows);
+    console.log(loadedData);
+    this.virtualNotifications.push(...loadedData);
+    console.log(this.virtualNotifications);
+  }
+
   public ngOnInit() {
     this.getCurrentUser();
     this.getMenuItems();
     this.initUserMenu();
+  }
+
+  public onShow() {
+    this.load();
+  }
+
+  public onHide() {
+    this.virtualNotifications = [];
+    this.first = 0;
+    this.rows = 0;
   }
 
   public getUserLogin(): string {
