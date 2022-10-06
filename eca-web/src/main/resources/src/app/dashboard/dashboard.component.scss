@@ -37,13 +37,17 @@
   background-color: #cbcbcb;
 }
 
-.info-panel::ng-deep {
+.notifications-overlay::ng-deep {
 
   .ui-overlaypanel-content {
     width: 500px;
-    max-height: 500px;
-    overflow-y: scroll;
   }
+}
+
+.notifications-scroll-panel {
+  width: 100%;
+  max-height: 500px;
+  overflow-y: scroll;
 }
 
 .created-date {
