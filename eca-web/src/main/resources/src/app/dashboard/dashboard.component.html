@@ -11,9 +11,17 @@
                   (onShow)="onShow()"
                   (onHide)="onHide()"
                   class="info-panel">
+    <div class="ui-g-12">
+      <div class="ui-g ml-auto d-flex align-items-end justify-content-end line-border">
+        <a [routerLink]="" class="text-bold link mt-1 mb-2">Отметить все как прочитанные</a>
+      </div>
+    </div>
     <div class="ui-g-12 notification-card mt-1" *ngFor="let notification of virtualNotifications">
       <ng-container [ngSwitch]="notification?.messageType">
         <ng-container *ngSwitchCase="'EXPERIMENT_STATUS'">
+          <div class="ui-g text-bold">
+            <span class="pi pi-user" style="color: #2d2d2d; padding-bottom: 2px">stonnos</span>
+          </div>
           <div class="ui-g text-bold text-left">
             {{ notification?.messageText }}
           </div>
@@ -23,7 +31,7 @@
           <div class="ui-g mx-auto d-flex align-items-center justify-content-center">
             <button
               pButton
-              label="Открыть заявку"
+              label="Открыть конфигурацию"
               type="button">
             </button>
           </div>

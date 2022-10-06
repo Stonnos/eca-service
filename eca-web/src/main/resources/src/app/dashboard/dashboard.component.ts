@@ -25,22 +25,22 @@ export class DashboardComponent implements OnInit {
   public virtualNotifications: NotificationDto[] = [];
   public notifications: NotificationDto[] = [
     {
-      messageText: "Поступила новая заявка на эксперимент 1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
+      messageText: "Сделал конфигурацию [123] активной",
       messageType: "EXPERIMENT_STATUS",
       createdAt: "2022-09-01 12:01:55"
     },
     {
-      messageText: "Поступила новая заявка на эксперимент 1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
+      messageText: "Добавил настройки классификатора [Логистическая регрессия] в конфигурацию [123]",
       messageType: "EXPERIMENT_STATUS",
       createdAt: "2022-09-01 12:02:55"
     },
     {
-      messageText: "Поступила новая заявка на эксперимент 1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
+      messageText: "Удалил настройки классификатора [Логистическая регрессия] из конфигурации [123]",
       messageType: "EXPERIMENT_STATUS",
       createdAt: "2022-09-01 12:03:55"
     },
     {
-      messageText: "Поступила новая заявка на эксперимент 1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
+      messageText: "Изменил название конфигурации [123] на [New configuration]",
       messageType: "EXPERIMENT_STATUS",
       createdAt: "2022-09-01 12:04:55"
     },
