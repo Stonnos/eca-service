@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v0-init-schema.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="create_hibernate_sequence" author="roman.batygin@mail.ru">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="hibernate_sequence"/>
+            </not>
+        </preConditions>
+        <createSequence sequenceName="hibernate_sequence" startValue="1" incrementBy="1" minValue="1"/>
+    </changeSet>
+
+    <changeSet id="create_notification_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="notification"/>
+            </not>
+        </preConditions>
+        <createTable tableName="notification">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="request_id" type="varchar(255)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="notification_request_id_unique_idx"/>
+            </column>
+            <column name="message_type" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="message" type="varchar(255)"/>
+            <column name="initiator" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="receiver" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_notification_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="notification_parameter"/>
+            </not>
+            <tableExists tableName="notification"/>
+        </preConditions>
+        <createTable tableName="notification_parameter">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="parameter_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="parameter_value" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="notification_id">
+                <constraints foreignKeyName="fk_notification_parameter_notification_id"
+                             referencedTableName="notification"
+                             referencedColumnNames="id" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

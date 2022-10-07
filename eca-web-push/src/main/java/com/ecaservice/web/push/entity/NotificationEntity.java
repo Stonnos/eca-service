@@ -58,10 +58,10 @@ public class NotificationEntity {
     private String receiver;
 
     /**
-     * Event date
+     * Created date
      */
-    @Column(name = "event_date", nullable = false)
-    private LocalDateTime eventDate;
+    @Column(nullable = false)
+    private LocalDateTime created;
 
     /**
      * Notification parameters list
