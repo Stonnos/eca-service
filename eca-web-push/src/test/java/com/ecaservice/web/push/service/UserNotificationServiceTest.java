@@ -81,18 +81,37 @@ class UserNotificationServiceTest extends AbstractJpaTest {
         assertThat(notificationsPage.getContent()).hasSameSizeAs(validNotifications);
     }
 
+    @Test
+    void testGetNotReadNotificationsCount() {
+        var validNotifications = createAndSaveValidNotifications();
+        createAndSaveInvalidNotificationsForCount();
+        when(userService.getCurrentUser()).thenReturn(CURRENT_USER);
+        long notReadCount = userNotificationService.getNotReadNotificationsCount();
+        assertThat(notReadCount).isEqualTo(validNotifications.size());
+    }
+
     private List<NotificationEntity> createAndSaveValidNotifications() {
         var notifications = List.of(
-                createNotificationEntity(CURRENT_USER, LocalDateTime.now()),
-                createNotificationEntity(CURRENT_USER, LocalDateTime.now())
+                createNotificationEntity(CURRENT_USER, MessageStatus.NOT_READ, LocalDateTime.now()),
+                createNotificationEntity(CURRENT_USER, MessageStatus.NOT_READ, LocalDateTime.now())
         );
         return notificationRepository.saveAll(notifications);
     }
 
     private void createAndSaveInvalidNotifications() {
         var notifications = List.of(
-                createNotificationEntity(OTHER_USER, LocalDateTime.now()),
-                createNotificationEntity(CURRENT_USER,
+                createNotificationEntity(OTHER_USER, MessageStatus.NOT_READ, LocalDateTime.now()),
+                createNotificationEntity(CURRENT_USER, MessageStatus.NOT_READ,
+                        LocalDateTime.now().minusDays(appProperties.getNotificationLifeTimeDays() + 1))
+        );
+        notificationRepository.saveAll(notifications);
+    }
+
+    private void createAndSaveInvalidNotificationsForCount() {
+        var notifications = List.of(
+                createNotificationEntity(OTHER_USER, MessageStatus.NOT_READ, LocalDateTime.now()),
+                createNotificationEntity(CURRENT_USER, MessageStatus.READ, LocalDateTime.now()),
+                createNotificationEntity(CURRENT_USER, MessageStatus.NOT_READ,
                         LocalDateTime.now().minusDays(appProperties.getNotificationLifeTimeDays() + 1))
         );
         notificationRepository.saveAll(notifications);

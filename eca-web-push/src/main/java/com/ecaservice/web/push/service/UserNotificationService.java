@@ -46,12 +46,27 @@ public class UserNotificationService {
         LocalDateTime date = LocalDateTime.now().minusDays(appProperties.getNotificationLifeTimeDays());
         var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageSize);
         var notificationsPage =
-                notificationRepository.findByReceiverAndCreatedIsAfter(currentUser, date, pageRequest);
+                notificationRepository.findByReceiverAndCreatedIsAfterOrderByCreatedDesc(currentUser, date,
+                        pageRequest);
         log.info("User [{}] notifications page [{} of {}] with size [{}] has been fetched for page request [{}]",
                 currentUser, notificationsPage.getNumber(), notificationsPage.getTotalPages(),
                 notificationsPage.getNumberOfElements(), pageRequestDto);
         var notificationDtoList = notificationMapper.map(notificationsPage.getContent());
         return PageDto.of(notificationDtoList, pageRequestDto.getPage(), notificationsPage.getTotalElements());
+    }
+
+    /**
+     * Gets not read notifications count for current user.
+     *
+     * @return not read notifications count
+     */
+    public long getNotReadNotificationsCount() {
+        String currentUser = userService.getCurrentUser();
+        log.info("Gets not read notification count for user [{}]", currentUser);
+        LocalDateTime date = LocalDateTime.now().minusDays(appProperties.getNotificationLifeTimeDays());
+        long notReadCount = notificationRepository.getNotReadNotificationsCount(currentUser, date);
+        log.info("[{}] not read notification count has been calculated for user [{}]", notReadCount, currentUser);
+        return notReadCount;
     }
 
     /**
