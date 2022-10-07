@@ -3,6 +3,8 @@ package com.ecaservice.web.push.service;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.SimplePageRequestDto;
 import com.ecaservice.web.dto.model.UserNotificationDto;
+import com.ecaservice.web.dto.model.UserNotificationStatisticsDto;
+import com.ecaservice.web.dto.model.UsersNotificationsDto;
 import com.ecaservice.web.push.config.AppProperties;
 import com.ecaservice.web.push.dto.UserPushNotificationRequest;
 import com.ecaservice.web.push.entity.MessageStatus;
@@ -56,17 +58,19 @@ public class UserNotificationService {
     }
 
     /**
-     * Gets not read notifications count for current user.
+     * Gets notifications statistics for current user.
      *
-     * @return not read notifications count
+     * @return notifications statistics
      */
-    public long getNotReadNotificationsCount() {
+    public UserNotificationStatisticsDto getNotificationStatistics() {
         String currentUser = userService.getCurrentUser();
         log.info("Gets not read notification count for user [{}]", currentUser);
         LocalDateTime date = LocalDateTime.now().minusDays(appProperties.getNotificationLifeTimeDays());
         long notReadCount = notificationRepository.getNotReadNotificationsCount(currentUser, date);
         log.info("[{}] not read notification count has been calculated for user [{}]", notReadCount, currentUser);
-        return notReadCount;
+        return UserNotificationStatisticsDto.builder()
+                .notReadCount(notReadCount)
+                .build();
     }
 
     /**

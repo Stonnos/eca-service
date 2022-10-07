@@ -86,8 +86,8 @@ class UserNotificationServiceTest extends AbstractJpaTest {
         var validNotifications = createAndSaveValidNotifications();
         createAndSaveInvalidNotificationsForCount();
         when(userService.getCurrentUser()).thenReturn(CURRENT_USER);
-        long notReadCount = userNotificationService.getNotReadNotificationsCount();
-        assertThat(notReadCount).isEqualTo(validNotifications.size());
+        var userNotificationStatisticsDto = userNotificationService.getNotificationStatistics();
+        assertThat(userNotificationStatisticsDto.getNotReadCount()).isEqualTo(validNotifications.size());
     }
 
     private List<NotificationEntity> createAndSaveValidNotifications() {

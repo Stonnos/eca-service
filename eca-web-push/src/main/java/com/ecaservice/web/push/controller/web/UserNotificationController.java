@@ -4,8 +4,8 @@ import com.ecaservice.common.web.dto.ValidationErrorDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.SimplePageRequestDto;
 import com.ecaservice.web.dto.model.UserNotificationDto;
+import com.ecaservice.web.dto.model.UserNotificationStatisticsDto;
 import com.ecaservice.web.dto.model.UsersNotificationsDto;
-import com.ecaservice.web.dto.model.UsersPageDto;
 import com.ecaservice.web.push.service.UserNotificationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -104,5 +105,46 @@ public class UserNotificationController {
     public PageDto<UserNotificationDto> getNotifications(@Valid @RequestBody SimplePageRequestDto pageRequestDto) {
         log.info("Received user notifications page request: {}", pageRequestDto);
         return userNotificationService.getNextPage(pageRequestDto);
+    }
+
+    /**
+     * Gets notifications statistics for current user.
+     *
+     * @return notifications statistics
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @Operation(
+            description = "Gets notifications statistics for current user",
+            summary = "Gets notifications statistics for current user",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "UserNotificationsStatistics",
+                                                    ref = "#/components/examples/UserNotificationsStatistics"
+                                            ),
+                                    },
+                                    schema = @Schema(implementation = UserNotificationStatisticsDto.class)
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
+                                    }
+                            )
+                    )
+            }
+    )
+    @GetMapping(value = "/statistics")
+    public UserNotificationStatisticsDto getStatistics() {
+        return userNotificationService.getNotificationStatistics();
     }
 }
