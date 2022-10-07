@@ -66,6 +66,12 @@
 
         <dependency>
             <groupId>eca.service</groupId>
+            <artifactId>eca-web-push-transport</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>eca.service</groupId>
             <artifactId>oauth2-core</artifactId>
             <version>${project.version}</version>
         </dependency>

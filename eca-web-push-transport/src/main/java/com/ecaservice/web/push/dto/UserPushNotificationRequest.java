@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.List;
 
@@ -35,7 +36,8 @@ public class UserPushNotificationRequest extends AbstractPushRequest {
     /**
      * Receivers list
      */
-    @Size(max = RECEIVERS_MAX_SIZE)
+    @NotEmpty
+    @Size(min = VALUE_1, max = RECEIVERS_MAX_SIZE)
     @Schema(description = "Receivers list")
     private List<String> receivers;
 }

@@ -5,6 +5,8 @@ import lombok.Data;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -26,12 +28,6 @@ public class NotificationEntity {
     @Id
     @GeneratedValue
     private Long id;
-
-    /**
-     * Request id
-     */
-    @Column(name = "request_id", nullable = false, unique = true)
-    private String requestId;
 
     /**
      * Message type
@@ -56,6 +52,13 @@ public class NotificationEntity {
      */
     @Column(nullable = false)
     private String receiver;
+
+    /**
+     * Message status
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "message_status", nullable = false)
+    private MessageStatus messageStatus;
 
     /**
      * Created date

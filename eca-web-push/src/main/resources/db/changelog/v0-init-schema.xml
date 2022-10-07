@@ -24,9 +24,6 @@
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="request_id" type="varchar(255)">
-                <constraints nullable="false" unique="true" uniqueConstraintName="notification_request_id_unique_idx"/>
-            </column>
             <column name="message_type" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
@@ -35,6 +32,9 @@
                 <constraints nullable="false"/>
             </column>
             <column name="receiver" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="message_status" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="created" type="timestamp">
