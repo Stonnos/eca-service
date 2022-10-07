@@ -43,7 +43,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="create_notification_table" author="roman.batygin@mail.ru" context="schema">
+    <changeSet id="create_notification_parameter_table" author="roman.batygin@mail.ru" context="schema">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="notification_parameter"/>
@@ -60,7 +60,7 @@
             <column name="parameter_value" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="notification_id">
+            <column name="notification_id" type="bigint">
                 <constraints foreignKeyName="fk_notification_parameter_notification_id"
                              referencedTableName="notification"
                              referencedColumnNames="id" nullable="false"/>
