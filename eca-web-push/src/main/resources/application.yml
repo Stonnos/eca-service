@@ -7,11 +7,32 @@ spring:
     loadbalancer:
       ribbon:
         enabled: false
+  ## Datasource properties
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/eca_web_push
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+        order_by:
+          default_null_ordering: last
+  liquibase:
+    contexts: schema,data
+    change-log: classpath:db/liquibase-changelog.xml
   sleuth:
     log:
       slf4j:
         whitelisted-mdc-keys: tx.id, ev.requestId
     propagation-keys: tx.id, ev.requestId
+
 eureka:
   client:
     registerWithEureka: false
