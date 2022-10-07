@@ -1,11 +1,13 @@
 package com.ecaservice.web.push.mapping;
 
+import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.UserNotificationDto;
 import com.ecaservice.web.push.dto.UserPushNotificationRequest;
 import com.ecaservice.web.push.entity.NotificationEntity;
 import com.ecaservice.web.push.entity.NotificationParameter;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.springframework.util.CollectionUtils;
 
@@ -34,6 +36,7 @@ public interface NotificationMapper {
      * @param notificationEntity - notification entity
      * @return user notification dto
      */
+    @Mapping(target = "messageStatus", ignore = true)
     UserNotificationDto map(NotificationEntity notificationEntity);
 
     /**
@@ -65,5 +68,19 @@ public interface NotificationMapper {
                     .collect(Collectors.toList());
             notificationEntity.setParameters(parameters);
         }
+    }
+
+    /**
+     * Maps message status.
+     *
+     * @param notificationEntity  - notification entity
+     * @param userNotificationDto - user notification dto
+     */
+    @AfterMapping
+    default void mapMessageStatus(NotificationEntity notificationEntity,
+                                  @MappingTarget UserNotificationDto userNotificationDto) {
+        var messageStatusDto = new EnumDto(notificationEntity.getMessageStatus().name(),
+                notificationEntity.getMessageStatus().getDescription());
+        userNotificationDto.setMessageStatus(messageStatusDto);
     }
 }
