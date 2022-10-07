@@ -1,8 +1,10 @@
 package com.ecaservice.web.push.service;
 
+import com.ecaservice.web.dto.model.SimplePageRequestDto;
 import com.ecaservice.web.push.AbstractJpaTest;
 import com.ecaservice.web.push.config.AppProperties;
 import com.ecaservice.web.push.entity.MessageStatus;
+import com.ecaservice.web.push.entity.NotificationEntity;
 import com.ecaservice.web.push.mapping.NotificationMapperImpl;
 import com.ecaservice.web.push.repository.NotificationRepository;
 import org.junit.jupiter.api.Test;
@@ -13,8 +15,13 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+import static com.ecaservice.web.push.TestHelperUtils.createNotificationEntity;
 import static com.ecaservice.web.push.TestHelperUtils.createUserPushNotificationRequest;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for {@link UserNotificationService} class.
@@ -25,6 +32,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import({UserNotificationService.class, AppProperties.class, NotificationMapperImpl.class})
 class UserNotificationServiceTest extends AbstractJpaTest {
 
+    private static final String CURRENT_USER = "currentUser";
+    private static final String OTHER_USER = "otherUser";
+    private static final int PAGE_SIZE = 25;
+
+    @Inject
+    private AppProperties appProperties;
     @Inject
     private NotificationRepository notificationRepository;
     @MockBean
@@ -54,5 +67,34 @@ class UserNotificationServiceTest extends AbstractJpaTest {
         assertThat(notificationEntity.getMessageStatus()).isEqualTo(MessageStatus.NOT_READ);
         assertThat(notificationEntity.getParameters().size()).isEqualTo(
                 userPushNotificationRequest.getAdditionalProperties().size());
+    }
+
+    @Test
+    void testGetNotificationsPage() {
+        var validNotifications = createAndSaveValidNotifications();
+        createAndSaveInvalidNotifications();
+        when(userService.getCurrentUser()).thenReturn(CURRENT_USER);
+        var notificationsPage = userNotificationService.getNextPage(new SimplePageRequestDto(0, PAGE_SIZE));
+        assertThat(notificationsPage).isNotNull();
+        assertThat(notificationsPage.getTotalCount()).isEqualTo(validNotifications.size());
+        assertThat(notificationsPage.getPage()).isZero();
+        assertThat(notificationsPage.getContent()).hasSameSizeAs(validNotifications);
+    }
+
+    private List<NotificationEntity> createAndSaveValidNotifications() {
+        var notifications = List.of(
+                createNotificationEntity(CURRENT_USER, LocalDateTime.now()),
+                createNotificationEntity(CURRENT_USER, LocalDateTime.now())
+        );
+        return notificationRepository.saveAll(notifications);
+    }
+
+    private void createAndSaveInvalidNotifications() {
+        var notifications = List.of(
+                createNotificationEntity(OTHER_USER, LocalDateTime.now()),
+                createNotificationEntity(CURRENT_USER,
+                        LocalDateTime.now().minusDays(appProperties.getNotificationLifeTimeDays() + 1))
+        );
+        notificationRepository.saveAll(notifications);
     }
 }

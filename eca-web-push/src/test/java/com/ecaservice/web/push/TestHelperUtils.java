@@ -60,14 +60,15 @@ public class TestHelperUtils {
     /**
      * Creates notification entity.
      *
-     * @param created - created date
+     * @param receiver - receiver
+     * @param created  - created date
      * @return notification entity
      */
-    public static NotificationEntity createNotificationEntity(LocalDateTime created) {
+    public static NotificationEntity createNotificationEntity(String receiver, LocalDateTime created) {
         NotificationEntity notificationEntity = new NotificationEntity();
         notificationEntity.setCreated(created);
         notificationEntity.setMessageStatus(MessageStatus.NOT_READ);
-        notificationEntity.setReceiver(RECEIVER);
+        notificationEntity.setReceiver(receiver);
         notificationEntity.setInitiator(INITIATOR);
         notificationEntity.setMessageType(EXPERIMENT_STATUS);
         notificationEntity.setMessageText(MESSAGE_TEXT);
@@ -95,6 +96,6 @@ public class TestHelperUtils {
      * @return notification entity
      */
     public static NotificationEntity createNotificationEntity() {
-        return createNotificationEntity(LocalDateTime.now());
+        return createNotificationEntity(RECEIVER, LocalDateTime.now());
     }
 }
