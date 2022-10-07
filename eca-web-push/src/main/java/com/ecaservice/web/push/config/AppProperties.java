@@ -21,4 +21,10 @@ public class AppProperties {
      */
     @NotNull
     private Integer maxPageSize;
+
+    /**
+     * User notification life time in days
+     */
+    @NotNull
+    private Integer notificationLifeTimeDays;
 }

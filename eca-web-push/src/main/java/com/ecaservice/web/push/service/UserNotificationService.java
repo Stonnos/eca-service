@@ -1,28 +1,22 @@
 package com.ecaservice.web.push.service;
 
 import com.ecaservice.web.dto.model.PageDto;
-import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.SimplePageRequestDto;
 import com.ecaservice.web.dto.model.UserNotificationDto;
 import com.ecaservice.web.push.config.AppProperties;
 import com.ecaservice.web.push.dto.UserPushNotificationRequest;
 import com.ecaservice.web.push.entity.MessageStatus;
 import com.ecaservice.web.push.entity.NotificationEntity;
-import com.ecaservice.web.push.filter.NotificationFilter;
 import com.ecaservice.web.push.mapping.NotificationMapper;
 import com.ecaservice.web.push.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
-import static com.ecaservice.web.push.entity.NotificationEntity_.CREATED;
 
 /**
  * User notification service.
@@ -40,20 +34,19 @@ public class UserNotificationService {
     private final NotificationRepository notificationRepository;
 
     /**
-     * Gets current user notifications next page for specified page request.
+     * Gets current user notifications next page for specified page request and last 7 days.
      *
      * @param pageRequestDto - page request
      * @return users entities page
      */
-    public PageDto<UserNotificationDto> getNextPage(PageRequestDto pageRequestDto) {
+    public PageDto<UserNotificationDto> getNextPage(SimplePageRequestDto pageRequestDto) {
         String currentUser = userService.getCurrentUser();
         log.info("Gets user [{}] notifications next page: {}", currentUser, pageRequestDto);
-        Sort sort = buildSort(pageRequestDto.getSortField(), CREATED, pageRequestDto.isAscending());
-        var filter = new NotificationFilter(currentUser, pageRequestDto.getSearchQuery(), Collections.emptyList(),
-                pageRequestDto.getFilters());
         int pageSize = Integer.min(pageRequestDto.getSize(), appProperties.getMaxPageSize());
+        LocalDateTime date = LocalDateTime.now().minusDays(appProperties.getNotificationLifeTimeDays());
+        var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageSize);
         var notificationsPage =
-                notificationRepository.findAll(filter, PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
+                notificationRepository.findByReceiverAndCreatedIsAfter(currentUser, date, pageRequest);
         log.info("User [{}] notifications page [{} of {}] with size [{}] has been fetched for page request [{}]",
                 currentUser, notificationsPage.getNumber(), notificationsPage.getTotalPages(),
                 notificationsPage.getNumberOfElements(), pageRequestDto);

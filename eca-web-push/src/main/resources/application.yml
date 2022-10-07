@@ -41,6 +41,7 @@ eureka:
 ## Application properties
 app:
   maxPageSize: 50
+  notificationLifeTimeDays: 7
 
 auth-server:
   baseUrl: http://localhost:8085/eca-oauth

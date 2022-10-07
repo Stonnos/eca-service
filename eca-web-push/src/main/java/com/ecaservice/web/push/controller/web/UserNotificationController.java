@@ -1,7 +1,7 @@
 package com.ecaservice.web.push.controller.web;
 
 import com.ecaservice.web.dto.model.PageDto;
-import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.SimplePageRequestDto;
 import com.ecaservice.web.dto.model.UserNotificationDto;
 import com.ecaservice.web.push.service.UserNotificationService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,19 +35,19 @@ public class UserNotificationController {
     private final UserNotificationService userNotificationService;
 
     /**
-     * Finds current user notifications with specified options such as filter, sorting and paging.
+     * Gets current user notifications next page for specified page request and last 7 days.
      *
      * @param pageRequestDto - page request dto
      * @return users page
      */
     @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
-            description = "Finds current user notifications with specified options such as filter, sorting and paging",
-            summary = "Finds current user notifications with specified options such as filter, sorting and paging",
+            description = "Gets current user notifications next page for specified page request and last 7 days",
+            summary = "Gets current user notifications next page for specified page request and last 7 days",
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB)
     )
     @PostMapping(value = "/list")
-    public PageDto<UserNotificationDto> getNotifications(@Valid @RequestBody PageRequestDto pageRequestDto) {
+    public PageDto<UserNotificationDto> getNotifications(@Valid @RequestBody SimplePageRequestDto pageRequestDto) {
         log.info("Received user notifications page request: {}", pageRequestDto);
         return userNotificationService.getNextPage(pageRequestDto);
     }
