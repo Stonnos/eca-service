@@ -9,6 +9,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -22,7 +23,7 @@ import java.util.List;
  */
 @Data
 @Entity
-@Table(name = "notification")
+@Table(name = "notification",indexes = @Index(columnList = "receiver", name = "notification_receiver_idx"))
 public class NotificationEntity {
 
     @Id

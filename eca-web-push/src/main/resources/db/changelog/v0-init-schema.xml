@@ -68,4 +68,17 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="create_notification_receiver_idx" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="notification"/>
+            <columnExists tableName="notification" columnName="receiver"/>
+            <not>
+                <indexExists indexName="notification_receiver_idx" tableName="notification" columnNames="receiver"/>
+            </not>
+        </preConditions>
+        <createIndex tableName="notification" indexName="notification_receiver_idx">
+            <column name="receiver"/>
+        </createIndex>
+    </changeSet>
+
 </databaseChangeLog>
