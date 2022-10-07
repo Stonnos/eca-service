@@ -60,9 +60,9 @@ public class UserNotificationService {
      * @param userPushNotificationRequest - user push notification request
      */
     public void save(UserPushNotificationRequest userPushNotificationRequest) {
-        log.info("Starting to save user push notification request [{}] from initiator [{}] to receivers {}",
-                userPushNotificationRequest.getRequestId(), userPushNotificationRequest.getInitiator(),
-                userPushNotificationRequest.getReceivers());
+        log.info("Starting to save user push notification request [{}] type [{}] from initiator [{}] to receivers {}",
+                userPushNotificationRequest.getRequestId(), userPushNotificationRequest.getMessageType(),
+                userPushNotificationRequest.getInitiator(), userPushNotificationRequest.getReceivers());
         var notifications = createNotifications(userPushNotificationRequest);
         notificationRepository.saveAll(notifications);
         log.info("[{}] notifications has been saved for push notification request [{}]",

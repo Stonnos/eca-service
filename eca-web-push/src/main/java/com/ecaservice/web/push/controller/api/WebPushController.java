@@ -1,8 +1,10 @@
-package com.ecaservice.web.push.controller;
+package com.ecaservice.web.push.controller.api;
 
 import com.ecaservice.common.web.dto.ValidationErrorDto;
 import com.ecaservice.web.dto.model.push.PushRequestDto;
 import com.ecaservice.web.push.config.ws.QueueConfig;
+import com.ecaservice.web.push.dto.UserPushNotificationRequest;
+import com.ecaservice.web.push.service.UserNotificationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -35,6 +37,7 @@ public class WebPushController {
 
     private final QueueConfig queueConfig;
     private final SimpMessagingTemplate messagingTemplate;
+    private final UserNotificationService userNotificationService;
 
     /**
      * Send web push.
@@ -79,5 +82,20 @@ public class WebPushController {
         messagingTemplate.convertAndSend(queue, pushRequestDto);
         log.info("Push request [{}, [{}]] has been send to queue [{}]", pushRequestDto.getRequestId(),
                 pushRequestDto.getMessageType(), queue);
+    }
+
+    /**
+     * Send user push notification.
+     *
+     * @param userPushNotificationRequest - user push notification
+     */
+    @Operation(
+            description = "Send user push notification",
+            summary = "Send user push notification"
+    )
+    @PostMapping(value = "/user-notification")
+    public void sentUserPushNotification(@Valid @RequestBody UserPushNotificationRequest userPushNotificationRequest) {
+        log.info("Received user notification push request [{}]", userPushNotificationRequest.getRequestId());
+        userNotificationService.save(userPushNotificationRequest);
     }
 }

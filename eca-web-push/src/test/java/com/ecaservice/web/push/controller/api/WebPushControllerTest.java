@@ -1,8 +1,9 @@
-package com.ecaservice.web.push.controller;
+package com.ecaservice.web.push.controller.api;
 
 import com.ecaservice.common.web.annotation.EnableGlobalExceptionHandler;
 import com.ecaservice.web.dto.model.push.PushRequestDto;
 import com.ecaservice.web.push.config.ws.QueueConfig;
+import com.ecaservice.web.push.controller.api.WebPushController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
