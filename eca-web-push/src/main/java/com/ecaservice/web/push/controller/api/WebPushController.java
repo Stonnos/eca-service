@@ -91,7 +91,30 @@ public class WebPushController {
      */
     @Operation(
             description = "Send user push notification",
-            summary = "Send user push notification"
+            summary = "Send user push notification",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
+                    @Content(examples = {
+                            @ExampleObject(
+                                    name = "UserNotificationPushRequest",
+                                    ref = "#/components/examples/UserNotificationPushRequest"
+                            )
+                    })
+            }),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "InvalidPushRequestResponse",
+                                                    ref = "#/components/examples/InvalidPushRequestResponse"
+                                            )
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
+                            )
+                    )
+            }
     )
     @PostMapping(value = "/user-notification")
     public void sentUserPushNotification(@Valid @RequestBody UserPushNotificationRequest userPushNotificationRequest) {
