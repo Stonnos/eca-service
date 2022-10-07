@@ -2,12 +2,17 @@ package com.ecaservice.web.push;
 
 import com.ecaservice.web.dto.model.push.PushRequestDto;
 import com.ecaservice.web.push.dto.UserPushNotificationRequest;
+import com.ecaservice.web.push.entity.MessageStatus;
+import com.ecaservice.web.push.entity.NotificationEntity;
+import com.ecaservice.web.push.entity.NotificationParameter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Cleanup;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 
 import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.UUID;
 
 /**
@@ -21,8 +26,12 @@ public class TestHelperUtils {
     public static final String EXPERIMENT_STATUS = "EXPERIMENT_STATUS";
 
     private static final String TEST_REQUEST_JSON = "user-push-notification-test-request.json";
-
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final String MESSAGE_TEXT = "Message text";
+    private static final String INITIATOR = "initiator";
+    private static final String RECEIVER = "receiver";
+    private static final String VALUE = "Value";
+    private static final String PARAM = "Param";
 
     /**
      * Creates push request dto.
@@ -46,5 +55,46 @@ public class TestHelperUtils {
         @Cleanup InputStream inputStream =
                 TestHelperUtils.class.getClassLoader().getResourceAsStream(TEST_REQUEST_JSON);
         return OBJECT_MAPPER.readValue(inputStream, UserPushNotificationRequest.class);
+    }
+
+    /**
+     * Creates notification entity.
+     *
+     * @param created - created date
+     * @return notification entity
+     */
+    public static NotificationEntity createNotificationEntity(LocalDateTime created) {
+        NotificationEntity notificationEntity = new NotificationEntity();
+        notificationEntity.setCreated(created);
+        notificationEntity.setMessageStatus(MessageStatus.NOT_READ);
+        notificationEntity.setReceiver(RECEIVER);
+        notificationEntity.setInitiator(INITIATOR);
+        notificationEntity.setMessageType(EXPERIMENT_STATUS);
+        notificationEntity.setMessageText(MESSAGE_TEXT);
+        notificationEntity.setParameters(Collections.singletonList(createNotificationParameter(PARAM, VALUE)));
+        return notificationEntity;
+    }
+
+    /**
+     * Creates notification parameter.
+     *
+     * @param name  - parameter name
+     * @param value - parameter value
+     * @return notification parameter
+     */
+    public static NotificationParameter createNotificationParameter(String name, String value) {
+        var notificationParameter = new NotificationParameter();
+        notificationParameter.setName(name);
+        notificationParameter.setValue(value);
+        return notificationParameter;
+    }
+
+    /**
+     * Creates notification entity.
+     *
+     * @return notification entity
+     */
+    public static NotificationEntity createNotificationEntity() {
+        return createNotificationEntity(LocalDateTime.now());
     }
 }

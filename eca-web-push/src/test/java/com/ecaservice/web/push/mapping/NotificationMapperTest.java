@@ -1,7 +1,6 @@
 package com.ecaservice.web.push.mapping;
 
 import com.ecaservice.web.push.dto.UserPushNotificationRequest;
-import com.ecaservice.web.push.entity.MessageStatus;
 import com.ecaservice.web.push.entity.NotificationEntity;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,6 +9,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
 
+import static com.ecaservice.web.push.TestHelperUtils.createNotificationEntity;
 import static com.ecaservice.web.push.TestHelperUtils.createUserPushNotificationRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -35,6 +35,22 @@ class NotificationMapperTest {
         assertThat(notificationEntity.getParameters().size()).isEqualTo(
                 userPushNotificationRequest.getAdditionalProperties().size());
         verifyParameters(userPushNotificationRequest, notificationEntity);
+    }
+
+    @Test
+    void testMapToUserNotificationDto() {
+        var notificationEntity = createNotificationEntity();
+        var userNotificationDto = notificationMapper.map(notificationEntity);
+        assertThat(userNotificationDto).isNotNull();
+        assertThat(userNotificationDto.getCreated()).isEqualTo(notificationEntity.getCreated());
+        assertThat(userNotificationDto.getInitiator()).isEqualTo(notificationEntity.getInitiator());
+        assertThat(userNotificationDto.getMessageType()).isEqualTo(notificationEntity.getMessageType());
+        assertThat(userNotificationDto.getMessageText()).isEqualTo(notificationEntity.getMessageText());
+        assertThat(userNotificationDto.getMessageStatus().getValue()).isEqualTo(
+                notificationEntity.getMessageStatus().name());
+        assertThat(userNotificationDto.getMessageStatus().getDescription()).isEqualTo(
+                notificationEntity.getMessageStatus().getDescription());
+        assertThat(userNotificationDto.getParameters()).hasSameSizeAs(notificationEntity.getParameters());
     }
 
     private void verifyParameters(UserPushNotificationRequest request, NotificationEntity notificationEntity) {
