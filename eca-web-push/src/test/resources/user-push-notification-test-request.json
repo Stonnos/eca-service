@@ -1,0 +1,12 @@
+{
+  "requestId": "1d2de514-3a87-4620-9b97-c260e24340de",
+  "messageType": "CLASSIFIER_CONFIGURATION_CHANGE",
+  "messageText": "Message text",
+  "initiator": "admin",
+  "receivers": [
+    "user"
+  ],
+  "additionalProperties": {
+    "CLASSIFIERS_CONFIGURATION_ID": "250"
+  }
+}
