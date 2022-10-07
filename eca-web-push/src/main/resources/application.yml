@@ -38,6 +38,10 @@ eureka:
     registerWithEureka: false
     fetchRegistry: false
 
+## Application properties
+app:
+  maxPageSize: 50
+
 auth-server:
   baseUrl: http://localhost:8085/eca-oauth
   clientId: eca_service_tech

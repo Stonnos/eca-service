@@ -1,5 +1,6 @@
 package com.ecaservice.web.push.mapping;
 
+import com.ecaservice.web.dto.model.UserNotificationDto;
 import com.ecaservice.web.push.dto.UserPushNotificationRequest;
 import com.ecaservice.web.push.entity.NotificationEntity;
 import com.ecaservice.web.push.entity.NotificationParameter;
@@ -8,6 +9,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.springframework.util.CollectionUtils;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -25,6 +27,22 @@ public interface NotificationMapper {
      * @return notification entity
      */
     NotificationEntity map(UserPushNotificationRequest userPushNotificationRequest);
+
+    /**
+     * Maps user notification entity to dto model.
+     *
+     * @param notificationEntity - notification entity
+     * @return user notification dto
+     */
+    UserNotificationDto map(NotificationEntity notificationEntity);
+
+    /**
+     * Maps user notifications entities to dto list.
+     *
+     * @param notifications - user notifications entities
+     * @return user notifications dto list
+     */
+    List<UserNotificationDto> map(List<NotificationEntity> notifications);
 
     /**
      * Maps notification parameters

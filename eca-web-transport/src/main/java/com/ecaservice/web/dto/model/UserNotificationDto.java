@@ -40,6 +40,12 @@ public class UserNotificationDto {
     private String messageText;
 
     /**
+     * Initiator user
+     */
+    @Schema(description = "Initiator user", example = "admin", maxLength = MAX_LENGTH_255)
+    private String initiator;
+
+    /**
      * Message status
      */
     @Schema(description = "Message status")
