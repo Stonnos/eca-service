@@ -46,6 +46,18 @@ public class NotificationEntity {
     private String messageText;
 
     /**
+     * Initiator user
+     */
+    @Column(nullable = false)
+    private String initiator;
+
+    /**
+     * Receiver user
+     */
+    @Column(nullable = false)
+    private String receiver;
+
+    /**
      * Event date
      */
     @Column(name = "event_date", nullable = false)
