@@ -38,11 +38,11 @@ public class WebPushController {
     /**
      * Send push notification.
      *
-     * @param pushRequest - user push notification
+     * @param pushRequest - push notification
      */
     @Operation(
-            description = "Send user push notification",
-            summary = "Send user push notification",
+            description = "Send push notification",
+            summary = "Send push notification",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
                             @ExampleObject(
