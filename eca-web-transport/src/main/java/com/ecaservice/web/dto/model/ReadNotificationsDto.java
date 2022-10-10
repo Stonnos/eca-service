@@ -1,13 +1,14 @@
 package com.ecaservice.web.dto.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.List;
+import java.util.Set;
 
 import static com.ecaservice.web.dto.util.FieldConstraints.READ_NOTIFICATIONS_LIST_MAX_LENGTH;
 
@@ -17,7 +18,8 @@ import static com.ecaservice.web.dto.util.FieldConstraints.READ_NOTIFICATIONS_LI
  * @author Roman Batygin
  */
 @Data
-@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Schema(description = "Read notifications model")
 public class ReadNotificationsDto {
 
@@ -29,5 +31,5 @@ public class ReadNotificationsDto {
     @Size(max = READ_NOTIFICATIONS_LIST_MAX_LENGTH)
     @Schema(description = "Notifications ids for current user. If ids is empty then all not read notifications will " +
             "be read for current user for last N days")
-    private List<@NotNull Long> ids;
+    private Set<@NotNull Long> ids;
 }

@@ -19,6 +19,7 @@ import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.ecaservice.web.push.TestHelperUtils.createNotificationEntity;
@@ -108,7 +109,7 @@ class UserNotificationServiceTest extends AbstractJpaTest {
     void testSuccessReadAllNotifications() {
         var validNotificationsIds = createAndSaveValidNotReadNotificationsIds();
         createAndSaveInvalidNotificationsForRead();
-        testReadNotifications(validNotificationsIds, Collections.emptyList());
+        testReadNotifications(validNotificationsIds, Collections.emptySet());
     }
 
     @Test
@@ -117,26 +118,18 @@ class UserNotificationServiceTest extends AbstractJpaTest {
         var invalidNotificationIds = createAndSaveInvalidNotificationsForRead();
         ids.addAll(invalidNotificationIds);
         assertThrows(InvalidNotificationsException.class, () ->
-                userNotificationService.readNotifications(
-                        ReadNotificationsDto.builder()
-                                .ids(ids)
-                                .build()
-                ));
+                userNotificationService.readNotifications(new ReadNotificationsDto(ids)));
     }
 
-    private List<Long> createAndSaveValidNotReadNotificationsIds() {
+    private Set<Long> createAndSaveValidNotReadNotificationsIds() {
         return createAndSaveValidNotReadNotifications()
                 .stream()
                 .map(NotificationEntity::getId)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
-    private void testReadNotifications(List<Long> validNotificationsIds, List<Long> readIds) {
-        userNotificationService.readNotifications(
-                ReadNotificationsDto.builder()
-                        .ids(readIds)
-                        .build()
-        );
+    private void testReadNotifications(Set<Long> validNotificationsIds, Set<Long> readIds) {
+        userNotificationService.readNotifications(new ReadNotificationsDto(readIds));
         validNotificationsIds.forEach(id -> {
             var notification = notificationRepository.findById(id).orElse(null);
             assertThat(notification).isNotNull();
@@ -152,7 +145,7 @@ class UserNotificationServiceTest extends AbstractJpaTest {
         return notificationRepository.saveAll(notifications);
     }
 
-    private List<Long> createAndSaveInvalidNotificationsForRead() {
+    private Set<Long> createAndSaveInvalidNotificationsForRead() {
         var notifications = List.of(
                 createNotificationEntity(OTHER_USER, MessageStatus.NOT_READ, LocalDateTime.now()),
                 createNotificationEntity(OTHER_USER, MessageStatus.NOT_READ, LocalDateTime.now())
@@ -160,7 +153,7 @@ class UserNotificationServiceTest extends AbstractJpaTest {
         return notificationRepository.saveAll(notifications)
                 .stream()
                 .map(NotificationEntity::getId)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
     private void createAndSaveInvalidNotificationsForPaging() {

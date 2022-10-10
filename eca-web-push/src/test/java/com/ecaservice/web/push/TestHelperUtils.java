@@ -1,5 +1,7 @@
 package com.ecaservice.web.push;
 
+import com.ecaservice.web.dto.model.EnumDto;
+import com.ecaservice.web.dto.model.UserNotificationDto;
 import com.ecaservice.web.dto.model.push.PushRequestDto;
 import com.ecaservice.web.push.dto.UserPushNotificationRequest;
 import com.ecaservice.web.push.entity.MessageStatus;
@@ -32,6 +34,7 @@ public class TestHelperUtils {
     private static final String RECEIVER = "receiver";
     private static final String VALUE = "Value";
     private static final String PARAM = "Param";
+    private static final long ID = 1L;
 
     /**
      * Creates push request dto.
@@ -60,9 +63,9 @@ public class TestHelperUtils {
     /**
      * Creates notification entity.
      *
-     * @param receiver - receiver
+     * @param receiver      - receiver
      * @param messageStatus - message status
-     * @param created  - created date
+     * @param created       - created date
      * @return notification entity
      */
     public static NotificationEntity createNotificationEntity(String receiver,
@@ -100,5 +103,22 @@ public class TestHelperUtils {
      */
     public static NotificationEntity createNotificationEntity() {
         return createNotificationEntity(RECEIVER, MessageStatus.NOT_READ, LocalDateTime.now());
+    }
+
+    /**
+     * Creates user notification dto.
+     *
+     * @return user notification dto
+     */
+    public static UserNotificationDto createUserNotificationDto() {
+        UserNotificationDto userNotificationDto = new UserNotificationDto();
+        userNotificationDto.setCreated(LocalDateTime.now());
+        userNotificationDto.setInitiator(INITIATOR);
+        userNotificationDto.setMessageText(MESSAGE_TEXT);
+        userNotificationDto.setMessageType(EXPERIMENT_STATUS);
+        userNotificationDto.setId(ID);
+        userNotificationDto.setMessageStatus(
+                new EnumDto(MessageStatus.NOT_READ.name(), MessageStatus.NOT_READ.getDescription()));
+        return userNotificationDto;
     }
 }
