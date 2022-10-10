@@ -8,7 +8,6 @@ import com.ecaservice.web.push.repository.NotificationRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,7 +54,6 @@ public class UserNotificationPushRequestHandler extends AbstractPushRequestHandl
                     var notification = notificationMapper.map(userPushNotificationRequest);
                     notification.setReceiver(receiver);
                     notification.setMessageStatus(MessageStatus.NOT_READ);
-                    notification.setCreated(LocalDateTime.now());
                     return notification;
                 })
                 .collect(Collectors.toList());

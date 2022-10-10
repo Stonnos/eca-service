@@ -40,4 +40,14 @@ public class FieldConstraints {
      * Receivers max size
      */
     public static final int RECEIVERS_MAX_SIZE = 1000;
+
+    /**
+     * Date time pattern
+     */
+    public static final String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
+
+    /**
+     * Local date time max length
+     */
+    public static final int LOCAL_DATE_TIME_MAX_LENGTH = 19;
 }

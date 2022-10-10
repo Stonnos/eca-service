@@ -32,6 +32,7 @@ class NotificationMapperTest {
         assertThat(notificationEntity.getInitiator()).isEqualTo(userPushNotificationRequest.getInitiator());
         assertThat(notificationEntity.getMessageText()).isEqualTo(userPushNotificationRequest.getMessageText());
         assertThat(notificationEntity.getMessageType()).isEqualTo(userPushNotificationRequest.getMessageType());
+        assertThat(notificationEntity.getCreated()).isEqualTo(userPushNotificationRequest.getCreated());
         assertThat(notificationEntity.getParameters().size()).isEqualTo(
                 userPushNotificationRequest.getAdditionalProperties().size());
         verifyParameters(userPushNotificationRequest, notificationEntity);
