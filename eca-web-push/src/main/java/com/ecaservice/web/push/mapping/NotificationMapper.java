@@ -49,6 +49,13 @@ public interface NotificationMapper {
      */
     List<UserNotificationDto> map(List<NotificationEntity> notifications);
 
+    /**
+     * Maps system push request to push request dto,
+     *
+     * @param systemPushRequest - system push request
+     * @return push request dto
+     */
+    @Mapping(target = "initiator", ignore = true)
     PushRequestDto map(SystemPushRequest systemPushRequest);
 
     /**

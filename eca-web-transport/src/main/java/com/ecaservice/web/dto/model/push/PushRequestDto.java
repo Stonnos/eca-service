@@ -16,10 +16,10 @@ import static com.ecaservice.web.dto.util.FieldConstraints.UUID_PATTERN;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
 /**
- * Push request dto.
+ * Push request web socket transport model.
  */
 @Data
-@Schema(description = "Push request")
+@Schema(description = "Push request web socket transport model")
 public class PushRequestDto {
 
     /**
@@ -48,9 +48,22 @@ public class PushRequestDto {
     private String messageText;
 
     /**
+     * Push initiator, for example user login
+     */
+    @Size(max = MAX_LENGTH_255)
+    @Schema(description = "Push initiator, for example user login")
+    private String initiator;
+
+    /**
      * Additional properties
      */
     @ArraySchema(schema = @Schema(description = "Additional properties"), maxItems = MAX_ADDITIONAL_PROPERTIES_SIZE)
     @Size(max = MAX_ADDITIONAL_PROPERTIES_SIZE)
     private Map<@NotBlank String, @NotBlank String> additionalProperties;
+
+    /**
+     * Show push message?
+     */
+    @Schema(description = "Show push message?")
+    private boolean showMessage;
 }
