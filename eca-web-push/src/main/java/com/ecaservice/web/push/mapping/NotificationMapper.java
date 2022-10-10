@@ -2,6 +2,8 @@ package com.ecaservice.web.push.mapping;
 
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.UserNotificationDto;
+import com.ecaservice.web.dto.model.push.PushRequestDto;
+import com.ecaservice.web.push.dto.SystemPushRequest;
 import com.ecaservice.web.push.dto.UserPushNotificationRequest;
 import com.ecaservice.web.push.entity.NotificationEntity;
 import com.ecaservice.web.push.entity.NotificationParameter;
@@ -46,6 +48,8 @@ public interface NotificationMapper {
      * @return user notifications dto list
      */
     List<UserNotificationDto> map(List<NotificationEntity> notifications);
+
+    PushRequestDto map(SystemPushRequest systemPushRequest);
 
     /**
      * Maps notification parameters

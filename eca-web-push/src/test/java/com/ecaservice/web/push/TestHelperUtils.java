@@ -3,6 +3,7 @@ package com.ecaservice.web.push;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.UserNotificationDto;
 import com.ecaservice.web.dto.model.push.PushRequestDto;
+import com.ecaservice.web.push.dto.SystemPushRequest;
 import com.ecaservice.web.push.dto.UserPushNotificationRequest;
 import com.ecaservice.web.push.entity.MessageStatus;
 import com.ecaservice.web.push.entity.NotificationEntity;
@@ -43,6 +44,18 @@ public class TestHelperUtils {
      */
     public static PushRequestDto createPushRequestDto() {
         var pushRequestDto = new PushRequestDto();
+        pushRequestDto.setRequestId(UUID.randomUUID().toString());
+        pushRequestDto.setMessageType(EXPERIMENT_STATUS);
+        return pushRequestDto;
+    }
+
+    /**
+     * Creates system push request dto.
+     *
+     * @return push request dto
+     */
+    public static SystemPushRequest createSystemPushRequest() {
+        var pushRequestDto = new SystemPushRequest();
         pushRequestDto.setRequestId(UUID.randomUUID().toString());
         pushRequestDto.setMessageType(EXPERIMENT_STATUS);
         return pushRequestDto;

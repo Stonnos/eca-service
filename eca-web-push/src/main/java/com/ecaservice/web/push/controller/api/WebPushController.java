@@ -44,7 +44,7 @@ public class WebPushController {
      * Send web push.
      *
      * @param pushRequestDto - push request dto
-     * @deprecated - deprecated api
+     * @deprecated - removed this api method after ES-234 task
      */
     @Operation(
             description = "Send web push",

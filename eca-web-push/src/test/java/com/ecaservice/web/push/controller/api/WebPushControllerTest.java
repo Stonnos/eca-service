@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import javax.inject.Inject;
 
 import static com.ecaservice.web.push.TestHelperUtils.createPushRequestDto;
+import static com.ecaservice.web.push.TestHelperUtils.createSystemPushRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
@@ -59,8 +60,9 @@ class WebPushControllerTest {
     private ArgumentCaptor<String> destinationCaptor;
 
     @Test
+    @Deprecated
     void testSendPush() throws Exception {
-        var pushRequestDto = createPushRequestDto();
+        var pushRequestDto = createSystemPushRequest();
         mockMvc.perform(post(SEND_PUSH_URL)
                 .content(objectMapper.writeValueAsString(pushRequestDto))
                 .contentType(MediaType.APPLICATION_JSON))
@@ -71,6 +73,7 @@ class WebPushControllerTest {
     }
 
     @Test
+    @Deprecated
     void testSendPushWithEmptyRequestId() throws Exception {
         var pushRequestDto = createPushRequestDto();
         pushRequestDto.setRequestId(null);
@@ -78,6 +81,7 @@ class WebPushControllerTest {
     }
 
     @Test
+    @Deprecated
     void testSendPushWithEmptyMessageType() throws Exception {
         var pushRequestDto = createPushRequestDto();
         pushRequestDto.setMessageType(null);
@@ -85,6 +89,7 @@ class WebPushControllerTest {
     }
 
     @Test
+    @Deprecated
     void testSendPushWithInvalidMessageTypeSize() throws Exception {
         var pushRequestDto = createPushRequestDto();
         pushRequestDto.setMessageType(StringUtils.repeat('Q', INVALID_SIZE));
@@ -92,6 +97,7 @@ class WebPushControllerTest {
     }
 
     @Test
+    @Deprecated
     void testSendPushWithInvalidMessageTextSize() throws Exception {
         var pushRequestDto = createPushRequestDto();
         pushRequestDto.setMessageType(StringUtils.repeat('Q', INVALID_SIZE));
