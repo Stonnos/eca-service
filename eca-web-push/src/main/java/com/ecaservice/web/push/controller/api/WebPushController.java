@@ -3,8 +3,8 @@ package com.ecaservice.web.push.controller.api;
 import com.ecaservice.common.web.dto.ValidationErrorDto;
 import com.ecaservice.web.dto.model.push.PushRequestDto;
 import com.ecaservice.web.push.config.ws.QueueConfig;
-import com.ecaservice.web.push.dto.UserPushNotificationRequest;
-import com.ecaservice.web.push.service.UserNotificationService;
+import com.ecaservice.web.push.dto.AbstractPushRequest;
+import com.ecaservice.web.push.service.handler.AbstractPushRequestHandler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * Implements REST API for sending web pushes.
@@ -37,12 +38,13 @@ public class WebPushController {
 
     private final QueueConfig queueConfig;
     private final SimpMessagingTemplate messagingTemplate;
-    private final UserNotificationService userNotificationService;
+    private final List<AbstractPushRequestHandler> pushRequestHandlers;
 
     /**
      * Send web push.
      *
      * @param pushRequestDto - push request dto
+     * @deprecated - deprecated api
      */
     @Operation(
             description = "Send web push",
@@ -72,6 +74,7 @@ public class WebPushController {
             }
     )
     @PostMapping(value = "/send")
+    @Deprecated
     public void sentPush(@Valid @RequestBody PushRequestDto pushRequestDto) {
         log.info("Received push request [{}], message type [{}], additional properties {}",
                 pushRequestDto.getRequestId(), pushRequestDto.getMessageType(),
@@ -85,9 +88,9 @@ public class WebPushController {
     }
 
     /**
-     * Send user push notification.
+     * Send push notification.
      *
-     * @param userPushNotificationRequest - user push notification
+     * @param pushRequest - user push notification
      */
     @Operation(
             description = "Send user push notification",
@@ -116,9 +119,22 @@ public class WebPushController {
                     )
             }
     )
-    @PostMapping(value = "/user-notification")
-    public void sentUserPushNotification(@Valid @RequestBody UserPushNotificationRequest userPushNotificationRequest) {
-        log.info("Received user notification push request [{}]", userPushNotificationRequest.getRequestId());
-        userNotificationService.save(userPushNotificationRequest);
+    @PostMapping(value = "/send-request")
+    @SuppressWarnings("unchecked")
+    public void sentPushNotification(@Valid @RequestBody AbstractPushRequest pushRequest) {
+        log.info("Received push request [{}] with type [{}], message code [{}]", pushRequest.getRequestId(),
+                pushRequest.getPushType(), pushRequest.getMessageType());
+        var handler = getRequestHandler(pushRequest);
+        handler.handle(pushRequest);
+        log.info("Push request [{}] with type [{}], message code [{}] has been processed", pushRequest.getRequestId(),
+                pushRequest.getPushType(), pushRequest.getMessageType());
+    }
+
+    private AbstractPushRequestHandler getRequestHandler(AbstractPushRequest pushRequest) {
+        return pushRequestHandlers.stream()
+                .filter(handler -> handler.canHandle(pushRequest))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException(
+                        String.format("Can't handle push type [%s]", pushRequest.getPushType())));
     }
 }

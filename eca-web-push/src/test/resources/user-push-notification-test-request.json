@@ -1,4 +1,5 @@
 {
+  "pushType": "USER_NOTIFICATION",
   "requestId": "1d2de514-3a87-4620-9b97-c260e24340de",
   "messageType": "CLASSIFIER_CONFIGURATION_CHANGE",
   "messageText": "Message text",

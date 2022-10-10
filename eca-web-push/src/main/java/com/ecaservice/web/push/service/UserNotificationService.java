@@ -6,9 +6,6 @@ import com.ecaservice.web.dto.model.SimplePageRequestDto;
 import com.ecaservice.web.dto.model.UserNotificationDto;
 import com.ecaservice.web.dto.model.UserNotificationStatisticsDto;
 import com.ecaservice.web.push.config.AppProperties;
-import com.ecaservice.web.push.dto.UserPushNotificationRequest;
-import com.ecaservice.web.push.entity.MessageStatus;
-import com.ecaservice.web.push.entity.NotificationEntity;
 import com.ecaservice.web.push.exception.InvalidNotificationsException;
 import com.ecaservice.web.push.mapping.NotificationMapper;
 import com.ecaservice.web.push.repository.NotificationRepository;
@@ -20,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -77,21 +73,6 @@ public class UserNotificationService {
     }
 
     /**
-     * Saves user push notification request.
-     *
-     * @param userPushNotificationRequest - user push notification request
-     */
-    public void save(UserPushNotificationRequest userPushNotificationRequest) {
-        log.info("Starting to save user push notification request [{}] type [{}] from initiator [{}] to receivers {}",
-                userPushNotificationRequest.getRequestId(), userPushNotificationRequest.getMessageType(),
-                userPushNotificationRequest.getInitiator(), userPushNotificationRequest.getReceivers());
-        var notifications = createNotifications(userPushNotificationRequest);
-        notificationRepository.saveAll(notifications);
-        log.info("[{}] notifications has been saved for push notification request [{}]",
-                userPushNotificationRequest.getRequestId(), notifications.size());
-    }
-
-    /**
      * Reads notifications.
      *
      * @param readNotificationsDto - read notifications dto
@@ -117,18 +98,5 @@ public class UserNotificationService {
             long readCount = notificationRepository.readAllNotifications(currentUser, date);
             log.info("[{}] notifications has been read for user [{}]", readCount, currentUser);
         }
-    }
-
-    private List<NotificationEntity> createNotifications(UserPushNotificationRequest userPushNotificationRequest) {
-        return userPushNotificationRequest.getReceivers()
-                .stream()
-                .map(receiver -> {
-                    var notification = notificationMapper.map(userPushNotificationRequest);
-                    notification.setReceiver(receiver);
-                    notification.setMessageStatus(MessageStatus.NOT_READ);
-                    notification.setCreated(LocalDateTime.now());
-                    return notification;
-                })
-                .collect(Collectors.toList());
     }
 }

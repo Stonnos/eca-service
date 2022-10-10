@@ -3,7 +3,6 @@ package com.ecaservice.web.push.controller.api;
 import com.ecaservice.common.web.annotation.EnableGlobalExceptionHandler;
 import com.ecaservice.web.dto.model.push.PushRequestDto;
 import com.ecaservice.web.push.config.ws.QueueConfig;
-import com.ecaservice.web.push.service.UserNotificationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
@@ -43,15 +42,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class WebPushControllerTest {
 
     private static final String BASE_URL = "/push";
-    private static final String SEND_PUSH_URL = BASE_URL + "/send";;
+    private static final String SEND_PUSH_URL = BASE_URL + "/send";
     private static final int INVALID_SIZE = 256;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @MockBean
     private SimpMessagingTemplate messagingTemplate;
-    @MockBean
-    private UserNotificationService userNotificationService;
 
     @Inject
     private MockMvc mockMvc;
