@@ -1,9 +1,8 @@
 package com.ecaservice.web.push.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -19,11 +18,17 @@ import static com.ecaservice.web.push.dto.FieldConstraints.VALUE_1;
  *
  * @author Roman Batygin
  */
-@Data
-@EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
+@Getter
+@Setter
 @Schema(description = "User notification push request")
 public class UserPushNotificationRequest extends AbstractPushRequest {
+
+    /**
+     * Creates user push notification request
+     */
+    public UserPushNotificationRequest() {
+        super(PushType.USER_NOTIFICATION);
+    }
 
     /**
      * Initiator user

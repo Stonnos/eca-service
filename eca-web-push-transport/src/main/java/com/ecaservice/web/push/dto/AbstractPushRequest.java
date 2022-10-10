@@ -1,10 +1,16 @@
 package com.ecaservice.web.push.dto;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.Map;
@@ -20,8 +26,25 @@ import static com.ecaservice.web.push.dto.FieldConstraints.VALUE_1;
  *
  * @author Roman Batygin
  */
-@Data
+@Setter
+@Getter
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        property = "pushType",
+        include = JsonTypeInfo.As.EXISTING_PROPERTY)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = SystemPushRequest.class, name = "SYSTEM"),
+        @JsonSubTypes.Type(value = UserPushNotificationRequest.class, name = "USER_NOTIFICATION")
+})
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class AbstractPushRequest {
+
+    /**
+     * Push type
+     */
+    @NotNull
+    @Schema(description = "Push type", minLength = VALUE_1, maxLength = MAX_LENGTH_255)
+    private final PushType pushType;
 
     /**
      * Request id

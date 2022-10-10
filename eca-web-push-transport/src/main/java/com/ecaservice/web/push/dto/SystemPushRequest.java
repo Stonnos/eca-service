@@ -1,20 +1,25 @@
 package com.ecaservice.web.push.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * System push request.
  *
  * @author Roman Batygin
  */
-@Data
-@EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
+@Getter
+@Setter
 @Schema(description = "System push request")
 public class SystemPushRequest extends AbstractPushRequest {
+
+    /**
+     * Creates system push request
+     */
+    public SystemPushRequest() {
+        super(PushType.SYSTEM);
+    }
 
     /**
      * Show push message?
