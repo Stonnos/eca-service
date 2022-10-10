@@ -21,7 +21,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import javax.inject.Inject;
 
 import static com.ecaservice.web.push.TestHelperUtils.createPushRequestDto;
-import static com.ecaservice.web.push.TestHelperUtils.createSystemPushRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
@@ -62,7 +61,7 @@ class WebPushControllerTest {
     @Test
     @Deprecated
     void testSendPush() throws Exception {
-        var pushRequestDto = createSystemPushRequest();
+        var pushRequestDto = createPushRequestDto();
         mockMvc.perform(post(SEND_PUSH_URL)
                 .content(objectMapper.writeValueAsString(pushRequestDto))
                 .contentType(MediaType.APPLICATION_JSON))
