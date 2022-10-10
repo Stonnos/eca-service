@@ -2,6 +2,7 @@ package com.ecaservice.web.push.controller.web;
 
 import com.ecaservice.common.web.dto.ValidationErrorDto;
 import com.ecaservice.web.dto.model.PageDto;
+import com.ecaservice.web.dto.model.ReadNotificationsDto;
 import com.ecaservice.web.dto.model.SimplePageRequestDto;
 import com.ecaservice.web.dto.model.UserNotificationDto;
 import com.ecaservice.web.dto.model.UserNotificationStatisticsDto;
@@ -146,5 +147,56 @@ public class UserNotificationController {
     @GetMapping(value = "/statistics")
     public UserNotificationStatisticsDto getStatistics() {
         return userNotificationService.getNotificationStatistics();
+    }
+
+    /**
+     * Reads not read notifications.
+     *
+     * @param readNotificationsDto - read notifications dto
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @Operation(
+            description = "Reads not read notifications",
+            summary = "Reads not read notifications",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
+                    @Content(examples = {
+                            @ExampleObject(
+                                    name = "ReadNotificationsRequest",
+                                    ref = "#/components/examples/ReadNotificationsRequest"
+                            )
+                    })
+            }),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "InvalidNotificationsResponse",
+                                                    ref = "#/components/examples/InvalidNotificationsResponse"
+                                            ),
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
+                            )
+                    )
+            }
+    )
+    @PostMapping(value = "/read")
+    public void readNotifications(@Valid @RequestBody ReadNotificationsDto readNotificationsDto) {
+        log.info("Request to read notifications: [{}]", readNotificationsDto);
+        userNotificationService.readNotifications(readNotificationsDto);
     }
 }

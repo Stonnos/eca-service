@@ -22,10 +22,12 @@ import static com.ecaservice.web.dto.util.FieldConstraints.READ_NOTIFICATIONS_LI
 public class ReadNotificationsDto {
 
     /**
-     * Notifications ids
+     * Notifications ids for current user. If ids is empty then all not read notifications will be read for current
+     * user for last N days.
      */
     @Valid
     @Size(max = READ_NOTIFICATIONS_LIST_MAX_LENGTH)
-    @Schema(description = "Notifications ids")
+    @Schema(description = "Notifications ids for current user. If ids is empty then all not read notifications will " +
+            "be read for current user for last N days")
     private List<@NotNull Long> ids;
 }

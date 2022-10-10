@@ -1,0 +1,6 @@
+[
+  {
+    "code": "InvalidNotifications",
+    "errorMessage": "Got invalid notifications ids [5, 6, 7]"
+  }
+]
