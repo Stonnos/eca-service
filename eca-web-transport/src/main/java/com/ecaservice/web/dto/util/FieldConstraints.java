@@ -150,4 +150,9 @@ public class FieldConstraints {
      * Max. additional properties size
      */
     public static final int MAX_ADDITIONAL_PROPERTIES_SIZE = 50;
+
+    /**
+     * Read notifications list max length
+     */
+    public static final int READ_NOTIFICATIONS_LIST_MAX_LENGTH = 50;
 }

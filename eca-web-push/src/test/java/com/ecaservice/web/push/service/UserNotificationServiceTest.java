@@ -1,10 +1,12 @@
 package com.ecaservice.web.push.service;
 
+import com.ecaservice.web.dto.model.ReadNotificationsDto;
 import com.ecaservice.web.dto.model.SimplePageRequestDto;
 import com.ecaservice.web.push.AbstractJpaTest;
 import com.ecaservice.web.push.config.AppProperties;
 import com.ecaservice.web.push.entity.MessageStatus;
 import com.ecaservice.web.push.entity.NotificationEntity;
+import com.ecaservice.web.push.exception.InvalidNotificationsException;
 import com.ecaservice.web.push.mapping.NotificationMapperImpl;
 import com.ecaservice.web.push.repository.NotificationRepository;
 import org.junit.jupiter.api.Test;
@@ -14,13 +16,15 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
-
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.ecaservice.web.push.TestHelperUtils.createNotificationEntity;
 import static com.ecaservice.web.push.TestHelperUtils.createUserPushNotificationRequest;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 /**
@@ -47,6 +51,11 @@ class UserNotificationServiceTest extends AbstractJpaTest {
     private UserNotificationService userNotificationService;
 
     @Override
+    public void init() {
+        when(userService.getCurrentUser()).thenReturn(CURRENT_USER);
+    }
+
+    @Override
     public void deleteAll() {
         notificationRepository.deleteAll();
     }
@@ -71,9 +80,8 @@ class UserNotificationServiceTest extends AbstractJpaTest {
 
     @Test
     void testGetNotificationsPage() {
-        var validNotifications = createAndSaveValidNotifications();
-        createAndSaveInvalidNotifications();
-        when(userService.getCurrentUser()).thenReturn(CURRENT_USER);
+        var validNotifications = createAndSaveValidNotReadNotifications();
+        createAndSaveInvalidNotificationsForPaging();
         var notificationsPage = userNotificationService.getNextPage(new SimplePageRequestDto(0, PAGE_SIZE));
         assertThat(notificationsPage).isNotNull();
         assertThat(notificationsPage.getTotalCount()).isEqualTo(validNotifications.size());
@@ -83,14 +91,60 @@ class UserNotificationServiceTest extends AbstractJpaTest {
 
     @Test
     void testGetNotReadNotificationsCount() {
-        var validNotifications = createAndSaveValidNotifications();
-        createAndSaveInvalidNotificationsForCount();
-        when(userService.getCurrentUser()).thenReturn(CURRENT_USER);
+        var validNotifications = createAndSaveValidNotReadNotifications();
+        createAndSaveInvalidNotificationsForStatistics();
         var userNotificationStatisticsDto = userNotificationService.getNotificationStatistics();
         assertThat(userNotificationStatisticsDto.getNotReadCount()).isEqualTo(validNotifications.size());
     }
 
-    private List<NotificationEntity> createAndSaveValidNotifications() {
+    @Test
+    void testSuccessReadNotificationsIds() {
+        var validNotificationsIds = createAndSaveValidNotReadNotificationsIds();
+        createAndSaveInvalidNotificationsForRead();
+        testReadNotifications(validNotificationsIds, validNotificationsIds);
+    }
+
+    @Test
+    void testSuccessReadAllNotifications() {
+        var validNotificationsIds = createAndSaveValidNotReadNotificationsIds();
+        createAndSaveInvalidNotificationsForRead();
+        testReadNotifications(validNotificationsIds, Collections.emptyList());
+    }
+
+    @Test
+    void testReadInvalidNotifications() {
+        var ids = createAndSaveValidNotReadNotificationsIds();
+        var invalidNotificationIds = createAndSaveInvalidNotificationsForRead();
+        ids.addAll(invalidNotificationIds);
+        assertThrows(InvalidNotificationsException.class, () ->
+                userNotificationService.readNotifications(
+                        ReadNotificationsDto.builder()
+                                .ids(ids)
+                                .build()
+                ));
+    }
+
+    private List<Long> createAndSaveValidNotReadNotificationsIds() {
+        return createAndSaveValidNotReadNotifications()
+                .stream()
+                .map(NotificationEntity::getId)
+                .collect(Collectors.toList());
+    }
+
+    private void testReadNotifications(List<Long> validNotificationsIds, List<Long> readIds) {
+        userNotificationService.readNotifications(
+                ReadNotificationsDto.builder()
+                        .ids(readIds)
+                        .build()
+        );
+        validNotificationsIds.forEach(id -> {
+            var notification = notificationRepository.findById(id).orElse(null);
+            assertThat(notification).isNotNull();
+            assertThat(notification.getMessageStatus()).isEqualTo(MessageStatus.READ);
+        });
+    }
+
+    private List<NotificationEntity> createAndSaveValidNotReadNotifications() {
         var notifications = List.of(
                 createNotificationEntity(CURRENT_USER, MessageStatus.NOT_READ, LocalDateTime.now()),
                 createNotificationEntity(CURRENT_USER, MessageStatus.NOT_READ, LocalDateTime.now())
@@ -98,7 +152,18 @@ class UserNotificationServiceTest extends AbstractJpaTest {
         return notificationRepository.saveAll(notifications);
     }
 
-    private void createAndSaveInvalidNotifications() {
+    private List<Long> createAndSaveInvalidNotificationsForRead() {
+        var notifications = List.of(
+                createNotificationEntity(OTHER_USER, MessageStatus.NOT_READ, LocalDateTime.now()),
+                createNotificationEntity(OTHER_USER, MessageStatus.NOT_READ, LocalDateTime.now())
+        );
+        return notificationRepository.saveAll(notifications)
+                .stream()
+                .map(NotificationEntity::getId)
+                .collect(Collectors.toList());
+    }
+
+    private void createAndSaveInvalidNotificationsForPaging() {
         var notifications = List.of(
                 createNotificationEntity(OTHER_USER, MessageStatus.NOT_READ, LocalDateTime.now()),
                 createNotificationEntity(CURRENT_USER, MessageStatus.NOT_READ,
@@ -107,7 +172,7 @@ class UserNotificationServiceTest extends AbstractJpaTest {
         notificationRepository.saveAll(notifications);
     }
 
-    private void createAndSaveInvalidNotificationsForCount() {
+    private void createAndSaveInvalidNotificationsForStatistics() {
         var notifications = List.of(
                 createNotificationEntity(OTHER_USER, MessageStatus.NOT_READ, LocalDateTime.now()),
                 createNotificationEntity(CURRENT_USER, MessageStatus.READ, LocalDateTime.now()),

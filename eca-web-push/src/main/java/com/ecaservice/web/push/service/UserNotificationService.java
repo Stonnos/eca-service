@@ -1,20 +1,23 @@
 package com.ecaservice.web.push.service;
 
 import com.ecaservice.web.dto.model.PageDto;
+import com.ecaservice.web.dto.model.ReadNotificationsDto;
 import com.ecaservice.web.dto.model.SimplePageRequestDto;
 import com.ecaservice.web.dto.model.UserNotificationDto;
 import com.ecaservice.web.dto.model.UserNotificationStatisticsDto;
-import com.ecaservice.web.dto.model.UsersNotificationsDto;
 import com.ecaservice.web.push.config.AppProperties;
 import com.ecaservice.web.push.dto.UserPushNotificationRequest;
 import com.ecaservice.web.push.entity.MessageStatus;
 import com.ecaservice.web.push.entity.NotificationEntity;
+import com.ecaservice.web.push.exception.InvalidNotificationsException;
 import com.ecaservice.web.push.mapping.NotificationMapper;
 import com.ecaservice.web.push.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -88,8 +91,37 @@ public class UserNotificationService {
                 userPushNotificationRequest.getRequestId(), notifications.size());
     }
 
+    /**
+     * Reads notifications.
+     *
+     * @param readNotificationsDto - read notifications dto
+     */
+    @Transactional
+    public void readNotifications(ReadNotificationsDto readNotificationsDto) {
+        String currentUser = userService.getCurrentUser();
+        var ids = readNotificationsDto.getIds();
+        log.info("Starting to read user [{}] notifications size [{}], ids {}", currentUser, ids.size(), ids);
+        if (!CollectionUtils.isEmpty(ids)) {
+            var fetchedIds = notificationRepository.getNotifications(ids, currentUser);
+            var invalidIds = ids.stream()
+                    .filter(id -> !fetchedIds.contains(id))
+                    .collect(Collectors.toList());
+            if (!CollectionUtils.isEmpty(invalidIds)) {
+                throw new InvalidNotificationsException(invalidIds);
+            }
+            long readCount = notificationRepository.readNotifications(currentUser, ids);
+            log.info("[{}] notifications has been read for user [{}]", readCount, currentUser);
+        } else {
+            log.info("Starting to read all not read notifications for user [{}]", currentUser);
+            LocalDateTime date = LocalDateTime.now().minusDays(appProperties.getNotificationLifeTimeDays());
+            long readCount = notificationRepository.readAllNotifications(currentUser, date);
+            log.info("[{}] notifications has been read for user [{}]", readCount, currentUser);
+        }
+    }
+
     private List<NotificationEntity> createNotifications(UserPushNotificationRequest userPushNotificationRequest) {
-        return userPushNotificationRequest.getReceivers().stream()
+        return userPushNotificationRequest.getReceivers()
+                .stream()
                 .map(receiver -> {
                     var notification = notificationMapper.map(userPushNotificationRequest);
                     notification.setReceiver(receiver);
