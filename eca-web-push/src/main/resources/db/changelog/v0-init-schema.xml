@@ -27,7 +27,7 @@
             <column name="message_type" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="message" type="varchar(255)"/>
+            <column name="message_text" type="varchar(255)"/>
             <column name="initiator" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
