@@ -37,7 +37,7 @@ import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
  * @author Roman Batygin
  */
 @Slf4j
-@Tag(name = "User notifications API")
+@Tag(name = "User notifications center API")
 @RestController
 @RequestMapping("/notifications")
 @RequiredArgsConstructor

@@ -54,14 +54,21 @@ queues:
 ## Swagger properties
 open-api:
   basePath: /
-  title: Web pushes microservice
-  description: API provides operations for sending web pushes
+  title: Web push notifications microservice
+  description: API provides operations with notifications center and web pushes
   author: Roman Batygin
   email: roman.batygin@mail.ru
   projectVersion: @project.version@
+  tokenBaseUrl: http://localhost:8080
+  apiAuth:
+    PASSWORD:
+      scopes: web
 
 springdoc:
   swagger-ui:
+    oauth:
+      client-id: swagger
+      client-secret: swagger_secret
     disable-swagger-default-url: true
 
 management:
