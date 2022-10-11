@@ -9,7 +9,7 @@ import lombok.Getter;
  * @author Roman Batygin
  */
 @Getter
-public abstract class ChangeClassifiersConfigurationPushEvent extends AbstractUserPushNotificationEvent {
+public abstract class AbstractChangeClassifiersConfigurationPushEvent extends AbstractUserPushNotificationEvent {
 
     private final ClassifiersConfiguration classifiersConfiguration;
 
@@ -21,9 +21,9 @@ public abstract class ChangeClassifiersConfigurationPushEvent extends AbstractUs
      * @param initiator                - initiator (user)
      * @param classifiersConfiguration - classifiers configuration
      */
-    public ChangeClassifiersConfigurationPushEvent(Object source,
-                                                   String initiator,
-                                                   ClassifiersConfiguration classifiersConfiguration) {
+    public AbstractChangeClassifiersConfigurationPushEvent(Object source,
+                                                           String initiator,
+                                                           ClassifiersConfiguration classifiersConfiguration) {
         super(source, initiator);
         this.classifiersConfiguration = classifiersConfiguration;
     }

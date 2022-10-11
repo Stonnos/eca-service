@@ -18,7 +18,7 @@ import static com.ecaservice.server.service.message.template.dictionary.MessageT
  */
 @Component
 public class SetActiveClassifiersConfigurationPushEventHandler
-        extends ChangeClassifiersConfigurationPushEventHandler<SetActiveClassifiersConfigurationPushEvent> {
+        extends AbstractChangeClassifiersConfigurationPushEventHandler<SetActiveClassifiersConfigurationPushEvent> {
 
     /**
      * Constructor with parameters.

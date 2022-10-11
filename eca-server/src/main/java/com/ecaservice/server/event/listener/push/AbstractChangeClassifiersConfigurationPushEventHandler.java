@@ -1,6 +1,6 @@
 package com.ecaservice.server.event.listener.push;
 
-import com.ecaservice.server.event.model.push.ChangeClassifiersConfigurationPushEvent;
+import com.ecaservice.server.event.model.push.AbstractChangeClassifiersConfigurationPushEvent;
 import com.ecaservice.server.repository.ClassifiersConfigurationHistoryRepository;
 import com.ecaservice.server.service.message.template.MessageTemplateProcessor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +21,7 @@ import static com.ecaservice.server.service.push.dictionary.PushProperties.CLASS
  * @author Roman Batygin
  */
 @Slf4j
-public abstract class ChangeClassifiersConfigurationPushEventHandler<E extends ChangeClassifiersConfigurationPushEvent>
+public abstract class AbstractChangeClassifiersConfigurationPushEventHandler<E extends AbstractChangeClassifiersConfigurationPushEvent>
         extends AbstractUserPushNotificationEventHandler<E> {
 
     private final ClassifiersConfigurationHistoryRepository classifiersConfigurationHistoryRepository;
@@ -34,7 +34,7 @@ public abstract class ChangeClassifiersConfigurationPushEventHandler<E extends C
      * @param classifiersConfigurationHistoryRepository - classifiers configuration history repository
      * @param messageTemplateProcessor                  - message template processor
      */
-    protected ChangeClassifiersConfigurationPushEventHandler(
+    protected AbstractChangeClassifiersConfigurationPushEventHandler(
             Class<E> clazz,
             ClassifiersConfigurationHistoryRepository classifiersConfigurationHistoryRepository,
             MessageTemplateProcessor messageTemplateProcessor) {
@@ -44,7 +44,7 @@ public abstract class ChangeClassifiersConfigurationPushEventHandler<E extends C
     }
 
     @Override
-    protected List<String> getReceivers(ChangeClassifiersConfigurationPushEvent event) {
+    protected List<String> getReceivers(AbstractChangeClassifiersConfigurationPushEvent event) {
         var classifiersConfiguration = event.getClassifiersConfiguration();
         log.info("Starting to get receivers for classifiers configuration [{}] event [{}]",
                 classifiersConfiguration.getId(), event.getClass().getSimpleName());

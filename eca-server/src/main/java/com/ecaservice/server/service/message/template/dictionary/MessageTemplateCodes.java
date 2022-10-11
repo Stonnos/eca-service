@@ -54,8 +54,8 @@ public class MessageTemplateCodes {
             "ADD_CLASSIFIERS_CONFIGURATION_OPTIONS_PUSH_MESSAGE";
 
     /**
-     * Remove classifiers configuration options push message template code
+     * Delete classifiers configuration options push message template code
      */
-    public static final String REMOVE_CLASSIFIERS_CONFIGURATION_OPTIONS_PUSH_MESSAGE =
-            "REMOVE_CLASSIFIERS_CONFIGURATION_OPTIONS_PUSH_MESSAGE";
+    public static final String DELETE_CLASSIFIERS_CONFIGURATION_OPTIONS_PUSH_MESSAGE =
+            "DELETE_CLASSIFIERS_CONFIGURATION_OPTIONS_PUSH_MESSAGE";
 }

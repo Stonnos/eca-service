@@ -7,7 +7,7 @@ import com.ecaservice.server.model.entity.ClassifiersConfiguration;
  *
  * @author Roman Batygin
  */
-public class RenameClassifiersConfigurationPushEvent extends ChangeClassifiersConfigurationPushEvent {
+public class RenameClassifiersConfigurationPushEvent extends AbstractChangeClassifiersConfigurationPushEvent {
 
     /**
      * Create a new {@code ApplicationEvent}.

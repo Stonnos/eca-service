@@ -18,7 +18,7 @@ import static com.ecaservice.server.service.message.template.dictionary.MessageT
  */
 @Component
 public class RenameClassifiersConfigurationPushEventHandler
-        extends ChangeClassifiersConfigurationPushEventHandler<RenameClassifiersConfigurationPushEvent> {
+        extends AbstractChangeClassifiersConfigurationPushEventHandler<RenameClassifiersConfigurationPushEvent> {
 
     /**
      * Constructor with parameters.

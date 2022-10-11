@@ -7,7 +7,7 @@ import com.ecaservice.server.model.entity.ClassifiersConfiguration;
  *
  * @author Roman Batygin
  */
-public class SetActiveClassifiersConfigurationPushEvent extends ChangeClassifiersConfigurationPushEvent {
+public class SetActiveClassifiersConfigurationPushEvent extends AbstractChangeClassifiersConfigurationPushEvent {
 
     /**
      * Create a new {@code ApplicationEvent}.
