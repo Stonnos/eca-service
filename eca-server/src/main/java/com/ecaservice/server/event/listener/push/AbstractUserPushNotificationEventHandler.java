@@ -23,7 +23,7 @@ public abstract class AbstractUserPushNotificationEventHandler<E extends Abstrac
     protected UserPushNotificationRequest internalCreatePushRequest(E event) {
         var userPushNotificationRequest = new UserPushNotificationRequest();
         userPushNotificationRequest.setInitiator(event.getInitiator());
-        userPushNotificationRequest.setReceivers(getReceivers());
+        userPushNotificationRequest.setReceivers(getReceivers(event));
         userPushNotificationRequest.setCreated(LocalDateTime.now());
         return userPushNotificationRequest;
     }
@@ -31,7 +31,8 @@ public abstract class AbstractUserPushNotificationEventHandler<E extends Abstrac
     /**
      * Gets receivers list.
      *
+     * @param event - push event
      * @return receivers list
      */
-    protected abstract List<String> getReceivers();
+    protected abstract List<String> getReceivers(E event);
 }
