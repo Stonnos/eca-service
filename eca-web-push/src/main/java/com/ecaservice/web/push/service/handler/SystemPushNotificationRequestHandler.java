@@ -38,15 +38,15 @@ public class SystemPushNotificationRequestHandler extends AbstractPushRequestHan
 
     @Override
     public void handle(SystemPushRequest systemPushRequest) {
-        log.info("Received push request [{}], message type [{}], additional properties {}",
+        log.info("Received system push request [{}], message type [{}], additional properties {}",
                 systemPushRequest.getRequestId(), systemPushRequest.getMessageType(),
                 systemPushRequest.getAdditionalProperties());
         String queue = queueConfig.getPushQueue();
-        log.info("Starting to sent push request [{}, [{}]] to queue [{}]", systemPushRequest.getRequestId(),
+        log.info("Starting to sent system push request [{}, [{}]] to queue [{}]", systemPushRequest.getRequestId(),
                 systemPushRequest.getMessageType(), queue);
         var pushRequestDto = notificationMapper.map(systemPushRequest);
         messagingTemplate.convertAndSend(queue, pushRequestDto);
-        log.info("Push request [{}, [{}]] has been send to queue [{}]", systemPushRequest.getRequestId(),
+        log.info("System push request [{}, [{}]] has been send to queue [{}]", systemPushRequest.getRequestId(),
                 systemPushRequest.getMessageType(), queue);
     }
 }
