@@ -34,4 +34,28 @@ public class MessageTemplateCodes {
      * Timeout experiment template code
      */
     public static final String TIMEOUT_EXPERIMENT = "TIMEOUT_EXPERIMENT";
+
+    /**
+     * Set active classifiers configuration push message template code
+     */
+    public static final String SET_ACTIVE_CLASSIFIERS_CONFIGURATION_PUSH_MESSAGE =
+            "SET_ACTIVE_CLASSIFIERS_CONFIGURATION_PUSH_MESSAGE";
+
+    /**
+     * Rename classifiers configuration push message template code
+     */
+    public static final String RENAME_CLASSIFIERS_CONFIGURATION_PUSH_MESSAGE =
+            "RENAME_CLASSIFIERS_CONFIGURATION_PUSH_MESSAGE";
+
+    /**
+     * Add classifiers configuration options push message template code
+     */
+    public static final String ADD_CLASSIFIERS_CONFIGURATION_OPTIONS_PUSH_MESSAGE =
+            "ADD_CLASSIFIERS_CONFIGURATION_OPTIONS_PUSH_MESSAGE";
+
+    /**
+     * Remove classifiers configuration options push message template code
+     */
+    public static final String REMOVE_CLASSIFIERS_CONFIGURATION_OPTIONS_PUSH_MESSAGE =
+            "REMOVE_CLASSIFIERS_CONFIGURATION_OPTIONS_PUSH_MESSAGE";
 }

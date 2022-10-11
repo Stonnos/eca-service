@@ -2,6 +2,7 @@ package com.ecaservice.server.event.listener.push;
 
 import com.ecaservice.server.event.model.push.ChangeClassifiersConfigurationPushEvent;
 import com.ecaservice.server.repository.ClassifiersConfigurationHistoryRepository;
+import com.ecaservice.server.service.message.template.MessageTemplateProcessor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collections;
@@ -24,17 +25,22 @@ public abstract class ChangeClassifiersConfigurationPushEventHandler<E extends C
         extends AbstractUserPushNotificationEventHandler<E> {
 
     private final ClassifiersConfigurationHistoryRepository classifiersConfigurationHistoryRepository;
+    private final MessageTemplateProcessor messageTemplateProcessor;
 
     /**
      * Constructor with parameters.
      *
      * @param clazz                                     - push event class
      * @param classifiersConfigurationHistoryRepository - classifiers configuration history repository
+     * @param messageTemplateProcessor                  - message template processor
      */
-    protected ChangeClassifiersConfigurationPushEventHandler(Class<E> clazz,
-                                                             ClassifiersConfigurationHistoryRepository classifiersConfigurationHistoryRepository) {
+    protected ChangeClassifiersConfigurationPushEventHandler(
+            Class<E> clazz,
+            ClassifiersConfigurationHistoryRepository classifiersConfigurationHistoryRepository,
+            MessageTemplateProcessor messageTemplateProcessor) {
         super(clazz);
         this.classifiersConfigurationHistoryRepository = classifiersConfigurationHistoryRepository;
+        this.messageTemplateProcessor = messageTemplateProcessor;
     }
 
     @Override
@@ -60,7 +66,8 @@ public abstract class ChangeClassifiersConfigurationPushEventHandler<E extends C
 
     @Override
     protected String getMessageText(E event) {
-        return null;
+        var templateParams = createMessageTemplateParams(event);
+        return messageTemplateProcessor.process(getMessageTemplateCode(), templateParams);
     }
 
     @Override
@@ -68,4 +75,19 @@ public abstract class ChangeClassifiersConfigurationPushEventHandler<E extends C
         return Collections.singletonMap(CLASSIFIERS_CONFIGURATION_ID_PROPERTY,
                 String.valueOf(event.getClassifiersConfiguration().getId()));
     }
+
+    /**
+     * Gets push message template code.
+     *
+     * @return message template code
+     */
+    protected abstract String getMessageTemplateCode();
+
+    /**
+     * Creates push message template params.
+     *
+     * @param event - push event
+     * @return message template params
+     */
+    protected abstract Map<String, Object> createMessageTemplateParams(E event);
 }
