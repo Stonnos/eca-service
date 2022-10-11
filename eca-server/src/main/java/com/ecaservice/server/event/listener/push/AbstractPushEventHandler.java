@@ -40,8 +40,8 @@ public abstract class AbstractPushEventHandler<E extends AbstractPushEvent, R ex
         var pushRequest = internalCreatePushRequest(event);
         pushRequest.setRequestId(UUID.randomUUID().toString());
         pushRequest.setMessageType(getMessageType());
-        pushRequest.setMessageText(getMessageText());
-        pushRequest.setAdditionalProperties(createAdditionalProperties());
+        pushRequest.setMessageText(getMessageText(event));
+        pushRequest.setAdditionalProperties(createAdditionalProperties(event));
         return pushRequest;
     }
 
@@ -55,16 +55,18 @@ public abstract class AbstractPushEventHandler<E extends AbstractPushEvent, R ex
     /**
      * Gets message text.
      *
+     * @param event - push event
      * @return message text
      */
-    protected abstract String getMessageText();
+    protected abstract String getMessageText(E event);
 
     /**
      * Creates additional properties map.
      *
+     * @param event - push event
      * @return additional properties map
      */
-    protected abstract Map<String, String> createAdditionalProperties();
+    protected abstract Map<String, String> createAdditionalProperties(E event);
 
     /**
      * Creates push request with its specific properties.
