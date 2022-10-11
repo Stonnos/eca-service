@@ -1,6 +1,7 @@
 package com.ecaservice.server.service.push;
 
 import com.ecaservice.web.dto.model.push.PushRequestDto;
+import com.ecaservice.web.push.dto.AbstractPushRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
  *
  * @author Roman Batygin
  */
-@FeignClient(value = "eca-web-push", path = "/push")
+@FeignClient(value = "eca-web-push", path = "/api/push")
 public interface WebPushClient {
 
     /**
@@ -19,4 +20,12 @@ public interface WebPushClient {
      */
     @PostMapping(value = "/send")
     void sendPush(PushRequestDto pushRequestDto);
+
+    /**
+     * Sends web push notification.
+     *
+     * @param pushRequest - push request
+     */
+    @PostMapping(value = "/send")
+    void sendPush(AbstractPushRequest pushRequest);
 }

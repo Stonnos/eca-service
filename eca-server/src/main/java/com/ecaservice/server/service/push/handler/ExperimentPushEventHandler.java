@@ -1,4 +1,4 @@
-package com.ecaservice.server.event.listener.push;
+package com.ecaservice.server.service.push.handler;
 
 import com.ecaservice.server.event.model.push.ExperimentWebPushEvent;
 import com.ecaservice.server.model.entity.Experiment;
