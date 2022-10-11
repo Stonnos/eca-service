@@ -23,12 +23,13 @@ import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 public class PushRequestDto {
 
     /**
-     * Request id
+     * Request id (used for cross system logging)
      */
     @NotBlank
     @Pattern(regexp = UUID_PATTERN)
     @Size(min = VALUE_1, max = UUID_MAX_LENGTH)
-    @Schema(description = "Request id", example = "1d2de514-3a87-4620-9b97-c260e24340de", required = true)
+    @Schema(description = "Request id (used for cross system logging)",
+            example = "1d2de514-3a87-4620-9b97-c260e24340de", required = true)
     private String requestId;
 
     /**
