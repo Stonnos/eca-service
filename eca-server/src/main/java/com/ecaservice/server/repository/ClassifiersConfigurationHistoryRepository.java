@@ -27,12 +27,26 @@ public interface ClassifiersConfigurationHistoryRepository
     long deleteAllByConfiguration(ClassifiersConfiguration classifiersConfiguration);
 
     /**
-     * Gets classifiers configuration modifiers.
+     * Gets classifiers configuration another modifiers.
      *
      * @param configuration - classifier configuration entity
+     * @param user          - current user
      * @return modifiers list
      */
     @Query("select distinct ch.createdBy from ClassifiersConfigurationHistoryEntity ch " +
-            "where ch.configuration = :configuration")
-    List<String> getAllModifiers(@Param("configuration") ClassifiersConfiguration configuration);
+            "where ch.configuration = :configuration and ch.createdBy <> :user")
+    List<String> getAnotherModifiers(@Param("configuration") ClassifiersConfiguration configuration,
+                                     @Param("user") String user);
+
+    /**
+     * Gets classifiers configuration modifications count by another users.
+     *
+     * @param configuration - classifier configuration entity
+     * @param user          - current user
+     * @return modifications count
+     */
+    @Query("select count(ch) from ClassifiersConfigurationHistoryEntity ch " +
+            "where ch.configuration = :configuration and ch.createdBy <> :user")
+    long getAnotherUsersModificationsCount(@Param("configuration") ClassifiersConfiguration configuration,
+                                           @Param("user") String user);
 }

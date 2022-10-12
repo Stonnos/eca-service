@@ -39,8 +39,12 @@ public class WebPushEventListener {
             log.warn("Web pushes are disabled. You may set [app.notifications.webPushesEnabled] property");
         } else {
             var pushEventHandler = getHandler(pushEvent);
-            var pushRequest = pushEventHandler.handleEvent(pushEvent);
-            webPushSender.send(pushRequest);
+            if (!pushEventHandler.isValid(pushEvent)) {
+                log.warn("Skip sent invalid push event [{}]", pushEvent.getClass().getSimpleName());
+            } else {
+                var pushRequest = pushEventHandler.handleEvent(pushEvent);
+                webPushSender.send(pushRequest);
+            }
         }
         log.info("Push event [{}] from source [{}] has been handled", pushEvent.getClass().getSimpleName(),
                 pushEvent.getSource().getClass().getSimpleName());

@@ -31,6 +31,16 @@ public abstract class AbstractPushEventHandler<E extends AbstractPushEvent, R ex
     }
 
     /**
+     * Is valid push event?
+     *
+     * @param pushEvent - push event
+     * @return {@code true} if push event is valid, otherwise {@code false}
+     */
+    public boolean isValid(E pushEvent) {
+        return true;
+    }
+
+    /**
      * Handles push event.
      *
      * @param event - push event
