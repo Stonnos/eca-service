@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.ecaservice.server.service.push.dictionary.PushProperties.CLASSIFIERS_CONFIGURATION_ID_PROPERTY;
 import static com.ecaservice.server.service.push.dictionary.PushProperties.CLASSIFIER_CONFIGURATION_CHANGE_MESSAGE_TYPE;
@@ -62,6 +63,13 @@ public abstract class AbstractChangeClassifiersConfigurationPushEventHandler<E e
                 event.getInitiator());
         log.info("[{}] receivers has been fetched for classifiers configuration [{}] event [{}]", allModifiers.size(),
                 classifiersConfiguration.getId(), event.getClass().getSimpleName());
+        // For old configurations without history add its author
+        if (!Objects.equals(event.getInitiator(), classifiersConfiguration.getCreatedBy()) &&
+                !allModifiers.contains(classifiersConfiguration.getCreatedBy())) {
+            allModifiers.add(classifiersConfiguration.getCreatedBy());
+            log.info("Force add author to receivers for old classifiers configuration [{}]",
+                    classifiersConfiguration.getId());
+        }
         log.info("Classifiers configuration [{}] event [{}] receivers: {}", classifiersConfiguration.getId(),
                 event.getClass().getSimpleName(), allModifiers);
         return allModifiers;

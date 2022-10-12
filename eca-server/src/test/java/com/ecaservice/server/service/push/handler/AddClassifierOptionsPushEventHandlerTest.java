@@ -87,6 +87,7 @@ class AddClassifierOptionsPushEventHandlerTest extends AbstractJpaTest {
 
     private void saveData() {
         ClassifiersConfiguration configuration = createClassifiersConfiguration();
+        configuration.setCreatedBy(CURRENT_USER);
         classifiersConfiguration = classifiersConfigurationRepository.save(configuration);
         var history = List.of(
                 createClassifiersConfigurationHistory(configuration,
