@@ -378,6 +378,24 @@ public class TestHelperUtils {
     }
 
     /**
+     * Creates classifiers configuration history entity.
+     *
+     * @param classifiersConfiguration - classifiers configuration entity
+     * @param actionType               - action type
+     * @param user                     - user
+     * @return classifiers configuration history entity
+     */
+    public static ClassifiersConfigurationHistoryEntity createClassifiersConfigurationHistory(
+            ClassifiersConfiguration classifiersConfiguration,
+            ClassifiersConfigurationActionType actionType,
+            String user) {
+        var classifiersConfigurationHistoryEntity =
+                createClassifiersConfigurationHistory(classifiersConfiguration, actionType, LocalDateTime.now());
+        classifiersConfigurationHistoryEntity.setCreatedBy(user);
+        return classifiersConfigurationHistoryEntity;
+    }
+
+    /**
      * Creates classifiers configuration entity.
      *
      * @return classifiers configuration entity
