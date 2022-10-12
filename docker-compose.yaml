@@ -237,6 +237,8 @@ services:
       TZ: ${TIME_ZONE}
       SERVER_PORT: "8099"
       SPRING_PROFILES_ACTIVE: "docker"
+      DB_CONTAINER_WAIT: ${DB_CONTAINER_WAIT}
+      DB_CONTAINER_WAIT_TIMEOUT: ${DB_CONTAINER_WAIT_TIMEOUT}
       JAVA_OPTS: "-Xmx512m"
       OPENAPI_BASEPATH: "/eca-web-push"
     networks:
