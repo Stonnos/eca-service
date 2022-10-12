@@ -63,7 +63,7 @@ public abstract class AbstractChangeClassifiersConfigurationPushEventHandler<E e
                 event.getInitiator());
         log.info("[{}] receivers has been fetched for classifiers configuration [{}] event [{}]", allModifiers.size(),
                 classifiersConfiguration.getId(), event.getClass().getSimpleName());
-        // For old configurations without history add its author
+        // For old configurations without history add its author to receivers list
         if (!Objects.equals(event.getInitiator(), classifiersConfiguration.getCreatedBy()) &&
                 !allModifiers.contains(classifiersConfiguration.getCreatedBy())) {
             allModifiers.add(classifiersConfiguration.getCreatedBy());
