@@ -12,6 +12,8 @@ public abstract class AbstractClassifierOptionsPushEvent extends AbstractChangeC
 
     @Getter
     private final long classifierOptionsId;
+    @Getter
+    private final String optionsName;
 
     /**
      * Create a new {@code ApplicationEvent}.
@@ -21,12 +23,14 @@ public abstract class AbstractClassifierOptionsPushEvent extends AbstractChangeC
      * @param initiator                - initiator (user)
      * @param classifiersConfiguration - classifiers configuration
      * @param classifierOptionsId      - classifier options id
+     * @param optionsName              - classifier options name
      */
     public AbstractClassifierOptionsPushEvent(Object source,
                                               String initiator,
                                               ClassifiersConfiguration classifiersConfiguration,
-                                              long classifierOptionsId) {
+                                              long classifierOptionsId, String optionsName) {
         super(source, initiator, classifiersConfiguration);
         this.classifierOptionsId = classifierOptionsId;
+        this.optionsName = optionsName;
     }
 }

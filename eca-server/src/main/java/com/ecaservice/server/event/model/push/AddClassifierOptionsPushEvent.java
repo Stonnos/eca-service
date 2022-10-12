@@ -17,11 +17,13 @@ public class AddClassifierOptionsPushEvent extends AbstractClassifierOptionsPush
      * @param initiator                - initiator (user)
      * @param classifiersConfiguration - classifiers configuration
      * @param classifierOptionsId      - classifier options id
+     * @param optionsName              - classifier options name
      */
     public AddClassifierOptionsPushEvent(Object source,
                                          String initiator,
                                          ClassifiersConfiguration classifiersConfiguration,
-                                         long classifierOptionsId) {
-        super(source, initiator, classifiersConfiguration, classifierOptionsId);
+                                         long classifierOptionsId,
+                                         String optionsName) {
+        super(source, initiator, classifiersConfiguration, classifierOptionsId, optionsName);
     }
 }

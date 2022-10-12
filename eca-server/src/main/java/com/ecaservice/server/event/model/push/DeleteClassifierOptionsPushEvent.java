@@ -17,11 +17,13 @@ public class DeleteClassifierOptionsPushEvent extends AbstractClassifierOptionsP
      * @param initiator                - initiator (user)
      * @param classifiersConfiguration - classifiers configuration
      * @param classifierOptionsId      - classifier options id
+     * @param optionsName              - classifier options name
      */
     public DeleteClassifierOptionsPushEvent(Object source,
                                             String initiator,
                                             ClassifiersConfiguration classifiersConfiguration,
-                                            long classifierOptionsId) {
-        super(source, initiator, classifiersConfiguration, classifierOptionsId);
+                                            long classifierOptionsId,
+                                            String optionsName) {
+        super(source, initiator, classifiersConfiguration, classifierOptionsId, optionsName);
     }
 }

@@ -4,6 +4,7 @@ import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.report.model.ClassifiersConfigurationBean;
 import com.ecaservice.server.mapping.ClassifiersConfigurationMapperImpl;
 import com.ecaservice.server.mapping.DateTimeConverter;
+import com.ecaservice.server.service.UserService;
 import com.ecaservice.server.service.classifiers.ClassifiersConfigurationHistoryService;
 import com.ecaservice.server.service.classifiers.ClassifiersConfigurationService;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
@@ -16,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -72,6 +74,10 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
     private ClassifiersConfigurationService classifiersConfigurationService;
     @MockBean
     private ClassifiersConfigurationHistoryService classifiersConfigurationHistoryService;
+    @MockBean
+    private UserService userService;
+    @MockBean
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @Test
     void testGetClassifiersConfigurationsPageUnauthorized() throws Exception {

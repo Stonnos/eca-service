@@ -48,6 +48,7 @@ import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.evaluation.ClassifierOptionsRequestSource;
 import com.ecaservice.server.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.server.model.experiment.InitializationParams;
+import com.ecaservice.web.dto.model.ClassifierOptionsDto;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationHistoryDto;
 import com.ecaservice.web.dto.model.EnumDto;
@@ -155,6 +156,7 @@ public class TestHelperUtils {
     private static final String CONFIGURATION_NAME = "configuration";
     private static final int ITERATIONS = 1;
     private static final int NUM_THREADS = 3;
+    private static final long ID = 1L;
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     public static final String MESSAGE_TEXT = "Message text";
@@ -339,6 +341,19 @@ public class TestHelperUtils {
                 DigestUtils.md5DigestAsHex(config.getBytes(StandardCharsets.UTF_8)));
         classifierOptionsDatabaseModel.setCreationDate(LocalDateTime.now());
         return classifierOptionsDatabaseModel;
+    }
+
+    /**
+     * Creates classifier options dto.
+     *
+     * @return classifier options dto
+     */
+    public static ClassifierOptionsDto createClassifierOptionsDto() {
+        ClassifierOptionsDto classifierOptionsDto = new ClassifierOptionsDto();
+        classifierOptionsDto.setId(ID);
+        classifierOptionsDto.setOptionsName(OPTION_NAME);
+        classifierOptionsDto.setCreationDate(LocalDateTime.now());
+        return classifierOptionsDto;
     }
 
     /**

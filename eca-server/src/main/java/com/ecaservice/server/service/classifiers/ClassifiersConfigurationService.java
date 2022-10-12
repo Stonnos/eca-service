@@ -87,9 +87,10 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
      * Updates classifiers configuration.
      *
      * @param configurationDto - update classifiers configuration dto
+     * @return classifiers configuration entity
      */
     @Audit(value = RENAME_CONFIGURATION, correlationIdKey = "#configurationDto.id")
-    public void update(UpdateClassifiersConfigurationDto configurationDto) {
+    public ClassifiersConfiguration update(UpdateClassifiersConfigurationDto configurationDto) {
         log.info("Starting to update classifiers configuration [{}] with new name [{}]", configurationDto.getId(),
                 configurationDto.getConfigurationName());
         var classifiersConfiguration = getById(configurationDto.getId());
@@ -99,6 +100,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
         log.info("Classifiers configuration [{}] has been updated with name [{}]", classifiersConfiguration.getId(),
                 classifiersConfiguration.getConfigurationName());
         classifiersConfigurationHistoryService.saveUpdateConfigurationAction(classifiersConfiguration);
+        return classifiersConfiguration;
     }
 
     /**
@@ -151,10 +153,11 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
      * Sets classifiers configuration as active.
      *
      * @param id - configuration id
+     * @return active classifiers configuration entity
      */
     @Locked(lockName = "setActiveClassifiersConfiguration")
     @Transactional
-    public void setActive(long id) {
+    public ClassifiersConfiguration setActive(long id) {
         log.info("Request to set classifiers configuration [{}] as active", id);
         var classifiersConfiguration = getById(id);
         var activeConfiguration = classifiersConfigurationRepository.findFirstByActiveTrue()
@@ -172,6 +175,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
             classifiersConfigurationHistoryService.saveSetActiveConfigurationAction(classifiersConfiguration);
             classifiersConfigurationHistoryService.saveDeactivateConfigurationAction(activeConfiguration);
         }
+        return classifiersConfiguration;
     }
 
     @Override
@@ -256,7 +260,13 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
         return classifiersConfigurationBean;
     }
 
-    private ClassifiersConfiguration getById(long id) {
+    /**
+     * Gets classifiers configuration by id.
+     *
+     * @param id - configuration by id
+     * @return classifiers configuration entity
+     */
+    public ClassifiersConfiguration getById(long id) {
         return classifiersConfigurationRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(ClassifiersConfiguration.class, id));
     }
