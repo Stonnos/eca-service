@@ -40,7 +40,7 @@ export class DashboardComponent implements OnInit {
   }
 
   public showNotifications(): void {
-    this.notificationsCenter.onLoad();
+    this.notificationsCenter.loadNext();
   }
 
   public hideNotifications(): void {

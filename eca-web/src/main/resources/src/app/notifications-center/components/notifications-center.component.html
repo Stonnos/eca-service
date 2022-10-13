@@ -2,6 +2,7 @@
   <div class="ui-g ml-auto d-flex align-items-end justify-content-end line-border">
     <a [routerLink]=""
        class="text-bold link mt-1 mb-2"
+       (click)="readAllNotifications()"
        [class.disabled-link]="loading || isEmptyContent()">
       Отметить все как прочитанные
     </a>
@@ -44,7 +45,7 @@
       <a [routerLink]=""
          class="text-bold link mt-2"
          [class.disabled-link]="loading"
-         (click)="onLoad()">
+         (click)="loadNext()">
         Показать еще
       </a>
     </div>
