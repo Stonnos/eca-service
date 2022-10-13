@@ -8,6 +8,8 @@
   </a>
   <p-overlayPanel #infoPanel
                   [showCloseIcon]="true"
+                  (onShow)="showNotifications()"
+                  (onHide)="hideNotifications()"
                   class="notifications-overlay">
     <app-notifications-center>
     </app-notifications-center>

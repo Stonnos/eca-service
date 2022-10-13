@@ -24,7 +24,11 @@ export class NotificationsCenterComponent {
   }
 
   public ngOnInit(): void {
-    this.onLoad();
+  }
+
+  public clear(): void {
+    this.virtualNotifications = [];
+    this.total = 0;
   }
 
   public hasContent(): boolean {

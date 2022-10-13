@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import { MenuItem, MessageService } from 'primeng/api';
 import { LogoutService } from "../auth/services/logout.service";
 import { MenuItemDto, UserDto } from "../../../../../../target/generated-sources/typescript/eca-web-dto";
@@ -7,6 +7,7 @@ import { UsersService } from "../users/services/users.service";
 import { WebAppService } from "../common/services/web-app.service";
 import { EventService } from "../common/event/event.service";
 import { EventType } from "../common/event/event.type";
+import { NotificationsCenterComponent } from "../notifications-center/components/notifications-center.component";
 
 @Component({
   selector: 'app-dashboard',
@@ -22,6 +23,9 @@ export class DashboardComponent implements OnInit {
 
   public userMenuItems: MenuItem[] = [];
 
+  @ViewChild(NotificationsCenterComponent, { static: true })
+  public notificationsCenter: NotificationsCenterComponent;
+
   public constructor(private logoutService: LogoutService,
                      private usersService: UsersService,
                      private webAppService: WebAppService,
@@ -33,6 +37,14 @@ export class DashboardComponent implements OnInit {
     this.getCurrentUser();
     this.getMenuItems();
     this.initUserMenu();
+  }
+
+  public showNotifications(): void {
+    this.notificationsCenter.onLoad();
+  }
+
+  public hideNotifications(): void {
+    this.notificationsCenter.clear();
   }
 
   public getCurrentUser(): void {
