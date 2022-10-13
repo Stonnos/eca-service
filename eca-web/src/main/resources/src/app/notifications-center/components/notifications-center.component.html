@@ -8,7 +8,7 @@
     </a>
   </div>
 </div>
-<div class="empty-notifications" *ngIf="isEmptyContent()">
+<div class="empty-notifications" *ngIf="!loading && isEmptyContent()">
   У вас нет уведомлений за последние 7 дней
 </div>
 <div class="ui-g-12 notifications-scroll-panel" *ngIf="!isEmptyContent()">

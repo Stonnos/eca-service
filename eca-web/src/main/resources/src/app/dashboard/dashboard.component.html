@@ -2,8 +2,8 @@
   <a [routerLink]="" class="notification" (click)="infoPanel.toggle($event)">
     <span class="pi pi-bell notification-icon">
     </span>
-    <span class="badge">
-      15
+    <span *ngIf="userNotificationsStatistics?.notReadCount > 0" class="badge">
+      {{ userNotificationsStatistics.notReadCount }}
     </span>
   </a>
   <p-overlayPanel #infoPanel
@@ -11,7 +11,8 @@
                   (onShow)="showNotifications()"
                   (onHide)="hideNotifications()"
                   class="notifications-overlay">
-    <app-notifications-center>
+    <app-notifications-center
+      (readEvent)="getNotificationsStatistics()">
     </app-notifications-center>
   </p-overlayPanel>
   <a [routerLink]="" class="user" (click)="userMenu.toggle($event)">

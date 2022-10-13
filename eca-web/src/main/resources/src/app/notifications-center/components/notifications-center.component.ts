@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import {
   PageDto, SimplePageRequestDto, UserNotificationDto, UserNotificationParameterDto,
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
@@ -26,6 +26,9 @@ export class NotificationsCenterComponent {
   private lastPageRequest: SimplePageRequestDto;
 
   public loading: boolean = false;
+
+  @Output()
+  public readEvent: EventEmitter<any> = new EventEmitter<any>();
 
   public constructor(private userNotificationsService: UserNotificationsService,
                      private messageService: MessageService,
@@ -64,6 +67,7 @@ export class NotificationsCenterComponent {
       .subscribe({
         next: () => {
           Logger.debug(`All notifications has been read`);
+          this.readEvent.emit();
         },
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
@@ -129,6 +133,7 @@ export class NotificationsCenterComponent {
         .subscribe({
           next: () => {
             this.getNextPage(this.lastPageRequest);
+            this.readEvent.emit();
           },
           error: (error) => {
             this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
