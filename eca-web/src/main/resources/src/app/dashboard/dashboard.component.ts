@@ -22,6 +22,8 @@ import { UserNotificationsService } from "../notifications-center/services/user-
 })
 export class DashboardComponent implements OnInit {
 
+  private static readonly MAX_NOT_READ_NOTIFICATIONS_COUNT_TO_DISPLAY = 99;
+
   private user: UserDto;
 
   public items: MenuItem[] = [];
@@ -54,6 +56,13 @@ export class DashboardComponent implements OnInit {
 
   public hideNotifications(): void {
     this.notificationsCenter.clear();
+  }
+
+  public getNotReadNotificationsCount() {
+    if (this.userNotificationsStatistics.notReadCount > DashboardComponent.MAX_NOT_READ_NOTIFICATIONS_COUNT_TO_DISPLAY) {
+      return `${DashboardComponent.MAX_NOT_READ_NOTIFICATIONS_COUNT_TO_DISPLAY}+`;
+    }
+    return this.userNotificationsStatistics.notReadCount;
   }
 
   public getCurrentUser(): void {
