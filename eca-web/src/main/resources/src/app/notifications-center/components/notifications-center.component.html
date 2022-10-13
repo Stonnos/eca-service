@@ -11,7 +11,7 @@
   У вас нет уведомлений за последние 7 дней
 </div>
 <div class="ui-g-12 notifications-scroll-panel" *ngIf="!isEmptyContent()">
-  <div class="ui-g-12 notification-card mt-1 w-100" *ngFor="let notification of virtualNotifications"
+  <div class="ui-g-12 notification-card mt-1 w-100" *ngFor="let notification of getNotifications()"
        [class.not-read-message]="notification?.messageStatus.value == 'NOT_READ'">
     <ng-container [ngSwitch]="notification?.messageType">
       <ng-container *ngSwitchCase="'CLASSIFIER_CONFIGURATION_CHANGE'">

@@ -14,9 +14,14 @@ import { finalize } from "rxjs/internal/operators";
 export class NotificationsCenterComponent {
 
   private total: number = 0;
-  private pageSize = 5;
+  private pageSize: number = 5;
 
-  public virtualNotifications: UserNotificationDto[] = [];
+  private virtualNotifications = new Map<number, UserNotificationDto>();
+
+  private lastPageRequest: SimplePageRequestDto;
+
+  //public virtualNotifications: UserNotificationDto[] = [];
+  //const map = new Map<string, string>();
   public loading: boolean = false;
 
   public constructor(private userNotificationsService: UserNotificationsService,
@@ -27,46 +32,78 @@ export class NotificationsCenterComponent {
   }
 
   public clear(): void {
-    this.virtualNotifications = [];
+    this.virtualNotifications.clear();
     this.total = 0;
     console.log('Clear notifications');
   }
 
   public hasMoreContent(): boolean {
-    return this.virtualNotifications.length < this.total;
+    return this.virtualNotifications.size < this.total;
   }
 
   public isEmptyContent(): boolean {
     return this.total == 0;
   }
 
+  public getNotifications(): UserNotificationDto[] {
+    return Array.from(this.virtualNotifications.values());
+  }
+
   public onLoad(): void {
-    const rows = this.virtualNotifications.length;
+    const rows = this.virtualNotifications.size;
     const page = Math.floor(rows / this.pageSize);
     console.log('Notification page ' + page);
-    const pageRequestDto = {
+    this.lastPageRequest = {
       page: page,
       size: this.pageSize
     };
-    this.getNextPage(pageRequestDto);
+    this.getNextPage(this.lastPageRequest, true);
   }
 
-  private getNextPage(pageRequest: SimplePageRequestDto): void {
+  private getNextPage(pageRequest: SimplePageRequestDto, readNotifications: boolean): void {
     this.loading = true;
     this.userNotificationsService.getNotifications(pageRequest)
-      .pipe(
-        finalize(() => {
-          this.loading = false;
-        })
-      )
       .subscribe({
         next: (pageDto: PageDto<UserNotificationDto>) => {
           this.total = pageDto.totalCount;
-          this.virtualNotifications.push(...pageDto.content);
+          pageDto.content.forEach((notification: UserNotificationDto) => {
+            this.virtualNotifications.set(notification.id, notification);
+          });
+          if (readNotifications) {
+            this.readNotificationsIfNeeded(pageDto.content)
+          } else {
+            this.loading = false;
+          }
         },
         error: (error) => {
+          this.loading = false;
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
         }
       });
+  }
+
+  private readNotificationsIfNeeded(notifications: UserNotificationDto[]): void {
+    const notReadIds: number[] = notifications
+      .filter((notification: UserNotificationDto) => notification.messageStatus.value == 'NOT_READ')
+      .map((notification: UserNotificationDto) => notification.id);
+    if (notReadIds.length == 0) {
+      console.log('All read content');
+      this.loading = false;
+    } else {
+      const readNotificationsDto = {
+        ids: notReadIds
+      };
+      console.log('Not read ids ' + notReadIds);
+      this.userNotificationsService.readNotifications(readNotificationsDto)
+        .subscribe({
+          next: () => {
+            this.getNextPage(this.lastPageRequest, false);
+          },
+          error: (error) => {
+            this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+            this.loading = false;
+          }
+        });
+    }
   }
 }
