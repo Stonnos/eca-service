@@ -1,11 +1,15 @@
 import { Component } from '@angular/core';
 import {
-  PageDto, SimplePageRequestDto, UserNotificationDto,
+  PageDto, SimplePageRequestDto, UserNotificationDto, UserNotificationParameterDto,
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { MessageService } from "primeng/api";
 import { UserNotificationsService } from "../services/user-notifications.service";
 import { Logger } from "../../common/util/logging";
 import { finalize } from "rxjs/internal/operators";
+import { PushMessageType } from "../../common/util/push-message.type";
+import { PushVariables } from "../../common/util/push-variables";
+import { RouterPaths } from "../../routing/router-paths";
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-notifications-center',
@@ -24,7 +28,8 @@ export class NotificationsCenterComponent {
   public loading: boolean = false;
 
   public constructor(private userNotificationsService: UserNotificationsService,
-                     private messageService: MessageService) {
+                     private messageService: MessageService,
+                     private router: Router) {
   }
 
   public ngOnInit(): void {
@@ -74,6 +79,18 @@ export class NotificationsCenterComponent {
       size: this.pageSize
     };
     this.getNextPage(this.lastPageRequest);
+  }
+
+  public onLinkClick(notification: UserNotificationDto): void {
+    if (notification.messageType == PushMessageType.CLASSIFIER_CONFIGURATION_CHANGE) {
+      const configurationId = notification.parameters
+        .filter((parameter: UserNotificationParameterDto) => parameter.name == PushVariables.CLASSIFIERS_CONFIGURATION_ID)
+        .map((parameter: UserNotificationParameterDto) => parameter.value)
+        .pop();
+      this.router.navigate([RouterPaths.CLASSIFIERS_CONFIGURATION_DETAILS_URL, configurationId]);
+    } else {
+      this.messageService.add({severity: 'error', summary: 'Ошибка', detail: `Can't handle user notification message ${notification.messageType} as link`});
+    }
   }
 
   private getNextPage(pageRequest: SimplePageRequestDto): void {
