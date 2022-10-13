@@ -4,6 +4,15 @@
   overflow-y: scroll;
 }
 
+.empty-notifications {
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 14px;
+  height: 500px;
+}
+
 .created-date {
   font-size: 12px;
   color: #6f6f6f;
@@ -21,4 +30,8 @@
 .initiator {
   color: #2d2d2d;
   padding-bottom: 2px
+}
+
+.not-read-message {
+  background-color: #e2e2e2;
 }

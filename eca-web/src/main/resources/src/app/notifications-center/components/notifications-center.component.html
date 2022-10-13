@@ -3,8 +3,12 @@
     <a [routerLink]="" class="text-bold link mt-1 mb-2">Отметить все как прочитанные</a>
   </div>
 </div>
-<div class="ui-g-12 notifications-scroll-panel">
-  <div class="ui-g-12 notification-card mt-1 w-100" *ngFor="let notification of virtualNotifications">
+<div class="empty-notifications" *ngIf="total == 0">
+  У вас нет уведомлений за последние 7 дней
+</div>
+<div class="ui-g-12 notifications-scroll-panel" *ngIf="total > 0">
+  <div class="ui-g-12 notification-card mt-1 w-100" *ngFor="let notification of virtualNotifications"
+       [class.not-read-message]="notification?.messageStatus.value == 'NOT_READ'">
     <ng-container [ngSwitch]="notification?.messageType">
       <ng-container *ngSwitchCase="'CLASSIFIER_CONFIGURATION_CHANGE'">
         <div class="ui-g text-bold">
@@ -31,7 +35,7 @@
       </ng-container>
     </ng-container>
   </div>
-  <div class="ui-g-12" *ngIf="hasContent()">
+  <div class="ui-g-12" *ngIf="hasMoreContent()">
     <div class="ui-g mx-auto d-flex align-items-center justify-content-center">
       <a [routerLink]="" class="text-bold link mt-2" (click)="onLoad()">Показать еще</a>
     </div>

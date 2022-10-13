@@ -31,7 +31,7 @@ export class NotificationsCenterComponent {
     this.total = 0;
   }
 
-  public hasContent(): boolean {
+  public hasMoreContent(): boolean {
     return this.virtualNotifications.length < this.total;
   }
 
