@@ -1,5 +1,61 @@
 <p-menubar [model]="items">
-  <button type="button" pButton icon="pi pi-user" label="{{ getUserLogin() }}" (click)="userMenu.toggle($event)"></button>
+  <a [routerLink]="" class="notification" (click)="infoPanel.toggle($event)">
+    <span class="pi pi-bell" style="font-size: 2rem; color: #2d2d2d">
+    </span>
+    <span class="badge">
+      15
+    </span>
+  </a>
+  <p-overlayPanel #infoPanel
+                  [showCloseIcon]="true"
+                  (onShow)="onShow()"
+                  (onHide)="onHide()"
+                  class="notifications-overlay">
+    <div class="ui-g-12">
+      <div class="ui-g ml-auto d-flex align-items-end justify-content-end line-border">
+        <a [routerLink]="" class="text-bold link mt-1 mb-2">Отметить все как прочитанные</a>
+      </div>
+    </div>
+    <div class="ui-g-12 notifications-scroll-panel">
+      <div class="ui-g-12 notification-card mt-1 w-100" *ngFor="let notification of virtualNotifications">
+        <ng-container [ngSwitch]="notification?.messageType">
+          <ng-container *ngSwitchCase="'EXPERIMENT_STATUS'">
+            <div class="ui-g text-bold">
+              <span class="pi pi-user" style="color: #2d2d2d; padding-bottom: 2px">stonnos</span>
+            </div>
+            <div class="ui-g text-bold text-left">
+              {{ notification?.messageText }}
+            </div>
+            <div class="ui-g text-left created-date">
+              {{ notification?.createdAt }}
+            </div>
+            <div class="ui-g mx-auto d-flex align-items-center justify-content-center">
+              <button
+                pButton
+                label="Открыть конфигурацию"
+                type="button">
+              </button>
+            </div>
+          </ng-container>
+          <ng-container *ngSwitchDefault>
+            <div class="ui-g align-items-center justify-content-center text-bold text-center">
+              {{ notification?.messageText }}
+            </div>
+          </ng-container>
+        </ng-container>
+      </div>
+      <div class="ui-g-12" *ngIf="hasContent()">
+        <div class="ui-g mx-auto d-flex align-items-center justify-content-center">
+          <a [routerLink]="" class="text-bold link mt-2" (click)="load()">Показать еще</a>
+        </div>
+      </div>
+    </div>
+  </p-overlayPanel>
+  <a [routerLink]="" class="user" (click)="userMenu.toggle($event)">
+    <span class="pi pi-user" style="font-size: 2rem; color: #2d2d2d">
+    </span>
+  </a>
+  <!--<button type="button" pButton icon="pi pi-user" label="{{ getUserLogin() }}" (click)="userMenu.toggle($event)"></button>-->
   <p-menu #userMenu [popup]="true" [model]="userMenuItems"></p-menu>
 </p-menubar>
 <router-outlet></router-outlet>
