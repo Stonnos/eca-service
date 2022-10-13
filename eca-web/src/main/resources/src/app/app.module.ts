@@ -45,6 +45,7 @@ import { ExportInstancesModule } from "./export-instances/export-instances.modul
 import { ClassifiersConfigurationFullDetailsModule } from "./classifiers-configuration-full-details/classifiers-configuration-full-details.module";
 import { ClassifiersConfigurationHistoryModule } from "./classifiers-configuration-history/classifiers-configuration-history.module";
 import { EventHandler } from "./common/event/event.handler";
+import { NotificationsCenterModule } from "./notifications-center/notifications-center.module";
 
 export function eventSubscribe(eventHandler: EventHandler) {
   return () => eventHandler.eventSubscribe();
@@ -96,7 +97,8 @@ export function eventSubscribe(eventHandler: EventHandler) {
     InstancesDetailsModule,
     ExportInstancesModule,
     ClassifiersConfigurationHistoryModule,
-    ClassifiersConfigurationFullDetailsModule
+    ClassifiersConfigurationFullDetailsModule,
+    NotificationsCenterModule
   ],
   providers: [
     CookieService,
