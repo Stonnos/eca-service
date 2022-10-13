@@ -29,15 +29,21 @@ export class NotificationsCenterComponent {
   public clear(): void {
     this.virtualNotifications = [];
     this.total = 0;
+    console.log('Clear notifications');
   }
 
   public hasMoreContent(): boolean {
     return this.virtualNotifications.length < this.total;
   }
 
+  public isEmptyContent(): boolean {
+    return this.total == 0;
+  }
+
   public onLoad(): void {
     const rows = this.virtualNotifications.length;
     const page = Math.floor(rows / this.pageSize);
+    console.log('Notification page ' + page);
     const pageRequestDto = {
       page: page,
       size: this.pageSize

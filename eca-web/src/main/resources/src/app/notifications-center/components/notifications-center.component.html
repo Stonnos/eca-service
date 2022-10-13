@@ -1,12 +1,16 @@
 <div class="ui-g-12">
   <div class="ui-g ml-auto d-flex align-items-end justify-content-end line-border">
-    <a [routerLink]="" class="text-bold link mt-1 mb-2">Отметить все как прочитанные</a>
+    <a [routerLink]=""
+       class="text-bold link mt-1 mb-2"
+       [class.disabled-link]="loading || isEmptyContent()">
+      Отметить все как прочитанные
+    </a>
   </div>
 </div>
-<div class="empty-notifications" *ngIf="total == 0">
+<div class="empty-notifications" *ngIf="isEmptyContent()">
   У вас нет уведомлений за последние 7 дней
 </div>
-<div class="ui-g-12 notifications-scroll-panel" *ngIf="total > 0">
+<div class="ui-g-12 notifications-scroll-panel" *ngIf="!isEmptyContent()">
   <div class="ui-g-12 notification-card mt-1 w-100" *ngFor="let notification of virtualNotifications"
        [class.not-read-message]="notification?.messageStatus.value == 'NOT_READ'">
     <ng-container [ngSwitch]="notification?.messageType">
@@ -37,7 +41,12 @@
   </div>
   <div class="ui-g-12" *ngIf="hasMoreContent()">
     <div class="ui-g mx-auto d-flex align-items-center justify-content-center">
-      <a [routerLink]="" class="text-bold link mt-2" (click)="onLoad()">Показать еще</a>
+      <a [routerLink]=""
+         class="text-bold link mt-2"
+         [class.disabled-link]="loading"
+         (click)="onLoad()">
+        Показать еще
+      </a>
     </div>
   </div>
 </div>
