@@ -99,11 +99,11 @@ export class NotificationsCenterComponent {
 
   private getNextPage(pageRequest: SimplePageRequestDto): void {
     this.loading = true;
-    Logger.debug(`Get next notifications page for page request ${this.lastPageRequest}`);
+    Logger.debug(`Get next notifications page for page request [${this.lastPageRequest.page}, ${this.lastPageRequest.size}]`);
     this.userNotificationsService.getNotifications(pageRequest)
       .subscribe({
         next: (pageDto: PageDto<UserNotificationDto>) => {
-          Logger.debug(`Receiver notifications page ${pageDto.page} with size ${pageDto.content.length} for page request ${this.lastPageRequest}`);
+          Logger.debug(`Receiver notifications page ${pageDto.page} with size ${pageDto.content.length} for page request [${this.lastPageRequest.page}, ${this.lastPageRequest.size}]`);
           this.total = pageDto.totalCount;
           pageDto.content.forEach((notification: UserNotificationDto) => {
             this.virtualNotifications.set(notification.id, notification);
@@ -122,13 +122,13 @@ export class NotificationsCenterComponent {
       .filter((notification: UserNotificationDto) => notification.messageStatus.value == 'NOT_READ')
       .map((notification: UserNotificationDto) => notification.id);
     if (notReadIds.length == 0) {
-      Logger.debug(`All notification have already been read for page request ${this.lastPageRequest}`);
+      Logger.debug(`All notification have already been read for page request [${this.lastPageRequest.page}, ${this.lastPageRequest.size}]`);
       this.loading = false;
     } else {
       const readNotificationsDto = {
         ids: notReadIds
       };
-      Logger.debug(`Got not read notifications ids ${notReadIds} for page request ${this.lastPageRequest}`);
+      Logger.debug(`Got not read notifications ids ${notReadIds} for page request [${this.lastPageRequest.page}, ${this.lastPageRequest.size}]`);
       this.userNotificationsService.readNotifications(readNotificationsDto)
         .subscribe({
           next: () => {
