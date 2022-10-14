@@ -8,6 +8,6 @@
     "user"
   ],
   "additionalProperties": {
-    "CLASSIFIERS_CONFIGURATION_ID": "250"
+    "classifiersConfigurationId": "250"
   }
 }

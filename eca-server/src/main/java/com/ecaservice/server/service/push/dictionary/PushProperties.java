@@ -38,5 +38,5 @@ public class PushProperties {
     /**
      * Classifiers configuration id property
      */
-    public static final String CLASSIFIERS_CONFIGURATION_ID_PROPERTY = "CLASSIFIERS_CONFIGURATION_ID";
+    public static final String CLASSIFIERS_CONFIGURATION_ID_PROPERTY = "classifiersConfigurationId";
 }

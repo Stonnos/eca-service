@@ -17,7 +17,7 @@ public class UserNotificationParameterDto {
     /**
      * Parameter name
      */
-    @Schema(description = "Parameter name", example = "CLASSIFIERS_CONFIGURATION_ID", maxLength = MAX_LENGTH_255)
+    @Schema(description = "Parameter name", example = "classifiersConfigurationId", maxLength = MAX_LENGTH_255)
     private String name;
 
     /**
