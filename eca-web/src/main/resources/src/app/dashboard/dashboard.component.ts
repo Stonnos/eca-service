@@ -50,6 +50,10 @@ export class DashboardComponent implements OnInit {
     this.initUserMenu();
   }
 
+  public getUserLogin(): string {
+    return this.user && this.user.login;
+  }
+
   public showNotifications(): void {
     this.notificationsCenter.loadNext();
   }
