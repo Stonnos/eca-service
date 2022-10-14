@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Table;
 
 /**
@@ -15,7 +16,13 @@ import javax.persistence.Table;
  */
 @Data
 @Entity
-@Table(name = "notification_parameter")
+@Table(name = "notification_parameter",
+        indexes = @Index(
+                columnList = "id, parameter_name",
+                name = "notification_parameter_id_parameter_name_unique_idx",
+                unique = true
+        )
+)
 public class NotificationParameter {
 
     @Id
