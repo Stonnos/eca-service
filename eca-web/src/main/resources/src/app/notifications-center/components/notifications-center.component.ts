@@ -18,6 +18,7 @@ import { Router } from "@angular/router";
 })
 export class NotificationsCenterComponent {
 
+  private beforeReadNotificationsDelayMillis: number = 300;
   private total: number = 0;
   private pageSize: number = 5;
 
@@ -129,17 +130,19 @@ export class NotificationsCenterComponent {
         ids: notReadIds
       };
       Logger.debug(`Got not read notifications ids ${notReadIds} for page request [${this.lastPageRequest.page}, ${this.lastPageRequest.size}]`);
-      this.userNotificationsService.readNotifications(readNotificationsDto)
-        .subscribe({
-          next: () => {
-            this.getNextPage(this.lastPageRequest);
-            this.readEvent.emit();
-          },
-          error: (error) => {
-            this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-            this.loading = false;
-          }
-        });
+      setTimeout(() => {
+        this.userNotificationsService.readNotifications(readNotificationsDto)
+          .subscribe({
+            next: () => {
+              this.getNextPage(this.lastPageRequest);
+              this.readEvent.emit();
+            },
+            error: (error) => {
+              this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+              this.loading = false;
+            }
+          });
+      }, this.beforeReadNotificationsDelayMillis);
     }
   }
 }
