@@ -24,6 +24,7 @@
 * mailUrl - url модуля eca-mail
 * auditLogUrl - url модуля eca-audit-log
 * webAppUrl - url модуля для получения конфигурации web - приложения
+* webPushUrl - url REST API модуля eca-web-push
 * wsUrl - url сервера веб - сокетов (модуль eca-web-push)
 * clientId - идентификатор клиента
 * secret - секретный ключ или пароль клиента
