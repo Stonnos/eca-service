@@ -26,7 +26,7 @@ public class SimpleWebPushSender implements WebPushSender {
 
     @Override
     @Retry(value = "webPushRequest", exceptionStrategy = FEIGN_EXCEPTION_STRATEGY,
-            requestIdKey = "#pushRequest.eventId")
+            requestIdKey = "#pushRequest.requestId")
     public void send(AbstractPushRequest pushRequest) {
         log.info("Starting to send push request [{}], type [{}], message type [{}]", pushRequest.getRequestId(),
                 pushRequest.getPushType(), pushRequest.getMessageType());
