@@ -59,25 +59,3 @@
     width: 500px;
   }
 }
-
-.notifications-scroll-panel {
-  width: 100%;
-  max-height: 500px;
-  overflow-y: scroll;
-}
-
-.created-date {
-  font-size: 12px;
-  color: #6f6f6f;
-  margin-top: 2px;
-}
-
-.notification-card {
-  //border-radius: 5px;
-  //border: 0.5px solid;
-  border-bottom: 0.5px solid lightgrey;
-}
-
-.line-border {
-  border-bottom: 0.5px solid lightgrey;
-}
