@@ -32,7 +32,9 @@ export class PushService {
           next: (message) => {
             Logger.debug(`Received web push ${message.body}`);
             const pushRequestDto: PushRequestDto = JSON.parse(message.body);
-            this.showMessage(pushRequestDto);
+            if (pushRequestDto.showMessage) {
+              this.showMessage(pushRequestDto);
+            }
             this.messageSubject.next(pushRequestDto);
           },
           error: (error) => {
