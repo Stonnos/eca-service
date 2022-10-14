@@ -5,7 +5,7 @@ import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.event.model.ExperimentEmailEvent;
 import com.ecaservice.server.event.model.ExperimentFinishedEvent;
 import com.ecaservice.server.event.model.ExperimentResponseEvent;
-import com.ecaservice.server.event.model.ExperimentWebPushEvent;
+import com.ecaservice.server.event.model.push.ExperimentWebPushEvent;
 import com.ecaservice.server.model.entity.Channel;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.RequestStatus;

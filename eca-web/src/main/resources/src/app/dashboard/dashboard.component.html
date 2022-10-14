@@ -1,5 +1,24 @@
 <p-menubar [model]="items">
-  <button type="button" pButton icon="pi pi-user" label="{{ getUserLogin() }}" (click)="userMenu.toggle($event)"></button>
+  <a [routerLink]="" class="notification" (click)="infoPanel.toggle($event)">
+    <span class="pi pi-bell notification-icon">
+    </span>
+    <span *ngIf="userNotificationsStatistics?.notReadCount > 0" class="badge">
+      {{ getNotReadNotificationsCount() }}
+    </span>
+  </a>
+  <p-overlayPanel #infoPanel
+                  [showCloseIcon]="true"
+                  (onShow)="showNotifications()"
+                  (onHide)="hideNotifications()"
+                  class="notifications-overlay">
+    <app-notifications-center
+      (readEvent)="getNotificationsStatistics()">
+    </app-notifications-center>
+  </p-overlayPanel>
+  <a [routerLink]="" class="user" (click)="userMenu.toggle($event)" [pTooltip]="getUserLogin()">
+    <span class="pi pi-user user-icon">
+    </span>
+  </a>
   <p-menu #userMenu [popup]="true" [model]="userMenuItems"></p-menu>
 </p-menubar>
 <router-outlet></router-outlet>

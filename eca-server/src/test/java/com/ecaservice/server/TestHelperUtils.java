@@ -48,6 +48,7 @@ import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.evaluation.ClassifierOptionsRequestSource;
 import com.ecaservice.server.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.server.model.experiment.InitializationParams;
+import com.ecaservice.web.dto.model.ClassifierOptionsDto;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationHistoryDto;
 import com.ecaservice.web.dto.model.EnumDto;
@@ -155,6 +156,7 @@ public class TestHelperUtils {
     private static final String CONFIGURATION_NAME = "configuration";
     private static final int ITERATIONS = 1;
     private static final int NUM_THREADS = 3;
+    private static final long ID = 1L;
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     public static final String MESSAGE_TEXT = "Message text";
@@ -342,6 +344,19 @@ public class TestHelperUtils {
     }
 
     /**
+     * Creates classifier options dto.
+     *
+     * @return classifier options dto
+     */
+    public static ClassifierOptionsDto createClassifierOptionsDto() {
+        ClassifierOptionsDto classifierOptionsDto = new ClassifierOptionsDto();
+        classifierOptionsDto.setId(ID);
+        classifierOptionsDto.setOptionsName(OPTION_NAME);
+        classifierOptionsDto.setCreationDate(LocalDateTime.now());
+        return classifierOptionsDto;
+    }
+
+    /**
      * Creates classifiers configuration history entity.
      *
      * @param classifiersConfiguration - classifiers configuration entity
@@ -359,6 +374,24 @@ public class TestHelperUtils {
         classifiersConfigurationHistoryEntity.setMessageText(MESSAGE_TEXT);
         classifiersConfigurationHistoryEntity.setCreatedAt(createdAt);
         classifiersConfigurationHistoryEntity.setCreatedBy(CREATED_BY);
+        return classifiersConfigurationHistoryEntity;
+    }
+
+    /**
+     * Creates classifiers configuration history entity.
+     *
+     * @param classifiersConfiguration - classifiers configuration entity
+     * @param actionType               - action type
+     * @param user                     - user
+     * @return classifiers configuration history entity
+     */
+    public static ClassifiersConfigurationHistoryEntity createClassifiersConfigurationHistory(
+            ClassifiersConfiguration classifiersConfiguration,
+            ClassifiersConfigurationActionType actionType,
+            String user) {
+        var classifiersConfigurationHistoryEntity =
+                createClassifiersConfigurationHistory(classifiersConfiguration, actionType, LocalDateTime.now());
+        classifiersConfigurationHistoryEntity.setCreatedBy(user);
         return classifiersConfigurationHistoryEntity;
     }
 

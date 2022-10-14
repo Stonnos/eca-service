@@ -1,22 +1,17 @@
 package com.ecaservice.web.dto.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
 
 import static com.ecaservice.web.dto.util.FieldConstraints.FILTERS_LIST_MAX_LENGTH;
 import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
-import static com.ecaservice.web.dto.util.FieldConstraints.MAX_PAGE_SIZE;
-import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_0;
-import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
 /**
  * Page request model.
@@ -24,28 +19,11 @@ import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
  * @author Roman Batygin
  */
 @Data
-@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @NoArgsConstructor
 @Schema(description = "Page request model")
-public class PageRequestDto {
-
-    /**
-     * Page number
-     */
-    @NotNull
-    @Min(VALUE_0)
-    @Max(Integer.MAX_VALUE)
-    @Schema(description = "Page number", example = "0")
-    private Integer page;
-
-    /**
-     * Page size
-     */
-    @NotNull
-    @Min(VALUE_1)
-    @Max(MAX_PAGE_SIZE)
-    @Schema(description = "Page size", example = "25")
-    private Integer size;
+public class PageRequestDto extends SimplePageRequestDto {
 
     /**
      * Sort field
@@ -74,4 +52,27 @@ public class PageRequestDto {
     @Size(max = FILTERS_LIST_MAX_LENGTH)
     @Schema(description = "Filters list")
     private List<FilterRequestDto> filters;
+
+    /**
+     * Creates page request dto,
+     *
+     * @param page        - page number
+     * @param size        - pzge size
+     * @param sortField   - sort field
+     * @param ascending   - is ascending sort?
+     * @param searchQuery - search query string
+     * @param filters     - filter fields
+     */
+    public PageRequestDto(Integer page,
+                          Integer size,
+                          String sortField,
+                          boolean ascending,
+                          String searchQuery,
+                          List<FilterRequestDto> filters) {
+        super(page, size);
+        this.sortField = sortField;
+        this.ascending = ascending;
+        this.searchQuery = searchQuery;
+        this.filters = filters;
+    }
 }

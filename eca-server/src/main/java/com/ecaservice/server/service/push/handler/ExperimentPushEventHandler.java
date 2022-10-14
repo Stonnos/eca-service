@@ -1,16 +1,13 @@
-package com.ecaservice.server.service.push;
+package com.ecaservice.server.service.push.handler;
 
+import com.ecaservice.server.event.model.push.ExperimentWebPushEvent;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.RequestStatusVisitor;
 import com.ecaservice.server.service.message.template.MessageTemplateProcessor;
-import com.ecaservice.web.dto.model.push.PushRequestDto;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.UUID;
 
 import static com.ecaservice.server.service.message.template.dictionary.MessageTemplateCodes.ERROR_EXPERIMENT;
 import static com.ecaservice.server.service.message.template.dictionary.MessageTemplateCodes.FINISHED_EXPERIMENT;
@@ -24,50 +21,33 @@ import static com.ecaservice.server.service.push.dictionary.PushProperties.EXPER
 import static com.ecaservice.server.service.push.dictionary.PushProperties.EXPERIMENT_STATUS_MESSAGE_TYPE;
 
 /**
- * Service for sending web pushes to client.
+ * Experiment web push event handler.
+ *
+ * @author Roman Batygin
  */
-@Slf4j
-@Service
-@RequiredArgsConstructor
-public class WebPushService {
+@Component
+public class ExperimentPushEventHandler extends AbstractSystemPushEventHandler<ExperimentWebPushEvent> {
 
     private final MessageTemplateProcessor messageTemplateProcessor;
-    private final WebPushClient webPushClient;
 
     /**
-     * Send web push with experiment changes.
+     * Constructor with parameters.
      *
-     * @param experiment - experiment entity
+     * @param messageTemplateProcessor - message template processor
      */
-    public void sendWebPush(Experiment experiment) {
-        log.info("Starting to sent web push for experiment [{}], request status [{}]", experiment.getRequestId(),
-                experiment.getRequestStatus());
-        try {
-            var pushRequest = buildPushRequest(experiment);
-            webPushClient.sendPush(pushRequest);
-            log.info("Web push has been sent for experiment [{}], request status [{}]", experiment.getRequestId(),
-                    experiment.getRequestStatus());
-        } catch (Exception ex) {
-            log.error("There was an error while sending web push for experiment [{}], status [{}]: {}",
-                    experiment.getRequestId(), experiment.getRequestStatus(), ex.getMessage());
-        }
+    public ExperimentPushEventHandler(MessageTemplateProcessor messageTemplateProcessor) {
+        super(ExperimentWebPushEvent.class);
+        this.messageTemplateProcessor = messageTemplateProcessor;
     }
 
-    private PushRequestDto buildPushRequest(Experiment experiment) {
-        var pushRequest = new PushRequestDto();
-        pushRequest.setRequestId(UUID.randomUUID().toString());
-        pushRequest.setMessageType(EXPERIMENT_STATUS_MESSAGE_TYPE);
-        String messageText = processMessageText(experiment);
-        pushRequest.setMessageText(messageText);
-        pushRequest.setAdditionalProperties(Map.of(
-                EXPERIMENT_ID_PROPERTY, String.valueOf(experiment.getId()),
-                EXPERIMENT_REQUEST_ID_PROPERTY, experiment.getRequestId(),
-                EXPERIMENT_REQUEST_STATUS_PROPERTY, experiment.getRequestStatus().name()
-        ));
-        return pushRequest;
+    @Override
+    protected String getMessageType() {
+        return EXPERIMENT_STATUS_MESSAGE_TYPE;
     }
 
-    private String processMessageText(Experiment experiment) {
+    @Override
+    protected String getMessageText(ExperimentWebPushEvent experimentWebPushEvent) {
+        var experiment = experimentWebPushEvent.getExperiment();
         return experiment.getRequestStatus().handle(new RequestStatusVisitor<>() {
             @Override
             public String caseNew(Experiment exp) {
@@ -95,5 +75,15 @@ public class WebPushService {
                         Collections.singletonMap(EXPERIMENT, exp));
             }
         }, experiment);
+    }
+
+    @Override
+    protected Map<String, String> createAdditionalProperties(ExperimentWebPushEvent experimentWebPushEvent) {
+        var experiment = experimentWebPushEvent.getExperiment();
+        return Map.of(
+                EXPERIMENT_ID_PROPERTY, String.valueOf(experiment.getId()),
+                EXPERIMENT_REQUEST_ID_PROPERTY, experiment.getRequestId(),
+                EXPERIMENT_REQUEST_STATUS_PROPERTY, experiment.getRequestStatus().name()
+        );
     }
 }

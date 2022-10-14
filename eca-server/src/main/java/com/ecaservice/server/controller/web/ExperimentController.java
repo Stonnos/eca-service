@@ -6,7 +6,7 @@ import com.ecaservice.common.web.dto.ValidationErrorDto;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.server.event.model.ExperimentEmailEvent;
-import com.ecaservice.server.event.model.ExperimentWebPushEvent;
+import com.ecaservice.server.event.model.push.ExperimentWebPushEvent;
 import com.ecaservice.server.mapping.ExperimentMapper;
 import com.ecaservice.server.mapping.ExperimentProgressMapper;
 import com.ecaservice.server.model.MsgProperties;

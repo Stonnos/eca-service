@@ -16,6 +16,11 @@ public class PushProperties {
     public static final String EXPERIMENT_STATUS_MESSAGE_TYPE = "EXPERIMENT_STATUS";
 
     /**
+     * Classifiers configuration change message type
+     */
+    public static final String CLASSIFIER_CONFIGURATION_CHANGE_MESSAGE_TYPE = "CLASSIFIER_CONFIGURATION_CHANGE";
+
+    /**
      * Experiment id property
      */
     public static final String EXPERIMENT_ID_PROPERTY = "experimentId";
@@ -29,4 +34,9 @@ public class PushProperties {
      * Experiment request status property
      */
     public static final String EXPERIMENT_REQUEST_STATUS_PROPERTY = "experimentRequestStatus";
+
+    /**
+     * Classifiers configuration id property
+     */
+    public static final String CLASSIFIERS_CONFIGURATION_ID_PROPERTY = "classifiersConfigurationId";
 }

@@ -1,15 +1,14 @@
-package com.ecaservice.server.event.model;
+package com.ecaservice.server.event.model.push;
 
 import com.ecaservice.server.model.entity.Experiment;
 import lombok.Getter;
-import org.springframework.context.ApplicationEvent;
 
 /**
  * Experiment web push event.
  *
  * @author Roman Batygin
  */
-public class ExperimentWebPushEvent extends ApplicationEvent {
+public class ExperimentWebPushEvent extends AbstractSystemPushEvent {
 
     /**
      * Experiment entity

@@ -1,12 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MenuItem, MessageService } from 'primeng/api';
 import { LogoutService } from "../auth/services/logout.service";
-import { MenuItemDto, UserDto } from "../../../../../../target/generated-sources/typescript/eca-web-dto";
+import {
+  MenuItemDto,
+  UserDto,
+  UserNotificationStatisticsDto
+} from "../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { HttpErrorResponse } from "@angular/common/http";
 import { UsersService } from "../users/services/users.service";
 import { WebAppService } from "../common/services/web-app.service";
 import { EventService } from "../common/event/event.service";
 import { EventType } from "../common/event/event.type";
+import { NotificationsCenterComponent } from "../notifications-center/components/notifications-center.component";
+import { UserNotificationsService } from "../notifications-center/services/user-notifications.service";
 
 @Component({
   selector: 'app-dashboard',
@@ -16,27 +22,51 @@ import { EventType } from "../common/event/event.type";
 })
 export class DashboardComponent implements OnInit {
 
+  private static readonly MAX_NOT_READ_NOTIFICATIONS_COUNT_TO_DISPLAY = 99;
+
   private user: UserDto;
 
   public items: MenuItem[] = [];
 
   public userMenuItems: MenuItem[] = [];
 
+  public userNotificationsStatistics: UserNotificationStatisticsDto;
+
+  @ViewChild(NotificationsCenterComponent, { static: true })
+  public notificationsCenter: NotificationsCenterComponent;
+
   public constructor(private logoutService: LogoutService,
                      private usersService: UsersService,
                      private webAppService: WebAppService,
                      private messageService: MessageService,
-                     private eventService: EventService) {
+                     private eventService: EventService,
+                     private userNotificationsService: UserNotificationsService) {
   }
 
   public ngOnInit() {
     this.getCurrentUser();
+    this.getNotificationsStatistics();
     this.getMenuItems();
     this.initUserMenu();
   }
 
   public getUserLogin(): string {
     return this.user && this.user.login;
+  }
+
+  public showNotifications(): void {
+    this.notificationsCenter.loadNext();
+  }
+
+  public hideNotifications(): void {
+    this.notificationsCenter.clear();
+  }
+
+  public getNotReadNotificationsCount() {
+    if (this.userNotificationsStatistics.notReadCount > DashboardComponent.MAX_NOT_READ_NOTIFICATIONS_COUNT_TO_DISPLAY) {
+      return `${DashboardComponent.MAX_NOT_READ_NOTIFICATIONS_COUNT_TO_DISPLAY}+`;
+    }
+    return this.userNotificationsStatistics.notReadCount;
   }
 
   public getCurrentUser(): void {
@@ -61,6 +91,18 @@ export class DashboardComponent implements OnInit {
         },
         error: (error) => {
           this.handleLogoutError(error);
+        }
+      });
+  }
+
+  public getNotificationsStatistics(): void {
+    this.userNotificationsService.getNotificationsStatistics()
+      .subscribe({
+        next: (userNotificationStatistics: UserNotificationStatisticsDto) => {
+          this.userNotificationsStatistics = userNotificationStatistics;
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
         }
       });
   }

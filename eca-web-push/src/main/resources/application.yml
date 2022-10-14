@@ -7,15 +7,41 @@ spring:
     loadbalancer:
       ribbon:
         enabled: false
+  ## Datasource properties
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/eca_web_push
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+        order_by:
+          default_null_ordering: last
+  liquibase:
+    contexts: schema,data
+    change-log: classpath:db/liquibase-changelog.xml
   sleuth:
     log:
       slf4j:
         whitelisted-mdc-keys: tx.id, ev.requestId
     propagation-keys: tx.id, ev.requestId
+
 eureka:
   client:
     registerWithEureka: false
     fetchRegistry: false
+
+## Application properties
+app:
+  maxPageSize: 50
+  notificationLifeTimeDays: 7
 
 auth-server:
   baseUrl: http://localhost:8085/eca-oauth
@@ -28,14 +54,21 @@ queues:
 ## Swagger properties
 open-api:
   basePath: /
-  title: Web pushes microservice
-  description: API provides operations for sending web pushes
+  title: Web push notifications microservice
+  description: API provides operations with notifications center and web pushes
   author: Roman Batygin
   email: roman.batygin@mail.ru
   projectVersion: @project.version@
+  tokenBaseUrl: http://localhost:8080
+  apiAuth:
+    PASSWORD:
+      scopes: web
 
 springdoc:
   swagger-ui:
+    oauth:
+      client-id: swagger
+      client-secret: swagger_secret
     disable-swagger-default-url: true
 
 management:

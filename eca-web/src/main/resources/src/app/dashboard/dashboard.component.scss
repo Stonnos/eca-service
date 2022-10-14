@@ -1,0 +1,61 @@
+.notification {
+  margin-top: 3px;
+  color: white;
+  text-decoration: none;
+  padding: 2px 4px;
+  position: relative;
+  display: inline-block;
+  border-radius: 2px;
+  margin-right: 2px;
+}
+
+.notification:hover {
+  background-color: #cbcbcb;
+}
+
+.notification .badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 4px 2px;
+  border-radius: 50%;
+  background-color: red;
+  font-size: 10px;
+  width: 18px;
+  height: 18px;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.user {
+  margin-top: 3px;
+  text-decoration: none;
+  padding: 2px 4px;
+  position: relative;
+  display: inline-block;
+  border-radius: 2px;
+  margin-right: 2px;
+}
+
+.user:hover {
+  background-color: #cbcbcb;
+}
+
+.user-icon {
+  font-size: 2rem;
+  color: #2d2d2d
+}
+
+.notification-icon {
+  font-size: 2rem;
+  color: #2d2d2d
+}
+
+.notifications-overlay::ng-deep {
+
+  .ui-overlaypanel-content {
+    width: 500px;
+  }
+}

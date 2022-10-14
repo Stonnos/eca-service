@@ -4,7 +4,7 @@ import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.server.event.model.ExperimentEmailEvent;
 import com.ecaservice.server.event.model.ExperimentResponseEvent;
-import com.ecaservice.server.event.model.ExperimentWebPushEvent;
+import com.ecaservice.server.event.model.push.ExperimentWebPushEvent;
 import com.ecaservice.server.model.MsgProperties;
 import com.ecaservice.server.service.experiment.ExperimentService;
 import org.junit.jupiter.api.Test;

@@ -2,7 +2,11 @@ package com.ecaservice.server.controller.web;
 
 import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.common.web.dto.ValidationErrorDto;
+import com.ecaservice.server.event.model.push.AddClassifierOptionsPushEvent;
+import com.ecaservice.server.event.model.push.DeleteClassifierOptionsPushEvent;
+import com.ecaservice.server.service.UserService;
 import com.ecaservice.server.service.classifiers.ClassifierOptionsService;
+import com.ecaservice.server.service.classifiers.ClassifiersConfigurationService;
 import com.ecaservice.web.dto.model.ClassifierOptionsDto;
 import com.ecaservice.web.dto.model.ClassifiersOptionsPageDto;
 import com.ecaservice.web.dto.model.CreateClassifierOptionsResultDto;
@@ -20,6 +24,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -55,6 +60,9 @@ import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 public class ClassifierOptionsController {
 
     private final ClassifierOptionsService classifierOptionsService;
+    private final ClassifiersConfigurationService classifiersConfigurationService;
+    private final UserService userService;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     /**
      * Finds classifiers options configs page.
@@ -189,6 +197,7 @@ public class ClassifierOptionsController {
             ClassifierOptions classifierOptions = parseOptions(inputStream);
             var classifierOptionsDto =
                     classifierOptionsService.saveClassifierOptions(configurationId, classifierOptions);
+            pushAddOptionsEvent(configurationId, classifierOptionsDto);
             classifierOptionsResultDto.setId(classifierOptionsDto.getId());
             classifierOptionsResultDto.setSuccess(true);
         } catch (Exception ex) {
@@ -264,7 +273,9 @@ public class ClassifierOptionsController {
             @RequestBody ClassifierOptions classifierOptions) {
         log.info("Received request to save classifier options {} for configuration id [{}]", classifierOptions,
                 configurationId);
-        return classifierOptionsService.saveClassifierOptions(configurationId, classifierOptions);
+        var classifierOptionsDto = classifierOptionsService.saveClassifierOptions(configurationId, classifierOptions);
+        pushAddOptionsEvent(configurationId, classifierOptionsDto);
+        return classifierOptionsDto;
     }
 
     /**
@@ -308,8 +319,17 @@ public class ClassifierOptionsController {
     public void delete(@Parameter(description = "Classifier options id", example = "1", required = true)
                        @Min(VALUE_1) @Max(Long.MAX_VALUE)
                        @RequestParam long id) {
-        classifierOptionsService.deleteOptions(id);
+        var deletedOptions = classifierOptionsService.deleteOptions(id);
+        var pushEvent = new DeleteClassifierOptionsPushEvent(this, userService.getCurrentUser(),
+                deletedOptions.getConfiguration(), deletedOptions.getId(), deletedOptions.getOptionsName());
+        applicationEventPublisher.publishEvent(pushEvent);
     }
 
+    private void pushAddOptionsEvent(long configurationId, ClassifierOptionsDto classifierOptionsDto) {
+        var classifiersConfiguration = classifiersConfigurationService.getById(configurationId);
+        var event = new AddClassifierOptionsPushEvent(this, userService.getCurrentUser(),
+                classifiersConfiguration, classifierOptionsDto.getId(), classifierOptionsDto.getOptionsName());
+        applicationEventPublisher.publishEvent(event);
+    }
 
 }

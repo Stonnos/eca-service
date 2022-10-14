@@ -1,4 +1,4 @@
-import { Component, Injector, OnInit } from '@angular/core';
+import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
 import {
   ClassifierOptionsDto, ClassifiersConfigurationDto, FormTemplateDto, PageDto,
   PageRequestDto
@@ -10,25 +10,26 @@ import { OverlayPanel} from "primeng/primeng";
 import { Observable } from "rxjs/internal/Observable";
 import { ClassifierOptionsFields } from "../../common/util/field-names";
 import { FieldService } from "../../common/services/field.service";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, NavigationEnd, Router, RouterEvent } from "@angular/router";
 import { ClassifiersConfigurationsService } from "../../classifiers-configurations/services/classifiers-configurations.service";
 import { ClassifiersConfigurationModel } from "../../create-classifiers-configuration/model/classifiers-configuration.model";
 import { ExperimentTabUtils } from "../../experiments-tabs/model/experiment-tab.utils";
-import { finalize } from "rxjs/internal/operators";
+import { filter, finalize } from "rxjs/internal/operators";
 import { Utils } from "../../common/util/utils";
 import { OperationType }  from "../../common/model/operation-type.enum";
 import { FormTemplatesService } from "../../form-templates/services/form-templates.service";
 import { FormField } from "../../form-templates/model/form-template.model";
 import { FormTemplatesMapper } from "../../form-templates/services/form-templates.mapper";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: 'app-classifiers-configuration-details',
   templateUrl: './classifiers-configuration-details.component.html',
   styleUrls: ['./classifiers-configuration-details.component.scss']
 })
-export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<ClassifierOptionsDto> implements OnInit {
+export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<ClassifierOptionsDto> implements OnInit, OnDestroy {
 
-  private readonly configurationId: number;
+  private configurationId: number;
 
   public classifiersConfiguration: ClassifiersConfigurationDto;
 
@@ -44,6 +45,8 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
 
   public selectedTemplate: FormTemplateDto;
   public selectedFormFields: FormField[] = [];
+
+  private routeUpdateSubscription: Subscription;
 
   public constructor(private injector: Injector,
                      private classifierOptionsService: ClassifierOptionsService,
@@ -63,6 +66,11 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
   public ngOnInit() {
     this.getClassifiersConfigurationDetails();
     this.getClassifiersTemplates();
+    this.subscribeForRouteChanges();
+  }
+
+  public ngOnDestroy(): void {
+    this.routeUpdateSubscription.unsubscribe();
   }
 
   public getClassifiersConfigurationDetails(): void {
@@ -278,6 +286,17 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
         }
       });
+  }
+
+  private subscribeForRouteChanges(): void {
+    //Subscribe for route changes in current details component
+    //Used for route from configuration details to another details via push
+    this.routeUpdateSubscription = this.router.events.pipe(
+      filter((event: RouterEvent) => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      this.configurationId = this.route.snapshot.params.id;
+      this.getClassifiersConfigurationDetails();
+    });
   }
 
   private initColumns() {

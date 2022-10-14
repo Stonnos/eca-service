@@ -1,8 +1,8 @@
-package com.ecaservice.web.push.controller;
+package com.ecaservice.web.push.controller.api;
 
 import com.ecaservice.common.web.dto.ValidationErrorDto;
-import com.ecaservice.web.dto.model.push.PushRequestDto;
-import com.ecaservice.web.push.config.ws.QueueConfig;
+import com.ecaservice.web.push.dto.AbstractPushRequest;
+import com.ecaservice.web.push.service.handler.AbstractPushRequestHandler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -13,13 +13,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * Implements REST API for sending web pushes.
@@ -29,26 +29,29 @@ import javax.validation.Valid;
 @Slf4j
 @Tag(name = "API for sending web pushes")
 @RestController
-@RequestMapping("/push")
+@RequestMapping("/api/push")
 @RequiredArgsConstructor
 public class WebPushController {
 
-    private final QueueConfig queueConfig;
-    private final SimpMessagingTemplate messagingTemplate;
+    private final List<AbstractPushRequestHandler> pushRequestHandlers;
 
     /**
-     * Send web push.
+     * Send push notification.
      *
-     * @param pushRequestDto - push request dto
+     * @param pushRequest - push notification
      */
     @Operation(
-            description = "Send web push",
-            summary = "Send web push",
+            description = "Send push notification",
+            summary = "Send push notification",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
                             @ExampleObject(
-                                    name = "PushRequest",
-                                    ref = "#/components/examples/PushRequest"
+                                    name = "SystemPushRequest",
+                                    ref = "#/components/examples/SystemPushRequest"
+                            ),
+                            @ExampleObject(
+                                    name = "UserNotificationPushRequest",
+                                    ref = "#/components/examples/UserNotificationPushRequest"
                             )
                     })
             }),
@@ -69,15 +72,21 @@ public class WebPushController {
             }
     )
     @PostMapping(value = "/send")
-    public void sentPush(@Valid @RequestBody PushRequestDto pushRequestDto) {
-        log.info("Received push request [{}], message type [{}], additional properties {}",
-                pushRequestDto.getRequestId(), pushRequestDto.getMessageType(),
-                pushRequestDto.getAdditionalProperties());
-        String queue = queueConfig.getPushQueue();
-        log.info("Starting to sent push request [{}, [{}]] to queue [{}]", pushRequestDto.getRequestId(),
-                pushRequestDto.getMessageType(), queue);
-        messagingTemplate.convertAndSend(queue, pushRequestDto);
-        log.info("Push request [{}, [{}]] has been send to queue [{}]", pushRequestDto.getRequestId(),
-                pushRequestDto.getMessageType(), queue);
+    @SuppressWarnings("unchecked")
+    public void sentPushNotification(@Valid @RequestBody AbstractPushRequest pushRequest) {
+        log.info("Received push request [{}] with type [{}], message code [{}]", pushRequest.getRequestId(),
+                pushRequest.getPushType(), pushRequest.getMessageType());
+        var handler = getRequestHandler(pushRequest);
+        handler.handle(pushRequest);
+        log.info("Push request [{}] with type [{}], message code [{}] has been processed", pushRequest.getRequestId(),
+                pushRequest.getPushType(), pushRequest.getMessageType());
+    }
+
+    private AbstractPushRequestHandler getRequestHandler(AbstractPushRequest pushRequest) {
+        return pushRequestHandlers.stream()
+                .filter(handler -> handler.canHandle(pushRequest))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException(
+                        String.format("Can't handle push type [%s]", pushRequest.getPushType())));
     }
 }
