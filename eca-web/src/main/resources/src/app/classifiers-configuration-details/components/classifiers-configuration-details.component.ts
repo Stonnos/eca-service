@@ -1,4 +1,4 @@
-import { Component, Injector, OnInit } from '@angular/core';
+import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
 import {
   ClassifierOptionsDto, ClassifiersConfigurationDto, FormTemplateDto, PageDto,
   PageRequestDto
@@ -27,7 +27,7 @@ import { Subscription } from "rxjs";
   templateUrl: './classifiers-configuration-details.component.html',
   styleUrls: ['./classifiers-configuration-details.component.scss']
 })
-export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<ClassifierOptionsDto> implements OnInit {
+export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<ClassifierOptionsDto> implements OnInit, OnDestroy {
 
   private configurationId: number;
 
@@ -67,6 +67,10 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
     this.getClassifiersConfigurationDetails();
     this.getClassifiersTemplates();
     this.subscribeForRouteChanges();
+  }
+
+  public ngOnDestroy(): void {
+    this.routeUpdateSubscription.unsubscribe();
   }
 
   public getClassifiersConfigurationDetails(): void {
