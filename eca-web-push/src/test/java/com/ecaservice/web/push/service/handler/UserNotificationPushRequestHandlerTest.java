@@ -4,6 +4,7 @@ import com.ecaservice.web.push.service.UserNotificationService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -24,6 +25,8 @@ class UserNotificationPushRequestHandlerTest {
 
     @MockBean
     private UserNotificationService userNotificationService;
+    @MockBean
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @Inject
     private UserNotificationPushRequestHandler userNotificationPushRequestHandler;

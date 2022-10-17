@@ -3,6 +3,8 @@ package com.ecaservice.web.push.repository;
 import com.ecaservice.web.push.entity.PushTokenEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 /**
  * Repository to manage with {@link PushTokenEntity} persistence entity.
  *
@@ -17,4 +19,12 @@ public interface PushTokenRepository extends JpaRepository<PushTokenEntity, Long
      * @return push token entity
      */
     PushTokenEntity findByUser(String user);
+
+    /**
+     * Gets users push tokens.
+     *
+     * @param users - users list
+     * @return push tokens list
+     */
+    List<PushTokenEntity> findByUserIn(List<String> users);
 }
