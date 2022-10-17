@@ -10,6 +10,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import javax.inject.Inject;
 
 import static com.ecaservice.web.push.TestHelperUtils.createNotificationEntity;
+import static com.ecaservice.web.push.TestHelperUtils.createSystemPushRequest;
 import static com.ecaservice.web.push.TestHelperUtils.createUserPushNotificationRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -52,6 +53,32 @@ class NotificationMapperTest {
         assertThat(userNotificationDto.getMessageStatus().getDescription()).isEqualTo(
                 notificationEntity.getMessageStatus().getDescription());
         assertThat(userNotificationDto.getParameters()).hasSameSizeAs(notificationEntity.getParameters());
+    }
+
+    @Test
+    void testUserPushNotificationRequestToPushRequestDto() {
+        var userPushNotificationRequest = createUserPushNotificationRequest();
+        var pushRequestDto = notificationMapper.mapUserPushRequest(userPushNotificationRequest);
+        assertThat(pushRequestDto.getInitiator()).isEqualTo(userPushNotificationRequest.getInitiator());
+        assertThat(pushRequestDto.getMessageText()).isEqualTo(userPushNotificationRequest.getMessageText());
+        assertThat(pushRequestDto.getMessageType()).isEqualTo(userPushNotificationRequest.getMessageType());
+        assertThat(pushRequestDto.isShowMessage()).isTrue();
+        assertThat(pushRequestDto.getRequestId()).isEqualTo(userPushNotificationRequest.getRequestId());
+        assertThat(pushRequestDto.getAdditionalProperties()).containsAllEntriesOf(
+                userPushNotificationRequest.getAdditionalProperties());
+    }
+
+    @Test
+    void testSystemNotificationRequestToPushRequestDto() {
+        var systemPushRequest = createSystemPushRequest();
+        var pushRequestDto = notificationMapper.map(systemPushRequest);
+        assertThat(pushRequestDto.getInitiator()).isNull();
+        assertThat(pushRequestDto.getMessageText()).isEqualTo(systemPushRequest.getMessageText());
+        assertThat(pushRequestDto.getMessageType()).isEqualTo(systemPushRequest.getMessageType());
+        assertThat(pushRequestDto.isShowMessage()).isEqualTo(systemPushRequest.isShowMessage());
+        assertThat(pushRequestDto.getRequestId()).isEqualTo(systemPushRequest.getRequestId());
+        assertThat(pushRequestDto.getAdditionalProperties()).containsAllEntriesOf(
+                systemPushRequest.getAdditionalProperties());
     }
 
     private void verifyParameters(UserPushNotificationRequest request, NotificationEntity notificationEntity) {
