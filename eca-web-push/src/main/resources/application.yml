@@ -42,6 +42,10 @@ eureka:
 app:
   maxPageSize: 50
   notificationLifeTimeDays: 7
+  pushTokenValidityMinutes: 240
+  encrypt:
+    password: pa66word!
+    salt: s@lt#
 
 auth-server:
   baseUrl: http://localhost:8085/eca-oauth

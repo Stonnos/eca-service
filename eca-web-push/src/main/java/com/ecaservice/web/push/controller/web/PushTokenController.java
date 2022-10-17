@@ -1,6 +1,7 @@
 package com.ecaservice.web.push.controller.web;
 
 import com.ecaservice.web.dto.model.PushTokenDto;
+import com.ecaservice.web.push.service.PushTokenService;
 import com.ecaservice.web.push.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -31,6 +32,7 @@ import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
 public class PushTokenController {
 
     private final UserService userService;
+    private final PushTokenService pushTokenService;
 
     /**
      * Obtains push token for current user.
@@ -72,6 +74,6 @@ public class PushTokenController {
     public PushTokenDto obtainToken() {
         var user = userService.getCurrentUser();
         log.info("Received request to get push token for user [{}]", user);
-        return null;
+        return pushTokenService.obtainToken(user);
     }
 }

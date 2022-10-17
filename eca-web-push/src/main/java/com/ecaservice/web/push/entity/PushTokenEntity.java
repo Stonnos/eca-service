@@ -40,4 +40,13 @@ public class PushTokenEntity {
      */
     @Column(name = "expire_at", nullable = false)
     private LocalDateTime expireAt;
+
+    /**
+     * Validates token expiration.
+     *
+     * @return {@code true} if token is expired, otherwise {@code false}
+     */
+    public boolean isExpired() {
+        return LocalDateTime.now().isAfter(expireAt);
+    }
 }
