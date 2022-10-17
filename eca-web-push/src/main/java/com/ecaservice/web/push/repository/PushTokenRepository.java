@@ -2,7 +2,10 @@ package com.ecaservice.web.push.repository;
 
 import com.ecaservice.web.push.entity.PushTokenEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -21,10 +24,13 @@ public interface PushTokenRepository extends JpaRepository<PushTokenEntity, Long
     PushTokenEntity findByUser(String user);
 
     /**
-     * Gets users push tokens.
+     * Gets not expired users push tokens.
      *
-     * @param users - users list
+     * @param users    - users list
+     * @param dateTime - date time bound
      * @return push tokens list
      */
-    List<PushTokenEntity> findByUserIn(List<String> users);
+    @Query("select pt from PushTokenEntity pt where pt.user in (:users) and pt.expireAt > :dateTime")
+    List<PushTokenEntity> getNotExpiredTokens(@Param("users") List<String> users,
+                                              @Param("dateTime") LocalDateTime dateTime);
 }
