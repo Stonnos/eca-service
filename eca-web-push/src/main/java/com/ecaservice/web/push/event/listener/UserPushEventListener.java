@@ -59,11 +59,12 @@ public class UserPushEventListener {
                           UserPushNotificationRequest userPushNotificationRequest) {
         String tokenId = encryptorBase64AdapterService.decrypt(pushTokenEntity.getTokenId());
         String queue = String.format("%s/%s", queueConfig.getPushQueue(), tokenId);
-        log.info("Starting to sent user push request [{}, [{}]] to queue [{}]",
-                userPushNotificationRequest.getRequestId(), userPushNotificationRequest.getMessageType(), queue);
+        log.info("Starting to sent user push request [{}, [{}]] to queue [{}] for user [{}]",
+                userPushNotificationRequest.getRequestId(), userPushNotificationRequest.getMessageType(), queue,
+                pushTokenEntity.getUser());
         var pushRequestDto = notificationMapper.mapUserPushRequest(userPushNotificationRequest);
         messagingTemplate.convertAndSend(queue, pushRequestDto);
-        log.info("User push request [{}, [{}]] has been send to queue [{}]", userPushNotificationRequest.getRequestId(),
-                userPushNotificationRequest.getMessageType(), queue);
+        log.info("User [{}] push request [{}, [{}]] has been send to queue [{}]", pushTokenEntity.getUser(),
+                userPushNotificationRequest.getRequestId(), userPushNotificationRequest.getMessageType(), queue);
     }
 }
