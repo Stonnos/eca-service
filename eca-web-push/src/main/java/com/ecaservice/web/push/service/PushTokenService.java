@@ -58,7 +58,7 @@ public class PushTokenService {
         pushTokenRepository.save(pushTokenEntity);
         log.info("New push token has been created for user [{}]", user);
         return PushTokenDto.builder()
-                .tokenId(pushTokenEntity.getTokenId())
+                .tokenId(tokenId)
                 .build();
     }
 }
