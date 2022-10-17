@@ -52,7 +52,7 @@ public class PushTokenService {
 
     private PushTokenDto createNewToken(PushTokenEntity pushTokenEntity, String user) {
         String tokenId = UUID.randomUUID().toString();
-        pushTokenEntity.setTokenId(tokenId);
+        pushTokenEntity.setTokenId(encryptorBase64AdapterService.encrypt(tokenId));
         pushTokenEntity.setUser(user);
         pushTokenEntity.setExpireAt(LocalDateTime.now().plusMinutes(appProperties.getPushTokenValidityMinutes()));
         pushTokenRepository.save(pushTokenEntity);
