@@ -17,6 +17,8 @@ import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
 /**
  * Push request web socket transport model.
+ *
+ * @author Roman Batygin
  */
 @Data
 @Schema(description = "Push request web socket transport model")
