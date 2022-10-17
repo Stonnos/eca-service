@@ -1,15 +1,9 @@
 package com.ecaservice.web.push.service.handler;
 
 import com.ecaservice.web.push.dto.UserPushNotificationRequest;
-import com.ecaservice.web.push.entity.MessageStatus;
-import com.ecaservice.web.push.entity.NotificationEntity;
-import com.ecaservice.web.push.mapping.NotificationMapper;
-import com.ecaservice.web.push.repository.NotificationRepository;
+import com.ecaservice.web.push.service.UserNotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * User push notification request handler.
@@ -20,42 +14,25 @@ import java.util.stream.Collectors;
 @Component
 public class UserNotificationPushRequestHandler extends AbstractPushRequestHandler<UserPushNotificationRequest> {
 
-    private final NotificationMapper notificationMapper;
-    private final NotificationRepository notificationRepository;
+    private final UserNotificationService userNotificationService;
 
     /**
      * Constructor with parameters.
      *
-     * @param notificationMapper     - notification mapper
-     * @param notificationRepository - notification repository
+     * @param userNotificationService - user notification nservice
      */
-    public UserNotificationPushRequestHandler(NotificationMapper notificationMapper,
-                                              NotificationRepository notificationRepository) {
+    public UserNotificationPushRequestHandler(UserNotificationService userNotificationService) {
         super(UserPushNotificationRequest.class);
-        this.notificationMapper = notificationMapper;
-        this.notificationRepository = notificationRepository;
+        this.userNotificationService = userNotificationService;
     }
 
     @Override
     public void handle(UserPushNotificationRequest userPushNotificationRequest) {
-        log.info("Starting to save user push notification request [{}] type [{}] from initiator [{}] to receivers {}",
+        log.info("Received user push notification request [{}] type [{}] from initiator [{}] to receivers {}",
                 userPushNotificationRequest.getRequestId(), userPushNotificationRequest.getMessageType(),
                 userPushNotificationRequest.getInitiator(), userPushNotificationRequest.getReceivers());
-        var notifications = createNotifications(userPushNotificationRequest);
-        notificationRepository.saveAll(notifications);
-        log.info("[{}] notifications has been saved for push notification request [{}]",
-                userPushNotificationRequest.getRequestId(), notifications.size());
-    }
-
-    private List<NotificationEntity> createNotifications(UserPushNotificationRequest userPushNotificationRequest) {
-        return userPushNotificationRequest.getReceivers()
-                .stream()
-                .map(receiver -> {
-                    var notification = notificationMapper.map(userPushNotificationRequest);
-                    notification.setReceiver(receiver);
-                    notification.setMessageStatus(MessageStatus.NOT_READ);
-                    return notification;
-                })
-                .collect(Collectors.toList());
+        userNotificationService.save(userPushNotificationRequest);
+        log.info("User push notification request [{}] type [{}] has been processed",
+                userPushNotificationRequest.getRequestId(), userPushNotificationRequest.getMessageType());
     }
 }
