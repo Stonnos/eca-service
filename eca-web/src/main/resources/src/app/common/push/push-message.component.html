@@ -2,11 +2,22 @@
   <ng-template let-message pTemplate="message">
     <ng-container [ngSwitch]="message.data.messageType">
       <ng-container *ngSwitchCase="'EXPERIMENT_STATUS'">
-        <div class="ui-g align-items-center justify-content-center text-bold text-center">
+        <div class="ui-g text-bold text-left">
           {{ message.summary }}
         </div>
         <div class="ui-g mx-auto d-flex align-items-center justify-content-center">
           <a [routerLink]="" class="text-bold white-link" (click)="onLinkClick(message.data)">Открыть заявку</a>
+        </div>
+      </ng-container>
+      <ng-container *ngSwitchCase="'CLASSIFIER_CONFIGURATION_CHANGE'">
+        <div class="ui-g text-bold">
+          <span class="pi pi-user initiator">{{ message.data.initiator }}</span>
+        </div>
+        <div class="ui-g text-bold text-left">
+          {{ message.summary }}
+        </div>
+        <div class="ui-g mx-auto d-flex align-items-center justify-content-center">
+          <a [routerLink]="" class="text-bold white-link" (click)="onLinkClick(message.data)">Открыть конфигурацию</a>
         </div>
       </ng-container>
       <ng-container *ngSwitchDefault>
