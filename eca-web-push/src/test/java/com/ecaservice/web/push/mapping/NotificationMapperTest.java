@@ -1,5 +1,6 @@
 package com.ecaservice.web.push.mapping;
 
+import com.ecaservice.web.dto.model.push.PushType;
 import com.ecaservice.web.push.dto.UserPushNotificationRequest;
 import com.ecaservice.web.push.entity.NotificationEntity;
 import org.junit.jupiter.api.Test;
@@ -64,6 +65,7 @@ class NotificationMapperTest {
         assertThat(pushRequestDto.getMessageType()).isEqualTo(userPushNotificationRequest.getMessageType());
         assertThat(pushRequestDto.isShowMessage()).isTrue();
         assertThat(pushRequestDto.getRequestId()).isEqualTo(userPushNotificationRequest.getRequestId());
+        assertThat(pushRequestDto.getPushType()).isEqualTo(PushType.USER_NOTIFICATION);
         assertThat(pushRequestDto.getAdditionalProperties()).containsAllEntriesOf(
                 userPushNotificationRequest.getAdditionalProperties());
     }
@@ -77,6 +79,7 @@ class NotificationMapperTest {
         assertThat(pushRequestDto.getMessageType()).isEqualTo(systemPushRequest.getMessageType());
         assertThat(pushRequestDto.isShowMessage()).isEqualTo(systemPushRequest.isShowMessage());
         assertThat(pushRequestDto.getRequestId()).isEqualTo(systemPushRequest.getRequestId());
+        assertThat(pushRequestDto.getPushType()).isEqualTo(PushType.SYSTEM);
         assertThat(pushRequestDto.getAdditionalProperties()).containsAllEntriesOf(
                 systemPushRequest.getAdditionalProperties());
     }
