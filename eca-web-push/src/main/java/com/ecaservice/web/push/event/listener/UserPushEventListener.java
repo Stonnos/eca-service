@@ -13,9 +13,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.List;
 
 /**
  * User push event listener.
@@ -42,33 +40,32 @@ public class UserPushEventListener {
     public void handlePushEvent(UserPushNotificationRequest userPushNotificationRequest) {
         log.info("Starting to handle user notification push event [{}]", userPushNotificationRequest.getRequestId());
         var pushTokens = getValidPushTokens(userPushNotificationRequest);
-        userPushNotificationRequest.getReceivers().forEach(user -> {
-            var pushTokenEntity = pushTokens.get(user);
-            if (pushTokenEntity == null) {
-                log.warn("Valid push token not found for user [{}]. Skipped...", user);
-            } else {
-                sendPush(pushTokenEntity, userPushNotificationRequest);
-            }
-        });
+        log.info("[{}] valid push tokens has been found for push event [{}] with receivers [{}]", pushTokens.size(),
+                userPushNotificationRequest.getRequestId(), userPushNotificationRequest.getReceivers());
+        pushTokens.forEach(pushTokenEntity -> sendPush(pushTokenEntity, userPushNotificationRequest));
         log.info("User notification push event [{}] has been processed", userPushNotificationRequest.getRequestId());
     }
 
-    private Map<String, PushTokenEntity> getValidPushTokens(UserPushNotificationRequest userPushNotificationRequest) {
-        return pushTokenRepository.getNotExpiredTokens(userPushNotificationRequest.getReceivers(), LocalDateTime.now())
-                .stream()
-                .collect(Collectors.toMap(PushTokenEntity::getUser, Function.identity()));
+    private List<PushTokenEntity> getValidPushTokens(UserPushNotificationRequest userPushNotificationRequest) {
+        return pushTokenRepository.getNotExpiredTokens(userPushNotificationRequest.getReceivers(), LocalDateTime.now());
     }
 
     private void sendPush(PushTokenEntity pushTokenEntity,
                           UserPushNotificationRequest userPushNotificationRequest) {
         String tokenId = encryptorBase64AdapterService.decrypt(pushTokenEntity.getTokenId());
         String queue = String.format("%s/%s", queueConfig.getPushQueue(), tokenId);
-        log.info("Starting to sent user push request [{}, [{}]] to ws queue for user [{}]",
-                userPushNotificationRequest.getRequestId(), userPushNotificationRequest.getMessageType(),
-                pushTokenEntity.getUser());
-        var pushRequestDto = notificationMapper.mapUserPushRequest(userPushNotificationRequest);
-        messagingTemplate.convertAndSend(queue, pushRequestDto);
-        log.info("User [{}] push request [{}, [{}]] has been send to ws queue", pushTokenEntity.getUser(),
-                userPushNotificationRequest.getRequestId(), userPushNotificationRequest.getMessageType());
+        try {
+            log.info("Starting to sent user push request [{}, [{}]] to ws queue for user [{}]",
+                    userPushNotificationRequest.getRequestId(), userPushNotificationRequest.getMessageType(),
+                    pushTokenEntity.getUser());
+            var pushRequestDto = notificationMapper.mapUserPushRequest(userPushNotificationRequest);
+            messagingTemplate.convertAndSend(queue, pushRequestDto);
+            log.info("User [{}] push request [{}, [{}]] has been send to ws queue", pushTokenEntity.getUser(),
+                    userPushNotificationRequest.getRequestId(), userPushNotificationRequest.getMessageType());
+        } catch (Exception ex) {
+            log.error("Error while sent user push request [{}, [{}]] to ws queue for user [{}]: {}",
+                    userPushNotificationRequest.getRequestId(), userPushNotificationRequest.getMessageType(),
+                    pushTokenEntity.getUser(), ex.getMessage());
+        }
     }
 }
