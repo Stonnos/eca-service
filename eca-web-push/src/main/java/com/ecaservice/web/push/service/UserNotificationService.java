@@ -49,8 +49,8 @@ public class UserNotificationService {
                 userPushNotificationRequest.getInitiator(), userPushNotificationRequest.getReceivers());
         var notifications = createNotifications(userPushNotificationRequest);
         notificationRepository.saveAll(notifications);
-        log.info("[{}] notifications has been saved for push notification request [{}]",
-                userPushNotificationRequest.getRequestId(), notifications.size());
+        log.info("[{}] notifications has been saved for push notification request [{}]", notifications.size(),
+                userPushNotificationRequest.getRequestId());
     }
 
     /**

@@ -26,7 +26,7 @@ public class PushTokenEntity {
     /**
      * User
      */
-    @Column(nullable = false, unique = true)
+    @Column(name = "user_name", nullable = false, unique = true)
     private String user;
 
     /**

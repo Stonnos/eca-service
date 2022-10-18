@@ -15,8 +15,8 @@
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="user" type="varchar(255)">
-                <constraints nullable="false" unique="true" uniqueConstraintName="push_token_user_unique_idx"/>
+            <column name="user_name" type="varchar(255)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="push_token_user_name_unique_idx"/>
             </column>
             <column name="token_id" type="varchar(255)">
                 <constraints nullable="false"/>
