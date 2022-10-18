@@ -4,6 +4,7 @@ import com.ecaservice.common.web.crypto.EncryptorBase64AdapterService;
 import com.ecaservice.web.push.config.ws.QueueConfig;
 import com.ecaservice.web.push.dto.UserPushNotificationRequest;
 import com.ecaservice.web.push.entity.PushTokenEntity;
+import com.ecaservice.web.push.event.model.UserPushEvent;
 import com.ecaservice.web.push.mapping.NotificationMapper;
 import com.ecaservice.web.push.repository.PushTokenRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,10 +35,11 @@ public class UserPushEventListener {
     /**
      * Handles user push event.
      *
-     * @param userPushNotificationRequest - user push notification request
+     * @param userPushEvent - user push event
      */
     @EventListener
-    public void handlePushEvent(UserPushNotificationRequest userPushNotificationRequest) {
+    public void handlePushEvent(UserPushEvent userPushEvent) {
+        var userPushNotificationRequest = userPushEvent.getUserPushNotificationRequest();
         log.info("Starting to handle user notification push event [{}]", userPushNotificationRequest.getRequestId());
         var pushTokens = getValidPushTokens(userPushNotificationRequest);
         log.info("[{}] valid push tokens has been found for push event [{}] with receivers [{}]", pushTokens.size(),
