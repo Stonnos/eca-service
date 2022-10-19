@@ -1083,9 +1083,6 @@ __string__
 
 
 
-*Values*:
-
-* EXPERIMENT_STATUS
 |*messageText*
 |Message text
 a|
@@ -1195,9 +1192,6 @@ __string__
 
 
 
-*Values*:
-
-* EXPERIMENT_STATUS
 |*messageText*
 |Message text
 a|
@@ -1260,7 +1254,7 @@ __boolean__
 |===
 === UserPushNotificationRequest
 :table-caption: Table
-.User notification push request
+.User push notification request
 [width=100%]
 |===
 |*Name*|*Description*|*Schema*
@@ -1326,9 +1320,6 @@ __string__
 
 
 
-*Values*:
-
-* EXPERIMENT_STATUS
 |*messageText*
 |Message text
 a|
