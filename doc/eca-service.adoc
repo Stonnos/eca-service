@@ -736,7 +736,7 @@ image::./images/eca-audit-log-db-schema.png[alt=Схема базы данных
 
 === 3.13 Схема БД eca-web-push
 
-На рисунке 3.4 приведена схема базы данных eca-web-push:
+На рисунке 3.7 приведена схема базы данных eca-web-push:
 
 image::./images/eca-web-push-db-schema.png[alt=Схема базы данных eca-web-push,scaledwidth=80%]
 
