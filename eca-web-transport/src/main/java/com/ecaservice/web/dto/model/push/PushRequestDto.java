@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.Map;
@@ -17,10 +18,19 @@ import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
 /**
  * Push request web socket transport model.
+ *
+ * @author Roman Batygin
  */
 @Data
 @Schema(description = "Push request web socket transport model")
 public class PushRequestDto {
+
+    /**
+     * Push type
+     */
+    @NotNull
+    @Schema(description = "Push type", minLength = VALUE_1, maxLength = MAX_LENGTH_255, required = true)
+    private final PushType pushType;
 
     /**
      * Request id (used for cross system logging)

@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.ecaservice.web.push.TestHelperUtils.createNotificationEntity;
+import static com.ecaservice.web.push.TestHelperUtils.createUserPushNotificationRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
@@ -58,6 +59,24 @@ class UserNotificationServiceTest extends AbstractJpaTest {
     @Override
     public void deleteAll() {
         notificationRepository.deleteAll();
+    }
+
+    @Test
+    void testSaveUserNotification() {
+        var userPushNotificationRequest = createUserPushNotificationRequest();
+        userNotificationService.save(userPushNotificationRequest);
+        var notificationEntities = notificationRepository.findAll();
+        assertThat(notificationEntities).hasSameSizeAs(userPushNotificationRequest.getReceivers());
+        var notificationEntity = notificationEntities.iterator().next();
+        assertThat(notificationEntity.getCreated()).isNotNull();
+        assertThat(notificationEntity.getInitiator()).isEqualTo(userPushNotificationRequest.getInitiator());
+        assertThat(notificationEntity.getMessageText()).isEqualTo(userPushNotificationRequest.getMessageText());
+        assertThat(notificationEntity.getMessageType()).isEqualTo(userPushNotificationRequest.getMessageType());
+        String expectedReceiver = userPushNotificationRequest.getReceivers().iterator().next();
+        assertThat(notificationEntity.getReceiver()).isEqualTo(expectedReceiver);
+        assertThat(notificationEntity.getMessageStatus()).isEqualTo(MessageStatus.NOT_READ);
+        assertThat(notificationEntity.getParameters().size()).isEqualTo(
+                userPushNotificationRequest.getAdditionalProperties().size());
     }
 
     @Test

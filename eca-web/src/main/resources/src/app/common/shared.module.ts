@@ -25,6 +25,7 @@ import { PushService } from "./push/push.service";
 import { PushMessageComponent } from "./push/push-message.component";
 import { EventService } from "./event/event.service";
 import { EventHandler } from "./event/event.handler";
+import { PushTokenService } from "./push/push-token.service";
 
 @NgModule({
   imports: [
@@ -72,6 +73,7 @@ import { EventHandler } from "./event/event.handler";
     WebAppService,
     WsService,
     PushService,
+    PushTokenService,
     EventService,
     EventHandler
   ]

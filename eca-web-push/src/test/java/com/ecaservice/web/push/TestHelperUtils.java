@@ -7,6 +7,7 @@ import com.ecaservice.web.push.dto.UserPushNotificationRequest;
 import com.ecaservice.web.push.entity.MessageStatus;
 import com.ecaservice.web.push.entity.NotificationEntity;
 import com.ecaservice.web.push.entity.NotificationParameter;
+import com.ecaservice.web.push.entity.PushTokenEntity;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Cleanup;
 import lombok.SneakyThrows;
@@ -45,6 +46,7 @@ public class TestHelperUtils {
         var pushRequestDto = new SystemPushRequest();
         pushRequestDto.setRequestId(UUID.randomUUID().toString());
         pushRequestDto.setMessageType(EXPERIMENT_STATUS);
+        pushRequestDto.setAdditionalProperties(Collections.singletonMap("key", "value"));
         return pushRequestDto;
     }
 
@@ -120,5 +122,21 @@ public class TestHelperUtils {
         userNotificationDto.setMessageStatus(
                 new EnumDto(MessageStatus.NOT_READ.name(), MessageStatus.NOT_READ.getDescription()));
         return userNotificationDto;
+    }
+
+    /**
+     * Creates push token entity.
+     *
+     * @param user     - user
+     * @param tokenId  - token id
+     * @param expireAt - expire at date
+     * @return push token entity
+     */
+    public static PushTokenEntity createPushTokenEntity(String user, String tokenId, LocalDateTime expireAt) {
+        var pushTokenEntity = new PushTokenEntity();
+        pushTokenEntity.setUser(user);
+        pushTokenEntity.setTokenId(tokenId);
+        pushTokenEntity.setExpireAt(expireAt);
+        return pushTokenEntity;
     }
 }

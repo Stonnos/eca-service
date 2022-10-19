@@ -27,4 +27,32 @@ public class AppProperties {
      */
     @NotNull
     private Integer notificationLifeTimeDays;
+
+    /**
+     * Push token validity time in minutes
+     */
+    @NotNull
+    private Integer pushTokenValidityMinutes;
+
+    /**
+     * Encrypt properties
+     */
+    private EncryptProperties encrypt;
+
+    /**
+     * Encrypt properties.
+     */
+    @Data
+    public static class EncryptProperties {
+
+        /**
+         * Password for PBKDF2WithHmacSHA1 algorithm
+         */
+        private String password;
+
+        /**
+         * Salt for PBKDF2WithHmacSHA1 algorithm
+         */
+        private String salt;
+    }
 }

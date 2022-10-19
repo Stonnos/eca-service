@@ -24,6 +24,9 @@ export class PushMessageComponent implements OnInit {
     if (pushRequestDto.messageType == PushMessageType.EXPERIMENT_STATUS_CHANGE) {
       const id = pushRequestDto.additionalProperties[PushVariables.EXPERIMENT_ID];
       this.router.navigate([RouterPaths.EXPERIMENT_DETAILS_URL, id]);
+    } else if (pushRequestDto.messageType == PushMessageType.CLASSIFIER_CONFIGURATION_CHANGE) {
+      const configurationId = pushRequestDto.additionalProperties[PushVariables.CLASSIFIERS_CONFIGURATION_ID];
+      this.router.navigate([RouterPaths.CLASSIFIERS_CONFIGURATION_DETAILS_URL, configurationId]);
     } else {
       this.messageService.add({severity: 'error', summary: 'Ошибка', detail: `Can't handle push message ${pushRequestDto.messageType} as link`});
     }

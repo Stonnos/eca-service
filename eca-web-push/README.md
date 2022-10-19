@@ -26,6 +26,9 @@
 2) app — основные настройки модуля:
    * app.maxPageSize - максимальное число элементов на странице (используется для запросов с пагинацией)
    * app.notificationLifeTimeDays - время жизни уведомления для пользователя (в днях)
+   * app.pushTokenValidityMinutes - время жизни токена для пуш уведомлений
+   * app.encrypt.password - пароль для алгоритма генерации ключа PBKDF2WithHmacSHA1
+   * app.encrypt.salt - соль для алгоритма генерации ключа PBKDF2WithHmacSHA1
 2) queues - настройки очередей для веб - сокетов
     * pushQueue - название очереди для отправки пушей
 3) open-api - настройки Swagger

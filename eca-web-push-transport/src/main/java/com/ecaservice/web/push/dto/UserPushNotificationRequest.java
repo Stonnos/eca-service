@@ -23,13 +23,13 @@ import static com.ecaservice.web.push.dto.FieldConstraints.RECEIVERS_MAX_SIZE;
 import static com.ecaservice.web.push.dto.FieldConstraints.VALUE_1;
 
 /**
- * User notification push request.
+ * User push notification request.
  *
  * @author Roman Batygin
  */
 @Getter
 @Setter
-@Schema(description = "User notification push request")
+@Schema(description = "User push notification request")
 public class UserPushNotificationRequest extends AbstractPushRequest {
 
     /**

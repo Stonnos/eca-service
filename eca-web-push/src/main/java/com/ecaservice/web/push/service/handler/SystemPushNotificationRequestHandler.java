@@ -42,11 +42,16 @@ public class SystemPushNotificationRequestHandler extends AbstractPushRequestHan
                 systemPushRequest.getRequestId(), systemPushRequest.getMessageType(),
                 systemPushRequest.getAdditionalProperties());
         String queue = queueConfig.getPushQueue();
-        log.info("Starting to sent system push request [{}, [{}]] to queue [{}]", systemPushRequest.getRequestId(),
-                systemPushRequest.getMessageType(), queue);
-        var pushRequestDto = notificationMapper.map(systemPushRequest);
-        messagingTemplate.convertAndSend(queue, pushRequestDto);
-        log.info("System push request [{}, [{}]] has been send to queue [{}]", systemPushRequest.getRequestId(),
-                systemPushRequest.getMessageType(), queue);
+        try {
+            log.info("Starting to sent system push request [{}, [{}]] to queue [{}]", systemPushRequest.getRequestId(),
+                    systemPushRequest.getMessageType(), queue);
+            var pushRequestDto = notificationMapper.map(systemPushRequest);
+            messagingTemplate.convertAndSend(queue, pushRequestDto);
+            log.info("System push request [{}, [{}]] has been send to queue [{}]", systemPushRequest.getRequestId(),
+                    systemPushRequest.getMessageType(), queue);
+        } catch (Exception ex) {
+            log.info("Error while sent system push request [{}, [{}]] to queue [{}]: {}",
+                    systemPushRequest.getRequestId(), systemPushRequest.getMessageType(), queue, ex.getMessage());
+        }
     }
 }

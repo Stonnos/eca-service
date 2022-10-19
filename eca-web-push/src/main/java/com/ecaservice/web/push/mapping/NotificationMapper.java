@@ -59,6 +59,15 @@ public interface NotificationMapper {
     PushRequestDto map(SystemPushRequest systemPushRequest);
 
     /**
+     * Maps user notification push request to push request dto,
+     *
+     * @param userPushNotificationRequest - user notification push request
+     * @return push request dto
+     */
+    @Mapping(target = "showMessage", constant = "true")
+    PushRequestDto mapUserPushRequest(UserPushNotificationRequest userPushNotificationRequest);
+
+    /**
      * Maps notification parameters
      *
      * @param userPushNotificationRequest - user push notification request
