@@ -775,7 +775,7 @@ image::./images/eca-web-push-db-schema.png[alt=Схема базы данных 
 |notification_id         |bigint            |-|+|fk_notification_parameter_notification_id     |Внешний ключ уведомления
 |===
 
-Таблица содержит уникальный индекс notification_parameter_id_parameter_name_unique_idx на поля id, parameter_name.
+Таблица содержит уникальный индекс *notification_parameter_id_parameter_name_unique_idx* на поля *id*, *parameter_name*.
 
 Таблицы *databasechangeloglock* и *databasechangeloglock* предназначены для управления миграциями базы данных.
 
