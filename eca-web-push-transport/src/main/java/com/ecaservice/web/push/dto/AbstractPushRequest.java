@@ -61,8 +61,7 @@ public abstract class AbstractPushRequest {
      */
     @NotBlank
     @Size(min = VALUE_1, max = MAX_LENGTH_255)
-    @Schema(description = "Message type", example = "EXPERIMENT_STATUS", required = true,
-            allowableValues = "EXPERIMENT_STATUS")
+    @Schema(description = "Message type", example = "EXPERIMENT_STATUS", required = true)
     private String messageType;
 
     /**
