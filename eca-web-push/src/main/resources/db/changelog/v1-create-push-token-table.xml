@@ -26,4 +26,16 @@
             </column>
         </createTable>
     </changeSet>
+
+    <changeSet id="add_push_token_id_unique_idx" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="push_token"/>
+            <not>
+                <indexExists indexName="push_token_id_unique_idx" tableName="push_token" columnNames="token_id"/>
+            </not>
+        </preConditions>
+        <createIndex tableName="push_token" indexName="push_token_id_unique_idx" unique="true">
+            <column name="token_id"/>
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>

@@ -26,13 +26,13 @@ public class PushTokenEntity {
     /**
      * User
      */
-    @Column(name = "user_name", nullable = false, unique = true)
+    @Column(name = "user_name", nullable = false, unique = true, updatable = false)
     private String user;
 
     /**
      * Token value
      */
-    @Column(name = "token_id", nullable = false)
+    @Column(name = "token_id", nullable = false, unique = true)
     private String tokenId;
 
     /**
