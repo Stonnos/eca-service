@@ -769,11 +769,13 @@ image::./images/eca-web-push-db-schema.png[alt=Схема базы данных 
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
-|id                      |bigint            |+|+|+                                                    |Идентификатор записи (первичный ключ)
-|parameter_name          |varchar(255)      |+|+|notification_parameter_id_parameter_name_unique_idx  |Название параметра
-|parameter_value         |varchar(255)      |-|+|notification_parameter_id_parameter_name_unique_idx  |Значение параметра
-|notification_id         |bigint            |-|+|fk_notification_parameter_notification_id            |Внешний ключ уведомления
+|id                      |bigint            |+|+|+                                             |Идентификатор записи (первичный ключ)
+|parameter_name          |varchar(255)      |+|+|+                                             |Название параметра
+|parameter_value         |varchar(255)      |-|+|-                                             |Значение параметра
+|notification_id         |bigint            |-|+|fk_notification_parameter_notification_id     |Внешний ключ уведомления
 |===
+
+Таблица содержит уникальный индекс notification_parameter_id_parameter_name_unique_idx на поля id, parameter_name.
 
 Таблицы *databasechangeloglock* и *databasechangeloglock* предназначены для управления миграциями базы данных.
 
