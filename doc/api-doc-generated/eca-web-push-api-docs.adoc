@@ -1,4 +1,4 @@
-= Web pushes microservice
+= Web push notifications microservice
 Автор: Roman Batygin
 (roman.batygin@mail.ru)
 :toc:
@@ -6,23 +6,68 @@
 
 == Overview
 
-API provides operations for sending web pushes
+API provides operations with notifications center and web pushes
+
+== Security schemas
 
 
-== Send web push
-
-__POST__ */push/send* - Send web push
-
-
-*Request body*
+=== EcaAuth
 
 [width=100%]
 |===
-|*Content type*|*Required*|*Schema*|*Example*
-|*application/json*
-|true
+|*Type*|*Description*|*Flows*
+|*oauth2*
+|Oauth2 authentication
+
+*Client credentials location:* __header__
+
+*Bearer format:* __Authorization: Bearer <access token>__
+a|
+
+*Flow*
+
+__Grant type:__ password
+
+__Token url:__ http://localhost:8080/eca-oauth/oauth/token
+
+__Refresh token url:__ http://localhost:8080/eca-oauth/oauth/token
+
+
+__Scopes__:
+
+
+* web
+
+|===
+
+== Obtains push token for current user
+
+__POST__ */push/token* - Obtains push token for current user
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
 |
-<<PushRequestDto>>
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+<<PushTokenDto>>
 
 
 
@@ -42,9 +87,321 @@ a|
 [source,json]
 ----
 {
+  "tokenId" : "d2de514-3a87-4620-9b97-c260e24340de"
+}
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|===
+
+== Reads not read notifications
+
+__POST__ */notifications/read* - Reads not read notifications
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+*Request body*
+
+[width=100%]
+|===
+|*Content type*|*Required*|*Schema*|*Example*
+|*application/json*
+|true
+|
+<<ReadNotificationsDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "ids" : [ 1, 2, 3 ]
+}
+----
+|===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*-*
+|-
+a|
+-
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|
+__array__
+<<<ValidationErrorDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+[ {
+  "code" : "InvalidNotifications",
+  "errorMessage" : "Got invalid notifications ids [5, 6, 7]"
+} ]
+----
+|===
+
+== Gets current user notifications next page for specified page request and last 7 days
+
+__POST__ */notifications/list* - Gets current user notifications next page for specified page request and last 7 days
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+*Request body*
+
+[width=100%]
+|===
+|*Content type*|*Required*|*Schema*|*Example*
+|*application/json*
+|true
+|
+<<SimplePageRequestDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "page" : 0,
+  "size" : 25
+}
+----
+|===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+<<UsersNotificationsDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "content" : [ {
+    "id" : 1,
+    "messageType" : "CLASSIFIER_CONFIGURATION_CHANGE",
+    "messageText" : "Message text",
+    "initiator" : "admin",
+    "messageStatus" : {
+      "value" : "NOT_READ",
+      "description" : "Не прочитано"
+    },
+    "created" : "2021-07-01 14:00:00",
+    "parameters" : [ {
+      "name" : "classifiersConfigurationId",
+      "value" : "250"
+    } ]
+  } ],
+  "page" : 0,
+  "totalCount" : 1
+}
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|
+__array__
+<<<ValidationErrorDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+[ {
+  "fieldName" : "page",
+  "code" : "Min",
+  "errorMessage" : "must be greater than or equal to 0"
+}, {
+  "fieldName" : "size",
+  "code" : "Min",
+  "errorMessage" : "must be greater than or equal to 1"
+} ]
+----
+|===
+
+== Send push notification
+
+__POST__ */api/push/send* - Send push notification
+
+
+*Request body*
+
+[width=100%]
+|===
+|*Content type*|*Required*|*Schema*|*Example*
+|*application/json*
+|true
+|
+
+
+*One of types:*
+
+* <<SystemPushRequest>>
+
+* <<UserPushNotificationRequest>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "pushType" : "SYSTEM",
   "requestId" : "1d2de514-3a87-4620-9b97-c260e24340de",
   "messageType" : "EXPERIMENT_STATUS",
   "messageText" : "Поступила новая заявка на эксперимент 1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
+  "showMessage" : true,
   "additionalProperties" : {
     "experimentId" : "1",
     "experimentRequestId" : "1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
@@ -115,8 +472,98 @@ a|
 ----
 |===
 
+== Gets notifications statistics for current user
+
+__GET__ */notifications/statistics* - Gets notifications statistics for current user
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+<<UserNotificationStatisticsDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "notReadCount" : 10
+}
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|===
+
 
 == Components
+=== PushTokenDto
+:table-caption: Table
+.Push token model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*tokenId**
+|Token id
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|===
 === ValidationErrorDto
 :table-caption: Table
 .Validation error model
@@ -181,14 +628,425 @@ __string__
 
 
 |===
-=== PushRequestDto
+=== ReadNotificationsDto
 :table-caption: Table
-.Push request
+.Read notifications model
 [width=100%]
 |===
 |*Name*|*Description*|*Schema*
+|*ids*
+|Notifications ids for current user. If ids is empty then all not read notifications will be read for current user for last N days
+a|
+__array__
+<integer
+__(int64)__
+>
+
+
+
+
+
+
+
+
+*Min. items*: 0
+
+*Max. items*: 50
+
+
+
+
+|===
+=== EnumDto
+:table-caption: Table
+.Enum dto model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*value**
+|Enum value
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*description**
+|Enum value description
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|===
+=== UserNotificationDto
+:table-caption: Table
+.User notification
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*id*
+|Notification id
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 9,223,372,036,854,775,807*
+
+
+
+
+
+
+
+
+|*messageType*
+|Message type
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*messageText*
+|Message text
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*initiator*
+|Initiator user
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*messageStatus*
+|-
+a|
+<<EnumDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*created*
+|Created date
+a|
+__string__
+
+
+
+
+*Max. length*: 19
+
+
+
+
+
+
+
+
+
+
+|*parameters*
+|Notification parameters list
+a|
+__array__
+<<<UserNotificationParameterDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== UserNotificationParameterDto
+:table-caption: Table
+.User notification parameter
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*name*
+|Parameter name
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*value*
+|Parameter value
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|===
+=== UsersNotificationsDto
+:table-caption: Table
+.Users notifications page dto
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*content*
+|-
+a|
+__array__
+<<<UserNotificationDto>>
+>
+
+
+
+
+
+
+
+
+
+
+*Max. items*: 100
+
+
+
+
+|*page*
+|Page number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*totalCount*
+|Total elements count in all pages
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 9,223,372,036,854,775,807*
+
+
+
+
+
+
+
+
+|===
+=== SimplePageRequestDto
+:table-caption: Table
+.Simple page request model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*page**
+|Page number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*size**
+|Page size
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 100*
+
+
+
+
+
+
+
+
+|===
+=== AbstractPushRequest
+:table-caption: Table
+.Component AbstractPushRequest
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*pushType**
+|Push type
+a|
+__string__
+
+
+*Min. length*: 1
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* SYSTEM
+
+* USER_NOTIFICATION
 |*requestId**
-|Request id
+|Request id (used for cross system logging)
 a|
 __string__
 
@@ -264,6 +1122,338 @@ __array__
 *Min. items*: 0
 
 *Max. items*: 50
+
+
+
+
+|===
+=== SystemPushRequest
+:table-caption: Table
+.System push request
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*pushType**
+|Push type
+a|
+__string__
+
+
+*Min. length*: 1
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* SYSTEM
+
+* USER_NOTIFICATION
+|*requestId**
+|Request id (used for cross system logging)
+a|
+__string__
+
+
+*Min. length*: 1
+
+*Max. length*: 36
+
+
+
+
+
+
+
+*Pattern*: `^[0-9a-f]{8}-[0-9a-f]{4}-[34][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`
+
+
+|*messageType**
+|Message type
+a|
+__string__
+
+
+*Min. length*: 1
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* EXPERIMENT_STATUS
+|*messageText*
+|Message text
+a|
+__string__
+
+
+*Min. length*: 0
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*additionalProperties*
+|-
+a|
+__array__
+<object
+>
+
+
+
+
+
+
+
+
+*Min. items*: 0
+
+*Max. items*: 50
+
+
+
+
+|*showMessage*
+|Show push message?
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== UserPushNotificationRequest
+:table-caption: Table
+.User notification push request
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*pushType**
+|Push type
+a|
+__string__
+
+
+*Min. length*: 1
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* SYSTEM
+
+* USER_NOTIFICATION
+|*requestId**
+|Request id (used for cross system logging)
+a|
+__string__
+
+
+*Min. length*: 1
+
+*Max. length*: 36
+
+
+
+
+
+
+
+*Pattern*: `^[0-9a-f]{8}-[0-9a-f]{4}-[34][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`
+
+
+|*messageType**
+|Message type
+a|
+__string__
+
+
+*Min. length*: 1
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* EXPERIMENT_STATUS
+|*messageText*
+|Message text
+a|
+__string__
+
+
+*Min. length*: 0
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*additionalProperties*
+|-
+a|
+__array__
+<object
+>
+
+
+
+
+
+
+
+
+*Min. items*: 0
+
+*Max. items*: 50
+
+
+
+
+|*initiator**
+|Initiator user
+a|
+__string__
+
+
+*Min. length*: 1
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*receivers**
+|Receivers list
+a|
+__array__
+<string
+>
+
+
+
+
+
+
+
+
+*Min. items*: 1
+
+*Max. items*: 1,000
+
+
+
+
+|*created**
+|Created date
+a|
+__string__
+__(date-time)__
+
+
+
+
+*Max. length*: 19
+
+
+
+
+
+
+
+*Pattern*: `yyyy-MM-dd HH:mm:ss`
+
+
+|===
+=== UserNotificationStatisticsDto
+:table-caption: Table
+.User notification statistics model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*notReadCount*
+|Not read count for last N days
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 9,223,372,036,854,775,807*
+
+
+
+
 
 
 
