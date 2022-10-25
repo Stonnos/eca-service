@@ -291,13 +291,13 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
     void testGetClassifiersStatisticsData() {
         var evaluationLogs = createAndSaveTestDataForGetClassifiersStatisticsData();
         mockClassifiersDictionary();
-        var chartDataDto = evaluationLogService.getClassifiersStatisticsData(LocalDate.now(), LocalDate.now());
-        assertThat(chartDataDto).isNotNull();
-        assertThat(chartDataDto.getTotal()).isEqualTo(evaluationLogs.size());
-        verifyChartItem(chartDataDto.getDataItems(), CART.class.getSimpleName(), 2L);
-        verifyChartItem(chartDataDto.getDataItems(), C45.class.getSimpleName(), 1L);
-        verifyChartItem(chartDataDto.getDataItems(), KNearestNeighbours.class.getSimpleName(), 1L);
-        verifyChartItem(chartDataDto.getDataItems(), NeuralNetwork.class.getSimpleName(), 0L);
+        var statisticsData = evaluationLogService.getClassifiersStatisticsData(LocalDate.now(), LocalDate.now());
+        assertThat(statisticsData).isNotNull();
+        assertThat(statisticsData.getTotal()).isEqualTo(evaluationLogs.size());
+        verifyChartItem(statisticsData.getDataItems(), CART.class.getSimpleName(), 2L);
+        verifyChartItem(statisticsData.getDataItems(), C45.class.getSimpleName(), 1L);
+        verifyChartItem(statisticsData.getDataItems(), KNearestNeighbours.class.getSimpleName(), 1L);
+        verifyChartItem(statisticsData.getDataItems(), NeuralNetwork.class.getSimpleName(), 0L);
     }
 
     private void verifyChartItem(List<ChartDataDto> items, String classifierName, long expectedCount) {

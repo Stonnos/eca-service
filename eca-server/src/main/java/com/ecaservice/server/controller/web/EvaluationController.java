@@ -224,16 +224,16 @@ public class EvaluationController {
     }
 
     /**
-     * Gets classifiers statistics histogram data.
+     * Gets classifiers statistics data (distribution diagram by classifier).
      *
      * @param createdDateFrom - created date from
      * @param createdDateTo   - created date to
-     * @return classifiers statistics histogram data
+     * @return classifiers statistics data
      */
     @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
-            description = "Gets classifiers statistics histogram data",
-            summary = "Gets classifiers statistics histogram data",
+            description = "Gets classifiers statistics data (distribution diagram by classifier)",
+            summary = "Gets classifiers statistics data (distribution diagram by classifier)",
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200",

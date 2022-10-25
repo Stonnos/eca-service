@@ -22,6 +22,9 @@ import com.ecaservice.server.model.projections.RequestStatusStatistics;
 import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.service.PageRequestService;
 import com.ecaservice.server.service.evaluation.CalculationExecutorService;
+import com.ecaservice.server.service.filter.dictionary.FilterDictionaries;
+import com.ecaservice.web.dto.model.ChartDataDto;
+import com.ecaservice.web.dto.model.ChartDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
 import com.ecaservice.web.dto.model.S3ContentResponseDto;
@@ -46,7 +49,6 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -253,13 +255,28 @@ public class ExperimentService implements PageRequestService<Experiment> {
     }
 
     /**
-     * Calculates experiments types counting statistics.
+     * Calculates experiments statistics data (distribution diagram by experiment type).
      *
      * @param createdDateFrom - experiment created date from
      * @param createdDateTo   - experiment created date to
-     * @return experiments types counting statistics
+     * @return experiments statistics
      */
-    public Map<ExperimentType, Long> getExperimentTypesStatistics(LocalDate createdDateFrom, LocalDate createdDateTo) {
+    public ChartDto getExperimentsStatistics(LocalDate createdDateFrom, LocalDate createdDateTo) {
+        log.info("Starting to get experiments statistics data with created date from [{}] to [{}]",
+                createdDateFrom, createdDateTo);
+        CriteriaQuery<Tuple> criteria = buildExperimentStatisticsDataCriteria(createdDateFrom, createdDateTo);
+        var experimentStatisticsMap = entityManager.createQuery(criteria).getResultList()
+                .stream()
+                .collect(Collectors.toMap(tuple -> tuple.get(0, ExperimentType.class).name(),
+                        tuple -> tuple.get(1, Long.class), (v1, v2) -> v1, TreeMap::new));
+        var chartData = populateExperimentsChartData(experimentStatisticsMap);
+        log.info("Experiments statistics data has been fetched with created date from [{}] to [{}]: {}",
+                createdDateFrom, createdDateTo, chartData);
+        return chartData;
+    }
+
+    private CriteriaQuery<Tuple> buildExperimentStatisticsDataCriteria(LocalDate createdDateFrom,
+                                                                       LocalDate createdDateTo) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Tuple> criteria = builder.createQuery(Tuple.class);
         Root<Experiment> root = criteria.from(Experiment.class);
@@ -271,15 +288,27 @@ public class ExperimentService implements PageRequestService<Experiment> {
         criteria.groupBy(root.get(EXPERIMENT_TYPE));
         criteria.multiselect(root.get(EXPERIMENT_TYPE), builder.count(root)).where(
                 builder.and(predicates.toArray(new Predicate[0])));
-        Map<ExperimentType, Long> experimentTypesMap = entityManager.createQuery(criteria).getResultList()
+        return criteria;
+    }
+
+    private ChartDto populateExperimentsChartData(Map<String, Long> statisticsMap) {
+        var classifiers = filterService.getFilterDictionary(FilterDictionaries.EXPERIMENT_TYPE);
+        var chartDataItems = classifiers.getValues()
                 .stream()
-                .collect(
-                        Collectors.toMap(tuple -> tuple.get(0, ExperimentType.class), tuple -> tuple.get(1, Long.class),
-                                (v1, v2) -> v1, TreeMap::new));
-        Arrays.stream(ExperimentType.values()).filter(
-                requestStatus -> !experimentTypesMap.containsKey(requestStatus)).forEach(
-                requestStatus -> experimentTypesMap.put(requestStatus, 0L));
-        return experimentTypesMap;
+                .map(filterDictionaryValueDto -> {
+                    var chartDataDto = new ChartDataDto();
+                    chartDataDto.setName(filterDictionaryValueDto.getValue());
+                    chartDataDto.setLabel(filterDictionaryValueDto.getLabel());
+                    chartDataDto.setCount(
+                            statisticsMap.getOrDefault(filterDictionaryValueDto.getValue(), 0L));
+                    return chartDataDto;
+                })
+                .collect(Collectors.toList());
+        Long total = chartDataItems.stream().mapToLong(ChartDataDto::getCount).sum();
+        return ChartDto.builder()
+                .dataItems(chartDataItems)
+                .total(total)
+                .build();
     }
 
     /**

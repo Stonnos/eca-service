@@ -154,7 +154,7 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
     }
 
     /**
-     * Calculates classifiers statistics data.
+     * Calculates classifiers statistics data (distribution diagram by classifier).
      *
      * @param createdDateFrom - created date from
      * @param createdDateTo   - created date to
@@ -163,7 +163,7 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
     public ChartDto getClassifiersStatisticsData(LocalDate createdDateFrom, LocalDate createdDateTo) {
         log.info("Starting to get classifiers statistics data with created date from [{}] to [{}]",
                 createdDateFrom, createdDateTo);
-        var criteria = buildClassifiersStatisticsHistogramDataCriteria(createdDateFrom, createdDateTo);
+        var criteria = buildClassifiersStatisticsDataCriteria(createdDateFrom, createdDateTo);
         var classifiersStatisticsMap = entityManager.createQuery(criteria)
                 .getResultList()
                 .stream()
@@ -177,8 +177,8 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
         return chartData;
     }
 
-    private CriteriaQuery<Tuple> buildClassifiersStatisticsHistogramDataCriteria(LocalDate createdDateFrom,
-                                                                                 LocalDate createdDateTo) {
+    private CriteriaQuery<Tuple> buildClassifiersStatisticsDataCriteria(LocalDate createdDateFrom,
+                                                                        LocalDate createdDateTo) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Tuple> criteria = builder.createQuery(Tuple.class);
         Root<EvaluationLog> root = criteria.from(EvaluationLog.class);
