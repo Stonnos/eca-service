@@ -23,7 +23,6 @@ import com.ecaservice.server.service.experiment.ExperimentProgressService;
 import com.ecaservice.server.service.experiment.ExperimentResultsService;
 import com.ecaservice.server.service.experiment.ExperimentService;
 import com.ecaservice.user.dto.UserInfoDto;
-import com.ecaservice.web.dto.model.ChartDataDto;
 import com.ecaservice.web.dto.model.ChartDto;
 import com.ecaservice.web.dto.model.CreateExperimentResultDto;
 import com.ecaservice.web.dto.model.ExperimentDto;
@@ -449,7 +448,7 @@ public class ExperimentController {
      *
      * @param createdDateFrom - experiment created date from
      * @param createdDateTo   - experiment created date to
-     * @return chart data list
+     * @return chart data dto
      */
     @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
@@ -466,7 +465,7 @@ public class ExperimentController {
                                                     ref = "#/components/examples/ExperimentsStatisticsResponse"
                                             )
                                     },
-                                    array = @ArraySchema(schema = @Schema(implementation = ChartDataDto.class))
+                                    schema = @Schema(implementation = ChartDto.class)
                             )
                     ),
                     @ApiResponse(description = "Not authorized", responseCode = "401",

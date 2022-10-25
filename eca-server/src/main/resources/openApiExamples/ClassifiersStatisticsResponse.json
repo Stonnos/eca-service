@@ -1,0 +1,69 @@
+{
+  "total": 636,
+  "dataItems": [
+    {
+      "name": "CART",
+      "label": "Алгоритм CART",
+      "count": 60
+    },
+    {
+      "name": "C45",
+      "label": "Алгоритм C4.5",
+      "count": 46
+    },
+    {
+      "name": "ID3",
+      "label": "Алгоритм ID3",
+      "count": 43
+    },
+    {
+      "name": "CHAID",
+      "label": "Алгоритм CHAID",
+      "count": 31
+    },
+    {
+      "name": "J48",
+      "label": "Алгоритм J48",
+      "count": 58
+    },
+    {
+      "name": "NeuralNetwork",
+      "label": "Нейронная сеть (Многослойный персептрон)",
+      "count": 49
+    },
+    {
+      "name": "KNearestNeighbours",
+      "label": "Алгоритм k - взвешенных ближайших соседей",
+      "count": 15
+    },
+    {
+      "name": "Logistic",
+      "label": "Логистическая регрессия",
+      "count": 74
+    },
+    {
+      "name": "AdaBoostClassifier",
+      "label": "Алгоритм AdaBoost",
+      "count": 37
+    },
+    {
+      "name": "HeterogeneousClassifier",
+      "label": "Неоднородный ансамблевый алгоритм",
+      "count": 42
+    },
+    {
+      "name": "ModifiedHeterogeneousClassifier",
+      "label": "Модифицированный неоднородный ансамблевый алгоритм",
+      "count": 7
+    },
+    {
+      "name": "StackingClassifier",
+      "label": "Алгоритм Stacking",
+      "count": 6
+    },
+    {
+      "name": "RandomForests",
+      "label": "Алгоритм Случайные леса",
+      "count": 73
+    },
+    {

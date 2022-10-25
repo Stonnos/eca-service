@@ -241,8 +241,8 @@ public class EvaluationController {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
                                             @ExampleObject(
-                                                    name = "ExperimentsStatisticsResponse",
-                                                    ref = "#/components/examples/ExperimentsStatisticsResponse"
+                                                    name = "ClassifiersStatisticsResponse",
+                                                    ref = "#/components/examples/ClassifiersStatisticsResponse"
                                             )
                                     },
                                     schema = @Schema(implementation = ChartDto.class)
