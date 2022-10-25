@@ -73,7 +73,6 @@ import java.util.stream.Collectors;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
 import static com.ecaservice.server.config.audit.AuditCodes.CREATE_EXPERIMENT_REQUEST;
-import static com.ecaservice.server.util.Utils.toRequestStatusesStatistics;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
 /**
@@ -385,10 +384,7 @@ public class ExperimentController {
     )
     @GetMapping(value = "/request-statuses-statistics")
     public RequestStatusStatisticsDto getExperimentsRequestStatusesStatistics() {
-        log.info("Request get experiments statuses statistics");
-        var requestStatusStatisticsDto = toRequestStatusesStatistics(experimentService.getRequestStatusesStatistics());
-        log.info("Experiments statuses statistics: {}", requestStatusStatisticsDto);
-        return requestStatusStatisticsDto;
+        return experimentService.getRequestStatusesStatistics();
     }
 
     /**

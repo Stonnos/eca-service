@@ -242,14 +242,14 @@ class ExperimentServiceTest extends AbstractJpaTest {
         experimentRepository.save(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR));
         experimentRepository.save(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR));
         experimentRepository.save(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR));
-        Map<RequestStatus, Long> requestStatusesMap = experimentService.getRequestStatusesStatistics();
-        assertThat(requestStatusesMap)
-                .isNotNull()
-                .hasSameSizeAs(RequestStatus.values())
-                .containsEntry(RequestStatus.NEW, 2L)
-                .containsEntry(RequestStatus.FINISHED, 3L)
-                .containsEntry(RequestStatus.ERROR, 4L)
-                .containsEntry(RequestStatus.TIMEOUT, 0L);
+        var requestStatusStatisticsDto = experimentService.getRequestStatusesStatistics();
+        assertThat(requestStatusStatisticsDto).isNotNull();
+        assertThat(requestStatusStatisticsDto.getNewRequestsCount()).isEqualTo(2L);
+        assertThat(requestStatusStatisticsDto.getInProgressRequestsCount()).isEqualTo(0L);
+        assertThat(requestStatusStatisticsDto.getFinishedRequestsCount()).isEqualTo(3L);
+        assertThat(requestStatusStatisticsDto.getErrorRequestsCount()).isEqualTo(4L);
+        assertThat(requestStatusStatisticsDto.getTimeoutRequestsCount()).isEqualTo(0L);
+        assertThat(requestStatusStatisticsDto.getTotalCount()).isEqualTo(experimentRepository.count());
     }
 
     /**

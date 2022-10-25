@@ -26,7 +26,6 @@ import org.springframework.http.MediaType;
 
 import javax.inject.Inject;
 import java.util.Collections;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -34,9 +33,7 @@ import static com.ecaservice.server.PageRequestUtils.PAGE_NUMBER;
 import static com.ecaservice.server.PageRequestUtils.TOTAL_ELEMENTS;
 import static com.ecaservice.server.TestHelperUtils.TEST_UUID;
 import static com.ecaservice.server.TestHelperUtils.bearerHeader;
-import static com.ecaservice.server.TestHelperUtils.buildRequestStatusStatisticsMap;
 import static com.ecaservice.server.TestHelperUtils.createPageRequestDto;
-import static com.ecaservice.server.util.Utils.toRequestStatusesStatistics;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -157,9 +154,8 @@ class EvaluationControllerTest extends PageRequestControllerTest {
 
     @Test
     void testEvaluationRequestStatusesStatisticsOk() throws Exception {
-        Map<RequestStatus, Long> requestStatusMap = buildRequestStatusStatisticsMap();
-        RequestStatusStatisticsDto requestStatusStatisticsDto = toRequestStatusesStatistics(requestStatusMap);
-        when(evaluationLogService.getRequestStatusesStatistics()).thenReturn(requestStatusMap);
+        RequestStatusStatisticsDto requestStatusStatisticsDto = new RequestStatusStatisticsDto();
+        when(evaluationLogService.getRequestStatusesStatistics()).thenReturn(requestStatusStatisticsDto);
         mockMvc.perform(get(REQUEST_STATUS_STATISTICS_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk())

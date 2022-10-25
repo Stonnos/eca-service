@@ -46,7 +46,6 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import static com.ecaservice.server.service.filter.dictionary.FilterDictionaries.CLASSIFIER_NAME;
@@ -122,15 +121,14 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
                 TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED));
         evaluationLogRepository.save(
                 TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.IN_PROGRESS));
-        Map<RequestStatus, Long> requestStatusesMap = evaluationLogService.getRequestStatusesStatistics();
-        assertThat(requestStatusesMap)
-                .isNotNull()
-                .hasSameSizeAs(RequestStatus.values())
-                .containsEntry(RequestStatus.NEW, 2L)
-                .containsEntry(RequestStatus.IN_PROGRESS, 1L)
-                .containsEntry(RequestStatus.FINISHED, 1L)
-                .containsEntry(RequestStatus.ERROR, 3L)
-                .containsEntry(RequestStatus.TIMEOUT, 1L);
+        var requestStatusStatisticsDto = evaluationLogService.getRequestStatusesStatistics();
+        assertThat(requestStatusStatisticsDto).isNotNull();
+        assertThat(requestStatusStatisticsDto.getNewRequestsCount()).isEqualTo(2L);
+        assertThat(requestStatusStatisticsDto.getInProgressRequestsCount()).isEqualTo(1L);
+        assertThat(requestStatusStatisticsDto.getFinishedRequestsCount()).isEqualTo(1L);
+        assertThat(requestStatusStatisticsDto.getErrorRequestsCount()).isEqualTo(3L);
+        assertThat(requestStatusStatisticsDto.getTimeoutRequestsCount()).isEqualTo(1L);
+        assertThat(requestStatusStatisticsDto.getTotalCount()).isEqualTo(evaluationLogRepository.count());
     }
 
     /**

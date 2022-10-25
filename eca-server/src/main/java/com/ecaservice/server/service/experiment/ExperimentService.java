@@ -23,6 +23,7 @@ import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.service.PageRequestService;
 import com.ecaservice.server.service.evaluation.CalculationExecutorService;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
 import com.ecaservice.web.dto.model.S3ContentResponseDto;
 import eca.dataminer.AbstractExperiment;
 import lombok.RequiredArgsConstructor;
@@ -64,7 +65,7 @@ import static com.ecaservice.server.model.entity.AbstractEvaluationEntity_.CREAT
 import static com.ecaservice.server.model.entity.Experiment_.EXPERIMENT_TYPE;
 import static com.ecaservice.server.util.Utils.atEndOfDay;
 import static com.ecaservice.server.util.Utils.atStartOfDay;
-import static com.ecaservice.server.util.Utils.toRequestStatusStatisticsMap;
+import static com.ecaservice.server.util.Utils.calculateRequestStatusesStatistics;
 import static com.google.common.collect.Lists.newArrayList;
 
 /**
@@ -241,11 +242,14 @@ public class ExperimentService implements PageRequestService<Experiment> {
     /**
      * Calculates experiment statuses counting statistics.
      *
-     * @return requests status counting statistics list
+     * @return requests status statistics dto
      */
-    public Map<RequestStatus, Long> getRequestStatusesStatistics() {
+    public RequestStatusStatisticsDto getRequestStatusesStatistics() {
+        log.info("Request get experiments statuses statistics");
         List<RequestStatusStatistics> requestStatusStatistics = experimentRepository.getRequestStatusesStatistics();
-        return toRequestStatusStatisticsMap(requestStatusStatistics);
+        var requestStatusStatisticsDto = calculateRequestStatusesStatistics(requestStatusStatistics);
+        log.info("Experiments statuses statistics: {}", requestStatusStatisticsDto);
+        return requestStatusStatisticsDto;
     }
 
     /**

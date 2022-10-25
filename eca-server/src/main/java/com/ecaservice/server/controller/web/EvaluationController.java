@@ -42,7 +42,6 @@ import java.time.LocalDate;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
-import static com.ecaservice.server.util.Utils.toRequestStatusesStatistics;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
 /**
@@ -221,11 +220,7 @@ public class EvaluationController {
     )
     @GetMapping(value = "/request-statuses-statistics")
     public RequestStatusStatisticsDto getEvaluationRequestStatusesStatistics() {
-        log.info("Request get evaluations requests statuses statistics");
-        var requestStatusStatisticsDto =
-                toRequestStatusesStatistics(evaluationLogService.getRequestStatusesStatistics());
-        log.info("Evaluations requests statuses statistics: {}", requestStatusStatisticsDto);
-        return requestStatusStatisticsDto;
+        return evaluationLogService.getRequestStatusesStatistics();
     }
 
     /**

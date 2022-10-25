@@ -26,6 +26,7 @@ import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -55,7 +56,7 @@ import static com.ecaservice.server.model.entity.EvaluationLog_.CLASSIFIER_INFO;
 import static com.ecaservice.server.util.Utils.atEndOfDay;
 import static com.ecaservice.server.util.Utils.atStartOfDay;
 import static com.ecaservice.server.util.Utils.buildEvaluationResultsDto;
-import static com.ecaservice.server.util.Utils.toRequestStatusStatisticsMap;
+import static com.ecaservice.server.util.Utils.calculateRequestStatusesStatistics;
 import static com.google.common.collect.Lists.newArrayList;
 
 /**
@@ -142,11 +143,14 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
     /**
      * Calculates evaluation statuses counting statistics.
      *
-     * @return requests status counting statistics list
+     * @return evaluation statuses counting statistics
      */
-    public Map<RequestStatus, Long> getRequestStatusesStatistics() {
+    public RequestStatusStatisticsDto getRequestStatusesStatistics() {
+        log.info("Request get evaluations requests statuses statistics");
         List<RequestStatusStatistics> requestStatusStatistics = evaluationLogRepository.getRequestStatusesStatistics();
-        return toRequestStatusStatisticsMap(requestStatusStatistics);
+        var requestStatusStatisticsDto = calculateRequestStatusesStatistics(requestStatusStatistics);
+        log.info("Evaluations requests statuses statistics: {}", requestStatusStatisticsDto);
+        return calculateRequestStatusesStatistics(requestStatusStatistics);
     }
 
     /**
