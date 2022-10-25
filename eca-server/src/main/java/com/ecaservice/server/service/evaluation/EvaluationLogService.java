@@ -19,6 +19,7 @@ import com.ecaservice.server.service.classifiers.ClassifierOptionsProcessor;
 import com.ecaservice.server.service.ers.ErsService;
 import com.ecaservice.server.service.filter.dictionary.FilterDictionaries;
 import com.ecaservice.web.dto.model.ChartDataDto;
+import com.ecaservice.web.dto.model.ChartDto;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import com.ecaservice.web.dto.model.EvaluationLogDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
@@ -155,8 +156,7 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
      * @param createdDateTo   - created date to
      * @return classifiers statistics histogram data
      */
-    public List<ChartDataDto> getClassifiersStatisticsHistogramData(LocalDate createdDateFrom,
-                                                                    LocalDate createdDateTo) {
+    public ChartDto getClassifiersStatisticsHistogramData(LocalDate createdDateFrom, LocalDate createdDateTo) {
         log.info("Starting to get classifiers statistics histogram data with created date from [{}] to [{}]",
                 createdDateFrom, createdDateTo);
         var criteria = buildClassifiersStatisticsHistogramDataCriteria(createdDateFrom, createdDateTo);
@@ -167,10 +167,10 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
                         tuple -> tuple.get(0, String.class), tuple -> tuple.get(1, Long.class), (v1, v2) -> v1,
                         TreeMap::new)
                 );
-        var chartDataList = populateClassifiersChartData(classifiersStatisticsMap);
+        var chartData = populateClassifiersChartData(classifiersStatisticsMap);
         log.info("Classifiers statistics histogram data has been fetched with created date from [{}] to [{}]: {}",
-                createdDateFrom, createdDateTo, chartDataList);
-        return chartDataList;
+                createdDateFrom, createdDateTo, chartData);
+        return chartData;
     }
 
     private CriteriaQuery<Tuple> buildClassifiersStatisticsHistogramDataCriteria(LocalDate createdDateFrom,
@@ -190,9 +190,9 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
         return criteria;
     }
 
-    private List<ChartDataDto> populateClassifiersChartData(Map<String, Long> classifiersStatisticsMap) {
+    private ChartDto populateClassifiersChartData(Map<String, Long> classifiersStatisticsMap) {
         var classifiers = filterService.getFilterDictionary(FilterDictionaries.CLASSIFIER_NAME);
-        return classifiers.getValues()
+        var chartDataItems = classifiers.getValues()
                 .stream()
                 .map(filterDictionaryValueDto -> {
                     var chartDataDto = new ChartDataDto();
@@ -203,6 +203,11 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
                     return chartDataDto;
                 })
                 .collect(Collectors.toList());
+        Long total = chartDataItems.stream().mapToLong(ChartDataDto::getCount).sum();
+        return ChartDto.builder()
+                .dataItems(chartDataItems)
+                .total(total)
+                .build();
     }
 
     private EvaluationResultsDto getEvaluationResults(EvaluationLog evaluationLog) {
