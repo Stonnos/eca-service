@@ -52,7 +52,7 @@ public class QueryHelper {
                 builder.lessThanOrEqualTo(root.get(dateAttribute), atEndOfDay(value))));
         var groupBy = groupByExpression.apply(root);
         criteria.groupBy(groupBy);
-        criteria.multiselect(groupBy, builder.count(root))
+        criteria.multiselect(groupBy, builder.count(groupBy))
                 .where(builder.and(predicates.toArray(new Predicate[0])));
         return criteria;
     }
