@@ -23,7 +23,6 @@ import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.service.PageRequestService;
 import com.ecaservice.server.service.evaluation.CalculationExecutorService;
 import com.ecaservice.server.service.filter.dictionary.FilterDictionaries;
-import com.ecaservice.web.dto.model.ChartDataDto;
 import com.ecaservice.web.dto.model.ChartDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
@@ -63,7 +62,8 @@ import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.server.model.entity.AbstractEvaluationEntity_.CREATION_DATE;
 import static com.ecaservice.server.model.entity.Experiment_.EXPERIMENT_TYPE;
 import static com.ecaservice.server.util.QueryHelper.buildGroupByStatisticsQuery;
-import static com.ecaservice.server.util.Utils.calculateRequestStatusesStatistics;
+import static com.ecaservice.server.util.StatisticsHelper.calculateChartData;
+import static com.ecaservice.server.util.StatisticsHelper.calculateRequestStatusesStatistics;
 
 /**
  * Experiment service.
@@ -278,23 +278,8 @@ public class ExperimentService implements PageRequestService<Experiment> {
     }
 
     private ChartDto populateExperimentsChartData(Map<String, Long> statisticsMap) {
-        var classifiers = filterService.getFilterDictionary(FilterDictionaries.EXPERIMENT_TYPE);
-        var chartDataItems = classifiers.getValues()
-                .stream()
-                .map(filterDictionaryValueDto -> {
-                    var chartDataDto = new ChartDataDto();
-                    chartDataDto.setName(filterDictionaryValueDto.getValue());
-                    chartDataDto.setLabel(filterDictionaryValueDto.getLabel());
-                    chartDataDto.setCount(
-                            statisticsMap.getOrDefault(filterDictionaryValueDto.getValue(), 0L));
-                    return chartDataDto;
-                })
-                .collect(Collectors.toList());
-        Long total = chartDataItems.stream().mapToLong(ChartDataDto::getCount).sum();
-        return ChartDto.builder()
-                .dataItems(chartDataItems)
-                .total(total)
-                .build();
+        var experimentTypesDictionary = filterService.getFilterDictionary(FilterDictionaries.EXPERIMENT_TYPE);
+        return calculateChartData(experimentTypesDictionary, statisticsMap);
     }
 
     /**

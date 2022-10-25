@@ -10,13 +10,10 @@ import com.ecaservice.ers.dto.ClassifierReport;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestEntity;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.server.model.entity.ClassifierOptionsResponseModel;
-import com.ecaservice.server.model.entity.RequestStatusVisitor;
 import com.ecaservice.server.model.evaluation.ClassifierOptionsRequestSource;
-import com.ecaservice.server.model.projections.RequestStatusStatistics;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
-import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
 import eca.core.evaluation.EvaluationMethod;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
@@ -42,7 +39,6 @@ public class Utils {
 
     private static final String CV_FORMAT = "%d - блочная кросс - проверка";
     private static final String CV_EXTENDED_FORMAT = "%d×%d - блочная кросс - проверка";
-    private static final long ZERO = 0L;
 
     /**
      * Creates error object.
@@ -165,52 +161,6 @@ public class Utils {
      */
     public static LocalDateTime atEndOfDay(LocalDate localDate) {
         return localDate != null ? localDate.atTime(LocalTime.MAX) : null;
-    }
-
-    /**
-     * Calculates request statuses statistics.
-     *
-     * @param requestStatusStatistics - request statuses statistics list
-     * @return request status statistics dto
-     */
-    public static RequestStatusStatisticsDto calculateRequestStatusesStatistics(
-            List<RequestStatusStatistics> requestStatusStatistics) {
-        RequestStatusStatisticsDto requestStatusStatisticsDto = new RequestStatusStatisticsDto();
-        requestStatusStatistics.forEach(item -> item.getRequestStatus().handle(
-                new RequestStatusVisitor<Void, RequestStatusStatisticsDto>() {
-                    @Override
-                    public Void caseNew(RequestStatusStatisticsDto statisticsDto) {
-                        statisticsDto.setNewRequestsCount(item.getRequestsCount());
-                        return null;
-                    }
-
-                    @Override
-                    public Void caseFinished(RequestStatusStatisticsDto statisticsDto) {
-                        statisticsDto.setFinishedRequestsCount(item.getRequestsCount());
-                        return null;
-                    }
-
-                    @Override
-                    public Void caseTimeout(RequestStatusStatisticsDto statisticsDto) {
-                        statisticsDto.setTimeoutRequestsCount(item.getRequestsCount());
-                        return null;
-                    }
-
-                    @Override
-                    public Void caseError(RequestStatusStatisticsDto statisticsDto) {
-                        statisticsDto.setErrorRequestsCount(item.getRequestsCount());
-                        return null;
-                    }
-
-                    @Override
-                    public Void caseInProgress(RequestStatusStatisticsDto statisticsDto) {
-                        statisticsDto.setInProgressRequestsCount(item.getRequestsCount());
-                        return null;
-                    }
-                }, requestStatusStatisticsDto));
-        long total = requestStatusStatistics.stream().mapToLong(RequestStatusStatistics::getRequestsCount).sum();
-        requestStatusStatisticsDto.setTotalCount(total);
-        return requestStatusStatisticsDto;
     }
 
     /**

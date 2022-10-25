@@ -18,7 +18,6 @@ import com.ecaservice.server.service.PageRequestService;
 import com.ecaservice.server.service.classifiers.ClassifierOptionsProcessor;
 import com.ecaservice.server.service.ers.ErsService;
 import com.ecaservice.server.service.filter.dictionary.FilterDictionaries;
-import com.ecaservice.web.dto.model.ChartDataDto;
 import com.ecaservice.web.dto.model.ChartDto;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import com.ecaservice.web.dto.model.EvaluationLogDto;
@@ -54,8 +53,9 @@ import static com.ecaservice.server.model.entity.AbstractEvaluationEntity_.CREAT
 import static com.ecaservice.server.model.entity.ClassifierInfo_.CLASSIFIER_NAME;
 import static com.ecaservice.server.model.entity.EvaluationLog_.CLASSIFIER_INFO;
 import static com.ecaservice.server.util.QueryHelper.buildGroupByStatisticsQuery;
+import static com.ecaservice.server.util.StatisticsHelper.calculateChartData;
+import static com.ecaservice.server.util.StatisticsHelper.calculateRequestStatusesStatistics;
 import static com.ecaservice.server.util.Utils.buildEvaluationResultsDto;
-import static com.ecaservice.server.util.Utils.calculateRequestStatusesStatistics;
 import static com.google.common.collect.Lists.newArrayList;
 
 /**
@@ -149,7 +149,7 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
         List<RequestStatusStatistics> requestStatusStatistics = evaluationLogRepository.getRequestStatusesStatistics();
         var requestStatusStatisticsDto = calculateRequestStatusesStatistics(requestStatusStatistics);
         log.info("Evaluations requests statuses statistics: {}", requestStatusStatisticsDto);
-        return calculateRequestStatusesStatistics(requestStatusStatistics);
+        return requestStatusStatisticsDto;
     }
 
     /**
@@ -192,22 +192,7 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
 
     private ChartDto populateClassifiersChartData(Map<String, Long> classifiersStatisticsMap) {
         var classifiers = filterService.getFilterDictionary(FilterDictionaries.CLASSIFIER_NAME);
-        var chartDataItems = classifiers.getValues()
-                .stream()
-                .map(filterDictionaryValueDto -> {
-                    var chartDataDto = new ChartDataDto();
-                    chartDataDto.setName(filterDictionaryValueDto.getValue());
-                    chartDataDto.setLabel(filterDictionaryValueDto.getLabel());
-                    chartDataDto.setCount(
-                            classifiersStatisticsMap.getOrDefault(filterDictionaryValueDto.getValue(), 0L));
-                    return chartDataDto;
-                })
-                .collect(Collectors.toList());
-        Long total = chartDataItems.stream().mapToLong(ChartDataDto::getCount).sum();
-        return ChartDto.builder()
-                .dataItems(chartDataItems)
-                .total(total)
-                .build();
+        return calculateChartData(classifiers, classifiersStatisticsMap);
     }
 
     private EvaluationResultsDto getEvaluationResults(EvaluationLog evaluationLog) {
