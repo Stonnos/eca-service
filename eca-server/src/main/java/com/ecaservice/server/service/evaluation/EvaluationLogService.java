@@ -5,6 +5,7 @@ import com.ecaservice.core.filter.specification.FilterFieldCustomizer;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.filter.EvaluationLogFilter;
 import com.ecaservice.server.mapping.EvaluationLogMapper;
+import com.ecaservice.server.model.entity.ClassifierInfo;
 import com.ecaservice.server.model.entity.ErsResponseStatus;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.EvaluationResultsRequestEntity;
@@ -13,9 +14,11 @@ import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.projections.RequestStatusStatistics;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.repository.EvaluationResultsRequestEntityRepository;
-import com.ecaservice.server.service.classifiers.ClassifierOptionsProcessor;
 import com.ecaservice.server.service.PageRequestService;
+import com.ecaservice.server.service.classifiers.ClassifierOptionsProcessor;
 import com.ecaservice.server.service.ers.ErsService;
+import com.ecaservice.server.service.filter.dictionary.FilterDictionaries;
+import com.ecaservice.web.dto.model.ChartDataDto;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import com.ecaservice.web.dto.model.EvaluationLogDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
@@ -30,12 +33,26 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import javax.persistence.EntityManager;
+import javax.persistence.Tuple;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.server.model.entity.AbstractEvaluationEntity_.CREATION_DATE;
+import static com.ecaservice.server.model.entity.ClassifierInfo_.CLASSIFIER_NAME;
+import static com.ecaservice.server.model.entity.EvaluationLog_.CLASSIFIER_INFO;
+import static com.ecaservice.server.util.Utils.atEndOfDay;
+import static com.ecaservice.server.util.Utils.atStartOfDay;
 import static com.ecaservice.server.util.Utils.buildEvaluationResultsDto;
 import static com.ecaservice.server.util.Utils.toRequestStatusStatisticsMap;
 import static com.google.common.collect.Lists.newArrayList;
@@ -55,6 +72,7 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
     private final EvaluationLogMapper evaluationLogMapper;
     private final ClassifierOptionsProcessor classifierOptionsProcessor;
     private final ErsService ersService;
+    private final EntityManager entityManager;
     private final EvaluationLogRepository evaluationLogRepository;
     private final EvaluationResultsRequestEntityRepository evaluationResultsRequestEntityRepository;
 
@@ -128,6 +146,63 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
     public Map<RequestStatus, Long> getRequestStatusesStatistics() {
         List<RequestStatusStatistics> requestStatusStatistics = evaluationLogRepository.getRequestStatusesStatistics();
         return toRequestStatusStatisticsMap(requestStatusStatistics);
+    }
+
+    /**
+     * Calculates classifiers statistics histogram data.
+     *
+     * @param createdDateFrom - created date from
+     * @param createdDateTo   - created date to
+     * @return classifiers statistics histogram data
+     */
+    public List<ChartDataDto> getClassifiersStatisticsHistogramData(LocalDate createdDateFrom,
+                                                                    LocalDate createdDateTo) {
+        log.info("Starting to get classifiers statistics histogram data with created date from [{}] to [{}]",
+                createdDateFrom, createdDateTo);
+        var criteria = buildClassifiersStatisticsHistogramDataCriteria(createdDateFrom, createdDateTo);
+        var classifiersStatisticsMap = entityManager.createQuery(criteria)
+                .getResultList()
+                .stream()
+                .collect(Collectors.toMap(
+                        tuple -> tuple.get(0, String.class), tuple -> tuple.get(1, Long.class), (v1, v2) -> v1,
+                        TreeMap::new)
+                );
+        var chartDataList = populateClassifiersChartData(classifiersStatisticsMap);
+        log.info("Classifiers statistics histogram data has been fetched with created date from [{}] to [{}]: {}",
+                createdDateFrom, createdDateTo, chartDataList);
+        return chartDataList;
+    }
+
+    private CriteriaQuery<Tuple> buildClassifiersStatisticsHistogramDataCriteria(LocalDate createdDateFrom,
+                                                                                 LocalDate createdDateTo) {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Tuple> criteria = builder.createQuery(Tuple.class);
+        Root<EvaluationLog> root = criteria.from(EvaluationLog.class);
+        List<Predicate> predicates = newArrayList();
+        Optional.ofNullable(createdDateFrom).ifPresent(
+                value -> predicates.add(builder.greaterThanOrEqualTo(root.get(CREATION_DATE), atStartOfDay(value))));
+        Optional.ofNullable(createdDateTo).ifPresent(
+                value -> predicates.add(builder.lessThanOrEqualTo(root.get(CREATION_DATE), atEndOfDay(value))));
+        Join<EvaluationLog, ClassifierInfo> classifierInfoJoin = root.join(CLASSIFIER_INFO);
+        criteria.groupBy(classifierInfoJoin.get(CLASSIFIER_NAME));
+        criteria.multiselect(classifierInfoJoin.get(CLASSIFIER_NAME), builder.count(classifierInfoJoin))
+                .where(builder.and(predicates.toArray(new Predicate[0])));
+        return criteria;
+    }
+
+    private List<ChartDataDto> populateClassifiersChartData(Map<String, Long> classifiersStatisticsMap) {
+        var classifiers = filterService.getFilterDictionary(FilterDictionaries.CLASSIFIER_NAME);
+        return classifiers.getValues()
+                .stream()
+                .map(filterDictionaryValueDto -> {
+                    var chartDataDto = new ChartDataDto();
+                    chartDataDto.setName(filterDictionaryValueDto.getValue());
+                    chartDataDto.setLabel(filterDictionaryValueDto.getLabel());
+                    chartDataDto.setCount(
+                            classifiersStatisticsMap.getOrDefault(filterDictionaryValueDto.getValue(), 0L));
+                    return chartDataDto;
+                })
+                .collect(Collectors.toList());
     }
 
     private EvaluationResultsDto getEvaluationResults(EvaluationLog evaluationLog) {
