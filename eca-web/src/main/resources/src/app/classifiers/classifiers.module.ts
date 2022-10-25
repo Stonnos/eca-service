@@ -9,20 +9,23 @@ import { RequestStatusesStatisticsModule } from "../request-statuses-statistics/
 import { SharedModule } from "../common/shared.module";
 
 @NgModule({
-  imports: [
-    CommonModule,
-    SharedModule,
-    FormsModule,
-    UiComponentsModule,
-    FilterModule,
-    RequestStatusesStatisticsModule
-  ],
-  declarations: [
-    ClassifierListComponent
-  ],
-  providers: [
-    ClassifiersService
-  ]
+    imports: [
+        CommonModule,
+        SharedModule,
+        FormsModule,
+        UiComponentsModule,
+        FilterModule,
+        RequestStatusesStatisticsModule
+    ],
+    declarations: [
+        ClassifierListComponent
+    ],
+    exports: [
+        ClassifierListComponent
+    ],
+    providers: [
+        ClassifiersService
+    ]
 })
 export class ClassifiersModule {
 }

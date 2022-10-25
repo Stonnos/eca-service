@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from "../dashboard/dashboard.component";
-import { ClassifierListComponent } from "../classifiers/components/classifier-list.component";
 import { ClassifierOptionsRequestsComponent } from "../classifier-options-requests/components/classifier-options-requests.component";
 import { LoginComponent } from "../auth/components/login.component";
 import { ExperimentTabsComponent } from "../experiments-tabs/components/experiment-tabs.component";
@@ -20,6 +19,7 @@ import { TemplatesListComponent } from "../email-templates/components/templates-
 import { InstancesDetailsComponent } from "../instances-details/components/instances-details.component";
 import { CreateResetPasswordRequestComponent } from "../change-password/components/create-reset-password-request/create-reset-password-request.component";
 import { ClassifiersConfigurationFullDetailsComponent } from "../classifiers-configuration-full-details/components/classifiers-configuration-full-details.component";
+import { ClassifiersTabsComponent } from "../classifiers-tabs/components/classifiers-tabs.component";
 
 const routes: Routes = [
   {
@@ -28,7 +28,7 @@ const routes: Routes = [
     children: [
       {
         path: 'classifiers',
-        component: ClassifierListComponent
+        component: ClassifiersTabsComponent
       },
       {
         path: 'experiments',
