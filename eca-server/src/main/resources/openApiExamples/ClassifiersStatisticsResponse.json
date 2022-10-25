@@ -67,3 +67,14 @@
       "count": 73
     },
     {
+      "name": "ExtraTreesClassifier",
+      "label": "Алгоритм Extra trees",
+      "count": 89
+    },
+    {
+      "name": "RandomNetworks",
+      "label": "Алгоритм Случайные сети",
+      "count": 6
+    }
+  ]
+}
