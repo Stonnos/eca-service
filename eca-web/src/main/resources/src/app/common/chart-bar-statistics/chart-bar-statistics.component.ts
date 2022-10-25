@@ -3,6 +3,7 @@ import { MessageService } from "primeng/api";
 import { DatePipe } from "@angular/common";
 import { Observable } from "rxjs/internal/Observable";
 import { ChartDataDto, ChartDto } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
+import { finalize } from "rxjs/internal/operators";
 
 @Component({
   selector: 'app-chart-bar-statistics',
@@ -16,6 +17,8 @@ export class ChartBarStatisticsComponent implements OnInit {
   public dataSet: any;
 
   public total: number;
+
+  public loading: boolean = false;
 
   public createdDateRange: Date[];
 
@@ -40,7 +43,13 @@ export class ChartBarStatisticsComponent implements OnInit {
   public onShow() {
     const createdFrom: Date = this.createdDateRange && this.createdDateRange[0];
     const createdTo: Date = this.createdDateRange && this.createdDateRange[1];
+    this.loading = true;
     this.loadData(this.transformDate(createdFrom), this.transformDate(createdTo))
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
       .subscribe({
         next: (chartData: ChartDto) => {
           this.total = chartData.total;
