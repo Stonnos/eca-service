@@ -19,6 +19,7 @@ import com.ecaservice.server.repository.EvaluationResultsRequestEntityRepository
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.classifiers.ClassifierOptionsProcessor;
 import com.ecaservice.server.service.ers.ErsService;
+import com.ecaservice.web.dto.model.ChartDataDto;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
@@ -39,6 +40,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
@@ -73,6 +76,8 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
     @Inject
     private EvaluationResultsRequestEntityRepository evaluationResultsRequestEntityRepository;
     @Inject
+    private EntityManager entityManager;
+    @Inject
     private AppProperties appProperties;
     @Inject
     private EvaluationLogMapper evaluationLogMapper;
@@ -89,7 +94,7 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
     public void init() {
         evaluationLogService =
                 new EvaluationLogService(appProperties, filterService, evaluationLogMapper, classifierOptionsProcessor,
-                        ersService, evaluationLogRepository, evaluationResultsRequestEntityRepository);
+                        ersService, entityManager, evaluationLogRepository, evaluationResultsRequestEntityRepository);
         evaluationLogService.initialize();
     }
 
@@ -284,6 +289,44 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
                 EvaluationResultsStatus.RESULTS_RECEIVED);
     }
 
+    @Test
+    void testGetClassifiersStatisticsHistogramData() {
+        var evaluationLogs = createAndSaveTEstDataForGetClassifiersStatisticsHistogramData();
+        mockClassifiersDictionary();
+        var chartDataDto = evaluationLogService.getClassifiersStatisticsHistogramData(LocalDate.now(), LocalDate.now());
+        assertThat(chartDataDto).isNotNull();
+        assertThat(chartDataDto.getTotal()).isEqualTo(evaluationLogs.size());
+        verifyChartItem(chartDataDto.getDataItems(), CART.class.getSimpleName(), 2L);
+        verifyChartItem(chartDataDto.getDataItems(), C45.class.getSimpleName(), 1L);
+        verifyChartItem(chartDataDto.getDataItems(), KNearestNeighbours.class.getSimpleName(), 1L);
+        verifyChartItem(chartDataDto.getDataItems(), NeuralNetwork.class.getSimpleName(), 0L);
+    }
+
+    private void verifyChartItem(List<ChartDataDto> items, String classifierName, long expectedCount) {
+        var chartItem = items.stream()
+                .filter(chartDataDto -> chartDataDto.getName().equals(classifierName))
+                .findFirst()
+                .orElse(null);
+        assertThat(chartItem).isNotNull();
+        assertThat(chartItem.getCount()).isEqualTo(expectedCount);
+    }
+
+    private List<EvaluationLog> createAndSaveTEstDataForGetClassifiersStatisticsHistogramData() {
+        EvaluationLog evaluationLog =
+                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        evaluationLog.getClassifierInfo().setClassifierName(CART.class.getSimpleName());
+        EvaluationLog evaluationLog1 =
+                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        evaluationLog1.getClassifierInfo().setClassifierName(C45.class.getSimpleName());
+        EvaluationLog evaluationLog2 =
+                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.ERROR);
+        evaluationLog2.getClassifierInfo().setClassifierName(CART.class.getSimpleName());
+        EvaluationLog evaluationLog3 =
+                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        evaluationLog3.getClassifierInfo().setClassifierName(KNearestNeighbours.class.getSimpleName());
+        return evaluationLogRepository.saveAll(List.of(evaluationLog, evaluationLog1, evaluationLog2, evaluationLog3));
+    }
+
     private void testGetEvaluationLogDetails(EvaluationLog evaluationLog, EvaluationResultsStatus expectedStatus) {
         EvaluationLogDetailsDto evaluationLogDetailsDto = evaluationLogService.getEvaluationLogDetails(evaluationLog);
         Assertions.assertThat(evaluationLogDetailsDto).isNotNull();
@@ -319,6 +362,10 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
         classifiersDictionary.getValues().add(
                 new FilterDictionaryValueDto(CART_DESCRIPTION, CART.class.getSimpleName()));
         classifiersDictionary.getValues().add(new FilterDictionaryValueDto(C45_DESCRIPTION, C45.class.getSimpleName()));
+        classifiersDictionary.getValues().add(new FilterDictionaryValueDto(KNearestNeighbours.class.getSimpleName(),
+                KNearestNeighbours.class.getSimpleName()));
+        classifiersDictionary.getValues().add(new FilterDictionaryValueDto(NeuralNetwork.class.getSimpleName(),
+                NeuralNetwork.class.getSimpleName()));
         when(filterService.getFilterDictionary(CLASSIFIER_NAME)).thenReturn(classifiersDictionary);
     }
 }

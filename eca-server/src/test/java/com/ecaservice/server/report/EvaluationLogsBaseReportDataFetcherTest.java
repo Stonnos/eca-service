@@ -28,6 +28,7 @@ import org.mockito.Mock;
 import org.springframework.context.annotation.Import;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -64,6 +65,8 @@ class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
     @Inject
     private EvaluationLogMapper evaluationLogMapper;
     @Inject
+    private EntityManager entityManager;
+    @Inject
     private EvaluationLogRepository evaluationLogRepository;
     @Inject
     private EvaluationResultsRequestEntityRepository evaluationResultsRequestEntityRepository;
@@ -74,7 +77,7 @@ class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
     public void init() {
         EvaluationLogService evaluationLogService =
                 new EvaluationLogService(appProperties, filterService, evaluationLogMapper, classifierOptionsProcessor,
-                        ersService, evaluationLogRepository, evaluationResultsRequestEntityRepository);
+                        ersService, entityManager, evaluationLogRepository, evaluationResultsRequestEntityRepository);
         evaluationLogsBaseReportDataFetcher =
                 new EvaluationLogsBaseReportDataFetcher(filterService, evaluationLogService, evaluationLogMapper);
         when(filterService.getFilterDictionary(CLASSIFIER_NAME)).thenReturn(createFilterDictionaryDto());
