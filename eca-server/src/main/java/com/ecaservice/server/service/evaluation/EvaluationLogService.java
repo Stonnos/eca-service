@@ -39,22 +39,21 @@ import javax.persistence.EntityManager;
 import javax.persistence.Tuple;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.TreeMap;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.server.model.entity.AbstractEvaluationEntity_.CREATION_DATE;
 import static com.ecaservice.server.model.entity.ClassifierInfo_.CLASSIFIER_NAME;
 import static com.ecaservice.server.model.entity.EvaluationLog_.CLASSIFIER_INFO;
-import static com.ecaservice.server.util.Utils.atEndOfDay;
-import static com.ecaservice.server.util.Utils.atStartOfDay;
+import static com.ecaservice.server.util.QueryHelper.buildGroupByStatisticsQuery;
 import static com.ecaservice.server.util.Utils.buildEvaluationResultsDto;
 import static com.ecaservice.server.util.Utils.calculateRequestStatusesStatistics;
 import static com.google.common.collect.Lists.newArrayList;
@@ -180,18 +179,15 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
     private CriteriaQuery<Tuple> buildClassifiersStatisticsDataCriteria(LocalDate createdDateFrom,
                                                                         LocalDate createdDateTo) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Tuple> criteria = builder.createQuery(Tuple.class);
-        Root<EvaluationLog> root = criteria.from(EvaluationLog.class);
-        List<Predicate> predicates = newArrayList();
-        Optional.ofNullable(createdDateFrom).ifPresent(
-                value -> predicates.add(builder.greaterThanOrEqualTo(root.get(CREATION_DATE), atStartOfDay(value))));
-        Optional.ofNullable(createdDateTo).ifPresent(
-                value -> predicates.add(builder.lessThanOrEqualTo(root.get(CREATION_DATE), atEndOfDay(value))));
-        Join<EvaluationLog, ClassifierInfo> classifierInfoJoin = root.join(CLASSIFIER_INFO);
-        criteria.groupBy(classifierInfoJoin.get(CLASSIFIER_NAME));
-        criteria.multiselect(classifierInfoJoin.get(CLASSIFIER_NAME), builder.count(classifierInfoJoin))
-                .where(builder.and(predicates.toArray(new Predicate[0])));
-        return criteria;
+        var groupBy = new Function<Root<EvaluationLog>, Expression<?>>() {
+            @Override
+            public Expression<?> apply(Root<EvaluationLog> root) {
+                Join<EvaluationLog, ClassifierInfo> classifierInfoJoin = root.join(CLASSIFIER_INFO);
+                return classifierInfoJoin.get(CLASSIFIER_NAME);
+            }
+        };
+        return buildGroupByStatisticsQuery(builder, EvaluationLog.class, groupBy, CREATION_DATE, createdDateFrom,
+                createdDateTo);
     }
 
     private ChartDto populateClassifiersChartData(Map<String, Long> classifiersStatisticsMap) {

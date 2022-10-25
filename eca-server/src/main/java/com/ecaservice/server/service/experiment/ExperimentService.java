@@ -45,13 +45,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.Tuple;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -65,10 +62,8 @@ import static com.ecaservice.common.web.util.LogHelper.putMdc;
 import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.server.model.entity.AbstractEvaluationEntity_.CREATION_DATE;
 import static com.ecaservice.server.model.entity.Experiment_.EXPERIMENT_TYPE;
-import static com.ecaservice.server.util.Utils.atEndOfDay;
-import static com.ecaservice.server.util.Utils.atStartOfDay;
+import static com.ecaservice.server.util.QueryHelper.buildGroupByStatisticsQuery;
 import static com.ecaservice.server.util.Utils.calculateRequestStatusesStatistics;
-import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * Experiment service.
@@ -278,17 +273,8 @@ public class ExperimentService implements PageRequestService<Experiment> {
     private CriteriaQuery<Tuple> buildExperimentStatisticsDataCriteria(LocalDate createdDateFrom,
                                                                        LocalDate createdDateTo) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Tuple> criteria = builder.createQuery(Tuple.class);
-        Root<Experiment> root = criteria.from(Experiment.class);
-        List<Predicate> predicates = newArrayList();
-        Optional.ofNullable(createdDateFrom).ifPresent(value -> predicates.add(
-                builder.greaterThanOrEqualTo(root.get(CREATION_DATE), atStartOfDay(value))));
-        Optional.ofNullable(createdDateTo).ifPresent(value -> predicates.add(
-                builder.lessThanOrEqualTo(root.get(CREATION_DATE), atEndOfDay(value))));
-        criteria.groupBy(root.get(EXPERIMENT_TYPE));
-        criteria.multiselect(root.get(EXPERIMENT_TYPE), builder.count(root)).where(
-                builder.and(predicates.toArray(new Predicate[0])));
-        return criteria;
+        return buildGroupByStatisticsQuery(builder, Experiment.class, root -> root.get(EXPERIMENT_TYPE), CREATION_DATE,
+                createdDateFrom, createdDateTo);
     }
 
     private ChartDto populateExperimentsChartData(Map<String, Long> statisticsMap) {
