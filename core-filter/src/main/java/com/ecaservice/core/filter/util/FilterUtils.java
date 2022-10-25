@@ -6,6 +6,7 @@ import org.springframework.data.domain.Sort;
 
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Root;
 
 import static com.ecaservice.core.filter.util.Utils.splitByPointSeparator;
@@ -44,7 +45,7 @@ public class FilterUtils {
     public static <T, E> Expression<E> buildExpression(Root<T> root, String fieldName) {
         String[] fieldLevels = splitByPointSeparator(fieldName);
         if (fieldLevels != null && fieldLevels.length > 1) {
-            Join<T, ?> join = root.join(fieldLevels[0]);
+            Join<T, ?> join = root.join(fieldLevels[0], JoinType.LEFT);
             return join.get(fieldLevels[1]);
         } else {
             return root.get(fieldName);
