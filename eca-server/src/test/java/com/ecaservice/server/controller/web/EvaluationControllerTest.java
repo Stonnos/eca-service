@@ -11,6 +11,8 @@ import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.service.evaluation.EvaluationLogService;
+import com.ecaservice.web.dto.model.ChartDataDto;
+import com.ecaservice.web.dto.model.ChartDto;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -43,7 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * Unit tests for cheking {@link EvaluationController} functionality.
+ * Unit tests for checking {@link EvaluationController} functionality.
  *
  * @author Roman Batygin
  */
@@ -56,6 +58,7 @@ class EvaluationControllerTest extends PageRequestControllerTest {
     private static final String DETAILS_URL = BASE_URL + "/details/{id}";
     private static final String LIST_URL = BASE_URL + "/list";
     private static final String REQUEST_STATUS_STATISTICS_URL = BASE_URL + "/request-statuses-statistics";
+    private static final String CLASSIFIERS_STATISTICS_URL = BASE_URL + "/classifiers-statistics";
     private static final long ID = 1L;
 
     @MockBean
@@ -162,5 +165,26 @@ class EvaluationControllerTest extends PageRequestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(requestStatusStatisticsDto)));
+    }
+
+    @Test
+    void testGetClassifiersStatisticsUnauthorized() throws Exception {
+        mockMvc.perform(get(CLASSIFIERS_STATISTICS_URL)).andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testGetClassifiersStatisticsOk() throws Exception {
+        ChartDto chartDto = ChartDto.builder()
+                .total(1L)
+                .dataItems(Collections.singletonList(new ChartDataDto("Item", "Item", 1L)))
+                .build();
+        when(evaluationLogService.getClassifiersStatisticsData(null, null))
+                .thenReturn(chartDto);
+        mockMvc.perform(get(CLASSIFIERS_STATISTICS_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(objectMapper.writeValueAsString(chartDto)));
+
     }
 }

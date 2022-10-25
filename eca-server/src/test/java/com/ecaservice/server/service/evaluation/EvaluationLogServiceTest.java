@@ -290,10 +290,10 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    void testGetClassifiersStatisticsHistogramData() {
-        var evaluationLogs = createAndSaveTEstDataForGetClassifiersStatisticsHistogramData();
+    void testGetClassifiersStatisticsData() {
+        var evaluationLogs = createAndSaveTestDataForGetClassifiersStatisticsData();
         mockClassifiersDictionary();
-        var chartDataDto = evaluationLogService.getClassifiersStatisticsHistogramData(LocalDate.now(), LocalDate.now());
+        var chartDataDto = evaluationLogService.getClassifiersStatisticsData(LocalDate.now(), LocalDate.now());
         assertThat(chartDataDto).isNotNull();
         assertThat(chartDataDto.getTotal()).isEqualTo(evaluationLogs.size());
         verifyChartItem(chartDataDto.getDataItems(), CART.class.getSimpleName(), 2L);
@@ -311,7 +311,7 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
         assertThat(chartItem.getCount()).isEqualTo(expectedCount);
     }
 
-    private List<EvaluationLog> createAndSaveTEstDataForGetClassifiersStatisticsHistogramData() {
+    private List<EvaluationLog> createAndSaveTestDataForGetClassifiersStatisticsData() {
         EvaluationLog evaluationLog =
                 TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         evaluationLog.getClassifierInfo().setClassifierName(CART.class.getSimpleName());

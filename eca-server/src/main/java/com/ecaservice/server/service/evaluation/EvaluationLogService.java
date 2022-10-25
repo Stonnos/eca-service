@@ -150,14 +150,14 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
     }
 
     /**
-     * Calculates classifiers statistics histogram data.
+     * Calculates classifiers statistics data.
      *
      * @param createdDateFrom - created date from
      * @param createdDateTo   - created date to
-     * @return classifiers statistics histogram data
+     * @return classifiers statistics data
      */
-    public ChartDto getClassifiersStatisticsHistogramData(LocalDate createdDateFrom, LocalDate createdDateTo) {
-        log.info("Starting to get classifiers statistics histogram data with created date from [{}] to [{}]",
+    public ChartDto getClassifiersStatisticsData(LocalDate createdDateFrom, LocalDate createdDateTo) {
+        log.info("Starting to get classifiers statistics data with created date from [{}] to [{}]",
                 createdDateFrom, createdDateTo);
         var criteria = buildClassifiersStatisticsHistogramDataCriteria(createdDateFrom, createdDateTo);
         var classifiersStatisticsMap = entityManager.createQuery(criteria)
@@ -168,7 +168,7 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
                         TreeMap::new)
                 );
         var chartData = populateClassifiersChartData(classifiersStatisticsMap);
-        log.info("Classifiers statistics histogram data has been fetched with created date from [{}] to [{}]: {}",
+        log.info("Classifiers statistics data has been fetched with created date from [{}] to [{}]: {}",
                 createdDateFrom, createdDateTo, chartData);
         return chartData;
     }
