@@ -1,12 +1,12 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
-  ChartDataDto, CreateExperimentResultDto,
+  CreateExperimentResultDto,
   ExperimentErsReportDto,
   ExperimentDto,
   PageDto,
   PageRequestDto,
-  RequestStatusStatisticsDto, ExperimentResultsDetailsDto, ExperimentProgressDto, S3ContentResponseDto
+  RequestStatusStatisticsDto, ExperimentResultsDetailsDto, ExperimentProgressDto, S3ContentResponseDto, ChartDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { saveAs } from 'file-saver/dist/FileSaver';
 import { Observable } from "rxjs/internal/Observable";
@@ -101,14 +101,14 @@ export class ExperimentsService {
     return this.http.get<ExperimentErsReportDto>(this.serviceUrl + '/ers-report/' + id, { headers: headers });
   }
 
-  public getExperimentTypesStatistics(createdDateFrom: string, createdDateTo: string): Observable<ChartDataDto[]> {
+  public getExperimentsStatistics(createdDateFrom: string, createdDateTo: string): Observable<ChartDto> {
     const headers = new HttpHeaders({
       'Content-type': 'application/x-www-form-urlencoded; charset=utf-8',
       'Authorization': Utils.getBearerTokenHeader()
     });
     let params = new HttpParams().set('createdDateFrom', createdDateFrom).set('createdDateTo', createdDateTo);
     const options = { headers: headers, params: params };
-    return this.http.get<ChartDataDto[]>(this.serviceUrl + '/statistics', options);
+    return this.http.get<ChartDto>(this.serviceUrl + '/statistics', options);
   }
 
   public createExperiment(experimentRequest: ExperimentRequest): Observable<CreateExperimentResultDto> {
