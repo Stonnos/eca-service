@@ -10,14 +10,14 @@ import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LONG_VALUE_STRING
 import static com.ecaservice.web.dto.util.FieldConstraints.ZERO_VALUE_STRING;
 
 /**
- * Dto model for charts.
+ * Chart data dto.
  *
  * @author Roman Batygin
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "Model for chart")
+@Schema(description = "Chart data model")
 public class ChartDataDto {
 
     /**

@@ -1,0 +1,43 @@
+.filter-label {
+  margin-right: 10px;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.total-count {
+  margin-right: 10px;
+  font-weight: bold;
+  font-size: 18px;
+  margin-top: 5px;
+}
+
+.app-progress-spinner::ng-deep {
+  .ui-progress-spinner {
+    position: fixed;
+    margin: auto;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 150px;
+    height: 150px;
+    z-index: 100000;
+  }
+
+  @keyframes ui-progress-spinner-color {
+    100%,
+    0% {
+      stroke: #416ee7;
+    }
+    40% {
+      stroke: #416ee7;
+    }
+    66% {
+      stroke: #416ee7;
+    }
+    80%,
+    90% {
+      stroke: #416ee7;
+    }
+  }
+}

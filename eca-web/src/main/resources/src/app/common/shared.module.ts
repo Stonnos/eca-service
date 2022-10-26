@@ -26,6 +26,7 @@ import { PushMessageComponent } from "./push/push-message.component";
 import { EventService } from "./event/event.service";
 import { EventHandler } from "./event/event.handler";
 import { PushTokenService } from "./push/push-token.service";
+import { ChartBarStatisticsComponent } from "./chart-bar-statistics/chart-bar-statistics.component";
 
 @NgModule({
   imports: [
@@ -47,7 +48,8 @@ import { PushTokenService } from "./push/push-token.service";
     ClassifierOptionsInfo,
     EvaluationMethodInfo,
     InstancesInfo,
-    PushMessageComponent
+    PushMessageComponent,
+    ChartBarStatisticsComponent,
   ],
   exports: [
     RequestStatusComponent,
@@ -63,7 +65,8 @@ import { PushTokenService } from "./push/push-token.service";
     ClassifierOptionsInfo,
     EvaluationMethodInfo,
     InstancesInfo,
-    PushMessageComponent
+    PushMessageComponent,
+    ChartBarStatisticsComponent
   ],
   providers: [
     FieldService,

@@ -27,6 +27,9 @@ import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.evaluation.CalculationExecutorService;
 import com.ecaservice.server.service.evaluation.CalculationExecutorServiceImpl;
+import com.ecaservice.web.dto.model.ChartDataDto;
+import com.ecaservice.web.dto.model.FilterDictionaryDto;
+import com.ecaservice.web.dto.model.FilterDictionaryValueDto;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -48,15 +51,16 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Stream;
 
 import static com.ecaservice.server.TestHelperUtils.createExperimentHistory;
 import static com.ecaservice.server.TestHelperUtils.createMessageProperties;
+import static com.ecaservice.server.service.filter.dictionary.FilterDictionaries.EXPERIMENT_TYPE;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -242,14 +246,14 @@ class ExperimentServiceTest extends AbstractJpaTest {
         experimentRepository.save(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR));
         experimentRepository.save(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR));
         experimentRepository.save(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR));
-        Map<RequestStatus, Long> requestStatusesMap = experimentService.getRequestStatusesStatistics();
-        assertThat(requestStatusesMap)
-                .isNotNull()
-                .hasSameSizeAs(RequestStatus.values())
-                .containsEntry(RequestStatus.NEW, 2L)
-                .containsEntry(RequestStatus.FINISHED, 3L)
-                .containsEntry(RequestStatus.ERROR, 4L)
-                .containsEntry(RequestStatus.TIMEOUT, 0L);
+        var requestStatusStatisticsDto = experimentService.getRequestStatusesStatistics();
+        assertThat(requestStatusStatisticsDto).isNotNull();
+        assertThat(requestStatusStatisticsDto.getNewRequestsCount()).isEqualTo(2L);
+        assertThat(requestStatusStatisticsDto.getInProgressRequestsCount()).isEqualTo(0L);
+        assertThat(requestStatusStatisticsDto.getFinishedRequestsCount()).isEqualTo(3L);
+        assertThat(requestStatusStatisticsDto.getErrorRequestsCount()).isEqualTo(4L);
+        assertThat(requestStatusStatisticsDto.getTimeoutRequestsCount()).isEqualTo(0L);
+        assertThat(requestStatusStatisticsDto.getTotalCount()).isEqualTo(experimentRepository.count());
     }
 
     /**
@@ -432,29 +436,15 @@ class ExperimentServiceTest extends AbstractJpaTest {
 
     @Test
     void testGetExperimentTypesStatistics() {
-        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
-        experiment.setCreationDate(LocalDateTime.of(2018, 1, 1, 0, 0, 0));
-        experiment.setExperimentType(ExperimentType.ADA_BOOST);
-        experimentRepository.save(experiment);
-        Experiment experiment1 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
-        experiment1.setCreationDate(LocalDateTime.of(2018, 1, 2, 12, 0, 0));
-        experiment1.setExperimentType(ExperimentType.ADA_BOOST);
-        experimentRepository.save(experiment1);
-        Experiment experiment2 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
-        experiment2.setCreationDate(LocalDateTime.of(2018, 1, 3, 23, 59, 59));
-        experimentRepository.save(experiment2);
-        Experiment experiment3 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
-        experiment3.setCreationDate(LocalDateTime.of(2018, 1, 4, 0, 0, 0));
-        experiment3.setExperimentType(ExperimentType.DECISION_TREE);
-        experimentRepository.save(experiment3);
-        Map<ExperimentType, Long> experimentTypesMap =
-                experimentService.getExperimentTypesStatistics(LocalDate.of(2018, 1, 1), LocalDate.of(2018, 1, 3));
-        Assertions.assertThat(experimentTypesMap).isNotNull();
-        Assertions.assertThat(experimentTypesMap)
-                .hasSameSizeAs(ExperimentType.values())
-                .containsEntry(ExperimentType.ADA_BOOST, 2L);
-        Assertions.assertThat(experimentTypesMap.get(ExperimentType.KNN)).isOne();
-        Assertions.assertThat(experimentTypesMap.get(ExperimentType.DECISION_TREE)).isZero();
+        createAndSaveDataForExperimentsStatistics();
+        mockExperimentTypesDictionary();
+        var experimentsStatistics =
+                experimentService.getExperimentsStatistics(LocalDate.of(2018, 1, 1), LocalDate.of(2018, 1, 3));
+        Assertions.assertThat(experimentsStatistics).isNotNull();
+        assertThat(experimentsStatistics.getTotal()).isEqualTo(3L);
+        verifyChartItem(experimentsStatistics.getDataItems(), ExperimentType.ADA_BOOST.name(), 2L);
+        verifyChartItem(experimentsStatistics.getDataItems(), ExperimentType.KNN.name(), 1L);
+        verifyChartItem(experimentsStatistics.getDataItems(), ExperimentType.DECISION_TREE.name(), 0L);
     }
 
     @Test
@@ -480,5 +470,38 @@ class ExperimentServiceTest extends AbstractJpaTest {
         var s3ContentResponseDto = experimentService.getExperimentResultsContentUrl(experiment.getId());
         assertThat(s3ContentResponseDto).isNotNull();
         assertThat(s3ContentResponseDto.getContentUrl()).isEqualTo(EXPERIMENT_DOWNLOAD_URL);
+    }
+
+    private void createAndSaveDataForExperimentsStatistics() {
+        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        experiment.setCreationDate(LocalDateTime.of(2018, 1, 1, 0, 0, 0));
+        experiment.setExperimentType(ExperimentType.ADA_BOOST);
+        Experiment experiment1 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        experiment1.setCreationDate(LocalDateTime.of(2018, 1, 2, 12, 0, 0));
+        experiment1.setExperimentType(ExperimentType.ADA_BOOST);
+        Experiment experiment2 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        experiment2.setCreationDate(LocalDateTime.of(2018, 1, 3, 23, 59, 59));
+        Experiment experiment3 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        experiment3.setCreationDate(LocalDateTime.of(2018, 1, 4, 0, 0, 0));
+        experiment3.setExperimentType(ExperimentType.DECISION_TREE);
+        experimentRepository.saveAll(List.of(experiment, experiment1, experiment2, experiment3));
+    }
+
+    private void mockExperimentTypesDictionary() {
+        var experimentsDictionary = new FilterDictionaryDto();
+        experimentsDictionary.setValues(newArrayList());
+        Stream.of(ExperimentType.values()).forEach(experimentType ->
+                experimentsDictionary.getValues().add(new FilterDictionaryValueDto(experimentType.getDescription(),
+                        experimentType.name())));
+        when(filterService.getFilterDictionary(EXPERIMENT_TYPE)).thenReturn(experimentsDictionary);
+    }
+
+    private void verifyChartItem(List<ChartDataDto> items, String classifierName, long expectedCount) {
+        var chartItem = items.stream()
+                .filter(chartDataDto -> chartDataDto.getName().equals(classifierName))
+                .findFirst()
+                .orElse(null);
+        assertThat(chartItem).isNotNull();
+        assertThat(chartItem.getCount()).isEqualTo(expectedCount);
     }
 }

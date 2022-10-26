@@ -22,7 +22,10 @@ import com.ecaservice.server.model.projections.RequestStatusStatistics;
 import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.service.PageRequestService;
 import com.ecaservice.server.service.evaluation.CalculationExecutorService;
+import com.ecaservice.server.service.filter.dictionary.FilterDictionaries;
+import com.ecaservice.web.dto.model.ChartDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
 import com.ecaservice.web.dto.model.S3ContentResponseDto;
 import eca.dataminer.AbstractExperiment;
 import lombok.RequiredArgsConstructor;
@@ -41,14 +44,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.Tuple;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -62,10 +61,9 @@ import static com.ecaservice.common.web.util.LogHelper.putMdc;
 import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.server.model.entity.AbstractEvaluationEntity_.CREATION_DATE;
 import static com.ecaservice.server.model.entity.Experiment_.EXPERIMENT_TYPE;
-import static com.ecaservice.server.util.Utils.atEndOfDay;
-import static com.ecaservice.server.util.Utils.atStartOfDay;
-import static com.ecaservice.server.util.Utils.toRequestStatusStatisticsMap;
-import static com.google.common.collect.Lists.newArrayList;
+import static com.ecaservice.server.util.QueryHelper.buildGroupByStatisticsQuery;
+import static com.ecaservice.server.util.StatisticsHelper.calculateChartData;
+import static com.ecaservice.server.util.StatisticsHelper.calculateRequestStatusesStatistics;
 
 /**
  * Experiment service.
@@ -241,41 +239,47 @@ public class ExperimentService implements PageRequestService<Experiment> {
     /**
      * Calculates experiment statuses counting statistics.
      *
-     * @return requests status counting statistics list
+     * @return requests status statistics dto
      */
-    public Map<RequestStatus, Long> getRequestStatusesStatistics() {
+    public RequestStatusStatisticsDto getRequestStatusesStatistics() {
+        log.info("Request get experiments statuses statistics");
         List<RequestStatusStatistics> requestStatusStatistics = experimentRepository.getRequestStatusesStatistics();
-        return toRequestStatusStatisticsMap(requestStatusStatistics);
+        var requestStatusStatisticsDto = calculateRequestStatusesStatistics(requestStatusStatistics);
+        log.info("Experiments statuses statistics: {}", requestStatusStatisticsDto);
+        return requestStatusStatisticsDto;
     }
 
     /**
-     * Calculates experiments types counting statistics.
+     * Calculates experiments statistics data (distribution diagram by experiment type).
      *
      * @param createdDateFrom - experiment created date from
      * @param createdDateTo   - experiment created date to
-     * @return experiments types counting statistics
+     * @return experiments statistics
      */
-    public Map<ExperimentType, Long> getExperimentTypesStatistics(LocalDate createdDateFrom, LocalDate createdDateTo) {
-        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Tuple> criteria = builder.createQuery(Tuple.class);
-        Root<Experiment> root = criteria.from(Experiment.class);
-        List<Predicate> predicates = newArrayList();
-        Optional.ofNullable(createdDateFrom).ifPresent(value -> predicates.add(
-                builder.greaterThanOrEqualTo(root.get(CREATION_DATE), atStartOfDay(value))));
-        Optional.ofNullable(createdDateTo).ifPresent(value -> predicates.add(
-                builder.lessThanOrEqualTo(root.get(CREATION_DATE), atEndOfDay(value))));
-        criteria.groupBy(root.get(EXPERIMENT_TYPE));
-        criteria.multiselect(root.get(EXPERIMENT_TYPE), builder.count(root)).where(
-                builder.and(predicates.toArray(new Predicate[0])));
-        Map<ExperimentType, Long> experimentTypesMap = entityManager.createQuery(criteria).getResultList()
+    public ChartDto getExperimentsStatistics(LocalDate createdDateFrom, LocalDate createdDateTo) {
+        log.info("Starting to get experiments statistics data with created date from [{}] to [{}]",
+                createdDateFrom, createdDateTo);
+        CriteriaQuery<Tuple> criteria = buildExperimentStatisticsDataCriteria(createdDateFrom, createdDateTo);
+        var experimentStatisticsMap = entityManager.createQuery(criteria).getResultList()
                 .stream()
-                .collect(
-                        Collectors.toMap(tuple -> tuple.get(0, ExperimentType.class), tuple -> tuple.get(1, Long.class),
-                                (v1, v2) -> v1, TreeMap::new));
-        Arrays.stream(ExperimentType.values()).filter(
-                requestStatus -> !experimentTypesMap.containsKey(requestStatus)).forEach(
-                requestStatus -> experimentTypesMap.put(requestStatus, 0L));
-        return experimentTypesMap;
+                .collect(Collectors.toMap(tuple -> tuple.get(0, ExperimentType.class).name(),
+                        tuple -> tuple.get(1, Long.class), (v1, v2) -> v1, TreeMap::new));
+        var chartData = populateExperimentsChartData(experimentStatisticsMap);
+        log.info("Experiments statistics data has been fetched with created date from [{}] to [{}]: {}",
+                createdDateFrom, createdDateTo, chartData);
+        return chartData;
+    }
+
+    private CriteriaQuery<Tuple> buildExperimentStatisticsDataCriteria(LocalDate createdDateFrom,
+                                                                       LocalDate createdDateTo) {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        return buildGroupByStatisticsQuery(builder, Experiment.class, root -> root.get(EXPERIMENT_TYPE), CREATION_DATE,
+                createdDateFrom, createdDateTo);
+    }
+
+    private ChartDto populateExperimentsChartData(Map<String, Long> statisticsMap) {
+        var experimentTypesDictionary = filterService.getFilterDictionary(FilterDictionaries.EXPERIMENT_TYPE);
+        return calculateChartData(experimentTypesDictionary, statisticsMap);
     }
 
     /**

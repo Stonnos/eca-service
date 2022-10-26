@@ -13,7 +13,6 @@ import com.ecaservice.server.model.MsgProperties;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentProgressEntity;
 import com.ecaservice.server.model.entity.ExperimentResultsEntity;
-import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.server.service.UserService;
 import com.ecaservice.server.service.auth.UsersClient;
@@ -23,6 +22,7 @@ import com.ecaservice.server.service.experiment.ExperimentResultsService;
 import com.ecaservice.server.service.experiment.ExperimentService;
 import com.ecaservice.user.dto.UserInfoDto;
 import com.ecaservice.web.dto.model.ChartDataDto;
+import com.ecaservice.web.dto.model.ChartDto;
 import com.ecaservice.web.dto.model.CreateExperimentResultDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
 import com.ecaservice.web.dto.model.ExperimentDto;
@@ -50,17 +50,13 @@ import javax.inject.Inject;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static com.ecaservice.server.PageRequestUtils.PAGE_NUMBER;
 import static com.ecaservice.server.PageRequestUtils.TOTAL_ELEMENTS;
 import static com.ecaservice.server.TestHelperUtils.bearerHeader;
-import static com.ecaservice.server.TestHelperUtils.buildRequestStatusStatisticsMap;
 import static com.ecaservice.server.TestHelperUtils.createPageRequestDto;
-import static com.ecaservice.server.util.Utils.toRequestStatusesStatistics;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -240,9 +236,8 @@ class ExperimentControllerTest extends PageRequestControllerTest {
 
     @Test
     void testExperimentsRequestStatusesStatisticsOk() throws Exception {
-        Map<RequestStatus, Long> requestStatusMap = buildRequestStatusStatisticsMap();
-        RequestStatusStatisticsDto requestStatusStatisticsDto = toRequestStatusesStatistics(requestStatusMap);
-        when(experimentService.getRequestStatusesStatistics()).thenReturn(requestStatusMap);
+        RequestStatusStatisticsDto requestStatusStatisticsDto = new RequestStatusStatisticsDto();
+        when(experimentService.getRequestStatusesStatistics()).thenReturn(requestStatusStatisticsDto);
         mockMvc.perform(get(REQUEST_STATUS_STATISTICS_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk())
@@ -315,16 +310,17 @@ class ExperimentControllerTest extends PageRequestControllerTest {
 
     @Test
     void testGetExperimentTypesStatisticsOk() throws Exception {
-        Map<ExperimentType, Long> experimentTypesMap = TestHelperUtils.buildExperimentTypeStatisticMap();
-        when(experimentService.getExperimentTypesStatistics(null, null)).thenReturn(experimentTypesMap);
-        List<ChartDataDto> chartDataDtoList = experimentTypesMap.entrySet().stream().map(
-                entry -> new ChartDataDto(entry.getKey().name(), entry.getKey().getDescription(),
-                        entry.getValue())).collect(Collectors.toList());
+        ChartDto chartDto = ChartDto.builder()
+                .total(1L)
+                .dataItems(Collections.singletonList(new ChartDataDto("Item", "Item", 1L)))
+                .build();
+        when(experimentService.getExperimentsStatistics(null, null))
+                .thenReturn(chartDto);
         mockMvc.perform(get(EXPERIMENT_TYPES_STATISTICS_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(objectMapper.writeValueAsString(chartDataDtoList)));
+                .andExpect(content().json(objectMapper.writeValueAsString(chartDto)));
 
     }
 

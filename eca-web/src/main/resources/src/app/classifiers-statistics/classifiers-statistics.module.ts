@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { UiComponentsModule } from "../ui-components.module";
-import { ExperimentStatisticsComponent } from "./components/experiment-statistics.component";
 import { SharedModule } from "../common/shared.module";
+import { ClassifiersStatisticsComponent } from "./components/classifiers-statistics.component";
 
 @NgModule({
   imports: [
@@ -13,12 +13,12 @@ import { SharedModule } from "../common/shared.module";
     SharedModule
   ],
   declarations: [
-    ExperimentStatisticsComponent
+    ClassifiersStatisticsComponent
   ],
   exports: [
-    ExperimentStatisticsComponent
+    ClassifiersStatisticsComponent
   ],
   providers: []
 })
-export class ExperimentStatisticsModule {
+export class ClassifiersStatisticsModule {
 }

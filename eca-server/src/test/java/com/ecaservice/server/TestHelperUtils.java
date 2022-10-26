@@ -993,19 +993,6 @@ public class TestHelperUtils {
     }
 
     /**
-     * Creates request status statistics map.
-     *
-     * @return request status statistics map
-     */
-    public static Map<RequestStatus, Long> buildRequestStatusStatisticsMap() {
-        RequestStatus[] requestStatuses = RequestStatus.values();
-        Map<RequestStatus, Long> requestStatusMap = newEnumMap(RequestStatus.class);
-        Stream.of(requestStatuses).forEach(
-                requestStatus -> requestStatusMap.put(requestStatus, (long) requestStatus.ordinal()));
-        return requestStatusMap;
-    }
-
-    /**
      * Creates experiment types statistics map.
      *
      * @return experiment types statistics map

@@ -10,13 +10,10 @@ import com.ecaservice.ers.dto.ClassifierReport;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestEntity;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.server.model.entity.ClassifierOptionsResponseModel;
-import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.evaluation.ClassifierOptionsRequestSource;
-import com.ecaservice.server.model.projections.RequestStatusStatistics;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
-import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
 import eca.core.evaluation.EvaluationMethod;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
@@ -25,14 +22,10 @@ import org.springframework.util.CollectionUtils;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.TreeMap;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static com.ecaservice.server.util.ClassifierOptionsHelper.isParsableOptions;
 
@@ -46,7 +39,6 @@ public class Utils {
 
     private static final String CV_FORMAT = "%d - блочная кросс - проверка";
     private static final String CV_EXTENDED_FORMAT = "%d×%d - блочная кросс - проверка";
-    private static final long ZERO = 0L;
 
     /**
      * Creates error object.
@@ -169,48 +161,6 @@ public class Utils {
      */
     public static LocalDateTime atEndOfDay(LocalDate localDate) {
         return localDate != null ? localDate.atTime(LocalTime.MAX) : null;
-    }
-
-    /**
-     * Transform requests statuses map to statistics dto.
-     *
-     * @param statusStatisticsMap - requests statuses map
-     * @return request status statistics dto
-     */
-    public static RequestStatusStatisticsDto toRequestStatusesStatistics(Map<RequestStatus, Long> statusStatisticsMap) {
-        RequestStatusStatisticsDto requestStatusStatisticsDto = new RequestStatusStatisticsDto();
-        requestStatusStatisticsDto.setNewRequestsCount(statusStatisticsMap.getOrDefault(RequestStatus.NEW, ZERO));
-        requestStatusStatisticsDto.setInProgressRequestsCount(
-                statusStatisticsMap.getOrDefault(RequestStatus.IN_PROGRESS, ZERO));
-        requestStatusStatisticsDto.setFinishedRequestsCount(
-                statusStatisticsMap.getOrDefault(RequestStatus.FINISHED, ZERO));
-        requestStatusStatisticsDto.setTimeoutRequestsCount(
-                statusStatisticsMap.getOrDefault(RequestStatus.TIMEOUT, ZERO));
-        requestStatusStatisticsDto.setErrorRequestsCount(statusStatisticsMap.getOrDefault(RequestStatus.ERROR, ZERO));
-        requestStatusStatisticsDto.setTotalCount(
-                statusStatisticsMap.values().stream().mapToLong(Long::longValue).sum());
-        return requestStatusStatisticsDto;
-    }
-
-    /**
-     * Transforms requests statuses list to map.
-     *
-     * @param requestStatusStatistics - request statuses list
-     * @return request statuses map
-     */
-    public static Map<RequestStatus, Long> toRequestStatusStatisticsMap(
-            List<RequestStatusStatistics> requestStatusStatistics) {
-        if (CollectionUtils.isEmpty(requestStatusStatistics)) {
-            return Collections.emptyMap();
-        }
-        Map<RequestStatus, Long> requestStatusMap = requestStatusStatistics
-                .stream()
-                .collect(Collectors.toMap(RequestStatusStatistics::getRequestStatus,
-                        RequestStatusStatistics::getRequestsCount, (v1, v2) -> v1, TreeMap::new));
-        Arrays.stream(RequestStatus.values()).filter(
-                requestStatus -> !requestStatusMap.containsKey(requestStatus)).forEach(
-                requestStatus -> requestStatusMap.put(requestStatus, ZERO));
-        return requestStatusMap;
     }
 
     /**

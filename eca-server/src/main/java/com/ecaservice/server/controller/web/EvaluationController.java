@@ -5,6 +5,7 @@ import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.service.evaluation.EvaluationLogService;
+import com.ecaservice.web.dto.model.ChartDto;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import com.ecaservice.web.dto.model.EvaluationLogDto;
 import com.ecaservice.web.dto.model.EvaluationLogsPageDto;
@@ -22,6 +23,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -30,15 +32,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import java.time.LocalDate;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
-import static com.ecaservice.server.util.Utils.toRequestStatusesStatistics;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
 /**
@@ -217,10 +220,57 @@ public class EvaluationController {
     )
     @GetMapping(value = "/request-statuses-statistics")
     public RequestStatusStatisticsDto getEvaluationRequestStatusesStatistics() {
-        log.info("Request get evaluations requests statuses statistics");
-        var requestStatusStatisticsDto =
-                toRequestStatusesStatistics(evaluationLogService.getRequestStatusesStatistics());
-        log.info("Evaluations requests statuses statistics: {}", requestStatusStatisticsDto);
-        return requestStatusStatisticsDto;
+        return evaluationLogService.getRequestStatusesStatistics();
+    }
+
+    /**
+     * Gets classifiers statistics data (distribution diagram by classifier).
+     *
+     * @param createdDateFrom - created date from
+     * @param createdDateTo   - created date to
+     * @return classifiers statistics data
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @Operation(
+            description = "Gets classifiers statistics data (distribution diagram by classifier)",
+            summary = "Gets classifiers statistics data (distribution diagram by classifier)",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "ClassifiersStatisticsResponse",
+                                                    ref = "#/components/examples/ClassifiersStatisticsResponse"
+                                            )
+                                    },
+                                    schema = @Schema(implementation = ChartDto.class)
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            )
+                                    }
+                            )
+                    )
+            }
+    )
+    @GetMapping(value = "/classifiers-statistics")
+    public ChartDto getClassifiersStatisticsData(
+            @Parameter(description = "Created date from", example = "2021-07-01")
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate createdDateFrom,
+            @Parameter(description = "Created date to", example = "2021-07-10")
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate createdDateTo) {
+        log.info("Received request to get classifiers statistics histogram data with created date from [{}] to [{}]",
+                createdDateFrom, createdDateTo);
+        return evaluationLogService.getClassifiersStatisticsData(createdDateFrom, createdDateTo);
     }
 }

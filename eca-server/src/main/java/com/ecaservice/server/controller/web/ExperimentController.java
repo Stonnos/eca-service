@@ -23,7 +23,7 @@ import com.ecaservice.server.service.experiment.ExperimentProgressService;
 import com.ecaservice.server.service.experiment.ExperimentResultsService;
 import com.ecaservice.server.service.experiment.ExperimentService;
 import com.ecaservice.user.dto.UserInfoDto;
-import com.ecaservice.web.dto.model.ChartDataDto;
+import com.ecaservice.web.dto.model.ChartDto;
 import com.ecaservice.web.dto.model.CreateExperimentResultDto;
 import com.ecaservice.web.dto.model.ExperimentDto;
 import com.ecaservice.web.dto.model.ExperimentErsReportDto;
@@ -67,13 +67,10 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
 import static com.ecaservice.server.config.audit.AuditCodes.CREATE_EXPERIMENT_REQUEST;
-import static com.ecaservice.server.util.Utils.toRequestStatusesStatistics;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
 /**
@@ -385,10 +382,7 @@ public class ExperimentController {
     )
     @GetMapping(value = "/request-statuses-statistics")
     public RequestStatusStatisticsDto getExperimentsRequestStatusesStatistics() {
-        log.info("Request get experiments statuses statistics");
-        var requestStatusStatisticsDto = toRequestStatusesStatistics(experimentService.getRequestStatusesStatistics());
-        log.info("Experiments statuses statistics: {}", requestStatusStatisticsDto);
-        return requestStatusStatisticsDto;
+        return experimentService.getRequestStatusesStatistics();
     }
 
     /**
@@ -450,16 +444,16 @@ public class ExperimentController {
     }
 
     /**
-     * Calculates experiments types counting statistics.
+     * Gets experiments statistics data (distribution diagram by experiment type).
      *
      * @param createdDateFrom - experiment created date from
      * @param createdDateTo   - experiment created date to
-     * @return chart data list
+     * @return chart data dto
      */
     @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
-            description = "Gets experiment types statistics",
-            summary = "Gets experiment types statistics",
+            description = "Gets experiments statistics data (distribution diagram by experiment type)",
+            summary = "Gets experiments statistics data (distribution diagram by experiment type)",
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200",
@@ -471,7 +465,7 @@ public class ExperimentController {
                                                     ref = "#/components/examples/ExperimentsStatisticsResponse"
                                             )
                                     },
-                                    array = @ArraySchema(schema = @Schema(implementation = ChartDataDto.class))
+                                    schema = @Schema(implementation = ChartDto.class)
                             )
                     ),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
@@ -488,21 +482,16 @@ public class ExperimentController {
             }
     )
     @GetMapping(value = "/statistics")
-    public List<ChartDataDto> getExperimentTypesStatistics(
+    public ChartDto getExperimentsStatistics(
             @Parameter(description = "Experiment created date from", example = "2021-07-01")
             @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate createdDateFrom,
             @Parameter(description = "Experiment created date to", example = "2021-07-10")
             @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate createdDateTo) {
-        log.info("Received request for experiment types statistics calculation with creation date from [{}] to [{}]",
+        log.info("Received request for experiment statistics calculation with creation date from [{}] to [{}]",
                 createdDateFrom, createdDateTo);
-        Map<ExperimentType, Long> experimentTypesMap =
-                experimentService.getExperimentTypesStatistics(createdDateFrom, createdDateTo);
-        return experimentTypesMap.entrySet()
-                .stream()
-                .map(entry -> new ChartDataDto(entry.getKey().name(), entry.getKey().getDescription(),
-                        entry.getValue())).collect(Collectors.toList());
+        return experimentService.getExperimentsStatistics(createdDateFrom, createdDateTo);
     }
 
     /**

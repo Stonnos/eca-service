@@ -1,12 +1,19 @@
-﻿<div class="ui-g">
+<p-progressSpinner
+  class="app-progress-spinner"
+  strokeWidth="4"
+  animationDuration=".5s"
+  *ngIf="loading">
+</p-progressSpinner>
+<div class="ui-g">
   <div class="ui-g-12">
-    <p-panel class="statistics">
+    <p-panel>
       <p-header>
         <div class="ui-g">
           <div class="ui-g-4 ui-g-offset-3">
-            <label class="filter-label">Дата создания заявки:</label>
+            <label class="filter-label">{{ dateLabelTitle }}</label>
             <p-calendar selectionMode="range"
                         [showIcon]="true"
+                        [disabled]="loading"
                         [showButtonBar]="true"
                         [(ngModel)]="createdDateRange"
                         [maxDate]="now">
@@ -17,6 +24,7 @@
               pButton
               label="Показать"
               type="button"
+              [disabled]="loading"
               (click)="onShow()">
             </button>
           </div>
@@ -32,7 +40,7 @@
       <p-footer>
         <div class="ui-g">
           <div class="ui-g-12 text-center">
-            <span class="total-experiments">Всего экспериментов:</span>
+            <span class="total-count">{{ totalCountTitle }}</span>
             {{ total }}
           </div>
         </div>
@@ -41,4 +49,3 @@
     </p-panel>
   </div>
 </div>
-
