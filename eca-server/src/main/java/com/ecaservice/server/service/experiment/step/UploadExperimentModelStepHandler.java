@@ -30,7 +30,7 @@ public class UploadExperimentModelStepHandler extends AbstractExperimentStepHand
                                             ExperimentStepService experimentStepService,
                                             ExperimentModelLocalStorage experimentModelLocalStorage,
                                             ExperimentRepository experimentRepository) {
-        super(ExperimentStep.EXPERIMENT_PROCESSING);
+        super(ExperimentStep.UPLOAD_EXPERIMENT_MODEL);
         this.objectStorageService = objectStorageService;
         this.experimentStepService = experimentStepService;
         this.experimentModelLocalStorage = experimentModelLocalStorage;

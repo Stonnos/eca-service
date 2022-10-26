@@ -28,7 +28,7 @@ public class GetExperimentDownloadUrlStepHandler extends AbstractExperimentStepH
                                                ObjectStorageService objectStorageService,
                                                ExperimentStepService experimentStepService,
                                                ExperimentRepository experimentRepository) {
-        super(ExperimentStep.EXPERIMENT_PROCESSING);
+        super(ExperimentStep.GET_EXPERIMENT_DOWNLOAD_URL);
         this.experimentConfig = experimentConfig;
         this.objectStorageService = objectStorageService;
         this.experimentStepService = experimentStepService;

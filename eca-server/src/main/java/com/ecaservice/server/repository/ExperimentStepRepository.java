@@ -17,4 +17,6 @@ public interface ExperimentStepRepository extends JpaRepository<ExperimentStepEn
 
     List<ExperimentStepEntity> findByExperimentAndStatusInOrderByOrder(Experiment experiment,
                                                                        Collection<ExperimentStepStatus> stepStatuses);
+
+    long countByStatusNotIn(Collection<ExperimentStepStatus> stepStatuses);
 }

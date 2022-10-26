@@ -15,15 +15,12 @@ import com.ecaservice.server.mapping.ExperimentMapper;
 import com.ecaservice.server.model.MsgProperties;
 import com.ecaservice.server.model.entity.Channel;
 import com.ecaservice.server.model.entity.Experiment;
-import com.ecaservice.server.model.entity.ExperimentStepStatus;
 import com.ecaservice.server.model.entity.FilterTemplateType;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.experiment.ExperimentContext;
 import com.ecaservice.server.model.projections.RequestStatusStatistics;
 import com.ecaservice.server.repository.ExperimentRepository;
-import com.ecaservice.server.repository.ExperimentStepRepository;
 import com.ecaservice.server.service.PageRequestService;
-import com.ecaservice.server.service.experiment.step.AbstractExperimentStepHandler;
 import com.ecaservice.server.service.filter.dictionary.FilterDictionaries;
 import com.ecaservice.web.dto.model.ChartDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -38,7 +35,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
-import org.springframework.util.StopWatch;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Tuple;
@@ -75,15 +71,13 @@ import static com.ecaservice.server.util.StatisticsHelper.calculateRequestStatus
 public class ExperimentService implements PageRequestService<Experiment> {
 
     private static final String EXPERIMENT_TRAIN_DATA_PATH_FORMAT = "experiment-train-data-%s.model";
-    private static final String EXPERIMENT_PATH_FORMAT = "experiment-%s.model";
 
     private final ExperimentRepository experimentRepository;
-    private final ExperimentStepRepository experimentStepRepository;
     private final ExperimentMapper experimentMapper;
     private final ObjectStorageService objectStorageService;
     private final CrossValidationConfig crossValidationConfig;
     private final ExperimentConfig experimentConfig;
-    private final List<AbstractExperimentStepHandler> experimentStepHandlers;
+    private final ExperimentStepProcessor experimentStepProcessor;
     private final EntityManager entityManager;
     private final AppProperties appProperties;
     private final FilterService filterService;
@@ -127,10 +121,17 @@ public class ExperimentService implements PageRequestService<Experiment> {
      * @return experiment history
      */
     public AbstractExperiment<?> processExperiment(final Experiment experiment) {
-        log.info("Starting to built experiment [{}].", experiment.getRequestId());
+        log.info("Starting to process experiment [{}].", experiment.getRequestId());
         try {
-            ExperimentContext experimentContext = processExperimentSteps(experiment);
-            experiment.setRequestStatus(RequestStatus.FINISHED);
+            ExperimentContext experimentContext = experimentStepProcessor.processExperimentSteps(experiment);
+            if (!experimentStepProcessor.allStepsCompleted(experiment)) {
+                log.warn("Not all experiment [{}] steps completed", experiment.getRequestId());
+            } else {
+                experiment.setRequestStatus(RequestStatus.FINISHED);
+                experiment.setEndDate(LocalDateTime.now());
+                experimentRepository.save(experiment);
+                log.info("All experiment [{}] steps has been completed", experiment.getRequestId());
+            }
             return experimentContext.getExperimentHistory();
            /* StopWatch stopWatch =
                     new StopWatch(String.format("Stop watching for experiment [%s]", experiment.getRequestId()));
@@ -162,14 +163,10 @@ public class ExperimentService implements PageRequestService<Experiment> {
             return abstractExperiment;*/
         } catch (TimeoutException ex) {
             log.warn("There was a timeout while experiment [{}] built.", experiment.getRequestId());
-            experiment.setRequestStatus(RequestStatus.TIMEOUT);
+            handleError(experiment, RequestStatus.TIMEOUT, ex.getMessage());
         } catch (Exception ex) {
             log.error("There was an error while experiment [{}] built: {}", experiment.getRequestId(), ex);
-            experiment.setRequestStatus(RequestStatus.ERROR);
-            experiment.setErrorMessage(ex.getMessage());
-        } finally {
-            experiment.setEndDate(LocalDateTime.now());
-            experimentRepository.save(experiment);
+            handleError(experiment, RequestStatus.ERROR, ex.getMessage());
         }
         return null;
     }
@@ -301,24 +298,11 @@ public class ExperimentService implements PageRequestService<Experiment> {
                 .build();
     }
 
-    private ExperimentContext processExperimentSteps(Experiment experiment) throws Exception {
-        var steps = experimentStepRepository.findByExperimentAndStatusInOrderByOrder(experiment,
-                List.of(ExperimentStepStatus.READY, ExperimentStepStatus.FAILED));
-        StopWatch stopWatch = new StopWatch(String.format("Timer for experiment [%s]", experiment.getRequestId()));
-        ExperimentContext experimentContext = ExperimentContext.builder()
-                .experiment(experiment)
-                .stopWatch(stopWatch)
-                .build();
-        for (var step : steps) {
-            var stepHandler = experimentStepHandlers.stream()
-                    .filter(handler -> handler.getStep().equals(step.getStep()))
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalStateException(String.format("Can't handle step [%s]", step.getStatus())));
-            stepHandler.handle(experimentContext, step);
-        }
-        log.info("Experiment [{}] has been successfully finished!", experiment.getRequestId());
-        log.info(stopWatch.prettyPrint());
-        return experimentContext;
+    private void handleError(Experiment experiment, RequestStatus requestStatus, String errorMessage) {
+        experiment.setRequestStatus(requestStatus);
+        experiment.setErrorMessage(errorMessage);
+        experiment.setEndDate(LocalDateTime.now());
+        experimentRepository.save(experiment);
     }
 
     private void setMessageProperties(Experiment experiment, MsgProperties msgProperties) {

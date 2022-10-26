@@ -62,17 +62,29 @@ public class ExperimentRequestProcessor {
         log.info("Starting to process new experiment [{}]", experiment.getRequestId());
         experimentProgressService.start(experiment);
         setInProgressStatus(experiment);
-        AbstractExperiment<?> experimentHistory = experimentService.processExperiment(experiment);
-        if (RequestStatus.FINISHED.equals(experiment.getRequestStatus())) {
-            eventPublisher.publishEvent(new ExperimentFinishedEvent(this, experiment, experimentHistory));
-        }
-        if (Channel.QUEUE.equals(experiment.getChannel())) {
-            eventPublisher.publishEvent(new ExperimentResponseEvent(this, experiment));
-        }
-        eventPublisher.publishEvent(new ExperimentWebPushEvent(this, experiment));
-        eventPublisher.publishEvent(new ExperimentEmailEvent(this, experiment));
-        experimentProgressService.finish(experiment);
+        internalProcessExperiment(experiment);
         log.info("New experiment [{}] has been processed", experiment.getRequestId());
+    }
+
+    /**
+     * Retries for experiment.
+     *
+     * @param id - experiment id
+     */
+    @Locked(lockName = "experiment", key = "#id", lockRegistry = EXPERIMENT_REDIS_LOCK_REGISTRY_BEAN,
+            waitForLock = false)
+    public void retryExperiment(Long id) {
+        var experiment = experimentService.getById(id);
+        if (!RequestStatus.IN_PROGRESS.equals(experiment.getRequestStatus())) {
+            log.warn("Attempt to retry experiment [{}] with status [{}]. Skipped...", experiment.getRequestId(),
+                    experiment.getRequestStatus());
+            return;
+        }
+        putMdc(TX_ID, experiment.getRequestId());
+        putMdc(EV_REQUEST_ID, experiment.getRequestId());
+        log.info("Starting to retry experiment [{}]", experiment.getRequestId());
+        internalProcessExperiment(experiment);
+        log.info("Retry experiment [{}] has been processed", experiment.getRequestId());
     }
 
     /**
@@ -103,6 +115,19 @@ public class ExperimentRequestProcessor {
         processWithPagination(experimentIds, experimentRepository::findByIdIn, this::removeExperimentsTrainingData,
                 experimentConfig.getPageSize());
         log.info("Experiments training data removing has been finished.");
+    }
+
+    private void internalProcessExperiment(Experiment experiment) {
+        AbstractExperiment<?> experimentHistory = experimentService.processExperiment(experiment);
+        if (RequestStatus.FINISHED.equals(experiment.getRequestStatus())) {
+            eventPublisher.publishEvent(new ExperimentFinishedEvent(this, experiment, experimentHistory));
+        }
+        if (Channel.QUEUE.equals(experiment.getChannel())) {
+            eventPublisher.publishEvent(new ExperimentResponseEvent(this, experiment));
+        }
+        eventPublisher.publishEvent(new ExperimentWebPushEvent(this, experiment));
+        eventPublisher.publishEvent(new ExperimentEmailEvent(this, experiment));
+        experimentProgressService.finish(experiment);
     }
 
     private void setInProgressStatus(Experiment experiment) {
