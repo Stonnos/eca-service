@@ -270,18 +270,6 @@ public class ExperimentService implements PageRequestService<Experiment> {
         return chartData;
     }
 
-    private CriteriaQuery<Tuple> buildExperimentStatisticsDataCriteria(LocalDate createdDateFrom,
-                                                                       LocalDate createdDateTo) {
-        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        return buildGroupByStatisticsQuery(builder, Experiment.class, root -> root.get(EXPERIMENT_TYPE), CREATION_DATE,
-                createdDateFrom, createdDateTo);
-    }
-
-    private ChartDto populateExperimentsChartData(Map<String, Long> statisticsMap) {
-        var experimentTypesDictionary = filterService.getFilterDictionary(FilterDictionaries.EXPERIMENT_TYPE);
-        return calculateChartData(experimentTypesDictionary, statisticsMap);
-    }
-
     /**
      * Gets experiment results content url.
      *
@@ -302,6 +290,18 @@ public class ExperimentService implements PageRequestService<Experiment> {
         return S3ContentResponseDto.builder()
                 .contentUrl(contentUrl)
                 .build();
+    }
+
+    private CriteriaQuery<Tuple> buildExperimentStatisticsDataCriteria(LocalDate createdDateFrom,
+                                                                       LocalDate createdDateTo) {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        return buildGroupByStatisticsQuery(builder, Experiment.class, root -> root.get(EXPERIMENT_TYPE), CREATION_DATE,
+                createdDateFrom, createdDateTo);
+    }
+
+    private ChartDto populateExperimentsChartData(Map<String, Long> statisticsMap) {
+        var experimentTypesDictionary = filterService.getFilterDictionary(FilterDictionaries.EXPERIMENT_TYPE);
+        return calculateChartData(experimentTypesDictionary, statisticsMap);
     }
 
     private String getExperimentDownloadPresignedUrl(String experimentPath) {
