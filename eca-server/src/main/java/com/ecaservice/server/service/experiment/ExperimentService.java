@@ -15,13 +15,15 @@ import com.ecaservice.server.mapping.ExperimentMapper;
 import com.ecaservice.server.model.MsgProperties;
 import com.ecaservice.server.model.entity.Channel;
 import com.ecaservice.server.model.entity.Experiment;
+import com.ecaservice.server.model.entity.ExperimentStepStatus;
 import com.ecaservice.server.model.entity.FilterTemplateType;
 import com.ecaservice.server.model.entity.RequestStatus;
-import com.ecaservice.server.model.experiment.InitializationParams;
+import com.ecaservice.server.model.experiment.ExperimentContext;
 import com.ecaservice.server.model.projections.RequestStatusStatistics;
 import com.ecaservice.server.repository.ExperimentRepository;
+import com.ecaservice.server.repository.ExperimentStepRepository;
 import com.ecaservice.server.service.PageRequestService;
-import com.ecaservice.server.service.evaluation.CalculationExecutorService;
+import com.ecaservice.server.service.experiment.step.AbstractExperimentStepHandler;
 import com.ecaservice.server.service.filter.dictionary.FilterDictionaries;
 import com.ecaservice.web.dto.model.ChartDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -30,7 +32,6 @@ import com.ecaservice.web.dto.model.S3ContentResponseDto;
 import eca.dataminer.AbstractExperiment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -38,7 +39,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.util.StopWatch;
-import weka.core.Instances;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Tuple;
@@ -50,7 +50,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
-import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
@@ -79,12 +78,12 @@ public class ExperimentService implements PageRequestService<Experiment> {
     private static final String EXPERIMENT_PATH_FORMAT = "experiment-%s.model";
 
     private final ExperimentRepository experimentRepository;
-    private final CalculationExecutorService executorService;
+    private final ExperimentStepRepository experimentStepRepository;
     private final ExperimentMapper experimentMapper;
     private final ObjectStorageService objectStorageService;
     private final CrossValidationConfig crossValidationConfig;
     private final ExperimentConfig experimentConfig;
-    private final ExperimentProcessorService experimentProcessorService;
+    private final List<AbstractExperimentStepHandler> experimentStepHandlers;
     private final EntityManager entityManager;
     private final AppProperties appProperties;
     private final FilterService filterService;
@@ -130,12 +129,10 @@ public class ExperimentService implements PageRequestService<Experiment> {
     public AbstractExperiment<?> processExperiment(final Experiment experiment) {
         log.info("Starting to built experiment [{}].", experiment.getRequestId());
         try {
-            if (StringUtils.isEmpty(experiment.getTrainingDataPath())) {
-                throw new ExperimentException(String.format("Training data path is not specified for experiment [%s]!",
-                        experiment.getRequestId()));
-            }
-
-            StopWatch stopWatch =
+            ExperimentContext experimentContext = processExperimentSteps(experiment);
+            experiment.setRequestStatus(RequestStatus.FINISHED);
+            return experimentContext.getExperimentHistory();
+           /* StopWatch stopWatch =
                     new StopWatch(String.format("Stop watching for experiment [%s]", experiment.getRequestId()));
             stopWatch.start(String.format("Loading data for experiment [%s]", experiment.getRequestId()));
             Instances data = objectStorageService.getObject(experiment.getTrainingDataPath(), Instances.class);
@@ -162,7 +159,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
             experiment.setRequestStatus(RequestStatus.FINISHED);
             log.info("Experiment [{}] has been successfully built!", experiment.getRequestId());
             log.info(stopWatch.prettyPrint());
-            return abstractExperiment;
+            return abstractExperiment;*/
         } catch (TimeoutException ex) {
             log.warn("There was a timeout while experiment [{}] built.", experiment.getRequestId());
             experiment.setRequestStatus(RequestStatus.TIMEOUT);
@@ -304,14 +301,24 @@ public class ExperimentService implements PageRequestService<Experiment> {
                 .build();
     }
 
-    private String getExperimentDownloadPresignedUrl(String experimentPath) {
-        return objectStorageService.getObjectPresignedProxyUrl(
-                GetPresignedUrlObject.builder()
-                        .objectPath(experimentPath)
-                        .expirationTime(experimentConfig.getExperimentDownloadUrlExpirationDays())
-                        .expirationTimeUnit(TimeUnit.DAYS)
-                        .build()
-        );
+    private ExperimentContext processExperimentSteps(Experiment experiment) throws Exception {
+        var steps = experimentStepRepository.findByExperimentAndStatusInOrderByOrder(experiment,
+                List.of(ExperimentStepStatus.READY, ExperimentStepStatus.FAILED));
+        StopWatch stopWatch = new StopWatch(String.format("Timer for experiment [%s]", experiment.getRequestId()));
+        ExperimentContext experimentContext = ExperimentContext.builder()
+                .experiment(experiment)
+                .stopWatch(stopWatch)
+                .build();
+        for (var step : steps) {
+            var stepHandler = experimentStepHandlers.stream()
+                    .filter(handler -> handler.getStep().equals(step.getStep()))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalStateException(String.format("Can't handle step [%s]", step.getStatus())));
+            stepHandler.handle(experimentContext, step);
+        }
+        log.info("Experiment [{}] has been successfully finished!", experiment.getRequestId());
+        log.info(stopWatch.prettyPrint());
+        return experimentContext;
     }
 
     private void setMessageProperties(Experiment experiment, MsgProperties msgProperties) {
