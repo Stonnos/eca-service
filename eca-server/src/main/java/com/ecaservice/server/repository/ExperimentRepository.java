@@ -1,7 +1,7 @@
 package com.ecaservice.server.repository;
 
 import com.ecaservice.server.model.entity.Experiment;
-import com.ecaservice.server.model.entity.RequestStatus;
+import com.ecaservice.server.model.entity.ExperimentStepStatus;
 import com.ecaservice.server.model.projections.RequestStatusStatistics;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -20,13 +20,23 @@ import java.util.List;
 public interface ExperimentRepository extends JpaRepository<Experiment, Long>, JpaSpecificationExecutor<Experiment> {
 
     /**
-     * Finds not sent experiments by statuses.
+     * Finds new experiments.
      *
-     * @param statuses - {@link RequestStatus} collection
      * @return experiments ids list
      */
-    @Query("select exp.id from Experiment exp where exp.requestStatus in (:statuses) order by exp.creationDate")
-    List<Long> findExperimentsForProcessing(@Param("statuses") Collection<RequestStatus> statuses);
+    @Query("select exp.id from Experiment exp where exp.requestStatus = 'NEW' order by exp.creationDate")
+    List<Long> findNewExperiments();
+
+    /**
+     * Finds experiments to process with step statuses not in blacklist.
+     *
+     * @param stepStatuses - experiment step statuses blacklist
+     * @return experiments ids list
+     */
+    @Query("select exp.id from Experiment exp where exp.requestStatus = 'IN_PROGRESS' " +
+            "and not exists (select es.id from ExperimentStepEntity es where es.experiment = exp " +
+            "and es.status in (:stepStatuses)) order by exp.creationDate")
+    List<Long> findExperimentsToProcess(@Param("stepStatuses") Collection<ExperimentStepStatus> stepStatuses);
 
     /**
      * Gets experiments page with specified ids.
