@@ -38,9 +38,7 @@ public class ExperimentStepProcessor {
     public void processExperimentSteps(Experiment experiment) {
         log.info("Starting to process experiment [{}] steps", experiment.getRequestId());
         var nextSteps = getNextStepsToProcess(experiment);
-        var stepNames = nextSteps.stream()
-                .map(ExperimentStepEntity::getStep)
-                .collect(Collectors.toList());
+        var stepNames = nextSteps.stream().map(ExperimentStepEntity::getStep).collect(Collectors.toList());
         log.info("Got experiment [{}] steps {} to process", experiment.getRequestId(), stepNames);
         StopWatch stopWatch = new StopWatch(String.format("Timer for experiment [%s]", experiment.getRequestId()));
         ExperimentContext experimentContext = ExperimentContext.builder()

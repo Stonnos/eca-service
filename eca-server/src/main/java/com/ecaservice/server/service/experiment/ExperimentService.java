@@ -15,6 +15,8 @@ import com.ecaservice.server.mapping.ExperimentMapper;
 import com.ecaservice.server.model.MsgProperties;
 import com.ecaservice.server.model.entity.Channel;
 import com.ecaservice.server.model.entity.Experiment;
+import com.ecaservice.server.model.entity.ExperimentStep;
+import com.ecaservice.server.model.entity.ExperimentStepEntity;
 import com.ecaservice.server.model.entity.ExperimentStepStatus;
 import com.ecaservice.server.model.entity.FilterTemplateType;
 import com.ecaservice.server.model.entity.RequestStatus;
@@ -48,6 +50,7 @@ import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.ecaservice.common.web.util.LogHelper.EV_REQUEST_ID;
 import static com.ecaservice.common.web.util.LogHelper.TX_ID;
@@ -118,12 +121,14 @@ public class ExperimentService implements PageRequestService<Experiment> {
      *
      * @param experiment - experiment entity
      */
+    @Transactional
     public void startExperiment(Experiment experiment) {
         log.info("Starting to set in progress status for experiment [{}]", experiment.getRequestId());
         experiment.setRequestStatus(RequestStatus.IN_PROGRESS);
         experiment.setStartDate(LocalDateTime.now());
         experimentRepository.save(experiment);
         log.info("Experiment [{}] in progress status has been set", experiment.getRequestId());
+        createAndSaveSteps(experiment);
     }
 
     /**
@@ -138,14 +143,6 @@ public class ExperimentService implements PageRequestService<Experiment> {
         experiment.setEndDate(LocalDateTime.now());
         experimentRepository.save(experiment);
         log.info("Final status [{}] has been set for experiment [{}]", requestStatus, experiment.getRequestId());
-    }
-
-    private RequestStatus calculateFinalStatus(Experiment experiment) {
-        var stepStatuses = experimentStepRepository.getStepStatuses(experiment);
-        if (stepStatuses.stream().allMatch(ExperimentStepStatus.COMPLETED::equals)) {
-            return RequestStatus.FINISHED;
-        }
-        return RequestStatus.ERROR;
     }
 
     /**
@@ -273,6 +270,30 @@ public class ExperimentService implements PageRequestService<Experiment> {
         return S3ContentResponseDto.builder()
                 .contentUrl(contentUrl)
                 .build();
+    }
+
+    private void createAndSaveSteps(Experiment experiment) {
+        var steps = Stream.of(ExperimentStep.values())
+                .map(experimentStep -> {
+                    var experimentStepEntity = new ExperimentStepEntity();
+                    experimentStepEntity.setStep(experimentStep);
+                    experimentStepEntity.setOrder(experimentStep.ordinal());
+                    experimentStepEntity.setStatus(ExperimentStepStatus.READY);
+                    experimentStepEntity.setExperiment( experiment);
+                    return experimentStepEntity;
+                })
+                .collect(Collectors.toList());
+        experimentStepRepository.saveAll(steps);
+        var stepNames = steps.stream().map(ExperimentStepEntity::getStep).collect(Collectors.toList());
+        log.info("{} steps has been saved for experiment [{}]", stepNames, experiment.getRequestId());
+    }
+
+    private RequestStatus calculateFinalStatus(Experiment experiment) {
+        var stepStatuses = experimentStepRepository.getStepStatuses(experiment);
+        if (stepStatuses.stream().allMatch(ExperimentStepStatus.COMPLETED::equals)) {
+            return RequestStatus.FINISHED;
+        }
+        return RequestStatus.ERROR;
     }
 
     private void setMessageProperties(Experiment experiment, MsgProperties msgProperties) {

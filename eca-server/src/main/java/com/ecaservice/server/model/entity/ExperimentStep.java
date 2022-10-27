@@ -1,8 +1,8 @@
 package com.ecaservice.server.model.entity;
 
 /**
- *
  * Experiment step enum.
+ *
  * @author Roman batygin
  */
 public enum ExperimentStep {
