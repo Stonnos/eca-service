@@ -95,6 +95,11 @@ public class ExperimentRequestProcessor {
             waitForLock = false)
     public void finishExperiment(Long id) {
         var experiment = experimentService.getById(id);
+        if (!RequestStatus.IN_PROGRESS.equals(experiment.getRequestStatus())) {
+            log.warn("Attempt to finish experiment [{}] with status [{}]. Skipped...", experiment.getRequestId(),
+                    experiment.getRequestStatus());
+            return;
+        }
         putMdc(TX_ID, experiment.getRequestId());
         putMdc(EV_REQUEST_ID, experiment.getRequestId());
         log.info("Starting to finish experiment [{}]", experiment.getRequestId());
