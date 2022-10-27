@@ -2,17 +2,13 @@ package com.ecaservice.server.service.experiment.step;
 
 import com.ecaservice.s3.client.minio.exception.ObjectStorageException;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
-import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.event.model.ExperimentFinishedEvent;
 import com.ecaservice.server.model.entity.ExperimentStep;
 import com.ecaservice.server.model.entity.ExperimentStepEntity;
 import com.ecaservice.server.model.experiment.ExperimentContext;
-import com.ecaservice.server.service.evaluation.CalculationExecutorService;
-import com.ecaservice.server.service.experiment.ExperimentProcessorService;
 import com.ecaservice.server.service.experiment.ExperimentStepService;
 import eca.dataminer.AbstractExperiment;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
@@ -22,25 +18,15 @@ import java.io.IOException;
 @Component
 public class ExperimentErsReportProcessorStepHandler extends AbstractExperimentStepHandler {
 
-    private final ExperimentConfig experimentConfig;
     private final ObjectStorageService objectStorageService;
-    private final ExperimentProcessorService experimentProcessorService;
-    private final CalculationExecutorService executorService;
     private final ExperimentStepService experimentStepService;
     private final ApplicationEventPublisher applicationEventPublisher;
 
-    public ExperimentErsReportProcessorStepHandler(ExperimentConfig experimentConfig,
-                                                   ObjectStorageService objectStorageService,
-                                                   ExperimentProcessorService experimentProcessorService,
-                                                   @Qualifier("calculationExecutorServiceImpl")
-                                                           CalculationExecutorService executorService,
+    public ExperimentErsReportProcessorStepHandler(ObjectStorageService objectStorageService,
                                                    ExperimentStepService experimentStepService,
                                                    ApplicationEventPublisher applicationEventPublisher) {
         super(ExperimentStep.CREATE_ERS_REPORT);
-        this.experimentConfig = experimentConfig;
         this.objectStorageService = objectStorageService;
-        this.experimentProcessorService = experimentProcessorService;
-        this.executorService = executorService;
         this.experimentStepService = experimentStepService;
         this.applicationEventPublisher = applicationEventPublisher;
     }
