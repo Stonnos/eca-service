@@ -71,8 +71,7 @@ public class UploadExperimentModelStepHandler extends AbstractExperimentStepHand
         } catch (ObjectStorageException ex) {
             log.error("Object storage error while upload experiment [{}] model: {}",
                     experimentContext.getExperiment().getRequestId(), ex.getMessage());
-            saveModelToLocalStorage(experimentContext.getExperimentHistory(), experimentStepEntity);
-            experimentStepService.failed(experimentStepEntity, ex.getMessage());
+            handleFailedUpload(experimentContext.getExperimentHistory(), experimentStepEntity, ex.getMessage());
         } catch (Exception ex) {
             log.error("Error while upload experiment [{}] model: {}",
                     experimentContext.getExperiment().getRequestId(), ex.getMessage());
@@ -87,13 +86,15 @@ public class UploadExperimentModelStepHandler extends AbstractExperimentStepHand
         experimentRepository.save(experiment);
     }
 
-    private void saveModelToLocalStorage(AbstractExperiment<?> experimentHistory,
-                                         ExperimentStepEntity experimentStepEntity) {
+    private void handleFailedUpload(AbstractExperiment<?> experimentHistory,
+                                    ExperimentStepEntity experimentStepEntity,
+                                    String errorMessage) {
         try {
             experimentModelLocalStorage.saveIfAbsent(experimentStepEntity.getExperiment().getRequestId(),
                     experimentHistory);
-        } catch (IOException ex) {
-            log.error("I/O Error while save experiment [{}] model to local storage: {}",
+            experimentStepService.failed(experimentStepEntity, errorMessage);
+        } catch (Exception ex) {
+            log.error("Error while save experiment [{}] model to local storage: {}",
                     experimentStepEntity.getExperiment().getRequestId(), ex.getMessage());
             experimentStepService.completeWithError(experimentStepEntity, ex.getMessage());
         }

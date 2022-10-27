@@ -34,7 +34,7 @@ public class ExperimentModelLocalStorage {
     public void saveIfAbsent(String requestId, AbstractExperiment<?> experiment) throws IOException {
         log.info("Starting to save experiment [{}] model to local storage", requestId);
         File file = getFile(requestId);
-        if (!file.isFile()) {
+        if (file.isFile()) {
             log.warn("Experiment [{}] file already exists. Skipped...", requestId);
         } else {
             ModelSerializationHelper.serialize(file, experiment);
