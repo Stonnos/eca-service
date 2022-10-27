@@ -15,10 +15,12 @@ import com.ecaservice.server.mapping.ExperimentMapper;
 import com.ecaservice.server.model.MsgProperties;
 import com.ecaservice.server.model.entity.Channel;
 import com.ecaservice.server.model.entity.Experiment;
+import com.ecaservice.server.model.entity.ExperimentStepStatus;
 import com.ecaservice.server.model.entity.FilterTemplateType;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.projections.RequestStatusStatistics;
 import com.ecaservice.server.repository.ExperimentRepository;
+import com.ecaservice.server.repository.ExperimentStepRepository;
 import com.ecaservice.server.service.PageRequestService;
 import com.ecaservice.server.service.filter.dictionary.FilterDictionaries;
 import com.ecaservice.web.dto.model.ChartDto;
@@ -70,6 +72,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
     private static final String EXPERIMENT_TRAIN_DATA_PATH_FORMAT = "experiment-train-data-%s.model";
 
     private final ExperimentRepository experimentRepository;
+    private final ExperimentStepRepository experimentStepRepository;
     private final ExperimentMapper experimentMapper;
     private final ObjectStorageService objectStorageService;
     private final CrossValidationConfig crossValidationConfig;
@@ -123,7 +126,26 @@ public class ExperimentService implements PageRequestService<Experiment> {
         log.info("Experiment [{}] in progress status has been set", experiment.getRequestId());
     }
 
+    /**
+     * Finishes experiment.
+     *
+     * @param experiment - experiment entity
+     */
     public void finishExperiment(Experiment experiment) {
+        log.info("Starting to set experiment [{}] final status", experiment.getRequestId());
+        RequestStatus requestStatus = calculateFinalStatus(experiment);
+        experiment.setRequestStatus(requestStatus);
+        experiment.setEndDate(LocalDateTime.now());
+        experimentRepository.save(experiment);
+        log.info("Final status [{}] has been set for experiment [{}]", requestStatus, experiment.getRequestId());
+    }
+
+    private RequestStatus calculateFinalStatus(Experiment experiment) {
+        var stepStatuses = experimentStepRepository.getStepStatuses(experiment);
+        if (stepStatuses.stream().allMatch(ExperimentStepStatus.COMPLETED::equals)) {
+            return RequestStatus.FINISHED;
+        }
+        return RequestStatus.ERROR;
     }
 
     /**
@@ -251,13 +273,6 @@ public class ExperimentService implements PageRequestService<Experiment> {
         return S3ContentResponseDto.builder()
                 .contentUrl(contentUrl)
                 .build();
-    }
-
-    private void handleError(Experiment experiment, RequestStatus requestStatus, String errorMessage) {
-        experiment.setRequestStatus(requestStatus);
-        experiment.setErrorMessage(errorMessage);
-        experiment.setEndDate(LocalDateTime.now());
-        experimentRepository.save(experiment);
     }
 
     private void setMessageProperties(Experiment experiment, MsgProperties msgProperties) {
