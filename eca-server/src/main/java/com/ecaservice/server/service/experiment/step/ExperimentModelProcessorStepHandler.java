@@ -1,5 +1,6 @@
 package com.ecaservice.server.service.experiment.step;
 
+import com.ecaservice.s3.client.minio.exception.ObjectStorageException;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.exception.experiment.ExperimentException;
@@ -68,6 +69,10 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
             Instances data = getInstances(experimentContext);
             processExperiment(data, experimentContext);
             experimentStepService.complete(experimentStepEntity);
+        } catch (ObjectStorageException ex) {
+            log.error("Object storage error while process experiment [{}]: {}",
+                    experimentContext.getExperiment().getRequestId(), ex.getMessage());
+            experimentStepService.failed(experimentStepEntity, ex.getMessage());
         } catch (TimeoutException ex) {
             log.error("Timeout error while process experiment [{}] model: {}",
                     experimentContext.getExperiment().getRequestId(), ex.getMessage());

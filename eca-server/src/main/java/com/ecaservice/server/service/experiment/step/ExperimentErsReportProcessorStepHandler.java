@@ -52,7 +52,7 @@ public class ExperimentErsReportProcessorStepHandler extends AbstractExperimentS
                     experimentContext.getExperiment(), experimentContext.getExperimentHistory()));
             experimentStepService.complete(experimentStepEntity);
         } catch (ObjectStorageException ex) {
-            log.error("Error while sent ers report for experiment [{}]: {}",
+            log.error("Object storage error while sent ers report for experiment [{}]: {}",
                     experimentContext.getExperiment().getRequestId(), ex.getMessage());
             experimentStepService.failed(experimentStepEntity, ex.getMessage());
         } catch (Exception ex) {

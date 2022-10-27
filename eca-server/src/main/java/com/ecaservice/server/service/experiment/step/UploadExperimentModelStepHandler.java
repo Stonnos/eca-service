@@ -69,7 +69,7 @@ public class UploadExperimentModelStepHandler extends AbstractExperimentStepHand
             }
             experimentStepService.complete(experimentStepEntity);
         } catch (ObjectStorageException ex) {
-            log.error("Error while upload experiment [{}] model: {}",
+            log.error("Object storage error while upload experiment [{}] model: {}",
                     experimentContext.getExperiment().getRequestId(), ex.getMessage());
             saveModelToLocalStorage(experimentContext.getExperimentHistory(), experimentStepEntity);
             experimentStepService.failed(experimentStepEntity, ex.getMessage());

@@ -97,15 +97,6 @@ class ExperimentServiceTest extends AbstractJpaTest {
         experimentRepository.deleteAll();
     }
 
-    //TODO moved
-    /*@Test
-    void testNullTrainingDataPath() {
-        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
-        experiment.setTrainingDataPath(null);
-        experimentService.processExperiment(experiment);
-        assertThat(experiment.getRequestStatus()).isEqualTo(RequestStatus.ERROR);
-    }*/
-
     @Test
     void testSuccessExperimentRequestCreation() {
         ExperimentRequest experimentRequest = TestHelperUtils.createExperimentRequest();
@@ -182,54 +173,6 @@ class ExperimentServiceTest extends AbstractJpaTest {
         createAndSaveExperimentStep(experiment, ExperimentStep.UPLOAD_EXPERIMENT_MODEL, ExperimentStepStatus.FAILED);
         assertThrows(ExperimentException.class, () -> experimentService.finishExperiment(experiment));
     }
-
-    //TODO moved
-    /*@Test
-    void testProcessExperimentWithSuccessStatus() throws Exception {
-        when(objectStorageService.getObject(anyString(), any())).thenReturn(data);
-        when(objectStorageService.getObjectPresignedProxyUrl(any(GetPresignedUrlObject.class)))
-                .thenReturn(EXPERIMENT_DOWNLOAD_URL);
-        AbstractExperiment experimentHistory = createExperimentHistory(data);
-        when(experimentProcessorService.processExperimentHistory(any(Experiment.class),
-                any(InitializationParams.class))).thenReturn(experimentHistory);
-        experimentService.processExperiment(TestHelperUtils.createExperiment(UUID.randomUUID().toString()));
-        List<Experiment> experiments = experimentRepository.findAll();
-        AssertionUtils.hasOneElement(experiments);
-        Experiment experiment = experiments.iterator().next();
-        assertThat(experiment.getEndDate()).isNotNull();
-        assertThat(experiment.getExperimentPath()).isNotNull();
-        assertThat(experiment.getExperimentDownloadUrl()).isEqualTo(EXPERIMENT_DOWNLOAD_URL);
-        assertThat(experiment.getRequestStatus()).isEqualTo(RequestStatus.FINISHED);
-    }
-
-    @Test
-    void testProcessExperimentWithErrorStatus() throws Exception {
-        when(objectStorageService.getObject(anyString(), any())).thenThrow(new RuntimeException());
-        experimentService.processExperiment(TestHelperUtils.createExperiment(UUID.randomUUID().toString()));
-        List<Experiment> experiments = experimentRepository.findAll();
-        AssertionUtils.hasOneElement(experiments);
-        Experiment experiment = experiments.iterator().next();
-        assertThat(experiment.getEndDate()).isNotNull();
-        assertThat(experiment.getRequestStatus()).isEqualTo(RequestStatus.ERROR);
-    }
-
-    @Test
-    void testProcessExperimentWithTimeoutStatus() throws Exception {
-        when(objectStorageService.getObject(anyString(), any())).thenReturn(data);
-        AbstractExperiment experimentHistory = createExperimentHistory(data);
-        when(experimentProcessorService.processExperimentHistory(any(Experiment.class),
-                any(InitializationParams.class))).thenReturn(experimentHistory);
-        CalculationExecutorService executorService = mock(CalculationExecutorService.class);
-        ReflectionTestUtils.setField(experimentService, "executorService", executorService);
-        doThrow(TimeoutException.class).when(executorService)
-                .execute(any(Callable.class), anyLong(), any(TimeUnit.class));
-        experimentService.processExperiment(TestHelperUtils.createExperiment(UUID.randomUUID().toString()));
-        List<Experiment> experiments = experimentRepository.findAll();
-        AssertionUtils.hasOneElement(experiments);
-        Experiment experiment = experiments.iterator().next();
-        assertThat(experiment.getEndDate()).isNotNull();
-        assertThat(experiment.getRequestStatus()).isEqualTo(RequestStatus.TIMEOUT);
-    }*/
 
     @Test
     void testSuccessRemoveExperimentModel() {
