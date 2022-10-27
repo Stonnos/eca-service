@@ -29,9 +29,7 @@ public class ExperimentStepService {
     public void complete(ExperimentStepEntity experimentStepEntity) {
         log.info("Starting to complete experiment [{}] step [{}]",
                 experimentStepEntity.getExperiment().getRequestId(), experimentStepEntity.getStep());
-        experimentStepEntity.setStatus(ExperimentStepStatus.COMPLETED);
-        experimentStepEntity.setCompleted(LocalDateTime.now());
-        experimentStepRepository.save(experimentStepEntity);
+        updateStatus(experimentStepEntity, ExperimentStepStatus.COMPLETED, null);
         log.info("Experiment [{}] step [{}] has been completed",
                 experimentStepEntity.getExperiment().getRequestId(), experimentStepEntity.getStep());
     }
@@ -45,11 +43,21 @@ public class ExperimentStepService {
     public void completeWithError(ExperimentStepEntity experimentStepEntity, String errorMessage) {
         log.info("Starting to complete experiment [{}] step [{}] with error",
                 experimentStepEntity.getExperiment().getRequestId(), experimentStepEntity.getStep());
-        experimentStepEntity.setStatus(ExperimentStepStatus.ERROR);
-        experimentStepEntity.setErrorMessage(errorMessage);
-        experimentStepEntity.setCompleted(LocalDateTime.now());
-        experimentStepRepository.save(experimentStepEntity);
+        updateStatus(experimentStepEntity, ExperimentStepStatus.ERROR, errorMessage);
         log.info("Experiment [{}] step [{}] has been completed with error",
+                experimentStepEntity.getExperiment().getRequestId(), experimentStepEntity.getStep());
+    }
+
+    /**
+     * Completes experiment step with timaout.
+     *
+     * @param experimentStepEntity - experiment step entity
+     */
+    public void timeout(ExperimentStepEntity experimentStepEntity) {
+        log.info("Starting to complete experiment [{}] step [{}] with timeout",
+                experimentStepEntity.getExperiment().getRequestId(), experimentStepEntity.getStep());
+        updateStatus(experimentStepEntity, ExperimentStepStatus.TIMEOUT, null);
+        log.info("Experiment [{}] step [{}] has been completed with timeout",
                 experimentStepEntity.getExperiment().getRequestId(), experimentStepEntity.getStep());
     }
 
@@ -62,11 +70,17 @@ public class ExperimentStepService {
     public void failed(ExperimentStepEntity experimentStepEntity, String errorMessage) {
         log.info("Starting to failure experiment [{}] step [{}] with error",
                 experimentStepEntity.getExperiment().getRequestId(), experimentStepEntity.getStep());
-        experimentStepEntity.setStatus(ExperimentStepStatus.FAILED);
+        updateStatus(experimentStepEntity, ExperimentStepStatus.FAILED, errorMessage);
+        log.info("Experiment [{}] step [{}] has been failed",
+                experimentStepEntity.getExperiment().getRequestId(), experimentStepEntity.getStep());
+    }
+
+    private void updateStatus(ExperimentStepEntity experimentStepEntity,
+                              ExperimentStepStatus stepStatus,
+                              String errorMessage) {
+        experimentStepEntity.setStatus(stepStatus);
         experimentStepEntity.setErrorMessage(errorMessage);
         experimentStepEntity.setCompleted(LocalDateTime.now());
         experimentStepRepository.save(experimentStepEntity);
-        log.info("Experiment [{}] step [{}] has been failed",
-                experimentStepEntity.getExperiment().getRequestId(), experimentStepEntity.getStep());
     }
 }

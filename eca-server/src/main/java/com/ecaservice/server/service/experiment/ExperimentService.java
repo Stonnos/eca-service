@@ -74,6 +74,9 @@ public class ExperimentService implements PageRequestService<Experiment> {
 
     private static final String EXPERIMENT_TRAIN_DATA_PATH_FORMAT = "experiment-train-data-%s.model";
 
+    private static final List<ExperimentStepStatus> EXPERIMENT_STEP_STATUSES_TO_PROCESS =
+            List.of(ExperimentStepStatus.READY, ExperimentStepStatus.FAILED);
+
     private final ExperimentRepository experimentRepository;
     private final ExperimentStepRepository experimentStepRepository;
     private final ExperimentMapper experimentMapper;
@@ -279,7 +282,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
                     experimentStepEntity.setStep(experimentStep);
                     experimentStepEntity.setOrder(experimentStep.ordinal());
                     experimentStepEntity.setStatus(ExperimentStepStatus.READY);
-                    experimentStepEntity.setExperiment( experiment);
+                    experimentStepEntity.setExperiment(experiment);
                     return experimentStepEntity;
                 })
                 .collect(Collectors.toList());
@@ -290,10 +293,21 @@ public class ExperimentService implements PageRequestService<Experiment> {
 
     private RequestStatus calculateFinalStatus(Experiment experiment) {
         var stepStatuses = experimentStepRepository.getStepStatuses(experiment);
-        if (stepStatuses.stream().allMatch(ExperimentStepStatus.COMPLETED::equals)) {
-            return RequestStatus.FINISHED;
+        if (stepStatuses.stream().anyMatch(EXPERIMENT_STEP_STATUSES_TO_PROCESS::contains)) {
+            String error =
+                    String.format("Can't calculate experiment [%s] final status. Steps contains one of %s status",
+                            experiment.getRequestId(), EXPERIMENT_STEP_STATUSES_TO_PROCESS);
+            throw new ExperimentException(error);
         }
-        return RequestStatus.ERROR;
+        for (var status : stepStatuses) {
+            if (ExperimentStepStatus.ERROR.equals(status)) {
+                return RequestStatus.ERROR;
+            }
+            if (ExperimentStepStatus.TIMEOUT.equals(status)) {
+                return RequestStatus.TIMEOUT;
+            }
+        }
+        return RequestStatus.FINISHED;
     }
 
     private void setMessageProperties(Experiment experiment, MsgProperties msgProperties) {

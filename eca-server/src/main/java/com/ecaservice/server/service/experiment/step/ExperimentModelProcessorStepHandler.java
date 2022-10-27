@@ -21,6 +21,7 @@ import weka.core.Instances;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 @Slf4j
 @Component
@@ -53,6 +54,10 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
             Instances data = getInstances(experimentContext);
             processExperiment(data, experimentContext);
             experimentStepService.complete(experimentStepEntity);
+        } catch (TimeoutException ex) {
+            log.error("Timeout error while process experiment [{}] model: {}",
+                    experimentContext.getExperiment().getRequestId(), ex.getMessage());
+            experimentStepService.timeout(experimentStepEntity);
         } catch (Exception ex) {
             log.error("Error while process experiment [{}] model: {}",
                     experimentContext.getExperiment().getRequestId(), ex.getMessage());
