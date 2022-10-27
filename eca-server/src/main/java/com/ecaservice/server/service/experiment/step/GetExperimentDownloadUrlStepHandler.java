@@ -45,8 +45,12 @@ public class GetExperimentDownloadUrlStepHandler extends AbstractExperimentStepH
             experimentRepository.save(experiment);
             experimentStepService.complete(experimentStepEntity);
         } catch (ObjectStorageException ex) {
+            log.error("Error while get experiment [{}] download url: {}",
+                    experimentContext.getExperiment().getRequestId(), ex.getMessage());
             experimentStepService.failed(experimentStepEntity, ex.getMessage());
         } catch (Exception ex) {
+            log.error("Error while get experiment [{}] download url: {}",
+                    experimentContext.getExperiment().getRequestId(), ex.getMessage());
             experimentStepService.completeWithError(experimentStepEntity, ex.getMessage());
         }
     }

@@ -56,9 +56,13 @@ public class UploadExperimentModelStepHandler extends AbstractExperimentStepHand
             }
             experimentStepService.complete(experimentStepEntity);
         } catch (ObjectStorageException ex) {
+            log.error("Error while upload experiment [{}] model: {}",
+                    experimentContext.getExperiment().getRequestId(), ex.getMessage());
             saveModelToLocalStorage(experimentContext.getExperimentHistory(), experimentStepEntity);
             experimentStepService.failed(experimentStepEntity, ex.getMessage());
         } catch (Exception ex) {
+            log.error("Error while upload experiment [{}] model: {}",
+                    experimentContext.getExperiment().getRequestId(), ex.getMessage());
             experimentStepService.completeWithError(experimentStepEntity, ex.getMessage());
         }
     }
@@ -76,6 +80,8 @@ public class UploadExperimentModelStepHandler extends AbstractExperimentStepHand
             experimentModelLocalStorage.saveIfAbsent(experimentStepEntity.getExperiment().getRequestId(),
                     experimentHistory);
         } catch (IOException ex) {
+            log.error("I/O Error while save experiment [{}] model to local storage: {}",
+                    experimentStepEntity.getExperiment().getRequestId(), ex.getMessage());
             experimentStepService.completeWithError(experimentStepEntity, ex.getMessage());
         }
     }

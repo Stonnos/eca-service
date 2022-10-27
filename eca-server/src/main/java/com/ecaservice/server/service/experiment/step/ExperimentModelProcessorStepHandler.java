@@ -54,6 +54,8 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
             processExperiment(data, experimentContext);
             experimentStepService.complete(experimentStepEntity);
         } catch (Exception ex) {
+            log.error("Error while process experiment [{}] model: {}",
+                    experimentContext.getExperiment().getRequestId(), ex.getMessage());
             experimentStepService.completeWithError(experimentStepEntity, ex.getMessage());
         }
     }
