@@ -26,7 +26,6 @@ import com.ecaservice.web.dto.model.ChartDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
 import com.ecaservice.web.dto.model.S3ContentResponseDto;
-import eca.dataminer.AbstractExperiment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -115,52 +114,27 @@ public class ExperimentService implements PageRequestService<Experiment> {
     }
 
     /**
-     * Processes new experiment. Experiments results are saved into file after processing.
+     * Starts experiment.
+     *
+     * @param experiment - experiment entity
+     */
+    public void startExperiment(Experiment experiment) {
+        log.info("Starting to set in progress status for experiment [{}]", experiment.getRequestId());
+        experiment.setRequestStatus(RequestStatus.IN_PROGRESS);
+        experiment.setStartDate(LocalDateTime.now());
+        experimentRepository.save(experiment);
+        log.info("Experiment [{}] in progress status has been set", experiment.getRequestId());
+    }
+
+    /**
+     * Processes experiment.
      *
      * @param experiment - experiment to process
-     * @return experiment history
      */
-    public AbstractExperiment<?> processExperiment(final Experiment experiment) {
+    public void processExperiment(final Experiment experiment) {
         log.info("Starting to process experiment [{}].", experiment.getRequestId());
         try {
             ExperimentContext experimentContext = experimentStepProcessor.processExperimentSteps(experiment);
-            if (!experimentStepProcessor.allStepsCompleted(experiment)) {
-                log.warn("Not all experiment [{}] steps completed", experiment.getRequestId());
-            } else {
-                experiment.setRequestStatus(RequestStatus.FINISHED);
-                experiment.setEndDate(LocalDateTime.now());
-                experimentRepository.save(experiment);
-                log.info("All experiment [{}] steps has been completed", experiment.getRequestId());
-            }
-            return experimentContext.getExperimentHistory();
-           /* StopWatch stopWatch =
-                    new StopWatch(String.format("Stop watching for experiment [%s]", experiment.getRequestId()));
-            stopWatch.start(String.format("Loading data for experiment [%s]", experiment.getRequestId()));
-            Instances data = objectStorageService.getObject(experiment.getTrainingDataPath(), Instances.class);
-            data.setClassIndex(experiment.getClassIndex());
-            stopWatch.stop();
-
-            final InitializationParams initializationParams =
-                    new InitializationParams(data, experiment.getEvaluationMethod());
-            stopWatch.start(String.format("Experiment [%s] processing", experiment.getRequestId()));
-            Callable<AbstractExperiment<?>> callable = () ->
-                    experimentProcessorService.processExperimentHistory(experiment, initializationParams);
-            AbstractExperiment<?> abstractExperiment =
-                    executorService.execute(callable, experimentConfig.getTimeout(), TimeUnit.HOURS);
-            stopWatch.stop();
-
-            stopWatch.start(String.format("Experiment [%s] saving", experiment.getRequestId()));
-            String experimentPath = String.format(EXPERIMENT_PATH_FORMAT, experiment.getRequestId());
-            objectStorageService.uploadObject(abstractExperiment, experimentPath);
-            stopWatch.stop();
-
-            experiment.setExperimentPath(experimentPath);
-            String experimentDownloadUrl = getExperimentDownloadPresignedUrl(experimentPath);
-            experiment.setExperimentDownloadUrl(experimentDownloadUrl);
-            experiment.setRequestStatus(RequestStatus.FINISHED);
-            log.info("Experiment [{}] has been successfully built!", experiment.getRequestId());
-            log.info(stopWatch.prettyPrint());
-            return abstractExperiment;*/
         } catch (TimeoutException ex) {
             log.warn("There was a timeout while experiment [{}] built.", experiment.getRequestId());
             handleError(experiment, RequestStatus.TIMEOUT, ex.getMessage());
@@ -168,7 +142,9 @@ public class ExperimentService implements PageRequestService<Experiment> {
             log.error("There was an error while experiment [{}] built: {}", experiment.getRequestId(), ex);
             handleError(experiment, RequestStatus.ERROR, ex.getMessage());
         }
-        return null;
+    }
+
+    public void finishExperiment(Experiment experiment) {
     }
 
     /**

@@ -3,14 +3,12 @@ package com.ecaservice.server.service.experiment;
 import com.ecaservice.core.lock.annotation.Locked;
 import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.event.model.ExperimentEmailEvent;
-import com.ecaservice.server.event.model.ExperimentFinishedEvent;
 import com.ecaservice.server.event.model.ExperimentResponseEvent;
 import com.ecaservice.server.event.model.push.ExperimentWebPushEvent;
 import com.ecaservice.server.model.entity.Channel;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.repository.ExperimentRepository;
-import eca.dataminer.AbstractExperiment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -44,13 +42,13 @@ public class ExperimentRequestProcessor {
     private final ExperimentConfig experimentConfig;
 
     /**
-     * Processes new experiment.
+     * Starts experiment.
      *
      * @param id - experiment id
      */
     @Locked(lockName = "experiment", key = "#id", lockRegistry = EXPERIMENT_REDIS_LOCK_REGISTRY_BEAN,
             waitForLock = false)
-    public void processNewExperiment(Long id) {
+    public void startExperiment(Long id) {
         var experiment = experimentService.getById(id);
         if (!RequestStatus.NEW.equals(experiment.getRequestStatus())) {
             log.warn("Attempt to process new experiment [{}] with status [{}]. Skipped...", experiment.getRequestId(),
@@ -61,30 +59,52 @@ public class ExperimentRequestProcessor {
         putMdc(EV_REQUEST_ID, experiment.getRequestId());
         log.info("Starting to process new experiment [{}]", experiment.getRequestId());
         experimentProgressService.start(experiment);
-        setInProgressStatus(experiment);
-        internalProcessExperiment(experiment);
-        log.info("New experiment [{}] has been processed", experiment.getRequestId());
+        experimentService.startExperiment(experiment);
+        eventPublisher.publishEvent(new ExperimentWebPushEvent(this, experiment));
+        eventPublisher.publishEvent(new ExperimentEmailEvent(this, experiment));
     }
 
     /**
-     * Retries for experiment.
+     * Processes experiment.
      *
      * @param id - experiment id
      */
     @Locked(lockName = "experiment", key = "#id", lockRegistry = EXPERIMENT_REDIS_LOCK_REGISTRY_BEAN,
             waitForLock = false)
-    public void retryExperiment(Long id) {
+    public void processExperiment(Long id) {
         var experiment = experimentService.getById(id);
         if (!RequestStatus.IN_PROGRESS.equals(experiment.getRequestStatus())) {
-            log.warn("Attempt to retry experiment [{}] with status [{}]. Skipped...", experiment.getRequestId(),
+            log.warn("Attempt to process experiment [{}] with status [{}]. Skipped...", experiment.getRequestId(),
                     experiment.getRequestStatus());
             return;
         }
         putMdc(TX_ID, experiment.getRequestId());
         putMdc(EV_REQUEST_ID, experiment.getRequestId());
-        log.info("Starting to retry experiment [{}]", experiment.getRequestId());
-        internalProcessExperiment(experiment);
-        log.info("Retry experiment [{}] has been processed", experiment.getRequestId());
+        log.info("Starting to process experiment [{}]", experiment.getRequestId());
+        experimentService.processExperiment(experiment);
+        log.info("Experiment [{}] has been processed", experiment.getRequestId());
+    }
+
+    /**
+     * Finishes experiment.
+     *
+     * @param id - experiment id
+     */
+    @Locked(lockName = "experiment", key = "#id", lockRegistry = EXPERIMENT_REDIS_LOCK_REGISTRY_BEAN,
+            waitForLock = false)
+    public void finishExperiment(Long id) {
+        var experiment = experimentService.getById(id);
+        putMdc(TX_ID, experiment.getRequestId());
+        putMdc(EV_REQUEST_ID, experiment.getRequestId());
+        log.info("Starting to finish experiment [{}]", experiment.getRequestId());
+        experimentService.finishExperiment(experiment);
+        if (Channel.QUEUE.equals(experiment.getChannel())) {
+            eventPublisher.publishEvent(new ExperimentResponseEvent(this, experiment));
+        }
+        eventPublisher.publishEvent(new ExperimentWebPushEvent(this, experiment));
+        eventPublisher.publishEvent(new ExperimentEmailEvent(this, experiment));
+        experimentProgressService.finish(experiment);
+        log.info("Experiment [{}] has been finished", experiment.getRequestId());
     }
 
     /**
@@ -115,28 +135,6 @@ public class ExperimentRequestProcessor {
         processWithPagination(experimentIds, experimentRepository::findByIdIn, this::removeExperimentsTrainingData,
                 experimentConfig.getPageSize());
         log.info("Experiments training data removing has been finished.");
-    }
-
-    private void internalProcessExperiment(Experiment experiment) {
-        AbstractExperiment<?> experimentHistory = experimentService.processExperiment(experiment);
-        if (RequestStatus.FINISHED.equals(experiment.getRequestStatus())) {
-            eventPublisher.publishEvent(new ExperimentFinishedEvent(this, experiment, experimentHistory));
-        }
-        if (Channel.QUEUE.equals(experiment.getChannel())) {
-            eventPublisher.publishEvent(new ExperimentResponseEvent(this, experiment));
-        }
-        eventPublisher.publishEvent(new ExperimentWebPushEvent(this, experiment));
-        eventPublisher.publishEvent(new ExperimentEmailEvent(this, experiment));
-        experimentProgressService.finish(experiment);
-    }
-
-    private void setInProgressStatus(Experiment experiment) {
-        experiment.setRequestStatus(RequestStatus.IN_PROGRESS);
-        experiment.setStartDate(LocalDateTime.now());
-        experimentRepository.save(experiment);
-        log.info("Experiment [{}] in progress status has been set", experiment.getRequestId());
-        eventPublisher.publishEvent(new ExperimentWebPushEvent(this, experiment));
-        eventPublisher.publishEvent(new ExperimentEmailEvent(this, experiment));
     }
 
     private void removedExperimentsModels(List<Experiment> experiments) {

@@ -36,7 +36,7 @@ public class ExperimentScheduler {
         var newExperimentIds = experimentRepository.findExperimentsForProcessing(NEW_STATUSES);
         if (!CollectionUtils.isEmpty(newExperimentIds)) {
             log.info("Obtained {} new experiments", newExperimentIds.size());
-            newExperimentIds.forEach(experimentRequestProcessor::processNewExperiment);
+            newExperimentIds.forEach(experimentRequestProcessor::processExperiment);
         }
         log.trace("New experiments processing has been successfully finished.");
     }

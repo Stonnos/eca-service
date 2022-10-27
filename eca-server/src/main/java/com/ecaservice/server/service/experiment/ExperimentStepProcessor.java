@@ -11,10 +11,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Experiment step processor.
+ *
+ * @author Roman Batygin
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -23,14 +27,15 @@ public class ExperimentStepProcessor {
     private final ExperimentStepRepository experimentStepRepository;
     private final List<AbstractExperimentStepHandler> experimentStepHandlers;
 
-    public boolean allStepsCompleted(Experiment experiment) {
-        long notCompletedCount =
-                experimentStepRepository.countByStatusNotIn(Collections.singletonList(ExperimentStepStatus.COMPLETED));
-        log.info("Not completed steps for experiment [{}]: {}", experiment.getRequestId(), notCompletedCount);
-        return notCompletedCount == 0L;
-    }
-
+    /**
+     * Processes experiment steps.
+     *
+     * @param experiment - experiment entity
+     * @return experiment context
+     * @throws Exception in case of error
+     */
     public ExperimentContext processExperimentSteps(Experiment experiment) throws Exception {
+        log.info("Starting to process experiment [{}] steps", experiment.getRequestId());
         var steps = experimentStepRepository.findByExperimentAndStatusInOrderByOrder(experiment,
                 List.of(ExperimentStepStatus.READY, ExperimentStepStatus.FAILED));
         var stepNames = steps.stream()
@@ -42,6 +47,14 @@ public class ExperimentStepProcessor {
                 .experiment(experiment)
                 .stopWatch(stopWatch)
                 .build();
+        processSteps(steps, experimentContext);
+        log.info("Experiment [{}] steps has been processed", experiment.getRequestId());
+        log.info(stopWatch.prettyPrint());
+        return experimentContext;
+    }
+
+    private void processSteps(List<ExperimentStepEntity> steps, ExperimentContext experimentContext) throws Exception {
+        var experiment = experimentContext.getExperiment();
         for (var experimentStepEntity : steps) {
             log.info("Starting to process experiment [{}] step [{}]", experiment.getRequestId(),
                     experimentStepEntity.getStep());
@@ -55,9 +68,6 @@ public class ExperimentStepProcessor {
                         experimentStepEntity.getStep());
             }
         }
-        log.info("Experiment [{}] has been successfully finished!", experiment.getRequestId());
-        log.info(stopWatch.prettyPrint());
-        return experimentContext;
     }
 
     private void processStep(ExperimentContext experimentContext,

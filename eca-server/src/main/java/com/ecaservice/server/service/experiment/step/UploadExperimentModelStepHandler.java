@@ -45,9 +45,10 @@ public class UploadExperimentModelStepHandler extends AbstractExperimentStepHand
             log.info("Starting to get experiment history [{}] to upload", experiment.getRequestId());
             if (experimentContext.getExperimentHistory() == null) {
                 log.info("Starting to get experiment history [{}] from local storage", experiment.getRequestId());
-                AbstractExperiment<?> abstractExperiment = experimentModelLocalStorage.get(experiment.getRequestId());
+                var experimentHistory = experimentModelLocalStorage.get(experiment.getRequestId());
+                experimentContext.setExperimentHistory(experimentHistory);
                 log.info("Experiment history [{}] has been fetched from local storage", experiment.getRequestId());
-                uploadObject(experiment, abstractExperiment);
+                uploadObject(experiment, experimentHistory);
                 experimentModelLocalStorage.delete(experiment.getRequestId());
             } else {
                 log.info("Experiment history [{}] has been fetched from context", experiment.getRequestId());
@@ -55,7 +56,7 @@ public class UploadExperimentModelStepHandler extends AbstractExperimentStepHand
             }
             experimentStepService.complete(experimentStepEntity);
         } catch (ObjectStorageException ex) {
-            putModelToLocalStorage(experimentContext.getExperimentHistory(), experimentStepEntity);
+            saveModelToLocalStorage(experimentContext.getExperimentHistory(), experimentStepEntity);
             experimentStepService.failed(experimentStepEntity, ex.getMessage());
         } catch (Exception ex) {
             experimentStepService.completeWithError(experimentStepEntity, ex.getMessage());
@@ -70,10 +71,11 @@ public class UploadExperimentModelStepHandler extends AbstractExperimentStepHand
         experimentRepository.save(experiment);
     }
 
-    private void putModelToLocalStorage(AbstractExperiment<?> abstractExperiment,
-                                        ExperimentStepEntity experimentStepEntity) throws IOException {
+    private void saveModelToLocalStorage(AbstractExperiment<?> experimentHistory,
+                                         ExperimentStepEntity experimentStepEntity) throws IOException {
         try {
-            experimentModelLocalStorage.put(experimentStepEntity.getExperiment().getRequestId(), abstractExperiment);
+            experimentModelLocalStorage.saveIfAbsent(experimentStepEntity.getExperiment().getRequestId(),
+                    experimentHistory);
         } catch (IOException ex) {
             experimentStepService.completeWithError(experimentStepEntity, ex.getMessage());
             throw ex;
