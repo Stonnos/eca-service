@@ -28,15 +28,28 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
     List<Long> findNewExperiments();
 
     /**
-     * Finds experiments to process with step statuses not in blacklist.
+     * Finds experiments to process.
      *
-     * @param stepStatuses - experiment step statuses blacklist
+     * @param stepStatuses - experiment step statuses
+     * @return experiments ids list
+     */
+    @Query("select exp.id from Experiment exp where exp.requestStatus = 'IN_PROGRESS' " +
+            "and not exists (select es.id from ExperimentStepEntity es " +
+            "where es.experiment = exp and es.status = 'ERROR') " +
+            "and exists (select es.id from ExperimentStepEntity es where es.experiment = exp " +
+            "and es.status in (:stepStatuses)) order by exp.creationDate")
+    List<Long> findExperimentsToProcess(@Param("stepStatuses") Collection<ExperimentStepStatus> stepStatuses);
+
+    /**
+     * Finds experiments to finish.
+     *
+     * @param stepStatuses - experiment step statuses
      * @return experiments ids list
      */
     @Query("select exp.id from Experiment exp where exp.requestStatus = 'IN_PROGRESS' " +
             "and not exists (select es.id from ExperimentStepEntity es where es.experiment = exp " +
             "and es.status in (:stepStatuses)) order by exp.creationDate")
-    List<Long> findExperimentsToProcess(@Param("stepStatuses") Collection<ExperimentStepStatus> stepStatuses);
+    List<Long> findExperimentsToFinish(@Param("stepStatuses") Collection<ExperimentStepStatus> stepStatuses);
 
     /**
      * Gets experiments page with specified ids.

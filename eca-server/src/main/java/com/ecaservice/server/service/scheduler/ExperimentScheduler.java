@@ -21,8 +21,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ExperimentScheduler {
 
-    private static final List<ExperimentStepStatus> FINAL_EXPERIMENT_STEP_STATUSES =
-            List.of(ExperimentStepStatus.COMPLETED, ExperimentStepStatus.ERROR);
     private static final List<ExperimentStepStatus> EXPERIMENT_STEP_STATUSES_TO_PROCESS =
             List.of(ExperimentStepStatus.READY, ExperimentStepStatus.FAILED);
 
@@ -68,7 +66,7 @@ public class ExperimentScheduler {
      */
     private void processInProgressRequests() {
         log.trace("Starting to process new experiments.");
-        var ids = experimentRepository.findExperimentsToProcess(FINAL_EXPERIMENT_STEP_STATUSES);
+        var ids = experimentRepository.findExperimentsToProcess(EXPERIMENT_STEP_STATUSES_TO_PROCESS);
         if (!CollectionUtils.isEmpty(ids)) {
             log.info("Fetched {} experiments to process", ids.size());
             ids.forEach(experimentRequestProcessor::processExperiment);
@@ -81,7 +79,7 @@ public class ExperimentScheduler {
      */
     private void processFinishedRequests() {
         log.trace("Starting to process finished experiments.");
-        var ids = experimentRepository.findExperimentsToProcess(EXPERIMENT_STEP_STATUSES_TO_PROCESS);
+        var ids = experimentRepository.findExperimentsToFinish(EXPERIMENT_STEP_STATUSES_TO_PROCESS);
         if (!CollectionUtils.isEmpty(ids)) {
             log.info("Fetched {} finished experiments", ids.size());
             ids.forEach(experimentRequestProcessor::finishExperiment);
