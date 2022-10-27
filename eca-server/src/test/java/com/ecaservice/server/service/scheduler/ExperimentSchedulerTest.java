@@ -14,8 +14,6 @@ import com.ecaservice.server.service.experiment.ExperimentProgressService;
 import com.ecaservice.server.service.experiment.ExperimentRequestProcessor;
 import com.ecaservice.server.service.experiment.ExperimentService;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Import;
@@ -50,9 +48,6 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
 
     @MockBean
     private ExperimentRequestProcessor experimentRequestProcessor;
-
-    @Captor
-    private ArgumentCaptor<Experiment> argumentCaptor;
 
     private ExperimentScheduler experimentScheduler;
 
@@ -95,7 +90,8 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
         experimentRepository.save(experiment);
         createAndSaveExperimentStep(experiment, ExperimentStep.EXPERIMENT_PROCESSING, ExperimentStepStatus.ERROR);
         createAndSaveExperimentStep(experiment, ExperimentStep.UPLOAD_EXPERIMENT_MODEL, ExperimentStepStatus.CANCELED);
-        createAndSaveExperimentStep(experiment, ExperimentStep.GET_EXPERIMENT_DOWNLOAD_URL, ExperimentStepStatus.CANCELED);
+        createAndSaveExperimentStep(experiment, ExperimentStep.GET_EXPERIMENT_DOWNLOAD_URL,
+                ExperimentStepStatus.CANCELED);
         when(experimentService.getById(experiment.getId())).thenReturn(experiment);
         experimentScheduler.processExperiments();
         verify(experimentRequestProcessor, never()).processExperiment(experiment.getId());
@@ -108,7 +104,8 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
         experimentRepository.save(experiment);
         createAndSaveExperimentStep(experiment, ExperimentStep.EXPERIMENT_PROCESSING, ExperimentStepStatus.COMPLETED);
         createAndSaveExperimentStep(experiment, ExperimentStep.UPLOAD_EXPERIMENT_MODEL, ExperimentStepStatus.COMPLETED);
-        createAndSaveExperimentStep(experiment, ExperimentStep.GET_EXPERIMENT_DOWNLOAD_URL, ExperimentStepStatus.COMPLETED);
+        createAndSaveExperimentStep(experiment, ExperimentStep.GET_EXPERIMENT_DOWNLOAD_URL,
+                ExperimentStepStatus.COMPLETED);
         when(experimentService.getById(experiment.getId())).thenReturn(experiment);
         experimentScheduler.processExperiments();
         verify(experimentRequestProcessor, never()).processExperiment(experiment.getId());
@@ -127,32 +124,6 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
         verify(experimentRequestProcessor, atLeastOnce()).processExperiment(experiment.getId());
         verify(experimentRequestProcessor, never()).finishExperiment(experiment.getId());
     }
-
-    //TODO moved
-    /*
-    @Test
-    void testRemoveExperiments() {
-        List<Experiment> experiments = newArrayList();
-        experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED));
-        Experiment experimentToRemove =
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        experimentToRemove.setEndDate(LocalDateTime.now().minusDays(experimentConfig.getNumberOfDaysForStorage() + 1));
-        experiments.add(experimentToRemove);
-        Experiment finishedExperiment =
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        experiments.add(finishedExperiment);
-        Experiment timeoutExperiment =
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.TIMEOUT);
-        timeoutExperiment.setDeletedDate(LocalDateTime.now());
-        experiments.add(timeoutExperiment);
-        Experiment errorExperiment =
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.TIMEOUT);
-        experiments.add(errorExperiment);
-        experimentRepository.saveAll(experiments);
-        experimentScheduler.processRequestsToRemove();
-        verify(experimentService).removeExperimentModel(argumentCaptor.capture());
-        assertThat(argumentCaptor.getValue()).isEqualTo(experimentToRemove);
-    }*/
 
     private void createAndSaveExperimentStep(Experiment experiment,
                                              ExperimentStep experimentStep,
