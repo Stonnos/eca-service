@@ -104,12 +104,12 @@ public class ExperimentRequestProcessor {
         putMdc(EV_REQUEST_ID, experiment.getRequestId());
         log.info("Starting to finish experiment [{}]", experiment.getRequestId());
         experimentService.finishExperiment(experiment);
+        experimentProgressService.finish(experiment);
         if (Channel.QUEUE.equals(experiment.getChannel())) {
             eventPublisher.publishEvent(new ExperimentResponseEvent(this, experiment));
         }
         eventPublisher.publishEvent(new ExperimentWebPushEvent(this, experiment));
         eventPublisher.publishEvent(new ExperimentEmailEvent(this, experiment));
-        experimentProgressService.finish(experiment);
         log.info("Experiment [{}] has been finished", experiment.getRequestId());
     }
 
