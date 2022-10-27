@@ -22,7 +22,7 @@
             <column name="status" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="order" type="integer">
+            <column name="step_order" type="integer">
                 <constraints nullable="false"/>
             </column>
             <column name="completed" type="timestamp"/>

@@ -54,7 +54,7 @@ public class ExperimentStepProcessor {
     }
 
     private List<ExperimentStepEntity> getNextStepsToProcess(Experiment experiment) {
-        return experimentStepRepository.findByExperimentAndStatusInOrderByOrder(experiment,
+        return experimentStepRepository.findByExperimentAndStatusInOrderByStepOrder(experiment,
                 EXPERIMENT_STEP_STATUSES_TO_PROCESS);
     }
 

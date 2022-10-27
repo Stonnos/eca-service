@@ -37,6 +37,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Tuple;
@@ -291,7 +292,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
                 .map(experimentStep -> {
                     var experimentStepEntity = new ExperimentStepEntity();
                     experimentStepEntity.setStep(experimentStep);
-                    experimentStepEntity.setOrder(experimentStep.ordinal());
+                    experimentStepEntity.setStepOrder(experimentStep.ordinal());
                     experimentStepEntity.setStatus(ExperimentStepStatus.READY);
                     experimentStepEntity.setExperiment(experiment);
                     return experimentStepEntity;
@@ -304,6 +305,10 @@ public class ExperimentService implements PageRequestService<Experiment> {
 
     private RequestStatus calculateFinalStatus(Experiment experiment) {
         var stepStatuses = experimentStepRepository.getStepStatuses(experiment);
+        if (CollectionUtils.isEmpty(stepStatuses)) {
+            throw new ExperimentException(
+                    String.format("Got empty steps for experiment [%s]", experiment.getRequestId()));
+        }
         if (stepStatuses.stream().anyMatch(EXPERIMENT_STEP_STATUSES_TO_PROCESS::contains)) {
             String error =
                     String.format("Can't calculate experiment [%s] final status. Steps contains one of %s status",
@@ -314,7 +319,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
             return RequestStatus.ERROR;
         }
         if (stepStatuses.stream().anyMatch(ExperimentStepStatus.TIMEOUT::equals)) {
-            return RequestStatus.ERROR;
+            return RequestStatus.TIMEOUT;
         }
         return RequestStatus.FINISHED;
     }

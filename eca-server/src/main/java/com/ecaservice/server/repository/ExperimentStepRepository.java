@@ -27,8 +27,8 @@ public interface ExperimentStepRepository extends JpaRepository<ExperimentStepEn
      * @param stepStatuses - experiment step statuses
      * @return experiments list
      */
-    List<ExperimentStepEntity> findByExperimentAndStatusInOrderByOrder(Experiment experiment,
-                                                                       Collection<ExperimentStepStatus> stepStatuses);
+    List<ExperimentStepEntity> findByExperimentAndStatusInOrderByStepOrder(Experiment experiment,
+                                                                           Collection<ExperimentStepStatus> stepStatuses);
 
     /**
      * Gets experiment steps statuses.
@@ -36,7 +36,7 @@ public interface ExperimentStepRepository extends JpaRepository<ExperimentStepEn
      * @param experiment - experiment entity
      * @return experiment step statuses
      */
-    @Query("select es.status from ExperimentStepEntity es where es.experiment = :experiment order by es.order")
+    @Query("select es.status from ExperimentStepEntity es where es.experiment = :experiment order by es.stepOrder")
     List<ExperimentStepStatus> getStepStatuses(@Param("experiment") Experiment experiment);
 
     /**
@@ -47,7 +47,7 @@ public interface ExperimentStepRepository extends JpaRepository<ExperimentStepEn
      */
     @Transactional
     @Modifying
-    @Query("update ExperimentStepEntity es set es.status = 'CANELED', es.completed = :completed " +
+    @Query("update ExperimentStepEntity es set es.status = 'CANCELED', es.completed = :completed " +
             "where es.experiment = :experiment and es.status = 'READY'")
     void cancelSteps(@Param("experiment") Experiment experiment,
                      @Param("completed") LocalDateTime completed);

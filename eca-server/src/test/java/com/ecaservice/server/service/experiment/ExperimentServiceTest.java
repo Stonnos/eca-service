@@ -14,36 +14,32 @@ import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.exception.experiment.ExperimentException;
 import com.ecaservice.server.mapping.DateTimeConverter;
-import com.ecaservice.server.mapping.ExperimentMapper;
 import com.ecaservice.server.mapping.ExperimentMapperImpl;
 import com.ecaservice.server.mapping.InstancesInfoMapperImpl;
 import com.ecaservice.server.model.MsgProperties;
 import com.ecaservice.server.model.entity.Experiment;
+import com.ecaservice.server.model.entity.ExperimentStep;
+import com.ecaservice.server.model.entity.ExperimentStepEntity;
+import com.ecaservice.server.model.entity.ExperimentStepStatus;
 import com.ecaservice.server.model.entity.Experiment_;
 import com.ecaservice.server.model.entity.FilterTemplateType;
 import com.ecaservice.server.model.entity.RequestStatus;
-import com.ecaservice.server.model.experiment.InitializationParams;
 import com.ecaservice.server.repository.ExperimentRepository;
+import com.ecaservice.server.repository.ExperimentStepRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
-import com.ecaservice.server.service.evaluation.CalculationExecutorService;
-import com.ecaservice.server.service.evaluation.CalculationExecutorServiceImpl;
 import com.ecaservice.web.dto.model.ChartDataDto;
 import com.ecaservice.web.dto.model.FilterDictionaryDto;
 import com.ecaservice.web.dto.model.FilterDictionaryValueDto;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
-import eca.dataminer.AbstractExperiment;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
-import org.springframework.test.util.ReflectionTestUtils;
-import weka.core.Instances;
 
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import java.io.IOException;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -52,23 +48,18 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.ecaservice.server.TestHelperUtils.createExperimentHistory;
 import static com.ecaservice.server.TestHelperUtils.createMessageProperties;
 import static com.ecaservice.server.service.filter.dictionary.FilterDictionaries.EXPERIMENT_TYPE;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 
@@ -78,7 +69,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import({ExperimentMapperImpl.class, ExperimentConfig.class, AppProperties.class, CrossValidationConfig.class,
-        DateTimeConverter.class, InstancesInfoMapperImpl.class})
+        DateTimeConverter.class, InstancesInfoMapperImpl.class, ExperimentService.class})
 class ExperimentServiceTest extends AbstractJpaTest {
 
     private static final int PAGE_NUMBER = 0;
@@ -89,49 +80,31 @@ class ExperimentServiceTest extends AbstractJpaTest {
     @Inject
     private ExperimentRepository experimentRepository;
     @Inject
-    private ExperimentMapper experimentMapper;
-    @Mock
+    private ExperimentStepRepository experimentStepRepository;
+    @MockBean
     private ObjectStorageService objectStorageService;
-    @Inject
-    private CrossValidationConfig crossValidationConfig;
-    @Inject
-    private ExperimentConfig experimentConfig;
-    @Inject
-    private EntityManager entityManager;
-    @Inject
-    private AppProperties appProperties;
-    @Mock
+    @MockBean
     private FilterService filterService;
-    @Mock
-    private ExperimentProcessorService experimentProcessorService;
+    @MockBean
+    private ExperimentStepProcessor experimentStepProcessor;
 
+    @Inject
     private ExperimentService experimentService;
-
-    private Instances data;
-
-    @Override
-    public void init() {
-        data = TestHelperUtils.loadInstances();
-        CalculationExecutorService executorService =
-                new CalculationExecutorServiceImpl(Executors.newCachedThreadPool());
-        experimentService =
-                new ExperimentService(experimentRepository, executorService, experimentMapper, objectStorageService,
-                        crossValidationConfig, experimentConfig, experimentProcessorService, entityManager,
-                        appProperties, filterService);
-    }
 
     @Override
     public void deleteAll() {
+        experimentStepRepository.deleteAll();
         experimentRepository.deleteAll();
     }
 
-    @Test
+    //TODO moved
+    /*@Test
     void testNullTrainingDataPath() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
         experiment.setTrainingDataPath(null);
         experimentService.processExperiment(experiment);
         assertThat(experiment.getRequestStatus()).isEqualTo(RequestStatus.ERROR);
-    }
+    }*/
 
     @Test
     void testSuccessExperimentRequestCreation() {
@@ -162,6 +135,56 @@ class ExperimentServiceTest extends AbstractJpaTest {
     }
 
     @Test
+    void testStartExperiment() {
+        var experiment = createAndSaveExperiment(RequestStatus.NEW);
+        experimentService.startExperiment(experiment);
+        var actual = experimentRepository.findById(experiment.getId()).orElse(null);
+        assertThat(actual).isNotNull();
+        assertThat(actual.getRequestStatus()).isEqualTo(RequestStatus.IN_PROGRESS);
+        assertThat(actual.getStartDate()).isNotNull();
+        verifySavedSteps(experiment);
+    }
+
+    @Test
+    void testFinishExperimentWith() {
+        var experiment = createAndSaveExperiment(RequestStatus.IN_PROGRESS);
+        createAndSaveExperimentStep(experiment, ExperimentStep.EXPERIMENT_PROCESSING, ExperimentStepStatus.COMPLETED);
+        createAndSaveExperimentStep(experiment, ExperimentStep.UPLOAD_EXPERIMENT_MODEL, ExperimentStepStatus.COMPLETED);
+        createAndSaveExperimentStep(experiment, ExperimentStep.GET_EXPERIMENT_DOWNLOAD_URL,
+                ExperimentStepStatus.COMPLETED);
+        internalTestFinishExperiment(experiment, RequestStatus.FINISHED);
+    }
+
+    @Test
+    void testFinishExperimentWithError() {
+        var experiment = createAndSaveExperiment(RequestStatus.IN_PROGRESS);
+        createAndSaveExperimentStep(experiment, ExperimentStep.EXPERIMENT_PROCESSING, ExperimentStepStatus.COMPLETED);
+        createAndSaveExperimentStep(experiment, ExperimentStep.UPLOAD_EXPERIMENT_MODEL, ExperimentStepStatus.ERROR);
+        createAndSaveExperimentStep(experiment, ExperimentStep.GET_EXPERIMENT_DOWNLOAD_URL,
+                ExperimentStepStatus.CANCELED);
+        internalTestFinishExperiment(experiment, RequestStatus.ERROR);
+    }
+
+    @Test
+    void testFinishExperimentWithTimeout() {
+        var experiment = createAndSaveExperiment(RequestStatus.IN_PROGRESS);
+        createAndSaveExperimentStep(experiment, ExperimentStep.EXPERIMENT_PROCESSING, ExperimentStepStatus.COMPLETED);
+        createAndSaveExperimentStep(experiment, ExperimentStep.UPLOAD_EXPERIMENT_MODEL, ExperimentStepStatus.TIMEOUT);
+        createAndSaveExperimentStep(experiment, ExperimentStep.GET_EXPERIMENT_DOWNLOAD_URL,
+                ExperimentStepStatus.CANCELED);
+        internalTestFinishExperiment(experiment, RequestStatus.TIMEOUT);
+    }
+
+    @Test
+    void testFinishExperimentWithInvalidStepStatuses() {
+        var experiment = createAndSaveExperiment(RequestStatus.IN_PROGRESS);
+        createAndSaveExperimentStep(experiment, ExperimentStep.EXPERIMENT_PROCESSING, ExperimentStepStatus.READY);
+        createAndSaveExperimentStep(experiment, ExperimentStep.UPLOAD_EXPERIMENT_MODEL, ExperimentStepStatus.FAILED);
+        assertThrows(ExperimentException.class, () -> experimentService.finishExperiment(experiment));
+    }
+
+    //TODO moved
+    /*@Test
     void testProcessExperimentWithSuccessStatus() throws Exception {
         when(objectStorageService.getObject(anyString(), any())).thenReturn(data);
         when(objectStorageService.getObjectPresignedProxyUrl(any(GetPresignedUrlObject.class)))
@@ -206,7 +229,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
         Experiment experiment = experiments.iterator().next();
         assertThat(experiment.getEndDate()).isNotNull();
         assertThat(experiment.getRequestStatus()).isEqualTo(RequestStatus.TIMEOUT);
-    }
+    }*/
 
     @Test
     void testSuccessRemoveExperimentModel() {
@@ -503,5 +526,41 @@ class ExperimentServiceTest extends AbstractJpaTest {
                 .orElse(null);
         assertThat(chartItem).isNotNull();
         assertThat(chartItem.getCount()).isEqualTo(expectedCount);
+    }
+
+    private Experiment createAndSaveExperiment(RequestStatus requestStatus) {
+        var experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), requestStatus);
+        return experimentRepository.save(experiment);
+    }
+
+    private void createAndSaveExperimentStep(Experiment experiment,
+                                             ExperimentStep experimentStep,
+                                             ExperimentStepStatus stepStatus) {
+        var experimentStepEntity = TestHelperUtils.createExperimentStepEntity(experiment, experimentStep, stepStatus);
+        experimentStepRepository.save(experimentStepEntity);
+    }
+
+    private void verifySavedSteps(Experiment experiment) {
+        var steps = experimentStepRepository.findAll()
+                .stream()
+                .collect(Collectors.toMap(ExperimentStepEntity::getStep, Function.identity()));
+        assertThat(steps.size()).isEqualTo(ExperimentStep.values().length);
+        Stream.of(ExperimentStep.values()).forEach(experimentStep -> {
+            var step = steps.get(experimentStep);
+            assertThat(step).isNotNull();
+            assertThat(step.getStep()).isEqualTo(experimentStep);
+            assertThat(step.getStepOrder()).isEqualTo(experimentStep.ordinal());
+            assertThat(step.getStatus()).isEqualTo(ExperimentStepStatus.READY);
+            assertThat(step.getExperiment()).isNotNull();
+            assertThat(step.getExperiment().getId()).isEqualTo(experiment.getId());
+        });
+    }
+
+    private void internalTestFinishExperiment(Experiment experiment, RequestStatus expectedStatus) {
+        experimentService.finishExperiment(experiment);
+        var actual = experimentRepository.findById(experiment.getId()).orElse(null);
+        assertThat(actual).isNotNull();
+        assertThat(actual.getRequestStatus()).isEqualTo(expectedStatus);
+        assertThat(actual.getEndDate()).isNotNull();
     }
 }

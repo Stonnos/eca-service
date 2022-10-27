@@ -44,7 +44,8 @@ public class ExperimentStepEntity {
     /**
      * Step order
      */
-    private int order;
+    @Column(name = "step_order", nullable = false)
+    private int stepOrder;
 
     /**
      * Completed date

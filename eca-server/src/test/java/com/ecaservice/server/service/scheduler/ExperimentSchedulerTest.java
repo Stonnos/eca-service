@@ -84,7 +84,7 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
         experimentRepository.saveAll(experiments);
         var iterator = experiments.iterator();
         when(experimentService.getById(anyLong())).thenReturn(iterator.next());
-        experimentScheduler.processNewRequests();
+        //experimentScheduler.processNewRequests();
         verify(experimentService, atLeastOnce()).processExperiment(any(Experiment.class));
         verify(eventPublisher, times(EXPECTED_CHANGE_STATUS_EVENTS_COUNT)).publishEvent(
                 any(ExperimentEmailEvent.class));

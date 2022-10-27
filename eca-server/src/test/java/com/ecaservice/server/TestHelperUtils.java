@@ -43,6 +43,9 @@ import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentResultsEntity;
 import com.ecaservice.server.model.entity.ExperimentResultsRequest;
+import com.ecaservice.server.model.entity.ExperimentStep;
+import com.ecaservice.server.model.entity.ExperimentStepEntity;
+import com.ecaservice.server.model.entity.ExperimentStepStatus;
 import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.evaluation.ClassifierOptionsRequestSource;
@@ -1054,6 +1057,25 @@ public class TestHelperUtils {
         classifierOptionsDatabaseModel.setOptionsName(DecisionTreeOptions.class.getSimpleName());
         classifierOptionsDatabaseModel.setCreatedBy(CREATED_BY);
         return classifierOptionsDatabaseModel;
+    }
+
+    /**
+     * Creates experiment step entity.
+     *
+     * @param experiment     - experiment entity
+     * @param experimentStep - experiment step
+     * @param stepStatus     - step status
+     * @return experiment step entity
+     */
+    public ExperimentStepEntity createExperimentStepEntity(Experiment experiment,
+                                                           ExperimentStep experimentStep,
+                                                           ExperimentStepStatus stepStatus) {
+        var experimentStepEntity = new ExperimentStepEntity();
+        experimentStepEntity.setStep(experimentStep);
+        experimentStepEntity.setStepOrder(experimentStep.ordinal());
+        experimentStepEntity.setStatus(stepStatus);
+        experimentStepEntity.setExperiment(experiment);
+        return experimentStepEntity;
     }
 
     /**
