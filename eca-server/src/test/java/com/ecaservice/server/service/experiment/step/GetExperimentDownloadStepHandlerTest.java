@@ -17,7 +17,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests for {@link ExperimentModelProcessorStepHandler} class.
+ * Unit tests for {@link GetExperimentDownloadUrlStepHandler} class.
  *
  * @author Roman Batygin
  */
