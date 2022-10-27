@@ -1,6 +1,5 @@
 package com.ecaservice.server.service.scheduler;
 
-import com.ecaservice.server.model.entity.ExperimentStepStatus;
 import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.service.experiment.ExperimentRequestProcessor;
 import lombok.RequiredArgsConstructor;
@@ -8,8 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-
-import java.util.List;
 
 /**
  * Experiment scheduler.
@@ -20,9 +17,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ExperimentScheduler {
-
-    private static final List<ExperimentStepStatus> EXPERIMENT_STEP_STATUSES_TO_PROCESS =
-            List.of(ExperimentStepStatus.READY, ExperimentStepStatus.FAILED);
 
     private final ExperimentRequestProcessor experimentRequestProcessor;
     private final ExperimentRepository experimentRepository;
@@ -66,7 +60,7 @@ public class ExperimentScheduler {
      */
     private void processInProgressRequests() {
         log.trace("Starting to process new experiments.");
-        var ids = experimentRepository.findExperimentsToProcess(EXPERIMENT_STEP_STATUSES_TO_PROCESS);
+        var ids = experimentRepository.findExperimentsToProcess();
         if (!CollectionUtils.isEmpty(ids)) {
             log.info("Fetched {} experiments to process", ids.size());
             ids.forEach(experimentRequestProcessor::processExperiment);
@@ -79,7 +73,7 @@ public class ExperimentScheduler {
      */
     private void processFinishedRequests() {
         log.trace("Starting to process finished experiments.");
-        var ids = experimentRepository.findExperimentsToFinish(EXPERIMENT_STEP_STATUSES_TO_PROCESS);
+        var ids = experimentRepository.findExperimentsToFinish();
         if (!CollectionUtils.isEmpty(ids)) {
             log.info("Fetched {} finished experiments", ids.size());
             ids.forEach(experimentRequestProcessor::finishExperiment);

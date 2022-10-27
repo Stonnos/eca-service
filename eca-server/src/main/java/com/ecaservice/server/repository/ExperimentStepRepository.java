@@ -4,9 +4,12 @@ import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentStepEntity;
 import com.ecaservice.server.model.entity.ExperimentStepStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -35,4 +38,17 @@ public interface ExperimentStepRepository extends JpaRepository<ExperimentStepEn
      */
     @Query("select es.status from ExperimentStepEntity es where es.experiment = :experiment order by es.order")
     List<ExperimentStepStatus> getStepStatuses(@Param("experiment") Experiment experiment);
+
+    /**
+     * Cancel all ready steps.
+     *
+     * @param experiment - experiment entity
+     * @param completed  - completed date
+     */
+    @Transactional
+    @Modifying
+    @Query("update ExperimentStepEntity es set es.status = 'CANELED', es.completed = :completed " +
+            "where es.experiment = :experiment and es.status = 'READY'")
+    void cancelSteps(@Param("experiment") Experiment experiment,
+                     @Param("completed") LocalDateTime completed);
 }

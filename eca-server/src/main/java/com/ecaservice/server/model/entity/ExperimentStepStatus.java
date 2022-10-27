@@ -23,6 +23,11 @@ public enum ExperimentStepStatus {
     FAILED,
 
     /**
+     * Canceled
+     */
+    CANCELED,
+
+    /**
      * Timeout
      */
     TIMEOUT,

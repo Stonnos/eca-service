@@ -1,7 +1,6 @@
 package com.ecaservice.server.repository;
 
 import com.ecaservice.server.model.entity.Experiment;
-import com.ecaservice.server.model.entity.ExperimentStepStatus;
 import com.ecaservice.server.model.projections.RequestStatusStatistics;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -30,26 +29,22 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
     /**
      * Finds experiments to process.
      *
-     * @param stepStatuses - experiment step statuses
      * @return experiments ids list
      */
     @Query("select exp.id from Experiment exp where exp.requestStatus = 'IN_PROGRESS' " +
-            "and not exists (select es.id from ExperimentStepEntity es " +
-            "where es.experiment = exp and es.status = 'ERROR') " +
             "and exists (select es.id from ExperimentStepEntity es where es.experiment = exp " +
-            "and es.status in (:stepStatuses)) order by exp.creationDate")
-    List<Long> findExperimentsToProcess(@Param("stepStatuses") Collection<ExperimentStepStatus> stepStatuses);
+            "and es.status = 'READY' or es.status = 'FAILED') order by exp.creationDate")
+    List<Long> findExperimentsToProcess();
 
     /**
      * Finds experiments to finish.
      *
-     * @param stepStatuses - experiment step statuses
      * @return experiments ids list
      */
     @Query("select exp.id from Experiment exp where exp.requestStatus = 'IN_PROGRESS' " +
             "and not exists (select es.id from ExperimentStepEntity es where es.experiment = exp " +
-            "and es.status in (:stepStatuses)) order by exp.creationDate")
-    List<Long> findExperimentsToFinish(@Param("stepStatuses") Collection<ExperimentStepStatus> stepStatuses);
+            "and es.status = 'READY' or es.status = 'FAILED') order by exp.creationDate")
+    List<Long> findExperimentsToFinish();
 
     /**
      * Gets experiments page with specified ids.

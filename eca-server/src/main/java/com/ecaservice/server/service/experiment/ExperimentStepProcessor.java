@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,6 +27,8 @@ public class ExperimentStepProcessor {
 
     private static final List<ExperimentStepStatus> EXPERIMENT_STEP_STATUSES_TO_PROCESS =
             List.of(ExperimentStepStatus.READY, ExperimentStepStatus.FAILED);
+    private static final List<ExperimentStepStatus> EXPERIMENT_STEP_ERROR_STATUSES =
+            List.of(ExperimentStepStatus.ERROR, ExperimentStepStatus.TIMEOUT);
 
     private final ExperimentStepRepository experimentStepRepository;
     private final List<AbstractExperimentStepHandler> experimentStepHandlers;
@@ -62,11 +65,15 @@ public class ExperimentStepProcessor {
                     experimentStepEntity.getStep());
             processStep(experimentContext, experimentStepEntity);
             if (!ExperimentStepStatus.COMPLETED.equals(experimentStepEntity.getStatus())) {
-                log.warn("Experiment [{}] step [{}] has been terminated with status [{}].", experiment.getRequestId(),
+                log.warn("Experiment [{}] step [{}] has been completed with status [{}].", experiment.getRequestId(),
                         experimentStepEntity.getStep(), experimentStepEntity.getStatus());
+                if (EXPERIMENT_STEP_ERROR_STATUSES.contains(experimentStepEntity.getStatus())) {
+                    experimentStepRepository.cancelSteps(experiment, LocalDateTime.now());
+                    log.info("All ready steps has been cancelled for experiment [{}]", experiment.getRequestId());
+                }
                 break;
             } else {
-                log.info("Experiment [{}] step [{}] has been completed.", experiment.getRequestId(),
+                log.info("Experiment [{}] step [{}] has been successfully completed.", experiment.getRequestId(),
                         experimentStepEntity.getStep());
             }
         }

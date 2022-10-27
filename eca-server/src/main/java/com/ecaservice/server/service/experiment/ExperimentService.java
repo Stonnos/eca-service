@@ -299,13 +299,11 @@ public class ExperimentService implements PageRequestService<Experiment> {
                             experiment.getRequestId(), EXPERIMENT_STEP_STATUSES_TO_PROCESS);
             throw new ExperimentException(error);
         }
-        for (var status : stepStatuses) {
-            if (ExperimentStepStatus.ERROR.equals(status)) {
-                return RequestStatus.ERROR;
-            }
-            if (ExperimentStepStatus.TIMEOUT.equals(status)) {
-                return RequestStatus.TIMEOUT;
-            }
+        if (stepStatuses.stream().anyMatch(ExperimentStepStatus.ERROR::equals)) {
+            return RequestStatus.ERROR;
+        }
+        if (stepStatuses.stream().anyMatch(ExperimentStepStatus.TIMEOUT::equals)) {
+            return RequestStatus.ERROR;
         }
         return RequestStatus.FINISHED;
     }
