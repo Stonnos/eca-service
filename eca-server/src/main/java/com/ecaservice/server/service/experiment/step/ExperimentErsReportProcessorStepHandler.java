@@ -14,6 +14,11 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+/**
+ * Step handler for sent experiment results to ERS.
+ *
+ * @author Roman Batygin
+ */
 @Slf4j
 @Component
 public class ExperimentErsReportProcessorStepHandler extends AbstractExperimentStepHandler {
@@ -22,6 +27,13 @@ public class ExperimentErsReportProcessorStepHandler extends AbstractExperimentS
     private final ExperimentStepService experimentStepService;
     private final ApplicationEventPublisher applicationEventPublisher;
 
+    /**
+     * Constructor with parameters.
+     *
+     * @param objectStorageService      - object storage service
+     * @param experimentStepService     - experiment step service
+     * @param applicationEventPublisher - application event publusher
+     */
     public ExperimentErsReportProcessorStepHandler(ObjectStorageService objectStorageService,
                                                    ExperimentStepService experimentStepService,
                                                    ApplicationEventPublisher applicationEventPublisher) {

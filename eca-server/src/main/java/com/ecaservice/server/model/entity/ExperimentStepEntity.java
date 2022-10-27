@@ -27,18 +27,33 @@ public class ExperimentStepEntity {
     @GeneratedValue
     private Long id;
 
+    /**
+     * Step
+     */
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ExperimentStep step;
 
+    /**
+     * Step status
+     */
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ExperimentStepStatus status;
 
+    /**
+     * Step order
+     */
     private int order;
 
+    /**
+     * Completed date
+     */
     private LocalDateTime completed;
 
+    /**
+     * Error message
+     */
     @Column(name = "error_message", columnDefinition = "text")
     private String errorMessage;
 

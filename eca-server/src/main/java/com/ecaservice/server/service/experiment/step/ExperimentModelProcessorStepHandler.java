@@ -23,6 +23,11 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+/**
+ * Step handler for experiment model processing.
+ *
+ * @author Roman
+ */
 @Slf4j
 @Component
 public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepHandler {
@@ -33,6 +38,15 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
     private final CalculationExecutorService executorService;
     private final ExperimentStepService experimentStepService;
 
+    /**
+     * Constructor with parameters.
+     *
+     * @param experimentConfig           - experiment config
+     * @param objectStorageService       - object storage service
+     * @param experimentProcessorService - experiment processor service
+     * @param executorService            - executor service
+     * @param experimentStepService      - experiment step service
+     */
     public ExperimentModelProcessorStepHandler(ExperimentConfig experimentConfig,
                                                ObjectStorageService objectStorageService,
                                                ExperimentProcessorService experimentProcessorService,

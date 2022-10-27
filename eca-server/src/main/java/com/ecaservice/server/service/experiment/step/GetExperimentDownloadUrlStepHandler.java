@@ -15,6 +15,11 @@ import org.springframework.stereotype.Component;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Step handler to get experiment download url.
+ *
+ * @author Roman Batygin
+ */
 @Slf4j
 @Component
 public class GetExperimentDownloadUrlStepHandler extends AbstractExperimentStepHandler {
@@ -24,6 +29,14 @@ public class GetExperimentDownloadUrlStepHandler extends AbstractExperimentStepH
     private final ExperimentStepService experimentStepService;
     private final ExperimentRepository experimentRepository;
 
+    /**
+     * Constructor with parameters.
+     *
+     * @param experimentConfig      - experiment config
+     * @param objectStorageService  - object storage service
+     * @param experimentStepService - experiment step service
+     * @param experimentRepository  - experiment repository
+     */
     public GetExperimentDownloadUrlStepHandler(ExperimentConfig experimentConfig,
                                                ObjectStorageService objectStorageService,
                                                ExperimentStepService experimentStepService,

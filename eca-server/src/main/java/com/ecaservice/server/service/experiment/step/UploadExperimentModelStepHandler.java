@@ -15,6 +15,11 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+/**
+ * Step handler to upload experiment model to S3.
+ *
+ * @author Roman Batygin
+ */
 @Slf4j
 @Component
 public class UploadExperimentModelStepHandler extends AbstractExperimentStepHandler {
@@ -26,6 +31,14 @@ public class UploadExperimentModelStepHandler extends AbstractExperimentStepHand
     private final ExperimentModelLocalStorage experimentModelLocalStorage;
     private final ExperimentRepository experimentRepository;
 
+    /**
+     * Constructor with parameters.
+     *
+     * @param objectStorageService        - object storage service
+     * @param experimentStepService       - experiment step service
+     * @param experimentModelLocalStorage - experiment model local storage
+     * @param experimentRepository        - experiment repository
+     */
     public UploadExperimentModelStepHandler(ObjectStorageService objectStorageService,
                                             ExperimentStepService experimentStepService,
                                             ExperimentModelLocalStorage experimentModelLocalStorage,
