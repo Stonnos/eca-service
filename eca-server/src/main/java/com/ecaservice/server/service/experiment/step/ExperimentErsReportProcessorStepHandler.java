@@ -2,7 +2,7 @@ package com.ecaservice.server.service.experiment.step;
 
 import com.ecaservice.s3.client.minio.exception.ObjectStorageException;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
-import com.ecaservice.server.event.model.ExperimentFinishedEvent;
+import com.ecaservice.server.event.model.ExperimentErsReportEvent;
 import com.ecaservice.server.model.entity.ExperimentStep;
 import com.ecaservice.server.model.entity.ExperimentStepEntity;
 import com.ecaservice.server.model.experiment.ExperimentContext;
@@ -36,7 +36,7 @@ public class ExperimentErsReportProcessorStepHandler extends AbstractExperimentS
                        ExperimentStepEntity experimentStepEntity) {
         try {
             fetchExperimentHistory(experimentContext);
-            applicationEventPublisher.publishEvent(new ExperimentFinishedEvent(this,
+            applicationEventPublisher.publishEvent(new ExperimentErsReportEvent(this,
                     experimentContext.getExperiment(), experimentContext.getExperimentHistory()));
             experimentStepService.complete(experimentStepEntity);
         } catch (ObjectStorageException ex) {

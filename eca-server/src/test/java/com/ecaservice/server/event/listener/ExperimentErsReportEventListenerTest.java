@@ -1,7 +1,7 @@
 package com.ecaservice.server.event.listener;
 
 import com.ecaservice.server.TestHelperUtils;
-import com.ecaservice.server.event.model.ExperimentFinishedEvent;
+import com.ecaservice.server.event.model.ExperimentErsReportEvent;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentResultsEntity;
 import com.ecaservice.server.model.entity.RequestStatus;
@@ -28,25 +28,25 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @ExtendWith(MockitoExtension.class)
-class ExperimentFinishedEventListenerTest {
+class ExperimentErsReportEventListenerTest {
 
     @Mock
     private ErsService ersService;
     @Mock
     private ExperimentResultsService experimentResultsService;
     @InjectMocks
-    private ExperimentFinishedEventListener experimentFinishedEventListener;
+    private ExperimentErsReportEventListener experimentErsReportEventListener;
 
     @Test
     void testExperimentFinishedEvent() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         AbstractExperiment experimentHistory = TestHelperUtils.createExperimentHistory();
-        ExperimentFinishedEvent experimentFinishedEvent =
-                new ExperimentFinishedEvent(this, experiment, experimentHistory);
+        ExperimentErsReportEvent experimentErsReportEvent =
+                new ExperimentErsReportEvent(this, experiment, experimentHistory);
         ExperimentResultsEntity experimentResultsEntity = TestHelperUtils.createExperimentResultsEntity(experiment);
         when(experimentResultsService.saveExperimentResultsToErsSent(experiment, experimentHistory)).thenReturn(
                 Collections.singletonList(experimentResultsEntity));
-        experimentFinishedEventListener.handleExperimentFinishedEvent(experimentFinishedEvent);
+        experimentErsReportEventListener.handleEvent(experimentErsReportEvent);
         verify(ersService, atLeastOnce()).sentExperimentResults(experimentResultsEntity, experimentHistory,
                 ExperimentResultsRequestSource.SYSTEM);
     }
