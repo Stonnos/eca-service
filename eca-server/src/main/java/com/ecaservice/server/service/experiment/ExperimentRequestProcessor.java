@@ -37,7 +37,6 @@ public class ExperimentRequestProcessor {
 
     private final ExperimentRepository experimentRepository;
     private final ExperimentService experimentService;
-    private final ExperimentStepProcessor experimentStepProcessor;
     private final ApplicationEventPublisher eventPublisher;
     private final ExperimentProgressService experimentProgressService;
     private final ExperimentConfig experimentConfig;
@@ -82,7 +81,7 @@ public class ExperimentRequestProcessor {
         putMdc(TX_ID, experiment.getRequestId());
         putMdc(EV_REQUEST_ID, experiment.getRequestId());
         log.info("Starting to process experiment [{}]", experiment.getRequestId());
-        experimentStepProcessor.processExperimentSteps(experiment);
+        experimentService.processExperiment(experiment);
         log.info("Experiment [{}] has been processed", experiment.getRequestId());
     }
 

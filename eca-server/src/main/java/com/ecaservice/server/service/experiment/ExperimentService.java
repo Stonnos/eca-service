@@ -80,6 +80,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
     private final ExperimentRepository experimentRepository;
     private final ExperimentStepRepository experimentStepRepository;
     private final ExperimentMapper experimentMapper;
+    private final ExperimentStepProcessor experimentStepProcessor;
     private final ObjectStorageService objectStorageService;
     private final CrossValidationConfig crossValidationConfig;
     private final ExperimentConfig experimentConfig;
@@ -132,6 +133,16 @@ public class ExperimentService implements PageRequestService<Experiment> {
         experimentRepository.save(experiment);
         log.info("Experiment [{}] in progress status has been set", experiment.getRequestId());
         createAndSaveSteps(experiment);
+    }
+
+    /**
+     * Processes experiment.
+     *
+     * @param experiment - experiment entity
+     */
+    public void processExperiment(Experiment experiment) {
+        log.info("Starting to process experiment [{}]", experiment.getRequestId());
+        experimentStepProcessor.processExperimentSteps(experiment);
     }
 
     /**
