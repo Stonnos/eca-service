@@ -50,13 +50,13 @@ public class ExperimentRequestProcessor {
             waitForLock = false)
     public void startExperiment(Long id) {
         var experiment = experimentService.getById(id);
+        putMdc(TX_ID, experiment.getRequestId());
+        putMdc(EV_REQUEST_ID, experiment.getRequestId());
         if (!RequestStatus.NEW.equals(experiment.getRequestStatus())) {
             log.warn("Attempt to process new experiment [{}] with status [{}]. Skipped...", experiment.getRequestId(),
                     experiment.getRequestStatus());
             return;
         }
-        putMdc(TX_ID, experiment.getRequestId());
-        putMdc(EV_REQUEST_ID, experiment.getRequestId());
         log.info("Starting to process new experiment [{}]", experiment.getRequestId());
         experimentProgressService.start(experiment);
         experimentService.startExperiment(experiment);
@@ -73,13 +73,13 @@ public class ExperimentRequestProcessor {
             waitForLock = false)
     public void processExperiment(Long id) {
         var experiment = experimentService.getById(id);
+        putMdc(TX_ID, experiment.getRequestId());
+        putMdc(EV_REQUEST_ID, experiment.getRequestId());
         if (!RequestStatus.IN_PROGRESS.equals(experiment.getRequestStatus())) {
             log.warn("Attempt to process experiment [{}] with status [{}]. Skipped...", experiment.getRequestId(),
                     experiment.getRequestStatus());
             return;
         }
-        putMdc(TX_ID, experiment.getRequestId());
-        putMdc(EV_REQUEST_ID, experiment.getRequestId());
         log.info("Starting to process experiment [{}]", experiment.getRequestId());
         experimentService.processExperiment(experiment);
         log.info("Experiment [{}] has been processed", experiment.getRequestId());
@@ -94,13 +94,13 @@ public class ExperimentRequestProcessor {
             waitForLock = false)
     public void finishExperiment(Long id) {
         var experiment = experimentService.getById(id);
+        putMdc(TX_ID, experiment.getRequestId());
+        putMdc(EV_REQUEST_ID, experiment.getRequestId());
         if (!RequestStatus.IN_PROGRESS.equals(experiment.getRequestStatus())) {
             log.warn("Attempt to finish experiment [{}] with status [{}]. Skipped...", experiment.getRequestId(),
                     experiment.getRequestStatus());
             return;
         }
-        putMdc(TX_ID, experiment.getRequestId());
-        putMdc(EV_REQUEST_ID, experiment.getRequestId());
         log.info("Starting to finish experiment [{}]", experiment.getRequestId());
         experimentService.finishExperiment(experiment);
         experimentProgressService.finish(experiment);
