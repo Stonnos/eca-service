@@ -31,11 +31,11 @@ public class ExperimentStepEntity {
     @Column(nullable = false)
     private ExperimentStep step;
 
-    private int order;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ExperimentStepStatus status;
+
+    private int order;
 
     private LocalDateTime completed;
 
