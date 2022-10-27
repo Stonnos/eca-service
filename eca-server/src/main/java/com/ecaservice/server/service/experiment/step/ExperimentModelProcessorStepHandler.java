@@ -48,14 +48,13 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
 
     @Override
     public void handle(ExperimentContext experimentContext,
-                       ExperimentStepEntity experimentStepEntity) throws Exception {
+                       ExperimentStepEntity experimentStepEntity) {
         try {
             Instances data = getInstances(experimentContext);
             processExperiment(data, experimentContext);
             experimentStepService.complete(experimentStepEntity);
         } catch (Exception ex) {
             experimentStepService.completeWithError(experimentStepEntity, ex.getMessage());
-            throw ex;
         }
     }
 

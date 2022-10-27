@@ -33,7 +33,7 @@ public class ExperimentErsReportProcessorStepHandler extends AbstractExperimentS
 
     @Override
     public void handle(ExperimentContext experimentContext,
-                       ExperimentStepEntity experimentStepEntity) throws Exception {
+                       ExperimentStepEntity experimentStepEntity) {
         try {
             fetchExperimentHistory(experimentContext);
             applicationEventPublisher.publishEvent(new ExperimentFinishedEvent(this,
@@ -43,7 +43,6 @@ public class ExperimentErsReportProcessorStepHandler extends AbstractExperimentS
             experimentStepService.failed(experimentStepEntity, ex.getMessage());
         } catch (Exception ex) {
             experimentStepService.completeWithError(experimentStepEntity, ex.getMessage());
-            throw ex;
         }
     }
 

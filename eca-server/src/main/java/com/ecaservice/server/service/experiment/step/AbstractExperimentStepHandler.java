@@ -14,5 +14,5 @@ public abstract class AbstractExperimentStepHandler {
     private final ExperimentStep step;
 
     public abstract void handle(ExperimentContext experimentContext,
-                                ExperimentStepEntity experimentStepEntity) throws Exception;
+                                ExperimentStepEntity experimentStepEntity);
 }

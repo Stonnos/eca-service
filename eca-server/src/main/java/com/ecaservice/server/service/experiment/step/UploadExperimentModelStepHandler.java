@@ -39,7 +39,7 @@ public class UploadExperimentModelStepHandler extends AbstractExperimentStepHand
 
     @Override
     public void handle(ExperimentContext experimentContext,
-                       ExperimentStepEntity experimentStepEntity) throws Exception {
+                       ExperimentStepEntity experimentStepEntity) {
         try {
             Experiment experiment = experimentContext.getExperiment();
             log.info("Starting to get experiment history [{}] to upload", experiment.getRequestId());
@@ -60,7 +60,6 @@ public class UploadExperimentModelStepHandler extends AbstractExperimentStepHand
             experimentStepService.failed(experimentStepEntity, ex.getMessage());
         } catch (Exception ex) {
             experimentStepService.completeWithError(experimentStepEntity, ex.getMessage());
-            throw ex;
         }
     }
 
@@ -72,13 +71,12 @@ public class UploadExperimentModelStepHandler extends AbstractExperimentStepHand
     }
 
     private void saveModelToLocalStorage(AbstractExperiment<?> experimentHistory,
-                                         ExperimentStepEntity experimentStepEntity) throws IOException {
+                                         ExperimentStepEntity experimentStepEntity) {
         try {
             experimentModelLocalStorage.saveIfAbsent(experimentStepEntity.getExperiment().getRequestId(),
                     experimentHistory);
         } catch (IOException ex) {
             experimentStepService.completeWithError(experimentStepEntity, ex.getMessage());
-            throw ex;
         }
     }
 }

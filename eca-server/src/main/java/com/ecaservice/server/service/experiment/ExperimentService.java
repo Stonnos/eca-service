@@ -17,7 +17,6 @@ import com.ecaservice.server.model.entity.Channel;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.FilterTemplateType;
 import com.ecaservice.server.model.entity.RequestStatus;
-import com.ecaservice.server.model.experiment.ExperimentContext;
 import com.ecaservice.server.model.projections.RequestStatusStatistics;
 import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.service.PageRequestService;
@@ -46,7 +45,6 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 import static com.ecaservice.common.web.util.LogHelper.EV_REQUEST_ID;
@@ -76,7 +74,6 @@ public class ExperimentService implements PageRequestService<Experiment> {
     private final ObjectStorageService objectStorageService;
     private final CrossValidationConfig crossValidationConfig;
     private final ExperimentConfig experimentConfig;
-    private final ExperimentStepProcessor experimentStepProcessor;
     private final EntityManager entityManager;
     private final AppProperties appProperties;
     private final FilterService filterService;
@@ -124,24 +121,6 @@ public class ExperimentService implements PageRequestService<Experiment> {
         experiment.setStartDate(LocalDateTime.now());
         experimentRepository.save(experiment);
         log.info("Experiment [{}] in progress status has been set", experiment.getRequestId());
-    }
-
-    /**
-     * Processes experiment.
-     *
-     * @param experiment - experiment to process
-     */
-    public void processExperiment(final Experiment experiment) {
-        log.info("Starting to process experiment [{}].", experiment.getRequestId());
-        try {
-            ExperimentContext experimentContext = experimentStepProcessor.processExperimentSteps(experiment);
-        } catch (TimeoutException ex) {
-            log.warn("There was a timeout while experiment [{}] built.", experiment.getRequestId());
-            handleError(experiment, RequestStatus.TIMEOUT, ex.getMessage());
-        } catch (Exception ex) {
-            log.error("There was an error while experiment [{}] built: {}", experiment.getRequestId(), ex);
-            handleError(experiment, RequestStatus.ERROR, ex.getMessage());
-        }
     }
 
     public void finishExperiment(Experiment experiment) {

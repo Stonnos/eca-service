@@ -24,6 +24,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ExperimentStepProcessor {
 
+    private static final List<ExperimentStepStatus> EXPERIMENT_STEP_STATUSES_TO_PROCESS =
+            List.of(ExperimentStepStatus.READY, ExperimentStepStatus.FAILED);
+
     private final ExperimentStepRepository experimentStepRepository;
     private final List<AbstractExperimentStepHandler> experimentStepHandlers;
 
@@ -31,14 +34,11 @@ public class ExperimentStepProcessor {
      * Processes experiment steps.
      *
      * @param experiment - experiment entity
-     * @return experiment context
-     * @throws Exception in case of error
      */
-    public ExperimentContext processExperimentSteps(Experiment experiment) throws Exception {
+    public void processExperimentSteps(Experiment experiment) {
         log.info("Starting to process experiment [{}] steps", experiment.getRequestId());
-        var steps = experimentStepRepository.findByExperimentAndStatusInOrderByOrder(experiment,
-                List.of(ExperimentStepStatus.READY, ExperimentStepStatus.FAILED));
-        var stepNames = steps.stream()
+        var nextSteps = getNextStepsToProcess(experiment);
+        var stepNames = nextSteps.stream()
                 .map(ExperimentStepEntity::getStep)
                 .collect(Collectors.toList());
         log.info("Got experiment [{}] steps {} to process", experiment.getRequestId(), stepNames);
@@ -47,13 +47,17 @@ public class ExperimentStepProcessor {
                 .experiment(experiment)
                 .stopWatch(stopWatch)
                 .build();
-        processSteps(steps, experimentContext);
+        processSteps(nextSteps, experimentContext);
         log.info("Experiment [{}] steps has been processed", experiment.getRequestId());
         log.info(stopWatch.prettyPrint());
-        return experimentContext;
     }
 
-    private void processSteps(List<ExperimentStepEntity> steps, ExperimentContext experimentContext) throws Exception {
+    private List<ExperimentStepEntity> getNextStepsToProcess(Experiment experiment) {
+        return experimentStepRepository.findByExperimentAndStatusInOrderByOrder(experiment,
+                EXPERIMENT_STEP_STATUSES_TO_PROCESS);
+    }
+
+    private void processSteps(List<ExperimentStepEntity> steps, ExperimentContext experimentContext) {
         var experiment = experimentContext.getExperiment();
         for (var experimentStepEntity : steps) {
             log.info("Starting to process experiment [{}] step [{}]", experiment.getRequestId(),
@@ -71,7 +75,7 @@ public class ExperimentStepProcessor {
     }
 
     private void processStep(ExperimentContext experimentContext,
-                             ExperimentStepEntity experimentStepEntity) throws Exception {
+                             ExperimentStepEntity experimentStepEntity) {
         var stepHandler = experimentStepHandlers.stream()
                 .filter(handler -> handler.getStep().equals(experimentStepEntity.getStep()))
                 .findFirst()

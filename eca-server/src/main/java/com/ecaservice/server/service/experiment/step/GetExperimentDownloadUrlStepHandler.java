@@ -48,7 +48,6 @@ public class GetExperimentDownloadUrlStepHandler extends AbstractExperimentStepH
             experimentStepService.failed(experimentStepEntity, ex.getMessage());
         } catch (Exception ex) {
             experimentStepService.completeWithError(experimentStepEntity, ex.getMessage());
-            throw ex;
         }
     }
 
