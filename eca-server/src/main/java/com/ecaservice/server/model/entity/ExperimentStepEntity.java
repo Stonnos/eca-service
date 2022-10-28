@@ -58,6 +58,11 @@ public class ExperimentStepEntity {
     private LocalDateTime created;
 
     /**
+     * Started date
+     */
+    private LocalDateTime started;
+
+    /**
      * Completed date
      */
     private LocalDateTime completed;

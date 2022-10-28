@@ -70,8 +70,14 @@ public class ExperimentStepProcessor {
         }
     }
 
+    private void updateStartedDate(ExperimentStepEntity experimentStepEntity) {
+        experimentStepEntity.setStarted(LocalDateTime.now());
+        experimentStepRepository.save(experimentStepEntity);
+    }
+
     private void processStep(ExperimentContext experimentContext,
                              ExperimentStepEntity experimentStepEntity) {
+        updateStartedDate(experimentStepEntity);
         var stepHandler = experimentStepHandlers.stream()
                 .filter(handler -> handler.getStep().equals(experimentStepEntity.getStep()))
                 .findFirst()
