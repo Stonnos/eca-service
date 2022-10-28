@@ -80,9 +80,9 @@ public class ExperimentRequestProcessor {
                     experiment.getRequestStatus());
             return;
         }
-        log.info("Starting to process experiment [{}]", experiment.getRequestId());
+        log.info("Starting to process experiment [{}] request", experiment.getRequestId());
         experimentService.processExperiment(experiment);
-        log.info("Experiment [{}] has been processed", experiment.getRequestId());
+        log.info("Experiment [{}] request has been processed", experiment.getRequestId());
     }
 
     /**
