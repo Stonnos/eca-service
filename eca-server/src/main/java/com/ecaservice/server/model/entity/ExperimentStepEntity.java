@@ -8,6 +8,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -20,7 +21,10 @@ import java.time.LocalDateTime;
  */
 @Data
 @Entity
-@Table(name = "experiment_step")
+@Table(name = "experiment_step", indexes = {
+        @Index(columnList = "experiment_id, step", name = "experiment_step_experiment_id_step_unique_idx"),
+        @Index(columnList = "experiment_id, step_order", name = "experiment_step_experiment_id_step_order_unique_idx")
+})
 public class ExperimentStepEntity {
 
     @Id

@@ -34,4 +34,36 @@
             </column>
         </createTable>
     </changeSet>
+
+    <changeSet id="add_experiment_step_experiment_id_step_unique_idx" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment_step"/>
+            <columnExists tableName="experiment_step" columnName="experiment_id"/>
+            <columnExists tableName="experiment_step" columnName="step"/>
+            <not>
+                <indexExists indexName="experiment_step_experiment_id_step_unique_idx" tableName="experiment_step"
+                             columnNames="experiment_id, step"/>
+            </not>
+        </preConditions>
+        <createIndex tableName="experiment_step" indexName="experiment_step_experiment_id_step_unique_idx" unique="true">
+            <column name="experiment_id"/>
+            <column name="step"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="add_experiment_step_experiment_id_step_order_unique_idx" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment_step"/>
+            <columnExists tableName="experiment_step" columnName="experiment_id"/>
+            <columnExists tableName="experiment_step" columnName="step_order"/>
+            <not>
+                <indexExists indexName="experiment_step_experiment_id_step_order_unique_idx" tableName="experiment_step"
+                             columnNames="experiment_id, step_order"/>
+            </not>
+        </preConditions>
+        <createIndex tableName="experiment_step" indexName="experiment_step_experiment_id_step_order_unique_idx" unique="true">
+            <column name="experiment_id"/>
+            <column name="step_order"/>
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>

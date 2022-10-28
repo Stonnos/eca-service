@@ -129,11 +129,11 @@ public class ExperimentService implements PageRequestService<Experiment> {
     @Transactional
     public void startExperiment(Experiment experiment) {
         log.info("Starting to set in progress status for experiment [{}]", experiment.getRequestId());
+        createAndSaveSteps(experiment);
         experiment.setRequestStatus(RequestStatus.IN_PROGRESS);
         experiment.setStartDate(LocalDateTime.now());
         experimentRepository.save(experiment);
         log.info("Experiment [{}] in progress status has been set", experiment.getRequestId());
-        createAndSaveSteps(experiment);
     }
 
     /**
@@ -144,6 +144,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
     public void processExperiment(Experiment experiment) {
         log.info("Starting to process experiment [{}]", experiment.getRequestId());
         experimentStepProcessor.processExperimentSteps(experiment);
+        log.info("Experiment [{}] has been processed", experiment.getRequestId());
     }
 
     /**
