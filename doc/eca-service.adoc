@@ -326,8 +326,11 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |step                         |varchar(255)     |-|+|-                                     |Название шага (EXPERIMENT_PROCESSING, UPLOAD_EXPERIMENT_MODEL, GET_EXPERIMENT_DOWNLOAD_URL, CREATE_ERS_REPORT)
 |status                       |varchar(255)     |-|+|-                                     |Статус выполнения шага (READY, COMPLETED, FAILED, CANCELED, TIMEOUT, ERROR)
 |step_order                   |integer          |-|+|-                                     |Порядок выполнения шага
-|completed                    |boolean          |-|-|-                                     |Дата завершения выполнения шага
+|created                      |timestamp        |-|+|-                                     |Дата создания шага
+|started                      |timestamp        |-|-|-                                     |Дата последнего запуска шага
+|completed                    |timestamp        |-|-|-                                     |Дата завершения выполнения шага
 |error_message                |text             |-|-|-                                     |Текст ошибки
+|num_failed_attempts          |integer          |-|-|-                                     |Число неудачных попыток выполнения шага
 |experiment_id                |bigint           |-|+|fk_experiment_step_experiment_id      |Внешний ключ, ID эксперимента
 |===
 
