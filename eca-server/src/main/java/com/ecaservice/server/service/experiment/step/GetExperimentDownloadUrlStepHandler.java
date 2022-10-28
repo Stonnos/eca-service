@@ -12,6 +12,7 @@ import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.service.experiment.ExperimentStepService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StopWatch;
 
 import java.util.concurrent.TimeUnit;
 
@@ -53,7 +54,10 @@ public class GetExperimentDownloadUrlStepHandler extends AbstractExperimentStepH
                        ExperimentStepEntity experimentStepEntity) {
         try {
             Experiment experiment = experimentContext.getExperiment();
+            StopWatch stopWatch = experimentContext.getStopWatch();
+            stopWatch.start(String.format("Gets experiment [%s] download url", experiment.getRequestId()));
             String experimentDownloadUrl = getExperimentDownloadPresignedUrl(experiment.getExperimentPath());
+            stopWatch.stop();
             experiment.setExperimentDownloadUrl(experimentDownloadUrl);
             experimentRepository.save(experiment);
             experimentStepService.complete(experimentStepEntity);

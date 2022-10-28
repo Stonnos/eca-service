@@ -48,8 +48,12 @@ public class ExperimentErsReportProcessorStepHandler extends AbstractExperimentS
                        ExperimentStepEntity experimentStepEntity) {
         try {
             fetchExperimentHistory(experimentContext);
+            var stopWatch = experimentContext.getStopWatch();
+            stopWatch.start(
+                    String.format("Sent experiment [%s] ERS report", experimentContext.getExperiment().getRequestId()));
             applicationEventPublisher.publishEvent(new ExperimentErsReportEvent(this,
                     experimentContext.getExperiment(), experimentContext.getExperimentHistory()));
+            stopWatch.stop();
             experimentStepService.complete(experimentStepEntity);
         } catch (ObjectStorageException ex) {
             log.error("Object storage error while sent ers report for experiment [{}]: {}",
@@ -70,8 +74,12 @@ public class ExperimentErsReportProcessorStepHandler extends AbstractExperimentS
             log.info("Experiment history [{}] has been fetched from context", experiment.getRequestId());
         } else {
             log.info("Starting to get experiment history [{}] from local storage", experiment.getRequestId());
+            var stopWatch = experimentContext.getStopWatch();
+            stopWatch.start(
+                    String.format("Load experiment history [%s] from local storage", experiment.getRequestId()));
             var experimentHistory =
                     objectStorageService.getObject(experiment.getExperimentPath(), AbstractExperiment.class);
+            stopWatch.stop();
             log.info("Experiment history [{}] has been fetched from local storage", experiment.getRequestId());
             experimentContext.setExperimentHistory(experimentHistory);
         }

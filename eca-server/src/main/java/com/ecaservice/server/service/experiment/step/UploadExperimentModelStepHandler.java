@@ -12,6 +12,7 @@ import com.ecaservice.server.service.experiment.ExperimentStepService;
 import eca.dataminer.AbstractExperiment;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StopWatch;
 
 import java.io.IOException;
 
@@ -55,17 +56,20 @@ public class UploadExperimentModelStepHandler extends AbstractExperimentStepHand
                        ExperimentStepEntity experimentStepEntity) {
         try {
             Experiment experiment = experimentContext.getExperiment();
+            StopWatch stopWatch = experimentContext.getStopWatch();
             log.info("Starting to get experiment history [{}] to upload", experiment.getRequestId());
             if (experimentContext.getExperimentHistory() == null) {
                 log.info("Starting to get experiment history [{}] from local storage", experiment.getRequestId());
+                stopWatch.start(String.format("Load experiment history [%s] from local storage", experiment.getRequestId()));
                 var experimentHistory = experimentModelLocalStorage.get(experiment.getRequestId());
+                stopWatch.stop();
                 experimentContext.setExperimentHistory(experimentHistory);
                 log.info("Experiment history [{}] has been fetched from local storage", experiment.getRequestId());
-                uploadObject(experiment, experimentHistory);
+                uploadObject(experiment, stopWatch, experimentHistory);
                 experimentModelLocalStorage.delete(experiment.getRequestId());
             } else {
                 log.info("Experiment history [{}] has been fetched from context", experiment.getRequestId());
-                uploadObject(experiment, experimentContext.getExperimentHistory());
+                uploadObject(experiment, stopWatch, experimentContext.getExperimentHistory());
             }
             experimentStepService.complete(experimentStepEntity);
         } catch (ObjectStorageException ex) {
@@ -79,9 +83,13 @@ public class UploadExperimentModelStepHandler extends AbstractExperimentStepHand
         }
     }
 
-    private void uploadObject(Experiment experiment, AbstractExperiment<?> abstractExperiment) throws IOException {
+    private void uploadObject(Experiment experiment,
+                              StopWatch stopWatch,
+                              AbstractExperiment<?> abstractExperiment) throws IOException {
         String experimentPath = String.format(EXPERIMENT_PATH_FORMAT, experiment.getRequestId());
+        stopWatch.start(String.format("Uploads experiment history [%s] to S3", experiment.getRequestId()));
         objectStorageService.uploadObject(abstractExperiment, experimentPath);
+        stopWatch.stop();
         experiment.setExperimentPath(experimentPath);
         experimentRepository.save(experiment);
     }
