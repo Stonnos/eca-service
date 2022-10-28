@@ -70,7 +70,9 @@ public class ExperimentStepService {
     public void failed(ExperimentStepEntity experimentStepEntity, String errorMessage) {
         log.info("Starting to failure experiment [{}] step [{}] with error",
                 experimentStepEntity.getExperiment().getRequestId(), experimentStepEntity.getStep());
-        updateStatus(experimentStepEntity, ExperimentStepStatus.FAILED, errorMessage);
+        experimentStepEntity.setStatus(ExperimentStepStatus.FAILED);
+        experimentStepEntity.setErrorMessage(errorMessage);
+        experimentStepRepository.save(experimentStepEntity);
         log.info("Experiment [{}] step [{}] has been failed",
                 experimentStepEntity.getExperiment().getRequestId(), experimentStepEntity.getStep());
     }
