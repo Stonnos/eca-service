@@ -296,6 +296,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
                     experimentStepEntity.setStepOrder(experimentStep.ordinal());
                     experimentStepEntity.setStatus(ExperimentStepStatus.READY);
                     experimentStepEntity.setExperiment(experiment);
+                    experimentStepEntity.setCreated(LocalDateTime.now());
                     return experimentStepEntity;
                 })
                 .collect(Collectors.toList());

@@ -72,9 +72,12 @@ public class ExperimentStepService {
                 experimentStepEntity.getExperiment().getRequestId(), experimentStepEntity.getStep());
         experimentStepEntity.setStatus(ExperimentStepStatus.FAILED);
         experimentStepEntity.setErrorMessage(errorMessage);
+        int failed = experimentStepEntity.getNumFailedAttempts();
+        experimentStepEntity.setNumFailedAttempts(++failed);
         experimentStepRepository.save(experimentStepEntity);
-        log.info("Experiment [{}] step [{}] has been failed",
-                experimentStepEntity.getExperiment().getRequestId(), experimentStepEntity.getStep());
+        log.info("Experiment [{}] step [{}] has been failed. Failed attempts number: {}",
+                experimentStepEntity.getExperiment().getRequestId(), experimentStepEntity.getStep(),
+                experimentStepEntity.getNumFailedAttempts());
     }
 
     private void updateStatus(ExperimentStepEntity experimentStepEntity,

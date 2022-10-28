@@ -25,8 +25,12 @@
             <column name="step_order" type="integer">
                 <constraints nullable="false"/>
             </column>
+            <column name="created" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
             <column name="completed" type="timestamp"/>
             <column name="error_message" type="text"/>
+            <column name="num_failed_attempts" type="integer" defaultValueNumeric="0"/>
             <column name="experiment_id" type="bigint">
                 <constraints foreignKeyName="fk_experiment_step_experiment_id"
                              referencedTableName="experiment"

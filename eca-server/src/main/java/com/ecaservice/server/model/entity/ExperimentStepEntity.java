@@ -52,6 +52,12 @@ public class ExperimentStepEntity {
     private int stepOrder;
 
     /**
+     * Created date
+     */
+    @Column(nullable = false)
+    private LocalDateTime created;
+
+    /**
      * Completed date
      */
     private LocalDateTime completed;
@@ -61,6 +67,12 @@ public class ExperimentStepEntity {
      */
     @Column(name = "error_message", columnDefinition = "text")
     private String errorMessage;
+
+    /**
+     * Failed attempts number
+     */
+    @Column(name = "num_failed_attempts")
+    private int numFailedAttempts;
 
     /**
      * Linked experiment
