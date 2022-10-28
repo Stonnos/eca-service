@@ -64,17 +64,8 @@ public class ExperimentStepProcessor {
             log.info("Starting to process experiment [{}] step [{}]", experiment.getRequestId(),
                     experimentStepEntity.getStep());
             processStep(experimentContext, experimentStepEntity);
-            if (!ExperimentStepStatus.COMPLETED.equals(experimentStepEntity.getStatus())) {
-                log.warn("Experiment [{}] step [{}] has been completed with status [{}].", experiment.getRequestId(),
-                        experimentStepEntity.getStep(), experimentStepEntity.getStatus());
-                if (EXPERIMENT_STEP_ERROR_STATUSES.contains(experimentStepEntity.getStatus())) {
-                    experimentStepRepository.cancelSteps(experiment, LocalDateTime.now());
-                    log.info("All ready steps has been cancelled for experiment [{}]", experiment.getRequestId());
-                }
+            if (!canHandleNext(experimentContext, experimentStepEntity)) {
                 break;
-            } else {
-                log.info("Experiment [{}] step [{}] has been successfully completed.", experiment.getRequestId(),
-                        experimentStepEntity.getStep());
             }
         }
     }
@@ -88,5 +79,22 @@ public class ExperimentStepProcessor {
                         () -> new IllegalStateException(
                                 String.format("Can't handle step [%s]", experimentStepEntity.getStatus())));
         stepHandler.handle(experimentContext, experimentStepEntity);
+    }
+
+    private boolean canHandleNext(ExperimentContext experimentContext, ExperimentStepEntity experimentStepEntity) {
+        Experiment experiment = experimentContext.getExperiment();
+        if (!ExperimentStepStatus.COMPLETED.equals(experimentStepEntity.getStatus())) {
+            log.warn("Experiment [{}] step [{}] has been completed with status [{}].", experiment.getRequestId(),
+                    experimentStepEntity.getStep(), experimentStepEntity.getStatus());
+            if (EXPERIMENT_STEP_ERROR_STATUSES.contains(experimentStepEntity.getStatus())) {
+                experimentStepRepository.cancelSteps(experiment, LocalDateTime.now());
+                log.info("All ready steps has been cancelled for experiment [{}]", experiment.getRequestId());
+            }
+            return false;
+        } else {
+            log.info("Experiment [{}] step [{}] has been successfully completed.", experiment.getRequestId(),
+                    experimentStepEntity.getStep());
+            return true;
+        }
     }
 }
