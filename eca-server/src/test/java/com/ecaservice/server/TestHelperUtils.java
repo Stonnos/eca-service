@@ -1074,6 +1074,7 @@ public class TestHelperUtils {
         experimentStepEntity.setStep(experimentStep);
         experimentStepEntity.setStepOrder(experimentStep.ordinal());
         experimentStepEntity.setStatus(stepStatus);
+        experimentStepEntity.setCreated(LocalDateTime.now());
         experimentStepEntity.setExperiment(experiment);
         return experimentStepEntity;
     }
