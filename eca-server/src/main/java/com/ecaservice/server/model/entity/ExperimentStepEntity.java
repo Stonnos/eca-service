@@ -10,7 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 
@@ -22,8 +22,10 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 @Table(name = "experiment_step", indexes = {
-        @Index(columnList = "experiment_id, step", name = "experiment_step_experiment_id_step_unique_idx"),
-        @Index(columnList = "experiment_id, step_order", name = "experiment_step_experiment_id_step_order_unique_idx")
+        @Index(columnList = "experiment_id, step", name = "experiment_step_experiment_id_step_unique_idx",
+                unique = true),
+        @Index(columnList = "experiment_id, step_order", name = "experiment_step_experiment_id_step_order_unique_idx",
+                unique = true)
 })
 public class ExperimentStepEntity {
 
@@ -82,7 +84,7 @@ public class ExperimentStepEntity {
     /**
      * Linked experiment
      */
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "experiment_id", nullable = false)
     private Experiment experiment;
 }
