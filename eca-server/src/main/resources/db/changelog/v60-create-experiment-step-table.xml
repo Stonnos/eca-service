@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v60-create-experiment-step-table.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="create-experiment-step-table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment"/>
+            <not>
+                <tableExists tableName="experiment_step"/>
+            </not>
+        </preConditions>
+        <createTable tableName="experiment_step">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="step" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="step_order" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="started" type="timestamp"/>
+            <column name="completed" type="timestamp"/>
+            <column name="error_message" type="text"/>
+            <column name="num_failed_attempts" type="integer" defaultValueNumeric="0"/>
+            <column name="experiment_id" type="bigint">
+                <constraints foreignKeyName="fk_experiment_step_experiment_id"
+                             referencedTableName="experiment"
+                             referencedColumnNames="id" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="add_experiment_step_experiment_id_step_unique_idx" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment_step"/>
+            <columnExists tableName="experiment_step" columnName="experiment_id"/>
+            <columnExists tableName="experiment_step" columnName="step"/>
+            <not>
+                <indexExists indexName="experiment_step_experiment_id_step_unique_idx" tableName="experiment_step"
+                             columnNames="experiment_id, step"/>
+            </not>
+        </preConditions>
+        <createIndex tableName="experiment_step" indexName="experiment_step_experiment_id_step_unique_idx" unique="true">
+            <column name="experiment_id"/>
+            <column name="step"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="add_experiment_step_experiment_id_step_order_unique_idx" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment_step"/>
+            <columnExists tableName="experiment_step" columnName="experiment_id"/>
+            <columnExists tableName="experiment_step" columnName="step_order"/>
+            <not>
+                <indexExists indexName="experiment_step_experiment_id_step_order_unique_idx" tableName="experiment_step"
+                             columnNames="experiment_id, step_order"/>
+            </not>
+        </preConditions>
+        <createIndex tableName="experiment_step" indexName="experiment_step_experiment_id_step_order_unique_idx" unique="true">
+            <column name="experiment_id"/>
+            <column name="step_order"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

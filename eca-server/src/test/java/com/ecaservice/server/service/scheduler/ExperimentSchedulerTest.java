@@ -3,33 +3,26 @@ package com.ecaservice.server.service.scheduler;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.config.ExperimentConfig;
-import com.ecaservice.server.event.model.ExperimentEmailEvent;
-import com.ecaservice.server.event.model.push.ExperimentWebPushEvent;
 import com.ecaservice.server.model.entity.Experiment;
+import com.ecaservice.server.model.entity.ExperimentStep;
+import com.ecaservice.server.model.entity.ExperimentStepStatus;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.repository.ExperimentRepository;
+import com.ecaservice.server.repository.ExperimentStepRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.experiment.ExperimentProgressService;
 import com.ecaservice.server.service.experiment.ExperimentRequestProcessor;
 import com.ecaservice.server.service.experiment.ExperimentService;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Import;
 
 import javax.inject.Inject;
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -41,78 +34,101 @@ import static org.mockito.Mockito.when;
 @Import({ExperimentConfig.class, AppProperties.class})
 class ExperimentSchedulerTest extends AbstractJpaTest {
 
-    private static final int EXPECTED_CHANGE_STATUS_EVENTS_COUNT = 2;
-
     @Inject
     private ExperimentRepository experimentRepository;
-    @Mock
-    private ExperimentService experimentService;
-    @Mock
-    private ExperimentProgressService experimentProgressService;
-    @Mock
-    private ApplicationEventPublisher eventPublisher;
-    @Captor
-    private ArgumentCaptor<Experiment> argumentCaptor;
-
     @Inject
-    private ExperimentConfig experimentConfig;
+    private ExperimentStepRepository experimentStepRepository;
+
+    @MockBean
+    private ExperimentService experimentService;
+    @MockBean
+    private ExperimentProgressService experimentProgressService;
+    @MockBean
+    private ApplicationEventPublisher eventPublisher;
+
+    @MockBean
+    private ExperimentRequestProcessor experimentRequestProcessor;
 
     private ExperimentScheduler experimentScheduler;
 
     @Override
     public void init() {
-        ExperimentRequestProcessor experimentRequestProcessor =
-                new ExperimentRequestProcessor(experimentRepository, experimentService, eventPublisher,
-                        experimentProgressService, experimentConfig);
         experimentScheduler = new ExperimentScheduler(experimentRequestProcessor, experimentRepository);
     }
 
     @Override
     public void deleteAll() {
+        experimentStepRepository.deleteAll();
         experimentRepository.deleteAll();
     }
 
     @Test
-    void testProcessExperiments() {
-        List<Experiment> experiments = newArrayList();
-        experiments.add(
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW));
-        experiments.add(
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR));
-        experiments.add(
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED));
-        experimentRepository.saveAll(experiments);
-        var iterator = experiments.iterator();
-        when(experimentService.getById(anyLong())).thenReturn(iterator.next());
-        experimentScheduler.processNewRequests();
-        verify(experimentService, atLeastOnce()).processExperiment(any(Experiment.class));
-        verify(eventPublisher, times(EXPECTED_CHANGE_STATUS_EVENTS_COUNT)).publishEvent(
-                any(ExperimentEmailEvent.class));
-        verify(eventPublisher, times(EXPECTED_CHANGE_STATUS_EVENTS_COUNT)).publishEvent(
-                any(ExperimentWebPushEvent.class));
+    void testProcessNewExperiments() {
+        var newExperiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        experimentRepository.save(newExperiment);
+        when(experimentService.getById(newExperiment.getId())).thenReturn(newExperiment);
+        experimentScheduler.processExperiments();
+        verify(experimentRequestProcessor, atLeastOnce()).startExperiment(newExperiment.getId());
     }
 
     @Test
-    void testRemoveExperiments() {
-        List<Experiment> experiments = newArrayList();
-        experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED));
-        Experiment experimentToRemove =
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        experimentToRemove.setEndDate(LocalDateTime.now().minusDays(experimentConfig.getNumberOfDaysForStorage() + 1));
-        experiments.add(experimentToRemove);
-        Experiment finishedExperiment =
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        experiments.add(finishedExperiment);
-        Experiment timeoutExperiment =
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.TIMEOUT);
-        timeoutExperiment.setDeletedDate(LocalDateTime.now());
-        experiments.add(timeoutExperiment);
-        Experiment errorExperiment =
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.TIMEOUT);
-        experiments.add(errorExperiment);
-        experimentRepository.saveAll(experiments);
-        experimentScheduler.processRequestsToRemove();
-        verify(experimentService).removeExperimentModel(argumentCaptor.capture());
-        assertThat(argumentCaptor.getValue()).isEqualTo(experimentToRemove);
+    void testProcessExperiments() {
+        var experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.IN_PROGRESS);
+        experimentRepository.save(experiment);
+        createAndSaveExperimentStep(experiment, ExperimentStep.EXPERIMENT_PROCESSING, ExperimentStepStatus.FAILED);
+        createAndSaveExperimentStep(experiment, ExperimentStep.UPLOAD_EXPERIMENT_MODEL, ExperimentStepStatus.READY);
+        createAndSaveExperimentStep(experiment, ExperimentStep.GET_EXPERIMENT_DOWNLOAD_URL, ExperimentStepStatus.READY);
+        when(experimentService.getById(experiment.getId())).thenReturn(experiment);
+        experimentScheduler.processExperiments();
+        verify(experimentRequestProcessor, never()).finishExperiment(experiment.getId());
+        verify(experimentRequestProcessor, atLeastOnce()).processExperiment(experiment.getId());
+    }
+
+    @Test
+    void testProcessFinishedExperimentsWithErrorStep() {
+        var experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.IN_PROGRESS);
+        experimentRepository.save(experiment);
+        createAndSaveExperimentStep(experiment, ExperimentStep.EXPERIMENT_PROCESSING, ExperimentStepStatus.ERROR);
+        createAndSaveExperimentStep(experiment, ExperimentStep.UPLOAD_EXPERIMENT_MODEL, ExperimentStepStatus.CANCELED);
+        createAndSaveExperimentStep(experiment, ExperimentStep.GET_EXPERIMENT_DOWNLOAD_URL,
+                ExperimentStepStatus.CANCELED);
+        when(experimentService.getById(experiment.getId())).thenReturn(experiment);
+        experimentScheduler.processExperiments();
+        verify(experimentRequestProcessor, never()).processExperiment(experiment.getId());
+        verify(experimentRequestProcessor, atLeastOnce()).finishExperiment(experiment.getId());
+    }
+
+    @Test
+    void testProcessFinishedExperimentsWithAllCompletedSteps() {
+        var experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.IN_PROGRESS);
+        experimentRepository.save(experiment);
+        createAndSaveExperimentStep(experiment, ExperimentStep.EXPERIMENT_PROCESSING, ExperimentStepStatus.COMPLETED);
+        createAndSaveExperimentStep(experiment, ExperimentStep.UPLOAD_EXPERIMENT_MODEL, ExperimentStepStatus.COMPLETED);
+        createAndSaveExperimentStep(experiment, ExperimentStep.GET_EXPERIMENT_DOWNLOAD_URL,
+                ExperimentStepStatus.COMPLETED);
+        when(experimentService.getById(experiment.getId())).thenReturn(experiment);
+        experimentScheduler.processExperiments();
+        verify(experimentRequestProcessor, never()).processExperiment(experiment.getId());
+        verify(experimentRequestProcessor, atLeastOnce()).finishExperiment(experiment.getId());
+    }
+
+    @Test
+    void testProcessFinishedExperimentsWithNotAllCompleted() {
+        var experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.IN_PROGRESS);
+        experimentRepository.save(experiment);
+        createAndSaveExperimentStep(experiment, ExperimentStep.EXPERIMENT_PROCESSING, ExperimentStepStatus.COMPLETED);
+        createAndSaveExperimentStep(experiment, ExperimentStep.UPLOAD_EXPERIMENT_MODEL, ExperimentStepStatus.COMPLETED);
+        createAndSaveExperimentStep(experiment, ExperimentStep.GET_EXPERIMENT_DOWNLOAD_URL, ExperimentStepStatus.READY);
+        when(experimentService.getById(experiment.getId())).thenReturn(experiment);
+        experimentScheduler.processExperiments();
+        verify(experimentRequestProcessor, atLeastOnce()).processExperiment(experiment.getId());
+        verify(experimentRequestProcessor, never()).finishExperiment(experiment.getId());
+    }
+
+    private void createAndSaveExperimentStep(Experiment experiment,
+                                             ExperimentStep experimentStep,
+                                             ExperimentStepStatus stepStatus) {
+        var experimentStepEntity = TestHelperUtils.createExperimentStepEntity(experiment, experimentStep, stepStatus);
+        experimentStepRepository.save(experimentStepEntity);
     }
 }

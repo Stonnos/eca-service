@@ -1,7 +1,6 @@
 package com.ecaservice.server.repository;
 
 import com.ecaservice.server.model.entity.Experiment;
-import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.projections.RequestStatusStatistics;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -20,13 +19,34 @@ import java.util.List;
 public interface ExperimentRepository extends JpaRepository<Experiment, Long>, JpaSpecificationExecutor<Experiment> {
 
     /**
-     * Finds not sent experiments by statuses.
+     * Finds new experiments.
      *
-     * @param statuses - {@link RequestStatus} collection
      * @return experiments ids list
      */
-    @Query("select exp.id from Experiment exp where exp.requestStatus in (:statuses) order by exp.creationDate")
-    List<Long> findExperimentsForProcessing(@Param("statuses") Collection<RequestStatus> statuses);
+    @Query("select exp.id from Experiment exp where exp.requestStatus = 'NEW' order by exp.creationDate")
+    List<Long> findNewExperiments();
+
+    /**
+     * Finds experiments to process.
+     *
+     * @return experiments ids list
+     */
+    @Query("select exp.id from Experiment exp where exp.requestStatus = 'IN_PROGRESS' " +
+            "and not exists (select es.id from ExperimentStepEntity es where es.experiment = exp " +
+            "and es.status = 'ERROR' or es.status = 'TIMEOUT' or es.status = 'CANCELED') " +
+            "and exists (select es.id from ExperimentStepEntity es where es.experiment = exp " +
+            "and es.status = 'READY' or es.status = 'FAILED') order by exp.creationDate")
+    List<Long> findExperimentsToProcess();
+
+    /**
+     * Finds experiments to finish.
+     *
+     * @return experiments ids list
+     */
+    @Query("select exp.id from Experiment exp where exp.requestStatus = 'IN_PROGRESS' " +
+            "and not exists (select es.id from ExperimentStepEntity es where es.experiment = exp " +
+            "and es.status = 'READY' or es.status = 'FAILED') order by exp.creationDate")
+    List<Long> findExperimentsToFinish();
 
     /**
      * Gets experiments page with specified ids.

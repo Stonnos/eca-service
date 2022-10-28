@@ -15,30 +15,29 @@ import com.ecaservice.server.mapping.ExperimentMapper;
 import com.ecaservice.server.model.MsgProperties;
 import com.ecaservice.server.model.entity.Channel;
 import com.ecaservice.server.model.entity.Experiment;
+import com.ecaservice.server.model.entity.ExperimentStep;
+import com.ecaservice.server.model.entity.ExperimentStepEntity;
+import com.ecaservice.server.model.entity.ExperimentStepStatus;
 import com.ecaservice.server.model.entity.FilterTemplateType;
 import com.ecaservice.server.model.entity.RequestStatus;
-import com.ecaservice.server.model.experiment.InitializationParams;
 import com.ecaservice.server.model.projections.RequestStatusStatistics;
 import com.ecaservice.server.repository.ExperimentRepository;
+import com.ecaservice.server.repository.ExperimentStepRepository;
 import com.ecaservice.server.service.PageRequestService;
-import com.ecaservice.server.service.evaluation.CalculationExecutorService;
 import com.ecaservice.server.service.filter.dictionary.FilterDictionaries;
 import com.ecaservice.web.dto.model.ChartDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
 import com.ecaservice.web.dto.model.S3ContentResponseDto;
-import eca.dataminer.AbstractExperiment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
-import org.springframework.util.StopWatch;
-import weka.core.Instances;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Tuple;
@@ -50,10 +49,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
-import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.ecaservice.common.web.util.LogHelper.EV_REQUEST_ID;
 import static com.ecaservice.common.web.util.LogHelper.TX_ID;
@@ -76,15 +74,17 @@ import static com.ecaservice.server.util.StatisticsHelper.calculateRequestStatus
 public class ExperimentService implements PageRequestService<Experiment> {
 
     private static final String EXPERIMENT_TRAIN_DATA_PATH_FORMAT = "experiment-train-data-%s.model";
-    private static final String EXPERIMENT_PATH_FORMAT = "experiment-%s.model";
+
+    private static final List<ExperimentStepStatus> EXPERIMENT_STEP_STATUSES_TO_PROCESS =
+            List.of(ExperimentStepStatus.READY, ExperimentStepStatus.FAILED);
 
     private final ExperimentRepository experimentRepository;
-    private final CalculationExecutorService executorService;
+    private final ExperimentStepRepository experimentStepRepository;
     private final ExperimentMapper experimentMapper;
+    private final ExperimentStepProcessor experimentStepProcessor;
     private final ObjectStorageService objectStorageService;
     private final CrossValidationConfig crossValidationConfig;
     private final ExperimentConfig experimentConfig;
-    private final ExperimentProcessorService experimentProcessorService;
     private final EntityManager entityManager;
     private final AppProperties appProperties;
     private final FilterService filterService;
@@ -122,59 +122,43 @@ public class ExperimentService implements PageRequestService<Experiment> {
     }
 
     /**
-     * Processes new experiment. Experiments results are saved into file after processing.
+     * Starts experiment.
      *
-     * @param experiment - experiment to process
-     * @return experiment history
+     * @param experiment - experiment entity
      */
-    public AbstractExperiment<?> processExperiment(final Experiment experiment) {
-        log.info("Starting to built experiment [{}].", experiment.getRequestId());
-        try {
-            if (StringUtils.isEmpty(experiment.getTrainingDataPath())) {
-                throw new ExperimentException(String.format("Training data path is not specified for experiment [%s]!",
-                        experiment.getRequestId()));
-            }
+    @Transactional
+    public void startExperiment(Experiment experiment) {
+        log.info("Starting to set in progress status for experiment [{}]", experiment.getRequestId());
+        createAndSaveSteps(experiment);
+        experiment.setRequestStatus(RequestStatus.IN_PROGRESS);
+        experiment.setStartDate(LocalDateTime.now());
+        experimentRepository.save(experiment);
+        log.info("Experiment [{}] in progress status has been set", experiment.getRequestId());
+    }
 
-            StopWatch stopWatch =
-                    new StopWatch(String.format("Stop watching for experiment [%s]", experiment.getRequestId()));
-            stopWatch.start(String.format("Loading data for experiment [%s]", experiment.getRequestId()));
-            Instances data = objectStorageService.getObject(experiment.getTrainingDataPath(), Instances.class);
-            data.setClassIndex(experiment.getClassIndex());
-            stopWatch.stop();
+    /**
+     * Processes experiment.
+     *
+     * @param experiment - experiment entity
+     */
+    public void processExperiment(Experiment experiment) {
+        log.info("Starting to process experiment [{}]", experiment.getRequestId());
+        experimentStepProcessor.processExperimentSteps(experiment);
+        log.info("Experiment [{}] has been processed", experiment.getRequestId());
+    }
 
-            final InitializationParams initializationParams =
-                    new InitializationParams(data, experiment.getEvaluationMethod());
-            stopWatch.start(String.format("Experiment [%s] processing", experiment.getRequestId()));
-            Callable<AbstractExperiment<?>> callable = () ->
-                    experimentProcessorService.processExperimentHistory(experiment, initializationParams);
-            AbstractExperiment<?> abstractExperiment =
-                    executorService.execute(callable, experimentConfig.getTimeout(), TimeUnit.HOURS);
-            stopWatch.stop();
-
-            stopWatch.start(String.format("Experiment [%s] saving", experiment.getRequestId()));
-            String experimentPath = String.format(EXPERIMENT_PATH_FORMAT, experiment.getRequestId());
-            objectStorageService.uploadObject(abstractExperiment, experimentPath);
-            stopWatch.stop();
-
-            experiment.setExperimentPath(experimentPath);
-            String experimentDownloadUrl = getExperimentDownloadPresignedUrl(experimentPath);
-            experiment.setExperimentDownloadUrl(experimentDownloadUrl);
-            experiment.setRequestStatus(RequestStatus.FINISHED);
-            log.info("Experiment [{}] has been successfully built!", experiment.getRequestId());
-            log.info(stopWatch.prettyPrint());
-            return abstractExperiment;
-        } catch (TimeoutException ex) {
-            log.warn("There was a timeout while experiment [{}] built.", experiment.getRequestId());
-            experiment.setRequestStatus(RequestStatus.TIMEOUT);
-        } catch (Exception ex) {
-            log.error("There was an error while experiment [{}] built: {}", experiment.getRequestId(), ex);
-            experiment.setRequestStatus(RequestStatus.ERROR);
-            experiment.setErrorMessage(ex.getMessage());
-        } finally {
-            experiment.setEndDate(LocalDateTime.now());
-            experimentRepository.save(experiment);
-        }
-        return null;
+    /**
+     * Finishes experiment.
+     *
+     * @param experiment - experiment entity
+     */
+    public void finishExperiment(Experiment experiment) {
+        log.info("Starting to set experiment [{}] final status", experiment.getRequestId());
+        RequestStatus requestStatus = calculateFinalStatus(experiment);
+        experiment.setRequestStatus(requestStatus);
+        experiment.setEndDate(LocalDateTime.now());
+        experimentRepository.save(experiment);
+        log.info("Final status [{}] has been set for experiment [{}]", requestStatus, experiment.getRequestId());
     }
 
     /**
@@ -270,6 +254,18 @@ public class ExperimentService implements PageRequestService<Experiment> {
         return chartData;
     }
 
+    private CriteriaQuery<Tuple> buildExperimentStatisticsDataCriteria(LocalDate createdDateFrom,
+                                                                       LocalDate createdDateTo) {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        return buildGroupByStatisticsQuery(builder, Experiment.class, root -> root.get(EXPERIMENT_TYPE), CREATION_DATE,
+                createdDateFrom, createdDateTo);
+    }
+
+    private ChartDto populateExperimentsChartData(Map<String, Long> statisticsMap) {
+        var experimentTypesDictionary = filterService.getFilterDictionary(FilterDictionaries.EXPERIMENT_TYPE);
+        return calculateChartData(experimentTypesDictionary, statisticsMap);
+    }
+
     /**
      * Gets experiment results content url.
      *
@@ -292,26 +288,42 @@ public class ExperimentService implements PageRequestService<Experiment> {
                 .build();
     }
 
-    private CriteriaQuery<Tuple> buildExperimentStatisticsDataCriteria(LocalDate createdDateFrom,
-                                                                       LocalDate createdDateTo) {
-        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        return buildGroupByStatisticsQuery(builder, Experiment.class, root -> root.get(EXPERIMENT_TYPE), CREATION_DATE,
-                createdDateFrom, createdDateTo);
+    private void createAndSaveSteps(Experiment experiment) {
+        var steps = Stream.of(ExperimentStep.values())
+                .map(experimentStep -> {
+                    var experimentStepEntity = new ExperimentStepEntity();
+                    experimentStepEntity.setStep(experimentStep);
+                    experimentStepEntity.setStepOrder(experimentStep.ordinal());
+                    experimentStepEntity.setStatus(ExperimentStepStatus.READY);
+                    experimentStepEntity.setExperiment(experiment);
+                    experimentStepEntity.setCreated(LocalDateTime.now());
+                    return experimentStepEntity;
+                })
+                .collect(Collectors.toList());
+        experimentStepRepository.saveAll(steps);
+        var stepNames = steps.stream().map(ExperimentStepEntity::getStep).collect(Collectors.toList());
+        log.info("{} steps has been saved for experiment [{}]", stepNames, experiment.getRequestId());
     }
 
-    private ChartDto populateExperimentsChartData(Map<String, Long> statisticsMap) {
-        var experimentTypesDictionary = filterService.getFilterDictionary(FilterDictionaries.EXPERIMENT_TYPE);
-        return calculateChartData(experimentTypesDictionary, statisticsMap);
-    }
-
-    private String getExperimentDownloadPresignedUrl(String experimentPath) {
-        return objectStorageService.getObjectPresignedProxyUrl(
-                GetPresignedUrlObject.builder()
-                        .objectPath(experimentPath)
-                        .expirationTime(experimentConfig.getExperimentDownloadUrlExpirationDays())
-                        .expirationTimeUnit(TimeUnit.DAYS)
-                        .build()
-        );
+    private RequestStatus calculateFinalStatus(Experiment experiment) {
+        var stepStatuses = experimentStepRepository.getStepStatuses(experiment);
+        if (CollectionUtils.isEmpty(stepStatuses)) {
+            throw new ExperimentException(
+                    String.format("Got empty steps for experiment [%s]", experiment.getRequestId()));
+        }
+        if (stepStatuses.stream().anyMatch(EXPERIMENT_STEP_STATUSES_TO_PROCESS::contains)) {
+            String error =
+                    String.format("Can't calculate experiment [%s] final status. Steps contains one of %s status",
+                            experiment.getRequestId(), EXPERIMENT_STEP_STATUSES_TO_PROCESS);
+            throw new ExperimentException(error);
+        }
+        if (stepStatuses.stream().anyMatch(ExperimentStepStatus.ERROR::equals)) {
+            return RequestStatus.ERROR;
+        }
+        if (stepStatuses.stream().anyMatch(ExperimentStepStatus.TIMEOUT::equals)) {
+            return RequestStatus.TIMEOUT;
+        }
+        return RequestStatus.FINISHED;
     }
 
     private void setMessageProperties(Experiment experiment, MsgProperties msgProperties) {

@@ -302,7 +302,7 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |experiment_path              |varchar(255)     |-|-|-                                 |Путь к объекту в S3 с результатами эксперимента
 |error_message                |text             |-|-|-                                 |Текст ошибки
 |deleted_date                 |timestamp        |-|-|-                                 |Дата удаления файлов с результатами эксперимента
-|experiment_download_url      |varchar(1024)    |-|-|-                                |Ссылка для скачивания результатов эксперимента из S3
+|experiment_download_url      |varchar(1024)    |-|-|-                                 |Ссылка для скачивания результатов эксперимента из S3
 |channel_type                 |varchar(255)     |-|+|-                                 |Канал поступления заявки (QUEUE или WEB)
 |reply_to                     |varchar(255)     |-|-|-                                 |Название очереди для отправки ответных сообщений в MQ
 |correlation_id               |varchar(255)     |-|-|-                                 |Значение для корреляции запрос/ответ
@@ -317,6 +317,25 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |finished                     |boolean          |-|-|-                                     |Флаг завершения построения эксперимента
 |experiment_id                |bigint           |-|+|fk_experiment_progress_experiment_id  |Внешний ключ, ID эксперимента
 |===
+
+==== Таблица 3.{counter:db-table-id} - 'experiment_step' - содержит данные о шагах построения экспериментов
+[cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
+|===
+|Название колонки|Тип|Unique|Not NULL|Индекс|Описание
+|id                           |bigint           |+|+|+                                     |Идентификатор записи (первичный ключ)
+|step                         |varchar(255)     |-|+|-                                     |Название шага (EXPERIMENT_PROCESSING, UPLOAD_EXPERIMENT_MODEL, GET_EXPERIMENT_DOWNLOAD_URL, CREATE_ERS_REPORT)
+|status                       |varchar(255)     |-|+|-                                     |Статус выполнения шага (READY, COMPLETED, FAILED, CANCELED, TIMEOUT, ERROR)
+|step_order                   |integer          |-|+|-                                     |Порядок выполнения шага
+|created                      |timestamp        |-|+|-                                     |Дата создания шага
+|started                      |timestamp        |-|-|-                                     |Дата последнего запуска шага
+|completed                    |timestamp        |-|-|-                                     |Дата завершения выполнения шага
+|error_message                |text             |-|-|-                                     |Текст ошибки
+|num_failed_attempts          |integer          |-|-|-                                     |Число неудачных попыток выполнения шага
+|experiment_id                |bigint           |-|+|fk_experiment_step_experiment_id      |Внешний ключ, ID эксперимента
+|===
+
+Таблица также содержит уникальный составной индекс *add_experiment_step_experiment_id_step_unique_idx* на поля (experiment_id, step)
+Таблица также содержит уникальный составной индекс *add_experiment_step_experiment_id_step_order_unique_idx* на поля (experiment_id, step_order)
 
 ==== Таблица 3.{counter:db-table-id} - 'experiment_results' - содержит мета данные о результатах экспериментов
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]

@@ -1,6 +1,6 @@
 package com.ecaservice.server.event.listener;
 
-import com.ecaservice.server.event.model.ExperimentFinishedEvent;
+import com.ecaservice.server.event.model.ExperimentErsReportEvent;
 import com.ecaservice.server.model.entity.ExperimentResultsEntity;
 import com.ecaservice.server.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.server.service.ers.ErsService;
@@ -13,14 +13,14 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
- * Event listener that occurs after experiment is successfully finished.
+ * Event listener for sending experiment results to ERS.
  *
  * @author Roman Batygin
  */
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ExperimentFinishedEventListener {
+public class ExperimentErsReportEventListener {
 
     private final ExperimentResultsService experimentResultsService;
     private final ErsService ersService;
@@ -28,18 +28,18 @@ public class ExperimentFinishedEventListener {
     /**
      * Handles event to sent experiment results to ERS.
      *
-     * @param experimentFinishedEvent - experiment finished event
+     * @param experimentErsReportEvent - experiment finished event
      */
     @EventListener
-    public void handleExperimentFinishedEvent(ExperimentFinishedEvent experimentFinishedEvent) {
+    public void handleEvent(ExperimentErsReportEvent experimentErsReportEvent) {
         List<ExperimentResultsEntity> experimentResultsEntityList =
-                experimentResultsService.saveExperimentResultsToErsSent(experimentFinishedEvent.getExperiment(),
-                        experimentFinishedEvent.getExperimentHistory());
+                experimentResultsService.saveExperimentResultsToErsSent(experimentErsReportEvent.getExperiment(),
+                        experimentErsReportEvent.getExperimentHistory());
         experimentResultsEntityList.forEach(experimentResultsEntity -> {
             log.info("Starting to sent experiment [{}] results index [{}] to ERS",
-                    experimentFinishedEvent.getExperiment().getRequestId(), experimentResultsEntity.getResultsIndex());
+                    experimentErsReportEvent.getExperiment().getRequestId(), experimentResultsEntity.getResultsIndex());
             ersService.sentExperimentResults(experimentResultsEntity,
-                    experimentFinishedEvent.getExperimentHistory(), ExperimentResultsRequestSource.SYSTEM);
+                    experimentErsReportEvent.getExperimentHistory(), ExperimentResultsRequestSource.SYSTEM);
         });
     }
 }
