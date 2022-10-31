@@ -10,7 +10,6 @@ import lombok.Data;
 import weka.core.Instances;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -28,7 +27,6 @@ public class ExperimentRequest implements EcaRequest {
     /**
      * Email
      */
-    @NotBlank
     @Email(regexp = EMAIL_REGEX)
     @Size(max = EMAIL_MAX_SIZE)
     private String email;
