@@ -16,7 +16,6 @@ import javax.validation.constraints.Size;
 
 import static com.ecaservice.base.model.util.FieldConstraints.EMAIL_MAX_SIZE;
 import static com.ecaservice.base.model.util.FieldConstraints.EMAIL_REGEX;
-import static com.ecaservice.base.model.util.FieldConstraints.FIRST_NAME_MAX_SIZE;
 
 /**
  * Experiment request transport model.
@@ -25,13 +24,6 @@ import static com.ecaservice.base.model.util.FieldConstraints.FIRST_NAME_MAX_SIZ
  */
 @Data
 public class ExperimentRequest implements EcaRequest {
-
-    /**
-     * First name
-     */
-    @NotBlank
-    @Size(max = FIRST_NAME_MAX_SIZE)
-    private String firstName;
 
     /**
      * Email

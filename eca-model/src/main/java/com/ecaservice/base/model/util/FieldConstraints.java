@@ -11,11 +11,6 @@ import lombok.experimental.UtilityClass;
 public class FieldConstraints {
 
     /**
-     * First name max size
-     */
-    public static final int FIRST_NAME_MAX_SIZE = 30;
-
-    /**
      * Email max size
      */
     public static final int EMAIL_MAX_SIZE = 50;
