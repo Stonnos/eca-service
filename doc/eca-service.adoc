@@ -296,8 +296,7 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |seed                         |integer          |-|-|-                                 |Начальное значение (seed) для генератор псевдослучайных чисел
 |class_index                  |integer          |-|-|-                                 |Индекс атрибута класса
 |experiment_type              |varchar(255)     |-|+|-                                 |Тип эксперимента
-|firstName                    |varchar(255)     |-|+|-                                 |Имя пользователя
-|email                        |varchar(255)     |-|+|-                                 |Email пользователя для отправки результатов эксперимента
+|email                        |varchar(255)     |-|-|-                                 |Email пользователя для отправки результатов эксперимента
 |training_data_path           |varchar(255)     |-|-|-                                 |Путь к объекту в S3 с обучающей выборкой
 |experiment_path              |varchar(255)     |-|-|-                                 |Путь к объекту в S3 с результатами эксперимента
 |error_message                |text             |-|-|-                                 |Текст ошибки
