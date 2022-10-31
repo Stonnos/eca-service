@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 /**
  * Notification service.
@@ -30,6 +31,8 @@ public class NotificationService {
     public void notifyByEmail(Experiment experiment) {
         log.info("Starting to send email request for experiment [{}] with status [{}].", experiment.getRequestId(),
                 experiment.getRequestStatus());
+        Assert.notNull(experiment.getEmail(),
+                String.format("Experiment [%s] email must be not empty", experiment.getEmail()));
         EmailRequest emailRequest = experiment.getRequestStatus().handle(statusTemplateVisitor, experiment);
         EmailEvent emailEvent = new EmailEvent(this, emailRequest);
         applicationEventPublisher.publishEvent(emailEvent);
