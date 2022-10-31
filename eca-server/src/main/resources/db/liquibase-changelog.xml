@@ -69,4 +69,5 @@
     <include file="db/changelog/v58-add-experiment-download-url-column.xml"/>
     <include file="db/changelog/v59-insert-experiment-relation-name-in-filter-templates.xml"/>
     <include file="db/changelog/v60-create-experiment-step-table.xml"/>
+    <include file="db/changelog/v61-drop-experiment-first-name-column.xml"/>
 </databaseChangeLog>
