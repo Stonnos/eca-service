@@ -1,0 +1,25 @@
+<?xml version="1.1" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v18-remove-first-name-template-parameter.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="delete_first_name_from_templates_parameters" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="5">select count(*) from templates_parameters where param_id = (select id from template_parameter where parameter_name = 'firstName')</sqlCheck>
+        </preConditions>
+        <delete tableName="templates_parameters">
+            <where>param_id = (select id from template_parameter where parameter_name = 'firstName')</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="delete_first_name_template_parameter" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">select count(*) from template_parameter where parameter_name = 'firstName'</sqlCheck>
+        </preConditions>
+        <delete tableName="template_parameter">
+            <where>parameter_name = 'firstName'</where>
+        </delete>
+    </changeSet>
+</databaseChangeLog>
