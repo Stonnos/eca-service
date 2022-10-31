@@ -239,7 +239,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
         pageRequestDto.getFilters().add(new FilterRequestDto(Experiment_.REQUEST_STATUS,
                 Collections.singletonList(RequestStatus.FINISHED.name()), MatchMode.EQUALS));
         when(filterService.getGlobalFilterFields(FilterTemplateType.EXPERIMENT.name())).thenReturn(
-                Arrays.asList(Experiment_.EMAIL, Experiment_.FIRST_NAME, Experiment_.REQUEST_ID));
+                Arrays.asList(Experiment_.EMAIL, Experiment_.REQUEST_ID));
         Page<Experiment> evaluationLogPage = experimentService.getNextPage(pageRequestDto);
         assertThat(evaluationLogPage).isNotNull();
         assertThat(evaluationLogPage.getTotalElements()).isOne();
