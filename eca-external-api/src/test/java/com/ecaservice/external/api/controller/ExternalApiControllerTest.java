@@ -47,7 +47,7 @@ class ExternalApiControllerTest extends AbstractControllerTest {
 
     private static final String BASE_URL = "/";
     private static final String UPLOAD_DATA_URL = BASE_URL + "uploads-train-data";
-    private static final String EVALUATION_RESULTS_STATUS_URL = BASE_URL + "evaluation-status/{requestId}";
+    private static final String EVALUATION_RESULTS_URL = BASE_URL + "evaluation-results/{requestId}";
 
     @MockBean
     private ExternalApiConfig externalApiConfig;
@@ -100,18 +100,18 @@ class ExternalApiControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void testGetEvaluationResultsStatusUnauthorized() throws Exception {
-        mockMvc.perform(get(EVALUATION_RESULTS_STATUS_URL, UUID.randomUUID().toString()))
+    void testGetEvaluationResultsUnauthorized() throws Exception {
+        mockMvc.perform(get(EVALUATION_RESULTS_URL, UUID.randomUUID().toString()))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    void testGetEvaluationResultsStatusSuccess() throws Exception {
+    void testGetEvaluationResultsSuccess() throws Exception {
         String correlationId = UUID.randomUUID().toString();
         var evaluationResponseDto = createEvaluationResponseDto(correlationId, EvaluationStatus.IN_PROGRESS);
         var expectedResponseDto = buildResponse(ResponseCode.SUCCESS, evaluationResponseDto);
         when(evaluationResponseService.processResponse(correlationId)).thenReturn(evaluationResponseDto);
-        mockMvc.perform(get(EVALUATION_RESULTS_STATUS_URL, correlationId)
+        mockMvc.perform(get(EVALUATION_RESULTS_URL, correlationId)
                 .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))

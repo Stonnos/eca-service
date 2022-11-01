@@ -387,11 +387,11 @@ public class ExternalApiController {
                     )
             }
     )
-    @GetMapping(value = "/evaluation-status/{requestId}")
-    public ResponseDto<EvaluationResultsResponseDto> getEvaluationResponseStatus(
+    @GetMapping(value = "/evaluation-results/{requestId}")
+    public ResponseDto<EvaluationResultsResponseDto> getEvaluationResults(
             @Parameter(description = "Request id", required = true)
             @Size(min = MIN_LENGTH_1, max = MAX_LENGTH_255) @PathVariable String requestId) {
-        log.debug("Request to get evaluation [{}] response status", requestId);
+        log.debug("Request to get evaluation [{}] results", requestId);
         var evaluationResponseDto = evaluationResponseService.processResponse(requestId);
         var responseDto = buildResponse(ResponseCode.SUCCESS, evaluationResponseDto);
         log.debug("Got evaluation [{}] response: {}", requestId, responseDto);
