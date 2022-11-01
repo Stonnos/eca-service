@@ -1,10 +1,12 @@
 package com.ecaservice.external.api.service;
 
 import com.ecaservice.base.model.EvaluationRequest;
+import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.base.model.InstancesRequest;
 import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.external.api.aspect.RequestExecution;
 import com.ecaservice.external.api.dto.EvaluationRequestDto;
+import com.ecaservice.external.api.dto.ExperimentRequestDto;
 import com.ecaservice.external.api.dto.InstancesRequestDto;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
@@ -70,6 +72,26 @@ public class EvaluationApiService {
         ecaRequestRepository.save(ecaRequestEntity);
         log.info("Optimal classifier evaluation request [{}] has been sent to eca-server",
                 ecaRequestEntity.getCorrelationId());
+    }
+
+    /**
+     * Processes experiment request.
+     *
+     * @param ecaRequestEntity     - eca request entity
+     * @param experimentRequestDto - experiment request dto.
+     */
+    @RequestExecution
+    public void processRequest(EcaRequestEntity ecaRequestEntity, ExperimentRequestDto experimentRequestDto) {
+        log.info("Starting to process experiment request [{}]", ecaRequestEntity.getCorrelationId());
+        Instances instances =
+                loadInstances(experimentRequestDto.getTrainDataUrl(), ecaRequestEntity.getCorrelationId());
+        ExperimentRequest experimentRequest = new ExperimentRequest();
+        experimentRequest.setData(instances);
+        rabbitSender.sendExperimentRequest(experimentRequest, ecaRequestEntity.getCorrelationId());
+        ecaRequestEntity.setRequestStage(RequestStageType.REQUEST_SENT);
+        ecaRequestEntity.setRequestDate(LocalDateTime.now());
+        ecaRequestRepository.save(ecaRequestEntity);
+        log.info("Experiment request [{}] has been sent to eca-server", ecaRequestEntity.getCorrelationId());
     }
 
     private EvaluationRequest createEvaluationRequest(EcaRequestEntity ecaRequestEntity,

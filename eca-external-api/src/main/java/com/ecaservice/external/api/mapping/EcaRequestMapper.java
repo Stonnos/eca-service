@@ -1,7 +1,9 @@
 package com.ecaservice.external.api.mapping;
 
 import com.ecaservice.external.api.dto.EvaluationRequestDto;
+import com.ecaservice.external.api.dto.ExperimentRequestDto;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
+import com.ecaservice.external.api.entity.ExperimentRequestEntity;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
@@ -23,6 +25,14 @@ public interface EcaRequestMapper {
      * @return evaluation request entity
      */
     EvaluationRequestEntity map(EvaluationRequestDto evaluationRequestDto);
+
+    /**
+     * Maps experiment request dto to entity model.
+     *
+     * @param experimentRequestDto - experiment request dto
+     * @return experiment request entity
+     */
+    ExperimentRequestEntity map(ExperimentRequestDto experimentRequestDto);
 
     /**
      * Maps classifier options.

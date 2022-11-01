@@ -2,10 +2,12 @@ package com.ecaservice.external.api.service;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.external.api.dto.EvaluationRequestDto;
+import com.ecaservice.external.api.dto.ExperimentRequestDto;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.mapping.EcaRequestMapper;
+import com.ecaservice.external.api.repository.EcaRequestRepository;
 import com.ecaservice.external.api.repository.EvaluationRequestRepository;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,7 @@ public class EcaRequestService {
 
     private final EcaRequestMapper ecaRequestMapper;
     private final ObjectStorageService objectStorageService;
+    private final EcaRequestRepository ecaRequestRepository;
     private final EvaluationRequestRepository evaluationRequestRepository;
 
     /**
@@ -41,7 +44,7 @@ public class EcaRequestService {
         log.info("Starting to save evaluation request for correlation id [{}]", correlationId);
         var ecaRequestEntity = ecaRequestMapper.map(evaluationRequestDto);
         initializeRequest(ecaRequestEntity, correlationId);
-        evaluationRequestRepository.save(ecaRequestEntity);
+        ecaRequestRepository.save(ecaRequestEntity);
         log.info("Evaluation request has been saved for correlation id [{}]", correlationId);
         return ecaRequestEntity;
     }
@@ -57,8 +60,26 @@ public class EcaRequestService {
         var ecaRequestEntity = new EvaluationRequestEntity();
         ecaRequestEntity.setUseOptimalClassifierOptions(true);
         initializeRequest(ecaRequestEntity, correlationId);
-        evaluationRequestRepository.save(ecaRequestEntity);
+        ecaRequestRepository.save(ecaRequestEntity);
         log.info("Evaluation request has been saved for correlation id [{}]", correlationId);
+        return ecaRequestEntity;
+    }
+
+    /**
+     * Creates and save evaluation request entity.
+     *
+     * @param experimentRequestDto - evaluation request dto
+     * @return eca request entity
+     */
+    public EcaRequestEntity createAndSaveExperimentRequestEntity(ExperimentRequestDto experimentRequestDto) {
+        String correlationId = UUID.randomUUID().toString();
+        log.info("Starting to save experiment [{}] request for correlation id [{}]",
+                experimentRequestDto.getExperimentType(), correlationId);
+        var ecaRequestEntity = ecaRequestMapper.map(experimentRequestDto);
+        initializeRequest(ecaRequestEntity, correlationId);
+        ecaRequestRepository.save(ecaRequestEntity);
+        log.info("Experiment [{}] request has been saved for correlation id [{}]",
+                experimentRequestDto.getExperimentType(),correlationId);
         return ecaRequestEntity;
     }
 

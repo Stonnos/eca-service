@@ -62,8 +62,10 @@ classifiers-options:
 
 queue:
   evaluationRequestQueue: evaluation-request-queue
+  experimentRequestQueue: experiment-request-queue
   optimalEvaluationRequestQueue: evaluation-optimizer-request-queue
   evaluationResponseQueue: external-api-evaluation-response-queue
+  experimentResponseQueue: external-api-experiment-response-queue
 
 ## Swagger properties
 open-api:

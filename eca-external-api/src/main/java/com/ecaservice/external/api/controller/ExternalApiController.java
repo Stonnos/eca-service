@@ -1,15 +1,17 @@
 package com.ecaservice.external.api.controller;
 
 import com.ecaservice.external.api.config.ExternalApiConfig;
-import com.ecaservice.external.api.dto.SimpleEvaluationResponseDto;
 import com.ecaservice.external.api.dto.EvaluationRequestDto;
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
 import com.ecaservice.external.api.dto.EvaluationResponsePayloadDto;
+import com.ecaservice.external.api.dto.ExperimentRequestDto;
 import com.ecaservice.external.api.dto.InstancesDto;
 import com.ecaservice.external.api.dto.InstancesRequestDto;
 import com.ecaservice.external.api.dto.InstancesResponseDto;
 import com.ecaservice.external.api.dto.ResponseCode;
 import com.ecaservice.external.api.dto.ResponseDto;
+import com.ecaservice.external.api.dto.SimpleEvaluationResponseDto;
+import com.ecaservice.external.api.dto.SimpleEvaluationResponsePayloadDto;
 import com.ecaservice.external.api.dto.ValidationErrorResponsePayloadDto;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.service.EcaRequestService;
@@ -269,6 +271,72 @@ public class ExternalApiController {
                 instancesRequestDto.getTrainDataUrl());
         var ecaRequestEntity = ecaRequestService.createAndSaveEvaluationOptimizerRequestEntity();
         return evaluateModel(evaluationApiService::processRequest, ecaRequestEntity, instancesRequestDto);
+    }
+
+    /**
+     * Creates experiment request.
+     *
+     * @param experimentRequestDto - evaluation request dto.
+     * @return evaluation response mono object
+     */
+    @PreAuthorize("#oauth2.hasScope('external-api')")
+    @Operation(
+            description = "Creates experiment request",
+            summary = "Creates experiment request",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_EXTERNAL_API),
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
+                    @Content(examples = {
+                            @ExampleObject(
+                                    name = "ExperimentRequest",
+                                    ref = "#/components/examples/ExperimentRequest"
+                            )
+                    })
+            }),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "SimpleEvaluationResponse",
+                                                    ref = "#/components/examples/SimpleEvaluationResponse"
+                                            ),
+                                    },
+                                    schema = @Schema(implementation = SimpleEvaluationResponsePayloadDto.class)
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "ExperimentBadRequestResponse",
+                                                    ref = "#/components/examples/ExperimentBadRequestResponse"
+                                            ),
+                                    },
+                                    schema = @Schema(implementation = ValidationErrorResponsePayloadDto.class)
+                            )
+                    )
+            }
+    )
+    @PostMapping(value = "/experiment-request")
+    public Mono<ResponseDto<SimpleEvaluationResponseDto>> createExperimentRequest(
+            @Valid @RequestBody ExperimentRequestDto experimentRequestDto) {
+        log.info("Received experiment request [{}], evaluation method [{}]", experimentRequestDto.getExperimentType(),
+                experimentRequestDto.getEvaluationMethod());
+        var ecaRequestEntity = ecaRequestService.createAndSaveExperimentRequestEntity(experimentRequestDto);
+        return evaluateModel(evaluationApiService::processRequest, ecaRequestEntity, experimentRequestDto);
     }
 
     /**
