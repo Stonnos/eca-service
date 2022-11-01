@@ -3,7 +3,9 @@ package com.ecaservice.external.api.mq.listener;
 import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
+import com.ecaservice.external.api.repository.EcaRequestRepository;
 import com.ecaservice.external.api.repository.EvaluationRequestRepository;
+import com.ecaservice.external.api.repository.ExperimentRequestRepository;
 import com.ecaservice.external.api.service.EcaResponseHandler;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,6 +36,10 @@ class EcaResponseListenerTest {
 
     @Mock
     private EcaResponseHandler ecaResponseHandler;
+    @Mock
+    private EcaRequestRepository ecaRequestRepository;
+    @Mock
+    private ExperimentRequestRepository experimentRequestRepository;
     @Mock
     private EvaluationRequestRepository evaluationRequestRepository;
 

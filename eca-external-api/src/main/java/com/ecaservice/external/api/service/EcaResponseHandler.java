@@ -1,11 +1,15 @@
 package com.ecaservice.external.api.service;
 
+import com.ecaservice.base.model.EcaResponse;
 import com.ecaservice.base.model.EvaluationResponse;
+import com.ecaservice.base.model.ExperimentResponse;
 import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.classifier.options.config.ClassifiersOptionsConfig;
 import com.ecaservice.external.api.config.ExternalApiConfig;
+import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
+import com.ecaservice.external.api.entity.ExperimentRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.repository.EcaRequestRepository;
 import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
@@ -46,23 +50,18 @@ public class EcaResponseHandler {
     private final EcaRequestRepository ecaRequestRepository;
 
     /**
-     * Handles response from eca - server.
+     * Handles evaluation response from eca - server.
      *
      * @param evaluationRequestEntity - evaluation request entity
      * @param evaluationResponse      - evaluation response
      */
     public void handleResponse(EvaluationRequestEntity evaluationRequestEntity,
                                EvaluationResponse evaluationResponse) {
-        log.info("Starting to process response with correlation id [{}]", evaluationRequestEntity.getCorrelationId());
+        log.info("Starting to process evaluation response with correlation id [{}]",
+                evaluationRequestEntity.getCorrelationId());
         try {
             if (!TechnicalStatus.SUCCESS.equals(evaluationResponse.getStatus())) {
-                evaluationRequestEntity.setRequestStage(RequestStageType.ERROR);
-                Optional.ofNullable(evaluationResponse.getErrors())
-                        .map(messageErrors -> messageErrors.iterator().next())
-                        .ifPresent(error -> {
-                            evaluationRequestEntity.setErrorCode(error.getCode());
-                            evaluationRequestEntity.setErrorMessage(error.getMessage());
-                        });
+                handleError(evaluationRequestEntity, evaluationResponse);
             } else {
                 EvaluationResults evaluationResults = evaluationResponse.getEvaluationResults();
                 if (evaluationRequestEntity.isUseOptimalClassifierOptions()) {
@@ -73,17 +72,60 @@ public class EcaResponseHandler {
                 generateClassifierModelDownloadUrl(evaluationRequestEntity);
                 evaluationRequestEntity.setRequestStage(RequestStageType.COMPLETED);
             }
-            log.info("Response with correlation id [{}] has been processed",
+            log.info("Evaluation response with correlation id [{}] has been processed",
                     evaluationRequestEntity.getCorrelationId());
         } catch (Exception ex) {
-            log.error("There was an error while response [{}] handling: {}", evaluationRequestEntity.getCorrelationId(),
-                    ex.getMessage(), ex);
+            log.error("There was an error while handle evaluation response [{}]: {}",
+                    evaluationRequestEntity.getCorrelationId(), ex.getMessage(), ex);
             evaluationRequestEntity.setRequestStage(RequestStageType.ERROR);
             evaluationRequestEntity.setErrorMessage(ex.getMessage());
         } finally {
             evaluationRequestEntity.setEndDate(LocalDateTime.now());
             ecaRequestRepository.save(evaluationRequestEntity);
         }
+    }
+
+    /**
+     * Handles experiment response from eca - server.
+     *
+     * @param experimentRequestEntity - evaluation request entity
+     * @param experimentResponse      - evaluation response
+     */
+    public void handleResponse(ExperimentRequestEntity experimentRequestEntity,
+                               ExperimentResponse experimentResponse) {
+        log.info("Starting to process experiment response with correlation id [{}]",
+                experimentRequestEntity.getCorrelationId());
+        try {
+            if (!TechnicalStatus.SUCCESS.equals(experimentResponse.getStatus())) {
+                handleError(experimentRequestEntity, experimentResponse);
+            } else {
+                Assert.notNull(experimentResponse.getDownloadUrl(),
+                        String.format("Expected not experiment download url for correlation id [%s]",
+                                experimentRequestEntity.getCorrelationId()));
+                experimentRequestEntity.setExperimentDownloadUrl(experimentResponse.getDownloadUrl());
+                experimentRequestEntity.setRequestStage(RequestStageType.COMPLETED);
+            }
+            log.info("Experiment response with correlation id [{}] has been processed",
+                    experimentRequestEntity.getCorrelationId());
+        } catch (Exception ex) {
+            log.error("There was an error while handle experiment response [{}]: {}",
+                    experimentRequestEntity.getCorrelationId(), ex.getMessage(), ex);
+            experimentRequestEntity.setRequestStage(RequestStageType.ERROR);
+            experimentRequestEntity.setErrorMessage(ex.getMessage());
+        } finally {
+            experimentRequestEntity.setEndDate(LocalDateTime.now());
+            ecaRequestRepository.save(experimentRequestEntity);
+        }
+    }
+
+    private void handleError(EcaRequestEntity ecaRequestEntity, EcaResponse ecaResponse) {
+        ecaRequestEntity.setRequestStage(RequestStageType.ERROR);
+        Optional.ofNullable(ecaResponse.getErrors())
+                .map(messageErrors -> messageErrors.iterator().next())
+                .ifPresent(error -> {
+                    ecaRequestEntity.setErrorCode(error.getCode());
+                    ecaRequestEntity.setErrorMessage(error.getMessage());
+                });
     }
 
     private void populateEvaluationOptions(EvaluationResults evaluationResults,
