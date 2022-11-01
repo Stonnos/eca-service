@@ -50,7 +50,7 @@ class EvaluationResponseServiceTest extends AbstractJpaTest {
                 createEvaluationRequestEntity(RequestStageType.ERROR, LocalDateTime.now(), LocalDateTime.now());
         evaluationRequestRepository.save(evaluationRequestEntity);
         var evaluationResponseDto =
-                evaluationResponseService.processResponse(evaluationRequestEntity.getCorrelationId());
+                evaluationResponseService.processEvaluationResultsResponse(evaluationRequestEntity.getCorrelationId());
         assertThat(evaluationResponseDto).isNotNull();
         assertThat(evaluationResponseDto.getRequestId()).isEqualTo(
                 evaluationRequestEntity.getCorrelationId());
@@ -64,7 +64,7 @@ class EvaluationResponseServiceTest extends AbstractJpaTest {
         evaluationRequestEntity.setClassifierDownloadUrl(CLASSIFIER_DOWNLOAD_URL);
         evaluationRequestRepository.save(evaluationRequestEntity);
         var evaluationResponseDto =
-                evaluationResponseService.processResponse(evaluationRequestEntity.getCorrelationId());
+                evaluationResponseService.processEvaluationResultsResponse(evaluationRequestEntity.getCorrelationId());
         assertThat(evaluationResponseDto).isNotNull();
         assertThat(evaluationResponseDto.getEvaluationStatus()).isEqualTo(EvaluationStatus.FINISHED);
         assertThat(evaluationResponseDto.getRequestId()).isEqualTo(

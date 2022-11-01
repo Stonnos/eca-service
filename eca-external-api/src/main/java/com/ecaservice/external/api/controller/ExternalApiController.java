@@ -5,6 +5,8 @@ import com.ecaservice.external.api.dto.EvaluationRequestDto;
 import com.ecaservice.external.api.dto.EvaluationResultsResponseDto;
 import com.ecaservice.external.api.dto.EvaluationResultsResponsePayloadDto;
 import com.ecaservice.external.api.dto.ExperimentRequestDto;
+import com.ecaservice.external.api.dto.ExperimentResultsResponseDto;
+import com.ecaservice.external.api.dto.ExperimentResultsResponsePayloadDto;
 import com.ecaservice.external.api.dto.InstancesDto;
 import com.ecaservice.external.api.dto.InstancesRequestDto;
 import com.ecaservice.external.api.dto.InstancesResponseDto;
@@ -168,7 +170,7 @@ public class ExternalApiController {
                                                     ref = "#/components/examples/EvaluationResponse"
                                             ),
                                     },
-                                    schema = @Schema(implementation = EvaluationResultsResponsePayloadDto.class)
+                                    schema = @Schema(implementation = SimpleEvaluationResponsePayloadDto.class)
                             )
                     ),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
@@ -236,7 +238,7 @@ public class ExternalApiController {
                                                     ref = "#/components/examples/EvaluationResponse"
                                             ),
                                     },
-                                    schema = @Schema(implementation = EvaluationResultsResponsePayloadDto.class)
+                                    schema = @Schema(implementation = SimpleEvaluationResponsePayloadDto.class)
                             )
                     ),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
@@ -340,14 +342,14 @@ public class ExternalApiController {
     }
 
     /**
-     * Gets evaluation response status.
+     * Gets evaluation results response.
      *
      * @param requestId - request id
      */
     @PreAuthorize("#oauth2.hasScope('external-api')")
     @Operation(
-            description = "Gets evaluation response status",
-            summary = "Gets evaluation response status",
+            description = "Gets evaluation results response",
+            summary = "Gets evaluation results response",
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_EXTERNAL_API),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200",
@@ -355,8 +357,8 @@ public class ExternalApiController {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
                                             @ExampleObject(
-                                                    name = "EvaluationStatusResponse",
-                                                    ref = "#/components/examples/EvaluationStatusResponse"
+                                                    name = "EvaluationResultsResponse",
+                                                    ref = "#/components/examples/EvaluationResultsResponse"
                                             ),
                                     },
                                     schema = @Schema(implementation = EvaluationResultsResponsePayloadDto.class)
@@ -392,9 +394,68 @@ public class ExternalApiController {
             @Parameter(description = "Request id", required = true)
             @Size(min = MIN_LENGTH_1, max = MAX_LENGTH_255) @PathVariable String requestId) {
         log.debug("Request to get evaluation [{}] results", requestId);
-        var evaluationResponseDto = evaluationResponseService.processResponse(requestId);
+        var evaluationResponseDto = evaluationResponseService.processEvaluationResultsResponse(requestId);
         var responseDto = buildResponse(ResponseCode.SUCCESS, evaluationResponseDto);
-        log.debug("Got evaluation [{}] response: {}", requestId, responseDto);
+        log.debug("Got evaluation [{}] results response: {}", requestId, responseDto);
+        return responseDto;
+    }
+
+    /**
+     * Gets experiment results response.
+     *
+     * @param requestId - request id
+     */
+    @PreAuthorize("#oauth2.hasScope('external-api')")
+    @Operation(
+            description = "Gets experiment results response",
+            summary = "Gets evaluation results response",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_EXTERNAL_API),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "ExperimentResultsResponse",
+                                                    ref = "#/components/examples/ExperimentResultsResponse"
+                                            ),
+                                    },
+                                    schema = @Schema(implementation = ExperimentResultsResponsePayloadDto.class)
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "DataNotFoundResponse",
+                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                            ),
+                                    },
+                                    schema = @Schema(implementation = ValidationErrorResponsePayloadDto.class)
+                            )
+                    )
+            }
+    )
+    @GetMapping(value = "/experiment-results/{requestId}")
+    public ResponseDto<ExperimentResultsResponseDto> getExperimentResults(
+            @Parameter(description = "Request id", required = true)
+            @Size(min = MIN_LENGTH_1, max = MAX_LENGTH_255) @PathVariable String requestId) {
+        log.debug("Request to get experiment [{}] results", requestId);
+        var experimentResponse = evaluationResponseService.processExperimentResultsResponse(requestId);
+        var responseDto = buildResponse(ResponseCode.SUCCESS, experimentResponse);
+        log.debug("Got experiment results [{}] response: {}", requestId, responseDto);
         return responseDto;
     }
 

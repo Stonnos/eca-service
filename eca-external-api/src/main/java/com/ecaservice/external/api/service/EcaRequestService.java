@@ -5,10 +5,12 @@ import com.ecaservice.external.api.dto.EvaluationRequestDto;
 import com.ecaservice.external.api.dto.ExperimentRequestDto;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
+import com.ecaservice.external.api.entity.ExperimentRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.mapping.EcaRequestMapper;
 import com.ecaservice.external.api.repository.EcaRequestRepository;
 import com.ecaservice.external.api.repository.EvaluationRequestRepository;
+import com.ecaservice.external.api.repository.ExperimentRequestRepository;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +34,7 @@ public class EcaRequestService {
     private final ObjectStorageService objectStorageService;
     private final EcaRequestRepository ecaRequestRepository;
     private final EvaluationRequestRepository evaluationRequestRepository;
+    private final ExperimentRequestRepository experimentRequestRepository;
 
     /**
      * Creates and save evaluation request entity.
@@ -89,9 +92,20 @@ public class EcaRequestService {
      * @param correlationId - correlation id
      * @return evaluation request entity
      */
-    public EvaluationRequestEntity getByCorrelationId(String correlationId) {
+    public EvaluationRequestEntity getEvaluationRequest(String correlationId) {
         return evaluationRequestRepository.findByCorrelationId(correlationId)
                 .orElseThrow(() -> new EntityNotFoundException(EcaRequestEntity.class, correlationId));
+    }
+
+    /**
+     * Gets experiment request by correlation id.
+     *
+     * @param correlationId - correlation id
+     * @return experiment request entity
+     */
+    public ExperimentRequestEntity getExperimentRequest(String correlationId) {
+        return experimentRequestRepository.findByCorrelationId(correlationId)
+                .orElseThrow(() -> new EntityNotFoundException(ExperimentRequestEntity.class, correlationId));
     }
 
     /**

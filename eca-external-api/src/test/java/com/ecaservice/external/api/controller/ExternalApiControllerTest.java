@@ -110,7 +110,7 @@ class ExternalApiControllerTest extends AbstractControllerTest {
         String correlationId = UUID.randomUUID().toString();
         var evaluationResponseDto = createEvaluationResponseDto(correlationId, EvaluationStatus.IN_PROGRESS);
         var expectedResponseDto = buildResponse(ResponseCode.SUCCESS, evaluationResponseDto);
-        when(evaluationResponseService.processResponse(correlationId)).thenReturn(evaluationResponseDto);
+        when(evaluationResponseService.processEvaluationResultsResponse(correlationId)).thenReturn(evaluationResponseDto);
         mockMvc.perform(get(EVALUATION_RESULTS_URL, correlationId)
                 .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk())

@@ -33,7 +33,7 @@ public class TimeoutFallback {
      */
     public Mono<ResponseDto<SimpleEvaluationResponseDto>> timeout(String correlationId) {
         return Mono.create(timeoutSink -> {
-            var ecaRequestEntity = ecaRequestService.getByCorrelationId(correlationId);
+            var ecaRequestEntity = ecaRequestService.getEvaluationRequest(correlationId);
             ResponseDto<SimpleEvaluationResponseDto> responseDto = buildResponse(ResponseCode.TIMEOUT);
             metricsService.trackResponse(ecaRequestEntity, responseDto.getResponseCode());
             log.info("Send response with timeout for correlation id [{}]", ecaRequestEntity.getCorrelationId());
