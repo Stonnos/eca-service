@@ -6,7 +6,7 @@ import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.repository.EcaRequestRepository;
 import com.ecaservice.external.api.repository.EvaluationRequestRepository;
 import com.ecaservice.external.api.repository.ExperimentRequestRepository;
-import com.ecaservice.external.api.service.EcaResponseHandler;
+import com.ecaservice.external.api.service.EvaluationResponseHandler;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,15 +27,15 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests for checking {@link EcaResponseListener} class functionality.
+ * Unit tests for checking {@link EvaluationResponseListener} class functionality.
  *
  * @author Roman Batygin
  */
 @ExtendWith(MockitoExtension.class)
-class EcaResponseListenerTest {
+class EvaluationResponseListenerTest {
 
     @Mock
-    private EcaResponseHandler ecaResponseHandler;
+    private EvaluationResponseHandler evaluationResponseHandler;
     @Mock
     private EcaRequestRepository ecaRequestRepository;
     @Mock
@@ -44,7 +44,7 @@ class EcaResponseListenerTest {
     private EvaluationRequestRepository evaluationRequestRepository;
 
     @InjectMocks
-    private EcaResponseListener ecaResponseListener;
+    private EvaluationResponseListener evaluationResponseListener;
 
     @Test
     void testHandleMessageWithInvalidCorrelationId() {
@@ -53,8 +53,8 @@ class EcaResponseListenerTest {
         when(message.getMessageProperties()).thenReturn(messageProperties);
         when(evaluationRequestRepository.findByCorrelationId(messageProperties.getCorrelationId())).thenReturn(
                 Optional.empty());
-        ecaResponseListener.handleEvaluationMessage(new EvaluationResponse(), message);
-        verify(ecaResponseHandler, never()).handleEvaluationResponse(any(EvaluationRequestEntity.class),
+        evaluationResponseListener.handleResponseMessage(new EvaluationResponse(), message);
+        verify(evaluationResponseHandler, never()).handleResponse(any(EvaluationRequestEntity.class),
                 any(EvaluationResponse.class));
     }
 
@@ -68,8 +68,8 @@ class EcaResponseListenerTest {
         evaluationRequestEntity.setRequestStage(RequestStageType.EXCEEDED);
         when(evaluationRequestRepository.findByCorrelationId(messageProperties.getCorrelationId())).thenReturn(
                 Optional.of(evaluationRequestEntity));
-        ecaResponseListener.handleEvaluationMessage(new EvaluationResponse(), message);
-        verify(ecaResponseHandler, never()).handleEvaluationResponse(any(EvaluationRequestEntity.class),
+        evaluationResponseListener.handleResponseMessage(new EvaluationResponse(), message);
+        verify(evaluationResponseHandler, never()).handleResponse(any(EvaluationRequestEntity.class),
                 any(EvaluationResponse.class));
     }
 
@@ -85,8 +85,8 @@ class EcaResponseListenerTest {
         when(evaluationRequestRepository.findByCorrelationId(messageProperties.getCorrelationId()))
                 .thenReturn(Optional.of(evaluationRequestEntity));
         //Verify that response is being sent to client
-        ecaResponseListener.handleEvaluationMessage(new EvaluationResponse(), message);
-        verify(ecaResponseHandler, atLeastOnce()).handleEvaluationResponse(any(EvaluationRequestEntity.class),
+        evaluationResponseListener.handleResponseMessage(new EvaluationResponse(), message);
+        verify(evaluationResponseHandler, atLeastOnce()).handleResponse(any(EvaluationRequestEntity.class),
                 any(EvaluationResponse.class));
     }
 }

@@ -1,16 +1,10 @@
 package com.ecaservice.external.api.service;
 
-import com.ecaservice.base.model.EcaResponse;
 import com.ecaservice.base.model.EvaluationResponse;
-import com.ecaservice.base.model.ExperimentResponse;
-import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.classifier.options.config.ClassifiersOptionsConfig;
 import com.ecaservice.external.api.config.ExternalApiConfig;
-import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
-import com.ecaservice.external.api.entity.ExperimentRequestEntity;
-import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.repository.EcaRequestRepository;
 import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
@@ -18,7 +12,6 @@ import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationMethod;
 import eca.core.evaluation.EvaluationResults;
 import eca.core.model.ClassificationModel;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -26,22 +19,18 @@ import weka.classifiers.AbstractClassifier;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import java.util.function.BiConsumer;
 
 import static com.ecaservice.external.api.util.Utils.toJson;
 
 /**
- * Eca response handler.
+ * Evaluation response handler.
  *
  * @author Roman Batygin
  */
 @Slf4j
 @Service
-@RequiredArgsConstructor
-public class EcaResponseHandler {
+public class EvaluationResponseHandler extends AbstractEcaResponseHandler<EvaluationRequestEntity, EvaluationResponse> {
 
     private static final String MODEL_PATH_FORMAT = "classifier-%s.model";
 
@@ -49,77 +38,38 @@ public class EcaResponseHandler {
     private final ClassifiersOptionsConfig classifiersOptionsConfig;
     private final ObjectStorageService objectStorageService;
     private final ClassifierOptionsAdapter classifierOptionsAdapter;
-    private final EcaRequestRepository ecaRequestRepository;
 
     /**
-     * Handles evaluation response from eca - server.
+     * Constructor with parameters.
      *
-     * @param evaluationRequestEntity - evaluation request entity
-     * @param evaluationResponse      - evaluation response
+     * @param ecaRequestRepository     - eca request repository
+     * @param externalApiConfig        - external api config
+     * @param classifiersOptionsConfig - classifiers options config
+     * @param objectStorageService     - object storage service
+     * @param classifierOptionsAdapter - classifier options adapter
      */
-    public void handleEvaluationResponse(EvaluationRequestEntity evaluationRequestEntity,
-                                         EvaluationResponse evaluationResponse) {
-        log.info("Starting to process evaluation response with correlation id [{}]",
-                evaluationRequestEntity.getCorrelationId());
-        internalHandleResponse(evaluationRequestEntity, evaluationResponse, (requestEntity, response) -> {
-            EvaluationResults evaluationResults = response.getEvaluationResults();
-            if (requestEntity.isUseOptimalClassifierOptions()) {
-                populateEvaluationOptions(evaluationResults, requestEntity);
-            }
-            saveEvaluationResults(evaluationResults, requestEntity);
-            uploadModelToS3(evaluationResults, requestEntity);
-            generateClassifierModelDownloadUrl(requestEntity);
-        });
+    public EvaluationResponseHandler(EcaRequestRepository ecaRequestRepository,
+                                     ExternalApiConfig externalApiConfig,
+                                     ClassifiersOptionsConfig classifiersOptionsConfig,
+                                     ObjectStorageService objectStorageService,
+                                     ClassifierOptionsAdapter classifierOptionsAdapter) {
+        super(ecaRequestRepository);
+        this.externalApiConfig = externalApiConfig;
+        this.classifiersOptionsConfig = classifiersOptionsConfig;
+        this.objectStorageService = objectStorageService;
+        this.classifierOptionsAdapter = classifierOptionsAdapter;
     }
 
-    /**
-     * Handles experiment response from eca - server.
-     *
-     * @param experimentRequestEntity - evaluation request entity
-     * @param experimentResponse      - evaluation response
-     */
-    public void handleExperimentResponse(ExperimentRequestEntity experimentRequestEntity,
-                                         ExperimentResponse experimentResponse) {
-        log.info("Starting to process experiment response with correlation id [{}]",
-                experimentRequestEntity.getCorrelationId());
-        internalHandleResponse(experimentRequestEntity, experimentResponse, (requestEntity, response) -> {
-            Assert.notNull(response.getDownloadUrl(),
-                    String.format("Expected not experiment download url for correlation id [%s]",
-                            requestEntity.getCorrelationId()));
-            requestEntity.setExperimentDownloadUrl(response.getDownloadUrl());
-        });
-    }
-
-    private <R extends EcaRequestEntity, M extends EcaResponse> void internalHandleResponse(R requestEntity,
-                                                                                            M ecaResponse,
-                                                                                            BiConsumer<R, M> successResponseHandler) {
-        try {
-            if (!TechnicalStatus.SUCCESS.equals(ecaResponse.getStatus())) {
-                handleError(requestEntity, ecaResponse);
-            } else {
-                successResponseHandler.accept(requestEntity, ecaResponse);
-                requestEntity.setRequestStage(RequestStageType.COMPLETED);
-            }
-            log.info("Response with correlation id [{}] has been processed", requestEntity.getCorrelationId());
-        } catch (Exception ex) {
-            log.error("There was an error while handle response [{}]: {}",
-                    requestEntity.getCorrelationId(), ex.getMessage(), ex);
-            requestEntity.setRequestStage(RequestStageType.ERROR);
-            requestEntity.setErrorMessage(ex.getMessage());
-        } finally {
-            requestEntity.setEndDate(LocalDateTime.now());
-            ecaRequestRepository.save(requestEntity);
+    @Override
+    protected void internalHandleSuccessResponse(EvaluationRequestEntity requestEntity,
+                                                 EvaluationResponse ecaResponse) {
+        EvaluationResults evaluationResults = ecaResponse.getEvaluationResults();
+        if (requestEntity.isUseOptimalClassifierOptions()) {
+            populateEvaluationOptions(evaluationResults, requestEntity);
         }
-    }
-
-    private void handleError(EcaRequestEntity ecaRequestEntity, EcaResponse ecaResponse) {
-        ecaRequestEntity.setRequestStage(RequestStageType.ERROR);
-        Optional.ofNullable(ecaResponse.getErrors())
-                .map(messageErrors -> messageErrors.iterator().next())
-                .ifPresent(error -> {
-                    ecaRequestEntity.setErrorCode(error.getCode());
-                    ecaRequestEntity.setErrorMessage(error.getMessage());
-                });
+        saveEvaluationResults(evaluationResults, requestEntity);
+        uploadModelToS3(evaluationResults, requestEntity);
+        generateClassifierModelDownloadUrl(requestEntity);
     }
 
     private void populateEvaluationOptions(EvaluationResults evaluationResults,

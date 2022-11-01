@@ -46,9 +46,7 @@ public class EvaluationApiService {
         log.info("Starting to process evaluation request [{}]", ecaRequestEntity.getCorrelationId());
         EvaluationRequest evaluationRequest = createEvaluationRequest(ecaRequestEntity, evaluationRequestDto);
         rabbitSender.sendEvaluationRequest(evaluationRequest, ecaRequestEntity.getCorrelationId());
-        ecaRequestEntity.setRequestStage(RequestStageType.REQUEST_SENT);
-        ecaRequestEntity.setRequestDate(LocalDateTime.now());
-        ecaRequestRepository.save(ecaRequestEntity);
+        saveAsSent(ecaRequestEntity);
         log.info("Evaluation request [{}] has been sent to eca-server", ecaRequestEntity.getCorrelationId());
     }
 
@@ -67,9 +65,7 @@ public class EvaluationApiService {
         InstancesRequest instancesRequest = new InstancesRequest();
         instancesRequest.setData(instances);
         rabbitSender.sendInstancesRequest(instancesRequest, ecaRequestEntity.getCorrelationId());
-        ecaRequestEntity.setRequestStage(RequestStageType.REQUEST_SENT);
-        ecaRequestEntity.setRequestDate(LocalDateTime.now());
-        ecaRequestRepository.save(ecaRequestEntity);
+        saveAsSent(ecaRequestEntity);
         log.info("Optimal classifier evaluation request [{}] has been sent to eca-server",
                 ecaRequestEntity.getCorrelationId());
     }
@@ -88,10 +84,14 @@ public class EvaluationApiService {
         ExperimentRequest experimentRequest = new ExperimentRequest();
         experimentRequest.setData(instances);
         rabbitSender.sendExperimentRequest(experimentRequest, ecaRequestEntity.getCorrelationId());
+        saveAsSent(ecaRequestEntity);
+        log.info("Experiment request [{}] has been sent to eca-server", ecaRequestEntity.getCorrelationId());
+    }
+
+    private void saveAsSent(EcaRequestEntity ecaRequestEntity) {
         ecaRequestEntity.setRequestStage(RequestStageType.REQUEST_SENT);
         ecaRequestEntity.setRequestDate(LocalDateTime.now());
         ecaRequestRepository.save(ecaRequestEntity);
-        log.info("Experiment request [{}] has been sent to eca-server", ecaRequestEntity.getCorrelationId());
     }
 
     private EvaluationRequest createEvaluationRequest(EcaRequestEntity ecaRequestEntity,
