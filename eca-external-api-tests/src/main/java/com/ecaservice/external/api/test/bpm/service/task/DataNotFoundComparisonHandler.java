@@ -1,6 +1,6 @@
 package com.ecaservice.external.api.test.bpm.service.task;
 
-import com.ecaservice.external.api.dto.EvaluationResponseDto;
+import com.ecaservice.external.api.dto.EvaluationResultsResponseDto;
 import com.ecaservice.external.api.dto.ResponseDto;
 import com.ecaservice.external.api.test.bpm.model.TaskType;
 import com.ecaservice.external.api.test.entity.AutoTestEntity;
@@ -27,8 +27,8 @@ import static com.ecaservice.external.api.test.util.CamundaUtils.getVariable;
 @Component
 public class DataNotFoundComparisonHandler extends ComparisonTaskHandler {
 
-    private static final ParameterizedTypeReference<ResponseDto<EvaluationResponseDto>> API_RESPONSE_TYPE_REFERENCE =
-            new ParameterizedTypeReference<ResponseDto<EvaluationResponseDto>>() {
+    private static final ParameterizedTypeReference<ResponseDto<EvaluationResultsResponseDto>> API_RESPONSE_TYPE_REFERENCE =
+            new ParameterizedTypeReference<ResponseDto<EvaluationResultsResponseDto>>() {
             };
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();

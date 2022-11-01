@@ -17,7 +17,7 @@ import static com.ecaservice.external.api.dto.Constraints.UUID_MAX_LENGTH;
  */
 @Data
 @SuperBuilder
-@Schema(description = "Simple response model")
+@Schema(description = "Simple evaluation response model")
 public class SimpleEvaluationResponseDto implements Serializable {
 
     @Tolerate

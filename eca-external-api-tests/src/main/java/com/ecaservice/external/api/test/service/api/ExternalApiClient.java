@@ -1,7 +1,7 @@
 package com.ecaservice.external.api.test.service.api;
 
 import com.ecaservice.external.api.dto.EvaluationRequestDto;
-import com.ecaservice.external.api.dto.EvaluationResponseDto;
+import com.ecaservice.external.api.dto.EvaluationResultsResponseDto;
 import com.ecaservice.external.api.dto.InstancesDto;
 import com.ecaservice.external.api.dto.ResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -38,7 +38,7 @@ public interface ExternalApiClient {
      * @return evaluation response dto
      */
     @PostMapping(value = "/evaluation-request")
-    ResponseDto<EvaluationResponseDto> evaluateRequest(@RequestBody EvaluationRequestDto evaluationRequestDto);
+    ResponseDto<EvaluationResultsResponseDto> evaluateRequest(@RequestBody EvaluationRequestDto evaluationRequestDto);
 
     /**
      * Creates evaluation response status.
@@ -47,5 +47,5 @@ public interface ExternalApiClient {
      * @return evaluation response dto
      */
     @GetMapping(value = "/evaluation-status/{requestId}")
-    ResponseDto<EvaluationResponseDto> evaluationStatus(@PathVariable String requestId);
+    ResponseDto<EvaluationResultsResponseDto> evaluationStatus(@PathVariable String requestId);
 }

@@ -1,7 +1,6 @@
 package com.ecaservice.external.api.service;
 
-import com.ecaservice.external.api.config.ExternalApiConfig;
-import com.ecaservice.external.api.dto.EvaluationResponseDto;
+import com.ecaservice.external.api.dto.EvaluationResultsResponseDto;
 import com.ecaservice.external.api.dto.EvaluationStatus;
 import com.ecaservice.external.api.mapping.EvaluationStatusMapper;
 import lombok.RequiredArgsConstructor;
@@ -27,10 +26,10 @@ public class EvaluationResponseService {
      * @param correlationId - request correlation id
      * @return evaluation response dto
      */
-    public EvaluationResponseDto processResponse(String correlationId) {
+    public EvaluationResultsResponseDto processResponse(String correlationId) {
         log.info("Starting to process evaluation response [{}]", correlationId);
         var ecaRequestEntity = ecaRequestService.getByCorrelationId(correlationId);
-        var evaluationResponseDtoBuilder = EvaluationResponseDto.builder()
+        var evaluationResponseDtoBuilder = EvaluationResultsResponseDto.builder()
                 .requestId(ecaRequestEntity.getCorrelationId());
         var evaluationStatus = evaluationStatusMapper.map(ecaRequestEntity.getRequestStage());
         evaluationResponseDtoBuilder.evaluationStatus(evaluationStatus);

@@ -2,8 +2,8 @@ package com.ecaservice.external.api.controller;
 
 import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.dto.EvaluationRequestDto;
-import com.ecaservice.external.api.dto.EvaluationResponseDto;
-import com.ecaservice.external.api.dto.EvaluationResponsePayloadDto;
+import com.ecaservice.external.api.dto.EvaluationResultsResponseDto;
+import com.ecaservice.external.api.dto.EvaluationResultsResponsePayloadDto;
 import com.ecaservice.external.api.dto.ExperimentRequestDto;
 import com.ecaservice.external.api.dto.InstancesDto;
 import com.ecaservice.external.api.dto.InstancesRequestDto;
@@ -168,7 +168,7 @@ public class ExternalApiController {
                                                     ref = "#/components/examples/EvaluationResponse"
                                             ),
                                     },
-                                    schema = @Schema(implementation = EvaluationResponsePayloadDto.class)
+                                    schema = @Schema(implementation = EvaluationResultsResponsePayloadDto.class)
                             )
                     ),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
@@ -236,7 +236,7 @@ public class ExternalApiController {
                                                     ref = "#/components/examples/EvaluationResponse"
                                             ),
                                     },
-                                    schema = @Schema(implementation = EvaluationResponsePayloadDto.class)
+                                    schema = @Schema(implementation = EvaluationResultsResponsePayloadDto.class)
                             )
                     ),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
@@ -359,7 +359,7 @@ public class ExternalApiController {
                                                     ref = "#/components/examples/EvaluationStatusResponse"
                                             ),
                                     },
-                                    schema = @Schema(implementation = EvaluationResponsePayloadDto.class)
+                                    schema = @Schema(implementation = EvaluationResultsResponsePayloadDto.class)
                             )
                     ),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
@@ -388,7 +388,7 @@ public class ExternalApiController {
             }
     )
     @GetMapping(value = "/evaluation-status/{requestId}")
-    public ResponseDto<EvaluationResponseDto> getEvaluationResponseStatus(
+    public ResponseDto<EvaluationResultsResponseDto> getEvaluationResponseStatus(
             @Parameter(description = "Request id", required = true)
             @Size(min = MIN_LENGTH_1, max = MAX_LENGTH_255) @PathVariable String requestId) {
         log.debug("Request to get evaluation [{}] response status", requestId);

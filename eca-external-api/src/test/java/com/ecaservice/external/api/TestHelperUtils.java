@@ -3,7 +3,7 @@ package com.ecaservice.external.api;
 import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.external.api.dto.EvaluationRequestDto;
-import com.ecaservice.external.api.dto.EvaluationResponseDto;
+import com.ecaservice.external.api.dto.EvaluationResultsResponseDto;
 import com.ecaservice.external.api.dto.EvaluationStatus;
 import com.ecaservice.external.api.dto.ExApiExperimentType;
 import com.ecaservice.external.api.dto.ExperimentRequestDto;
@@ -226,9 +226,9 @@ public class TestHelperUtils {
      * @param evaluationStatus - evaluation status
      * @return evaluation response dto
      */
-    public static EvaluationResponseDto createEvaluationResponseDto(String requestId,
-                                                                    EvaluationStatus evaluationStatus) {
-        return EvaluationResponseDto.builder()
+    public static EvaluationResultsResponseDto createEvaluationResponseDto(String requestId,
+                                                                           EvaluationStatus evaluationStatus) {
+        return EvaluationResultsResponseDto.builder()
                 .requestId(requestId)
                 .evaluationStatus(evaluationStatus)
                 .build();

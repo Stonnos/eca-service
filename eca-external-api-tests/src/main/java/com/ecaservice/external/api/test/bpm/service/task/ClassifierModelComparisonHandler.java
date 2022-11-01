@@ -1,6 +1,6 @@
 package com.ecaservice.external.api.test.bpm.service.task;
 
-import com.ecaservice.external.api.dto.EvaluationResponseDto;
+import com.ecaservice.external.api.dto.EvaluationResultsResponseDto;
 import com.ecaservice.external.api.dto.ResponseDto;
 import com.ecaservice.external.api.test.bpm.model.TaskType;
 import com.ecaservice.external.api.test.entity.AutoTestEntity;
@@ -31,8 +31,8 @@ import static com.ecaservice.external.api.test.util.Utils.getScaledValue;
 @Component
 public class ClassifierModelComparisonHandler extends ComparisonTaskHandler {
 
-    private static final ParameterizedTypeReference<ResponseDto<EvaluationResponseDto>> API_RESPONSE_TYPE_REFERENCE =
-            new ParameterizedTypeReference<ResponseDto<EvaluationResponseDto>>() {
+    private static final ParameterizedTypeReference<ResponseDto<EvaluationResultsResponseDto>> API_RESPONSE_TYPE_REFERENCE =
+            new ParameterizedTypeReference<ResponseDto<EvaluationResultsResponseDto>>() {
             };
 
     private final ExternalApiService externalApiService;
@@ -67,19 +67,19 @@ public class ClassifierModelComparisonHandler extends ComparisonTaskHandler {
     }
 
     private void compareAndMatchEvaluationFields(AutoTestEntity autoTestEntity,
-                                                 EvaluationResponseDto evaluationResponseDto,
+                                                 EvaluationResultsResponseDto evaluationResultsResponseDto,
                                                  ClassificationModel classificationModel,
                                                  TestResultsMatcher matcher) {
         log.debug("Compare classifier model result for test [{}]", autoTestEntity.getId());
         BigDecimal expectedPctCorrect = getScaledValue(classificationModel, Evaluation::pctCorrect);
-        BigDecimal actualPctCorrect = getScaledValue(evaluationResponseDto, EvaluationResponseDto::getPctCorrect);
+        BigDecimal actualPctCorrect = getScaledValue(evaluationResultsResponseDto, EvaluationResultsResponseDto::getPctCorrect);
         MatchResult pctCorrectMatchResult = matcher.compareAndMatch(expectedPctCorrect, actualPctCorrect);
         BigDecimal expectedPctIncorrect = getScaledValue(classificationModel, Evaluation::pctIncorrect);
-        BigDecimal actualPctIncorrect = getScaledValue(evaluationResponseDto, EvaluationResponseDto::getPctIncorrect);
+        BigDecimal actualPctIncorrect = getScaledValue(evaluationResultsResponseDto, EvaluationResultsResponseDto::getPctIncorrect);
         MatchResult pctIncorrectMatchResult = matcher.compareAndMatch(expectedPctIncorrect, actualPctIncorrect);
         BigDecimal expectedMeanAbsoluteError = getScaledValue(classificationModel, Evaluation::meanAbsoluteError);
         BigDecimal actualMeanAbsoluteError =
-                getScaledValue(evaluationResponseDto, EvaluationResponseDto::getMeanAbsoluteError);
+                getScaledValue(evaluationResultsResponseDto, EvaluationResultsResponseDto::getMeanAbsoluteError);
         MatchResult meanAbsoluteErrorMatchResult =
                 matcher.compareAndMatch(expectedMeanAbsoluteError, actualMeanAbsoluteError);
 

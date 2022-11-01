@@ -18,11 +18,11 @@ import static com.ecaservice.external.api.dto.Constraints.MAX_LENGTH_255;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @SuperBuilder
-@Schema(description = "Experiment response model")
-public class ExperimentResponseDto extends SimpleEvaluationResponseDto {
+@Schema(description = "Experiment results response model")
+public class ExperimentResultsResponseDto extends SimpleEvaluationResponseDto {
 
     @Tolerate
-    public ExperimentResponseDto() {
+    public ExperimentResultsResponseDto() {
         //default constructor
     }
 

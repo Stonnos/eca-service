@@ -25,11 +25,11 @@ import static com.ecaservice.external.api.dto.Constraints.VALUE_2_STRING;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @SuperBuilder
-@Schema(description = "Evaluation response model")
-public class EvaluationResponseDto extends SimpleEvaluationResponseDto {
+@Schema(description = "Evaluation results response model")
+public class EvaluationResultsResponseDto extends SimpleEvaluationResponseDto {
 
     @Tolerate
-    public EvaluationResponseDto() {
+    public EvaluationResultsResponseDto() {
         //default constructor
     }
 

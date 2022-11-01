@@ -1,7 +1,7 @@
 package com.ecaservice.external.api.test.bpm.service.task;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
-import com.ecaservice.external.api.dto.EvaluationResponseDto;
+import com.ecaservice.external.api.dto.EvaluationResultsResponseDto;
 import com.ecaservice.external.api.dto.ResponseDto;
 import com.ecaservice.external.api.test.bpm.model.TaskType;
 import com.ecaservice.external.api.test.entity.AutoTestEntity;
@@ -26,8 +26,8 @@ import static com.ecaservice.external.api.test.util.Utils.getValueSafe;
 @Component
 public class EvaluationRequestResponseHandler extends AbstractTaskHandler {
 
-    private static final ParameterizedTypeReference<ResponseDto<EvaluationResponseDto>> API_RESPONSE_TYPE_REFERENCE =
-            new ParameterizedTypeReference<ResponseDto<EvaluationResponseDto>>() {
+    private static final ParameterizedTypeReference<ResponseDto<EvaluationResultsResponseDto>> API_RESPONSE_TYPE_REFERENCE =
+            new ParameterizedTypeReference<ResponseDto<EvaluationResultsResponseDto>>() {
             };
 
     private final AutoTestRepository autoTestRepository;
@@ -57,10 +57,10 @@ public class EvaluationRequestResponseHandler extends AbstractTaskHandler {
                 execution.getId(), execution.getProcessBusinessKey());
     }
 
-    private void saveRequestId(long autoTestId, ResponseDto<EvaluationResponseDto> responseDto) {
+    private void saveRequestId(long autoTestId, ResponseDto<EvaluationResultsResponseDto> responseDto) {
         AutoTestEntity autoTestEntity = autoTestRepository.findById(autoTestId)
                 .orElseThrow(() -> new EntityNotFoundException(AutoTestEntity.class, autoTestId));
-        String requestId = getValueSafe(responseDto, EvaluationResponseDto::getRequestId);
+        String requestId = getValueSafe(responseDto, EvaluationResultsResponseDto::getRequestId);
         autoTestEntity.setRequestId(requestId);
         autoTestRepository.save(autoTestEntity);
     }
