@@ -1,6 +1,7 @@
 package com.ecaservice.external.api.controller;
 
 import com.ecaservice.external.api.config.ExternalApiConfig;
+import com.ecaservice.external.api.dto.SimpleEvaluationResponseDto;
 import com.ecaservice.external.api.dto.EvaluationRequestDto;
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
 import com.ecaservice.external.api.dto.EvaluationResponsePayloadDto;
@@ -194,7 +195,7 @@ public class ExternalApiController {
             }
     )
     @PostMapping(value = "/evaluation-request")
-    public Mono<ResponseDto<EvaluationResponseDto>> evaluateModel(
+    public Mono<ResponseDto<SimpleEvaluationResponseDto>> evaluateModel(
             @Valid @RequestBody EvaluationRequestDto evaluationRequestDto) {
         if (log.isDebugEnabled()) {
             log.debug("Received request with options [{}], evaluation method [{}]",
@@ -262,7 +263,7 @@ public class ExternalApiController {
             }
     )
     @PostMapping(value = "/optimal-evaluation-request")
-    public Mono<ResponseDto<EvaluationResponseDto>> evaluateOptimalModel(
+    public Mono<ResponseDto<SimpleEvaluationResponseDto>> evaluateOptimalModel(
             @Valid @RequestBody InstancesRequestDto instancesRequestDto) {
         log.info("Received request to evaluate optimal classifier for data url [{}]",
                 instancesRequestDto.getTrainDataUrl());
@@ -329,10 +330,11 @@ public class ExternalApiController {
         return responseDto;
     }
 
-    private <T> Mono<ResponseDto<EvaluationResponseDto>> evaluateModel(BiConsumer<EcaRequestEntity, T> requestConsumer,
-                                                                       EcaRequestEntity ecaRequestEntity,
-                                                                       T requestDto) {
-        return Mono.<ResponseDto<EvaluationResponseDto>>create(sink -> {
+    private <T> Mono<ResponseDto<SimpleEvaluationResponseDto>> evaluateModel(
+            BiConsumer<EcaRequestEntity, T> requestConsumer,
+            EcaRequestEntity ecaRequestEntity,
+            T requestDto) {
+        return Mono.<ResponseDto<SimpleEvaluationResponseDto>>create(sink -> {
             messageCorrelationService.push(ecaRequestEntity.getCorrelationId(), sink);
             requestConsumer.accept(ecaRequestEntity, requestDto);
 

@@ -1,8 +1,8 @@
 package com.ecaservice.external.api.aspect;
 
-import com.ecaservice.external.api.dto.EvaluationResponseDto;
 import com.ecaservice.external.api.dto.EvaluationStatus;
 import com.ecaservice.external.api.dto.ResponseCode;
+import com.ecaservice.external.api.dto.SimpleEvaluationResponseDto;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.error.ExceptionTranslator;
 import com.ecaservice.external.api.metrics.MetricsService;
@@ -66,7 +66,7 @@ public class RequestExecutionAspect {
 
     private void handleSuccess(EcaRequestEntity ecaRequestEntity) {
         messageCorrelationService.pop(ecaRequestEntity.getCorrelationId()).ifPresent(sink -> {
-            var evaluationResponseDto = EvaluationResponseDto.builder()
+            var evaluationResponseDto = SimpleEvaluationResponseDto.builder()
                     .requestId(ecaRequestEntity.getCorrelationId())
                     .evaluationStatus(EvaluationStatus.IN_PROGRESS)
                     .build();
@@ -81,7 +81,7 @@ public class RequestExecutionAspect {
         requestStageHandler.handleError(ecaRequestEntity, ex.getMessage());
         messageCorrelationService.pop(ecaRequestEntity.getCorrelationId()).ifPresent(sink -> {
             var responseCode = exceptionTranslator.translate(ex);
-            var evaluationResponseDto = EvaluationResponseDto.builder()
+            var evaluationResponseDto = SimpleEvaluationResponseDto.builder()
                     .requestId(ecaRequestEntity.getCorrelationId())
                     .evaluationStatus(EvaluationStatus.ERROR)
                     .errorCode(ecaRequestEntity.getErrorCode())
