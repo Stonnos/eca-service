@@ -204,7 +204,7 @@ public class ExternalApiController {
                     toJson(evaluationRequestDto.getClassifierOptions()), evaluationRequestDto.getEvaluationMethod());
         }
         var ecaRequestEntity = ecaRequestService.createAndSaveEvaluationRequestEntity(evaluationRequestDto);
-        return evaluateModel(evaluationApiService::processRequest, ecaRequestEntity, evaluationRequestDto);
+        return internalProcessRequest(evaluationApiService::processRequest, ecaRequestEntity, evaluationRequestDto);
     }
 
     /**
@@ -270,7 +270,7 @@ public class ExternalApiController {
         log.info("Received request to evaluate optimal classifier for data url [{}]",
                 instancesRequestDto.getTrainDataUrl());
         var ecaRequestEntity = ecaRequestService.createAndSaveEvaluationOptimizerRequestEntity();
-        return evaluateModel(evaluationApiService::processRequest, ecaRequestEntity, instancesRequestDto);
+        return internalProcessRequest(evaluationApiService::processRequest, ecaRequestEntity, instancesRequestDto);
     }
 
     /**
@@ -336,7 +336,7 @@ public class ExternalApiController {
         log.info("Received experiment request [{}], evaluation method [{}]", experimentRequestDto.getExperimentType(),
                 experimentRequestDto.getEvaluationMethod());
         var ecaRequestEntity = ecaRequestService.createAndSaveExperimentRequestEntity(experimentRequestDto);
-        return evaluateModel(evaluationApiService::processRequest, ecaRequestEntity, experimentRequestDto);
+        return internalProcessRequest(evaluationApiService::processRequest, ecaRequestEntity, experimentRequestDto);
     }
 
     /**
@@ -398,7 +398,7 @@ public class ExternalApiController {
         return responseDto;
     }
 
-    private <T> Mono<ResponseDto<SimpleEvaluationResponseDto>> evaluateModel(
+    private <T> Mono<ResponseDto<SimpleEvaluationResponseDto>> internalProcessRequest(
             BiConsumer<EcaRequestEntity, T> requestConsumer,
             EcaRequestEntity ecaRequestEntity,
             T requestDto) {
