@@ -1,6 +1,7 @@
 package com.ecaservice.external.api;
 
 import com.ecaservice.base.model.EvaluationResponse;
+import com.ecaservice.base.model.ExperimentResponse;
 import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.external.api.dto.EvaluationRequestDto;
@@ -51,6 +52,7 @@ public class TestHelperUtils {
     private static final String TRAINING_DATA_PARAM = "trainingData";
     private static final String IRIS_XLS = "iris.xls";
     private static final String TRAIN_DATA_URL = "data://84327874";
+    private static final String EXPERIMENT_DOWNLOAD_URL = "http://localhost:900/object-storage/experiment.model";
 
     /**
      * Generates the test data set.
@@ -225,6 +227,31 @@ public class TestHelperUtils {
         evaluationResponse.setEvaluationResults(getEvaluationResults());
         evaluationResponse.setRequestId(UUID.randomUUID().toString());
         evaluationResponse.setStatus(TechnicalStatus.SUCCESS);
+        return evaluationResponse;
+    }
+
+    /**
+     * Creates experiment response with success status.
+     *
+     * @return experiment response
+     */
+    public static ExperimentResponse successExperimentResponse() {
+        ExperimentResponse evaluationResponse = new ExperimentResponse();
+        evaluationResponse.setDownloadUrl(EXPERIMENT_DOWNLOAD_URL);
+        evaluationResponse.setRequestId(UUID.randomUUID().toString());
+        evaluationResponse.setStatus(TechnicalStatus.SUCCESS);
+        return evaluationResponse;
+    }
+
+    /**
+     * Creates experiment response with success status.
+     *
+     * @return experiment response
+     */
+    public static ExperimentResponse errorExperimentResponse() {
+        ExperimentResponse evaluationResponse = new ExperimentResponse();
+        evaluationResponse.setRequestId(UUID.randomUUID().toString());
+        evaluationResponse.setStatus(TechnicalStatus.ERROR);
         return evaluationResponse;
     }
 
