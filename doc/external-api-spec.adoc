@@ -30,9 +30,14 @@ API предоставляет следующие методы:
 |Создание запроса на построение модели классификатора
 |application/json
 |application/json
-|http://eca-service:8080/external-api/evaluation-status/{requestId}
+|http://eca-service:8080/external-api/evaluation-results/{requestId}
 |POST
-|Запрос на получение статуса построения модели классификатора
+|Запрос на получение результатов построения модели классификатора
+|application/json
+|application/json
+|http://eca-service:8080/external-api/experiment-results/{requestId}
+|POST
+|Запрос на получение результатов эксперимента
 |application/json
 |application/json
 |===
