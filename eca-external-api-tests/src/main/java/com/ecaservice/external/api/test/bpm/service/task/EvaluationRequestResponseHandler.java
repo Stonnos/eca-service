@@ -1,8 +1,8 @@
 package com.ecaservice.external.api.test.bpm.service.task;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
-import com.ecaservice.external.api.dto.EvaluationResultsResponseDto;
 import com.ecaservice.external.api.dto.ResponseDto;
+import com.ecaservice.external.api.dto.SimpleEvaluationResponseDto;
 import com.ecaservice.external.api.test.bpm.model.TaskType;
 import com.ecaservice.external.api.test.entity.AutoTestEntity;
 import com.ecaservice.external.api.test.repository.AutoTestRepository;
@@ -26,8 +26,8 @@ import static com.ecaservice.external.api.test.util.Utils.getValueSafe;
 @Component
 public class EvaluationRequestResponseHandler extends AbstractTaskHandler {
 
-    private static final ParameterizedTypeReference<ResponseDto<EvaluationResultsResponseDto>> API_RESPONSE_TYPE_REFERENCE =
-            new ParameterizedTypeReference<ResponseDto<EvaluationResultsResponseDto>>() {
+    private static final ParameterizedTypeReference<ResponseDto<SimpleEvaluationResponseDto>> API_RESPONSE_TYPE_REFERENCE =
+            new ParameterizedTypeReference<ResponseDto<SimpleEvaluationResponseDto>>() {
             };
 
     private final AutoTestRepository autoTestRepository;
@@ -57,10 +57,10 @@ public class EvaluationRequestResponseHandler extends AbstractTaskHandler {
                 execution.getId(), execution.getProcessBusinessKey());
     }
 
-    private void saveRequestId(long autoTestId, ResponseDto<EvaluationResultsResponseDto> responseDto) {
+    private void saveRequestId(long autoTestId, ResponseDto<SimpleEvaluationResponseDto> responseDto) {
         AutoTestEntity autoTestEntity = autoTestRepository.findById(autoTestId)
                 .orElseThrow(() -> new EntityNotFoundException(AutoTestEntity.class, autoTestId));
-        String requestId = getValueSafe(responseDto, EvaluationResultsResponseDto::getRequestId);
+        String requestId = getValueSafe(responseDto, SimpleEvaluationResponseDto::getRequestId);
         autoTestEntity.setRequestId(requestId);
         autoTestRepository.save(autoTestEntity);
     }

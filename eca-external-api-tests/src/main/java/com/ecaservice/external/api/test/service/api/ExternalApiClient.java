@@ -4,6 +4,7 @@ import com.ecaservice.external.api.dto.EvaluationRequestDto;
 import com.ecaservice.external.api.dto.EvaluationResultsResponseDto;
 import com.ecaservice.external.api.dto.InstancesDto;
 import com.ecaservice.external.api.dto.ResponseDto;
+import com.ecaservice.external.api.dto.SimpleEvaluationResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,14 +39,14 @@ public interface ExternalApiClient {
      * @return evaluation response dto
      */
     @PostMapping(value = "/evaluation-request")
-    ResponseDto<EvaluationResultsResponseDto> evaluateRequest(@RequestBody EvaluationRequestDto evaluationRequestDto);
+    ResponseDto<SimpleEvaluationResponseDto> evaluateRequest(@RequestBody EvaluationRequestDto evaluationRequestDto);
 
     /**
-     * Creates evaluation response status.
+     * Gets evaluation results.
      *
      * @param requestId - request id
      * @return evaluation response dto
      */
-    @GetMapping(value = "/evaluation-status/{requestId}")
-    ResponseDto<EvaluationResultsResponseDto> evaluationStatus(@PathVariable String requestId);
+    @GetMapping(value = "/evaluation-results/{requestId}")
+    ResponseDto<EvaluationResultsResponseDto> getEvaluationResults(@PathVariable String requestId);
 }
