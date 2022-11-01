@@ -1,14 +1,17 @@
 package com.ecaservice.external.api;
 
 import com.ecaservice.base.model.EvaluationResponse;
+import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.external.api.dto.EvaluationRequestDto;
 import com.ecaservice.external.api.dto.EvaluationResultsResponseDto;
 import com.ecaservice.external.api.dto.EvaluationStatus;
 import com.ecaservice.external.api.dto.ExApiExperimentType;
 import com.ecaservice.external.api.dto.ExperimentRequestDto;
+import com.ecaservice.external.api.dto.ExperimentResultsResponseDto;
 import com.ecaservice.external.api.dto.InstancesRequestDto;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
+import com.ecaservice.external.api.entity.ExperimentRequestEntity;
 import com.ecaservice.external.api.entity.InstancesEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -181,6 +184,24 @@ public class TestHelperUtils {
     }
 
     /**
+     * Creates experiment request entity.
+     *
+     * @param correlationId    - correlation id
+     * @param requestStageType - request stage type
+     * @return experiment request entity
+     */
+    public static ExperimentRequestEntity createExperimentRequestEntity(String correlationId,
+                                                                        RequestStageType requestStageType) {
+        ExperimentRequestEntity experimentRequestEntity = new ExperimentRequestEntity();
+        experimentRequestEntity.setRequestStage(requestStageType);
+        experimentRequestEntity.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
+        experimentRequestEntity.setExperimentType(ExperimentType.RANDOM_FORESTS);
+        experimentRequestEntity.setCreationDate(LocalDateTime.now());
+        experimentRequestEntity.setCorrelationId(correlationId);
+        return experimentRequestEntity;
+    }
+
+    /**
      * Creates instances entity.
      *
      * @param creationDate - creation date
@@ -229,6 +250,21 @@ public class TestHelperUtils {
     public static EvaluationResultsResponseDto createEvaluationResponseDto(String requestId,
                                                                            EvaluationStatus evaluationStatus) {
         return EvaluationResultsResponseDto.builder()
+                .requestId(requestId)
+                .evaluationStatus(evaluationStatus)
+                .build();
+    }
+
+    /**
+     * Creates experiment response dto.
+     *
+     * @param requestId        - request id
+     * @param evaluationStatus - evaluation status
+     * @return experiment response dto
+     */
+    public static ExperimentResultsResponseDto createExperimentResponseDto(String requestId,
+                                                                           EvaluationStatus evaluationStatus) {
+        return ExperimentResultsResponseDto.builder()
                 .requestId(requestId)
                 .evaluationStatus(evaluationStatus)
                 .build();
