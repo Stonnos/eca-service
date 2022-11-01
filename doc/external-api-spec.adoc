@@ -176,14 +176,7 @@ curl -X POST "http://localhost:8080/external-api/uploads-train-data" -H "accept:
   "payload": {
     "requestId": "1cbe6c49-8432-4c81-9afa-90f04a803fed",
     "evaluationStatus": "IN_PROGRESS",
-    "errorCode": null,
-    "modelUrl": null,
-    "numTestInstances": null,
-    "numCorrect": null,
-    "numIncorrect": null,
-    "pctCorrect": null,
-    "pctIncorrect": null,
-    "meanAbsoluteError": null
+    "errorCode": null
   },
   "responseCode": "SUCCESS",
   "errorDescription": null
@@ -191,6 +184,98 @@ curl -X POST "http://localhost:8080/external-api/uploads-train-data" -H "accept:
 ----
 
 ==== 3.7. Описание параметров ответа на запрос построения модели классификатора
+
+|===
+|Название поля/атрибута|Тип|Обязательное|Описание|Комментарий
+|requestId
+|string
+|+
+|Уникальный идентификатор запроса
+|
+|evaluationStatus
+|string
+|+
+|Статус построения модели
+|Заполняется по справочнику <<Справочник кодов EvaluationStatus>>
+|responseCode
+|string
+|+
+|Статус ответа
+|Заполняется по справочнику <<Справочник кодов ответа>>
+|errorCode
+|string
+|-
+|Код ошибки
+|
+|===
+
+==== 3.8. Пример запроса на построение модели классификатора с использованием оптимальных параметров
+
+[source,json]
+----
+{
+  "trainDataUrl": "http://kt.ijs.si/Branax/Repository/WEKA/Iris.xls"
+}
+----
+
+==== 3.9. Описание параметров запроса на построение модели классификатора с использованием оптимальных параметров
+
+|===
+|Название поля/атрибута|Тип|Обязательное|Описание|Комментарий
+|trainDataUrl
+|string
+|+
+|Ссылка на обучающую выборку
+|Может быть передана ссылка на внешний источник, например http или ftp, так и ссылка на файл с данными на сервере в формате data://DATA_ID
+|===
+
+==== 3.10. Пример ответа на запрос построения модели классификатора с использованием оптимальных параметров
+
+[source,json]
+----
+{
+  "payload": {
+    "requestId": "1cbe6c49-8432-4c81-9afa-90f04a803fed",
+    "evaluationStatus": "IN_PROGRESS",
+    "errorCode": null
+  },
+  "responseCode": "SUCCESS",
+  "errorDescription": null
+}
+----
+
+Описание полей ответа приведено в п. 3.7.
+
+==== 3.11. Пример запроса на получение результатов построения модели
+
+[source,bash]
+----
+curl -X GET "http://localhost:8080/external-api/evaluation-results/1cbe6c49-8432-4c81-9afa-90f04a803fed" -H "accept: */*" -H "authorization: Bearer cf4cd583-b9f1-4dce-8dcc-afefd1510974"
+----
+
+==== 3.12. Пример ответа на запрос получения результатов построения модели
+
+[source,json]
+----
+{
+  "payload": {
+    "requestId": "1cbe6c49-8432-4c81-9afa-90f04a803fed",
+    "evaluationStatus": "FINISHED",
+    "errorCode": null,
+    "modelUrl": "http://localhost:8098/object-storage/eca-service/classifier-0f45c641-48e1-4f8f-a461-38c27a4befc3.model?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minio%2F20220727%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220727T061714Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=2ebb2d403962381a141efaf28767fe3ef622ce1477d9bd2f914560561579325c",
+    "numTestInstances": 150,
+    "numCorrect": 144,
+    "numIncorrect": 6,
+    "pctCorrect": 96,
+    "pctIncorrect": 4,
+    "meanAbsoluteError": 0.02869334024628254
+  },
+  "responseCode": "SUCCESS",
+  "errorDescription": null
+}
+----
+
+==== 3.13. Описание параметров ответа на запрос получения результатов построения модели
 
 |===
 |Название поля/атрибута|Тип|Обязательное|Описание|Комментарий
@@ -251,18 +336,18 @@ curl -X POST "http://localhost:8080/external-api/uploads-train-data" -H "accept:
 |Заполняется при evaluationStatus = FINISHED
 |===
 
-* Примечание: данные с моделями хранятся 14 дней
-
-==== 3.8. Пример запроса на построение модели классификатора с использованием оптимальных параметров
+==== 3.14. Пример запроса на создание заявки на эксперимент
 
 [source,json]
 ----
 {
-  "trainDataUrl": "http://kt.ijs.si/Branax/Repository/WEKA/Iris.xls"
+  "trainDataUrl": "http://kt.ijs.si/Branax/Repository/WEKA/Iris.xls",
+  "evaluationMethod": "CROSS_VALIDATION",
+  "experimentType": "RANDOM_FORESTS"
 }
 ----
 
-==== 3.9. Описание параметров запроса на построение модели классификатора с использованием оптимальных параметров
+==== 3.15. Описание параметров запроса на создание заявки на эксперимент
 
 |===
 |Название поля/атрибута|Тип|Обязательное|Описание|Комментарий
@@ -271,9 +356,19 @@ curl -X POST "http://localhost:8080/external-api/uploads-train-data" -H "accept:
 |+
 |Ссылка на обучающую выборку
 |Может быть передана ссылка на внешний источник, например http или ftp, так и ссылка на файл с данными на сервере в формате data://DATA_ID
+|evaluationMethod
+|string
+|+
+|Метод оценки точности
+|Заполняется по справочнику <<Справочник значений EvaluationMethod>>
+|experimentType
+|string
+|+
+|Тип эксперимента
+|Заполняется по справочнику <<Справочник значений ExperimentType>>
 |===
 
-==== 3.10. Пример ответа на запрос построения модели классификатора с использованием оптимальных параметров
+==== 3.16. Пример ответа на запрос создания заявки на эксперимент
 
 [source,json]
 ----
@@ -281,14 +376,7 @@ curl -X POST "http://localhost:8080/external-api/uploads-train-data" -H "accept:
   "payload": {
     "requestId": "1cbe6c49-8432-4c81-9afa-90f04a803fed",
     "evaluationStatus": "IN_PROGRESS",
-    "errorCode": null,
-    "modelUrl": null,
-    "numTestInstances": null,
-    "numCorrect": null,
-    "numIncorrect": null,
-    "pctCorrect": null,
-    "pctIncorrect": null,
-    "meanAbsoluteError": null
+    "errorCode": null
   },
   "responseCode": "SUCCESS",
   "errorDescription": null
@@ -297,14 +385,14 @@ curl -X POST "http://localhost:8080/external-api/uploads-train-data" -H "accept:
 
 Описание полей ответа приведено в п. 3.7.
 
-==== 3.11. Пример запроса на получение статуса построения модели
+==== 3.17. Пример запроса на получение результатов эксперимента
 
 [source,bash]
 ----
-curl -X GET "http://localhost:8080/external-api/evaluation-status/1cbe6c49-8432-4c81-9afa-90f04a803fed" -H "accept: */*" -H "authorization: Bearer cf4cd583-b9f1-4dce-8dcc-afefd1510974"
+curl -X GET "http://localhost:8080/external-api/experiment-results/1cbe6c49-8432-4c81-9afa-90f04a803fed" -H "accept: */*" -H "authorization: Bearer cf4cd583-b9f1-4dce-8dcc-afefd1510974"
 ----
 
-==== 3.12. Пример ответа на запрос статуса построения модели
+==== 3.18. Пример ответа на запрос получения результатов эксперимента
 
 [source,json]
 ----
@@ -313,18 +401,43 @@ curl -X GET "http://localhost:8080/external-api/evaluation-status/1cbe6c49-8432-
     "requestId": "1cbe6c49-8432-4c81-9afa-90f04a803fed",
     "evaluationStatus": "FINISHED",
     "errorCode": null,
-    "modelUrl": "http://localhost:8098/object-storage/eca-service/classifier-0f45c641-48e1-4f8f-a461-38c27a4befc3.model?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minio%2F20220727%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220727T061714Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=2ebb2d403962381a141efaf28767fe3ef622ce1477d9bd2f914560561579325c",
-    "numTestInstances": 150,
-    "numCorrect": 144,
-    "numIncorrect": 6,
-    "pctCorrect": 96,
-    "pctIncorrect": 4,
-    "meanAbsoluteError": 0.02869334024628254
+    "experimentModelUrl": "http://localhost:8098/object-storage/eca-service/experiment-0f45c641-48e1-4f8f-a461-38c27a4befc3.model?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minio%2F20220727%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220727T061714Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=2ebb2d403962381a141efaf28767fe3ef622ce1477d9bd2f914560561579325c"
   },
   "responseCode": "SUCCESS",
   "errorDescription": null
 }
 ----
+
+==== 3.19. Описание параметров ответа на запрос получения результатов эксперимента
+
+|===
+|Название поля/атрибута|Тип|Обязательное|Описание|Комментарий
+|requestId
+|string
+|+
+|Уникальный идентификатор запроса
+|
+|evaluationStatus
+|string
+|+
+|Статус построения модели
+|Заполняется по справочнику <<Справочник кодов EvaluationStatus>>
+|responseCode
+|string
+|+
+|Статус ответа
+|Заполняется по справочнику <<Справочник кодов ответа>>
+|errorCode
+|string
+|-
+|Код ошибки
+|
+|experimentModelUrl
+|string
+|-
+|Ссылка на скачивание эксперимента из S3. Ссылка действительна в течении 7 дней.
+|Заполняется при evaluationStatus = FINISHED
+|===
 
 == Справочник значений EvaluationMethod
 
@@ -381,4 +494,38 @@ curl -X GET "http://localhost:8080/external-api/evaluation-status/1cbe6c49-8432-
 |4
 |ERROR
 |Ошибка при построении модели
+|===
+
+== Справочник значений ExperimentType
+
+[options="header"]
+|===
+|№|Код ответа|Описание
+|1
+|NEURAL_NETWORKS
+|Автоматический подбор оптимальных параметров для нейронных сетей
+|2
+|HETEROGENEOUS_ENSEMBLE
+|Автоматический подбор оптимальных параметров для неоднородного ансамблевого алгоритма
+|3
+|MODIFIED_HETEROGENEOUS_ENSEMBLE
+|Автоматический подбор оптимальных параметров для модифицированного неоднородного ансамблевого алгоритма
+|4
+|ADA_BOOST
+|Автоматический подбор оптимальных параметров для алгоритма AdaBoost
+|5
+|STACKING
+|Автоматический подбор оптимальных параметров для алгоритма Stacking
+|6
+|KNN
+|Автоматический подбор оптимальных параметров для алгоритма KNN
+|7
+|RANDOM_FORESTS
+|Автоматический подбор оптимальных параметров для алгоритма RandomForests
+|8
+|STACKING_CV
+|Автоматический подбор оптимальных параметров для алгоритма Stacking CV
+|9
+|DECISION_TREE
+|Автоматический подбор оптимальных параметров для деревьев решений
 |===
