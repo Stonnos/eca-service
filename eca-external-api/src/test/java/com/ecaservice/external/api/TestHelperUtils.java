@@ -5,6 +5,8 @@ import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.external.api.dto.EvaluationRequestDto;
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
 import com.ecaservice.external.api.dto.EvaluationStatus;
+import com.ecaservice.external.api.dto.ExApiExperimentType;
+import com.ecaservice.external.api.dto.ExperimentRequestDto;
 import com.ecaservice.external.api.dto.InstancesRequestDto;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.InstancesEntity;
@@ -118,6 +120,19 @@ public class TestHelperUtils {
         var instancesRequestDto = new InstancesRequestDto();
         instancesRequestDto.setTrainDataUrl(TRAIN_DATA_URL);
         return instancesRequestDto;
+    }
+
+    /**
+     * Creates experiment request dto.
+     *
+     * @return experiment request dto
+     */
+    public static ExperimentRequestDto createExperimentRequestDto() {
+        var experimentRequestDto = new ExperimentRequestDto();
+        experimentRequestDto.setTrainDataUrl(TRAIN_DATA_URL);
+        experimentRequestDto.setExperimentType(ExApiExperimentType.RANDOM_FORESTS);
+        experimentRequestDto.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
+        return experimentRequestDto;
     }
 
     /**

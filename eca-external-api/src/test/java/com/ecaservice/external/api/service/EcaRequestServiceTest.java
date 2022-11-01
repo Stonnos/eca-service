@@ -2,11 +2,11 @@ package com.ecaservice.external.api.service;
 
 import com.ecaservice.external.api.AbstractJpaTest;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
-import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.exception.ProcessFileException;
 import com.ecaservice.external.api.mapping.EcaRequestMapperImpl;
 import com.ecaservice.external.api.repository.EvaluationRequestRepository;
+import com.ecaservice.external.api.repository.ExperimentRequestRepository;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -17,6 +17,7 @@ import java.util.UUID;
 
 import static com.ecaservice.external.api.TestHelperUtils.createEvaluationRequestDto;
 import static com.ecaservice.external.api.TestHelperUtils.createEvaluationRequestEntity;
+import static com.ecaservice.external.api.TestHelperUtils.createExperimentRequestDto;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doThrow;
@@ -36,6 +37,8 @@ class EcaRequestServiceTest extends AbstractJpaTest {
 
     @Inject
     private EvaluationRequestRepository evaluationRequestRepository;
+    @Inject
+    private ExperimentRequestRepository experimentRequestRepository;
 
     @Inject
     private EcaRequestService ecaRequestService;
@@ -57,6 +60,17 @@ class EcaRequestServiceTest extends AbstractJpaTest {
         var actual = evaluationRequestRepository.findById(ecaRequestEntity.getId()).orElse(null);
         assertCreatedRequestEntityBaseFields(actual);
         assertThat(actual.isUseOptimalClassifierOptions()).isTrue();
+    }
+
+    @Test
+    void testSaveExperimentRequestEntity() {
+        var experimentRequestDto = createExperimentRequestDto();
+        var ecaRequestEntity = ecaRequestService.createAndSaveExperimentRequestEntity(experimentRequestDto);
+        assertThat(ecaRequestEntity).isNotNull();
+        var actual = experimentRequestRepository.findById(ecaRequestEntity.getId()).orElse(null);
+        assertCreatedRequestEntityBaseFields(actual);
+        assertThat(actual.getExperimentType()).isNotNull();
+        assertThat(actual.getEvaluationMethod()).isEqualTo(experimentRequestDto.getEvaluationMethod());
     }
 
     @Test
@@ -87,10 +101,9 @@ class EcaRequestServiceTest extends AbstractJpaTest {
 
     private void assertCreatedRequestEntityBaseFields(EcaRequestEntity ecaRequestEntity) {
         assertThat(ecaRequestEntity).isNotNull();
-        EvaluationRequestEntity actual = evaluationRequestRepository.findById(ecaRequestEntity.getId()).orElse(null);
-        assertThat(actual).isNotNull();
-        assertThat(actual.getRequestStage()).isEqualTo(RequestStageType.READY);
-        assertThat(actual.getCreationDate()).isNotNull();
-        assertThat(actual.getCorrelationId()).isNotNull();
+        assertThat(ecaRequestEntity).isNotNull();
+        assertThat(ecaRequestEntity.getRequestStage()).isEqualTo(RequestStageType.READY);
+        assertThat(ecaRequestEntity.getCreationDate()).isNotNull();
+        assertThat(ecaRequestEntity.getCorrelationId()).isNotNull();
     }
 }
