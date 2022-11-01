@@ -18,7 +18,7 @@ import com.ecaservice.external.api.dto.ValidationErrorResponsePayloadDto;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.service.EcaRequestService;
 import com.ecaservice.external.api.service.EvaluationApiService;
-import com.ecaservice.external.api.service.EvaluationResponseService;
+import com.ecaservice.external.api.service.EvaluationResultsResponseService;
 import com.ecaservice.external.api.service.InstancesService;
 import com.ecaservice.external.api.service.MessageCorrelationService;
 import com.ecaservice.external.api.validation.annotations.ValidTrainData;
@@ -77,7 +77,7 @@ public class ExternalApiController {
     private final EcaRequestService ecaRequestService;
     private final TimeoutFallback timeoutFallback;
     private final InstancesService instancesService;
-    private final EvaluationResponseService evaluationResponseService;
+    private final EvaluationResultsResponseService evaluationResultsResponseService;
 
     /**
      * Uploads train data file.
@@ -394,7 +394,7 @@ public class ExternalApiController {
             @Parameter(description = "Request id", required = true)
             @Size(min = MIN_LENGTH_1, max = MAX_LENGTH_255) @PathVariable String requestId) {
         log.debug("Request to get evaluation [{}] results", requestId);
-        var evaluationResponseDto = evaluationResponseService.processEvaluationResultsResponse(requestId);
+        var evaluationResponseDto = evaluationResultsResponseService.getEvaluationResultsResponse(requestId);
         var responseDto = buildResponse(ResponseCode.SUCCESS, evaluationResponseDto);
         log.debug("Got evaluation [{}] results response: {}", requestId, responseDto);
         return responseDto;
@@ -453,7 +453,7 @@ public class ExternalApiController {
             @Parameter(description = "Request id", required = true)
             @Size(min = MIN_LENGTH_1, max = MAX_LENGTH_255) @PathVariable String requestId) {
         log.debug("Request to get experiment [{}] results", requestId);
-        var experimentResponse = evaluationResponseService.processExperimentResultsResponse(requestId);
+        var experimentResponse = evaluationResultsResponseService.getExperimentResultsResponse(requestId);
         var responseDto = buildResponse(ResponseCode.SUCCESS, experimentResponse);
         log.debug("Got experiment results [{}] response: {}", requestId, responseDto);
         return responseDto;

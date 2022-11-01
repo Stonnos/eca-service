@@ -9,26 +9,26 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 /**
- * Class for response building.
+ * Evaluation results response service.
  *
  * @author Roman Batygin
  */
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class EvaluationResponseService {
+public class EvaluationResultsResponseService {
 
     private final EvaluationStatusMapper evaluationStatusMapper;
     private final EcaRequestService ecaRequestService;
 
     /**
-     * Processes evaluation results response.
+     * Gets evaluation results response.
      *
      * @param correlationId - request correlation id
      * @return evaluation response dto
      */
-    public EvaluationResultsResponseDto processEvaluationResultsResponse(String correlationId) {
-        log.info("Starting to process evaluation results response [{}]", correlationId);
+    public EvaluationResultsResponseDto getEvaluationResultsResponse(String correlationId) {
+        log.info("Starting to get evaluation results response [{}]", correlationId);
         var ecaRequestEntity = ecaRequestService.getEvaluationRequest(correlationId);
         var responseBuilder = EvaluationResultsResponseDto.builder()
                 .requestId(ecaRequestEntity.getCorrelationId());
@@ -45,18 +45,18 @@ public class EvaluationResponseService {
         } else if (EvaluationStatus.ERROR.equals(evaluationStatus)) {
             responseBuilder.errorCode(ecaRequestEntity.getErrorCode());
         }
-        log.info("Evaluation [{}] results response has been built", correlationId);
+        log.info("Evaluation [{}] results response has been fetched", correlationId);
         return responseBuilder.build();
     }
 
     /**
-     * Processes experiment results response.
+     * Gets experiment results response.
      *
      * @param correlationId - request correlation id
      * @return experiment response dto
      */
-    public ExperimentResultsResponseDto processExperimentResultsResponse(String correlationId) {
-        log.info("Starting to process experiment results response [{}]", correlationId);
+    public ExperimentResultsResponseDto getExperimentResultsResponse(String correlationId) {
+        log.info("Starting to get experiment results response [{}]", correlationId);
         var ecaRequestEntity = ecaRequestService.getExperimentRequest(correlationId);
         var responseBuilder = ExperimentResultsResponseDto.builder()
                 .requestId(ecaRequestEntity.getCorrelationId());
@@ -67,7 +67,7 @@ public class EvaluationResponseService {
         } else if (EvaluationStatus.ERROR.equals(evaluationStatus)) {
             responseBuilder.errorCode(ecaRequestEntity.getErrorCode());
         }
-        log.info("Evaluation [{}] response has been built", correlationId);
+        log.info("Experiment [{}] response has been fetched", correlationId);
         return responseBuilder.build();
     }
 }

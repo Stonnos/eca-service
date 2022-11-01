@@ -11,7 +11,7 @@ import com.ecaservice.external.api.repository.EcaRequestRepository;
 import com.ecaservice.external.api.repository.EvaluationRequestRepository;
 import com.ecaservice.external.api.service.EcaRequestService;
 import com.ecaservice.external.api.service.EvaluationApiService;
-import com.ecaservice.external.api.service.EvaluationResponseService;
+import com.ecaservice.external.api.service.EvaluationResultsResponseService;
 import com.ecaservice.external.api.service.InstancesService;
 import com.ecaservice.external.api.service.MessageCorrelationService;
 import com.ecaservice.oauth2.test.controller.AbstractControllerTest;
@@ -62,7 +62,7 @@ class ExternalApiControllerTest extends AbstractControllerTest {
     @MockBean
     private EvaluationApiService evaluationApiService;
     @MockBean
-    private EvaluationResponseService evaluationResponseService;
+    private EvaluationResultsResponseService evaluationResultsResponseService;
     @MockBean
     private EcaRequestService ecaRequestService;
     @MockBean
@@ -112,7 +112,7 @@ class ExternalApiControllerTest extends AbstractControllerTest {
         String correlationId = UUID.randomUUID().toString();
         var evaluationResponseDto = createEvaluationResponseDto(correlationId, EvaluationStatus.IN_PROGRESS);
         var expectedResponseDto = buildResponse(ResponseCode.SUCCESS, evaluationResponseDto);
-        when(evaluationResponseService.processEvaluationResultsResponse(correlationId)).thenReturn(
+        when(evaluationResultsResponseService.getEvaluationResultsResponse(correlationId)).thenReturn(
                 evaluationResponseDto);
         mockMvc.perform(get(EVALUATION_RESULTS_URL, correlationId)
                 .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
@@ -132,7 +132,7 @@ class ExternalApiControllerTest extends AbstractControllerTest {
         String correlationId = UUID.randomUUID().toString();
         var experimentResponseDto = createExperimentResponseDto(correlationId, EvaluationStatus.IN_PROGRESS);
         var expectedResponseDto = buildResponse(ResponseCode.SUCCESS, experimentResponseDto);
-        when(evaluationResponseService.processExperimentResultsResponse(correlationId))
+        when(evaluationResultsResponseService.getExperimentResultsResponse(correlationId))
                 .thenReturn(experimentResponseDto);
         mockMvc.perform(get(EXPERIMENT_RESULTS_URL, correlationId)
                 .header(HttpHeaders.AUTHORIZATION, getBearerToken()))

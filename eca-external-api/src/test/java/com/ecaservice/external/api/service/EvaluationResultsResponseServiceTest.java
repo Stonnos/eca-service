@@ -23,14 +23,14 @@ import static com.ecaservice.external.api.TestHelperUtils.createExperimentReques
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Unit tests for {@link EvaluationResponseService} functionality.
+ * Unit tests for {@link EvaluationResultsResponseService} functionality.
  *
  * @author Roman Batygin
  */
 @ExtendWith(SpringExtension.class)
-@Import({EvaluationResponseService.class, EvaluationStatusMapperImpl.class,
+@Import({EvaluationResultsResponseService.class, EvaluationStatusMapperImpl.class,
         EcaRequestService.class, EcaRequestMapperImpl.class})
-class EvaluationResponseServiceTest extends AbstractJpaTest {
+class EvaluationResultsResponseServiceTest extends AbstractJpaTest {
 
     private static final String MODEL_DOWNLOAD_URL = "http://localhost:9000/object-storage";
 
@@ -42,7 +42,7 @@ class EvaluationResponseServiceTest extends AbstractJpaTest {
     @Inject
     private ExperimentRequestRepository experimentRequestRepository;
     @Inject
-    private EvaluationResponseService evaluationResponseService;
+    private EvaluationResultsResponseService evaluationResultsResponseService;
 
     @Override
     public void deleteAll() {
@@ -50,12 +50,12 @@ class EvaluationResponseServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    void testBuildEvaluationResponseWithError() {
+    void testGetEvaluationResponseWithError() {
         var evaluationRequestEntity =
                 createEvaluationRequestEntity(RequestStageType.ERROR, LocalDateTime.now(), LocalDateTime.now());
         evaluationRequestRepository.save(evaluationRequestEntity);
         var evaluationResponseDto =
-                evaluationResponseService.processEvaluationResultsResponse(evaluationRequestEntity.getCorrelationId());
+                evaluationResultsResponseService.getEvaluationResultsResponse(evaluationRequestEntity.getCorrelationId());
         assertThat(evaluationResponseDto).isNotNull();
         assertThat(evaluationResponseDto.getRequestId()).isEqualTo(
                 evaluationRequestEntity.getCorrelationId());
@@ -63,13 +63,13 @@ class EvaluationResponseServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    void testBuildEvaluationSuccessResponse() {
+    void testGetEvaluationSuccessResponse() {
         var evaluationRequestEntity =
                 createEvaluationRequestEntity(RequestStageType.COMPLETED, LocalDateTime.now(), LocalDateTime.now());
         evaluationRequestEntity.setClassifierDownloadUrl(MODEL_DOWNLOAD_URL);
         evaluationRequestRepository.save(evaluationRequestEntity);
         var evaluationResponseDto =
-                evaluationResponseService.processEvaluationResultsResponse(evaluationRequestEntity.getCorrelationId());
+                evaluationResultsResponseService.getEvaluationResultsResponse(evaluationRequestEntity.getCorrelationId());
         assertThat(evaluationResponseDto).isNotNull();
         assertThat(evaluationResponseDto.getEvaluationStatus()).isEqualTo(EvaluationStatus.FINISHED);
         assertThat(evaluationResponseDto.getRequestId()).isEqualTo(
@@ -78,12 +78,12 @@ class EvaluationResponseServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    void testBuildExperimentResponseWithError() {
+    void testGetExperimentResponseWithError() {
         var experimentRequestEntity =
                 createExperimentRequestEntity(UUID.randomUUID().toString(), RequestStageType.ERROR);
         experimentRequestRepository.save(experimentRequestEntity);
         var experimentResultsResponseDto =
-                evaluationResponseService.processExperimentResultsResponse(experimentRequestEntity.getCorrelationId());
+                evaluationResultsResponseService.getExperimentResultsResponse(experimentRequestEntity.getCorrelationId());
         assertThat(experimentResultsResponseDto).isNotNull();
         assertThat(experimentResultsResponseDto.getRequestId()).isEqualTo(
                 experimentRequestEntity.getCorrelationId());
@@ -91,13 +91,13 @@ class EvaluationResponseServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    void testBuildExperimentSuccessResponse() {
+    void testGetExperimentSuccessResponse() {
         var experimentRequestEntity =
                 createExperimentRequestEntity(UUID.randomUUID().toString(), RequestStageType.COMPLETED);
         experimentRequestEntity.setExperimentDownloadUrl(MODEL_DOWNLOAD_URL);
         experimentRequestRepository.save(experimentRequestEntity);
         var experimentResultsResponseDto =
-                evaluationResponseService.processExperimentResultsResponse(experimentRequestEntity.getCorrelationId());
+                evaluationResultsResponseService.getExperimentResultsResponse(experimentRequestEntity.getCorrelationId());
         assertThat(experimentResultsResponseDto).isNotNull();
         assertThat(experimentResultsResponseDto.getEvaluationStatus()).isEqualTo(EvaluationStatus.FINISHED);
         assertThat(experimentResultsResponseDto.getRequestId()).isEqualTo(
