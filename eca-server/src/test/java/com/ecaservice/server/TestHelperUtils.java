@@ -120,7 +120,6 @@ public class TestHelperUtils {
     public static final int PAGE_SIZE = 10;
     public static final int PAGE_NUMBER = 0;
 
-    private static final String FIRST_NAME = "Roman";
     private static final String TEST_MAIL_RU = "test@mail.ru";
     private static final String TRAINING_DATA_PATH = "data.model";
     private static final String EXPERIMENT_PATH = "experiment.model";
@@ -261,7 +260,6 @@ public class TestHelperUtils {
         experimentRequest.setExperimentType(ExperimentType.KNN);
         experimentRequest.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         experimentRequest.setData(loadInstances());
-        experimentRequest.setFirstName(FIRST_NAME);
         experimentRequest.setEmail(TEST_MAIL_RU);
         return experimentRequest;
     }
@@ -285,7 +283,6 @@ public class TestHelperUtils {
      */
     public static Experiment createExperiment(String requestId, RequestStatus experimentStatus) {
         Experiment experiment = new Experiment();
-        experiment.setFirstName(FIRST_NAME);
         experiment.setEmail(TEST_MAIL_RU);
         experiment.setRequestStatus(experimentStatus);
         experiment.setCreationDate(LocalDateTime.now());

@@ -615,7 +615,6 @@ public class ExperimentController {
                                                       ExperimentType experimentType,
                                                       EvaluationMethod evaluationMethod) {
         ExperimentRequest experimentRequest = new ExperimentRequest();
-        experimentRequest.setFirstName(userInfoDto.getFirstName());
         experimentRequest.setEmail(userInfoDto.getEmail());
         Instances data = dataService.load(new MultipartFileResource(trainingData));
         experimentRequest.setData(data);

@@ -411,7 +411,6 @@ a|
     "numTests" : 1,
     "seed" : 1,
     "evaluationTotalTime" : "00:00:1:43",
-    "firstName" : "Roman",
     "email" : "test@mail.ru",
     "experimentPath" : "experiment-1d2de514-3a87-4620-9b97-c260e24340de.model",
     "instancesInfo" : {
@@ -3309,7 +3308,6 @@ a|
     "numTests" : 1,
     "seed" : 1,
     "evaluationTotalTime" : "00:00:1:43",
-    "firstName" : "Roman",
     "email" : "test@mail.ru",
     "experimentPath" : "experiment-1d2de514-3a87-4620-9b97-c260e24340de.model",
     "instancesInfo" : {
@@ -3967,7 +3965,6 @@ a|
   "numTests" : 1,
   "seed" : 1,
   "evaluationTotalTime" : "00:00:1:43",
-  "firstName" : "Roman",
   "email" : "test@mail.ru",
   "experimentPath" : "experiment-1d2de514-3a87-4620-9b97-c260e24340de.model",
   "instancesInfo" : {
@@ -5951,25 +5948,6 @@ __string__
 
 
 *Max. length*: 11
-
-
-
-
-
-
-
-
-
-
-|*firstName*
-|Request creator first name
-a|
-__string__
-
-
-
-
-*Max. length*: 255
 
 
 

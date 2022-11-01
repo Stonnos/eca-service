@@ -1,8 +1,8 @@
 package com.ecaservice.server.service.experiment.visitor;
 
-import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.notification.dto.EmailRequest;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.RequestStatus;
@@ -18,7 +18,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
 import java.util.Map;
-import java.util.UUID;
 
 import static com.ecaservice.notification.util.Priority.MEDIUM;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -99,7 +98,6 @@ class EmailTemplateVisitorTest {
 
     private void assertEmailRequest(EmailRequest emailRequest, Experiment experiment) {
         Map<String, String> variablesMap = emailRequest.getVariables();
-        assertThat(variablesMap).containsEntry(TemplateVariablesDictionary.FIRST_NAME_KEY, experiment.getFirstName());
         ExperimentType actualExperimentType =
                 ExperimentType.findByDescription(
                         variablesMap.get(TemplateVariablesDictionary.EXPERIMENT_TYPE_KEY));

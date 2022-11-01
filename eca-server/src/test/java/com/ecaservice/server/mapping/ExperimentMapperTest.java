@@ -44,7 +44,6 @@ class ExperimentMapperTest {
         ExperimentRequest experimentRequest = TestHelperUtils.createExperimentRequest();
         Experiment experiment = experimentMapper.map(experimentRequest, crossValidationConfig);
         assertThat(experiment).isNotNull();
-        assertThat(experiment.getFirstName()).isEqualTo(experimentRequest.getFirstName());
         assertThat(experiment.getEmail()).isEqualTo(experimentRequest.getEmail());
         assertThat(experiment.getEvaluationMethod()).isEqualTo(experimentRequest.getEvaluationMethod());
         assertThat(experiment.getNumFolds()).isNull();
@@ -71,7 +70,6 @@ class ExperimentMapperTest {
         experimentRequest.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
         Experiment experiment = experimentMapper.map(experimentRequest, crossValidationConfig);
         assertThat(experiment).isNotNull();
-        assertThat(experiment.getFirstName()).isEqualTo(experimentRequest.getFirstName());
         assertThat(experiment.getEmail()).isEqualTo(experimentRequest.getEmail());
         assertThat(experiment.getEvaluationMethod()).isEqualTo(experimentRequest.getEvaluationMethod());
         assertThat(experiment.getNumFolds()).isEqualTo(crossValidationConfig.getNumFolds());
@@ -94,7 +92,6 @@ class ExperimentMapperTest {
         experiment.setSeed(crossValidationConfig.getSeed());
         ExperimentDto experimentDto = experimentMapper.map(experiment);
         assertThat(experimentDto).isNotNull();
-        assertThat(experimentDto.getFirstName()).isEqualTo(experiment.getFirstName());
         assertThat(experimentDto.getEmail()).isEqualTo(experiment.getEmail());
         assertThat(experimentDto.getCreationDate()).isEqualTo(experiment.getCreationDate());
         assertThat(experimentDto.getStartDate()).isEqualTo(experiment.getStartDate());
@@ -140,7 +137,6 @@ class ExperimentMapperTest {
         experiment.setExperimentPath(EXPERIMENT_PATH);
         ExperimentBean experimentBean = experimentMapper.mapToBean(experiment);
         assertThat(experimentBean).isNotNull();
-        assertThat(experimentBean.getFirstName()).isEqualTo(experiment.getFirstName());
         assertThat(experimentBean.getEmail()).isEqualTo(experiment.getEmail());
         assertThat(experimentBean.getCreationDate()).isNotNull();
         assertThat(experimentBean.getStartDate()).isNotNull();

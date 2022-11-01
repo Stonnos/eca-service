@@ -5,6 +5,7 @@ import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.service.experiment.mail.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -30,6 +31,10 @@ public class ExperimentNotificationEventListener {
         Experiment experiment = experimentEmailEvent.getExperiment();
         log.info("Handles experiment [{}] email event from source [{}]", experiment.getRequestId(),
                 experimentEmailEvent.getSource().getClass().getSimpleName());
-        notificationService.notifyByEmail(experiment);
+        if (StringUtils.isEmpty(experiment.getEmail())) {
+            log.warn("Experiment [{}] email is not specified. Skipped email sending.", experiment.getRequestId());
+        } else {
+            notificationService.notifyByEmail(experiment);
+        }
     }
 }

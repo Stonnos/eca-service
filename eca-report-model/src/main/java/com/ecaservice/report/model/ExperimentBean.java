@@ -18,11 +18,6 @@ public class ExperimentBean extends EvaluationBean {
     private String experimentType;
 
     /**
-     * First name
-     */
-    private String firstName;
-
-    /**
      * Email
      */
     private String email;

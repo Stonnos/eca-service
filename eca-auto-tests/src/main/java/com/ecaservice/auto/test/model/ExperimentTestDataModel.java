@@ -18,11 +18,6 @@ public class ExperimentTestDataModel {
     private ExperimentType experimentType;
 
     /**
-     * First name
-     */
-    private String firstName;
-
-    /**
      * Train data path in resources directory
      */
     private String trainDataPath;

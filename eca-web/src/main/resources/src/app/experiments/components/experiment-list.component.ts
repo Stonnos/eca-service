@@ -260,7 +260,6 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
       { name: ExperimentFields.EXPERIMENT_TYPE_DESCRIPTION, label: "Тип эксперимента", sortBy: ExperimentFields.EXPERIMENT_TYPE },
       { name: ExperimentFields.REQUEST_STATUS_DESCRIPTION, label: "Статус заявки", sortBy: ExperimentFields.REQUEST_STATUS },
       { name: ExperimentFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности", sortBy: ExperimentFields.EVALUATION_METHOD },
-      { name: ExperimentFields.FIRST_NAME, label: "Имя заявки" },
       { name: ExperimentFields.EMAIL, label: "Email заявки" },
       { name: ExperimentFields.RELATION_NAME, label: "Обучающая выборка" },
       { name: ExperimentFields.EXPERIMENT_PATH, label: "Результаты эксперимента" },
