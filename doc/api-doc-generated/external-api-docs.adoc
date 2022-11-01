@@ -254,7 +254,143 @@ a|
 |OK
 |*application/json*
 |
-<<EvaluationResponsePayloadDto>>
+<<SimpleEvaluationResponsePayloadDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "payload" : {
+    "requestId" : "1cbe6c49-8432-4c81-9afa-90f04a803fed",
+    "evaluationStatus" : "IN_PROGRESS"
+  },
+  "responseCode" : "SUCCESS"
+}
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|
+<<ValidationErrorResponsePayloadDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "payload" : [ {
+    "fieldName" : "trainDataUrl",
+    "code" : "DataURL",
+    "errorMessage" : "train data url must have one of the protocols such as http, ftp, data"
+  } ],
+  "responseCode" : "VALIDATION_ERROR",
+  "errorDescription" : "Validation errors"
+}
+----
+|===
+
+== Creates experiment request
+
+__POST__ */experiment-request* - Creates experiment request
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* external-api
+
+|===
+
+*Request body*
+
+[width=100%]
+|===
+|*Content type*|*Required*|*Schema*|*Example*
+|*application/json*
+|true
+|
+<<ExperimentRequestDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "trainDataUrl" : "http://kt.ijs.si/Branax/Repository/WEKA/Iris.xls",
+  "experimentType" : "RANDOM_FORESTS",
+  "evaluationMethod" : "CROSS_VALIDATION"
+}
+----
+|===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+<<SimpleEvaluationResponsePayloadDto>>
 
 
 
@@ -397,7 +533,7 @@ a|
 |OK
 |*application/json*
 |
-<<EvaluationResponsePayloadDto>>
+<<SimpleEvaluationResponsePayloadDto>>
 
 
 
@@ -475,9 +611,9 @@ a|
 ----
 |===
 
-== Gets evaluation response status
+== Gets experiment results response
 
-__GET__ */evaluation-status/{requestId}* - Gets evaluation response status
+__GET__ */experiment-results/{requestId}* - Gets evaluation results response
 
 *Security requirement*
 
@@ -527,7 +663,133 @@ __string__
 |OK
 |*application/json*
 |
-<<EvaluationResponsePayloadDto>>
+<<ExperimentResultsResponsePayloadDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "payload" : {
+    "requestId" : "1cbe6c49-8432-4c81-9afa-90f04a803fed",
+    "evaluationStatus" : "FINISHED",
+    "experimentModelUrl" : "http://localhost:8098/object-storage/eca-service/experiment-0f45c641-48e1-4f8f-a461-38c27a4befc3.model?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minio%2F20220727%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220727T061714Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=2ebb2d403962381a141efaf28767fe3ef622ce1477d9bd2f914560561579325c"
+  },
+  "responseCode" : "SUCCESS"
+}
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|
+<<ValidationErrorResponsePayloadDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "payload" : [ {
+    "code" : "DataNotFound",
+    "errorMessage" : "Entity with search key [1] not found!"
+  } ],
+  "responseCode" : "VALIDATION_ERROR",
+  "errorDescription" : "Validation errors"
+}
+----
+|===
+
+== Gets evaluation results response
+
+__GET__ */evaluation-results/{requestId}* - Gets evaluation results response
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* external-api
+
+|===
+
+
+*Request parameters*
+[width=100%]
+|===
+|*Name*|*Description*|*Location*|*Schema*
+|*requestId**
+|Request id
+|path
+a|
+__string__
+
+
+*Min. length*: 1
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+<<EvaluationResultsResponsePayloadDto>>
 
 
 
@@ -874,14 +1136,14 @@ __string__
 
 
 |===
-=== EvaluationResponseDto
+=== SimpleEvaluationResponseDto
 :table-caption: Table
-.Evaluation response model
+.Simple evaluation response model
 [width=100%]
 |===
 |*Name*|*Description*|*Schema*
 |*requestId*
-|Evaluation request id
+|Experiment request id
 a|
 __string__
 
@@ -946,165 +1208,17 @@ __string__
 
 
 
-|*modelUrl*
-|Model url
-a|
-__string__
-
-
-
-
-*Max. length*: 255
-
-
-
-
-
-
-
-
-
-
-|*numTestInstances*
-|Test instances number
-a|
-__integer__
-__(int32)__
-
-
-
-
-
-
-*Minimum*: 2*
-
-*Maximum*: 2,147,483,647*
-
-
-
-
-
-
-
-
-|*numCorrect*
-|Correctly classified instances number
-a|
-__integer__
-__(int32)__
-
-
-
-
-
-
-*Minimum*: 0*
-
-*Maximum*: 2,147,483,647*
-
-
-
-
-
-
-
-
-|*numIncorrect*
-|Incorrectly classified instances number
-a|
-__integer__
-__(int32)__
-
-
-
-
-
-
-*Minimum*: 0*
-
-*Maximum*: 2,147,483,647*
-
-
-
-
-
-
-
-
-|*pctCorrect*
-|Correctly classified percentage
-a|
-__number__
-
-
-
-
-
-
-*Minimum*: 0*
-
-*Maximum*: 100*
-
-
-
-
-
-
-
-
-|*pctIncorrect*
-|Incorrectly classified percentage
-a|
-__number__
-
-
-
-
-
-
-*Minimum*: 0*
-
-*Maximum*: 100*
-
-
-
-
-
-
-
-
-|*meanAbsoluteError*
-|Mean absolute error
-a|
-__number__
-
-
-
-
-
-
-*Minimum*: 0*
-
-*Maximum*: 1*
-
-
-
-
-
-
-
-
 |===
-=== EvaluationResponsePayloadDto
+=== SimpleEvaluationResponsePayloadDto
 :table-caption: Table
-.Evaluation response payload model
+.Simple evaluation response response payload model
 [width=100%]
 |===
 |*Name*|*Description*|*Schema*
 |*payload*
 |-
 a|
-<<EvaluationResponseDto>>
+<<SimpleEvaluationResponseDto>>
 
 
 
@@ -1197,6 +1311,94 @@ __string__
 
 
 
+|===
+=== ExperimentRequestDto
+:table-caption: Table
+.Experiment request model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*trainDataUrl**
+|Train data url
+a|
+__string__
+
+
+*Min. length*: 1
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*experimentType**
+|Experiment type
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* NEURAL_NETWORKS
+
+* HETEROGENEOUS_ENSEMBLE
+
+* MODIFIED_HETEROGENEOUS_ENSEMBLE
+
+* ADA_BOOST
+
+* STACKING
+
+* KNN
+
+* RANDOM_FORESTS
+
+* STACKING_CV
+
+* DECISION_TREE
+|*evaluationMethod**
+|Evaluation method
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* TRAINING_DATA
+
+* CROSS_VALIDATION
 |===
 === ActivationFunctionOptions
 :table-caption: Table
@@ -2740,7 +2942,7 @@ __string__
 
 
 
-*Pattern*: `^([0-9],?)+$`
+*Pattern*: `^\|(([0-9],?)+)$`
 
 
 |*seed*
@@ -3307,6 +3509,473 @@ a|
 
 
 
+
+
+
+
+
+
+
+
+
+
+|===
+=== ExperimentResultsResponseDto
+:table-caption: Table
+.Experiment results response model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*requestId*
+|Experiment request id
+a|
+__string__
+
+
+
+
+*Max. length*: 36
+
+
+
+
+
+
+
+
+
+
+|*evaluationStatus*
+|Evaluation status
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* IN_PROGRESS
+
+* FINISHED
+
+* TIMEOUT
+
+* ERROR
+|*errorCode*
+|Error code
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*experimentModelUrl*
+|Experiment model url
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|===
+=== ExperimentResultsResponsePayloadDto
+:table-caption: Table
+.Experiment results response payload model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*payload*
+|-
+a|
+<<ExperimentResultsResponseDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*responseCode*
+|Response code
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* SUCCESS
+
+* VALIDATION_ERROR
+
+* DATA_NOT_FOUND
+
+* ERROR
+
+* TIMEOUT
+
+* SERVICE_UNAVAILABLE
+|*errorDescription*
+|Error message
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|===
+=== EvaluationResultsResponseDto
+:table-caption: Table
+.Evaluation results response model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*requestId*
+|Experiment request id
+a|
+__string__
+
+
+
+
+*Max. length*: 36
+
+
+
+
+
+
+
+
+
+
+|*evaluationStatus*
+|Evaluation status
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* IN_PROGRESS
+
+* FINISHED
+
+* TIMEOUT
+
+* ERROR
+|*errorCode*
+|Error code
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*modelUrl*
+|Model url
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*numTestInstances*
+|Test instances number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 2*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*numCorrect*
+|Correctly classified instances number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*numIncorrect*
+|Incorrectly classified instances number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2,147,483,647*
+
+
+
+
+
+
+
+
+|*pctCorrect*
+|Correctly classified percentage
+a|
+__number__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 100*
+
+
+
+
+
+
+
+
+|*pctIncorrect*
+|Incorrectly classified percentage
+a|
+__number__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 100*
+
+
+
+
+
+
+
+
+|*meanAbsoluteError*
+|Mean absolute error
+a|
+__number__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 1*
+
+
+
+
+
+
+
+
+|===
+=== EvaluationResultsResponsePayloadDto
+:table-caption: Table
+.Evaluation results response payload model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*payload*
+|-
+a|
+<<EvaluationResultsResponseDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*responseCode*
+|Response code
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* SUCCESS
+
+* VALIDATION_ERROR
+
+* DATA_NOT_FOUND
+
+* ERROR
+
+* TIMEOUT
+
+* SERVICE_UNAVAILABLE
+|*errorDescription*
+|Error message
+a|
+__string__
+
+
+
+
+*Max. length*: 255
 
 
 
