@@ -8,10 +8,10 @@
     <changeSet id="create_experiment_request_table" author="roman.batygin@mail.ru" context="schema">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="evaluation_request"/>
+                <tableExists tableName="experiment_request"/>
             </not>
         </preConditions>
-        <createTable tableName="evaluation_request">
+        <createTable tableName="experiment_request">
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
