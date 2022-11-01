@@ -54,7 +54,7 @@ class EcaResponseListenerTest {
         when(evaluationRequestRepository.findByCorrelationId(messageProperties.getCorrelationId())).thenReturn(
                 Optional.empty());
         ecaResponseListener.handleEvaluationMessage(new EvaluationResponse(), message);
-        verify(ecaResponseHandler, never()).handleResponse(any(EvaluationRequestEntity.class),
+        verify(ecaResponseHandler, never()).handleEvaluationResponse(any(EvaluationRequestEntity.class),
                 any(EvaluationResponse.class));
     }
 
@@ -69,7 +69,7 @@ class EcaResponseListenerTest {
         when(evaluationRequestRepository.findByCorrelationId(messageProperties.getCorrelationId())).thenReturn(
                 Optional.of(evaluationRequestEntity));
         ecaResponseListener.handleEvaluationMessage(new EvaluationResponse(), message);
-        verify(ecaResponseHandler, never()).handleResponse(any(EvaluationRequestEntity.class),
+        verify(ecaResponseHandler, never()).handleEvaluationResponse(any(EvaluationRequestEntity.class),
                 any(EvaluationResponse.class));
     }
 
@@ -86,7 +86,7 @@ class EcaResponseListenerTest {
                 .thenReturn(Optional.of(evaluationRequestEntity));
         //Verify that response is being sent to client
         ecaResponseListener.handleEvaluationMessage(new EvaluationResponse(), message);
-        verify(ecaResponseHandler, atLeastOnce()).handleResponse(any(EvaluationRequestEntity.class),
+        verify(ecaResponseHandler, atLeastOnce()).handleEvaluationResponse(any(EvaluationRequestEntity.class),
                 any(EvaluationResponse.class));
     }
 }

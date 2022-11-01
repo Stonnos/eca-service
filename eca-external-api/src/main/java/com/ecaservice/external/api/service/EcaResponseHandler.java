@@ -24,10 +24,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import weka.classifiers.AbstractClassifier;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiConsumer;
 
 import static com.ecaservice.external.api.util.Utils.toJson;
 
@@ -55,34 +57,19 @@ public class EcaResponseHandler {
      * @param evaluationRequestEntity - evaluation request entity
      * @param evaluationResponse      - evaluation response
      */
-    public void handleResponse(EvaluationRequestEntity evaluationRequestEntity,
-                               EvaluationResponse evaluationResponse) {
+    public void handleEvaluationResponse(EvaluationRequestEntity evaluationRequestEntity,
+                                         EvaluationResponse evaluationResponse) {
         log.info("Starting to process evaluation response with correlation id [{}]",
                 evaluationRequestEntity.getCorrelationId());
-        try {
-            if (!TechnicalStatus.SUCCESS.equals(evaluationResponse.getStatus())) {
-                handleError(evaluationRequestEntity, evaluationResponse);
-            } else {
-                EvaluationResults evaluationResults = evaluationResponse.getEvaluationResults();
-                if (evaluationRequestEntity.isUseOptimalClassifierOptions()) {
-                    populateEvaluationOptions(evaluationResults, evaluationRequestEntity);
-                }
-                saveEvaluationResults(evaluationResults, evaluationRequestEntity);
-                uploadModelToS3(evaluationResults, evaluationRequestEntity);
-                generateClassifierModelDownloadUrl(evaluationRequestEntity);
-                evaluationRequestEntity.setRequestStage(RequestStageType.COMPLETED);
+        internalHandleResponse(evaluationRequestEntity, evaluationResponse, (requestEntity, response) -> {
+            EvaluationResults evaluationResults = response.getEvaluationResults();
+            if (requestEntity.isUseOptimalClassifierOptions()) {
+                populateEvaluationOptions(evaluationResults, requestEntity);
             }
-            log.info("Evaluation response with correlation id [{}] has been processed",
-                    evaluationRequestEntity.getCorrelationId());
-        } catch (Exception ex) {
-            log.error("There was an error while handle evaluation response [{}]: {}",
-                    evaluationRequestEntity.getCorrelationId(), ex.getMessage(), ex);
-            evaluationRequestEntity.setRequestStage(RequestStageType.ERROR);
-            evaluationRequestEntity.setErrorMessage(ex.getMessage());
-        } finally {
-            evaluationRequestEntity.setEndDate(LocalDateTime.now());
-            ecaRequestRepository.save(evaluationRequestEntity);
-        }
+            saveEvaluationResults(evaluationResults, requestEntity);
+            uploadModelToS3(evaluationResults, requestEntity);
+            generateClassifierModelDownloadUrl(requestEntity);
+        });
     }
 
     /**
@@ -91,30 +78,37 @@ public class EcaResponseHandler {
      * @param experimentRequestEntity - evaluation request entity
      * @param experimentResponse      - evaluation response
      */
-    public void handleResponse(ExperimentRequestEntity experimentRequestEntity,
-                               ExperimentResponse experimentResponse) {
+    public void handleExperimentResponse(ExperimentRequestEntity experimentRequestEntity,
+                                         ExperimentResponse experimentResponse) {
         log.info("Starting to process experiment response with correlation id [{}]",
                 experimentRequestEntity.getCorrelationId());
+        internalHandleResponse(experimentRequestEntity, experimentResponse, (requestEntity, response) -> {
+            Assert.notNull(response.getDownloadUrl(),
+                    String.format("Expected not experiment download url for correlation id [%s]",
+                            requestEntity.getCorrelationId()));
+            requestEntity.setExperimentDownloadUrl(response.getDownloadUrl());
+        });
+    }
+
+    private <R extends EcaRequestEntity, M extends EcaResponse> void internalHandleResponse(R requestEntity,
+                                                                                            M ecaResponse,
+                                                                                            BiConsumer<R, M> successResponseHandler) {
         try {
-            if (!TechnicalStatus.SUCCESS.equals(experimentResponse.getStatus())) {
-                handleError(experimentRequestEntity, experimentResponse);
+            if (!TechnicalStatus.SUCCESS.equals(ecaResponse.getStatus())) {
+                handleError(requestEntity, ecaResponse);
             } else {
-                Assert.notNull(experimentResponse.getDownloadUrl(),
-                        String.format("Expected not experiment download url for correlation id [%s]",
-                                experimentRequestEntity.getCorrelationId()));
-                experimentRequestEntity.setExperimentDownloadUrl(experimentResponse.getDownloadUrl());
-                experimentRequestEntity.setRequestStage(RequestStageType.COMPLETED);
+                successResponseHandler.accept(requestEntity, ecaResponse);
+                requestEntity.setRequestStage(RequestStageType.COMPLETED);
             }
-            log.info("Experiment response with correlation id [{}] has been processed",
-                    experimentRequestEntity.getCorrelationId());
+            log.info("Response with correlation id [{}] has been processed", requestEntity.getCorrelationId());
         } catch (Exception ex) {
-            log.error("There was an error while handle experiment response [{}]: {}",
-                    experimentRequestEntity.getCorrelationId(), ex.getMessage(), ex);
-            experimentRequestEntity.setRequestStage(RequestStageType.ERROR);
-            experimentRequestEntity.setErrorMessage(ex.getMessage());
+            log.error("There was an error while handle response [{}]: {}",
+                    requestEntity.getCorrelationId(), ex.getMessage(), ex);
+            requestEntity.setRequestStage(RequestStageType.ERROR);
+            requestEntity.setErrorMessage(ex.getMessage());
         } finally {
-            experimentRequestEntity.setEndDate(LocalDateTime.now());
-            ecaRequestRepository.save(experimentRequestEntity);
+            requestEntity.setEndDate(LocalDateTime.now());
+            ecaRequestRepository.save(requestEntity);
         }
     }
 
@@ -159,13 +153,19 @@ public class EcaResponseHandler {
     }
 
     private void uploadModelToS3(EvaluationResults evaluationResults,
-                                 EvaluationRequestEntity evaluationRequestEntity) throws Exception {
-        var classifierModel = buildClassificationModel(evaluationResults);
-        String classifierPath = String.format(MODEL_PATH_FORMAT, evaluationRequestEntity.getCorrelationId());
-        log.info("Starting to save model [{}] to S3 {}", evaluationRequestEntity.getCorrelationId(), classifierPath);
-        objectStorageService.uploadObject(classifierModel, classifierPath);
-        log.info("Model [{}] has been saved into file {}", evaluationRequestEntity.getCorrelationId(), classifierPath);
-        evaluationRequestEntity.setClassifierPath(classifierPath);
+                                 EvaluationRequestEntity evaluationRequestEntity) {
+        try {
+            var classifierModel = buildClassificationModel(evaluationResults);
+            String classifierPath = String.format(MODEL_PATH_FORMAT, evaluationRequestEntity.getCorrelationId());
+            log.info("Starting to save model [{}] to S3 {}", evaluationRequestEntity.getCorrelationId(),
+                    classifierPath);
+            objectStorageService.uploadObject(classifierModel, classifierPath);
+            log.info("Model [{}] has been saved into file {}", evaluationRequestEntity.getCorrelationId(),
+                    classifierPath);
+            evaluationRequestEntity.setClassifierPath(classifierPath);
+        } catch (IOException ex) {
+            throw new IllegalStateException(ex);
+        }
     }
 
     private void generateClassifierModelDownloadUrl(EvaluationRequestEntity evaluationRequestEntity) {

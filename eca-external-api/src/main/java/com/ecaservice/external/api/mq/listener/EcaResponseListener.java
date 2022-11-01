@@ -46,7 +46,7 @@ public class EcaResponseListener {
         log.info("Received evaluation response from eca - server with correlation id [{}], status [{}]", correlationId,
                 evaluationResponse.getStatus());
         internalHandleResponse(correlationId, evaluationResponse, evaluationRequestRepository::findByCorrelationId,
-                ecaResponseHandler::handleResponse);
+                ecaResponseHandler::handleEvaluationResponse);
     }
 
     /**
@@ -61,7 +61,7 @@ public class EcaResponseListener {
         log.info("Received experiment response from eca - server with correlation id [{}], status [{}]", correlationId,
                 experimentResponse.getStatus());
         internalHandleResponse(correlationId, experimentResponse, experimentRequestRepository::findByCorrelationId,
-                ecaResponseHandler::handleResponse);
+                ecaResponseHandler::handleExperimentResponse);
     }
 
     private <R extends EcaRequestEntity, M extends EcaResponse> void internalHandleResponse(String correlationId,

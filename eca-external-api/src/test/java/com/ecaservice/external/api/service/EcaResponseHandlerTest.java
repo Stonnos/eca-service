@@ -51,7 +51,7 @@ class EcaResponseHandlerTest extends AbstractJpaTest {
     }
 
     @Test
-    void testSuccessResponseHandle() {
+    void testSuccessEvaluationResponseHandle() {
         EvaluationRequestEntity evaluationRequestEntity =
                 createEvaluationRequestEntity(RequestStageType.RESPONSE_RECEIVED, null, LocalDateTime.now());
         evaluationRequestEntity.setUseOptimalClassifierOptions(true);
@@ -61,7 +61,7 @@ class EcaResponseHandlerTest extends AbstractJpaTest {
                 String.format(CLASSIFIER_MODEL_PATH_FORMAT, evaluationRequestEntity.getCorrelationId());
         when(objectStorageService.getObjectPresignedProxyUrl(any(GetPresignedUrlObject.class)))
                 .thenReturn(CLASSIFIER_DOWNLOAD_URL);
-        ecaResponseHandler.handleResponse(evaluationRequestEntity, evaluationResponse);
+        ecaResponseHandler.handleEvaluationResponse(evaluationRequestEntity, evaluationResponse);
         var actual =
                 internalTestResponseHandle(evaluationRequestEntity, evaluationResponse, RequestStageType.COMPLETED);
         assertThat(actual.getClassifierPath()).isEqualTo(expectedClassifierPath);
@@ -70,7 +70,7 @@ class EcaResponseHandlerTest extends AbstractJpaTest {
     }
 
     @Test
-    void testResponseHandleWithErrorTechnicalStatus() {
+    void testEvaluationResponseHandleWithErrorTechnicalStatus() {
         EvaluationRequestEntity evaluationRequestEntity =
                 createEvaluationRequestEntity(RequestStageType.RESPONSE_RECEIVED, null, LocalDateTime.now());
         evaluationRequestRepository.save(evaluationRequestEntity);
@@ -79,7 +79,7 @@ class EcaResponseHandlerTest extends AbstractJpaTest {
     }
 
     @Test
-    void testResponseHandleWithError() throws Exception {
+    void testEvaluationResponseHandleWithError() throws Exception {
         EvaluationRequestEntity evaluationRequestEntity =
                 createEvaluationRequestEntity(RequestStageType.RESPONSE_RECEIVED, null, LocalDateTime.now());
         evaluationRequestRepository.save(evaluationRequestEntity);
@@ -91,7 +91,7 @@ class EcaResponseHandlerTest extends AbstractJpaTest {
     private EvaluationRequestEntity internalTestResponseHandle(EvaluationRequestEntity evaluationRequestEntity,
                                                                EvaluationResponse evaluationResponse,
                                                                RequestStageType expected) {
-        ecaResponseHandler.handleResponse(evaluationRequestEntity, evaluationResponse);
+        ecaResponseHandler.handleEvaluationResponse(evaluationRequestEntity, evaluationResponse);
         EvaluationRequestEntity actual =
                 evaluationRequestRepository.findById(evaluationRequestEntity.getId()).orElse(null);
         assertThat(actual).isNotNull();
