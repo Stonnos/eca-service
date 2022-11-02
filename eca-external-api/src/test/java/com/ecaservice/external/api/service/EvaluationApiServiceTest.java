@@ -8,6 +8,7 @@ import com.ecaservice.external.api.dto.EvaluationRequestDto;
 import com.ecaservice.external.api.dto.InstancesRequestDto;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
+import com.ecaservice.external.api.mapping.EcaRequestMapperImpl;
 import com.ecaservice.external.api.repository.EvaluationRequestRepository;
 import eca.regression.Logistic;
 import org.junit.jupiter.api.Test;
@@ -34,7 +35,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({EvaluationApiService.class, ClassifiersOptionsAutoConfiguration.class})
+@Import({EvaluationApiService.class, ClassifiersOptionsAutoConfiguration.class, EcaRequestMapperImpl.class})
 class EvaluationApiServiceTest extends AbstractJpaTest {
 
     @MockBean

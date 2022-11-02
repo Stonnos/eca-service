@@ -10,6 +10,7 @@ import com.ecaservice.external.api.dto.ExperimentRequestDto;
 import com.ecaservice.external.api.dto.InstancesRequestDto;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
+import com.ecaservice.external.api.mapping.EcaRequestMapper;
 import com.ecaservice.external.api.repository.EcaRequestRepository;
 import eca.core.evaluation.EvaluationMethod;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class EvaluationApiService {
 
+    private final EcaRequestMapper ecaRequestMapper;
     private final InstancesService instancesService;
     private final ClassifierOptionsAdapter classifierOptionsAdapter;
     private final RabbitSender rabbitSender;
@@ -83,6 +85,8 @@ public class EvaluationApiService {
                 loadInstances(experimentRequestDto.getTrainDataUrl(), ecaRequestEntity.getCorrelationId());
         ExperimentRequest experimentRequest = new ExperimentRequest();
         experimentRequest.setData(instances);
+        experimentRequest.setEvaluationMethod(experimentRequestDto.getEvaluationMethod());
+        experimentRequest.setExperimentType(ecaRequestMapper.map(experimentRequestDto.getExperimentType()));
         rabbitSender.sendExperimentRequest(experimentRequest, ecaRequestEntity.getCorrelationId());
         saveAsSent(ecaRequestEntity);
         log.info("Experiment request [{}] has been sent to eca-server", ecaRequestEntity.getCorrelationId());

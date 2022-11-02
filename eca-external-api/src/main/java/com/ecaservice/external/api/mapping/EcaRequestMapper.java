@@ -1,6 +1,8 @@
 package com.ecaservice.external.api.mapping;
 
+import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.external.api.dto.EvaluationRequestDto;
+import com.ecaservice.external.api.dto.ExApiExperimentType;
 import com.ecaservice.external.api.dto.ExperimentRequestDto;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.ExperimentRequestEntity;
@@ -33,6 +35,14 @@ public interface EcaRequestMapper {
      * @return experiment request entity
      */
     ExperimentRequestEntity map(ExperimentRequestDto experimentRequestDto);
+
+    /**
+     * Maps experiment external api experiment type to internal format.
+     *
+     * @param exApiExperimentType - external api experiment type
+     * @return internal experiment type
+     */
+    ExperimentType map(ExApiExperimentType exApiExperimentType);
 
     /**
      * Maps classifier options.
