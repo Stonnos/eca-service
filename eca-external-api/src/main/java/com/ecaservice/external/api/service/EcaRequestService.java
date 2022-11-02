@@ -15,7 +15,6 @@ import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -113,17 +112,21 @@ public class EcaRequestService {
      *
      * @param evaluationRequestEntity - evaluation request entity
      */
-    @Transactional
     public void deleteClassifierModel(EvaluationRequestEntity evaluationRequestEntity) {
-        log.info("Starting to delete evaluation request [{}] classifier model file",
-                evaluationRequestEntity.getCorrelationId());
-        String classifierPath = evaluationRequestEntity.getClassifierPath();
-        evaluationRequestEntity.setClassifierPath(null);
-        evaluationRequestEntity.setDeletedDate(LocalDateTime.now());
-        evaluationRequestRepository.save(evaluationRequestEntity);
-        objectStorageService.removeObject(classifierPath);
-        log.info("Evaluation request [{}] classifier model file has been deleted",
-                evaluationRequestEntity.getCorrelationId());
+        try {
+            log.info("Starting to delete evaluation request [{}] classifier model file",
+                    evaluationRequestEntity.getCorrelationId());
+            String classifierPath = evaluationRequestEntity.getClassifierPath();
+            evaluationRequestEntity.setClassifierPath(null);
+            evaluationRequestEntity.setDeletedDate(LocalDateTime.now());
+            evaluationRequestRepository.save(evaluationRequestEntity);
+            objectStorageService.removeObject(classifierPath);
+            log.info("Evaluation request [{}] classifier model file has been deleted",
+                    evaluationRequestEntity.getCorrelationId());
+        } catch (Exception ex) {
+            log.error("There was an error while deleting evaluation request [{}] classifier model: {}",
+                    evaluationRequestEntity.getCorrelationId(), ex.getMessage());
+        }
     }
 
     private void initializeRequest(EcaRequestEntity ecaRequestEntity, String correlationId) {
