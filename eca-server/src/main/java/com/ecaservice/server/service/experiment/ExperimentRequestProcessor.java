@@ -146,12 +146,7 @@ public class ExperimentRequestProcessor {
         experiments.forEach(experiment -> {
             putMdc(TX_ID, experiment.getRequestId());
             putMdc(EV_REQUEST_ID, experiment.getRequestId());
-            try {
-                experimentService.removeExperimentModel(experiment);
-            } catch (Exception ex) {
-                log.error("There was an error while remove experiment [{}] model file: {}", experiment.getRequestId(),
-                        ex.getMessage());
-            }
+            experimentService.removeExperimentModel(experiment);
         });
     }
 
@@ -159,12 +154,7 @@ public class ExperimentRequestProcessor {
         experiments.forEach(experiment -> {
             putMdc(TX_ID, experiment.getRequestId());
             putMdc(EV_REQUEST_ID, experiment.getRequestId());
-            try {
-                experimentService.removeExperimentTrainingData(experiment);
-            } catch (Exception ex) {
-                log.error("There was an error while remove experiment [{}] training data file: {}",
-                        experiment.getRequestId(), ex.getMessage());
-            }
+            experimentService.removeExperimentTrainingData(experiment);
         });
     }
 }

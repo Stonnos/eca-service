@@ -166,16 +166,20 @@ public class ExperimentService implements PageRequestService<Experiment> {
      *
      * @param experiment - experiment entity
      */
-    @Transactional
     public void removeExperimentModel(Experiment experiment) {
-        log.info("Starting to remove experiment [{}] model file", experiment.getRequestId());
-        String experimentPath = experiment.getExperimentPath();
-        experiment.setExperimentPath(null);
-        experiment.setExperimentDownloadUrl(null);
-        experiment.setDeletedDate(LocalDateTime.now());
-        experimentRepository.save(experiment);
-        objectStorageService.removeObject(experimentPath);
-        log.info("Experiment [{}] model file has been deleted", experiment.getRequestId());
+        try {
+            log.info("Starting to remove experiment [{}] model file", experiment.getRequestId());
+            String experimentPath = experiment.getExperimentPath();
+            objectStorageService.removeObject(experimentPath);
+            experiment.setExperimentPath(null);
+            experiment.setExperimentDownloadUrl(null);
+            experiment.setDeletedDate(LocalDateTime.now());
+            experimentRepository.save(experiment);
+            log.info("Experiment [{}] model file has been deleted", experiment.getRequestId());
+        } catch (Exception ex) {
+            log.error("There was an error while remove experiment [{}] model file: {}", experiment.getRequestId(),
+                    ex.getMessage());
+        }
     }
 
     /**
@@ -183,14 +187,18 @@ public class ExperimentService implements PageRequestService<Experiment> {
      *
      * @param experiment - experiment entity
      */
-    @Transactional
     public void removeExperimentTrainingData(Experiment experiment) {
-        log.info("Starting to remove experiment [{}] training data file", experiment.getRequestId());
-        String trainingDataPath = experiment.getTrainingDataPath();
-        experiment.setTrainingDataPath(null);
-        experimentRepository.save(experiment);
-        objectStorageService.removeObject(trainingDataPath);
-        log.info("Experiment [{}] training data file has been deleted", experiment.getRequestId());
+        try {
+            log.info("Starting to remove experiment [{}] training data file", experiment.getRequestId());
+            String trainingDataPath = experiment.getTrainingDataPath();
+            objectStorageService.removeObject(trainingDataPath);
+            experiment.setTrainingDataPath(null);
+            experimentRepository.save(experiment);
+            log.info("Experiment [{}] training data file has been deleted", experiment.getRequestId());
+        } catch (Exception ex) {
+            log.error("There was an error while remove experiment [{}] training data file: {}",
+                    experiment.getRequestId(), ex.getMessage());
+        }
     }
 
     @Override
