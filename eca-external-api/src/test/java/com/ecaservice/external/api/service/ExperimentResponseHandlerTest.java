@@ -38,7 +38,7 @@ class ExperimentResponseHandlerTest extends AbstractJpaTest {
     @Test
     void testSuccessExperimentResponseHandle() {
         var experimentRequestEntity =
-                createExperimentRequestEntity(UUID.randomUUID().toString(), RequestStageType.RESPONSE_RECEIVED);
+                createExperimentRequestEntity(UUID.randomUUID().toString(), RequestStageType.REQUEST_SENT);
         experimentRequestRepository.save(experimentRequestEntity);
         var experimentResponse = successExperimentResponse();
         experimentResponseHandler.handleResponse(experimentRequestEntity, experimentResponse);
@@ -50,7 +50,7 @@ class ExperimentResponseHandlerTest extends AbstractJpaTest {
     @Test
     void testExperimentResponseHandleWithErrorTechnicalStatus() {
         var experimentRequestEntity =
-                createExperimentRequestEntity(UUID.randomUUID().toString(), RequestStageType.RESPONSE_RECEIVED);
+                createExperimentRequestEntity(UUID.randomUUID().toString(), RequestStageType.REQUEST_SENT);
         experimentRequestRepository.save(experimentRequestEntity);
         var experimentResponse = errorExperimentResponse();
         internalTestResponseHandle(experimentRequestEntity, experimentResponse, RequestStageType.ERROR);

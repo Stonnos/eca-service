@@ -2,7 +2,6 @@ package com.ecaservice.external.api.mq.listener;
 
 import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
-import com.ecaservice.external.api.repository.EcaRequestRepository;
 import com.ecaservice.external.api.repository.EvaluationRequestRepository;
 import com.ecaservice.external.api.service.EvaluationResponseHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -27,14 +26,11 @@ public class EvaluationResponseListener extends AbstractResponseListener<Evaluat
     /**
      * Constructor with parameters,
      *
-     * @param ecaRequestRepository        - eca request repository
      * @param evaluationRequestRepository - evaluation request repository
      * @param evaluationResponseHandler   - evaluation response handler
      */
-    public EvaluationResponseListener(EcaRequestRepository ecaRequestRepository,
-                                      EvaluationRequestRepository evaluationRequestRepository,
+    public EvaluationResponseListener(EvaluationRequestRepository evaluationRequestRepository,
                                       EvaluationResponseHandler evaluationResponseHandler) {
-        super(ecaRequestRepository);
         this.evaluationRequestRepository = evaluationRequestRepository;
         this.evaluationResponseHandler = evaluationResponseHandler;
     }

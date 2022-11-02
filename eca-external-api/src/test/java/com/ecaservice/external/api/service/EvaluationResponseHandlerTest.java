@@ -53,7 +53,7 @@ class EvaluationResponseHandlerTest extends AbstractJpaTest {
     @Test
     void testSuccessEvaluationResponseHandle() {
         EvaluationRequestEntity evaluationRequestEntity =
-                createEvaluationRequestEntity(RequestStageType.RESPONSE_RECEIVED, null, LocalDateTime.now());
+                createEvaluationRequestEntity(RequestStageType.REQUEST_SENT, null, LocalDateTime.now());
         evaluationRequestEntity.setUseOptimalClassifierOptions(true);
         evaluationRequestRepository.save(evaluationRequestEntity);
         EvaluationResponse evaluationResponse = successEvaluationResponse();
@@ -72,7 +72,7 @@ class EvaluationResponseHandlerTest extends AbstractJpaTest {
     @Test
     void testEvaluationResponseHandleWithErrorTechnicalStatus() {
         EvaluationRequestEntity evaluationRequestEntity =
-                createEvaluationRequestEntity(RequestStageType.RESPONSE_RECEIVED, null, LocalDateTime.now());
+                createEvaluationRequestEntity(RequestStageType.REQUEST_SENT, null, LocalDateTime.now());
         evaluationRequestRepository.save(evaluationRequestEntity);
         EvaluationResponse evaluationResponse = errorEvaluationResponse();
         internalTestResponseHandle(evaluationRequestEntity, evaluationResponse, RequestStageType.ERROR);
@@ -81,7 +81,7 @@ class EvaluationResponseHandlerTest extends AbstractJpaTest {
     @Test
     void testEvaluationResponseHandleWithError() throws Exception {
         EvaluationRequestEntity evaluationRequestEntity =
-                createEvaluationRequestEntity(RequestStageType.RESPONSE_RECEIVED, null, LocalDateTime.now());
+                createEvaluationRequestEntity(RequestStageType.REQUEST_SENT, null, LocalDateTime.now());
         evaluationRequestRepository.save(evaluationRequestEntity);
         EvaluationResponse evaluationResponse = successEvaluationResponse();
         doThrow(IllegalStateException.class).when(objectStorageService).uploadObject(any(), anyString());

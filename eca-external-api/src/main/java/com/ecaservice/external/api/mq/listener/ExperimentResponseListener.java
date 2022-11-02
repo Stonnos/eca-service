@@ -2,7 +2,6 @@ package com.ecaservice.external.api.mq.listener;
 
 import com.ecaservice.base.model.ExperimentResponse;
 import com.ecaservice.external.api.entity.ExperimentRequestEntity;
-import com.ecaservice.external.api.repository.EcaRequestRepository;
 import com.ecaservice.external.api.repository.ExperimentRequestRepository;
 import com.ecaservice.external.api.service.ExperimentResponseHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -27,14 +26,11 @@ public class ExperimentResponseListener extends AbstractResponseListener<Experim
     /**
      * Constructor with parameters.
      *
-     * @param ecaRequestRepository        - eca request repository
      * @param experimentRequestRepository - experiment request repository
      * @param experimentResponseHandler   - experiment response handler
      */
-    public ExperimentResponseListener(EcaRequestRepository ecaRequestRepository,
-                                      ExperimentRequestRepository experimentRequestRepository,
+    public ExperimentResponseListener(ExperimentRequestRepository experimentRequestRepository,
                                       ExperimentResponseHandler experimentResponseHandler) {
-        super(ecaRequestRepository);
         this.experimentRequestRepository = experimentRequestRepository;
         this.experimentResponseHandler = experimentResponseHandler;
     }

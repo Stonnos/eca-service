@@ -3,9 +3,6 @@ package com.ecaservice.external.api.mq.listener;
 import com.ecaservice.base.model.EcaResponse;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
-import com.ecaservice.external.api.repository.EcaRequestRepository;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 
@@ -19,10 +16,7 @@ import java.util.Optional;
  * @author Roman Batygin
  */
 @Slf4j
-@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class AbstractResponseListener<R extends EcaRequestEntity, M extends EcaResponse> {
-
-    private final EcaRequestRepository ecaRequestRepository;
 
     /**
      * Handles response message.
@@ -64,16 +58,7 @@ public abstract class AbstractResponseListener<R extends EcaRequestEntity, M ext
         if (RequestStageType.EXCEEDED.equals(requestEntity.getRequestStage())) {
             log.warn("Got exceeded eca request entity [{}].", correlationId);
         } else {
-            saveReceivedResponseStatus(requestEntity, ecaResponse);
             handleResponse(requestEntity, ecaResponse);
         }
     }
-
-    private void saveReceivedResponseStatus(R requestEntity, M ecaResponse) {
-        requestEntity.setRequestId(ecaResponse.getRequestId());
-        requestEntity.setTechnicalStatus(ecaResponse.getStatus());
-        requestEntity.setRequestStage(RequestStageType.RESPONSE_RECEIVED);
-        ecaRequestRepository.save(requestEntity);
-    }
-
 }

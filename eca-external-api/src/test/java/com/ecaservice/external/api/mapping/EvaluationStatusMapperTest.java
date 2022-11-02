@@ -23,7 +23,7 @@ class EvaluationStatusMapperTest {
 
     private final Map<RequestStageType, EvaluationStatus> statusesMap = Map.of(
             RequestStageType.REQUEST_SENT, EvaluationStatus.IN_PROGRESS,
-            RequestStageType.RESPONSE_RECEIVED, EvaluationStatus.IN_PROGRESS,
+            RequestStageType.REQUEST_CREATED, EvaluationStatus.IN_PROGRESS,
             RequestStageType.COMPLETED, EvaluationStatus.FINISHED,
             RequestStageType.ERROR, EvaluationStatus.ERROR,
             RequestStageType.READY, EvaluationStatus.IN_PROGRESS,
