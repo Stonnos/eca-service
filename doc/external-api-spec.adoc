@@ -218,7 +218,7 @@ curl -X POST "http://localhost:8080/external-api/uploads-train-data" -H "accept:
 |string
 |-
 |Код ошибки
-|
+|Заполняется по справочнику <<Справочник кодов ошибок>>
 |===
 
 ==== 3.8. Пример запроса на построение модели классификатора с использованием оптимальных параметров
@@ -310,7 +310,7 @@ curl -X GET "http://localhost:8080/external-api/evaluation-results/1cbe6c49-8432
 |string
 |-
 |Код ошибки
-|
+|Заполняется по справочнику <<Справочник кодов ошибок>>
 |modelUrl
 |string
 |-
@@ -443,7 +443,7 @@ curl -X GET "http://localhost:8080/external-api/experiment-results/1cbe6c49-8432
 |string
 |-
 |Код ошибки
-|
+|Заполняется по справочнику <<Справочник кодов ошибок>>
 |experimentModelUrl
 |string
 |-
@@ -540,4 +540,23 @@ curl -X GET "http://localhost:8080/external-api/experiment-results/1cbe6c49-8432
 |9
 |DECISION_TREE
 |Автоматический подбор оптимальных параметров для деревьев решений
+|===
+
+== Справочник кодов ошибок
+
+[options="header"]
+|===
+|№|Код|Описание
+|1
+|INTERNAL_SERVER_ERROR
+|Внутренняя ошибка сервера
+|2
+|SERVICE_UNAVAILABLE
+|Внутренний сервис не доступен
+|3
+|CLASSIFIER_OPTIONS_NOT_FOUND
+|Не удалось подобрать оптимальные настройки классификатора (для запроса /optimal-evaluation-request)
+|4
+|TRAINING_DATA_NOT_FOUND
+|Не удалось найти обучающую выборку в базе знаний (для запроса /optimal-evaluation-request)
 |===
