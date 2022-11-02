@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Import;
 
 import javax.inject.Inject;
@@ -24,28 +23,24 @@ import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 
 /**
- * Unit tests for {@link ExperimentRequestProcessor} class.
+ * Unit tests for {@link ExperimentDataCleaner} class.
  *
  * @author Roman Batygin
  */
-@Import({ExperimentRequestProcessor.class, ExperimentConfig.class})
-class ExperimentRequestProcessorTest extends AbstractJpaTest {
+@Import({ExperimentDataCleaner.class, ExperimentConfig.class})
+class ExperimentDataCleanerTest extends AbstractJpaTest {
 
     @Inject
     private ExperimentRepository experimentRepository;
 
     @MockBean
     private ExperimentService experimentService;
-    @MockBean
-    private ApplicationEventPublisher eventPublisher;
-    @MockBean
-    private ExperimentProgressService experimentProgressService;
 
     @Inject
     private ExperimentConfig experimentConfig;
 
     @Inject
-    private ExperimentRequestProcessor experimentRequestProcessor;
+    private ExperimentDataCleaner experimentDataCleaner;
 
     @Captor
     private ArgumentCaptor<Experiment> argumentCaptor;
@@ -74,7 +69,7 @@ class ExperimentRequestProcessorTest extends AbstractJpaTest {
                 TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.TIMEOUT);
         experiments.add(errorExperiment);
         experimentRepository.saveAll(experiments);
-        experimentRequestProcessor.removeExperimentsModels();
+        experimentDataCleaner.removeExperimentsModels();
         verify(experimentService, atLeastOnce()).removeExperimentModel(argumentCaptor.capture());
         assertThat(argumentCaptor.getValue()).isEqualTo(experimentToRemove);
     }

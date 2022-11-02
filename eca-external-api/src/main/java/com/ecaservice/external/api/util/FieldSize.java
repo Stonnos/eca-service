@@ -20,7 +20,7 @@ public class FieldSize {
     public static final int SCALE = 4;
 
     /**
-     * Classifier download url max length
+     * Download url max length
      */
-    public static final int CLASSIFIER_DOWNLOAD_URL_MAX_LENGTH = 1024;
+    public static final int DOWNLOAD_URL_MAX_LENGTH = 1024;
 }

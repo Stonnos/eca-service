@@ -1,7 +1,6 @@
 package com.ecaservice.external.api.service;
 
 import com.ecaservice.external.api.AbstractJpaTest;
-import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.repository.EvaluationRequestRepository;
@@ -18,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Roman Batygin
  */
-@Import({RequestStageHandler.class, ExternalApiConfig.class})
+@Import(RequestStageHandler.class)
 class RequestStageHandlerTest extends AbstractJpaTest {
 
     private static final String ERROR_MESSAGE = "Error";

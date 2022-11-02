@@ -6,6 +6,7 @@ import com.ecaservice.external.api.AbstractJpaTest;
 import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
+import com.ecaservice.external.api.mapping.EcaRequestMapperImpl;
 import com.ecaservice.external.api.repository.EvaluationRequestRepository;
 import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
@@ -26,12 +27,13 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests for checking {@link EcaResponseHandler} functionality.
+ * Unit tests for checking {@link EvaluationResponseHandler} functionality.
  *
  * @author Roman Batygin
  */
-@Import({EcaResponseHandler.class, ClassifiersOptionsAutoConfiguration.class, ExternalApiConfig.class})
-class EcaResponseHandlerTest extends AbstractJpaTest {
+@Import({EvaluationResponseHandler.class, ClassifiersOptionsAutoConfiguration.class, ExternalApiConfig.class,
+        EcaRequestMapperImpl.class, RequestStageHandler.class})
+class EvaluationResponseHandlerTest extends AbstractJpaTest {
 
     private static final String CLASSIFIER_MODEL_PATH_FORMAT = "classifier-%s.model";
     private static final String CLASSIFIER_DOWNLOAD_URL = "http://localhost:9000/object-storage";
@@ -43,7 +45,7 @@ class EcaResponseHandlerTest extends AbstractJpaTest {
     private EvaluationRequestRepository evaluationRequestRepository;
 
     @Inject
-    private EcaResponseHandler ecaResponseHandler;
+    private EvaluationResponseHandler evaluationResponseHandler;
 
     @Override
     public void deleteAll() {
@@ -51,9 +53,9 @@ class EcaResponseHandlerTest extends AbstractJpaTest {
     }
 
     @Test
-    void testSuccessResponseHandle() {
+    void testSuccessEvaluationResponseHandle() {
         EvaluationRequestEntity evaluationRequestEntity =
-                createEvaluationRequestEntity(RequestStageType.RESPONSE_RECEIVED, null, LocalDateTime.now());
+                createEvaluationRequestEntity(RequestStageType.REQUEST_SENT, null, LocalDateTime.now());
         evaluationRequestEntity.setUseOptimalClassifierOptions(true);
         evaluationRequestRepository.save(evaluationRequestEntity);
         EvaluationResponse evaluationResponse = successEvaluationResponse();
@@ -61,7 +63,7 @@ class EcaResponseHandlerTest extends AbstractJpaTest {
                 String.format(CLASSIFIER_MODEL_PATH_FORMAT, evaluationRequestEntity.getCorrelationId());
         when(objectStorageService.getObjectPresignedProxyUrl(any(GetPresignedUrlObject.class)))
                 .thenReturn(CLASSIFIER_DOWNLOAD_URL);
-        ecaResponseHandler.handleResponse(evaluationRequestEntity, evaluationResponse);
+        evaluationResponseHandler.handleResponse(evaluationRequestEntity, evaluationResponse);
         var actual =
                 internalTestResponseHandle(evaluationRequestEntity, evaluationResponse, RequestStageType.COMPLETED);
         assertThat(actual.getClassifierPath()).isEqualTo(expectedClassifierPath);
@@ -70,18 +72,18 @@ class EcaResponseHandlerTest extends AbstractJpaTest {
     }
 
     @Test
-    void testResponseHandleWithErrorTechnicalStatus() {
+    void testEvaluationResponseHandleWithErrorTechnicalStatus() {
         EvaluationRequestEntity evaluationRequestEntity =
-                createEvaluationRequestEntity(RequestStageType.RESPONSE_RECEIVED, null, LocalDateTime.now());
+                createEvaluationRequestEntity(RequestStageType.REQUEST_SENT, null, LocalDateTime.now());
         evaluationRequestRepository.save(evaluationRequestEntity);
         EvaluationResponse evaluationResponse = errorEvaluationResponse();
         internalTestResponseHandle(evaluationRequestEntity, evaluationResponse, RequestStageType.ERROR);
     }
 
     @Test
-    void testResponseHandleWithError() throws Exception {
+    void testEvaluationResponseHandleWithError() throws Exception {
         EvaluationRequestEntity evaluationRequestEntity =
-                createEvaluationRequestEntity(RequestStageType.RESPONSE_RECEIVED, null, LocalDateTime.now());
+                createEvaluationRequestEntity(RequestStageType.REQUEST_SENT, null, LocalDateTime.now());
         evaluationRequestRepository.save(evaluationRequestEntity);
         EvaluationResponse evaluationResponse = successEvaluationResponse();
         doThrow(IllegalStateException.class).when(objectStorageService).uploadObject(any(), anyString());
@@ -91,7 +93,7 @@ class EcaResponseHandlerTest extends AbstractJpaTest {
     private EvaluationRequestEntity internalTestResponseHandle(EvaluationRequestEntity evaluationRequestEntity,
                                                                EvaluationResponse evaluationResponse,
                                                                RequestStageType expected) {
-        ecaResponseHandler.handleResponse(evaluationRequestEntity, evaluationResponse);
+        evaluationResponseHandler.handleResponse(evaluationRequestEntity, evaluationResponse);
         EvaluationRequestEntity actual =
                 evaluationRequestRepository.findById(evaluationRequestEntity.getId()).orElse(null);
         assertThat(actual).isNotNull();

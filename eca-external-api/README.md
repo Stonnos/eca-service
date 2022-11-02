@@ -24,13 +24,17 @@ ECA external API
    * external-api.batchSize - размер страницы (используется для постраничной обработки)
    * external-api.requestTimeoutSeconds - таймаут запроса в сек.
    * external-api.evaluationRequestTimeoutMinutes - таймаут в мин. для построения моделей
+   * external-api.experimentRequestTimeoutMinutes - таймаут в мин. для построения экспериментов
    * external-api.classifierDownloadUrlExpirationDays - время жизни ссылки на скачивание моделей
    * external-api.numberOfDaysForStorage - число дней для хранения файлов с моделями и обучающими выборками.
    * external-api.removeClassifiersCron - крон выражение для удаления файлов с моделями
    * external-api.removeDataCron - крон выражение для удаления файлов с обучающими выборками
 3) queue - настройки очередей rabbit mq
-   * queue.evaluationRequestQueue - очередь запросов на построение классификаторов
-   * queue.evaluationRequestReplyToQueue - очередь ответов от eca - server
+   * queue.evaluationRequestQueue - очередь для запросов на построение классификаторов
+   * queue.experimentRequestQueue - очедерь для запросов на построение экспериментов
+   * queue.optimalEvaluationRequestQueue - очередь для запросов на построение классификаторов с использованием оптимальных параметров
+   * queue.evaluationResponseQueue - очередь ответов от eca - server на построение классификаторов
+   * queue.experimentResponseQueue - очередь ответов от eca - server на построение экспериментов
 4) open-api - настройки Swagger
    * open-api.tokenBaseUrl - базовый url - сервера авторизации
    * open-api.projectVersion - версия API

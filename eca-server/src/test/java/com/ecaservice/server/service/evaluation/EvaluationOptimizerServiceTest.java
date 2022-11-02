@@ -394,7 +394,7 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         assertThat(evaluationResponse.getEvaluationResults()).isNull();
         assertThat(evaluationResponse.getErrors()).hasSize(1);
         var error = evaluationResponse.getErrors().iterator().next();
-        assertThat(error.getCode()).isEqualTo(expectedErrorCode.name());
+        assertThat(error.getCode()).isEqualTo(expectedErrorCode);
         assertThat(error.getMessage()).isEqualTo(expectedErrorCode.getErrorMessage());
         List<ClassifierOptionsRequestModel> optionsRequests = classifierOptionsRequestModelRepository.findAll();
         AssertionUtils.hasOneElement(optionsRequests);

@@ -1,9 +1,9 @@
 package com.ecaservice.external.api.aspect;
 
-import com.ecaservice.external.api.dto.EvaluationResponseDto;
 import com.ecaservice.external.api.dto.EvaluationStatus;
 import com.ecaservice.external.api.dto.ResponseCode;
 import com.ecaservice.external.api.dto.ResponseDto;
+import com.ecaservice.external.api.dto.SimpleEvaluationResponseDto;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.error.ExceptionTranslator;
@@ -54,17 +54,17 @@ class RequestExecutionAspectTest {
     private RequestExecutionAspect requestExecutionAspect;
 
     @Captor
-    private ArgumentCaptor<ResponseDto<EvaluationResponseDto>> evaluationResponseDtoArgumentCaptor;
+    private ArgumentCaptor<ResponseDto<SimpleEvaluationResponseDto>> evaluationResponseDtoArgumentCaptor;
 
     @Test
     void testSuccessMethodExecution() throws Throwable {
         EvaluationRequestEntity evaluationRequestEntity = createEvaluationRequestEntity(UUID.randomUUID().toString());
         ProceedingJoinPoint joinPoint = createProceedingJoinPoint(evaluationRequestEntity);
-        MonoSink<ResponseDto<EvaluationResponseDto>> sink = mock(MonoSink.class);
+        MonoSink<ResponseDto<SimpleEvaluationResponseDto>> sink = mock(MonoSink.class);
         when(messageCorrelationService.pop(evaluationRequestEntity.getCorrelationId())).thenReturn(Optional.of(sink));
         requestExecutionAspect.around(joinPoint, null);
         verify(sink).success(evaluationResponseDtoArgumentCaptor.capture());
-        ResponseDto<EvaluationResponseDto> evaluationResponseDto = evaluationResponseDtoArgumentCaptor.getValue();
+        var evaluationResponseDto = evaluationResponseDtoArgumentCaptor.getValue();
         assertThat(evaluationResponseDto).isNotNull();
         assertThat(evaluationResponseDto.getPayload()).isNotNull();
         assertThat(evaluationResponseDto.getPayload().getRequestId()).isEqualTo(
@@ -79,12 +79,12 @@ class RequestExecutionAspectTest {
         ProceedingJoinPoint joinPoint = createProceedingJoinPoint(evaluationRequestEntity);
         doThrow(new DataNotFoundException("error")).when(joinPoint).proceed();
         when(exceptionTranslator.translate(any(Exception.class))).thenReturn(ResponseCode.ERROR);
-        MonoSink<ResponseDto<EvaluationResponseDto>> sink = mock(MonoSink.class);
+        MonoSink<ResponseDto<SimpleEvaluationResponseDto>> sink = mock(MonoSink.class);
         when(messageCorrelationService.pop(evaluationRequestEntity.getCorrelationId())).thenReturn(Optional.of(sink));
         requestExecutionAspect.around(joinPoint, null);
         verify(requestStageHandler).handleError(any(EcaRequestEntity.class), any(String.class));
         verify(sink).success(evaluationResponseDtoArgumentCaptor.capture());
-        ResponseDto<EvaluationResponseDto> evaluationResponseDto = evaluationResponseDtoArgumentCaptor.getValue();
+        var evaluationResponseDto = evaluationResponseDtoArgumentCaptor.getValue();
         assertThat(evaluationResponseDto).isNotNull();
         assertThat(evaluationResponseDto.getPayload()).isNotNull();
         assertThat(evaluationResponseDto.getPayload().getRequestId()).isEqualTo(

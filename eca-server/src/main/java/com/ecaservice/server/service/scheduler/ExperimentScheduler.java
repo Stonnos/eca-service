@@ -1,6 +1,7 @@
 package com.ecaservice.server.service.scheduler;
 
 import com.ecaservice.server.repository.ExperimentRepository;
+import com.ecaservice.server.service.experiment.ExperimentDataCleaner;
 import com.ecaservice.server.service.experiment.ExperimentRequestProcessor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ import org.springframework.util.CollectionUtils;
 public class ExperimentScheduler {
 
     private final ExperimentRequestProcessor experimentRequestProcessor;
+    private final ExperimentDataCleaner experimentDataCleaner;
     private final ExperimentRepository experimentRepository;
 
     /**
@@ -32,13 +34,13 @@ public class ExperimentScheduler {
     }
 
     /**
-     * Removes experiments data files from disk. Schedules by cron.
+     * Removes experiments data files from S3. Schedules by cron.
      */
     @Scheduled(cron = "${experiment.removeExperimentCron}")
     public void processRequestsToRemove() {
         log.info("Starting job to removes experiments data files from disk");
-        experimentRequestProcessor.removeExperimentsTrainingData();
-        experimentRequestProcessor.removeExperimentsModels();
+        experimentDataCleaner.removeExperimentsTrainingData();
+        experimentDataCleaner.removeExperimentsModels();
         log.info("Removing experiments data files job has been finished");
     }
 

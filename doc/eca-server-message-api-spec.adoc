@@ -112,9 +112,9 @@
   "status": "VALIDATION_ERROR",
   "errors": [
     {
-      "code": "NotNull",
+      "code": "INVALID_FIELD_VALUE",
       "fieldName": "classifier",
-      "errorMessage": "Expected not null value"
+      "errorMessage": "classifier: Expected not null value"
     }
   ]
 }
@@ -422,15 +422,6 @@
 |TRAINING_DATA_NOT_FOUND
 |Не найдена обучающая выборка для нахождения оптимальных настроек классификатора
 |5
-|NotNull
-|Не задано обязательное поле запроса
-|6
-|NotBlank
-|Поле не должно быть пустым
-|7
-|Email
-|Невалидный формат email
-|8
-|Size
-|Длина поля не соответствует заданным ограничениям
+|INVALID_FIELD_VALUE
+|Невалидное значение поля
 |===

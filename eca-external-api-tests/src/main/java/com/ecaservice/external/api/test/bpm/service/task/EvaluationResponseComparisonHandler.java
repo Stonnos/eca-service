@@ -1,7 +1,7 @@
 package com.ecaservice.external.api.test.bpm.service.task;
 
-import com.ecaservice.external.api.dto.EvaluationResponseDto;
 import com.ecaservice.external.api.dto.ResponseDto;
+import com.ecaservice.external.api.dto.SimpleEvaluationResponseDto;
 import com.ecaservice.external.api.test.bpm.model.TaskType;
 import com.ecaservice.external.api.test.entity.AutoTestEntity;
 import com.ecaservice.external.api.test.model.TestDataModel;
@@ -27,8 +27,8 @@ import static com.ecaservice.external.api.test.util.CamundaUtils.getVariable;
 @Component
 public class EvaluationResponseComparisonHandler extends ComparisonTaskHandler {
 
-    private static final ParameterizedTypeReference<ResponseDto<EvaluationResponseDto>> API_RESPONSE_TYPE_REFERENCE =
-            new ParameterizedTypeReference<ResponseDto<EvaluationResponseDto>>() {
+    private static final ParameterizedTypeReference<ResponseDto<SimpleEvaluationResponseDto>> API_RESPONSE_TYPE_REFERENCE =
+            new ParameterizedTypeReference<ResponseDto<SimpleEvaluationResponseDto>>() {
             };
 
     private final ObjectMapper objectMapper;
@@ -62,7 +62,7 @@ public class EvaluationResponseComparisonHandler extends ComparisonTaskHandler {
     }
 
     private void saveResponse(AutoTestEntity autoTestEntity,
-                              ResponseDto<EvaluationResponseDto> response) throws JsonProcessingException {
+                              ResponseDto<SimpleEvaluationResponseDto> response) throws JsonProcessingException {
         autoTestEntity.setResponse(objectMapper.writeValueAsString(response));
     }
 }

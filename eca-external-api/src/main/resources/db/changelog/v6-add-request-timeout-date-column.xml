@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v6-add-request-timeout-date-column.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="add_request_timeout_date_to_evaluation_request_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_request"/>
+            <not>
+                <columnExists tableName="evaluation_request" columnName="request_timeout_date"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="evaluation_request">
+            <column name="request_timeout_date" type="timestamp"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add_request_timeout_date_to_experiment_request_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment_request"/>
+            <not>
+                <columnExists tableName="experiment_request" columnName="request_timeout_date"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="experiment_request">
+            <column name="request_timeout_date" type="timestamp"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

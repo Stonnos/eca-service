@@ -1,12 +1,18 @@
 package com.ecaservice.external.api;
 
 import com.ecaservice.base.model.EvaluationResponse;
+import com.ecaservice.base.model.ExperimentResponse;
+import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.external.api.dto.EvaluationRequestDto;
-import com.ecaservice.external.api.dto.EvaluationResponseDto;
+import com.ecaservice.external.api.dto.EvaluationResultsResponseDto;
 import com.ecaservice.external.api.dto.EvaluationStatus;
+import com.ecaservice.external.api.dto.ExApiExperimentType;
+import com.ecaservice.external.api.dto.ExperimentRequestDto;
+import com.ecaservice.external.api.dto.ExperimentResultsResponseDto;
 import com.ecaservice.external.api.dto.InstancesRequestDto;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
+import com.ecaservice.external.api.entity.ExperimentRequestEntity;
 import com.ecaservice.external.api.entity.InstancesEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -46,6 +52,7 @@ public class TestHelperUtils {
     private static final String TRAINING_DATA_PARAM = "trainingData";
     private static final String IRIS_XLS = "iris.xls";
     private static final String TRAIN_DATA_URL = "data://84327874";
+    private static final String EXPERIMENT_DOWNLOAD_URL = "http://localhost:900/object-storage/experiment.model";
 
     /**
      * Generates the test data set.
@@ -121,6 +128,19 @@ public class TestHelperUtils {
     }
 
     /**
+     * Creates experiment request dto.
+     *
+     * @return experiment request dto
+     */
+    public static ExperimentRequestDto createExperimentRequestDto() {
+        var experimentRequestDto = new ExperimentRequestDto();
+        experimentRequestDto.setTrainDataUrl(TRAIN_DATA_URL);
+        experimentRequestDto.setExperimentType(ExApiExperimentType.RANDOM_FORESTS);
+        experimentRequestDto.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
+        return experimentRequestDto;
+    }
+
+    /**
      * Creates message properties.
      *
      * @return message properties
@@ -150,19 +170,52 @@ public class TestHelperUtils {
     /**
      * Creates evaluation request entity.
      *
-     * @param requestStageType - request stage type
-     * @param endDate          - end date
-     * @param requestDate      - request date
+     * @param requestStageType   - request stage type
+     * @param endDate            - end date
+     * @param requestTimeoutDate - request timeout date
      * @return evaluation request entity
      */
     public static EvaluationRequestEntity createEvaluationRequestEntity(RequestStageType requestStageType,
                                                                         LocalDateTime endDate,
-                                                                        LocalDateTime requestDate) {
+                                                                        LocalDateTime requestTimeoutDate) {
         EvaluationRequestEntity evaluationRequestEntity = createEvaluationRequestEntity(UUID.randomUUID().toString());
         evaluationRequestEntity.setRequestStage(requestStageType);
         evaluationRequestEntity.setEndDate(endDate);
-        evaluationRequestEntity.setRequestDate(requestDate);
+        evaluationRequestEntity.setRequestTimeoutDate(requestTimeoutDate);
         return evaluationRequestEntity;
+    }
+
+    /**
+     * Creates experiment request entity.
+     *
+     * @param correlationId    - correlation id
+     * @param requestStageType - request stage type
+     * @return experiment request entity
+     */
+    public static ExperimentRequestEntity createExperimentRequestEntity(String correlationId,
+                                                                        RequestStageType requestStageType) {
+        ExperimentRequestEntity experimentRequestEntity = new ExperimentRequestEntity();
+        experimentRequestEntity.setRequestStage(requestStageType);
+        experimentRequestEntity.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
+        experimentRequestEntity.setExperimentType(ExperimentType.RANDOM_FORESTS);
+        experimentRequestEntity.setCreationDate(LocalDateTime.now());
+        experimentRequestEntity.setCorrelationId(correlationId);
+        return experimentRequestEntity;
+    }
+
+    /**
+     * Creates experiment request entity.
+     *
+     * @param requestStageType   - request stage type
+     * @param requestTimeoutDate - request timeout date
+     * @return experiment request entity
+     */
+    public static ExperimentRequestEntity createExperimentRequestEntity(RequestStageType requestStageType,
+                                                                        LocalDateTime requestTimeoutDate) {
+        ExperimentRequestEntity experimentRequestEntity = createExperimentRequestEntity(UUID.randomUUID().toString(),
+                requestStageType);
+        experimentRequestEntity.setRequestTimeoutDate(requestTimeoutDate);
+        return experimentRequestEntity;
     }
 
     /**
@@ -193,6 +246,31 @@ public class TestHelperUtils {
     }
 
     /**
+     * Creates experiment response with success status.
+     *
+     * @return experiment response
+     */
+    public static ExperimentResponse successExperimentResponse() {
+        ExperimentResponse evaluationResponse = new ExperimentResponse();
+        evaluationResponse.setDownloadUrl(EXPERIMENT_DOWNLOAD_URL);
+        evaluationResponse.setRequestId(UUID.randomUUID().toString());
+        evaluationResponse.setStatus(TechnicalStatus.SUCCESS);
+        return evaluationResponse;
+    }
+
+    /**
+     * Creates experiment response with success status.
+     *
+     * @return experiment response
+     */
+    public static ExperimentResponse errorExperimentResponse() {
+        ExperimentResponse evaluationResponse = new ExperimentResponse();
+        evaluationResponse.setRequestId(UUID.randomUUID().toString());
+        evaluationResponse.setStatus(TechnicalStatus.ERROR);
+        return evaluationResponse;
+    }
+
+    /**
      * Creates evaluation response with error status.
      *
      * @return evaluation response
@@ -211,9 +289,24 @@ public class TestHelperUtils {
      * @param evaluationStatus - evaluation status
      * @return evaluation response dto
      */
-    public static EvaluationResponseDto createEvaluationResponseDto(String requestId,
-                                                                    EvaluationStatus evaluationStatus) {
-        return EvaluationResponseDto.builder()
+    public static EvaluationResultsResponseDto createEvaluationResponseDto(String requestId,
+                                                                           EvaluationStatus evaluationStatus) {
+        return EvaluationResultsResponseDto.builder()
+                .requestId(requestId)
+                .evaluationStatus(evaluationStatus)
+                .build();
+    }
+
+    /**
+     * Creates experiment response dto.
+     *
+     * @param requestId        - request id
+     * @param evaluationStatus - evaluation status
+     * @return experiment response dto
+     */
+    public static ExperimentResultsResponseDto createExperimentResponseDto(String requestId,
+                                                                           EvaluationStatus evaluationStatus) {
+        return ExperimentResultsResponseDto.builder()
                 .requestId(requestId)
                 .evaluationStatus(evaluationStatus)
                 .build();

@@ -1,13 +1,16 @@
 package com.ecaservice.external.api.service;
 
 import com.ecaservice.base.model.EvaluationRequest;
+import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.base.model.InstancesRequest;
 import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.external.api.aspect.RequestExecution;
 import com.ecaservice.external.api.dto.EvaluationRequestDto;
+import com.ecaservice.external.api.dto.ExperimentRequestDto;
 import com.ecaservice.external.api.dto.InstancesRequestDto;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
+import com.ecaservice.external.api.mapping.EcaRequestMapper;
 import com.ecaservice.external.api.repository.EcaRequestRepository;
 import eca.core.evaluation.EvaluationMethod;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +31,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class EvaluationApiService {
 
+    private final EcaRequestMapper ecaRequestMapper;
     private final InstancesService instancesService;
     private final ClassifierOptionsAdapter classifierOptionsAdapter;
     private final RabbitSender rabbitSender;
@@ -44,9 +48,7 @@ public class EvaluationApiService {
         log.info("Starting to process evaluation request [{}]", ecaRequestEntity.getCorrelationId());
         EvaluationRequest evaluationRequest = createEvaluationRequest(ecaRequestEntity, evaluationRequestDto);
         rabbitSender.sendEvaluationRequest(evaluationRequest, ecaRequestEntity.getCorrelationId());
-        ecaRequestEntity.setRequestStage(RequestStageType.REQUEST_SENT);
-        ecaRequestEntity.setRequestDate(LocalDateTime.now());
-        ecaRequestRepository.save(ecaRequestEntity);
+        saveAsSent(ecaRequestEntity);
         log.info("Evaluation request [{}] has been sent to eca-server", ecaRequestEntity.getCorrelationId());
     }
 
@@ -65,11 +67,35 @@ public class EvaluationApiService {
         InstancesRequest instancesRequest = new InstancesRequest();
         instancesRequest.setData(instances);
         rabbitSender.sendInstancesRequest(instancesRequest, ecaRequestEntity.getCorrelationId());
+        saveAsSent(ecaRequestEntity);
+        log.info("Optimal classifier evaluation request [{}] has been sent to eca-server",
+                ecaRequestEntity.getCorrelationId());
+    }
+
+    /**
+     * Processes experiment request.
+     *
+     * @param ecaRequestEntity     - eca request entity
+     * @param experimentRequestDto - experiment request dto.
+     */
+    @RequestExecution
+    public void processRequest(EcaRequestEntity ecaRequestEntity, ExperimentRequestDto experimentRequestDto) {
+        log.info("Starting to process experiment request [{}]", ecaRequestEntity.getCorrelationId());
+        Instances instances =
+                loadInstances(experimentRequestDto.getTrainDataUrl(), ecaRequestEntity.getCorrelationId());
+        ExperimentRequest experimentRequest = new ExperimentRequest();
+        experimentRequest.setData(instances);
+        experimentRequest.setEvaluationMethod(experimentRequestDto.getEvaluationMethod());
+        experimentRequest.setExperimentType(ecaRequestMapper.map(experimentRequestDto.getExperimentType()));
+        rabbitSender.sendExperimentRequest(experimentRequest, ecaRequestEntity.getCorrelationId());
+        saveAsSent(ecaRequestEntity);
+        log.info("Experiment request [{}] has been sent to eca-server", ecaRequestEntity.getCorrelationId());
+    }
+
+    private void saveAsSent(EcaRequestEntity ecaRequestEntity) {
         ecaRequestEntity.setRequestStage(RequestStageType.REQUEST_SENT);
         ecaRequestEntity.setRequestDate(LocalDateTime.now());
         ecaRequestRepository.save(ecaRequestEntity);
-        log.info("Optimal classifier evaluation request [{}] has been sent to eca-server",
-                ecaRequestEntity.getCorrelationId());
     }
 
     private EvaluationRequest createEvaluationRequest(EcaRequestEntity ecaRequestEntity,

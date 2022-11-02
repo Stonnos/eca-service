@@ -1,16 +1,16 @@
 package com.ecaservice.external.api.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 import lombok.experimental.Tolerate;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 
 import static com.ecaservice.external.api.dto.Constraints.MAX_INTEGER_VALUE_STRING;
 import static com.ecaservice.external.api.dto.Constraints.MAX_LENGTH_255;
-import static com.ecaservice.external.api.dto.Constraints.UUID_MAX_LENGTH;
 import static com.ecaservice.external.api.dto.Constraints.VALUE_0_STRING;
 import static com.ecaservice.external.api.dto.Constraints.VALUE_100_STRING;
 import static com.ecaservice.external.api.dto.Constraints.VALUE_1_STRING;
@@ -22,40 +22,21 @@ import static com.ecaservice.external.api.dto.Constraints.VALUE_2_STRING;
  * @author Roman Batygin
  */
 @Data
-@Builder
-@Schema(description = "Evaluation response model")
-public class EvaluationResponseDto implements Serializable {
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+@SuperBuilder
+@Schema(description = "Evaluation results response model")
+public class EvaluationResultsResponseDto extends SimpleEvaluationResponseDto {
 
     @Tolerate
-    public EvaluationResponseDto() {
+    public EvaluationResultsResponseDto() {
         //default constructor
     }
 
     /**
-     * Evaluation request id
-     */
-    @Schema(description = "Evaluation request id", example = "1cbe6c49-8432-4c81-9afa-90f04a803fed",
-            maxLength = UUID_MAX_LENGTH)
-    private String requestId;
-
-    /**
-     * Evaluation status
-     */
-    @Schema(description = "Evaluation status", example = "FINISHED", maxLength = MAX_LENGTH_255)
-    private EvaluationStatus evaluationStatus;
-
-    /**
-     * Error code
-     */
-    @Schema(description = "Error code", example = "INTERNAL_SERVER_ERROR", maxLength = MAX_LENGTH_255)
-    private String errorCode;
-
-    /**
      * Classifier model url
      */
-    @Schema(description = "Model url",
-            example = "http://localhost:8080/external-api/download-model/1cbe6c49-8432-4c81-9afa-90f04a803fed",
-            maxLength = MAX_LENGTH_255)
+    @Schema(description = "Model url", maxLength = MAX_LENGTH_255)
     private String modelUrl;
 
     /**

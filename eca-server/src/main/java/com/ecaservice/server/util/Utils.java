@@ -48,7 +48,7 @@ public class Utils {
      */
     public static MessageError error(ErrorCode errorCode) {
         MessageError error = new MessageError();
-        error.setCode(errorCode.name());
+        error.setCode(errorCode);
         error.setMessage(errorCode.getErrorMessage());
         return error;
     }
