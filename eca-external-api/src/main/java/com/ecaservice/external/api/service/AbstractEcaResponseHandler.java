@@ -34,36 +34,46 @@ public abstract class AbstractEcaResponseHandler<R extends EcaRequestEntity, M e
      * @param ecaResponse   - response from eca - server
      */
     public void handleResponse(R requestEntity, M ecaResponse) {
-        log.info("Starting to process evaluation response with correlation id [{}]",
+        log.info("Starting to process eca response with correlation id [{}]",
                 requestEntity.getCorrelationId());
         try {
-            if (!TechnicalStatus.SUCCESS.equals(ecaResponse.getStatus())) {
-                handleError(requestEntity, ecaResponse);
-            } else {
+            if (TechnicalStatus.IN_PROGRESS.equals(ecaResponse.getStatus())) {
+                log.info("Eca request [{}] has been created for correlation id [{}]", ecaResponse.getRequestId(),
+                        requestEntity.getCorrelationId());
+            } else if (TechnicalStatus.SUCCESS.equals(ecaResponse.getStatus())) {
                 internalHandleSuccessResponse(requestEntity, ecaResponse);
                 requestEntity.setRequestStage(RequestStageType.COMPLETED);
+                requestEntity.setEndDate(LocalDateTime.now());
+                ecaRequestRepository.save(requestEntity);
+            } else {
+                handleEcaResponseError(requestEntity, ecaResponse);
             }
             log.info("Response with correlation id [{}] has been processed", requestEntity.getCorrelationId());
         } catch (Exception ex) {
             log.error("There was an error while handle response [{}]: {}",
                     requestEntity.getCorrelationId(), ex.getMessage(), ex);
-            requestEntity.setRequestStage(RequestStageType.ERROR);
-            requestEntity.setErrorMessage(ex.getMessage());
-        } finally {
-            requestEntity.setEndDate(LocalDateTime.now());
-            ecaRequestRepository.save(requestEntity);
+            handleError(requestEntity, ex.getMessage());
         }
     }
 
     protected abstract void internalHandleSuccessResponse(R requestEntity, M ecaResponse);
 
-    private void handleError(EcaRequestEntity ecaRequestEntity, EcaResponse ecaResponse) {
-        ecaRequestEntity.setRequestStage(RequestStageType.ERROR);
+    private void handleError(EcaRequestEntity requestEntity, String errorMessage) {
+        requestEntity.setRequestStage(RequestStageType.ERROR);
+        requestEntity.setErrorMessage(errorMessage);
+        requestEntity.setEndDate(LocalDateTime.now());
+        ecaRequestRepository.save(requestEntity);
+    }
+
+    private void handleEcaResponseError(EcaRequestEntity requestEntity, EcaResponse ecaResponse) {
+        requestEntity.setRequestStage(RequestStageType.ERROR);
         Optional.ofNullable(ecaResponse.getErrors())
                 .map(messageErrors -> messageErrors.iterator().next())
                 .ifPresent(error -> {
-                    ecaRequestEntity.setErrorCode(error.getCode());
-                    ecaRequestEntity.setErrorMessage(error.getMessage());
+                    requestEntity.setErrorCode(error.getCode());
+                    requestEntity.setErrorMessage(error.getMessage());
                 });
+        requestEntity.setEndDate(LocalDateTime.now());
+        ecaRequestRepository.save(requestEntity);
     }
 }

@@ -62,12 +62,16 @@ public abstract class AbstractResponseListener<R extends EcaRequestEntity, M ext
         if (RequestStageType.EXCEEDED.equals(requestEntity.getRequestStage())) {
             log.warn("Got exceeded eca request entity [{}].", correlationId);
         } else {
-            requestEntity.setRequestId(ecaResponse.getRequestId());
-            requestEntity.setTechnicalStatus(ecaResponse.getStatus());
-            requestEntity.setRequestStage(RequestStageType.RESPONSE_RECEIVED);
-            ecaRequestRepository.save(requestEntity);
+            saveReceivedResponseStatus(requestEntity, ecaResponse);
             handleResponse(requestEntity, ecaResponse);
         }
+    }
+
+    private void saveReceivedResponseStatus(R requestEntity, M ecaResponse) {
+        requestEntity.setRequestId(ecaResponse.getRequestId());
+        requestEntity.setTechnicalStatus(ecaResponse.getStatus());
+        requestEntity.setRequestStage(RequestStageType.RESPONSE_RECEIVED);
+        ecaRequestRepository.save(requestEntity);
     }
 
 }
