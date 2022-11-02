@@ -10,6 +10,7 @@ import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.repository.ExperimentStepRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
+import com.ecaservice.server.service.experiment.ExperimentDataCleaner;
 import com.ecaservice.server.service.experiment.ExperimentProgressService;
 import com.ecaservice.server.service.experiment.ExperimentRequestProcessor;
 import com.ecaservice.server.service.experiment.ExperimentService;
@@ -44,6 +45,8 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
     @MockBean
     private ExperimentProgressService experimentProgressService;
     @MockBean
+    private ExperimentDataCleaner experimentDataCleaner;
+    @MockBean
     private ApplicationEventPublisher eventPublisher;
 
     @MockBean
@@ -53,7 +56,7 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
 
     @Override
     public void init() {
-        experimentScheduler = new ExperimentScheduler(experimentRequestProcessor, experimentRepository);
+        experimentScheduler = new ExperimentScheduler(experimentRequestProcessor, experimentDataCleaner, experimentRepository);
     }
 
     @Override
