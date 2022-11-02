@@ -32,9 +32,11 @@ public abstract class AbstractResponseListener<R extends EcaRequestEntity, M ext
      */
     public void handleResponseMessage(M ecaResponse, Message message) {
         String correlationId = message.getMessageProperties().getCorrelationId();
-        log.info("Received response from eca - server with correlation id [{}], status [{}]", correlationId,
+        log.info("Received response message from eca - server with correlation id [{}], status [{}]", correlationId,
                 ecaResponse.getStatus());
         internalHandleResponse(correlationId, ecaResponse);
+        log.info("Response message from eca - server with correlation id [{}], status [{}] has been processed",
+                correlationId, ecaResponse.getStatus());
     }
 
     /**

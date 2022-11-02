@@ -34,21 +34,22 @@ public abstract class AbstractEcaResponseHandler<R extends EcaRequestEntity, M e
      * @param ecaResponse   - response from eca - server
      */
     public void handleResponse(R requestEntity, M ecaResponse) {
-        log.info("Starting to process eca response with correlation id [{}]",
-                requestEntity.getCorrelationId());
+        log.info("Starting to handle eca response with correlation id [{}], status [{}]",
+                requestEntity.getCorrelationId(), ecaResponse.getStatus());
         try {
             if (TechnicalStatus.IN_PROGRESS.equals(ecaResponse.getStatus())) {
-                log.info("Eca request [{}] has been created for correlation id [{}]", ecaResponse.getRequestId(),
-                        requestEntity.getCorrelationId());
+                log.info("Eca request [{}] has been successfully created for correlation id [{}]",
+                        ecaResponse.getRequestId(), requestEntity.getCorrelationId());
             } else if (TechnicalStatus.SUCCESS.equals(ecaResponse.getStatus())) {
                 internalHandleSuccessResponse(requestEntity, ecaResponse);
                 requestEntity.setRequestStage(RequestStageType.COMPLETED);
                 requestEntity.setEndDate(LocalDateTime.now());
                 ecaRequestRepository.save(requestEntity);
+                log.info("Eca request [{}] has been successfully completed", requestEntity.getCorrelationId());
             } else {
                 handleEcaResponseError(requestEntity, ecaResponse);
             }
-            log.info("Response with correlation id [{}] has been processed", requestEntity.getCorrelationId());
+            log.info("Response with correlation id [{}] has been handled", requestEntity.getCorrelationId());
         } catch (Exception ex) {
             log.error("There was an error while handle response [{}]: {}",
                     requestEntity.getCorrelationId(), ex.getMessage(), ex);
@@ -63,6 +64,7 @@ public abstract class AbstractEcaResponseHandler<R extends EcaRequestEntity, M e
         requestEntity.setErrorMessage(errorMessage);
         requestEntity.setEndDate(LocalDateTime.now());
         ecaRequestRepository.save(requestEntity);
+        log.info("Eca request [{}] has been completed with error", requestEntity.getCorrelationId());
     }
 
     private void handleEcaResponseError(EcaRequestEntity requestEntity, EcaResponse ecaResponse) {
@@ -72,8 +74,11 @@ public abstract class AbstractEcaResponseHandler<R extends EcaRequestEntity, M e
                 .ifPresent(error -> {
                     requestEntity.setErrorCode(error.getCode());
                     requestEntity.setErrorMessage(error.getMessage());
+                    log.info("Got error code [{}], message [{}] from eca response with correlation id [{}]",
+                            error.getCode(), error.getMessage(), requestEntity.getCorrelationId());
                 });
         requestEntity.setEndDate(LocalDateTime.now());
         ecaRequestRepository.save(requestEntity);
+        log.info("Eca request [{}] has been completed with error", requestEntity.getCorrelationId());
     }
 }

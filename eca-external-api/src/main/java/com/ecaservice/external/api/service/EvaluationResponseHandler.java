@@ -63,6 +63,7 @@ public class EvaluationResponseHandler extends AbstractEcaResponseHandler<Evalua
     @Override
     protected void internalHandleSuccessResponse(EvaluationRequestEntity requestEntity,
                                                  EvaluationResponse ecaResponse) {
+        log.info("Starting to process success evaluation response [{}]", requestEntity.getCorrelationId());
         EvaluationResults evaluationResults = ecaResponse.getEvaluationResults();
         if (requestEntity.isUseOptimalClassifierOptions()) {
             populateEvaluationOptions(evaluationResults, requestEntity);
@@ -70,6 +71,7 @@ public class EvaluationResponseHandler extends AbstractEcaResponseHandler<Evalua
         saveEvaluationResults(evaluationResults, requestEntity);
         uploadModelToS3(evaluationResults, requestEntity);
         generateClassifierModelDownloadUrl(requestEntity);
+        log.info("Success evaluation response [{}] has been processed", requestEntity.getCorrelationId());
     }
 
     private void populateEvaluationOptions(EvaluationResults evaluationResults,
