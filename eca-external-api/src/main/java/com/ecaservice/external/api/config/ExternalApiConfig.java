@@ -33,6 +33,11 @@ public class ExternalApiConfig {
     private Long evaluationRequestTimeoutMinutes;
 
     /**
+     * Experiment request timeout in minutes
+     */
+    private Long experimentRequestTimeoutMinutes;
+
+    /**
      * Days number for classifiers models files storage
      */
     private Integer numberOfDaysForStorage;

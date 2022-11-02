@@ -19,7 +19,6 @@ import static com.ecaservice.external.api.TestHelperUtils.createEvaluationReques
 import static com.ecaservice.external.api.TestHelperUtils.createEvaluationRequestEntity;
 import static com.ecaservice.external.api.TestHelperUtils.createExperimentRequestDto;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doThrow;
 
 /**
@@ -91,8 +90,6 @@ class EcaRequestServiceTest extends AbstractJpaTest {
         evaluationRequestEntity.setClassifierPath(CLASSIFIER_ABSOLUTE_PATH);
         evaluationRequestRepository.save(evaluationRequestEntity);
         doThrow(ProcessFileException.class).when(objectStorageService).removeObject(CLASSIFIER_ABSOLUTE_PATH);
-        assertThrows(ProcessFileException.class,
-                () -> ecaRequestService.deleteClassifierModel(evaluationRequestEntity));
         var actual = evaluationRequestRepository.findById(evaluationRequestEntity.getId()).orElse(null);
         assertThat(actual).isNotNull();
         assertThat(actual.getClassifierPath()).isNotNull();

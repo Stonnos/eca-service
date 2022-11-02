@@ -50,6 +50,7 @@ external-api:
   batchSize: 25
   requestTimeoutSeconds: 60
   evaluationRequestTimeoutMinutes: 120
+  experimentRequestTimeoutMinutes: 300
   numberOfDaysForStorage: 14
   classifierDownloadUrlExpirationDays: 7
   delaySeconds: 10

@@ -24,6 +24,7 @@ ECA external API
    * external-api.batchSize - размер страницы (используется для постраничной обработки)
    * external-api.requestTimeoutSeconds - таймаут запроса в сек.
    * external-api.evaluationRequestTimeoutMinutes - таймаут в мин. для построения моделей
+   * external-api.experimentRequestTimeoutMinutes - таймаут в мин. для построения экспериментов
    * external-api.classifierDownloadUrlExpirationDays - время жизни ссылки на скачивание моделей
    * external-api.numberOfDaysForStorage - число дней для хранения файлов с моделями и обучающими выборками.
    * external-api.removeClassifiersCron - крон выражение для удаления файлов с моделями

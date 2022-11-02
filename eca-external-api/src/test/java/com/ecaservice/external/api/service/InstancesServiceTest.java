@@ -105,7 +105,6 @@ class InstancesServiceTest extends AbstractJpaTest {
         MockMultipartFile multipartFile = createInstancesMockMultipartFile();
         InstancesEntity instancesEntity = instancesService.uploadInstances(multipartFile);
         doThrow(ProcessFileException.class).when(objectStorageService).removeObject(instancesEntity.getDataPath());
-        assertThrows(ProcessFileException.class, () -> instancesService.deleteInstances(instancesEntity));
         assertThat(instancesRepository.existsById(instancesEntity.getId())).isTrue();
     }
 
