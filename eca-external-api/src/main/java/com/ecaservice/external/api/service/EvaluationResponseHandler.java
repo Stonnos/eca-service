@@ -5,6 +5,7 @@ import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.classifier.options.config.ClassifiersOptionsConfig;
 import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
+import com.ecaservice.external.api.mapping.EcaRequestMapper;
 import com.ecaservice.external.api.repository.EcaRequestRepository;
 import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
@@ -43,17 +44,21 @@ public class EvaluationResponseHandler extends AbstractEcaResponseHandler<Evalua
      * Constructor with parameters.
      *
      * @param ecaRequestRepository     - eca request repository
+     * @param requestStageHandler      - request stage handler
+     * @param ecaRequestMapper         - eca request mapper
      * @param externalApiConfig        - external api config
      * @param classifiersOptionsConfig - classifiers options config
      * @param objectStorageService     - object storage service
      * @param classifierOptionsAdapter - classifier options adapter
      */
     public EvaluationResponseHandler(EcaRequestRepository ecaRequestRepository,
+                                     RequestStageHandler requestStageHandler,
+                                     EcaRequestMapper ecaRequestMapper,
                                      ExternalApiConfig externalApiConfig,
                                      ClassifiersOptionsConfig classifiersOptionsConfig,
                                      ObjectStorageService objectStorageService,
                                      ClassifierOptionsAdapter classifierOptionsAdapter) {
-        super(ecaRequestRepository);
+        super(ecaRequestRepository, requestStageHandler, ecaRequestMapper);
         this.externalApiConfig = externalApiConfig;
         this.classifiersOptionsConfig = classifiersOptionsConfig;
         this.objectStorageService = objectStorageService;

@@ -4,6 +4,7 @@ import com.ecaservice.base.model.ExperimentResponse;
 import com.ecaservice.external.api.AbstractJpaTest;
 import com.ecaservice.external.api.entity.ExperimentRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
+import com.ecaservice.external.api.mapping.EcaRequestMapperImpl;
 import com.ecaservice.external.api.repository.ExperimentRequestRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Import;
@@ -21,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Roman Batygin
  */
-@Import(ExperimentResponseHandler.class)
+@Import({ExperimentResponseHandler.class, EcaRequestMapperImpl.class, RequestStageHandler.class})
 class ExperimentResponseHandlerTest extends AbstractJpaTest {
 
     @Inject

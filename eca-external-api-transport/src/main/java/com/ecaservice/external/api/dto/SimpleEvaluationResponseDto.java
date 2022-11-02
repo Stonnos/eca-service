@@ -42,5 +42,5 @@ public class SimpleEvaluationResponseDto implements Serializable {
      * Error code
      */
     @Schema(description = "Error code", example = "INTERNAL_SERVER_ERROR", maxLength = MAX_LENGTH_255)
-    private String errorCode;
+    private EvaluationErrorCode errorCode;
 }

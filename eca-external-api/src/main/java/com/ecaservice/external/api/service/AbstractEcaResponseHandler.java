@@ -4,6 +4,7 @@ import com.ecaservice.base.model.EcaResponse;
 import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
+import com.ecaservice.external.api.mapping.EcaRequestMapper;
 import com.ecaservice.external.api.repository.EcaRequestRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,8 @@ import java.util.Optional;
 public abstract class AbstractEcaResponseHandler<R extends EcaRequestEntity, M extends EcaResponse> {
 
     private final EcaRequestRepository ecaRequestRepository;
+    private final RequestStageHandler requestStageHandler;
+    private final EcaRequestMapper ecaRequestMapper;
 
     /**
      * Handles response from eca - server.
@@ -57,32 +60,26 @@ public abstract class AbstractEcaResponseHandler<R extends EcaRequestEntity, M e
         } catch (Exception ex) {
             log.error("There was an error while handle response [{}]: {}",
                     requestEntity.getCorrelationId(), ex.getMessage(), ex);
-            handleError(requestEntity, ex.getMessage());
+            requestStageHandler.handleError(requestEntity, ex.getMessage());
         }
     }
 
     protected abstract void internalHandleSuccessResponse(R requestEntity, M ecaResponse);
-
-    private void handleError(EcaRequestEntity requestEntity, String errorMessage) {
-        requestEntity.setRequestStage(RequestStageType.ERROR);
-        requestEntity.setErrorMessage(errorMessage);
-        requestEntity.setEndDate(LocalDateTime.now());
-        ecaRequestRepository.save(requestEntity);
-        log.info("Eca request [{}] has been completed with error", requestEntity.getCorrelationId());
-    }
 
     private void handleEcaResponseError(EcaRequestEntity requestEntity, EcaResponse ecaResponse) {
         requestEntity.setRequestStage(RequestStageType.ERROR);
         Optional.ofNullable(ecaResponse.getErrors())
                 .map(messageErrors -> messageErrors.iterator().next())
                 .ifPresent(error -> {
-                    requestEntity.setErrorCode(error.getCode().name());
-                    requestEntity.setErrorMessage(error.getMessage());
                     log.info("Got error code [{}], message [{}] from eca response with correlation id [{}]",
                             error.getCode(), error.getMessage(), requestEntity.getCorrelationId());
+                    var evaluationErrorCode = ecaRequestMapper.map(error.getCode());
+                    requestEntity.setErrorCode(evaluationErrorCode);
+                    requestEntity.setErrorMessage(error.getMessage());
                 });
         requestEntity.setEndDate(LocalDateTime.now());
         ecaRequestRepository.save(requestEntity);
-        log.info("Eca request [{}] has been completed with error", requestEntity.getCorrelationId());
+        log.info("Eca request [{}] has been completed with error code [{}]", requestEntity.getCorrelationId(),
+                requestEntity.getErrorCode());
     }
 }

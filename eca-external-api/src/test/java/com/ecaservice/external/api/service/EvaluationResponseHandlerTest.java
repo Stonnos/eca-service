@@ -6,6 +6,7 @@ import com.ecaservice.external.api.AbstractJpaTest;
 import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
+import com.ecaservice.external.api.mapping.EcaRequestMapperImpl;
 import com.ecaservice.external.api.repository.EvaluationRequestRepository;
 import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
@@ -30,7 +31,8 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({EvaluationResponseHandler.class, ClassifiersOptionsAutoConfiguration.class, ExternalApiConfig.class})
+@Import({EvaluationResponseHandler.class, ClassifiersOptionsAutoConfiguration.class, ExternalApiConfig.class,
+        EcaRequestMapperImpl.class, RequestStageHandler.class})
 class EvaluationResponseHandlerTest extends AbstractJpaTest {
 
     private static final String CLASSIFIER_MODEL_PATH_FORMAT = "classifier-%s.model";
