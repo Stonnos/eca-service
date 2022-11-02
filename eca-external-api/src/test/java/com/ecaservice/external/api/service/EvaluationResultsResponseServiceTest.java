@@ -1,6 +1,7 @@
 package com.ecaservice.external.api.service;
 
 import com.ecaservice.external.api.AbstractJpaTest;
+import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.dto.EvaluationStatus;
 import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.mapping.EcaRequestMapperImpl;
@@ -29,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @ExtendWith(SpringExtension.class)
 @Import({EvaluationResultsResponseService.class, EvaluationStatusMapperImpl.class,
-        EcaRequestService.class, EcaRequestMapperImpl.class})
+        EcaRequestService.class, EcaRequestMapperImpl.class, ExternalApiConfig.class})
 class EvaluationResultsResponseServiceTest extends AbstractJpaTest {
 
     private static final String MODEL_DOWNLOAD_URL = "http://localhost:9000/object-storage";
