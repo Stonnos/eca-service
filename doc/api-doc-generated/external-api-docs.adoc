@@ -1208,6 +1208,15 @@ __string__
 
 
 
+*Values*:
+
+* INTERNAL_SERVER_ERROR
+
+* SERVICE_UNAVAILABLE
+
+* CLASSIFIER_OPTIONS_NOT_FOUND
+
+* TRAINING_DATA_NOT_FOUND
 |===
 === SimpleEvaluationResponsePayloadDto
 :table-caption: Table
@@ -3592,6 +3601,15 @@ __string__
 
 
 
+*Values*:
+
+* INTERNAL_SERVER_ERROR
+
+* SERVICE_UNAVAILABLE
+
+* CLASSIFIER_OPTIONS_NOT_FOUND
+
+* TRAINING_DATA_NOT_FOUND
 |*experimentModelUrl*
 |Experiment model url
 a|
@@ -3761,6 +3779,15 @@ __string__
 
 
 
+*Values*:
+
+* INTERNAL_SERVER_ERROR
+
+* SERVICE_UNAVAILABLE
+
+* CLASSIFIER_OPTIONS_NOT_FOUND
+
+* TRAINING_DATA_NOT_FOUND
 |*modelUrl*
 |Model url
 a|
