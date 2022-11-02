@@ -37,6 +37,8 @@ public abstract class AbstractEcaResponseHandler<R extends EcaRequestEntity, M e
         log.info("Starting to handle eca response with correlation id [{}], status [{}]",
                 requestEntity.getCorrelationId(), ecaResponse.getStatus());
         try {
+            requestEntity.setRequestId(ecaResponse.getRequestId());
+            requestEntity.setTechnicalStatus(ecaResponse.getStatus());
             if (TechnicalStatus.IN_PROGRESS.equals(ecaResponse.getStatus())) {
                 requestEntity.setRequestStage(RequestStageType.REQUEST_CREATED);
                 ecaRequestRepository.save(requestEntity);
