@@ -105,8 +105,8 @@ public class InstancesService {
     public void deleteInstances(InstancesEntity instancesEntity) {
         try {
             log.info("Starting to delete instances [{}]", instancesEntity.getId());
-            instancesRepository.delete(instancesEntity);
             objectStorageService.removeObject(instancesEntity.getDataPath());
+            instancesRepository.delete(instancesEntity);
             log.info("Instances [{}] has been deleted", instancesEntity.getId());
         } catch (Exception ex) {
             log.error("There was an error while deleting instances [{}]: {}", instancesEntity.getId(),

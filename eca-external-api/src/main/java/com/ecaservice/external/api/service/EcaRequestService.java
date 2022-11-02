@@ -125,10 +125,10 @@ public class EcaRequestService {
             log.info("Starting to delete evaluation request [{}] classifier model file",
                     evaluationRequestEntity.getCorrelationId());
             String classifierPath = evaluationRequestEntity.getClassifierPath();
+            objectStorageService.removeObject(classifierPath);
             evaluationRequestEntity.setClassifierPath(null);
             evaluationRequestEntity.setDeletedDate(LocalDateTime.now());
             evaluationRequestRepository.save(evaluationRequestEntity);
-            objectStorageService.removeObject(classifierPath);
             log.info("Evaluation request [{}] classifier model file has been deleted",
                     evaluationRequestEntity.getCorrelationId());
         } catch (Exception ex) {
