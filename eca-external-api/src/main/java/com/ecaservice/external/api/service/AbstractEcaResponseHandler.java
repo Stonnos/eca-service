@@ -76,7 +76,7 @@ public abstract class AbstractEcaResponseHandler<R extends EcaRequestEntity, M e
         Optional.ofNullable(ecaResponse.getErrors())
                 .map(messageErrors -> messageErrors.iterator().next())
                 .ifPresent(error -> {
-                    requestEntity.setErrorCode(error.getCode());
+                    requestEntity.setErrorCode(error.getCode().name());
                     requestEntity.setErrorMessage(error.getMessage());
                     log.info("Got error code [{}], message [{}] from eca response with correlation id [{}]",
                             error.getCode(), error.getMessage(), requestEntity.getCorrelationId());
