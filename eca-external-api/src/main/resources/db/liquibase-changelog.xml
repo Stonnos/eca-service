@@ -10,4 +10,5 @@
     <include file="db/changelog/v3-add-error-code-column.xml"/>
     <include file="db/changelog/v4-add-classifier-model-download-url-column.xml"/>
     <include file="db/changelog/v5-create-experiment-request-table.xml"/>
+    <include file="db/changelog/v6-add-request-timeout-date-column.xml"/>
 </databaseChangeLog>

@@ -14,8 +14,9 @@ import javax.inject.Inject;
 import java.time.LocalDateTime;
 
 import static com.ecaservice.external.api.TestHelperUtils.createEvaluationRequestEntity;
+import static com.ecaservice.external.api.TestHelperUtils.createExperimentRequestEntity;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 /**
@@ -47,8 +48,10 @@ class EvaluationRequestSchedulerTest extends AbstractJpaTest {
         LocalDateTime dateTime =
                 LocalDateTime.now().minusMinutes(externalApiConfig.getEvaluationRequestTimeoutMinutes() + 1);
         ecaRequestRepository.save(createEvaluationRequestEntity(RequestStageType.REQUEST_SENT, null, dateTime));
-        ecaRequestRepository.save(
-                createEvaluationRequestEntity(RequestStageType.REQUEST_SENT, null, LocalDateTime.now()));
+        ecaRequestRepository.save(createExperimentRequestEntity(RequestStageType.REQUEST_SENT,
+                LocalDateTime.now().minusMinutes(externalApiConfig.getExperimentRequestTimeoutMinutes() + 1)));
+        ecaRequestRepository.save(createEvaluationRequestEntity(RequestStageType.REQUEST_SENT, null,
+                LocalDateTime.now().plusMinutes(1L)));
         ecaRequestRepository.save(
                 createEvaluationRequestEntity(RequestStageType.ERROR, LocalDateTime.now(), LocalDateTime.now()));
         ecaRequestRepository.save(
@@ -56,6 +59,6 @@ class EvaluationRequestSchedulerTest extends AbstractJpaTest {
         ecaRequestRepository.save(
                 createEvaluationRequestEntity(RequestStageType.EXCEEDED, LocalDateTime.now(), LocalDateTime.now()));
         evaluationRequestScheduler.processExceededRequests();
-        verify(requestStageHandler, atLeastOnce()).handleExceeded(any(EcaRequestEntity.class));
+        verify(requestStageHandler, times(2)).handleExceeded(any(EcaRequestEntity.class));
     }
 }

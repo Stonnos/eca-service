@@ -1,7 +1,7 @@
 package com.ecaservice.external.api.scheduler;
 
 import com.ecaservice.external.api.config.ExternalApiConfig;
-import com.ecaservice.external.api.repository.EvaluationRequestRepository;
+import com.ecaservice.external.api.repository.EcaRequestRepository;
 import com.ecaservice.external.api.service.RequestStageHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +25,7 @@ public class EvaluationRequestScheduler {
 
     private final ExternalApiConfig externalApiConfig;
     private final RequestStageHandler requestStageHandler;
-    private final EvaluationRequestRepository evaluationRequestRepository;
+    private final EcaRequestRepository ecaRequestRepository;
 
     /**
      * Processes exceeded requests.
@@ -33,10 +33,8 @@ public class EvaluationRequestScheduler {
     @Scheduled(fixedDelayString = "${external-api.delaySeconds}000")
     public void processExceededRequests() {
         log.trace("Starting to processed exceeded requests");
-        LocalDateTime exceededTime =
-                LocalDateTime.now().minusMinutes(externalApiConfig.getEvaluationRequestTimeoutMinutes());
-        List<Long> exceededIds = evaluationRequestRepository.findExceededRequestIds(exceededTime);
-        processWithPagination(exceededIds, evaluationRequestRepository::findByIdIn,
+        List<Long> exceededIds = ecaRequestRepository.findExceededRequestIds(LocalDateTime.now());
+        processWithPagination(exceededIds, ecaRequestRepository::findByIdIn,
                 pageContent -> pageContent.forEach(requestStageHandler::handleExceeded),
                 externalApiConfig.getBatchSize()
         );

@@ -1,6 +1,7 @@
 package com.ecaservice.external.api.service;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.dto.EvaluationRequestDto;
 import com.ecaservice.external.api.dto.ExperimentRequestDto;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
@@ -29,6 +30,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class EcaRequestService {
 
+    private final ExternalApiConfig externalApiConfig;
     private final EcaRequestMapper ecaRequestMapper;
     private final ObjectStorageService objectStorageService;
     private final EcaRequestRepository ecaRequestRepository;
@@ -45,6 +47,8 @@ public class EcaRequestService {
         String correlationId = UUID.randomUUID().toString();
         log.info("Starting to save evaluation request for correlation id [{}]", correlationId);
         var ecaRequestEntity = ecaRequestMapper.map(evaluationRequestDto);
+        ecaRequestEntity.setRequestTimeoutDate(
+                LocalDateTime.now().plusMinutes(externalApiConfig.getEvaluationRequestTimeoutMinutes()));
         initializeRequest(ecaRequestEntity, correlationId);
         ecaRequestRepository.save(ecaRequestEntity);
         log.info("Evaluation request has been saved for correlation id [{}]", correlationId);
@@ -61,6 +65,8 @@ public class EcaRequestService {
         log.info("Starting to save evaluation request for correlation id [{}]", correlationId);
         var ecaRequestEntity = new EvaluationRequestEntity();
         ecaRequestEntity.setUseOptimalClassifierOptions(true);
+        ecaRequestEntity.setRequestTimeoutDate(
+                LocalDateTime.now().plusMinutes(externalApiConfig.getEvaluationRequestTimeoutMinutes()));
         initializeRequest(ecaRequestEntity, correlationId);
         ecaRequestRepository.save(ecaRequestEntity);
         log.info("Evaluation request has been saved for correlation id [{}]", correlationId);
@@ -78,10 +84,12 @@ public class EcaRequestService {
         log.info("Starting to save experiment [{}] request for correlation id [{}]",
                 experimentRequestDto.getExperimentType(), correlationId);
         var ecaRequestEntity = ecaRequestMapper.map(experimentRequestDto);
+        ecaRequestEntity.setRequestTimeoutDate(
+                LocalDateTime.now().plusMinutes(externalApiConfig.getExperimentRequestTimeoutMinutes()));
         initializeRequest(ecaRequestEntity, correlationId);
         ecaRequestRepository.save(ecaRequestEntity);
         log.info("Experiment [{}] request has been saved for correlation id [{}]",
-                experimentRequestDto.getExperimentType(),correlationId);
+                experimentRequestDto.getExperimentType(), correlationId);
         return ecaRequestEntity;
     }
 

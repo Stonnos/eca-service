@@ -1,6 +1,7 @@
 package com.ecaservice.external.api.service;
 
 import com.ecaservice.external.api.AbstractJpaTest;
+import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.exception.ProcessFileException;
@@ -26,7 +27,7 @@ import static org.mockito.Mockito.doThrow;
  *
  * @author Roman Batygin
  */
-@Import({EcaRequestService.class, EcaRequestMapperImpl.class})
+@Import({EcaRequestService.class, EcaRequestMapperImpl.class, ExternalApiConfig.class})
 class EcaRequestServiceTest extends AbstractJpaTest {
 
     private static final String CLASSIFIER_ABSOLUTE_PATH = "classifier.model";

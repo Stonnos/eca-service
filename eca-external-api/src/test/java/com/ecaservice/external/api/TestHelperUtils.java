@@ -170,18 +170,18 @@ public class TestHelperUtils {
     /**
      * Creates evaluation request entity.
      *
-     * @param requestStageType - request stage type
-     * @param endDate          - end date
-     * @param requestDate      - request date
+     * @param requestStageType   - request stage type
+     * @param endDate            - end date
+     * @param requestTimeoutDate - request timeout date
      * @return evaluation request entity
      */
     public static EvaluationRequestEntity createEvaluationRequestEntity(RequestStageType requestStageType,
                                                                         LocalDateTime endDate,
-                                                                        LocalDateTime requestDate) {
+                                                                        LocalDateTime requestTimeoutDate) {
         EvaluationRequestEntity evaluationRequestEntity = createEvaluationRequestEntity(UUID.randomUUID().toString());
         evaluationRequestEntity.setRequestStage(requestStageType);
         evaluationRequestEntity.setEndDate(endDate);
-        evaluationRequestEntity.setRequestDate(requestDate);
+        evaluationRequestEntity.setRequestTimeoutDate(requestTimeoutDate);
         return evaluationRequestEntity;
     }
 
@@ -200,6 +200,21 @@ public class TestHelperUtils {
         experimentRequestEntity.setExperimentType(ExperimentType.RANDOM_FORESTS);
         experimentRequestEntity.setCreationDate(LocalDateTime.now());
         experimentRequestEntity.setCorrelationId(correlationId);
+        return experimentRequestEntity;
+    }
+
+    /**
+     * Creates experiment request entity.
+     *
+     * @param requestStageType   - request stage type
+     * @param requestTimeoutDate - request timeout date
+     * @return experiment request entity
+     */
+    public static ExperimentRequestEntity createExperimentRequestEntity(RequestStageType requestStageType,
+                                                                        LocalDateTime requestTimeoutDate) {
+        ExperimentRequestEntity experimentRequestEntity = createExperimentRequestEntity(UUID.randomUUID().toString(),
+                requestStageType);
+        experimentRequestEntity.setRequestTimeoutDate(requestTimeoutDate);
         return experimentRequestEntity;
     }
 

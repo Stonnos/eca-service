@@ -66,6 +66,12 @@ public abstract class EcaRequestEntity {
     private LocalDateTime endDate;
 
     /**
+     * Request timeout date
+     */
+    @Column(name = "request_timeout_date")
+    private LocalDateTime requestTimeoutDate;
+
+    /**
      * Request stage
      */
     @Enumerated(EnumType.STRING)
