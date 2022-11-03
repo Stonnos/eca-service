@@ -10,6 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import javax.validation.ConstraintViolationException;
 import java.util.List;
@@ -116,6 +117,19 @@ public class GlobalExceptionHandler {
         log.error("Method argument type mismatch error: {}", ex.getMessage());
         var response = ExceptionResponseHandler.handleMethodArgumentTypeMismatchException(ex);
         log.error("Method argument type mismatch errors: {}", response.getBody());
+        return response;
+    }
+
+    /**
+     * Handles {@link MaxUploadSizeExceededException} errors.
+     *
+     * @param ex - exception
+     */
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<List<ValidationErrorDto>> handleError(MaxUploadSizeExceededException ex) {
+        log.error("Max upload size error: {}", ex.getMessage());
+        var response = ExceptionResponseHandler.handleMaxUploadSizeExceededException(ex);
+        log.error("Max upload size error response: {}", response.getBody());
         return response;
     }
 }

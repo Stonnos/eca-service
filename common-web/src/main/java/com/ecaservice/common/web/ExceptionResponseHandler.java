@@ -13,6 +13,7 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import javax.validation.ConstraintViolationException;
 import javax.validation.metadata.ConstraintDescriptor;
@@ -34,6 +35,7 @@ public class ExceptionResponseHandler {
 
     private static final String INVALID_REQUEST_CODE = "InvalidRequest";
     private static final String INVALID_FORMAT_CODE = "InvalidFormat";
+    private static final String MAX_UPLOAD_SIZE_EXCEEDED_CODE = "MaxUploadSizeExceeded";
 
     private static final String POINT = ".";
     private static final String OPEN_BRACKET = "[";
@@ -148,6 +150,20 @@ public class ExceptionResponseHandler {
         validationErrorDto.setFieldName(ex.getFieldName());
         validationErrorDto.setErrorMessage(ex.getMessage());
         return ResponseEntity.badRequest().body(Collections.singletonList(validationErrorDto));
+    }
+
+    /**
+     * Handles max upload size exceeded error.
+     *
+     * @param ex - exception object
+     * @return response entity
+     */
+    public static ResponseEntity<List<ValidationErrorDto>> handleMaxUploadSizeExceededException(
+            MaxUploadSizeExceededException ex) {
+        var validationError = new ValidationErrorDto();
+        validationError.setCode(MAX_UPLOAD_SIZE_EXCEEDED_CODE);
+        validationError.setErrorMessage(ex.getMessage());
+        return ResponseEntity.badRequest().body(Collections.singletonList(validationError));
     }
 
     private static String getPropertyPath(List<JsonMappingException.Reference> references) {
