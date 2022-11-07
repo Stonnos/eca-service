@@ -2,7 +2,6 @@ package com.ecaservice.external.api.test.bpm.service.task;
 
 import com.ecaservice.external.api.test.bpm.model.TaskType;
 import com.ecaservice.external.api.test.model.AbstractTestDataModel;
-import com.ecaservice.external.api.test.model.EvaluationTestDataModel;
 import com.ecaservice.external.api.test.service.ExternalApiService;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
