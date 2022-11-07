@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
- * Test data model.
+ * Evaluation test data model.
  *
  * @author Roman Batygin
  */

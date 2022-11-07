@@ -50,6 +50,21 @@ public class JobService {
     }
 
     /**
+     * Finishes auto test job with error.
+     *
+     * @param jobEntity    - job entity
+     * @param errorMessage - error message
+     */
+    public void finishWithError(JobEntity jobEntity, String errorMessage) {
+        log.info("Starting to finish auto test job [{}] with error", jobEntity.getJobUuid());
+        jobEntity.setDetails(errorMessage);
+        jobEntity.setExecutionStatus(ExecutionStatus.ERROR);
+        jobEntity.setFinished(LocalDateTime.now());
+        jobRepository.save(jobEntity);
+        log.info("Auto test job [{}] has been finished with error", jobEntity.getJobUuid());
+    }
+
+    /**
      * Gets auto tests job details.
      *
      * @param jobUuid - job uuid

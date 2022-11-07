@@ -4,7 +4,7 @@ import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.external.api.test.bpm.service.ProcessManager;
 import com.ecaservice.external.api.test.config.ProcessConfig;
 import com.ecaservice.external.api.test.entity.AutoTestEntity;
-import com.ecaservice.external.api.test.model.EvaluationTestDataModel;
+import com.ecaservice.external.api.test.model.AbstractTestDataModel;
 import com.ecaservice.external.api.test.repository.AutoTestRepository;
 import com.ecaservice.test.common.model.ExecutionStatus;
 import com.ecaservice.test.common.service.TestResultsMatcher;
@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.CountDownLatch;
 
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.AUTO_TEST_ID;
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.TEST_DATA_MODEL;
@@ -45,9 +44,8 @@ public class TestWorkerService {
      *
      * @param testId         - test id
      * @param testDataModel  - test data model
-     * @param countDownLatch - count down latch
      */
-    public void execute(long testId, EvaluationTestDataModel testDataModel, CountDownLatch countDownLatch) {
+    public void execute(long testId, AbstractTestDataModel<?, ?> testDataModel) {
         AutoTestEntity autoTestEntity = autoTestRepository.findById(testId)
                 .orElseThrow(() -> new EntityNotFoundException(AutoTestEntity.class, testId));
         try {
@@ -59,12 +57,10 @@ public class TestWorkerService {
         } catch (Exception ex) {
             log.error("Unknown error while auto test [{}] execution: {}", autoTestEntity.getId(), ex.getMessage(), ex);
             autoTestService.finishWithError(autoTestEntity.getId(), ex.getMessage());
-        } finally {
-            countDownLatch.countDown();
         }
     }
 
-    private void executeNextTest(AutoTestEntity autoTestEntity, EvaluationTestDataModel testDataModel) {
+    private void executeNextTest(AutoTestEntity autoTestEntity, AbstractTestDataModel<?, ?> testDataModel) {
         TestResultsMatcher matcher = new TestResultsMatcher();
         Map<String, Object> variables = newHashMap();
         variables.put(AUTO_TEST_ID, autoTestEntity.getId());
