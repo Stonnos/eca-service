@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
 
 /**
  * Auto tests controller.
@@ -42,7 +43,7 @@ public class AutoTestController {
     private static final String AUTO_TEST_REPORT_NAME = "auto-tests-report%s.zip";
 
     private final JobService jobService;
-    private final ExternalApiTestResultsCsvReportGenerator externalApiTestResultsCsvReportGenerator;
+    private final List<ExternalApiTestResultsCsvReportGenerator> externalApiTestResultsCsvReportGenerators;
     private final JobRepository jobRepository;
 
     /**
@@ -102,8 +103,18 @@ public class AutoTestController {
         httpServletResponse.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
         String reportName = String.format(AUTO_TEST_REPORT_NAME, jobEntity.getJobUuid());
         httpServletResponse.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format(ATTACHMENT_FORMAT, reportName));
-        externalApiTestResultsCsvReportGenerator.generateReport(jobEntity, outputStream);
+        var reportGenerator = getReportGenerator(jobEntity);
+        reportGenerator.generateReport(jobEntity, outputStream);
         outputStream.flush();
         log.info("Auto tests [{}] report has been generated", jobUuid);
+    }
+
+    private ExternalApiTestResultsCsvReportGenerator getReportGenerator(JobEntity jobEntity) {
+        return externalApiTestResultsCsvReportGenerators.stream()
+                .filter(generator -> generator.getAutoTestType().equals(jobEntity.getAutoTestType()))
+                .findFirst()
+                .orElseThrow(() ->
+                        new IllegalStateException(String.format("Can't get report generator for auto test [%s]",
+                                jobEntity.getAutoTestType())));
     }
 }

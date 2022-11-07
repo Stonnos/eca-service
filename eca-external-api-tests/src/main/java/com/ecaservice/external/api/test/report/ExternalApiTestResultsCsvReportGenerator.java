@@ -1,17 +1,14 @@
 package com.ecaservice.external.api.test.report;
 
-import com.ecaservice.external.api.test.config.ExternalApiTestsConfig;
-import com.ecaservice.external.api.test.entity.AutoTestEntity;
+import com.ecaservice.external.api.test.dto.AutoTestType;
 import com.ecaservice.external.api.test.entity.JobEntity;
-import com.ecaservice.external.api.test.repository.AutoTestRepository;
 import com.ecaservice.test.common.report.AbstractCsvTestResultsReportGenerator;
 import com.ecaservice.test.common.report.TestResultsCounter;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVPrinter;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -26,34 +23,9 @@ import static com.ecaservice.test.common.util.Utils.totalTime;
  */
 @Slf4j
 @Component
-@RequiredArgsConstructor
-public class ExternalApiTestResultsCsvReportGenerator extends AbstractCsvTestResultsReportGenerator<JobEntity> {
-
-    private static final String[] TEST_RESULTS_HEADERS = {
-            "Display name",
-            "started",
-            "finished",
-            "total time",
-            "result",
-            "total matched",
-            "total not matched",
-            "total not found",
-            "expected response code",
-            "actual response code",
-            "response code match result",
-            "expected pct correct",
-            "actual pct correct",
-            "pct correct match result",
-            "expected pct incorrect",
-            "actual pct incorrect",
-            "pct incorrect match result",
-            "expected mean abs. error",
-            "actual mean abs. error",
-            "mean abs. error match result",
-            "request",
-            "response",
-            "details"
-    };
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
+public abstract class ExternalApiTestResultsCsvReportGenerator
+        extends AbstractCsvTestResultsReportGenerator<JobEntity> {
 
     private static final String[] HEADERS_TOTALS = {
             "test uuid",
@@ -65,62 +37,12 @@ public class ExternalApiTestResultsCsvReportGenerator extends AbstractCsvTestRes
             "errors"
     };
 
-    private final ExternalApiTestsConfig externalApiTestsConfig;
-    private final AutoTestRepository autoTestRepository;
-
-    @Override
-    protected String[] getResultsReportHeaders() {
-        return TEST_RESULTS_HEADERS;
-    }
+    @Getter
+    private final AutoTestType autoTestType;
 
     @Override
     protected String[] getTotalReportHeaders() {
         return HEADERS_TOTALS;
-    }
-
-    @Override
-    protected void printReportTestResults(CSVPrinter printer, JobEntity jobEntity,
-                                          TestResultsCounter testResultsCounter)
-            throws IOException {
-        Pageable pageRequest = PageRequest.of(0, externalApiTestsConfig.getPageSize());
-        Page<AutoTestEntity> page;
-        do {
-            page = autoTestRepository.findAllByJob(jobEntity, pageRequest);
-            if (page == null || !page.hasContent()) {
-                log.trace("No one entity has been fetched");
-                break;
-            } else {
-                for (AutoTestEntity autoTestEntity : page.getContent()) {
-                    autoTestEntity.getTestResult().apply(testResultsCounter);
-                    printer.printRecord(Arrays.asList(
-                            autoTestEntity.getDisplayName(),
-                            autoTestEntity.getStarted(),
-                            autoTestEntity.getFinished(),
-                            totalTime(autoTestEntity.getStarted(), autoTestEntity.getFinished()),
-                            autoTestEntity.getTestResult(),
-                            autoTestEntity.getTotalMatched(),
-                            autoTestEntity.getTotalNotMatched(),
-                            autoTestEntity.getTotalNotFound(),
-                            autoTestEntity.getExpectedResponseCode(),
-                            autoTestEntity.getActualResponseCode(),
-                            autoTestEntity.getResponseCodeMatchResult(),
-                            autoTestEntity.getExpectedPctCorrect(),
-                            autoTestEntity.getActualPctCorrect(),
-                            autoTestEntity.getPctCorrectMatchResult(),
-                            autoTestEntity.getExpectedPctIncorrect(),
-                            autoTestEntity.getActualPctIncorrect(),
-                            autoTestEntity.getPctIncorrectMatchResult(),
-                            autoTestEntity.getExpectedMeanAbsoluteError(),
-                            autoTestEntity.getActualMeanAbsoluteError(),
-                            autoTestEntity.getMeanAbsoluteErrorMatchResult(),
-                            autoTestEntity.getRequest(),
-                            autoTestEntity.getResponse(),
-                            autoTestEntity.getDetails()
-                    ));
-                }
-            }
-            pageRequest = page.nextPageable();
-        } while (page.hasNext());
     }
 
     @Override
