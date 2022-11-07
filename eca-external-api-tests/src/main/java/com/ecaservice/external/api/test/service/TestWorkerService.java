@@ -4,7 +4,7 @@ import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.external.api.test.bpm.service.ProcessManager;
 import com.ecaservice.external.api.test.config.ProcessConfig;
 import com.ecaservice.external.api.test.entity.AutoTestEntity;
-import com.ecaservice.external.api.test.model.TestDataModel;
+import com.ecaservice.external.api.test.model.EvaluationTestDataModel;
 import com.ecaservice.external.api.test.repository.AutoTestRepository;
 import com.ecaservice.test.common.model.ExecutionStatus;
 import com.ecaservice.test.common.service.TestResultsMatcher;
@@ -47,7 +47,7 @@ public class TestWorkerService {
      * @param testDataModel  - test data model
      * @param countDownLatch - count down latch
      */
-    public void execute(long testId, TestDataModel testDataModel, CountDownLatch countDownLatch) {
+    public void execute(long testId, EvaluationTestDataModel testDataModel, CountDownLatch countDownLatch) {
         AutoTestEntity autoTestEntity = autoTestRepository.findById(testId)
                 .orElseThrow(() -> new EntityNotFoundException(AutoTestEntity.class, testId));
         try {
@@ -64,7 +64,7 @@ public class TestWorkerService {
         }
     }
 
-    private void executeNextTest(AutoTestEntity autoTestEntity, TestDataModel testDataModel) {
+    private void executeNextTest(AutoTestEntity autoTestEntity, EvaluationTestDataModel testDataModel) {
         TestResultsMatcher matcher = new TestResultsMatcher();
         Map<String, Object> variables = newHashMap();
         variables.put(AUTO_TEST_ID, autoTestEntity.getId());

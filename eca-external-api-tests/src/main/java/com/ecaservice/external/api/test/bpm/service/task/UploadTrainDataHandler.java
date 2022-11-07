@@ -1,7 +1,8 @@
 package com.ecaservice.external.api.test.bpm.service.task;
 
 import com.ecaservice.external.api.test.bpm.model.TaskType;
-import com.ecaservice.external.api.test.model.TestDataModel;
+import com.ecaservice.external.api.test.model.AbstractTestDataModel;
+import com.ecaservice.external.api.test.model.EvaluationTestDataModel;
 import com.ecaservice.external.api.test.service.ExternalApiService;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -45,7 +46,7 @@ public class UploadTrainDataHandler extends ExternalApiTaskHandler {
         log.debug("Handles upload train data for execution [{}], process key [{}]", execution.getId(),
                 execution.getProcessBusinessKey());
         Long autoTestId = getVariable(execution, AUTO_TEST_ID, Long.class);
-        TestDataModel testDataModel = getVariable(execution, TEST_DATA_MODEL, TestDataModel.class);
+        var testDataModel = getVariable(execution, TEST_DATA_MODEL, AbstractTestDataModel.class);
         log.debug("Starting to uploads train data [{}] to server for test [{}]",
                 testDataModel.getTrainDataPath(), autoTestId);
         Resource resource = resolver.getResource(testDataModel.getTrainDataPath());

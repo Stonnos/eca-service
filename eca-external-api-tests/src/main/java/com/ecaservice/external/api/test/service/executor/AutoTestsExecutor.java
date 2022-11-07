@@ -3,7 +3,7 @@ package com.ecaservice.external.api.test.service.executor;
 import com.ecaservice.external.api.test.config.ExternalApiTestsConfig;
 import com.ecaservice.external.api.test.entity.AutoTestEntity;
 import com.ecaservice.external.api.test.entity.JobEntity;
-import com.ecaservice.external.api.test.model.TestDataModel;
+import com.ecaservice.external.api.test.model.EvaluationTestDataModel;
 import com.ecaservice.external.api.test.repository.AutoTestRepository;
 import com.ecaservice.external.api.test.repository.JobRepository;
 import com.ecaservice.external.api.test.service.TestDataService;
@@ -52,7 +52,7 @@ public class AutoTestsExecutor {
 
     private void runTests(JobEntity jobEntity) {
         ThreadPoolTaskExecutor executor = initializeThreadPoolTaskExecutor(jobEntity.getNumThreads());
-        List<TestDataModel> testDataModels = testDataService.getTestDataModels();
+        List<EvaluationTestDataModel> testDataModels = testDataService.getTestDataModels();
         CountDownLatch countDownLatch = new CountDownLatch(testDataModels.size());
         try {
             testDataModels.forEach(testDataModel -> {
@@ -75,7 +75,7 @@ public class AutoTestsExecutor {
         }
     }
 
-    private AutoTestEntity createAndSaveAutoTest(JobEntity jobEntity, TestDataModel testDataModel) {
+    private AutoTestEntity createAndSaveAutoTest(JobEntity jobEntity, EvaluationTestDataModel testDataModel) {
         AutoTestEntity autoTestEntity = new AutoTestEntity();
         autoTestEntity.setJob(jobEntity);
         autoTestEntity.setDisplayName(testDataModel.getDisplayName());
@@ -92,7 +92,7 @@ public class AutoTestsExecutor {
         jobRepository.save(jobEntity);
     }
 
-    private Runnable createTask(long testId, TestDataModel testDataModel, CountDownLatch countDownLatch) {
+    private Runnable createTask(long testId, EvaluationTestDataModel testDataModel, CountDownLatch countDownLatch) {
         return () -> testWorkerService.execute(testId, testDataModel, countDownLatch);
     }
 

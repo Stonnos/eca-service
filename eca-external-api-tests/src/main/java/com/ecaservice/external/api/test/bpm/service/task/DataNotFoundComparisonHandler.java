@@ -4,7 +4,7 @@ import com.ecaservice.external.api.dto.ResponseDto;
 import com.ecaservice.external.api.dto.SimpleEvaluationResponseDto;
 import com.ecaservice.external.api.test.bpm.model.TaskType;
 import com.ecaservice.external.api.test.entity.AutoTestEntity;
-import com.ecaservice.external.api.test.model.TestDataModel;
+import com.ecaservice.external.api.test.model.AbstractTestDataModel;
 import com.ecaservice.external.api.test.repository.AutoTestRepository;
 import com.ecaservice.test.common.service.TestResultsMatcher;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -48,7 +48,7 @@ public class DataNotFoundComparisonHandler extends ComparisonTaskHandler {
                                          TestResultsMatcher matcher) throws JsonProcessingException {
         log.debug("Compare data not found status for execution id [{}], process key [{}]", execution.getId(),
                 execution.getProcessBusinessKey());
-        TestDataModel testDataModel = getVariable(execution, TEST_DATA_MODEL, TestDataModel.class);
+        var testDataModel = getVariable(execution, TEST_DATA_MODEL, AbstractTestDataModel.class);
         var responseDto = getVariable(execution, API_RESPONSE, API_RESPONSE_TYPE_REFERENCE);
         autoTestEntity.setResponse(OBJECT_MAPPER.writeValueAsString(responseDto));
         compareAndMatchResponseCode(autoTestEntity, testDataModel.getExpectedResponse().getResponseCode(),

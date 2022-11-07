@@ -1,19 +1,22 @@
 package com.ecaservice.external.api.test.model;
 
-import com.ecaservice.external.api.dto.EvaluationRequestDto;
-import com.ecaservice.external.api.dto.EvaluationResultsResponseDto;
+import com.ecaservice.external.api.dto.AbstractEvaluationRequestDto;
 import com.ecaservice.external.api.dto.ResponseDto;
+import com.ecaservice.external.api.dto.SimpleEvaluationResponseDto;
 import lombok.Data;
 
 import java.io.Serializable;
 
 /**
- * Test data model.
+ * Abstract test data model.
  *
+ * @param <REQ>  - request generic type
+ * @param <RESP> - response generic type
  * @author Roman Batygin
  */
 @Data
-public class TestDataModel implements Serializable {
+public abstract class AbstractTestDataModel<REQ extends AbstractEvaluationRequestDto, RESP extends SimpleEvaluationResponseDto>
+        implements Serializable {
 
     /**
      * Display name (Test description)
@@ -33,10 +36,10 @@ public class TestDataModel implements Serializable {
     /**
      * Request model
      */
-    private EvaluationRequestDto request;
+    private REQ request;
 
     /**
      * Expected response model
      */
-    private ResponseDto<EvaluationResultsResponseDto> expectedResponse;
+    private ResponseDto<RESP> expectedResponse;
 }

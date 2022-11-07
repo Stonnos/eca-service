@@ -1,7 +1,7 @@
 package com.ecaservice.external.api.test.service;
 
 import com.ecaservice.external.api.test.config.ExternalApiTestsConfig;
-import com.ecaservice.external.api.test.model.TestDataModel;
+import com.ecaservice.external.api.test.model.EvaluationTestDataModel;
 import com.ecaservice.test.common.service.AbstractTestDataProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
-public class TestDataService extends AbstractTestDataProvider<TestDataModel> {
+public class TestDataService extends AbstractTestDataProvider<EvaluationTestDataModel> {
 
     private final ExternalApiTestsConfig externalApiTestsConfig;
 
@@ -23,7 +23,7 @@ public class TestDataService extends AbstractTestDataProvider<TestDataModel> {
      * @param externalApiTestsConfig - external api tests config
      */
     public TestDataService(ExternalApiTestsConfig externalApiTestsConfig) {
-        super(TestDataModel.class);
+        super(EvaluationTestDataModel.class);
         this.externalApiTestsConfig = externalApiTestsConfig;
     }
 
