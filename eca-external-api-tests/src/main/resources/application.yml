@@ -37,7 +37,9 @@ external-api-tests:
   delaySeconds: 2
 
 process:
-  processId: ExternalApiAutoTestProcess
+  ids:
+    EVALUATION_REQUEST_PROCESS: ExternalApiAutoTestProcess
+    EXPERIMENT_REQUEST_PROCESS: ExternalApiAutoTestProcess
 
 ## Swagger properties
 open-api:

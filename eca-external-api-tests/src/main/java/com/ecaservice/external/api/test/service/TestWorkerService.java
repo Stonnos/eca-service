@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -42,8 +43,8 @@ public class TestWorkerService {
     /**
      * Executes auto test.
      *
-     * @param testId         - test id
-     * @param testDataModel  - test data model
+     * @param testId        - test id
+     * @param testDataModel - test data model
      */
     public void execute(long testId, AbstractTestDataModel<?, ?> testDataModel) {
         AutoTestEntity autoTestEntity = autoTestRepository.findById(testId)
@@ -61,12 +62,20 @@ public class TestWorkerService {
     }
 
     private void executeNextTest(AutoTestEntity autoTestEntity, AbstractTestDataModel<?, ?> testDataModel) {
+        String processId = getProcessId(autoTestEntity);
+        Assert.notNull(processId, String.format("Expected not null BPM process id for auto test [%d]",
+                autoTestEntity.getId()));
         TestResultsMatcher matcher = new TestResultsMatcher();
         Map<String, Object> variables = newHashMap();
         variables.put(AUTO_TEST_ID, autoTestEntity.getId());
         variables.put(TRAINS_DATA_SOURCE, testDataModel.getTrainDataSource().name());
         variables.put(TEST_DATA_MODEL, testDataModel);
         variables.put(TEST_RESULTS_MATCHER, matcher);
-        processManager.startProcess(processConfig.getProcessId(), UUID.randomUUID().toString(), variables);
+        processManager.startProcess(processId, UUID.randomUUID().toString(), variables);
+    }
+
+    private String getProcessId(AutoTestEntity autoTestEntity) {
+        var autoTestType = autoTestEntity.getJob().getAutoTestType();
+        return processConfig.getIds().get(autoTestType);
     }
 }
