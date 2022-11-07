@@ -2,7 +2,7 @@ package com.ecaservice.external.api.test.service;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.external.api.test.config.ExternalApiTestsConfig;
-import com.ecaservice.external.api.test.dto.AutoTestDto;
+import com.ecaservice.external.api.test.dto.AbstractAutoTestDto;
 import com.ecaservice.external.api.test.dto.AutoTestType;
 import com.ecaservice.external.api.test.dto.AutoTestsJobDto;
 import com.ecaservice.external.api.test.entity.JobEntity;
@@ -32,6 +32,7 @@ public class JobService {
 
     private final ExternalApiTestsConfig externalApiTestsConfig;
     private final AutoTestMapper autoTestMapper;
+    private final AutoTestRequestAdapter autoTestRequestAdapter;
     private final AutoTestRepository autoTestRepository;
     private final JobRepository jobRepository;
 
@@ -87,11 +88,11 @@ public class JobService {
         return jobDto;
     }
 
-    private List<AutoTestDto> getTestResults(JobEntity jobEntity, TestResultsCounter counter) {
+    private List<AbstractAutoTestDto> getTestResults(JobEntity jobEntity, TestResultsCounter counter) {
         return autoTestRepository.findAllByJob(jobEntity)
                 .stream()
                 .map(autoTestEntity -> {
-                    var autoTestsDto = autoTestMapper.map(autoTestEntity);
+                    var autoTestsDto = autoTestRequestAdapter.proceed(autoTestEntity);
                     autoTestEntity.getTestResult().apply(counter);
                     return autoTestsDto;
                 })

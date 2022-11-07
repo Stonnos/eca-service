@@ -47,6 +47,6 @@ public class AutoTestsJobDto extends BaseTestDto {
      * Test results list
      */
     @ArraySchema(schema = @Schema(description = "Test results"))
-    private List<AutoTestDto> testResults;
+    private List<AbstractAutoTestDto> testResults;
 
 }
