@@ -1,6 +1,7 @@
 package com.ecaservice.external.api.test.controller;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.external.api.test.dto.AutoTestType;
 import com.ecaservice.external.api.test.dto.AutoTestsJobDto;
 import com.ecaservice.external.api.test.entity.JobEntity;
 import com.ecaservice.external.api.test.report.ExternalApiTestResultsCsvReportGenerator;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
@@ -46,6 +48,7 @@ public class AutoTestController {
     /**
      * Creates auto tests job.
      *
+     * @param autoTestType - auto test type
      * @return auto tests job dto
      */
     @Operation(
@@ -53,9 +56,10 @@ public class AutoTestController {
             summary = "Creates auto tests job"
     )
     @PostMapping(value = "/create-job")
-    public AutoTestsJobDto createJob() {
+    public AutoTestsJobDto createJob(@Parameter(description = "Auto test type", required = true)
+                                     @RequestParam AutoTestType autoTestType) {
         log.info("Received auto tests request");
-        var jobDto = jobService.createAndSaveNewJob();
+        var jobDto = jobService.createAndSaveNewJob(autoTestType);
         log.info("Auto tests job has been created with uuid [{}]", jobDto.getJobUuid());
         return jobDto;
     }

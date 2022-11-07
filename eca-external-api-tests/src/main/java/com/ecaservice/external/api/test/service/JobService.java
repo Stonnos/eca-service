@@ -3,6 +3,7 @@ package com.ecaservice.external.api.test.service;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.external.api.test.config.ExternalApiTestsConfig;
 import com.ecaservice.external.api.test.dto.AutoTestDto;
+import com.ecaservice.external.api.test.dto.AutoTestType;
 import com.ecaservice.external.api.test.dto.AutoTestsJobDto;
 import com.ecaservice.external.api.test.entity.JobEntity;
 import com.ecaservice.external.api.test.mapping.AutoTestMapper;
@@ -37,11 +38,13 @@ public class JobService {
     /**
      * Creates new auto tests job.
      *
+     * @param autoTestType - auto test type
      * @return auto tests job
      */
-    public AutoTestsJobDto createAndSaveNewJob() {
+    public AutoTestsJobDto createAndSaveNewJob(AutoTestType autoTestType) {
         var jobEntity = new JobEntity();
         jobEntity.setJobUuid(UUID.randomUUID().toString());
+        jobEntity.setAutoTestType(autoTestType);
         jobEntity.setNumThreads(externalApiTestsConfig.getNumThreads());
         jobEntity.setExecutionStatus(ExecutionStatus.NEW);
         jobEntity.setCreated(LocalDateTime.now());
