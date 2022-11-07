@@ -3,6 +3,7 @@ package com.ecaservice.external.api.test.service.runner;
 import com.ecaservice.external.api.test.config.ExternalApiTestsConfig;
 import com.ecaservice.external.api.test.dto.AutoTestType;
 import com.ecaservice.external.api.test.entity.AutoTestEntity;
+import com.ecaservice.external.api.test.entity.EvaluationRequestAutoTestEntity;
 import com.ecaservice.external.api.test.model.EvaluationTestDataModel;
 import com.ecaservice.external.api.test.repository.AutoTestRepository;
 import com.ecaservice.external.api.test.service.EvaluationTestDataService;
@@ -48,6 +49,6 @@ public class EvaluationRequestAutoTestRunner extends AbstractAutoTestRunner<Auto
 
     @Override
     protected AutoTestEntity createAutoTestEntity(EvaluationTestDataModel testDataModel) {
-        return new AutoTestEntity();
+        return new EvaluationRequestAutoTestEntity();
     }
 }
