@@ -1,6 +1,6 @@
 {
   "displayName": "ID3 request with invalid 'minObj'",
-  "testType": "USING_EXTERNAL_DATA_URL",
+  "trainDataSource": "EXTERNAL_DATA_URL",
   "request": {
     "trainDataUrl": "http://kt.ijs.si/Branax/Repository/WEKA/Iris.xls",
     "classifierOptions": {

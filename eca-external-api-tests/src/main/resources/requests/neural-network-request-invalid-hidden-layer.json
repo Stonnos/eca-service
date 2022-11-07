@@ -1,6 +1,6 @@
 {
   "displayName": "Neural network request with invalid 'hiddenLayer'",
-  "testType": "USING_EXTERNAL_DATA_URL",
+  "trainDataSource": "EXTERNAL_DATA_URL",
   "request": {
     "trainDataUrl": "http://kt.ijs.si/Branax/Repository/WEKA/Iris.xls",
     "classifierOptions": {

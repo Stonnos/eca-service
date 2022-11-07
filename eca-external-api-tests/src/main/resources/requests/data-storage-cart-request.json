@@ -1,6 +1,6 @@
 {
   "displayName": "Cart request using data storage API",
-  "testType": "USING_API_DATA_STORAGE",
+  "trainDataSource": "API_DATA_STORAGE",
   "trainDataPath": "classpath:/data/credit.xlsx",
   "request": {
     "classifierOptions": {

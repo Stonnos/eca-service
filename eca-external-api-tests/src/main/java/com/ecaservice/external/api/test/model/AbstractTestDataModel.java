@@ -24,9 +24,9 @@ public abstract class AbstractTestDataModel<REQ extends AbstractEvaluationReques
     private String displayName;
 
     /**
-     * Test type
+     * Train data source
      */
-    private TestType testType;
+    private TrainDataSource trainDataSource;
 
     /**
      * Train data path on file system

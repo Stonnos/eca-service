@@ -1,6 +1,6 @@
 {
   "displayName": "J48 request with invalid 'numFolds'",
-  "testType": "USING_EXTERNAL_DATA_URL",
+  "trainDataSource": "API_DATA_STORAGE",
   "request": {
     "trainDataUrl": "http://kt.ijs.si/Branax/Repository/WEKA/Iris.xls",
     "classifierOptions": {

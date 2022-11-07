@@ -21,9 +21,9 @@ public class CamundaVariables {
     public static final String AUTO_TEST_ID = "autoTestId";
 
     /**
-     * Test type variable
+     * Train data source
      */
-    public static final String TEST_TYPE = "testType";
+    public static final String TRAINS_DATA_SOURCE = "trainDataSource";
 
     /**
      * Test data model variable

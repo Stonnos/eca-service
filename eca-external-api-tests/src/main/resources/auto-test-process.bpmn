@@ -21,7 +21,7 @@
       <bpmn:outgoing>Flow_1dpx3b3</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0rhzdbq" sourceRef="Gateway_1uq9ik9" targetRef="Activity_0jkpz24">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${testType == 'USING_API_DATA_STORAGE'}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${trainDataSource == 'API_DATA_STORAGE'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:serviceTask id="Activity_0au6vxc" name="Завершить тест с ошибкой" camunda:modelerTemplate="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener" camunda:class="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
@@ -101,7 +101,7 @@
       <bpmn:outgoing>Flow_0rj1wpt</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1ckv5ax" sourceRef="Gateway_1uq9ik9" targetRef="Activity_0i734h5">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${testType == 'USING_EXTERNAL_DATA_URL'}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${trainDataSource == 'EXTERNAL_DATA_URL'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:exclusiveGateway id="Gateway_0me8elr" default="Flow_1klxt8x">
       <bpmn:incoming>Flow_1dpx3b3</bpmn:incoming>

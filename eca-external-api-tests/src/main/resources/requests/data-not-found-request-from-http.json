@@ -1,6 +1,6 @@
 {
   "displayName": "Data not found request from http",
-  "testType": "USING_EXTERNAL_DATA_URL",
+  "trainDataSource": "EXTERNAL_DATA_URL",
   "request": {
     "trainDataUrl": "http://localhost:8093/data.csv",
     "classifierOptions": {

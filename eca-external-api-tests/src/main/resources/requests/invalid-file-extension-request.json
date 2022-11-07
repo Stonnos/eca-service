@@ -1,6 +1,6 @@
 {
   "displayName": "Request with invalid train data file extension",
-  "testType": "USING_API_DATA_STORAGE",
+  "trainDataSource": "API_DATA_STORAGE",
   "trainDataPath": "classpath:/data/invalid-file.sql",
   "request": {
     "classifierOptions": {
