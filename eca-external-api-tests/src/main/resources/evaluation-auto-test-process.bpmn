@@ -36,6 +36,7 @@
       <bpmn:incoming>Flow_0mwnit3</bpmn:incoming>
       <bpmn:incoming>Flow_0t4z0jk</bpmn:incoming>
       <bpmn:incoming>Flow_0lyfe25</bpmn:incoming>
+      <bpmn:incoming>Flow_0g05up0</bpmn:incoming>
       <bpmn:outgoing>Flow_063j6fq</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="Activity_09gcibm" name="Сравнение результатов для ошибки валидации" camunda:modelerTemplate="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener" camunda:class="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener">
@@ -196,6 +197,7 @@
       <bpmn:incoming>Flow_0m89vnf</bpmn:incoming>
       <bpmn:outgoing>Flow_1x8fenf</bpmn:outgoing>
       <bpmn:outgoing>Flow_0dwy85b</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0g05up0</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_1x8fenf" sourceRef="Gateway_15p6hxs" targetRef="Event_1horvp8" />
     <bpmn:intermediateCatchEvent id="Event_1horvp8">
@@ -248,6 +250,9 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${taskResult.status == 'SUCCESS'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0lyfe25" sourceRef="Gateway_1alq03j" targetRef="Activity_0au6vxc" />
+    <bpmn:sequenceFlow id="Flow_0g05up0" sourceRef="Gateway_15p6hxs" targetRef="Activity_0au6vxc">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${apiResponse.responseCode == 'SUCCESS' &amp;&amp; (apiResponse.payload.evaluationStatus == 'ERROR' || apiResponse.payload.evaluationStatus == 'TIMEOUT')}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
     <bpmn:textAnnotation id="TextAnnotation_05fl470">
       <bpmn:text>Тест с загрузкой обучающей выборки на сервер</bpmn:text>
     </bpmn:textAnnotation>
@@ -318,9 +323,15 @@
       <bpmn:text>Проверка результата выполнения задачи</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_06sg533" sourceRef="Gateway_1alq03j" targetRef="TextAnnotation_0y1uqy0" />
+    <bpmn:textAnnotation id="TextAnnotation_13twiky">
+      <bpmn:text>Ошибка при построении модели</bpmn:text>
+    </bpmn:textAnnotation>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="EvaluationApiAutoTestProcess">
+      <bpmndi:BPMNShape id="TextAnnotation_13twiky_di" bpmnElement="TextAnnotation_13twiky">
+        <dc:Bounds x="1570" y="978" width="118" height="52" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0lyfe25_di" bpmnElement="Flow_0lyfe25">
         <di:waypoint x="1470" y="805" />
         <di:waypoint x="1470" y="1130" />
@@ -488,6 +499,13 @@
       <bpmndi:BPMNEdge id="Flow_0mpzo1a_di" bpmnElement="Flow_0mpzo1a">
         <di:waypoint x="188" y="557" />
         <di:waypoint x="395" y="557" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0g05up0_di" bpmnElement="Flow_0g05up0">
+        <di:waypoint x="1550" y="805" />
+        <di:waypoint x="1550" y="1130" />
+        <di:waypoint x="2470" y="1130" />
+        <di:waypoint x="2470" y="110" />
+        <di:waypoint x="2220" y="110" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="152" y="539" width="36" height="36" />
