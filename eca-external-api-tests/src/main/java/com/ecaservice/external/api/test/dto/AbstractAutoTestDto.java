@@ -19,6 +19,7 @@ import lombok.ToString;
 @ToString(callSuper = true)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = EvaluationRequestAutoTestDto.class),
+        @JsonSubTypes.Type(value = ExperimentRequestAutoTestDto.class)
 })
 @Schema(description = "Base auto test dto model")
 public abstract class AbstractAutoTestDto extends BaseTestDto {
