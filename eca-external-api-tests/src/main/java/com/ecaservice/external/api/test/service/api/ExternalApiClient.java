@@ -49,7 +49,7 @@ public interface ExternalApiClient {
      * @param experimentRequestDto - experiment request dto
      * @return evaluation response dto
      */
-    @PostMapping(value = "/evaluation-request")
+    @PostMapping(value = "/experiment-request")
     ResponseDto<SimpleEvaluationResponseDto> experimentRequest(@RequestBody ExperimentRequestDto experimentRequestDto);
 
     /**
