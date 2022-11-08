@@ -39,8 +39,8 @@ external-api-tests:
 
 process:
   ids:
-    EVALUATION_REQUEST_PROCESS: ExternalApiAutoTestProcess
-    EXPERIMENT_REQUEST_PROCESS: ExternalApiAutoTestProcess
+    EVALUATION_REQUEST_PROCESS: EvaluationApiAutoTestProcess
+    EXPERIMENT_REQUEST_PROCESS: ExperimentApiAutoTestProcess
 
 ## Swagger properties
 open-api:
