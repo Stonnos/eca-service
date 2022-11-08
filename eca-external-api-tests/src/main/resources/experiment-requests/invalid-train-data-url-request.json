@@ -1,0 +1,12 @@
+{
+  "displayName": "Request with invalid train data url protocol",
+  "trainDataSource": "EXTERNAL_DATA_URL",
+  "request": {
+    "trainDataUrl": "ppp://Iris.xls",
+    "experimentType": "RANDOM_FORESTS",
+    "evaluationMethod": "TRAINING_DATA"
+  },
+  "expectedResponse": {
+    "responseCode": "VALIDATION_ERROR"
+  }
+}

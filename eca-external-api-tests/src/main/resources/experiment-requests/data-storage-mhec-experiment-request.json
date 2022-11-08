@@ -1,0 +1,12 @@
+{
+  "displayName": "Modified heterogeneous classifier experiment request with data storage",
+  "trainDataSource": "API_DATA_STORAGE",
+  "trainDataPath": "classpath:/data/credit.xlsx",
+  "request": {
+    "evaluationMethod": "TRAINING_DATA",
+    "experimentType": "MODIFIED_HETEROGENEOUS_ENSEMBLE"
+  },
+  "expectedResponse": {
+    "responseCode": "SUCCESS"
+  }
+}

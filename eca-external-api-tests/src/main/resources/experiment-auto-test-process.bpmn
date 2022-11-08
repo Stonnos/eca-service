@@ -202,7 +202,7 @@
       <bpmn:incoming>Flow_1x8fenf</bpmn:incoming>
       <bpmn:outgoing>Flow_1km68eq</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_01p5jtw">
-        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT1S</bpmn:timeDuration>
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT3S</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
     <bpmn:sequenceFlow id="Flow_1km68eq" sourceRef="Event_1horvp8" targetRef="Activity_0o3hr0a" />
@@ -321,9 +321,6 @@
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="ExperimentApiAutoTestProcess">
-      <bpmndi:BPMNShape id="TextAnnotation_0djfyxy_di" bpmnElement="TextAnnotation_0djfyxy">
-        <dc:Bounds x="1600" y="590" width="243.99317653890824" height="39.48896631823461" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0lyfe25_di" bpmnElement="Flow_0lyfe25">
         <di:waypoint x="1470" y="805" />
         <di:waypoint x="1470" y="1130" />
@@ -602,6 +599,9 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0yl8edy_di" bpmnElement="TextAnnotation_0yl8edy">
         <dc:Bounds x="1710" y="850" width="203.99608013937282" height="53.426248548199766" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0djfyxy_di" bpmnElement="TextAnnotation_0djfyxy">
+        <dc:Bounds x="1600" y="590" width="243.99317653890824" height="39.48896631823461" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0rmoqox_di" bpmnElement="TextAnnotation_0rmoqox">
         <dc:Bounds x="1570" y="699" width="149.98911149825784" height="38.9989837398374" />

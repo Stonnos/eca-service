@@ -1,0 +1,12 @@
+{
+  "displayName": "Data not found request from storage",
+  "trainDataSource": "EXTERNAL_DATA_URL",
+  "request": {
+    "trainDataUrl": "data://datauuid",
+    "experimentType": "RANDOM_FORESTS",
+    "evaluationMethod": "TRAINING_DATA"
+  },
+  "expectedResponse": {
+    "responseCode": "DATA_NOT_FOUND"
+  }
+}
