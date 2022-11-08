@@ -56,16 +56,16 @@
             "value": "COMPARE_CLASSIFIER_MODEL_RESULT"
           },
           {
-            "name": "EXPERIMENT_REQUEST",
-            "value": "Создать заявку на построение модели эксперимента"
+            "name": "Создать заявку на построение модели эксперимента",
+            "value": "EXPERIMENT_REQUEST"
           },
           {
-            "name": "GET_EXPERIMENT_STATUS",
-            "value": "Получение результатов эксперимента"
+            "name": "Получение результатов эксперимента",
+            "value": "GET_EXPERIMENT_STATUS"
           },
           {
-            "name": "COMPARE_EXPERIMENT_MODEL_RESULT",
-            "value": "Скачать модель эксперимента с сервера и сравнить результаты"
+            "name": "Скачать модель эксперимента с сервера и сравнить результаты",
+            "value": "COMPARE_EXPERIMENT_MODEL_RESULT"
           },
           {
             "name": "Вычислить окончательный результат теста",

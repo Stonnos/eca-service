@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_0uznkhk" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.7.1">
-  <bpmn:process id="EvaluationApiAutoTestProcess" isExecutable="true">
+  <bpmn:process id="ExperimentApiAutoTestProcess" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1">
       <bpmn:outgoing>Flow_0mpzo1a</bpmn:outgoing>
     </bpmn:startEvent>
@@ -94,10 +94,10 @@
     <bpmn:sequenceFlow id="Flow_063j6fq" sourceRef="Activity_0au6vxc" targetRef="Event_1n8quue" />
     <bpmn:sequenceFlow id="Flow_1jn34ba" sourceRef="Activity_09gcibm" targetRef="Activity_1vk8gb4" />
     <bpmn:sequenceFlow id="Flow_1s0pylq" sourceRef="Activity_1vk8gb4" targetRef="Event_1n8quue" />
-    <bpmn:serviceTask id="Activity_0i734h5" name="Отправить запрос на построение модели" camunda:modelerTemplate="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener" camunda:class="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener">
+    <bpmn:serviceTask id="Activity_0i734h5" name="Создать заявку на эксперимент" camunda:modelerTemplate="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener" camunda:class="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="taskType">EVALUATION_REQUEST</camunda:inputParameter>
+          <camunda:inputParameter name="taskType">EXPERIMENT_REQUEST</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1ckv5ax</bpmn:incoming>
@@ -149,10 +149,10 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${apiResponse.responseCode == 'DATA_NOT_FOUND'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0pn1vrx" sourceRef="Activity_10bazct" targetRef="Activity_1vk8gb4" />
-    <bpmn:serviceTask id="Activity_070x360" name="Скачать модель с сервера и сравнить результаты" camunda:modelerTemplate="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener" camunda:class="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener">
+    <bpmn:serviceTask id="Activity_070x360" name="Скачать модель эксперимента с сервера и сравнить результаты" camunda:modelerTemplate="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener" camunda:class="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="taskType">COMPARE_CLASSIFIER_MODEL_RESULT</camunda:inputParameter>
+          <camunda:inputParameter name="taskType">COMPARE_EXPERIMENT_MODEL_RESULT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0ydfsak</bpmn:incoming>
@@ -181,10 +181,10 @@
       <bpmn:incoming>Flow_146f0cb</bpmn:incoming>
       <bpmn:outgoing>Flow_1b6i77s</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_0o3hr0a" name="Получение результатов построения модели" camunda:modelerTemplate="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener" camunda:class="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener">
+    <bpmn:serviceTask id="Activity_0o3hr0a" name="Получение результатов эксперимента" camunda:modelerTemplate="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener" camunda:class="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="taskType">GET_EVALUATION_STATUS</camunda:inputParameter>
+          <camunda:inputParameter name="taskType">GET_EXPERIMENT_STATUS</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1b6i77s</bpmn:incoming>
@@ -293,14 +293,14 @@
     </bpmn:textAnnotation>
     <bpmn:association id="Association_1psbg5p" sourceRef="Activity_10bazct" targetRef="TextAnnotation_1hfvyfa" />
     <bpmn:textAnnotation id="TextAnnotation_0yl8edy">
-      <bpmn:text>Ожидание отправки следующего запроса на получение результатов построения модели</bpmn:text>
+      <bpmn:text>Ожидание отправки следующего запроса на получение результатов эксперимента</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_1m6s2d8" sourceRef="Event_1horvp8" targetRef="TextAnnotation_0yl8edy" />
     <bpmn:textAnnotation id="TextAnnotation_0djfyxy">
-      <bpmn:text>Модель успешно построена</bpmn:text>
+      <bpmn:text>Модель эксперимента умпешно построена</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:textAnnotation id="TextAnnotation_0rmoqox">
-      <bpmn:text>Модель еще не построена</bpmn:text>
+      <bpmn:text>Модель эксперимента еще не построена</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:textAnnotation id="TextAnnotation_0l1zivc">
       <bpmn:text>Проверка результата выполнения задачи</bpmn:text>
@@ -320,7 +320,10 @@
     <bpmn:association id="Association_06sg533" sourceRef="Gateway_1alq03j" targetRef="TextAnnotation_0y1uqy0" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="EvaluationApiAutoTestProcess">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="ExperimentApiAutoTestProcess">
+      <bpmndi:BPMNShape id="TextAnnotation_0djfyxy_di" bpmnElement="TextAnnotation_0djfyxy">
+        <dc:Bounds x="1600" y="590" width="243.99317653890824" height="39.48896631823461" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0lyfe25_di" bpmnElement="Flow_0lyfe25">
         <di:waypoint x="1470" y="805" />
         <di:waypoint x="1470" y="1130" />
@@ -598,13 +601,10 @@
         <dc:Bounds x="1240" y="990" width="140" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0yl8edy_di" bpmnElement="TextAnnotation_0yl8edy">
-        <dc:Bounds x="1710" y="850" width="203.9895411605938" height="52.631578947368425" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_0djfyxy_di" bpmnElement="TextAnnotation_0djfyxy">
-        <dc:Bounds x="1620" y="600" width="244" height="30" />
+        <dc:Bounds x="1710" y="850" width="203.99608013937282" height="53.426248548199766" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0rmoqox_di" bpmnElement="TextAnnotation_0rmoqox">
-        <dc:Bounds x="1570" y="699" width="150" height="39" />
+        <dc:Bounds x="1570" y="699" width="149.98911149825784" height="38.9989837398374" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0l1zivc_di" bpmnElement="TextAnnotation_0l1zivc">
         <dc:Bounds x="700" y="310" width="90" height="69" />
@@ -652,7 +652,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_1m6s2d8_di" bpmnElement="Association_1m6s2d8">
         <di:waypoint x="1685" y="789" />
-        <di:waypoint x="1774" y="850" />
+        <di:waypoint x="1773" y="850" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_0ycdciq_di" bpmnElement="Association_0ycdciq">
         <di:waypoint x="692" y="407" />
