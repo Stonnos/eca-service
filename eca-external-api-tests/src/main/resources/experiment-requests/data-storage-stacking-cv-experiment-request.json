@@ -1,7 +1,7 @@
 {
   "displayName": "Stacking CV experiment request with data storage",
   "trainDataSource": "API_DATA_STORAGE",
-  "trainDataPath": "classpath:/data/credit.xlsx",
+  "trainDataPath": "classpath:/data/iris.xls",
   "request": {
     "evaluationMethod": "TRAINING_DATA",
     "experimentType": "STACKING_CV"
