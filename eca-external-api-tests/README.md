@@ -26,6 +26,7 @@
    * external-api-tests.url - endpoint для внешнего API
    * external-api-tests.evaluationTestDataPath - относительный путь к директории (в resources) с автотестами для построения моделей классификаторов
    * external-api-tests.experimentTestDataPath - относительный путь к директории (в resources) с автотестами для построения экспериментов
+   * external-api.expectedExperimentNumModels - ожидаемое число моделей в истории эксперимента
 3) security.oauth2.client - настройки клиента для oauth2 авторизации
    * security.oauth2.client.clientId - идентификатор клиента
    * security.oauth2.client.clientSecret - секретный ключ или пароль клиента

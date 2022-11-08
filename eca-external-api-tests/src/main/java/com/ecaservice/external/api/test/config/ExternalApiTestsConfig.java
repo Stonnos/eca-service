@@ -65,4 +65,10 @@ public class ExternalApiTestsConfig {
      */
     @NotNull
     private Integer delaySeconds;
+
+    /**
+     * Experiment models number in experiment history
+     */
+    @NotNull
+    private Integer expectedExperimentNumModels;
 }
