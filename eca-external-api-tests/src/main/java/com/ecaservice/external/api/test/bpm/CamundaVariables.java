@@ -41,6 +41,11 @@ public class CamundaVariables {
     public static final String API_RESPONSE = "apiResponse";
 
     /**
+     * Task result variable
+     */
+    public static final String TASK_RESULT = "taskResult";
+
+    /**
      * Error message
      */
     public static final String ERROR_MESSAGE = "errorMessage";
