@@ -107,13 +107,17 @@ public class ExperimentResultsService {
         log.info("Starting to fetch experiment [{}] ERS report", experiment.getRequestId());
         ExperimentErsReportDto experimentErsReportDto = new ExperimentErsReportDto();
         experimentErsReportDto.setExperimentRequestId(experiment.getRequestId());
-        //Gets experiment results list
-        List<ExperimentResultsEntity> experimentResultsEntityList =
-                experimentResultsEntityRepository.findByExperimentOrderByResultsIndex(experiment);
-        var experimentResultsDtoList = mapToExperimentResultsDtoList(experimentResultsEntityList);
-        experimentErsReportDto.setExperimentResults(experimentResultsDtoList);
-        populateSentFlag(experimentErsReportDto, experimentResultsEntityList);
-        populateErsReportStatus(experiment, experimentErsReportDto);
+        if (!RequestStatus.FINISHED.equals(experiment.getRequestStatus())) {
+            populateErsReportStatusForNotFinishedExperiment(experiment, experimentErsReportDto);
+        } else {
+            //Gets experiment results list
+            var experimentResultsEntityList =
+                    experimentResultsEntityRepository.findByExperimentOrderByResultsIndex(experiment);
+            var experimentResultsDtoList = mapToExperimentResultsDtoList(experimentResultsEntityList);
+            experimentErsReportDto.setExperimentResults(experimentResultsDtoList);
+            populateSentFlag(experimentErsReportDto, experimentResultsEntityList);
+            populateErsReportStatusForFinishedExperiment(experiment, experimentErsReportDto);
+        }
         log.info("Experiment [{}] ERS report has been fetched with status [{}]", experiment.getRequestId(),
                 experimentErsReportDto.getErsReportStatus().getValue());
         return experimentErsReportDto;
@@ -151,12 +155,10 @@ public class ExperimentResultsService {
         }
     }
 
-    private void populateErsReportStatus(Experiment experiment, ExperimentErsReportDto experimentErsReportDto) {
+    private void populateErsReportStatusForFinishedExperiment(Experiment experiment,
+                                                              ExperimentErsReportDto experimentErsReportDto) {
         ErsReportStatus ersReportStatus;
-        if (!RequestStatus.FINISHED.equals(experiment.getRequestStatus())) {
-            ersReportStatus = handleNotFinishedExperiment(experiment);
-            //else handle ERS report status for experiment with FINISHED status
-        } else if (experimentErsReportDto.getClassifiersCount() == 0L) {
+        if (experimentErsReportDto.getClassifiersCount() == 0L) {
             ersReportStatus = ErsReportStatus.EXPERIMENT_RESULTS_NOT_FOUND;
         } else if (experimentErsReportDto.getSentClassifiersCount() == experimentErsReportDto.getClassifiersCount()) {
             ersReportStatus = ErsReportStatus.SUCCESS_SENT;
@@ -169,14 +171,18 @@ public class ExperimentResultsService {
                 new EnumDto(ersReportStatus.name(), ersReportStatus.getDescription()));
     }
 
-    private ErsReportStatus handleNotFinishedExperiment(Experiment experiment) {
+    private void populateErsReportStatusForNotFinishedExperiment(Experiment experiment,
+                                                                 ExperimentErsReportDto experimentErsReportDto) {
+        ErsReportStatus ersReportStatus;
         if (RequestStatus.NEW.equals(experiment.getRequestStatus())) {
-            return ErsReportStatus.EXPERIMENT_NEW;
+            ersReportStatus = ErsReportStatus.EXPERIMENT_NEW;
         } else if (RequestStatus.IN_PROGRESS.equals(experiment.getRequestStatus())) {
-            return ErsReportStatus.EXPERIMENT_IN_PROGRESS;
+            ersReportStatus = ErsReportStatus.EXPERIMENT_IN_PROGRESS;
         } else {
-            return ErsReportStatus.EXPERIMENT_ERROR;
+            ersReportStatus = ErsReportStatus.EXPERIMENT_ERROR;
         }
+        experimentErsReportDto.setErsReportStatus(
+                new EnumDto(ersReportStatus.name(), ersReportStatus.getDescription()));
     }
 
     private EvaluationResultsDto getEvaluationResults(ExperimentResultsEntity experimentResultsEntity) {
