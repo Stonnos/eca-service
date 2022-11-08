@@ -29,10 +29,16 @@ public class ExternalApiTestsConfig {
     private String url;
 
     /**
-     * Test data path
+     * Evaluation requests test data path
      */
     @NotEmpty
-    private String testDataPath;
+    private String evaluationTestDataPath;
+
+    /**
+     * Experiment requests test data path
+     */
+    @NotEmpty
+    private String experimentTestDataPath;
 
     /**
      * Threads number for requests sending
@@ -59,4 +65,10 @@ public class ExternalApiTestsConfig {
      */
     @NotNull
     private Integer delaySeconds;
+
+    /**
+     * Experiment models number in experiment history
+     */
+    @NotNull
+    private Integer expectedExperimentNumModels;
 }

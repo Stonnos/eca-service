@@ -7,7 +7,7 @@
 
 1. Запуск пакета автотестов для внешнего API. 
 2. Построение сводных отчетов по автотестам в формате csv.
-3. Возможность добавления новых автотестов в директорию src/main/resources/requests
+3. Возможность добавления новых автотестов в директорию src/main/resources
 
 Необходимый софт
 ----------------------------------------
@@ -24,7 +24,9 @@
    * external-api-tests.pageSize - размер страницы для постраничной обработки
    * external-api-tests.delaySeconds - интервал между запусками scheduler для обработки тестов
    * external-api-tests.url - endpoint для внешнего API
-   * external-api-tests.testDataPath - относительный путь к директории (в resources) с автотестами
+   * external-api-tests.evaluationTestDataPath - относительный путь к директории (в resources) с автотестами для построения моделей классификаторов
+   * external-api-tests.experimentTestDataPath - относительный путь к директории (в resources) с автотестами для построения экспериментов
+   * external-api.expectedExperimentNumModels - ожидаемое число моделей в истории эксперимента
 3) security.oauth2.client - настройки клиента для oauth2 авторизации
    * security.oauth2.client.clientId - идентификатор клиента
    * security.oauth2.client.clientSecret - секретный ключ или пароль клиента
@@ -41,7 +43,7 @@
    * open-api.apiAuth - настройки авторизации
    * open-api.apiAuth.scopes - список scopes
 5) process - настройки бизнес - процесса
-   * processId - идентификатор бизнес - процесса
+   * ids - идентификаторы бизнес - процессов
 
 Инструкция по развертыванию
 ----------------------------------------

@@ -1,0 +1,42 @@
+{
+  "displayName": "Heterogeneous classifier request with invalid 'minError' greater than maximum",
+  "trainDataSource": "EXTERNAL_DATA_URL",
+  "request": {
+    "trainDataUrl": "http://kt.ijs.si/Branax/Repository/WEKA/Iris.xls",
+    "classifierOptions": {
+      "type": "heterogeneous_classifier",
+      "numIterations": 10,
+      "numThreads": 4,
+      "minError": 0.51,
+      "maxError": 0.5,
+      "classifierOptions": [
+        {
+          "type": "decision_tree",
+          "decisionTreeType": "CART",
+          "minObj": 2,
+          "maxDepth": 0,
+          "randomTree": false,
+          "useBinarySplits": true,
+          "useRandomSplits": false
+        },
+        {
+          "type": "decision_tree",
+          "decisionTreeType": "ID3",
+          "minObj": 2,
+          "maxDepth": 0,
+          "randomTree": false,
+          "useBinarySplits": false,
+          "useRandomSplits": false
+        }
+      ],
+      "useWeightedVotes": true,
+      "useRandomClassifier": false,
+      "samplingMethod": "BAGGING",
+      "useRandomSubspaces": false
+    },
+    "evaluationMethod": "TRAINING_DATA"
+  },
+  "expectedResponse": {
+    "responseCode": "VALIDATION_ERROR"
+  }
+}

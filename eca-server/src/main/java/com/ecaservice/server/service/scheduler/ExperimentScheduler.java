@@ -1,6 +1,7 @@
 package com.ecaservice.server.service.scheduler;
 
 import com.ecaservice.server.repository.ExperimentRepository;
+import com.ecaservice.server.repository.ExperimentStepRepository;
 import com.ecaservice.server.service.experiment.ExperimentDataCleaner;
 import com.ecaservice.server.service.experiment.ExperimentRequestProcessor;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ public class ExperimentScheduler {
     private final ExperimentRequestProcessor experimentRequestProcessor;
     private final ExperimentDataCleaner experimentDataCleaner;
     private final ExperimentRepository experimentRepository;
+    private final ExperimentStepRepository experimentStepRepository;
 
     /**
      * Processes experiment requests.
@@ -52,7 +54,11 @@ public class ExperimentScheduler {
         var newExperimentIds = experimentRepository.findNewExperiments();
         if (!CollectionUtils.isEmpty(newExperimentIds)) {
             log.info("Fetched {} new experiments", newExperimentIds.size());
-            newExperimentIds.forEach(experimentRequestProcessor::startExperiment);
+            newExperimentIds.forEach(id -> {
+                experimentRequestProcessor.startExperiment(id);
+                experimentRequestProcessor.processExperiment(id);
+                finishExperiment(id);
+            });
         }
         log.trace("New experiments processing has been successfully finished.");
     }
@@ -65,7 +71,10 @@ public class ExperimentScheduler {
         var ids = experimentRepository.findExperimentsToProcess();
         if (!CollectionUtils.isEmpty(ids)) {
             log.info("Fetched {} experiments to process", ids.size());
-            ids.forEach(experimentRequestProcessor::processExperiment);
+            ids.forEach(id -> {
+                experimentRequestProcessor.processExperiment(id);
+                finishExperiment(id);
+            });
         }
         log.trace("New experiments processing has been successfully finished.");
     }
@@ -81,5 +90,15 @@ public class ExperimentScheduler {
             ids.forEach(experimentRequestProcessor::finishExperiment);
         }
         log.trace("Finished experiments processing has been successfully finished.");
+    }
+
+    private void finishExperiment(long experimentId) {
+        if (processed(experimentId)) {
+            experimentRequestProcessor.finishExperiment(experimentId);
+        }
+    }
+
+    private boolean processed(long experimentId) {
+        return experimentStepRepository.getExperimentStepsCountToProcess(experimentId) == 0L;
     }
 }

@@ -1,6 +1,7 @@
 package com.ecaservice.external.api.test.controller;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.external.api.test.dto.AutoTestType;
 import com.ecaservice.external.api.test.dto.AutoTestsJobDto;
 import com.ecaservice.external.api.test.entity.JobEntity;
 import com.ecaservice.external.api.test.report.ExternalApiTestResultsCsvReportGenerator;
@@ -18,11 +19,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
 
 /**
  * Auto tests controller.
@@ -40,12 +43,13 @@ public class AutoTestController {
     private static final String AUTO_TEST_REPORT_NAME = "auto-tests-report%s.zip";
 
     private final JobService jobService;
-    private final ExternalApiTestResultsCsvReportGenerator externalApiTestResultsCsvReportGenerator;
+    private final List<ExternalApiTestResultsCsvReportGenerator> externalApiTestResultsCsvReportGenerators;
     private final JobRepository jobRepository;
 
     /**
      * Creates auto tests job.
      *
+     * @param autoTestType - auto test type
      * @return auto tests job dto
      */
     @Operation(
@@ -53,9 +57,10 @@ public class AutoTestController {
             summary = "Creates auto tests job"
     )
     @PostMapping(value = "/create-job")
-    public AutoTestsJobDto createJob() {
+    public AutoTestsJobDto createJob(@Parameter(description = "Auto test type", required = true)
+                                     @RequestParam AutoTestType autoTestType) {
         log.info("Received auto tests request");
-        var jobDto = jobService.createAndSaveNewJob();
+        var jobDto = jobService.createAndSaveNewJob(autoTestType);
         log.info("Auto tests job has been created with uuid [{}]", jobDto.getJobUuid());
         return jobDto;
     }
@@ -98,8 +103,18 @@ public class AutoTestController {
         httpServletResponse.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
         String reportName = String.format(AUTO_TEST_REPORT_NAME, jobEntity.getJobUuid());
         httpServletResponse.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format(ATTACHMENT_FORMAT, reportName));
-        externalApiTestResultsCsvReportGenerator.generateReport(jobEntity, outputStream);
+        var reportGenerator = getReportGenerator(jobEntity);
+        reportGenerator.generateReport(jobEntity, outputStream);
         outputStream.flush();
         log.info("Auto tests [{}] report has been generated", jobUuid);
+    }
+
+    private ExternalApiTestResultsCsvReportGenerator getReportGenerator(JobEntity jobEntity) {
+        return externalApiTestResultsCsvReportGenerators.stream()
+                .filter(generator -> generator.getAutoTestType().equals(jobEntity.getAutoTestType()))
+                .findFirst()
+                .orElseThrow(() ->
+                        new IllegalStateException(String.format("Can't get report generator for auto test [%s]",
+                                jobEntity.getAutoTestType())));
     }
 }

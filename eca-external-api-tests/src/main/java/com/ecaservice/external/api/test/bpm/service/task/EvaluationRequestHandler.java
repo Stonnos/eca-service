@@ -1,7 +1,7 @@
 package com.ecaservice.external.api.test.bpm.service.task;
 
 import com.ecaservice.external.api.test.bpm.model.TaskType;
-import com.ecaservice.external.api.test.model.TestDataModel;
+import com.ecaservice.external.api.test.model.EvaluationTestDataModel;
 import com.ecaservice.external.api.test.service.api.ExternalApiClient;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -39,7 +39,7 @@ public class EvaluationRequestHandler extends ExternalApiTaskHandler {
         log.debug("Evaluation request execution [{}], process key [{}]", execution.getId(),
                 execution.getProcessBusinessKey());
         Long autoTestId = getVariable(execution, AUTO_TEST_ID, Long.class);
-        TestDataModel testDataModel = getVariable(execution, TEST_DATA_MODEL, TestDataModel.class);
+        var testDataModel = getVariable(execution, TEST_DATA_MODEL, EvaluationTestDataModel.class);
         log.debug("Starting to send evaluation request for test [{}]", autoTestId);
         var response = externalApiClient.evaluateRequest(testDataModel.getRequest());
         log.debug("Received evaluation response for test [{}]: {}", autoTestId, response);

@@ -29,14 +29,18 @@ security:
 
 external-api-tests:
   url: http://localhost:8080
-  testDataPath: classpath*:requests/**/*.json
+  evaluationTestDataPath: classpath*:evaluation-requests/**/*.json
+  experimentTestDataPath: classpath*:experiment-requests/**/*.json
   numThreads: 10
   workerThreadTimeoutInSeconds: 180
   pageSize: 25
   delaySeconds: 2
+  expectedExperimentNumModels: 5
 
 process:
-  processId: ExternalApiAutoTestProcess
+  ids:
+    EVALUATION_REQUEST_PROCESS: EvaluationApiAutoTestProcess
+    EXPERIMENT_REQUEST_PROCESS: ExperimentApiAutoTestProcess
 
 ## Swagger properties
 open-api:

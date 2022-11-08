@@ -1,0 +1,18 @@
+{
+  "displayName": "Neural network request with invalid 'numIterations'",
+  "trainDataSource": "EXTERNAL_DATA_URL",
+  "request": {
+    "trainDataUrl": "http://kt.ijs.si/Branax/Repository/WEKA/Iris.xls",
+    "classifierOptions": {
+      "type": "neural_network",
+      "numIterations": 0,
+      "activationFunctionOptions": {
+        "activationFunctionType": "LOGISTIC"
+      }
+    },
+    "evaluationMethod": "TRAINING_DATA"
+  },
+  "expectedResponse": {
+    "responseCode": "VALIDATION_ERROR"
+  }
+}

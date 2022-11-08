@@ -7,6 +7,7 @@ import com.ecaservice.external.api.test.service.api.ExternalApiClient;
 import eca.core.ModelSerializationHelper;
 import eca.core.model.ClassificationModel;
 import eca.data.file.resource.UrlResource;
+import eca.dataminer.AbstractExperiment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
@@ -53,5 +54,17 @@ public class ExternalApiService {
     public ClassificationModel downloadModel(String modelUrl) throws IOException {
         URL experimentUrl = new URL(modelUrl);
         return ModelSerializationHelper.deserialize(new UrlResource(experimentUrl), ClassificationModel.class);
+    }
+
+    /**
+     * Downloads experiment model.
+     *
+     * @param modelUrl - model url
+     * @return experiment model
+     * @throws IOException in case of I/O error
+     */
+    public AbstractExperiment<?> downloadExperiment(String modelUrl) throws IOException {
+        URL experimentUrl = new URL(modelUrl);
+        return ModelSerializationHelper.deserialize(new UrlResource(experimentUrl), AbstractExperiment.class);
     }
 }

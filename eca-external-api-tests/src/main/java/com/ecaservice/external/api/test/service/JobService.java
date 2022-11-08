@@ -2,7 +2,8 @@ package com.ecaservice.external.api.test.service;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.external.api.test.config.ExternalApiTestsConfig;
-import com.ecaservice.external.api.test.dto.AutoTestDto;
+import com.ecaservice.external.api.test.dto.AbstractAutoTestDto;
+import com.ecaservice.external.api.test.dto.AutoTestType;
 import com.ecaservice.external.api.test.dto.AutoTestsJobDto;
 import com.ecaservice.external.api.test.entity.JobEntity;
 import com.ecaservice.external.api.test.mapping.AutoTestMapper;
@@ -31,22 +32,40 @@ public class JobService {
 
     private final ExternalApiTestsConfig externalApiTestsConfig;
     private final AutoTestMapper autoTestMapper;
+    private final AutoTestRequestAdapter autoTestRequestAdapter;
     private final AutoTestRepository autoTestRepository;
     private final JobRepository jobRepository;
 
     /**
      * Creates new auto tests job.
      *
+     * @param autoTestType - auto test type
      * @return auto tests job
      */
-    public AutoTestsJobDto createAndSaveNewJob() {
+    public AutoTestsJobDto createAndSaveNewJob(AutoTestType autoTestType) {
         var jobEntity = new JobEntity();
         jobEntity.setJobUuid(UUID.randomUUID().toString());
+        jobEntity.setAutoTestType(autoTestType);
         jobEntity.setNumThreads(externalApiTestsConfig.getNumThreads());
         jobEntity.setExecutionStatus(ExecutionStatus.NEW);
         jobEntity.setCreated(LocalDateTime.now());
         jobRepository.save(jobEntity);
         return autoTestMapper.map(jobEntity);
+    }
+
+    /**
+     * Finishes auto test job with error.
+     *
+     * @param jobEntity    - job entity
+     * @param errorMessage - error message
+     */
+    public void finishWithError(JobEntity jobEntity, String errorMessage) {
+        log.info("Starting to finish auto test job [{}] with error", jobEntity.getJobUuid());
+        jobEntity.setDetails(errorMessage);
+        jobEntity.setExecutionStatus(ExecutionStatus.ERROR);
+        jobEntity.setFinished(LocalDateTime.now());
+        jobRepository.save(jobEntity);
+        log.info("Auto test job [{}] has been finished with error", jobEntity.getJobUuid());
     }
 
     /**
@@ -69,11 +88,11 @@ public class JobService {
         return jobDto;
     }
 
-    private List<AutoTestDto> getTestResults(JobEntity jobEntity, TestResultsCounter counter) {
+    private List<AbstractAutoTestDto> getTestResults(JobEntity jobEntity, TestResultsCounter counter) {
         return autoTestRepository.findAllByJob(jobEntity)
                 .stream()
                 .map(autoTestEntity -> {
-                    var autoTestsDto = autoTestMapper.map(autoTestEntity);
+                    var autoTestsDto = autoTestRequestAdapter.proceed(autoTestEntity);
                     autoTestEntity.getTestResult().apply(counter);
                     return autoTestsDto;
                 })

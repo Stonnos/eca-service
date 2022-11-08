@@ -1,10 +1,12 @@
 package com.ecaservice.external.api.test.config;
 
+import com.ecaservice.external.api.test.dto.AutoTestType;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotEmpty;
+import java.util.Map;
 
 /**
  * BPM process config.
@@ -17,8 +19,8 @@ import javax.validation.constraints.NotEmpty;
 public class ProcessConfig {
 
     /**
-     * Process id
+     * Process ids
      */
     @NotEmpty
-    private String processId;
+    private Map<AutoTestType, String> ids;
 }

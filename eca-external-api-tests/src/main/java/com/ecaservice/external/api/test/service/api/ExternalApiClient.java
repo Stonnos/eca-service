@@ -2,6 +2,8 @@ package com.ecaservice.external.api.test.service.api;
 
 import com.ecaservice.external.api.dto.EvaluationRequestDto;
 import com.ecaservice.external.api.dto.EvaluationResultsResponseDto;
+import com.ecaservice.external.api.dto.ExperimentRequestDto;
+import com.ecaservice.external.api.dto.ExperimentResultsResponseDto;
 import com.ecaservice.external.api.dto.InstancesDto;
 import com.ecaservice.external.api.dto.ResponseDto;
 import com.ecaservice.external.api.dto.SimpleEvaluationResponseDto;
@@ -42,11 +44,29 @@ public interface ExternalApiClient {
     ResponseDto<SimpleEvaluationResponseDto> evaluateRequest(@RequestBody EvaluationRequestDto evaluationRequestDto);
 
     /**
+     * Creates experiment request.
+     *
+     * @param experimentRequestDto - experiment request dto
+     * @return evaluation response dto
+     */
+    @PostMapping(value = "/experiment-request")
+    ResponseDto<SimpleEvaluationResponseDto> experimentRequest(@RequestBody ExperimentRequestDto experimentRequestDto);
+
+    /**
      * Gets evaluation results.
      *
      * @param requestId - request id
-     * @return evaluation response dto
+     * @return evaluation results response dto
      */
     @GetMapping(value = "/evaluation-results/{requestId}")
     ResponseDto<EvaluationResultsResponseDto> getEvaluationResults(@PathVariable String requestId);
+
+    /**
+     * Gets experiment results.
+     *
+     * @param requestId - request id
+     * @return experiment results response dto
+     */
+    @GetMapping(value = "/experiment-results/{requestId}")
+    ResponseDto<ExperimentResultsResponseDto> getExperimentResults(@PathVariable String requestId);
 }

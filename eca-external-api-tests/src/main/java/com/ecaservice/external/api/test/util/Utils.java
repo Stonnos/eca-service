@@ -61,7 +61,7 @@ public class Utils {
      * Gets scaled decimal value.
      *
      * @param evaluationResultsResponseDto - evaluation response
-     * @param valueFunction         value function
+     * @param valueFunction                - value function
      * @return scaled decimal value
      */
     public static BigDecimal getScaledValue(EvaluationResultsResponseDto evaluationResultsResponseDto,
@@ -76,7 +76,7 @@ public class Utils {
      * Gets scaled decimal value.
      *
      * @param classificationModel - classification model
-     * @param valueFunction       value function
+     * @param valueFunction       - value function
      * @return scaled decimal value
      */
     public static BigDecimal getScaledValue(ClassificationModel classificationModel,

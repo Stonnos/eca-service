@@ -1,0 +1,11 @@
+{
+  "displayName": "Empty train data url request",
+  "trainDataSource": "EXTERNAL_DATA_URL",
+  "request": {
+    "experimentType": "RANDOM_FORESTS",
+    "evaluationMethod": "TRAINING_DATA"
+  },
+  "expectedResponse": {
+    "responseCode": "VALIDATION_ERROR"
+  }
+}

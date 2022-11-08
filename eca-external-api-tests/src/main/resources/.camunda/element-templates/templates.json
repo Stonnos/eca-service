@@ -24,7 +24,7 @@
             "value": "UPLOAD_TRAINING_DATA"
           },
           {
-            "name": "Отправить запрос на построение модели",
+            "name": "Отправить запрос на построение модели классификатора",
             "value": "EVALUATION_REQUEST"
           },
           {
@@ -32,7 +32,7 @@
             "value": "PROCESS_EVALUATION_REQUEST_RESPONSE"
           },
           {
-            "name": "Получение статуса ответа на запрос на построения модели",
+            "name": "Получение результатов построения модели классификатора",
             "value": "GET_EVALUATION_STATUS"
           },
           {
@@ -52,8 +52,20 @@
             "value": "COMPARE_EVALUATION_RESPONSE_RESULT"
           },
           {
-            "name": "Скачать модель с сервера и сравнить результаты",
+            "name": "Скачать модель классификатора с сервера и сравнить результаты",
             "value": "COMPARE_CLASSIFIER_MODEL_RESULT"
+          },
+          {
+            "name": "Создать заявку на построение модели эксперимента",
+            "value": "EXPERIMENT_REQUEST"
+          },
+          {
+            "name": "Получение результатов эксперимента",
+            "value": "GET_EXPERIMENT_STATUS"
+          },
+          {
+            "name": "Скачать модель эксперимента с сервера и сравнить результаты",
+            "value": "COMPARE_EXPERIMENT_MODEL_RESULT"
           },
           {
             "name": "Вычислить окончательный результат теста",
