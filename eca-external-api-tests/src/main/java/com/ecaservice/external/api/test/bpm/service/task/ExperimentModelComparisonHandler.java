@@ -72,14 +72,13 @@ public class ExperimentModelComparisonHandler extends ComparisonTaskHandler {
                 externalApiService.downloadExperiment(responseDto.getPayload().getExperimentModelUrl());
         log.debug("Experiment model has been downloaded for test [{}]", autoTestEntity.getId());
         //Compare and match experiment model fields
-        compareAndMatchExperimentFields(autoTestEntity, responseDto.getPayload(), experiment, matcher);
+        compareAndMatchExperimentFields(autoTestEntity, experiment, matcher);
         experimentRequestAutoTestRepository.save(autoTestEntity);
         log.debug("Comparison experiment model has been finished for execution id [{}], process key [{}]",
                 execution.getId(), execution.getProcessBusinessKey());
     }
 
     private void compareAndMatchExperimentFields(ExperimentRequestAutoTestEntity autoTestEntity,
-                                                 ExperimentResultsResponseDto experimentResultsResponseDto,
                                                  AbstractExperiment<?> experiment,
                                                  TestResultsMatcher matcher) {
         log.debug("Compare experiment model result for test [{}]", autoTestEntity.getId());
