@@ -57,7 +57,7 @@ public abstract class AbstractAutoTestRunner<A extends AutoTestEntity, TD extend
                     TimeUnit.SECONDS)) {
                 String errorMessage =
                         String.format("Worker thread timeout occurred for auto test job [%s]", jobEntity.getJobUuid());
-                log.warn(errorMessage);
+                log.error(errorMessage);
                 jobService.finishWithError(jobEntity, errorMessage);
                 executor.shutdownNow();
             }
