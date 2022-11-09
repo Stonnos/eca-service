@@ -11,7 +11,6 @@ import com.ecaservice.ers.exception.DuplicateRequestIdException;
 import com.ecaservice.ers.exception.ResultsNotFoundException;
 import com.ecaservice.ers.mapping.ClassificationCostsReportMapperImpl;
 import com.ecaservice.ers.mapping.ClassifierOptionsInfoMapperImpl;
-import com.ecaservice.ers.mapping.ClassifierReportFactory;
 import com.ecaservice.ers.mapping.ClassifierReportMapperImpl;
 import com.ecaservice.ers.mapping.ConfusionMatrixMapperImpl;
 import com.ecaservice.ers.mapping.EvaluationResultsMapperImpl;
@@ -45,7 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
         ConfusionMatrixMapperImpl.class, StatisticsReportMapperImpl.class, InstancesMapperImpl.class,
         RocCurveReportMapperImpl.class, InstancesService.class,
         EvaluationResultsService.class, ClassifierReportMapperImpl.class,
-        ClassifierOptionsInfoMapperImpl.class, ClassifierReportFactory.class})
+        ClassifierOptionsInfoMapperImpl.class})
 class EvaluationResultsServiceTest extends AbstractJpaTest {
 
     private static final int NUM_THREADS = 2;

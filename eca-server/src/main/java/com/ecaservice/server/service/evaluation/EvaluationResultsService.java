@@ -3,10 +3,8 @@ package com.ecaservice.server.service.evaluation;
 import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.ers.dto.ClassificationCostsReport;
-import com.ecaservice.ers.dto.ClassifierInputOption;
 import com.ecaservice.ers.dto.ClassifierReport;
 import com.ecaservice.ers.dto.ConfusionMatrixReport;
-import com.ecaservice.ers.dto.EnsembleClassifierReport;
 import com.ecaservice.ers.dto.EvaluationMethod;
 import com.ecaservice.ers.dto.EvaluationMethodReport;
 import com.ecaservice.ers.dto.EvaluationResultsRequest;
@@ -16,9 +14,6 @@ import com.ecaservice.server.mapping.InstancesConverter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
-import eca.ensemble.AbstractHeterogeneousClassifier;
-import eca.ensemble.EnsembleUtils;
-import eca.ensemble.StackingClassifier;
 import eca.roc.RocCurve;
 import eca.roc.ThresholdModel;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +26,6 @@ import weka.core.Utils;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
 
@@ -86,8 +80,7 @@ public class EvaluationResultsService {
     private void populateClassifierReport(EvaluationResults evaluationResults,
                                           EvaluationResultsRequest evaluationResultsRequest) {
         AbstractClassifier classifier = (AbstractClassifier) evaluationResults.getClassifier();
-        evaluationResultsRequest.setClassifierReport(EnsembleUtils.isHeterogeneousEnsembleClassifier(classifier) ?
-                buildEnsembleClassifierReport(classifier) : buildClassifierReport(classifier));
+        evaluationResultsRequest.setClassifierReport(buildClassifierReport(classifier));
     }
 
     private void populateStatisticsReport(EvaluationResults evaluationResults,
@@ -167,52 +160,7 @@ public class EvaluationResultsService {
         ClassifierReport classifierReport = new ClassifierReport();
         classifierReport.setClassifierName(classifier.getClass().getSimpleName());
         classifierReport.setOptions(getClassifierOptionsAsJsonString(classifier));
-        classifierReport.setClassifierInputOptions(populateInputOptions(classifier));
         return classifierReport;
-    }
-
-    private EnsembleClassifierReport buildEnsembleClassifierReport(AbstractClassifier classifier) {
-        EnsembleClassifierReport classifierReport = new EnsembleClassifierReport();
-        classifierReport.setClassifierName(classifier.getClass().getSimpleName());
-        classifierReport.setOptions(getClassifierOptionsAsJsonString(classifier));
-        classifierReport.setClassifierInputOptions(populateInputOptions(classifier));
-        populateIndividualClassifiers(classifierReport, classifier);
-        return classifierReport;
-    }
-
-    private List<ClassifierInputOption> populateInputOptions(AbstractClassifier classifier) {
-        List<ClassifierInputOption> options = newArrayList();
-        String[] classifierOptions = classifier.getOptions();
-        for (int i = 0; i < classifierOptions.length; i += 2) {
-            options.add(new ClassifierInputOption(classifierOptions[i], classifierOptions[i + 1]));
-        }
-        return options;
-    }
-
-    private void populateIndividualClassifiers(EnsembleClassifierReport classifierReport,
-                                               AbstractClassifier classifier) {
-        classifierReport.setIndividualClassifiers(newArrayList());
-        if (classifier instanceof AbstractHeterogeneousClassifier) {
-            AbstractHeterogeneousClassifier heterogeneousClassifier =
-                    (AbstractHeterogeneousClassifier) classifier;
-            heterogeneousClassifier.getClassifiersSet().toList().forEach(c -> {
-                ClassifierReport report = buildClassifierReport((AbstractClassifier) c);
-                classifierReport.getIndividualClassifiers().add(report);
-            });
-        } else if (classifier instanceof StackingClassifier) {
-            StackingClassifier stackingClassifier = (StackingClassifier) classifier;
-            stackingClassifier.getClassifiers().toList().forEach(c -> {
-                ClassifierReport report = buildClassifierReport((AbstractClassifier) c);
-                classifierReport.getIndividualClassifiers().add(report);
-            });
-            ClassifierReport metaClassifierReport =
-                    buildClassifierReport((AbstractClassifier) stackingClassifier.getMetaClassifier());
-            metaClassifierReport.setMetaClassifier(true);
-            classifierReport.getIndividualClassifiers().add(metaClassifierReport);
-        } else {
-            throw new IllegalStateException(
-                    String.format("Unexpected ensemble classifier: %s!", classifier.getClass().getSimpleName()));
-        }
     }
 
     private String getClassifierOptionsAsJsonString(AbstractClassifier classifier) {

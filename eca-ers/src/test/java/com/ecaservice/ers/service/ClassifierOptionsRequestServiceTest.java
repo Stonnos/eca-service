@@ -7,7 +7,6 @@ import com.ecaservice.ers.exception.DataNotFoundException;
 import com.ecaservice.ers.exception.ResultsNotFoundException;
 import com.ecaservice.ers.mapping.ClassifierOptionsInfoMapper;
 import com.ecaservice.ers.mapping.ClassifierOptionsInfoMapperImpl;
-import com.ecaservice.ers.mapping.ClassifierReportFactory;
 import com.ecaservice.ers.model.ClassifierOptionsInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,7 +31,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @ExtendWith(SpringExtension.class)
-@Import({ClassifierReportFactory.class, ClassifierOptionsInfoMapperImpl.class})
+@Import(ClassifierOptionsInfoMapperImpl.class)
 class ClassifierOptionsRequestServiceTest {
 
     @Inject

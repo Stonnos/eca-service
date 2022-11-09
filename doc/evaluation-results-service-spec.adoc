@@ -33,49 +33,9 @@ Evaluation results service представляет собой сервис, к�
     "className": "Type"
   },
   "classifierReport": {
-    "type": "ClassifierReport",
     "classifierName": "ExtraTreesClassifier",
     "classifierDescription": null,
-    "options": "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}",
-    "classifierInputOptions": [
-      {
-        "key": "Число деревьев:",
-        "value": "20"
-      },
-      {
-        "key": "Минимальное число объектов в листе:",
-        "value": "2"
-      },
-      {
-        "key": "Максиальная глубина дерева:",
-        "value": "0"
-      },
-      {
-        "key": "Число случайных атрибутов:",
-        "value": "5"
-      },
-      {
-        "key": "Алгоритм построения дерева решений:",
-        "value": "ID3"
-      },
-      {
-        "key": "Число потоков",
-        "value": "6"
-      },
-      {
-        "key": "Начальное значение (Seed)",
-        "value": "1"
-      },
-      {
-        "key": "Число случайных расщеплений атрибута:",
-        "value": "6"
-      },
-      {
-        "key": "Формирование обучающих выборок:",
-        "value": "Исходное обучающее множество"
-      }
-    ],
-    "metaClassifier": false
+    "options": "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}"
   },
   "evaluationMethodReport": {
     "evaluationMethod": "CROSS_VALIDATION",
@@ -493,36 +453,9 @@ Evaluation results service представляет собой сервис, к�
 |255
 |Дополнительная информация о классификаторе
 |
-|4
-|classifierInputOptions
-|array<ClassifierInputOption>
-|-
-|-
-|Входные параметры классификатора в формате ключ/значение
-|
-|5
-|metaClassifier
-|boolean
-|+
-|-
-|Значение равно true, если классификатор является мета - классификатором (используется для алгоритмов семейства Stacking)
-|
 |===
 
-==== 2.2.4. Описание полей блока EnsembleClassifierReport
-
-[options="header"]
-|===
-|№|Название поля|Тип|Обязательное|Описание|Комментарий
-|1
-|individualClassifiers
-|array<ClassifierReport>
-|-
-|Перечень входных параметров базовых классификаторов, которые использовались при построении ансамбля
-|
-|===
-
-==== 2.2.5. Описание полей блока EvaluationMethodReport
+==== 2.2.4. Описание полей блока EvaluationMethodReport
 
 [options="header"]
 |===
@@ -557,7 +490,7 @@ Evaluation results service представляет собой сервис, к�
 |
 |===
 
-==== 2.2.6. Описание полей блока StatisticsReport
+==== 2.2.5. Описание полей блока StatisticsReport
 
 [options="header"]
 |===
@@ -652,7 +585,7 @@ Evaluation results service представляет собой сервис, к�
 |
 |===
 
-==== 2.2.7. Описание полей блока ClassificationCostsReport
+==== 2.2.6. Описание полей блока ClassificationCostsReport
 
 [options="header"]
 |===
@@ -710,7 +643,7 @@ Evaluation results service представляет собой сервис, к�
 |
 |===
 
-==== 2.2.8. Описание полей блока RocCurveReport
+==== 2.2.7. Описание полей блока RocCurveReport
 
 [options="header"]
 |===
@@ -749,7 +682,7 @@ Evaluation results service представляет собой сервис, к�
 |
 |===
 
-==== 2.2.9. Описание полей блока ConfusionMatrixReport
+==== 2.2.8. Описание полей блока ConfusionMatrixReport
 
 [options="header"]
 |===
@@ -777,29 +710,6 @@ Evaluation results service представляет собой сервис, к�
 |-
 |0
 |Число объектов
-|
-|===
-
-==== 2.2.10. Описание полей блока ClassifierInputOption
-
-[options="header"]
-|===
-|№|Название поля|Тип|Обязательное|Макс. длина|Мин. значение|Описание|Комментарий
-|1
-|key
-|string
-|+
-|255
-|-
-|Название параметра
-|
-|2
-|value
-|string
-|+
-|255
-|-
-|Значение параметра
 |
 |===
 
@@ -919,229 +829,28 @@ Evaluation results service представляет собой сервис, к�
   "requestId": "f8cecbf7-405b-403b-9a94-f51e8fb73ed8",
   "classifierReports": [
     {
-      "type": "ClassifierReport",
       "classifierName": "ExtraTreesClassifier",
       "classifierDescription": null,
-      "options": "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}",
-      "classifierInputOptions": [
-        {
-          "key": "Число потоков",
-          "value": "6"
-        },
-        {
-          "key": "Формирование обучающих выборок:",
-          "value": "Исходное обучающее множество"
-        },
-        {
-          "key": "Алгоритм построения дерева решений:",
-          "value": "ID3"
-        },
-        {
-          "key": "Число деревьев:",
-          "value": "20"
-        },
-        {
-          "key": "Максиальная глубина дерева:",
-          "value": "0"
-        },
-        {
-          "key": "Число случайных атрибутов:",
-          "value": "5"
-        },
-        {
-          "key": "Число случайных расщеплений атрибута:",
-          "value": "6"
-        },
-        {
-          "key": "Минимальное число объектов в листе:",
-          "value": "2"
-        },
-        {
-          "key": "Начальное значение (Seed)",
-          "value": "1"
-        }
-      ],
-      "metaClassifier": false
+      "options": "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}"
+    {
+      "classifierName": "ExtraTreesClassifier",
+      "classifierDescription": null,
+      "options": "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}"
     },
     {
-      "type": "ClassifierReport",
       "classifierName": "ExtraTreesClassifier",
       "classifierDescription": null,
-      "options": "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}",
-      "classifierInputOptions": [
-        {
-          "key": "Число потоков",
-          "value": "6"
-        },
-        {
-          "key": "Формирование обучающих выборок:",
-          "value": "Исходное обучающее множество"
-        },
-        {
-          "key": "Алгоритм построения дерева решений:",
-          "value": "ID3"
-        },
-        {
-          "key": "Число деревьев:",
-          "value": "20"
-        },
-        {
-          "key": "Максиальная глубина дерева:",
-          "value": "0"
-        },
-        {
-          "key": "Число случайных атрибутов:",
-          "value": "5"
-        },
-        {
-          "key": "Число случайных расщеплений атрибута:",
-          "value": "6"
-        },
-        {
-          "key": "Минимальное число объектов в листе:",
-          "value": "2"
-        },
-        {
-          "key": "Начальное значение (Seed)",
-          "value": "1"
-        }
-      ],
-      "metaClassifier": false
+      "options": "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}"
     },
     {
-      "type": "ClassifierReport",
       "classifierName": "ExtraTreesClassifier",
       "classifierDescription": null,
-      "options": "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}",
-      "classifierInputOptions": [
-        {
-          "key": "Число потоков",
-          "value": "6"
-        },
-        {
-          "key": "Формирование обучающих выборок:",
-          "value": "Исходное обучающее множество"
-        },
-        {
-          "key": "Алгоритм построения дерева решений:",
-          "value": "ID3"
-        },
-        {
-          "key": "Число деревьев:",
-          "value": "20"
-        },
-        {
-          "key": "Максиальная глубина дерева:",
-          "value": "0"
-        },
-        {
-          "key": "Число случайных атрибутов:",
-          "value": "5"
-        },
-        {
-          "key": "Число случайных расщеплений атрибута:",
-          "value": "6"
-        },
-        {
-          "key": "Минимальное число объектов в листе:",
-          "value": "2"
-        },
-        {
-          "key": "Начальное значение (Seed)",
-          "value": "1"
-        }
-      ],
-      "metaClassifier": false
+      "options": "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}"
     },
     {
-      "type": "ClassifierReport",
       "classifierName": "ExtraTreesClassifier",
       "classifierDescription": null,
-      "options": "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}",
-      "classifierInputOptions": [
-        {
-          "key": "Число потоков",
-          "value": "6"
-        },
-        {
-          "key": "Формирование обучающих выборок:",
-          "value": "Исходное обучающее множество"
-        },
-        {
-          "key": "Алгоритм построения дерева решений:",
-          "value": "ID3"
-        },
-        {
-          "key": "Число деревьев:",
-          "value": "20"
-        },
-        {
-          "key": "Максиальная глубина дерева:",
-          "value": "0"
-        },
-        {
-          "key": "Число случайных атрибутов:",
-          "value": "5"
-        },
-        {
-          "key": "Число случайных расщеплений атрибута:",
-          "value": "6"
-        },
-        {
-          "key": "Минимальное число объектов в листе:",
-          "value": "2"
-        },
-        {
-          "key": "Начальное значение (Seed)",
-          "value": "1"
-        }
-      ],
-      "metaClassifier": false
-    },
-    {
-      "type": "ClassifierReport",
-      "classifierName": "ExtraTreesClassifier",
-      "classifierDescription": null,
-      "options": "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}",
-      "classifierInputOptions": [
-        {
-          "key": "Число потоков",
-          "value": "6"
-        },
-        {
-          "key": "Формирование обучающих выборок:",
-          "value": "Исходное обучающее множество"
-        },
-        {
-          "key": "Алгоритм построения дерева решений:",
-          "value": "ID3"
-        },
-        {
-          "key": "Число деревьев:",
-          "value": "20"
-        },
-        {
-          "key": "Максиальная глубина дерева:",
-          "value": "0"
-        },
-        {
-          "key": "Число случайных атрибутов:",
-          "value": "5"
-        },
-        {
-          "key": "Число случайных расщеплений атрибута:",
-          "value": "6"
-        },
-        {
-          "key": "Минимальное число объектов в листе:",
-          "value": "2"
-        },
-        {
-          "key": "Начальное значение (Seed)",
-          "value": "1"
-        }
-      ],
-      "metaClassifier": false
+      "options": "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}"
     }
   ]
 }
@@ -1208,49 +917,9 @@ Evaluation results service представляет собой сервис, к�
     "className": "Type"
   },
   "classifierReport": {
-    "type": "ClassifierReport",
     "classifierName": "ExtraTreesClassifier",
     "classifierDescription": null,
-    "options": "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}",
-    "classifierInputOptions": [
-      {
-        "key": "Число потоков",
-        "value": "6"
-      },
-      {
-        "key": "Формирование обучающих выборок:",
-        "value": "Исходное обучающее множество"
-      },
-      {
-        "key": "Алгоритм построения дерева решений:",
-        "value": "ID3"
-      },
-      {
-        "key": "Число деревьев:",
-        "value": "20"
-      },
-      {
-        "key": "Максиальная глубина дерева:",
-        "value": "0"
-      },
-      {
-        "key": "Число случайных атрибутов:",
-        "value": "5"
-      },
-      {
-        "key": "Число случайных расщеплений атрибута:",
-        "value": "6"
-      },
-      {
-        "key": "Минимальное число объектов в листе:",
-        "value": "2"
-      },
-      {
-        "key": "Начальное значение (Seed)",
-        "value": "1"
-      }
-    ],
-    "metaClassifier": false
+    "options": "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}"
   },
   "evaluationMethodReport": {
     "evaluationMethod": "CROSS_VALIDATION",

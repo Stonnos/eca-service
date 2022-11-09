@@ -4,7 +4,6 @@ import com.ecaservice.classifier.options.config.ClassifiersOptionsAutoConfigurat
 import com.ecaservice.ers.dto.ClassificationCostsReport;
 import com.ecaservice.ers.dto.ClassifierReport;
 import com.ecaservice.ers.dto.ConfusionMatrixReport;
-import com.ecaservice.ers.dto.EnsembleClassifierReport;
 import com.ecaservice.ers.dto.EvaluationMethod;
 import com.ecaservice.ers.dto.EvaluationMethodReport;
 import com.ecaservice.ers.dto.EvaluationResultsRequest;
@@ -15,13 +14,6 @@ import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.mapping.InstancesConverter;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
-import eca.ensemble.ClassifiersSet;
-import eca.ensemble.HeterogeneousClassifier;
-import eca.ensemble.StackingClassifier;
-import eca.metrics.KNearestNeighbours;
-import eca.regression.Logistic;
-import eca.trees.CART;
-import eca.trees.J48;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -73,42 +65,6 @@ class EvaluationResultsServiceTest {
         verifyStatisticsReport(evaluation, resultsRequest);
     }
 
-    @Test
-    void testHeterogeneousClassifierMap() {
-        HeterogeneousClassifier heterogeneousClassifier = new HeterogeneousClassifier();
-        heterogeneousClassifier.setClassifiersSet(new ClassifiersSet());
-        heterogeneousClassifier.getClassifiersSet().addClassifier(new CART());
-        heterogeneousClassifier.getClassifiersSet().addClassifier(new Logistic());
-        heterogeneousClassifier.getClassifiersSet().addClassifier(new KNearestNeighbours());
-        EvaluationResults results = new EvaluationResults(heterogeneousClassifier, evaluationResults.getEvaluation());
-        EvaluationResultsRequest resultsRequest = evaluationResultsService.proceed(results);
-        assertThat(resultsRequest.getClassifierReport()).isNotNull();
-        assertThat(resultsRequest.getClassifierReport()).isInstanceOf(EnsembleClassifierReport.class);
-        EnsembleClassifierReport classifierReport = (EnsembleClassifierReport) resultsRequest.getClassifierReport();
-        assertThat(classifierReport.getIndividualClassifiers().size()).isEqualTo(
-                heterogeneousClassifier.getClassifiersSet().size());
-    }
-
-    @Test
-    void testStackingClassifierMap() {
-        StackingClassifier stackingClassifier = new StackingClassifier();
-        stackingClassifier.setClassifiers(new ClassifiersSet());
-        stackingClassifier.getClassifiers().addClassifier(new CART());
-        stackingClassifier.getClassifiers().addClassifier(new Logistic());
-        stackingClassifier.getClassifiers().addClassifier(new KNearestNeighbours());
-        stackingClassifier.setMetaClassifier(new J48());
-        EvaluationResults results = new EvaluationResults(stackingClassifier, evaluationResults.getEvaluation());
-        EvaluationResultsRequest resultsRequest = evaluationResultsService.proceed(results);
-        assertThat(resultsRequest.getClassifierReport()).isNotNull();
-        assertThat(resultsRequest.getClassifierReport()).isInstanceOf(EnsembleClassifierReport.class);
-        EnsembleClassifierReport classifierReport = (EnsembleClassifierReport) resultsRequest.getClassifierReport();
-        assertThat(classifierReport.getIndividualClassifiers().size()).isEqualTo(
-                stackingClassifier.getClassifiers().size() + 1);
-        ClassifierReport metaClassifierReport =
-                classifierReport.getIndividualClassifiers().get(classifierReport.getIndividualClassifiers().size() - 1);
-        assertThat(metaClassifierReport.isMetaClassifier()).isTrue();
-    }
-
     private void verifyInstancesReport(Instances instances, EvaluationResultsRequest resultsRequest) {
         InstancesReport instancesReport = resultsRequest.getInstances();
         assertThat(instancesReport).isNotNull();
@@ -126,7 +82,6 @@ class EvaluationResultsServiceTest {
         AbstractClassifier classifier = (AbstractClassifier) evaluationResults.getClassifier();
         assertThat(classifierReport).isNotNull();
         assertThat(classifierReport.getClassifierName()).isEqualTo(classifier.getClass().getSimpleName());
-        assertThat(classifierReport.getClassifierInputOptions()).hasSize(classifier.getOptions().length / 2);
     }
 
     private void verifyEvaluationMethodReport(Evaluation evaluation, EvaluationResultsRequest resultsRequest) {

@@ -9,49 +9,9 @@
     "className": "Type"
   },
   "classifierReport": {
-    "type": "ClassifierReport",
     "classifierName": "ExtraTreesClassifier",
     "classifierDescription": null,
-    "options": "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}",
-    "classifierInputOptions": [
-      {
-        "key": "Число потоков",
-        "value": "6"
-      },
-      {
-        "key": "Формирование обучающих выборок:",
-        "value": "Исходное обучающее множество"
-      },
-      {
-        "key": "Алгоритм построения дерева решений:",
-        "value": "ID3"
-      },
-      {
-        "key": "Число деревьев:",
-        "value": "20"
-      },
-      {
-        "key": "Максиальная глубина дерева:",
-        "value": "0"
-      },
-      {
-        "key": "Число случайных атрибутов:",
-        "value": "5"
-      },
-      {
-        "key": "Число случайных расщеплений атрибута:",
-        "value": "6"
-      },
-      {
-        "key": "Минимальное число объектов в листе:",
-        "value": "2"
-      },
-      {
-        "key": "Начальное значение (Seed)",
-        "value": "1"
-      }
-    ],
-    "metaClassifier": false
+    "options": "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}"
   },
   "evaluationMethodReport": {
     "evaluationMethod": "CROSS_VALIDATION",

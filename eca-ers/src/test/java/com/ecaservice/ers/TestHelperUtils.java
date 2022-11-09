@@ -1,11 +1,9 @@
 package com.ecaservice.ers;
 
 import com.ecaservice.ers.dto.ClassificationCostsReport;
-import com.ecaservice.ers.dto.ClassifierInputOption;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import com.ecaservice.ers.dto.ClassifierReport;
 import com.ecaservice.ers.dto.ConfusionMatrixReport;
-import com.ecaservice.ers.dto.EnsembleClassifierReport;
 import com.ecaservice.ers.dto.EvaluationMethod;
 import com.ecaservice.ers.dto.EvaluationMethodReport;
 import com.ecaservice.ers.dto.EvaluationResultsRequest;
@@ -35,8 +33,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static com.google.common.collect.Lists.newArrayList;
 
@@ -272,23 +268,6 @@ public class TestHelperUtils {
         classifierReport.setClassifierName(CLASSIFIER_NAME);
         classifierReport.setClassifierDescription(CLASSIFIER_DESCRIPTION);
         classifierReport.setOptions(OPTIONS);
-        classifierReport.setClassifierInputOptions(createClassifierInputOptions());
-        return classifierReport;
-    }
-
-    /**
-     * Creates ensemble classifier report.
-     *
-     * @return ensemble classifier report
-     */
-    public static EnsembleClassifierReport buildEnsembleClassifierReport() {
-        EnsembleClassifierReport classifierReport = new EnsembleClassifierReport();
-        classifierReport.setClassifierName(CLASSIFIER_NAME);
-        classifierReport.setClassifierInputOptions(createClassifierInputOptions());
-        classifierReport.setIndividualClassifiers(newArrayList());
-        for (int i = 0; i < OPTIONS_SIZE; i++) {
-            classifierReport.getIndividualClassifiers().add(buildClassifierReport());
-        }
         return classifierReport;
     }
 
@@ -304,8 +283,6 @@ public class TestHelperUtils {
         classifierOptionsInfo.setClassifierName(CLASSIFIER_NAME);
         classifierOptionsInfo.setClassifierDescription(CLASSIFIER_DESCRIPTION);
         classifierOptionsInfo.setOptions(OPTIONS);
-        classifierOptionsInfo.setInputOptionsMap(inputOptionsMap);
-        classifierOptionsInfo.setIndividualClassifiers(classifierOptionsInfoList);
         return classifierOptionsInfo;
     }
 
@@ -424,11 +401,5 @@ public class TestHelperUtils {
         getEvaluationResultsResponse.setStatistics(buildStatisticsReport());
         getEvaluationResultsResponse.setInstances(buildInstancesReport());
         return getEvaluationResultsResponse;
-    }
-
-    private static List<ClassifierInputOption> createClassifierInputOptions() {
-        return IntStream.range(0, OPTIONS_SIZE)
-                .mapToObj(i -> new ClassifierInputOption(String.valueOf(i), OPTION_VALUE))
-                .collect(Collectors.toList());
     }
 }

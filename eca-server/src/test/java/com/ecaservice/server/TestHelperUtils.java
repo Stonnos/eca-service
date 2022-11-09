@@ -704,7 +704,6 @@ public class TestHelperUtils {
         ClassifierReport classifierReport = new ClassifierReport();
         classifierReport.setClassifierName(DecisionTreeType.CART.name());
         classifierReport.setClassifierDescription(DecisionTreeType.CART.getDescription());
-        classifierReport.setClassifierInputOptions(newArrayList());
         classifierReport.setOptions(options);
         return classifierReport;
     }
