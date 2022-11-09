@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v8-drop-classifier-options-data.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="drop_classifier_options_meta_classifier_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="classifier_options_info"/>
+            <columnExists tableName="classifier_options_info" columnName="meta_classifier"/>
+        </preConditions>
+        <dropColumn tableName="classifier_options_info" columnName="meta_classifier"/>
+    </changeSet>
+
+    <changeSet id="delete_individual_classifier_options_data" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="classifier_options_info"/>
+            <columnExists tableName="classifier_options_info" columnName="parent_id"/>
+        </preConditions>
+        <delete tableName="classifier_options_info">
+            <where>parent_id is not null</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="drop_classifier_options_parent_id_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="classifier_options_info"/>
+            <columnExists tableName="classifier_options_info" columnName="parent_id"/>
+        </preConditions>
+        <dropColumn tableName="classifier_options_info" columnName="parent_id"/>
+    </changeSet>
+
+    <changeSet id="drop_input_options_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="input_options"/>
+        </preConditions>
+        <dropTable tableName="input_options"/>
+    </changeSet>
+
+</databaseChangeLog>
