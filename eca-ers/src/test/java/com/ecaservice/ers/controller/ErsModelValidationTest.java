@@ -56,8 +56,6 @@ class ErsModelValidationTest {
                     "falseNegativeRate");
     private static final List<String> CONFUSION_MATRIX_FIELDS_NULL_TEST =
             ImmutableList.of("actualClass", "predictedClass", "numInstances");
-    private static final List<String> INPUT_OPTIONS_MAP_NULL_TEST =
-            ImmutableList.of("key", "value");
 
     /**
      * Not empty string fields for tests
@@ -70,8 +68,6 @@ class ErsModelValidationTest {
             ImmutableList.of("classValue");
     private static final List<String> CONFUSION_MATRIX_FIELDS_EMPTY_TEST =
             ImmutableList.of("actualClass", "predictedClass");
-    private static final List<String> INPUT_OPTIONS_MAP_EMPTY_TEST =
-            ImmutableList.of("key", "value");
 
     /**
      * Not large string fields to tests
@@ -84,8 +80,6 @@ class ErsModelValidationTest {
             ImmutableList.of("classValue");
     private static final List<String> CONFUSION_MATRIX_FIELDS_LARGE_TEST =
             ImmutableList.of("actualClass", "predictedClass");
-    private static final List<String> INPUT_OPTIONS_MAP_LARGE_TEST =
-            ImmutableList.of("key", "value");
 
     /**
      * Decimal fields to tests
@@ -281,24 +275,6 @@ class ErsModelValidationTest {
         internalTestFieldsWithConstraints(ROC_CURVE_FIELDS_BOUNDS_TEST,
                 (request) -> request.getClassificationCosts().iterator().next().getRocCurve(),
                 BigDecimal.valueOf(1.01d));
-    }
-
-    @Test
-    void testValidateEvaluationReportWithNullInputOptionsMapFields() {
-        internalTestNullFields(INPUT_OPTIONS_MAP_NULL_TEST,
-                (request) -> request.getClassifierReport().getClassifierInputOptions().iterator().next());
-    }
-
-    @Test
-    void testValidateEvaluationReportWithEmptyInputOptionsMapFields() {
-        internalTestEmptyFields(INPUT_OPTIONS_MAP_EMPTY_TEST,
-                (request) -> request.getClassifierReport().getClassifierInputOptions().iterator().next());
-    }
-
-    @Test
-    void testValidateEvaluationReportWitLargeInputOptionsMapFields() {
-        internalTestLargeFields(INPUT_OPTIONS_MAP_LARGE_TEST,
-                (request) -> request.getClassifierReport().getClassifierInputOptions().iterator().next());
     }
 
     private <T> void internalTestEmptyFields(List<String> testFields,

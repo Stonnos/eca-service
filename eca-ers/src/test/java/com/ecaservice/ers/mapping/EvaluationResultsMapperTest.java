@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import({EvaluationResultsMapperImpl.class, ClassificationCostsReportMapperImpl.class,
         ConfusionMatrixMapperImpl.class, StatisticsReportMapperImpl.class,
         InstancesMapperImpl.class, ClassifierReportMapperImpl.class,
-        RocCurveReportMapperImpl.class, ClassifierOptionsInfoMapperImpl.class, ClassifierReportFactory.class})
+        RocCurveReportMapperImpl.class, ClassifierOptionsInfoMapperImpl.class})
 class EvaluationResultsMapperTest {
 
     @Inject
