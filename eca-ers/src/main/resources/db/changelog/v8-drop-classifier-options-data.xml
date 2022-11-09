@@ -13,6 +13,13 @@
         <dropColumn tableName="classifier_options_info" columnName="meta_classifier"/>
     </changeSet>
 
+    <changeSet id="drop_input_options_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="input_options"/>
+        </preConditions>
+        <dropTable tableName="input_options"/>
+    </changeSet>
+
     <changeSet id="delete_individual_classifier_options_data" author="roman.batygin@mail.ru" context="data">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="classifier_options_info"/>
@@ -29,13 +36,6 @@
             <columnExists tableName="classifier_options_info" columnName="parent_id"/>
         </preConditions>
         <dropColumn tableName="classifier_options_info" columnName="parent_id"/>
-    </changeSet>
-
-    <changeSet id="drop_input_options_table" author="roman.batygin@mail.ru" context="schema">
-        <preConditions onFail="MARK_RAN">
-            <tableExists tableName="input_options"/>
-        </preConditions>
-        <dropTable tableName="input_options"/>
     </changeSet>
 
 </databaseChangeLog>
