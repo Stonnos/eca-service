@@ -12,6 +12,7 @@ import eca.dataminer.AutomatedKNearestNeighbours;
 import eca.dataminer.AutomatedNeuralNetwork;
 import eca.dataminer.AutomatedRandomForests;
 import eca.dataminer.AutomatedStacking;
+import eca.dataminer.ExperimentHistoryMode;
 import eca.ensemble.AdaBoostClassifier;
 import eca.ensemble.ClassifiersSet;
 import eca.ensemble.HeterogeneousClassifier;
@@ -119,6 +120,8 @@ public class ExperimentInitializationVisitor
         experiment.setNumFolds(crossValidationConfig.getNumFolds());
         experiment.setNumTests(crossValidationConfig.getNumTests());
         experiment.setSeed(crossValidationConfig.getSeed());
+        experiment.setExperimentHistoryMode(ExperimentHistoryMode.ONLY_BEST_MODELS);
+        experiment.setNumBestResults(experimentConfig.getResultSize());
     }
 
     private AutomatedStacking createStackingExperiment(InitializationParams initializationParams,

@@ -14,6 +14,7 @@ import eca.dataminer.AutomatedKNearestNeighbours;
 import eca.dataminer.AutomatedNeuralNetwork;
 import eca.dataminer.AutomatedRandomForests;
 import eca.dataminer.AutomatedStacking;
+import eca.dataminer.ExperimentHistoryMode;
 import eca.ensemble.ClassifiersSet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -164,6 +165,8 @@ class ExperimentInitializationVisitorTest {
         assertThat(experiment.getNumFolds()).isEqualTo(crossValidationConfig.getNumFolds().intValue());
         assertThat(experiment.getNumTests()).isEqualTo(crossValidationConfig.getNumTests().intValue());
         assertThat(experiment.getSeed()).isEqualTo(crossValidationConfig.getSeed().intValue());
+        assertThat(experiment.getExperimentHistoryMode()).isEqualTo(ExperimentHistoryMode.ONLY_BEST_MODELS);
+        assertThat(experiment.getNumBestResults()).isEqualTo(experimentConfig.getResultSize());
     }
 
     private void assertHeterogeneousEnsembleExperiment(AutomatedHeterogeneousEnsemble automatedHeterogeneousEnsemble) {

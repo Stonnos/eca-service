@@ -7,6 +7,7 @@ import com.ecaservice.server.model.experiment.InitializationParams;
 import com.ecaservice.server.service.experiment.visitor.ExperimentInitializationVisitor;
 import eca.dataminer.AbstractExperiment;
 import eca.dataminer.AutomatedKNearestNeighbours;
+import eca.dataminer.ExperimentHistoryMode;
 import eca.metrics.KNearestNeighbours;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,8 @@ import org.mockito.Mock;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import weka.core.Instances;
+
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -61,10 +64,12 @@ class ExperimentProcessorServiceTest {
         InitializationParams initializationParams = TestHelperUtils.createInitializationParams(data);
         AutomatedKNearestNeighbours automatedKNearestNeighbours =
                 new AutomatedKNearestNeighbours(data, new KNearestNeighbours());
+        automatedKNearestNeighbours.setExperimentHistoryMode(ExperimentHistoryMode.ONLY_BEST_MODELS);
+        automatedKNearestNeighbours.setNumBestResults(RESULTS_SIZE);
         when(experimentInitializationVisitor.caseKNearestNeighbours(initializationParams))
                 .thenReturn(automatedKNearestNeighbours);
         AbstractExperiment<?> experiment = experimentProcessorService.processExperimentHistory(
-                TestHelperUtils.createExperiment(null), initializationParams);
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString()), initializationParams);
         assertThat(experiment).isNotNull();
         assertThat(experiment.getHistory().size()).isEqualTo(experimentConfig.getResultSize().intValue());
     }
