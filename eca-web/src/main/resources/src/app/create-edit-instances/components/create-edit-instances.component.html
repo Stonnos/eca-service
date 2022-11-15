@@ -41,8 +41,8 @@
             Заполните название таблицы
           </div>
           <div *ngIf="tableName?.errors?.pattern">
-            <span>Разрешены только цифры, символ подчеркивания</span>
-            <span class="d-block">и латинские символы в нижнем регистре</span>
+            <span>Разрешены только цифры, символ подчеркивания и латинские символы в нижнем регистре.</span>
+            <span class="d-block">Название таблицы должно начинаться с латинской буквы в нижнем регистре</span>
           </div>
         </div>
         <div class="text-danger error-message" *ngIf="hasSameTableName && submitted">

@@ -21,7 +21,7 @@ import { Utils } from "../../common/util/utils";
 })
 export class CreateEditInstancesComponent extends BaseCreateDialogComponent<CreateEditInstancesModel> implements OnInit {
 
-  public tableNameRegex: string = '[0-9a-z_]+';
+  public tableNameRegex: string = '[a-z][0-9a-z_]*';
 
   public loading: boolean = false;
 
