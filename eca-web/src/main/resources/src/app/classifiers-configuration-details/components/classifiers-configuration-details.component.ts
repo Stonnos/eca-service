@@ -1,7 +1,7 @@
 import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
 import {
   ClassifierOptionsDto, ClassifiersConfigurationDto, FormTemplateDto, PageDto,
-  PageRequestDto
+  PageRequestDto, PushRequestDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ClassifierOptionsService } from "../services/classifier-options.service";
 import { ConfirmationService, MessageService } from "primeng/api";
@@ -21,6 +21,10 @@ import { FormTemplatesService } from "../../form-templates/services/form-templat
 import { FormField } from "../../form-templates/model/form-template.model";
 import { FormTemplatesMapper } from "../../form-templates/services/form-templates.mapper";
 import { Subscription } from "rxjs";
+import { Logger} from "../../common/util/logging";
+import { PushMessageType } from "../../common/util/push-message.type";
+import { PushVariables } from "../../common/util/push-variables";
+import { PushService } from "../../common/push/push.service";
 
 @Component({
   selector: 'app-classifiers-configuration-details',
@@ -47,10 +51,12 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
   public selectedFormFields: FormField[] = [];
 
   private routeUpdateSubscription: Subscription;
+  private configurationUpdatesSubscription: Subscription;
 
   public constructor(private injector: Injector,
                      private classifierOptionsService: ClassifierOptionsService,
                      private classifiersConfigurationService: ClassifiersConfigurationsService,
+                     private pushService: PushService,
                      private formTemplatesService: FormTemplatesService,
                      private formTemplatesMapper: FormTemplatesMapper,
                      private route: ActivatedRoute,
@@ -67,10 +73,12 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
     this.getClassifiersConfigurationDetails();
     this.getClassifiersTemplates();
     this.subscribeForRouteChanges();
+    this.subscribeForConfigurationUpdates(this.configurationId);
   }
 
   public ngOnDestroy(): void {
     this.routeUpdateSubscription.unsubscribe();
+    this.unSubscribeConfigurationUpdates(this.configurationId);
   }
 
   public getClassifiersConfigurationDetails(): void {
@@ -175,6 +183,36 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
   public onAddClassifierOptions(formFields: FormField[]): void {
     const classifierOptions = this.formTemplatesMapper.mapToClassifierOptionsObject(formFields, this.selectedTemplate);
     this.addClassifiersOptions(classifierOptions);
+  }
+
+  private subscribeForConfigurationUpdates(configId: number): void {
+    if (!this.configurationUpdatesSubscription) {
+      Logger.debug(`Subscribe configuration ${configId} changes`);
+      const filterPredicate = (pushRequestDto: PushRequestDto) => {
+        if (pushRequestDto.messageType != PushMessageType.CLASSIFIER_CONFIGURATION_CHANGE) {
+          return false;
+        }
+        const id = pushRequestDto.additionalProperties[PushVariables.CLASSIFIERS_CONFIGURATION_ID];
+        return configId == Number(id);
+      };
+      this.configurationUpdatesSubscription = this.pushService.pushMessageSubscribe(filterPredicate)
+        .subscribe({
+          next: (pushRequestDto: PushRequestDto) => {
+            this.reloadConfigurationDetails();
+          },
+          error: (error) => {
+            this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+          }
+        });
+    }
+  }
+
+  private unSubscribeConfigurationUpdates(configId: number): void {
+    if (this.configurationUpdatesSubscription) {
+      this.configurationUpdatesSubscription.unsubscribe();
+      this.configurationUpdatesSubscription = null;
+      Logger.debug(`Unsubscribe configuration ${configId} changes`);
+    }
   }
 
   private deleteConfiguration(item: ClassifiersConfigurationDto): void {
@@ -294,10 +332,16 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
     this.routeUpdateSubscription = this.router.events.pipe(
       filter((event: RouterEvent) => event instanceof NavigationEnd)
     ).subscribe(() => {
+      this.unSubscribeConfigurationUpdates(this.configurationId);
       this.configurationId = this.route.snapshot.params.id;
-      this.getClassifiersConfigurationDetails();
-      this.reloadPageWithLoader();
+      this.reloadConfigurationDetails();
+      this.subscribeForConfigurationUpdates(this.configurationId);
     });
+  }
+
+  private reloadConfigurationDetails(): void {
+    this.getClassifiersConfigurationDetails();
+    this.reloadPageWithLoader();
   }
 
   private initColumns() {
