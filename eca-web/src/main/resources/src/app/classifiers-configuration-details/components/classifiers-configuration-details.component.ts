@@ -296,6 +296,7 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
     ).subscribe(() => {
       this.configurationId = this.route.snapshot.params.id;
       this.getClassifiersConfigurationDetails();
+      this.reloadPageWithLoader();
     });
   }
 
