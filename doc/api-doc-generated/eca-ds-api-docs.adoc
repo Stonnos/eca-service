@@ -102,7 +102,7 @@ __string__
 
 
 
-*Pattern*: `^[0-9a-z_]+$`
+*Pattern*: `^[a-z][0-9a-z_]*$`
 
 
 |===
@@ -254,7 +254,7 @@ __string__
 
 
 
-*Pattern*: `^[0-9a-z_]+$`
+*Pattern*: `^[a-z][0-9a-z_]*$`
 
 
 |===
