@@ -2,6 +2,7 @@ package com.ecaservice.oauth.service;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.common.web.exception.FileProcessingException;
+import com.ecaservice.common.web.exception.InvalidFileException;
 import com.ecaservice.common.web.exception.InvalidOperationException;
 import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.oauth.config.AppProperties;
@@ -40,6 +41,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.ecaservice.common.web.util.FileUtils.isValidExtension;
 import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.oauth.config.audit.AuditCodes.CREATE_USER;
 import static com.ecaservice.oauth.config.audit.AuditCodes.DELETE_PHOTO;
@@ -269,6 +271,11 @@ public class UserService {
     public void updatePhoto(long userId, MultipartFile file) {
         log.info("Starting to update user [{}] photo: [{}]", userId, file.getOriginalFilename());
         UserEntity userEntity = getById(userId);
+        if (!isValidExtension(file.getOriginalFilename(), appProperties.getValidUserPhotoFileExtensions())) {
+            throw new InvalidFileException(
+                    String.format("Invalid file [%s] extension. Expected one of %s", file.getOriginalFilename(),
+                            appProperties.getValidUserPhotoFileExtensions()));
+        }
         UserPhoto userPhoto = userPhotoRepository.findByUserEntity(userEntity);
         if (userPhoto == null) {
             userPhoto = new UserPhoto();

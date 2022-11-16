@@ -1,6 +1,7 @@
 package com.ecaservice.oauth.service;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.common.web.exception.InvalidFileException;
 import com.ecaservice.common.web.exception.InvalidOperationException;
 import com.ecaservice.oauth.AbstractJpaTest;
 import com.ecaservice.oauth.TestHelperUtils;
@@ -263,6 +264,15 @@ class UserServiceTest extends AbstractJpaTest {
         assertThat(userPhoto.getFileExtension()).isEqualTo(FilenameUtils.getExtension(PHOTO_FILE_NAME));
         assertThat(userPhoto.getPhoto()).isNotNull();
         assertThat(userPhoto.getPhoto()).hasSize(BYTE_ARRAY_LENGTH);
+    }
+
+    @Test
+    void testUpdatePhotoWithInvalidExtension() throws IOException {
+        MultipartFile file = mock(MultipartFile.class);
+        when(file.getOriginalFilename()).thenReturn("file.txt");
+        when(file.getBytes()).thenReturn(new byte[BYTE_ARRAY_LENGTH]);
+        UserEntity userEntity = createAndSaveUser();
+        assertThrows(InvalidFileException.class, () -> userService.updatePhoto(userEntity.getId(), file));
     }
 
     @Test

@@ -6,6 +6,7 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * Application properties.
@@ -28,6 +29,11 @@ public class AppProperties {
      */
     @NotEmpty
     private String webExternalBaseUrl;
+
+    /**
+     * Valid user photo file extensions
+     */
+    private List<String> validUserPhotoFileExtensions;
 
     /**
      * Reset password properties
