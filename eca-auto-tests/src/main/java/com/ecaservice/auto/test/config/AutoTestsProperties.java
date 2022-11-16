@@ -61,12 +61,6 @@ public class AutoTestsProperties {
     private Long requestTimeoutInSeconds;
 
     /**
-     * Eca server base url
-     */
-    @NotEmpty
-    private String ecaServerBaseUrl;
-
-    /**
      * Eca ers base url
      */
     @NotEmpty
