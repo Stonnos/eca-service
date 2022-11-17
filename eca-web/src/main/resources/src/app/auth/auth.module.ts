@@ -7,12 +7,14 @@ import { AuthService } from "./services/auth.service";
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { AuthInterceptor } from "./interceptors/auth-interceptor";
 import { LogoutService } from "./services/logout.service";
+import { SharedModule } from "../common/shared.module";
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
-    UiComponentsModule
+    UiComponentsModule,
+    SharedModule
   ],
   declarations: [
     LoginComponent
