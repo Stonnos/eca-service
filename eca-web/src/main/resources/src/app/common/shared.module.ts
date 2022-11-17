@@ -27,6 +27,7 @@ import { EventService } from "./event/event.service";
 import { EventHandler } from "./event/event.handler";
 import { PushTokenService } from "./push/push-token.service";
 import { ChartBarStatisticsComponent } from "./chart-bar-statistics/chart-bar-statistics.component";
+import { NotBlankValidator } from "./validators/not-blank-validator.directive";
 
 @NgModule({
   imports: [
@@ -41,6 +42,7 @@ import { ChartBarStatisticsComponent } from "./chart-bar-statistics/chart-bar-st
     EqualValidator,
     MinNumberValidator,
     MaxNumberValidator,
+    NotBlankValidator,
     ConfirmDialogComponent,
     EditableInputTextComponent,
     InfoPanelComponent,
@@ -58,6 +60,7 @@ import { ChartBarStatisticsComponent } from "./chart-bar-statistics/chart-bar-st
     EqualValidator,
     MinNumberValidator,
     MaxNumberValidator,
+    NotBlankValidator,
     ConfirmDialogComponent,
     EditableInputTextComponent,
     InfoPanelComponent,
