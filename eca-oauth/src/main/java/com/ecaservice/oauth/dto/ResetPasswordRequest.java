@@ -6,8 +6,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import static com.ecaservice.oauth.util.FieldConstraints.MIN_PASSWORD_LENGTH;
+import static com.ecaservice.oauth.util.FieldConstraints.PASSWORD_REGEX;
 import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
@@ -35,7 +38,8 @@ public class ResetPasswordRequest {
      * New password
      */
     @NotBlank
-    @Size(min = VALUE_1, max = MAX_LENGTH_255)
+    @Pattern(regexp = PASSWORD_REGEX)
+    @Size(min = MIN_PASSWORD_LENGTH, max = MAX_LENGTH_255)
     @Schema(description = "New password", example = "passw0rd!", required = true)
     private String password;
 }
