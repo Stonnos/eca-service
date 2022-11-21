@@ -88,6 +88,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
     private final EntityManager entityManager;
     private final AppProperties appProperties;
     private final FilterService filterService;
+    private final ExperimentProgressService experimentProgressService;
 
     /**
      * Creates experiment request.
@@ -129,6 +130,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
     @Transactional
     public void startExperiment(Experiment experiment) {
         log.info("Starting to set in progress status for experiment [{}]", experiment.getRequestId());
+        experimentProgressService.start(experiment);
         createAndSaveSteps(experiment);
         experiment.setRequestStatus(RequestStatus.IN_PROGRESS);
         experiment.setStartDate(LocalDateTime.now());

@@ -11,6 +11,7 @@ import com.ecaservice.server.model.experiment.ExperimentContext;
 import com.ecaservice.server.model.experiment.InitializationParams;
 import com.ecaservice.server.service.evaluation.CalculationExecutorService;
 import com.ecaservice.server.service.experiment.ExperimentProcessorService;
+import com.ecaservice.server.service.experiment.ExperimentProgressService;
 import com.ecaservice.server.service.experiment.ExperimentStepService;
 import eca.dataminer.AbstractExperiment;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +39,7 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
     private final ExperimentProcessorService experimentProcessorService;
     private final CalculationExecutorService executorService;
     private final ExperimentStepService experimentStepService;
+    private final ExperimentProgressService experimentProgressService;
 
     /**
      * Constructor with parameters.
@@ -47,19 +49,22 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
      * @param experimentProcessorService - experiment processor service
      * @param executorService            - executor service
      * @param experimentStepService      - experiment step service
+     * @param experimentProgressService  - experiment progress service
      */
     public ExperimentModelProcessorStepHandler(ExperimentConfig experimentConfig,
                                                ObjectStorageService objectStorageService,
                                                ExperimentProcessorService experimentProcessorService,
                                                @Qualifier("calculationExecutorServiceImpl")
                                                        CalculationExecutorService executorService,
-                                               ExperimentStepService experimentStepService) {
+                                               ExperimentStepService experimentStepService,
+                                               ExperimentProgressService experimentProgressService) {
         super(ExperimentStep.EXPERIMENT_PROCESSING);
         this.experimentConfig = experimentConfig;
         this.objectStorageService = objectStorageService;
         this.experimentProcessorService = experimentProcessorService;
         this.executorService = executorService;
         this.experimentStepService = experimentStepService;
+        this.experimentProgressService = experimentProgressService;
     }
 
     @Override
@@ -68,6 +73,7 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
         try {
             Instances data = getInstances(experimentContext);
             processExperiment(data, experimentContext);
+            experimentProgressService.finish(experimentStepEntity.getExperiment());
             experimentStepService.complete(experimentStepEntity);
         } catch (ObjectStorageException ex) {
             log.error("Object storage error while process experiment [{}]: {}",

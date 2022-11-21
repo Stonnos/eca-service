@@ -6,6 +6,7 @@ import com.ecaservice.server.model.entity.ExperimentStepEntity;
 import com.ecaservice.server.model.entity.ExperimentStepStatus;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.experiment.ExperimentContext;
+import com.ecaservice.server.repository.ExperimentProgressRepository;
 import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.repository.ExperimentStepRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
@@ -30,6 +31,9 @@ abstract class AbstractStepHandlerTest extends AbstractJpaTest {
 
     @Getter
     @Inject
+    private ExperimentProgressRepository experimentProgressRepository;
+    @Getter
+    @Inject
     private ExperimentStepRepository experimentStepRepository;
     @Getter
     @Inject
@@ -42,6 +46,7 @@ abstract class AbstractStepHandlerTest extends AbstractJpaTest {
 
     @Override
     public void deleteAll() {
+        experimentProgressRepository.deleteAll();
         experimentStepRepository.deleteAll();
         experimentRepository.deleteAll();
     }

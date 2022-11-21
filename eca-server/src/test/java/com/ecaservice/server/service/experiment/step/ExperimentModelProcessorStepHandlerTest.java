@@ -10,6 +10,7 @@ import com.ecaservice.server.model.experiment.InitializationParams;
 import com.ecaservice.server.service.evaluation.CalculationExecutorService;
 import com.ecaservice.server.service.evaluation.CalculationExecutorServiceImpl;
 import com.ecaservice.server.service.experiment.ExperimentProcessorService;
+import com.ecaservice.server.service.experiment.ExperimentProgressService;
 import com.ecaservice.server.service.experiment.ExperimentStepService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -24,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import static com.ecaservice.server.TestHelperUtils.createExperimentHistory;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -36,8 +38,10 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({ExperimentConfig.class, ExperimentStepService.class})
+@Import({ExperimentConfig.class, ExperimentStepService.class, ExperimentProgressService.class})
 class ExperimentModelProcessorStepHandlerTest extends AbstractStepHandlerTest {
+
+    private static final int FULL_PROGRESS = 100;
 
     @Mock
     private ObjectStorageService objectStorageService;
@@ -48,6 +52,8 @@ class ExperimentModelProcessorStepHandlerTest extends AbstractStepHandlerTest {
     private ExperimentConfig experimentConfig;
     @Inject
     private ExperimentStepService experimentStepService;
+    @Inject
+    private ExperimentProgressService experimentProgressService;
 
     private ExperimentModelProcessorStepHandler experimentModelProcessorStepHandler;
 
@@ -59,7 +65,8 @@ class ExperimentModelProcessorStepHandlerTest extends AbstractStepHandlerTest {
         data = TestHelperUtils.loadInstances();
         var executorService = new CalculationExecutorServiceImpl(Executors.newCachedThreadPool());
         experimentModelProcessorStepHandler = new ExperimentModelProcessorStepHandler(experimentConfig,
-                objectStorageService, experimentProcessorService, executorService, experimentStepService);
+                objectStorageService, experimentProcessorService, executorService, experimentStepService,
+                experimentProgressService);
     }
 
     @Test
@@ -69,6 +76,7 @@ class ExperimentModelProcessorStepHandlerTest extends AbstractStepHandlerTest {
         when(experimentProcessorService.processExperimentHistory(any(Experiment.class),
                 any(InitializationParams.class))).thenReturn(experimentHistory);
         testStep(experimentModelProcessorStepHandler::handle, ExperimentStepStatus.COMPLETED);
+        verifyProgressFinished();
     }
 
     @Test
@@ -95,5 +103,13 @@ class ExperimentModelProcessorStepHandlerTest extends AbstractStepHandlerTest {
         doThrow(TimeoutException.class).when(executorService)
                 .execute(any(Callable.class), anyLong(), any(TimeUnit.class));
         testStep(experimentModelProcessorStepHandler::handle, ExperimentStepStatus.TIMEOUT);
+    }
+
+    private void verifyProgressFinished() {
+        var experimentProgressEntity =
+                getExperimentProgressRepository().findByExperiment(getExperimentStepEntity().getExperiment()).orElse(null);
+        assertThat(experimentProgressEntity).isNotNull();
+        assertThat(experimentProgressEntity.isFinished()).isTrue();
+        assertThat(experimentProgressEntity.getProgress()).isEqualTo(FULL_PROGRESS);
     }
 }

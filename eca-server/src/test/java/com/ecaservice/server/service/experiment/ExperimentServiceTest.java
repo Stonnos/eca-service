@@ -24,6 +24,7 @@ import com.ecaservice.server.model.entity.ExperimentStepStatus;
 import com.ecaservice.server.model.entity.Experiment_;
 import com.ecaservice.server.model.entity.FilterTemplateType;
 import com.ecaservice.server.model.entity.RequestStatus;
+import com.ecaservice.server.repository.ExperimentProgressRepository;
 import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.repository.ExperimentStepRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
@@ -69,7 +70,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import({ExperimentMapperImpl.class, ExperimentConfig.class, AppProperties.class, CrossValidationConfig.class,
-        DateTimeConverter.class, InstancesInfoMapperImpl.class, ExperimentService.class})
+        DateTimeConverter.class, InstancesInfoMapperImpl.class, ExperimentService.class, ExperimentProgressService.class})
 class ExperimentServiceTest extends AbstractJpaTest {
 
     private static final int PAGE_NUMBER = 0;
@@ -81,6 +82,8 @@ class ExperimentServiceTest extends AbstractJpaTest {
     private ExperimentRepository experimentRepository;
     @Inject
     private ExperimentStepRepository experimentStepRepository;
+    @Inject
+    private ExperimentProgressRepository experimentProgressRepository;
     @MockBean
     private ObjectStorageService objectStorageService;
     @MockBean
@@ -93,6 +96,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
 
     @Override
     public void deleteAll() {
+        experimentProgressRepository.deleteAll();
         experimentStepRepository.deleteAll();
         experimentRepository.deleteAll();
     }
@@ -134,6 +138,10 @@ class ExperimentServiceTest extends AbstractJpaTest {
         assertThat(actual.getRequestStatus()).isEqualTo(RequestStatus.IN_PROGRESS);
         assertThat(actual.getStartDate()).isNotNull();
         verifySavedSteps(experiment);
+        var experimentProgressEntity = experimentProgressRepository.findByExperiment(experiment).orElse(null);
+        assertThat(experimentProgressEntity).isNotNull();
+        assertThat(experimentProgressEntity.isFinished()).isFalse();
+        assertThat(experimentProgressEntity.getProgress()).isZero();
     }
 
     @Test

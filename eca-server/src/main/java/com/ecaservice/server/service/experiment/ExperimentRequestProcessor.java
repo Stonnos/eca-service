@@ -28,7 +28,6 @@ public class ExperimentRequestProcessor {
 
     private final ExperimentService experimentService;
     private final ApplicationEventPublisher eventPublisher;
-    private final ExperimentProgressService experimentProgressService;
 
     /**
      * Starts experiment.
@@ -47,7 +46,6 @@ public class ExperimentRequestProcessor {
             return;
         }
         log.info("Starting to process new experiment [{}]", experiment.getRequestId());
-        experimentProgressService.start(experiment);
         experimentService.startExperiment(experiment);
         eventPublisher.publishEvent(new ExperimentWebPushEvent(this, experiment));
         eventPublisher.publishEvent(new ExperimentEmailEvent(this, experiment));
@@ -92,7 +90,6 @@ public class ExperimentRequestProcessor {
         }
         log.info("Starting to finish experiment [{}]", experiment.getRequestId());
         experimentService.finishExperiment(experiment);
-        experimentProgressService.finish(experiment);
         if (Channel.QUEUE.equals(experiment.getChannel())) {
             eventPublisher.publishEvent(new ExperimentResponseEvent(this, experiment));
         }
