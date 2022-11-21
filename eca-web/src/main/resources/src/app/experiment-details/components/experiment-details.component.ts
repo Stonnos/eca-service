@@ -168,6 +168,7 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
 
   private subscribeForExperimentProgressUpdate(): void {
     if (!this.experimentProgressSubscription) {
+      this.experimentProgress = null;
       Logger.debug(`Subscribe experiment ${this.experimentDto.requestId} progress change`);
       this.experimentProgressSubscription = timer(0, this.updateProgressInterval).subscribe({
         next: () => {
@@ -234,7 +235,6 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
     if (this.experimentProgressSubscription) {
       this.experimentProgressSubscription.unsubscribe();
       this.experimentProgressSubscription = null;
-      this.experimentProgress = null;
       Logger.debug(`Unsubscribe experiment ${this.experimentDto.requestId} progress change`);
     }
   }
