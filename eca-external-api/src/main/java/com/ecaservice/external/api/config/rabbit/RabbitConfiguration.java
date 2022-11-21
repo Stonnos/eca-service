@@ -28,7 +28,7 @@ public class RabbitConfiguration {
     /**
      * Creates evaluation response queue bean.
      *
-     * @return  evaluation response queue bean
+     * @return evaluation response queue bean
      */
     @Bean
     public Queue evaluationResponseQueue() {
@@ -43,5 +43,25 @@ public class RabbitConfiguration {
     @Bean
     public Binding bindingEvaluationResponseQueue() {
         return BindingBuilder.bind(evaluationResponseQueue()).to(DirectExchange.DEFAULT).withQueueName();
+    }
+
+    /**
+     * Creates experiment response queue bean.
+     *
+     * @return experiment response queue bean
+     */
+    @Bean
+    public Queue experimentResponseQueue() {
+        return QueueBuilder.durable(queueConfig.getExperimentResponseQueue()).build();
+    }
+
+    /**
+     * Creates experiment response queue bindings bean.
+     *
+     * @return experiment response queue bindings bean
+     */
+    @Bean
+    public Binding bindingExperimentResponseQueue() {
+        return BindingBuilder.bind(experimentResponseQueue()).to(DirectExchange.DEFAULT).withQueueName();
     }
 }

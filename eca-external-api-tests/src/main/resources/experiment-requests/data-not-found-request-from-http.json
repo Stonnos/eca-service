@@ -1,0 +1,12 @@
+{
+  "displayName": "Data not found request from http",
+  "trainDataSource": "EXTERNAL_DATA_URL",
+  "request": {
+    "trainDataUrl": "http://localhost:8093/data.csv",
+    "experimentType": "RANDOM_FORESTS",
+    "evaluationMethod": "TRAINING_DATA"
+  },
+  "expectedResponse": {
+    "responseCode": "DATA_NOT_FOUND"
+  }
+}

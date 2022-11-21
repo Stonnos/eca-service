@@ -1,9 +1,12 @@
 package com.ecaservice.external.api.test.service.api;
 
 import com.ecaservice.external.api.dto.EvaluationRequestDto;
-import com.ecaservice.external.api.dto.EvaluationResponseDto;
+import com.ecaservice.external.api.dto.EvaluationResultsResponseDto;
+import com.ecaservice.external.api.dto.ExperimentRequestDto;
+import com.ecaservice.external.api.dto.ExperimentResultsResponseDto;
 import com.ecaservice.external.api.dto.InstancesDto;
 import com.ecaservice.external.api.dto.ResponseDto;
+import com.ecaservice.external.api.dto.SimpleEvaluationResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,14 +41,32 @@ public interface ExternalApiClient {
      * @return evaluation response dto
      */
     @PostMapping(value = "/evaluation-request")
-    ResponseDto<EvaluationResponseDto> evaluateRequest(@RequestBody EvaluationRequestDto evaluationRequestDto);
+    ResponseDto<SimpleEvaluationResponseDto> evaluateRequest(@RequestBody EvaluationRequestDto evaluationRequestDto);
 
     /**
-     * Creates evaluation response status.
+     * Creates experiment request.
      *
-     * @param requestId - request id
+     * @param experimentRequestDto - experiment request dto
      * @return evaluation response dto
      */
-    @GetMapping(value = "/evaluation-status/{requestId}")
-    ResponseDto<EvaluationResponseDto> evaluationStatus(@PathVariable String requestId);
+    @PostMapping(value = "/experiment-request")
+    ResponseDto<SimpleEvaluationResponseDto> experimentRequest(@RequestBody ExperimentRequestDto experimentRequestDto);
+
+    /**
+     * Gets evaluation results.
+     *
+     * @param requestId - request id
+     * @return evaluation results response dto
+     */
+    @GetMapping(value = "/evaluation-results/{requestId}")
+    ResponseDto<EvaluationResultsResponseDto> getEvaluationResults(@PathVariable String requestId);
+
+    /**
+     * Gets experiment results.
+     *
+     * @param requestId - request id
+     * @return experiment results response dto
+     */
+    @GetMapping(value = "/experiment-results/{requestId}")
+    ResponseDto<ExperimentResultsResponseDto> getExperimentResults(@PathVariable String requestId);
 }

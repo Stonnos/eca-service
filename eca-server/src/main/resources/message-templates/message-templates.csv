@@ -10,3 +10,7 @@ IN_PROGRESS_EXPERIMENT;Заявка на эксперимент ${experiment.req
 FINISHED_EXPERIMENT;Эксперимент ${experiment.requestId} успешно завершен
 ERROR_EXPERIMENT;Эксперимент ${experiment.requestId} завершился с ошибкой
 TIMEOUT_EXPERIMENT;Таймаут при обработке заявки на эксперимент ${experiment.requestId}
+SET_ACTIVE_CLASSIFIERS_CONFIGURATION_PUSH_MESSAGE;Сделал конфигурацию [${classifiersConfiguration.id}] активной
+RENAME_CLASSIFIERS_CONFIGURATION_PUSH_MESSAGE;Изменил название конфигурации [${classifiersConfiguration.id}] на [${classifiersConfiguration.configurationName}]
+ADD_CLASSIFIERS_CONFIGURATION_OPTIONS_PUSH_MESSAGE;Добавил настройки классификатора [${classifierOptionsDescription}] в конфигурацию [${classifiersConfiguration.id}]. Идентификатор настроек [${classifierOptionsId}]
+DELETE_CLASSIFIERS_CONFIGURATION_OPTIONS_PUSH_MESSAGE;Удалил настройки классификатора [${classifierOptionsDescription}] из конфигурации [${classifiersConfiguration.id}]. Идентификатор настроек [${classifierOptionsId}]

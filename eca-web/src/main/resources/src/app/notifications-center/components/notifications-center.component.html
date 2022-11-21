@@ -1,0 +1,54 @@
+<div class="ui-g-12">
+  <div class="ui-g ml-auto d-flex align-items-end justify-content-end line-border">
+    <a [routerLink]=""
+       class="text-bold link mt-1 mb-2"
+       (click)="readAllNotifications()"
+       [class.disabled-link]="loading || userNotificationsStatistics?.notReadCount == 0">
+      Отметить все как прочитанные
+    </a>
+  </div>
+</div>
+<div class="empty-notifications" *ngIf="!loading && isEmptyContent()">
+  У вас нет уведомлений за последние 7 дней
+</div>
+<div class="ui-g-12 notifications-scroll-panel" *ngIf="!isEmptyContent()">
+  <div class="ui-g-12 notification-card mt-1 w-100" *ngFor="let notification of getNotifications()"
+       [class.not-read-message]="notification?.messageStatus.value == 'NOT_READ'">
+    <ng-container [ngSwitch]="notification?.messageType">
+      <ng-container *ngSwitchCase="'CLASSIFIER_CONFIGURATION_CHANGE'">
+        <div class="ui-g text-bold">
+          <span class="pi pi-user initiator">{{ notification.initiator }}</span>
+        </div>
+        <div class="ui-g text-bold text-left">
+          {{ notification?.messageText }}
+        </div>
+        <div class="ui-g text-left created-date">
+          {{ notification.created }}
+        </div>
+        <div class="ui-g mx-auto d-flex align-items-center justify-content-center">
+          <button
+            pButton
+            (click)="onLinkClick(notification)"
+            label="Открыть конфигурацию"
+            type="button">
+          </button>
+        </div>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+        <div class="ui-g align-items-center justify-content-center text-bold text-center">
+          {{ notification?.messageText }}
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+  <div class="ui-g-12" *ngIf="hasMoreContent()">
+    <div class="ui-g mx-auto d-flex align-items-center justify-content-center">
+      <a [routerLink]=""
+         class="text-bold link mt-2"
+         [class.disabled-link]="loading"
+         (click)="loadNext()">
+        Показать еще
+      </a>
+    </div>
+  </div>
+</div>

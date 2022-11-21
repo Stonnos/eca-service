@@ -1,5 +1,6 @@
 package com.ecaservice.server.controller.web;
 
+import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.classifier.options.model.LogisticOptions;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.server.TestHelperUtils;
@@ -8,7 +9,9 @@ import com.ecaservice.server.mapping.ClassifierOptionsDatabaseModelMapperImpl;
 import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.server.model.entity.ClassifiersConfiguration;
+import com.ecaservice.server.service.UserService;
 import com.ecaservice.server.service.classifiers.ClassifierOptionsService;
+import com.ecaservice.server.service.classifiers.ClassifiersConfigurationService;
 import com.ecaservice.web.dto.model.ClassifierOptionsDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -17,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
@@ -33,6 +37,7 @@ import java.util.Map;
 import static com.ecaservice.server.PageRequestUtils.PAGE_NUMBER;
 import static com.ecaservice.server.PageRequestUtils.TOTAL_ELEMENTS;
 import static com.ecaservice.server.TestHelperUtils.bearerHeader;
+import static com.ecaservice.server.TestHelperUtils.createClassifierOptionsDto;
 import static com.ecaservice.server.TestHelperUtils.createClassifiersConfiguration;
 import static com.ecaservice.server.TestHelperUtils.createDecisionTreeOptions;
 import static com.ecaservice.server.TestHelperUtils.createPageRequestDto;
@@ -70,6 +75,12 @@ class ClassifierOptionsControllerTest extends PageRequestControllerTest {
 
     @MockBean
     private ClassifierOptionsService classifierOptionsService;
+    @MockBean
+    private ClassifiersConfigurationService classifiersConfigurationService;
+    @MockBean
+    private UserService userService;
+    @MockBean
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @Inject
     private ClassifierOptionsDatabaseModelMapper classifierOptionsDatabaseModelMapper;
@@ -174,6 +185,10 @@ class ClassifierOptionsControllerTest extends PageRequestControllerTest {
 
     @Test
     void testDeleteOptionsOk() throws Exception {
+        var classifiersConfiguration = createClassifiersConfiguration();
+        var options = TestHelperUtils.createClassifierOptionsDatabaseModel(OPTIONS, classifiersConfiguration);
+        options.setId(CONFIGURATION_ID);
+        when(classifierOptionsService.deleteOptions(CONFIGURATION_ID)).thenReturn(options);
         mockMvc.perform(delete(DELETE_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(ID_PARAM, String.valueOf(CONFIGURATION_ID)))
@@ -249,6 +264,10 @@ class ClassifierOptionsControllerTest extends PageRequestControllerTest {
     @Test
     void testAddOptionsOk() throws Exception {
         var decisionTreesOptions = createDecisionTreeOptions();
+        var classifiersConfiguration = createClassifiersConfiguration();
+        when(classifiersConfigurationService.getById(CONFIGURATION_ID)).thenReturn(classifiersConfiguration);
+        when(classifierOptionsService.saveClassifierOptions(anyLong(), any(ClassifierOptions.class)))
+                .thenReturn(createClassifierOptionsDto());
         mockMvc.perform(post(ADD_URL)
                 .content(objectMapper.writeValueAsString(decisionTreesOptions))
                 .param(CONFIGURATION_ID_PARAM, String.valueOf(CONFIGURATION_ID))

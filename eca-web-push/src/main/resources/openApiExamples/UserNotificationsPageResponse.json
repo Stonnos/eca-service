@@ -1,0 +1,23 @@
+{
+  "content": [
+    {
+      "id": 1,
+      "messageType": "CLASSIFIER_CONFIGURATION_CHANGE",
+      "messageText": "Message text",
+      "initiator": "admin",
+      "messageStatus": {
+        "value": "NOT_READ",
+        "description": "Не прочитано"
+      },
+      "created": "2021-07-01 14:00:00",
+      "parameters": [
+        {
+          "name": "classifiersConfigurationId",
+          "value": "250"
+        }
+      ]
+    }
+  ],
+  "page": 0,
+  "totalCount": 1
+}

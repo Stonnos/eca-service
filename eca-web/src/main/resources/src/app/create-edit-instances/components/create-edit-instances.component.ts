@@ -10,8 +10,8 @@ import {
   CreateInstancesResultDto,
   ValidationErrorDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
-import { HttpErrorResponse} from "@angular/common/http";
-import { ValidationErrorCode} from "../../common/model/validation-error-code";
+import { HttpErrorResponse } from "@angular/common/http";
+import { ValidationErrorCode } from "../../common/model/validation-error-code";
 import { Utils } from "../../common/util/utils";
 
 @Component({
@@ -21,7 +21,7 @@ import { Utils } from "../../common/util/utils";
 })
 export class CreateEditInstancesComponent extends BaseCreateDialogComponent<CreateEditInstancesModel> implements OnInit {
 
-  public tableNameRegex: string = '[0-9a-z_]+';
+  public tableNameRegex: string = '[a-z][0-9a-z_]*';
 
   public loading: boolean = false;
 
@@ -105,6 +105,10 @@ export class CreateEditInstancesComponent extends BaseCreateDialogComponent<Crea
       } else if (this.validationService.hasErrorCode(errors, ValidationErrorCode.PROCESS_FILE_ERROR)) {
         this.messageService.add({ severity: 'error',
           summary: 'Не удалось добавить датасет. Файл с обучающей выборкой содержит ошибки', detail: '' });
+        return;
+      } else if (this.validationService.hasErrorCode(errors, ValidationErrorCode.EMPTY_DATA_SET)) {
+        this.messageService.add({ severity: 'error',
+          summary: 'Не удалось добавить датасет. Датасет должен содержать хотя бы одну строку с данными', detail: '' });
         return;
       }
       this.hasSameTableName = this.validationService.hasErrorCode(errors, ValidationErrorCode.UNIQUE_TABLE_NAME);

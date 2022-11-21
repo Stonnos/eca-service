@@ -1,6 +1,7 @@
 package com.ecaservice.external.api.entity;
 
 import com.ecaservice.base.model.TechnicalStatus;
+import com.ecaservice.external.api.dto.EvaluationErrorCode;
 import eca.core.evaluation.EvaluationMethod;
 import lombok.Data;
 
@@ -66,6 +67,12 @@ public abstract class EcaRequestEntity {
     private LocalDateTime endDate;
 
     /**
+     * Request timeout date
+     */
+    @Column(name = "request_timeout_date")
+    private LocalDateTime requestTimeoutDate;
+
+    /**
      * Request stage
      */
     @Enumerated(EnumType.STRING)
@@ -99,8 +106,9 @@ public abstract class EcaRequestEntity {
     /**
      * Error code
      */
+    @Enumerated(EnumType.STRING)
     @Column(name = "error_code")
-    private String errorCode;
+    private EvaluationErrorCode errorCode;
 
     /**
      * Error message

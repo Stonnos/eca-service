@@ -30,7 +30,12 @@ public enum ErrorCode {
     /**
      * Training data not found (used for evaluation optimizer requests)
      */
-    TRAINING_DATA_NOT_FOUND("Training data not found for specified request");
+    TRAINING_DATA_NOT_FOUND("Training data not found for specified request"),
+
+    /**
+     * Invalid field value
+     */
+    INVALID_FIELD_VALUE("Invalid field value");
 
     /**
      * Error message

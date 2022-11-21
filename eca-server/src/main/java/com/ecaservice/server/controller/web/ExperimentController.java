@@ -6,7 +6,7 @@ import com.ecaservice.common.web.dto.ValidationErrorDto;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.server.event.model.ExperimentEmailEvent;
-import com.ecaservice.server.event.model.ExperimentWebPushEvent;
+import com.ecaservice.server.event.model.push.ExperimentWebPushEvent;
 import com.ecaservice.server.mapping.ExperimentMapper;
 import com.ecaservice.server.mapping.ExperimentProgressMapper;
 import com.ecaservice.server.model.MsgProperties;
@@ -19,11 +19,12 @@ import com.ecaservice.server.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.server.service.UserService;
 import com.ecaservice.server.service.auth.UsersClient;
 import com.ecaservice.server.service.experiment.DataService;
+import com.ecaservice.server.service.experiment.ExperimentDataService;
 import com.ecaservice.server.service.experiment.ExperimentProgressService;
 import com.ecaservice.server.service.experiment.ExperimentResultsService;
 import com.ecaservice.server.service.experiment.ExperimentService;
 import com.ecaservice.user.dto.UserInfoDto;
-import com.ecaservice.web.dto.model.ChartDataDto;
+import com.ecaservice.web.dto.model.ChartDto;
 import com.ecaservice.web.dto.model.CreateExperimentResultDto;
 import com.ecaservice.web.dto.model.ExperimentDto;
 import com.ecaservice.web.dto.model.ExperimentErsReportDto;
@@ -67,13 +68,10 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
 import static com.ecaservice.server.config.audit.AuditCodes.CREATE_EXPERIMENT_REQUEST;
-import static com.ecaservice.server.util.Utils.toRequestStatusesStatistics;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
 /**
@@ -91,6 +89,7 @@ public class ExperimentController {
 
     private final UserService userService;
     private final ExperimentService experimentService;
+    private final ExperimentDataService experimentDataService;
     private final ExperimentResultsService experimentResultsService;
     private final ExperimentMapper experimentMapper;
     private final ExperimentProgressMapper experimentProgressMapper;
@@ -225,7 +224,7 @@ public class ExperimentController {
     @PostMapping(value = "/list")
     public PageDto<ExperimentDto> getExperiments(@Valid @RequestBody PageRequestDto pageRequestDto) {
         log.info("Received experiments page request: {}", pageRequestDto);
-        Page<Experiment> experimentPage = experimentService.getNextPage(pageRequestDto);
+        Page<Experiment> experimentPage = experimentDataService.getNextPage(pageRequestDto);
         List<ExperimentDto> experimentDtoList = experimentMapper.map(experimentPage.getContent());
         return PageDto.of(experimentDtoList, pageRequestDto.getPage(), experimentPage.getTotalElements());
     }
@@ -284,7 +283,7 @@ public class ExperimentController {
             @Parameter(description = "Experiment id", required = true)
             @Min(VALUE_1) @Max(Long.MAX_VALUE) @PathVariable Long id) {
         log.info("Received request to get experiment details for id [{}]", id);
-        Experiment experiment = experimentService.getById(id);
+        Experiment experiment = experimentDataService.getById(id);
         return experimentMapper.map(experiment);
     }
 
@@ -385,10 +384,7 @@ public class ExperimentController {
     )
     @GetMapping(value = "/request-statuses-statistics")
     public RequestStatusStatisticsDto getExperimentsRequestStatusesStatistics() {
-        log.info("Request get experiments statuses statistics");
-        var requestStatusStatisticsDto = toRequestStatusesStatistics(experimentService.getRequestStatusesStatistics());
-        log.info("Experiments statuses statistics: {}", requestStatusStatisticsDto);
-        return requestStatusStatisticsDto;
+        return experimentDataService.getRequestStatusesStatistics();
     }
 
     /**
@@ -445,21 +441,21 @@ public class ExperimentController {
             @Parameter(description = "Experiment id", required = true)
             @Min(VALUE_1) @Max(Long.MAX_VALUE) @PathVariable Long id) {
         log.info("Received request for ERS report for experiment [{}]", id);
-        Experiment experiment = experimentService.getById(id);
+        Experiment experiment = experimentDataService.getById(id);
         return experimentResultsService.getErsReport(experiment);
     }
 
     /**
-     * Calculates experiments types counting statistics.
+     * Gets experiments statistics data (distribution diagram by experiment type).
      *
      * @param createdDateFrom - experiment created date from
      * @param createdDateTo   - experiment created date to
-     * @return chart data list
+     * @return chart data dto
      */
     @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
-            description = "Gets experiment types statistics",
-            summary = "Gets experiment types statistics",
+            description = "Gets experiments statistics data (distribution diagram by experiment type)",
+            summary = "Gets experiments statistics data (distribution diagram by experiment type)",
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200",
@@ -471,7 +467,7 @@ public class ExperimentController {
                                                     ref = "#/components/examples/ExperimentsStatisticsResponse"
                                             )
                                     },
-                                    array = @ArraySchema(schema = @Schema(implementation = ChartDataDto.class))
+                                    schema = @Schema(implementation = ChartDto.class)
                             )
                     ),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
@@ -488,21 +484,16 @@ public class ExperimentController {
             }
     )
     @GetMapping(value = "/statistics")
-    public List<ChartDataDto> getExperimentTypesStatistics(
+    public ChartDto getExperimentsStatistics(
             @Parameter(description = "Experiment created date from", example = "2021-07-01")
             @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate createdDateFrom,
             @Parameter(description = "Experiment created date to", example = "2021-07-10")
             @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate createdDateTo) {
-        log.info("Received request for experiment types statistics calculation with creation date from [{}] to [{}]",
+        log.info("Received request for experiment statistics calculation with creation date from [{}] to [{}]",
                 createdDateFrom, createdDateTo);
-        Map<ExperimentType, Long> experimentTypesMap =
-                experimentService.getExperimentTypesStatistics(createdDateFrom, createdDateTo);
-        return experimentTypesMap.entrySet()
-                .stream()
-                .map(entry -> new ChartDataDto(entry.getKey().name(), entry.getKey().getDescription(),
-                        entry.getValue())).collect(Collectors.toList());
+        return experimentDataService.getExperimentsStatistics(createdDateFrom, createdDateTo);
     }
 
     /**
@@ -559,7 +550,7 @@ public class ExperimentController {
             @Parameter(description = "Experiment id", required = true)
             @Min(VALUE_1) @Max(Long.MAX_VALUE) @PathVariable Long id) {
         log.trace("Received request to get experiment progress for id [{}]", id);
-        Experiment experiment = experimentService.getById(id);
+        Experiment experiment = experimentDataService.getById(id);
         ExperimentProgressEntity experimentProgressEntity = experimentProgressService.getExperimentProgress(experiment);
         return experimentProgressMapper.map(experimentProgressEntity);
     }
@@ -618,7 +609,7 @@ public class ExperimentController {
             @Parameter(description = "Experiment id", required = true)
             @Min(VALUE_1) @Max(Long.MAX_VALUE) @PathVariable Long id) {
         log.info("Received request to get experiment [{}] result content url", id);
-        return experimentService.getExperimentResultsContentUrl(id);
+        return experimentDataService.getExperimentResultsContentUrl(id);
     }
 
     private ExperimentRequest createExperimentRequest(MultipartFile trainingData,
@@ -626,7 +617,6 @@ public class ExperimentController {
                                                       ExperimentType experimentType,
                                                       EvaluationMethod evaluationMethod) {
         ExperimentRequest experimentRequest = new ExperimentRequest();
-        experimentRequest.setFirstName(userInfoDto.getFirstName());
         experimentRequest.setEmail(userInfoDto.getEmail());
         Instances data = dataService.load(new MultipartFileResource(trainingData));
         experimentRequest.setData(data);

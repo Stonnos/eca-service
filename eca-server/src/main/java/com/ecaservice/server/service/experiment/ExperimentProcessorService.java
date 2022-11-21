@@ -1,6 +1,5 @@
 package com.ecaservice.server.service.experiment;
 
-import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.event.model.ExperimentProgressEvent;
 import com.ecaservice.server.exception.experiment.ExperimentException;
 import com.ecaservice.server.model.entity.Experiment;
@@ -29,7 +28,6 @@ public class ExperimentProcessorService {
 
     private final ExperimentInitializationVisitor experimentInitializer;
     private final ApplicationEventPublisher applicationEventPublisher;
-    private final ExperimentConfig experimentConfig;
 
     /**
      * Processes experiment and returns its history.
@@ -62,18 +60,11 @@ public class ExperimentProcessorService {
                 log.warn("Warning for experiment [{}]: {}", experiment.getRequestId(), ex.getMessage());
             }
         }
-        postProcessFinalResults(abstractExperiment);
-        log.info("Experiment [{}] processing has been finished with {} best models!",
-                experiment.getRequestId(), abstractExperiment.getHistory().size());
-        return abstractExperiment;
-    }
-
-    private void postProcessFinalResults(AbstractExperiment<?> abstractExperiment) {
         if (CollectionUtils.isEmpty(abstractExperiment.getHistory())) {
             throw new ExperimentException("No models has been built!");
         }
-        int resultsSize = Integer.min(abstractExperiment.getHistory().size(), experimentConfig.getResultSize());
-        abstractExperiment.sortByBestResults();
-        abstractExperiment.reduce(resultsSize);
+        log.info("Experiment [{}] processing has been finished with {} best models!",
+                experiment.getRequestId(), abstractExperiment.getHistory().size());
+        return abstractExperiment;
     }
 }

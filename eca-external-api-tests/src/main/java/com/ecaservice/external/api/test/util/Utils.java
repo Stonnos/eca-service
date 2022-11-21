@@ -1,6 +1,6 @@
 package com.ecaservice.external.api.test.util;
 
-import com.ecaservice.external.api.dto.EvaluationResponseDto;
+import com.ecaservice.external.api.dto.EvaluationResultsResponseDto;
 import com.ecaservice.external.api.dto.ResponseDto;
 import eca.core.evaluation.Evaluation;
 import eca.core.model.ClassificationModel;
@@ -60,13 +60,13 @@ public class Utils {
     /**
      * Gets scaled decimal value.
      *
-     * @param evaluationResponseDto - evaluation response
-     * @param valueFunction         value function
+     * @param evaluationResultsResponseDto - evaluation response
+     * @param valueFunction                - value function
      * @return scaled decimal value
      */
-    public static BigDecimal getScaledValue(EvaluationResponseDto evaluationResponseDto,
-                                            Function<EvaluationResponseDto, BigDecimal> valueFunction) {
-        return Optional.ofNullable(evaluationResponseDto)
+    public static BigDecimal getScaledValue(EvaluationResultsResponseDto evaluationResultsResponseDto,
+                                            Function<EvaluationResultsResponseDto, BigDecimal> valueFunction) {
+        return Optional.ofNullable(evaluationResultsResponseDto)
                 .map(valueFunction)
                 .map(decimal -> decimal.setScale(SCALE, RoundingMode.HALF_UP))
                 .orElse(null);
@@ -76,7 +76,7 @@ public class Utils {
      * Gets scaled decimal value.
      *
      * @param classificationModel - classification model
-     * @param valueFunction       value function
+     * @param valueFunction       - value function
      * @return scaled decimal value
      */
     public static BigDecimal getScaledValue(ClassificationModel classificationModel,

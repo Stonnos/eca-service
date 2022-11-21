@@ -68,7 +68,7 @@ import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 @RequiredArgsConstructor
 public class DataStorageController {
 
-    private static final String TABLE_NAME_REGEX = "^[0-9a-z_]+$";
+    private static final String TABLE_NAME_REGEX = "^[a-z][0-9a-z_]*$";
     private static final int MAX_TABLE_NAME_LENGTH = 30;
 
     private final StorageService storageService;

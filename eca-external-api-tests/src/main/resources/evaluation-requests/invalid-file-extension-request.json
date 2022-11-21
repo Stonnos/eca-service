@@ -1,0 +1,19 @@
+{
+  "displayName": "Request with invalid train data file extension",
+  "trainDataSource": "API_DATA_STORAGE",
+  "trainDataPath": "classpath:/data/invalid-file.sql",
+  "request": {
+    "classifierOptions": {
+      "type": "logistic",
+      "maxIts": 200,
+      "useConjugateGradientDescent": false
+    },
+    "evaluationMethod": "CROSS_VALIDATION",
+    "numFolds": 10,
+    "numTests": 1,
+    "seed": 1
+  },
+  "expectedResponse": {
+    "responseCode": "VALIDATION_ERROR"
+  }
+}

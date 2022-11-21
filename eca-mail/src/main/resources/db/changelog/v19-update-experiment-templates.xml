@@ -1,0 +1,43 @@
+<?xml version="1.1" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v19-update-experiment-templates.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="update_new_experiment_template_body" author="roman.batygin@mail.ru" context="data">
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/new-experiment-template.html"/>
+            <where>template_code = 'NEW_EXPERIMENT'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="update_error_experiment_template_body" author="roman.batygin@mail.ru" context="data">
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/error-experiment-template.html"/>
+            <where>template_code = 'ERROR_EXPERIMENT'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="update_timeout_experiment_template_body" author="roman.batygin@mail.ru" context="data">
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/timeout-experiment-template.html"/>
+            <where>template_code = 'TIMEOUT_EXPERIMENT'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="update_finished_experiment_template_body" author="roman.batygin@mail.ru" context="data">
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/finished-experiment-template.html"/>
+            <where>template_code = 'FINISHED_EXPERIMENT'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="update_in_progress_experiment_template_body" author="roman.batygin@mail.ru" context="data">
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/in-progress-experiment-template.html"/>
+            <where>template_code = 'IN_PROGRESS_EXPERIMENT'</where>
+        </update>
+    </changeSet>
+
+</databaseChangeLog>

@@ -4,7 +4,7 @@ import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.external.api.test.bpm.service.ProcessManager;
 import com.ecaservice.external.api.test.config.ProcessConfig;
 import com.ecaservice.external.api.test.entity.AutoTestEntity;
-import com.ecaservice.external.api.test.model.TestDataModel;
+import com.ecaservice.external.api.test.model.AbstractTestDataModel;
 import com.ecaservice.external.api.test.repository.AutoTestRepository;
 import com.ecaservice.test.common.model.ExecutionStatus;
 import com.ecaservice.test.common.service.TestResultsMatcher;
@@ -12,16 +12,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.CountDownLatch;
 
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.AUTO_TEST_ID;
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.TEST_DATA_MODEL;
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.TEST_RESULTS_MATCHER;
-import static com.ecaservice.external.api.test.bpm.CamundaVariables.TEST_TYPE;
+import static com.ecaservice.external.api.test.bpm.CamundaVariables.TRAINS_DATA_SOURCE;
 import static com.google.common.collect.Maps.newHashMap;
 
 /**
@@ -43,11 +43,10 @@ public class TestWorkerService {
     /**
      * Executes auto test.
      *
-     * @param testId         - test id
-     * @param testDataModel  - test data model
-     * @param countDownLatch - count down latch
+     * @param testId        - test id
+     * @param testDataModel - test data model
      */
-    public void execute(long testId, TestDataModel testDataModel, CountDownLatch countDownLatch) {
+    public void execute(long testId, AbstractTestDataModel<?, ?> testDataModel) {
         AutoTestEntity autoTestEntity = autoTestRepository.findById(testId)
                 .orElseThrow(() -> new EntityNotFoundException(AutoTestEntity.class, testId));
         try {
@@ -59,18 +58,24 @@ public class TestWorkerService {
         } catch (Exception ex) {
             log.error("Unknown error while auto test [{}] execution: {}", autoTestEntity.getId(), ex.getMessage(), ex);
             autoTestService.finishWithError(autoTestEntity.getId(), ex.getMessage());
-        } finally {
-            countDownLatch.countDown();
         }
     }
 
-    private void executeNextTest(AutoTestEntity autoTestEntity, TestDataModel testDataModel) {
+    private void executeNextTest(AutoTestEntity autoTestEntity, AbstractTestDataModel<?, ?> testDataModel) {
+        String processId = getProcessId(autoTestEntity);
+        Assert.notNull(processId, String.format("Expected not null BPM process id for auto test [%d]",
+                autoTestEntity.getId()));
         TestResultsMatcher matcher = new TestResultsMatcher();
         Map<String, Object> variables = newHashMap();
         variables.put(AUTO_TEST_ID, autoTestEntity.getId());
-        variables.put(TEST_TYPE, testDataModel.getTestType().name());
+        variables.put(TRAINS_DATA_SOURCE, testDataModel.getTrainDataSource().name());
         variables.put(TEST_DATA_MODEL, testDataModel);
         variables.put(TEST_RESULTS_MATCHER, matcher);
-        processManager.startProcess(processConfig.getProcessId(), UUID.randomUUID().toString(), variables);
+        processManager.startProcess(processId, UUID.randomUUID().toString(), variables);
+    }
+
+    private String getProcessId(AutoTestEntity autoTestEntity) {
+        var autoTestType = autoTestEntity.getJob().getAutoTestType();
+        return processConfig.getIds().get(autoTestType);
     }
 }

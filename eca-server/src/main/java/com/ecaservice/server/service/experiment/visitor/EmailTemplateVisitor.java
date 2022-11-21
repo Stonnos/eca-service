@@ -59,7 +59,6 @@ public class EmailTemplateVisitor implements RequestStatusVisitor<EmailRequest, 
 
     private Map<String, String> createCommonVariablesMap(Experiment experiment) {
         Map<String, String> variablesMap = newHashMap();
-        variablesMap.put(TemplateVariablesDictionary.FIRST_NAME_KEY, experiment.getFirstName());
         variablesMap.put(TemplateVariablesDictionary.EXPERIMENT_TYPE_KEY,
                 experiment.getExperimentType().getDescription());
         variablesMap.put(TemplateVariablesDictionary.REQUEST_ID_KEY, experiment.getRequestId());

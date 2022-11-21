@@ -1,6 +1,7 @@
 package com.ecaservice.external.api.service;
 
 import com.ecaservice.base.model.EvaluationRequest;
+import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.base.model.InstancesRequest;
 import com.ecaservice.external.api.config.rabbit.QueueConfig;
 import lombok.RequiredArgsConstructor;
@@ -51,5 +52,21 @@ public class RabbitSender {
             return message;
         });
         log.debug("Optimal classifier evaluation request [{}] has been to rabbit mq", correlationId);
+    }
+
+    /**
+     * Sends experiment request message to rabbit mq.
+     *
+     * @param experimentRequest - experiment request
+     * @param correlationId     - message correlation id
+     */
+    public void sendExperimentRequest(ExperimentRequest experimentRequest, String correlationId) {
+        log.debug("Starting to send experiment request [{}] to rabbit mq", correlationId);
+        rabbitTemplate.convertAndSend(queueConfig.getExperimentRequestQueue(), experimentRequest, message -> {
+            message.getMessageProperties().setCorrelationId(correlationId);
+            message.getMessageProperties().setReplyTo(queueConfig.getExperimentResponseQueue());
+            return message;
+        });
+        log.debug("Experiment request [{}] has been to rabbit mq", correlationId);
     }
 }

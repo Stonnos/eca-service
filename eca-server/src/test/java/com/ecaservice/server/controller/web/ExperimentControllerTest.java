@@ -13,16 +13,17 @@ import com.ecaservice.server.model.MsgProperties;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentProgressEntity;
 import com.ecaservice.server.model.entity.ExperimentResultsEntity;
-import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.server.service.UserService;
 import com.ecaservice.server.service.auth.UsersClient;
 import com.ecaservice.server.service.experiment.DataService;
+import com.ecaservice.server.service.experiment.ExperimentDataService;
 import com.ecaservice.server.service.experiment.ExperimentProgressService;
 import com.ecaservice.server.service.experiment.ExperimentResultsService;
 import com.ecaservice.server.service.experiment.ExperimentService;
 import com.ecaservice.user.dto.UserInfoDto;
 import com.ecaservice.web.dto.model.ChartDataDto;
+import com.ecaservice.web.dto.model.ChartDto;
 import com.ecaservice.web.dto.model.CreateExperimentResultDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
 import com.ecaservice.web.dto.model.ExperimentDto;
@@ -50,17 +51,13 @@ import javax.inject.Inject;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static com.ecaservice.server.PageRequestUtils.PAGE_NUMBER;
 import static com.ecaservice.server.PageRequestUtils.TOTAL_ELEMENTS;
 import static com.ecaservice.server.TestHelperUtils.bearerHeader;
-import static com.ecaservice.server.TestHelperUtils.buildRequestStatusStatisticsMap;
 import static com.ecaservice.server.TestHelperUtils.createPageRequestDto;
-import static com.ecaservice.server.util.Utils.toRequestStatusesStatistics;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -104,6 +101,8 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     @MockBean
     private ExperimentService experimentService;
     @MockBean
+    private ExperimentDataService experimentDataService;
+    @MockBean
     private ExperimentResultsService experimentResultsService;
     @MockBean
     private UsersClient usersClient;
@@ -130,7 +129,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
 
     @Test
     void testGetExperimentDetailsNotFound() throws Exception {
-        when(experimentService.getById(ID)).thenThrow(EntityNotFoundException.class);
+        when(experimentDataService.getById(ID)).thenThrow(EntityNotFoundException.class);
         mockMvc.perform(get(DETAILS_URL, ID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isBadRequest());
@@ -139,7 +138,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     @Test
     void testGetExperimentDetailsOk() throws Exception {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
-        when(experimentService.getById(ID)).thenReturn(experiment);
+        when(experimentDataService.getById(ID)).thenReturn(experiment);
         ExperimentDto experimentDto = experimentMapper.map(experiment);
         mockMvc.perform(get(DETAILS_URL, ID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
@@ -222,7 +221,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
                 Collections.singletonList(TestHelperUtils.createExperiment(UUID.randomUUID().toString()));
         PageDto<ExperimentDto> expected = PageDto.of(experimentMapper.map(experiments), PAGE_NUMBER, TOTAL_ELEMENTS);
         when(experimentPage.getContent()).thenReturn(experiments);
-        when(experimentService.getNextPage(any(PageRequestDto.class))).thenReturn(experimentPage);
+        when(experimentDataService.getNextPage(any(PageRequestDto.class))).thenReturn(experimentPage);
         mockMvc.perform(post(LIST_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .content(objectMapper.writeValueAsString(createPageRequestDto()))
@@ -240,9 +239,8 @@ class ExperimentControllerTest extends PageRequestControllerTest {
 
     @Test
     void testExperimentsRequestStatusesStatisticsOk() throws Exception {
-        Map<RequestStatus, Long> requestStatusMap = buildRequestStatusStatisticsMap();
-        RequestStatusStatisticsDto requestStatusStatisticsDto = toRequestStatusesStatistics(requestStatusMap);
-        when(experimentService.getRequestStatusesStatistics()).thenReturn(requestStatusMap);
+        RequestStatusStatisticsDto requestStatusStatisticsDto = new RequestStatusStatisticsDto();
+        when(experimentDataService.getRequestStatusesStatistics()).thenReturn(requestStatusStatisticsDto);
         mockMvc.perform(get(REQUEST_STATUS_STATISTICS_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk())
@@ -290,7 +288,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
 
     @Test
     void testGetErsReportForNotExistingExperiment() throws Exception {
-        when(experimentService.getById(ID)).thenThrow(EntityNotFoundException.class);
+        when(experimentDataService.getById(ID)).thenThrow(EntityNotFoundException.class);
         mockMvc.perform(get(ERS_REPORT_URL, ID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isBadRequest());
@@ -299,7 +297,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     @Test
     void testGetErsReportOk() throws Exception {
         ExperimentErsReportDto expected = new ExperimentErsReportDto();
-        when(experimentService.getById(ID)).thenReturn(new Experiment());
+        when(experimentDataService.getById(ID)).thenReturn(new Experiment());
         when(experimentResultsService.getErsReport(any(Experiment.class))).thenReturn(expected);
         mockMvc.perform(get(ERS_REPORT_URL, ID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
@@ -315,16 +313,17 @@ class ExperimentControllerTest extends PageRequestControllerTest {
 
     @Test
     void testGetExperimentTypesStatisticsOk() throws Exception {
-        Map<ExperimentType, Long> experimentTypesMap = TestHelperUtils.buildExperimentTypeStatisticMap();
-        when(experimentService.getExperimentTypesStatistics(null, null)).thenReturn(experimentTypesMap);
-        List<ChartDataDto> chartDataDtoList = experimentTypesMap.entrySet().stream().map(
-                entry -> new ChartDataDto(entry.getKey().name(), entry.getKey().getDescription(),
-                        entry.getValue())).collect(Collectors.toList());
+        ChartDto chartDto = ChartDto.builder()
+                .total(1L)
+                .dataItems(Collections.singletonList(new ChartDataDto("Item", "Item", 1L)))
+                .build();
+        when(experimentDataService.getExperimentsStatistics(null, null))
+                .thenReturn(chartDto);
         mockMvc.perform(get(EXPERIMENT_TYPES_STATISTICS_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(objectMapper.writeValueAsString(chartDataDtoList)));
+                .andExpect(content().json(objectMapper.writeValueAsString(chartDto)));
 
     }
 
@@ -335,7 +334,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
 
     @Test
     void testGetExperimentProgressForNotExistingExperiment() throws Exception {
-        when(experimentService.getById(ID)).thenThrow(EntityNotFoundException.class);
+        when(experimentDataService.getById(ID)).thenThrow(EntityNotFoundException.class);
         mockMvc.perform(get(EXPERIMENT_PROGRESS_URL, ID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isBadRequest());
@@ -343,7 +342,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
 
     @Test
     void testGetExperimentProgressForNotExistingExperimentProgress() throws Exception {
-        when(experimentService.getById(ID)).thenReturn(new Experiment());
+        when(experimentDataService.getById(ID)).thenReturn(new Experiment());
         when(experimentProgressService.getExperimentProgress(any(Experiment.class)))
                 .thenThrow(EntityNotFoundException.class);
         mockMvc.perform(get(EXPERIMENT_PROGRESS_URL, ID)
@@ -356,7 +355,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
         ExperimentProgressDto expected = new ExperimentProgressDto();
         expected.setFinished(true);
         expected.setProgress(PROGRESS_VALUE);
-        when(experimentService.getById(ID)).thenReturn(new Experiment());
+        when(experimentDataService.getById(ID)).thenReturn(new Experiment());
         ExperimentProgressEntity experimentProgressEntity = new ExperimentProgressEntity();
         experimentProgressEntity.setFinished(true);
         experimentProgressEntity.setProgress(PROGRESS_VALUE);
@@ -377,7 +376,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
 
     @Test
     void testGetExperimentResultsContentUrlForNotExistingExperiment() throws Exception {
-        when(experimentService.getExperimentResultsContentUrl(ID)).thenThrow(EntityNotFoundException.class);
+        when(experimentDataService.getExperimentResultsContentUrl(ID)).thenThrow(EntityNotFoundException.class);
         mockMvc.perform(get(EXPERIMENT_RESULTS_CONTENT_URL, ID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isBadRequest());
@@ -388,7 +387,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
         var s3ContentResponseDto = S3ContentResponseDto.builder()
                 .contentUrl(CONTENT_URL)
                 .build();
-        when(experimentService.getExperimentResultsContentUrl(ID)).thenReturn(s3ContentResponseDto);
+        when(experimentDataService.getExperimentResultsContentUrl(ID)).thenReturn(s3ContentResponseDto);
         mockMvc.perform(get(EXPERIMENT_RESULTS_CONTENT_URL, ID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk())

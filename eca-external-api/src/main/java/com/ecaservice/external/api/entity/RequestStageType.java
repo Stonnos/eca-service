@@ -13,9 +13,9 @@ public enum RequestStageType {
     REQUEST_SENT,
 
     /**
-     * Response received
+     * Request created
      */
-    RESPONSE_RECEIVED,
+    REQUEST_CREATED,
 
     /**
      * Request completed

@@ -1,0 +1,17 @@
+{
+  "displayName": "KNN request with invalid 'weight' greater than maximum",
+  "trainDataSource": "EXTERNAL_DATA_URL",
+  "request": {
+    "trainDataUrl": "http://kt.ijs.si/Branax/Repository/WEKA/Iris.xls",
+    "classifierOptions": {
+      "type": "knn",
+      "numNeighbours": 10,
+      "distanceType": "EUCLID",
+      "weight": 1.01
+    },
+    "evaluationMethod": "TRAINING_DATA"
+  },
+  "expectedResponse": {
+    "responseCode": "VALIDATION_ERROR"
+  }
+}

@@ -52,38 +52,8 @@ a|
     "className" : "Type"
   },
   "classifierReport" : {
-    "type" : "ClassifierReport",
     "classifierName" : "ExtraTreesClassifier",
-    "options" : "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}",
-    "classifierInputOptions" : [ {
-      "key" : "Число деревьев:",
-      "value" : "20"
-    }, {
-      "key" : "Минимальное число объектов в листе:",
-      "value" : "2"
-    }, {
-      "key" : "Максиальная глубина дерева:",
-      "value" : "0"
-    }, {
-      "key" : "Число случайных атрибутов:",
-      "value" : "5"
-    }, {
-      "key" : "Алгоритм построения дерева решений:",
-      "value" : "ID3"
-    }, {
-      "key" : "Число потоков",
-      "value" : "6"
-    }, {
-      "key" : "Начальное значение (Seed)",
-      "value" : "1"
-    }, {
-      "key" : "Число случайных расщеплений атрибута:",
-      "value" : "6"
-    }, {
-      "key" : "Формирование обучающих выборок:",
-      "value" : "Исходное обучающее множество"
-    } ],
-    "metaClassifier" : false
+    "options" : "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}"
   },
   "evaluationMethodReport" : {
     "evaluationMethod" : "CROSS_VALIDATION",
@@ -486,38 +456,8 @@ a|
     "className" : "Type"
   },
   "classifierReport" : {
-    "type" : "ClassifierReport",
     "classifierName" : "ExtraTreesClassifier",
-    "options" : "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}",
-    "classifierInputOptions" : [ {
-      "key" : "Число потоков",
-      "value" : "6"
-    }, {
-      "key" : "Формирование обучающих выборок:",
-      "value" : "Исходное обучающее множество"
-    }, {
-      "key" : "Алгоритм построения дерева решений:",
-      "value" : "ID3"
-    }, {
-      "key" : "Число деревьев:",
-      "value" : "20"
-    }, {
-      "key" : "Максиальная глубина дерева:",
-      "value" : "0"
-    }, {
-      "key" : "Число случайных атрибутов:",
-      "value" : "5"
-    }, {
-      "key" : "Число случайных расщеплений атрибута:",
-      "value" : "6"
-    }, {
-      "key" : "Минимальное число объектов в листе:",
-      "value" : "2"
-    }, {
-      "key" : "Начальное значение (Seed)",
-      "value" : "1"
-    } ],
-    "metaClassifier" : false
+    "options" : "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}"
   },
   "evaluationMethodReport" : {
     "evaluationMethod" : "CROSS_VALIDATION",
@@ -869,71 +809,11 @@ a|
 {
   "requestId" : "f8cecbf7-405b-403b-9a94-f51e8fb73ed8",
   "classifierReports" : [ {
-    "type" : "ClassifierReport",
     "classifierName" : "ExtraTreesClassifier",
-    "options" : "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}",
-    "classifierInputOptions" : [ {
-      "key" : "Число потоков",
-      "value" : "6"
-    }, {
-      "key" : "Формирование обучающих выборок:",
-      "value" : "Исходное обучающее множество"
-    }, {
-      "key" : "Алгоритм построения дерева решений:",
-      "value" : "ID3"
-    }, {
-      "key" : "Число деревьев:",
-      "value" : "20"
-    }, {
-      "key" : "Максиальная глубина дерева:",
-      "value" : "0"
-    }, {
-      "key" : "Число случайных атрибутов:",
-      "value" : "5"
-    }, {
-      "key" : "Число случайных расщеплений атрибута:",
-      "value" : "6"
-    }, {
-      "key" : "Минимальное число объектов в листе:",
-      "value" : "2"
-    }, {
-      "key" : "Начальное значение (Seed)",
-      "value" : "1"
-    } ],
-    "metaClassifier" : false
+    "options" : "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}"
   }, {
-    "type" : "ClassifierReport",
     "classifierName" : "ExtraTreesClassifier",
-    "options" : "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}",
-    "classifierInputOptions" : [ {
-      "key" : "Число потоков",
-      "value" : "6"
-    }, {
-      "key" : "Формирование обучающих выборок:",
-      "value" : "Исходное обучающее множество"
-    }, {
-      "key" : "Алгоритм построения дерева решений:",
-      "value" : "ID3"
-    }, {
-      "key" : "Число деревьев:",
-      "value" : "20"
-    }, {
-      "key" : "Максиальная глубина дерева:",
-      "value" : "0"
-    }, {
-      "key" : "Число случайных атрибутов:",
-      "value" : "5"
-    }, {
-      "key" : "Число случайных расщеплений атрибута:",
-      "value" : "6"
-    }, {
-      "key" : "Минимальное число объектов в листе:",
-      "value" : "2"
-    }, {
-      "key" : "Начальное значение (Seed)",
-      "value" : "1"
-    } ],
-    "metaClassifier" : false
+    "options" : "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}"
   } ]
 }
 ----
@@ -1199,51 +1079,6 @@ a|
 
 
 |===
-=== ClassifierInputOption
-:table-caption: Table
-.Classifier input option model
-[width=100%]
-|===
-|*Name*|*Description*|*Schema*
-|*key**
-|Option key
-a|
-__string__
-
-
-*Min. length*: 1
-
-*Max. length*: 255
-
-
-
-
-
-
-
-
-
-
-|*value**
-|Option value
-a|
-__string__
-
-
-*Min. length*: 1
-
-*Max. length*: 255
-
-
-
-
-
-
-
-
-
-
-|===
 === ClassifierReport
 :table-caption: Table
 .Classifier report model
@@ -1297,65 +1132,6 @@ __string__
 *Min. length*: 1
 
 *Max. length*: 2,147,483,647
-
-
-
-
-
-
-
-
-
-
-|*classifierInputOptions*
-|Classifier input options
-a|
-__array__
-<<<ClassifierInputOption>>
->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*metaClassifier*
-|Is meta classifier?
-a|
-__boolean__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*type**
-|-
-a|
-__string__
-
-
-
-
-
 
 
 
@@ -1424,150 +1200,6 @@ __integer__
 *Minimum*: 0*
 
 *Maximum*: 2,147,483,647*
-
-
-
-
-
-
-
-
-|===
-=== EnsembleClassifierReport
-:table-caption: Table
-.Ensemble classifier report
-[width=100%]
-|===
-|*Name*|*Description*|*Schema*
-|*classifierName**
-|Classifier name
-a|
-__string__
-
-
-*Min. length*: 1
-
-*Max. length*: 255
-
-
-
-
-
-
-
-
-
-
-|*classifierDescription*
-|Classifier description
-a|
-__string__
-
-
-*Min. length*: 0
-
-*Max. length*: 255
-
-
-
-
-
-
-
-
-
-
-|*options**
-|Classifier options string
-a|
-__string__
-
-
-*Min. length*: 1
-
-*Max. length*: 2,147,483,647
-
-
-
-
-
-
-
-
-
-
-|*classifierInputOptions*
-|Classifier input options
-a|
-__array__
-<<<ClassifierInputOption>>
->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*metaClassifier*
-|Is meta classifier?
-a|
-__boolean__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*type**
-|-
-a|
-__string__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*individualClassifiers*
-|Individual classifiers reports
-a|
-__array__
-<<<ClassifierReport>>
->
-
-
-
-
-
-
-
 
 
 
@@ -1718,13 +1350,8 @@ a|
 |*classifierReport**
 |-
 a|
+<<ClassifierReport>>
 
-
-*One of types:*
-
-* <<ClassifierReport>>
-
-* <<EnsembleClassifierReport>>
 
 
 

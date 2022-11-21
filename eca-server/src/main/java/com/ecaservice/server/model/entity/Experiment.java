@@ -40,12 +40,6 @@ public class Experiment extends AbstractEvaluationEntity {
     private InstancesInfo instancesInfo;
 
     /**
-     * First name
-     */
-    @Column(name = "first_name", nullable = false)
-    private String firstName;
-
-    /**
      * Email
      */
     @Column(name = "email", nullable = false)

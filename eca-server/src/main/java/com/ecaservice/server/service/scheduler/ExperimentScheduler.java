@@ -1,16 +1,14 @@
 package com.ecaservice.server.service.scheduler;
 
-import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.repository.ExperimentRepository;
+import com.ecaservice.server.repository.ExperimentStepRepository;
+import com.ecaservice.server.service.experiment.ExperimentDataCleaner;
 import com.ecaservice.server.service.experiment.ExperimentRequestProcessor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Experiment scheduler.
@@ -22,33 +20,85 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ExperimentScheduler {
 
-    private static final List<RequestStatus> NEW_STATUSES = Collections.singletonList(RequestStatus.NEW);
-
     private final ExperimentRequestProcessor experimentRequestProcessor;
+    private final ExperimentDataCleaner experimentDataCleaner;
     private final ExperimentRepository experimentRepository;
+    private final ExperimentStepRepository experimentStepRepository;
+
+    /**
+     * Processes experiment requests.
+     */
+    @Scheduled(fixedDelayString = "${experiment.delaySeconds}000")
+    public void processExperiments() {
+        processNewRequests();
+        processInProgressRequests();
+        processFinishedRequests();
+    }
+
+    /**
+     * Removes experiments data files from S3. Schedules by cron.
+     */
+    @Scheduled(cron = "${experiment.removeExperimentCron}")
+    public void processRequestsToRemove() {
+        log.info("Starting job to removes experiments data files from disk");
+        experimentDataCleaner.removeExperimentsTrainingData();
+        experimentDataCleaner.removeExperimentsModels();
+        log.info("Removing experiments data files job has been finished");
+    }
 
     /**
      * Processing new experiment requests.
      */
-    @Scheduled(fixedDelayString = "${experiment.delaySeconds}000")
-    public void processNewRequests() {
+    private void processNewRequests() {
         log.trace("Starting to process new experiments.");
-        var newExperimentIds = experimentRepository.findExperimentsForProcessing(NEW_STATUSES);
+        var newExperimentIds = experimentRepository.findNewExperiments();
         if (!CollectionUtils.isEmpty(newExperimentIds)) {
-            log.info("Obtained {} new experiments", newExperimentIds.size());
-            newExperimentIds.forEach(experimentRequestProcessor::processNewExperiment);
+            log.info("Fetched {} new experiments", newExperimentIds.size());
+            newExperimentIds.forEach(id -> {
+                experimentRequestProcessor.startExperiment(id);
+                experimentRequestProcessor.processExperiment(id);
+                finishExperiment(id);
+            });
         }
         log.trace("New experiments processing has been successfully finished.");
     }
 
     /**
-     * Removes experiments data files from disk. Schedules by cron.
+     * Processing in progress experiment requests.
      */
-    @Scheduled(cron = "${experiment.removeExperimentCron}")
-    public void processRequestsToRemove() {
-        log.info("Starting job to removes experiments data files from disk");
-        experimentRequestProcessor.removeExperimentsTrainingData();
-        experimentRequestProcessor.removeExperimentsModels();
-        log.info("Removing experiments data files job has been finished");
+    private void processInProgressRequests() {
+        log.trace("Starting to process new experiments.");
+        var ids = experimentRepository.findExperimentsToProcess();
+        if (!CollectionUtils.isEmpty(ids)) {
+            log.info("Fetched {} experiments to process", ids.size());
+            ids.forEach(id -> {
+                experimentRequestProcessor.processExperiment(id);
+                finishExperiment(id);
+            });
+        }
+        log.trace("New experiments processing has been successfully finished.");
+    }
+
+    /**
+     * Processing finished experiment requests.
+     */
+    private void processFinishedRequests() {
+        log.trace("Starting to process finished experiments.");
+        var ids = experimentRepository.findExperimentsToFinish();
+        if (!CollectionUtils.isEmpty(ids)) {
+            log.info("Fetched {} finished experiments", ids.size());
+            ids.forEach(experimentRequestProcessor::finishExperiment);
+        }
+        log.trace("Finished experiments processing has been successfully finished.");
+    }
+
+    private void finishExperiment(long experimentId) {
+        if (processed(experimentId)) {
+            experimentRequestProcessor.finishExperiment(experimentId);
+        }
+    }
+
+    private boolean processed(long experimentId) {
+        return experimentStepRepository.getExperimentStepsCountToProcess(experimentId) == 0L;
     }
 }

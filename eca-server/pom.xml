@@ -5,7 +5,7 @@
     <parent>
         <artifactId>eca-service</artifactId>
         <groupId>eca.service</groupId>
-        <version>6.3.2</version>
+        <version>6.4</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -74,6 +74,12 @@
         <dependency>
             <groupId>eca.service</groupId>
             <artifactId>eca-ers-transport</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>eca.service</groupId>
+            <artifactId>eca-web-push-transport</artifactId>
             <version>${project.version}</version>
         </dependency>
 

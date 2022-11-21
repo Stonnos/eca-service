@@ -1,5 +1,6 @@
 package com.ecaservice.zuul.config;
 
+import com.ecaservice.common.web.annotation.EnableGlobalExceptionHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
  * @author Roman Batygin
  */
 @Configuration
+@EnableGlobalExceptionHandler
 public class ZuulGateConfiguration {
 
     private static final String ALL = "*";

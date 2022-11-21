@@ -23,7 +23,17 @@ public class QueueConfig {
     private String optimalEvaluationRequestQueue;
 
     /**
+     * Experiment request queue name
+     */
+    private String experimentRequestQueue;
+
+    /**
      * Evaluation response queue name
      */
     private String evaluationResponseQueue;
+
+    /**
+     * Experiment response queue name
+     */
+    private String experimentResponseQueue;
 }

@@ -10,33 +10,28 @@ import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.mapping.DateTimeConverter;
-import com.ecaservice.server.mapping.ExperimentMapper;
 import com.ecaservice.server.mapping.ExperimentMapperImpl;
 import com.ecaservice.server.mapping.InstancesInfoMapperImpl;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.Experiment_;
 import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
-import com.ecaservice.server.service.evaluation.CalculationExecutorService;
-import com.ecaservice.server.service.evaluation.CalculationExecutorServiceImpl;
-import com.ecaservice.server.service.experiment.ExperimentProcessorService;
-import com.ecaservice.server.service.experiment.ExperimentService;
+import com.ecaservice.server.service.experiment.ExperimentDataService;
+import com.ecaservice.server.service.experiment.ExperimentStepProcessor;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.Executors;
 
 import static com.ecaservice.server.AssertionUtils.assertBaseReportBean;
 import static com.ecaservice.server.PageRequestUtils.PAGE_NUMBER;
@@ -49,45 +44,25 @@ import static com.google.common.collect.Lists.newArrayList;
  * @author Roman Batygin
  */
 @Import({ExperimentMapperImpl.class, ExperimentConfig.class, AppProperties.class, CrossValidationConfig.class,
-        DateTimeConverter.class, InstancesInfoMapperImpl.class})
+        DateTimeConverter.class, InstancesInfoMapperImpl.class, ExperimentDataService.class,
+        ExperimentsBaseReportDataFetcher.class})
 class ExperimentsBaseReportDataFetcherTest extends AbstractJpaTest {
 
     private static final List<String> DATE_RANGE_VALUES = ImmutableList.of("2018-01-01", "2018-01-07");
     private static final LocalDateTime CREATION_DATE = LocalDateTime.of(2018, 1, 5, 0, 0, 0);
 
-    @Mock
+    @MockBean
     private ObjectStorageService objectStorageService;
-    @Mock
+    @MockBean
     private FilterService filterService;
-    @Mock
-    private ExperimentProcessorService experimentProcessorService;
+    @MockBean
+    private ExperimentStepProcessor experimentStepProcessor;
 
-    @Inject
-    private ExperimentMapper experimentMapper;
-    @Inject
-    private CrossValidationConfig crossValidationConfig;
-    @Inject
-    private ExperimentConfig experimentConfig;
-    @Inject
-    private EntityManager entityManager;
-    @Inject
-    private AppProperties appProperties;
     @Inject
     private ExperimentRepository experimentRepository;
 
+    @Inject
     private ExperimentsBaseReportDataFetcher experimentsBaseReportDataFetcher;
-
-    @Override
-    public void init() {
-        CalculationExecutorService executorService =
-                new CalculationExecutorServiceImpl(Executors.newCachedThreadPool());
-        ExperimentService experimentService =
-                new ExperimentService(experimentRepository, executorService, experimentMapper, objectStorageService,
-                        crossValidationConfig, experimentConfig, experimentProcessorService, entityManager,
-                        appProperties, filterService);
-        experimentsBaseReportDataFetcher =
-                new ExperimentsBaseReportDataFetcher(filterService, experimentService, experimentMapper);
-    }
 
     @Override
     public void deleteAll() {

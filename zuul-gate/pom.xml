@@ -5,7 +5,7 @@
     <parent>
         <artifactId>eca-service</artifactId>
         <groupId>eca.service</groupId>
-        <version>6.3.2</version>
+        <version>6.4</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -60,6 +60,12 @@
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>eca.service</groupId>
+            <artifactId>common-web</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
     </dependencies>

@@ -37,6 +37,10 @@ export class ResetPasswordComponent implements BaseForm, OnInit {
 
   public errorCode: string;
 
+  public passwordRegex: string = Utils.PASSWORD_REGEX;
+  public minPasswordLength: number = Utils.MIN_PASSWORD_LENGTH;
+  public passwordTooltipText: string = 'Разрешены только цифры, символы латинского алфавита и спец. символы кроме пробелов';
+
   private readonly errorCodes: string[] = [
     ValidationErrorCode.USER_LOCKED,
     ValidationErrorCode.PASSWORDS_MATCHED

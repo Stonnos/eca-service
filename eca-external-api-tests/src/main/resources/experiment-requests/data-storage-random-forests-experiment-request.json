@@ -1,0 +1,12 @@
+{
+  "displayName": "Random forests experiment request with data storage",
+  "trainDataSource": "API_DATA_STORAGE",
+  "trainDataPath": "classpath:/data/iris.xls",
+  "request": {
+    "evaluationMethod": "TRAINING_DATA",
+    "experimentType": "RANDOM_FORESTS"
+  },
+  "expectedResponse": {
+    "responseCode": "SUCCESS"
+  }
+}

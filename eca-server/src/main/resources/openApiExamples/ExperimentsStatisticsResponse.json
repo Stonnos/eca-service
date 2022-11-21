@@ -1,47 +1,50 @@
-[
-  {
-    "name": "NEURAL_NETWORKS",
-    "label": "Нейронные сети",
-    "count": 0
-  },
-  {
-    "name": "HETEROGENEOUS_ENSEMBLE",
-    "label": "Неоднородный ансамбль",
-    "count": 0
-  },
-  {
-    "name": "MODIFIED_HETEROGENEOUS_ENSEMBLE",
-    "label": "Мод. неоднородный ансамбль",
-    "count": 0
-  },
-  {
-    "name": "ADA_BOOST",
-    "label": "Алгоритм AdaBoost",
-    "count": 0
-  },
-  {
-    "name": "STACKING",
-    "label": "Алгоритм Stacking",
-    "count": 0
-  },
-  {
-    "name": "KNN",
-    "label": "Алгоритм KNN",
-    "count": 0
-  },
-  {
-    "name": "RANDOM_FORESTS",
-    "label": "Случайные леса",
-    "count": 0
-  },
-  {
-    "name": "STACKING_CV",
-    "label": "Алгоритм Stacking CV",
-    "count": 0
-  },
-  {
-    "name": "DECISION_TREE",
-    "label": "Деревья решений",
-    "count": 0
-  }
-]
+{
+  "total": 233,
+  "dataItems": [
+    {
+      "name": "NEURAL_NETWORKS",
+      "label": "Нейронные сети",
+      "count": 19
+    },
+    {
+      "name": "ADA_BOOST",
+      "label": "Алгоритм AdaBoost",
+      "count": 27
+    },
+    {
+      "name": "STACKING",
+      "label": "Алгоритм Stacking",
+      "count": 24
+    },
+    {
+      "name": "RANDOM_FORESTS",
+      "label": "Случайные леса",
+      "count": 60
+    },
+    {
+      "name": "STACKING_CV",
+      "label": "Алгоритм Stacking CV",
+      "count": 7
+    },
+    {
+      "name": "DECISION_TREE",
+      "label": "Деревья решений",
+      "count": 5
+    },
+    {
+      "name": "HETEROGENEOUS_ENSEMBLE",
+      "label": "Неоднородный ансамбль",
+      "count": 39
+    },
+    {
+      "name": "MODIFIED_HETEROGENEOUS_ENSEMBLE",
+      "label": "Мод. неоднородный ансамбль",
+      "count": 25
+    },
+    {
+      "name": "KNN",
+      "label": "Алгоритм KNN",
+      "count": 27
+    }
+  ]
+}

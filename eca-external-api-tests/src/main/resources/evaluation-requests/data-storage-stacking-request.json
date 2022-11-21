@@ -1,0 +1,58 @@
+{
+  "displayName": "Stacking request using data storage API",
+  "trainDataSource": "API_DATA_STORAGE",
+  "trainDataPath": "classpath:/data/credit.xlsx",
+  "request": {
+    "classifierOptions": {
+      "type": "stacking",
+      "useCrossValidation": false,
+      "classifierOptions": [
+        {
+          "type": "decision_tree",
+          "decisionTreeType": "CART",
+          "minObj": 2,
+          "maxDepth": 0,
+          "randomTree": false,
+          "useBinarySplits": true,
+          "useRandomSplits": false
+        },
+        {
+          "type": "decision_tree",
+          "decisionTreeType": "ID3",
+          "minObj": 2,
+          "maxDepth": 0,
+          "randomTree": false,
+          "useBinarySplits": false,
+          "useRandomSplits": false
+        },
+        {
+          "type": "decision_tree",
+          "decisionTreeType": "C45",
+          "minObj": 2,
+          "maxDepth": 0,
+          "randomTree": false,
+          "useBinarySplits": false,
+          "useRandomSplits": false
+        },
+        {
+          "type": "logistic",
+          "maxIts": 200,
+          "useConjugateGradientDescent": false
+        }
+      ],
+      "metaClassifierOptions": {
+        "type": "decision_tree",
+        "decisionTreeType": "ID3",
+        "minObj": 2,
+        "maxDepth": 0,
+        "randomTree": false,
+        "useBinarySplits": false,
+        "useRandomSplits": false
+      }
+    },
+    "evaluationMethod": "TRAINING_DATA"
+  },
+  "expectedResponse": {
+    "responseCode": "SUCCESS"
+  }
+}

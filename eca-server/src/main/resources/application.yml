@@ -115,6 +115,7 @@ experiment:
   pageSize: 10
   experimentDownloadUrlExpirationDays: 7
   shortLifeUrlExpirationMinutes: 5
+  experimentLocalStoragePath: /home/experiment
   ensemble:
     numIterations: 25
     numBestClassifiers: 4

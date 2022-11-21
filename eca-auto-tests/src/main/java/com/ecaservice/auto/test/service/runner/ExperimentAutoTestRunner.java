@@ -139,7 +139,6 @@ public class ExperimentAutoTestRunner extends AbstractAutoTestRunner<ExperimentR
         ExperimentRequest experimentRequest = new ExperimentRequest();
         experimentRequest.setData(instances);
         experimentRequest.setEmail(mailProperties.getUserName());
-        experimentRequest.setFirstName(experimentTestDataModel.getFirstName());
         experimentRequest.setEvaluationMethod(experimentTestDataModel.getEvaluationMethod());
         experimentRequest.setExperimentType(experimentTestDataModel.getExperimentType());
         return experimentRequest;

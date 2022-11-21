@@ -25,6 +25,9 @@ import { PushService } from "./push/push.service";
 import { PushMessageComponent } from "./push/push-message.component";
 import { EventService } from "./event/event.service";
 import { EventHandler } from "./event/event.handler";
+import { PushTokenService } from "./push/push-token.service";
+import { ChartBarStatisticsComponent } from "./chart-bar-statistics/chart-bar-statistics.component";
+import { NotBlankValidator } from "./validators/not-blank-validator.directive";
 
 @NgModule({
   imports: [
@@ -39,6 +42,7 @@ import { EventHandler } from "./event/event.handler";
     EqualValidator,
     MinNumberValidator,
     MaxNumberValidator,
+    NotBlankValidator,
     ConfirmDialogComponent,
     EditableInputTextComponent,
     InfoPanelComponent,
@@ -46,7 +50,8 @@ import { EventHandler } from "./event/event.handler";
     ClassifierOptionsInfo,
     EvaluationMethodInfo,
     InstancesInfo,
-    PushMessageComponent
+    PushMessageComponent,
+    ChartBarStatisticsComponent,
   ],
   exports: [
     RequestStatusComponent,
@@ -55,6 +60,7 @@ import { EventHandler } from "./event/event.handler";
     EqualValidator,
     MinNumberValidator,
     MaxNumberValidator,
+    NotBlankValidator,
     ConfirmDialogComponent,
     EditableInputTextComponent,
     InfoPanelComponent,
@@ -62,7 +68,8 @@ import { EventHandler } from "./event/event.handler";
     ClassifierOptionsInfo,
     EvaluationMethodInfo,
     InstancesInfo,
-    PushMessageComponent
+    PushMessageComponent,
+    ChartBarStatisticsComponent
   ],
   providers: [
     FieldService,
@@ -72,6 +79,7 @@ import { EventHandler } from "./event/event.handler";
     WebAppService,
     WsService,
     PushService,
+    PushTokenService,
     EventService,
     EventHandler
   ]

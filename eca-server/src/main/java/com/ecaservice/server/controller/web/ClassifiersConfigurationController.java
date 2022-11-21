@@ -4,8 +4,11 @@ import com.ecaservice.common.web.dto.ValidationErrorDto;
 import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.report.model.ClassifiersConfigurationBean;
 import com.ecaservice.report.model.ReportType;
+import com.ecaservice.server.event.model.push.RenameClassifiersConfigurationPushEvent;
+import com.ecaservice.server.event.model.push.SetActiveClassifiersConfigurationPushEvent;
 import com.ecaservice.server.mapping.ClassifiersConfigurationMapper;
 import com.ecaservice.server.model.entity.ClassifiersConfiguration;
+import com.ecaservice.server.service.UserService;
 import com.ecaservice.server.service.classifiers.ClassifiersConfigurationHistoryService;
 import com.ecaservice.server.service.classifiers.ClassifiersConfigurationService;
 import com.ecaservice.web.dto.model.*;
@@ -20,6 +23,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -64,6 +68,8 @@ public class ClassifiersConfigurationController {
     private final ClassifiersConfigurationService classifiersConfigurationService;
     private final ClassifiersConfigurationHistoryService classifiersConfigurationHistoryService;
     private final ClassifiersConfigurationMapper classifiersConfigurationMapper;
+    private final UserService userService;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     /**
      * Finds classifiers configurations with specified options such as filter, sorting and paging.
@@ -296,7 +302,10 @@ public class ClassifiersConfigurationController {
     )
     @PutMapping(value = "/update")
     public void update(@Valid @RequestBody UpdateClassifiersConfigurationDto configurationDto) {
-        classifiersConfigurationService.update(configurationDto);
+        var updatedConfiguration = classifiersConfigurationService.update(configurationDto);
+        applicationEventPublisher.publishEvent(
+                new RenameClassifiersConfigurationPushEvent(this, userService.getCurrentUser(),
+                        updatedConfiguration));
     }
 
     /**
@@ -448,7 +457,10 @@ public class ClassifiersConfigurationController {
     public void setActive(@Parameter(description = "Configuration id", example = "1", required = true)
                           @Min(VALUE_1) @Max(Long.MAX_VALUE)
                           @RequestParam long id) {
-        classifiersConfigurationService.setActive(id);
+        var activeConfiguration = classifiersConfigurationService.setActive(id);
+        applicationEventPublisher.publishEvent(
+                new SetActiveClassifiersConfigurationPushEvent(this, userService.getCurrentUser(),
+                        activeConfiguration));
     }
 
     /**

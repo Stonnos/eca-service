@@ -18,6 +18,7 @@
             <label class="text-bold">Логин или email</label>
             <input
               required
+              notBlank
               pInputText
               id="login"
               name="login"
@@ -29,7 +30,7 @@
               maxlength="255"
               class="form-control d-block w-100">
             <div class="text-danger error-message" *ngIf="login.invalid && (login.dirty || login.touched || submitted)">
-              <div *ngIf="login?.errors?.required">
+              <div *ngIf="login?.errors?.required || login?.errors?.notBlank">
                 Заполните логин или email
               </div>
             </div>
@@ -38,6 +39,7 @@
             <label class="text-bold">Пароль</label>
             <input
               required
+              notBlank
               pPassword
               id="password"
               name="password"
@@ -51,7 +53,7 @@
               [feedback]="false">
             <div class="text-danger error-message"
                  *ngIf="password.invalid && (password.dirty || password.touched || submitted)">
-              <div *ngIf="password?.errors?.required">
+              <div *ngIf="password?.errors?.required || password?.errors?.notBlank">
                 Заполните пароль
               </div>
             </div>

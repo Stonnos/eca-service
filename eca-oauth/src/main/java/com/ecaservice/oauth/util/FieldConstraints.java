@@ -42,6 +42,16 @@ public class FieldConstraints {
     public static final String PERSON_NAME_REGEX = "^([A-Z][a-z]+)|([А-Я][а-я]+)$";
 
     /**
+     * Password regex
+     */
+    public static final String PASSWORD_REGEX = "^[^а-яА-Я\\s]*$";
+
+    /**
+     * Min password length
+     */
+    public static final int MIN_PASSWORD_LENGTH = 8;
+
+    /**
      * Person name (e.g. first name, last name) max size
      */
     public static final int PERSON_NAME_MAX_SIZE = 30;

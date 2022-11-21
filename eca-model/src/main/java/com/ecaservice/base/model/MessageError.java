@@ -17,7 +17,7 @@ public class MessageError {
     /**
      * Error code
      */
-    private String code;
+    private ErrorCode code;
 
     /**
      * Error field

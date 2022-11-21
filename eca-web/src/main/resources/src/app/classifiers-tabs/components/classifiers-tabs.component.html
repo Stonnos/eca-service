@@ -1,0 +1,17 @@
+<div class="container-fluid mb-5">
+  <p-tabView class="classifiers-tab">
+    <p-tabPanel header="Таблица классификаторов" leftIcon="pi pi-table" [cache]="false">
+      <ng-template pTemplate="content">
+        <app-classifier-list>
+        </app-classifier-list>
+      </ng-template>
+    </p-tabPanel>
+
+    <p-tabPanel header="Статистика" leftIcon="pi pi-chart-bar" [cache]="false">
+      <ng-template pTemplate="content">
+        <app-classifiers-statistics></app-classifiers-statistics>
+      </ng-template>
+    </p-tabPanel>
+
+  </p-tabView>
+</div>

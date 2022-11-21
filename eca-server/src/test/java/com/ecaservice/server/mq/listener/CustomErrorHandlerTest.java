@@ -40,7 +40,6 @@ class CustomErrorHandlerTest {
     private RabbitTemplate rabbitTemplate;
     @Mock
     private List<AbstractExceptionTranslator> exceptionTranslators;
-    ;
     @InjectMocks
     private CustomErrorHandler customErrorHandler;
 
@@ -66,6 +65,6 @@ class CustomErrorHandlerTest {
         MessageError error = ecaResponseArgumentCaptor.getValue().getErrors().iterator().next();
         assertThat(error).isNotNull();
         assertThat(error.getMessage()).isEqualTo(ErrorCode.INTERNAL_SERVER_ERROR.getErrorMessage());
-        assertThat(error.getCode()).isEqualTo(ErrorCode.INTERNAL_SERVER_ERROR.name());
+        assertThat(error.getCode()).isEqualTo(ErrorCode.INTERNAL_SERVER_ERROR);
     }
 }

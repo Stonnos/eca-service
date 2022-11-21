@@ -1,6 +1,7 @@
 package com.ecaservice.external.api.service;
 
 import com.ecaservice.base.model.EvaluationRequest;
+import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.base.model.InstancesRequest;
 import com.ecaservice.external.api.config.rabbit.QueueConfig;
 import org.junit.jupiter.api.Test;
@@ -58,5 +59,13 @@ class RabbitSenderTest {
         verify(rabbitTemplate).convertAndSend(queueCaptor.capture(), any(InstancesRequest.class), any(
                 MessagePostProcessor.class));
         assertThat(queueCaptor.getValue()).isEqualTo(queueConfig.getOptimalEvaluationRequestQueue());
+    }
+
+    @Test
+    void testSendExperimentRequest() {
+        rabbitSender.sendExperimentRequest(new ExperimentRequest(), UUID.randomUUID().toString());
+        verify(rabbitTemplate).convertAndSend(queueCaptor.capture(), any(ExperimentRequest.class), any(
+                MessagePostProcessor.class));
+        assertThat(queueCaptor.getValue()).isEqualTo(queueConfig.getExperimentRequestQueue());
     }
 }

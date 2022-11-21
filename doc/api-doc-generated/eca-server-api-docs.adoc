@@ -411,7 +411,6 @@ a|
     "numTests" : 1,
     "seed" : 1,
     "evaluationTotalTime" : "00:00:1:43",
-    "firstName" : "Roman",
     "email" : "test@mail.ru",
     "experimentPath" : "experiment-1d2de514-3a87-4620-9b97-c260e24340de.model",
     "instancesInfo" : {
@@ -3036,9 +3035,9 @@ a|
 ----
 |===
 
-== Gets experiment types statistics
+== Gets experiments statistics data (distribution diagram by experiment type)
 
-__GET__ */experiment/statistics* - Gets experiment types statistics
+__GET__ */experiment/statistics* - Gets experiments statistics data (distribution diagram by experiment type)
 
 *Security requirement*
 
@@ -3110,9 +3109,7 @@ __(date)__
 |OK
 |*application/json*
 |
-__array__
-<<<ChartDataDto>>
->
+<<ChartDto>>
 
 
 
@@ -3131,43 +3128,46 @@ __array__
 a|
 [source,json]
 ----
-[ {
-  "name" : "NEURAL_NETWORKS",
-  "label" : "Нейронные сети",
-  "count" : 0
-}, {
-  "name" : "HETEROGENEOUS_ENSEMBLE",
-  "label" : "Неоднородный ансамбль",
-  "count" : 0
-}, {
-  "name" : "MODIFIED_HETEROGENEOUS_ENSEMBLE",
-  "label" : "Мод. неоднородный ансамбль",
-  "count" : 0
-}, {
-  "name" : "ADA_BOOST",
-  "label" : "Алгоритм AdaBoost",
-  "count" : 0
-}, {
-  "name" : "STACKING",
-  "label" : "Алгоритм Stacking",
-  "count" : 0
-}, {
-  "name" : "KNN",
-  "label" : "Алгоритм KNN",
-  "count" : 0
-}, {
-  "name" : "RANDOM_FORESTS",
-  "label" : "Случайные леса",
-  "count" : 0
-}, {
-  "name" : "STACKING_CV",
-  "label" : "Алгоритм Stacking CV",
-  "count" : 0
-}, {
-  "name" : "DECISION_TREE",
-  "label" : "Деревья решений",
-  "count" : 0
-} ]
+{
+  "total" : 233,
+  "dataItems" : [ {
+    "name" : "NEURAL_NETWORKS",
+    "label" : "Нейронные сети",
+    "count" : 19
+  }, {
+    "name" : "ADA_BOOST",
+    "label" : "Алгоритм AdaBoost",
+    "count" : 27
+  }, {
+    "name" : "STACKING",
+    "label" : "Алгоритм Stacking",
+    "count" : 24
+  }, {
+    "name" : "RANDOM_FORESTS",
+    "label" : "Случайные леса",
+    "count" : 60
+  }, {
+    "name" : "STACKING_CV",
+    "label" : "Алгоритм Stacking CV",
+    "count" : 7
+  }, {
+    "name" : "DECISION_TREE",
+    "label" : "Деревья решений",
+    "count" : 5
+  }, {
+    "name" : "HETEROGENEOUS_ENSEMBLE",
+    "label" : "Неоднородный ансамбль",
+    "count" : 39
+  }, {
+    "name" : "MODIFIED_HETEROGENEOUS_ENSEMBLE",
+    "label" : "Мод. неоднородный ансамбль",
+    "count" : 25
+  }, {
+    "name" : "KNN",
+    "label" : "Алгоритм KNN",
+    "count" : 27
+  } ]
+}
 ----
 |401
 |Not authorized
@@ -3308,7 +3308,6 @@ a|
     "numTests" : 1,
     "seed" : 1,
     "evaluationTotalTime" : "00:00:1:43",
-    "firstName" : "Roman",
     "email" : "test@mail.ru",
     "experimentPath" : "experiment-1d2de514-3a87-4620-9b97-c260e24340de.model",
     "instancesInfo" : {
@@ -3966,7 +3965,6 @@ a|
   "numTests" : 1,
   "seed" : 1,
   "evaluationTotalTime" : "00:00:1:43",
-  "firstName" : "Roman",
   "email" : "test@mail.ru",
   "experimentPath" : "experiment-1d2de514-3a87-4620-9b97-c260e24340de.model",
   "instancesInfo" : {
@@ -4523,6 +4521,178 @@ a|
   "code" : "DataNotFound",
   "errorMessage" : "Entity with search key [1] not found!"
 } ]
+----
+|===
+
+== Gets classifiers statistics data (distribution diagram by classifier)
+
+__GET__ */evaluation/classifiers-statistics* - Gets classifiers statistics data (distribution diagram by classifier)
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+
+*Request parameters*
+[width=100%]
+|===
+|*Name*|*Description*|*Location*|*Schema*
+|*createdDateFrom*
+|Created date from
+|query
+a|
+__string__
+__(date)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*createdDateTo*
+|Created date to
+|query
+a|
+__string__
+__(date)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+<<ChartDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "total" : 636,
+  "dataItems" : [ {
+    "name" : "CART",
+    "label" : "Алгоритм CART",
+    "count" : 60
+  }, {
+    "name" : "C45",
+    "label" : "Алгоритм C4.5",
+    "count" : 46
+  }, {
+    "name" : "ID3",
+    "label" : "Алгоритм ID3",
+    "count" : 43
+  }, {
+    "name" : "CHAID",
+    "label" : "Алгоритм CHAID",
+    "count" : 31
+  }, {
+    "name" : "J48",
+    "label" : "Алгоритм J48",
+    "count" : 58
+  }, {
+    "name" : "NeuralNetwork",
+    "label" : "Нейронная сеть (Многослойный персептрон)",
+    "count" : 49
+  }, {
+    "name" : "KNearestNeighbours",
+    "label" : "Алгоритм k - взвешенных ближайших соседей",
+    "count" : 15
+  }, {
+    "name" : "Logistic",
+    "label" : "Логистическая регрессия",
+    "count" : 74
+  }, {
+    "name" : "AdaBoostClassifier",
+    "label" : "Алгоритм AdaBoost",
+    "count" : 37
+  }, {
+    "name" : "HeterogeneousClassifier",
+    "label" : "Неоднородный ансамблевый алгоритм",
+    "count" : 42
+  }, {
+    "name" : "ModifiedHeterogeneousClassifier",
+    "label" : "Модифицированный неоднородный ансамблевый алгоритм",
+    "count" : 7
+  }, {
+    "name" : "StackingClassifier",
+    "label" : "Алгоритм Stacking",
+    "count" : 6
+  }, {
+    "name" : "RandomForests",
+    "label" : "Алгоритм Случайные леса",
+    "count" : 73
+  }, {
+    "name" : "ExtraTreesClassifier",
+    "label" : "Алгоритм Extra trees",
+    "count" : 89
+  }, {
+    "name" : "RandomNetworks",
+    "label" : "Алгоритм Случайные сети",
+    "count" : 6
+  } ]
+}
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
 ----
 |===
 
@@ -5778,25 +5948,6 @@ __string__
 
 
 *Max. length*: 11
-
-
-
-
-
-
-
-
-
-
-|*firstName*
-|Request creator first name
-a|
-__string__
-
-
-
-
-*Max. length*: 255
 
 
 
@@ -9838,7 +9989,7 @@ a|
 |===
 === ChartDataDto
 :table-caption: Table
-.Model for chart
+.Chart data model
 [width=100%]
 |===
 |*Name*|*Description*|*Schema*
@@ -9894,6 +10045,56 @@ __(int64)__
 *Minimum*: 0*
 
 *Maximum*: 9,223,372,036,854,775,807*
+
+
+
+
+
+
+
+
+|===
+=== ChartDto
+:table-caption: Table
+.Chart model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*total**
+|Total items
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 9,223,372,036,854,775,807*
+
+
+
+
+
+
+
+
+|*dataItems*
+|Chart data items
+a|
+__array__
+<<<ChartDataDto>>
+>
+
+
+
+
+
+
+
 
 
 

@@ -5,6 +5,7 @@ import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.data.storage.config.EcaDsConfig;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.entity.InstancesEntity_;
+import com.ecaservice.data.storage.exception.EmptyDataException;
 import com.ecaservice.data.storage.exception.TableExistsException;
 import com.ecaservice.data.storage.filter.InstancesFilter;
 import com.ecaservice.data.storage.model.ColumnModel;
@@ -78,6 +79,9 @@ public class StorageServiceImpl implements StorageService {
         log.info("Starting to save instances into table [{}]", tableName);
         if (tableNameService.tableExists(tableName)) {
             throw new TableExistsException(tableName);
+        }
+        if (instances.isEmpty()) {
+            throw new EmptyDataException();
         }
         instancesService.saveInstances(tableName, instances);
         InstancesEntity instancesEntity = saveInstancesEntity(tableName, instances);

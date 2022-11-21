@@ -1,0 +1,12 @@
+{
+  "displayName": "Neural networks experiment request with external data url",
+  "trainDataSource": "EXTERNAL_DATA_URL",
+  "request": {
+    "trainDataUrl": "http://kt.ijs.si/Branax/Repository/WEKA/Iris.xls",
+    "evaluationMethod": "TRAINING_DATA",
+    "experimentType": "NEURAL_NETWORKS"
+  },
+  "expectedResponse": {
+    "responseCode": "SUCCESS"
+  }
+}

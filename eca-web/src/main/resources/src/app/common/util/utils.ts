@@ -11,10 +11,12 @@ export class Utils {
   public static readonly EMAIL_REGEX: string =
     '[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})';
   public static readonly PERSON_NAME_REGEX: string = '([A-Z][a-z]+)|([А-Я][а-я]+)';
+  public static readonly PASSWORD_REGEX: string = '[^а-яА-Я\\s]*';
   public static readonly PERSON_NAME_MAX_LENGTH: number = 30;
 
   public static readonly MISSING_VALUE: string = "-";
   public static readonly PASSWORD_STRENGTH_CUTOFF: number = 3;
+  public static readonly MIN_PASSWORD_LENGTH: number = 8;
 
   public static getEvaluationMethodDescription(evaluationMethod: EnumDto, numFolds: number, numTests: number): string {
     if (evaluationMethod.value == EvaluationMethod.CROSS_VALIDATION) {

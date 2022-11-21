@@ -13,4 +13,5 @@ export class ValidationErrorCode {
   public static readonly ACTIVE_CHANGE_EMAIL_REQUEST: string = 'ActiveChangeEmailRequest';
   public static readonly EMAIL_ALREADY_BOUND: string = 'EmailAlreadyBound';
   public static readonly PASSWORDS_MATCHED: string = 'PasswordsMatched';
+  public static readonly EMPTY_DATA_SET: string = 'EmptyDataSet';
 }

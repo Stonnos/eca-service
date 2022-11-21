@@ -73,6 +73,11 @@ public class ExperimentConfig {
     private Integer shortLifeUrlExpirationMinutes;
 
     /**
+     * Experiment local storage path on file system
+     */
+    private String experimentLocalStoragePath;
+
+    /**
      * Ensemble configuration properties.
      */
     @Data

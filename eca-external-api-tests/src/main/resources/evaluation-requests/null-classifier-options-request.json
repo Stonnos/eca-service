@@ -1,0 +1,14 @@
+{
+  "displayName": "Request with null classifier options",
+  "trainDataSource": "EXTERNAL_DATA_URL",
+  "request": {
+    "trainDataUrl": "http://kt.ijs.si/Branax/Repository/WEKA/Iris.xls",
+    "evaluationMethod": "CROSS_VALIDATION",
+    "numFolds": 10,
+    "numTests": 1,
+    "seed": 1
+  },
+  "expectedResponse": {
+    "responseCode": "VALIDATION_ERROR"
+  }
+}

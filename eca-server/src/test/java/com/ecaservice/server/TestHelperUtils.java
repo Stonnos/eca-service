@@ -43,11 +43,15 @@ import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentResultsEntity;
 import com.ecaservice.server.model.entity.ExperimentResultsRequest;
+import com.ecaservice.server.model.entity.ExperimentStep;
+import com.ecaservice.server.model.entity.ExperimentStepEntity;
+import com.ecaservice.server.model.entity.ExperimentStepStatus;
 import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.evaluation.ClassifierOptionsRequestSource;
 import com.ecaservice.server.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.server.model.experiment.InitializationParams;
+import com.ecaservice.web.dto.model.ClassifierOptionsDto;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationHistoryDto;
 import com.ecaservice.web.dto.model.EnumDto;
@@ -116,7 +120,6 @@ public class TestHelperUtils {
     public static final int PAGE_SIZE = 10;
     public static final int PAGE_NUMBER = 0;
 
-    private static final String FIRST_NAME = "Roman";
     private static final String TEST_MAIL_RU = "test@mail.ru";
     private static final String TRAINING_DATA_PATH = "data.model";
     private static final String EXPERIMENT_PATH = "experiment.model";
@@ -155,6 +158,7 @@ public class TestHelperUtils {
     private static final String CONFIGURATION_NAME = "configuration";
     private static final int ITERATIONS = 1;
     private static final int NUM_THREADS = 3;
+    private static final long ID = 1L;
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     public static final String MESSAGE_TEXT = "Message text";
@@ -256,7 +260,6 @@ public class TestHelperUtils {
         experimentRequest.setExperimentType(ExperimentType.KNN);
         experimentRequest.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         experimentRequest.setData(loadInstances());
-        experimentRequest.setFirstName(FIRST_NAME);
         experimentRequest.setEmail(TEST_MAIL_RU);
         return experimentRequest;
     }
@@ -280,7 +283,6 @@ public class TestHelperUtils {
      */
     public static Experiment createExperiment(String requestId, RequestStatus experimentStatus) {
         Experiment experiment = new Experiment();
-        experiment.setFirstName(FIRST_NAME);
         experiment.setEmail(TEST_MAIL_RU);
         experiment.setRequestStatus(experimentStatus);
         experiment.setCreationDate(LocalDateTime.now());
@@ -342,6 +344,19 @@ public class TestHelperUtils {
     }
 
     /**
+     * Creates classifier options dto.
+     *
+     * @return classifier options dto
+     */
+    public static ClassifierOptionsDto createClassifierOptionsDto() {
+        ClassifierOptionsDto classifierOptionsDto = new ClassifierOptionsDto();
+        classifierOptionsDto.setId(ID);
+        classifierOptionsDto.setOptionsName(OPTION_NAME);
+        classifierOptionsDto.setCreationDate(LocalDateTime.now());
+        return classifierOptionsDto;
+    }
+
+    /**
      * Creates classifiers configuration history entity.
      *
      * @param classifiersConfiguration - classifiers configuration entity
@@ -359,6 +374,24 @@ public class TestHelperUtils {
         classifiersConfigurationHistoryEntity.setMessageText(MESSAGE_TEXT);
         classifiersConfigurationHistoryEntity.setCreatedAt(createdAt);
         classifiersConfigurationHistoryEntity.setCreatedBy(CREATED_BY);
+        return classifiersConfigurationHistoryEntity;
+    }
+
+    /**
+     * Creates classifiers configuration history entity.
+     *
+     * @param classifiersConfiguration - classifiers configuration entity
+     * @param actionType               - action type
+     * @param user                     - user
+     * @return classifiers configuration history entity
+     */
+    public static ClassifiersConfigurationHistoryEntity createClassifiersConfigurationHistory(
+            ClassifiersConfiguration classifiersConfiguration,
+            ClassifiersConfigurationActionType actionType,
+            String user) {
+        var classifiersConfigurationHistoryEntity =
+                createClassifiersConfigurationHistory(classifiersConfiguration, actionType, LocalDateTime.now());
+        classifiersConfigurationHistoryEntity.setCreatedBy(user);
         return classifiersConfigurationHistoryEntity;
     }
 
@@ -671,7 +704,6 @@ public class TestHelperUtils {
         ClassifierReport classifierReport = new ClassifierReport();
         classifierReport.setClassifierName(DecisionTreeType.CART.name());
         classifierReport.setClassifierDescription(DecisionTreeType.CART.getDescription());
-        classifierReport.setClassifierInputOptions(newArrayList());
         classifierReport.setOptions(options);
         return classifierReport;
     }
@@ -960,19 +992,6 @@ public class TestHelperUtils {
     }
 
     /**
-     * Creates request status statistics map.
-     *
-     * @return request status statistics map
-     */
-    public static Map<RequestStatus, Long> buildRequestStatusStatisticsMap() {
-        RequestStatus[] requestStatuses = RequestStatus.values();
-        Map<RequestStatus, Long> requestStatusMap = newEnumMap(RequestStatus.class);
-        Stream.of(requestStatuses).forEach(
-                requestStatus -> requestStatusMap.put(requestStatus, (long) requestStatus.ordinal()));
-        return requestStatusMap;
-    }
-
-    /**
      * Creates experiment types statistics map.
      *
      * @return experiment types statistics map
@@ -1034,6 +1053,26 @@ public class TestHelperUtils {
         classifierOptionsDatabaseModel.setOptionsName(DecisionTreeOptions.class.getSimpleName());
         classifierOptionsDatabaseModel.setCreatedBy(CREATED_BY);
         return classifierOptionsDatabaseModel;
+    }
+
+    /**
+     * Creates experiment step entity.
+     *
+     * @param experiment     - experiment entity
+     * @param experimentStep - experiment step
+     * @param stepStatus     - step status
+     * @return experiment step entity
+     */
+    public ExperimentStepEntity createExperimentStepEntity(Experiment experiment,
+                                                           ExperimentStep experimentStep,
+                                                           ExperimentStepStatus stepStatus) {
+        var experimentStepEntity = new ExperimentStepEntity();
+        experimentStepEntity.setStep(experimentStep);
+        experimentStepEntity.setStepOrder(experimentStep.ordinal());
+        experimentStepEntity.setStatus(stepStatus);
+        experimentStepEntity.setCreated(LocalDateTime.now());
+        experimentStepEntity.setExperiment(experiment);
+        return experimentStepEntity;
     }
 
     /**

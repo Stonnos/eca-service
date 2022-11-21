@@ -1,6 +1,7 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
+  ChartDto,
   EvaluationLogDetailsDto,
   EvaluationLogDto,
   PageDto,
@@ -40,5 +41,15 @@ export class ClassifiersService {
       'Authorization': Utils.getBearerTokenHeader()
     });
     return this.http.get<EvaluationLogDetailsDto>(this.serviceUrl + '/details/' + id, { headers: headers });
+  }
+
+  public getClassifiersStatistics(createdDateFrom: string, createdDateTo: string): Observable<ChartDto> {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/x-www-form-urlencoded; charset=utf-8',
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    let params = new HttpParams().set('createdDateFrom', createdDateFrom).set('createdDateTo', createdDateTo);
+    const options = { headers: headers, params: params };
+    return this.http.get<ChartDto>(this.serviceUrl + '/classifiers-statistics', options);
   }
 }

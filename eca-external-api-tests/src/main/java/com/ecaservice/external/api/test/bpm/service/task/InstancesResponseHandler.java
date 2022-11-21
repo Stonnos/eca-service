@@ -5,7 +5,7 @@ import com.ecaservice.external.api.dto.InstancesDto;
 import com.ecaservice.external.api.dto.ResponseDto;
 import com.ecaservice.external.api.test.bpm.model.TaskType;
 import com.ecaservice.external.api.test.entity.AutoTestEntity;
-import com.ecaservice.external.api.test.model.TestDataModel;
+import com.ecaservice.external.api.test.model.AbstractTestDataModel;
 import com.ecaservice.external.api.test.repository.AutoTestRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -55,7 +55,7 @@ public class InstancesResponseHandler extends AbstractTaskHandler {
         log.debug("Handles instances response for execution [{}], process key [{}]", execution.getId(),
                 execution.getProcessBusinessKey());
         Long autoTestId = getVariable(execution, AUTO_TEST_ID, Long.class);
-        TestDataModel testDataModel = getVariable(execution, TEST_DATA_MODEL, TestDataModel.class);
+        var testDataModel = getVariable(execution, TEST_DATA_MODEL, AbstractTestDataModel.class);
         var responseDto = getVariable(execution, API_RESPONSE, API_RESPONSE_TYPE_REFERENCE);
         Assert.notNull(responseDto.getPayload(),
                 String.format("Expected not null instances response for auto test [%d]", autoTestId));

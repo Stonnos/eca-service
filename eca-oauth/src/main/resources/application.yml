@@ -41,6 +41,7 @@ ribbon:
 app:
   maxPageSize: 50
   webExternalBaseUrl: http://localhost:8085
+  validUserPhotoFileExtensions: png, jpg, jpeg, gif
   resetPassword:
     validityMinutes: 30
     url: /reset-password/?token=%s

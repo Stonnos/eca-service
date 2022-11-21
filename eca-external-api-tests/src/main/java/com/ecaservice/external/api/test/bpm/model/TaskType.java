@@ -58,6 +58,21 @@ public enum TaskType {
     PROCESS_FINAL_TEST_RESULTS,
 
     /**
+     * Send experiment request
+     */
+    EXPERIMENT_REQUEST,
+
+    /**
+     * Get experiment response status
+     */
+    GET_EXPERIMENT_STATUS,
+
+    /**
+     * Compare downloaded experiment model result
+     */
+    COMPARE_EXPERIMENT_MODEL_RESULT,
+
+    /**
      * Finish auto test with error
      */
     FINISH_WITH_ERROR

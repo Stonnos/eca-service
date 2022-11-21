@@ -28,7 +28,6 @@
   "receiver": "test@mail.ru",
   "templateCode": "NEW_EXPERIMENT",
   "variables": {
-    "firstName": "Роман",
     "requestId": "1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
     "experimentType": "KNN",
   },
@@ -90,10 +89,6 @@
 
 |===
 |Название параметра|Тип|Regex выражение|Описание
-|firstName
-|string
-|-
-|Имя
 |experimentType
 |string
 |-
@@ -150,19 +145,19 @@
 |Код шаблона|Описание|Обязательные параметры
 |NEW_EXPERIMENT
 |Сообщение о новом эксперименте
-|firstName, experimentType, requestId
+|experimentType, requestId
 |IN_PROGRESS_EXPERIMENT
 |Сообщение о поступлении эксперимента в работу
-|firstName, experimentType, requestId
+|experimentType, requestId
 |ERROR_EXPERIMENT
 |Сообщение о завершении эксперимента с ошибкой
-|firstName, experimentType, requestId
+|experimentType, requestId
 |TIMEOUT_EXPERIMENT
 |Сообщение о таймауте эксперимента
-|firstName, experimentType, requestId, timeout
+|experimentType, requestId, timeout
 |FINISHED_EXPERIMENT
 |Сообщение о завершенном эксперименте
-|firstName, experimentType, requestId, downloadUrl
+|experimentType, requestId, downloadUrl
 |RESET_PASSWORD
 |Сообщение со ссылкой для сброса пароля
 |resetPasswordUrl, validityMinutes

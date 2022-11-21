@@ -1,0 +1,5 @@
+{
+  "trainDataUrl": "http://kt.ijs.si/Branax/Repository/WEKA/Iris.xls",
+  "experimentType": "RANDOM_FORESTS",
+  "evaluationMethod": "CROSS_VALIDATION"
+}

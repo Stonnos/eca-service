@@ -159,14 +159,16 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
     this.routeUpdateSubscription = this.router.events.pipe(
       filter((event: RouterEvent) => event instanceof NavigationEnd)
     ).subscribe(() => {
-      this.id = this.route.snapshot.params.id;
       this.unSubscribeExperimentProgress();
+      this.unSubscribeExperimentUpdates();
+      this.id = this.route.snapshot.params.id;
       this.getExperimentFullData();
     });
   }
 
   private subscribeForExperimentProgressUpdate(): void {
     if (!this.experimentProgressSubscription) {
+      this.experimentProgress = null;
       Logger.debug(`Subscribe experiment ${this.experimentDto.requestId} progress change`);
       this.experimentProgressSubscription = timer(0, this.updateProgressInterval).subscribe({
         next: () => {
@@ -233,7 +235,6 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
     if (this.experimentProgressSubscription) {
       this.experimentProgressSubscription.unsubscribe();
       this.experimentProgressSubscription = null;
-      this.experimentProgress = null;
       Logger.debug(`Unsubscribe experiment ${this.experimentDto.requestId} progress change`);
     }
   }

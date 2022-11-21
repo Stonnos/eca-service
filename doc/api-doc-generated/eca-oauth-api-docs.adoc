@@ -43,7 +43,7 @@ __Scopes__:
 
 __Grant type:__ client_credentials
 
-__Token url:__ http://eca-service:8080/eca-oauth/oauth/token
+__Token url:__ http://localhost:8080/eca-oauth/oauth/token
 
 
 
@@ -2928,7 +2928,7 @@ a|
 __string__
 
 
-*Min. length*: 1
+*Min. length*: 8
 
 *Max. length*: 255
 
@@ -2938,7 +2938,7 @@ __string__
 
 
 
-
+*Pattern*: `^[^а-яА-Я\s]*$`
 
 
 |===
@@ -2999,7 +2999,7 @@ a|
 __string__
 
 
-*Min. length*: 1
+*Min. length*: 8
 
 *Max. length*: 255
 
@@ -3009,7 +3009,7 @@ __string__
 
 
 
-
+*Pattern*: `^[^а-яА-Я\s]*$`
 
 
 |===
