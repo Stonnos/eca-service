@@ -58,8 +58,11 @@
     <p-progressBar
       [value]="experimentProgress?.progress">
     </p-progressBar>
-    <div class="mt-1">
+    <div class="mt-1" *ngIf="experimentProgress?.progress < 100">
       Осталось времени: {{ experimentProgress?.estimatedTimeLeft || 'неизвестно' }}
+    </div>
+    <div class="mt-1 text-info" *ngIf="experimentProgress?.progress == 100">
+      Пожалуйста подождите, идет обработка результатов эксперимента
     </div>
   </div>
 </div>
