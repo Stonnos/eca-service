@@ -25,7 +25,6 @@ import java.util.UUID;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * Unit tests that checks ExperimentScheduler functionality {@see ExperimentScheduler}.
@@ -70,7 +69,6 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
     void testProcessNewExperiments() {
         var newExperiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
         experimentRepository.save(newExperiment);
-        when(experimentService.getById(newExperiment.getId())).thenReturn(newExperiment);
         experimentScheduler.processExperiments();
         verify(experimentRequestProcessor, atLeastOnce()).startExperiment(newExperiment.getId());
     }
@@ -82,7 +80,6 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
         createAndSaveExperimentStep(experiment, ExperimentStep.EXPERIMENT_PROCESSING, ExperimentStepStatus.FAILED);
         createAndSaveExperimentStep(experiment, ExperimentStep.UPLOAD_EXPERIMENT_MODEL, ExperimentStepStatus.READY);
         createAndSaveExperimentStep(experiment, ExperimentStep.GET_EXPERIMENT_DOWNLOAD_URL, ExperimentStepStatus.READY);
-        when(experimentService.getById(experiment.getId())).thenReturn(experiment);
         experimentScheduler.processExperiments();
         verify(experimentRequestProcessor, never()).finishExperiment(experiment.getId());
         verify(experimentRequestProcessor, atLeastOnce()).processExperiment(experiment.getId());
@@ -96,7 +93,6 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
         createAndSaveExperimentStep(experiment, ExperimentStep.UPLOAD_EXPERIMENT_MODEL, ExperimentStepStatus.CANCELED);
         createAndSaveExperimentStep(experiment, ExperimentStep.GET_EXPERIMENT_DOWNLOAD_URL,
                 ExperimentStepStatus.CANCELED);
-        when(experimentService.getById(experiment.getId())).thenReturn(experiment);
         experimentScheduler.processExperiments();
         verify(experimentRequestProcessor, never()).processExperiment(experiment.getId());
         verify(experimentRequestProcessor, atLeastOnce()).finishExperiment(experiment.getId());
@@ -110,7 +106,6 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
         createAndSaveExperimentStep(experiment, ExperimentStep.UPLOAD_EXPERIMENT_MODEL, ExperimentStepStatus.COMPLETED);
         createAndSaveExperimentStep(experiment, ExperimentStep.GET_EXPERIMENT_DOWNLOAD_URL,
                 ExperimentStepStatus.COMPLETED);
-        when(experimentService.getById(experiment.getId())).thenReturn(experiment);
         experimentScheduler.processExperiments();
         verify(experimentRequestProcessor, never()).processExperiment(experiment.getId());
         verify(experimentRequestProcessor, atLeastOnce()).finishExperiment(experiment.getId());
@@ -123,7 +118,6 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
         createAndSaveExperimentStep(experiment, ExperimentStep.EXPERIMENT_PROCESSING, ExperimentStepStatus.COMPLETED);
         createAndSaveExperimentStep(experiment, ExperimentStep.UPLOAD_EXPERIMENT_MODEL, ExperimentStepStatus.COMPLETED);
         createAndSaveExperimentStep(experiment, ExperimentStep.GET_EXPERIMENT_DOWNLOAD_URL, ExperimentStepStatus.READY);
-        when(experimentService.getById(experiment.getId())).thenReturn(experiment);
         experimentScheduler.processExperiments();
         verify(experimentRequestProcessor, atLeastOnce()).processExperiment(experiment.getId());
         verify(experimentRequestProcessor, never()).finishExperiment(experiment.getId());

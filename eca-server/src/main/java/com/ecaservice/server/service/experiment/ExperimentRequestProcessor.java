@@ -1,11 +1,14 @@
 package com.ecaservice.server.service.experiment;
 
+import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.lock.annotation.Locked;
 import com.ecaservice.server.event.model.ExperimentEmailEvent;
 import com.ecaservice.server.event.model.ExperimentResponseEvent;
 import com.ecaservice.server.event.model.push.ExperimentWebPushEvent;
 import com.ecaservice.server.model.entity.Channel;
+import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.RequestStatus;
+import com.ecaservice.server.repository.ExperimentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -28,6 +31,7 @@ public class ExperimentRequestProcessor {
 
     private final ExperimentService experimentService;
     private final ApplicationEventPublisher eventPublisher;
+    private final ExperimentRepository experimentRepository;
 
     /**
      * Starts experiment.
@@ -37,7 +41,7 @@ public class ExperimentRequestProcessor {
     @Locked(lockName = "experiment", key = "#id", lockRegistry = EXPERIMENT_REDIS_LOCK_REGISTRY_BEAN,
             waitForLock = false)
     public void startExperiment(Long id) {
-        var experiment = experimentService.getById(id);
+        var experiment = getById(id);
         putMdc(TX_ID, experiment.getRequestId());
         putMdc(EV_REQUEST_ID, experiment.getRequestId());
         if (!RequestStatus.NEW.equals(experiment.getRequestStatus())) {
@@ -59,7 +63,7 @@ public class ExperimentRequestProcessor {
     @Locked(lockName = "experiment", key = "#id", lockRegistry = EXPERIMENT_REDIS_LOCK_REGISTRY_BEAN,
             waitForLock = false)
     public void processExperiment(Long id) {
-        var experiment = experimentService.getById(id);
+        var experiment = getById(id);
         putMdc(TX_ID, experiment.getRequestId());
         putMdc(EV_REQUEST_ID, experiment.getRequestId());
         if (!RequestStatus.IN_PROGRESS.equals(experiment.getRequestStatus())) {
@@ -80,7 +84,7 @@ public class ExperimentRequestProcessor {
     @Locked(lockName = "experiment", key = "#id", lockRegistry = EXPERIMENT_REDIS_LOCK_REGISTRY_BEAN,
             waitForLock = false)
     public void finishExperiment(Long id) {
-        var experiment = experimentService.getById(id);
+        var experiment = getById(id);
         putMdc(TX_ID, experiment.getRequestId());
         putMdc(EV_REQUEST_ID, experiment.getRequestId());
         if (!RequestStatus.IN_PROGRESS.equals(experiment.getRequestStatus())) {
@@ -96,5 +100,10 @@ public class ExperimentRequestProcessor {
         eventPublisher.publishEvent(new ExperimentWebPushEvent(this, experiment));
         eventPublisher.publishEvent(new ExperimentEmailEvent(this, experiment));
         log.info("Experiment [{}] has been finished", experiment.getRequestId());
+    }
+
+    private Experiment getById(Long id) {
+        return experimentRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Experiment.class, id));
     }
 }

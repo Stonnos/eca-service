@@ -7,7 +7,7 @@ import com.ecaservice.report.model.ReportType;
 import com.ecaservice.server.mapping.ExperimentMapper;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.FilterTemplateType;
-import com.ecaservice.server.service.experiment.ExperimentService;
+import com.ecaservice.server.service.experiment.ExperimentDataService;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
@@ -23,28 +23,28 @@ import java.util.List;
 @Component
 public class ExperimentsBaseReportDataFetcher extends AbstractBaseReportDataFetcher<Experiment, ExperimentBean> {
 
-    private final ExperimentService experimentService;
+    private final ExperimentDataService experimentDataService;
     private final ExperimentMapper experimentMapper;
 
     /**
      * Constructor with spring dependency injection.
      *
-     * @param filterService     - filter service bean
-     * @param experimentService - experiments service bean
-     * @param experimentMapper  - experiment mapper bean
+     * @param filterService         - filter service bean
+     * @param experimentDataService - experiments data service bean
+     * @param experimentMapper      - experiment mapper bean
      */
     @Inject
     public ExperimentsBaseReportDataFetcher(FilterService filterService,
-                                            ExperimentService experimentService,
+                                            ExperimentDataService experimentDataService,
                                             ExperimentMapper experimentMapper) {
         super(ReportType.EXPERIMENTS, Experiment.class, FilterTemplateType.EXPERIMENT.name(), filterService);
-        this.experimentService = experimentService;
+        this.experimentDataService = experimentDataService;
         this.experimentMapper = experimentMapper;
     }
 
     @Override
     protected Page<Experiment> getItemsPage(PageRequestDto pageRequestDto) {
-        return experimentService.getNextPage(pageRequestDto);
+        return experimentDataService.getNextPage(pageRequestDto);
     }
 
     @Override

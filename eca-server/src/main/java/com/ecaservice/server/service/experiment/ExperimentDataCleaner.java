@@ -31,7 +31,7 @@ public class ExperimentDataCleaner {
     private static final String EXPERIMENTS_CRON_JOB_KEY = "experimentsCronJob";
 
     private final ExperimentRepository experimentRepository;
-    private final ExperimentService experimentService;
+    private final ExperimentDataService experimentDataService;
     private final ExperimentConfig experimentConfig;
 
     /**
@@ -45,7 +45,7 @@ public class ExperimentDataCleaner {
         var experimentIds = experimentRepository.findExperimentsModelsToDelete(dateTime);
         log.info("Obtained {} experiments to remove model files", experimentIds.size());
         processWithPagination(experimentIds, experimentRepository::findByIdIn,
-                experiments -> removeData(experiments, experimentService::removeExperimentModel),
+                experiments -> removeData(experiments, experimentDataService::removeExperimentModel),
                 experimentConfig.getPageSize()
         );
         log.info("Experiments models removing has been finished.");
@@ -62,7 +62,7 @@ public class ExperimentDataCleaner {
         var experimentIds = experimentRepository.findExperimentsTrainingDataToDelete(dateTime);
         log.info("Obtained {} experiments to remove training data files", experimentIds.size());
         processWithPagination(experimentIds, experimentRepository::findByIdIn,
-                experiments -> removeData(experiments, experimentService::removeExperimentTrainingData),
+                experiments -> removeData(experiments, experimentDataService::removeExperimentTrainingData),
                 experimentConfig.getPageSize()
         );
         log.info("Experiments training data removing has been finished.");

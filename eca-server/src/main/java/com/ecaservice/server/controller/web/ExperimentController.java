@@ -19,6 +19,7 @@ import com.ecaservice.server.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.server.service.UserService;
 import com.ecaservice.server.service.auth.UsersClient;
 import com.ecaservice.server.service.experiment.DataService;
+import com.ecaservice.server.service.experiment.ExperimentDataService;
 import com.ecaservice.server.service.experiment.ExperimentProgressService;
 import com.ecaservice.server.service.experiment.ExperimentResultsService;
 import com.ecaservice.server.service.experiment.ExperimentService;
@@ -88,6 +89,7 @@ public class ExperimentController {
 
     private final UserService userService;
     private final ExperimentService experimentService;
+    private final ExperimentDataService experimentDataService;
     private final ExperimentResultsService experimentResultsService;
     private final ExperimentMapper experimentMapper;
     private final ExperimentProgressMapper experimentProgressMapper;
@@ -222,7 +224,7 @@ public class ExperimentController {
     @PostMapping(value = "/list")
     public PageDto<ExperimentDto> getExperiments(@Valid @RequestBody PageRequestDto pageRequestDto) {
         log.info("Received experiments page request: {}", pageRequestDto);
-        Page<Experiment> experimentPage = experimentService.getNextPage(pageRequestDto);
+        Page<Experiment> experimentPage = experimentDataService.getNextPage(pageRequestDto);
         List<ExperimentDto> experimentDtoList = experimentMapper.map(experimentPage.getContent());
         return PageDto.of(experimentDtoList, pageRequestDto.getPage(), experimentPage.getTotalElements());
     }
@@ -281,7 +283,7 @@ public class ExperimentController {
             @Parameter(description = "Experiment id", required = true)
             @Min(VALUE_1) @Max(Long.MAX_VALUE) @PathVariable Long id) {
         log.info("Received request to get experiment details for id [{}]", id);
-        Experiment experiment = experimentService.getById(id);
+        Experiment experiment = experimentDataService.getById(id);
         return experimentMapper.map(experiment);
     }
 
@@ -382,7 +384,7 @@ public class ExperimentController {
     )
     @GetMapping(value = "/request-statuses-statistics")
     public RequestStatusStatisticsDto getExperimentsRequestStatusesStatistics() {
-        return experimentService.getRequestStatusesStatistics();
+        return experimentDataService.getRequestStatusesStatistics();
     }
 
     /**
@@ -439,7 +441,7 @@ public class ExperimentController {
             @Parameter(description = "Experiment id", required = true)
             @Min(VALUE_1) @Max(Long.MAX_VALUE) @PathVariable Long id) {
         log.info("Received request for ERS report for experiment [{}]", id);
-        Experiment experiment = experimentService.getById(id);
+        Experiment experiment = experimentDataService.getById(id);
         return experimentResultsService.getErsReport(experiment);
     }
 
@@ -491,7 +493,7 @@ public class ExperimentController {
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate createdDateTo) {
         log.info("Received request for experiment statistics calculation with creation date from [{}] to [{}]",
                 createdDateFrom, createdDateTo);
-        return experimentService.getExperimentsStatistics(createdDateFrom, createdDateTo);
+        return experimentDataService.getExperimentsStatistics(createdDateFrom, createdDateTo);
     }
 
     /**
@@ -548,7 +550,7 @@ public class ExperimentController {
             @Parameter(description = "Experiment id", required = true)
             @Min(VALUE_1) @Max(Long.MAX_VALUE) @PathVariable Long id) {
         log.trace("Received request to get experiment progress for id [{}]", id);
-        Experiment experiment = experimentService.getById(id);
+        Experiment experiment = experimentDataService.getById(id);
         ExperimentProgressEntity experimentProgressEntity = experimentProgressService.getExperimentProgress(experiment);
         return experimentProgressMapper.map(experimentProgressEntity);
     }
@@ -607,7 +609,7 @@ public class ExperimentController {
             @Parameter(description = "Experiment id", required = true)
             @Min(VALUE_1) @Max(Long.MAX_VALUE) @PathVariable Long id) {
         log.info("Received request to get experiment [{}] result content url", id);
-        return experimentService.getExperimentResultsContentUrl(id);
+        return experimentDataService.getExperimentResultsContentUrl(id);
     }
 
     private ExperimentRequest createExperimentRequest(MultipartFile trainingData,

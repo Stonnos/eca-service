@@ -34,7 +34,7 @@ class ExperimentDataCleanerTest extends AbstractJpaTest {
     private ExperimentRepository experimentRepository;
 
     @MockBean
-    private ExperimentService experimentService;
+    private ExperimentDataService experimentDataService;
 
     @Inject
     private ExperimentConfig experimentConfig;
@@ -70,7 +70,7 @@ class ExperimentDataCleanerTest extends AbstractJpaTest {
         experiments.add(errorExperiment);
         experimentRepository.saveAll(experiments);
         experimentDataCleaner.removeExperimentsModels();
-        verify(experimentService, atLeastOnce()).removeExperimentModel(argumentCaptor.capture());
+        verify(experimentDataService, atLeastOnce()).removeExperimentModel(argumentCaptor.capture());
         assertThat(argumentCaptor.getValue()).isEqualTo(experimentToRemove);
     }
 }
