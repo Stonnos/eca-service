@@ -3,7 +3,7 @@
     <a [routerLink]=""
        class="text-bold link mt-1 mb-2"
        (click)="readAllNotifications()"
-       [class.disabled-link]="loading || isEmptyContent()">
+       [class.disabled-link]="loading || userNotificationsStatistics?.notReadCount == 0">
       Отметить все как прочитанные
     </a>
   </div>

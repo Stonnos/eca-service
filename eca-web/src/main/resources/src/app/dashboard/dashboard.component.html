@@ -12,6 +12,7 @@
                   (onHide)="hideNotifications()"
                   class="notifications-overlay">
     <app-notifications-center
+      [userNotificationsStatistics]="userNotificationsStatistics"
       (readEvent)="getNotificationsStatistics()">
     </app-notifications-center>
   </p-overlayPanel>

@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import {
-  PageDto, SimplePageRequestDto, UserNotificationDto, UserNotificationParameterDto,
+  PageDto, SimplePageRequestDto, UserNotificationDto, UserNotificationParameterDto, UserNotificationStatisticsDto,
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { MessageService } from "primeng/api";
 import { UserNotificationsService } from "../services/user-notifications.service";
@@ -27,6 +27,9 @@ export class NotificationsCenterComponent {
   private lastPageRequest: SimplePageRequestDto;
 
   public loading: boolean = false;
+
+  @Input()
+  public userNotificationsStatistics: UserNotificationStatisticsDto;
 
   @Output()
   public readEvent: EventEmitter<any> = new EventEmitter<any>();
