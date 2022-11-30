@@ -13,7 +13,7 @@ public abstract class AbstractSystemPushEvent extends AbstractPushEvent {
      * @param source the object on which the event initially occurred or with
      *               which the event is associated (never {@code null})
      */
-    public AbstractSystemPushEvent(Object source) {
+    protected AbstractSystemPushEvent(Object source) {
         super(source);
     }
 }

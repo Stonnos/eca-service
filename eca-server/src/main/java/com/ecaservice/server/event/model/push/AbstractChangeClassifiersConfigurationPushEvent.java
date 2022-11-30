@@ -21,7 +21,7 @@ public abstract class AbstractChangeClassifiersConfigurationPushEvent extends Ab
      * @param initiator                - initiator (user)
      * @param classifiersConfiguration - classifiers configuration
      */
-    public AbstractChangeClassifiersConfigurationPushEvent(Object source,
+    protected AbstractChangeClassifiersConfigurationPushEvent(Object source,
                                                            String initiator,
                                                            ClassifiersConfiguration classifiersConfiguration) {
         super(source, initiator);

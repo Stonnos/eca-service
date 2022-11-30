@@ -15,7 +15,7 @@ public abstract class AbstractPushEvent extends ApplicationEvent {
      * @param source the object on which the event initially occurred or with
      *               which the event is associated (never {@code null})
      */
-    public AbstractPushEvent(Object source) {
+    protected AbstractPushEvent(Object source) {
         super(source);
     }
 }

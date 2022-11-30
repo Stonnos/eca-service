@@ -19,7 +19,7 @@ public abstract class AbstractUserPushNotificationEvent extends AbstractPushEven
      *                  is associated (never {@code null})
      * @param initiator - initiator (user)
      */
-    public AbstractUserPushNotificationEvent(Object source, String initiator) {
+    protected AbstractUserPushNotificationEvent(Object source, String initiator) {
         super(source);
         this.initiator = initiator;
     }
