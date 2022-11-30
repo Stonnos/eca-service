@@ -5,10 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Primary;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 
+import static com.ecaservice.core.mail.client.config.EcaMailClientAutoConfiguration.MAIL_CLIENT_THREAD_POOL_TASK_EXECUTOR;
 
 /**
  * Asynchronous email event processor.
@@ -41,6 +43,7 @@ public class AsyncEmailEventProcessor implements EmailEventProcessor {
     }
 
     @Override
+    @Async(MAIL_CLIENT_THREAD_POOL_TASK_EXECUTOR)
     public void handleEmailEvent(AbstractEmailEvent event) {
         emailEventProcessor.handleEmailEvent(event);
     }

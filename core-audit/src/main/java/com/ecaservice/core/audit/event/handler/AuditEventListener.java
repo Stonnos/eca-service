@@ -1,7 +1,7 @@
 package com.ecaservice.core.audit.event.handler;
 
 import com.ecaservice.core.audit.event.AuditEvent;
-import com.ecaservice.core.audit.service.impl.SimpleAuditEventService;
+import com.ecaservice.core.audit.service.AuditEventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuditEventListener {
 
-    private final SimpleAuditEventService auditEventService;
+    private final AuditEventService auditEventService;
 
     /**
      * Handles audit event.
