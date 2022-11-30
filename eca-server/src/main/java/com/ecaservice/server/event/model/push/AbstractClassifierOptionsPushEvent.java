@@ -25,7 +25,7 @@ public abstract class AbstractClassifierOptionsPushEvent extends AbstractChangeC
      * @param classifierOptionsId      - classifier options id
      * @param optionsName              - classifier options name
      */
-    public AbstractClassifierOptionsPushEvent(Object source,
+    protected AbstractClassifierOptionsPushEvent(Object source,
                                               String initiator,
                                               ClassifiersConfiguration classifiersConfiguration,
                                               long classifierOptionsId, String optionsName) {
