@@ -16,7 +16,7 @@ public abstract class ExperimentRequestAutoTestMapper
     /**
      * Constructor with parameters.
      */
-    public ExperimentRequestAutoTestMapper() {
+    protected ExperimentRequestAutoTestMapper() {
         super(ExperimentRequestAutoTestEntity.class);
     }
 }

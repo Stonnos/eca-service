@@ -1,7 +1,6 @@
 package com.ecaservice.external.api.test.service;
 
 import com.ecaservice.external.api.test.config.ExternalApiTestsConfig;
-import com.ecaservice.external.api.test.model.EvaluationTestDataModel;
 import com.ecaservice.external.api.test.model.ExperimentTestDataModel;
 import com.ecaservice.test.common.service.AbstractTestDataProvider;
 import lombok.extern.slf4j.Slf4j;

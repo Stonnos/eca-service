@@ -16,7 +16,7 @@ public abstract class EvaluationRequestAutoTestMapper
     /**
      * Constructor with parameters.
      */
-    public EvaluationRequestAutoTestMapper() {
+    protected EvaluationRequestAutoTestMapper() {
         super(EvaluationRequestAutoTestEntity.class);
     }
 }
