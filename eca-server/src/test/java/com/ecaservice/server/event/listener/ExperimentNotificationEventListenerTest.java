@@ -2,15 +2,18 @@ package com.ecaservice.server.event.listener;
 
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.event.model.ExperimentEmailEvent;
-import com.ecaservice.server.service.experiment.mail.NotificationService;
+import com.ecaservice.server.event.model.mail.AbstractExperimentEmailEvent;
+import com.ecaservice.server.service.experiment.visitor.ExperimentEmailEventVisitor;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 
@@ -23,16 +26,21 @@ import static org.mockito.Mockito.verify;
 class ExperimentNotificationEventListenerTest {
 
     @Mock
-    private NotificationService notificationService;
+    private ApplicationEventPublisher applicationEventPublisher;
 
-    @InjectMocks
     private ExperimentNotificationEventListener experimentNotificationEventListener;
+
+    @BeforeEach
+    void init() {
+        experimentNotificationEventListener =
+                new ExperimentNotificationEventListener(new ExperimentEmailEventVisitor(), applicationEventPublisher);
+    }
 
     @Test
     void testHandleEmailEvent() {
         var experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
         var experimentEmailEvent = new ExperimentEmailEvent(this, experiment);
         experimentNotificationEventListener.handleExperimentEmailEvent(experimentEmailEvent);
-        verify(notificationService, atLeastOnce()).notifyByEmail(experiment);
+        verify(applicationEventPublisher, atLeastOnce()).publishEvent(any(AbstractExperimentEmailEvent.class));
     }
 }

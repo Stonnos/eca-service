@@ -2,10 +2,11 @@ package com.ecaservice.server.event.listener;
 
 import com.ecaservice.server.event.model.ExperimentEmailEvent;
 import com.ecaservice.server.model.entity.Experiment;
-import com.ecaservice.server.service.experiment.mail.NotificationService;
+import com.ecaservice.server.service.experiment.visitor.ExperimentEmailEventVisitor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +20,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ExperimentNotificationEventListener {
 
-    private final NotificationService notificationService;
+    private final ExperimentEmailEventVisitor experimentEmailEventVisitor;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     /**
      * Handles event to sent email about experiment status change.
@@ -34,7 +36,8 @@ public class ExperimentNotificationEventListener {
         if (StringUtils.isEmpty(experiment.getEmail())) {
             log.warn("Experiment [{}] email is not specified. Skipped email sending.", experiment.getRequestId());
         } else {
-            notificationService.notifyByEmail(experiment);
+            var emailEvent = experiment.getRequestStatus().handle(experimentEmailEventVisitor, experiment);
+            applicationEventPublisher.publishEvent(emailEvent);
         }
     }
 }

@@ -1,7 +1,7 @@
 package com.ecaservice.server.service.evaluation;
 
-import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.base.model.EvaluationRequest;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.model.evaluation.ClassificationResult;
 import eca.core.evaluation.EvaluationMethod;
