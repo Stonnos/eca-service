@@ -1,4 +1,4 @@
-package com.ecaservice.oauth.event.listener.handler;
+package com.ecaservice.oauth.event.handler;
 
 import com.ecaservice.oauth.config.AppProperties;
 import com.ecaservice.oauth.event.model.ChangePasswordRequestNotificationEvent;
@@ -20,7 +20,7 @@ import static com.google.common.collect.Maps.newHashMap;
 @Slf4j
 @Component
 public class ChangePasswordRequestNotificationEventHandler
-        extends AbstractNotificationEventHandler<ChangePasswordRequestNotificationEvent> {
+        extends AbstractTokenNotificationEventHandler<ChangePasswordRequestNotificationEvent> {
 
     private final AppProperties appProperties;
 
@@ -35,7 +35,7 @@ public class ChangePasswordRequestNotificationEventHandler
     }
 
     @Override
-    Map<String, String> createVariables(ChangePasswordRequestNotificationEvent event) {
+    public Map<String, String> createVariables(ChangePasswordRequestNotificationEvent event) {
         String tokenEndpoint =
                 String.format(appProperties.getChangePassword().getUrl(), event.getTokenModel().getToken());
         String changePasswordUrl = String.format("%s%s", appProperties.getWebExternalBaseUrl(), tokenEndpoint);

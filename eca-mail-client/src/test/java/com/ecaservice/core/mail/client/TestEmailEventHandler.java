@@ -14,7 +14,7 @@ public class TestEmailEventHandler extends AbstractEmailEventHandler<TestEmailEv
     }
 
     @Override
-    public String getReceiver() {
+    public String getReceiver(TestEmailEvent emailEvent) {
         return "test@mail.ru";
     }
 }

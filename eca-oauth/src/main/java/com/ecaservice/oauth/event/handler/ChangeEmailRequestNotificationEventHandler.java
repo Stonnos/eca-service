@@ -1,4 +1,4 @@
-package com.ecaservice.oauth.event.listener.handler;
+package com.ecaservice.oauth.event.handler;
 
 import com.ecaservice.oauth.config.AppProperties;
 import com.ecaservice.oauth.event.model.ChangeEmailRequestNotificationEvent;
@@ -21,7 +21,7 @@ import static com.google.common.collect.Maps.newHashMap;
 @Slf4j
 @Component
 public class ChangeEmailRequestNotificationEventHandler
-        extends AbstractNotificationEventHandler<ChangeEmailRequestNotificationEvent> {
+        extends AbstractTokenNotificationEventHandler<ChangeEmailRequestNotificationEvent> {
 
     private static final long MINUTES_IN_HOUR = 60L;
 
@@ -38,7 +38,7 @@ public class ChangeEmailRequestNotificationEventHandler
     }
 
     @Override
-    Map<String, String> createVariables(ChangeEmailRequestNotificationEvent event) {
+    public Map<String, String> createVariables(ChangeEmailRequestNotificationEvent event) {
         String tokenEndpoint = String.format(appProperties.getChangeEmail().getUrl(), event.getTokenModel().getToken());
         String changeEmailUrl = String.format("%s%s", appProperties.getWebExternalBaseUrl(), tokenEndpoint);
         Long validityHours = appProperties.getChangeEmail().getValidityMinutes() / MINUTES_IN_HOUR;

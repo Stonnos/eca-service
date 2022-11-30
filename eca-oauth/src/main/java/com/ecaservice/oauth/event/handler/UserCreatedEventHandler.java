@@ -1,4 +1,4 @@
-package com.ecaservice.oauth.event.listener.handler;
+package com.ecaservice.oauth.event.handler;
 
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.event.model.UserCreatedEvent;
@@ -19,7 +19,7 @@ import static com.google.common.collect.Maps.newHashMap;
  */
 @Slf4j
 @Component
-public class UserCreatedEventHandler extends AbstractNotificationEventHandler<UserCreatedEvent> {
+public class UserCreatedEventHandler extends AbstractUserNotificationEventHandler<UserCreatedEvent> {
 
     /**
      * Creates user created event handler.
@@ -29,7 +29,7 @@ public class UserCreatedEventHandler extends AbstractNotificationEventHandler<Us
     }
 
     @Override
-    Map<String, String> createVariables(UserCreatedEvent event) {
+    public Map<String, String> createVariables(UserCreatedEvent event) {
         UserEntity userEntity = event.getUserEntity();
         Map<String, String> templateVariables = newHashMap();
         templateVariables.put(USERNAME_KEY, userEntity.getLogin());

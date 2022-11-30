@@ -1,4 +1,4 @@
-package com.ecaservice.oauth.event.listener.handler;
+package com.ecaservice.oauth.event.handler;
 
 import com.ecaservice.oauth.event.model.TfaCodeNotificationEvent;
 import com.ecaservice.oauth.service.mail.dictionary.Templates;
@@ -18,7 +18,7 @@ import static com.ecaservice.oauth.service.mail.dictionary.TemplateVariablesDict
  */
 @Slf4j
 @Component
-public class TfaCodeNotificationEventHandler extends AbstractNotificationEventHandler<TfaCodeNotificationEvent> {
+public class TfaCodeNotificationEventHandler extends AbstractUserNotificationEventHandler<TfaCodeNotificationEvent> {
 
     /**
      * Creates tfa code notification event handler.
@@ -28,12 +28,12 @@ public class TfaCodeNotificationEventHandler extends AbstractNotificationEventHa
     }
 
     @Override
-    Map<String, String> createVariables(TfaCodeNotificationEvent event) {
+    public Map<String, String> createVariables(TfaCodeNotificationEvent event) {
         return Collections.singletonMap(TFA_CODE, event.getTfaCode());
     }
 
     @Override
-    int getPriority() {
+    public int getPriority() {
         return HIGHEST;
     }
 }

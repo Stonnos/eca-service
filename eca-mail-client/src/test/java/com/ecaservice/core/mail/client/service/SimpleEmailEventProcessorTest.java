@@ -50,6 +50,5 @@ class SimpleEmailEventProcessorTest {
         assertThat(emailRequest).isNotNull();
         assertThat(emailRequest.getRequestId()).isNotNull();
         assertThat(emailRequest.getTemplateCode()).isEqualTo(testEmailEventHandler.getTemplateCode());
-        assertThat(emailRequest.getReceiver()).isEqualTo(testEmailEventHandler.getReceiver());
     }
 }

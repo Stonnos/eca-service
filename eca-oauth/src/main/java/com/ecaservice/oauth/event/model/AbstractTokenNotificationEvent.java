@@ -1,5 +1,6 @@
 package com.ecaservice.oauth.event.model;
 
+import com.ecaservice.core.mail.client.event.model.AbstractEmailEvent;
 import com.ecaservice.oauth.model.TokenModel;
 import lombok.Getter;
 
@@ -8,7 +9,7 @@ import lombok.Getter;
  *
  * @author Roman Batygin
  */
-public abstract class AbstractTokenNotificationEvent extends AbstractNotificationEvent {
+public abstract class AbstractTokenNotificationEvent extends AbstractEmailEvent {
 
     /**
      * Token model
@@ -26,10 +27,5 @@ public abstract class AbstractTokenNotificationEvent extends AbstractNotificatio
     protected AbstractTokenNotificationEvent(Object source, TokenModel tokenModel) {
         super(source);
         this.tokenModel = tokenModel;
-    }
-
-    @Override
-    public String getReceiver() {
-        return tokenModel.getEmail();
     }
 }

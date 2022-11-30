@@ -1,4 +1,4 @@
-package com.ecaservice.oauth.event.listener.handler;
+package com.ecaservice.oauth.event.handler;
 
 import com.ecaservice.oauth.event.model.PasswordChangedNotificationEvent;
 import com.ecaservice.oauth.service.mail.dictionary.Templates;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class PasswordChangedNotificationEventHandler
-        extends AbstractNotificationEventHandler<PasswordChangedNotificationEvent> {
+        extends AbstractUserNotificationEventHandler<PasswordChangedNotificationEvent> {
 
     /**
      * Creates password changed notification event handler.

@@ -1,4 +1,4 @@
-package com.ecaservice.oauth.event.listener.handler;
+package com.ecaservice.oauth.event.handler;
 
 import com.ecaservice.oauth.event.model.UserLockedNotificationEvent;
 import com.ecaservice.oauth.service.mail.dictionary.Templates;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class UserLockedNotificationEventHandler
-        extends AbstractNotificationEventHandler<UserLockedNotificationEvent> {
+        extends AbstractUserNotificationEventHandler<UserLockedNotificationEvent> {
 
     /**
      * Creates user locked notification event handler.

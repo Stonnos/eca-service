@@ -1,4 +1,4 @@
-package com.ecaservice.oauth.event.listener.handler;
+package com.ecaservice.oauth.event.handler;
 
 import com.ecaservice.notification.dto.EmailRequest;
 import com.ecaservice.oauth.config.AppProperties;

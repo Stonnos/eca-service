@@ -1,8 +1,8 @@
-package com.ecaservice.oauth.event.listener.handler;
+package com.ecaservice.oauth.event.handler;
 
 import com.ecaservice.notification.dto.EmailRequest;
 import com.ecaservice.oauth.config.AppProperties;
-import com.ecaservice.oauth.event.model.ChangePasswordRequestNotificationEvent;
+import com.ecaservice.oauth.event.model.ResetPasswordRequestNotificationEvent;
 import com.ecaservice.oauth.model.TokenModel;
 import com.ecaservice.oauth.service.mail.dictionary.TemplateVariablesDictionary;
 import com.ecaservice.oauth.service.mail.dictionary.Templates;
@@ -16,19 +16,19 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import javax.inject.Inject;
 
 import static com.ecaservice.notification.util.Priority.MEDIUM;
-import static com.ecaservice.oauth.TestHelperUtils.createChangePasswordRequestEntity;
+import static com.ecaservice.oauth.TestHelperUtils.createResetPasswordRequestEntity;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Unit tests for class {@link ChangePasswordRequestNotificationEventHandler}.
+ * Unit tests for class {@link ResetPasswordRequestNotificationEventHandler}.
  *
  * @author Roman Batygin
  */
 @ExtendWith(SpringExtension.class)
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
-@Import({AppProperties.class, ChangePasswordRequestNotificationEventHandler.class})
-class ChangePasswordRequestNotificationEventHandlerTest {
+@Import({AppProperties.class, ResetPasswordRequestNotificationEventHandler.class})
+class ResetPasswordRequestNotificationEventHandlerTest {
 
     private static final String TOKEN = "token";
     private static final long USER_ID = 1L;
@@ -36,29 +36,30 @@ class ChangePasswordRequestNotificationEventHandlerTest {
     @Inject
     private AppProperties appProperties;
     @Inject
-    private ChangePasswordRequestNotificationEventHandler eventHandler;
+    private ResetPasswordRequestNotificationEventHandler eventHandler;
 
     @Test
     void testEvent() {
-        var changePasswordRequestEntity = createChangePasswordRequestEntity(TOKEN);
-        changePasswordRequestEntity.getUserEntity().setId(USER_ID);
+        var resetPasswordRequestEntity = createResetPasswordRequestEntity();
+        resetPasswordRequestEntity.getUserEntity().setId(USER_ID);
         var tokenModel = TokenModel.builder()
                 .token(TOKEN)
-                .tokenId(changePasswordRequestEntity.getId())
-                .login(changePasswordRequestEntity.getUserEntity().getLogin())
-                .email(changePasswordRequestEntity.getUserEntity().getEmail())
+                .tokenId(resetPasswordRequestEntity.getId())
+                .login(resetPasswordRequestEntity.getUserEntity().getLogin())
+                .email(resetPasswordRequestEntity.getUserEntity().getEmail())
                 .build();
-        var changePasswordNotificationEvent = new ChangePasswordRequestNotificationEvent(this, tokenModel);
-        EmailRequest actual = eventHandler.handle(changePasswordNotificationEvent);
+        ;
+        var resetPasswordNotificationEvent = new ResetPasswordRequestNotificationEvent(this, tokenModel);
+        EmailRequest actual = eventHandler.handle(resetPasswordNotificationEvent);
         assertThat(actual).isNotNull();
-        assertThat(actual.getTemplateCode()).isEqualTo(Templates.CHANGE_PASSWORD);
-        assertThat(actual.getReceiver()).isEqualTo(changePasswordRequestEntity.getUserEntity().getEmail());
+        assertThat(actual.getTemplateCode()).isEqualTo(Templates.RESET_PASSWORD);
+        assertThat(actual.getReceiver()).isEqualTo(resetPasswordRequestEntity.getUserEntity().getEmail());
         assertThat(actual.getVariables()).isNotEmpty();
         assertThat(actual.getVariables()).containsEntry(TemplateVariablesDictionary.VALIDITY_MINUTES_KEY,
-                String.valueOf(appProperties.getChangePassword().getValidityMinutes()));
-        String tokenEndpoint = String.format(appProperties.getChangePassword().getUrl(), TOKEN);
+                String.valueOf(appProperties.getResetPassword().getValidityMinutes()));
+        String tokenEndpoint = String.format(appProperties.getResetPassword().getUrl(), TOKEN);
         String expectedUrl = String.format("%s%s", appProperties.getWebExternalBaseUrl(), tokenEndpoint);
-        assertThat(actual.getVariables()).containsEntry(TemplateVariablesDictionary.CHANGE_PASSWORD_URL_KEY,
+        assertThat(actual.getVariables()).containsEntry(TemplateVariablesDictionary.RESET_PASSWORD_URL_KEY,
                 expectedUrl);
         assertThat(actual.getPriority()).isEqualTo(MEDIUM);
     }

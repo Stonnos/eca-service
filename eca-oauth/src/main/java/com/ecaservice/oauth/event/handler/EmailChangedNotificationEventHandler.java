@@ -1,4 +1,4 @@
-package com.ecaservice.oauth.event.listener.handler;
+package com.ecaservice.oauth.event.handler;
 
 import com.ecaservice.oauth.event.model.EmailChangedNotificationEvent;
 import com.ecaservice.oauth.service.mail.dictionary.Templates;
@@ -12,7 +12,8 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-public class EmailChangedNotificationEventHandler extends AbstractNotificationEventHandler<EmailChangedNotificationEvent> {
+public class EmailChangedNotificationEventHandler
+        extends AbstractUserNotificationEventHandler<EmailChangedNotificationEvent> {
 
     /**
      * Creates email changed notification event handler.

@@ -1,4 +1,4 @@
-package com.ecaservice.oauth.event.listener.handler;
+package com.ecaservice.oauth.event.handler;
 
 import com.ecaservice.oauth.config.AppProperties;
 import com.ecaservice.oauth.event.model.ResetPasswordRequestNotificationEvent;
@@ -20,7 +20,7 @@ import static com.google.common.collect.Maps.newHashMap;
 @Slf4j
 @Component
 public class ResetPasswordRequestNotificationEventHandler
-        extends AbstractNotificationEventHandler<ResetPasswordRequestNotificationEvent> {
+        extends AbstractTokenNotificationEventHandler<ResetPasswordRequestNotificationEvent> {
 
     private final AppProperties appProperties;
 
@@ -35,7 +35,7 @@ public class ResetPasswordRequestNotificationEventHandler
     }
 
     @Override
-    Map<String, String> createVariables(ResetPasswordRequestNotificationEvent event) {
+    public Map<String, String> createVariables(ResetPasswordRequestNotificationEvent event) {
         Map<String, String> templateVariables = newHashMap();
         String tokenEndpoint =
                 String.format(appProperties.getResetPassword().getUrl(), event.getTokenModel().getToken());

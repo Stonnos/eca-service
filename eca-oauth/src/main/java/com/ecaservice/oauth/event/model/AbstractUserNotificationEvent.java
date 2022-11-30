@@ -1,5 +1,6 @@
 package com.ecaservice.oauth.event.model;
 
+import com.ecaservice.core.mail.client.event.model.AbstractEmailEvent;
 import com.ecaservice.oauth.entity.UserEntity;
 import lombok.Getter;
 
@@ -8,7 +9,7 @@ import lombok.Getter;
  *
  * @author Roman Batygin
  */
-public abstract class AbstractUserNotificationEvent extends AbstractNotificationEvent {
+public abstract class AbstractUserNotificationEvent extends AbstractEmailEvent {
 
     /**
      * User entity
@@ -26,10 +27,5 @@ public abstract class AbstractUserNotificationEvent extends AbstractNotification
     protected AbstractUserNotificationEvent(Object source, UserEntity userEntity) {
         super(source);
         this.userEntity = userEntity;
-    }
-
-    @Override
-    public String getReceiver() {
-        return userEntity.getEmail();
     }
 }
