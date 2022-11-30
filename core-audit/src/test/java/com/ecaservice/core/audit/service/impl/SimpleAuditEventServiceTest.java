@@ -1,4 +1,4 @@
-package com.ecaservice.core.audit.service;
+package com.ecaservice.core.audit.service.impl;
 
 import com.ecaservice.audit.dto.AuditEventRequest;
 import com.ecaservice.core.audit.AbstractJpaTest;
@@ -9,6 +9,7 @@ import com.ecaservice.core.audit.model.AuditContextParams;
 import com.ecaservice.core.audit.repository.AuditCodeRepository;
 import com.ecaservice.core.audit.repository.AuditEventTemplateRepository;
 import com.ecaservice.core.audit.repository.AuditGroupRepository;
+import com.ecaservice.core.audit.service.AuditEventSender;
 import com.ecaservice.core.audit.service.store.DatabaseAuditEventTemplateStore;
 import com.ecaservice.core.audit.service.template.AuditTemplateProcessorService;
 import org.junit.jupiter.api.Test;
@@ -27,18 +28,18 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests for {@link AuditEventService} class.
+ * Unit tests for {@link SimpleAuditEventService} class.
  *
  * @author Roman Batygin
  */
-@Import({AuditEventService.class, AuditMapperImpl.class, DatabaseAuditEventTemplateStore.class})
-class AuditEventServiceTest extends AbstractJpaTest {
+@Import({SimpleAuditEventService.class, AuditMapperImpl.class, DatabaseAuditEventTemplateStore.class})
+class SimpleAuditEventServiceTest extends AbstractJpaTest {
 
     private static final String MESSAGE = "Message";
     private static final String INITIATOR = "user";
 
     @Inject
-    private AuditEventService auditEventService;
+    private SimpleAuditEventService auditEventService;
 
     @Inject
     private AuditEventTemplateRepository auditEventTemplateRepository;
