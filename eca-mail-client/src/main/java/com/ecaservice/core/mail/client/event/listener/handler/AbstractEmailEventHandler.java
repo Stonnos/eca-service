@@ -29,6 +29,13 @@ public abstract class AbstractEmailEventHandler<T extends AbstractEmailEvent> {
     private final String templateCode;
 
     /**
+     * Gets receiver.
+     *
+     * @return receiver
+     */
+    public abstract String getReceiver();
+
+    /**
      * Can handle notification event?
      *
      * @param event - notification event
@@ -47,7 +54,7 @@ public abstract class AbstractEmailEventHandler<T extends AbstractEmailEvent> {
         EmailRequest emailRequest = new EmailRequest();
         emailRequest.setRequestId(UUID.randomUUID().toString());
         emailRequest.setTemplateCode(getTemplateCode());
-        emailRequest.setReceiver(event.getReceiver());
+        emailRequest.setReceiver(getReceiver());
         emailRequest.setVariables(createVariables(event));
         emailRequest.setPriority(getPriority());
         return emailRequest;
@@ -58,7 +65,7 @@ public abstract class AbstractEmailEventHandler<T extends AbstractEmailEvent> {
      *
      * @return delivery priority
      */
-    int getPriority() {
+    public int getPriority() {
         return MEDIUM;
     }
 
@@ -68,7 +75,7 @@ public abstract class AbstractEmailEventHandler<T extends AbstractEmailEvent> {
      * @param event - notification event
      * @return variables map
      */
-    Map<String, String> createVariables(T event) {
+    public Map<String, String> createVariables(T event) {
         return Collections.emptyMap();
     }
 }

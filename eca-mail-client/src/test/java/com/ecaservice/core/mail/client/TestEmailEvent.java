@@ -18,9 +18,4 @@ public class TestEmailEvent extends AbstractEmailEvent {
     public TestEmailEvent(Object source) {
         super(source);
     }
-
-    @Override
-    public String getReceiver() {
-        return null;
-    }
 }

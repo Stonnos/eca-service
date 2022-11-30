@@ -12,4 +12,9 @@ public class TestEmailEventHandler extends AbstractEmailEventHandler<TestEmailEv
     public TestEmailEventHandler() {
         super(TestEmailEvent.class, "test_template_code");
     }
+
+    @Override
+    public String getReceiver() {
+        return "test@mail.ru";
+    }
 }

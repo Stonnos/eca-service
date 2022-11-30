@@ -18,11 +18,4 @@ public abstract class AbstractEmailEvent extends ApplicationEvent {
     protected AbstractEmailEvent(Object source) {
         super(source);
     }
-
-    /**
-     * Gets receiver.
-     *
-     * @return receiver
-     */
-    public abstract String getReceiver();
 }
