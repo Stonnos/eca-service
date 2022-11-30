@@ -8,7 +8,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 /**
- * Notification event listener.
+ * Email event listener.
  *
  * @author Roman Batygin
  */
