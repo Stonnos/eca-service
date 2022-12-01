@@ -73,4 +73,18 @@ class ExperimentDataCleanerTest extends AbstractJpaTest {
         verify(experimentDataService, atLeastOnce()).removeExperimentModel(argumentCaptor.capture());
         assertThat(argumentCaptor.getValue()).isEqualTo(experimentToRemove);
     }
+
+    @Test
+    void testRemoveExperimentTrainingData() {
+        List<Experiment> experiments = newArrayList();
+        experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED));
+        Experiment experimentToRemove =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        experimentToRemove.setCreationDate(LocalDateTime.now().minusDays(experimentConfig.getNumberOfDaysForStorage() + 1));
+        experiments.add(experimentToRemove);
+        experimentRepository.saveAll(experiments);
+        experimentDataCleaner.removeExperimentsTrainingData();
+        verify(experimentDataService, atLeastOnce()).removeExperimentTrainingData(argumentCaptor.capture());
+        assertThat(argumentCaptor.getValue()).isEqualTo(experimentToRemove);
+    }
 }
