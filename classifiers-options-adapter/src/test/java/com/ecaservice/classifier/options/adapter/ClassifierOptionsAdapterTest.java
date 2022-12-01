@@ -108,8 +108,8 @@ class ClassifierOptionsAdapterTest {
         Assertions.assertThat(options).isInstanceOf(HeterogeneousClassifierOptions.class);
         HeterogeneousClassifierOptions heterogeneousClassifierOptions = (HeterogeneousClassifierOptions) options;
         Assertions.assertThat(heterogeneousClassifierOptions.getClassifierOptions()).isNotEmpty();
-        Assertions.assertThat(heterogeneousClassifierOptions.getClassifierOptions().size()).isEqualTo(
-                heterogeneousClassifier.getClassifiersSet().size());
+        Assertions.assertThat(heterogeneousClassifierOptions.getClassifierOptions()).hasSameSizeAs(
+                heterogeneousClassifier.getClassifiersSet());
     }
 
     @Test
@@ -126,8 +126,8 @@ class ClassifierOptionsAdapterTest {
         Assertions.assertThat(options).isInstanceOf(AdaBoostOptions.class);
         AdaBoostOptions adaBoostOptions = (AdaBoostOptions) options;
         Assertions.assertThat(adaBoostOptions.getClassifierOptions()).isNotEmpty();
-        Assertions.assertThat(adaBoostOptions.getClassifierOptions().size()).isEqualTo(
-                adaBoostOptions.getClassifierOptions().size());
+        Assertions.assertThat(adaBoostOptions.getClassifierOptions()).hasSameSizeAs(
+                adaBoostOptions.getClassifierOptions());
     }
 
     @Test

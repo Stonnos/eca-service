@@ -20,6 +20,7 @@ public class TaskResult implements Serializable {
      */
     @Tolerate
     public TaskResult() {
+        //default constructor
     }
 
     /**

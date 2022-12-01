@@ -71,7 +71,7 @@ class ExperimentProcessorServiceTest {
         AbstractExperiment<?> experiment = experimentProcessorService.processExperimentHistory(
                 TestHelperUtils.createExperiment(UUID.randomUUID().toString()), initializationParams);
         assertThat(experiment).isNotNull();
-        assertThat(experiment.getHistory().size()).isEqualTo(experimentConfig.getResultSize().intValue());
+        assertThat(experiment.getHistory()).hasSize(experimentConfig.getResultSize());
     }
 
 }

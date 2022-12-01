@@ -173,7 +173,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
         var steps = experimentStepRepository.findAll()
                 .stream()
                 .collect(Collectors.toMap(ExperimentStepEntity::getStep, Function.identity()));
-        assertThat(steps.size()).isEqualTo(ExperimentStep.values().length);
+        assertThat(steps).hasSize(ExperimentStep.values().length);
         Stream.of(ExperimentStep.values()).forEach(experimentStep -> {
             var step = steps.get(experimentStep);
             assertThat(step).isNotNull();

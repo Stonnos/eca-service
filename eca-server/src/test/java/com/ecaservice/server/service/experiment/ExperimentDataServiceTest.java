@@ -128,10 +128,10 @@ class ExperimentDataServiceTest extends AbstractJpaTest {
         var requestStatusStatisticsDto = experimentDataService.getRequestStatusesStatistics();
         assertThat(requestStatusStatisticsDto).isNotNull();
         assertThat(requestStatusStatisticsDto.getNewRequestsCount()).isEqualTo(2L);
-        assertThat(requestStatusStatisticsDto.getInProgressRequestsCount()).isEqualTo(0L);
+        assertThat(requestStatusStatisticsDto.getInProgressRequestsCount()).isZero();
         assertThat(requestStatusStatisticsDto.getFinishedRequestsCount()).isEqualTo(3L);
         assertThat(requestStatusStatisticsDto.getErrorRequestsCount()).isEqualTo(4L);
-        assertThat(requestStatusStatisticsDto.getTimeoutRequestsCount()).isEqualTo(0L);
+        assertThat(requestStatusStatisticsDto.getTimeoutRequestsCount()).isZero();
         assertThat(requestStatusStatisticsDto.getTotalCount()).isEqualTo(experimentRepository.count());
     }
 
@@ -292,7 +292,7 @@ class ExperimentDataServiceTest extends AbstractJpaTest {
         List<Experiment> experimentList = experiments.getContent();
         assertThat(experiments).isNotNull();
         assertThat(experiments.getTotalElements()).isEqualTo(3);
-        assertThat(experimentList.size()).isEqualTo(3);
+        assertThat(experimentList).hasSize(3);
         experimentRepository.deleteAll();
         //Case 2
         experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);

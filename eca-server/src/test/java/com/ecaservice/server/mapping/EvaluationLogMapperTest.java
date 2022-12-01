@@ -145,7 +145,7 @@ class EvaluationLogMapperTest {
                 evaluationLog.getClassifierInfo().getClassifierInputOptions();
         assertThat(classifierInputOptions).isNotEmpty();
         String[] options = request.getClassifier().getOptions();
-        assertThat(classifierInputOptions.size()).isEqualTo(options.length / 2);
+        assertThat(classifierInputOptions).hasSize(options.length / 2);
         for (int i = 0; i < options.length; i += 2) {
             ClassifierInputOptions inputOptions = classifierInputOptions.get(i / 2);
             assertThat(inputOptions.getOptionName()).isEqualTo(options[i]);

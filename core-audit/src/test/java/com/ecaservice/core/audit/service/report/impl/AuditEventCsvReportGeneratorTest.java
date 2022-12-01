@@ -49,7 +49,7 @@ class AuditEventCsvReportGeneratorTest extends AbstractJpaTest {
         assertThat(reportString).isNotNull();
         var auditCodes = auditCodeRepository.findAll();
         var rows = reportString.split("\r\n");
-        assertThat(rows.length).isEqualTo(auditCodes.size() + 1);
+        assertThat(rows).hasSize(auditCodes.size() + 1);
         assertThat(rows[HEADER_IDX]).isEqualTo(StringUtils.join(REPORT_HEADERS, HEADER_DELIMITER));
         IntStream.range(1, rows.length).forEach(i -> {
             var auditCode = auditCodes.get(i - 1);

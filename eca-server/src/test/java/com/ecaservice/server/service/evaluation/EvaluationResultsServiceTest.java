@@ -101,7 +101,7 @@ class EvaluationResultsServiceTest {
         Instances instances = evaluationResults.getEvaluation().getData();
         List<ClassificationCostsReport> costsReports = resultsRequest.getClassificationCosts();
         assertThat(costsReports).isNotNull();
-        assertThat(costsReports.size()).isEqualTo(instances.numClasses());
+        assertThat(costsReports).hasSize(instances.numClasses());
         Attribute classAttribute = instances.classAttribute();
         for (int i = 0; i < classAttribute.numValues(); i++) {
             assertThat(costsReports.get(i).getClassValue()).isEqualTo(classAttribute.value(i));

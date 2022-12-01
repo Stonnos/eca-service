@@ -87,7 +87,6 @@ class InstancesServiceTest extends AbstractJpaTest {
     void testGetInstances() {
         instancesService.saveInstances(TABLE_3_NAME, instances);
         var actual = instancesService.getInstances(TABLE_3_NAME);
-        assertThat(actual).isNotNull();
         assertThat(actual).hasSameSizeAs(instances);
         assertThat(actual.numAttributes()).isEqualTo(instances.numAttributes());
     }

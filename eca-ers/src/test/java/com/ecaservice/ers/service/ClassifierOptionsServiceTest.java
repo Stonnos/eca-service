@@ -161,7 +161,7 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
         List<ClassifierOptionsInfo> classifierOptionsInfoList =
                 classifierOptionsService.findBestClassifierOptions(request);
         assertThat(classifierOptionsInfoList).isNotEmpty();
-        assertThat(classifierOptionsInfoList.size()).isEqualTo(ersConfig.getResultSize());
+        assertThat(classifierOptionsInfoList).hasSize(ersConfig.getResultSize());
         assertThat(classifierOptionsInfoList.get(0).getClassifierName()).isEqualTo
                 (classifierOptionsInfo7.getClassifierName());
         assertThat(classifierOptionsInfoList.get(1).getClassifierName()).isEqualTo

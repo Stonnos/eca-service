@@ -37,7 +37,6 @@ class InstancesConversionServiceTest {
     @Test
     void testInstancesConversion() {
         var dataList = instancesConversionService.covert(instances);
-        assertThat(dataList).isNotNull();
         assertThat(dataList).hasSize(instances.numInstances());
         assertRows(dataList);
     }

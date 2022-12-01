@@ -12,6 +12,8 @@ public class OptionsVariables {
 
     /**
      * Chi square alpha value
+     *
+     * @deprecated use {@link DecisionTreeOptions#getAlpha()} instead
      */
     @Deprecated
     public static final String ALPHA = "alphaValue";

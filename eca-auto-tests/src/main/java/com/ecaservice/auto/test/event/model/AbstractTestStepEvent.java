@@ -15,7 +15,7 @@ public abstract class AbstractTestStepEvent extends ApplicationEvent {
      * @param source the object on which the event initially occurred or with
      *               which the event is associated (never {@code null})
      */
-    public AbstractTestStepEvent(Object source) {
+    protected AbstractTestStepEvent(Object source) {
         super(source);
     }
 }
