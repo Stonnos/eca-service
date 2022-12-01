@@ -111,7 +111,7 @@ import static com.google.common.collect.Maps.newEnumMap;
 @UtilityClass
 public class TestHelperUtils {
 
-    private static final String DATA_RESOURCE_PATH = "data/iris.xls";
+    public static final String DATA_RESOURCE_PATH = "data/iris.xls";
 
     public static final int NUM_FOLDS = 3;
     public static final int NUM_TESTS = 1;
