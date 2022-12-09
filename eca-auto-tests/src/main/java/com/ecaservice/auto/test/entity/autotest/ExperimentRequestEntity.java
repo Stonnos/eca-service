@@ -1,12 +1,10 @@
 package com.ecaservice.auto.test.entity.autotest;
 
-import com.ecaservice.auto.test.model.evaluation.EvaluationResultsDetailsMatch;
 import com.ecaservice.base.model.ExperimentType;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.Column;
@@ -14,7 +12,6 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
-import java.util.List;
 
 import static com.ecaservice.auto.test.util.Constraints.DOWNLOAD_URL_MAX_LENGTH;
 
@@ -43,11 +40,4 @@ public class ExperimentRequestEntity extends BaseEvaluationRequestEntity {
      */
     @Column(name = "download_url", length = DOWNLOAD_URL_MAX_LENGTH)
     private String downloadUrl;
-
-    /**
-     * Experiment results details.
-     */
-    @Type(type = "jsonb")
-    @Column(name = "experiment_results_details", columnDefinition = "jsonb")
-    private List<EvaluationResultsDetailsMatch> experimentResultDetails;
 }

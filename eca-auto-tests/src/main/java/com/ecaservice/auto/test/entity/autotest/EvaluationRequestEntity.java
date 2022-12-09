@@ -1,11 +1,9 @@
 package com.ecaservice.auto.test.entity.autotest;
 
-import com.ecaservice.auto.test.model.evaluation.EvaluationResultsDetailsMatch;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.Column;
@@ -53,11 +51,4 @@ public class EvaluationRequestEntity extends BaseEvaluationRequestEntity {
      * Seed value for random generator
      */
     private Integer seed;
-
-    /**
-     * Evaluation results details
-     */
-    @Type(type = "jsonb")
-    @Column(name = "evaluation_results_details", columnDefinition = "jsonb")
-    private EvaluationResultsDetailsMatch evaluationResultsDetails;
 }
