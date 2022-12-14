@@ -96,7 +96,7 @@ public class MetricsDiscoveryService {
 
     private void updateInstanceInfo(MetricsInstanceInfo metricsInstanceInfo, InstanceInfo instanceInfo) {
         metricsInstanceInfo.setAppName(instanceInfo.getAppName());
-        metricsInstanceInfo.setInstanceId(instanceInfo.getInstanceId());
+        metricsInstanceInfo.setInstanceId(instanceInfo.getId());
         metricsInstanceInfo.setHostName(instanceInfo.getHostName());
         metricsInstanceInfo.setIpAddress(instanceInfo.getIPAddr());
         metricsInstanceInfo.setStatus(MetricsInstanceStatus.UP);

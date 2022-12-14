@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.ecaservice.discovery.prometheus.Labels.APP_INSTANCES_LABEL_NAME;
+import static com.ecaservice.discovery.prometheus.Labels.APP_NAME_LABEL_NAME;
+
 /**
  * Prometheus service discovery config service.
  *
@@ -21,9 +24,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class PrometheusSdConfigService {
-
-    private static final String APP_NAME_LABEL_NAME = "__meta_discovery_app_name__";
-    private static final String APP_INSTANCES_LABEL_NAME = "__meta_discovery_app_instance_name__";
 
     private final MetricsDiscoveryService metricsDiscoveryService;
 
