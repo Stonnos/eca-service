@@ -44,6 +44,7 @@ public class MetricsDiscoveryService {
         if (metricsInstanceInfo == null) {
             metricsInstanceInfo = getFirstDownInstance(instanceInfo.getAppName());
             if (metricsInstanceInfo != null) {
+                //rewrite first down instance info for specified app name
                 log.info(REWRITE_INSTANCE_LOG_MESSAGE, metricsInstanceInfo.getInstanceId(),
                         metricsInstanceInfo.getIpAddress(), metricsInstanceInfo.getAppName(), instanceInfo.getId(),
                         instanceInfo.getIPAddr());
