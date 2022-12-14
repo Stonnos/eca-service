@@ -25,6 +25,9 @@ import static com.google.common.collect.Maps.newHashMap;
 public class MetricsDiscoveryService {
 
     private static final String MANAGEMENT_PORT_KEY = "management.port";
+    private static final String REWRITE_INSTANCE_LOG_MESSAGE =
+            "First [{}] down instance with ip [{}] has been found for app name [{}]. " +
+                    "Rewrite it with new id [{}], ip [{}]";
 
     private final Map<String, Integer> appCounters = newHashMap();
     private final List<MetricsInstanceInfo> instances = newArrayList();
@@ -41,10 +44,9 @@ public class MetricsDiscoveryService {
         if (metricsInstanceInfo == null) {
             metricsInstanceInfo = getFirstDownInstance(instanceInfo.getAppName());
             if (metricsInstanceInfo != null) {
-                log.info("First [{}] down instance with ip [{}] has been found for app name [{}]. " +
-                                "Rewrite it with new id [{}], ip [{}]",
-                        metricsInstanceInfo.getInstanceId(), metricsInstanceInfo.getIpAddress(),
-                        metricsInstanceInfo.getAppName(), instanceInfo.getId(), instanceInfo.getIPAddr());
+                log.info(REWRITE_INSTANCE_LOG_MESSAGE, metricsInstanceInfo.getInstanceId(),
+                        metricsInstanceInfo.getIpAddress(), metricsInstanceInfo.getAppName(), instanceInfo.getId(),
+                        instanceInfo.getIPAddr());
             } else {
                 metricsInstanceInfo = new MetricsInstanceInfo();
                 setInstanceNumber(instanceInfo.getAppName(), metricsInstanceInfo);
