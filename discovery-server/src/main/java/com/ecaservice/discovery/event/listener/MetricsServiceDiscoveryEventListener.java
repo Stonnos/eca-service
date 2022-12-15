@@ -10,14 +10,14 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 /**
- * Eureka instance event listener.
+ * Metrics service discovery event listener.
  *
  * @author Roman Batygin
  */
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class EurekaInstanceEventListener {
+public class MetricsServiceDiscoveryEventListener {
 
     private final MetricsDiscoveryService metricsDiscoveryService;
 

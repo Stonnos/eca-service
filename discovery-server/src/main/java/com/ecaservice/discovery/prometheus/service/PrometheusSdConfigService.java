@@ -12,7 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.ecaservice.discovery.prometheus.Labels.APP_INSTANCES_LABEL_NAME;
+import static com.ecaservice.discovery.prometheus.Labels.APP_INSTANCE_LABEL_NAME;
+import static com.ecaservice.discovery.prometheus.Labels.APP_INSTANCE_METRICS_PATH_LABEL_NAME;
 import static com.ecaservice.discovery.prometheus.Labels.APP_NAME_LABEL_NAME;
 
 /**
@@ -24,6 +25,8 @@ import static com.ecaservice.discovery.prometheus.Labels.APP_NAME_LABEL_NAME;
 @Service
 @RequiredArgsConstructor
 public class PrometheusSdConfigService {
+
+    private static final String ACTUATOR_PROMETHEUS_PATH = "/actuator/prometheus";
 
     private final MetricsDiscoveryService metricsDiscoveryService;
 
@@ -48,14 +51,19 @@ public class PrometheusSdConfigService {
         var prometheusSdConfig = new PrometheusSdConfig();
         String target =
                 String.format("%s:%d", metricsInstanceInfo.getHostName(), metricsInstanceInfo.getManagementPort());
-        String appName = metricsInstanceInfo.getAppName().toLowerCase();
-        String instance = String.format("%s-%d", appName, metricsInstanceInfo.getInstanceNumber());
-        Map<String, String> labels = Map.of(
-                APP_NAME_LABEL_NAME, appName,
-                APP_INSTANCES_LABEL_NAME, instance
-        );
+        Map<String, String> labels = createLabels(metricsInstanceInfo);
         prometheusSdConfig.setTargets(Collections.singletonList(target));
         prometheusSdConfig.setLabels(labels);
         return prometheusSdConfig;
+    }
+
+    private Map<String, String> createLabels(MetricsInstanceInfo metricsInstanceInfo) {
+        String appName = metricsInstanceInfo.getAppName().toLowerCase();
+        String instance = String.format("%s-%d", appName, metricsInstanceInfo.getInstanceNumber());
+        return Map.of(
+                APP_NAME_LABEL_NAME, appName,
+                APP_INSTANCE_LABEL_NAME, instance,
+                APP_INSTANCE_METRICS_PATH_LABEL_NAME, ACTUATOR_PROMETHEUS_PATH
+        );
     }
 }

@@ -12,7 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Collections;
 
 import static com.ecaservice.discovery.TestHelperUtils.createMetricsInstanceInfo;
-import static com.ecaservice.discovery.prometheus.Labels.APP_INSTANCES_LABEL_NAME;
+import static com.ecaservice.discovery.prometheus.Labels.APP_INSTANCE_LABEL_NAME;
 import static com.ecaservice.discovery.prometheus.Labels.APP_NAME_LABEL_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -49,7 +49,7 @@ class PrometheusSdConfigServiceTest {
         assertThat(sdConfig.getTargets()).containsOnly(expectedTarget);
         assertThat(sdConfig.getLabels())
                 .containsEntry(APP_NAME_LABEL_NAME, metricsInstanceInfo.getAppName())
-                .containsEntry(APP_INSTANCES_LABEL_NAME, String.format("%s-%d", metricsInstanceInfo.getAppName(),
+                .containsEntry(APP_INSTANCE_LABEL_NAME, String.format("%s-%d", metricsInstanceInfo.getAppName(),
                         metricsInstanceInfo.getInstanceNumber()));
     }
 }
