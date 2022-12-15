@@ -1,0 +1,102 @@
+[
+  {
+    "targets": [
+      "e4a64a4e96eb:8030"
+    ],
+    "labels": {
+      "__meta_discovery_app_instance_name": "zuul-gate-1",
+      "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
+      "__meta_discovery_app_name": "zuul-gate"
+    }
+  },
+  {
+    "targets": [
+      "d9631a3c008e:8080"
+    ],
+    "labels": {
+      "__meta_discovery_app_instance_name": "eca-web-1",
+      "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
+      "__meta_discovery_app_name": "eca-web"
+    }
+  },
+  {
+    "targets": [
+      "aa5be4ee0c34:8099"
+    ],
+    "labels": {
+      "__meta_discovery_app_instance_name": "eca-web-push-1",
+      "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
+      "__meta_discovery_app_name": "eca-web-push"
+    }
+  },
+  {
+    "targets": [
+      "8f7c728e662a:8080"
+    ],
+    "labels": {
+      "__meta_discovery_app_instance_name": "eca-ers-1",
+      "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
+      "__meta_discovery_app_name": "eca-ers"
+    }
+  },
+  {
+    "targets": [
+      "64dd34f7ea41:8080"
+    ],
+    "labels": {
+      "__meta_discovery_app_instance_name": "eca-audit-log-1",
+      "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
+      "__meta_discovery_app_name": "eca-audit-log"
+    }
+  },
+  {
+    "targets": [
+      "10a423d2ed74:8080"
+    ],
+    "labels": {
+      "__meta_discovery_app_instance_name": "eca-mail-1",
+      "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
+      "__meta_discovery_app_name": "eca-mail"
+    }
+  },
+  {
+    "targets": [
+      "9d5feb5ef3c7:8080"
+    ],
+    "labels": {
+      "__meta_discovery_app_instance_name": "eca-data-storage-1",
+      "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
+      "__meta_discovery_app_name": "eca-data-storage"
+    }
+  },
+  {
+    "targets": [
+      "73ea70e84ef9:8080"
+    ],
+    "labels": {
+      "__meta_discovery_app_instance_name": "eca-oauth-1",
+      "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
+      "__meta_discovery_app_name": "eca-oauth"
+    }
+  },
+  {
+    "targets": [
+      "7eec82f6bed5:8080"
+    ],
+    "labels": {
+      "__meta_discovery_app_instance_name": "eca-server-1",
+      "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
+      "__meta_discovery_app_name": "eca-server"
+    }
+  },
+  {
+    "targets": [
+      "f3f660b2fb20:8080"
+    ],
+    "labels": {
+      "__meta_discovery_app_instance_name": "eca-server-2",
+      "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
+      "__meta_discovery_app_name": "eca-server"
+    }
+  }
+]
