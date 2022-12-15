@@ -95,6 +95,10 @@ public class MetricsDiscoveryService {
     }
 
     private void updateInstanceInfo(MetricsInstanceInfo metricsInstanceInfo, InstanceInfo instanceInfo) {
+        if (MetricsInstanceStatus.DOWN.equals(metricsInstanceInfo.getStatus())) {
+            log.info("Set [UP] status for instance [{}] with ip [{}] for app name [{}]", instanceInfo.getId(),
+                    instanceInfo.getIPAddr(), instanceInfo.getAppName());
+        }
         metricsInstanceInfo.setAppName(instanceInfo.getAppName());
         metricsInstanceInfo.setInstanceId(instanceInfo.getId());
         metricsInstanceInfo.setHostName(instanceInfo.getHostName());

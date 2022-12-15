@@ -36,14 +36,14 @@ public class PrometheusSdConfigService {
      * @return sd configs list
      */
     public List<PrometheusSdConfig> getSdConfigs() {
-        log.info("Gets service discovery configs for prometheus");
+        log.debug("Gets services discovery configs for prometheus");
         var metricInstances = metricsDiscoveryService.getInstances();
         var prometheusSdConfigs = metricInstances
                 .stream()
                 .map(this::createPrometheusSdConfig)
                 .collect(Collectors.toList());
+        log.debug("[{}] services discovery configs has been fetched for prometheus", prometheusSdConfigs.size());
         log.debug("Fetched service discovery configs for prometheus: {}", prometheusSdConfigs);
-        log.info("[{}] service discovery configs has been fetched for prometheus", prometheusSdConfigs.size());
         return prometheusSdConfigs;
     }
 

@@ -56,7 +56,7 @@ public class MetricsServiceDiscoveryEventListener {
      */
     @EventListener
     public void handle(EurekaInstanceCanceledEvent event) {
-        log.debug("Cancel instance [{}] for app name [{}]", event.getServerId(), event.getAppName());
+        log.info("Cancel instance [{}] for app name [{}]", event.getServerId(), event.getAppName());
         metricsDiscoveryService.markAsDown(event.getServerId());
     }
 }
