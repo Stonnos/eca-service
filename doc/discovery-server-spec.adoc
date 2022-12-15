@@ -9,11 +9,11 @@
 == 1. Список доступных методов
 
 |===
-|Endpoint|Тип запроса|Описание|Формат запроса|Формат ответа
+|*Endpoint*|*Тип запроса*|*Описание*|*Формат запроса*|*Формат ответа*
 |http://eca-service:8761/api/prometheus/sd-configs
 |GET
 |Возвращает ответ для prometheus со списком сервисов для мониторинга
-|application/json
+|-
 |application/json
 |===
 
@@ -141,7 +141,7 @@ curl -X GET "http://eca-service:8761/api/prometheus/sd-configs"
 === 2.2. Описание меток для <relabel_config>
 
 |===
-|Название метки|Описание|Пример значения
+|*Название метки*|*Описание*|*Пример значения*
 |__meta_discovery_app_name
 |Название сервиса
 |eca-server
@@ -155,7 +155,7 @@ curl -X GET "http://eca-service:8761/api/prometheus/sd-configs"
 
 === 2.3. Пример настройки <http_sd_configs>
 
-Ниже приведен пример prometheus.yml с настройками http_sd_configs для получения списка сервисов для мониторинга
+Ниже приведен пример *prometheus.yml* с настройками *http_sd_configs* для получения списка сервисов для мониторинга
 
 [source,yml]
 ----
