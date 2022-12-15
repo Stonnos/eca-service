@@ -71,6 +71,8 @@ public class MetricsDiscoveryService {
         var metricsInstanceInfo = getById(instanceId);
         if (metricsInstanceInfo == null) {
             log.warn("Instance [{}] not found to mark as down", instanceId);
+        } else if (MetricsInstanceStatus.DOWN.equals(metricsInstanceInfo.getStatus())) {
+            log.warn("Instance is already marked as down. Skipped...");
         } else {
             metricsInstanceInfo.setStatus(MetricsInstanceStatus.DOWN);
             log.info("Instance [{}] with ip [{}] has been marked as down for app name [{}]",
@@ -84,7 +86,7 @@ public class MetricsDiscoveryService {
      *
      * @return instances list
      */
-    public List<MetricsInstanceInfo> getInstances() {
+    public synchronized List<MetricsInstanceInfo> getInstances() {
         return List.copyOf(instances);
     }
 
