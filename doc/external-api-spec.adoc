@@ -38,12 +38,12 @@ API предоставляет следующие методы:
 |application/json
 |application/json
 |http://eca-service:8080/external-api/evaluation-results/{requestId}
-|POST
+|GET
 |Запрос на получение результатов построения модели классификатора
 |application/json
 |application/json
 |http://eca-service:8080/external-api/experiment-results/{requestId}
-|POST
+|GET
 |Запрос на получение результатов эксперимента
 |application/json
 |application/json

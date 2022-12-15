@@ -1,0 +1,179 @@
+= DISCOVERY SERVER API
+:toc:
+:toc-title: Оглавление
+
+== Введение
+
+В данном документе приведено описание API сервиса discovery server.
+
+== 1. Список доступных методов
+
+|===
+|Endpoint|Тип запроса|Описание|Формат запроса|Формат ответа
+|http://eca-service:8761/api/prometheus/sd-configs
+|GET
+|Возвращает ответ для prometheus со списком сервисов для мониторинга
+|application/json
+|application/json
+|===
+
+== 2. Получение списка сервисов для мониторинга с помощью prometheus
+
+=== 2.1. Пример запроса
+
+Для получения списка сервисов необходимо выполнить следующий запрос:
+
+[source,bash]
+----
+curl -X GET "http://eca-service:8761/api/prometheus/sd-configs"
+----
+
+Пример ответа:
+
+[source,json]
+----
+[
+  {
+    "targets": [
+      "e4a64a4e96eb:8030"
+    ],
+    "labels": {
+      "__meta_discovery_app_instance_name": "zuul-gate-1",
+      "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
+      "__meta_discovery_app_name": "zuul-gate"
+    }
+  },
+  {
+    "targets": [
+      "d9631a3c008e:8080"
+    ],
+    "labels": {
+      "__meta_discovery_app_instance_name": "eca-web-1",
+      "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
+      "__meta_discovery_app_name": "eca-web"
+    }
+  },
+  {
+    "targets": [
+      "aa5be4ee0c34:8099"
+    ],
+    "labels": {
+      "__meta_discovery_app_instance_name": "eca-web-push-1",
+      "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
+      "__meta_discovery_app_name": "eca-web-push"
+    }
+  },
+  {
+    "targets": [
+      "8f7c728e662a:8080"
+    ],
+    "labels": {
+      "__meta_discovery_app_instance_name": "eca-ers-1",
+      "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
+      "__meta_discovery_app_name": "eca-ers"
+    }
+  },
+  {
+    "targets": [
+      "64dd34f7ea41:8080"
+    ],
+    "labels": {
+      "__meta_discovery_app_instance_name": "eca-audit-log-1",
+      "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
+      "__meta_discovery_app_name": "eca-audit-log"
+    }
+  },
+  {
+    "targets": [
+      "10a423d2ed74:8080"
+    ],
+    "labels": {
+      "__meta_discovery_app_instance_name": "eca-mail-1",
+      "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
+      "__meta_discovery_app_name": "eca-mail"
+    }
+  },
+  {
+    "targets": [
+      "9d5feb5ef3c7:8080"
+    ],
+    "labels": {
+      "__meta_discovery_app_instance_name": "eca-data-storage-1",
+      "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
+      "__meta_discovery_app_name": "eca-data-storage"
+    }
+  },
+  {
+    "targets": [
+      "73ea70e84ef9:8080"
+    ],
+    "labels": {
+      "__meta_discovery_app_instance_name": "eca-oauth-1",
+      "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
+      "__meta_discovery_app_name": "eca-oauth"
+    }
+  },
+  {
+    "targets": [
+      "7eec82f6bed5:8080"
+    ],
+    "labels": {
+      "__meta_discovery_app_instance_name": "eca-server-1",
+      "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
+      "__meta_discovery_app_name": "eca-server"
+    }
+  },
+  {
+    "targets": [
+      "f3f660b2fb20:8080"
+    ],
+    "labels": {
+      "__meta_discovery_app_instance_name": "eca-server-2",
+      "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
+      "__meta_discovery_app_name": "eca-server"
+    }
+  }
+]
+----
+
+Подробное описание формата ответа для prometheus приведено в https://prometheus.io/docs/prometheus/latest/configuration/configuration/#http_sd_config.
+
+=== 2.2. Описание меток для <relabel_config>
+
+|===
+|Название метки|Описание|Пример значения
+|__meta_discovery_app_name
+|Название сервиса
+|eca-server
+|__meta_discovery_app_instance_name
+|Название инстанса для конкретного сервиса
+|eca-server-1
+|__meta_discovery_app_instance_metrics_path
+|Endpoint сервиса для получения метрик в формате prometheus
+|/actuator/prometheus
+|===
+
+=== 2.3. Пример настройки <http_sd_configs>
+
+Ниже приведен пример prometheus.yml с настройками http_sd_configs для получения списка сервисов для мониторинга
+
+[source,yml]
+----
+global:
+  scrape_interval: 30s
+  evaluation_interval: 30s
+
+scrape_configs:
+  - job_name: 'service-discovery'
+    http_sd_configs:
+      - url: 'http://discovery-server:8761/api/prometheus/sd-configs'
+        refresh_interval: 30s
+    relabel_configs:
+      - source_labels: [__meta_discovery_app_name]
+        target_label: application
+      - source_labels: [__meta_discovery_app_instance_name]
+        target_label: instance
+      - source_labels: [__meta_discovery_app_instance_metrics_path]
+        target_label: __metrics_path__
+----
+
