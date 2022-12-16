@@ -175,7 +175,7 @@ curl -X GET "http://eca-service:8761/api/prometheus/sd-configs"
 |Статус инстанса (UP или DOWN)
 |UP
 |__meta_discovery_app_instance_last_updated_date
-|Дата последнего обновления данных инстанса в формате yyyy-MM-dd HH:mm:ss
+|Дата последнего обновления данных инстанса в формате *yyyy-MM-dd HH:mm:ss*
 |2022-12-16 15:00:00
 |===
 
