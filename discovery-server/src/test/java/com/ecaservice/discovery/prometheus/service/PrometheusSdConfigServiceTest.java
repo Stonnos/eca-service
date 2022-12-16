@@ -13,6 +13,9 @@ import java.util.Collections;
 
 import static com.ecaservice.discovery.TestHelperUtils.createMetricsInstanceInfo;
 import static com.ecaservice.discovery.prometheus.Labels.APP_INSTANCE_LABEL_NAME;
+import static com.ecaservice.discovery.prometheus.Labels.APP_INSTANCE_LAST_UPDATED_LABEL_NAME;
+import static com.ecaservice.discovery.prometheus.Labels.APP_INSTANCE_METRICS_PATH_LABEL_NAME;
+import static com.ecaservice.discovery.prometheus.Labels.APP_INSTANCE_STATUS_LABEL_NAME;
 import static com.ecaservice.discovery.prometheus.Labels.APP_NAME_LABEL_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -24,6 +27,8 @@ import static org.mockito.Mockito.when;
  */
 @ExtendWith(MockitoExtension.class)
 class PrometheusSdConfigServiceTest {
+
+    private static final String ACTUATOR_PROMETHEUS_ENDPOINT = "/actuator/prometheus";
 
     @Mock
     private MetricsDiscoveryService metricsDiscoveryService;
@@ -50,6 +55,9 @@ class PrometheusSdConfigServiceTest {
         assertThat(sdConfig.getLabels())
                 .containsEntry(APP_NAME_LABEL_NAME, metricsInstanceInfo.getAppName())
                 .containsEntry(APP_INSTANCE_LABEL_NAME, String.format("%s-%d", metricsInstanceInfo.getAppName(),
-                        metricsInstanceInfo.getInstanceNumber()));
+                        metricsInstanceInfo.getInstanceNumber()))
+                .containsEntry(APP_INSTANCE_METRICS_PATH_LABEL_NAME, ACTUATOR_PROMETHEUS_ENDPOINT)
+                .containsEntry(APP_INSTANCE_STATUS_LABEL_NAME, metricsInstanceInfo.getStatus().name())
+                .containsKey(APP_INSTANCE_LAST_UPDATED_LABEL_NAME);
     }
 }

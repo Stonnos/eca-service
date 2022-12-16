@@ -30,7 +30,7 @@ public class TestHelperUtils {
         metricsInstanceInfo.setInstanceId(UUID.randomUUID().toString());
         metricsInstanceInfo.setIpAddress(IP_ADDRESS);
         metricsInstanceInfo.setHostName(UUID.randomUUID().toString());
-        metricsInstanceInfo.setLastSyncDate(LocalDateTime.now());
+        metricsInstanceInfo.setLastUpdatedDate(LocalDateTime.now());
         metricsInstanceInfo.setInstanceNumber(0);
         metricsInstanceInfo.setManagementPort(MANAGEMENT_PORT);
         metricsInstanceInfo.setStatus(MetricsInstanceStatus.UP);

@@ -67,7 +67,7 @@ class MetricsDiscoveryServiceTest {
         assertThat(metricsInstanceInfo.getInstanceId()).isEqualTo(instanceInfo.getId());
         assertThat(metricsInstanceInfo.getHostName()).isEqualTo(instanceInfo.getHostName());
         assertThat(metricsInstanceInfo.getIpAddress()).isEqualTo(instanceInfo.getIPAddr());
-        assertThat(metricsInstanceInfo.getLastSyncDate()).isNotNull();
+        assertThat(metricsInstanceInfo.getLastUpdatedDate()).isNotNull();
         assertThat(metricsInstanceInfo.getStatus()).isEqualTo(expectedStatus);
         assertThat(metricsInstanceInfo.getManagementPort()).isEqualTo(MANAGEMENT_PORT);
         assertThat(metricsInstanceInfo.getInstanceNumber()).isOne();

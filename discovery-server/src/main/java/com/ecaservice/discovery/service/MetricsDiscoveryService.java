@@ -111,7 +111,7 @@ public class MetricsDiscoveryService {
             int managementPort = Integer.parseInt(metaData.get(MANAGEMENT_PORT_KEY));
             metricsInstanceInfo.setManagementPort(managementPort);
         }
-        metricsInstanceInfo.setLastSyncDate(LocalDateTime.now());
+        metricsInstanceInfo.setLastUpdatedDate(LocalDateTime.now());
     }
 
     private MetricsInstanceInfo getById(String id) {

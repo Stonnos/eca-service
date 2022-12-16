@@ -43,9 +43,9 @@ public class MetricsInstanceInfo {
     private MetricsInstanceStatus status;
 
     /**
-     * Last sync date
+     * Last updated date
      */
-    private LocalDateTime lastSyncDate;
+    private LocalDateTime lastUpdatedDate;
 
     /**
      * Instance unique number per application name

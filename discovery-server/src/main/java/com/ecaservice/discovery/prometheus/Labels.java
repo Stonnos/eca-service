@@ -24,4 +24,14 @@ public class Labels {
      * App instance metrics path label
      */
     public static final String APP_INSTANCE_METRICS_PATH_LABEL_NAME = "__meta_discovery_app_instance_metrics_path";
+
+    /**
+     * Application instance status label
+     */
+    public static final String APP_INSTANCE_STATUS_LABEL_NAME = "__meta_discovery_app_instance_status";
+
+    /**
+     * Application instance last updated label
+     */
+    public static final String APP_INSTANCE_LAST_UPDATED_LABEL_NAME = "__meta_discovery_app_instance_last_updated_date";
 }
