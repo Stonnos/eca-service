@@ -1,102 +1,122 @@
 [
   {
     "targets": [
-      "e4a64a4e96eb:8030"
+      "859eb9bc8f89:8080"
     ],
     "labels": {
-      "__meta_discovery_app_instance_name": "zuul-gate-1",
-      "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
-      "__meta_discovery_app_name": "zuul-gate"
-    }
-  },
-  {
-    "targets": [
-      "d9631a3c008e:8080"
-    ],
-    "labels": {
+      "__meta_discovery_app_name": "eca-web",
       "__meta_discovery_app_instance_name": "eca-web-1",
       "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
-      "__meta_discovery_app_name": "eca-web"
+      "__meta_discovery_app_instance_status": "UP",
+      "__meta_discovery_app_instance_last_updated_date": "2022-12-16 13:16:44"
     }
   },
   {
     "targets": [
-      "aa5be4ee0c34:8099"
+      "375a17fa4e70:8080"
     ],
     "labels": {
-      "__meta_discovery_app_instance_name": "eca-web-push-1",
-      "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
-      "__meta_discovery_app_name": "eca-web-push"
-    }
-  },
-  {
-    "targets": [
-      "8f7c728e662a:8080"
-    ],
-    "labels": {
+      "__meta_discovery_app_name": "eca-ers",
       "__meta_discovery_app_instance_name": "eca-ers-1",
       "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
-      "__meta_discovery_app_name": "eca-ers"
+      "__meta_discovery_app_instance_status": "UP",
+      "__meta_discovery_app_instance_last_updated_date": "2022-12-16 13:16:53"
     }
   },
   {
     "targets": [
-      "64dd34f7ea41:8080"
+      "329a34741260:8099"
     ],
     "labels": {
-      "__meta_discovery_app_instance_name": "eca-audit-log-1",
+      "__meta_discovery_app_name": "eca-web-push",
+      "__meta_discovery_app_instance_name": "eca-web-push-1",
       "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
-      "__meta_discovery_app_name": "eca-audit-log"
+      "__meta_discovery_app_instance_status": "UP",
+      "__meta_discovery_app_instance_last_updated_date": "2022-12-16 13:16:54"
     }
   },
   {
     "targets": [
-      "10a423d2ed74:8080"
+      "5760a5ab801b:8030"
     ],
     "labels": {
+      "__meta_discovery_app_name": "zuul-gate",
+      "__meta_discovery_app_instance_name": "zuul-gate-1",
+      "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
+      "__meta_discovery_app_instance_status": "UP",
+      "__meta_discovery_app_instance_last_updated_date": "2022-12-16 13:17:02"
+    }
+  },
+  {
+    "targets": [
+      "7f343a34022f:8080"
+    ],
+    "labels": {
+      "__meta_discovery_app_name": "eca-mail",
       "__meta_discovery_app_instance_name": "eca-mail-1",
       "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
-      "__meta_discovery_app_name": "eca-mail"
+      "__meta_discovery_app_instance_status": "UP",
+      "__meta_discovery_app_instance_last_updated_date": "2022-12-16 13:17:02"
     }
   },
   {
     "targets": [
-      "9d5feb5ef3c7:8080"
+      "5fc8351f29c4:8080"
     ],
     "labels": {
+      "__meta_discovery_app_name": "eca-audit-log",
+      "__meta_discovery_app_instance_name": "eca-audit-log-1",
+      "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
+      "__meta_discovery_app_instance_status": "UP",
+      "__meta_discovery_app_instance_last_updated_date": "2022-12-16 13:17:04"
+    }
+  },
+  {
+    "targets": [
+      "1e91c94aa786:8080"
+    ],
+    "labels": {
+      "__meta_discovery_app_name": "eca-data-storage",
       "__meta_discovery_app_instance_name": "eca-data-storage-1",
       "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
-      "__meta_discovery_app_name": "eca-data-storage"
+      "__meta_discovery_app_instance_status": "UP",
+      "__meta_discovery_app_instance_last_updated_date": "2022-12-16 13:17:07"
     }
   },
   {
     "targets": [
-      "73ea70e84ef9:8080"
+      "132eb1c5dd15:8080"
     ],
     "labels": {
+      "__meta_discovery_app_name": "eca-oauth",
       "__meta_discovery_app_instance_name": "eca-oauth-1",
       "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
-      "__meta_discovery_app_name": "eca-oauth"
+      "__meta_discovery_app_instance_status": "UP",
+      "__meta_discovery_app_instance_last_updated_date": "2022-12-16 13:17:09"
     }
   },
   {
     "targets": [
-      "7eec82f6bed5:8080"
+      "26213c37a099:8080"
     ],
     "labels": {
+      "__meta_discovery_app_name": "eca-server",
       "__meta_discovery_app_instance_name": "eca-server-1",
       "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
-      "__meta_discovery_app_name": "eca-server"
+      "__meta_discovery_app_instance_status": "UP",
+      "__meta_discovery_app_instance_last_updated_date": "2022-12-16 13:17:12"
     }
   },
   {
     "targets": [
-      "f3f660b2fb20:8080"
+      "2708d3ca6b79:8080"
     ],
     "labels": {
+      "__meta_discovery_app_name": "eca-server",
       "__meta_discovery_app_instance_name": "eca-server-2",
       "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
-      "__meta_discovery_app_name": "eca-server"
+      "__meta_discovery_app_instance_status": "UP",
+      "__meta_discovery_app_instance_last_updated_date": "2022-12-16 13:16:46"
     }
   }
 ]
