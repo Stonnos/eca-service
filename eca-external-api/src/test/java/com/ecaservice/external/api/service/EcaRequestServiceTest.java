@@ -91,6 +91,7 @@ class EcaRequestServiceTest extends AbstractJpaTest {
         evaluationRequestEntity.setClassifierPath(CLASSIFIER_ABSOLUTE_PATH);
         evaluationRequestRepository.save(evaluationRequestEntity);
         doThrow(ProcessFileException.class).when(objectStorageService).removeObject(CLASSIFIER_ABSOLUTE_PATH);
+        ecaRequestService.deleteClassifierModel(evaluationRequestEntity);
         var actual = evaluationRequestRepository.findById(evaluationRequestEntity.getId()).orElse(null);
         assertThat(actual).isNotNull();
         assertThat(actual.getClassifierPath()).isNotNull();

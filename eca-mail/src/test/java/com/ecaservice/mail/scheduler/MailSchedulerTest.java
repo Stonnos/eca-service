@@ -4,12 +4,12 @@ import com.ecaservice.mail.AbstractJpaTest;
 import com.ecaservice.mail.TestHelperUtils;
 import com.ecaservice.mail.config.MailConfig;
 import com.ecaservice.mail.metrics.MetricsService;
-import com.ecaservice.mail.service.MailSenderService;
 import com.ecaservice.mail.model.Email;
 import com.ecaservice.mail.model.EmailStatus;
 import com.ecaservice.mail.repository.EmailRepository;
+import com.ecaservice.mail.service.MailSenderService;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
 import javax.inject.Inject;
@@ -32,9 +32,9 @@ class MailSchedulerTest extends AbstractJpaTest {
     private MailConfig mailConfig;
     @Inject
     private EmailRepository emailRepository;
-    @Mock
+    @MockBean
     private MailSenderService mailSenderService;
-    @Mock
+    @MockBean
     private MetricsService metricsService;
 
     private MailScheduler mailScheduler;
@@ -60,34 +60,43 @@ class MailSchedulerTest extends AbstractJpaTest {
         emailRepository.save(email2);
         Email email3 = TestHelperUtils.createEmail(LocalDateTime.now().minusHours(3L), EmailStatus.EXCEEDED);
         emailRepository.save(email3);
-        Email email4 = TestHelperUtils.createEmail(LocalDateTime.now().minusHours(4L), EmailStatus.NOT_SENT);
-        email4.setFailedAttemptsToSent(mailConfig.getMaxFailedAttemptsToSent());
-        emailRepository.save(email4);
-        doThrow(new MessagingException()).when(mailSenderService).sendEmail(email4);
         mailScheduler.sendEmails();
-        email = emailRepository.findById(email.getId()).orElse(null);
-        assertThat(email).isNotNull();
-        assertThat(email.getStatus()).isEqualTo(EmailStatus.SENT);
-        assertThat(email.getSentDate()).isNotNull();
-        email1 = emailRepository.findById(email1.getId()).orElse(null);
-        assertThat(email1).isNotNull();
-        assertThat(email1.getStatus()).isEqualTo(EmailStatus.SENT);
-        assertThat(email1.getSentDate()).isNotNull();
-        email4 = emailRepository.findById(email4.getId()).orElse(null);
-        assertThat(email4).isNotNull();
-        assertThat(email4.getStatus()).isEqualTo(EmailStatus.EXCEEDED);
-        assertThat(email4.getSentDate()).isNull();
-        verify(mailSenderService, times(3)).sendEmail(any(Email.class));
+        verifyEmailIsSent(email);
+        verifyEmailIsSent(email1);
+        verify(mailSenderService, times(2)).sendEmail(any(Email.class));
     }
 
     @Test
     void testNotSentEmail() throws MessagingException {
         Email email = TestHelperUtils.createEmail(LocalDateTime.now(), EmailStatus.NEW);
         emailRepository.save(email);
-        doThrow(new MessagingException()).when(mailSenderService).sendEmail(email);
+        doThrow(MessagingException.class).when(mailSenderService).sendEmail(any(Email.class));
+        internalTestEmailSent(email, EmailStatus.NOT_SENT);
+    }
+
+    @Test
+    void testExceededEmail() throws MessagingException {
+        Email email = TestHelperUtils.createEmail(LocalDateTime.now(), EmailStatus.NOT_SENT);
+        email.setFailedAttemptsToSent(mailConfig.getMaxFailedAttemptsToSent());
+        emailRepository.save(email);
+        doThrow(MessagingException.class).when(mailSenderService).sendEmail(any(Email.class));
+        internalTestEmailSent(email, EmailStatus.EXCEEDED);
+    }
+
+    private void internalTestEmailSent(Email email, EmailStatus expectedStatus) {
         mailScheduler.sendEmails();
+        verifyEmailStatus(email, expectedStatus);
+    }
+
+    private Email verifyEmailStatus(Email email, EmailStatus expectedStatus) {
         Email actual = emailRepository.findById(email.getId()).orElse(null);
         assertThat(actual).isNotNull();
-        assertThat(actual.getStatus()).isEqualTo(EmailStatus.NOT_SENT);
+        assertThat(actual.getStatus()).isEqualTo(expectedStatus);
+        return actual;
+    }
+
+    private void verifyEmailIsSent(Email email) {
+        Email actual = verifyEmailStatus(email, EmailStatus.SENT);
+        assertThat(actual.getSentDate()).isNotNull();
     }
 }

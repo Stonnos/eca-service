@@ -71,7 +71,7 @@ class ExperimentDataCleanerTest extends AbstractJpaTest {
         experimentRepository.saveAll(experiments);
         experimentDataCleaner.removeExperimentsModels();
         verify(experimentDataService, atLeastOnce()).removeExperimentModel(argumentCaptor.capture());
-        assertThat(argumentCaptor.getValue()).isEqualTo(experimentToRemove);
+        assertThat(argumentCaptor.getValue().getId()).isEqualTo(experimentToRemove.getId());
     }
 
     @Test
@@ -85,6 +85,6 @@ class ExperimentDataCleanerTest extends AbstractJpaTest {
         experimentRepository.saveAll(experiments);
         experimentDataCleaner.removeExperimentsTrainingData();
         verify(experimentDataService, atLeastOnce()).removeExperimentTrainingData(argumentCaptor.capture());
-        assertThat(argumentCaptor.getValue()).isEqualTo(experimentToRemove);
+        assertThat(argumentCaptor.getValue().getId()).isEqualTo(experimentToRemove.getId());
     }
 }
