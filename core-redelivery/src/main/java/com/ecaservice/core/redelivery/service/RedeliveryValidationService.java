@@ -44,23 +44,24 @@ public class RedeliveryValidationService {
         var beans = applicationContext.getBeansWithAnnotation(Retryable.class);
         if (CollectionUtils.isEmpty(beans)) {
             log.info("No one bean annotated with [{}] found. Skipped...", Retryable.class.getSimpleName());
-        }
-        var retryMethods = getAllRetryMethods(beans);
-        log.info("Found [{}] methods annotated with [{}]", retryMethods.size(), Retry.class.getSimpleName());
-        Set<String> retryCodes = newHashSet();
-        for (var method : retryMethods) {
-            var retryAnnotation = AnnotationUtils.findAnnotation(method, Retry.class);
-            Assert.notNull(retryAnnotation, "Expected not null retry annotation");
-            if (!retryCodes.add(retryAnnotation.value())) {
-                throw new IllegalArgumentException(
-                        String.format("Found duplicate code [%s] for annotation [%s]. Codes must be unique",
-                                retryAnnotation.value(), Retry.class.getSimpleName()));
-            }
-            if (method.getParameters().length == 0) {
-                throw new IllegalStateException(
-                        String.format("[%s#%s] annotated with [%s], code [%s], has no input parameters",
-                                method.getDeclaringClass().getSimpleName(), method.getName(),
-                                Retry.class.getSimpleName(), retryAnnotation.value()));
+        } else {
+            var retryMethods = getAllRetryMethods(beans);
+            log.info("Found [{}] methods annotated with [{}]", retryMethods.size(), Retry.class.getSimpleName());
+            Set<String> retryCodes = newHashSet();
+            for (var method : retryMethods) {
+                var retryAnnotation = AnnotationUtils.findAnnotation(method, Retry.class);
+                Assert.notNull(retryAnnotation, "Expected not null retry annotation");
+                if (!retryCodes.add(retryAnnotation.value())) {
+                    throw new IllegalArgumentException(
+                            String.format("Found duplicate code [%s] for annotation [%s]. Codes must be unique",
+                                    retryAnnotation.value(), Retry.class.getSimpleName()));
+                }
+                if (method.getParameters().length == 0) {
+                    throw new IllegalStateException(
+                            String.format("[%s#%s] annotated with [%s], code [%s], has no input parameters",
+                                    method.getDeclaringClass().getSimpleName(), method.getName(),
+                                    Retry.class.getSimpleName(), retryAnnotation.value()));
+                }
             }
         }
         log.info("Redelivery annotations validation has been passed");
@@ -71,9 +72,9 @@ public class RedeliveryValidationService {
         for (var entry : beans.entrySet()) {
             Class<?> targetClass = AopUtils.getTargetClass(entry.getValue());
             var methods = ReflectionUtils.getDeclaredMethods(targetClass);
-            var redeliverMethods = getRetryMethods(methods);
-            if (!CollectionUtils.isEmpty(redeliverMethods)) {
-                resultMethods.addAll(redeliverMethods);
+            var retryMethods = getRetryMethods(methods);
+            if (!CollectionUtils.isEmpty(retryMethods)) {
+                resultMethods.addAll(retryMethods);
             }
         }
         return resultMethods;
