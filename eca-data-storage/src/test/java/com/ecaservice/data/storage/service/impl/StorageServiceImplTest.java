@@ -5,7 +5,10 @@ import com.ecaservice.data.storage.AbstractJpaTest;
 import com.ecaservice.data.storage.config.StorageTestConfiguration;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.model.ColumnModel;
+import com.ecaservice.data.storage.repository.AttributeRepository;
+import com.ecaservice.data.storage.repository.AttributeValueRepository;
 import com.ecaservice.data.storage.repository.InstancesRepository;
+import com.ecaservice.data.storage.service.AttributeService;
 import com.ecaservice.data.storage.service.InstancesConversionService;
 import com.ecaservice.data.storage.service.InstancesResultSetExtractor;
 import com.ecaservice.data.storage.service.InstancesService;
@@ -40,7 +43,8 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import({StorageServiceImpl.class, InstancesService.class, TransactionalService.class,
-        SqlQueryHelper.class, StorageTestConfiguration.class, InstancesConversionService.class})
+        SqlQueryHelper.class, StorageTestConfiguration.class, InstancesConversionService.class,
+        AttributeService.class})
 class StorageServiceImplTest extends AbstractJpaTest {
 
     private static final String TEST_TABLE = "test_table";
@@ -61,6 +65,10 @@ class StorageServiceImplTest extends AbstractJpaTest {
 
     @Inject
     private InstancesRepository instancesRepository;
+    @Inject
+    private AttributeRepository attributeRepository;
+    @Inject
+    private AttributeValueRepository attributeValueRepository;
 
     @MockBean
     private TableNameService tableNameService;
@@ -82,6 +90,8 @@ class StorageServiceImplTest extends AbstractJpaTest {
 
     @Override
     public void deleteAll() {
+        attributeValueRepository.deleteAll();
+        attributeRepository.deleteAll();
         instancesRepository.deleteAll();
     }
 

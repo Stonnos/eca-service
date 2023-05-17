@@ -10,6 +10,7 @@ import com.ecaservice.data.storage.exception.TableExistsException;
 import com.ecaservice.data.storage.filter.InstancesFilter;
 import com.ecaservice.data.storage.model.ColumnModel;
 import com.ecaservice.data.storage.repository.InstancesRepository;
+import com.ecaservice.data.storage.service.AttributeService;
 import com.ecaservice.data.storage.service.InstancesService;
 import com.ecaservice.data.storage.service.StorageService;
 import com.ecaservice.data.storage.service.TableMetaDataProvider;
@@ -53,6 +54,7 @@ public class StorageServiceImpl implements StorageService {
 
     private final EcaDsConfig ecaDsConfig;
     private final InstancesService instancesService;
+    private final AttributeService attributeService;
     private final UserService userService;
     private final TableNameService tableNameService;
     private final TableMetaDataProvider tableMetaDataProvider;
@@ -75,6 +77,7 @@ public class StorageServiceImpl implements StorageService {
 
     @Override
     @Audit(value = SAVE_INSTANCES, correlationIdKey = "#result.id")
+    @Transactional
     public InstancesEntity saveData(Instances instances, String tableName) {
         log.info("Starting to save instances into table [{}]", tableName);
         if (tableNameService.tableExists(tableName)) {
@@ -85,6 +88,7 @@ public class StorageServiceImpl implements StorageService {
         }
         instancesService.saveInstances(tableName, instances);
         InstancesEntity instancesEntity = saveInstancesEntity(tableName, instances);
+        attributeService.saveAttributes(instancesEntity, instances);
         log.info("Instances has been saved into table [{}]", tableName);
         return instancesEntity;
     }
