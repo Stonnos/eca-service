@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static eca.data.db.SqlQueryHelper.truncateStringValue;
+import static eca.util.Utils.removeQuotes;
+
 /**
  * Utility class.
  *
@@ -45,10 +48,26 @@ public class Utils {
         return IntStream.range(0, attribute.numValues())
                 .mapToObj(i -> {
                     var attributeValueEntity = new AttributeValueEntity();
-                    attributeValueEntity.setValue(attribute.value(i));
+                    String value = getFormattedAttributeValue(attribute, i);
+                    attributeValueEntity.setValue(value);
                     attributeValueEntity.setValueOrder(i);
                     return attributeValueEntity;
                 })
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Gets formatted attribute value.
+     * Formatting includes:
+     * 1. Quotes removal
+     * 2. Value truncation to 255 length, if its length greater than 255 symbols
+     *
+     * @param attribute  - attribute
+     * @param valueIndex - value index
+     * @return formatted attribute value
+     */
+    public static String getFormattedAttributeValue(Attribute attribute, int valueIndex) {
+        String val = removeQuotes(attribute.value(valueIndex));
+        return truncateStringValue(val);
     }
 }

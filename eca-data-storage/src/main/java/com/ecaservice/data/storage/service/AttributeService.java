@@ -30,6 +30,9 @@ public class AttributeService {
 
     /**
      * Saves instances attributes info into database.
+     * Each attribute is formatted according to the following rules:
+     * 1. Each special character is transformed to '_' symbol
+     * 2. Each attribute name is truncated to 255 length, if its length greater than 255 symbols
      *
      * @param instancesEntity - instances entity
      * @param instances       - instances
