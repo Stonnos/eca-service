@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v2-create-attribute-table.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="create_attribute_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="instances"/>
+            <not>
+                <tableExists tableName="attribute"/>
+            </not>
+        </preConditions>
+        <createTable tableName="attribute">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="column_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="_type" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="selected" type="boolean" defaultValueBoolean="true"/>
+            <column name="_index" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="instances_id" type="bigint">
+                <constraints foreignKeyName="fk_attribute_instances_id"
+                             referencedTableName="instances" referencedColumnNames="id"
+                             nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="add_instances_id_index_unique_index" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="attribute"/>
+            <columnExists tableName="attribute" columnName="instances_id"/>
+            <columnExists tableName="attribute" columnName="_index"/>
+        </preConditions>
+        <addUniqueConstraint tableName="attribute" columnNames="instances_id, _index"
+                             constraintName="instances_id_index_unique_index"/>
+    </changeSet>
+
+    <changeSet id="add_instances_id_column_name_unique_index" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="attribute"/>
+            <columnExists tableName="attribute" columnName="instances_id"/>
+            <columnExists tableName="attribute" columnName="column_name"/>
+        </preConditions>
+        <addUniqueConstraint tableName="attribute" columnNames="instances_id, column_name"
+                             constraintName="instances_id_column_name_unique_index"/>
+    </changeSet>
+
+    <changeSet id="create_attribute_value_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="attribute"/>
+            <not>
+                <tableExists tableName="attribute_value"/>
+            </not>
+        </preConditions>
+        <createTable tableName="attribute_value">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="_value" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value_order" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="attribute_id" type="bigint">
+                <constraints foreignKeyName="fk_attribute_value_attribute_id"
+                             referencedTableName="attribute" referencedColumnNames="id"
+                             nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="add_attribute_id_value_unique_index" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="attribute_value"/>
+            <columnExists tableName="attribute_value" columnName="attribute_id"/>
+            <columnExists tableName="attribute_value" columnName="_value"/>
+        </preConditions>
+        <addUniqueConstraint tableName="attribute_value" columnNames="attribute_id, _value"
+                             constraintName="attribute_id_value_unique_index"/>
+    </changeSet>
+
+    <changeSet id="add_attribute_id_value_order_unique_index" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="attribute_value"/>
+            <columnExists tableName="attribute_value" columnName="attribute_id"/>
+            <columnExists tableName="attribute_value" columnName="value_order"/>
+        </preConditions>
+        <addUniqueConstraint tableName="attribute_value" columnNames="attribute_id, value_order"
+                             constraintName="attribute_id_value_order_unique_index"/>
+    </changeSet>
+
+</databaseChangeLog>
