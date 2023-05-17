@@ -74,5 +74,5 @@ public class AttributeEntity {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "attribute_id", nullable = false)
     @OrderBy("valueOrder")
-    private List<AttributeValueEntity> classifierInputOptions;
+    private List<AttributeValueEntity> values;
 }
