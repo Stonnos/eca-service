@@ -90,16 +90,16 @@ public class SearchQueryCreator {
                                    String searchQuery,
                                    SqlPreparedQuery.SqlPreparedQueryBuilder sqlPreparedQueryBuilder,
                                    StringBuilder queryString) {
-        var searchColumns = getTableSearchColumns(instancesEntity, searchQuery);
-        Object[] args = new Object[searchColumns.size()];
+        var searchAttributes = getTableSearchColumns(instancesEntity, searchQuery);
+        Object[] args = new Object[searchAttributes.size()];
         queryString.append(WHERE_PART);
-        int lastColumnIndex = searchColumns.size() - 1;
+        int lastColumnIndex = searchAttributes.size() - 1;
         IntStream.range(0, lastColumnIndex).forEach(i -> {
-            var columnModel = searchColumns.get(i);
-            appendSearchPredicate(columnModel, searchQuery, queryString, args, i, false);
+            var attributeEntity = searchAttributes.get(i);
+            appendSearchPredicate(attributeEntity, searchQuery, queryString, args, i, false);
         });
-        var lastColumn = searchColumns.get(lastColumnIndex);
-        appendSearchPredicate(lastColumn, searchQuery, queryString, args, lastColumnIndex, true);
+        var lastAttributes = searchAttributes.get(lastColumnIndex);
+        appendSearchPredicate(lastAttributes, searchQuery, queryString, args, lastColumnIndex, true);
         sqlPreparedQueryBuilder.args(args);
     }
 
