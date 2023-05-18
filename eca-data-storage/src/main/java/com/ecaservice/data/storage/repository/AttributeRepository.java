@@ -2,6 +2,7 @@ package com.ecaservice.data.storage.repository;
 
 import com.ecaservice.data.storage.entity.AttributeEntity;
 import com.ecaservice.data.storage.entity.InstancesEntity;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -19,5 +20,6 @@ public interface AttributeRepository extends JpaRepository<AttributeEntity, Long
      * @param instancesEntity - instances entity
      * @return attributes list
      */
+    @EntityGraph(value = "attributeValues", type = EntityGraph.EntityGraphType.FETCH)
     List<AttributeEntity> findByInstancesEntityOrderByIndex(InstancesEntity instancesEntity);
 }

@@ -7,11 +7,12 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
@@ -31,6 +32,11 @@ import java.util.List;
         @UniqueConstraint(columnNames = {"instances_id", "column_name"},
                 name = "instances_id_column_name_unique_index")
 })
+@NamedEntityGraph(name = "attributeValues",
+        attributeNodes = {
+                @NamedAttributeNode(value = "values")
+        }
+)
 public class AttributeEntity {
 
     @Id
@@ -71,7 +77,7 @@ public class AttributeEntity {
     /**
      * Attribute values list for nominal attribute
      */
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "attribute_id", nullable = false)
     @OrderBy("valueOrder")
     private List<AttributeValueEntity> values;
