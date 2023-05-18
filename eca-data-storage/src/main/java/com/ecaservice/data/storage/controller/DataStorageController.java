@@ -9,6 +9,7 @@ import com.ecaservice.data.storage.report.InstancesReportService;
 import com.ecaservice.data.storage.report.ReportsConfigurationService;
 import com.ecaservice.data.storage.service.InstancesLoader;
 import com.ecaservice.data.storage.service.StorageService;
+import com.ecaservice.web.dto.model.AttributeDto;
 import com.ecaservice.web.dto.model.CreateInstancesResultDto;
 import com.ecaservice.web.dto.model.DataListPageDto;
 import com.ecaservice.web.dto.model.InstancesDto;
@@ -446,7 +447,7 @@ public class DataStorageController {
                                                     ref = "#/components/examples/AttributesListResponse"
                                             ),
                                     },
-                                    array = @ArraySchema(schema = @Schema(type = "string"))
+                                    array = @ArraySchema(schema = @Schema(implementation = AttributeDto.class))
                             )
                     ),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
@@ -475,8 +476,8 @@ public class DataStorageController {
             }
     )
     @GetMapping(value = "/attributes/{id}")
-    public List<String> getAttributes(@Parameter(description = "Instances id", example = "1", required = true)
-                                      @PathVariable @Min(VALUE_1) @Max(Long.MAX_VALUE) Long id) {
+    public List<AttributeDto> getAttributes(@Parameter(description = "Instances id", example = "1", required = true)
+                                            @PathVariable @Min(VALUE_1) @Max(Long.MAX_VALUE) Long id) {
         log.info("Received attributes request for instances [{}]", id);
         return storageService.getAttributes(id);
     }

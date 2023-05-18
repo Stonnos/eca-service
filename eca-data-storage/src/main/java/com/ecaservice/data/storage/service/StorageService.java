@@ -1,6 +1,7 @@
 package com.ecaservice.data.storage.service;
 
 import com.ecaservice.data.storage.entity.InstancesEntity;
+import com.ecaservice.web.dto.model.AttributeDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import org.springframework.data.domain.Page;
@@ -78,5 +79,5 @@ public interface StorageService {
      * @param id - instances id
      * @return instances attributes
      */
-    List<String> getAttributes(long id);
+    List<AttributeDto> getAttributes(long id);
 }

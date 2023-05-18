@@ -4,7 +4,7 @@ import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.data.storage.AbstractJpaTest;
 import com.ecaservice.data.storage.config.StorageTestConfiguration;
 import com.ecaservice.data.storage.entity.InstancesEntity;
-import com.ecaservice.data.storage.model.ColumnModel;
+import com.ecaservice.data.storage.mapping.AttributeMapperImpl;
 import com.ecaservice.data.storage.repository.AttributeRepository;
 import com.ecaservice.data.storage.repository.AttributeValueRepository;
 import com.ecaservice.data.storage.repository.InstancesRepository;
@@ -13,7 +13,6 @@ import com.ecaservice.data.storage.service.InstancesConversionService;
 import com.ecaservice.data.storage.service.InstancesResultSetExtractor;
 import com.ecaservice.data.storage.service.InstancesService;
 import com.ecaservice.data.storage.service.SearchQueryCreator;
-import com.ecaservice.data.storage.service.TableMetaDataProvider;
 import com.ecaservice.data.storage.service.TableNameService;
 import com.ecaservice.data.storage.service.TransactionalService;
 import com.ecaservice.data.storage.service.UserService;
@@ -28,7 +27,6 @@ import weka.core.Instances;
 
 import javax.inject.Inject;
 import java.util.Collections;
-import java.util.List;
 
 import static com.ecaservice.data.storage.TestHelperUtils.createInstancesEntity;
 import static com.ecaservice.data.storage.TestHelperUtils.loadInstances;
@@ -44,7 +42,7 @@ import static org.mockito.Mockito.when;
  */
 @Import({StorageServiceImpl.class, InstancesService.class, TransactionalService.class,
         SqlQueryHelper.class, StorageTestConfiguration.class, InstancesConversionService.class,
-        AttributeService.class})
+        AttributeService.class, AttributeMapperImpl.class})
 class StorageServiceImplTest extends AbstractJpaTest {
 
     private static final String TEST_TABLE = "test_table";
@@ -52,13 +50,6 @@ class StorageServiceImplTest extends AbstractJpaTest {
     private static final String NEW_TABLE_NAME = "new_table_name";
     private static final long ID = 2L;
     private static final String USER_NAME = "admin";
-
-    private static final List<ColumnModel> COLUMNS = Collections.singletonList(
-            ColumnModel.builder()
-                    .columnName("class")
-                    .dataType("character varying")
-                    .build()
-    );
 
     @Inject
     private StorageServiceImpl storageService;
@@ -76,8 +67,6 @@ class StorageServiceImplTest extends AbstractJpaTest {
     private UserService userService;
     @MockBean
     private SearchQueryCreator searchQueryCreator;
-    @MockBean
-    private TableMetaDataProvider tableMetaDataProvider;
     @MockBean
     private InstancesResultSetExtractor instancesResultSetExtractor;
 
@@ -139,14 +128,6 @@ class StorageServiceImplTest extends AbstractJpaTest {
     @Test
     void testGetNotExistingData() {
         assertThrows(EntityNotFoundException.class, () -> storageService.getData(ID, null));
-    }
-
-    @Test
-    void testGetAttributes() {
-        when(tableMetaDataProvider.getTableColumns(instancesEntity.getTableName()))
-                .thenReturn(COLUMNS);
-        var actual = storageService.getAttributes(instancesEntity.getId());
-        assertThat(actual).hasSameSizeAs(COLUMNS);
     }
 
     private void createAndSaveInstancesEntity() {

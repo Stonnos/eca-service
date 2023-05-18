@@ -12,6 +12,7 @@ import com.ecaservice.data.storage.repository.InstancesRepository;
 import com.ecaservice.data.storage.service.InstancesLoader;
 import com.ecaservice.data.storage.service.impl.StorageServiceImpl;
 import com.ecaservice.oauth2.test.controller.AbstractControllerTest;
+import com.ecaservice.web.dto.model.AttributeDto;
 import com.ecaservice.web.dto.model.CreateInstancesResultDto;
 import com.ecaservice.web.dto.model.InstancesDto;
 import com.ecaservice.web.dto.model.PageDto;
@@ -35,6 +36,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.ecaservice.data.storage.TestHelperUtils.bearerHeader;
+import static com.ecaservice.data.storage.TestHelperUtils.createAttributeDto;
 import static com.ecaservice.data.storage.TestHelperUtils.createInstancesEntity;
 import static com.ecaservice.data.storage.TestHelperUtils.createPageRequestDto;
 import static com.ecaservice.data.storage.TestHelperUtils.createReportProperties;
@@ -62,7 +64,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(InstancesMapperImpl.class)
 class DataStorageControllerTest extends AbstractControllerTest {
 
-    private static final List<String> EXPECTED_ATTRIBUTES = List.of("attr1", "attr2");
+    private static final List<AttributeDto> EXPECTED_ATTRIBUTES = List.of(
+            createAttributeDto("attr1"),
+            createAttributeDto("attr2")
+    );
     private static final List<String> VALUES = List.of("val1", "val2");
 
     private static final String BASE_URL = "/instances";

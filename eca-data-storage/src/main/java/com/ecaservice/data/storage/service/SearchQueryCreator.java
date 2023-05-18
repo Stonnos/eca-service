@@ -1,7 +1,9 @@
 package com.ecaservice.data.storage.service;
 
 import com.ecaservice.core.filter.exception.FieldNotFoundException;
-import com.ecaservice.data.storage.model.ColumnModel;
+import com.ecaservice.data.storage.entity.AttributeEntity;
+import com.ecaservice.data.storage.entity.AttributeType;
+import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.model.SqlPreparedQuery;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import lombok.RequiredArgsConstructor;
@@ -39,36 +41,35 @@ public class SearchQueryCreator {
     private static final String VARCHAR_TYPE = "character varying";
     private static final String COUNT_QUERY_PART = "select count(*) from %s%s";
 
-    private final TableMetaDataProvider tableMetaDataProvider;
+    private final AttributeService attributeService;
 
     /**
      * Builds sql search query based on page request model.
      *
-     * @param tableName      - table name
-     * @param pageRequestDto - page request
+     * @param instancesEntity - table name
+     * @param pageRequestDto  - page request
      * @return sql prepared query
      */
-    public SqlPreparedQuery buildSqlQuery(String tableName, PageRequestDto pageRequestDto) {
-        if (!isValidSortField(tableName, pageRequestDto)) {
+    public SqlPreparedQuery buildSqlQuery(InstancesEntity instancesEntity, PageRequestDto pageRequestDto) {
+        if (!isValidSortField(instancesEntity, pageRequestDto)) {
             throw new FieldNotFoundException(
                     String.format("Sort field [%s] doesn't exists", pageRequestDto.getSortField()));
         }
-        return internalBuildSqlQuery(tableName, pageRequestDto);
+        return internalBuildSqlQuery(instancesEntity, pageRequestDto);
     }
 
-    private SqlPreparedQuery internalBuildSqlQuery(String tableName, PageRequestDto pageRequestDto) {
+    private SqlPreparedQuery internalBuildSqlQuery(InstancesEntity instancesEntity, PageRequestDto pageRequestDto) {
         var sqlPreparedQueryBuilder = SqlPreparedQuery.builder();
         StringBuilder queryString = new StringBuilder();
         if (StringUtils.isNotBlank(pageRequestDto.getSearchQuery())) {
-            appendSearchQuery(tableName, pageRequestDto.getSearchQuery().toLowerCase(), sqlPreparedQueryBuilder,
-                    queryString);
+            appendSearchQuery(instancesEntity, pageRequestDto.getSearchQuery().toLowerCase(), sqlPreparedQueryBuilder, queryString);
         }
-        String sqlCountQuery = String.format(COUNT_QUERY_PART, tableName, queryString.toString());
+        String sqlCountQuery = String.format(COUNT_QUERY_PART, instancesEntity.getTableName(), queryString);
         if (StringUtils.isNotBlank(pageRequestDto.getSortField())) {
             appendOrderBy(queryString, pageRequestDto);
         }
         appendLimitOffset(queryString, pageRequestDto);
-        String sqlQuery = String.format(SELECT_PART, tableName, queryString.toString());
+        String sqlQuery = String.format(SELECT_PART, instancesEntity.getTableName(), queryString);
         return sqlPreparedQueryBuilder
                 .query(sqlQuery)
                 .countQuery(sqlCountQuery)
@@ -85,59 +86,62 @@ public class SearchQueryCreator {
         queryString.append(String.format(ORDER_BY_PART, pageRequestDto.getSortField(), sortMode));
     }
 
-    private void appendSearchQuery(String tableName,
+    private void appendSearchQuery(InstancesEntity instancesEntity,
                                    String searchQuery,
                                    SqlPreparedQuery.SqlPreparedQueryBuilder sqlPreparedQueryBuilder,
                                    StringBuilder queryString) {
-        var columns = getTableSearchColumns(tableName, searchQuery);
-        Object[] args = new Object[columns.size()];
+        var searchColumns = getTableSearchColumns(instancesEntity, searchQuery);
+        Object[] args = new Object[searchColumns.size()];
         queryString.append(WHERE_PART);
-        int lastColumnIndex = columns.size() - 1;
+        int lastColumnIndex = searchColumns.size() - 1;
         IntStream.range(0, lastColumnIndex).forEach(i -> {
-            var columnModel = columns.get(i);
+            var columnModel = searchColumns.get(i);
             appendSearchPredicate(columnModel, searchQuery, queryString, args, i, false);
         });
-        var lastColumn = columns.get(lastColumnIndex);
+        var lastColumn = searchColumns.get(lastColumnIndex);
         appendSearchPredicate(lastColumn, searchQuery, queryString, args, lastColumnIndex, true);
         sqlPreparedQueryBuilder.args(args);
     }
 
-    private List<ColumnModel> getTableSearchColumns(String tableName, String searchQuery) {
-        return tableMetaDataProvider.getTableColumns(tableName).stream()
-                .filter(columnModel -> isSearchSupported(columnModel, searchQuery))
+    private List<AttributeEntity> getTableSearchColumns(InstancesEntity instancesEntity, String searchQuery) {
+        return attributeService.getAttributes(instancesEntity)
+                .stream()
+                .filter(attributeEntity -> isSearchSupported(attributeEntity, searchQuery))
                 .collect(Collectors.toList());
     }
 
-    private void appendSearchPredicate(ColumnModel columnModel, String searchQuery,
+    private void appendSearchPredicate(AttributeEntity attributeEntity, String searchQuery,
                                        StringBuilder queryString, Object[] args, int argIndex, boolean lastPredicate) {
-        if (isNumberSearchSupported(columnModel, searchQuery)) {
+        if (isNumberSearchSupported(attributeEntity, searchQuery)) {
             String part = lastPredicate ? EQUAL_PART : EQUAL_OR_PART;
-            queryString.append(String.format(part, columnModel.getColumnName()));
+            queryString.append(String.format(part, attributeEntity.getColumnName()));
             args[argIndex] = new BigDecimal(searchQuery);
-        } else if (VARCHAR_TYPE.equals(columnModel.getDataType())) {
+        } else if (AttributeType.NOMINAL.equals(attributeEntity.getType())) {
             String part = lastPredicate ? LIKE_PART : LIKE_OR_PART;
-            queryString.append(String.format(part, columnModel.getColumnName()));
+            queryString.append(String.format(part, attributeEntity.getColumnName()));
             args[argIndex] = MessageFormat.format(LIKE_FORMAT, searchQuery);
         } else {
-            throw new IllegalStateException(String.format("Can't create search predicate for column [%s] of type [%s]",
-                    columnModel.getColumnName(), columnModel.getDataType()));
+            throw new IllegalStateException(
+                    String.format("Can't create search predicate for attribute [%s] of type [%s]",
+                            attributeEntity.getColumnName(), attributeEntity.getType()));
         }
     }
 
-    private boolean isSearchSupported(ColumnModel columnModel, String searchQuery) {
-        return isNumberSearchSupported(columnModel, searchQuery) || VARCHAR_TYPE.equals(columnModel.getDataType());
+    private boolean isSearchSupported(AttributeEntity attributeEntity, String searchQuery) {
+        return isNumberSearchSupported(attributeEntity, searchQuery) ||
+                AttributeType.NOMINAL.equals(attributeEntity.getType());
     }
 
-    private boolean isNumberSearchSupported(ColumnModel columnModel, String searchQuery) {
-        return NUMERIC_TYPE.equals(columnModel.getDataType()) && NumberUtils.isParsable(searchQuery);
+    private boolean isNumberSearchSupported(AttributeEntity attributeEntity, String searchQuery) {
+        return AttributeType.NUMERIC.equals(attributeEntity.getType()) && NumberUtils.isParsable(searchQuery);
     }
 
-    private boolean isValidSortField(String tableName, PageRequestDto pageRequestDto) {
+    private boolean isValidSortField(InstancesEntity instancesEntity, PageRequestDto pageRequestDto) {
         if (StringUtils.isBlank(pageRequestDto.getSortField())) {
             return true;
         }
-        var columns = tableMetaDataProvider.getTableColumns(tableName);
-        return columns.stream()
-                .anyMatch(columnModel -> columnModel.getColumnName().equals(pageRequestDto.getSortField()));
+        var attributes = attributeService.getAttributes(instancesEntity);
+        return attributes.stream()
+                .anyMatch(attributeEntity -> attributeEntity.getColumnName().equals(pageRequestDto.getSortField()));
     }
 }

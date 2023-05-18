@@ -6,6 +6,7 @@ import com.ecaservice.data.storage.entity.AttributeValueEntity;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.model.report.ReportProperties;
 import com.ecaservice.data.storage.model.report.ReportType;
+import com.ecaservice.web.dto.model.AttributeDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import eca.data.file.resource.FileResource;
 import eca.data.file.xls.XLSLoader;
@@ -146,5 +147,18 @@ public class TestHelperUtils {
         attributeValueEntity.setValue(value);
         attributeValueEntity.setValueOrder(order);
         return attributeValueEntity;
+    }
+
+    /**
+     * Creates attribute dto.
+     *
+     * @param name - attribute name
+     * @return attribute dto
+     */
+    public static AttributeDto createAttributeDto(String name) {
+        var attributeDto = new AttributeDto();
+        attributeDto.setName(name);
+        attributeDto.setSelected(true);
+        return attributeDto;
     }
 }

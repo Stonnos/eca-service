@@ -8,14 +8,14 @@ import com.ecaservice.data.storage.entity.InstancesEntity_;
 import com.ecaservice.data.storage.exception.EmptyDataException;
 import com.ecaservice.data.storage.exception.TableExistsException;
 import com.ecaservice.data.storage.filter.InstancesFilter;
-import com.ecaservice.data.storage.model.ColumnModel;
+import com.ecaservice.data.storage.mapping.AttributeMapper;
 import com.ecaservice.data.storage.repository.InstancesRepository;
 import com.ecaservice.data.storage.service.AttributeService;
 import com.ecaservice.data.storage.service.InstancesService;
 import com.ecaservice.data.storage.service.StorageService;
-import com.ecaservice.data.storage.service.TableMetaDataProvider;
 import com.ecaservice.data.storage.service.TableNameService;
 import com.ecaservice.data.storage.service.UserService;
+import com.ecaservice.web.dto.model.AttributeDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,6 @@ import weka.core.Instances;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.data.storage.config.audit.AuditCodes.DELETE_INSTANCES;
@@ -57,7 +56,7 @@ public class StorageServiceImpl implements StorageService {
     private final AttributeService attributeService;
     private final UserService userService;
     private final TableNameService tableNameService;
-    private final TableMetaDataProvider tableMetaDataProvider;
+    private final AttributeMapper attributeMapper;
     private final InstancesRepository instancesRepository;
 
     @Override
@@ -109,7 +108,7 @@ public class StorageServiceImpl implements StorageService {
     public PageDto<List<String>> getData(long id, PageRequestDto pageRequestDto) {
         log.info("Starting to get instances data with id [{}]", id);
         InstancesEntity instancesEntity = getById(id);
-        return instancesService.getInstances(instancesEntity.getTableName(), pageRequestDto);
+        return instancesService.getInstances(instancesEntity, pageRequestDto);
     }
 
     @Override
@@ -119,13 +118,11 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    public List<String> getAttributes(long id) {
+    public List<AttributeDto> getAttributes(long id) {
         log.info("Gets instances [{}] attributes", id);
         InstancesEntity instancesEntity = getById(id);
-        return tableMetaDataProvider.getTableColumns(instancesEntity.getTableName())
-                .stream()
-                .map(ColumnModel::getColumnName)
-                .collect(Collectors.toList());
+        var attributes = attributeService.getAttributes(instancesEntity);
+        return attributeMapper.map(attributes);
     }
 
     @Override

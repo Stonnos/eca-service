@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import weka.core.Attribute;
 import weka.core.Instances;
 
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -33,6 +34,7 @@ public class AttributeService {
      * Each attribute is formatted according to the following rules:
      * 1. Each special character is transformed to '_' symbol
      * 2. Each attribute name is truncated to 255 length, if its length greater than 255 symbols
+     * 3. Each attribute name is casted to lower case
      *
      * @param instancesEntity - instances entity
      * @param instances       - instances
@@ -45,6 +47,17 @@ public class AttributeService {
         attributeRepository.saveAll(attributesToSave);
         log.info("[{}] attributes info has been saved for instances [{}]", attributesToSave.size(),
                 instancesEntity.getTableName());
+    }
+
+    /**
+     * Gets attributes list for specified instances.
+     *
+     * @param instancesEntity - instances entity
+     * @return attributes list
+     */
+    public List<AttributeEntity> getAttributes(InstancesEntity instancesEntity) {
+        log.debug("Gets attributes list for instances [{}]", instancesEntity.getTableName());
+        return attributeRepository.findByInstancesEntityOrderByIndex(instancesEntity);
     }
 
     private AttributeEntity createAttributeEntity(Attribute attribute, InstancesEntity instancesEntity) {

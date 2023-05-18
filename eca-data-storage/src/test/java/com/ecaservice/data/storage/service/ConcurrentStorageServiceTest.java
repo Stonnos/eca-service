@@ -4,6 +4,7 @@ import com.ecaservice.data.storage.AbstractJpaTest;
 import com.ecaservice.data.storage.config.StorageTestConfiguration;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.exception.TableExistsException;
+import com.ecaservice.data.storage.mapping.AttributeMapperImpl;
 import com.ecaservice.data.storage.repository.AttributeRepository;
 import com.ecaservice.data.storage.repository.AttributeValueRepository;
 import com.ecaservice.data.storage.repository.InstancesRepository;
@@ -34,7 +35,7 @@ import static org.mockito.Mockito.when;
  */
 @Import({StorageServiceImpl.class, InstancesService.class, TransactionalService.class,
         SqlQueryHelper.class, StorageTestConfiguration.class, TableNameTestService.class,
-        InstancesConversionService.class, AttributeService.class})
+        InstancesConversionService.class, AttributeService.class, AttributeMapperImpl.class})
 class ConcurrentStorageServiceTest extends AbstractJpaTest {
 
     private static final int NUM_THREADS = 2;
@@ -55,8 +56,6 @@ class ConcurrentStorageServiceTest extends AbstractJpaTest {
 
     @MockBean
     private UserService userService;
-    @MockBean
-    private TableMetaDataProvider tableMetaDataProvider;
     @MockBean
     private SearchQueryCreator searchQueryCreator;
     @MockBean

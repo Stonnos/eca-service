@@ -1,6 +1,7 @@
 package com.ecaservice.data.storage.service;
 
 import com.ecaservice.data.storage.entity.InstancesEntity;
+import com.ecaservice.web.dto.model.AttributeDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import lombok.extern.slf4j.Slf4j;
@@ -85,7 +86,7 @@ public class ConcurrentStorageService implements StorageService {
     }
 
     @Override
-    public List<String> getAttributes(long id) {
+    public List<AttributeDto> getAttributes(long id) {
         return storageService.getAttributes(id);
     }
 }

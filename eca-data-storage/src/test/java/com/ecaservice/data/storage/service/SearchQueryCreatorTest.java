@@ -1,7 +1,9 @@
 package com.ecaservice.data.storage.service;
 
 import com.ecaservice.core.filter.exception.FieldNotFoundException;
-import com.ecaservice.data.storage.model.ColumnModel;
+import com.ecaservice.data.storage.entity.AttributeEntity;
+import com.ecaservice.data.storage.entity.AttributeType;
+import com.ecaservice.data.storage.entity.InstancesEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,9 +13,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
+import static com.ecaservice.data.storage.TestHelperUtils.createAttributeEntity;
+import static com.ecaservice.data.storage.TestHelperUtils.createInstancesEntity;
+import static com.ecaservice.data.storage.TestHelperUtils.createNominalAttributeEntity;
 import static com.ecaservice.data.storage.TestHelperUtils.createPageRequestDto;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 /**
@@ -24,23 +30,11 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class SearchQueryCreatorTest {
 
-    private static final List<ColumnModel> COLUMNS = List.of(
-            ColumnModel.builder()
-                    .columnName("column1")
-                    .dataType("character varying")
-                    .build(),
-            ColumnModel.builder()
-                    .columnName("column2")
-                    .dataType("character varying")
-                    .build(),
-            ColumnModel.builder()
-                    .columnName("column3")
-                    .dataType("character varying")
-                    .build(),
-            ColumnModel.builder()
-                    .columnName("column4")
-                    .dataType("numeric")
-                    .build()
+    private static final List<AttributeEntity> ATTRIBUTES = List.of(
+           createNominalAttributeEntity("column1", 0),
+            createNominalAttributeEntity("column2", 1),
+            createNominalAttributeEntity("column3", 2),
+            createAttributeEntity("column4", 3, AttributeType.NUMERIC)
     );
 
     private static final String TABLE_NAME = "table";
@@ -55,14 +49,18 @@ class SearchQueryCreatorTest {
     private static final String INVALID_SORT_FIELD = "avc";
 
     @Mock
-    private TableMetaDataProvider tableMetaDataProvider;
+    private AttributeService attributeService;
 
     @InjectMocks
     private SearchQueryCreator searchQueryCreator;
 
+    private InstancesEntity instancesEntity;
+
     @BeforeEach
     void init() {
-        when(tableMetaDataProvider.getTableColumns(TABLE_NAME)).thenReturn(COLUMNS);
+        instancesEntity = createInstancesEntity();
+        instancesEntity.setTableName(TABLE_NAME);
+        when(attributeService.getAttributes(any(InstancesEntity.class))).thenReturn(ATTRIBUTES);
     }
 
     @Test
@@ -71,18 +69,18 @@ class SearchQueryCreatorTest {
         pageRequestDto.setSearchQuery(SEARCH_TERM);
         pageRequestDto.setSortField(SORT_FIELD);
         pageRequestDto.setAscending(false);
-        var preparedSql = searchQueryCreator.buildSqlQuery(TABLE_NAME, pageRequestDto);
+        var preparedSql = searchQueryCreator.buildSqlQuery(instancesEntity, pageRequestDto);
         assertThat(preparedSql).isNotNull();
         assertThat(preparedSql.getQuery()).isEqualTo(EXPECTED_SQL_QUERY);
         assertThat(preparedSql.getCountQuery()).isEqualTo(EXPECTED_SQL_COUNT_QUERY);
-        assertThat(preparedSql.getArgs()).hasSize(COLUMNS.size());
+        assertThat(preparedSql.getArgs()).hasSize(ATTRIBUTES.size());
     }
 
     @Test
     void testBuildSqlQueryWithInvalidSortField() {
         var pageRequestDto = createPageRequestDto();
         pageRequestDto.setSortField(INVALID_SORT_FIELD);
-        assertThrows(FieldNotFoundException.class, () -> searchQueryCreator.buildSqlQuery(TABLE_NAME, pageRequestDto));
+        assertThrows(FieldNotFoundException.class, () -> searchQueryCreator.buildSqlQuery(instancesEntity, pageRequestDto));
     }
 
 }

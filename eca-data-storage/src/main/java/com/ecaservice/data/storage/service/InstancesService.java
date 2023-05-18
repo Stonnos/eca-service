@@ -1,20 +1,18 @@
 package com.ecaservice.data.storage.service;
 
 import com.ecaservice.data.storage.config.EcaDsConfig;
+import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import eca.data.db.SqlQueryHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import weka.core.Instances;
 
 import java.util.List;
-
-import static com.ecaservice.data.storage.config.CacheNames.TABLE_COLUMNS_CACHE;
 
 /**
  * Instances service.
@@ -70,7 +68,6 @@ public class InstancesService {
      *
      * @param tableName - table name
      */
-    @CacheEvict(value = TABLE_COLUMNS_CACHE)
     public void deleteInstances(String tableName) {
         log.info("Starting to delete table with name [{}]", tableName);
         jdbcTemplate.execute(String.format(DROP_TABLE_QUERY_FORMAT, tableName));
@@ -83,7 +80,6 @@ public class InstancesService {
      * @param tableName    - table name
      * @param newTableName - new table name
      */
-    @CacheEvict(value = TABLE_COLUMNS_CACHE, key = "#tableName")
     public void renameInstances(String tableName, String newTableName) {
         log.info("Starting to rename table [{}] with new name [{}]", tableName, newTableName);
         jdbcTemplate.execute(String.format(RENAME_TABLE_QUERY_FORMAT, tableName, newTableName));
@@ -93,13 +89,14 @@ public class InstancesService {
     /**
      * Gets instances page with specified page request params.
      *
-     * @param tableName      - table name
+     * @param instancesEntity      - instances entity
      * @param pageRequestDto - page request
      * @return instances page
      */
-    public PageDto<List<String>> getInstances(String tableName, PageRequestDto pageRequestDto) {
+    public PageDto<List<String>> getInstances(InstancesEntity instancesEntity, PageRequestDto pageRequestDto) {
+        String tableName = instancesEntity.getTableName();
         log.info("Starting to get instances for table [{}], page request [{}]", tableName, pageRequestDto);
-        var sqlPreparedQuery = searchQueryCreator.buildSqlQuery(tableName, pageRequestDto);
+        var sqlPreparedQuery = searchQueryCreator.buildSqlQuery(instancesEntity, pageRequestDto);
         var instances = jdbcTemplate.query(sqlPreparedQuery.getQuery(), sqlPreparedQuery.getArgs(),
                 instancesResultSetExtractor);
         Assert.notNull(instances, String.format("Expected not null instances for table [%s]", tableName));

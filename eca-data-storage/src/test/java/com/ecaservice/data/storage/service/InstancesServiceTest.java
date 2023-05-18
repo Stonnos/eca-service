@@ -2,7 +2,8 @@ package com.ecaservice.data.storage.service;
 
 import com.ecaservice.data.storage.AbstractJpaTest;
 import com.ecaservice.data.storage.config.EcaDsConfig;
-import com.ecaservice.data.storage.model.ColumnModel;
+import com.ecaservice.data.storage.entity.InstancesEntity;
+import com.ecaservice.data.storage.repository.InstancesRepository;
 import eca.data.db.InstancesExtractor;
 import eca.data.db.InstancesResultSetConverter;
 import eca.data.db.SqlQueryHelper;
@@ -14,8 +15,9 @@ import weka.core.Instances;
 
 import javax.inject.Inject;
 import java.util.Collections;
-import java.util.List;
 
+import static com.ecaservice.data.storage.TestHelperUtils.createInstancesEntity;
+import static com.ecaservice.data.storage.TestHelperUtils.createNominalAttributeEntity;
 import static com.ecaservice.data.storage.TestHelperUtils.createPageRequestDto;
 import static com.ecaservice.data.storage.TestHelperUtils.loadInstances;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,13 +36,6 @@ class InstancesServiceTest extends AbstractJpaTest {
     private static final String TABLE_NAME = "test_table";
     private static final String SELECT_COUNT_FORMAT = "SELECT count(*) FROM %s";
 
-    private static final List<ColumnModel> COLUMNS = Collections.singletonList(
-            ColumnModel.builder()
-                    .columnName("class")
-                    .dataType("character varying")
-                    .build()
-    );
-
     private static final String SEARCH_QUERY = "good";
     private static final String TABLE_2_NAME = "table2";
     private static final String TABLE_3_NAME = "table3";
@@ -49,8 +44,10 @@ class InstancesServiceTest extends AbstractJpaTest {
     private static final int EXPECTED_NUM_INSTANCES = 700;
 
     @MockBean
-    private TableMetaDataProvider tableMetaDataProvider;
+    private AttributeService attributeService;
 
+    @Inject
+    private InstancesRepository instancesRepository;
     @Inject
     private InstancesService instancesService;
     @Inject
@@ -58,9 +55,17 @@ class InstancesServiceTest extends AbstractJpaTest {
 
     private Instances instances;
 
+    private InstancesEntity instancesEntity;
+
     @Override
     public void init() {
         instances = loadInstances();
+        createAndSaveInstancesEntity();
+    }
+
+    @Override
+    public void deleteAll() {
+        instancesRepository.deleteAll();
     }
 
     @Test
@@ -73,11 +78,12 @@ class InstancesServiceTest extends AbstractJpaTest {
     @Test
     void testGetInstancesWithPageParams() {
         instancesService.saveInstances(TABLE_2_NAME, instances);
-        when(tableMetaDataProvider.getTableColumns(TABLE_2_NAME)).thenReturn(COLUMNS);
+        var attributes = Collections.singletonList(createNominalAttributeEntity("class", 0));
+        when(attributeService.getAttributes(instancesEntity)).thenReturn(attributes);
         var pageRequest = createPageRequestDto();
         pageRequest.setSearchQuery(SEARCH_QUERY);
         pageRequest.setSize(PAGE_SIZE);
-        var instancesPage = instancesService.getInstances(TABLE_2_NAME, pageRequest);
+        var instancesPage = instancesService.getInstances(instancesEntity, pageRequest);
         assertThat(instancesPage).isNotNull();
         assertThat(instancesPage.getContent()).hasSize(PAGE_SIZE);
         assertThat(instancesPage.getTotalCount()).isEqualTo(EXPECTED_NUM_INSTANCES);
@@ -89,5 +95,11 @@ class InstancesServiceTest extends AbstractJpaTest {
         var actual = instancesService.getInstances(TABLE_3_NAME);
         assertThat(actual).hasSameSizeAs(instances);
         assertThat(actual.numAttributes()).isEqualTo(instances.numAttributes());
+    }
+
+    private void createAndSaveInstancesEntity() {
+        instancesEntity = createInstancesEntity();
+        instancesEntity.setTableName(TABLE_2_NAME);
+        instancesRepository.save(instancesEntity);
     }
 }
