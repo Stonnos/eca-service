@@ -3,7 +3,9 @@ package com.ecaservice.data.storage.service;
 import com.ecaservice.data.storage.AbstractJpaTest;
 import com.ecaservice.data.storage.TestHelperUtils;
 import com.ecaservice.data.storage.config.EcaDsConfig;
+import com.ecaservice.data.storage.entity.AttributeType;
 import com.ecaservice.data.storage.entity.InstancesEntity;
+import com.ecaservice.data.storage.model.AttributeInfo;
 import eca.data.db.InstancesExtractor;
 import eca.data.db.InstancesResultSetConverter;
 import eca.data.db.SqlQueryHelper;
@@ -16,7 +18,6 @@ import weka.core.Instances;
 import javax.inject.Inject;
 import java.util.Collections;
 
-import static com.ecaservice.data.storage.TestHelperUtils.createNominalAttributeEntity;
 import static com.ecaservice.data.storage.TestHelperUtils.createPageRequestDto;
 import static com.ecaservice.data.storage.TestHelperUtils.loadInstances;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -70,8 +71,8 @@ class InstancesServiceTest extends AbstractJpaTest {
     @Test
     void testGetInstancesWithPageParams() {
         instancesService.saveInstances(TABLE_2_NAME, instances);
-        var attributes = Collections.singletonList(createNominalAttributeEntity("class", 0));
-        when(attributeService.getAttributes(instancesEntity)).thenReturn(attributes);
+        var attributes = Collections.singletonList(new AttributeInfo("class", AttributeType.NOMINAL));
+        when(attributeService.getsAttributesInfo(instancesEntity)).thenReturn(attributes);
         var pageRequest = createPageRequestDto();
         pageRequest.setSearchQuery(SEARCH_QUERY);
         pageRequest.setSize(PAGE_SIZE);

@@ -1,9 +1,9 @@
 package com.ecaservice.data.storage.service;
 
 import com.ecaservice.core.filter.exception.FieldNotFoundException;
-import com.ecaservice.data.storage.entity.AttributeEntity;
 import com.ecaservice.data.storage.entity.AttributeType;
 import com.ecaservice.data.storage.entity.InstancesEntity;
+import com.ecaservice.data.storage.model.AttributeInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,9 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
-import static com.ecaservice.data.storage.TestHelperUtils.createAttributeEntity;
 import static com.ecaservice.data.storage.TestHelperUtils.createInstancesEntity;
-import static com.ecaservice.data.storage.TestHelperUtils.createNominalAttributeEntity;
 import static com.ecaservice.data.storage.TestHelperUtils.createPageRequestDto;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -30,11 +28,11 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class SearchQueryCreatorTest {
 
-    private static final List<AttributeEntity> ATTRIBUTES = List.of(
-           createNominalAttributeEntity("column1", 0),
-            createNominalAttributeEntity("column2", 1),
-            createNominalAttributeEntity("column3", 2),
-            createAttributeEntity("column4", 3, AttributeType.NUMERIC)
+    private static final List<AttributeInfo> ATTRIBUTES = List.of(
+           new AttributeInfo("column1", AttributeType.NOMINAL),
+            new AttributeInfo("column2", AttributeType.NOMINAL),
+            new AttributeInfo("column3", AttributeType.NOMINAL),
+            new AttributeInfo("column4", AttributeType.NUMERIC)
     );
 
     private static final String TABLE_NAME = "table";
@@ -60,7 +58,7 @@ class SearchQueryCreatorTest {
     void init() {
         instancesEntity = createInstancesEntity();
         instancesEntity.setTableName(TABLE_NAME);
-        when(attributeService.getAttributes(any(InstancesEntity.class))).thenReturn(ATTRIBUTES);
+        when(attributeService.getsAttributesInfo(any(InstancesEntity.class))).thenReturn(ATTRIBUTES);
     }
 
     @Test
