@@ -1,5 +1,8 @@
 package com.ecaservice.data.storage;
 
+import com.ecaservice.data.storage.entity.AttributeEntity;
+import com.ecaservice.data.storage.entity.AttributeType;
+import com.ecaservice.data.storage.entity.AttributeValueEntity;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.model.report.ReportProperties;
 import com.ecaservice.data.storage.model.report.ReportType;
@@ -13,6 +16,8 @@ import weka.core.Instances;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Test helper utility class.
@@ -32,6 +37,7 @@ public class TestHelperUtils {
 
     private static final int PAGE_SIZE = 10;
     private static final int PAGE_NUMBER = 0;
+    private static final int NUM_ATTR_VALUES = 3;
 
     /**
      * Creates page request dto.
@@ -90,5 +96,55 @@ public class TestHelperUtils {
         reportProperties.setReportType(ReportType.CSV);
         reportProperties.setTitle(TITLE);
         return reportProperties;
+    }
+
+    /**
+     * Creates attribute entity.
+     *
+     * @param columnName - column name
+     * @param index      - attribute index
+     * @return attribute entity
+     */
+    public static AttributeEntity createAttributeEntity(String columnName, int index, AttributeType attributeType) {
+        var attributeEntity = new AttributeEntity();
+        attributeEntity.setColumnName(columnName);
+        attributeEntity.setIndex(index);
+        attributeEntity.setSelected(true);
+        attributeEntity.setType(attributeType);
+        return attributeEntity;
+    }
+
+    /**
+     * Creates nominal attribute entity.
+     *
+     * @param columnName - column name
+     * @param index      - attribute index
+     * @return attribute entity
+     */
+    public static AttributeEntity createNominalAttributeEntity(String columnName, int index) {
+        var attributeEntity = new AttributeEntity();
+        attributeEntity.setColumnName(columnName);
+        attributeEntity.setIndex(index);
+        attributeEntity.setSelected(true);
+        attributeEntity.setType(AttributeType.NOMINAL);
+        var values = IntStream.range(0, NUM_ATTR_VALUES)
+                .mapToObj(i -> createAttributeValueEntity(String.valueOf(i), i))
+                .collect(Collectors.toList());
+        attributeEntity.setValues(values);
+        return attributeEntity;
+    }
+
+    /**
+     * Creates attribute value entity.
+     *
+     * @param value - attribute value
+     * @param order - value order
+     * @return attribute value entity
+     */
+    public static AttributeValueEntity createAttributeValueEntity(String value, int order) {
+        var attributeValueEntity = new AttributeValueEntity();
+        attributeValueEntity.setValue(value);
+        attributeValueEntity.setValueOrder(order);
+        return attributeValueEntity;
     }
 }
