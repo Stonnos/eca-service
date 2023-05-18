@@ -13,7 +13,6 @@ import com.ecaservice.data.storage.service.InstancesConversionService;
 import com.ecaservice.data.storage.service.InstancesResultSetExtractor;
 import com.ecaservice.data.storage.service.InstancesService;
 import com.ecaservice.data.storage.service.SearchQueryCreator;
-import com.ecaservice.data.storage.service.TableNameService;
 import com.ecaservice.data.storage.service.TransactionalService;
 import com.ecaservice.data.storage.service.UserService;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -62,8 +61,6 @@ class StorageServiceImplTest extends AbstractJpaTest {
     private AttributeValueRepository attributeValueRepository;
 
     @MockBean
-    private TableNameService tableNameService;
-    @MockBean
     private UserService userService;
     @MockBean
     private SearchQueryCreator searchQueryCreator;
@@ -86,7 +83,6 @@ class StorageServiceImplTest extends AbstractJpaTest {
 
     @Test
     void testSaveData() {
-        when(tableNameService.tableExists(TEST_TABLE_2)).thenReturn(false);
         when(userService.getCurrentUser()).thenReturn(USER_NAME);
         Instances instances = loadInstances();
         InstancesEntity expected = storageService.saveData(instances, TEST_TABLE_2);
@@ -98,7 +94,6 @@ class StorageServiceImplTest extends AbstractJpaTest {
 
     @Test
     void testRenameData() {
-        when(tableNameService.tableExists(TEST_TABLE)).thenReturn(false);
         storageService.renameData(instancesEntity.getId(), NEW_TABLE_NAME);
         InstancesEntity actual = instancesRepository.findById(instancesEntity.getId()).orElse(null);
         assertThat(actual).isNotNull();

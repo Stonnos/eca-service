@@ -9,7 +9,6 @@ import com.ecaservice.data.storage.repository.AttributeRepository;
 import com.ecaservice.data.storage.repository.AttributeValueRepository;
 import com.ecaservice.data.storage.repository.InstancesRepository;
 import com.ecaservice.data.storage.service.impl.StorageServiceImpl;
-import com.ecaservice.data.storage.service.impl.TableNameTestService;
 import eca.data.db.SqlQueryHelper;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -34,7 +33,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import({StorageServiceImpl.class, InstancesService.class, TransactionalService.class,
-        SqlQueryHelper.class, StorageTestConfiguration.class, TableNameTestService.class,
+        SqlQueryHelper.class, StorageTestConfiguration.class,
         InstancesConversionService.class, AttributeService.class, AttributeMapperImpl.class})
 class ConcurrentStorageServiceTest extends AbstractJpaTest {
 

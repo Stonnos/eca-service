@@ -13,7 +13,6 @@ import com.ecaservice.data.storage.repository.InstancesRepository;
 import com.ecaservice.data.storage.service.AttributeService;
 import com.ecaservice.data.storage.service.InstancesService;
 import com.ecaservice.data.storage.service.StorageService;
-import com.ecaservice.data.storage.service.TableNameService;
 import com.ecaservice.data.storage.service.UserService;
 import com.ecaservice.web.dto.model.AttributeDto;
 import com.ecaservice.web.dto.model.PageDto;
@@ -55,7 +54,6 @@ public class StorageServiceImpl implements StorageService {
     private final InstancesService instancesService;
     private final AttributeService attributeService;
     private final UserService userService;
-    private final TableNameService tableNameService;
     private final AttributeMapper attributeMapper;
     private final InstancesRepository instancesRepository;
 
@@ -79,7 +77,7 @@ public class StorageServiceImpl implements StorageService {
     @Transactional
     public InstancesEntity saveData(Instances instances, String tableName) {
         log.info("Starting to save instances into table [{}]", tableName);
-        if (tableNameService.tableExists(tableName)) {
+        if (instancesRepository.existsByTableName(tableName)) {
             throw new TableExistsException(tableName);
         }
         if (instances.isEmpty()) {
@@ -133,7 +131,7 @@ public class StorageServiceImpl implements StorageService {
         InstancesEntity instancesEntity = getById(id);
         String oldTableName = instancesEntity.getTableName();
         if (!instancesEntity.getTableName().equals(newName)) {
-            if (tableNameService.tableExists(newName)) {
+            if (instancesRepository.existsByTableName(newName)) {
                 throw new TableExistsException(newName);
             }
             instancesService.renameInstances(instancesEntity.getTableName(), newName);
