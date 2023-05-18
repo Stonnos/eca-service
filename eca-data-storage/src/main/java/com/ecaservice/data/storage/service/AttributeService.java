@@ -18,7 +18,7 @@ import java.util.stream.IntStream;
 
 import static com.ecaservice.data.storage.util.Utils.getAttributeType;
 import static com.ecaservice.data.storage.util.Utils.getAttributeValues;
-import static eca.data.db.SqlQueryHelper.normalizeName;
+import static eca.data.db.SqlQueryHelper.formatName;
 
 /**
  * Attributes service.
@@ -82,7 +82,7 @@ public class AttributeService {
 
     private AttributeEntity createAttributeEntity(Attribute attribute, InstancesEntity instancesEntity) {
         var attributeEntity = new AttributeEntity();
-        attributeEntity.setColumnName(normalizeName(attribute.name()));
+        attributeEntity.setColumnName(formatName(attribute.name()));
         attributeEntity.setIndex(attribute.index());
         attributeEntity.setType(getAttributeType(attribute));
         if (attribute.isNominal()) {
