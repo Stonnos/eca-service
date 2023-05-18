@@ -1,9 +1,9 @@
 package com.ecaservice.data.storage.service;
 
 import com.ecaservice.data.storage.AbstractJpaTest;
+import com.ecaservice.data.storage.TestHelperUtils;
 import com.ecaservice.data.storage.config.EcaDsConfig;
 import com.ecaservice.data.storage.entity.InstancesEntity;
-import com.ecaservice.data.storage.repository.InstancesRepository;
 import eca.data.db.InstancesExtractor;
 import eca.data.db.InstancesResultSetConverter;
 import eca.data.db.SqlQueryHelper;
@@ -16,7 +16,6 @@ import weka.core.Instances;
 import javax.inject.Inject;
 import java.util.Collections;
 
-import static com.ecaservice.data.storage.TestHelperUtils.createInstancesEntity;
 import static com.ecaservice.data.storage.TestHelperUtils.createNominalAttributeEntity;
 import static com.ecaservice.data.storage.TestHelperUtils.createPageRequestDto;
 import static com.ecaservice.data.storage.TestHelperUtils.loadInstances;
@@ -47,8 +46,6 @@ class InstancesServiceTest extends AbstractJpaTest {
     private AttributeService attributeService;
 
     @Inject
-    private InstancesRepository instancesRepository;
-    @Inject
     private InstancesService instancesService;
     @Inject
     private JdbcTemplate jdbcTemplate;
@@ -60,12 +57,7 @@ class InstancesServiceTest extends AbstractJpaTest {
     @Override
     public void init() {
         instances = loadInstances();
-        createAndSaveInstancesEntity();
-    }
-
-    @Override
-    public void deleteAll() {
-        instancesRepository.deleteAll();
+        createInstancesEntity();
     }
 
     @Test
@@ -97,9 +89,8 @@ class InstancesServiceTest extends AbstractJpaTest {
         assertThat(actual.numAttributes()).isEqualTo(instances.numAttributes());
     }
 
-    private void createAndSaveInstancesEntity() {
-        instancesEntity = createInstancesEntity();
+    private void createInstancesEntity() {
+        instancesEntity = TestHelperUtils.createInstancesEntity();
         instancesEntity.setTableName(TABLE_2_NAME);
-        instancesRepository.save(instancesEntity);
     }
 }

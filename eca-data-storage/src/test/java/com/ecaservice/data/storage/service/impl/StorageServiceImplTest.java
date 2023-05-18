@@ -16,6 +16,8 @@ import com.ecaservice.data.storage.service.SearchQueryCreator;
 import com.ecaservice.data.storage.service.TransactionalService;
 import com.ecaservice.data.storage.service.UserService;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import eca.data.db.InstancesExtractor;
+import eca.data.db.InstancesResultSetConverter;
 import eca.data.db.SqlQueryHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
@@ -28,6 +30,7 @@ import javax.inject.Inject;
 import java.util.Collections;
 
 import static com.ecaservice.data.storage.TestHelperUtils.createInstancesEntity;
+import static com.ecaservice.data.storage.TestHelperUtils.createPageRequestDto;
 import static com.ecaservice.data.storage.TestHelperUtils.loadInstances;
 import static com.ecaservice.data.storage.entity.InstancesEntity_.CREATED;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,14 +44,21 @@ import static org.mockito.Mockito.when;
  */
 @Import({StorageServiceImpl.class, InstancesService.class, TransactionalService.class,
         SqlQueryHelper.class, StorageTestConfiguration.class, InstancesConversionService.class,
-        AttributeService.class, AttributeMapperImpl.class})
+        AttributeService.class, AttributeMapperImpl.class, SearchQueryCreator.class,
+        InstancesResultSetExtractor.class, InstancesResultSetConverter.class,
+        InstancesExtractor.class, InstancesConversionService.class})
 class StorageServiceImplTest extends AbstractJpaTest {
 
     private static final String TEST_TABLE = "test_table";
     private static final String TEST_TABLE_2 = "test_table_2";
+    private static final String TEST_TABLE_3 = "test_table_3";
     private static final String NEW_TABLE_NAME = "new_table_name";
     private static final long ID = 2L;
     private static final String USER_NAME = "admin";
+    private static final String SEARCH_QUERY = "good";
+    private static final int PAGE_SIZE = 100;
+
+    private static final int EXPECTED_NUM_INSTANCES = 700;
 
     @Inject
     private StorageServiceImpl storageService;
@@ -62,10 +72,6 @@ class StorageServiceImplTest extends AbstractJpaTest {
 
     @MockBean
     private UserService userService;
-    @MockBean
-    private SearchQueryCreator searchQueryCreator;
-    @MockBean
-    private InstancesResultSetExtractor instancesResultSetExtractor;
 
     private InstancesEntity instancesEntity;
 
@@ -83,9 +89,7 @@ class StorageServiceImplTest extends AbstractJpaTest {
 
     @Test
     void testSaveData() {
-        when(userService.getCurrentUser()).thenReturn(USER_NAME);
-        Instances instances = loadInstances();
-        InstancesEntity expected = storageService.saveData(instances, TEST_TABLE_2);
+        InstancesEntity expected = internalSaveData(TEST_TABLE_2);
         InstancesEntity actual = instancesRepository.findById(expected.getId()).orElse(null);
         assertThat(actual).isNotNull();
         assertThat(actual.getTableName()).isEqualTo(TEST_TABLE_2);
@@ -123,6 +127,24 @@ class StorageServiceImplTest extends AbstractJpaTest {
     @Test
     void testGetNotExistingData() {
         assertThrows(EntityNotFoundException.class, () -> storageService.getData(ID, null));
+    }
+
+    @Test
+    void testGetTableDataWithPageParams() {
+        var instances = internalSaveData(TEST_TABLE_3);
+        var pageRequest = createPageRequestDto();
+        pageRequest.setSearchQuery(SEARCH_QUERY);
+        pageRequest.setSize(PAGE_SIZE);
+        var instancesPage = storageService.getData(instances.getId(), pageRequest);
+        assertThat(instancesPage).isNotNull();
+        assertThat(instancesPage.getContent()).hasSize(PAGE_SIZE);
+        assertThat(instancesPage.getTotalCount()).isEqualTo(EXPECTED_NUM_INSTANCES);
+    }
+
+    private InstancesEntity internalSaveData(String tableName) {
+        when(userService.getCurrentUser()).thenReturn(USER_NAME);
+        Instances instances = loadInstances();
+        return storageService.saveData(instances, tableName);
     }
 
     private void createAndSaveInstancesEntity() {
