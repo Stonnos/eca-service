@@ -142,7 +142,7 @@ public class StorageServiceImpl implements StorageService {
             throw new AttributeMismatchException(instances.getTableName(), classAttributeId);
         }
         if (!AttributeType.NOMINAL.equals(attribute.getType())) {
-            throw new InvalidClassAttributeTypeException(attribute.getColumnName());
+            throw new InvalidClassAttributeTypeException(classAttributeId);
         }
         if (attribute.getValues().size() < MIN_NUM_CLASSES) {
             throw new ClassAttributeValuesOutOfBoundsException(classAttributeId);

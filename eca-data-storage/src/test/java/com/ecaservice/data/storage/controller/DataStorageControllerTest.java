@@ -73,6 +73,7 @@ class DataStorageControllerTest extends AbstractControllerTest {
     private static final String BASE_URL = "/instances";
     private static final String SAVE_URL = BASE_URL + "/save";
     private static final String RENAME_URL = BASE_URL + "/rename";
+    private static final String SET_CLASS_URL = BASE_URL + "/set_class_attribute";
     private static final String DELETE_URL = BASE_URL + "/delete";
     private static final String LIST_URL = BASE_URL + "/list";
     private static final String ATTRIBUTES_URL = BASE_URL + "/attributes/{id}";
@@ -90,6 +91,8 @@ class DataStorageControllerTest extends AbstractControllerTest {
     private static final long ID = 1L;
     private static final long TOTAL_ELEMENTS = 1L;
     private static final int PAGE_NUMBER = 0;
+    private static final String INSTANCES_ID_PARAM = "instancesId";
+    private static final String CLASS_ATTRIBUTE_ID_PARAM = "classAttributeId";
 
     @MockBean
     private StorageServiceImpl storageService;
@@ -156,7 +159,6 @@ class DataStorageControllerTest extends AbstractControllerTest {
 
     @Test
     void testRenameDataUnauthorized() throws Exception {
-        when(jdbcTemplate.queryForObject(anyString(), eq(Boolean.class))).thenReturn(true);
         mockMvc.perform(put(RENAME_URL)
                 .param(ID_PARAM, String.valueOf(ID))
                 .param(TABLE_NAME_PARAM, TABLE_NAME)).andExpect(status().isUnauthorized());
@@ -314,5 +316,38 @@ class DataStorageControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(expected)));
+    }
+
+    @Test
+    void testSetClassUnauthorized() throws Exception {
+        mockMvc.perform(put(SET_CLASS_URL)
+                .param(INSTANCES_ID_PARAM, String.valueOf(ID))
+                .param(CLASS_ATTRIBUTE_ID_PARAM, String.valueOf(ID)))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testSetClass() throws Exception {
+        mockMvc.perform(put(SET_CLASS_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .param(INSTANCES_ID_PARAM, String.valueOf(ID))
+                .param(CLASS_ATTRIBUTE_ID_PARAM, String.valueOf(ID)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void testSetClassWithNullInstancesId() throws Exception {
+        mockMvc.perform(put(SET_CLASS_URL)
+                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                        .param(CLASS_ATTRIBUTE_ID_PARAM, String.valueOf(ID)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testSetClassWithNullClassAttributeId() throws Exception {
+        mockMvc.perform(put(SET_CLASS_URL)
+                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                        .param(INSTANCES_ID_PARAM, String.valueOf(ID)))
+                .andExpect(status().isBadRequest());
     }
 }

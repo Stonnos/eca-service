@@ -529,6 +529,52 @@ public class DataStorageController {
     }
 
     /**
+     * Sets class attribute for specified instances.
+     *
+     * @param instancesId      - instances id
+     * @param classAttributeId - class attribute id
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @Operation(
+            description = "Sets class attribute for specified instances",
+            summary = "Sets class attribute for specified instances",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "InvalidClassTypeErrorCode",
+                                                    ref = "#/components/examples/InvalidClassTypeErrorCode"
+                                            ),
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
+                            )
+                    )
+            }
+    )
+    @PutMapping(value = "/set_class_attribute")
+    public void setClassAttribute(@Parameter(description = "Instances id", example = "1", required = true)
+                                  @Min(VALUE_1) @Max(Long.MAX_VALUE) @RequestParam long instancesId,
+                                  @Parameter(description = "Class attribute id", example = "1", required = true)
+                                  @Min(VALUE_1) @Max(Long.MAX_VALUE) @RequestParam long classAttributeId) {
+        storageService.setClassAttribute(instancesId, classAttributeId);
+    }
+
+    /**
      * Download instances report with specified type.
      *
      * @param id                  - instances id

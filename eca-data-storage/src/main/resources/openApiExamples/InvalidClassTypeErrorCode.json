@@ -1,0 +1,7 @@
+[
+  {
+    "fieldName": null,
+    "code": "InvalidClassAttributeType",
+    "errorMessage": "Class attribute [12] must be nominal"
+  }
+]

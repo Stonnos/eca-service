@@ -19,7 +19,7 @@ public class ClassAttributeValuesOutOfBoundsException extends ValidationErrorExc
      * @param id - attribute id
      */
     public ClassAttributeValuesOutOfBoundsException(long id) {
-        super(ERROR_CODE, String.format("Class attribute id [%s] must have greater than or equal to [%d] values",
+        super(ERROR_CODE, String.format("Class attribute id [%d] must have greater than or equal to [%d] values",
                 id, MIN_NUM_CLASSES));
     }
 }

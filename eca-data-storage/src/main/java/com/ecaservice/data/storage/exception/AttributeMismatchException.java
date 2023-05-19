@@ -18,7 +18,7 @@ public class AttributeMismatchException extends ValidationErrorException {
      * @param attributeId - attribute id
      */
     public AttributeMismatchException(String tableName, long attributeId) {
-        super(ERROR_CODE, String.format("Instances [%s] does not contain attribute with id [%s]", tableName,
+        super(ERROR_CODE, String.format("Instances [%s] does not contain attribute with id [%d]", tableName,
                 attributeId));
     }
 }

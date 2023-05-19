@@ -14,9 +14,9 @@ public class InvalidClassAttributeTypeException extends ValidationErrorException
     /**
      * Creates exception object.
      *
-     * @param attributeName - attribute name
+     * @param id - attribute id
      */
-    public InvalidClassAttributeTypeException(String attributeName) {
-        super(ERROR_CODE, String.format("Class attribute [%s] must be nominal", attributeName));
+    public InvalidClassAttributeTypeException(long id) {
+        super(ERROR_CODE, String.format("Class attribute [%d] must be nominal", id));
     }
 }
