@@ -84,8 +84,7 @@ public interface StorageService {
     /**
      * Sets class attribute for specified instances.
      *
-     * @param instancesId      - instances id
      * @param classAttributeId - class attribute id
      */
-    void setClassAttribute(long instancesId, long classAttributeId);
+    void setClassAttribute(long classAttributeId);
 }

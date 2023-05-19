@@ -7,7 +7,6 @@ import com.ecaservice.data.storage.entity.AttributeEntity;
 import com.ecaservice.data.storage.entity.AttributeType;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.entity.InstancesEntity_;
-import com.ecaservice.data.storage.exception.AttributeMismatchException;
 import com.ecaservice.data.storage.exception.ClassAttributeValuesOutOfBoundsException;
 import com.ecaservice.data.storage.exception.EmptyDataException;
 import com.ecaservice.data.storage.exception.InvalidClassAttributeTypeException;
@@ -134,21 +133,19 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    public void setClassAttribute(long instancesId, long classAttributeId) {
-        log.info("Starting to set class attribute [{}] for instances with id [{}]", classAttributeId, instancesId);
-        var instances = getById(instancesId);
+    @Transactional
+    public void setClassAttribute(long classAttributeId) {
+        log.info("Starting to set class attribute [{}]", classAttributeId);
         var attribute = attributeService.getById(classAttributeId);
-        if (!attribute.getInstancesEntity().getId().equals(instances.getId())) {
-            throw new AttributeMismatchException(instances.getTableName(), classAttributeId);
-        }
         if (!AttributeType.NOMINAL.equals(attribute.getType())) {
             throw new InvalidClassAttributeTypeException(classAttributeId);
         }
         if (attribute.getValues().size() < MIN_NUM_CLASSES) {
             throw new ClassAttributeValuesOutOfBoundsException(classAttributeId);
         }
-        instances.setClassAttribute(attribute);
-        log.info("Class attribute [{}] has been set for instances with id [{}]", classAttributeId, instancesId);
+        attribute.getInstancesEntity().setClassAttribute(attribute);
+        log.info("Class attribute [{}] has been set for instances with [{}]", classAttributeId,
+                attribute.getInstancesEntity().getTableName());
     }
 
     @Override

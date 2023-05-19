@@ -6,7 +6,6 @@ import com.ecaservice.data.storage.config.StorageTestConfiguration;
 import com.ecaservice.data.storage.entity.AttributeEntity;
 import com.ecaservice.data.storage.entity.AttributeType;
 import com.ecaservice.data.storage.entity.InstancesEntity;
-import com.ecaservice.data.storage.exception.AttributeMismatchException;
 import com.ecaservice.data.storage.exception.ClassAttributeValuesOutOfBoundsException;
 import com.ecaservice.data.storage.exception.InvalidClassAttributeTypeException;
 import com.ecaservice.data.storage.mapping.AttributeMapperImpl;
@@ -133,7 +132,7 @@ class StorageServiceImplTest extends AbstractJpaTest {
     void testSetClassSuccess() {
         var instances = internalSaveData(TEST_TABLE_5);
         var classAttribute = getAttribute(instances, EXPECTED_CLASS_NAME);
-        storageService.setClassAttribute(instances.getId(), classAttribute.getId());
+        storageService.setClassAttribute(classAttribute.getId());
         InstancesEntity actual = instancesRepository.findById(instances.getId()).orElse(null);
         assertThat(actual).isNotNull();
         assertThat(actual.getClassAttribute()).isNotNull();
@@ -145,15 +144,7 @@ class StorageServiceImplTest extends AbstractJpaTest {
         var instances = internalSaveData(TEST_TABLE_6);
         var classAttribute = getAttribute(instances, DURATION_ATTRIBUTE);
         assertThrows(InvalidClassAttributeTypeException.class,
-                () -> storageService.setClassAttribute(instances.getId(), classAttribute.getId()));
-    }
-
-    @Test
-    void testSetMismatchClass() {
-        var instances = internalSaveData(TEST_TABLE_7);
-        var classAttribute = getAttribute(instances, EXPECTED_CLASS_NAME);
-        assertThrows(AttributeMismatchException.class,
-                () -> storageService.setClassAttribute(instancesEntity.getId(), classAttribute.getId()));
+                () -> storageService.setClassAttribute(classAttribute.getId()));
     }
 
     @Test
@@ -163,7 +154,7 @@ class StorageServiceImplTest extends AbstractJpaTest {
         classAttribute.setValues(Collections.singletonList(createAttributeValueEntity("value", 0)));
         attributeRepository.save(classAttribute);
         assertThrows(ClassAttributeValuesOutOfBoundsException.class,
-                () -> storageService.setClassAttribute(instancesEntity.getId(), classAttribute.getId()));
+                () -> storageService.setClassAttribute(classAttribute.getId()));
     }
 
     @Test

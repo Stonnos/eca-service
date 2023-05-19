@@ -531,7 +531,6 @@ public class DataStorageController {
     /**
      * Sets class attribute for specified instances.
      *
-     * @param instancesId      - instances id
      * @param classAttributeId - class attribute id
      */
     @PreAuthorize("#oauth2.hasScope('web')")
@@ -567,11 +566,9 @@ public class DataStorageController {
             }
     )
     @PutMapping(value = "/set_class_attribute")
-    public void setClassAttribute(@Parameter(description = "Instances id", example = "1", required = true)
-                                  @Min(VALUE_1) @Max(Long.MAX_VALUE) @RequestParam long instancesId,
-                                  @Parameter(description = "Class attribute id", example = "1", required = true)
+    public void setClassAttribute(@Parameter(description = "Class attribute id", example = "1", required = true)
                                   @Min(VALUE_1) @Max(Long.MAX_VALUE) @RequestParam long classAttributeId) {
-        storageService.setClassAttribute(instancesId, classAttributeId);
+        storageService.setClassAttribute(classAttributeId);
     }
 
     /**

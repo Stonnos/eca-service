@@ -91,7 +91,7 @@ public class ConcurrentStorageService implements StorageService {
     }
 
     @Override
-    public void setClassAttribute(long instancesId, long classAttributeId) {
-        storageService.setClassAttribute(instancesId, classAttributeId);
+    public void setClassAttribute(long classAttributeId) {
+        storageService.setClassAttribute(classAttributeId);
     }
 }

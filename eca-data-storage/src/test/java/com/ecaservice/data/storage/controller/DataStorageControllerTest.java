@@ -91,7 +91,6 @@ class DataStorageControllerTest extends AbstractControllerTest {
     private static final long ID = 1L;
     private static final long TOTAL_ELEMENTS = 1L;
     private static final int PAGE_NUMBER = 0;
-    private static final String INSTANCES_ID_PARAM = "instancesId";
     private static final String CLASS_ATTRIBUTE_ID_PARAM = "classAttributeId";
 
     @MockBean
@@ -321,7 +320,6 @@ class DataStorageControllerTest extends AbstractControllerTest {
     @Test
     void testSetClassUnauthorized() throws Exception {
         mockMvc.perform(put(SET_CLASS_URL)
-                .param(INSTANCES_ID_PARAM, String.valueOf(ID))
                 .param(CLASS_ATTRIBUTE_ID_PARAM, String.valueOf(ID)))
                 .andExpect(status().isUnauthorized());
     }
@@ -330,24 +328,14 @@ class DataStorageControllerTest extends AbstractControllerTest {
     void testSetClass() throws Exception {
         mockMvc.perform(put(SET_CLASS_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .param(INSTANCES_ID_PARAM, String.valueOf(ID))
                 .param(CLASS_ATTRIBUTE_ID_PARAM, String.valueOf(ID)))
                 .andExpect(status().isOk());
     }
 
     @Test
-    void testSetClassWithNullInstancesId() throws Exception {
-        mockMvc.perform(put(SET_CLASS_URL)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                        .param(CLASS_ATTRIBUTE_ID_PARAM, String.valueOf(ID)))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
     void testSetClassWithNullClassAttributeId() throws Exception {
         mockMvc.perform(put(SET_CLASS_URL)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                        .param(INSTANCES_ID_PARAM, String.valueOf(ID)))
+                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isBadRequest());
     }
 }
