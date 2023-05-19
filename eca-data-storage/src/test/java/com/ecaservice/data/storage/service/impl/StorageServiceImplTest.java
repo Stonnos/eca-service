@@ -60,6 +60,7 @@ class StorageServiceImplTest extends AbstractJpaTest {
     private static final int PAGE_SIZE = 100;
 
     private static final int EXPECTED_NUM_INSTANCES = 700;
+    private static final String EXPECTED_CLASS_NAME = "class";
 
     @Inject
     private StorageServiceImpl storageService;
@@ -83,6 +84,7 @@ class StorageServiceImplTest extends AbstractJpaTest {
 
     @Override
     public void deleteAll() {
+        unsetInstancesClass();
         attributeValueRepository.deleteAll();
         attributeRepository.deleteAll();
         instancesRepository.deleteAll();
@@ -95,6 +97,8 @@ class StorageServiceImplTest extends AbstractJpaTest {
         assertThat(actual).isNotNull();
         assertThat(actual.getTableName()).isEqualTo(TEST_TABLE_2);
         assertThat(actual.getCreatedBy()).isEqualTo(USER_NAME);
+        assertThat(actual.getClassAttribute()).isNotNull();
+        assertThat(actual.getClassAttribute().getColumnName()).isEqualTo(EXPECTED_CLASS_NAME);
     }
 
     @Test
@@ -155,5 +159,11 @@ class StorageServiceImplTest extends AbstractJpaTest {
         instancesEntity = createInstancesEntity();
         instancesEntity.setTableName(TEST_TABLE);
         instancesRepository.save(instancesEntity);
+    }
+
+    private void unsetInstancesClass() {
+        var instancesList = instancesRepository.findAll();
+        instancesList.forEach(instancesEntity -> instancesEntity.setClassAttribute(null));
+        instancesRepository.saveAll(instancesList);
     }
 }

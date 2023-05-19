@@ -41,8 +41,9 @@ public class AttributeService {
      *
      * @param instancesEntity - instances entity
      * @param instances       - instances
+     * @return saved attributes list
      */
-    public void saveAttributes(InstancesEntity instancesEntity, Instances instances) {
+    public List<AttributeEntity> saveAttributes(InstancesEntity instancesEntity, Instances instances) {
         log.info("Starting to save attributes info for instances [{}]", instancesEntity.getTableName());
         var attributesToSave = IntStream.range(0, instances.numAttributes())
                 .mapToObj(i -> createAttributeEntity(instances.attribute(i), instancesEntity))
@@ -50,6 +51,7 @@ public class AttributeService {
         attributeRepository.saveAll(attributesToSave);
         log.info("[{}] attributes info has been saved for instances [{}]", attributesToSave.size(),
                 instancesEntity.getTableName());
+        return attributesToSave;
     }
 
     /**

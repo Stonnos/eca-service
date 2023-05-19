@@ -69,6 +69,7 @@ class ConcurrentStorageServiceTest extends AbstractJpaTest {
 
     @Override
     public void deleteAll() {
+        unsetInstancesClass();
         attributeValueRepository.deleteAll();
         attributeRepository.deleteAll();
         instancesRepository.deleteAll();
@@ -131,5 +132,11 @@ class ConcurrentStorageServiceTest extends AbstractJpaTest {
         InstancesEntity instancesEntity = createInstancesEntity();
         instancesEntity.setTableName(tableName);
         return instancesRepository.save(instancesEntity);
+    }
+
+    private void unsetInstancesClass() {
+        var instancesList = instancesRepository.findAll();
+        instancesList.forEach(instancesEntity -> instancesEntity.setClassAttribute(null));
+        instancesRepository.saveAll(instancesList);
     }
 }

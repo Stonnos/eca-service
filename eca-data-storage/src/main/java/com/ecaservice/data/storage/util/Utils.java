@@ -20,6 +20,11 @@ import static eca.data.db.SqlQueryHelper.formatNominalValue;
 public class Utils {
 
     /**
+     * Min. number of classes
+     */
+    public static final int MIN_NUM_CLASSES = 2;
+
+    /**
      * Gets attribute type.
      *
      * @param attribute - attribute

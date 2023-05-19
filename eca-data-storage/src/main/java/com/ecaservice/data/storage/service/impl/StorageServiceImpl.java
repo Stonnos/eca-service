@@ -3,6 +3,7 @@ package com.ecaservice.data.storage.service.impl;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.data.storage.config.EcaDsConfig;
+import com.ecaservice.data.storage.entity.AttributeEntity;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.entity.InstancesEntity_;
 import com.ecaservice.data.storage.exception.EmptyDataException;
@@ -34,6 +35,8 @@ import static com.ecaservice.data.storage.config.audit.AuditCodes.DELETE_INSTANC
 import static com.ecaservice.data.storage.config.audit.AuditCodes.RENAME_INSTANCES;
 import static com.ecaservice.data.storage.config.audit.AuditCodes.SAVE_INSTANCES;
 import static com.ecaservice.data.storage.entity.InstancesEntity_.CREATED;
+import static com.ecaservice.data.storage.util.Utils.MIN_NUM_CLASSES;
+import static eca.data.db.SqlQueryHelper.formatName;
 
 /**
  * Service for saving data file into database.
@@ -85,7 +88,8 @@ public class StorageServiceImpl implements StorageService {
         }
         instancesService.saveInstances(tableName, instances);
         InstancesEntity instancesEntity = saveInstancesEntity(tableName, instances);
-        attributeService.saveAttributes(instancesEntity, instances);
+        var attributes = attributeService.saveAttributes(instancesEntity, instances);
+        setClassAttribute(instances, instancesEntity, attributes);
         log.info("Instances has been saved into table [{}]", tableName);
         return instancesEntity;
     }
@@ -97,6 +101,7 @@ public class StorageServiceImpl implements StorageService {
         log.info("Starting to delete instances with id [{}]", id);
         InstancesEntity instancesEntity = getById(id);
         instancesService.deleteInstances(instancesEntity.getTableName());
+        unsetClassAttribute(instancesEntity);
         attributeService.deleteAttributes(instancesEntity);
         instancesRepository.deleteById(id);
         log.info("Instances [{}] has been deleted", id);
@@ -158,5 +163,38 @@ public class StorageServiceImpl implements StorageService {
         instancesEntity.setCreatedBy(userService.getCurrentUser());
         instancesEntity.setCreated(LocalDateTime.now());
         return instancesRepository.save(instancesEntity);
+    }
+
+    private void setClassAttribute(Instances instances,
+                                   InstancesEntity instancesEntity,
+                                   List<AttributeEntity> attributeEntities) {
+        var classAttribute = instances.classAttribute();
+        if (classAttribute.isNumeric()) {
+            log.warn("Class attribute [{}] is numeric or date for instances [{}]. Ignore class setting",
+                    classAttribute.name(), instancesEntity.getTableName());
+        } else if (classAttribute.numValues() < MIN_NUM_CLASSES) {
+            log.warn("Class attribute [{}] has less than 2 values for instances [{}]. Ignore class setting",
+                    classAttribute.name(), instancesEntity.getTableName());
+        } else {
+            var className = formatName(classAttribute.name());
+            var classAttributeEntity = attributeEntities.stream()
+                    .filter(attributeEntity -> attributeEntity.getColumnName().equals(className))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalStateException(
+                            String.format("Can't find class attribute entity [%s]", className)));
+            instancesEntity.setClassAttribute(classAttributeEntity);
+            instancesRepository.save(instancesEntity);
+            log.info("Class attribute [{}] has been set for instances [{}]", className, instancesEntity.getTableName());
+        }
+    }
+
+    private void unsetClassAttribute(InstancesEntity instancesEntity) {
+        var classAttribute = instancesEntity.getClassAttribute();
+        if (classAttribute != null) {
+            instancesEntity.setClassAttribute(null);
+            instancesRepository.save(instancesEntity);
+            log.info("Class [{}] attribute has been unset for instances [{}]", classAttribute.getColumnName(),
+                    instancesEntity.getTableName());
+        }
     }
 }
