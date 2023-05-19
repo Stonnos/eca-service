@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Repository to manage with {@link AttributeEntity} persistence entity.
@@ -25,6 +26,15 @@ public interface AttributeRepository extends JpaRepository<AttributeEntity, Long
      */
     @EntityGraph(value = "attributeValues", type = EntityGraph.EntityGraphType.FETCH)
     List<AttributeEntity> findByInstancesEntityOrderByIndex(InstancesEntity instancesEntity);
+
+    /**
+     * Finds attribute by id.
+     *
+     * @param id - attribute id
+     * @return attribute entity
+     */
+    @EntityGraph(value = "attributeValues", type = EntityGraph.EntityGraphType.FETCH)
+    Optional<AttributeEntity> findById(Long id);
 
     /**
      * Finds instances attributes info ordered by index.

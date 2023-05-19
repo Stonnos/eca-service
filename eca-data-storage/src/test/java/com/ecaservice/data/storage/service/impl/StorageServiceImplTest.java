@@ -3,7 +3,12 @@ package com.ecaservice.data.storage.service.impl;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.data.storage.AbstractJpaTest;
 import com.ecaservice.data.storage.config.StorageTestConfiguration;
+import com.ecaservice.data.storage.entity.AttributeEntity;
+import com.ecaservice.data.storage.entity.AttributeType;
 import com.ecaservice.data.storage.entity.InstancesEntity;
+import com.ecaservice.data.storage.exception.AttributeMismatchException;
+import com.ecaservice.data.storage.exception.ClassAttributeValuesOutOfBoundsException;
+import com.ecaservice.data.storage.exception.InvalidClassAttributeTypeException;
 import com.ecaservice.data.storage.mapping.AttributeMapperImpl;
 import com.ecaservice.data.storage.repository.AttributeRepository;
 import com.ecaservice.data.storage.repository.AttributeValueRepository;
@@ -29,6 +34,8 @@ import weka.core.Instances;
 import javax.inject.Inject;
 import java.util.Collections;
 
+import static com.ecaservice.data.storage.TestHelperUtils.createAttributeEntity;
+import static com.ecaservice.data.storage.TestHelperUtils.createAttributeValueEntity;
 import static com.ecaservice.data.storage.TestHelperUtils.createInstancesEntity;
 import static com.ecaservice.data.storage.TestHelperUtils.createPageRequestDto;
 import static com.ecaservice.data.storage.TestHelperUtils.loadInstances;
@@ -53,6 +60,9 @@ class StorageServiceImplTest extends AbstractJpaTest {
     private static final String TEST_TABLE_2 = "test_table_2";
     private static final String TEST_TABLE_3 = "test_table_3";
     private static final String TEST_TABLE_4 = "test_table_4";
+    private static final String TEST_TABLE_5 = "test_table_5";
+    private static final String TEST_TABLE_6 = "test_table_6";
+    private static final String TEST_TABLE_7 = "test_table_7";
     private static final String NEW_TABLE_NAME = "new_table_name";
     private static final long ID = 2L;
     private static final String USER_NAME = "admin";
@@ -61,6 +71,7 @@ class StorageServiceImplTest extends AbstractJpaTest {
 
     private static final int EXPECTED_NUM_INSTANCES = 700;
     private static final String EXPECTED_CLASS_NAME = "class";
+    private static final String DURATION_ATTRIBUTE = "duration";
 
     @Inject
     private StorageServiceImpl storageService;
@@ -119,6 +130,43 @@ class StorageServiceImplTest extends AbstractJpaTest {
     }
 
     @Test
+    void testSetClassSuccess() {
+        var instances = internalSaveData(TEST_TABLE_5);
+        var classAttribute = getAttribute(instances, EXPECTED_CLASS_NAME);
+        storageService.setClassAttribute(instances.getId(), classAttribute.getId());
+        InstancesEntity actual = instancesRepository.findById(instances.getId()).orElse(null);
+        assertThat(actual).isNotNull();
+        assertThat(actual.getClassAttribute()).isNotNull();
+        assertThat(actual.getClassAttribute().getId()).isEqualTo(classAttribute.getId());
+    }
+
+    @Test
+    void testSetNumericClass() {
+        var instances = internalSaveData(TEST_TABLE_6);
+        var classAttribute = getAttribute(instances, DURATION_ATTRIBUTE);
+        assertThrows(InvalidClassAttributeTypeException.class,
+                () -> storageService.setClassAttribute(instances.getId(), classAttribute.getId()));
+    }
+
+    @Test
+    void testSetMismatchClass() {
+        var instances = internalSaveData(TEST_TABLE_7);
+        var classAttribute = getAttribute(instances, EXPECTED_CLASS_NAME);
+        assertThrows(AttributeMismatchException.class,
+                () -> storageService.setClassAttribute(instancesEntity.getId(), classAttribute.getId()));
+    }
+
+    @Test
+    void testSetClassWithOneValue() {
+        var classAttribute = createAttributeEntity("class", 0, AttributeType.NOMINAL);
+        classAttribute.setInstancesEntity(instancesEntity);
+        classAttribute.setValues(Collections.singletonList(createAttributeValueEntity("value", 0)));
+        attributeRepository.save(classAttribute);
+        assertThrows(ClassAttributeValuesOutOfBoundsException.class,
+                () -> storageService.setClassAttribute(instancesEntity.getId(), classAttribute.getId()));
+    }
+
+    @Test
     void testDeleteNotExistingData() {
         assertThrows(EntityNotFoundException.class, () -> storageService.deleteData(ID));
     }
@@ -165,5 +213,14 @@ class StorageServiceImplTest extends AbstractJpaTest {
         var instancesList = instancesRepository.findAll();
         instancesList.forEach(instancesEntity -> instancesEntity.setClassAttribute(null));
         instancesRepository.saveAll(instancesList);
+    }
+
+    private AttributeEntity getAttribute(InstancesEntity instances, String columnName) {
+        return attributeRepository.findByInstancesEntityOrderByIndex(instances).stream()
+                .filter(attributeEntity -> attributeEntity.getColumnName().equals(columnName))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException(
+                        String.format("Can't find attribute [%s] for instances [%s]", columnName,
+                                instances.getTableName())));
     }
 }
