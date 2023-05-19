@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({StorageServiceImpl.class, InstancesService.class, TransactionalService.class,
+@Import({StorageServiceImpl.class, InstancesService.class, InstancesBatchService.class,
         SqlQueryHelper.class, StorageTestConfiguration.class, AttributeService.class, AttributeMapperImpl.class})
 class ConcurrentStorageServiceTest extends AbstractJpaTest {
 

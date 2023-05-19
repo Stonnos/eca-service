@@ -9,14 +9,14 @@ import org.springframework.transaction.annotation.Transactional;
 import weka.core.Instances;
 
 /**
- * Service for transactional data migration.
+ * Instances batch service.
  *
  * @author Roman Batygin
  */
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class TransactionalService {
+public class InstancesBatchService {
 
     private final JdbcTemplate jdbcTemplate;
     private final SqlQueryHelper sqlQueryHelper;

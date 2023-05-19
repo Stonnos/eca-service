@@ -29,7 +29,7 @@ public class InstancesService {
     private static final String SELECT_QUERY = "select * from %s";
 
     private final JdbcTemplate jdbcTemplate;
-    private final TransactionalService transactionalMigrationService;
+    private final InstancesBatchService instancesBatchService;
     private final EcaDsConfig ecaDsConfig;
     private final SqlQueryHelper sqlQueryHelper;
     private final SearchQueryCreator searchQueryCreator;
@@ -54,7 +54,7 @@ public class InstancesService {
         for (int offset = 0; offset < instances.numInstances(); offset += batchSize) {
             log.trace("Starting to save batch with limit = {}, offset = {} into table '{}'.", batchSize, offset,
                     tableName);
-            transactionalMigrationService.saveBatch(tableName, instances, batchSize, offset);
+            instancesBatchService.saveBatch(tableName, instances, batchSize, offset);
             log.trace("{} rows has been saved into table '{}'.", offset + batchSize, tableName);
         }
         log.info("Data has been saved into table '{}'.", tableName);

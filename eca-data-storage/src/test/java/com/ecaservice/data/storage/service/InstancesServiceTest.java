@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Roman Batygin
  */
-@Import({InstancesService.class, TransactionalService.class, SqlQueryHelper.class, EcaDsConfig.class,
+@Import({InstancesService.class, InstancesBatchService.class, SqlQueryHelper.class, EcaDsConfig.class,
         SearchQueryCreator.class, InstancesExtractor.class, AttributeService.class})
 class InstancesServiceTest extends AbstractJpaTest {
 

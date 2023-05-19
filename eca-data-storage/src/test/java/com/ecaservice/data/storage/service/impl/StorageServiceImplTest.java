@@ -15,7 +15,7 @@ import com.ecaservice.data.storage.repository.InstancesRepository;
 import com.ecaservice.data.storage.service.AttributeService;
 import com.ecaservice.data.storage.service.InstancesService;
 import com.ecaservice.data.storage.service.SearchQueryCreator;
-import com.ecaservice.data.storage.service.TransactionalService;
+import com.ecaservice.data.storage.service.InstancesBatchService;
 import com.ecaservice.data.storage.service.UserService;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import eca.data.db.InstancesExtractor;
@@ -48,7 +48,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({StorageServiceImpl.class, InstancesService.class, TransactionalService.class,
+@Import({StorageServiceImpl.class, InstancesService.class, InstancesBatchService.class,
         SqlQueryHelper.class, StorageTestConfiguration.class,
         AttributeService.class, AttributeMapperImpl.class, SearchQueryCreator.class,
         InstancesResultSetConverter.class, InstancesExtractor.class})
