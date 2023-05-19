@@ -15,17 +15,41 @@ public enum AttributeType {
     /**
      * Numeric type
      */
-    NUMERIC("Числовой"),
+    NUMERIC("Числовой") {
+        @Override
+        public <T> T handle(AttributeTypeVisitor<T> attributeTypeVisitor) {
+            return attributeTypeVisitor.caseNumeric();
+        }
+    },
 
     /**
      * Nominal type
      */
-    NOMINAL("Категориальный"),
+    NOMINAL("Категориальный") {
+        @Override
+        public <T> T handle(AttributeTypeVisitor<T> attributeTypeVisitor) {
+            return attributeTypeVisitor.caseNominal();
+        }
+    },
 
     /**
      * Date type
      */
-    DATE("Дата и время");
+    DATE("Дата и время") {
+        @Override
+        public <T> T handle(AttributeTypeVisitor<T> attributeTypeVisitor) {
+            return attributeTypeVisitor.caseDate();
+        }
+    };
+
+    /**
+     * Visitor pattern common method
+     *
+     * @param attributeTypeVisitor visitor class
+     * @param <T>                  generic class
+     * @return generic class
+     */
+    public abstract <T> T handle(AttributeTypeVisitor<T> attributeTypeVisitor);
 
     private final String description;
 }

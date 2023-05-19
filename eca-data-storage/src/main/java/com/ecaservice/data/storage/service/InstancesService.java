@@ -33,8 +33,7 @@ public class InstancesService {
     private final EcaDsConfig ecaDsConfig;
     private final SqlQueryHelper sqlQueryHelper;
     private final SearchQueryCreator searchQueryCreator;
-    private final InstancesResultSetExtractor instancesResultSetExtractor;
-    private final InstancesConversionService instancesConversionService;
+    private final AttributeService attributeService;
 
     /**
      * Saves training data into database.
@@ -89,18 +88,18 @@ public class InstancesService {
     /**
      * Gets instances page with specified page request params.
      *
-     * @param instancesEntity      - instances entity
-     * @param pageRequestDto - page request
+     * @param instancesEntity - instances entity
+     * @param pageRequestDto  - page request
      * @return instances page
      */
     public PageDto<List<String>> getInstances(InstancesEntity instancesEntity, PageRequestDto pageRequestDto) {
         String tableName = instancesEntity.getTableName();
         log.info("Starting to get instances for table [{}], page request [{}]", tableName, pageRequestDto);
+        var attributes = attributeService.getAttributes(instancesEntity);
         var sqlPreparedQuery = searchQueryCreator.buildSqlQuery(instancesEntity, pageRequestDto);
-        var instances = jdbcTemplate.query(sqlPreparedQuery.getQuery(), sqlPreparedQuery.getArgs(),
-                instancesResultSetExtractor);
-        Assert.notNull(instances, String.format("Expected not null instances for table [%s]", tableName));
-        var dataList = instancesConversionService.covert(instances);
+        var dataListResultSetExtractor = new DataListResultSetExtractor(instancesEntity, attributes);
+        var dataList =
+                jdbcTemplate.query(sqlPreparedQuery.getQuery(), sqlPreparedQuery.getArgs(), dataListResultSetExtractor);
         Long totalElements =
                 jdbcTemplate.queryForObject(sqlPreparedQuery.getCountQuery(), sqlPreparedQuery.getArgs(), Long.class);
         Assert.notNull(totalElements, String.format("Expected not null total elements for table [%s]", tableName));
@@ -109,15 +108,18 @@ public class InstancesService {
     }
 
     /**
-     * Gets instances from specified table.
+     * Gets instances from specified instances.
      *
-     * @param tableName - table name
+     * @param instancesEntity - instances entity
      * @return instances object
      */
-    public Instances getInstances(String tableName) {
-        log.info("Starting to get instances for table [{}]", tableName);
-        var instances = jdbcTemplate.query(String.format(SELECT_QUERY, tableName), instancesResultSetExtractor);
-        log.info("Instances has been fetched for table [{}]", tableName);
+    public Instances getInstances(InstancesEntity instancesEntity) {
+        log.info("Starting to get instances for table [{}]", instancesEntity.getTableName());
+        var attributes = attributeService.getAttributes(instancesEntity);
+        var instancesResultSetExtractor = new InstancesResultSetExtractor(instancesEntity, attributes);
+        var instances = jdbcTemplate.query(String.format(SELECT_QUERY, instancesEntity.getTableName()),
+                instancesResultSetExtractor);
+        log.info("Instances has been fetched for table [{}]", instancesEntity.getTableName());
         return instances;
     }
 }
