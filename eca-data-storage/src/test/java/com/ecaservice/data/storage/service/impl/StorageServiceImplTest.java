@@ -52,6 +52,7 @@ class StorageServiceImplTest extends AbstractJpaTest {
     private static final String TEST_TABLE = "test_table";
     private static final String TEST_TABLE_2 = "test_table_2";
     private static final String TEST_TABLE_3 = "test_table_3";
+    private static final String TEST_TABLE_4 = "test_table_4";
     private static final String NEW_TABLE_NAME = "new_table_name";
     private static final long ID = 2L;
     private static final String USER_NAME = "admin";
@@ -106,8 +107,11 @@ class StorageServiceImplTest extends AbstractJpaTest {
 
     @Test
     void testDeleteData() {
-        storageService.deleteData(instancesEntity.getId());
-        assertThat(instancesRepository.existsById(instancesEntity.getId())).isFalse();
+        var instances = internalSaveData(TEST_TABLE_4);
+        storageService.deleteData(instances.getId());
+        assertThat(instancesRepository.existsById(instances.getId())).isFalse();
+        assertThat(attributeRepository.count()).isZero();
+        assertThat(attributeValueRepository.count()).isZero();
     }
 
     @Test

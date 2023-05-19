@@ -97,6 +97,7 @@ public class StorageServiceImpl implements StorageService {
         log.info("Starting to delete instances with id [{}]", id);
         InstancesEntity instancesEntity = getById(id);
         instancesService.deleteInstances(instancesEntity.getTableName());
+        attributeService.deleteAttributes(instancesEntity);
         instancesRepository.deleteById(id);
         log.info("Instances [{}] has been deleted", id);
         return instancesEntity.getTableName();

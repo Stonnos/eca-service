@@ -76,8 +76,22 @@ public class AttributeService {
         log.info("[{}] attributes info has been fetched for instances [{}]", attributes.size(),
                 instancesEntity.getTableName());
         return attributes.stream()
-                .map(attributeInfoProjection -> new AttributeInfo(attributeInfoProjection.getColumnName(), attributeInfoProjection.getType()))
+                .map(attributeInfoProjection -> new AttributeInfo(attributeInfoProjection.getColumnName(),
+                        attributeInfoProjection.getType()))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Deletes instances attributes.
+     *
+     * @param instancesEntity - instances entity
+     */
+    public void deleteAttributes(InstancesEntity instancesEntity) {
+        log.info("Starting to delete instances [{}] attributes", instancesEntity.getTableName());
+        var attributes = attributeRepository.findByInstancesEntityOrderByIndex(instancesEntity);
+        attributeRepository.deleteAll(attributes);
+        log.info("[{}] attributes has been deleted for instances [{}]", attributes.size(),
+                instancesEntity.getTableName());
     }
 
     private AttributeEntity createAttributeEntity(Attribute attribute, InstancesEntity instancesEntity) {
