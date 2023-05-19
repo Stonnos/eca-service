@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import weka.core.Instances;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -97,9 +98,9 @@ public class InstancesService {
         log.info("Starting to get instances for table [{}], page request [{}]", tableName, pageRequestDto);
         var attributes = attributeService.getAttributes(instancesEntity);
         var sqlPreparedQuery = searchQueryCreator.buildSqlQuery(instancesEntity, pageRequestDto);
-        var dataListResultSetExtractor = new DataListResultSetExtractor(instancesEntity, attributes);
-        var dataList =
-                jdbcTemplate.query(sqlPreparedQuery.getQuery(), sqlPreparedQuery.getArgs(), dataListResultSetExtractor);
+        var extractor = new DataListResultSetExtractor(instancesEntity, attributes);
+        extractor.setDateTimeFormatter(DateTimeFormatter.ofPattern(ecaDsConfig.getDateFormat()));
+        var dataList = jdbcTemplate.query(sqlPreparedQuery.getQuery(), sqlPreparedQuery.getArgs(), extractor);
         Long totalElements =
                 jdbcTemplate.queryForObject(sqlPreparedQuery.getCountQuery(), sqlPreparedQuery.getArgs(), Long.class);
         Assert.notNull(totalElements, String.format("Expected not null total elements for table [%s]", tableName));
@@ -116,9 +117,9 @@ public class InstancesService {
     public Instances getInstances(InstancesEntity instancesEntity) {
         log.info("Starting to get instances for table [{}]", instancesEntity.getTableName());
         var attributes = attributeService.getAttributes(instancesEntity);
-        var instancesResultSetExtractor = new InstancesResultSetExtractor(instancesEntity, attributes);
-        var instances = jdbcTemplate.query(String.format(SELECT_QUERY, instancesEntity.getTableName()),
-                instancesResultSetExtractor);
+        var extractor = new InstancesResultSetExtractor(instancesEntity, attributes);
+        extractor.setDateFormat(ecaDsConfig.getDateFormat());
+        var instances = jdbcTemplate.query(String.format(SELECT_QUERY, instancesEntity.getTableName()), extractor);
         log.info("Instances has been fetched for table [{}]", instancesEntity.getTableName());
         return instances;
     }
