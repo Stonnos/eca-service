@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v3-add-class-attribute-column.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="add_class_attribute_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="instances"/>
+                <tableExists tableName="attribute"/>
+            <not>
+                <columnExists tableName="instances" columnName="class_attribute_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="instances">
+            <column name="class_attribute_id" type="bigint">
+                <constraints foreignKeyName="fk_instances_class_attribute_id"
+                             referencedTableName="attribute" referencedColumnNames="id"
+                             nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>
