@@ -4,9 +4,13 @@ import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.data.storage.config.EcaDsConfig;
 import com.ecaservice.data.storage.entity.AttributeEntity;
+import com.ecaservice.data.storage.entity.AttributeType;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.entity.InstancesEntity_;
+import com.ecaservice.data.storage.exception.AttributeMismatchException;
+import com.ecaservice.data.storage.exception.ClassAttributeValuesOutOfBoundsException;
 import com.ecaservice.data.storage.exception.EmptyDataException;
+import com.ecaservice.data.storage.exception.InvalidClassAttributeTypeException;
 import com.ecaservice.data.storage.exception.TableExistsException;
 import com.ecaservice.data.storage.filter.InstancesFilter;
 import com.ecaservice.data.storage.mapping.AttributeMapper;
@@ -127,6 +131,24 @@ public class StorageServiceImpl implements StorageService {
         InstancesEntity instancesEntity = getById(id);
         var attributes = attributeService.getAttributes(instancesEntity);
         return attributeMapper.map(attributes);
+    }
+
+    @Override
+    public void setClassAttribute(long instancesId, long classAttributeId) {
+        log.info("Starting to set class attribute [{}] for instances with id [{}]", classAttributeId, instancesId);
+        var instances = getById(instancesId);
+        var attribute = attributeService.getById(classAttributeId);
+        if (!attribute.getInstancesEntity().getId().equals(instances.getId())) {
+            throw new AttributeMismatchException(instances.getTableName(), classAttributeId);
+        }
+        if (!AttributeType.NOMINAL.equals(attribute.getType())) {
+            throw new InvalidClassAttributeTypeException(attribute.getColumnName());
+        }
+        if (attribute.getValues().size() < MIN_NUM_CLASSES) {
+            throw new ClassAttributeValuesOutOfBoundsException(classAttributeId);
+        }
+        instances.setClassAttribute(attribute);
+        log.info("Class attribute [{}] has been set for instances with id [{}]", classAttributeId, instancesId);
     }
 
     @Override

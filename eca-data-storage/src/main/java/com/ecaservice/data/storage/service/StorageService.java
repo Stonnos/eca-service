@@ -80,4 +80,12 @@ public interface StorageService {
      * @return instances attributes
      */
     List<AttributeDto> getAttributes(long id);
+
+    /**
+     * Sets class attribute for specified instances.
+     *
+     * @param instancesId      - instances id
+     * @param classAttributeId - class attribute id
+     */
+    void setClassAttribute(long instancesId, long classAttributeId);
 }

@@ -1,5 +1,6 @@
 package com.ecaservice.data.storage.service;
 
+import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.data.storage.config.CacheNames;
 import com.ecaservice.data.storage.entity.AttributeEntity;
 import com.ecaservice.data.storage.entity.InstancesEntity;
@@ -94,6 +95,18 @@ public class AttributeService {
         attributeRepository.deleteAll(attributes);
         log.info("[{}] attributes has been deleted for instances [{}]", attributes.size(),
                 instancesEntity.getTableName());
+    }
+
+    /**
+     * Gets attribute with specified id.
+     *
+     * @param id - attribute id
+     * @return attribute entity
+     */
+    public AttributeEntity getById(long id) {
+        log.debug("Gets attribute with id [{}]", id);
+        return attributeRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(AttributeEntity.class, id));
     }
 
     private AttributeEntity createAttributeEntity(Attribute attribute, InstancesEntity instancesEntity) {

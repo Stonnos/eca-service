@@ -89,4 +89,9 @@ public class ConcurrentStorageService implements StorageService {
     public List<AttributeDto> getAttributes(long id) {
         return storageService.getAttributes(id);
     }
+
+    @Override
+    public void setClassAttribute(long instancesId, long classAttributeId) {
+        storageService.setClassAttribute(instancesId, classAttributeId);
+    }
 }
