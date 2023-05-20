@@ -7,6 +7,7 @@ import com.ecaservice.data.storage.model.MultipartFileResource;
 import com.ecaservice.data.storage.model.report.ReportType;
 import com.ecaservice.data.storage.report.InstancesReportService;
 import com.ecaservice.data.storage.report.ReportsConfigurationService;
+import com.ecaservice.data.storage.service.AttributeService;
 import com.ecaservice.data.storage.service.InstancesLoader;
 import com.ecaservice.data.storage.service.StorageService;
 import com.ecaservice.web.dto.model.AttributeDto;
@@ -74,6 +75,7 @@ public class DataStorageController {
 
     private final StorageService storageService;
     private final InstancesReportService instancesReportService;
+    private final AttributeService attributeService;
     private final ReportsConfigurationService reportsConfigurationService;
     private final InstancesLoader instancesLoader;
     private final InstancesMapper instancesMapper;
@@ -569,6 +571,135 @@ public class DataStorageController {
     public void setClassAttribute(@Parameter(description = "Class attribute id", example = "1", required = true)
                                   @Min(VALUE_1) @Max(Long.MAX_VALUE) @RequestParam long classAttributeId) {
         storageService.setClassAttribute(classAttributeId);
+    }
+
+    /**
+     * Selects attribute for classification.
+     *
+     * @param id - attribute id
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @Operation(
+            description = "Selects attribute for classification",
+            summary = "Selects attribute for classification",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "DataNotFoundResponse",
+                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                            ),
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
+                            )
+                    )
+            }
+    )
+    @PutMapping(value = "/select_attribute")
+    public void selectAttribute(@Parameter(description = "Attribute id", example = "1", required = true)
+                                @Min(VALUE_1) @Max(Long.MAX_VALUE) @RequestParam long id) {
+        attributeService.selectAttribute(id);
+    }
+
+    /**
+     * Unselects attribute for classification.
+     *
+     * @param id - attribute id
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @Operation(
+            description = "Unselects attribute for classification",
+            summary = "Unselects attribute for classification",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "DataNotFoundResponse",
+                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                            ),
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
+                            )
+                    )
+            }
+    )
+    @PutMapping(value = "/unselect_attribute")
+    public void unselectAttribute(@Parameter(description = "Attribute id", example = "1", required = true)
+                                  @Min(VALUE_1) @Max(Long.MAX_VALUE) @RequestParam long id) {
+        attributeService.unselectAttribute(id);
+    }
+
+    /**
+     * Selects all attributes for classification.
+     *
+     * @param id - instances id
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @Operation(
+            description = "Selects all attributes for classification",
+            summary = "Selects all attributes for classification",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "DataNotFoundResponse",
+                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                            ),
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
+                            )
+                    )
+            }
+    )
+    @PutMapping(value = "/select_all_attributes")
+    public void selectAllAttributes(@Parameter(description = "Instances id", example = "1", required = true)
+                                    @Min(VALUE_1) @Max(Long.MAX_VALUE) @RequestParam long id) {
+        storageService.selectAllAttributes(id);
     }
 
     /**

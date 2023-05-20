@@ -113,6 +113,11 @@ public class AttributeService {
                 .orElseThrow(() -> new EntityNotFoundException(AttributeEntity.class, id));
     }
 
+    /**
+     * Selects attribute for classification.
+     *
+     * @param id - attribute id
+     */
     @Audit(value = SELECT_ATTRIBUTE, correlationIdKey = "#result.instancesEntity.id")
     public AttributeEntity selectAttribute(long id) {
         log.info("Starting to select attribute [{}]", id);
@@ -126,6 +131,11 @@ public class AttributeService {
         return attribute;
     }
 
+    /**
+     * Unselects attribute for classification.
+     *
+     * @param id - attribute id
+     */
     @Audit(value = UNSELECT_ATTRIBUTE, correlationIdKey = "#result.instancesEntity.id")
     public AttributeEntity unselectAttribute(long id) {
         log.info("Starting to unselect attribute [{}]", id);

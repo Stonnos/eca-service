@@ -9,6 +9,7 @@ import com.ecaservice.data.storage.model.report.ReportType;
 import com.ecaservice.data.storage.report.InstancesReportService;
 import com.ecaservice.data.storage.report.ReportsConfigurationService;
 import com.ecaservice.data.storage.repository.InstancesRepository;
+import com.ecaservice.data.storage.service.AttributeService;
 import com.ecaservice.data.storage.service.InstancesLoader;
 import com.ecaservice.data.storage.service.impl.StorageServiceImpl;
 import com.ecaservice.oauth2.test.controller.AbstractControllerTest;
@@ -103,6 +104,8 @@ class DataStorageControllerTest extends AbstractControllerTest {
     private JdbcTemplate jdbcTemplate;
     @MockBean
     private InstancesReportService instancesReportService;
+    @MockBean
+    private AttributeService attributeService;
     @MockBean
     private ReportsConfigurationService reportsConfigurationService;
 
