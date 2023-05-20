@@ -4,3 +4,6 @@ RENAME_INSTANCES;Изменение имени таблицы с обучающ�
 DELETE_INSTANCES;Удаление таблицы с обучающей выборкой;true;DATA_STORAGE_ACTIONS
 DOWNLOAD_INSTANCES_REPORT;Выгрузка обучающей выборки;true;DATA_STORAGE_ACTIONS
 SET_CLASS_ATTRIBUTE;Установка атрибута класса;true;DATA_STORAGE_ACTIONS
+SELECT_ATTRIBUTE;Выбор атрибута классификации;true;DATA_STORAGE_ACTIONS
+UNSELECT_ATTRIBUTE;Отмена выбора атрибута классификации;true;DATA_STORAGE_ACTIONS
+SELECT_ALL_ATTRIBUTES;Выбор всех атрибутов классификации;true;DATA_STORAGE_ACTIONS

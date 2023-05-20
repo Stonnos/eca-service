@@ -4,3 +4,6 @@ id;event_type;message_template;audit_code_id
 3;SUCCESS;Таблица ${returnValue} с обучающей выборкой была удалена;DELETE_INSTANCES
 4;SUCCESS;Данные обучающей выборки были выгружены из таблицы [${instancesEntity.tableName}] в формате [${reportType.extension}];DOWNLOAD_INSTANCES_REPORT
 5;SUCCESS;Установлен атрибут класса [${returnValue.columnName}] для обучающей выборки [${returnValue.instancesEntity.tableName}];SET_CLASS_ATTRIBUTE
+6;SUCCESS;Выбран атрибут классификации [${returnValue.columnName}] для обучающей выборки [${returnValue.instancesEntity.tableName}];SELECT_ATTRIBUTE
+7;SUCCESS;Отменен выбор атрибута классификации [${returnValue.columnName}] для обучающей выборки [${returnValue.instancesEntity.tableName}];UNSELECT_ATTRIBUTE
+8;SUCCESS;Выбраны все атрибуты классификации для обучающей выборки [${returnValue.tableName}];SELECT_ALL_ATTRIBUTES

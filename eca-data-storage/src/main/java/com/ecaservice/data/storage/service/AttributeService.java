@@ -1,6 +1,8 @@
 package com.ecaservice.data.storage.service;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.common.web.exception.InvalidOperationException;
+import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.data.storage.config.CacheNames;
 import com.ecaservice.data.storage.entity.AttributeEntity;
 import com.ecaservice.data.storage.entity.InstancesEntity;
@@ -17,6 +19,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static com.ecaservice.data.storage.config.audit.AuditCodes.SELECT_ATTRIBUTE;
+import static com.ecaservice.data.storage.config.audit.AuditCodes.UNSELECT_ATTRIBUTE;
 import static com.ecaservice.data.storage.util.Utils.getAttributeType;
 import static com.ecaservice.data.storage.util.Utils.getAttributeValues;
 import static eca.data.db.SqlQueryHelper.formatName;
@@ -107,6 +111,32 @@ public class AttributeService {
         log.debug("Gets attribute with id [{}]", id);
         return attributeRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(AttributeEntity.class, id));
+    }
+
+    @Audit(value = SELECT_ATTRIBUTE, correlationIdKey = "#result.instancesEntity.id")
+    public AttributeEntity selectAttribute(long id) {
+        log.info("Starting to select attribute [{}]", id);
+        var attribute = getById(id);
+        if (attribute.isSelected()) {
+            throw new InvalidOperationException(String.format("Attribute [%d] is already selected", id));
+        }
+        attribute.setSelected(true);
+        attributeRepository.save(attribute);
+        log.info("Attribute [{}] has been selected", attribute.getId());
+        return attribute;
+    }
+
+    @Audit(value = UNSELECT_ATTRIBUTE, correlationIdKey = "#result.instancesEntity.id")
+    public AttributeEntity unselectAttribute(long id) {
+        log.info("Starting to unselect attribute [{}]", id);
+        var attribute = getById(id);
+        if (!attribute.isSelected()) {
+            throw new InvalidOperationException(String.format("Attribute [%d] is already unselected", id));
+        }
+        attribute.setSelected(false);
+        attributeRepository.save(attribute);
+        log.info("Attribute [{}] has been unselected", attribute.getId());
+        return attribute;
     }
 
     private AttributeEntity createAttributeEntity(Attribute attribute, InstancesEntity instancesEntity) {

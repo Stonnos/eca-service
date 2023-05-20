@@ -89,4 +89,12 @@ public interface StorageService {
      * @return attribute entity
      */
     AttributeEntity setClassAttribute(long classAttributeId);
+
+    /**
+     * Selects all attributes for specified instances.
+     *
+     * @param id - instances id
+     * @return instances entity
+     */
+    InstancesEntity selectAllAttributes(long id);
 }

@@ -95,4 +95,9 @@ public class ConcurrentStorageService implements StorageService {
     public AttributeEntity setClassAttribute(long classAttributeId) {
         return storageService.setClassAttribute(classAttributeId);
     }
+
+    @Override
+    public InstancesEntity selectAllAttributes(long id) {
+        return storageService.selectAllAttributes(id);
+    }
 }

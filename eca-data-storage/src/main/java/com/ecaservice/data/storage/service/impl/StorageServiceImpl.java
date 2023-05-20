@@ -13,6 +13,7 @@ import com.ecaservice.data.storage.exception.InvalidClassAttributeTypeException;
 import com.ecaservice.data.storage.exception.TableExistsException;
 import com.ecaservice.data.storage.filter.InstancesFilter;
 import com.ecaservice.data.storage.mapping.AttributeMapper;
+import com.ecaservice.data.storage.repository.AttributeRepository;
 import com.ecaservice.data.storage.repository.InstancesRepository;
 import com.ecaservice.data.storage.service.AttributeService;
 import com.ecaservice.data.storage.service.InstancesService;
@@ -37,6 +38,7 @@ import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.data.storage.config.audit.AuditCodes.DELETE_INSTANCES;
 import static com.ecaservice.data.storage.config.audit.AuditCodes.RENAME_INSTANCES;
 import static com.ecaservice.data.storage.config.audit.AuditCodes.SAVE_INSTANCES;
+import static com.ecaservice.data.storage.config.audit.AuditCodes.SELECT_ALL_ATTRIBUTES;
 import static com.ecaservice.data.storage.config.audit.AuditCodes.SET_CLASS_ATTRIBUTE;
 import static com.ecaservice.data.storage.entity.InstancesEntity_.CREATED;
 import static com.ecaservice.data.storage.util.Utils.MIN_NUM_CLASSES;
@@ -63,6 +65,7 @@ public class StorageServiceImpl implements StorageService {
     private final UserService userService;
     private final AttributeMapper attributeMapper;
     private final InstancesRepository instancesRepository;
+    private final AttributeRepository attributeRepository;
 
     @Override
     public Page<InstancesEntity> getNextPage(PageRequestDto pageRequestDto) {
@@ -149,6 +152,18 @@ public class StorageServiceImpl implements StorageService {
         log.info("Class attribute [{}] has been set for instances with [{}]", classAttributeId,
                 attribute.getInstancesEntity().getTableName());
         return attribute;
+    }
+
+    @Override
+    @Audit(value = SELECT_ALL_ATTRIBUTES, correlationIdKey = "#id")
+    @Transactional
+    public InstancesEntity selectAllAttributes(long id) {
+        log.info("Starting to select all attributes for instances [{}]", id);
+        var instancesEntity = getById(id);
+        attributeRepository.selectAll(instancesEntity);
+        log.info("All attributes has been selected for instances [{}] with table name [{}]", id,
+                instancesEntity.getId());
+        return instancesEntity;
     }
 
     @Override

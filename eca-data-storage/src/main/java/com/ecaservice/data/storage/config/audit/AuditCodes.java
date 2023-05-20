@@ -34,4 +34,19 @@ public class AuditCodes {
      * Sets class attribute.
      */
     public static final String SET_CLASS_ATTRIBUTE = "SET_CLASS_ATTRIBUTE";
+
+    /**
+     * Select attribute
+     */
+    public static final String SELECT_ATTRIBUTE = "SELECT_ATTRIBUTE";
+
+    /**
+     * Unselect attribute
+     */
+    public static final String UNSELECT_ATTRIBUTE = "UNSELECT_ATTRIBUTE";
+
+    /**
+     * Select all attributes
+     */
+    public static final String SELECT_ALL_ATTRIBUTES = "SELECT_ALL_ATTRIBUTES";
 }
