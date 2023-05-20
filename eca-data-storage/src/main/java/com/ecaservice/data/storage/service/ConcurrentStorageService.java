@@ -1,5 +1,6 @@
 package com.ecaservice.data.storage.service;
 
+import com.ecaservice.data.storage.entity.AttributeEntity;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.web.dto.model.AttributeDto;
 import com.ecaservice.web.dto.model.PageDto;
@@ -91,7 +92,7 @@ public class ConcurrentStorageService implements StorageService {
     }
 
     @Override
-    public void setClassAttribute(long classAttributeId) {
-        storageService.setClassAttribute(classAttributeId);
+    public AttributeEntity setClassAttribute(long classAttributeId) {
+        return storageService.setClassAttribute(classAttributeId);
     }
 }

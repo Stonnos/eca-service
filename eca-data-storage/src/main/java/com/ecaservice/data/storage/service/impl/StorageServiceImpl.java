@@ -37,6 +37,7 @@ import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.data.storage.config.audit.AuditCodes.DELETE_INSTANCES;
 import static com.ecaservice.data.storage.config.audit.AuditCodes.RENAME_INSTANCES;
 import static com.ecaservice.data.storage.config.audit.AuditCodes.SAVE_INSTANCES;
+import static com.ecaservice.data.storage.config.audit.AuditCodes.SET_CLASS_ATTRIBUTE;
 import static com.ecaservice.data.storage.entity.InstancesEntity_.CREATED;
 import static com.ecaservice.data.storage.util.Utils.MIN_NUM_CLASSES;
 import static eca.data.db.SqlQueryHelper.formatName;
@@ -133,8 +134,9 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
+    @Audit(value = SET_CLASS_ATTRIBUTE, correlationIdKey = "#result.instancesEntity.id")
     @Transactional
-    public void setClassAttribute(long classAttributeId) {
+    public AttributeEntity setClassAttribute(long classAttributeId) {
         log.info("Starting to set class attribute [{}]", classAttributeId);
         var attribute = attributeService.getById(classAttributeId);
         if (!AttributeType.NOMINAL.equals(attribute.getType())) {
@@ -146,6 +148,7 @@ public class StorageServiceImpl implements StorageService {
         attribute.getInstancesEntity().setClassAttribute(attribute);
         log.info("Class attribute [{}] has been set for instances with [{}]", classAttributeId,
                 attribute.getInstancesEntity().getTableName());
+        return attribute;
     }
 
     @Override

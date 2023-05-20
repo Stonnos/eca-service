@@ -1,5 +1,6 @@
 package com.ecaservice.data.storage.service;
 
+import com.ecaservice.data.storage.entity.AttributeEntity;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.web.dto.model.AttributeDto;
 import com.ecaservice.web.dto.model.PageDto;
@@ -85,6 +86,7 @@ public interface StorageService {
      * Sets class attribute for specified instances.
      *
      * @param classAttributeId - class attribute id
+     * @return attribute entity
      */
-    void setClassAttribute(long classAttributeId);
+    AttributeEntity setClassAttribute(long classAttributeId);
 }

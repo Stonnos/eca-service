@@ -3,3 +3,4 @@ id;event_type;message_template;audit_code_id
 2;SUCCESS;Изменено название таблицы ${returnValue} для обучающей выборки. Новое название - ${newName};RENAME_INSTANCES
 3;SUCCESS;Таблица ${returnValue} с обучающей выборкой была удалена;DELETE_INSTANCES
 4;SUCCESS;Данные обучающей выборки были выгружены из таблицы [${instancesEntity.tableName}] в формате [${reportType.extension}];DOWNLOAD_INSTANCES_REPORT
+5;SUCCESS;Установлен атрибут класса [${returnValue.columnName}] для обучающей выборки [${returnValue.instancesEntity.tableName}];SET_CLASS_ATTRIBUTE

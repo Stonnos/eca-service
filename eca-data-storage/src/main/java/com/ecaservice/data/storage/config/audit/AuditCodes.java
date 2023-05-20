@@ -29,4 +29,9 @@ public class AuditCodes {
      * Downloads instances report
      */
     public static final String DOWNLOAD_INSTANCES_REPORT = "DOWNLOAD_INSTANCES_REPORT";
+
+    /**
+     * Sets class attribute.
+     */
+    public static final String SET_CLASS_ATTRIBUTE = "SET_CLASS_ATTRIBUTE";
 }
