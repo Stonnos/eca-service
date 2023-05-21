@@ -13,9 +13,9 @@ import com.ecaservice.data.storage.repository.AttributeRepository;
 import com.ecaservice.data.storage.repository.AttributeValueRepository;
 import com.ecaservice.data.storage.repository.InstancesRepository;
 import com.ecaservice.data.storage.service.AttributeService;
+import com.ecaservice.data.storage.service.InstancesBatchService;
 import com.ecaservice.data.storage.service.InstancesService;
 import com.ecaservice.data.storage.service.SearchQueryCreator;
-import com.ecaservice.data.storage.service.InstancesBatchService;
 import com.ecaservice.data.storage.service.UserService;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import eca.data.db.InstancesExtractor;
@@ -71,6 +71,7 @@ class StorageServiceImplTest extends AbstractJpaTest {
     private static final int EXPECTED_NUM_INSTANCES = 700;
     private static final String EXPECTED_CLASS_NAME = "class";
     private static final String DURATION_ATTRIBUTE = "duration";
+    private static final String COLUMN_NAME = "column1";
 
     @Inject
     private StorageServiceImpl storageService;
@@ -160,6 +161,15 @@ class StorageServiceImplTest extends AbstractJpaTest {
     }
 
     @Test
+    void testSelectAllAttributes() {
+        var attribute = createAndSaveAttribute(false);
+        storageService.selectAllAttributes(instancesEntity.getId());
+        var actual = attributeRepository.findById(attribute.getId()).orElse(null);
+        assertThat(actual).isNotNull();
+        assertThat(actual.isSelected()).isTrue();
+    }
+
+    @Test
     void testDeleteNotExistingData() {
         assertThrows(EntityNotFoundException.class, () -> storageService.deleteData(ID));
     }
@@ -225,6 +235,13 @@ class StorageServiceImplTest extends AbstractJpaTest {
         var instancesList = instancesRepository.findAll();
         instancesList.forEach(instancesEntity -> instancesEntity.setClassAttribute(null));
         instancesRepository.saveAll(instancesList);
+    }
+
+    private AttributeEntity createAndSaveAttribute(boolean selected) {
+        var attribute = createAttributeEntity(COLUMN_NAME, 0, AttributeType.NUMERIC);
+        attribute.setSelected(selected);
+        attribute.setInstancesEntity(instancesEntity);
+        return attributeRepository.save(attribute);
     }
 
     private AttributeEntity getAttribute(InstancesEntity instances, String columnName) {

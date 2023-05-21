@@ -1,7 +1,9 @@
 package com.ecaservice.data.storage.service;
 
+import com.ecaservice.common.web.exception.InvalidOperationException;
 import com.ecaservice.data.storage.AbstractJpaTest;
 import com.ecaservice.data.storage.entity.AttributeEntity;
+import com.ecaservice.data.storage.entity.AttributeType;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.repository.AttributeRepository;
 import com.ecaservice.data.storage.repository.AttributeValueRepository;
@@ -15,10 +17,12 @@ import javax.inject.Inject;
 
 import java.util.stream.IntStream;
 
+import static com.ecaservice.data.storage.TestHelperUtils.createAttributeEntity;
 import static com.ecaservice.data.storage.TestHelperUtils.createInstancesEntity;
 import static com.ecaservice.data.storage.TestHelperUtils.loadInstances;
 import static com.ecaservice.data.storage.util.Utils.getAttributeType;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for checking {@link AttributeService} functionality.
@@ -29,6 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class AttributesServiceTest extends AbstractJpaTest {
 
     private static final String TEST_TABLE = "test_table";
+    private static final String COLUMN_NAME = "column1";
 
     @Inject
     private InstancesRepository instancesRepository;
@@ -63,6 +68,36 @@ class AttributesServiceTest extends AbstractJpaTest {
         verifySavedAttributes();
     }
 
+    @Test
+    void testSelectAttribute() {
+        var attribute = createAndSaveAttribute(false);
+        var selectedAttribute = attributeService.selectAttribute(attribute.getId());
+        var actual = attributeRepository.findById(selectedAttribute.getId()).orElse(null);
+        assertThat(actual).isNotNull();
+        assertThat(actual.isSelected()).isTrue();
+    }
+
+    @Test
+    void testSelectAlreadySelectedAttribute() {
+        var attribute = createAndSaveAttribute(true);
+        assertThrows(InvalidOperationException.class, () -> attributeService.selectAttribute(attribute.getId()));
+    }
+
+    @Test
+    void testUnselectAttribute() {
+        var attribute = createAndSaveAttribute(true);
+        var selectedAttribute = attributeService.unselectAttribute(attribute.getId());
+        var actual = attributeRepository.findById(selectedAttribute.getId()).orElse(null);
+        assertThat(actual).isNotNull();
+        assertThat(actual.isSelected()).isFalse();
+    }
+
+    @Test
+    void testUnselectAlreadyUnselectedAttribute() {
+        var attribute = createAndSaveAttribute(false);
+        assertThrows(InvalidOperationException.class, () -> attributeService.unselectAttribute(attribute.getId()));
+    }
+
     private void createAndSaveInstancesEntity() {
         instancesEntity = createInstancesEntity();
         instancesEntity.setTableName(TEST_TABLE);
@@ -95,5 +130,12 @@ class AttributesServiceTest extends AbstractJpaTest {
             assertThat(actualValue).isEqualTo(expectedValue);
             assertThat(attributeValueEntity.getValueOrder()).isEqualTo(i);
         });
+    }
+
+    private AttributeEntity createAndSaveAttribute(boolean selected) {
+        var attribute = createAttributeEntity(COLUMN_NAME, 0, AttributeType.NUMERIC);
+        attribute.setSelected(selected);
+        attribute.setInstancesEntity(instancesEntity);
+        return attributeRepository.save(attribute);
     }
 }

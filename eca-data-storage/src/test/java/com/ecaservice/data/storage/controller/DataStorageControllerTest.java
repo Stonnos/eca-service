@@ -75,6 +75,9 @@ class DataStorageControllerTest extends AbstractControllerTest {
     private static final String SAVE_URL = BASE_URL + "/save";
     private static final String RENAME_URL = BASE_URL + "/rename";
     private static final String SET_CLASS_URL = BASE_URL + "/set_class_attribute";
+    private static final String SELECT_ATTRIBUTE_URL = BASE_URL + "/select_attribute";
+    private static final String UNSELECT_ATTRIBUTE_URL = BASE_URL + "/unselect_attribute";
+    private static final String SELECT_ALL_ATTRIBUTES_URL = BASE_URL + "/select_all_attributes";
     private static final String DELETE_URL = BASE_URL + "/delete";
     private static final String LIST_URL = BASE_URL + "/list";
     private static final String ATTRIBUTES_URL = BASE_URL + "/attributes/{id}";
@@ -338,6 +341,72 @@ class DataStorageControllerTest extends AbstractControllerTest {
     @Test
     void testSetClassWithNullClassAttributeId() throws Exception {
         mockMvc.perform(put(SET_CLASS_URL)
+                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testSelectAttributeUnauthorized() throws Exception {
+        mockMvc.perform(put(SELECT_ATTRIBUTE_URL)
+                        .param(ID_PARAM, String.valueOf(ID)))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testSelectAttribute() throws Exception {
+        mockMvc.perform(put(SELECT_ATTRIBUTE_URL)
+                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                        .param(ID_PARAM, String.valueOf(ID)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void testSelectAttributeWithNullId() throws Exception {
+        mockMvc.perform(put(SELECT_ATTRIBUTE_URL)
+                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testUnselectAttributeUnauthorized() throws Exception {
+        mockMvc.perform(put(UNSELECT_ATTRIBUTE_URL)
+                        .param(ID_PARAM, String.valueOf(ID)))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testUnselectAttribute() throws Exception {
+        mockMvc.perform(put(UNSELECT_ATTRIBUTE_URL)
+                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                        .param(ID_PARAM, String.valueOf(ID)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void testUnselectAttributeWithNullId() throws Exception {
+        mockMvc.perform(put(UNSELECT_ATTRIBUTE_URL)
+                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testSelectAllAttributesUnauthorized() throws Exception {
+        mockMvc.perform(put(SELECT_ALL_ATTRIBUTES_URL)
+                        .param(ID_PARAM, String.valueOf(ID)))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testSelectAllAttributes() throws Exception {
+        mockMvc.perform(put(SELECT_ALL_ATTRIBUTES_URL)
+                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                        .param(ID_PARAM, String.valueOf(ID)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void testSelectAllAttributesWithNullId() throws Exception {
+        mockMvc.perform(put(SELECT_ALL_ATTRIBUTES_URL)
                         .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isBadRequest());
     }
