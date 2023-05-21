@@ -1,13 +1,11 @@
 package com.ecaservice.data.storage.service;
 
 import com.ecaservice.data.storage.model.InstancesBatchOptions;
-import eca.data.db.SqlQueryHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import weka.core.Instances;
 
 /**
  * Instances batch service.
