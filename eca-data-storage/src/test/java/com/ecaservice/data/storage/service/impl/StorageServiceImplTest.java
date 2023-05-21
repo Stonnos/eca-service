@@ -20,16 +20,17 @@ import com.ecaservice.data.storage.service.UserService;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import eca.data.db.InstancesExtractor;
 import eca.data.db.InstancesResultSetConverter;
-import eca.data.db.SqlQueryHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
+import org.springframework.security.oauth2.common.util.RandomValueStringGenerator;
 import weka.core.Instances;
 
 import javax.inject.Inject;
 import java.util.Collections;
+import java.util.UUID;
 
 import static com.ecaservice.data.storage.AssertionUtils.assertDataList;
 import static com.ecaservice.data.storage.AssertionUtils.assertInstances;
@@ -49,8 +50,8 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import({StorageServiceImpl.class, InstancesService.class, InstancesBatchService.class,
-        SqlQueryHelper.class, StorageTestConfiguration.class,
-        AttributeService.class, AttributeMapperImpl.class, SearchQueryCreator.class,
+        RandomValueStringGenerator.class, StorageTestConfiguration.class, AttributeService.class,
+        AttributeMapperImpl.class, SearchQueryCreator.class,
         InstancesResultSetConverter.class, InstancesExtractor.class})
 class StorageServiceImplTest extends AbstractJpaTest {
 
@@ -228,6 +229,8 @@ class StorageServiceImplTest extends AbstractJpaTest {
     private void createAndSaveInstancesEntity() {
         instancesEntity = createInstancesEntity();
         instancesEntity.setTableName(TEST_TABLE);
+        instancesEntity.setUuid(UUID.randomUUID().toString());
+        instancesEntity.setIdColumnName(UUID.randomUUID().toString());
         instancesRepository.save(instancesEntity);
     }
 

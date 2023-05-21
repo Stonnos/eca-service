@@ -1,5 +1,6 @@
 package com.ecaservice.data.storage.service;
 
+import com.ecaservice.data.storage.model.InstancesBatchOptions;
 import eca.data.db.SqlQueryHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,20 +20,21 @@ import weka.core.Instances;
 public class InstancesBatchService {
 
     private final JdbcTemplate jdbcTemplate;
-    private final SqlQueryHelper sqlQueryHelper;
 
     /**
      * Saves training data batch into database.
      *
-     * @param tableName - table name
-     * @param instances - training data
-     * @param limit     - batch size
-     * @param offset    - offset value
+     * @param instancesBatchOptions - instances batch options
      */
     @Transactional
-    public void saveBatch(String tableName, Instances instances, int limit, int offset) {
-        String sqlQuery = sqlQueryHelper.buildPreparedInsertQuery(tableName, instances);
+    public void saveBatch(InstancesBatchOptions instancesBatchOptions) {
+        var instances = instancesBatchOptions.getInstances();
+        var sqlQueryHelper = instancesBatchOptions.getSqlQueryHelper();
+        String sqlQuery = sqlQueryHelper.buildPreparedInsertQuery(instancesBatchOptions.getTableName(), instances);
+        int offset = instancesBatchOptions.getOffset();
+        int limit = instancesBatchOptions.getLimit();
         for (int i = offset; i < Integer.min(instances.numInstances(), limit + offset); i++) {
+            sqlQueryHelper.setNextId(i);
             Object[] args = sqlQueryHelper.prepareQueryParameters(instances.instance(i));
             jdbcTemplate.update(sqlQuery, args);
         }

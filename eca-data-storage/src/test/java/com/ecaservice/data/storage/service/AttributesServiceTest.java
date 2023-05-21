@@ -15,6 +15,7 @@ import weka.core.Instances;
 
 import javax.inject.Inject;
 
+import java.util.UUID;
 import java.util.stream.IntStream;
 
 import static com.ecaservice.data.storage.TestHelperUtils.createAttributeEntity;
@@ -101,6 +102,8 @@ class AttributesServiceTest extends AbstractJpaTest {
     private void createAndSaveInstancesEntity() {
         instancesEntity = createInstancesEntity();
         instancesEntity.setTableName(TEST_TABLE);
+        instancesEntity.setUuid(UUID.randomUUID().toString());
+        instancesEntity.setIdColumnName(UUID.randomUUID().toString());
         instancesRepository.save(instancesEntity);
     }
 

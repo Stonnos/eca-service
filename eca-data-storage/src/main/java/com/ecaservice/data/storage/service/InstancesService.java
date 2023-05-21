@@ -2,9 +2,11 @@ package com.ecaservice.data.storage.service;
 
 import com.ecaservice.data.storage.config.EcaDsConfig;
 import com.ecaservice.data.storage.entity.InstancesEntity;
+import com.ecaservice.data.storage.model.InstancesBatchOptions;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import eca.data.db.SqlQueryHelper;
+import eca.data.db.SqlTypeUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -32,35 +34,38 @@ public class InstancesService {
     private final JdbcTemplate jdbcTemplate;
     private final InstancesBatchService instancesBatchService;
     private final EcaDsConfig ecaDsConfig;
-    private final SqlQueryHelper sqlQueryHelper;
     private final SearchQueryCreator searchQueryCreator;
     private final AttributeService attributeService;
 
     /**
      * Saves training data into database.
      *
-     * @param tableName - training data table name
-     * @param instances - training data
+     * @param instancesEntity - instances entity
+     * @param instances       - training data
      */
-    public void saveInstances(String tableName, Instances instances) {
-        log.info("Starting to save instances '{}' into table '{}'.", instances.relationName(), tableName);
-        log.info("Starting to create table '{}'.", tableName);
-        String createTableQuery = sqlQueryHelper.buildCreateTableQuery(tableName, instances);
+    public void saveInstances(InstancesEntity instancesEntity, Instances instances) {
+        log.info("Starting to save instances '{}' into table '{}'.", instances.relationName(),
+                instancesEntity.getTableName());
+        log.info("Starting to create table '{}'.", instancesEntity.getTableName());
+        var sqlQueryHelper = initializeSqlQueryHelper(instancesEntity);
+        String createTableQuery = sqlQueryHelper.buildCreateTableQuery(instancesEntity.getTableName(), instances);
         log.trace("create table query: {}", createTableQuery);
         jdbcTemplate.execute(createTableQuery);
-        log.info("Table '{}' has been successfully created.", tableName);
+        log.info("Table '{}' has been successfully created.", instancesEntity.getTableName());
 
-        log.info("Starting to save data into table '{}'.", tableName);
+        log.info("Starting to save data into table '{}'.", instancesEntity.getTableName());
         int batchSize = ecaDsConfig.getBatchSize();
         for (int offset = 0; offset < instances.numInstances(); offset += batchSize) {
             log.trace("Starting to save batch with limit = {}, offset = {} into table '{}'.", batchSize, offset,
-                    tableName);
-            instancesBatchService.saveBatch(tableName, instances, batchSize, offset);
-            log.trace("{} rows has been saved into table '{}'.", offset + batchSize, tableName);
+                    instancesEntity.getTableName());
+            var batchOptions = new InstancesBatchOptions(instancesEntity.getTableName(), instances, batchSize, offset,
+                    sqlQueryHelper);
+            instancesBatchService.saveBatch(batchOptions);
+            log.trace("{} rows has been saved into table '{}'.", offset + batchSize, instancesEntity.getTableName());
         }
-        log.info("Data has been saved into table '{}'.", tableName);
+        log.info("Data has been saved into table '{}'.", instancesEntity.getTableName());
         log.info("Data saving has been successfully completed. Instances '{}' has been saved into table '{}'.",
-                instances.relationName(), tableName);
+                instances.relationName(), instancesEntity.getTableName());
     }
 
     /**
@@ -122,5 +127,13 @@ public class InstancesService {
         var instances = jdbcTemplate.query(String.format(SELECT_QUERY, instancesEntity.getTableName()), extractor);
         log.info("Instances has been fetched for table [{}]", instancesEntity.getTableName());
         return instances;
+    }
+
+    private SqlQueryHelper initializeSqlQueryHelper(InstancesEntity instancesEntity) {
+        var sqlQueryHelper = new SqlQueryHelper();
+        sqlQueryHelper.setDateColumnType(SqlTypeUtils.TIMESTAMP_TYPE);
+        sqlQueryHelper.setUsePrimaryKeyColumn(true);
+        sqlQueryHelper.setPrimaryKeyColumnName(instancesEntity.getIdColumnName());
+        return sqlQueryHelper;
     }
 }

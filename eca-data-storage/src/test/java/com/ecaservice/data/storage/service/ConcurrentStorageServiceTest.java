@@ -9,13 +9,14 @@ import com.ecaservice.data.storage.repository.AttributeRepository;
 import com.ecaservice.data.storage.repository.AttributeValueRepository;
 import com.ecaservice.data.storage.repository.InstancesRepository;
 import com.ecaservice.data.storage.service.impl.StorageServiceImpl;
-import eca.data.db.SqlQueryHelper;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.oauth2.common.util.RandomValueStringGenerator;
 import weka.core.Instances;
 
 import javax.inject.Inject;
+import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -33,7 +34,8 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import({StorageServiceImpl.class, InstancesService.class, InstancesBatchService.class,
-        SqlQueryHelper.class, StorageTestConfiguration.class, AttributeService.class, AttributeMapperImpl.class})
+        RandomValueStringGenerator.class, StorageTestConfiguration.class,
+        AttributeService.class, AttributeMapperImpl.class})
 class ConcurrentStorageServiceTest extends AbstractJpaTest {
 
     private static final int NUM_THREADS = 2;
@@ -128,6 +130,8 @@ class ConcurrentStorageServiceTest extends AbstractJpaTest {
     private InstancesEntity createAndSaveInstancesEntity(String tableName) {
         InstancesEntity instancesEntity = createInstancesEntity();
         instancesEntity.setTableName(tableName);
+        instancesEntity.setUuid(UUID.randomUUID().toString());
+        instancesEntity.setIdColumnName(UUID.randomUUID().toString());
         return instancesRepository.save(instancesEntity);
     }
 

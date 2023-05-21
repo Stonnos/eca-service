@@ -39,16 +39,18 @@ public class DataListResultSetExtractor implements ResultSetExtractor<List<List<
             List<String> row = newArrayList();
             for (int i = 1; i <= instancesEntity.getNumAttributes(); i++) {
                 var attributeEntity = attributeEntities.get(i - 1);
-                if (resultSet.getObject(i) == null) {
+                //Skip id column
+                int columnIndex = i + 1;
+                if (resultSet.getObject(columnIndex) == null) {
                     row.add(null);
                 } else if (AttributeType.DATE.equals(attributeEntity.getType())) {
-                    var value = resultSet.getTimestamp(i).toLocalDateTime();
+                    var value = resultSet.getTimestamp(columnIndex).toLocalDateTime();
                     row.add(value.format(dateTimeFormatter));
                 } else if (AttributeType.NUMERIC.equals(attributeEntity.getType())) {
-                    double value = resultSet.getBigDecimal(i).doubleValue();
+                    double value = resultSet.getBigDecimal(columnIndex).doubleValue();
                     row.add(String.valueOf(value));
                 } else {
-                    row.add(getStringValueSafe(resultSet, i));
+                    row.add(getStringValueSafe(resultSet, columnIndex));
                 }
             }
             dataList.add(row);

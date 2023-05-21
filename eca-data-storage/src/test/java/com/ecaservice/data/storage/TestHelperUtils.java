@@ -17,6 +17,7 @@ import weka.core.Instances;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -39,6 +40,7 @@ public class TestHelperUtils {
     private static final int PAGE_SIZE = 10;
     private static final int PAGE_NUMBER = 0;
     private static final int NUM_ATTR_VALUES = 3;
+    private static final String ID_COLUMN_NAME = "ID";
 
     /**
      * Creates page request dto.
@@ -79,6 +81,8 @@ public class TestHelperUtils {
      */
     public static InstancesEntity createInstancesEntity() {
         InstancesEntity instancesEntity = new InstancesEntity();
+        instancesEntity.setUuid(UUID.randomUUID().toString());
+        instancesEntity.setIdColumnName(ID_COLUMN_NAME);
         instancesEntity.setTableName(TABLE_NAME);
         instancesEntity.setNumInstances(NUM_INSTANCES);
         instancesEntity.setNumAttributes(NUM_ATTRIBUTES);

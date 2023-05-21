@@ -48,14 +48,16 @@ public class InstancesResultSetExtractor implements ResultSetExtractor<Instances
             Instance instance = new DenseInstance(instances.numAttributes());
             for (int i = 1; i <= instances.numAttributes(); i++) {
                 Attribute attribute = instances.attribute(i - 1);
-                if (resultSet.getObject(i) == null) {
+                //Skip id column
+                int columnIndex = i + 1;
+                if (resultSet.getObject(columnIndex) == null) {
                     instance.setValue(attribute, Utils.missingValue());
                 } else if (attribute.isDate()) {
-                    instance.setValue(attribute, resultSet.getTimestamp(i).getTime());
+                    instance.setValue(attribute, resultSet.getTimestamp(columnIndex).getTime());
                 } else if (attribute.isNumeric()) {
-                    instance.setValue(attribute, resultSet.getBigDecimal(i).doubleValue());
+                    instance.setValue(attribute, resultSet.getBigDecimal(columnIndex).doubleValue());
                 } else {
-                    instance.setValue(attribute, getStringValueSafe(resultSet, i));
+                    instance.setValue(attribute, getStringValueSafe(resultSet, columnIndex));
                 }
             }
             instances.add(instance);

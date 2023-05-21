@@ -1,6 +1,7 @@
 package com.ecaservice.data.storage.entity;
 
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -70,6 +71,7 @@ public class InstancesEntity {
     /**
      * Class attribute
      */
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "class_attribute_id")
     private AttributeEntity classAttribute;

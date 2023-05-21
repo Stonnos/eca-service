@@ -27,12 +27,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.oauth2.common.util.RandomValueStringGenerator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import weka.core.Instances;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.data.storage.config.audit.AuditCodes.DELETE_INSTANCES;
@@ -58,11 +60,13 @@ public class StorageServiceImpl implements StorageService {
             InstancesEntity_.TABLE_NAME,
             InstancesEntity_.CREATED_BY
     );
+    private static final String ID_COLUMN_NAME_FORMAT = "id_%s";
 
     private final EcaDsConfig ecaDsConfig;
     private final InstancesService instancesService;
     private final AttributeService attributeService;
     private final UserService userService;
+    private final RandomValueStringGenerator randomValueStringGenerator;
     private final AttributeMapper attributeMapper;
     private final InstancesRepository instancesRepository;
     private final AttributeRepository attributeRepository;
@@ -93,10 +97,10 @@ public class StorageServiceImpl implements StorageService {
         if (instances.isEmpty()) {
             throw new EmptyDataException();
         }
-        instancesService.saveInstances(tableName, instances);
-        InstancesEntity instancesEntity = saveInstancesEntity(tableName, instances);
+        var instancesEntity = saveInstancesEntity(tableName, instances);
         var attributes = attributeService.saveAttributes(instancesEntity, instances);
         setClassAttribute(instances, instancesEntity, attributes);
+        instancesService.saveInstances(instancesEntity, instances);
         log.info("Instances has been saved into table [{}]", tableName);
         return instancesEntity;
     }
@@ -194,6 +198,8 @@ public class StorageServiceImpl implements StorageService {
 
     private InstancesEntity saveInstancesEntity(String tableName, Instances instances) {
         InstancesEntity instancesEntity = new InstancesEntity();
+        instancesEntity.setUuid(UUID.randomUUID().toString());
+        instancesEntity.setIdColumnName(String.format(ID_COLUMN_NAME_FORMAT, randomValueStringGenerator.generate()));
         instancesEntity.setTableName(tableName);
         instancesEntity.setNumAttributes(instances.numAttributes());
         instancesEntity.setNumInstances(instances.numInstances());
