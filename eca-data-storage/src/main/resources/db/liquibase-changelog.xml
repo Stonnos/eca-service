@@ -9,4 +9,5 @@
     <include file="db/changelog/v1-insert-audit-codes-and-events.xml"/>
     <include file="db/changelog/v2-create-attribute-table.xml"/>
     <include file="db/changelog/v3-add-class-attribute-column.xml"/>
+    <include file="db/changelog/v4-add-id-column-name-column.xml"/>
 </databaseChangeLog>

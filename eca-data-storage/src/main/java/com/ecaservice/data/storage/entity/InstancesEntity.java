@@ -32,6 +32,18 @@ public class InstancesEntity {
     private String tableName;
 
     /**
+     * Instances uuid
+     */
+    @Column(unique = true, nullable = false)
+    private String uuid;
+
+    /**
+     * ID column name in instances table
+     */
+    @Column(name = "id_column_name", nullable = false)
+    private String idColumnName;
+
+    /**
      * Instances number
      */
     @Column(name = "num_instances")
