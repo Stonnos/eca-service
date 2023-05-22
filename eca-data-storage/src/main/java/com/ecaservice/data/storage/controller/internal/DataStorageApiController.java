@@ -65,8 +65,8 @@ public class DataStorageApiController {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
                                             @ExampleObject(
-                                                    name = "SelectedAttributesOutOfBoundsErrorCodeResponse",
-                                                    ref = "#/components/examples/SelectedAttributesOutOfBoundsErrorCodeResponse"
+                                                    name = "SelectedAttributesValuesIsTooLowErrorCodeResponse",
+                                                    ref = "#/components/examples/SelectedAttributesValuesIsTooLowErrorCodeResponse"
                                             ),
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))

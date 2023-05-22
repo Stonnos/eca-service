@@ -7,7 +7,7 @@ import com.ecaservice.data.storage.entity.AttributeEntity;
 import com.ecaservice.data.storage.entity.AttributeType;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.entity.InstancesEntity_;
-import com.ecaservice.data.storage.exception.ClassAttributeValuesOutOfBoundsException;
+import com.ecaservice.data.storage.exception.ClassAttributeValuesIsTooLowException;
 import com.ecaservice.data.storage.exception.EmptyDataException;
 import com.ecaservice.data.storage.exception.InvalidClassAttributeTypeException;
 import com.ecaservice.data.storage.exception.TableExistsException;
@@ -157,7 +157,7 @@ public class StorageServiceImpl implements StorageService {
             throw new InvalidClassAttributeTypeException(classAttributeId);
         }
         if (attribute.getValues().size() < MIN_NUM_CLASSES) {
-            throw new ClassAttributeValuesOutOfBoundsException(classAttributeId);
+            throw new ClassAttributeValuesIsTooLowException(classAttributeId);
         }
         attribute.getInstancesEntity().setClassAttribute(attribute);
         log.info("Class attribute [{}] has been set for instances with [{}]", classAttributeId,

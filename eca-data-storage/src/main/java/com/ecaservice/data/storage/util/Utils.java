@@ -3,6 +3,7 @@ package com.ecaservice.data.storage.util;
 import com.ecaservice.data.storage.entity.AttributeEntity;
 import com.ecaservice.data.storage.entity.AttributeType;
 import com.ecaservice.data.storage.entity.AttributeValueEntity;
+import com.ecaservice.data.storage.entity.InstancesEntity;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
 import weka.core.Attribute;
@@ -33,6 +34,7 @@ public class Utils {
 
     private static final String SELECT_QUERY = "select %s from %s";
     private static final String COMMA_SEPARATOR = ",";
+    private static final String SELECT_COUNT_DISTINCT_QUERY = "select count(distinct %s) from %s";
 
     /**
      * Gets attribute type.
@@ -83,5 +85,16 @@ public class Utils {
                 .collect(Collectors.toList());
         String attributes = StringUtils.join(values, COMMA_SEPARATOR);
         return String.format(SELECT_QUERY, attributes, tableName);
+    }
+
+    /**
+     * Builds sql count unique values.
+     *
+     * @param tableName  - table name
+     * @param columnName - column name
+     * @return sql query
+     */
+    public static String buildSqlCountUniqueValuesQuery(String tableName, String columnName) {
+        return String.format(SELECT_COUNT_DISTINCT_QUERY, columnName, tableName);
     }
 }

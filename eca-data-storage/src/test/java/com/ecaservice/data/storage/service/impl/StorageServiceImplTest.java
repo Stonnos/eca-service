@@ -6,7 +6,7 @@ import com.ecaservice.data.storage.config.StorageTestConfiguration;
 import com.ecaservice.data.storage.entity.AttributeEntity;
 import com.ecaservice.data.storage.entity.AttributeType;
 import com.ecaservice.data.storage.entity.InstancesEntity;
-import com.ecaservice.data.storage.exception.ClassAttributeValuesOutOfBoundsException;
+import com.ecaservice.data.storage.exception.ClassAttributeValuesIsTooLowException;
 import com.ecaservice.data.storage.exception.InvalidClassAttributeTypeException;
 import com.ecaservice.data.storage.mapping.AttributeMapperImpl;
 import com.ecaservice.data.storage.repository.AttributeRepository;
@@ -159,7 +159,7 @@ class StorageServiceImplTest extends AbstractJpaTest {
         classAttribute.setInstancesEntity(instancesEntity);
         classAttribute.setValues(Collections.singletonList(createAttributeValueEntity("value", 0)));
         attributeRepository.save(classAttribute);
-        assertThrows(ClassAttributeValuesOutOfBoundsException.class,
+        assertThrows(ClassAttributeValuesIsTooLowException.class,
                 () -> storageService.setClassAttribute(classAttribute.getId()));
     }
 

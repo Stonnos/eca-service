@@ -3,7 +3,8 @@ package com.ecaservice.data.storage.service;
 import com.ecaservice.data.storage.config.EcaDsConfig;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.exception.ClassAttributeNotSelectedException;
-import com.ecaservice.data.storage.exception.SelectedAttributesOutOfBoundsException;
+import com.ecaservice.data.storage.exception.ClassAttributeValuesIsTooLowException;
+import com.ecaservice.data.storage.exception.SelectedAttributesNumberIsTooLowException;
 import com.ecaservice.data.storage.model.InstancesBatchOptions;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -20,7 +21,9 @@ import weka.core.Instances;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import static com.ecaservice.data.storage.util.Utils.MIN_NUM_CLASSES;
 import static com.ecaservice.data.storage.util.Utils.MIN_NUM_SELECTED_ATTRIBUTES;
+import static com.ecaservice.data.storage.util.Utils.buildSqlCountUniqueValuesQuery;
 import static com.ecaservice.data.storage.util.Utils.buildSqlSelectQuery;
 
 /**
@@ -140,19 +143,23 @@ public class InstancesService {
      * Valid instances is:
      * 1. Selected attributes number is greater than or equal to 2
      * 2. Class attribute is selected
+     * 3. Class values number in table is greater than or equal to 2
      *
      * @param instancesEntity - instances entity
      * @return instances model object
      */
     public InstancesModel getValidInstancesModel(InstancesEntity instancesEntity) {
-        log.info("Starting to get instances model with selected attributes from table [{}]",
-                instancesEntity.getTableName());
+        log.info("Starting to get valid instances model from table [{}]", instancesEntity.getTableName());
         var attributes = attributeService.getSelectedAttributes(instancesEntity);
         if (attributes.size() < MIN_NUM_SELECTED_ATTRIBUTES) {
-            throw new SelectedAttributesOutOfBoundsException(instancesEntity.getId());
+            throw new SelectedAttributesNumberIsTooLowException(instancesEntity.getId());
         }
         if (instancesEntity.getClassAttribute() == null) {
             throw new ClassAttributeNotSelectedException(instancesEntity.getId());
+        }
+        int countUniqueClassesInTable = countUniqueClassValuesInTable(instancesEntity);
+        if (countUniqueClassesInTable < MIN_NUM_CLASSES) {
+            throw new ClassAttributeValuesIsTooLowException(instancesEntity.getId());
         }
         var extractor = new InstancesModelResultSetExtractor(instancesEntity, attributes);
         extractor.setDateFormat(ecaDsConfig.getDateFormat());
@@ -161,6 +168,15 @@ public class InstancesService {
         var instancesModel = jdbcTemplate.query(query, extractor);
         log.info("Instances model has been fetched for table [{}]", instancesEntity.getTableName());
         return instancesModel;
+    }
+
+    private int countUniqueClassValuesInTable(InstancesEntity instancesEntity) {
+        String query = buildSqlCountUniqueValuesQuery(instancesEntity.getTableName(),
+                instancesEntity.getClassAttribute().getColumnName());
+        var resultValue = jdbcTemplate.queryForObject(query, Integer.class);
+        Assert.notNull(resultValue, String.format("Expected not null count unique value for table [%s], column [%s]",
+                instancesEntity.getTableName(), instancesEntity.getClassAttribute().getColumnName()));
+        return resultValue;
     }
 
     private SqlQueryHelper initializeSqlQueryHelper(InstancesEntity instancesEntity) {

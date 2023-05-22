@@ -88,6 +88,7 @@ public interface StorageService {
      * Valid instances is:
      * 1. Selected attributes number is greater than or equal to 2
      * 2. Class attribute is selected
+     * 3. Class values number in table is greater than or equal to 2
      *
      * @param instancesEntity - instances entity
      * @return instances model object
