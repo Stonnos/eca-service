@@ -93,8 +93,8 @@ public class ConcurrentStorageService implements StorageService {
     }
 
     @Override
-    public InstancesModel getInstancesModelWithSelectedAttributes(InstancesEntity instancesEntity) {
-        return storageService.getInstancesModelWithSelectedAttributes(instancesEntity);
+    public InstancesModel getValidInstancesModel(InstancesEntity instancesEntity) {
+        return storageService.getValidInstancesModel(instancesEntity);
     }
 
     @Override

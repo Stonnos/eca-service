@@ -134,9 +134,9 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    public InstancesModel getInstancesModelWithSelectedAttributes(InstancesEntity instancesEntity) {
-        log.info("Starting to get instances model with selected attributes data with id [{}]", instancesEntity.getId());
-        return instancesService.getInstancesModelWithSelectedAttributes(instancesEntity);
+    public InstancesModel getValidInstancesModel(InstancesEntity instancesEntity) {
+        log.info("Starting to get valid instances model with id [{}]", instancesEntity.getId());
+        return instancesService.getValidInstancesModel(instancesEntity);
     }
 
     @Override

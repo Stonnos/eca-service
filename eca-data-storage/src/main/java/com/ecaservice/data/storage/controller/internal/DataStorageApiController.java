@@ -22,11 +22,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
+import static com.ecaservice.web.dto.util.FieldConstraints.UUID_MAX_SIZE;
+import static com.ecaservice.web.dto.util.FieldConstraints.UUID_PATTERN;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
 /**
@@ -46,15 +48,15 @@ public class DataStorageApiController {
     private final InstancesReportService instancesReportService;
 
     /**
-     * Downloads instances report with selected attributes in json format.
+     * Downloads valid json instances report with selected attributes and assigned class attribute.
      *
      * @param uuid                - instances uuid
      * @param httpServletResponse - http servlet response
      * @throws Exception in case of error
      */
     @Operation(
-            description = "Downloads instances report with selected attributes in json format",
-            summary = "Downloads instances report with selected attributes in json format",
+            description = "Downloads valid json instances report with selected attributes and assigned class attribute",
+            summary = "Downloads valid json instances report with selected attributes and assigned class attribute",
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200"),
@@ -72,14 +74,15 @@ public class DataStorageApiController {
                     )
             }
     )
-    @GetMapping(value = "/download_report")
-    public void downloadInstancesReportWithSelectedAttributes(
+    @GetMapping(value = "/download_valid_report")
+    public void downloadValidInstancesReport(
             @Parameter(description = "Instances uuid", example = "1d2de514-3a87-4620-9b97-c260e24340de",
                     required = true)
-            @RequestParam @Min(VALUE_1) @Max(Long.MAX_VALUE) String uuid,
+            @RequestParam @Pattern(regexp = UUID_PATTERN)
+            @Size(min = VALUE_1, max = UUID_MAX_SIZE) String uuid,
             HttpServletResponse httpServletResponse) throws Exception {
-        log.info("Request to download instances [{}] report", uuid);
+        log.info("Request to download valid instances report with uuid [{}]", uuid);
         var instancesEntity = storageService.getByUuid(uuid);
-        instancesReportService.generateJsonInstancesReportWithSelectedAttributes(instancesEntity, httpServletResponse);
+        instancesReportService.generateValidJsonInstancesReport(instancesEntity, httpServletResponse);
     }
 }

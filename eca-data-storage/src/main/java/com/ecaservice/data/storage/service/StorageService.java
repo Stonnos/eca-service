@@ -84,12 +84,15 @@ public interface StorageService {
     Instances getInstances(InstancesEntity instancesEntity);
 
     /**
-     * Gets instances model with selected attributes list.
+     * Gets valid instances model with selected attributes and assigned class attribute.
+     * Valid instances is:
+     * 1. Selected attributes number is greater than or equal to 2
+     * 2. Class attribute is selected
      *
      * @param instancesEntity - instances entity
      * @return instances model object
      */
-    InstancesModel getInstancesModelWithSelectedAttributes(InstancesEntity instancesEntity);
+    InstancesModel getValidInstancesModel(InstancesEntity instancesEntity);
 
     /**
      * Gets instances attributes.

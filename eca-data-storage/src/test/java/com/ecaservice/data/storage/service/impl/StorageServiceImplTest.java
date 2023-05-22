@@ -223,9 +223,9 @@ class StorageServiceImplTest extends AbstractJpaTest {
     }
 
     @Test
-    void testGetInstancesModelWithSelectedAttributes() {
+    void testGetValidInstancesModel() {
         var savedInstances = internalSaveData(TEST_TABLE_9);
-        var instancesModel = storageService.getInstancesModelWithSelectedAttributes(savedInstances);
+        var instancesModel = storageService.getValidInstancesModel(savedInstances);
         assertInstancesModel(instances, instancesModel);
     }
 

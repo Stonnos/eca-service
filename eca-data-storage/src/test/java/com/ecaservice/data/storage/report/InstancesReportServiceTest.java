@@ -77,12 +77,12 @@ class InstancesReportServiceTest {
     }
 
     @Test
-    void testGenerateReportWithSelectedAttributes() throws Exception {
+    void testGenerateValidJsonInstancesReport() throws Exception {
         var httpServletResponse = new MockHttpServletResponse();
         InstancesModel instancesModel = new InstancesModel();
         instancesModel.setRelationName(RELATION_NAME);
-        when(storageService.getInstancesModelWithSelectedAttributes(instancesEntity)).thenReturn(instancesModel);
-        instancesReportService.generateJsonInstancesReportWithSelectedAttributes(instancesEntity, httpServletResponse);
+        when(storageService.getValidInstancesModel(instancesEntity)).thenReturn(instancesModel);
+        instancesReportService.generateValidJsonInstancesReport(instancesEntity, httpServletResponse);
         assertThat(httpServletResponse.getContentType()).isEqualTo(MediaType.APPLICATION_OCTET_STREAM_VALUE);
         String expectedFileName = String.format("%s.json", instancesModel.getRelationName());
         String expectedContentDisposition = String.format(ATTACHMENT_FORMAT, expectedFileName);

@@ -2,6 +2,7 @@ package com.ecaservice.data.storage.service;
 
 import com.ecaservice.data.storage.config.EcaDsConfig;
 import com.ecaservice.data.storage.entity.InstancesEntity;
+import com.ecaservice.data.storage.exception.ClassAttributeNotSelectedException;
 import com.ecaservice.data.storage.exception.SelectedAttributesOutOfBoundsException;
 import com.ecaservice.data.storage.model.InstancesBatchOptions;
 import com.ecaservice.web.dto.model.PageDto;
@@ -48,27 +49,27 @@ public class InstancesService {
      * @param instances       - training data
      */
     public void saveInstances(InstancesEntity instancesEntity, Instances instances) {
-        log.info("Starting to save instances '{}' into table '{}'.", instances.relationName(),
+        log.info("Starting to save instances [{}] into table [{}].", instances.relationName(),
                 instancesEntity.getTableName());
-        log.info("Starting to create table '{}'.", instancesEntity.getTableName());
+        log.info("Starting to create table [{}].", instancesEntity.getTableName());
         var sqlQueryHelper = initializeSqlQueryHelper(instancesEntity);
         String createTableQuery = sqlQueryHelper.buildCreateTableQuery(instancesEntity.getTableName(), instances);
         log.trace("create table query: {}", createTableQuery);
         jdbcTemplate.execute(createTableQuery);
-        log.info("Table '{}' has been successfully created.", instancesEntity.getTableName());
+        log.info("Table [{}] has been successfully created.", instancesEntity.getTableName());
 
-        log.info("Starting to save data into table '{}'.", instancesEntity.getTableName());
+        log.info("Starting to save data into table [{}].", instancesEntity.getTableName());
         int batchSize = ecaDsConfig.getBatchSize();
         for (int offset = 0; offset < instances.numInstances(); offset += batchSize) {
-            log.trace("Starting to save batch with limit = {}, offset = {} into table '{}'.", batchSize, offset,
+            log.trace("Starting to save batch with limit = {}, offset = {} into table [{}].", batchSize, offset,
                     instancesEntity.getTableName());
             var batchOptions = new InstancesBatchOptions(instancesEntity.getTableName(), instances, batchSize, offset,
                     sqlQueryHelper);
             instancesBatchService.saveBatch(batchOptions);
-            log.trace("{} rows has been saved into table '{}'.", offset + batchSize, instancesEntity.getTableName());
+            log.trace("{} rows has been saved into table [{}].", offset + batchSize, instancesEntity.getTableName());
         }
-        log.info("Data has been saved into table '{}'.", instancesEntity.getTableName());
-        log.info("Data saving has been successfully completed. Instances '{}' has been saved into table '{}'.",
+        log.info("Data has been saved into table [{}].", instancesEntity.getTableName());
+        log.info("Data saving has been successfully completed. Instances [{}] has been saved into table [{}].",
                 instances.relationName(), instancesEntity.getTableName());
     }
 
@@ -135,17 +136,23 @@ public class InstancesService {
     }
 
     /**
-     * Gets instances model with selected attributes list.
+     * Gets valid instances model with selected attributes and assigned class attribute.
+     * Valid instances is:
+     * 1. Selected attributes number is greater than or equal to 2
+     * 2. Class attribute is selected
      *
      * @param instancesEntity - instances entity
      * @return instances model object
      */
-    public InstancesModel getInstancesModelWithSelectedAttributes(InstancesEntity instancesEntity) {
+    public InstancesModel getValidInstancesModel(InstancesEntity instancesEntity) {
         log.info("Starting to get instances model with selected attributes from table [{}]",
                 instancesEntity.getTableName());
         var attributes = attributeService.getSelectedAttributes(instancesEntity);
         if (attributes.size() < MIN_NUM_SELECTED_ATTRIBUTES) {
             throw new SelectedAttributesOutOfBoundsException(instancesEntity.getId());
+        }
+        if (instancesEntity.getClassAttribute() == null) {
+            throw new ClassAttributeNotSelectedException(instancesEntity.getId());
         }
         var extractor = new InstancesModelResultSetExtractor(instancesEntity, attributes);
         extractor.setDateFormat(ecaDsConfig.getDateFormat());

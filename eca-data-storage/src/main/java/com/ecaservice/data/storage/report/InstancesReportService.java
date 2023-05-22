@@ -61,23 +61,20 @@ public class InstancesReportService {
     }
 
     /**
-     * Generates instances report with selected attributes in json format.
+     * Generates valid instances report with selected attributes and assigned class attribute.
      *
      * @param instancesEntity     - instances entity
      * @param httpServletResponse - http servlet response
      * @throws Exception in case of error
      */
-    public void generateJsonInstancesReportWithSelectedAttributes(InstancesEntity instancesEntity,
-                                                                  HttpServletResponse httpServletResponse)
-            throws Exception {
-        log.info("Starting to generate report with selected attributes for instances with id [{}]",
-                instancesEntity.getId());
-        var instancesModel = storageService.getInstancesModelWithSelectedAttributes(instancesEntity);
+    public void generateValidJsonInstancesReport(InstancesEntity instancesEntity,
+                                                 HttpServletResponse httpServletResponse) throws Exception {
+        log.info("Starting to generate valid json report for instances with id [{}]", instancesEntity.getId());
+        var instancesModel = storageService.getValidInstancesModel(instancesEntity);
         String reportName = String.format("%s.json", instancesEntity.getTableName());
         generate(httpServletResponse, reportName,
                 outputStream -> generateJsonInstancesReport(instancesModel, outputStream));
-        log.info("Report with selected attributes has been generated for instances with id [{}]",
-                instancesEntity.getId());
+        log.info("Valid json report has been generated for instances with id [{}]", instancesEntity.getId());
     }
 
     private void generateInstancesReport(Instances instances, ReportType reportType, OutputStream outputStream) {
