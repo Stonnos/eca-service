@@ -28,6 +28,7 @@
 * eca-mail-transport - модуль содержит dto классы для сервиса eca-mail
 * classifiers-options - модуль содержит модельные классы для настроек входных параметров классификаторов
 * eca-ers-transport - модуль содержит dto классы для сервиса ERS
+* eca-ds-transport - модуль содержит dto классы для сервиса Data storage
 * eca-external-api-transport - модуль содержит dto классы для внешнего API
 * eca-audit-transport - модуль содержит dto классы для сервиса журнала аудита
 * eca-report-model - модуль содержит модельные классы для отчетов

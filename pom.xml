@@ -18,6 +18,7 @@
         <module>eca-mail-transport</module>
         <module>classifiers-options</module>
         <module>eca-ers-transport</module>
+        <module>eca-ds-transport</module>
         <module>eca-web-push-transport</module>
         <module>eca-external-api-transport</module>
         <module>eca-audit-transport</module>
