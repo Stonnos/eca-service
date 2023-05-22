@@ -151,9 +151,9 @@ public class InstancesService {
         extractor.setDateFormat(ecaDsConfig.getDateFormat());
         extractor.setDateTimeFormatter(DateTimeFormatter.ofPattern(ecaDsConfig.getDateFormat()));
         String query = buildSqlSelectQuery(instancesEntity.getTableName(), attributes);
-        var instances = jdbcTemplate.query(query, extractor);
+        var instancesModel = jdbcTemplate.query(query, extractor);
         log.info("Instances model has been fetched for table [{}]", instancesEntity.getTableName());
-        return instances;
+        return instancesModel;
     }
 
     private SqlQueryHelper initializeSqlQueryHelper(InstancesEntity instancesEntity) {

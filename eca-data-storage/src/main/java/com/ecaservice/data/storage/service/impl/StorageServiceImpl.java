@@ -199,8 +199,16 @@ public class StorageServiceImpl implements StorageService {
 
     @Override
     public InstancesEntity getById(long id) {
+        log.debug("Gets instances by id [{}]", id);
         return instancesRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(InstancesEntity.class, id));
+    }
+
+    @Override
+    public InstancesEntity getByUuid(String uuid) {
+        log.debug("Gets instances by uuid [{}]", uuid);
+        return instancesRepository.findByUuid(uuid)
+                .orElseThrow(() -> new EntityNotFoundException(InstancesEntity.class, uuid));
     }
 
     private InstancesEntity saveInstancesEntity(String tableName, Instances instances) {

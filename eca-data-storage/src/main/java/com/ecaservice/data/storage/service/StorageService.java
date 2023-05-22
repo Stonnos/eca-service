@@ -43,6 +43,14 @@ public interface StorageService {
     InstancesEntity getById(long id);
 
     /**
+     * Gets instances by uuid.
+     *
+     * @param uuid - instances uuid
+     * @return instances entity
+     */
+    InstancesEntity getByUuid(String uuid);
+
+    /**
      * Renames data with specified id.
      *
      * @param id      - instances id
