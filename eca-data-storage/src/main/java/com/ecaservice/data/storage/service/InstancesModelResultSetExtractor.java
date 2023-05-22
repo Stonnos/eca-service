@@ -45,9 +45,10 @@ public class InstancesModelResultSetExtractor implements ResultSetExtractor<Inst
     @Override
     public InstancesModel extractData(ResultSet resultSet) throws SQLException, DataAccessException {
         ArrayList<AttributeModel> attributes = createAttributes();
-        InstancesModel instances = new InstancesModel();
-        instances.setRelationName(instancesEntity.getTableName());
-        instances.setAttributes(attributes);
+        InstancesModel instancesModel = new InstancesModel();
+        instancesModel.setInstances(newArrayList());
+        instancesModel.setRelationName(instancesEntity.getTableName());
+        instancesModel.setAttributes(attributes);
         var valueExtractor = new AttributeValueExtractor(resultSet, dateTimeFormatter);
         while (resultSet.next()) {
             InstanceModel instance = new InstanceModel();
@@ -63,11 +64,12 @@ public class InstancesModelResultSetExtractor implements ResultSetExtractor<Inst
                 }
             }
             instance.setValues(values);
+            instancesModel.getInstances().add(instance);
         }
         if (instancesEntity.getClassAttribute() != null) {
-            instances.setClassName(instancesEntity.getClassAttribute().getColumnName());
+            instancesModel.setClassName(instancesEntity.getClassAttribute().getColumnName());
         }
-        return instances;
+        return instancesModel;
     }
 
     private ArrayList<AttributeModel> createAttributes() {

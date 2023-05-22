@@ -34,6 +34,7 @@ import java.util.UUID;
 
 import static com.ecaservice.data.storage.AssertionUtils.assertDataList;
 import static com.ecaservice.data.storage.AssertionUtils.assertInstances;
+import static com.ecaservice.data.storage.AssertionUtils.assertInstancesModel;
 import static com.ecaservice.data.storage.TestHelperUtils.createAttributeEntity;
 import static com.ecaservice.data.storage.TestHelperUtils.createAttributeValueEntity;
 import static com.ecaservice.data.storage.TestHelperUtils.createInstancesEntity;
@@ -63,6 +64,7 @@ class StorageServiceImplTest extends AbstractJpaTest {
     private static final String TEST_TABLE_6 = "test_table_6";
     private static final String TEST_TABLE_7 = "test_table_7";
     private static final String TEST_TABLE_8 = "test_table_8";
+    private static final String TEST_TABLE_9 = "test_table_9";
     private static final String NEW_TABLE_NAME = "new_table_name";
     private static final long ID = 2L;
     private static final String USER_NAME = "admin";
@@ -218,6 +220,13 @@ class StorageServiceImplTest extends AbstractJpaTest {
         var instancesEntity = internalSaveData(TEST_TABLE_7);
         var actual = storageService.getInstances(instancesEntity);
         assertInstances(instances, actual);
+    }
+
+    @Test
+    void testGetInstancesModelWithSelectedAttributes() {
+        var savedInstances = internalSaveData(TEST_TABLE_9);
+        var instancesModel = storageService.getInstancesModelWithSelectedAttributes(savedInstances);
+        assertInstancesModel(instances, instancesModel);
     }
 
     private InstancesEntity internalSaveData(String tableName) {

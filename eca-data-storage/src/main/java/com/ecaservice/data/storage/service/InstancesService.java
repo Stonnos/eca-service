@@ -34,7 +34,6 @@ public class InstancesService {
 
     private static final String DROP_TABLE_QUERY_FORMAT = "DROP TABLE IF EXISTS %s";
     private static final String RENAME_TABLE_QUERY_FORMAT = "ALTER TABLE IF EXISTS %s RENAME TO %s";
-    private static final String SELECT_QUERY = "select * from %s";
 
     private final JdbcTemplate jdbcTemplate;
     private final InstancesBatchService instancesBatchService;
@@ -129,7 +128,8 @@ public class InstancesService {
         var attributes = attributeService.getAttributes(instancesEntity);
         var extractor = new InstancesResultSetExtractor(instancesEntity, attributes);
         extractor.setDateFormat(ecaDsConfig.getDateFormat());
-        var instances = jdbcTemplate.query(String.format(SELECT_QUERY, instancesEntity.getTableName()), extractor);
+        String query = buildSqlSelectQuery(instancesEntity.getTableName(), attributes);
+        var instances = jdbcTemplate.query(query, extractor);
         log.info("Instances has been fetched from table [{}]", instancesEntity.getTableName());
         return instances;
     }

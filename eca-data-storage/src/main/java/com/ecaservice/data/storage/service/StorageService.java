@@ -5,6 +5,7 @@ import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.web.dto.model.AttributeDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import eca.data.file.model.InstancesModel;
 import org.springframework.data.domain.Page;
 import weka.core.Instances;
 
@@ -73,6 +74,14 @@ public interface StorageService {
      * @return instances data
      */
     Instances getInstances(InstancesEntity instancesEntity);
+
+    /**
+     * Gets instances model with selected attributes list.
+     *
+     * @param instancesEntity - instances entity
+     * @return instances model object
+     */
+    InstancesModel getInstancesModelWithSelectedAttributes(InstancesEntity instancesEntity);
 
     /**
      * Gets instances attributes.

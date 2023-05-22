@@ -22,6 +22,7 @@ import com.ecaservice.data.storage.service.UserService;
 import com.ecaservice.web.dto.model.AttributeDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import eca.data.file.model.InstancesModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -130,6 +131,12 @@ public class StorageServiceImpl implements StorageService {
     public Instances getInstances(InstancesEntity instancesEntity) {
         log.info("Starting to get instances data with id [{}]", instancesEntity.getId());
         return instancesService.getInstances(instancesEntity);
+    }
+
+    @Override
+    public InstancesModel getInstancesModelWithSelectedAttributes(InstancesEntity instancesEntity) {
+        log.info("Starting to get instances model with selected attributes data with id [{}]", instancesEntity.getId());
+        return instancesService.getInstancesModelWithSelectedAttributes(instancesEntity);
     }
 
     @Override

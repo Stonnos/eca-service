@@ -5,6 +5,7 @@ import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.web.dto.model.AttributeDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import eca.data.file.model.InstancesModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
@@ -84,6 +85,11 @@ public class ConcurrentStorageService implements StorageService {
     @Override
     public Instances getInstances(InstancesEntity instancesEntity) {
         return storageService.getInstances(instancesEntity);
+    }
+
+    @Override
+    public InstancesModel getInstancesModelWithSelectedAttributes(InstancesEntity instancesEntity) {
+        return storageService.getInstancesModelWithSelectedAttributes(instancesEntity);
     }
 
     @Override
