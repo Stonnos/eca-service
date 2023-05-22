@@ -11,6 +11,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static com.ecaservice.data.storage.TestHelperUtils.createInstancesEntity;
@@ -29,10 +31,10 @@ import static org.mockito.Mockito.when;
 class SearchQueryCreatorTest {
 
     private static final List<AttributeInfo> ATTRIBUTES = List.of(
-           new AttributeInfo("column1", AttributeType.NOMINAL),
-            new AttributeInfo("column2", AttributeType.NOMINAL),
-            new AttributeInfo("column3", AttributeType.NOMINAL),
-            new AttributeInfo("column4", AttributeType.NUMERIC)
+            new AttributeInfo("column1", AttributeType.NOMINAL, Arrays.asList("a", "b")),
+            new AttributeInfo("column2", AttributeType.NOMINAL, Collections.emptyList()),
+            new AttributeInfo("column3", AttributeType.NOMINAL, Collections.emptyList()),
+            new AttributeInfo("column4", AttributeType.NUMERIC, Collections.emptyList())
     );
 
     private static final String TABLE_NAME = "table";
@@ -78,7 +80,8 @@ class SearchQueryCreatorTest {
     void testBuildSqlQueryWithInvalidSortField() {
         var pageRequestDto = createPageRequestDto();
         pageRequestDto.setSortField(INVALID_SORT_FIELD);
-        assertThrows(FieldNotFoundException.class, () -> searchQueryCreator.buildSqlQuery(instancesEntity, pageRequestDto));
+        assertThrows(FieldNotFoundException.class,
+                () -> searchQueryCreator.buildSqlQuery(instancesEntity, pageRequestDto));
     }
 
 }

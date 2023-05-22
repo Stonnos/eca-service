@@ -3,6 +3,9 @@ package com.ecaservice.data.storage.model;
 import com.ecaservice.data.storage.entity.AttributeType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 /**
  * Attribute info model.
@@ -10,6 +13,7 @@ import lombok.Data;
  * @author Roman Batygin
  */
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class AttributeInfo {
 
@@ -22,4 +26,9 @@ public class AttributeInfo {
      * Attribute type
      */
     private AttributeType type;
+
+    /**
+     * Attribute values list
+     */
+    private List<String> values;
 }

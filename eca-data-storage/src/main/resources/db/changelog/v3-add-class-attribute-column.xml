@@ -8,7 +8,7 @@
     <changeSet id="add_class_attribute_column" author="roman.batygin@mail.ru" context="schema">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="instances"/>
-                <tableExists tableName="attribute"/>
+            <tableExists tableName="attribute"/>
             <not>
                 <columnExists tableName="instances" columnName="class_attribute_id"/>
             </not>

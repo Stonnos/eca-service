@@ -1,7 +1,7 @@
 package com.ecaservice.data.storage.service;
 
-import com.ecaservice.data.storage.entity.AttributeEntity;
 import com.ecaservice.data.storage.entity.InstancesEntity;
+import com.ecaservice.data.storage.model.AttributeInfo;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -24,7 +24,7 @@ import static com.google.common.collect.Lists.newArrayList;
 public class DataListResultSetExtractor implements ResultSetExtractor<List<List<String>>> {
 
     private final InstancesEntity instancesEntity;
-    private final List<AttributeEntity> attributeEntities;
+    private final List<AttributeInfo> attributeInfoList;
 
     @Getter
     @Setter
@@ -37,14 +37,14 @@ public class DataListResultSetExtractor implements ResultSetExtractor<List<List<
         while (resultSet.next()) {
             List<String> row = newArrayList();
             for (int i = 1; i <= instancesEntity.getNumAttributes(); i++) {
-                var attributeEntity = attributeEntities.get(i - 1);
+                var attributeInfo = attributeInfoList.get(i - 1);
                 //Skip id column
                 int columnIndex = i + 1;
                 if (resultSet.getObject(columnIndex) == null) {
                     row.add(null);
                 } else {
                     valueExtractor.setColumnIndex(columnIndex);
-                    String value = attributeEntity.getType().handle(valueExtractor);
+                    String value = attributeInfo.getType().handle(valueExtractor);
                     row.add(value);
                 }
             }

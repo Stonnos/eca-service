@@ -1,9 +1,8 @@
 package com.ecaservice.data.storage.service;
 
-import com.ecaservice.data.storage.entity.AttributeEntity;
 import com.ecaservice.data.storage.entity.AttributeTypeVisitor;
-import com.ecaservice.data.storage.entity.AttributeValueEntity;
 import com.ecaservice.data.storage.entity.InstancesEntity;
+import com.ecaservice.data.storage.model.AttributeInfo;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -33,7 +32,7 @@ import static com.ecaservice.data.storage.util.SqlUtils.getStringValueSafe;
 public class InstancesResultSetExtractor implements ResultSetExtractor<Instances> {
 
     private final InstancesEntity instancesEntity;
-    private final List<AttributeEntity> attributeEntities;
+    private final List<AttributeInfo> attributeInfoList;
 
     @Getter
     @Setter
@@ -70,31 +69,27 @@ public class InstancesResultSetExtractor implements ResultSetExtractor<Instances
     private ArrayList<Attribute> createAttributes() {
         return IntStream.range(0, instancesEntity.getNumAttributes())
                 .mapToObj(i -> {
-                    var attributeEntity = attributeEntities.get(i);
+                    var attributeEntity = attributeInfoList.get(i);
                     return createAttribute(attributeEntity);
                 })
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    private Attribute createAttribute(AttributeEntity attributeEntity) {
-        return attributeEntity.getType().handle(new AttributeTypeVisitor<>() {
+    private Attribute createAttribute(AttributeInfo attributeInfo) {
+        return attributeInfo.getType().handle(new AttributeTypeVisitor<>() {
             @Override
             public Attribute caseNumeric() {
-                return new Attribute(attributeEntity.getColumnName());
+                return new Attribute(attributeInfo.getColumnName());
             }
 
             @Override
             public Attribute caseNominal() {
-                var values = attributeEntity.getValues()
-                        .stream()
-                        .map(AttributeValueEntity::getValue)
-                        .collect(Collectors.toList());
-                return new Attribute(attributeEntity.getColumnName(), values);
+                return new Attribute(attributeInfo.getColumnName(), attributeInfo.getValues());
             }
 
             @Override
             public Attribute caseDate() {
-                return new Attribute(attributeEntity.getColumnName(), dateFormat);
+                return new Attribute(attributeInfo.getColumnName(), dateFormat);
             }
         });
     }

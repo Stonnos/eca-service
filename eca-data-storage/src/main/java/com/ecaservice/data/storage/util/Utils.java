@@ -1,9 +1,7 @@
 package com.ecaservice.data.storage.util;
 
-import com.ecaservice.data.storage.entity.AttributeEntity;
 import com.ecaservice.data.storage.entity.AttributeType;
 import com.ecaservice.data.storage.entity.AttributeValueEntity;
-import com.ecaservice.data.storage.entity.InstancesEntity;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
 import weka.core.Attribute;
@@ -73,17 +71,14 @@ public class Utils {
     }
 
     /**
-     * Builds sql select query with specified attributes.
+     * Builds sql select query with specified columns.
      *
-     * @param tableName         - table name
-     * @param attributeEntities - attributes entities
+     * @param tableName - table name
+     * @param columns   - columns list
      * @return sql select query
      */
-    public static String buildSqlSelectQuery(String tableName, List<AttributeEntity> attributeEntities) {
-        var values = attributeEntities.stream()
-                .map(AttributeEntity::getColumnName)
-                .collect(Collectors.toList());
-        String attributes = StringUtils.join(values, COMMA_SEPARATOR);
+    public static String buildSqlSelectQuery(String tableName, List<String> columns) {
+        String attributes = StringUtils.join(columns, COMMA_SEPARATOR);
         return String.format(SELECT_QUERY, attributes, tableName);
     }
 

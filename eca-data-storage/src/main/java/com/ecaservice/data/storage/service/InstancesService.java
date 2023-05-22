@@ -1,10 +1,12 @@
 package com.ecaservice.data.storage.service;
 
 import com.ecaservice.data.storage.config.EcaDsConfig;
+import com.ecaservice.data.storage.entity.AttributeEntity;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.exception.ClassAttributeNotSelectedException;
 import com.ecaservice.data.storage.exception.ClassAttributeValuesIsTooLowException;
 import com.ecaservice.data.storage.exception.SelectedAttributesNumberIsTooLowException;
+import com.ecaservice.data.storage.model.AttributeInfo;
 import com.ecaservice.data.storage.model.InstancesBatchOptions;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -20,6 +22,7 @@ import weka.core.Instances;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.ecaservice.data.storage.util.Utils.MIN_NUM_CLASSES;
 import static com.ecaservice.data.storage.util.Utils.MIN_NUM_SELECTED_ATTRIBUTES;
@@ -109,7 +112,7 @@ public class InstancesService {
     public PageDto<List<String>> getInstances(InstancesEntity instancesEntity, PageRequestDto pageRequestDto) {
         String tableName = instancesEntity.getTableName();
         log.info("Starting to get instances for table [{}], page request [{}]", tableName, pageRequestDto);
-        var attributes = attributeService.getAttributes(instancesEntity);
+        var attributes = attributeService.getsAttributesInfo(instancesEntity);
         var sqlPreparedQuery = searchQueryCreator.buildSqlQuery(instancesEntity, pageRequestDto);
         var extractor = new DataListResultSetExtractor(instancesEntity, attributes);
         extractor.setDateTimeFormatter(DateTimeFormatter.ofPattern(ecaDsConfig.getDateFormat()));
@@ -129,10 +132,13 @@ public class InstancesService {
      */
     public Instances getInstances(InstancesEntity instancesEntity) {
         log.info("Starting to get instances from table [{}]", instancesEntity.getTableName());
-        var attributes = attributeService.getAttributes(instancesEntity);
+        var attributes = attributeService.getsAttributesInfo(instancesEntity);
+        var columns = attributes.stream()
+                .map(AttributeInfo::getColumnName)
+                .collect(Collectors.toList());
         var extractor = new InstancesResultSetExtractor(instancesEntity, attributes);
         extractor.setDateFormat(ecaDsConfig.getDateFormat());
-        String query = buildSqlSelectQuery(instancesEntity.getTableName(), attributes);
+        String query = buildSqlSelectQuery(instancesEntity.getTableName(), columns);
         var instances = jdbcTemplate.query(query, extractor);
         log.info("Instances has been fetched from table [{}]", instancesEntity.getTableName());
         return instances;
@@ -161,10 +167,13 @@ public class InstancesService {
         if (countUniqueClassesInTable < MIN_NUM_CLASSES) {
             throw new ClassAttributeValuesIsTooLowException(instancesEntity.getId());
         }
+        var columns = attributes.stream()
+                .map(AttributeEntity::getColumnName)
+                .collect(Collectors.toList());
+        String query = buildSqlSelectQuery(instancesEntity.getTableName(), columns);
         var extractor = new InstancesModelResultSetExtractor(instancesEntity, attributes);
         extractor.setDateFormat(ecaDsConfig.getDateFormat());
         extractor.setDateTimeFormatter(DateTimeFormatter.ofPattern(ecaDsConfig.getDateFormat()));
-        String query = buildSqlSelectQuery(instancesEntity.getTableName(), attributes);
         var instancesModel = jdbcTemplate.query(query, extractor);
         log.info("Instances model has been fetched for table [{}]", instancesEntity.getTableName());
         return instancesModel;

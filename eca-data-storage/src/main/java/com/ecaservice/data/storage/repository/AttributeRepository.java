@@ -2,7 +2,6 @@ package com.ecaservice.data.storage.repository;
 
 import com.ecaservice.data.storage.entity.AttributeEntity;
 import com.ecaservice.data.storage.entity.InstancesEntity;
-import com.ecaservice.data.storage.projection.AttributeInfoProjection;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -45,16 +44,6 @@ public interface AttributeRepository extends JpaRepository<AttributeEntity, Long
      */
     @EntityGraph(value = "attributeValues", type = EntityGraph.EntityGraphType.FETCH)
     Optional<AttributeEntity> findById(Long id);
-
-    /**
-     * Finds instances attributes info ordered by index.
-     *
-     * @param instancesEntity - instances entity
-     * @return attributes list
-     */
-    @Query("select a.columnName as columnName, a.type as type from AttributeEntity a " +
-            "where a.instancesEntity = :instances order by a.index")
-    List<AttributeInfoProjection> getsAttributesInfo(@Param("instances") InstancesEntity instancesEntity);
 
     /**
      * Selects all attributes for instances.

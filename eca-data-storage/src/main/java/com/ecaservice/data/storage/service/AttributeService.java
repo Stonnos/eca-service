@@ -5,6 +5,8 @@ import com.ecaservice.common.web.exception.InvalidOperationException;
 import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.data.storage.config.CacheNames;
 import com.ecaservice.data.storage.entity.AttributeEntity;
+import com.ecaservice.data.storage.entity.AttributeType;
+import com.ecaservice.data.storage.entity.AttributeValueEntity;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.model.AttributeInfo;
 import com.ecaservice.data.storage.repository.AttributeRepository;
@@ -87,15 +89,26 @@ public class AttributeService {
      * @param instancesEntity - instances entity
      * @return attributes list
      */
-    @Cacheable(CacheNames.ATTRIBUTES_CACHE)
+    @Cacheable(value = CacheNames.ATTRIBUTES_CACHE, key = "#instancesEntity.id")
     public List<AttributeInfo> getsAttributesInfo(InstancesEntity instancesEntity) {
         log.info("Gets attributes info list for instances [{}]", instancesEntity.getTableName());
-        var attributes = attributeRepository.getsAttributesInfo(instancesEntity);
+        var attributes = attributeRepository.findByInstancesEntityOrderByIndex(instancesEntity);
         log.info("[{}] attributes info has been fetched for instances [{}]", attributes.size(),
                 instancesEntity.getTableName());
         return attributes.stream()
-                .map(attributeInfoProjection -> new AttributeInfo(attributeInfoProjection.getColumnName(),
-                        attributeInfoProjection.getType()))
+                .map(attributeEntity -> {
+                    var attributeInfo = new AttributeInfo();
+                    attributeInfo.setColumnName(attributeEntity.getColumnName());
+                    attributeInfo.setType(attributeEntity.getType());
+                    if (AttributeType.NOMINAL.equals(attributeEntity.getType())) {
+                        var values = attributeEntity.getValues()
+                                .stream()
+                                .map(AttributeValueEntity::getValue)
+                                .collect(Collectors.toList());
+                        attributeInfo.setValues(values);
+                    }
+                    return attributeInfo;
+                })
                 .collect(Collectors.toList());
     }
 
