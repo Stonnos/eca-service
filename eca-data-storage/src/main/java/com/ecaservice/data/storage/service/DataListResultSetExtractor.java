@@ -1,7 +1,6 @@
 package com.ecaservice.data.storage.service;
 
 import com.ecaservice.data.storage.entity.AttributeEntity;
-import com.ecaservice.data.storage.entity.AttributeType;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +13,6 @@ import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import static com.ecaservice.data.storage.util.SqlUtils.getStringValueSafe;
 import static com.google.common.collect.Lists.newArrayList;
 
 /**
@@ -35,6 +33,7 @@ public class DataListResultSetExtractor implements ResultSetExtractor<List<List<
     @Override
     public List<List<String>> extractData(ResultSet resultSet) throws SQLException, DataAccessException {
         List<List<String>> dataList = newArrayList();
+        var valueExtractor = new AttributeValueExtractor(resultSet, dateTimeFormatter);
         while (resultSet.next()) {
             List<String> row = newArrayList();
             for (int i = 1; i <= instancesEntity.getNumAttributes(); i++) {
@@ -43,14 +42,10 @@ public class DataListResultSetExtractor implements ResultSetExtractor<List<List<
                 int columnIndex = i + 1;
                 if (resultSet.getObject(columnIndex) == null) {
                     row.add(null);
-                } else if (AttributeType.DATE.equals(attributeEntity.getType())) {
-                    var value = resultSet.getTimestamp(columnIndex).toLocalDateTime();
-                    row.add(value.format(dateTimeFormatter));
-                } else if (AttributeType.NUMERIC.equals(attributeEntity.getType())) {
-                    double value = resultSet.getBigDecimal(columnIndex).doubleValue();
-                    row.add(String.valueOf(value));
                 } else {
-                    row.add(getStringValueSafe(resultSet, columnIndex));
+                    valueExtractor.setColumnIndex(columnIndex);
+                    String value = attributeEntity.getType().handle(valueExtractor);
+                    row.add(value);
                 }
             }
             dataList.add(row);

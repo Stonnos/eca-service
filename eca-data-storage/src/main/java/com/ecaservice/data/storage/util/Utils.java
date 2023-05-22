@@ -1,8 +1,10 @@
 package com.ecaservice.data.storage.util;
 
+import com.ecaservice.data.storage.entity.AttributeEntity;
 import com.ecaservice.data.storage.entity.AttributeType;
 import com.ecaservice.data.storage.entity.AttributeValueEntity;
 import lombok.experimental.UtilityClass;
+import org.apache.commons.lang3.StringUtils;
 import weka.core.Attribute;
 
 import java.util.List;
@@ -23,6 +25,14 @@ public class Utils {
      * Min. number of classes
      */
     public static final int MIN_NUM_CLASSES = 2;
+
+    /**
+     * Min. number of selected attributes
+     */
+    public static final int MIN_NUM_SELECTED_ATTRIBUTES = 2;
+
+    private static final String SELECT_QUERY = "select %s from %s";
+    private static final String COMMA_SEPARATOR = ",";
 
     /**
      * Gets attribute type.
@@ -58,5 +68,20 @@ public class Utils {
                     return attributeValueEntity;
                 })
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Builds sql select query with specified attributes.
+     *
+     * @param tableName         - table name
+     * @param attributeEntities - attributes entities
+     * @return sql select query
+     */
+    public static String buildSqlSelectQuery(String tableName, List<AttributeEntity> attributeEntities) {
+        var values = attributeEntities.stream()
+                .map(AttributeEntity::getColumnName)
+                .collect(Collectors.toList());
+        String attributes = StringUtils.join(values, COMMA_SEPARATOR);
+        return String.format(SELECT_QUERY, attributes, tableName);
     }
 }

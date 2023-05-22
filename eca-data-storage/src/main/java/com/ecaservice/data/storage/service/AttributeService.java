@@ -71,6 +71,17 @@ public class AttributeService {
     }
 
     /**
+     * Gets selected attributes list for specified instances.
+     *
+     * @param instancesEntity - instances entity
+     * @return attributes list
+     */
+    public List<AttributeEntity> getSelectedAttributes(InstancesEntity instancesEntity) {
+        log.debug("Gets selected attributes list for instances [{}]", instancesEntity.getTableName());
+        return attributeRepository.findByInstancesEntityAndSelectedIsTrueOrderByIndex(instancesEntity);
+    }
+
+    /**
      * Gets attributes info list for specified instances.
      *
      * @param instancesEntity - instances entity

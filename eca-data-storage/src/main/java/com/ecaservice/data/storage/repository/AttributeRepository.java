@@ -29,6 +29,15 @@ public interface AttributeRepository extends JpaRepository<AttributeEntity, Long
     List<AttributeEntity> findByInstancesEntityOrderByIndex(InstancesEntity instancesEntity);
 
     /**
+     * Finds selected attributes for specified instances ordered by index.
+     *
+     * @param instancesEntity - instances entity
+     * @return attributes list
+     */
+    @EntityGraph(value = "attributeValues", type = EntityGraph.EntityGraphType.FETCH)
+    List<AttributeEntity> findByInstancesEntityAndSelectedIsTrueOrderByIndex(InstancesEntity instancesEntity);
+
+    /**
      * Finds attribute by id.
      *
      * @param id - attribute id

@@ -1,4 +1,4 @@
-package com.ecaservice.data.storage.controller;
+package com.ecaservice.data.storage.controller.web;
 
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.exception.TableExistsException;

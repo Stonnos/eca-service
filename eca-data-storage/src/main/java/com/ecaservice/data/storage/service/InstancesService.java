@@ -2,11 +2,13 @@ package com.ecaservice.data.storage.service;
 
 import com.ecaservice.data.storage.config.EcaDsConfig;
 import com.ecaservice.data.storage.entity.InstancesEntity;
+import com.ecaservice.data.storage.exception.SelectedAttributesOutOfBoundsException;
 import com.ecaservice.data.storage.model.InstancesBatchOptions;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import eca.data.db.SqlQueryHelper;
 import eca.data.db.SqlTypeUtils;
+import eca.data.file.model.InstancesModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -16,6 +18,9 @@ import weka.core.Instances;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+
+import static com.ecaservice.data.storage.util.Utils.MIN_NUM_SELECTED_ATTRIBUTES;
+import static com.ecaservice.data.storage.util.Utils.buildSqlSelectQuery;
 
 /**
  * Instances service.
@@ -114,18 +119,40 @@ public class InstancesService {
     }
 
     /**
-     * Gets instances from specified instances.
+     * Gets instances from specified instances table.
      *
      * @param instancesEntity - instances entity
      * @return instances object
      */
     public Instances getInstances(InstancesEntity instancesEntity) {
-        log.info("Starting to get instances for table [{}]", instancesEntity.getTableName());
+        log.info("Starting to get instances from table [{}]", instancesEntity.getTableName());
         var attributes = attributeService.getAttributes(instancesEntity);
         var extractor = new InstancesResultSetExtractor(instancesEntity, attributes);
         extractor.setDateFormat(ecaDsConfig.getDateFormat());
         var instances = jdbcTemplate.query(String.format(SELECT_QUERY, instancesEntity.getTableName()), extractor);
-        log.info("Instances has been fetched for table [{}]", instancesEntity.getTableName());
+        log.info("Instances has been fetched from table [{}]", instancesEntity.getTableName());
+        return instances;
+    }
+
+    /**
+     * Gets instances model with selected attributes list.
+     *
+     * @param instancesEntity - instances entity
+     * @return instances model object
+     */
+    public InstancesModel getInstancesModelWithSelectedAttributes(InstancesEntity instancesEntity) {
+        log.info("Starting to get instances model with selected attributes from table [{}]",
+                instancesEntity.getTableName());
+        var attributes = attributeService.getSelectedAttributes(instancesEntity);
+        if (attributes.size() < MIN_NUM_SELECTED_ATTRIBUTES) {
+            throw new SelectedAttributesOutOfBoundsException(instancesEntity.getId());
+        }
+        var extractor = new InstancesModelResultSetExtractor(instancesEntity, attributes);
+        extractor.setDateFormat(ecaDsConfig.getDateFormat());
+        extractor.setDateTimeFormatter(DateTimeFormatter.ofPattern(ecaDsConfig.getDateFormat()));
+        String query = buildSqlSelectQuery(instancesEntity.getTableName(), attributes);
+        var instances = jdbcTemplate.query(query, extractor);
+        log.info("Instances model has been fetched for table [{}]", instancesEntity.getTableName());
         return instances;
     }
 
