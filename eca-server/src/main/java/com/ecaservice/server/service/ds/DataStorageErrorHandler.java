@@ -41,8 +41,8 @@ public class DataStorageErrorHandler {
                 return dsErrorCode;
             }
         } catch (JsonProcessingException ex) {
-            log.error("Got error while handling bad request with status [{}] for uuid [{}]", badRequestEx.status(),
-                    uuid);
+            log.error("Got json processing error while handling bad request with status [{}] for uuid [{}]",
+                    badRequestEx.status(), uuid);
             throw new DataStorageException(
                     String.format("Parse bad request response error from data storage for uuid [%s]", uuid));
         }
