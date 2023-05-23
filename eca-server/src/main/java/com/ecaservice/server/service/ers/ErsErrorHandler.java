@@ -1,6 +1,5 @@
 package com.ecaservice.server.service.ers;
 
-import com.ecaservice.common.web.dto.ValidationErrorDto;
 import com.ecaservice.ers.dto.ErsErrorCode;
 import com.ecaservice.server.mapping.ErsResponseStatusMapper;
 import com.ecaservice.server.model.entity.ErsRequest;
@@ -12,11 +11,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.ecaservice.common.web.util.ValidationErrorHelper.getFirstError;
+import static com.ecaservice.common.web.util.ValidationErrorHelper.getFirstErrorCodeAsEnum;
 import static com.ecaservice.common.web.util.ValidationErrorHelper.retrieveValidationErrors;
 
 /**
@@ -79,7 +76,7 @@ public class ErsErrorHandler {
     public ErsErrorCode handleBadRequest(ErsRequest ersRequest, FeignException.BadRequest badRequestEx) {
         try {
             var validationErrors = retrieveValidationErrors(badRequestEx.contentUTF8());
-            var ersErrorCode = getErsErrorCode(validationErrors);
+            var ersErrorCode = getFirstErrorCodeAsEnum(validationErrors, ErsErrorCode.class);
             handleValidationError(ersRequest, ersErrorCode);
             ersRequest.setDetails(badRequestEx.getMessage());
             ersRequestRepository.save(ersRequest);
@@ -92,16 +89,6 @@ public class ErsErrorHandler {
             handleErrorRequest(ersRequest, ErsResponseStatus.ERROR, ex.getMessage());
         }
         return null;
-    }
-
-    private ErsErrorCode getErsErrorCode(List<ValidationErrorDto> validationErrors) {
-        var errorCodes = Stream.of(ErsErrorCode.values())
-                .map(Enum::name)
-                .collect(Collectors.toList());
-        var validationError = getFirstError(errorCodes, validationErrors);
-        return validationError
-                .map(validationErrorDto -> ErsErrorCode.valueOf(validationErrorDto.getCode()))
-                .orElse(null);
     }
 
     private void handleValidationError(ErsRequest ersRequest, ErsErrorCode ersErrorCode) {
