@@ -20,5 +20,10 @@ public enum DsErrorCode {
     /**
      * Class values is too low error code
      */
-    CLASS_VALUES_IS_TOO_LOW
+    CLASS_VALUES_IS_TOO_LOW,
+
+    /**
+     * Instances not found
+     */
+    INSTANCES_NOT_FOUND
 }
