@@ -2,7 +2,6 @@ package com.ecaservice.server.service.ds;
 
 import com.ecaservice.data.storage.dto.DsErrorCode;
 import com.ecaservice.server.exception.DataStorageException;
-import com.ecaservice.server.mapping.DataStorageErrorCodeMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +21,6 @@ import static com.ecaservice.common.web.util.ValidationErrorHelper.retrieveValid
 @RequiredArgsConstructor
 public class DataStorageErrorHandler {
 
-    private final DataStorageErrorCodeMapper dataStorageErrorCodeMapper;
-
     /**
      * Handles data storage bad request error.
      *
@@ -31,7 +28,7 @@ public class DataStorageErrorHandler {
      * @param badRequestEx - exception object
      * @return data storage error code
      */
-    public DsInternalErrorCode handleBadRequest(String uuid, FeignException.BadRequest badRequestEx) {
+    public DsErrorCode handleBadRequest(String uuid, FeignException.BadRequest badRequestEx) {
         log.info("Starting to handle ds bad request error for instances [{}]", uuid);
         try {
             var validationErrors = retrieveValidationErrors(badRequestEx.contentUTF8());
@@ -41,7 +38,7 @@ public class DataStorageErrorHandler {
                 throw new DataStorageException(
                         String.format("Got unknown data storage error code for uuid [%s]", uuid));
             } else {
-                return dataStorageErrorCodeMapper.mapErrorCode(dsErrorCode);
+                return dsErrorCode;
             }
         } catch (JsonProcessingException ex) {
             log.error("Got error while handling bad request with status [{}] for uuid [{}]", badRequestEx.status(),
