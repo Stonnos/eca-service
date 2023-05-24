@@ -567,7 +567,7 @@ public class DataStorageController {
                     )
             }
     )
-    @PutMapping(value = "/set_class_attribute")
+    @PutMapping(value = "/set-class-attribute")
     public void setClassAttribute(@Parameter(description = "Class attribute id", example = "1", required = true)
                                   @Min(VALUE_1) @Max(Long.MAX_VALUE) @RequestParam long classAttributeId) {
         storageService.setClassAttribute(classAttributeId);
@@ -610,7 +610,7 @@ public class DataStorageController {
                     )
             }
     )
-    @PutMapping(value = "/select_attribute")
+    @PutMapping(value = "/select-attribute")
     public void selectAttribute(@Parameter(description = "Attribute id", example = "1", required = true)
                                 @Min(VALUE_1) @Max(Long.MAX_VALUE) @RequestParam long id) {
         attributeService.selectAttribute(id);
@@ -653,7 +653,7 @@ public class DataStorageController {
                     )
             }
     )
-    @PutMapping(value = "/unselect_attribute")
+    @PutMapping(value = "/unselect-attribute")
     public void unselectAttribute(@Parameter(description = "Attribute id", example = "1", required = true)
                                   @Min(VALUE_1) @Max(Long.MAX_VALUE) @RequestParam long id) {
         attributeService.unselectAttribute(id);
@@ -696,7 +696,7 @@ public class DataStorageController {
                     )
             }
     )
-    @PutMapping(value = "/select_all_attributes")
+    @PutMapping(value = "/select-all-attributes")
     public void selectAllAttributes(@Parameter(description = "Instances id", example = "1", required = true)
                                     @Min(VALUE_1) @Max(Long.MAX_VALUE) @RequestParam long id) {
         storageService.selectAllAttributes(id);

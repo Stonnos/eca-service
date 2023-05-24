@@ -74,7 +74,7 @@ public class DataStorageApiController {
                     )
             }
     )
-    @GetMapping(value = "/download_valid_report")
+    @GetMapping(value = "/download-valid-report")
     public void downloadValidInstancesReport(
             @Parameter(description = "Instances uuid", example = "1d2de514-3a87-4620-9b97-c260e24340de",
                     required = true)

@@ -74,10 +74,10 @@ class DataStorageControllerTest extends AbstractControllerTest {
     private static final String BASE_URL = "/instances";
     private static final String SAVE_URL = BASE_URL + "/save";
     private static final String RENAME_URL = BASE_URL + "/rename";
-    private static final String SET_CLASS_URL = BASE_URL + "/set_class_attribute";
-    private static final String SELECT_ATTRIBUTE_URL = BASE_URL + "/select_attribute";
-    private static final String UNSELECT_ATTRIBUTE_URL = BASE_URL + "/unselect_attribute";
-    private static final String SELECT_ALL_ATTRIBUTES_URL = BASE_URL + "/select_all_attributes";
+    private static final String SET_CLASS_URL = BASE_URL + "/set-class-attribute";
+    private static final String SELECT_ATTRIBUTE_URL = BASE_URL + "/select-attribute";
+    private static final String UNSELECT_ATTRIBUTE_URL = BASE_URL + "/unselect-attribute";
+    private static final String SELECT_ALL_ATTRIBUTES_URL = BASE_URL + "/select-all-attributes";
     private static final String DELETE_URL = BASE_URL + "/delete";
     private static final String LIST_URL = BASE_URL + "/list";
     private static final String ATTRIBUTES_URL = BASE_URL + "/attributes/{id}";
