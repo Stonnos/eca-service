@@ -29,7 +29,9 @@ import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
 import com.ecaservice.web.dto.model.S3ContentResponseDto;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import eca.core.evaluation.EvaluationMethod;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -149,6 +151,37 @@ class ExperimentControllerTest extends PageRequestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(expected)));
+    }
+
+    @Test
+    void testCreateExperimentBadRequestWithNullExperimentType() throws Exception {
+        var experimentRequestDto =
+                new CreateExperimentRequestDto(UUID.randomUUID().toString(), null,
+                        EvaluationMethod.CROSS_VALIDATION);
+        internalTestCreateExperimentBadRequest(experimentRequestDto);
+    }
+
+    @Test
+    void testCreateExperimentBadRequestWithNullEvaluationMethod() throws Exception {
+        var experimentRequestDto =
+                new CreateExperimentRequestDto(UUID.randomUUID().toString(), ExperimentType.ADA_BOOST, null);
+        internalTestCreateExperimentBadRequest(experimentRequestDto);
+    }
+
+    @Test
+    void testCreateExperimentBadRequestWithEmptyInstancesUuid() throws Exception {
+        var experimentRequestDto =
+                new CreateExperimentRequestDto(StringUtils.EMPTY, ExperimentType.ADA_BOOST,
+                        EvaluationMethod.CROSS_VALIDATION);
+        internalTestCreateExperimentBadRequest(experimentRequestDto);
+    }
+
+    @Test
+    void testCreateExperimentBadRequestWithInvalidInstancesUuidPattern() throws Exception {
+        var experimentRequestDto =
+                new CreateExperimentRequestDto("abc", ExperimentType.ADA_BOOST,
+                        EvaluationMethod.CROSS_VALIDATION);
+        internalTestCreateExperimentBadRequest(experimentRequestDto);
     }
 
     @Test
@@ -366,5 +399,14 @@ class ExperimentControllerTest extends PageRequestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(s3ContentResponseDto)));
+    }
+
+    private void internalTestCreateExperimentBadRequest(CreateExperimentRequestDto experimentRequestDto)
+            throws Exception {
+        mockMvc.perform(post(CREATE_EXPERIMENT_URL)
+                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                        .content(objectMapper.writeValueAsString(experimentRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 }
