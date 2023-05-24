@@ -137,6 +137,7 @@ class DataStorageControllerTest extends AbstractControllerTest {
         when(storageService.saveData(any(Instances.class), anyString())).thenReturn(instancesEntity);
         CreateInstancesResultDto expected = CreateInstancesResultDto.builder()
                 .id(instancesEntity.getId())
+                .uuid(instancesEntity.getUuid())
                 .tableName(instancesEntity.getTableName())
                 .sourceFileName(trainingData.getOriginalFilename())
                 .build();

@@ -208,6 +208,7 @@ public class DataStorageController {
         InstancesEntity instancesEntity = storageService.saveData(instances, tableName);
         return CreateInstancesResultDto.builder()
                 .id(instancesEntity.getId())
+                .uuid(instancesEntity.getUuid())
                 .sourceFileName(trainingData.getOriginalFilename())
                 .tableName(instancesEntity.getTableName())
                 .build();
