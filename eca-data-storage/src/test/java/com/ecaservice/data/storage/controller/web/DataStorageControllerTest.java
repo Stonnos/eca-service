@@ -26,7 +26,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.util.MimeTypeUtils;
 import weka.core.Instances;
@@ -45,7 +44,6 @@ import static com.ecaservice.data.storage.TestHelperUtils.loadInstances;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -104,8 +102,6 @@ class DataStorageControllerTest extends AbstractControllerTest {
     @MockBean
     private InstancesLoader instancesLoader;
     @MockBean
-    private JdbcTemplate jdbcTemplate;
-    @MockBean
     private InstancesReportService instancesReportService;
     @MockBean
     private AttributeService attributeService;
@@ -133,7 +129,6 @@ class DataStorageControllerTest extends AbstractControllerTest {
         InstancesEntity instancesEntity = createInstancesEntity();
         instancesEntity.setTableName(TABLE_NAME);
         when(instancesLoader.load(any(MultipartFileResource.class))).thenReturn(instances);
-        when(jdbcTemplate.queryForObject(anyString(), eq(Boolean.class))).thenReturn(true);
         when(storageService.saveData(any(Instances.class), anyString())).thenReturn(instancesEntity);
         CreateInstancesResultDto expected = CreateInstancesResultDto.builder()
                 .id(instancesEntity.getId())
@@ -172,7 +167,6 @@ class DataStorageControllerTest extends AbstractControllerTest {
 
     @Test
     void testRenameData() throws Exception {
-        when(jdbcTemplate.queryForObject(anyString(), eq(Boolean.class))).thenReturn(true);
         mockMvc.perform(put(RENAME_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(ID_PARAM, String.valueOf(ID))
