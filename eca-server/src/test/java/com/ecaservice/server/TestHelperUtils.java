@@ -69,6 +69,7 @@ import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationMethod;
 import eca.core.evaluation.EvaluationResults;
 import eca.core.evaluation.EvaluationService;
+import eca.data.file.model.InstancesModel;
 import eca.data.file.resource.FileResource;
 import eca.data.file.xls.XLSLoader;
 import eca.dataminer.AbstractExperiment;
@@ -112,6 +113,8 @@ import static com.google.common.collect.Maps.newEnumMap;
 public class TestHelperUtils {
 
     public static final String DATA_RESOURCE_PATH = "data/iris.xls";
+
+    public static final String JSON_DATA_RESOURCE_PATH = "data/iris.json";
 
     public static final int NUM_FOLDS = 3;
     public static final int NUM_TESTS = 1;
@@ -194,6 +197,21 @@ public class TestHelperUtils {
             XLSLoader dataLoader = new XLSLoader();
             dataLoader.setSource(new FileResource(new File(classLoader.getResource(DATA_RESOURCE_PATH).getFile())));
             return dataLoader.loadInstances();
+        } catch (Exception ex) {
+            throw new IllegalStateException(ex.getMessage());
+        }
+    }
+
+    /**
+     * Generates the test data set.
+     *
+     * @return created training data
+     */
+    public static InstancesModel loadInstancesModel() {
+        try {
+            ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+            @Cleanup var inputStream = classLoader.getResourceAsStream(JSON_DATA_RESOURCE_PATH);
+            return OBJECT_MAPPER.readValue(inputStream, InstancesModel.class);
         } catch (Exception ex) {
             throw new IllegalStateException(ex.getMessage());
         }

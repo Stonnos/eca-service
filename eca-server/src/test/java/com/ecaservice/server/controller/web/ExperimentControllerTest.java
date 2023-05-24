@@ -1,27 +1,22 @@
 package com.ecaservice.server.controller.web;
 
-import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.server.TestHelperUtils;
+import com.ecaservice.server.dto.CreateExperimentRequestDto;
 import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.mapping.ExperimentMapper;
 import com.ecaservice.server.mapping.ExperimentMapperImpl;
 import com.ecaservice.server.mapping.ExperimentProgressMapperImpl;
 import com.ecaservice.server.mapping.InstancesInfoMapperImpl;
-import com.ecaservice.server.model.MsgProperties;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentProgressEntity;
 import com.ecaservice.server.model.entity.ExperimentResultsEntity;
 import com.ecaservice.server.repository.ExperimentResultsEntityRepository;
-import com.ecaservice.server.service.UserService;
-import com.ecaservice.server.service.auth.UsersClient;
-import com.ecaservice.server.service.experiment.DataService;
 import com.ecaservice.server.service.experiment.ExperimentDataService;
 import com.ecaservice.server.service.experiment.ExperimentProgressService;
+import com.ecaservice.server.service.experiment.ExperimentRequestWebApiService;
 import com.ecaservice.server.service.experiment.ExperimentResultsService;
-import com.ecaservice.server.service.experiment.ExperimentService;
-import com.ecaservice.user.dto.UserInfoDto;
 import com.ecaservice.web.dto.model.ChartDataDto;
 import com.ecaservice.web.dto.model.ChartDto;
 import com.ecaservice.web.dto.model.CreateExperimentResultDto;
@@ -34,21 +29,19 @@ import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
 import com.ecaservice.web.dto.model.S3ContentResponseDto;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import eca.core.evaluation.EvaluationMethod;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.util.MimeTypeUtils;
 
 import javax.inject.Inject;
-import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -61,7 +54,6 @@ import static com.ecaservice.server.TestHelperUtils.createPageRequestDto;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -87,40 +79,24 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     private static final String EXPERIMENT_PROGRESS_URL = BASE_URL + "/progress/{id}";
     private static final String EXPERIMENT_RESULTS_CONTENT_URL = BASE_URL + "/results-content/{id}";
 
-    private static final String EXPERIMENT_TYPE_PARAM = "experimentType";
-    private static final String EVALUATION_METHOD_PARAM = "evaluationMethod";
-    private static final String TRAINING_DATA_PARAM = "trainingData";
     private static final long EXPERIMENT_RESULTS_ID = 1L;
     private static final int PROGRESS_VALUE = 100;
     private static final long ID = 1L;
-    private static final String USER = "user";
     private static final String CONTENT_URL = "http://localhost:9000/content";
 
-    @MockBean
-    private UserService userService;
-    @MockBean
-    private ExperimentService experimentService;
     @MockBean
     private ExperimentDataService experimentDataService;
     @MockBean
     private ExperimentResultsService experimentResultsService;
     @MockBean
-    private UsersClient usersClient;
-    @MockBean
     private ExperimentProgressService experimentProgressService;
     @MockBean
-    private ApplicationEventPublisher eventPublisher;
-    @MockBean
-    private DataService dataService;
+    private ExperimentRequestWebApiService experimentRequestWebApiService;
     @MockBean
     private ExperimentResultsEntityRepository experimentResultsEntityRepository;
 
     @Inject
     private ExperimentMapper experimentMapper;
-
-    private final MockMultipartFile trainingData =
-            new MockMultipartFile(TRAINING_DATA_PARAM, "iris.txt",
-                    MimeTypeUtils.TEXT_PLAIN.toString(), "file-content".getBytes(StandardCharsets.UTF_8));
 
     @Test
     void testGetExperimentDetailsUnauthorized() throws Exception {
@@ -131,7 +107,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     void testGetExperimentDetailsNotFound() throws Exception {
         when(experimentDataService.getById(ID)).thenThrow(EntityNotFoundException.class);
         mockMvc.perform(get(DETAILS_URL, ID)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isBadRequest());
     }
 
@@ -141,7 +117,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
         when(experimentDataService.getById(ID)).thenReturn(experiment);
         ExperimentDto experimentDto = experimentMapper.map(experiment);
         mockMvc.perform(get(DETAILS_URL, ID)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(experimentDto)));
@@ -149,33 +125,63 @@ class ExperimentControllerTest extends PageRequestControllerTest {
 
     @Test
     void testCreateExperimentUnauthorized() throws Exception {
-        mockMvc.perform(multipart(CREATE_EXPERIMENT_URL)
-                .file(trainingData)
-                .param(EXPERIMENT_TYPE_PARAM, ExperimentType.NEURAL_NETWORKS.name())
-                .param(EVALUATION_METHOD_PARAM, EvaluationMethod.CROSS_VALIDATION.name()))
+        var experimentRequestDto =
+                new CreateExperimentRequestDto(UUID.randomUUID().toString(), ExperimentType.ADA_BOOST,
+                        EvaluationMethod.CROSS_VALIDATION);
+        mockMvc.perform(post(CREATE_EXPERIMENT_URL)
+                .content(objectMapper.writeValueAsString(experimentRequestDto))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     void testCreateExperimentSuccess() throws Exception {
-        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
+        var experimentRequestDto =
+                new CreateExperimentRequestDto(UUID.randomUUID().toString(), ExperimentType.ADA_BOOST,
+                        EvaluationMethod.CROSS_VALIDATION);
         CreateExperimentResultDto expected = CreateExperimentResultDto.builder()
-                .id(experiment.getId())
-                .requestId(experiment.getRequestId())
+                .id(ID)
+                .requestId(UUID.randomUUID().toString())
                 .build();
-        expected.setId(experiment.getId());
-        when(userService.getCurrentUser()).thenReturn(USER);
-        when(usersClient.getUserInfo(USER)).thenReturn(new UserInfoDto());
-        when(experimentService.createExperiment(any(ExperimentRequest.class), any(MsgProperties.class)))
-                .thenReturn(experiment);
-        mockMvc.perform(multipart(CREATE_EXPERIMENT_URL)
-                .file(trainingData)
+        when(experimentRequestWebApiService.createExperiment(experimentRequestDto)).thenReturn(expected);
+        mockMvc.perform(post(CREATE_EXPERIMENT_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .param(EXPERIMENT_TYPE_PARAM, ExperimentType.NEURAL_NETWORKS.name())
-                .param(EVALUATION_METHOD_PARAM, EvaluationMethod.CROSS_VALIDATION.name()))
+                .content(objectMapper.writeValueAsString(experimentRequestDto))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(expected)));
+    }
+
+    @Test
+    void testCreateExperimentBadRequestWithNullExperimentType() throws Exception {
+        var experimentRequestDto =
+                new CreateExperimentRequestDto(UUID.randomUUID().toString(), null,
+                        EvaluationMethod.CROSS_VALIDATION);
+        internalTestCreateExperimentBadRequest(experimentRequestDto);
+    }
+
+    @Test
+    void testCreateExperimentBadRequestWithNullEvaluationMethod() throws Exception {
+        var experimentRequestDto =
+                new CreateExperimentRequestDto(UUID.randomUUID().toString(), ExperimentType.ADA_BOOST, null);
+        internalTestCreateExperimentBadRequest(experimentRequestDto);
+    }
+
+    @Test
+    void testCreateExperimentBadRequestWithEmptyInstancesUuid() throws Exception {
+        var experimentRequestDto =
+                new CreateExperimentRequestDto(StringUtils.EMPTY, ExperimentType.ADA_BOOST,
+                        EvaluationMethod.CROSS_VALIDATION);
+        internalTestCreateExperimentBadRequest(experimentRequestDto);
+    }
+
+    @Test
+    void testCreateExperimentBadRequestWithInvalidInstancesUuidPattern() throws Exception {
+        var experimentRequestDto =
+                new CreateExperimentRequestDto("abc", ExperimentType.ADA_BOOST,
+                        EvaluationMethod.CROSS_VALIDATION);
+        internalTestCreateExperimentBadRequest(experimentRequestDto);
     }
 
     @Test
@@ -223,9 +229,9 @@ class ExperimentControllerTest extends PageRequestControllerTest {
         when(experimentPage.getContent()).thenReturn(experiments);
         when(experimentDataService.getNextPage(any(PageRequestDto.class))).thenReturn(experimentPage);
         mockMvc.perform(post(LIST_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .content(objectMapper.writeValueAsString(createPageRequestDto()))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                        .content(objectMapper.writeValueAsString(createPageRequestDto()))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(expected)));
@@ -242,7 +248,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
         RequestStatusStatisticsDto requestStatusStatisticsDto = new RequestStatusStatisticsDto();
         when(experimentDataService.getRequestStatusesStatistics()).thenReturn(requestStatusStatisticsDto);
         mockMvc.perform(get(REQUEST_STATUS_STATISTICS_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(requestStatusStatisticsDto)));
@@ -258,7 +264,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     void testGetExperimentResultsDetailsNotFound() throws Exception {
         when(experimentResultsEntityRepository.findById(EXPERIMENT_RESULTS_ID)).thenReturn(Optional.empty());
         mockMvc.perform(get(EXPERIMENT_RESULTS_DETAILS_URL, EXPERIMENT_RESULTS_ID)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isBadRequest());
     }
 
@@ -275,7 +281,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
         when(experimentResultsService.getExperimentResultsDetails(experimentResultsEntity)).thenReturn(
                 experimentResultsDetailsDto);
         mockMvc.perform(get(EXPERIMENT_RESULTS_DETAILS_URL, EXPERIMENT_RESULTS_ID)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(experimentResultsDetailsDto)));
@@ -290,7 +296,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     void testGetErsReportForNotExistingExperiment() throws Exception {
         when(experimentDataService.getById(ID)).thenThrow(EntityNotFoundException.class);
         mockMvc.perform(get(ERS_REPORT_URL, ID)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isBadRequest());
     }
 
@@ -300,7 +306,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
         when(experimentDataService.getById(ID)).thenReturn(new Experiment());
         when(experimentResultsService.getErsReport(any(Experiment.class))).thenReturn(expected);
         mockMvc.perform(get(ERS_REPORT_URL, ID)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(expected)));
@@ -320,7 +326,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
         when(experimentDataService.getExperimentsStatistics(null, null))
                 .thenReturn(chartDto);
         mockMvc.perform(get(EXPERIMENT_TYPES_STATISTICS_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(chartDto)));
@@ -336,7 +342,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     void testGetExperimentProgressForNotExistingExperiment() throws Exception {
         when(experimentDataService.getById(ID)).thenThrow(EntityNotFoundException.class);
         mockMvc.perform(get(EXPERIMENT_PROGRESS_URL, ID)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isBadRequest());
     }
 
@@ -346,7 +352,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
         when(experimentProgressService.getExperimentProgress(any(Experiment.class)))
                 .thenThrow(EntityNotFoundException.class);
         mockMvc.perform(get(EXPERIMENT_PROGRESS_URL, ID)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isBadRequest());
     }
 
@@ -362,7 +368,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
         when(experimentProgressService.getExperimentProgress(any(Experiment.class))).thenReturn(
                 experimentProgressEntity);
         mockMvc.perform(get(EXPERIMENT_PROGRESS_URL, ID)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(expected)));
@@ -378,7 +384,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     void testGetExperimentResultsContentUrlForNotExistingExperiment() throws Exception {
         when(experimentDataService.getExperimentResultsContentUrl(ID)).thenThrow(EntityNotFoundException.class);
         mockMvc.perform(get(EXPERIMENT_RESULTS_CONTENT_URL, ID)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isBadRequest());
     }
 
@@ -389,9 +395,18 @@ class ExperimentControllerTest extends PageRequestControllerTest {
                 .build();
         when(experimentDataService.getExperimentResultsContentUrl(ID)).thenReturn(s3ContentResponseDto);
         mockMvc.perform(get(EXPERIMENT_RESULTS_CONTENT_URL, ID)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(s3ContentResponseDto)));
+    }
+
+    private void internalTestCreateExperimentBadRequest(CreateExperimentRequestDto experimentRequestDto)
+            throws Exception {
+        mockMvc.perform(post(CREATE_EXPERIMENT_URL)
+                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                        .content(objectMapper.writeValueAsString(experimentRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 }

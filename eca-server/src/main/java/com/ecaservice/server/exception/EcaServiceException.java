@@ -13,7 +13,7 @@ public class EcaServiceException extends RuntimeException {
     /**
      * Creates exception.
      *
-     * @param message error message
+     * @param message - error message
      */
     public EcaServiceException(String message) {
         super(message);

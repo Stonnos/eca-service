@@ -27,7 +27,7 @@
                 file="audit/codes.csv"/>
     </changeSet>
 
-    <changeSet author="roman.batygin@mail.ru" id="insert_audit_event_templates_7" context="data">
+    <changeSet author="roman.batygin@mail.ru" id="insert_audit_event_templates_8" context="data">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="audit_event_template"/>
         </preConditions>

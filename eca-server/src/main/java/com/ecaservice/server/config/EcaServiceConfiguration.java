@@ -10,6 +10,7 @@ import com.ecaservice.oauth2.annotation.Oauth2ResourceServer;
 import com.ecaservice.server.config.ers.ErsConfig;
 import com.ecaservice.server.model.entity.AbstractEvaluationEntity;
 import com.ecaservice.server.repository.EvaluationLogRepository;
+import eca.data.file.converter.InstancesConverter;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.annotation.EnableCaching;
@@ -88,5 +89,15 @@ public class EcaServiceConfiguration {
         ExperimentConfig.LockProperties lockProperties = experimentConfig.getLock();
         return new RedisLockRegistry(redisConnectionFactory, lockProperties.getRegistryKey(),
                 lockProperties.getExpireAfter());
+    }
+
+    /**
+     * Creates instances converter bean.
+     *
+     * @return instances converter bean
+     */
+    @Bean
+    public InstancesConverter instancesConverter() {
+        return new InstancesConverter();
     }
 }
