@@ -12,6 +12,7 @@ import com.ecaservice.server.model.entity.Channel;
 import com.ecaservice.server.service.UserService;
 import com.ecaservice.server.service.auth.UsersClient;
 import com.ecaservice.server.service.ds.DataStorageService;
+import com.ecaservice.user.dto.UserInfoDto;
 import com.ecaservice.web.dto.model.CreateExperimentResultDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -62,15 +63,21 @@ public class ExperimentRequestWebApiService {
     }
 
     private ExperimentRequest createExperimentRequest(CreateExperimentRequestDto experimentRequestDto) {
-        var user = userService.getCurrentUser();
-        var userInfoDto = usersClient.getUserInfo(user);
+        log.info("Starting to get current user info for experiment request [{}]", experimentRequestDto);
+        var userInfoDto = getCurrentUserInfo();
+        log.info("User info has been fetched for experiment request [{}]", experimentRequestDto);
         ExperimentRequest experimentRequest = new ExperimentRequest();
         experimentRequest.setEmail(userInfoDto.getEmail());
         Instances data = downloadInstances(experimentRequestDto.getInstancesUuid());
         experimentRequest.setData(data);
         experimentRequest.setExperimentType(experimentRequestDto.getExperimentType());
-        experimentRequest.setEvaluationMethod(experimentRequest.getEvaluationMethod());
+        experimentRequest.setEvaluationMethod(experimentRequestDto.getEvaluationMethod());
         return experimentRequest;
+    }
+
+    private UserInfoDto getCurrentUserInfo() {
+        var user = userService.getCurrentUser();
+        return usersClient.getUserInfo(user);
     }
 
     private Instances downloadInstances(String uuid) {
