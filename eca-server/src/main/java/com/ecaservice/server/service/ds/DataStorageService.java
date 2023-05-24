@@ -3,12 +3,10 @@ package com.ecaservice.server.service.ds;
 import com.ecaservice.common.web.exception.InternalServiceUnavailableException;
 import com.ecaservice.server.exception.DataStorageBadRequestException;
 import com.ecaservice.server.exception.DataStorageException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ecaservice.server.service.DataStorageLoader;
 import eca.data.file.converter.InstancesConverter;
-import eca.data.file.model.InstancesModel;
 import feign.FeignException;
 import feign.RetryableException;
-import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,9 +22,8 @@ import weka.core.Instances;
 @RequiredArgsConstructor
 public class DataStorageService {
 
-    private final DataStorageClient dataStorageClient;
+    private final DataStorageLoader dataStorageLoader;
     private final InstancesConverter instancesConverter;
-    private final ObjectMapper objectMapper;
     private final DataStorageErrorHandler dataStorageErrorHandler;
 
     /**
@@ -38,9 +35,7 @@ public class DataStorageService {
     public Instances getValidInstances(String uuid) {
         log.info("Gets valid instances with uuid [{}] from data storage", uuid);
         try {
-            var resource = dataStorageClient.downloadValidInstancesReport(uuid);
-            @Cleanup var inputStream = resource.getInputStream();
-            var instancesModel = objectMapper.readValue(inputStream, InstancesModel.class);
+            var instancesModel = dataStorageLoader.downloadValidInstancesReport(uuid);
             var instances = instancesConverter.convert(instancesModel);
             log.info("Instances [{}] has been fetched from data storage", uuid);
             return instances;
