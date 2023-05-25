@@ -3,7 +3,7 @@ package com.ecaservice.server.report;
 import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.report.model.BaseReportBean;
-import com.ecaservice.report.model.ExperimentBean;
+import com.ecaservice.server.report.model.ExperimentBean;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;

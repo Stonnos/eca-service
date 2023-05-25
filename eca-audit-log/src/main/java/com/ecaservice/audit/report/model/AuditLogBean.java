@@ -1,4 +1,4 @@
-package com.ecaservice.report.model;
+package com.ecaservice.audit.report.model;
 
 import lombok.Data;
 

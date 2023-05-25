@@ -1,7 +1,7 @@
 package com.ecaservice.server.controller.web;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
-import com.ecaservice.report.model.ClassifiersConfigurationBean;
+import com.ecaservice.server.report.model.ClassifiersConfigurationBean;
 import com.ecaservice.server.mapping.ClassifiersConfigurationMapperImpl;
 import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.service.UserService;

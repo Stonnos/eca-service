@@ -2,7 +2,7 @@ package com.ecaservice.audit.mapping;
 
 import com.ecaservice.audit.dto.AuditEventRequest;
 import com.ecaservice.audit.entity.AuditLogEntity;
-import com.ecaservice.report.model.AuditLogBean;
+import com.ecaservice.audit.report.model.AuditLogBean;
 import com.ecaservice.web.dto.model.AuditLogDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

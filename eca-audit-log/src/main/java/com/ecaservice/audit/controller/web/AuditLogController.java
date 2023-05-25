@@ -6,7 +6,6 @@ import com.ecaservice.audit.report.AuditLogsBaseReportDataFetcher;
 import com.ecaservice.audit.service.AuditLogService;
 import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.core.filter.service.FilterService;
-import com.ecaservice.report.model.ReportType;
 import com.ecaservice.web.dto.model.AuditLogDto;
 import com.ecaservice.web.dto.model.AuditLogsPageDto;
 import com.ecaservice.web.dto.model.FilterFieldDto;
@@ -40,6 +39,7 @@ import java.io.OutputStream;
 import java.util.List;
 
 import static com.ecaservice.audit.dictionary.FilterDictionaries.AUDIT_LOG_TEMPLATE;
+import static com.ecaservice.audit.report.ReportTemplates.AUDIT_LOGS_TEMPLATE;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
 import static com.ecaservice.report.ReportGenerator.generateReport;
@@ -267,11 +267,11 @@ public class AuditLogController {
             throws IOException {
         log.info("Request to download audit logs base report with params: {}", pageRequestDto);
         var baseReportBean = auditLogsBaseReportDataFetcher.fetchReportData(pageRequestDto);
-        String targetFile = String.format(FILE_NAME_FORMAT, ReportType.AUDIT_LOGS.getName());
+        String targetFile = String.format(FILE_NAME_FORMAT, AUDIT_LOGS_TEMPLATE);
         @Cleanup OutputStream outputStream = httpServletResponse.getOutputStream();
         httpServletResponse.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
         httpServletResponse.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format(ATTACHMENT_FORMAT, targetFile));
-        generateReport(ReportType.AUDIT_LOGS, baseReportBean, outputStream);
+        generateReport(AUDIT_LOGS_TEMPLATE, baseReportBean, outputStream);
         outputStream.flush();
     }
 }

@@ -2,7 +2,7 @@ package com.ecaservice.server.mapping;
 
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.base.model.EvaluationRequest;
-import com.ecaservice.report.model.EvaluationLogBean;
+import com.ecaservice.server.report.model.EvaluationLogBean;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.model.entity.ClassifierInputOptions;
 import com.ecaservice.server.model.entity.EvaluationLog;

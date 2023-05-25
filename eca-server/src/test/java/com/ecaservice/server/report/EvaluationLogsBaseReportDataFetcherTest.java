@@ -2,7 +2,7 @@ package com.ecaservice.server.report;
 
 import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.report.model.BaseReportBean;
-import com.ecaservice.report.model.EvaluationLogBean;
+import com.ecaservice.server.report.model.EvaluationLogBean;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.mapping.ClassifierInfoMapperImpl;

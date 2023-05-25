@@ -4,9 +4,7 @@ import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.report.data.fetcher.AbstractBaseReportDataFetcher;
 import com.ecaservice.report.model.BaseReportBean;
-import com.ecaservice.report.model.ReportType;
-import com.ecaservice.server.mapping.ReportTypeMapper;
-import com.ecaservice.web.dto.model.BaseReportType;
+import com.ecaservice.server.report.model.BaseReportType;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -36,6 +34,7 @@ import java.util.List;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
 import static com.ecaservice.server.config.audit.AuditCodes.GENERATE_EVALUATION_REQUESTS_REPORT;
+import static com.ecaservice.server.report.ReportTemplates.BASE_REPORT_TEMPLATES;
 import static com.ecaservice.server.util.ReportHelper.download;
 
 /**
@@ -51,7 +50,6 @@ import static com.ecaservice.server.util.ReportHelper.download;
 @RequiredArgsConstructor
 public class ReportController {
 
-    private final ReportTypeMapper reportTypeMapper;
     private final List<AbstractBaseReportDataFetcher> reportDataFetchers;
 
     /**
@@ -109,15 +107,15 @@ public class ReportController {
                                HttpServletResponse httpServletResponse)
             throws IOException {
         log.info("Request to download base report [{}] with params: {}", reportType, pageRequestDto);
-        var targetReportType = reportTypeMapper.map(reportType);
-        AbstractBaseReportDataFetcher reportDataFetcher = getReportDataFetcher(targetReportType);
+        AbstractBaseReportDataFetcher reportDataFetcher = getReportDataFetcher(reportType);
         BaseReportBean<?> baseReportBean = reportDataFetcher.fetchReportData(pageRequestDto);
-        download(targetReportType, targetReportType.getName(), httpServletResponse, baseReportBean);
+        String template = BASE_REPORT_TEMPLATES.get(reportType);
+        download(template, template, httpServletResponse, baseReportBean);
     }
 
-    private AbstractBaseReportDataFetcher getReportDataFetcher(ReportType reportType) {
+    private AbstractBaseReportDataFetcher getReportDataFetcher(BaseReportType reportType) {
         return reportDataFetchers.stream()
-                .filter(fetcher -> fetcher.getReportType().equals(reportType))
+                .filter(fetcher -> fetcher.getReportType().equals(reportType.name()))
                 .findFirst()
                 .orElseThrow(
                         () -> new IllegalStateException(String.format("Can't handle [%s] report type", reportType)));

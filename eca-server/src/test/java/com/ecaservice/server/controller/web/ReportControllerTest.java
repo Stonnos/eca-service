@@ -1,16 +1,13 @@
 package com.ecaservice.server.controller.web;
 
-import com.ecaservice.report.model.ReportType;
-import com.ecaservice.server.mapping.ReportTypeMapperImpl;
 import com.ecaservice.server.report.ClassifierOptionsRequestsBaseReportDataFetcher;
 import com.ecaservice.server.report.EvaluationLogsBaseReportDataFetcher;
 import com.ecaservice.server.report.ExperimentsBaseReportDataFetcher;
-import com.ecaservice.web.dto.model.BaseReportType;
+import com.ecaservice.server.report.model.BaseReportType;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
@@ -31,7 +28,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Roman Batygin
  */
 @WebMvcTest(controllers = ReportController.class)
-@Import(ReportTypeMapperImpl.class)
 class ReportControllerTest extends PageRequestControllerTest {
 
     private static final String DOWNLOAD_REPORT_URL = "/reports/download";
@@ -46,10 +42,10 @@ class ReportControllerTest extends PageRequestControllerTest {
 
     @Override
     public void before() {
-        when(experimentsBaseReportDataFetcher.getReportType()).thenReturn(ReportType.EXPERIMENTS);
-        when(evaluationLogsBaseReportDataFetcher.getReportType()).thenReturn(ReportType.EVALUATION_LOGS);
+        when(experimentsBaseReportDataFetcher.getReportType()).thenReturn(BaseReportType.EXPERIMENTS.name());
+        when(evaluationLogsBaseReportDataFetcher.getReportType()).thenReturn(BaseReportType.EVALUATION_LOGS.name());
         when(classifierOptionsRequestsBaseReportDataFetcher.getReportType()).thenReturn(
-                ReportType.CLASSIFIERS_OPTIONS_REQUESTS);
+                BaseReportType.CLASSIFIERS_OPTIONS_REQUESTS.name());
     }
 
     @Test

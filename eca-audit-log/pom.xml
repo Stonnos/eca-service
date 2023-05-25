@@ -15,6 +15,7 @@
     <properties>
         <sonar.coverage.exclusions>
             **/entity/**/*,
+            **/model/**/*,
             **/config/**/*,
             **/EcaAuditLogApplication.java
         </sonar.coverage.exclusions>

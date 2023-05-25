@@ -3,7 +3,6 @@ package com.ecaservice.report.data.fetcher;
 import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.report.model.BaseReportBean;
 import com.ecaservice.report.model.FilterBean;
-import com.ecaservice.report.model.ReportType;
 import com.ecaservice.web.dto.model.FilterDictionaryDto;
 import com.ecaservice.web.dto.model.FilterDictionaryValueDto;
 import com.ecaservice.web.dto.model.FilterFieldDto;
@@ -39,7 +38,7 @@ public abstract class AbstractBaseReportDataFetcher<E, B> {
     private static final String VALUES_SEPARATOR = ", ";
 
     @Getter
-    private final ReportType reportType;
+    private final String reportType;
     private final Class<E> entityClazz;
     private final String filterTemplateType;
     private final FilterService filterService;
