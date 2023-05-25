@@ -116,4 +116,16 @@
 |GENERATE_EVALUATION_REQUESTS_REPORT
 |Выгрузка отчета по заявкам
 |EVALUATION_REQUESTS_ACTIONS
+|SET_CLASS_ATTRIBUTE
+|Установка атрибута класса
+|DATA_STORAGE_ACTIONS
+|SELECT_ATTRIBUTE
+|Выбор атрибута классификации
+|DATA_STORAGE_ACTIONS
+|UNSELECT_ATTRIBUTE
+|Отмена выбора атрибута классификации
+|DATA_STORAGE_ACTIONS
+|SELECT_ALL_ATTRIBUTES
+|Выбор всех атрибутов классификации
+|DATA_STORAGE_ACTIONS
 |===

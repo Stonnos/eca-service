@@ -189,3 +189,29 @@
 |Сообщение о снятии блокировки учетной записи
 |-
 |===
+
+== 5. Пример ответа с ошибкой
+
+[source,json]
+----
+[
+  {
+    "fieldName": "templateCode",
+    "code": "ValidEmailRequest",
+    "errorMessage": "Invalid template code!"
+  }
+]
+----
+
+== Справочник кодов ошибок
+
+[options="header"]
+|===
+|№|Код ошибки|Описание
+|1
+|DuplicateRequestId
+|Данные с таким requestId уже существуют в базе
+|2
+|ValidEmailRequest
+|Переданы некорректные параметры запроса
+|===

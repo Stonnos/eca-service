@@ -93,10 +93,9 @@ curl -i -X POST -H "Content-Type: multipart/form-data" -H "authorization: Bearer
 ----
 {
   "id": 10,
+  "uuid": "1d2de514-3a87-4620-9b97-c260e24340de"
   "sourceFileName": "soybean.arff",
-  "tableName": "soybean",
-  "created": true,
-  "errorMessage": null
+  "tableName": "soybean"
 }
 ----
 
@@ -109,6 +108,11 @@ curl -i -X POST -H "Content-Type: multipart/form-data" -H "authorization: Bearer
 |+
 |ID выборки
 |-
+|uuid
+|string
+|+
+|UUID выборки
+|-
 |sourceFileName
 |string
 |+
@@ -118,16 +122,6 @@ curl -i -X POST -H "Content-Type: multipart/form-data" -H "authorization: Bearer
 |string
 |-
 |Название таблицы, в которую были сохранены данные
-|-
-|created
-|boolean
-|+
-|Признак успешного сохранения данных
-|-
-|errorMessage
-|string
-|-
-|Сообщение об ошибке
 |-
 |===
 
