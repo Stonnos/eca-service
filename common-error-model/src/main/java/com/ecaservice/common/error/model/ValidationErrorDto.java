@@ -1,4 +1,4 @@
-package com.ecaservice.common.web.dto;
+package com.ecaservice.common.error.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
-import static com.ecaservice.common.web.dto.Constraints.STRING_MAX_LENGTH_1000;
-import static com.ecaservice.common.web.dto.Constraints.STRING_MAX_LENGTH_255;
+import static com.ecaservice.common.error.model.Constraints.STRING_MAX_LENGTH_1000;
+import static com.ecaservice.common.error.model.Constraints.STRING_MAX_LENGTH_255;
 
 /**
  * Validation error dto.

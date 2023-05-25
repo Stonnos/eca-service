@@ -1,6 +1,6 @@
 package com.ecaservice.common.web;
 
-import com.ecaservice.common.web.dto.ValidationErrorDto;
+import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.common.web.exception.ValidationErrorException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

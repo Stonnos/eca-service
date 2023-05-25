@@ -1,4 +1,4 @@
-package com.ecaservice.common.web.dto;
+package com.ecaservice.common.error.model;
 
 import lombok.experimental.UtilityClass;
 

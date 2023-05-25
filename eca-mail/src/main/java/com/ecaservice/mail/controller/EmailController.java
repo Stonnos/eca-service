@@ -1,6 +1,6 @@
 package com.ecaservice.mail.controller;
 
-import com.ecaservice.common.web.dto.ValidationErrorDto;
+import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.mail.mapping.EmailRequestMapper;
 import com.ecaservice.mail.model.Email;
 import com.ecaservice.mail.service.EmailService;

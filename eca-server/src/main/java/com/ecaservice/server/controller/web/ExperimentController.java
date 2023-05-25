@@ -1,6 +1,6 @@
 package com.ecaservice.server.controller.web;
 
-import com.ecaservice.common.web.dto.ValidationErrorDto;
+import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.server.dto.CreateExperimentRequestDto;
 import com.ecaservice.server.mapping.ExperimentMapper;

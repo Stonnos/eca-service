@@ -1,6 +1,6 @@
 package com.ecaservice.data.storage.controller.internal;
 
-import com.ecaservice.common.web.dto.ValidationErrorDto;
+import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.data.storage.report.InstancesReportService;
 import com.ecaservice.data.storage.service.StorageService;
 import io.swagger.v3.oas.annotations.Operation;

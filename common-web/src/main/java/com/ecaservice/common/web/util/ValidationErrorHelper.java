@@ -1,7 +1,7 @@
 package com.ecaservice.common.web.util;
 
 import com.ecaservice.common.error.model.ErrorDetails;
-import com.ecaservice.common.web.dto.ValidationErrorDto;
+import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

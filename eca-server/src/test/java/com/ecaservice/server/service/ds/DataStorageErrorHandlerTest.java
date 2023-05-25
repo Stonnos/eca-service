@@ -1,6 +1,6 @@
 package com.ecaservice.server.service.ds;
 
-import com.ecaservice.common.web.dto.ValidationErrorDto;
+import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.data.storage.dto.DsInternalApiErrorCode;
 import com.ecaservice.server.exception.DataStorageException;
 import com.fasterxml.jackson.core.JsonProcessingException;

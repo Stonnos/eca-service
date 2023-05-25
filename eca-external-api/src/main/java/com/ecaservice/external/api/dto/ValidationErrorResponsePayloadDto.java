@@ -1,6 +1,6 @@
 package com.ecaservice.external.api.dto;
 
-import com.ecaservice.common.web.dto.ValidationErrorDto;
+import com.ecaservice.common.error.model.ValidationErrorDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;

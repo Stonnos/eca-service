@@ -2,7 +2,7 @@ package com.ecaservice.audit.controller.audit;
 
 import com.ecaservice.audit.dto.AuditEventRequest;
 import com.ecaservice.audit.service.AuditLogService;
-import com.ecaservice.common.web.dto.ValidationErrorDto;
+import com.ecaservice.common.error.model.ValidationErrorDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;

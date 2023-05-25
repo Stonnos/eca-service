@@ -4,7 +4,7 @@ import com.ecaservice.audit.entity.AuditLogEntity;
 import com.ecaservice.audit.mapping.AuditLogMapper;
 import com.ecaservice.audit.report.AuditLogsBaseReportDataFetcher;
 import com.ecaservice.audit.service.AuditLogService;
-import com.ecaservice.common.web.dto.ValidationErrorDto;
+import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.report.model.ReportType;
 import com.ecaservice.web.dto.model.AuditLogDto;

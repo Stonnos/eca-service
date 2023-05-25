@@ -1,6 +1,6 @@
 package com.ecaservice.server.service.ers;
 
-import com.ecaservice.common.web.dto.ValidationErrorDto;
+import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.ers.dto.ErsErrorCode;
 import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
 import com.ecaservice.server.TestHelperUtils;

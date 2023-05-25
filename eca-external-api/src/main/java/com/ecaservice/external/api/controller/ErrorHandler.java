@@ -1,7 +1,7 @@
 package com.ecaservice.external.api.controller;
 
 import com.ecaservice.common.web.ExceptionResponseHandler;
-import com.ecaservice.common.web.dto.ValidationErrorDto;
+import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.common.web.exception.ValidationErrorException;
 import com.ecaservice.external.api.dto.ResponseCode;
 import com.ecaservice.external.api.dto.ResponseDto;
