@@ -1,6 +1,7 @@
 package com.ecaservice.common.web;
 
 import com.ecaservice.common.web.dto.ValidationErrorDto;
+import com.ecaservice.common.web.error.CommonErrorCode;
 import com.ecaservice.common.web.exception.ValidationErrorException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
@@ -80,8 +81,8 @@ class GlobalExceptionHandlerTest {
     @Test
     void testValidationError() {
         var errorResponse =
-                exceptionHandler.handleValidationError(new ValidationErrorException(ERROR_CODE, ERROR_MESSAGE));
-        assertResponse(errorResponse, ERROR_CODE, null, ERROR_MESSAGE);
+                exceptionHandler.handleValidationError(new ValidationErrorException(CommonErrorCode.INVALID_FORMAT_CODE, ERROR_MESSAGE));
+        assertResponse(errorResponse, CommonErrorCode.INVALID_FORMAT_CODE.getCode(), null, ERROR_MESSAGE);
     }
 
     @Test

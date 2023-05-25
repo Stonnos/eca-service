@@ -2,7 +2,7 @@ package com.ecaservice.server.service.ds;
 
 import com.ecaservice.common.web.dto.ValidationErrorDto;
 import com.ecaservice.common.web.exception.InternalServiceUnavailableException;
-import com.ecaservice.data.storage.dto.DsErrorCode;
+import com.ecaservice.data.storage.dto.DsInternalApiErrorCode;
 import com.ecaservice.server.exception.DataStorageBadRequestException;
 import com.ecaservice.server.service.DataStorageLoader;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -65,7 +65,7 @@ class DataStorageServiceTest {
     void testGetValidInstanceBadRequest() throws IOException {
         var badRequestEx = mock(FeignException.BadRequest.class);
         var validationError = new ValidationErrorDto();
-        validationError.setCode(DsErrorCode.INSTANCES_NOT_FOUND.name());
+        validationError.setCode(DsInternalApiErrorCode.INSTANCES_NOT_FOUND.getCode());
         when(badRequestEx.contentUTF8())
                 .thenReturn(objectMapper.writeValueAsString(Collections.singletonList(validationError)));
         when(dataStorageLoader.downloadValidInstancesReport(anyString())).thenThrow(badRequestEx);

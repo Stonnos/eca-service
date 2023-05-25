@@ -1,7 +1,7 @@
 package com.ecaservice.server.service.ds;
 
 import com.ecaservice.common.web.dto.ValidationErrorDto;
-import com.ecaservice.data.storage.dto.DsErrorCode;
+import com.ecaservice.data.storage.dto.DsInternalApiErrorCode;
 import com.ecaservice.server.exception.DataStorageException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,8 +31,8 @@ class DataStorageErrorHandlerTest {
 
     @Test
     void testValidErrorCodes() throws JsonProcessingException {
-        for (DsErrorCode expectedDsErrorCode : DsErrorCode.values()) {
-            var badRequestEx = mockErrorCodeException(expectedDsErrorCode.name());
+        for (DsInternalApiErrorCode expectedDsErrorCode : DsInternalApiErrorCode.values()) {
+            var badRequestEx = mockErrorCodeException(expectedDsErrorCode.getCode());
             var actualErrorCode = dataStorageErrorHandler.handleBadRequest(UUID.randomUUID().toString(), badRequestEx);
             assertThat(actualErrorCode).isNotNull();
             assertThat(actualErrorCode).isEqualTo(expectedDsErrorCode);

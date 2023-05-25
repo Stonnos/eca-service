@@ -18,6 +18,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>eca.service</groupId>
+            <artifactId>common-error-model</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>io.swagger.core.v3</groupId>
             <artifactId>swagger-annotations</artifactId>
         </dependency>

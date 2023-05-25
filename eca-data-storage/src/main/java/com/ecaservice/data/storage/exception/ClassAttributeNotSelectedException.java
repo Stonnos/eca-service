@@ -1,7 +1,7 @@
 package com.ecaservice.data.storage.exception;
 
 import com.ecaservice.common.web.exception.ValidationErrorException;
-import com.ecaservice.data.storage.dto.DsErrorCode;
+import com.ecaservice.data.storage.dto.DsInternalApiErrorCode;
 
 /**
  * Exception throws in case if class attribute type not selected.
@@ -16,7 +16,7 @@ public class ClassAttributeNotSelectedException extends ValidationErrorException
      * @param id - attribute id
      */
     public ClassAttributeNotSelectedException(long id) {
-        super(DsErrorCode.CLASS_ATTRIBUTE_NOT_SELECTED.name(),
+        super(DsInternalApiErrorCode.CLASS_ATTRIBUTE_NOT_SELECTED,
                 String.format("Class attribute not selected for instances [%d]", id));
     }
 }

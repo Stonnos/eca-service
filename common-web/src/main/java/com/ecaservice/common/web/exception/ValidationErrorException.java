@@ -1,5 +1,6 @@
 package com.ecaservice.common.web.exception;
 
+import com.ecaservice.common.error.model.ErrorDetails;
 import lombok.Getter;
 
 /**
@@ -13,7 +14,7 @@ public class ValidationErrorException extends RuntimeException {
      * Error code.
      */
     @Getter
-    private final String errorCode;
+    private final ErrorDetails errorDetails;
 
     /**
      * Field name
@@ -24,23 +25,23 @@ public class ValidationErrorException extends RuntimeException {
     /**
      * Creates exception object.
      *
-     * @param errorCode - error code
-     * @param message   - error message
+     * @param errorDetails - error details
+     * @param message      - error message
      */
-    public ValidationErrorException(String errorCode, String message) {
+    public ValidationErrorException(ErrorDetails errorDetails, String message) {
         super(message);
-        this.errorCode = errorCode;
+        this.errorDetails = errorDetails;
     }
 
     /**
      * Creates exception object.
      *
-     * @param errorCode - error code
-     * @param message   - error message
-     * @param fieldName - field name
+     * @param errorDetails - error details
+     * @param message      - error message
+     * @param fieldName    - field name
      */
-    public ValidationErrorException(String errorCode, String message, String fieldName) {
-        this(errorCode, message);
+    public ValidationErrorException(ErrorDetails errorDetails, String message, String fieldName) {
+        this(errorDetails, message);
         this.fieldName = fieldName;
     }
 }

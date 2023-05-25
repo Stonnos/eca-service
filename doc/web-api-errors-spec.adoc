@@ -78,4 +78,19 @@
 |400
 |EmptyDataSet
 |Датасет должен содержать хотя бы одну строку с данными
+|400
+|ClassAttributeNotSelected
+|Не выбран атрибут класса для обучающей выборки
+|400
+|SelectedAttributesNumberIsTooLow
+|Число атрибутов классификации должно быть не менее двух
+|400
+|ClassValuesIsTooLow
+|ЧИсло классов должно быть не менее двух
+|400
+|InstancesNotFound
+|Обучающая выборка не найдена
+|400
+|InvalidClassAttributeType
+|Атрибут класса должен быть номинальным
 |===

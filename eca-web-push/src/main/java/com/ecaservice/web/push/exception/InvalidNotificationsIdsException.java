@@ -1,6 +1,7 @@
 package com.ecaservice.web.push.exception;
 
 import com.ecaservice.common.web.exception.ValidationErrorException;
+import com.ecaservice.web.push.error.WebPushErrorCode;
 
 import java.util.List;
 
@@ -9,16 +10,15 @@ import java.util.List;
  *
  * @author Roman Batygin
  */
-public class InvalidNotificationsException extends ValidationErrorException {
-
-    private static final String ERROR_CODE = "InvalidNotifications";
+public class InvalidNotificationsIdsException extends ValidationErrorException {
 
     /**
      * Creates invalid notifications exception.
      *
      * @param invalidIds - invalid notifications ids
      */
-    public InvalidNotificationsException(List<Long> invalidIds) {
-        super(ERROR_CODE, String.format("Got invalid notifications ids %s", invalidIds));
+    public InvalidNotificationsIdsException(List<Long> invalidIds) {
+        super(WebPushErrorCode.INVALID_NOTIFICATIONS_IDS,
+                String.format("Got invalid notifications ids %s", invalidIds));
     }
 }

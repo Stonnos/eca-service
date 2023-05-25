@@ -1,7 +1,7 @@
 package com.ecaservice.data.storage.exception;
 
 import com.ecaservice.common.web.exception.ValidationErrorException;
-import com.ecaservice.data.storage.dto.DsErrorCode;
+import com.ecaservice.data.storage.dto.DsInternalApiErrorCode;
 
 import static com.ecaservice.data.storage.util.Utils.MIN_NUM_CLASSES;
 
@@ -18,7 +18,7 @@ public class ClassAttributeValuesIsTooLowException extends ValidationErrorExcept
      * @param id - attribute id
      */
     public ClassAttributeValuesIsTooLowException(long id) {
-        super(DsErrorCode.CLASS_VALUES_IS_TOO_LOW.name(),
+        super(DsInternalApiErrorCode.CLASS_VALUES_IS_TOO_LOW,
                 String.format("Class attribute id [%d] must have greater than or equal to [%d] values", id,
                         MIN_NUM_CLASSES));
     }

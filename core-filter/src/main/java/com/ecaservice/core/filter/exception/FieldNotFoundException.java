@@ -1,6 +1,7 @@
 package com.ecaservice.core.filter.exception;
 
 import com.ecaservice.common.web.exception.ValidationErrorException;
+import com.ecaservice.core.filter.error.CoreFilterErrorCode;
 
 /**
  * Field not found exception.
@@ -9,8 +10,6 @@ import com.ecaservice.common.web.exception.ValidationErrorException;
  */
 public class FieldNotFoundException extends ValidationErrorException {
 
-    private static final String ERROR_CODE = "FieldNotFound";
-
     /**
      * Constructor with parameters.
      *
@@ -18,7 +17,8 @@ public class FieldNotFoundException extends ValidationErrorException {
      * @param clazz     - class type
      */
     public FieldNotFoundException(String fieldName, Class<?> clazz) {
-        super(ERROR_CODE, String.format("Field [%s] not found for type [%s]", fieldName, clazz.getSimpleName()));
+        super(CoreFilterErrorCode.FIELD_NOT_FOUND,
+                String.format("Field [%s] not found for type [%s]", fieldName, clazz.getSimpleName()));
     }
 
     /**
@@ -27,6 +27,6 @@ public class FieldNotFoundException extends ValidationErrorException {
      * @param errorMessage - error message
      */
     public FieldNotFoundException(String errorMessage) {
-        super(ERROR_CODE, errorMessage);
+        super(CoreFilterErrorCode.FIELD_NOT_FOUND, errorMessage);
     }
 }

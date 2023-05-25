@@ -1,6 +1,7 @@
 package com.ecaservice.data.storage.exception;
 
 import com.ecaservice.common.web.exception.ValidationErrorException;
+import com.ecaservice.data.storage.error.DsErrorCode;
 
 /**
  * Exception throws in case if table name is exists.
@@ -9,14 +10,12 @@ import com.ecaservice.common.web.exception.ValidationErrorException;
  */
 public class TableExistsException extends ValidationErrorException {
 
-    private static final String ERROR_CODE = "UniqueTableName";
-
     /**
      * Creates exception object.
      *
      * @param tableName - table name
      */
     public TableExistsException(String tableName) {
-        super(ERROR_CODE, String.format("Table with name [%s] already exists!", tableName));
+        super(DsErrorCode.TABLE_NAME_DUPLICATION, String.format("Table with name [%s] already exists!", tableName));
     }
 }

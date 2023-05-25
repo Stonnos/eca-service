@@ -1,6 +1,7 @@
 package com.ecaservice.oauth.exception;
 
 import com.ecaservice.common.web.exception.ValidationErrorException;
+import com.ecaservice.oauth.error.EcaOauthErrorCode;
 
 /**
  * Exception throws in case if user was locked.
@@ -9,14 +10,12 @@ import com.ecaservice.common.web.exception.ValidationErrorException;
  */
 public class UserLockedException extends ValidationErrorException {
 
-    private static final String ERROR_CODE = "UserLocked";
-
     /**
      * Constructor with parameters.
      *
      * @param userId - user id
      */
     public UserLockedException(Long userId) {
-        super(ERROR_CODE, String.format("User was locked [%d]", userId));
+        super(EcaOauthErrorCode.USER_LOCKED, String.format("User was locked [%d]", userId));
     }
 }

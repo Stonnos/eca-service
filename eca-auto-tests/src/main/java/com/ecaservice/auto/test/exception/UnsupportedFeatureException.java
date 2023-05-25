@@ -16,6 +16,6 @@ public class UnsupportedFeatureException extends ValidationErrorException {
      * @param message - error message
      */
     public UnsupportedFeatureException(String message) {
-        super(ErrorCode.UNSUPPORTED_FEATURE.name(), message);
+        super(ErrorCode.UNSUPPORTED_FEATURE, message);
     }
 }

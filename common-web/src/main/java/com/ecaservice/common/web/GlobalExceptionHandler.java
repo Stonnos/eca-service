@@ -72,7 +72,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(ValidationErrorException.class)
     public ResponseEntity<List<ValidationErrorDto>> handleValidationError(ValidationErrorException ex) {
-        log.error("Validation error [{}]: {}", ex.getErrorCode(), ex.getMessage());
+        log.error("Validation error [{}]: {}", ex.getErrorDetails(), ex.getMessage());
         return ExceptionResponseHandler.handleValidationErrorException(ex);
     }
 

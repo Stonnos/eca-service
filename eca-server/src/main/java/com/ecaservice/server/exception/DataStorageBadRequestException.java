@@ -1,6 +1,6 @@
 package com.ecaservice.server.exception;
 
-import com.ecaservice.data.storage.dto.DsErrorCode;
+import com.ecaservice.data.storage.dto.DsInternalApiErrorCode;
 import lombok.Getter;
 
 /**
@@ -11,7 +11,7 @@ import lombok.Getter;
 public class DataStorageBadRequestException extends RuntimeException {
 
     @Getter
-    private final DsErrorCode dsErrorCode;
+    private final DsInternalApiErrorCode dsErrorCode;
 
     /**
      * Creates data storage bad request exception.
@@ -19,7 +19,7 @@ public class DataStorageBadRequestException extends RuntimeException {
      * @param dsErrorCode - error code
      * @param message     - error message
      */
-    public DataStorageBadRequestException(DsErrorCode dsErrorCode, String message) {
+    public DataStorageBadRequestException(DsInternalApiErrorCode dsErrorCode, String message) {
         super(message);
         this.dsErrorCode = dsErrorCode;
     }

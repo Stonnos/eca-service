@@ -16,7 +16,7 @@ public class DuplicateRequestIdException extends ValidationErrorException {
      * @param requestId - request id
      */
     public DuplicateRequestIdException(String requestId) {
-        super(ErsErrorCode.DUPLICATE_REQUEST_ID.name(),
+        super(ErsErrorCode.DUPLICATE_REQUEST_ID,
                 String.format("Evaluation results with request id = [%s] is already exists!", requestId));
     }
 }

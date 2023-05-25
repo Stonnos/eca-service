@@ -1,6 +1,6 @@
 package com.ecaservice.server.service.ds;
 
-import com.ecaservice.data.storage.dto.DsErrorCode;
+import com.ecaservice.data.storage.dto.DsInternalApiErrorCode;
 import com.ecaservice.server.exception.DataStorageException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import feign.FeignException;
@@ -28,11 +28,11 @@ public class DataStorageErrorHandler {
      * @param badRequestEx - exception object
      * @return data storage error code
      */
-    public DsErrorCode handleBadRequest(String uuid, FeignException.BadRequest badRequestEx) {
+    public DsInternalApiErrorCode handleBadRequest(String uuid, FeignException.BadRequest badRequestEx) {
         log.info("Starting to handle ds bad request error for instances [{}]", uuid);
         try {
             var validationErrors = retrieveValidationErrors(badRequestEx.contentUTF8());
-            var dsErrorCode = getFirstErrorCodeAsEnum(validationErrors, DsErrorCode.class);
+            var dsErrorCode = getFirstErrorCodeAsEnum(validationErrors, DsInternalApiErrorCode.class);
             if (dsErrorCode == null) {
                 log.error("Got unknown data storage error code for uuid [{}]", uuid);
                 throw new DataStorageException(

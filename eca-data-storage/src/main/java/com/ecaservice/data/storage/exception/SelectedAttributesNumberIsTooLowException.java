@@ -1,7 +1,7 @@
 package com.ecaservice.data.storage.exception;
 
 import com.ecaservice.common.web.exception.ValidationErrorException;
-import com.ecaservice.data.storage.dto.DsErrorCode;
+import com.ecaservice.data.storage.dto.DsInternalApiErrorCode;
 
 import static com.ecaservice.data.storage.util.Utils.MIN_NUM_SELECTED_ATTRIBUTES;
 
@@ -18,7 +18,7 @@ public class SelectedAttributesNumberIsTooLowException extends ValidationErrorEx
      * @param id - instances id
      */
     public SelectedAttributesNumberIsTooLowException(long id) {
-        super(DsErrorCode.SELECTED_ATTRIBUTES_NUMBER_IS_TOO_LOW.name(),
+        super(DsInternalApiErrorCode.SELECTED_ATTRIBUTES_NUMBER_IS_TOO_LOW,
                 String.format("Selected attributes number must be greater than or equal to [%d] for table [%s]",
                         id, MIN_NUM_SELECTED_ATTRIBUTES));
     }

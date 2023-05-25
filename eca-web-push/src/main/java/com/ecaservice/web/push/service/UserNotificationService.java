@@ -9,7 +9,7 @@ import com.ecaservice.web.push.config.AppProperties;
 import com.ecaservice.web.push.dto.UserPushNotificationRequest;
 import com.ecaservice.web.push.entity.MessageStatus;
 import com.ecaservice.web.push.entity.NotificationEntity;
-import com.ecaservice.web.push.exception.InvalidNotificationsException;
+import com.ecaservice.web.push.exception.InvalidNotificationsIdsException;
 import com.ecaservice.web.push.mapping.NotificationMapper;
 import com.ecaservice.web.push.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
@@ -107,7 +107,7 @@ public class UserNotificationService {
                     .filter(id -> !fetchedIds.contains(id))
                     .collect(Collectors.toList());
             if (!CollectionUtils.isEmpty(invalidIds)) {
-                throw new InvalidNotificationsException(invalidIds);
+                throw new InvalidNotificationsIdsException(invalidIds);
             }
             long readCount = notificationRepository.readNotifications(currentUser, ids);
             log.info("[{}] notifications has been read for user [{}]", readCount, currentUser);

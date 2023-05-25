@@ -88,7 +88,7 @@ public class ErrorHandler {
      */
     @ExceptionHandler(ValidationErrorException.class)
     public ResponseEntity<ResponseDto<List<ValidationErrorDto>>> handleValidationError(ValidationErrorException ex) {
-        log.error("Validation error [{}]: {}", ex.getErrorCode(), ex.getMessage());
+        log.error("Validation error [{}]: {}", ex.getErrorDetails(), ex.getMessage());
         var responseEntity = ExceptionResponseHandler.handleValidationErrorException(ex);
         var responseDto = buildResponse(ResponseCode.VALIDATION_ERROR, responseEntity.getBody());
         return ResponseEntity.badRequest().body(responseDto);

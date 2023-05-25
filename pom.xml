@@ -10,6 +10,7 @@
     <modules>
         <module>core-test</module>
         <module>oauth2-test</module>
+        <module>common-error-model</module>
         <module>common-web</module>
         <module>core-lock</module>
         <module>redis-lock</module>

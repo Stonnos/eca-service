@@ -129,7 +129,7 @@ class ErsRequestServiceTest extends AbstractJpaTest {
     void testSendingWithBadRequest() throws JsonProcessingException {
         FeignException.BadRequest badRequest = mock(FeignException.BadRequest.class);
         var validationError = new ValidationErrorDto();
-        validationError.setCode(ErsErrorCode.DUPLICATE_REQUEST_ID.name());
+        validationError.setCode(ErsErrorCode.DUPLICATE_REQUEST_ID.getCode());
         when(badRequest.contentUTF8()).thenReturn(
                 OBJECT_MAPPER.writeValueAsString(Collections.singletonList(validationError)));
         internalTestErrorStatus(badRequest, ErsResponseStatus.DUPLICATE_REQUEST_ID);

@@ -1,6 +1,7 @@
 package com.ecaservice.data.storage.exception;
 
 import com.ecaservice.common.web.exception.ValidationErrorException;
+import com.ecaservice.data.storage.error.DsErrorCode;
 
 /**
  * Exception throws in case if class attribute type is invalid.
@@ -9,14 +10,13 @@ import com.ecaservice.common.web.exception.ValidationErrorException;
  */
 public class InvalidClassAttributeTypeException extends ValidationErrorException {
 
-    private static final String ERROR_CODE = "InvalidClassAttributeType";
-
     /**
      * Creates exception object.
      *
      * @param id - attribute id
      */
     public InvalidClassAttributeTypeException(long id) {
-        super(ERROR_CODE, String.format("Class attribute [%d] must be nominal", id));
+        super(DsErrorCode.INVALID_CLASS_ATTRIBUTE_TYPE,
+                String.format("Class attribute [%d] must be nominal", id));
     }
 }

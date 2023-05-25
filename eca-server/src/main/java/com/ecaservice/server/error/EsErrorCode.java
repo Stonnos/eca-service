@@ -1,5 +1,6 @@
 package com.ecaservice.server.error;
 
+import com.ecaservice.common.error.model.ErrorDetails;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -8,9 +9,9 @@ import lombok.RequiredArgsConstructor;
  *
  * @author Roman Batygin
  */
-@RequiredArgsConstructor
 @Getter
-public enum EsErrorCode {
+@RequiredArgsConstructor
+public enum EsErrorCode implements ErrorDetails {
 
     /**
      * Class attribute not selected error code
@@ -31,8 +32,6 @@ public enum EsErrorCode {
      * Instances not found
      */
     INSTANCES_NOT_FOUND("InstancesNotFound");
-
-
 
     /**
      * Error code

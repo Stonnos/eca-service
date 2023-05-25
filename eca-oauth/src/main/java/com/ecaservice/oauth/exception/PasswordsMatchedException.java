@@ -1,6 +1,7 @@
 package com.ecaservice.oauth.exception;
 
 import com.ecaservice.common.web.exception.ValidationErrorException;
+import com.ecaservice.oauth.error.EcaOauthErrorCode;
 
 /**
  * Exception throws in case if old and new passwords matches
@@ -9,14 +10,13 @@ import com.ecaservice.common.web.exception.ValidationErrorException;
  */
 public class PasswordsMatchedException extends ValidationErrorException {
 
-    private static final String ERROR_CODE = "PasswordsMatched";
-
     /**
      * Constructor with parameters.
      *
      * @param userId - user id
      */
     public PasswordsMatchedException(Long userId) {
-        super(ERROR_CODE, String.format("Old and new passwords matched for user [%d]", userId));
+        super(EcaOauthErrorCode.PASSWORD_MATCHED,
+                String.format("Old and new passwords matched for user [%d]", userId));
     }
 }

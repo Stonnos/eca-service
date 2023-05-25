@@ -89,7 +89,7 @@ public class ExperimentRequestWebApiService {
             return dataStorageService.getValidInstances(uuid);
         } catch (DataStorageBadRequestException ex) {
             var dsErrorCode = dataStorageErrorCodeMapper.mapErrorCode(ex.getDsErrorCode());
-            throw new InstancesValidationException(dsErrorCode.getCode(), ex.getMessage());
+            throw new InstancesValidationException(dsErrorCode, ex.getMessage());
         }
     }
 }

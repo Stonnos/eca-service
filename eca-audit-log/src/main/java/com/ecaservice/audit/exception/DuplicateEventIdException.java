@@ -1,6 +1,6 @@
 package com.ecaservice.audit.exception;
 
-import com.ecaservice.audit.error.ErrorCode;
+import com.ecaservice.audit.error.AuditErrorCode;
 import com.ecaservice.common.web.exception.ValidationErrorException;
 
 /**
@@ -16,6 +16,6 @@ public class DuplicateEventIdException extends ValidationErrorException {
      * @param eventId - event id
      */
     public DuplicateEventIdException(String eventId) {
-        super(ErrorCode.DUPLICATE_EVENT_ID.name(), String.format("Event id = [%s] is already exists!", eventId));
+        super(AuditErrorCode.DUPLICATE_EVENT_ID, String.format("Event id = [%s] is already exists!", eventId));
     }
 }

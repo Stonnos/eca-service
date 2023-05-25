@@ -1,7 +1,7 @@
 package com.ecaservice.data.storage.exception;
 
 import com.ecaservice.common.web.exception.ValidationErrorException;
-import com.ecaservice.data.storage.dto.DsErrorCode;
+import com.ecaservice.data.storage.dto.DsInternalApiErrorCode;
 
 /**
  * Instances not found exception class.
@@ -16,6 +16,6 @@ public class InstancesNotFoundException extends ValidationErrorException {
      * @param message - error message
      */
     public InstancesNotFoundException(String message) {
-        super(DsErrorCode.INSTANCES_NOT_FOUND.name(), message);
+        super(DsInternalApiErrorCode.INSTANCES_NOT_FOUND, message);
     }
 }

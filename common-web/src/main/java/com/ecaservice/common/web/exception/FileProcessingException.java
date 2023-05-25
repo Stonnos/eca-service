@@ -1,5 +1,7 @@
 package com.ecaservice.common.web.exception;
 
+import com.ecaservice.common.web.error.CommonErrorCode;
+
 /**
  * File processing exception.
  *
@@ -7,14 +9,12 @@ package com.ecaservice.common.web.exception;
  */
 public class FileProcessingException extends ValidationErrorException {
 
-    public static final String PROCESS_FILE_ERROR_CODE = "ProcessFileError";
-
     /**
      * Creates exception object.
      *
      * @param message - error message
      */
     public FileProcessingException(String message) {
-        super(PROCESS_FILE_ERROR_CODE, message);
+        super(CommonErrorCode.PROCESS_FILE_ERROR, message);
     }
 }

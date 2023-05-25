@@ -1,5 +1,7 @@
 package com.ecaservice.common.web.exception;
 
+import com.ecaservice.common.web.error.CommonErrorCode;
+
 /**
  * Invalid operation exception.
  *
@@ -7,14 +9,12 @@ package com.ecaservice.common.web.exception;
  */
 public class InvalidOperationException extends ValidationErrorException {
 
-    public static final String ERROR_CODE = "InvalidOperation";
-
     /**
      * Creates exception object.
      *
      * @param message - error message
      */
     public InvalidOperationException(String message) {
-        super(ERROR_CODE, message);
+        super(CommonErrorCode.INVALID_OPERATION, message);
     }
 }

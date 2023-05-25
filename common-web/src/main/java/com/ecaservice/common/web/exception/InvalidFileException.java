@@ -1,5 +1,7 @@
 package com.ecaservice.common.web.exception;
 
+import com.ecaservice.common.web.error.CommonErrorCode;
+
 /**
  * Invalid file exception.
  *
@@ -7,14 +9,12 @@ package com.ecaservice.common.web.exception;
  */
 public class InvalidFileException extends ValidationErrorException {
 
-    private static final String INVALID_FILE_CODE = "InvalidFile";
-
     /**
      * Creates exception object.
      *
      * @param message - error message
      */
     public InvalidFileException(String message) {
-        super(INVALID_FILE_CODE, message);
+        super(CommonErrorCode.INVALID_FILE, message);
     }
 }

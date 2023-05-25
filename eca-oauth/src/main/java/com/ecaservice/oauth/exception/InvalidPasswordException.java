@@ -1,6 +1,7 @@
 package com.ecaservice.oauth.exception;
 
 import com.ecaservice.common.web.exception.ValidationErrorException;
+import com.ecaservice.oauth.error.EcaOauthErrorCode;
 
 /**
  * Exception throws in case if password is invalid.
@@ -9,12 +10,10 @@ import com.ecaservice.common.web.exception.ValidationErrorException;
  */
 public class InvalidPasswordException extends ValidationErrorException {
 
-    private static final String ERROR_CODE = "InvalidPassword";
-
     /**
      * Constructor with parameters.
      */
     public InvalidPasswordException() {
-        super(ERROR_CODE, "Invalid password");
+        super(EcaOauthErrorCode.INVALID_PASSWORD, "Invalid password");
     }
 }
