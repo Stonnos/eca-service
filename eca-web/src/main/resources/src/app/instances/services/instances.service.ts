@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
+  AttributeDto,
   CreateInstancesResultDto,
   InstancesDto, InstancesReportInfoDto,
   PageDto,
@@ -62,11 +63,11 @@ export class InstancesService {
     return this.http.get<InstancesDto>(this.serviceUrl + '/details/' + id, { headers: headers });
   }
 
-  public getAttributes(id: number): Observable<string[]> {
+  public getAttributes(id: number): Observable<AttributeDto[]> {
     const headers = new HttpHeaders({
       'Authorization': Utils.getBearerTokenHeader()
     });
-    return this.http.get<string[]>(this.serviceUrl + '/attributes/' + id, { headers: headers });
+    return this.http.get<AttributeDto[]>(this.serviceUrl + '/attributes/' + id, { headers: headers });
   }
 
   public getDataPage(id: number, pageRequest: PageRequestDto): Observable<PageDto<string[]>> {

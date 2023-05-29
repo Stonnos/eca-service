@@ -1,5 +1,6 @@
 import { Component, Injector } from '@angular/core';
 import {
+  AttributeDto,
   InstancesDto,
   PageDto,
   PageRequestDto,
@@ -61,8 +62,8 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
   public getAttributes(): void {
     this.instancesService.getAttributes(this.id)
       .subscribe({
-        next: (attributes: string[]) => {
-          this.columns = attributes.map((attr: string) => { return { name: attr, label: attr} });
+        next: (attributes: AttributeDto[]) => {
+          this.columns = attributes.map((attr: AttributeDto) => { return { name: attr.name, label: attr.name} });
         },
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
