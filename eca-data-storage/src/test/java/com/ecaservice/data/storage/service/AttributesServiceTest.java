@@ -131,7 +131,7 @@ class AttributesServiceTest extends AbstractJpaTest {
             String expectedValue = expectedAttribute.value(i);
             String actualValue = attributeValueEntity.getValue();
             assertThat(actualValue).isEqualTo(expectedValue);
-            assertThat(attributeValueEntity.getValueOrder()).isEqualTo(i);
+            assertThat(attributeValueEntity.getIndex()).isEqualTo(i);
         });
     }
 

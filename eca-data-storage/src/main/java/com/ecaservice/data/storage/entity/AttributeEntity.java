@@ -79,6 +79,6 @@ public class AttributeEntity {
      */
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "attribute_id", nullable = false)
-    @OrderBy("valueOrder")
+    @OrderBy("index")
     private List<AttributeValueEntity> values;
 }

@@ -143,13 +143,13 @@ public class TestHelperUtils {
      * Creates attribute value entity.
      *
      * @param value - attribute value
-     * @param order - value order
+     * @param index - value index
      * @return attribute value entity
      */
-    public static AttributeValueEntity createAttributeValueEntity(String value, int order) {
+    public static AttributeValueEntity createAttributeValueEntity(String value, int index) {
         var attributeValueEntity = new AttributeValueEntity();
         attributeValueEntity.setValue(value);
-        attributeValueEntity.setValueOrder(order);
+        attributeValueEntity.setIndex(index);
         return attributeValueEntity;
     }
 

@@ -19,8 +19,8 @@ import javax.persistence.UniqueConstraint;
 @Table(name = "attribute_value", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"attribute_id", "_value"},
                 name = "attribute_id_value_unique_index"),
-        @UniqueConstraint(columnNames = {"attribute_id", "value_order"},
-                name = "attribute_id_value_order_unique_index")
+        @UniqueConstraint(columnNames = {"attribute_id", "_index"},
+                name = "attribute_id_index_unique_index")
 })
 public class AttributeValueEntity {
 
@@ -35,8 +35,8 @@ public class AttributeValueEntity {
     private String value;
 
     /**
-     * Value order
+     * Value index
      */
-    @Column(name = "value_order", nullable = false, updatable = false)
-    private int valueOrder;
+    @Column(name = "_index", nullable = false, updatable = false)
+    private int index;
 }

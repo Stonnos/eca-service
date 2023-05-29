@@ -68,7 +68,7 @@
             <column name="_value" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="value_order" type="int">
+            <column name="_index" type="int">
                 <constraints nullable="false"/>
             </column>
             <column name="attribute_id" type="bigint">
@@ -89,14 +89,14 @@
                              constraintName="attribute_id_value_unique_index"/>
     </changeSet>
 
-    <changeSet id="add_attribute_id_value_order_unique_index" author="roman.batygin@mail.ru" context="schema">
+    <changeSet id="add_attribute_id_index_unique_index" author="roman.batygin@mail.ru" context="schema">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="attribute_value"/>
             <columnExists tableName="attribute_value" columnName="attribute_id"/>
-            <columnExists tableName="attribute_value" columnName="value_order"/>
+            <columnExists tableName="attribute_value" columnName="_index"/>
         </preConditions>
-        <addUniqueConstraint tableName="attribute_value" columnNames="attribute_id, value_order"
-                             constraintName="attribute_id_value_order_unique_index"/>
+        <addUniqueConstraint tableName="attribute_value" columnNames="attribute_id, _index"
+                             constraintName="attribute_id_index_unique_index"/>
     </changeSet>
 
 </databaseChangeLog>

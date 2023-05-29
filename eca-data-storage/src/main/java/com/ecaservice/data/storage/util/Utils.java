@@ -64,7 +64,7 @@ public class Utils {
                     var attributeValueEntity = new AttributeValueEntity();
                     String value = formatNominalValue(attribute.value(i));
                     attributeValueEntity.setValue(value);
-                    attributeValueEntity.setValueOrder(i);
+                    attributeValueEntity.setIndex(i);
                     return attributeValueEntity;
                 })
                 .collect(Collectors.toList());

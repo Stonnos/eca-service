@@ -51,14 +51,17 @@
     "values": [
       {
         "id": 133,
+        "index": 0,
         "value": "Iris-setosa"
       },
       {
         "id": 133,
+        "index": 1,
         "value": "Iris-versicolor"
       },
       {
         "id": 133,
+        "index": 2,
         "value": "Iris-verginica"
       }
     ]
