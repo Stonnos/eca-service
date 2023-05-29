@@ -89,6 +89,7 @@ services:
   eca-server:
     image: eca-server
     container_name: eca-server
+    restart: always
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
@@ -113,6 +114,7 @@ services:
   eca-oauth:
     image: eca-oauth
     container_name: eca-oauth
+    restart: always
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
@@ -131,6 +133,7 @@ services:
   eca-mail:
     image: eca-mail
     container_name: eca-mail
+    restart: always
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
@@ -145,6 +148,7 @@ services:
   eca-data-storage:
     image: eca-data-storage
     container_name: eca-data-storage
+    restart: always
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
@@ -163,6 +167,7 @@ services:
   eca-ers:
     image: eca-ers
     container_name: eca-ers
+    restart: always
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
@@ -177,6 +182,7 @@ services:
   eca-external-api:
     image: eca-external-api
     container_name: eca-external-api
+    restart: always
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
@@ -219,6 +225,7 @@ services:
   eca-web-push:
     image: eca-web-push
     container_name: eca-web-push
+    restart: always
     ports:
       - "8099:8099"
     environment:
@@ -233,6 +240,7 @@ services:
   eca-audit-log:
     image: eca-audit-log
     container_name: eca-audit-log
+    restart: always
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
