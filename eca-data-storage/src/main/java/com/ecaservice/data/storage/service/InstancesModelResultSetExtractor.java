@@ -53,7 +53,7 @@ public class InstancesModelResultSetExtractor implements ResultSetExtractor<Inst
         while (resultSet.next()) {
             InstanceModel instance = new InstanceModel();
             List<String> values = newArrayList();
-            for (int i = 1; i <= instancesEntity.getNumAttributes(); i++) {
+            for (int i = 1; i <= attributeEntities.size(); i++) {
                 AttributeEntity attributeEntity = attributeEntities.get(i - 1);
                 if (resultSet.getObject(i) == null) {
                     values.add(null);
