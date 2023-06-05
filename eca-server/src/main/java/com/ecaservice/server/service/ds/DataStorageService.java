@@ -23,8 +23,8 @@ import weka.core.Instances;
 public class DataStorageService {
 
     private final DataStorageLoader dataStorageLoader;
-    private final InstancesConverter instancesConverter;
     private final DataStorageErrorHandler dataStorageErrorHandler;
+    private final InstancesConverter instancesConverter = new InstancesConverter();
 
     /**
      * Gets valid instances with specified uuid.

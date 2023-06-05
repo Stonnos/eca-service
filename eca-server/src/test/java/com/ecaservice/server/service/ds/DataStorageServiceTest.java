@@ -6,7 +6,6 @@ import com.ecaservice.data.storage.dto.DsInternalApiErrorCode;
 import com.ecaservice.server.exception.DataStorageBadRequestException;
 import com.ecaservice.server.service.DataStorageLoader;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eca.data.file.converter.InstancesConverter;
 import feign.FeignException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,7 +31,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @ExtendWith(SpringExtension.class)
-@Import({DataStorageService.class, DataStorageErrorHandler.class, InstancesConverter.class})
+@Import({DataStorageService.class, DataStorageErrorHandler.class})
 class DataStorageServiceTest {
 
     @MockBean
