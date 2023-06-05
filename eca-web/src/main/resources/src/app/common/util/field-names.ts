@@ -155,3 +155,8 @@ export class ClassifiersConfigurationHistoryFields {
   public static readonly CREATED_AT: string = "createdAt";
   public static readonly MESSAGE_TEXT: string = "messageText";
 }
+
+export class AttributeFields {
+  public static readonly NAME: string = "name";
+  public static readonly TYPE: string = "type.description";
+}

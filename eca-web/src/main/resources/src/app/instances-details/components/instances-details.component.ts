@@ -13,6 +13,8 @@ import { InstancesService } from "../../instances/services/instances.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { CreateEditInstancesModel } from "../../create-edit-instances/model/create-edit-instances.model";
 import { ExportInstancesModel } from "../../export-instances/model/export-instances.model";
+import { EditAttributeModel } from "../../attributes/model/edit-attribute.model";
+import { finalize } from "rxjs/internal/operators";
 
 @Component({
   selector: 'app-instances-details',
@@ -23,7 +25,11 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
 
   private readonly id: number;
 
-  private instancesDto: InstancesDto;
+  public instancesDto: InstancesDto;
+
+  public attributedLoading: boolean = false;
+  public attributes: AttributeDto[] = [];
+  public classAttribute: AttributeDto;
 
   public createEditInstancesDialogVisibility: boolean = false;
 
@@ -44,7 +50,6 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
 
   public ngOnInit() {
     this.getInstancesDetails();
-    this.getAttributes();
   }
 
   public getInstancesDetails(): void {
@@ -52,6 +57,33 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
       .subscribe({
         next: (instancesDto: InstancesDto) => {
           this.instancesDto = instancesDto;
+          this.getAttributes();
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
+  }
+
+  public onSelectAttribute(item: EditAttributeModel): void {
+    if (item.selected) {
+      this.selectAttribute(item.id);
+    } else {
+      this.unselectAttribute(item.id);
+    }
+  }
+
+  public onSelectAll(): void {
+    this.attributedLoading = true;
+    this.instancesService.selectAllAttributes(this.id)
+      .pipe(
+        finalize(() => {
+          this.attributedLoading = false;
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.getAttributes();
         },
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
@@ -63,6 +95,8 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
     this.instancesService.getAttributes(this.id)
       .subscribe({
         next: (attributes: AttributeDto[]) => {
+          this.attributes = attributes;
+          this.setClassIfAbsent();
           this.columns = attributes.map((attr: AttributeDto) => { return { name: attr.name, label: attr.name} });
         },
         error: (error) => {
@@ -112,6 +146,12 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
     this.getInstancesDetails();
   }
 
+  private setClassIfAbsent(): void {
+    if (this.instancesDto.classAttributeId) {
+      this.classAttribute = this.attributes.filter((attr: AttributeDto) => attr.id == this.instancesDto.classAttributeId).pop();
+    }
+  }
+
   private deleteInstances(): void {
     this.instancesService.deleteInstances(this.id)
       .subscribe({
@@ -119,6 +159,42 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
           this.messageService.add({ severity: 'success',
             summary: `Данные ${this.instancesDto.tableName} были успешно удалены`, detail: '' });
           this.router.navigate(['/dashboard/instances']);
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
+  }
+
+  private selectAttribute(id: number): void {
+    this.attributedLoading = true;
+    this.instancesService.selectAttribute(id)
+      .pipe(
+        finalize(() => {
+          this.attributedLoading = false;
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.getAttributes();
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
+  }
+
+  private unselectAttribute(id: number): void {
+    this.attributedLoading = true;
+    this.instancesService.unselectAttribute(id)
+      .pipe(
+        finalize(() => {
+          this.attributedLoading = false;
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.getAttributes();
         },
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });

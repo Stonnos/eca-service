@@ -98,4 +98,40 @@ export class InstancesService {
     const options = { headers: headers, params: params, responseType: 'blob' as 'json' };
     return this.http.get<Blob>(this.serviceUrl + '/download', options);
   }
+
+  public selectAllAttributes(id: number): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    const formData = new FormData();
+    formData.append('id', id.toString());
+    return this.http.put(this.serviceUrl + '/select-all-attributes', formData, { headers: headers });
+  }
+
+  public selectAttribute(id: number): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    const formData = new FormData();
+    formData.append('id', id.toString());
+    return this.http.put(this.serviceUrl + '/select-attribute', formData, { headers: headers });
+  }
+
+  public unselectAttribute(id: number): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    const formData = new FormData();
+    formData.append('id', id.toString());
+    return this.http.put(this.serviceUrl + '/unselect-attribute', formData, { headers: headers });
+  }
+
+  public setClassAttribute(classAttributeId: number): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    const formData = new FormData();
+    formData.append('classAttributeId', classAttributeId.toString());
+    return this.http.put(this.serviceUrl + '/set-class-attribute', formData, { headers: headers });
+  }
 }

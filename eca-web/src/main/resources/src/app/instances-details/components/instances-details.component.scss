@@ -40,3 +40,17 @@
   margin-top: 10px;
   font-size: 18px;
 }
+
+.attributes-sidebar {
+  margin-top: 14px;
+  width: 400px;
+  min-width: 400px;
+  max-width: 400px;
+  display: inline-block;
+}
+
+.instances-details-table {
+  margin-left: 15px;
+  width: calc(100% - 415px);
+  display: inline-block;
+}

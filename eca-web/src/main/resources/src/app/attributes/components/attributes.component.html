@@ -1,0 +1,61 @@
+<p-panel class="attributes-panel" [showHeader]="true" [header]="header">
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-10 mx-auto">
+      <button
+        pButton
+        type="button"
+        label="Выбрать все"
+        (click)="selectAllAttributes()"
+        class="ml-auto">
+      </button>
+    </div>
+    <div class="ui-g-12">
+      <p-table
+        class="attributes-table"
+        [loading]="loading"
+        [columns]="columns"
+        [value]="attributes">
+        <ng-template pTemplate="header">
+          <tr>
+            <th></th>
+            <ng-container *ngFor="let column of columns">
+              <th>{{ column.label }}</th>
+            </ng-container>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item>
+          <tr>
+            <td>
+              <p-checkbox binary="true"
+                          name="{{ item.name }}"
+                          (onChange)="selectAttribute(item, $event)"
+                          [(ngModel)]="item.selected">
+              </p-checkbox>
+            </td>
+            <td *ngFor="let column of columns">
+              <a class="link" [routerLink]="" *ngIf="isLink(column.name)">
+                {{ getColumnValue(column.name, item) }}
+              </a>
+              <div *ngIf="!isLink(column.name)">
+                {{ getColumnValue(column.name, item) }}
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+    <div class="ui-g-12 text-center justify-content-center align-items-center">
+      <div class="form-group">
+        <label class="class-label">Атрибут класса</label>
+        <p-dropdown
+          [options]="attributes"
+          placeholder="Выбрать"
+          optionLabel="name"
+          [(ngModel)]="classAttribute"
+          (onChange)="setClass($event)"
+          [style]="{'width':'100%'}">
+        </p-dropdown>
+      </div>
+    </div>
+  </div>
+</p-panel>
