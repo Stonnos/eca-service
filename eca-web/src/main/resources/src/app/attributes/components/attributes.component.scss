@@ -13,6 +13,13 @@
   }
 }
 
+.messages::ng-deep {
+  .ui-messages {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
 .class-label {
   margin-top: 5px;
   font-weight: bold;

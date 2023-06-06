@@ -10,7 +10,7 @@
       </button>
     </div>
     <div *ngIf="selectedAttributesIsTooLow()" class="ui-g-12 ml-1 mr-1 text-bold text-center">
-      <p-messages [enableService]="false"
+      <p-messages class="messages" [enableService]="false"
                   [closable]="false"
                   [(value)]="selectedAttributesIsTooLowMessage">
       </p-messages>
@@ -65,7 +65,7 @@
       </div>
     </div>
     <div *ngIf="isClassNotSelected()" class="ui-g-12 ml-1 mr-1 text-bold text-center">
-      <p-messages [enableService]="false"
+      <p-messages class="messages" [enableService]="false"
                   [closable]="false"
                   [(value)]="classNotSelectedMessage">
       </p-messages>
