@@ -1,4 +1,4 @@
-import { Component, Injector } from '@angular/core';
+import { Component, Injector, ViewChild } from '@angular/core';
 import {
   AttributeDto,
   InstancesDto,
@@ -17,6 +17,7 @@ import { EditAttributeModel } from "../../attributes/model/edit-attribute.model"
 import { finalize } from "rxjs/internal/operators";
 import { ValidationErrorCode } from "../../common/model/validation-error-code";
 import { ErrorHandler } from "../../common/services/error-handler";
+import { AttributesComponent } from "../../attributes/components/attributes.component";
 
 @Component({
   selector: 'app-instances-details',
@@ -34,7 +35,10 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
 
   private readonly errorCodesMap = new Map<string, string>()
     .set(ValidationErrorCode.INVALID_CLASS_ATTRIBUTE_TYPE, 'Атрибут класса должен иметь категориальный тип')
-    .set(ValidationErrorCode.CLASS_VALUES_IS_TOO_LOW, 'Число классов должно быть не менее 2х');
+    .set(ValidationErrorCode.CLASS_VALUES_IS_TOO_LOW, 'Число классов должно быть не менее двух');
+
+  @ViewChild(AttributesComponent, { static: true })
+  private attributesComponent: AttributesComponent;
 
   public instancesDto: InstancesDto;
 
@@ -234,8 +238,7 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
   }
 
   private handleSetClassError(error): void {
-    //Force set previous class value
-    this.setClassIfAbsent();
+    this.attributesComponent.forceSetClass(this.classAttribute);
     const errorCode = this.errorHandler.getFirstErrorCode(error, this.errorCodes);
     const errorMessage = this.errorCodesMap.get(errorCode);
     this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: errorMessage });

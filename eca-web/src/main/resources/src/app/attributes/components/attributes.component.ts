@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AttributeDto } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { AttributeFields } from "../../common/util/field-names";
 import { FieldService } from "../../common/services/field.service";
@@ -10,7 +10,7 @@ import { Message } from "primeng/api";
   templateUrl: './attributes.component.html',
   styleUrls: ['./attributes.component.scss']
 })
-export class AttributesComponent implements OnInit, OnChanges {
+export class AttributesComponent implements OnInit {
 
   private static readonly MIN_NUM_SELECTED_ATTRIBUTES: number = 2;
 
@@ -52,9 +52,6 @@ export class AttributesComponent implements OnInit, OnChanges {
   public ngOnInit() {
   }
 
-  public ngOnChanges(changes: SimpleChanges): void {
-  }
-
   private initColumns() {
     this.columns = [
       { name: AttributeFields.NAME, label: "Название" },
@@ -71,8 +68,6 @@ export class AttributesComponent implements OnInit, OnChanges {
   }
 
   public selectAttribute(attribute: AttributeDto, event): void {
-    console.log(attribute.name);
-    console.log(event);
     this.attributeSelected.emit(new EditAttributeModel(attribute.id, event));
   }
 
@@ -90,5 +85,9 @@ export class AttributesComponent implements OnInit, OnChanges {
 
   public isClassNotSelected(): boolean {
     return !this.classAttribute;
+  }
+
+  public forceSetClass(classAttribute: AttributeDto): void {
+    this.classAttribute = classAttribute;
   }
 }
