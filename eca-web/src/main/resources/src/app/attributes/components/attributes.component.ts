@@ -1,9 +1,10 @@
-import {Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AttributeDto } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { AttributeFields } from "../../common/util/field-names";
 import { FieldService } from "../../common/services/field.service";
 import { EditAttributeModel } from "../model/edit-attribute.model";
 import { Message } from "primeng/api";
+import { OverlayPanel } from "primeng/primeng";
 
 @Component({
   selector: 'app-attributes',
@@ -36,6 +37,8 @@ export class AttributesComponent implements OnInit {
   public attributes: AttributeDto[] = [];
   @Input()
   public classAttribute: AttributeDto;
+
+  public toggledAttribute: AttributeDto;
 
   @Output()
   public onClassChange: EventEmitter<AttributeDto> = new EventEmitter<AttributeDto>();
@@ -89,5 +92,12 @@ export class AttributesComponent implements OnInit {
 
   public forceSetClass(classAttribute: AttributeDto): void {
     this.classAttribute = classAttribute;
+  }
+
+  public toggleOverlayPanel(event, attributeDto: AttributeDto, overlayPanel: OverlayPanel): void {
+    if (attributeDto.type.value == 'NOMINAL') {
+      this.toggledAttribute = attributeDto;
+      overlayPanel.toggle(event);
+    }
   }
 }

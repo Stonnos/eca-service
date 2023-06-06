@@ -39,7 +39,7 @@
               </p-checkbox>
             </td>
             <td *ngFor="let column of columns">
-              <a class="link" [routerLink]="" *ngIf="isLink(column.name)">
+              <a class="link" [routerLink]="" *ngIf="isLink(column.name)" (click)="toggleOverlayPanel($event, item, infoPanel)">
                 {{ getColumnValue(column.name, item) }}
               </a>
               <div *ngIf="!isLink(column.name)">
@@ -72,3 +72,24 @@
     </div>
   </div>
 </p-panel>
+
+<p-overlayPanel #infoPanel [showCloseIcon]="true" class="info-panel">
+  <ng-container *ngIf="toggledAttribute">
+    <div class="ui-g">
+      <div class="ui-g-2 text-center text-left text-bold text-wrap bottom-border">
+        Код
+      </div>
+      <div class="ui-g-10 text-center text-left text-bold text-wrap bottom-border">
+        Значение
+      </div>
+    </div>
+    <div class="ui-g" *ngFor="let value of toggledAttribute?.values">
+      <div class="ui-g-2 text-left text-bold text-wrap">
+        {{ value.index }}
+      </div>
+      <div class="ui-g-10 text-left text-wrap">
+        {{ value.value }}
+      </div>
+    </div>
+  </ng-container>
+</p-overlayPanel>

@@ -40,3 +40,12 @@
     }
   }
 }
+
+.info-panel::ng-deep {
+
+  .ui-overlaypanel-content {
+    width: 400px;
+    max-height: 400px;
+    overflow-y: scroll;
+  }
+}
