@@ -160,7 +160,7 @@ public class InstancesService {
         if (attributes.size() < MIN_NUM_SELECTED_ATTRIBUTES) {
             throw new SelectedAttributesNumberIsTooLowException(instancesEntity.getId());
         }
-        if (instancesEntity.getClassAttribute() == null) {
+        if (instancesEntity.getClassAttribute() == null || !instancesEntity.getClassAttribute().isSelected()) {
             throw new ClassAttributeNotSelectedException(instancesEntity.getId());
         }
         int countUniqueClassesInTable = countUniqueClassValuesInTable(instancesEntity);
