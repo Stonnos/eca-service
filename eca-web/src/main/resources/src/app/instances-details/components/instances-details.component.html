@@ -66,6 +66,7 @@
                         [loading]="attributedLoading"
                         [classAttribute]="classAttribute"
                         (attributeSelected)="onSelectAttribute($event)"
+                        (onClassChange)="onSetClass($event)"
                         (selectAll)="onSelectAll()">
         </app-attributes>
       </div>

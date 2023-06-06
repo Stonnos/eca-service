@@ -1,19 +1,34 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import { AttributeDto } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { AttributeFields } from "../../common/util/field-names";
 import { FieldService } from "../../common/services/field.service";
 import { EditAttributeModel } from "../model/edit-attribute.model";
+import { Message } from "primeng/api";
 
 @Component({
   selector: 'app-attributes',
   templateUrl: './attributes.component.html',
   styleUrls: ['./attributes.component.scss']
 })
-export class AttributesComponent implements OnInit {
+export class AttributesComponent implements OnInit, OnChanges {
+
+  private static readonly MIN_NUM_SELECTED_ATTRIBUTES: number = 2;
 
   public columns: any[] = [];
   public header: string = 'Атрибуты';
   public linkColumns: string[] = [];
+  public selectedAttributesIsTooLowMessage: Message[] = [
+    {
+      severity: 'warn',
+      detail: 'Выберите хотя бы два атрибута классификации'
+    }
+  ];
+  public classNotSelectedMessage: Message[] = [
+    {
+      severity: 'warn',
+      detail: 'Не выбран атрибут класса'
+    }
+  ];
 
   @Input()
   public loading: boolean = false;
@@ -35,6 +50,9 @@ export class AttributesComponent implements OnInit {
   }
 
   public ngOnInit() {
+  }
+
+  public ngOnChanges(changes: SimpleChanges): void {
   }
 
   private initColumns() {
@@ -64,5 +82,13 @@ export class AttributesComponent implements OnInit {
 
   public setClass(event): void {
     this.onClassChange.emit(event.value);
+  }
+
+  public selectedAttributesIsTooLow(): boolean {
+    return this.attributes.filter((attr: AttributeDto) => attr.selected).length < AttributesComponent.MIN_NUM_SELECTED_ATTRIBUTES;
+  }
+
+  public isClassNotSelected(): boolean {
+    return !this.classAttribute;
   }
 }

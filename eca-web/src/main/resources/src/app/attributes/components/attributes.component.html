@@ -9,6 +9,12 @@
         class="ml-auto">
       </button>
     </div>
+    <div *ngIf="selectedAttributesIsTooLow()" class="ui-g-12 ml-1 mr-1 text-bold text-center">
+      <p-messages [enableService]="false"
+                  [closable]="false"
+                  [(value)]="selectedAttributesIsTooLowMessage">
+      </p-messages>
+    </div>
     <div class="ui-g-12">
       <p-table
         class="attributes-table"
@@ -49,6 +55,7 @@
         <label class="class-label">Атрибут класса</label>
         <p-dropdown
           [options]="attributes"
+          [disabled]="loading"
           placeholder="Выбрать"
           optionLabel="name"
           [(ngModel)]="classAttribute"
@@ -56,6 +63,12 @@
           [style]="{'width':'100%'}">
         </p-dropdown>
       </div>
+    </div>
+    <div *ngIf="isClassNotSelected()" class="ui-g-12 ml-1 mr-1 text-bold text-center">
+      <p-messages [enableService]="false"
+                  [closable]="false"
+                  [(value)]="classNotSelectedMessage">
+      </p-messages>
     </div>
   </div>
 </p-panel>

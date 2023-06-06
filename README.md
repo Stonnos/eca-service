@@ -84,7 +84,7 @@ mvn clean install -Pquality
 
 3. Используя пакетный менеджер docker-compose, создать docker контейнеры с помощью команды:
 
-    docker-compose up -d
+   docker-compose up -d --build
 
 ВАЖНО! Данную команду необходимо выполнять из корневой папки проекта.
 

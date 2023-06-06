@@ -3,7 +3,7 @@ import {
   AttributeDto,
   InstancesDto,
   PageDto,
-  PageRequestDto,
+  PageRequestDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { BaseListComponent } from "../../common/lists/base-list.component";
 import { ConfirmationService, MessageService } from "primeng/api";
@@ -15,6 +15,8 @@ import { CreateEditInstancesModel } from "../../create-edit-instances/model/crea
 import { ExportInstancesModel } from "../../export-instances/model/export-instances.model";
 import { EditAttributeModel } from "../../attributes/model/edit-attribute.model";
 import { finalize } from "rxjs/internal/operators";
+import { ValidationErrorCode } from "../../common/model/validation-error-code";
+import { ErrorHandler } from "../../common/services/error-handler";
 
 @Component({
   selector: 'app-instances-details',
@@ -24,6 +26,15 @@ import { finalize } from "rxjs/internal/operators";
 export class InstancesDetailsComponent extends BaseListComponent<string[]> {
 
   private readonly id: number;
+
+  private readonly errorCodes: string[] = [
+    ValidationErrorCode.INVALID_CLASS_ATTRIBUTE_TYPE,
+    ValidationErrorCode.CLASS_VALUES_IS_TOO_LOW
+  ];
+
+  private readonly errorCodesMap = new Map<string, string>()
+    .set(ValidationErrorCode.INVALID_CLASS_ATTRIBUTE_TYPE, 'Атрибут класса должен иметь категориальный тип')
+    .set(ValidationErrorCode.CLASS_VALUES_IS_TOO_LOW, 'Число классов должно быть не менее 2х');
 
   public instancesDto: InstancesDto;
 
@@ -42,6 +53,7 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
   public constructor(private injector: Injector,
                      private instancesService: InstancesService,
                      private confirmationService: ConfirmationService,
+                     private errorHandler: ErrorHandler,
                      private router: Router,
                      private route: ActivatedRoute) {
     super(injector.get(MessageService), injector.get(FieldService));
@@ -87,6 +99,24 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
         },
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
+  }
+
+  public onSetClass(attribute: AttributeDto): void {
+    this.attributedLoading = true;
+    this.instancesService.setClassAttribute(attribute.id)
+      .pipe(
+        finalize(() => {
+          this.attributedLoading = false;
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.getInstancesDetails();
+        },
+        error: (error) => {
+          this.handleSetClassError(error);
         }
       });
   }
@@ -149,6 +179,7 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
   private setClassIfAbsent(): void {
     if (this.instancesDto.classAttributeId) {
       this.classAttribute = this.attributes.filter((attr: AttributeDto) => attr.id == this.instancesDto.classAttributeId).pop();
+      console.log(this.classAttribute);
     }
   }
 
@@ -200,5 +231,13 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
         }
       });
+  }
+
+  private handleSetClassError(error): void {
+    //Force set previous class value
+    this.setClassIfAbsent();
+    const errorCode = this.errorHandler.getFirstErrorCode(error, this.errorCodes);
+    const errorMessage = this.errorCodesMap.get(errorCode);
+    this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: errorMessage });
   }
 }
