@@ -13,8 +13,9 @@ import { InstancesFields } from "../util/field-names";
 })
 export class InstancesAutocompleteComponent implements OnInit {
 
-  private total: number = 0;
-  private pageSize: number = 100;
+  private autocompleted: boolean = false;
+
+  public pageSize: number = 100;
 
   @Input()
   public submitted: boolean = false;
@@ -31,6 +32,7 @@ export class InstancesAutocompleteComponent implements OnInit {
   }
 
   public onComplete(event): void {
+    this.autocompleted = true;
     this.getNextPage(event.query);
   }
 
@@ -57,7 +59,6 @@ export class InstancesAutocompleteComponent implements OnInit {
     this.instancesService.getInstancesPage(pageRequest)
       .subscribe({
         next: (pageDto: PageDto<InstancesDto>) => {
-          this.total = pageDto.totalCount;
           this.instances = pageDto.content;
         },
         error: (error) => {
@@ -69,5 +70,10 @@ export class InstancesAutocompleteComponent implements OnInit {
   public clear(): void {
     this.instances = [];
     this.selectedInstances = null;
+    this.autocompleted = false;
+  }
+
+  public hideAutocompleted(): void {
+    this.autocompleted = false;
   }
 }

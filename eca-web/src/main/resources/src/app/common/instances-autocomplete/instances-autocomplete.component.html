@@ -1,9 +1,13 @@
 <p-autoComplete required
                 id="instances"
                 name="instances"
+                class="instances-list"
                 [(ngModel)]="selectedInstances"
                 [suggestions]="instances"
                 (completeMethod)="onComplete($event)"
+                (onSelect)="hideAutocompleted()"
+                (onUnselect)="hideAutocompleted()"
+                (onClear)="hideAutocompleted()"
                 field="tableName"
                 dropdownMode="current"
                 emptyMessage="Не найдено ни одной обучающей выборки"
@@ -32,6 +36,9 @@
     </div>
   </ng-template>
 </p-autoComplete>
+<div *ngIf="autocompleted" class="d-flex mx-auto align-items-center justify-content-center">
+  Максимум {{ pageSize }} результатов
+</div>
 <div class="text-danger error-message" *ngIf="submitted && !selectedInstances">
   Выберите обучающую выборку
 </div>
