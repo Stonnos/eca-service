@@ -150,7 +150,6 @@ public class StorageServiceImpl implements StorageService {
 
     @Override
     @Audit(value = SET_CLASS_ATTRIBUTE, correlationIdKey = "#result.instancesEntity.id")
-    @Transactional
     public AttributeEntity setClassAttribute(long classAttributeId) {
         log.info("Starting to set class attribute [{}]", classAttributeId);
         var attribute = attributeService.getById(classAttributeId);
@@ -160,7 +159,9 @@ public class StorageServiceImpl implements StorageService {
         if (attribute.getValues().size() < MIN_NUM_CLASSES) {
             throw new ClassAttributeValuesIsTooLowException(classAttributeId);
         }
-        attribute.getInstancesEntity().setClassAttribute(attribute);
+        var instancesEntity = attribute.getInstancesEntity();
+        instancesEntity.setClassAttribute(attribute);
+        instancesRepository.save(instancesEntity);
         log.info("Class attribute [{}] has been set for instances with [{}]", classAttributeId,
                 attribute.getInstancesEntity().getTableName());
         return attribute;

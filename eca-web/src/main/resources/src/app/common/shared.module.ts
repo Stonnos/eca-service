@@ -28,6 +28,7 @@ import { EventHandler } from "./event/event.handler";
 import { PushTokenService } from "./push/push-token.service";
 import { ChartBarStatisticsComponent } from "./chart-bar-statistics/chart-bar-statistics.component";
 import { NotBlankValidator } from "./validators/not-blank-validator.directive";
+import { InstancesAutocompleteComponent } from "./instances-autocomplete/instances-autocomplete.component";
 
 @NgModule({
   imports: [
@@ -52,6 +53,7 @@ import { NotBlankValidator } from "./validators/not-blank-validator.directive";
     InstancesInfo,
     PushMessageComponent,
     ChartBarStatisticsComponent,
+    InstancesAutocompleteComponent
   ],
   exports: [
     RequestStatusComponent,
@@ -69,7 +71,8 @@ import { NotBlankValidator } from "./validators/not-blank-validator.directive";
     EvaluationMethodInfo,
     InstancesInfo,
     PushMessageComponent,
-    ChartBarStatisticsComponent
+    ChartBarStatisticsComponent,
+    InstancesAutocompleteComponent
   ],
   providers: [
     FieldService,

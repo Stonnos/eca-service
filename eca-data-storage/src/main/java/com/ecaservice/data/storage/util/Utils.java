@@ -2,6 +2,7 @@ package com.ecaservice.data.storage.util;
 
 import com.ecaservice.data.storage.entity.AttributeType;
 import com.ecaservice.data.storage.entity.AttributeValueEntity;
+import com.ecaservice.data.storage.entity.InstancesEntity;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
 import weka.core.Attribute;
@@ -30,7 +31,7 @@ public class Utils {
      */
     public static final int MIN_NUM_SELECTED_ATTRIBUTES = 2;
 
-    private static final String SELECT_QUERY = "select %s from %s";
+    private static final String SELECT_QUERY = "select %s from %s order by %s";
     private static final String COMMA_SEPARATOR = ",";
     private static final String SELECT_COUNT_DISTINCT_QUERY = "select count(distinct %s) from %s";
 
@@ -71,15 +72,15 @@ public class Utils {
     }
 
     /**
-     * Builds sql select query with specified columns.
+     * Builds sql select query with specified columns sorted by id column.
      *
-     * @param tableName - table name
+     * @param instancesEntity - instances entity
      * @param columns   - columns list
      * @return sql select query
      */
-    public static String buildSqlSelectQuery(String tableName, List<String> columns) {
+    public static String buildSqlSelectQuery(InstancesEntity instancesEntity, List<String> columns) {
         String attributes = StringUtils.join(columns, COMMA_SEPARATOR);
-        return String.format(SELECT_QUERY, attributes, tableName);
+        return String.format(SELECT_QUERY, attributes, instancesEntity.getTableName(), instancesEntity.getIdColumnName());
     }
 
     /**

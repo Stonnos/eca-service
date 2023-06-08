@@ -34,7 +34,8 @@ import java.util.List;
 })
 @NamedEntityGraph(name = "attributeValues",
         attributeNodes = {
-                @NamedAttributeNode(value = "values")
+                @NamedAttributeNode(value = "values"),
+                @NamedAttributeNode(value = "instancesEntity")
         }
 )
 public class AttributeEntity {

@@ -1,8 +1,11 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ExperimentRequest } from "../model/experiment-request.model";
-import { FilterDictionaryValueDto } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
+import {
+  FilterDictionaryValueDto,
+  InstancesDto
+} from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { BaseCreateDialogComponent } from "../../common/dialog/base-create-dialog.component";
-import { UploadTrainingDataComponent } from "../../common/upload-training-data/upload-training-data.component";
+import { InstancesAutocompleteComponent } from "../../common/instances-autocomplete/instances-autocomplete.component";
 
 @Component({
   selector: 'app-create-experiment',
@@ -11,8 +14,8 @@ import { UploadTrainingDataComponent } from "../../common/upload-training-data/u
 })
 export class CreateExperimentComponent extends BaseCreateDialogComponent<ExperimentRequest> implements OnInit {
 
-  @ViewChild(UploadTrainingDataComponent, { static: true })
-  public fileUpload: UploadTrainingDataComponent;
+  @ViewChild(InstancesAutocompleteComponent, { static: true })
+  private instancesAutocompleteComponent: InstancesAutocompleteComponent;
 
   @Input()
   public experimentTypes: FilterDictionaryValueDto[] = [];
@@ -24,17 +27,19 @@ export class CreateExperimentComponent extends BaseCreateDialogComponent<Experim
   }
 
   public isValid(): boolean {
-    return super.isValid() && this.fileUpload.isSelected();
+    return super.isValid();
   }
 
   public clear(): void {
-    this.item.trainingDataFile = null;
-    this.fileUpload.clearAll();
+    this.instancesAutocompleteComponent.clear();
     super.clear();
   }
 
-  public onUpload(file: File): void {
-    this.item.trainingDataFile = file;
-    this.fileUpload.resetUpload();
+  public selectInstances(instancesDto: InstancesDto): void {
+    this.item.instancesUuid = instancesDto.uuid;
+  }
+
+  public unselectInstances(): void {
+    this.item.instancesUuid = null;
   }
 }

@@ -14,10 +14,11 @@
     <div class="ui-g ui-fluid">
       <div class="ui-g-10 mx-auto mb-5">
         <label class="text-bold control-label">Обучающая выборка</label>
-        <app-upload-training-data
-          [submitted]="submitted"
-          (upload)="onUpload($event)">
-        </app-upload-training-data>
+        <app-instances-autocomplete
+          (onInstancesSelected)="selectInstances($event)"
+          (onInstancesUnselected)="unselectInstances()"
+          [submitted]="submitted">
+        </app-instances-autocomplete>
       </div>
       <div class="ui-g-10 mx-auto mb-3">
         <label class="text-bold control-label">Тип эксперимента</label>

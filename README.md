@@ -11,7 +11,7 @@
 * Openjdk 1.11
 * maven => 3.3.9
 * Rabbit MQ => 3
-* eca-core 6.9.2
+* eca-core 6.9.3
 * Postgres Database для хранения информации => 9.6
 * Docker, Docker-compose
 
@@ -84,7 +84,7 @@ mvn clean install -Pquality
 
 3. Используя пакетный менеджер docker-compose, создать docker контейнеры с помощью команды:
 
-    docker-compose up -d
+   docker-compose up -d --build
 
 ВАЖНО! Данную команду необходимо выполнять из корневой папки проекта.
 

@@ -10,11 +10,11 @@ import {
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { saveAs } from 'file-saver/dist/FileSaver';
 import { Observable } from "rxjs/internal/Observable";
-import { ExperimentRequest } from "../../create-experiment/model/experiment-request.model";
 import { environment } from "../../../environments/environment";
 import { Utils } from "../../common/util/utils";
 import { catchError, finalize, switchMap } from "rxjs/internal/operators";
 import { EMPTY } from "rxjs/internal/observable/empty";
+import { CreateExperimentRequestDto } from "../../create-experiment/model/create-experiment-request.model";
 
 @Injectable()
 export class ExperimentsService {
@@ -111,15 +111,12 @@ export class ExperimentsService {
     return this.http.get<ChartDto>(this.serviceUrl + '/statistics', options);
   }
 
-  public createExperiment(experimentRequest: ExperimentRequest): Observable<CreateExperimentResultDto> {
+  public createExperiment(experimentRequest: CreateExperimentRequestDto): Observable<CreateExperimentResultDto> {
     const headers = new HttpHeaders({
+      'Content-type': 'application/json; charset=utf-8',
       'Authorization': Utils.getBearerTokenHeader()
     });
-    const formData = new FormData();
-    formData.append('trainingData', experimentRequest.trainingDataFile, experimentRequest.trainingDataFile.name);
-    formData.append('experimentType', experimentRequest.experimentType.value);
-    formData.append('evaluationMethod', experimentRequest.evaluationMethod.value);
-    return this.http.post<CreateExperimentResultDto>(this.serviceUrl + '/create', formData, { headers: headers });
+    return this.http.post<CreateExperimentResultDto>(this.serviceUrl + '/create', experimentRequest, { headers: headers });
   }
 
   public getExperimentProgress(id: number): Observable<ExperimentProgressDto> {

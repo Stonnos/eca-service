@@ -20,14 +20,14 @@ import { ReportsService } from "../../common/services/report.service";
 import { EvaluationMethod } from "../../common/model/evaluation-method.enum";
 import { ReportType } from "../../common/model/report-type.enum";
 import { Subscription } from "rxjs";
-import { HttpErrorResponse } from "@angular/common/http";
 import { ValidationService } from "../../common/services/validation.service";
 import { ValidationErrorCode } from "../../common/model/validation-error-code";
 import { PushVariables } from "../../common/util/push-variables";
 import { PushService } from "../../common/push/push.service";
 import { PushMessageType } from "../../common/util/push-message.type";
 import { Logger } from "../../common/util/logging";
-import { UsersService } from "../../users/services/users.service";
+import { CreateExperimentRequestDto } from "../../create-experiment/model/create-experiment-request.model";
+import { ErrorHandler } from "../../common/services/error-handler";
 
 @Component({
   selector: 'app-experiment-list',
@@ -37,6 +37,19 @@ import { UsersService } from "../../users/services/users.service";
 export class ExperimentListComponent extends BaseListComponent<ExperimentDto> implements OnInit, OnDestroy {
 
   private static readonly EXPERIMENTS_REPORT_FILE_NAME = 'experiments-report.xlsx';
+
+  private readonly errorCodes: string[] = [
+    ValidationErrorCode.CLASS_ATTRIBUTE_NOT_SELECTED,
+    ValidationErrorCode.INSTANCES_NOT_FOUND,
+    ValidationErrorCode.SELECTED_ATTRIBUTES_NUMBER_IS_TOO_LOW,
+    ValidationErrorCode.CLASS_VALUES_IS_TOO_LOW
+  ];
+
+  private readonly errorCodesMap = new Map<string, string>()
+    .set(ValidationErrorCode.CLASS_ATTRIBUTE_NOT_SELECTED, 'Не выбран атрибут класса для заданной обучающей выборки')
+    .set(ValidationErrorCode.INSTANCES_NOT_FOUND, 'Обучающая выборка не найдена')
+    .set(ValidationErrorCode.SELECTED_ATTRIBUTES_NUMBER_IS_TOO_LOW, 'Выберите не менее двух атрибутов классификации')
+    .set(ValidationErrorCode.CLASS_VALUES_IS_TOO_LOW, 'Число классов должно быть не менее двух');
 
   private experimentsUpdatesSubscriptions: Subscription;
 
@@ -57,8 +70,8 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
                      private filterService: FilterService,
                      private reportsService: ReportsService,
                      private validationService: ValidationService,
+                     private errorHandler: ErrorHandler,
                      private pushService: PushService,
-                     private usersService: UsersService,
                      private router: Router) {
     super(injector.get(MessageService), injector.get(FieldService));
     this.defaultSortField = ExperimentFields.CREATION_DATE;
@@ -138,8 +151,10 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
   }
 
   public onCreateExperiment(experimentRequest: ExperimentRequest): void {
+    const createExperimentRequestDto =
+      new CreateExperimentRequestDto(experimentRequest.instancesUuid, experimentRequest.experimentType.value, experimentRequest.evaluationMethod.value)
     this.loading = true;
-    this.experimentsService.createExperiment(experimentRequest)
+    this.experimentsService.createExperiment(createExperimentRequestDto)
       .pipe(
         finalize(() => {
           this.loading = false;
@@ -221,37 +236,20 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
   }
 
   private handleCreateExperimentError(error): void {
-    if (error instanceof HttpErrorResponse && error.status === 400) {
-      const errors: ValidationErrorDto[] = error.error;
-      if (this.validationService.hasErrorCode(errors, ValidationErrorCode.INVALID_TRAIN_DATA_FILE)) {
-        this.messageService.add({ severity: 'error',
-          summary: 'Не удалось создать эксперимент. Допускаются файлы только файлы форматов .csv,.xls,.xlsx,.arff,.xml,.json,.txt,.data,.docx', detail: '' });
-        return;
-      } else if (this.validationService.hasErrorCode(errors, ValidationErrorCode.PROCESS_FILE_ERROR)) {
-        this.messageService.add({ severity: 'error',
-          summary: 'Не удалось создать эксперимент. Файл с обучающей выборкой содержит ошибки', detail: '' });
-        return;
-      }
+    const errorCode = this.errorHandler.getFirstErrorCode(error, this.errorCodes);
+    if (errorCode) {
+      const errorMessage = this.errorCodesMap.get(errorCode);
+      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: errorMessage });
     }
-    this.messageService.add({ severity: 'error', summary: 'Не удалось создать эксперимент', detail: error.message });
   }
 
   private handleExperimentCreated(createExperimentResultDto: CreateExperimentResultDto): void {
     Logger.debug(`Experiment ${createExperimentResultDto.requestId} has been created`);
-    this.usersService.getCurrentUser().subscribe({
-      next: (user: UserDto) => {
-        if (!user.pushEnabled) {
-          this.messageService.add({ severity: 'success',
-            summary: `Эксперимент ${createExperimentResultDto.requestId} был успешно создан`, detail: '' });
-          this.lastCreatedId = createExperimentResultDto.id;
-          this.getRequestStatusesStatistics();
-          this.reloadPageWithLoader();
-        }
-      },
-      error: (error) => {
-        this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-      }
-    });
+    this.messageService.add({ severity: 'success',
+      summary: `Эксперимент ${createExperimentResultDto.requestId} был успешно создан`, detail: '' });
+    this.lastCreatedId = createExperimentResultDto.id;
+    this.getRequestStatusesStatistics();
+    this.reloadPageWithLoader();
   }
 
   private initColumns() {
