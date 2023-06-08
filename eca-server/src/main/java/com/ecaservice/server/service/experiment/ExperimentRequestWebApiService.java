@@ -15,6 +15,7 @@ import com.ecaservice.server.service.auth.UsersClient;
 import com.ecaservice.server.service.ds.DataStorageService;
 import com.ecaservice.user.dto.UserInfoDto;
 import com.ecaservice.web.dto.model.CreateExperimentResultDto;
+import eca.filter.ConstantAttributesFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 import weka.core.Instances;
 
 import static com.ecaservice.server.config.audit.AuditCodes.CREATE_EXPERIMENT_REQUEST;
+import static com.ecaservice.server.util.InstancesUtils.removeConstantAttributes;
 
 /**
  * Experiment request web api service.
@@ -73,7 +75,9 @@ public class ExperimentRequestWebApiService {
         ExperimentRequest experimentRequest = new ExperimentRequest();
         experimentRequest.setEmail(userInfoDto.getEmail());
         Instances data = downloadInstances(experimentRequestDto.getInstancesUuid());
-        experimentRequest.setData(data);
+        Instances filteredData = removeConstantAttributes(data);
+        log.info("Constant attributes has been removed from data [{}]", filteredData.relationName());
+        experimentRequest.setData(filteredData);
         experimentRequest.setExperimentType(experimentRequestDto.getExperimentType());
         experimentRequest.setEvaluationMethod(experimentRequestDto.getEvaluationMethod());
         return experimentRequest;
