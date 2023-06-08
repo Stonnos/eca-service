@@ -138,7 +138,7 @@ public class InstancesService {
                 .collect(Collectors.toList());
         var extractor = new InstancesResultSetExtractor(instancesEntity, attributes);
         extractor.setDateFormat(ecaDsConfig.getDateFormat());
-        String query = buildSqlSelectQuery(instancesEntity.getTableName(), columns);
+        String query = buildSqlSelectQuery(instancesEntity, columns);
         var instances = jdbcTemplate.query(query, extractor);
         log.info("Instances has been fetched from table [{}]", instancesEntity.getTableName());
         return instances;
@@ -170,7 +170,7 @@ public class InstancesService {
         var columns = attributes.stream()
                 .map(AttributeEntity::getColumnName)
                 .collect(Collectors.toList());
-        String query = buildSqlSelectQuery(instancesEntity.getTableName(), columns);
+        String query = buildSqlSelectQuery(instancesEntity, columns);
         var extractor = new InstancesModelResultSetExtractor(instancesEntity, attributes);
         extractor.setDateFormat(ecaDsConfig.getDateFormat());
         extractor.setDateTimeFormatter(DateTimeFormatter.ofPattern(ecaDsConfig.getDateFormat()));
