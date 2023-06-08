@@ -67,6 +67,9 @@ public class SearchQueryCreator {
         String sqlCountQuery = String.format(COUNT_QUERY_PART, instancesEntity.getTableName(), queryString);
         if (StringUtils.isNotBlank(pageRequestDto.getSortField())) {
             appendOrderBy(queryString, pageRequestDto);
+        } else {
+            //Sort by id column default behavior
+            queryString.append(String.format(ORDER_BY_PART, instancesEntity.getIdColumnName(), ASC));
         }
         appendLimitOffset(queryString, pageRequestDto);
         String sqlQuery = String.format(SELECT_PART, instancesEntity.getTableName(), queryString);
