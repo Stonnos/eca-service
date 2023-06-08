@@ -47,7 +47,7 @@ class ChangePasswordIT extends AbstractUserIT {
         createChangePasswordRequest(tokenResponse);
         String token = getHttpRequestParamFromEmailUrlVariable(Templates.CHANGE_PASSWORD,
                 TemplateVariablesDictionary.CHANGE_PASSWORD_URL_KEY, TOKEN_PARAM);
-        confirmChangePassword(token);
+        confirmChangePassword(tokenResponse, token);
         verifyChangePassword();
     }
 
@@ -63,11 +63,12 @@ class ChangePasswordIT extends AbstractUserIT {
                 .block();
     }
 
-    private void confirmChangePassword(String token) {
+    private void confirmChangePassword(TokenResponse tokenResponse, String token) {
         getWebClient().post()
                 .uri(uriBuilder -> uriBuilder.path(CONFIRM_CHANGE_PASSWORD_REQUEST_URL)
                         .queryParam(TOKEN_PARAM, token)
                         .build())
+                .header(HttpHeaders.AUTHORIZATION, getBearerAuthorizationHeader(tokenResponse))
                 .retrieve()
                 .bodyToMono(Void.class)
                 .block();

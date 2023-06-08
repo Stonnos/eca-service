@@ -10,6 +10,7 @@ import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
  */
 public class TfaRequiredException extends OAuth2Exception {
 
+    private static final String TOKEN = "token";
     private static final String EXPIRES_IN = "expires_in";
 
     /**
@@ -17,8 +18,9 @@ public class TfaRequiredException extends OAuth2Exception {
      *
      * @param expiresIn - tfa code expires in seconds
      */
-    public TfaRequiredException(long expiresIn) {
+    public TfaRequiredException(String token, long expiresIn) {
         super("Two-factor authentication required");
+        this.addAdditionalInformation(TOKEN, token);
         this.addAdditionalInformation(EXPIRES_IN, String.valueOf(expiresIn));
     }
 

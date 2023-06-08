@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.fail;
  */
 class TfaIT extends AbstractUserIT {
 
+    private static final String TOKEN_PARAM = "token";
     private static final String TFA_CODE_PARAM = "tfa_code";
     private static final String TFA_CODE_GRANT_TYPE = "tfa_code";
 

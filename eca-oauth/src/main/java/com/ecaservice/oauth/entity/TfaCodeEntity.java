@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.hibernate.annotations.Type;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.Table;
@@ -20,6 +21,12 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "tfa_code")
 public class TfaCodeEntity extends TokenEntity {
+
+    /**
+     * Two - factor authentication code value
+     */
+    @Column(nullable = false)
+    private String code;
 
     /**
      * Authentication serialized object
