@@ -237,8 +237,10 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
 
   private handleCreateExperimentError(error): void {
     const errorCode = this.errorHandler.getFirstErrorCode(error, this.errorCodes);
-    const errorMessage = this.errorCodesMap.get(errorCode);
-    this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: errorMessage });
+    if (errorCode) {
+      const errorMessage = this.errorCodesMap.get(errorCode);
+      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: errorMessage });
+    }
   }
 
   private handleExperimentCreated(createExperimentResultDto: CreateExperimentResultDto): void {

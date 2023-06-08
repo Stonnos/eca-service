@@ -239,7 +239,9 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
   private handleSetClassError(error): void {
     this.attributesComponent.forceSetClass(this.classAttribute);
     const errorCode = this.errorHandler.getFirstErrorCode(error, this.errorCodes);
-    const errorMessage = this.errorCodesMap.get(errorCode);
-    this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: errorMessage });
+    if (errorCode) {
+      const errorMessage = this.errorCodesMap.get(errorCode);
+      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: errorMessage });
+    }
   }
 }
