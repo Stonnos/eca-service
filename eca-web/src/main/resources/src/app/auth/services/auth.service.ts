@@ -23,8 +23,9 @@ export class AuthService {
     return this.performTokenRequest(params);
   }
 
-  public verifyTfaCode(code: string): Observable<any> {
+  public verifyTfaCode(token: string, code: string): Observable<any> {
     const params = new URLSearchParams();
+    params.append('token', token);
     params.append('tfa_code', code);
     params.append('grant_type', 'tfa_code');
     return this.performTokenRequest(params);
