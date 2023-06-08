@@ -38,6 +38,7 @@ class TfaCodeServiceTest extends AbstractJpaTest {
     private static final String TEST_CODE = "testCode";
     private static final String INVALID_TOKEN = "1";
     private static final String INVALID_CODE = "2";
+    private static final String AUTHENTICATION = "auth";
 
     @MockBean
     private SerializationHelper serializationHelper;
@@ -60,7 +61,7 @@ class TfaCodeServiceTest extends AbstractJpaTest {
     public void init() {
         userEntity = createAndSaveUser();
         when(oAuth2Authentication.getName()).thenReturn(USER);
-        when(serializationHelper.serialize(any())).thenReturn(new byte[0]);
+        when(serializationHelper.serialize(any())).thenReturn(AUTHENTICATION);
         when(serializationHelper.deserialize(any())).thenReturn(oAuth2Authentication);
     }
 
@@ -110,7 +111,7 @@ class TfaCodeServiceTest extends AbstractJpaTest {
         tfaCodeEntity.setUserEntity(userEntity);
         tfaCodeEntity.setToken(md5Hex(TEST_TOKEN));
         tfaCodeEntity.setCode(md5Hex(TEST_CODE));
-        tfaCodeEntity.setAuthentication(new byte[0]);
+        tfaCodeEntity.setAuthentication(AUTHENTICATION);
         tfaCodeEntity.setExpireDate(LocalDateTime.now().plusSeconds(tfaConfig.getCodeValiditySeconds()));
         tfaCodeRepository.save(tfaCodeEntity);
     }

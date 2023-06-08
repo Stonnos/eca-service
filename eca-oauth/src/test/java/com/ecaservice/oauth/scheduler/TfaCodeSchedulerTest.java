@@ -70,7 +70,7 @@ class TfaCodeSchedulerTest extends AbstractJpaTest {
         tfaCodeEntity.setUserEntity(userEntity);
         tfaCodeEntity.setToken(md5Hex(UUID.randomUUID().toString()));
         tfaCodeEntity.setCode(md5Hex(UUID.randomUUID().toString()));
-        tfaCodeEntity.setAuthentication(new byte[0]);
+        tfaCodeEntity.setAuthentication("auth");
         tfaCodeEntity.setExpireDate(expiredDate);
         tfaCodeRepository.save(tfaCodeEntity);
     }

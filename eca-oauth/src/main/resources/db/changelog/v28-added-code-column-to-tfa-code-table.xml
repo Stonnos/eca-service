@@ -18,4 +18,12 @@
             </column>
         </addColumn>
     </changeSet>
+
+    <changeSet id="change_authentication_column_type_in_tfa_code_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="tfa_code"/>
+            <columnExists tableName="tfa_code" columnName="authentication"/>
+        </preConditions>
+        <modifyDataType tableName="tfa_code" columnName="authentication" newDataType="text"/>
+    </changeSet>
 </databaseChangeLog>

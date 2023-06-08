@@ -1,9 +1,12 @@
 package com.ecaservice.oauth.integration;
 
 import com.ecaservice.oauth.entity.UserEntity;
+import com.ecaservice.oauth.model.TfaRequiredResponse;
 import com.ecaservice.oauth.service.mail.dictionary.TemplateVariablesDictionary;
 import com.ecaservice.oauth.service.mail.dictionary.Templates;
 import com.ecaservice.oauth2.test.token.TokenResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
@@ -12,7 +15,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 
 /**
  * Integration tests for two-factor authentication functionality.
@@ -24,6 +26,8 @@ class TfaIT extends AbstractUserIT {
     private static final String TOKEN_PARAM = "token";
     private static final String TFA_CODE_PARAM = "tfa_code";
     private static final String TFA_CODE_GRANT_TYPE = "tfa_code";
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     String getApiPrefix() {
@@ -40,27 +44,33 @@ class TfaIT extends AbstractUserIT {
     }
 
     @Test
-    void testTfa() {
-        login();
+    void testTfa() throws JsonProcessingException {
+        var tfaRequiredResponse = login();
+        assertThat(tfaRequiredResponse).isNotNull();
         String tfaCode = getVariableFromEmail(Templates.TFA_CODE, TemplateVariablesDictionary.TFA_CODE);
-        confirmTfaCode(tfaCode);
+        confirmTfaCode(tfaRequiredResponse.getToken(), tfaCode);
     }
 
-    private void login() {
+    private TfaRequiredResponse login() throws JsonProcessingException {
         try {
             obtainOauth2Token();
         } catch (WebClientResponseException ex) {
             assertThat(ex.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
-            return;
+            var tfaRequiredResponse = objectMapper.readValue(ex.getResponseBodyAsString(), TfaRequiredResponse.class);
+            assertThat(tfaRequiredResponse).isNotNull();
+            assertThat(tfaRequiredResponse.getToken()).isNotNull();
+            assertThat(tfaRequiredResponse.getExpiresIn()).isNotNull();
+            return tfaRequiredResponse;
         }
-        fail("Expected 403 http error code while login via tfa");
+        return null;
     }
 
-    private void confirmTfaCode(String code) {
+    private void confirmTfaCode(String token, String code) {
         WebClient tokenClient = createWebClient(StringUtils.EMPTY);
         TokenResponse tokenResponse = tokenClient.post()
                 .uri(uriBuilder -> uriBuilder.path(TOKEN_URL)
                         .queryParam(GRANT_TYPE_PARAM, TFA_CODE_GRANT_TYPE)
+                        .queryParam(TOKEN_PARAM, token)
                         .queryParam(TFA_CODE_PARAM, code)
                         .build())
                 .header(HttpHeaders.AUTHORIZATION, getBasicAuthorizationHeader())

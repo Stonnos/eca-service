@@ -2,6 +2,7 @@ package com.ecaservice.oauth.service;
 
 import org.springframework.security.oauth2.common.util.SerializationUtils;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Base64Utils;
 
 /**
  * Serialization helper.
@@ -12,23 +13,25 @@ import org.springframework.stereotype.Component;
 public class SerializationHelper {
 
     /**
-     * Serializes object into bytes array.
+     * Serializes object into base64 string.
      *
      * @param object - object
-     * @return serialized object as bytes array
+     * @return serialized object base64 string
      */
-    public byte[] serialize(Object object) {
-        return SerializationUtils.serialize(object);
+    public String serialize(Object object) {
+        byte[] bytes = SerializationUtils.serialize(object);
+        return Base64Utils.encodeToString(bytes);
     }
 
     /**
-     * Deserializes object to byte array.
+     * Deserializes base64 string to object.
      *
-     * @param bytes - bytes
-     * @param <T>   - object generic type
+     * @param base64String - base64 string
+     * @param <T>          - object generic type
      * @return result object
      */
-    public <T> T deserialize(byte[] bytes) {
+    public <T> T deserialize(String base64String) {
+        byte[] bytes = Base64Utils.decodeFromString(base64String);
         return SerializationUtils.deserialize(bytes);
     }
 }
