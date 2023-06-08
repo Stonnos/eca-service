@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit,  EventEmitter, Output } from '@angular/core';
 import {
   InstancesDto, PageDto, PageRequestDto,
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
@@ -13,7 +13,7 @@ import { InstancesFields } from "../util/field-names";
 })
 export class InstancesAutocompleteComponent implements OnInit {
 
-  private autocompleted: boolean = false;
+  public autocompleted: boolean = false;
 
   public pageSize: number = 100;
 
@@ -23,6 +23,11 @@ export class InstancesAutocompleteComponent implements OnInit {
   public instances: InstancesDto[] = [];
 
   public selectedInstances: InstancesDto;
+
+  @Output()
+  public onInstancesSelected: EventEmitter<InstancesDto> = new EventEmitter<InstancesDto>();
+  @Output()
+  public onInstancesUnselected: EventEmitter<any> = new EventEmitter<any>();
 
   public constructor(private instancesService: InstancesService,
                      private messageService: MessageService) {
@@ -73,7 +78,13 @@ export class InstancesAutocompleteComponent implements OnInit {
     this.autocompleted = false;
   }
 
-  public hideAutocompleted(): void {
+  public onSelect(): void {
     this.autocompleted = false;
+    this.onInstancesSelected.emit(this.selectedInstances);
+  }
+
+  public onUnselect(): void {
+    this.autocompleted = false;
+    this.onInstancesUnselected.emit();
   }
 }

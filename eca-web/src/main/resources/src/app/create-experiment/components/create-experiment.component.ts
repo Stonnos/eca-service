@@ -1,6 +1,9 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ExperimentRequest } from "../model/experiment-request.model";
-import { FilterDictionaryValueDto } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
+import {
+  FilterDictionaryValueDto,
+  InstancesDto
+} from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { BaseCreateDialogComponent } from "../../common/dialog/base-create-dialog.component";
 import { InstancesAutocompleteComponent } from "../../common/instances-autocomplete/instances-autocomplete.component";
 
@@ -30,5 +33,13 @@ export class CreateExperimentComponent extends BaseCreateDialogComponent<Experim
   public clear(): void {
     this.instancesAutocompleteComponent.clear();
     super.clear();
+  }
+
+  public selectInstances(instancesDto: InstancesDto): void {
+    this.item.instancesUuid = instancesDto.uuid;
+  }
+
+  public unselectInstances(): void {
+    this.item.instancesUuid = null;
   }
 }

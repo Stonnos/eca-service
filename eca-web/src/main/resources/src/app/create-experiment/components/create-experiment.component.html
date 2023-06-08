@@ -15,6 +15,8 @@
       <div class="ui-g-10 mx-auto mb-5">
         <label class="text-bold control-label">Обучающая выборка</label>
         <app-instances-autocomplete
+          (onInstancesSelected)="selectInstances($event)"
+          (onInstancesUnselected)="unselectInstances()"
           [submitted]="submitted">
         </app-instances-autocomplete>
       </div>

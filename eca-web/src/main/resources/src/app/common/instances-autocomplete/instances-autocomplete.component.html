@@ -5,35 +5,36 @@
                 [(ngModel)]="selectedInstances"
                 [suggestions]="instances"
                 (completeMethod)="onComplete($event)"
-                (onSelect)="hideAutocompleted()"
-                (onUnselect)="hideAutocompleted()"
-                (onClear)="hideAutocompleted()"
+                (onSelect)="onSelect()"
+                (onUnselect)="onUnselect()"
+                (onClear)="onUnselect()"
                 field="tableName"
                 dropdownMode="current"
                 emptyMessage="Не найдено ни одной обучающей выборки"
                 [forceSelection]="true"
                 [dropdown]="true">
   <ng-template let-instance pTemplate="item">
-    <div class="ui-g">
-      <div class="ui-g-4 text-left text-bold text-wrap">
-        Данные:
+    <p-panel>
+      <p-header>
+        <div class="d-flex mx-auto align-items-center justify-content-center">
+          Данные: {{ instance.tableName }}
+        </div>
+      </p-header>
+      <div class="ui-g">
+        <div class="ui-g-4 text-left text-bold text-wrap">
+          Число объектов:
+        </div>
+        <div class="ui-g-8 text-left text-wrap">
+          {{ instance.numInstances }}
+        </div>
+        <div class="ui-g-4 text-left text-bold text-wrap">
+          Число атрибутов:
+        </div>
+        <div class="ui-g-8 text-left text-wrap">
+          {{ instance.numAttributes }}
+        </div>
       </div>
-      <div class="ui-g-8 text-left text-wrap">
-        {{ instance.tableName }}
-      </div>
-      <div class="ui-g-4 text-left text-bold text-wrap">
-        Число объектов:
-      </div>
-      <div class="ui-g-8 text-left text-wrap">
-        {{ instance.numInstances }}
-      </div>
-      <div class="ui-g-4 text-left text-bold text-wrap bottom-border">
-        Число атрибутов:
-      </div>
-      <div class="ui-g-8 text-left text-wrap bottom-border">
-        {{ instance.numAttributes }}
-      </div>
-    </div>
+    </p-panel>
   </ng-template>
 </p-autoComplete>
 <div *ngIf="autocompleted" class="d-flex mx-auto align-items-center justify-content-center">

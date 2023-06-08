@@ -16,4 +16,7 @@ export class ValidationErrorCode {
   public static readonly EMPTY_DATA_SET: string = 'EmptyDataSet';
   public static readonly CLASS_VALUES_IS_TOO_LOW: string = 'ClassValuesIsTooLow';
   public static readonly INVALID_CLASS_ATTRIBUTE_TYPE: string = 'InvalidClassAttributeType';
+  public static readonly CLASS_ATTRIBUTE_NOT_SELECTED: string = 'ClassAttributeNotSelected';
+  public static readonly SELECTED_ATTRIBUTES_NUMBER_IS_TOO_LOW: string = 'SelectedAttributesNumberIsTooLow';
+  public static readonly INSTANCES_NOT_FOUND: string = 'InstancesNotFound';
 }

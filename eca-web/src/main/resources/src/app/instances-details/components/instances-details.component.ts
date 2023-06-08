@@ -183,7 +183,6 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
   private setClassIfAbsent(): void {
     if (this.instancesDto.classAttributeId) {
       this.classAttribute = this.attributes.filter((attr: AttributeDto) => attr.id == this.instancesDto.classAttributeId).pop();
-      console.log(this.classAttribute);
     }
   }
 
