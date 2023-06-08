@@ -85,9 +85,9 @@
     
     В случае, если настроена двухфакторная аутентификация, то запрос возвращает 403 ошибку с телом ответа:
     
-    {"error":"tfa_required","error_description":"Two-factor authentication required","expires_in":"120"}
+    {"error":"tfa_required","error_description":"Two-factor authentication required","token": "ff47d750-0b50-40f0-9dc8-454819685eea","expires_in":"120"}
     
-    где expires_in - время действия одноразового пароля, который должен прийти по почте, привязанной к учетной записи пользователя
+    где token - временный токен, expires_in - время действия одноразового пароля, который должен прийти по почте, привязанной к учетной записи пользователя
 
 2. Пример запроса на обновление access token на основе refresh token:
 
@@ -95,6 +95,6 @@
 
 3. Пример запроса на получение токена с использованием двухфакторной аутентификации:
 
-    curl eca_web:web_secret@localhost:8080/eca-oauth/oauth/token -d grant_type=tfa_code -d tfa_code=hFgU5G
+    curl eca_web:web_secret@localhost:8080/eca-oauth/oauth/token -d grant_type=tfa_code -d token=ff47d750-0b50-40f0-9dc8-454819685eea -d tfa_code=hFgU5G
     
-    где tfa_code - одноразовый пароль для двухфакторной аутентификации
+    где tfa_code - одноразовый пароль для двухфакторной аутентификации, который должен прийти по почте
