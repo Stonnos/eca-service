@@ -2,11 +2,11 @@ package com.ecaservice.server.report;
 
 import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.report.data.fetcher.AbstractBaseReportDataFetcher;
-import com.ecaservice.report.model.ClassifierOptionsRequestBean;
-import com.ecaservice.report.model.ReportType;
 import com.ecaservice.server.mapping.ClassifierOptionsRequestModelMapper;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.server.model.entity.FilterTemplateType;
+import com.ecaservice.server.report.model.BaseReportType;
+import com.ecaservice.server.report.model.ClassifierOptionsRequestBean;
 import com.ecaservice.server.service.classifiers.ClassifiersTemplateProvider;
 import com.ecaservice.server.service.ers.ClassifierOptionsRequestService;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -46,7 +46,7 @@ public class ClassifierOptionsRequestsBaseReportDataFetcher
                                                           ClassifierOptionsRequestService classifierOptionsRequestService,
                                                           ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper,
                                                           ClassifiersTemplateProvider classifiersTemplateProvider) {
-        super(ReportType.CLASSIFIERS_OPTIONS_REQUESTS, ClassifierOptionsRequestModel.class,
+        super(BaseReportType.CLASSIFIERS_OPTIONS_REQUESTS.name(), ClassifierOptionsRequestModel.class,
                 FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST.name(), filterService);
         this.classifierOptionsRequestService = classifierOptionsRequestService;
         this.classifierOptionsRequestModelMapper = classifierOptionsRequestModelMapper;

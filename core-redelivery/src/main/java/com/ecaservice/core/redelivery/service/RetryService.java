@@ -194,12 +194,12 @@ public class RetryService {
             retryMeterService.trackRetryExhausted(retryRequest.getRequestType());
         } else {
             retryCallback.onError(retryContext, ex);
-            updateErrorRetryRequest(retryRequest, retry);
+            updateFailedRetryRequest(retryRequest, retry);
             retryMeterService.trackRetryFailed(retryRequest.getRequestType());
         }
     }
 
-    private void updateErrorRetryRequest(RetryRequest retryRequest, Retry retry) {
+    private void updateFailedRetryRequest(RetryRequest retryRequest, Retry retry) {
         retryRequest.setRetries(retryRequest.getRetries() + 1);
         LocalDateTime nextRetryAt = calculateNextRetryAt(retryRequest, retry);
         retryRequest.setRetryAt(nextRetryAt);

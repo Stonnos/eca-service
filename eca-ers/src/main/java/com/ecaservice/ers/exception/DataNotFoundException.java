@@ -16,6 +16,6 @@ public class DataNotFoundException extends ValidationErrorException {
      * @param message - error message
      */
     public DataNotFoundException(String message) {
-        super(ErsErrorCode.DATA_NOT_FOUND.name(), message);
+        super(ErsErrorCode.DATA_NOT_FOUND, message);
     }
 }

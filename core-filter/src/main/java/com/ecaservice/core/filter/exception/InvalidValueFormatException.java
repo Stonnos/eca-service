@@ -1,6 +1,7 @@
 package com.ecaservice.core.filter.exception;
 
 import com.ecaservice.common.web.exception.ValidationErrorException;
+import com.ecaservice.core.filter.error.CoreFilterErrorCode;
 
 /**
  * Invalid value format exception.
@@ -9,8 +10,6 @@ import com.ecaservice.common.web.exception.ValidationErrorException;
  */
 public class InvalidValueFormatException extends ValidationErrorException {
 
-    private static final String ERROR_CODE = "InvalidValueFormat";
-
     /**
      * Constructor with parameters.
      *
@@ -18,6 +17,6 @@ public class InvalidValueFormatException extends ValidationErrorException {
      * @param fieldName    - field name
      */
     public InvalidValueFormatException(String errorMessage, String fieldName) {
-        super(ERROR_CODE, errorMessage, fieldName);
+        super(CoreFilterErrorCode.INVALID_VALUE_FORMAT, errorMessage, fieldName);
     }
 }

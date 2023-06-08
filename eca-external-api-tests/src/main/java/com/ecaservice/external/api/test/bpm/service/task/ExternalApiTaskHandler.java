@@ -1,6 +1,6 @@
 package com.ecaservice.external.api.test.bpm.service.task;
 
-import com.ecaservice.common.web.dto.ValidationErrorDto;
+import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.external.api.dto.ResponseDto;
 import com.ecaservice.external.api.test.bpm.model.TaskType;
 import com.fasterxml.jackson.core.JsonProcessingException;

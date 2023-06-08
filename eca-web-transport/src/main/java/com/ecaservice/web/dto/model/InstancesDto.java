@@ -13,6 +13,7 @@ import static com.ecaservice.web.dto.util.FieldConstraints.LOCAL_DATE_TIME_MAX_L
 import static com.ecaservice.web.dto.util.FieldConstraints.MAX_INTEGER_VALUE_STRING;
 import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
 import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LONG_VALUE_STRING;
+import static com.ecaservice.web.dto.util.FieldConstraints.UUID_MAX_LENGTH;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1_STRING;
 import static com.ecaservice.web.dto.util.FieldConstraints.ZERO_VALUE_STRING;
 
@@ -27,6 +28,13 @@ public class InstancesDto {
 
     @Schema(description = "Instances id", example = "1", minimum = VALUE_1_STRING, maximum = MAX_LONG_VALUE_STRING)
     private Long id;
+
+    /**
+     * Instances uuid
+     */
+    @Schema(description = "Instances uuid", example = "1d2de514-3a87-4620-9b97-c260e24340de",
+            maxLength = UUID_MAX_LENGTH)
+    private String uuid;
 
     /**
      * Instances name
@@ -62,4 +70,11 @@ public class InstancesDto {
      */
     @Schema(description = "User name", example = "admin", maxLength = MAX_LENGTH_255)
     private String createdBy;
+
+    /**
+     * Class attribute ID
+     */
+    @Schema(description = "Class attribute ID", example = "1", minimum = VALUE_1_STRING,
+            maximum = MAX_LONG_VALUE_STRING)
+    private Long classAttributeId;
 }

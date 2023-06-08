@@ -12,7 +12,7 @@ public class ExperimentException extends EcaServiceException {
     /**
      * Creates experiment exception.
      *
-     * @param message error message
+     * @param message - error message
      */
     public ExperimentException(String message) {
         super(message);

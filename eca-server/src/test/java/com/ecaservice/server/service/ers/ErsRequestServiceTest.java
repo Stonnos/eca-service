@@ -1,6 +1,6 @@
 package com.ecaservice.server.service.ers;
 
-import com.ecaservice.common.web.dto.ValidationErrorDto;
+import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.ers.dto.ErsErrorCode;
 import com.ecaservice.ers.dto.EvaluationResultsRequest;
 import com.ecaservice.ers.dto.EvaluationResultsResponse;
@@ -129,7 +129,7 @@ class ErsRequestServiceTest extends AbstractJpaTest {
     void testSendingWithBadRequest() throws JsonProcessingException {
         FeignException.BadRequest badRequest = mock(FeignException.BadRequest.class);
         var validationError = new ValidationErrorDto();
-        validationError.setCode(ErsErrorCode.DUPLICATE_REQUEST_ID.name());
+        validationError.setCode(ErsErrorCode.DUPLICATE_REQUEST_ID.getCode());
         when(badRequest.contentUTF8()).thenReturn(
                 OBJECT_MAPPER.writeValueAsString(Collections.singletonList(validationError)));
         internalTestErrorStatus(badRequest, ErsResponseStatus.DUPLICATE_REQUEST_ID);

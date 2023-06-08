@@ -1,6 +1,6 @@
 package com.ecaservice.web.push.controller.web;
 
-import com.ecaservice.common.web.dto.ValidationErrorDto;
+import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.ReadNotificationsDto;
 import com.ecaservice.web.dto.model.SimplePageRequestDto;

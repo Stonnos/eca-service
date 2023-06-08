@@ -11,7 +11,7 @@ import lombok.experimental.UtilityClass;
 public class CacheNames {
 
     /**
-     * Table columns cache name
+     * Attributes cache name
      */
-    public static final String TABLE_COLUMNS_CACHE = "table-columns";
+    public static final String ATTRIBUTES_CACHE = "attributes";
 }

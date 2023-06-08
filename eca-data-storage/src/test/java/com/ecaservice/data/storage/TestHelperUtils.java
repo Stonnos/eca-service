@@ -1,8 +1,12 @@
 package com.ecaservice.data.storage;
 
+import com.ecaservice.data.storage.entity.AttributeEntity;
+import com.ecaservice.data.storage.entity.AttributeType;
+import com.ecaservice.data.storage.entity.AttributeValueEntity;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.model.report.ReportProperties;
 import com.ecaservice.data.storage.model.report.ReportType;
+import com.ecaservice.web.dto.model.AttributeDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import eca.data.file.resource.FileResource;
 import eca.data.file.xls.XLSLoader;
@@ -13,6 +17,9 @@ import weka.core.Instances;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Test helper utility class.
@@ -32,6 +39,8 @@ public class TestHelperUtils {
 
     private static final int PAGE_SIZE = 10;
     private static final int PAGE_NUMBER = 0;
+    private static final int NUM_ATTR_VALUES = 3;
+    private static final String ID_COLUMN_NAME = "ID";
 
     /**
      * Creates page request dto.
@@ -72,6 +81,8 @@ public class TestHelperUtils {
      */
     public static InstancesEntity createInstancesEntity() {
         InstancesEntity instancesEntity = new InstancesEntity();
+        instancesEntity.setUuid(UUID.randomUUID().toString());
+        instancesEntity.setIdColumnName(ID_COLUMN_NAME);
         instancesEntity.setTableName(TABLE_NAME);
         instancesEntity.setNumInstances(NUM_INSTANCES);
         instancesEntity.setNumAttributes(NUM_ATTRIBUTES);
@@ -90,5 +101,68 @@ public class TestHelperUtils {
         reportProperties.setReportType(ReportType.CSV);
         reportProperties.setTitle(TITLE);
         return reportProperties;
+    }
+
+    /**
+     * Creates attribute entity.
+     *
+     * @param columnName - column name
+     * @param index      - attribute index
+     * @return attribute entity
+     */
+    public static AttributeEntity createAttributeEntity(String columnName, int index, AttributeType attributeType) {
+        var attributeEntity = new AttributeEntity();
+        attributeEntity.setColumnName(columnName);
+        attributeEntity.setIndex(index);
+        attributeEntity.setSelected(true);
+        attributeEntity.setType(attributeType);
+        return attributeEntity;
+    }
+
+    /**
+     * Creates nominal attribute entity.
+     *
+     * @param columnName - column name
+     * @param index      - attribute index
+     * @return attribute entity
+     */
+    public static AttributeEntity createNominalAttributeEntity(String columnName, int index) {
+        var attributeEntity = new AttributeEntity();
+        attributeEntity.setColumnName(columnName);
+        attributeEntity.setIndex(index);
+        attributeEntity.setSelected(true);
+        attributeEntity.setType(AttributeType.NOMINAL);
+        var values = IntStream.range(0, NUM_ATTR_VALUES)
+                .mapToObj(i -> createAttributeValueEntity(String.valueOf(i), i))
+                .collect(Collectors.toList());
+        attributeEntity.setValues(values);
+        return attributeEntity;
+    }
+
+    /**
+     * Creates attribute value entity.
+     *
+     * @param value - attribute value
+     * @param index - value index
+     * @return attribute value entity
+     */
+    public static AttributeValueEntity createAttributeValueEntity(String value, int index) {
+        var attributeValueEntity = new AttributeValueEntity();
+        attributeValueEntity.setValue(value);
+        attributeValueEntity.setIndex(index);
+        return attributeValueEntity;
+    }
+
+    /**
+     * Creates attribute dto.
+     *
+     * @param name - attribute name
+     * @return attribute dto
+     */
+    public static AttributeDto createAttributeDto(String name) {
+        var attributeDto = new AttributeDto();
+        attributeDto.setName(name);
+        attributeDto.setSelected(true);
+        return attributeDto;
     }
 }

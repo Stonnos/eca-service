@@ -20,6 +20,7 @@
             **/config/**/*,
             **/exception/**/*,
             **/dictionary/**/*,
+            **/util/**/*,
             **/EcaDataStorageApplication.java
         </sonar.coverage.exclusions>
     </properties>
@@ -127,6 +128,12 @@
         <dependency>
             <groupId>eca.service</groupId>
             <artifactId>core-audit</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>eca.service</groupId>
+            <artifactId>eca-ds-transport</artifactId>
             <version>${project.version}</version>
         </dependency>
 

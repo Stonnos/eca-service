@@ -1,8 +1,11 @@
 package com.ecaservice.data.storage.service;
 
+import com.ecaservice.data.storage.entity.AttributeEntity;
 import com.ecaservice.data.storage.entity.InstancesEntity;
+import com.ecaservice.web.dto.model.AttributeDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import eca.data.file.model.InstancesModel;
 import org.springframework.data.domain.Page;
 import weka.core.Instances;
 
@@ -40,6 +43,14 @@ public interface StorageService {
     InstancesEntity getById(long id);
 
     /**
+     * Gets instances by uuid.
+     *
+     * @param uuid - instances uuid
+     * @return instances entity
+     */
+    InstancesEntity getByUuid(String uuid);
+
+    /**
      * Renames data with specified id.
      *
      * @param id      - instances id
@@ -73,10 +84,38 @@ public interface StorageService {
     Instances getInstances(InstancesEntity instancesEntity);
 
     /**
+     * Gets valid instances model with selected attributes and assigned class attribute.
+     * Valid instances is:
+     * 1. Selected attributes number is greater than or equal to 2
+     * 2. Class attribute is selected
+     * 3. Class values number in table is greater than or equal to 2
+     *
+     * @param instancesEntity - instances entity
+     * @return instances model object
+     */
+    InstancesModel getValidInstancesModel(InstancesEntity instancesEntity);
+
+    /**
      * Gets instances attributes.
      *
      * @param id - instances id
      * @return instances attributes
      */
-    List<String> getAttributes(long id);
+    List<AttributeDto> getAttributes(long id);
+
+    /**
+     * Sets class attribute for specified instances.
+     *
+     * @param classAttributeId - class attribute id
+     * @return attribute entity
+     */
+    AttributeEntity setClassAttribute(long classAttributeId);
+
+    /**
+     * Selects all attributes for specified instances.
+     *
+     * @param id - instances id
+     * @return instances entity
+     */
+    InstancesEntity selectAllAttributes(long id);
 }

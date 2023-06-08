@@ -1,6 +1,7 @@
 package com.ecaservice.oauth.exception;
 
 import com.ecaservice.common.web.exception.ValidationErrorException;
+import com.ecaservice.oauth.error.EcaOauthErrorCode;
 
 /**
  * Exception throws in case if token is invalid.
@@ -9,12 +10,10 @@ import com.ecaservice.common.web.exception.ValidationErrorException;
  */
 public class InvalidTokenException extends ValidationErrorException {
 
-    private static final String ERROR_CODE = "InvalidToken";
-
     /**
      * Constructor with parameters.
      */
     public InvalidTokenException() {
-        super(ERROR_CODE, "Invalid token");
+        super(EcaOauthErrorCode.INVALID_TOKEN, "Invalid token");
     }
 }

@@ -11,7 +11,7 @@
 * Openjdk 1.11
 * maven => 3.3.9
 * Rabbit MQ => 3
-* eca-core 6.9.2
+* eca-core 6.9.3
 * Postgres Database для хранения информации => 9.6
 * Docker, Docker-compose
 
@@ -20,6 +20,7 @@
 
 * core-test - модуль содержит основные зависимости для тестов
 * oauth2-test - модуль содержит конфигурацию spring security oauth2 для тестов
+* common-error-model - модуль содержит модельные классы для ошибок
 * common-web - модуль содержит общие классы, используемые во всех сервисах
 * core-lock - библиотека для работы с блокирующими операциями
 * redis-lock - библиотека для работы с блокирующими операциями с использованием redis
@@ -28,6 +29,7 @@
 * eca-mail-transport - модуль содержит dto классы для сервиса eca-mail
 * classifiers-options - модуль содержит модельные классы для настроек входных параметров классификаторов
 * eca-ers-transport - модуль содержит dto классы для сервиса ERS
+* eca-ds-transport - модуль содержит dto классы для сервиса Data storage
 * eca-external-api-transport - модуль содержит dto классы для внешнего API
 * eca-audit-transport - модуль содержит dto классы для сервиса журнала аудита
 * eca-report-model - модуль содержит модельные классы для отчетов
@@ -82,7 +84,7 @@ mvn clean install -Pquality
 
 3. Используя пакетный менеджер docker-compose, создать docker контейнеры с помощью команды:
 
-    docker-compose up -d
+   docker-compose up -d --build
 
 ВАЖНО! Данную команду необходимо выполнять из корневой папки проекта.
 

@@ -4,16 +4,19 @@ import com.ecaservice.data.storage.AbstractJpaTest;
 import com.ecaservice.data.storage.config.StorageTestConfiguration;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.exception.TableExistsException;
+import com.ecaservice.data.storage.mapping.AttributeMapperImpl;
+import com.ecaservice.data.storage.repository.AttributeRepository;
+import com.ecaservice.data.storage.repository.AttributeValueRepository;
 import com.ecaservice.data.storage.repository.InstancesRepository;
 import com.ecaservice.data.storage.service.impl.StorageServiceImpl;
-import com.ecaservice.data.storage.service.impl.TableNameTestService;
-import eca.data.db.SqlQueryHelper;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.oauth2.common.util.RandomValueStringGenerator;
 import weka.core.Instances;
 
 import javax.inject.Inject;
+import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -30,9 +33,9 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({StorageServiceImpl.class, InstancesService.class, TransactionalService.class,
-        SqlQueryHelper.class, StorageTestConfiguration.class, TableNameTestService.class,
-        InstancesConversionService.class})
+@Import({StorageServiceImpl.class, InstancesService.class, InstancesBatchService.class,
+        RandomValueStringGenerator.class, StorageTestConfiguration.class,
+        AttributeService.class, AttributeMapperImpl.class})
 class ConcurrentStorageServiceTest extends AbstractJpaTest {
 
     private static final int NUM_THREADS = 2;
@@ -46,15 +49,15 @@ class ConcurrentStorageServiceTest extends AbstractJpaTest {
 
     @Inject
     private InstancesRepository instancesRepository;
+    @Inject
+    private AttributeRepository attributeRepository;
+    @Inject
+    private AttributeValueRepository attributeValueRepository;
 
     @MockBean
     private UserService userService;
     @MockBean
-    private TableMetaDataProvider tableMetaDataProvider;
-    @MockBean
     private SearchQueryCreator searchQueryCreator;
-    @MockBean
-    private InstancesResultSetExtractor instancesResultSetExtractor;
 
     private ConcurrentStorageService concurrentStorageService;
 
@@ -65,6 +68,9 @@ class ConcurrentStorageServiceTest extends AbstractJpaTest {
 
     @Override
     public void deleteAll() {
+        unsetInstancesClass();
+        attributeValueRepository.deleteAll();
+        attributeRepository.deleteAll();
         instancesRepository.deleteAll();
     }
 
@@ -124,6 +130,14 @@ class ConcurrentStorageServiceTest extends AbstractJpaTest {
     private InstancesEntity createAndSaveInstancesEntity(String tableName) {
         InstancesEntity instancesEntity = createInstancesEntity();
         instancesEntity.setTableName(tableName);
+        instancesEntity.setUuid(UUID.randomUUID().toString());
+        instancesEntity.setIdColumnName(UUID.randomUUID().toString());
         return instancesRepository.save(instancesEntity);
+    }
+
+    private void unsetInstancesClass() {
+        var instancesList = instancesRepository.findAll();
+        instancesList.forEach(instancesEntity -> instancesEntity.setClassAttribute(null));
+        instancesRepository.saveAll(instancesList);
     }
 }

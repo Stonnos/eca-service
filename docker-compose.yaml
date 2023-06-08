@@ -89,12 +89,11 @@ services:
   eca-server:
     image: eca-server
     container_name: eca-server
+    restart: always
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
       JAVA_OPTS: "-Xmx1g"
-      DB_CONTAINER_WAIT: ${DB_CONTAINER_WAIT}
-      DB_CONTAINER_WAIT_TIMEOUT: ${DB_CONTAINER_WAIT_TIMEOUT}
       QUEUE_EVALUATIONREQUESTQUEUE: ${QUEUE_EVALUATION_REQUEST_QUEUE}
       QUEUE_EVALUATIONOPTIMIZERREQUESTQUEUE: ${QUEUE_EVALUATION_OPTIMIZER_REQUEST_QUEUE}
       QUEUE_EXPERIMENTREQUESTQUEUE: ${QUEUE_EXPERIMENT_REQUEST_QUEUE}
@@ -115,11 +114,10 @@ services:
   eca-oauth:
     image: eca-oauth
     container_name: eca-oauth
+    restart: always
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
-      DB_CONTAINER_WAIT: ${DB_CONTAINER_WAIT}
-      DB_CONTAINER_WAIT_TIMEOUT: ${DB_CONTAINER_WAIT_TIMEOUT}
       JAVA_OPTS: "-Xmx756m"
       AUDIT_ENABLED: "true"
       AUDIT_ASYNCEVENTS: ${AUDIT_ASYNC_EVENTS}
@@ -135,11 +133,10 @@ services:
   eca-mail:
     image: eca-mail
     container_name: eca-mail
+    restart: always
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
-      DB_CONTAINER_WAIT: ${DB_CONTAINER_WAIT}
-      DB_CONTAINER_WAIT_TIMEOUT: ${DB_CONTAINER_WAIT_TIMEOUT}
       JAVA_OPTS: "-Xmx512m"
       OPENAPI_BASEPATH: "/eca-mail"
     networks:
@@ -151,11 +148,10 @@ services:
   eca-data-storage:
     image: eca-data-storage
     container_name: eca-data-storage
+    restart: always
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
-      DB_CONTAINER_WAIT: ${DB_CONTAINER_WAIT}
-      DB_CONTAINER_WAIT_TIMEOUT: ${DB_CONTAINER_WAIT_TIMEOUT}
       JAVA_OPTS: "-Xmx512m"
       AUDIT_ENABLED: "true"
       AUDIT_ASYNCEVENTS: ${AUDIT_ASYNC_EVENTS}
@@ -171,12 +167,11 @@ services:
   eca-ers:
     image: eca-ers
     container_name: eca-ers
+    restart: always
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
       JAVA_OPTS: "-Xmx1g"
-      DB_CONTAINER_WAIT: ${DB_CONTAINER_WAIT}
-      DB_CONTAINER_WAIT_TIMEOUT: ${DB_CONTAINER_WAIT_TIMEOUT}
       OPENAPI_BASEPATH: "/eca-ers"
     networks:
       - default
@@ -187,12 +182,11 @@ services:
   eca-external-api:
     image: eca-external-api
     container_name: eca-external-api
+    restart: always
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
       JAVA_OPTS: "-Xmx1g"
-      DB_CONTAINER_WAIT: ${DB_CONTAINER_WAIT}
-      DB_CONTAINER_WAIT_TIMEOUT: ${DB_CONTAINER_WAIT_TIMEOUT}
       OPENAPI_BASEPATH: "/external-api"
     networks:
       - default
@@ -231,14 +225,13 @@ services:
   eca-web-push:
     image: eca-web-push
     container_name: eca-web-push
+    restart: always
     ports:
       - "8099:8099"
     environment:
       TZ: ${TIME_ZONE}
       SERVER_PORT: "8099"
       SPRING_PROFILES_ACTIVE: "docker"
-      DB_CONTAINER_WAIT: ${DB_CONTAINER_WAIT}
-      DB_CONTAINER_WAIT_TIMEOUT: ${DB_CONTAINER_WAIT_TIMEOUT}
       JAVA_OPTS: "-Xmx512m"
       OPENAPI_BASEPATH: "/eca-web-push"
     networks:
@@ -247,11 +240,10 @@ services:
   eca-audit-log:
     image: eca-audit-log
     container_name: eca-audit-log
+    restart: always
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
-      DB_CONTAINER_WAIT: ${DB_CONTAINER_WAIT}
-      DB_CONTAINER_WAIT_TIMEOUT: ${DB_CONTAINER_WAIT_TIMEOUT}
       JAVA_OPTS: "-Xmx512m"
       OPENAPI_BASEPATH: "/eca-audit-log"
     networks:

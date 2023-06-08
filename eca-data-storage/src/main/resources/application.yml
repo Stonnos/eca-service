@@ -22,13 +22,11 @@ spring:
         jdbc:
           lob:
             non_contextual_creation: true
-        order_by:
-          default_null_ordering: last
   liquibase:
     contexts: schema,data
     change-log: classpath:db/liquibase-changelog.xml
   cache:
-    cache-names: table-columns
+    cache-names: attributes
     caffeine:
       spec: maximumSize=100, expireAfterWrite=18000s
   servlet:

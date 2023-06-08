@@ -1,6 +1,8 @@
 package com.ecaservice.common.web;
 
-import com.ecaservice.common.web.dto.ValidationErrorDto;
+import com.ecaservice.common.error.model.ErrorDetails;
+import com.ecaservice.common.error.model.ValidationErrorDto;
+import com.ecaservice.common.web.error.CommonErrorCode;
 import com.ecaservice.common.web.exception.ValidationErrorException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
@@ -32,10 +34,6 @@ import java.util.stream.IntStream;
  */
 @UtilityClass
 public class ExceptionResponseHandler {
-
-    private static final String INVALID_REQUEST_CODE = "InvalidRequest";
-    private static final String INVALID_FORMAT_CODE = "InvalidFormat";
-    private static final String MAX_UPLOAD_SIZE_EXCEEDED_CODE = "MaxUploadSizeExceeded";
 
     private static final String POINT = ".";
     private static final String OPEN_BRACKET = "[";
@@ -92,13 +90,13 @@ public class ExceptionResponseHandler {
         if (ex.getCause() instanceof InvalidFormatException) {
             var invalidFormatException = (InvalidFormatException) ex.getCause();
             var validationErrorDto = new ValidationErrorDto();
-            validationErrorDto.setCode(INVALID_FORMAT_CODE);
+            validationErrorDto.setCode(CommonErrorCode.INVALID_FORMAT_CODE.getCode());
             validationErrorDto.setFieldName(getPropertyPath(invalidFormatException.getPath()));
             validationErrorDto.setErrorMessage(ex.getMessage());
             validationErrors.add(validationErrorDto);
         } else {
             var validationErrorDto = new ValidationErrorDto();
-            validationErrorDto.setCode(INVALID_REQUEST_CODE);
+            validationErrorDto.setCode(CommonErrorCode.INVALID_REQUEST_CODE.getCode());
             validationErrorDto.setErrorMessage(ex.getMessage());
             validationErrors.add(validationErrorDto);
         }
@@ -146,7 +144,8 @@ public class ExceptionResponseHandler {
      */
     public static ResponseEntity<List<ValidationErrorDto>> handleValidationErrorException(ValidationErrorException ex) {
         var validationErrorDto = new ValidationErrorDto();
-        validationErrorDto.setCode(ex.getErrorCode());
+        String code = Optional.ofNullable(ex.getErrorDetails()).map(ErrorDetails::getCode).orElse(null);
+        validationErrorDto.setCode(code);
         validationErrorDto.setFieldName(ex.getFieldName());
         validationErrorDto.setErrorMessage(ex.getMessage());
         return ResponseEntity.badRequest().body(Collections.singletonList(validationErrorDto));
@@ -161,7 +160,7 @@ public class ExceptionResponseHandler {
     public static ResponseEntity<List<ValidationErrorDto>> handleMaxUploadSizeExceededException(
             MaxUploadSizeExceededException ex) {
         var validationError = new ValidationErrorDto();
-        validationError.setCode(MAX_UPLOAD_SIZE_EXCEEDED_CODE);
+        validationError.setCode(CommonErrorCode.MAX_UPLOAD_SIZE_EXCEEDED_CODE.getCode());
         validationError.setErrorMessage(ex.getMessage());
         return ResponseEntity.badRequest().body(Collections.singletonList(validationError));
     }

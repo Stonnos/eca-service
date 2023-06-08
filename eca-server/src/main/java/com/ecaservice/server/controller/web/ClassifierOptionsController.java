@@ -1,7 +1,7 @@
 package com.ecaservice.server.controller.web;
 
 import com.ecaservice.classifier.options.model.ClassifierOptions;
-import com.ecaservice.common.web.dto.ValidationErrorDto;
+import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.server.event.model.push.AddClassifierOptionsPushEvent;
 import com.ecaservice.server.event.model.push.DeleteClassifierOptionsPushEvent;
 import com.ecaservice.server.service.UserService;

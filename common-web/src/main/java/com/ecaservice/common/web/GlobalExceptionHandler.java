@@ -1,6 +1,6 @@
 package com.ecaservice.common.web;
 
-import com.ecaservice.common.web.dto.ValidationErrorDto;
+import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.common.web.exception.ValidationErrorException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -72,8 +72,10 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(ValidationErrorException.class)
     public ResponseEntity<List<ValidationErrorDto>> handleValidationError(ValidationErrorException ex) {
-        log.error("Validation error [{}]: {}", ex.getErrorCode(), ex.getMessage());
-        return ExceptionResponseHandler.handleValidationErrorException(ex);
+        log.error("Validation error [{}]: {}", ex.getErrorDetails(), ex.getMessage());
+        var response = ExceptionResponseHandler.handleValidationErrorException(ex);
+        log.error("Validation errors: {}", response.getBody());
+        return response;
     }
 
     /**

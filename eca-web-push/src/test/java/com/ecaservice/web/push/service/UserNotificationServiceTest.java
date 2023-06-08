@@ -6,7 +6,7 @@ import com.ecaservice.web.push.AbstractJpaTest;
 import com.ecaservice.web.push.config.AppProperties;
 import com.ecaservice.web.push.entity.MessageStatus;
 import com.ecaservice.web.push.entity.NotificationEntity;
-import com.ecaservice.web.push.exception.InvalidNotificationsException;
+import com.ecaservice.web.push.exception.InvalidNotificationsIdsException;
 import com.ecaservice.web.push.mapping.NotificationMapperImpl;
 import com.ecaservice.web.push.repository.NotificationRepository;
 import org.junit.jupiter.api.Test;
@@ -117,7 +117,7 @@ class UserNotificationServiceTest extends AbstractJpaTest {
         var ids = createAndSaveValidNotReadNotificationsIds();
         var invalidNotificationIds = createAndSaveInvalidNotificationsForRead();
         ids.addAll(invalidNotificationIds);
-        assertThrows(InvalidNotificationsException.class, () ->
+        assertThrows(InvalidNotificationsIdsException.class, () ->
                 userNotificationService.readNotifications(new ReadNotificationsDto(ids)));
     }
 

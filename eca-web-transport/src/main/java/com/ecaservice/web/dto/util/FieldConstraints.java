@@ -147,6 +147,11 @@ public class FieldConstraints {
             "^[0-9a-f]{8}-[0-9a-f]{4}-[34][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$";
 
     /**
+     * UUID max size.
+     */
+    public static final int UUID_MAX_SIZE = 36;
+
+    /**
      * Max. additional properties size
      */
     public static final int MAX_ADDITIONAL_PROPERTIES_SIZE = 50;

@@ -10,6 +10,7 @@
     <modules>
         <module>core-test</module>
         <module>oauth2-test</module>
+        <module>common-error-model</module>
         <module>common-web</module>
         <module>core-lock</module>
         <module>redis-lock</module>
@@ -18,6 +19,7 @@
         <module>eca-mail-transport</module>
         <module>classifiers-options</module>
         <module>eca-ers-transport</module>
+        <module>eca-ds-transport</module>
         <module>eca-web-push-transport</module>
         <module>eca-external-api-transport</module>
         <module>eca-audit-transport</module>
@@ -79,7 +81,7 @@
         <inject.version>1</inject.version>
         <logback.version>1.2.10</logback.version>
         <slf4j.version>1.7.30</slf4j.version>
-        <eca.version>6.9.2</eca.version>
+        <eca.version>6.9.3</eca.version>
         <h2.version>1.4.199</h2.version>
         <postresql.version>42.3.3</postresql.version>
         <liquibase.version>3.7.0</liquibase.version>

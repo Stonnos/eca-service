@@ -1,7 +1,7 @@
 package com.ecaservice.external.api.controller;
 
 import com.ecaservice.common.web.ExceptionResponseHandler;
-import com.ecaservice.common.web.dto.ValidationErrorDto;
+import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.common.web.exception.ValidationErrorException;
 import com.ecaservice.external.api.dto.ResponseCode;
 import com.ecaservice.external.api.dto.ResponseDto;
@@ -88,7 +88,7 @@ public class ErrorHandler {
      */
     @ExceptionHandler(ValidationErrorException.class)
     public ResponseEntity<ResponseDto<List<ValidationErrorDto>>> handleValidationError(ValidationErrorException ex) {
-        log.error("Validation error [{}]: {}", ex.getErrorCode(), ex.getMessage());
+        log.error("Validation error [{}]: {}", ex.getErrorDetails(), ex.getMessage());
         var responseEntity = ExceptionResponseHandler.handleValidationErrorException(ex);
         var responseDto = buildResponse(ResponseCode.VALIDATION_ERROR, responseEntity.getBody());
         return ResponseEntity.badRequest().body(responseDto);

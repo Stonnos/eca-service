@@ -1,8 +1,11 @@
 package com.ecaservice.data.storage.service;
 
+import com.ecaservice.data.storage.entity.AttributeEntity;
 import com.ecaservice.data.storage.entity.InstancesEntity;
+import com.ecaservice.web.dto.model.AttributeDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import eca.data.file.model.InstancesModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
@@ -59,6 +62,11 @@ public class ConcurrentStorageService implements StorageService {
     }
 
     @Override
+    public InstancesEntity getByUuid(String uuid) {
+        return storageService.getByUuid(uuid);
+    }
+
+    @Override
     public String renameData(long id, String newTableName) {
         String oldTableName;
         tableNamesMonitorsMap.putIfAbsent(newTableName, new Object());
@@ -85,7 +93,22 @@ public class ConcurrentStorageService implements StorageService {
     }
 
     @Override
-    public List<String> getAttributes(long id) {
+    public InstancesModel getValidInstancesModel(InstancesEntity instancesEntity) {
+        return storageService.getValidInstancesModel(instancesEntity);
+    }
+
+    @Override
+    public List<AttributeDto> getAttributes(long id) {
         return storageService.getAttributes(id);
+    }
+
+    @Override
+    public AttributeEntity setClassAttribute(long classAttributeId) {
+        return storageService.setClassAttribute(classAttributeId);
+    }
+
+    @Override
+    public InstancesEntity selectAllAttributes(long id) {
+        return storageService.selectAllAttributes(id);
     }
 }

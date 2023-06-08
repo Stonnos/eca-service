@@ -1,11 +1,14 @@
 package com.ecaservice.data.storage.entity;
 
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 
@@ -30,6 +33,18 @@ public class InstancesEntity {
     private String tableName;
 
     /**
+     * Instances uuid
+     */
+    @Column(unique = true, nullable = false)
+    private String uuid;
+
+    /**
+     * ID column name in instances table
+     */
+    @Column(name = "id_column_name", nullable = false)
+    private String idColumnName;
+
+    /**
      * Instances number
      */
     @Column(name = "num_instances")
@@ -52,4 +67,12 @@ public class InstancesEntity {
      */
     @Column(name = "created_by", nullable = false)
     private String createdBy;
+
+    /**
+     * Class attribute
+     */
+    @ToString.Exclude
+    @ManyToOne
+    @JoinColumn(name = "class_attribute_id")
+    private AttributeEntity classAttribute;
 }

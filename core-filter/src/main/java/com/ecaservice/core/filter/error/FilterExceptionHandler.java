@@ -1,6 +1,6 @@
 package com.ecaservice.core.filter.error;
 
-import com.ecaservice.common.web.dto.ValidationErrorDto;
+import com.ecaservice.common.error.model.ValidationErrorDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +19,6 @@ import java.util.List;
 @ControllerAdvice
 public class FilterExceptionHandler {
 
-    private static final String ERROR_CODE = "FieldNotFound";
-
     /**
      * Handles {@link PropertyReferenceException} errors.
      *
@@ -29,7 +27,9 @@ public class FilterExceptionHandler {
     @ExceptionHandler(PropertyReferenceException.class)
     public ResponseEntity<List<ValidationErrorDto>> handleError(PropertyReferenceException ex) {
         log.error("Property reference error for name [{}]: {}", ex.getPropertyName(), ex.getMessage());
-        var validationError = new ValidationErrorDto(ex.getPropertyName(), ERROR_CODE, ex.getMessage());
+        var validationError =
+                new ValidationErrorDto(ex.getPropertyName(), CoreFilterErrorCode.FIELD_NOT_FOUND.getCode(),
+                        ex.getMessage());
         return ResponseEntity.badRequest().body(Collections.singletonList(validationError));
     }
 }

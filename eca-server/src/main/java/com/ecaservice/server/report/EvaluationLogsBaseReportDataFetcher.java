@@ -2,11 +2,11 @@ package com.ecaservice.server.report;
 
 import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.report.data.fetcher.AbstractBaseReportDataFetcher;
-import com.ecaservice.report.model.EvaluationLogBean;
-import com.ecaservice.report.model.ReportType;
 import com.ecaservice.server.mapping.EvaluationLogMapper;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.FilterTemplateType;
+import com.ecaservice.server.report.model.BaseReportType;
+import com.ecaservice.server.report.model.EvaluationLogBean;
 import com.ecaservice.server.service.evaluation.EvaluationLogService;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import org.springframework.data.domain.Page;
@@ -41,7 +41,8 @@ public class EvaluationLogsBaseReportDataFetcher extends
     public EvaluationLogsBaseReportDataFetcher(FilterService filterService,
                                                EvaluationLogService evaluationLogService,
                                                EvaluationLogMapper evaluationLogMapper) {
-        super(ReportType.EVALUATION_LOGS, EvaluationLog.class, FilterTemplateType.EVALUATION_LOG.name(), filterService);
+        super(BaseReportType.EVALUATION_LOGS.name(), EvaluationLog.class, FilterTemplateType.EVALUATION_LOG.name(),
+                filterService);
         this.evaluationLogService = evaluationLogService;
         this.evaluationLogMapper = evaluationLogMapper;
     }

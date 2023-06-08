@@ -4,7 +4,6 @@ import com.ecaservice.common.web.exception.FileProcessingException;
 import com.ecaservice.common.web.exception.InvalidFileException;
 import com.ecaservice.data.storage.model.MultipartFileResource;
 import eca.data.file.FileDataLoader;
-import eca.data.file.resource.DataResource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

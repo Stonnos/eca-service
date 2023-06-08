@@ -1,6 +1,7 @@
 package com.ecaservice.oauth.exception;
 
 import com.ecaservice.common.web.exception.ValidationErrorException;
+import com.ecaservice.oauth.error.EcaOauthErrorCode;
 
 /**
  * Exception throws in case if active change email request already exists.
@@ -9,14 +10,13 @@ import com.ecaservice.common.web.exception.ValidationErrorException;
  */
 public class ChangeEmailRequestAlreadyExistsException extends ValidationErrorException {
 
-    private static final String ERROR_CODE = "ActiveChangeEmailRequest";
-
     /**
      * Constructor with parameters.
      *
      * @param userId - user id
      */
     public ChangeEmailRequestAlreadyExistsException(Long userId) {
-        super(ERROR_CODE, String.format("Active change email request already exists for user [%d]", userId));
+        super(EcaOauthErrorCode.ACTIVE_CHANGE_EMAIL_REQUEST,
+                String.format("Active change email request already exists for user [%d]", userId));
     }
 }

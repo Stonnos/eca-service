@@ -1,7 +1,69 @@
 [
-  "x1",
-  "x2",
-  "x3",
-  "x4",
-  "class"
+  {
+    "id": 1,
+    "name": "x1",
+    "index": 0,
+    "selected": true,
+    "type": {
+      "value": "NUMERIC",
+      "description": "Числовой"
+    }
+  },
+  {
+    "id": 2,
+    "name": "x2",
+    "index": 1,
+    "selected": true,
+    "type": {
+      "value": "NUMERIC",
+      "description": "Числовой"
+    }
+  },
+  {
+    "id": 3,
+    "name": "x3",
+    "index": 2,
+    "selected": true,
+    "type": {
+      "value": "NUMERIC",
+      "description": "Числовой"
+    }
+  },
+  {
+    "id": 4,
+    "name": "x4",
+    "index": 3,
+    "selected": true,
+    "type": {
+      "value": "NUMERIC",
+      "description": "Числовой"
+    }
+  },
+  {
+    "id": 5,
+    "name": "class",
+    "index": 4,
+    "selected": true,
+    "type": {
+      "value": "NOMINAL",
+      "description": "Категориальный"
+    },
+    "values": [
+      {
+        "id": 133,
+        "index": 0,
+        "value": "Iris-setosa"
+      },
+      {
+        "id": 133,
+        "index": 1,
+        "value": "Iris-versicolor"
+      },
+      {
+        "id": 133,
+        "index": 2,
+        "value": "Iris-verginica"
+      }
+    ]
+  }
 ]

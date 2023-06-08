@@ -1,29 +1,18 @@
 package com.ecaservice.server.controller.web;
 
-import com.ecaservice.base.model.ExperimentRequest;
-import com.ecaservice.base.model.ExperimentType;
-import com.ecaservice.common.web.dto.ValidationErrorDto;
+import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
-import com.ecaservice.core.audit.annotation.Audit;
-import com.ecaservice.server.event.model.ExperimentEmailEvent;
-import com.ecaservice.server.event.model.push.ExperimentWebPushEvent;
+import com.ecaservice.server.dto.CreateExperimentRequestDto;
 import com.ecaservice.server.mapping.ExperimentMapper;
 import com.ecaservice.server.mapping.ExperimentProgressMapper;
-import com.ecaservice.server.model.MsgProperties;
-import com.ecaservice.server.model.MultipartFileResource;
-import com.ecaservice.server.model.entity.Channel;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentProgressEntity;
 import com.ecaservice.server.model.entity.ExperimentResultsEntity;
 import com.ecaservice.server.repository.ExperimentResultsEntityRepository;
-import com.ecaservice.server.service.UserService;
-import com.ecaservice.server.service.auth.UsersClient;
-import com.ecaservice.server.service.experiment.DataService;
 import com.ecaservice.server.service.experiment.ExperimentDataService;
 import com.ecaservice.server.service.experiment.ExperimentProgressService;
+import com.ecaservice.server.service.experiment.ExperimentRequestWebApiService;
 import com.ecaservice.server.service.experiment.ExperimentResultsService;
-import com.ecaservice.server.service.experiment.ExperimentService;
-import com.ecaservice.user.dto.UserInfoDto;
 import com.ecaservice.web.dto.model.ChartDto;
 import com.ecaservice.web.dto.model.CreateExperimentResultDto;
 import com.ecaservice.web.dto.model.ExperimentDto;
@@ -35,7 +24,6 @@ import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
 import com.ecaservice.web.dto.model.S3ContentResponseDto;
-import eca.core.evaluation.EvaluationMethod;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -47,7 +35,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
@@ -60,8 +47,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-import weka.core.Instances;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
@@ -71,7 +56,6 @@ import java.util.List;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
-import static com.ecaservice.server.config.audit.AuditCodes.CREATE_EXPERIMENT_REQUEST;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
 /**
@@ -87,32 +71,33 @@ import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 @RequiredArgsConstructor
 public class ExperimentController {
 
-    private final UserService userService;
-    private final ExperimentService experimentService;
     private final ExperimentDataService experimentDataService;
     private final ExperimentResultsService experimentResultsService;
     private final ExperimentMapper experimentMapper;
     private final ExperimentProgressMapper experimentProgressMapper;
-    private final UsersClient usersClient;
     private final ExperimentProgressService experimentProgressService;
-    private final ApplicationEventPublisher eventPublisher;
-    private final DataService dataService;
+    private final ExperimentRequestWebApiService experimentRequestWebApiService;
     private final ExperimentResultsEntityRepository experimentResultsEntityRepository;
 
     /**
      * Creates experiment request.
      *
-     * @param trainingData     - training data file with format, such as csv, xls, xlsx, arff, json, docx, data, txt
-     * @param experimentType   - experiment type
-     * @param evaluationMethod - evaluation method
+     * @param experimentRequestDto - experiment request dto
      * @return create experiment results dto
      */
-    @Audit(value = CREATE_EXPERIMENT_REQUEST, correlationIdKey = "#result.requestId")
     @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
             description = "Creates experiment request with specified options",
             summary = "Creates experiment request with specified options",
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
+                    @Content(examples = {
+                            @ExampleObject(
+                                    name = "CreateExperimentRequest",
+                                    ref = "#/components/examples/CreateExperimentRequest"
+                            )
+                    })
+            }),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200",
                             content = @Content(
@@ -139,29 +124,11 @@ public class ExperimentController {
                     )
             }
     )
-    @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/create")
     public CreateExperimentResultDto createRequest(
-            @Parameter(description = "Training data file", required = true) @RequestParam MultipartFile trainingData,
-            @Parameter(description = "Experiment type", required = true) @RequestParam ExperimentType experimentType,
-            @Parameter(description = "Evaluation method", required = true) @RequestParam
-                    EvaluationMethod evaluationMethod) {
-        log.info("Received experiment request for data '{}', experiment type {}, evaluation method {}",
-                trainingData.getOriginalFilename(), experimentType, evaluationMethod);
-        var user = userService.getCurrentUser();
-        var userInfoDto = usersClient.getUserInfo(user);
-        ExperimentRequest experimentRequest =
-                createExperimentRequest(trainingData, userInfoDto, experimentType, evaluationMethod);
-        MsgProperties msgProperties = MsgProperties.builder()
-                .channel(Channel.WEB)
-                .build();
-        Experiment experiment = experimentService.createExperiment(experimentRequest, msgProperties);
-        eventPublisher.publishEvent(new ExperimentWebPushEvent(this, experiment));
-        eventPublisher.publishEvent(new ExperimentEmailEvent(this, experiment));
-        log.info("Experiment request [{}] has been created.", experiment.getRequestId());
-        return CreateExperimentResultDto.builder()
-                .id(experiment.getId())
-                .requestId(experiment.getRequestId())
-                .build();
+            @Valid @RequestBody CreateExperimentRequestDto experimentRequestDto) {
+        log.info("Received experiment request [{}]", experimentRequestDto);
+        return experimentRequestWebApiService.createExperiment(experimentRequestDto);
     }
 
     /**
@@ -341,9 +308,9 @@ public class ExperimentController {
             @Parameter(description = "Experiment results id", example = "1", required = true)
             @Min(VALUE_1) @Max(Long.MAX_VALUE) @PathVariable Long id) {
         log.info("Received request to get experiment results details for id [{}]", id);
-        ExperimentResultsEntity experimentResultsEntityOptional = experimentResultsEntityRepository.findById(id)
+        var experimentResultsEntity = experimentResultsEntityRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(ExperimentResultsEntity.class, id));
-        return experimentResultsService.getExperimentResultsDetails(experimentResultsEntityOptional);
+        return experimentResultsService.getExperimentResultsDetails(experimentResultsEntity);
     }
 
     /**
@@ -610,18 +577,5 @@ public class ExperimentController {
             @Min(VALUE_1) @Max(Long.MAX_VALUE) @PathVariable Long id) {
         log.info("Received request to get experiment [{}] result content url", id);
         return experimentDataService.getExperimentResultsContentUrl(id);
-    }
-
-    private ExperimentRequest createExperimentRequest(MultipartFile trainingData,
-                                                      UserInfoDto userInfoDto,
-                                                      ExperimentType experimentType,
-                                                      EvaluationMethod evaluationMethod) {
-        ExperimentRequest experimentRequest = new ExperimentRequest();
-        experimentRequest.setEmail(userInfoDto.getEmail());
-        Instances data = dataService.load(new MultipartFileResource(trainingData));
-        experimentRequest.setData(data);
-        experimentRequest.setExperimentType(experimentType);
-        experimentRequest.setEvaluationMethod(evaluationMethod);
-        return experimentRequest;
     }
 }

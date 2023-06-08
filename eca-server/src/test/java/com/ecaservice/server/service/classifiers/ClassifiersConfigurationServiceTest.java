@@ -3,7 +3,7 @@ package com.ecaservice.server.service.classifiers;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.common.web.exception.InvalidOperationException;
 import com.ecaservice.core.filter.service.FilterService;
-import com.ecaservice.report.model.ClassifiersConfigurationBean;
+import com.ecaservice.server.report.model.ClassifiersConfigurationBean;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.mapping.ClassifierOptionsDatabaseModelMapperImpl;

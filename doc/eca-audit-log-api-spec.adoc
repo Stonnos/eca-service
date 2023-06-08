@@ -96,6 +96,19 @@
 |
 |===
 
+== 3. Пример ответа с ошибкой
+
+[source,json]
+----
+[
+  {
+    "fieldName": null,
+    "code": "DuplicateEventId",
+    "errorMessage": "Event id = [1d2de514-3a87-4620-9b97-c260e24340de] is already exists!"
+  }
+]
+----
+
 == Справочник значений EventType
 
 [options="header"]
@@ -110,4 +123,14 @@
 |3
 |FAILED
 |В ходе выполнения операции возникла ошибка
+|===
+
+== Справочник кодов ошибок
+
+[options="header"]
+|===
+|№|Код ошибки|Описание
+|1
+|DuplicateEventId
+|Данные с таким eventId уже существуют в базе
 |===

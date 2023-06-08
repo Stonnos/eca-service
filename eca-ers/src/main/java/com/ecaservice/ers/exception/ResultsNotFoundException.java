@@ -16,6 +16,6 @@ public class ResultsNotFoundException extends ValidationErrorException {
      * @param message - error message
      */
     public ResultsNotFoundException(String message) {
-        super(ErsErrorCode.RESULTS_NOT_FOUND.name(), message);
+        super(ErsErrorCode.RESULTS_NOT_FOUND, message);
     }
 }

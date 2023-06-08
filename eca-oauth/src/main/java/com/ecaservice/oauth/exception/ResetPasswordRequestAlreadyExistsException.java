@@ -1,6 +1,7 @@
 package com.ecaservice.oauth.exception;
 
 import com.ecaservice.common.web.exception.ValidationErrorException;
+import com.ecaservice.oauth.error.EcaOauthErrorCode;
 
 /**
  * Exception throws in case if active reset password request already exists.
@@ -9,14 +10,13 @@ import com.ecaservice.common.web.exception.ValidationErrorException;
  */
 public class ResetPasswordRequestAlreadyExistsException extends ValidationErrorException {
 
-    private static final String ERROR_CODE = "ActiveResetPasswordRequest";
-
     /**
      * Constructor with parameters.
      *
      * @param userId - user id
      */
     public ResetPasswordRequestAlreadyExistsException(Long userId) {
-        super(ERROR_CODE, String.format("Active reset password request already exists for user [%d]", userId));
+        super(EcaOauthErrorCode.ACTIVE_RESET_PASSWORD_REQUEST,
+                String.format("Active reset password request already exists for user [%d]", userId));
     }
 }

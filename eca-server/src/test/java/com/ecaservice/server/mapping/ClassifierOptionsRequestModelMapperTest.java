@@ -2,7 +2,7 @@ package com.ecaservice.server.mapping;
 
 
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
-import com.ecaservice.report.model.ClassifierOptionsRequestBean;
+import com.ecaservice.server.report.model.ClassifierOptionsRequestBean;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.server.model.entity.ClassifierOptionsResponseModel;

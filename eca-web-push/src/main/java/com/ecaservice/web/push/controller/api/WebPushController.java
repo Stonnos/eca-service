@@ -1,6 +1,6 @@
 package com.ecaservice.web.push.controller.api;
 
-import com.ecaservice.common.web.dto.ValidationErrorDto;
+import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.web.push.dto.AbstractPushRequest;
 import com.ecaservice.web.push.service.handler.AbstractPushRequestHandler;
 import io.swagger.v3.oas.annotations.Operation;

@@ -48,6 +48,7 @@ import { EventHandler } from "./common/event/event.handler";
 import { NotificationsCenterModule } from "./notifications-center/notifications-center.module";
 import { ClassifiersStatisticsModule } from "./classifiers-statistics/classifiers-statistics.module";
 import { ClassifiersTabsModule } from "./classifiers-tabs/classifiers-tabs.module";
+import { AttributesModule } from "./attributes/attributes.module";
 
 export function eventSubscribe(eventHandler: EventHandler) {
   return () => eventHandler.eventSubscribe();
@@ -102,7 +103,8 @@ export function eventSubscribe(eventHandler: EventHandler) {
     ClassifiersConfigurationHistoryModule,
     ClassifiersConfigurationFullDetailsModule,
     NotificationsCenterModule,
-    ClassifiersStatisticsModule
+    ClassifiersStatisticsModule,
+    AttributesModule
   ],
   providers: [
     CookieService,

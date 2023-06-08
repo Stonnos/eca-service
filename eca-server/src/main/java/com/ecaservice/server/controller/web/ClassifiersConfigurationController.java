@@ -1,17 +1,23 @@
 package com.ecaservice.server.controller.web;
 
-import com.ecaservice.common.web.dto.ValidationErrorDto;
+import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.core.audit.annotation.Audit;
-import com.ecaservice.report.model.ClassifiersConfigurationBean;
-import com.ecaservice.report.model.ReportType;
 import com.ecaservice.server.event.model.push.RenameClassifiersConfigurationPushEvent;
 import com.ecaservice.server.event.model.push.SetActiveClassifiersConfigurationPushEvent;
 import com.ecaservice.server.mapping.ClassifiersConfigurationMapper;
 import com.ecaservice.server.model.entity.ClassifiersConfiguration;
+import com.ecaservice.server.report.model.ClassifiersConfigurationBean;
 import com.ecaservice.server.service.UserService;
 import com.ecaservice.server.service.classifiers.ClassifiersConfigurationHistoryService;
 import com.ecaservice.server.service.classifiers.ClassifiersConfigurationService;
-import com.ecaservice.web.dto.model.*;
+import com.ecaservice.web.dto.model.ClassifierConfigurationsPageDto;
+import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
+import com.ecaservice.web.dto.model.ClassifiersConfigurationHistoryDto;
+import com.ecaservice.web.dto.model.ClassifiersConfigurationHistoryPageDto;
+import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
+import com.ecaservice.web.dto.model.PageDto;
+import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.UpdateClassifiersConfigurationDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -47,6 +53,7 @@ import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTIC
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
 import static com.ecaservice.server.config.audit.AuditCodes.GENERATE_CONFIGURATION_REPORT;
 import static com.ecaservice.server.config.audit.AuditCodes.SET_ACTIVE_CONFIGURATION;
+import static com.ecaservice.server.report.ReportTemplates.CLASSIFIERS_CONFIGURATION_TEMPLATE;
 import static com.ecaservice.server.util.ReportHelper.download;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
@@ -513,7 +520,7 @@ public class ClassifiersConfigurationController {
                 classifiersConfigurationService.getClassifiersConfigurationReport(id);
         String fileName =
                 String.format(CONFIGURATION_FILE_NAME_FORMAT, classifiersConfigurationBean.getConfigurationName());
-        download(ReportType.CLASSIFIERS_CONFIGURATION, fileName, httpServletResponse, classifiersConfigurationBean);
+        download(CLASSIFIERS_CONFIGURATION_TEMPLATE, fileName, httpServletResponse, classifiersConfigurationBean);
     }
 
     /**
