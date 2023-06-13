@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v28-added-code-column-to-tfa-code-table.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="added_code_column_to_tfa_code_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="tfa_code"/>
+            <not>
+                <columnExists tableName="tfa_code" columnName="code"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="tfa_code">
+            <column name="code" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="change_authentication_column_type_in_tfa_code_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="tfa_code"/>
+            <columnExists tableName="tfa_code" columnName="authentication"/>
+        </preConditions>
+        <modifyDataType tableName="tfa_code" columnName="authentication" newDataType="text"/>
+    </changeSet>
+</databaseChangeLog>

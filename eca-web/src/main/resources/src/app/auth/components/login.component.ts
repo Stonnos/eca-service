@@ -24,6 +24,8 @@ export class LoginComponent implements BaseForm, OnInit, OnDestroy {
   private static readonly TFA_REQUIRED_ERROR_CODE = 'tfa_required';
   private static readonly CHANGE_PASSWORD_REQUIRED_ERROR_CODE = 'change_password_required';
 
+  private token: string;
+
   public errorMessage: string;
   public submitted: boolean = false;
   public loading: boolean = false;
@@ -125,7 +127,7 @@ export class LoginComponent implements BaseForm, OnInit, OnDestroy {
 
   private verifyCode(): void {
     this.loading = true;
-    this.authService.verifyTfaCode(this.tfaVerificationCode)
+    this.authService.verifyTfaCode(this.token, this.tfaVerificationCode)
       .pipe(
         finalize(() => {
           this.loading = false;
@@ -163,6 +165,7 @@ export class LoginComponent implements BaseForm, OnInit, OnDestroy {
         this.loginStep = false;
         this.tfaCodeVerificationStep = true;
         this.codeExpired = false;
+        this.token = error.error.token;
         this.startTfaCodeValidityTimer(error.error.expires_in);
         break;
       case LoginComponent.CHANGE_PASSWORD_REQUIRED_ERROR_CODE:

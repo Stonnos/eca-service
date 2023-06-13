@@ -3,10 +3,9 @@ package com.ecaservice.oauth.entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.hibernate.annotations.Type;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 
 /**
@@ -22,9 +21,14 @@ import javax.persistence.Table;
 public class TfaCodeEntity extends TokenEntity {
 
     /**
-     * Authentication serialized object
+     * Two - factor authentication code value
      */
-    @Lob
-    @Type(type = "org.hibernate.type.BinaryType")
-    private byte[] authentication;
+    @Column(nullable = false)
+    private String code;
+
+    /**
+     * Authentication serialized object in base64
+     */
+    @Column(columnDefinition = "text", nullable = false)
+    private String authentication;
 }

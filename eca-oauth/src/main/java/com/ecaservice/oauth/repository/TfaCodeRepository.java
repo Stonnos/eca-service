@@ -31,10 +31,9 @@ public interface TfaCodeRepository extends JpaRepository<TfaCodeEntity, Long> {
      * Finds tfa code entity.
      *
      * @param token    - code value
-     * @param dateTime - now date time value
      * @return tfa code entity
      */
-    TfaCodeEntity findByTokenAndExpireDateAfter(String token, LocalDateTime dateTime);
+    TfaCodeEntity findByToken(String token);
 
     /**
      * Gets expired codes ids.
