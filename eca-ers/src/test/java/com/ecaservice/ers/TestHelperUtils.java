@@ -13,8 +13,9 @@ import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
 import com.ecaservice.ers.dto.InstancesReport;
 import com.ecaservice.ers.dto.RocCurveReport;
 import com.ecaservice.ers.dto.SortDirection;
-import com.ecaservice.ers.dto.SortField;
+import com.ecaservice.ers.dto.EvaluationResultsStatisticsField;
 import com.ecaservice.ers.dto.StatisticsReport;
+import com.ecaservice.ers.dto.EvaluationResultsStatisticsSortField;
 import com.ecaservice.ers.model.ClassificationCostsInfo;
 import com.ecaservice.ers.model.ClassifierOptionsInfo;
 import com.ecaservice.ers.model.ConfusionMatrix;
@@ -23,11 +24,9 @@ import com.ecaservice.ers.model.InstancesInfo;
 import com.ecaservice.ers.model.RocCurveInfo;
 import com.ecaservice.ers.model.StatisticsInfo;
 import lombok.experimental.UtilityClass;
-import org.springframework.util.DigestUtils;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -48,7 +47,6 @@ public class TestHelperUtils {
     private static final int NUM_FOLDS = 10;
     private static final int NUM_TESTS = 1;
     private static final int SEED = 1;
-    private static final String STRUCTURE = "data";
     private static final String RELATION_NAME = "relation";
     private static final String CLASS_NAME = "class";
     private static final String ACTUAL_CLASS = "actual";
@@ -56,10 +54,10 @@ public class TestHelperUtils {
     private static final String CLASSIFIER_NAME = "Classifier";
     private static final String CLASSIFIER_DESCRIPTION = "description";
     private static final String OPTIONS = "options";
-    private static final String OPTION_VALUE = "option-value";
     private static final String STATISTICS_PCT_CORRECT = "statistics.pctCorrect";
     private static final String STATISTICS_MAX_AUC_VALUE = "statistics.maxAucValue";
     private static final String STATISTICS_VARIANCE_ERROR = "statistics.varianceError";
+    private static final String DATA_HASH = "3032e188204cb537f69fc7364f638641";
 
     /**
      * Creates evaluation results report.
@@ -90,7 +88,7 @@ public class TestHelperUtils {
      */
     public static InstancesReport buildInstancesReport() {
         InstancesReport instancesReport = new InstancesReport();
-        instancesReport.setStructure(STRUCTURE);
+        instancesReport.setDataMd5Hash(DATA_HASH);
         instancesReport.setRelationName(RELATION_NAME);
         instancesReport.setNumInstances(BigInteger.TEN);
         instancesReport.setNumAttributes(BigInteger.TEN);
@@ -106,7 +104,7 @@ public class TestHelperUtils {
      */
     public static InstancesInfo buildInstancesInfo() {
         InstancesInfo instancesInfo = new InstancesInfo();
-        instancesInfo.setStructure(STRUCTURE.getBytes(StandardCharsets.UTF_8));
+        instancesInfo.setDataMd5Hash(DATA_HASH);
         instancesInfo.setRelationName(RELATION_NAME);
         instancesInfo.setNumInstances(BigInteger.TEN.intValue());
         instancesInfo.setNumAttributes(BigInteger.TEN.intValue());
@@ -304,14 +302,12 @@ public class TestHelperUtils {
     public static ClassifierOptionsRequest createClassifierOptionsRequest(EvaluationMethod evaluationMethod) {
         ClassifierOptionsRequest request = new ClassifierOptionsRequest();
         request.setRequestId(UUID.randomUUID().toString());
-        request.setRelationName(RELATION_NAME);
-        String dataMd5Hash = DigestUtils.md5DigestAsHex(STRUCTURE.getBytes(StandardCharsets.UTF_8));
-        request.setDataHash(dataMd5Hash);
+        request.setDataHash(DATA_HASH);
         request.setEvaluationMethodReport(buildEvaluationMethodReport(evaluationMethod));
-        request.setSortFields(newArrayList());
-        request.getSortFields().add(createSortField(STATISTICS_PCT_CORRECT, SortDirection.DESC));
-        request.getSortFields().add(createSortField(STATISTICS_MAX_AUC_VALUE, SortDirection.DESC));
-        request.getSortFields().add(createSortField(STATISTICS_VARIANCE_ERROR, SortDirection.ASC));
+        request.setEvaluationResultsStatisticsSortFields(newArrayList());
+        request.getEvaluationResultsStatisticsSortFields().add(createSortField(EvaluationResultsStatisticsField.PCT_CORRECT, SortDirection.DESC));
+        request.getEvaluationResultsStatisticsSortFields().add(createSortField(EvaluationResultsStatisticsField.MAX_AUC_VALUE, SortDirection.DESC));
+        request.getEvaluationResultsStatisticsSortFields().add(createSortField(EvaluationResultsStatisticsField.VARIANCE_ERROR, SortDirection.ASC));
         return request;
     }
 
@@ -322,9 +318,9 @@ public class TestHelperUtils {
      * @param direction - sort direction
      * @return sort field object
      */
-    public static SortField createSortField(String fieldName, SortDirection direction) {
-        SortField sortField = new SortField();
-        sortField.setFieldName(fieldName);
+    public static EvaluationResultsStatisticsSortField createSortField(EvaluationResultsStatisticsField fieldName, SortDirection direction) {
+        EvaluationResultsStatisticsSortField sortField = new EvaluationResultsStatisticsSortField();
+        sortField.setField(fieldName);
         sortField.setDirection(direction);
         return sortField;
     }

@@ -10,7 +10,7 @@ import com.ecaservice.server.config.ers.ErsConfig;
 import com.ecaservice.server.configuation.CacheConfiguration;
 import com.ecaservice.server.mapping.ClassifierReportMapperImpl;
 import com.ecaservice.server.mapping.ErsResponseStatusMapperImpl;
-import com.ecaservice.server.mapping.InstancesConverter;
+import com.ecaservice.server.mapping.InstancesInfoMapperImpl;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.evaluation.EvaluationResultsService;
 import org.assertj.core.api.Assertions;
@@ -35,7 +35,7 @@ import static org.mockito.Mockito.when;
 @Import({ErsConfig.class, ClassifierReportMapperImpl.class, ErsErrorHandler.class,
         EvaluationResultsService.class, ErsResponseStatusMapperImpl.class,
         CacheConfiguration.class, CrossValidationConfig.class, ErsRequestService.class,
-        ClassifiersOptionsAutoConfiguration.class, InstancesConverter.class})
+        ClassifiersOptionsAutoConfiguration.class, InstancesInfoMapperImpl.class})
 class GetEvaluationResultsCacheTest extends AbstractJpaTest {
 
     @MockBean

@@ -24,12 +24,12 @@ import static com.ecaservice.ers.dto.Constraints.MIN_2;
 public class InstancesReport {
 
     /**
-     * Training data structure
+     * Instances MD5 hash sum
      */
     @NotBlank
-    @Size(min = MIN_1)
-    @Schema(description = "Training data structure", example = "training data string", required = true)
-    private String structure;
+    @Size(min = MIN_1, max = MAX_LENGTH_255)
+    @Schema(description = "Instances MD5 hash sum", example = "3032e188204cb537f69fc7364f638641", required = true)
+    private String dataMd5Hash;
 
     /**
      * Relation name

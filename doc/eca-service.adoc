@@ -371,8 +371,7 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                           |bigint           |+|+|fk_experiment_results_id                                                                                           |Идентификатор записи (первичный ключ) и внешний ключ на ers_request
-|experiment_results_id        |bigint           |+|+|fk_experiment_results_request_experiment_results_id, experiment_results_request_experiment_results_id_unique_idx   |Внешний ключ, ID experiment_results
-|request_source               |varchar(255)     |-|-|-                                                                                                                  |Источник запроса
+|experiment_results_id        |bigint           |+|+|fk_experiment_results_request_experiment_results_id, experiment_results_request_experiment_results_id_unique_idx   |Внешний ключ, ID experiment_results                                                                                                               |Источник запроса
 |===
 
 ==== Таблица 3.{counter:db-table-id} - 'classifier_options_request_model' - содержит информацию о запросах в eca-ers на нахождение оптимальных настроек классификаторов

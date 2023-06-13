@@ -49,7 +49,6 @@ import com.ecaservice.server.model.entity.ExperimentStepStatus;
 import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.evaluation.ClassifierOptionsRequestSource;
-import com.ecaservice.server.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.server.model.experiment.InitializationParams;
 import com.ecaservice.web.dto.model.ClassifierOptionsDto;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
@@ -165,6 +164,7 @@ public class TestHelperUtils {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     public static final String MESSAGE_TEXT = "Message text";
+    private static final String DATA_MD_5_HASH = "3032e188204cb537f69fc7364f638641";
 
     /**
      * Creates page request dto.
@@ -530,6 +530,7 @@ public class TestHelperUtils {
         instancesInfo.setNumInstances(NUM_INSTANCES);
         instancesInfo.setNumAttributes(NUM_ATTRIBUTES);
         instancesInfo.setNumClasses(NUM_CLASSES);
+        instancesInfo.setDataMd5Hash(DATA_MD_5_HASH);
         return instancesInfo;
     }
 
@@ -749,7 +750,6 @@ public class TestHelperUtils {
         ClassifierOptionsRequest classifierOptionsRequest = new ClassifierOptionsRequest();
         classifierOptionsRequest.setEvaluationMethodReport(new EvaluationMethodReport());
         classifierOptionsRequest.setEvaluationMethodReport(createEvaluationMethodReport());
-        classifierOptionsRequest.setRelationName(RELATION_NAME);
         classifierOptionsRequest.setDataHash(
                 DigestUtils.md5DigestAsHex(RELATION_NAME.getBytes(StandardCharsets.UTF_8)));
         return classifierOptionsRequest;
@@ -854,7 +854,6 @@ public class TestHelperUtils {
         experimentResultsRequest.setResponseStatus(responseStatus);
         experimentResultsRequest.setRequestDate(LocalDateTime.now());
         experimentResultsRequest.setRequestId(UUID.randomUUID().toString());
-        experimentResultsRequest.setRequestSource(ExperimentResultsRequestSource.SYSTEM);
         return experimentResultsRequest;
     }
 

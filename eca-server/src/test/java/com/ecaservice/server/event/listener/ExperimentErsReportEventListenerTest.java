@@ -5,7 +5,6 @@ import com.ecaservice.server.event.model.ExperimentErsReportEvent;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentResultsEntity;
 import com.ecaservice.server.model.entity.RequestStatus;
-import com.ecaservice.server.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.server.service.ers.ErsService;
 import com.ecaservice.server.service.experiment.ExperimentResultsService;
 import eca.dataminer.AbstractExperiment;
@@ -47,7 +46,6 @@ class ExperimentErsReportEventListenerTest {
         when(experimentResultsService.saveExperimentResultsToErsSent(experiment, experimentHistory)).thenReturn(
                 Collections.singletonList(experimentResultsEntity));
         experimentErsReportEventListener.handleEvent(experimentErsReportEvent);
-        verify(ersService, atLeastOnce()).sentExperimentResults(experimentResultsEntity, experimentHistory,
-                ExperimentResultsRequestSource.SYSTEM);
+        verify(ersService, atLeastOnce()).sentExperimentResults(experimentResultsEntity, experimentHistory);
     }
 }

@@ -37,6 +37,7 @@ import java.util.Set;
 @NamedEntityGraph(name = "evaluationResults",
         attributeNodes = {
                 @NamedAttributeNode(value = "instances"),
+                @NamedAttributeNode(value = "classifierOptionsInfo"),
                 @NamedAttributeNode(value = "classificationCosts"),
                 @NamedAttributeNode(value = "confusionMatrix")
         }

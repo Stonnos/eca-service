@@ -64,7 +64,7 @@ public class Constraints {
     /**
      * Sor fields max items
      */
-    public static final int SORT_FIELDS_MAX_ITEMS = 10;
+    public static final int SORT_FIELDS_MAX_ITEMS = 3;
 
     /**
      * Min. integer value

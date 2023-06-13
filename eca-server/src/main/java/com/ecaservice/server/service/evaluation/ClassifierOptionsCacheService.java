@@ -47,8 +47,8 @@ public class ClassifierOptionsCacheService {
      */
     public ClassifierOptionsResult getOptimalClassifierOptionsFromErs(
             ClassifierOptionsRequest classifierOptionsRequest) {
-        log.info("Starting to get optimal classifiers options from ERS for data: {}",
-                classifierOptionsRequest.getRelationName());
+        log.info("Starting to get optimal classifiers options from ERS for data md5 hash: {}",
+                classifierOptionsRequest.getDataHash());
         ClassifierOptionsRequestEntity requestEntity =
                 createClassifierOptionsRequestEntity(ClassifierOptionsRequestSource.ERS);
         ClassifierOptionsRequestModel requestModel = classifierOptionsRequestModelMapper.map(classifierOptionsRequest);
@@ -69,13 +69,13 @@ public class ClassifierOptionsCacheService {
     public ClassifierOptionsResult getOptimalClassifierOptionsFromCache(
             ClassifierOptionsRequest classifierOptionsRequest) {
         String dataMd5Hash = classifierOptionsRequest.getDataHash();
-        log.info("Starting to get optimal classifiers options from cache for data: {}",
-                classifierOptionsRequest.getRelationName());
+        log.info("Starting to get optimal classifiers options from cache for data md5 hash: {}",
+                classifierOptionsRequest.getDataHash());
         ClassifierOptionsRequestModel requestModel = getLastClassifierOptionsRequestModel(dataMd5Hash);
         ClassifierOptionsResponseModel responseModel = getFirstResponseModel(requestModel);
         if (responseModel != null) {
-            log.info("Optimal classifier options [{}] has been taken from last response for data '{}'.",
-                    responseModel.getOptions(), classifierOptionsRequest.getRelationName());
+            log.info("Optimal classifier options [{}] has been taken from last response for data md5 hash '{}'.",
+                    responseModel.getOptions(), classifierOptionsRequest.getDataHash());
             ClassifierOptionsRequestEntity requestEntity =
                     createClassifierOptionsRequestEntity(ClassifierOptionsRequestSource.CACHE);
             requestEntity.setClassifierOptionsRequestModel(requestModel);

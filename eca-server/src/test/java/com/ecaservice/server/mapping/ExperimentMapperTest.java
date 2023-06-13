@@ -62,6 +62,7 @@ class ExperimentMapperTest {
                 experimentRequest.getData().numClasses());
         assertThat(experiment.getInstancesInfo().getNumInstances().intValue()).isEqualTo(
                 experimentRequest.getData().numInstances());
+        assertThat(experiment.getInstancesInfo().getDataMd5Hash()).isNotNull();
     }
 
     @Test

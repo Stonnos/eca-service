@@ -1,5 +1,6 @@
 package com.ecaservice.server.mapping;
 
+import com.ecaservice.ers.dto.InstancesReport;
 import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.web.dto.model.InstancesInfoDto;
 import org.mapstruct.Mapper;
@@ -17,4 +18,11 @@ public interface InstancesInfoMapper {
      * @return instances info dto
      */
     InstancesInfoDto map(InstancesInfo instancesInfo);
+
+    /**
+     * Maps instances info to instances report.
+     * @param instancesInfo - instances info
+     * @return instances report
+     */
+    InstancesReport mapToReport(InstancesInfo instancesInfo);
 }

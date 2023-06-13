@@ -4,6 +4,7 @@ import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.server.event.model.EvaluationFinishedEvent;
+import com.ecaservice.server.model.ErsEvaluationRequestData;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.EvaluationResultsRequestEntity;
 import com.ecaservice.server.model.entity.RequestStatus;
@@ -42,14 +43,21 @@ public class EvaluationFinishedEventListener {
                     evaluationResponse.getRequestId(), evaluationResponse.getStatus());
         } else {
             EvaluationLog evaluationLog = evaluationLogRepository.findByRequestId(evaluationResponse.getRequestId())
-                    .orElseThrow(() -> new EntityNotFoundException(EvaluationLog.class, evaluationResponse.getRequestId()));
+                    .orElseThrow(
+                            () -> new EntityNotFoundException(EvaluationLog.class, evaluationResponse.getRequestId()));
             if (!RequestStatus.FINISHED.equals(evaluationLog.getRequestStatus())) {
-                log.warn("Can't send evaluation [{}] results to ERS in request status [{}]", evaluationLog.getRequestId(),
+                log.warn("Can't send evaluation [{}] results to ERS in request status [{}]",
+                        evaluationLog.getRequestId(),
                         evaluationLog.getRequestStatus());
             } else {
-                EvaluationResultsRequestEntity requestEntity = new EvaluationResultsRequestEntity();
-                requestEntity.setEvaluationLog(evaluationLog);
-                ersRequestService.saveEvaluationResults(evaluationResponse.getEvaluationResults(), requestEntity);
+                var evaluationResultsRequestEntity = new EvaluationResultsRequestEntity();
+                evaluationResultsRequestEntity.setEvaluationLog(evaluationLog);
+                var ersEvaluationRequestData = ErsEvaluationRequestData.builder()
+                        .ersRequest(evaluationResultsRequestEntity)
+                        .evaluationEntity(evaluationLog)
+                        .evaluationResults(evaluationResponse.getEvaluationResults())
+                        .build();
+                ersRequestService.saveEvaluationResults(ersEvaluationRequestData);
             }
         }
     }

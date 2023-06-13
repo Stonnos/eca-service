@@ -7,7 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Index;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 
 /**
@@ -23,13 +22,6 @@ public class InstancesInfo {
     @Id
     @GeneratedValue
     private Long id;
-
-    /**
-     * Data structure bytes
-     */
-    @Lob
-    @Column(nullable = false)
-    private byte[] structure;
 
     /**
      * Data MD5 hash

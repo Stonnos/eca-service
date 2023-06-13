@@ -11,7 +11,10 @@ import com.ecaservice.ers.dto.InstancesReport;
 import com.ecaservice.ers.dto.RocCurveReport;
 import com.ecaservice.ers.dto.StatisticsReport;
 import com.ecaservice.server.TestHelperUtils;
-import com.ecaservice.server.mapping.InstancesConverter;
+import com.ecaservice.server.mapping.InstancesInfoMapperImpl;
+import com.ecaservice.server.model.ErsEvaluationRequestData;
+import com.ecaservice.server.model.entity.EvaluationResultsRequestEntity;
+import com.ecaservice.server.model.entity.InstancesInfo;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,7 +41,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(SpringExtension.class)
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
-@Import({EvaluationResultsService.class, InstancesConverter.class, ClassifiersOptionsAutoConfiguration.class})
+@Import({EvaluationResultsService.class, InstancesInfoMapperImpl.class, ClassifiersOptionsAutoConfiguration.class})
 class EvaluationResultsServiceTest {
 
     @Inject
@@ -53,11 +56,16 @@ class EvaluationResultsServiceTest {
 
     @Test
     void testMapEvaluationResults() {
-        EvaluationResultsRequest resultsRequest = evaluationResultsService.proceed(evaluationResults);
+        var evaluationLog = TestHelperUtils.createEvaluationLog();
+        var ersEvaluationRequestData = ErsEvaluationRequestData.builder()
+                .ersRequest(new EvaluationResultsRequestEntity())
+                .evaluationEntity(evaluationLog)
+                .evaluationResults(evaluationResults)
+                .build();
+        EvaluationResultsRequest resultsRequest = evaluationResultsService.proceed(ersEvaluationRequestData);
         assertThat(resultsRequest).isNotNull();
-        Instances instances = evaluationResults.getEvaluation().getData();
         Evaluation evaluation = evaluationResults.getEvaluation();
-        verifyInstancesReport(instances, resultsRequest);
+        verifyInstancesReport(evaluationLog.getInstancesInfo(), resultsRequest);
         verifyClassifiersReport(resultsRequest);
         verifyEvaluationMethodReport(evaluation, resultsRequest);
         verifyClassificationCostsReport(evaluation, resultsRequest);
@@ -65,15 +73,15 @@ class EvaluationResultsServiceTest {
         verifyStatisticsReport(evaluation, resultsRequest);
     }
 
-    private void verifyInstancesReport(Instances instances, EvaluationResultsRequest resultsRequest) {
+    private void verifyInstancesReport(InstancesInfo instances, EvaluationResultsRequest resultsRequest) {
         InstancesReport instancesReport = resultsRequest.getInstances();
         assertThat(instancesReport).isNotNull();
-        assertThat(instancesReport.getStructure()).isNotNull();
-        assertThat(instancesReport.getRelationName()).isEqualTo(instances.relationName());
-        assertThat(instancesReport.getClassName()).isEqualTo(instances.classAttribute().name());
-        assertThat(instancesReport.getNumInstances().intValue()).isEqualTo(instances.numInstances());
-        assertThat(instancesReport.getNumAttributes().intValue()).isEqualTo(instances.numAttributes());
-        assertThat(instancesReport.getNumClasses().intValue()).isEqualTo(instances.numClasses());
+        assertThat(instancesReport.getRelationName()).isEqualTo(instances.getRelationName());
+        assertThat(instancesReport.getDataMd5Hash()).isEqualTo(instances.getDataMd5Hash());
+        assertThat(instancesReport.getClassName()).isEqualTo(instances.getClassName());
+        assertThat(instancesReport.getNumInstances().intValue()).isEqualTo(instances.getNumInstances());
+        assertThat(instancesReport.getNumAttributes().intValue()).isEqualTo(instances.getNumAttributes());
+        assertThat(instancesReport.getNumClasses().intValue()).isEqualTo(instances.getNumClasses());
     }
 
     private void verifyClassifiersReport(EvaluationResultsRequest resultsRequest) {

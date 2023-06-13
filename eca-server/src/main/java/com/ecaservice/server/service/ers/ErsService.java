@@ -2,9 +2,9 @@ package com.ecaservice.server.service.ers;
 
 import com.ecaservice.ers.dto.ErsErrorCode;
 import com.ecaservice.server.mapping.GetEvaluationResultsMapper;
+import com.ecaservice.server.model.ErsEvaluationRequestData;
 import com.ecaservice.server.model.entity.ExperimentResultsEntity;
 import com.ecaservice.server.model.entity.ExperimentResultsRequest;
-import com.ecaservice.server.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
@@ -38,16 +38,19 @@ public class ErsService {
      *
      * @param experimentResultsEntity - experiment entity
      * @param abstractExperiment      - experiment history
-     * @param source                  - experiment results request source
      */
     public void sentExperimentResults(ExperimentResultsEntity experimentResultsEntity,
-                                      AbstractExperiment<?> abstractExperiment, ExperimentResultsRequestSource source) {
-        ExperimentResultsRequest experimentResultsRequest = new ExperimentResultsRequest();
-        experimentResultsRequest.setRequestSource(source);
+                                      AbstractExperiment<?> abstractExperiment) {
+        var experimentResultsRequest = new ExperimentResultsRequest();
         experimentResultsRequest.setExperimentResults(experimentResultsEntity);
         EvaluationResults evaluationResults =
                 abstractExperiment.getHistory().get(experimentResultsEntity.getResultsIndex());
-        ersRequestService.saveEvaluationResults(evaluationResults, experimentResultsRequest);
+        var ersEvaluationRequestData = ErsEvaluationRequestData.builder()
+                .ersRequest(experimentResultsRequest)
+                .evaluationEntity(experimentResultsEntity.getExperiment())
+                .evaluationResults(evaluationResults)
+                .build();
+        ersRequestService.saveEvaluationResults(ersEvaluationRequestData);
     }
 
     /**

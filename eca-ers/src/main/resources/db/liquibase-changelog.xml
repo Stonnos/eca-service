@@ -13,4 +13,5 @@
     <include file="db/changelog/v6-add-not-null-constraints.xml"/>
     <include file="db/changelog/v7-add-request-id-unique-idx.xml"/>
     <include file="db/changelog/v8-drop-classifier-options-data.xml"/>
+    <include file="db/changelog/v9-drop-instances-structure-column.xml"/>
 </databaseChangeLog>

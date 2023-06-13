@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(SpringExtension.class)
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
-@Import({ClassifierOptionsRequestMapperImpl.class, CrossValidationConfig.class, InstancesConverter.class})
+@Import({ClassifierOptionsRequestMapperImpl.class, CrossValidationConfig.class, InstancesInfoMapperImpl.class})
 class ClassifierOptionsRequestMapperTest {
 
     @Inject
@@ -53,8 +53,6 @@ class ClassifierOptionsRequestMapperTest {
                 crossValidationConfig.getNumTests());
         assertThat(request.getEvaluationMethodReport().getSeed().intValue()).isEqualTo(
                 crossValidationConfig.getSeed());
-        assertThat(request.getRelationName()).isEqualTo(
-                instancesRequest.getData().relationName());
         assertThat(request.getDataHash()).isNotNull();
     }
 }

@@ -11,13 +11,13 @@ import com.ecaservice.server.config.cache.CacheNames;
 import com.ecaservice.server.mapping.ClassifierReportMapper;
 import com.ecaservice.server.mapping.ErsResponseStatusMapper;
 import com.ecaservice.server.model.ClassifierOptionsResult;
+import com.ecaservice.server.model.ErsEvaluationRequestData;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.server.model.entity.ErsRequest;
 import com.ecaservice.server.model.entity.ErsResponseStatus;
 import com.ecaservice.server.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.server.repository.ErsRequestRepository;
 import com.ecaservice.server.service.evaluation.EvaluationResultsService;
-import eca.core.evaluation.EvaluationResults;
 import feign.FeignException;
 import feign.RetryableException;
 import lombok.RequiredArgsConstructor;
@@ -55,13 +55,13 @@ public class ErsRequestService {
     /**
      * Save evaluation results by sending request to ERS service.
      *
-     * @param evaluationResults - evaluation results
-     * @param ersRequest        - evaluation results service request
+     * @param ersEvaluationRequestData - ers evaluation request data
      */
-    public void saveEvaluationResults(EvaluationResults evaluationResults, ErsRequest ersRequest) {
+    public void saveEvaluationResults(ErsEvaluationRequestData ersEvaluationRequestData) {
+        var ersRequest = ersEvaluationRequestData.getErsRequest();
         ersRequest.setRequestId(UUID.randomUUID().toString());
         try {
-            EvaluationResultsRequest evaluationResultsRequest = evaluationResultsService.proceed(evaluationResults);
+            EvaluationResultsRequest evaluationResultsRequest = evaluationResultsService.proceed(ersEvaluationRequestData);
             evaluationResultsRequest.setRequestId(ersRequest.getRequestId());
             saveEvaluationResults(evaluationResultsRequest, ersRequest);
         } catch (Exception ex) {
@@ -123,11 +123,11 @@ public class ErsRequestService {
         requestModel.setRequestDate(LocalDateTime.now());
         ClassifierOptionsResult classifierOptionsResult = new ClassifierOptionsResult();
         try {
-            log.info("Sending request [{}] to find classifier optimal options for data '{}'.",
-                    classifierOptionsRequest.getRequestId(), classifierOptionsRequest.getRelationName());
+            log.info("Sending request [{}] to find classifier optimal options for data md5 hash '{}'.",
+                    classifierOptionsRequest.getRequestId(), classifierOptionsRequest.getDataHash());
             ClassifierOptionsResponse response = ersClient.getClassifierOptions(classifierOptionsRequest);
-            log.info("Received response for request id [{}], data [{}]", response.getRequestId(),
-                    classifierOptionsRequest.getRelationName());
+            log.info("Received response for request id [{}], data md5 hash [{}]", response.getRequestId(),
+                    classifierOptionsRequest.getDataHash());
             handleClassifierOptionsResponse(classifierOptionsRequest, response, requestModel, classifierOptionsResult);
         } catch (FeignException.ServiceUnavailable | RetryableException ex) {
             log.error("Service unavailable error while sending classifier options request: {}.", ex.getMessage());
@@ -141,8 +141,8 @@ public class ErsRequestService {
             ersErrorHandler.handleErrorRequest(requestModel, ErsResponseStatus.ERROR, ex.getMessage());
             setClassifierOptionsResultError(classifierOptionsResult, ErrorCode.INTERNAL_SERVER_ERROR);
         }
-        log.info("Got optimal classifier options result [{}] for data [{}]", classifierOptionsResult,
-                classifierOptionsRequest.getRelationName());
+        log.info("Got optimal classifier options result [{}] for data md5 hash [{}]", classifierOptionsResult,
+                classifierOptionsRequest.getDataHash());
         return classifierOptionsResult;
     }
 
@@ -160,8 +160,8 @@ public class ErsRequestService {
             parseOptions(classifierReport.getOptions());
             classifierOptionsResult.setOptionsJson(classifierReport.getOptions());
             classifierOptionsResult.setFound(true);
-            log.info("Optimal classifier options [{}] has been found for data '{}'.",
-                    classifierReport.getOptions(), classifierOptionsRequest.getRelationName());
+            log.info("Optimal classifier options [{}] has been found for data md5 hash '{}'.",
+                    classifierReport.getOptions(), classifierOptionsRequest.getDataHash());
             requestModel.setClassifierOptionsResponseModels(
                     Collections.singletonList(classifierReportMapper.map(classifierReport)));
             requestModel.setResponseStatus(ErsResponseStatus.SUCCESS);

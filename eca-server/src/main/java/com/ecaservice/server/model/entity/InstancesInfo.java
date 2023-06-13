@@ -52,4 +52,10 @@ public class InstancesInfo {
     @Column(name = "class_name", nullable = false)
     private String className;
 
+    /**
+     * Instances MD5 hash
+     */
+    @Column(name = "data_md5_hash")
+    private String dataMd5Hash;
+
 }

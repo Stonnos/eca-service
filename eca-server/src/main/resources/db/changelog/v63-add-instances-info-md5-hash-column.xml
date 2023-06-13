@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v63-add-instances-info-md5-hash-column.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="add_instances_info_data_md5_hash_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="instances_info"/>
+            <not>
+                <columnExists tableName="instances_info" columnName="data_md5_hash"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="instances_info">
+            <column name="data_md5_hash" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="drop_experiment_results_request_request_source_column" author="roman.batygin@mail.ru"
+               context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment_results_request"/>
+            <columnExists tableName="experiment_results_request" columnName="request_source"/>
+        </preConditions>
+        <dropColumn tableName="experiment_results_request" columnName="request_source"/>
+    </changeSet>
+</databaseChangeLog>

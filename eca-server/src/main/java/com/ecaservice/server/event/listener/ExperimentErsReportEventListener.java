@@ -2,7 +2,6 @@ package com.ecaservice.server.event.listener;
 
 import com.ecaservice.server.event.model.ExperimentErsReportEvent;
 import com.ecaservice.server.model.entity.ExperimentResultsEntity;
-import com.ecaservice.server.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.server.service.ers.ErsService;
 import com.ecaservice.server.service.experiment.ExperimentResultsService;
 import lombok.RequiredArgsConstructor;
@@ -38,8 +37,7 @@ public class ExperimentErsReportEventListener {
         experimentResultsEntityList.forEach(experimentResultsEntity -> {
             log.info("Starting to sent experiment [{}] results index [{}] to ERS",
                     experimentErsReportEvent.getExperiment().getRequestId(), experimentResultsEntity.getResultsIndex());
-            ersService.sentExperimentResults(experimentResultsEntity,
-                    experimentErsReportEvent.getExperimentHistory(), ExperimentResultsRequestSource.SYSTEM);
+            ersService.sentExperimentResults(experimentResultsEntity, experimentErsReportEvent.getExperimentHistory());
         });
     }
 }

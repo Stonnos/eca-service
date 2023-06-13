@@ -56,6 +56,7 @@ class EvaluationLogMapperTest {
                 evaluationRequest.getData().numClasses());
         assertThat(evaluationLog.getInstancesInfo().getNumInstances().intValue()).isEqualTo(
                 evaluationRequest.getData().numInstances());
+        assertThat(evaluationLog.getInstancesInfo().getDataMd5Hash()).isNotNull();
         assertThat(evaluationLog.getNumFolds()).isNull();
         assertThat(evaluationLog.getNumTests()).isNull();
         assertThat(evaluationLog.getSeed()).isNull();

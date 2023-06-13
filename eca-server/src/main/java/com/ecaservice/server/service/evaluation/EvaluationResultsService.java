@@ -10,7 +10,8 @@ import com.ecaservice.ers.dto.EvaluationMethodReport;
 import com.ecaservice.ers.dto.EvaluationResultsRequest;
 import com.ecaservice.ers.dto.RocCurveReport;
 import com.ecaservice.ers.dto.StatisticsReport;
-import com.ecaservice.server.mapping.InstancesConverter;
+import com.ecaservice.server.mapping.InstancesInfoMapper;
+import com.ecaservice.server.model.ErsEvaluationRequestData;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
@@ -43,17 +44,20 @@ public class EvaluationResultsService {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     private final ClassifierOptionsAdapter classifierOptionsAdapter;
-    private final InstancesConverter instancesConverter;
+    private final InstancesInfoMapper instancesInfoMapper;
 
     /**
      * Gets evaluation results request model for ERS wev - service
      *
-     * @param evaluationResults - evaluation results
+     * @param ersEvaluationRequestData - ers evaluation request data
      * @return evaluation results request model
      */
-    public EvaluationResultsRequest proceed(EvaluationResults evaluationResults) {
+    public EvaluationResultsRequest proceed(ErsEvaluationRequestData ersEvaluationRequestData) {
         EvaluationResultsRequest evaluationResultsRequest = new EvaluationResultsRequest();
-        evaluationResultsRequest.setInstances(instancesConverter.convert(evaluationResults.getEvaluation().getData()));
+        EvaluationResults evaluationResults = ersEvaluationRequestData.getEvaluationResults();
+        var instancesReport =
+                instancesInfoMapper.mapToReport(ersEvaluationRequestData.getEvaluationEntity().getInstancesInfo());
+        evaluationResultsRequest.setInstances(instancesReport);
         populateEvaluationMethodReport(evaluationResults, evaluationResultsRequest);
         populateClassifierReport(evaluationResults, evaluationResultsRequest);
         populateStatisticsReport(evaluationResults, evaluationResultsRequest);

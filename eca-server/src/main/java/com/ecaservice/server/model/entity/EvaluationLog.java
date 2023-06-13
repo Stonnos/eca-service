@@ -32,11 +32,4 @@ public class EvaluationLog extends AbstractEvaluationEntity {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "classifier_info_id", nullable = false)
     private ClassifierInfo classifierInfo;
-
-    /**
-     * Training data info
-     */
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "instances_info_id", nullable = false)
-    private InstancesInfo instancesInfo;
 }
