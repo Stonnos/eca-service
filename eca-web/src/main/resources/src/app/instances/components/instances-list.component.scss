@@ -1,3 +1,17 @@
+.instances-table::ng-deep {
+
+  .ui-table-tbody > tr > td {
+    &:first-child {
+      width: 100px;
+    }
+  }
+  .ui-table-thead > tr > th {
+    &:first-child {
+      width: 100px;
+    }
+  }
+}
+
 .round-button {
   border-radius: 50%;
 }

@@ -122,6 +122,7 @@ export class InstancesListComponent extends BaseListComponent<InstancesDto> impl
 
   private initColumns() {
     this.columns = [
+      { name: InstancesFields.ID, label: "#" },
       { name: InstancesFields.TABLE_NAME, label: "Название таблицы" },
       { name: InstancesFields.NUM_INSTANCES, label: "Число объектов" },
       { name: InstancesFields.NUM_ATTRIBUTES, label: "Число атрибутов" },
