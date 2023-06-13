@@ -46,8 +46,7 @@ public class InstancesLoader {
         } catch (Exception ex) {
             log.error("There was an error while load data from file {}: {}", multipartFileResource.getFile(),
                     ex.getMessage());
-            throw new FileProcessingException(String.format("Error while process train data file [%s]",
-                    multipartFileResource.getFile()));
+            throw new FileProcessingException(ex.getMessage());
         }
     }
 }
