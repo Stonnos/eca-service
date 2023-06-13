@@ -225,9 +225,11 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
     this.experimentsUpdatesSubscriptions = this.pushService.pushMessageSubscribe(filterPredicate)
       .subscribe({
         next: (pushRequestDto: PushRequestDto) => {
-          this.lastCreatedId = pushRequestDto.additionalProperties[PushVariables.EXPERIMENT_ID];
-          this.reloadPage(false);
-          this.getRequestStatusesStatistics();
+          if (!this.lastCreatedId) {
+            this.lastCreatedId = pushRequestDto.additionalProperties[PushVariables.EXPERIMENT_ID];
+            this.reloadPage(false);
+            this.getRequestStatusesStatistics();
+          }
         },
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
@@ -245,9 +247,11 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
 
   private handleExperimentCreated(createExperimentResultDto: CreateExperimentResultDto): void {
     Logger.debug(`Experiment ${createExperimentResultDto.requestId} has been created`);
-    this.lastCreatedId = createExperimentResultDto.id;
-    this.getRequestStatusesStatistics();
-    this.reloadPageWithLoader();
+    if (!this.lastCreatedId) {
+      this.lastCreatedId = createExperimentResultDto.id;
+      this.getRequestStatusesStatistics();
+      this.reloadPageWithLoader();
+    }
   }
 
   private initColumns() {

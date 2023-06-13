@@ -1,5 +1,6 @@
 package com.ecaservice.data.storage.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
@@ -18,6 +19,7 @@ import static com.google.common.collect.Lists.newArrayList;
  *
  * @author Roman Batygin
  */
+@Slf4j
 @Component
 public class InstancesTransformer {
 
@@ -30,6 +32,7 @@ public class InstancesTransformer {
      * @return result instances
      */
     public Instances transform(Instances sourceData) {
+        log.info("Starting to transform instances [{}]", sourceData.relationName());
         ArrayList<Attribute> attributes = createAttributesList(sourceData);
         Instances targetData = new Instances(sourceData.relationName(), attributes, sourceData.numInstances());
         IntStream.range(0, sourceData.numInstances()).forEach(i -> {
@@ -50,6 +53,7 @@ public class InstancesTransformer {
         if (sourceData.classIndex() >= 0) {
             targetData.setClassIndex(sourceData.classIndex());
         }
+        log.info("Instances [{}] has been transformed", sourceData.relationName());
         return targetData;
     }
 

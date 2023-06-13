@@ -103,7 +103,8 @@ export class CreateEditInstancesComponent extends BaseCreateDialogComponent<Crea
           summary: 'Не удалось добавить датасет. Допускаются файлы только файлы форматов .csv,.xls,.xlsx,.arff,.xml,.json,.txt,.data,.docx', detail: '' });
         return;
       } else if (this.validationService.hasErrorCode(errors, ValidationErrorCode.PROCESS_FILE_ERROR)) {
-        this.messageService.add({ severity: 'error', summary: error.message, detail: '' });
+        const validationError = this.validationService.getErrorByCode(errors, ValidationErrorCode.PROCESS_FILE_ERROR);
+        this.messageService.add({ severity: 'error', summary: validationError.errorMessage, detail: '' });
         return;
       } else if (this.validationService.hasErrorCode(errors, ValidationErrorCode.EMPTY_DATA_SET)) {
         this.messageService.add({ severity: 'error',

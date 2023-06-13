@@ -17,4 +17,8 @@ export class ValidationService {
       .map((validationError: ValidationErrorDto) => validationError.code)
       .pop();
   }
+
+  public getErrorByCode(errors: ValidationErrorDto[], code: string): ValidationErrorDto {
+    return errors && errors.filter((validationError: ValidationErrorDto) => validationError.code == code).pop();
+  }
 }
