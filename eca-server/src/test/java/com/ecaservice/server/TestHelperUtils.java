@@ -49,7 +49,6 @@ import com.ecaservice.server.model.entity.ExperimentStepStatus;
 import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.evaluation.ClassifierOptionsRequestSource;
-import com.ecaservice.server.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.server.model.experiment.InitializationParams;
 import com.ecaservice.web.dto.model.ClassifierOptionsDto;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
@@ -855,7 +854,6 @@ public class TestHelperUtils {
         experimentResultsRequest.setResponseStatus(responseStatus);
         experimentResultsRequest.setRequestDate(LocalDateTime.now());
         experimentResultsRequest.setRequestId(UUID.randomUUID().toString());
-        experimentResultsRequest.setRequestSource(ExperimentResultsRequestSource.SYSTEM);
         return experimentResultsRequest;
     }
 

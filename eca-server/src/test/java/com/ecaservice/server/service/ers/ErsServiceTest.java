@@ -11,7 +11,6 @@ import com.ecaservice.server.mapping.StatisticsReportMapperImpl;
 import com.ecaservice.server.model.ErsEvaluationRequestData;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentResultsEntity;
-import com.ecaservice.server.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
@@ -75,8 +74,7 @@ class ErsServiceTest extends AbstractJpaTest {
         AbstractExperiment experimentHistory = TestHelperUtils.createExperimentHistory();
         doNothing().when(ersRequestService).saveEvaluationResults(any(ErsEvaluationRequestData.class));
         ExperimentResultsEntity experimentResultsEntity = createExperimentResults();
-        ersService.sentExperimentResults(experimentResultsEntity, experimentHistory,
-                ExperimentResultsRequestSource.SYSTEM);
+        ersService.sentExperimentResults(experimentResultsEntity, experimentHistory);
         verify(ersRequestService, atLeastOnce()).saveEvaluationResults(any(ErsEvaluationRequestData.class));
     }
 

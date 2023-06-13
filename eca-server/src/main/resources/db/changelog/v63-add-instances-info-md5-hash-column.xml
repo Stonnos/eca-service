@@ -16,4 +16,13 @@
             <column name="data_md5_hash" type="varchar(255)"/>
         </addColumn>
     </changeSet>
+
+    <changeSet id="drop_experiment_results_request_request_source_column" author="roman.batygin@mail.ru"
+               context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment_results_request"/>
+            <columnExists tableName="experiment_results_request" columnName="request_source"/>
+        </preConditions>
+        <dropColumn tableName="experiment_results_request" columnName="request_source"/>
+    </changeSet>
 </databaseChangeLog>
