@@ -60,6 +60,7 @@ import static eca.data.db.SqlQueryHelper.formatName;
 public class StorageServiceImpl implements StorageService {
 
     private static final List<String> INSTANCES_GLOBAL_FILTER_FIELDS = List.of(
+            InstancesEntity_.ID,
             InstancesEntity_.TABLE_NAME,
             InstancesEntity_.CREATED_BY
     );
