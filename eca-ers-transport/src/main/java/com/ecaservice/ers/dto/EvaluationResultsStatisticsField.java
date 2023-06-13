@@ -1,7 +1,7 @@
 package com.ecaservice.ers.dto;
 
 /**
- * Statistics field.
+ * Evaluation results statistics field.
  *
  * @author Roman Batygin
  */
