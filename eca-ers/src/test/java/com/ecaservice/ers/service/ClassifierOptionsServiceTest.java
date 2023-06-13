@@ -97,14 +97,14 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
     @Test
     void testClassifierOptionsSearchingWithTrainingDataEvaluationMethodAndDefaultSortFields() {
         ClassifierOptionsRequest request = createClassifierOptionsRequest(EvaluationMethod.TRAINING_DATA);
-        request.getSortFields().clear();
+        request.getEvaluationResultsStatisticsSortFields().clear();
         testClassifierOptionsSearching(request);
     }
 
     @Test
     void testClassifierOptionsSearchingWithCrossValidationAndDefaultSortFields() {
         ClassifierOptionsRequest request = createClassifierOptionsRequest(EvaluationMethod.CROSS_VALIDATION);
-        request.getSortFields().clear();
+        request.getEvaluationResultsStatisticsSortFields().clear();
         testClassifierOptionsSearching(request);
     }
 

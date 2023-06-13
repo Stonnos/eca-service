@@ -53,10 +53,10 @@ public class ClassifierOptionsRequest {
     private EvaluationMethodReport evaluationMethodReport;
 
     /**
-     * Sort fields list
+     * Evaluation results statistics sort fields list
      */
     @Valid
     @Size(max = SORT_FIELDS_MAX_ITEMS)
-    @ArraySchema(schema = @Schema(description = "Sort fields list"))
-    private List<@NotNull SortField> sortFields;
+    @ArraySchema(schema = @Schema(description = "Evaluation results statistics sort fields list"))
+    private List<@NotNull EvaluationResultsStatisticsSortField> evaluationResultsStatisticsSortFields;
 }

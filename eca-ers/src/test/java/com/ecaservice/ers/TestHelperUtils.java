@@ -13,8 +13,9 @@ import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
 import com.ecaservice.ers.dto.InstancesReport;
 import com.ecaservice.ers.dto.RocCurveReport;
 import com.ecaservice.ers.dto.SortDirection;
-import com.ecaservice.ers.dto.SortField;
+import com.ecaservice.ers.dto.EvaluationResultsStatisticsField;
 import com.ecaservice.ers.dto.StatisticsReport;
+import com.ecaservice.ers.dto.EvaluationResultsStatisticsSortField;
 import com.ecaservice.ers.model.ClassificationCostsInfo;
 import com.ecaservice.ers.model.ClassifierOptionsInfo;
 import com.ecaservice.ers.model.ConfusionMatrix;
@@ -303,10 +304,10 @@ public class TestHelperUtils {
         request.setRequestId(UUID.randomUUID().toString());
         request.setDataHash(DATA_HASH);
         request.setEvaluationMethodReport(buildEvaluationMethodReport(evaluationMethod));
-        request.setSortFields(newArrayList());
-        request.getSortFields().add(createSortField(STATISTICS_PCT_CORRECT, SortDirection.DESC));
-        request.getSortFields().add(createSortField(STATISTICS_MAX_AUC_VALUE, SortDirection.DESC));
-        request.getSortFields().add(createSortField(STATISTICS_VARIANCE_ERROR, SortDirection.ASC));
+        request.setEvaluationResultsStatisticsSortFields(newArrayList());
+        request.getEvaluationResultsStatisticsSortFields().add(createSortField(EvaluationResultsStatisticsField.PCT_CORRECT, SortDirection.DESC));
+        request.getEvaluationResultsStatisticsSortFields().add(createSortField(EvaluationResultsStatisticsField.MAX_AUC_VALUE, SortDirection.DESC));
+        request.getEvaluationResultsStatisticsSortFields().add(createSortField(EvaluationResultsStatisticsField.VARIANCE_ERROR, SortDirection.ASC));
         return request;
     }
 
@@ -317,9 +318,9 @@ public class TestHelperUtils {
      * @param direction - sort direction
      * @return sort field object
      */
-    public static SortField createSortField(String fieldName, SortDirection direction) {
-        SortField sortField = new SortField();
-        sortField.setFieldName(fieldName);
+    public static EvaluationResultsStatisticsSortField createSortField(EvaluationResultsStatisticsField fieldName, SortDirection direction) {
+        EvaluationResultsStatisticsSortField sortField = new EvaluationResultsStatisticsSortField();
+        sortField.setField(fieldName);
         sortField.setDirection(direction);
         return sortField;
     }
