@@ -13,7 +13,6 @@ import com.ecaservice.ers.repository.EvaluationResultsInfoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,7 +31,7 @@ public class EvaluationResultsService {
     private final EvaluationResultsMapper evaluationResultsMapper;
     private final EvaluationResultsInfoRepository evaluationResultsInfoRepository;
 
-    private ConcurrentHashMap<String, Object> cachedRequestIds = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, Object> cachedRequestIds = new ConcurrentHashMap<>();
 
     /**
      * Saves evaluation results report into database.
@@ -72,7 +71,6 @@ public class EvaluationResultsService {
      * @param request - evaluation results request
      * @return evaluation results simple response
      */
-    @Transactional
     public GetEvaluationResultsResponse getEvaluationResultsResponse(GetEvaluationResultsRequest request) {
         log.info("Starting to get evaluation results for request id [{}]", request.getRequestId());
         var evaluationResultsInfo = evaluationResultsInfoRepository.findByRequestId(request.getRequestId());

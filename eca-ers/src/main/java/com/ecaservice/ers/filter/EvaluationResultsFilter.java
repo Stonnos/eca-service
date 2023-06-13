@@ -37,7 +37,7 @@ public class EvaluationResultsFilter implements Specification<EvaluationResultsI
      * Instances info id
      */
     @Getter
-    private final Long instancesInfoId;
+    private final InstancesInfo instancesInfo;
 
     /**
      * Evaluation method report
@@ -50,7 +50,7 @@ public class EvaluationResultsFilter implements Specification<EvaluationResultsI
                                  CriteriaBuilder criteriaBuilder) {
         List<Predicate> predicates = newArrayList();
         Join<EvaluationResultsInfo, InstancesInfo> join = root.join(INSTANCES);
-        predicates.add(criteriaBuilder.equal(join.get(ID), instancesInfoId));
+        predicates.add(criteriaBuilder.equal(join.get(ID), instancesInfo.getId()));
         predicates.add(criteriaBuilder.equal(root.get(EVALUATION_METHOD),
                 evaluationMethodReport.getEvaluationMethod()));
         if (EvaluationMethod.CROSS_VALIDATION.equals(evaluationMethodReport.getEvaluationMethod())) {

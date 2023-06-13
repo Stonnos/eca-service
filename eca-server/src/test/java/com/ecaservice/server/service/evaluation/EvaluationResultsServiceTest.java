@@ -77,6 +77,7 @@ class EvaluationResultsServiceTest {
         InstancesReport instancesReport = resultsRequest.getInstances();
         assertThat(instancesReport).isNotNull();
         assertThat(instancesReport.getRelationName()).isEqualTo(instances.getRelationName());
+        assertThat(instancesReport.getDataMd5Hash()).isEqualTo(instances.getDataMd5Hash());
         assertThat(instancesReport.getClassName()).isEqualTo(instances.getClassName());
         assertThat(instancesReport.getNumInstances().intValue()).isEqualTo(instances.getNumInstances());
         assertThat(instancesReport.getNumAttributes().intValue()).isEqualTo(instances.getNumAttributes());

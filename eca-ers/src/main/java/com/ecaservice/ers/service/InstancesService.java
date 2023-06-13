@@ -7,9 +7,7 @@ import com.ecaservice.ers.repository.InstancesInfoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.util.DigestUtils;
 
-import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -25,7 +23,7 @@ public class InstancesService {
     private final InstancesMapper instancesMapper;
     private final InstancesInfoRepository instancesInfoRepository;
 
-    private ConcurrentHashMap<String, Object> cachedDataMd5Hashes = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, Object> cachedDataMd5Hashes = new ConcurrentHashMap<>();
 
     /**
      * Gets or saves instances info in case if instances with md5 hash doesn't exists.
@@ -34,24 +32,23 @@ public class InstancesService {
      * @return instances info
      */
     public InstancesInfo getOrSaveInstancesInfo(EvaluationResultsRequest evaluationResultsRequest) {
-        String structure = evaluationResultsRequest.getInstances().getStructure();
-        byte[] dataBytes = structure.getBytes(StandardCharsets.UTF_8);
-        String md5Hash = DigestUtils.md5DigestAsHex(dataBytes);
+        String dataMd5Hash = evaluationResultsRequest.getInstances().getDataMd5Hash();
+        log.info("Starting to get instances [{}] with md5 hash [{}]",
+                evaluationResultsRequest.getInstances().getRelationName(), dataMd5Hash);
         InstancesInfo instancesInfo;
-        cachedDataMd5Hashes.putIfAbsent(md5Hash, new Object());
-        synchronized (cachedDataMd5Hashes.get(md5Hash)) {
-            Long instancesInfoId = instancesInfoRepository.findIdByDataMd5Hash(md5Hash);
-            if (instancesInfoId != null) {
-                instancesInfo = new InstancesInfo();
-                instancesInfo.setId(instancesInfoId);
-            } else {
+        cachedDataMd5Hashes.putIfAbsent(dataMd5Hash, new Object());
+        synchronized (cachedDataMd5Hashes.get(dataMd5Hash)) {
+            instancesInfo = instancesInfoRepository.findByDataMd5Hash(dataMd5Hash);
+            if (instancesInfo == null) {
                 instancesInfo = instancesMapper.map(evaluationResultsRequest.getInstances());
-                instancesInfo.setStructure(dataBytes);
-                instancesInfo.setDataMd5Hash(md5Hash);
                 instancesInfoRepository.save(instancesInfo);
+                log.info("New instances [{}] with md5 hash [{}] has been saved",
+                        evaluationResultsRequest.getInstances().getRelationName(), dataMd5Hash);
             }
         }
-        cachedDataMd5Hashes.remove(md5Hash);
+        cachedDataMd5Hashes.remove(dataMd5Hash);
+        log.info("Instances [{}] with md5 hash [{}] has been fetched",
+                evaluationResultsRequest.getInstances().getRelationName(), dataMd5Hash);
         return instancesInfo;
     }
 }

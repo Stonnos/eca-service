@@ -44,17 +44,16 @@ public class ClassifierOptionsService {
      */
     public List<ClassifierOptionsInfo> findBestClassifierOptions(ClassifierOptionsRequest classifierOptionsRequest) {
         String dataHash = classifierOptionsRequest.getDataHash();
-        Long instancesInfoId = instancesInfoRepository.findIdByDataMd5Hash(dataHash);
-        if (instancesInfoId == null) {
+        var instancesInfo = instancesInfoRepository.findByDataMd5Hash(dataHash);
+        if (instancesInfo == null) {
             throw new DataNotFoundException(
                     String.format("Instances [%s] doesn't exists!", classifierOptionsRequest.getRelationName()));
         } else {
             EvaluationMethodReport evaluationMethodReport = classifierOptionsRequest.getEvaluationMethodReport();
-            EvaluationResultsFilter filter = new EvaluationResultsFilter(instancesInfoId, evaluationMethodReport);
+            EvaluationResultsFilter filter = new EvaluationResultsFilter(instancesInfo, evaluationMethodReport);
             Sort sort = buildSort(classifierOptionsRequest);
             PageRequest pageRequest = PageRequest.of(0, ersConfig.getResultSize(), sort);
-            Page<EvaluationResultsInfo> evaluationResultsInfoPage =
-                    evaluationResultsInfoRepository.findAll(filter, pageRequest);
+            var evaluationResultsInfoPage = evaluationResultsInfoRepository.findAll(filter, pageRequest);
             return evaluationResultsInfoPage.getContent()
                     .stream()
                     .map(EvaluationResultsInfo::getClassifierOptionsInfo)
