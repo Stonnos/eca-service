@@ -1,7 +1,7 @@
 {
   "requestId": "04b1373f-7838-4535-b65a-88c088830879",
   "instances": {
-    "structure": "<data structure>",
+    "dataMd5Hash": "3032e188204cb537f69fc7364f638641",
     "relationName": "Glass",
     "numInstances": 214,
     "numAttributes": 10,
