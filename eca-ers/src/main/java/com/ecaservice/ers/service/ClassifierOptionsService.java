@@ -46,9 +46,11 @@ public class ClassifierOptionsService {
         String dataHash = classifierOptionsRequest.getDataHash();
         var instancesInfo = instancesInfoRepository.findByDataMd5Hash(dataHash);
         if (instancesInfo == null) {
-            throw new DataNotFoundException(
-                    String.format("Instances [%s] doesn't exists!", classifierOptionsRequest.getRelationName()));
+            throw new DataNotFoundException(String.format("Instances with md5 hash [%s] doesn't exists!",
+                    classifierOptionsRequest.getDataHash()));
         } else {
+            log.info("[{}] instances info has been found with data md5 hash [{}]", instancesInfo.getRelationName(),
+                    instancesInfo.getDataMd5Hash());
             EvaluationMethodReport evaluationMethodReport = classifierOptionsRequest.getEvaluationMethodReport();
             EvaluationResultsFilter filter = new EvaluationResultsFilter(instancesInfo, evaluationMethodReport);
             Sort sort = buildSort(classifierOptionsRequest);

@@ -45,7 +45,6 @@ public interface ClassifierOptionsRequestMapper {
     default void mapData(InstancesRequest instancesRequest,
                          @MappingTarget ClassifierOptionsRequest classifierOptionsRequest) {
         if (Optional.ofNullable(instancesRequest.getData()).isPresent()) {
-            classifierOptionsRequest.setRelationName(instancesRequest.getData().relationName());
             String jsonData = toJson(instancesRequest.getData());
             String dataMd5Hash = DigestUtils.md5DigestAsHex(jsonData.getBytes(StandardCharsets.UTF_8));
             classifierOptionsRequest.setDataHash(dataMd5Hash);

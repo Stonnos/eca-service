@@ -53,8 +53,6 @@ class ClassifierOptionsRequestMapperTest {
                 crossValidationConfig.getNumTests());
         assertThat(request.getEvaluationMethodReport().getSeed().intValue()).isEqualTo(
                 crossValidationConfig.getSeed());
-        assertThat(request.getRelationName()).isEqualTo(
-                instancesRequest.getData().relationName());
         assertThat(request.getDataHash()).isNotNull();
     }
 }

@@ -751,7 +751,6 @@ public class TestHelperUtils {
         ClassifierOptionsRequest classifierOptionsRequest = new ClassifierOptionsRequest();
         classifierOptionsRequest.setEvaluationMethodReport(new EvaluationMethodReport());
         classifierOptionsRequest.setEvaluationMethodReport(createEvaluationMethodReport());
-        classifierOptionsRequest.setRelationName(RELATION_NAME);
         classifierOptionsRequest.setDataHash(
                 DigestUtils.md5DigestAsHex(RELATION_NAME.getBytes(StandardCharsets.UTF_8)));
         return classifierOptionsRequest;

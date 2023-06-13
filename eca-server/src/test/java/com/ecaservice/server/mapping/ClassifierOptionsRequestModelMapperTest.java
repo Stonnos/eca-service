@@ -43,7 +43,6 @@ class ClassifierOptionsRequestModelMapperTest {
         assertThat(requestModel.getNumFolds()).isEqualTo(request.getEvaluationMethodReport().getNumFolds().intValue());
         assertThat(requestModel.getNumTests()).isEqualTo(request.getEvaluationMethodReport().getNumTests().intValue());
         assertThat(requestModel.getSeed()).isEqualTo(request.getEvaluationMethodReport().getSeed().intValue());
-        assertThat(requestModel.getRelationName()).isEqualTo(request.getRelationName());
         assertThat(requestModel.getDataMd5Hash()).isEqualTo(request.getDataHash());
     }
 

@@ -37,14 +37,6 @@ public class ClassifierOptionsRequest {
     private String requestId;
 
     /**
-     * Instances name
-     */
-    @NotBlank
-    @Size(min = MIN_1, max = MAX_LENGTH_255)
-    @Schema(description = "Instances name", example = "iris", required = true)
-    private String relationName;
-
-    /**
      * Instances MD5 hash sum
      */
     @NotBlank

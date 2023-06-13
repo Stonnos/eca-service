@@ -301,7 +301,6 @@ public class TestHelperUtils {
     public static ClassifierOptionsRequest createClassifierOptionsRequest(EvaluationMethod evaluationMethod) {
         ClassifierOptionsRequest request = new ClassifierOptionsRequest();
         request.setRequestId(UUID.randomUUID().toString());
-        request.setRelationName(RELATION_NAME);
         request.setDataHash(DATA_HASH);
         request.setEvaluationMethodReport(buildEvaluationMethodReport(evaluationMethod));
         request.setSortFields(newArrayList());
