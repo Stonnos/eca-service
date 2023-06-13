@@ -2,7 +2,7 @@ import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
 import {
   CreateExperimentResultDto,
   ExperimentDto, FilterDictionaryDto, FilterDictionaryValueDto, FilterFieldDto, PageDto,
-  PageRequestDto, PushRequestDto, RequestStatusStatisticsDto, UserDto, ValidationErrorDto
+  PageRequestDto, PushRequestDto, RequestStatusStatisticsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ExperimentsService } from "../services/experiments.service";
 import { MessageService } from "primeng/api";
@@ -245,8 +245,6 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
 
   private handleExperimentCreated(createExperimentResultDto: CreateExperimentResultDto): void {
     Logger.debug(`Experiment ${createExperimentResultDto.requestId} has been created`);
-    this.messageService.add({ severity: 'success',
-      summary: `Эксперимент ${createExperimentResultDto.requestId} был успешно создан`, detail: '' });
     this.lastCreatedId = createExperimentResultDto.id;
     this.getRequestStatusesStatistics();
     this.reloadPageWithLoader();
