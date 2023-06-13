@@ -35,7 +35,7 @@ import static org.mockito.Mockito.when;
  */
 @Import({StorageServiceImpl.class, InstancesService.class, InstancesBatchService.class,
         RandomValueStringGenerator.class, StorageTestConfiguration.class,
-        AttributeService.class, AttributeMapperImpl.class})
+        AttributeService.class, AttributeMapperImpl.class, InstancesTransformer.class})
 class ConcurrentStorageServiceTest extends AbstractJpaTest {
 
     private static final int NUM_THREADS = 2;

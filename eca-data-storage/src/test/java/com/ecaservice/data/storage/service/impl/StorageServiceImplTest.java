@@ -15,6 +15,7 @@ import com.ecaservice.data.storage.repository.InstancesRepository;
 import com.ecaservice.data.storage.service.AttributeService;
 import com.ecaservice.data.storage.service.InstancesBatchService;
 import com.ecaservice.data.storage.service.InstancesService;
+import com.ecaservice.data.storage.service.InstancesTransformer;
 import com.ecaservice.data.storage.service.SearchQueryCreator;
 import com.ecaservice.data.storage.service.UserService;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -52,7 +53,7 @@ import static org.mockito.Mockito.when;
  */
 @Import({StorageServiceImpl.class, InstancesService.class, InstancesBatchService.class,
         RandomValueStringGenerator.class, StorageTestConfiguration.class, AttributeService.class,
-        AttributeMapperImpl.class, SearchQueryCreator.class,
+        AttributeMapperImpl.class, SearchQueryCreator.class, InstancesTransformer.class,
         InstancesResultSetConverter.class, InstancesExtractor.class})
 class StorageServiceImplTest extends AbstractJpaTest {
 

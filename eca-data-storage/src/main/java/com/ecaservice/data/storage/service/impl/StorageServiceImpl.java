@@ -18,6 +18,7 @@ import com.ecaservice.data.storage.repository.AttributeRepository;
 import com.ecaservice.data.storage.repository.InstancesRepository;
 import com.ecaservice.data.storage.service.AttributeService;
 import com.ecaservice.data.storage.service.InstancesService;
+import com.ecaservice.data.storage.service.InstancesTransformer;
 import com.ecaservice.data.storage.service.StorageService;
 import com.ecaservice.data.storage.service.UserService;
 import com.ecaservice.web.dto.model.AttributeDto;
@@ -68,6 +69,8 @@ public class StorageServiceImpl implements StorageService {
     private final InstancesService instancesService;
     private final AttributeService attributeService;
     private final UserService userService;
+
+    private final InstancesTransformer instancesTransformer;
     private final RandomValueStringGenerator randomValueStringGenerator;
     private final AttributeMapper attributeMapper;
     private final InstancesRepository instancesRepository;
@@ -99,10 +102,11 @@ public class StorageServiceImpl implements StorageService {
         if (instances.isEmpty()) {
             throw new EmptyDataException();
         }
-        var instancesEntity = saveInstancesEntity(tableName, instances);
-        var attributes = attributeService.saveAttributes(instancesEntity, instances);
-        setClassAttribute(instances, instancesEntity, attributes);
-        instancesService.saveInstances(instancesEntity, instances);
+        var transformedInstances = instancesTransformer.transform(instances);
+        var instancesEntity = saveInstancesEntity(tableName, transformedInstances);
+        var attributes = attributeService.saveAttributes(instancesEntity, transformedInstances);
+        setClassAttribute(transformedInstances, instancesEntity, attributes);
+        instancesService.saveInstances(instancesEntity, transformedInstances);
         log.info("Instances has been saved into table [{}]", tableName);
         return instancesEntity;
     }
