@@ -3,12 +3,15 @@ package com.ecaservice.server.model.entity;
 import eca.core.evaluation.EvaluationMethod;
 import lombok.Data;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.OneToOne;
 import java.time.LocalDateTime;
 
 /**
@@ -29,6 +32,13 @@ public abstract class AbstractEvaluationEntity {
      */
     @Column(name = "request_id", nullable = false, unique = true)
     private String requestId;
+
+    /**
+     * Training data info
+     */
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "instances_info_id")
+    private InstancesInfo instancesInfo;
 
     /**
      * Request creation date

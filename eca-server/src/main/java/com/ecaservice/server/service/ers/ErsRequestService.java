@@ -11,13 +11,13 @@ import com.ecaservice.server.config.cache.CacheNames;
 import com.ecaservice.server.mapping.ClassifierReportMapper;
 import com.ecaservice.server.mapping.ErsResponseStatusMapper;
 import com.ecaservice.server.model.ClassifierOptionsResult;
+import com.ecaservice.server.model.ErsEvaluationRequestData;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.server.model.entity.ErsRequest;
 import com.ecaservice.server.model.entity.ErsResponseStatus;
 import com.ecaservice.server.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.server.repository.ErsRequestRepository;
 import com.ecaservice.server.service.evaluation.EvaluationResultsService;
-import eca.core.evaluation.EvaluationResults;
 import feign.FeignException;
 import feign.RetryableException;
 import lombok.RequiredArgsConstructor;
@@ -55,13 +55,13 @@ public class ErsRequestService {
     /**
      * Save evaluation results by sending request to ERS service.
      *
-     * @param evaluationResults - evaluation results
-     * @param ersRequest        - evaluation results service request
+     * @param ersEvaluationRequestData - ers evaluation request data
      */
-    public void saveEvaluationResults(EvaluationResults evaluationResults, ErsRequest ersRequest) {
+    public void saveEvaluationResults(ErsEvaluationRequestData ersEvaluationRequestData) {
+        var ersRequest = ersEvaluationRequestData.getErsRequest();
         ersRequest.setRequestId(UUID.randomUUID().toString());
         try {
-            EvaluationResultsRequest evaluationResultsRequest = evaluationResultsService.proceed(evaluationResults);
+            EvaluationResultsRequest evaluationResultsRequest = evaluationResultsService.proceed(ersEvaluationRequestData);
             evaluationResultsRequest.setRequestId(ersRequest.getRequestId());
             saveEvaluationResults(evaluationResultsRequest, ersRequest);
         } catch (Exception ex) {

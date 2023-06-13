@@ -165,6 +165,7 @@ public class TestHelperUtils {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     public static final String MESSAGE_TEXT = "Message text";
+    private static final String DATA_MD_5_HASH = "md5Hash";
 
     /**
      * Creates page request dto.
@@ -530,6 +531,7 @@ public class TestHelperUtils {
         instancesInfo.setNumInstances(NUM_INSTANCES);
         instancesInfo.setNumAttributes(NUM_ATTRIBUTES);
         instancesInfo.setNumClasses(NUM_CLASSES);
+        instancesInfo.setDataMd5Hash(DATA_MD_5_HASH);
         return instancesInfo;
     }
 

@@ -12,6 +12,7 @@ import com.ecaservice.server.mapping.ClassifierReportMapper;
 import com.ecaservice.server.mapping.ClassifierReportMapperImpl;
 import com.ecaservice.server.mapping.ErsResponseStatusMapper;
 import com.ecaservice.server.mapping.ErsResponseStatusMapperImpl;
+import com.ecaservice.server.model.ErsEvaluationRequestData;
 import com.ecaservice.server.model.entity.ErsRequest;
 import com.ecaservice.server.model.entity.ErsResponseStatus;
 import com.ecaservice.server.model.entity.EvaluationLog;
@@ -97,11 +98,16 @@ class ErsRequestServiceTest extends AbstractJpaTest {
         evaluationLogRepository.save(evaluationLog);
         EvaluationResultsRequest evaluationResultsRequest = new EvaluationResultsRequest();
         EvaluationResultsResponse resultsResponse = new EvaluationResultsResponse();
-        when(evaluationResultsService.proceed(evaluationResults)).thenReturn(evaluationResultsRequest);
         when(ersClient.save(evaluationResultsRequest)).thenReturn(resultsResponse);
         EvaluationResultsRequestEntity requestEntity = new EvaluationResultsRequestEntity();
         requestEntity.setEvaluationLog(evaluationLog);
-        ersRequestService.saveEvaluationResults(evaluationResults, requestEntity);
+        var ersEvaluationRequestData = ErsEvaluationRequestData.builder()
+                .ersRequest(requestEntity)
+                .evaluationEntity(evaluationLog)
+                .evaluationResults(evaluationResults)
+                .build();
+        when(evaluationResultsService.proceed(ersEvaluationRequestData)).thenReturn(evaluationResultsRequest);
+        ersRequestService.saveEvaluationResults(ersEvaluationRequestData);
         List<ErsRequest> requestEntities = ersRequestRepository.findAll();
         AssertionUtils.hasOneElement(requestEntities);
         ErsRequest ersRequest = requestEntities.stream().findFirst().orElse(null);
@@ -147,11 +153,16 @@ class ErsRequestServiceTest extends AbstractJpaTest {
     private void internalTestErrorStatus(Exception ex, ErsResponseStatus expectedStatus) {
         EvaluationLog evaluationLog = TestHelperUtils.createEvaluationLog();
         evaluationLogRepository.save(evaluationLog);
-        when(evaluationResultsService.proceed(evaluationResults)).thenReturn(new EvaluationResultsRequest());
         doThrow(ex).when(ersRequestSender).send(any(EvaluationResultsRequest.class));
         EvaluationResultsRequestEntity requestEntity = new EvaluationResultsRequestEntity();
         requestEntity.setEvaluationLog(evaluationLog);
-        ersRequestService.saveEvaluationResults(evaluationResults, requestEntity);
+        var ersEvaluationRequestData = ErsEvaluationRequestData.builder()
+                .ersRequest(requestEntity)
+                .evaluationEntity(evaluationLog)
+                .evaluationResults(evaluationResults)
+                .build();
+        when(evaluationResultsService.proceed(ersEvaluationRequestData)).thenReturn(new EvaluationResultsRequest());
+        ersRequestService.saveEvaluationResults(ersEvaluationRequestData);
         List<ErsRequest> requestEntities = ersRequestRepository.findAll();
         AssertionUtils.hasOneElement(requestEntities);
         ErsRequest ersRequest = requestEntities.stream().findFirst().orElse(null);

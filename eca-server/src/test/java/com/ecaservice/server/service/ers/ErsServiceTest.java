@@ -8,7 +8,7 @@ import com.ecaservice.server.mapping.ClassificationCostsMapperImpl;
 import com.ecaservice.server.mapping.GetEvaluationResultsMapper;
 import com.ecaservice.server.mapping.GetEvaluationResultsMapperImpl;
 import com.ecaservice.server.mapping.StatisticsReportMapperImpl;
-import com.ecaservice.server.model.entity.ErsRequest;
+import com.ecaservice.server.model.ErsEvaluationRequestData;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentResultsEntity;
 import com.ecaservice.server.model.experiment.ExperimentResultsRequestSource;
@@ -19,7 +19,6 @@ import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eca.core.evaluation.EvaluationResults;
 import eca.dataminer.AbstractExperiment;
 import feign.FeignException;
 import org.assertj.core.api.Assertions;
@@ -74,12 +73,11 @@ class ErsServiceTest extends AbstractJpaTest {
     @Test
     void testSentExperimentResults() {
         AbstractExperiment experimentHistory = TestHelperUtils.createExperimentHistory();
-        doNothing().when(ersRequestService).saveEvaluationResults(any(EvaluationResults.class), any(ErsRequest.class));
+        doNothing().when(ersRequestService).saveEvaluationResults(any(ErsEvaluationRequestData.class));
         ExperimentResultsEntity experimentResultsEntity = createExperimentResults();
         ersService.sentExperimentResults(experimentResultsEntity, experimentHistory,
                 ExperimentResultsRequestSource.SYSTEM);
-        verify(ersRequestService, atLeastOnce()).saveEvaluationResults(any(EvaluationResults.class),
-                any(ErsRequest.class));
+        verify(ersRequestService, atLeastOnce()).saveEvaluationResults(any(ErsEvaluationRequestData.class));
     }
 
     private ExperimentResultsEntity createExperimentResults() {

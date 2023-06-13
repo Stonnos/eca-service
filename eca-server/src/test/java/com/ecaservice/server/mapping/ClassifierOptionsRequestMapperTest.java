@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(SpringExtension.class)
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
-@Import({ClassifierOptionsRequestMapperImpl.class, CrossValidationConfig.class, InstancesConverter.class})
+@Import({ClassifierOptionsRequestMapperImpl.class, CrossValidationConfig.class, InstancesInfoMapperImpl.class})
 class ClassifierOptionsRequestMapperTest {
 
     @Inject

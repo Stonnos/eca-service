@@ -4,14 +4,11 @@ import com.ecaservice.base.model.ExperimentType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Index;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 
@@ -31,13 +28,6 @@ import static com.ecaservice.server.util.FieldConstraints.EXPERIMENT_DOWNLOAD_UR
                 @Index(name = "idx_experiment_status", columnList = "request_status")
         })
 public class Experiment extends AbstractEvaluationEntity {
-
-    /**
-     * Training data info
-     */
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "instances_info_id")
-    private InstancesInfo instancesInfo;
 
     /**
      * Email

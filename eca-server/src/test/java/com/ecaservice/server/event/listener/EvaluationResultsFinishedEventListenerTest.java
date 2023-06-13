@@ -2,12 +2,11 @@ package com.ecaservice.server.event.listener;
 
 import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.server.event.model.EvaluationFinishedEvent;
-import com.ecaservice.server.model.entity.ErsRequest;
+import com.ecaservice.server.model.ErsEvaluationRequestData;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.service.ers.ErsRequestService;
-import eca.core.evaluation.EvaluationResults;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -53,8 +52,7 @@ class EvaluationResultsFinishedEventListenerTest {
         evaluationResponse.setEvaluationResults(getEvaluationResults());
         EvaluationFinishedEvent evaluationFinishedEvent = new EvaluationFinishedEvent(this, evaluationResponse);
         evaluationFinishedEventListener.handleEvaluationFinishedEvent(evaluationFinishedEvent);
-        verify(ersRequestService, atLeastOnce())
-                .saveEvaluationResults(any(EvaluationResults.class), any(ErsRequest.class));
+        verify(ersRequestService, atLeastOnce()).saveEvaluationResults(any(ErsEvaluationRequestData.class));
     }
 
     /**
@@ -68,7 +66,6 @@ class EvaluationResultsFinishedEventListenerTest {
         EvaluationResponse evaluationResponse = createEvaluationResponse(evaluationLog.getRequestId());
         EvaluationFinishedEvent evaluationFinishedEvent = new EvaluationFinishedEvent(this, evaluationResponse);
         evaluationFinishedEventListener.handleEvaluationFinishedEvent(evaluationFinishedEvent);
-        verify(ersRequestService, never())
-                .saveEvaluationResults(any(EvaluationResults.class), any(ErsRequest.class));
+        verify(ersRequestService, never()).saveEvaluationResults(any(ErsEvaluationRequestData.class));
     }
 }
