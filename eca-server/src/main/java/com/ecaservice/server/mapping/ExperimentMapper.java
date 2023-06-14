@@ -1,8 +1,10 @@
 package com.ecaservice.server.mapping;
 
+import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.experiment.AbstractExperimentRequestData;
+import com.ecaservice.server.model.experiment.ExperimentMessageRequestData;
 import com.ecaservice.server.report.model.ExperimentBean;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.ExperimentDto;
@@ -12,6 +14,7 @@ import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.springframework.amqp.core.Message;
 
 import java.util.List;
 
@@ -24,6 +27,21 @@ import static com.ecaservice.server.util.Utils.getEvaluationMethodDescription;
  */
 @Mapper(uses = {DateTimeConverter.class, InstancesInfoMapper.class}, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public abstract class ExperimentMapper extends AbstractEvaluationMapper {
+
+    /**
+     * Maps experiment request to experiment request data model.
+     *
+     * @param experimentRequest - experiment request
+     * @param message           - mq message
+     * @return experiment request data model
+     */
+    @Mapping(source = "experimentRequest.data", target = "data")
+    @Mapping(source = "experimentRequest.email", target = "email")
+    @Mapping(source = "experimentRequest.experimentType", target = "experimentType")
+    @Mapping(source = "experimentRequest.evaluationMethod", target = "evaluationMethod")
+    @Mapping(source = "message.messageProperties.replyTo", target = "replyTo")
+    @Mapping(source = "message.messageProperties.correlationId", target = "correlationId")
+    public abstract ExperimentMessageRequestData map(ExperimentRequest experimentRequest, Message message);
 
     /**
      * Maps experiment request to experiment persistence entity.

@@ -4,6 +4,7 @@ import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.server.event.model.ExperimentEmailEvent;
 import com.ecaservice.server.event.model.ExperimentResponseEvent;
 import com.ecaservice.server.event.model.push.ExperimentWebPushEvent;
+import com.ecaservice.server.mapping.ExperimentMapper;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.experiment.ExperimentMessageRequestData;
 import com.ecaservice.server.service.experiment.ExperimentService;
@@ -30,6 +31,7 @@ import javax.validation.Valid;
 public class ExperimentRequestListener {
 
     private final ExperimentService experimentService;
+    private final ExperimentMapper experimentMapper;
     private final ApplicationEventPublisher eventPublisher;
 
     /**
@@ -39,7 +41,7 @@ public class ExperimentRequestListener {
      */
     @RabbitListener(queues = "${queue.experimentRequestQueue}")
     public void handleMessage(@Valid @Payload ExperimentRequest experimentRequest, Message inboundMessage) {
-        var experimentRequestData = createExperimentRequestData(experimentRequest, inboundMessage);
+        var experimentRequestData = experimentMapper.map(experimentRequest, inboundMessage);
         Experiment experiment = experimentService.createExperiment(experimentRequestData);
         log.info("Experiment request [{}] has been created.", experiment.getRequestId());
         eventPublisher.publishEvent(new ExperimentResponseEvent(this, experiment));

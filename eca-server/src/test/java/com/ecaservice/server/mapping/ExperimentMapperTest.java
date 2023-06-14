@@ -1,5 +1,6 @@
 package com.ecaservice.server.mapping;
 
+import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.model.entity.Experiment;
@@ -8,6 +9,9 @@ import com.ecaservice.web.dto.model.ExperimentDto;
 import eca.core.evaluation.EvaluationMethod;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageProperties;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -18,6 +22,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 
 /**
@@ -37,6 +42,24 @@ class ExperimentMapperTest {
     private CrossValidationConfig crossValidationConfig;
     @Inject
     private ExperimentMapper experimentMapper;
+
+    @Test
+    void testMapExperimentRequestData() {
+        ExperimentRequest experimentRequest = TestHelperUtils.createExperimentRequest();
+        Message message = Mockito.mock(Message.class);
+        MessageProperties messageProperties = TestHelperUtils.buildMessageProperties();
+        when(message.getMessageProperties()).thenReturn(messageProperties);
+        var experimentMessageRequest = experimentMapper.map(experimentRequest, message);
+        assertThat(experimentMessageRequest).isNotNull();
+        assertThat(experimentMessageRequest.getEmail()).isEqualTo(experimentRequest.getEmail());
+        assertThat(experimentMessageRequest.getExperimentType()).isEqualTo(experimentRequest.getExperimentType());
+        assertThat(experimentMessageRequest.getEvaluationMethod()).isEqualTo(experimentRequest.getEvaluationMethod());
+        assertThat(experimentMessageRequest.getData().relationName()).isEqualTo(
+                experimentRequest.getData().relationName());
+        assertThat(experimentMessageRequest.getReplyTo()).isEqualTo(message.getMessageProperties().getReplyTo());
+        assertThat(experimentMessageRequest.getCorrelationId()).isEqualTo(
+                message.getMessageProperties().getCorrelationId());
+    }
 
     @Test
     void testMapExperimentRequestWithTrainingDataEvaluationMethod() {
