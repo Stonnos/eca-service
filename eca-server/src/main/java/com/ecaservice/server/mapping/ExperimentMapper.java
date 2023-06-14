@@ -1,9 +1,9 @@
 package com.ecaservice.server.mapping;
 
-import com.ecaservice.base.model.ExperimentRequest;
-import com.ecaservice.server.report.model.ExperimentBean;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.model.entity.Experiment;
+import com.ecaservice.server.model.experiment.AbstractExperimentRequestData;
+import com.ecaservice.server.report.model.ExperimentBean;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.ExperimentDto;
 import eca.core.evaluation.EvaluationMethod;
@@ -36,7 +36,8 @@ public abstract class ExperimentMapper extends AbstractEvaluationMapper {
     @Mapping(target = "numFolds", ignore = true)
     @Mapping(target = "numTests", ignore = true)
     @Mapping(target = "seed", ignore = true)
-    public abstract Experiment map(ExperimentRequest experimentRequest, CrossValidationConfig crossValidationConfig);
+    public abstract Experiment map(AbstractExperimentRequestData experimentRequest,
+                                   CrossValidationConfig crossValidationConfig);
 
     /**
      * Maps experiment entity to experiment dto model.
@@ -97,7 +98,7 @@ public abstract class ExperimentMapper extends AbstractEvaluationMapper {
     }
 
     @AfterMapping
-    protected void postMappingExperimentRequest(ExperimentRequest experimentRequest,
+    protected void postMappingExperimentRequest(AbstractExperimentRequestData experimentRequest,
                                                 @MappingTarget Experiment experiment) {
         experiment.setClassIndex(experimentRequest.getData().classIndex());
     }

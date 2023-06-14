@@ -1,10 +1,9 @@
 package com.ecaservice.server.mapping;
 
-import com.ecaservice.base.model.ExperimentRequest;
-import com.ecaservice.server.report.model.ExperimentBean;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.model.entity.Experiment;
+import com.ecaservice.server.report.model.ExperimentBean;
 import com.ecaservice.web.dto.model.ExperimentDto;
 import eca.core.evaluation.EvaluationMethod;
 import org.junit.jupiter.api.Test;
@@ -30,7 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import({ExperimentMapperImpl.class, CrossValidationConfig.class, DateTimeConverter.class,
         InstancesInfoMapperImpl.class})
 class ExperimentMapperTest {
-    
+
     private static final String EXPERIMENT_PATH = "experiment.model";
     private static final String DATA_PATH = "data.model";
 
@@ -41,42 +40,42 @@ class ExperimentMapperTest {
 
     @Test
     void testMapExperimentRequestWithTrainingDataEvaluationMethod() {
-        ExperimentRequest experimentRequest = TestHelperUtils.createExperimentRequest();
-        Experiment experiment = experimentMapper.map(experimentRequest, crossValidationConfig);
+        var experimentMessageRequest = TestHelperUtils.createExperimentMessageRequest();
+        Experiment experiment = experimentMapper.map(experimentMessageRequest, crossValidationConfig);
         assertThat(experiment).isNotNull();
-        assertThat(experiment.getEmail()).isEqualTo(experimentRequest.getEmail());
-        assertThat(experiment.getEvaluationMethod()).isEqualTo(experimentRequest.getEvaluationMethod());
+        assertThat(experiment.getEmail()).isEqualTo(experimentMessageRequest.getEmail());
+        assertThat(experiment.getEvaluationMethod()).isEqualTo(experimentMessageRequest.getEvaluationMethod());
         assertThat(experiment.getNumFolds()).isNull();
         assertThat(experiment.getNumTests()).isNull();
         assertThat(experiment.getSeed()).isNull();
-        assertThat(experiment.getExperimentType()).isEqualTo(experimentRequest.getExperimentType());
-        assertThat(experiment.getClassIndex()).isEqualTo(experimentRequest.getData().classIndex());
+        assertThat(experiment.getExperimentType()).isEqualTo(experimentMessageRequest.getExperimentType());
+        assertThat(experiment.getClassIndex()).isEqualTo(experimentMessageRequest.getData().classIndex());
         assertThat(experiment.getInstancesInfo()).isNotNull();
         assertThat(experiment.getInstancesInfo().getRelationName()).isEqualTo(
-                experimentRequest.getData().relationName());
+                experimentMessageRequest.getData().relationName());
         assertThat(experiment.getInstancesInfo().getClassName()).isEqualTo(
-                experimentRequest.getData().classAttribute().name());
+                experimentMessageRequest.getData().classAttribute().name());
         assertThat(experiment.getInstancesInfo().getNumAttributes().intValue()).isEqualTo(
-                experimentRequest.getData().numAttributes());
+                experimentMessageRequest.getData().numAttributes());
         assertThat(experiment.getInstancesInfo().getNumClasses().intValue()).isEqualTo(
-                experimentRequest.getData().numClasses());
+                experimentMessageRequest.getData().numClasses());
         assertThat(experiment.getInstancesInfo().getNumInstances().intValue()).isEqualTo(
-                experimentRequest.getData().numInstances());
+                experimentMessageRequest.getData().numInstances());
         assertThat(experiment.getInstancesInfo().getDataMd5Hash()).isNotNull();
     }
 
     @Test
     void testMapExperimentRequestWithCrossValidationEvaluationMethod() {
-        ExperimentRequest experimentRequest = TestHelperUtils.createExperimentRequest();
-        experimentRequest.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
-        Experiment experiment = experimentMapper.map(experimentRequest, crossValidationConfig);
+        var experimentMessageRequest = TestHelperUtils.createExperimentMessageRequest();
+        experimentMessageRequest.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
+        Experiment experiment = experimentMapper.map(experimentMessageRequest, crossValidationConfig);
         assertThat(experiment).isNotNull();
-        assertThat(experiment.getEmail()).isEqualTo(experimentRequest.getEmail());
-        assertThat(experiment.getEvaluationMethod()).isEqualTo(experimentRequest.getEvaluationMethod());
+        assertThat(experiment.getEmail()).isEqualTo(experimentMessageRequest.getEmail());
+        assertThat(experiment.getEvaluationMethod()).isEqualTo(experimentMessageRequest.getEvaluationMethod());
         assertThat(experiment.getNumFolds()).isEqualTo(crossValidationConfig.getNumFolds());
         assertThat(experiment.getNumTests()).isEqualTo(crossValidationConfig.getNumTests());
         assertThat(experiment.getSeed()).isEqualTo(crossValidationConfig.getSeed());
-        assertThat(experiment.getExperimentType()).isEqualTo(experimentRequest.getExperimentType());
+        assertThat(experiment.getExperimentType()).isEqualTo(experimentMessageRequest.getExperimentType());
     }
 
     @Test

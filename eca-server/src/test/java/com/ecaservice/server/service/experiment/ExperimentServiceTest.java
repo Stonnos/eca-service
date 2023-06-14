@@ -1,6 +1,5 @@
 package com.ecaservice.server.service.experiment;
 
-import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.s3.client.minio.exception.ObjectStorageException;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
@@ -13,7 +12,7 @@ import com.ecaservice.server.exception.experiment.ExperimentException;
 import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.mapping.ExperimentMapperImpl;
 import com.ecaservice.server.mapping.InstancesInfoMapperImpl;
-import com.ecaservice.server.model.MsgProperties;
+import com.ecaservice.server.model.entity.Channel;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentStep;
 import com.ecaservice.server.model.entity.ExperimentStepEntity;
@@ -36,7 +35,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.ecaservice.server.TestHelperUtils.createMessageProperties;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -50,7 +48,8 @@ import static org.mockito.Mockito.doThrow;
  * @author Roman Batygin
  */
 @Import({ExperimentMapperImpl.class, ExperimentConfig.class, AppProperties.class, CrossValidationConfig.class,
-        DateTimeConverter.class, InstancesInfoMapperImpl.class, ExperimentService.class, ExperimentProgressService.class})
+        DateTimeConverter.class, InstancesInfoMapperImpl.class, ExperimentService.class,
+        ExperimentProgressService.class})
 class ExperimentServiceTest extends AbstractJpaTest {
 
     @Inject
@@ -78,30 +77,27 @@ class ExperimentServiceTest extends AbstractJpaTest {
 
     @Test
     void testSuccessExperimentRequestCreation() {
-        ExperimentRequest experimentRequest = TestHelperUtils.createExperimentRequest();
-        MsgProperties msgProperties = createMessageProperties();
-        experimentService.createExperiment(experimentRequest, msgProperties);
+        var experimentMessageRequest = TestHelperUtils.createExperimentMessageRequest();
+        experimentService.createExperiment(experimentMessageRequest);
         List<Experiment> experiments = experimentRepository.findAll();
         AssertionUtils.hasOneElement(experiments);
         Experiment experiment = experiments.iterator().next();
         assertThat(experiment.getRequestStatus()).isEqualTo(RequestStatus.NEW);
         assertThat(experiment.getRequestId()).isNotNull();
         assertThat(experiment.getCreationDate()).isNotNull();
-        assertThat(experiment.getChannel()).isEqualTo(msgProperties.getChannel());
-        assertThat(experiment.getReplyTo()).isEqualTo(msgProperties.getReplyTo());
-        assertThat(experiment.getCorrelationId()).isEqualTo(msgProperties.getCorrelationId());
+        assertThat(experiment.getChannel()).isEqualTo(Channel.QUEUE);
+        assertThat(experiment.getReplyTo()).isEqualTo(experimentMessageRequest.getReplyTo());
+        assertThat(experiment.getCorrelationId()).isEqualTo(experimentMessageRequest.getCorrelationId());
         assertThat(experiment.getTrainingDataPath()).isNotNull();
     }
 
     @Test
     void testExperimentRequestCreationWithError() throws IOException {
-        ExperimentRequest experimentRequest = TestHelperUtils.createExperimentRequest();
+        var experimentMessageRequest = TestHelperUtils.createExperimentMessageRequest();
         doThrow(ObjectStorageException.class)
                 .when(objectStorageService)
                 .uploadObject(any(Serializable.class), anyString());
-        MsgProperties msgProperties = createMessageProperties();
-        assertThrows(ExperimentException.class,
-                () -> experimentService.createExperiment(experimentRequest, msgProperties));
+        assertThrows(ExperimentException.class, () -> experimentService.createExperiment(experimentMessageRequest));
     }
 
     @Test

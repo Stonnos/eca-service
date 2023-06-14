@@ -27,7 +27,6 @@ import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
 import com.ecaservice.ers.dto.RocCurveReport;
 import com.ecaservice.ers.dto.StatisticsReport;
 import com.ecaservice.report.model.BaseReportBean;
-import com.ecaservice.server.model.MsgProperties;
 import com.ecaservice.server.model.entity.Channel;
 import com.ecaservice.server.model.entity.ClassifierInfo;
 import com.ecaservice.server.model.entity.ClassifierInputOptions;
@@ -49,6 +48,7 @@ import com.ecaservice.server.model.entity.ExperimentStepStatus;
 import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.evaluation.ClassifierOptionsRequestSource;
+import com.ecaservice.server.model.experiment.ExperimentMessageRequestData;
 import com.ecaservice.server.model.experiment.InitializationParams;
 import com.ecaservice.web.dto.model.ClassifierOptionsDto;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
@@ -279,6 +279,22 @@ public class TestHelperUtils {
         experimentRequest.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         experimentRequest.setData(loadInstances());
         experimentRequest.setEmail(TEST_MAIL_RU);
+        return experimentRequest;
+    }
+
+    /**
+     * Creates experiment message request.
+     *
+     * @return created experiment request
+     */
+    public static ExperimentMessageRequestData createExperimentMessageRequest() {
+        ExperimentMessageRequestData experimentRequest = new ExperimentMessageRequestData();
+        experimentRequest.setExperimentType(ExperimentType.KNN);
+        experimentRequest.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
+        experimentRequest.setData(loadInstances());
+        experimentRequest.setEmail(TEST_MAIL_RU);
+        experimentRequest.setReplyTo(REPLY_TO);
+        experimentRequest.setCorrelationId(UUID.randomUUID().toString());
         return experimentRequest;
     }
 
@@ -1090,19 +1106,6 @@ public class TestHelperUtils {
         experimentStepEntity.setCreated(LocalDateTime.now());
         experimentStepEntity.setExperiment(experiment);
         return experimentStepEntity;
-    }
-
-    /**
-     * Creates message properties.
-     *
-     * @return message properties
-     */
-    public static MsgProperties createMessageProperties() {
-        return MsgProperties.builder()
-                .channel(Channel.QUEUE)
-                .replyTo(REPLY_TO)
-                .correlationId(UUID.randomUUID().toString())
-                .build();
     }
 
     private static <T> T loadConfig(String path, TypeReference<T> tTypeReference) {

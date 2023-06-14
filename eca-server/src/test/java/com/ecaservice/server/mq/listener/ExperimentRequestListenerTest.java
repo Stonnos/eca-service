@@ -1,11 +1,10 @@
 package com.ecaservice.server.mq.listener;
 
 import com.ecaservice.server.TestHelperUtils;
-import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.server.event.model.ExperimentEmailEvent;
 import com.ecaservice.server.event.model.ExperimentResponseEvent;
 import com.ecaservice.server.event.model.push.ExperimentWebPushEvent;
-import com.ecaservice.server.model.MsgProperties;
+import com.ecaservice.server.model.experiment.AbstractExperimentRequestData;
 import com.ecaservice.server.service.experiment.ExperimentService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,13 +41,13 @@ class ExperimentRequestListenerTest {
 
     @Test
     void testHandleMessage() {
-        ExperimentRequest evaluationRequest = TestHelperUtils.createExperimentRequest();
+        var experimentRequest = TestHelperUtils.createExperimentRequest();
         Message message = Mockito.mock(Message.class);
-        when(experimentService.createExperiment(any(ExperimentRequest.class), any(MsgProperties.class)))
+        when(experimentService.createExperiment(any(AbstractExperimentRequestData.class)))
                 .thenReturn(TestHelperUtils.createExperiment(UUID.randomUUID().toString()));
         MessageProperties messageProperties = TestHelperUtils.buildMessageProperties();
         when(message.getMessageProperties()).thenReturn(messageProperties);
-        experimentRequestListener.handleMessage(evaluationRequest, message);
+        experimentRequestListener.handleMessage(experimentRequest, message);
         verify(eventPublisher, atLeastOnce()).publishEvent(any(ExperimentResponseEvent.class));
         verify(eventPublisher, atLeastOnce()).publishEvent(any(ExperimentEmailEvent.class));
         verify(eventPublisher, atLeastOnce()).publishEvent(any(ExperimentWebPushEvent.class));

@@ -1,24 +1,25 @@
 package com.ecaservice.server.service.experiment;
 
-import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.exception.experiment.ExperimentException;
 import com.ecaservice.server.mapping.ExperimentMapper;
-import com.ecaservice.server.model.MsgProperties;
 import com.ecaservice.server.model.entity.Channel;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentStep;
 import com.ecaservice.server.model.entity.ExperimentStepEntity;
 import com.ecaservice.server.model.entity.ExperimentStepStatus;
 import com.ecaservice.server.model.entity.RequestStatus;
+import com.ecaservice.server.model.experiment.AbstractExperimentRequestData;
+import com.ecaservice.server.model.experiment.ExperimentMessageRequestData;
+import com.ecaservice.server.model.experiment.ExperimentRequestDataVisitor;
+import com.ecaservice.server.model.experiment.ExperimentWebRequestData;
 import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.repository.ExperimentStepRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
@@ -57,22 +58,19 @@ public class ExperimentService {
     /**
      * Creates experiment request.
      *
-     * @param experimentRequest - experiment request {@link ExperimentRequest}
-     * @param msgProperties     - message properties
+     * @param experimentRequest - experiment request data
      * @return created experiment entity
      */
-    public Experiment createExperiment(ExperimentRequest experimentRequest, MsgProperties msgProperties) {
+    public Experiment createExperiment(AbstractExperimentRequestData experimentRequest) {
         String requestId = UUID.randomUUID().toString();
         putMdc(TX_ID, requestId);
         putMdc(EV_REQUEST_ID, requestId);
         log.info("Received experiment [{}] request for data '{}', evaluation method [{}], email '{}'",
                 experimentRequest.getExperimentType(), experimentRequest.getData().relationName(),
                 experimentRequest.getEvaluationMethod(), experimentRequest.getEmail());
-        Assert.notNull(msgProperties, "Expected not null message properties");
-        Assert.notNull(msgProperties.getChannel(), "Expected not null channel");
         try {
             Experiment experiment = experimentMapper.map(experimentRequest, crossValidationConfig);
-            setMessageProperties(experiment, msgProperties);
+            setAdditionalProperties(experiment, experimentRequest);
             experiment.setRequestStatus(RequestStatus.NEW);
             experiment.setRequestId(requestId);
             String objectPath = String.format(EXPERIMENT_TRAIN_DATA_PATH_FORMAT, experiment.getRequestId());
@@ -165,11 +163,19 @@ public class ExperimentService {
         return RequestStatus.FINISHED;
     }
 
-    private void setMessageProperties(Experiment experiment, MsgProperties msgProperties) {
-        experiment.setChannel(msgProperties.getChannel());
-        if (Channel.QUEUE.equals(experiment.getChannel())) {
-            experiment.setReplyTo(msgProperties.getReplyTo());
-            experiment.setCorrelationId(msgProperties.getCorrelationId());
-        }
+    private void setAdditionalProperties(Experiment experiment, AbstractExperimentRequestData experimentRequestData) {
+        experimentRequestData.visit(new ExperimentRequestDataVisitor() {
+            @Override
+            public void visit(ExperimentWebRequestData experimentWebRequestData) {
+                experiment.setChannel(Channel.WEB);
+            }
+
+            @Override
+            public void visit(ExperimentMessageRequestData experimentMessageRequestData) {
+                experiment.setChannel(Channel.QUEUE);
+                experiment.setCorrelationId(experimentMessageRequestData.getCorrelationId());
+                experiment.setReplyTo(experimentMessageRequestData.getReplyTo());
+            }
+        });
     }
 }
