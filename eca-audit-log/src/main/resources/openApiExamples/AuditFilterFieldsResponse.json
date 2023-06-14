@@ -13,7 +13,7 @@
     "description": "ID корреляции",
     "fieldOrder": 1,
     "filterFieldType": "TEXT",
-    "matchMode": "LIKE",
+    "matchMode": "EQUALS",
     "multiple": false,
     "dictionary": null
   },
