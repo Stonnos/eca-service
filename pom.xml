@@ -96,7 +96,7 @@
         <javax-validation-api.version>2.0.1.Final</javax-validation-api.version>
         <swagger-annotations.version>2.1.9</swagger-annotations.version>
         <open-api.version>1.5.9</open-api.version>
-        <guava.version>30.0-jre</guava.version>
+        <guava.version>32.0.0-jre</guava.version>
         <feign.version>11.2</feign.version>
         <janino.version>3.1.7</janino.version>
         <jacoco-plugin.version>0.8.5</jacoco-plugin.version>
