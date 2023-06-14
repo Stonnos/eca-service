@@ -18,9 +18,9 @@ public class ExperimentBean extends EvaluationBean {
     private String experimentType;
 
     /**
-     * Email
+     * User name
      */
-    private String email;
+    private String createdBy;
 
     /**
      * Experiment file

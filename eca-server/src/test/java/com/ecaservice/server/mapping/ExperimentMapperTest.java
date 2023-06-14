@@ -115,7 +115,7 @@ class ExperimentMapperTest {
         experiment.setSeed(crossValidationConfig.getSeed());
         ExperimentDto experimentDto = experimentMapper.map(experiment);
         assertThat(experimentDto).isNotNull();
-        assertThat(experimentDto.getEmail()).isEqualTo(experiment.getEmail());
+        assertThat(experimentDto.getCreatedBy()).isEqualTo(experiment.getCreatedBy());
         assertThat(experimentDto.getCreationDate()).isEqualTo(experiment.getCreationDate());
         assertThat(experimentDto.getStartDate()).isEqualTo(experiment.getStartDate());
         assertThat(experimentDto.getEndDate()).isEqualTo(experiment.getEndDate());
@@ -160,7 +160,7 @@ class ExperimentMapperTest {
         experiment.setExperimentPath(EXPERIMENT_PATH);
         ExperimentBean experimentBean = experimentMapper.mapToBean(experiment);
         assertThat(experimentBean).isNotNull();
-        assertThat(experimentBean.getEmail()).isEqualTo(experiment.getEmail());
+        assertThat(experimentBean.getCreatedBy()).isEqualTo(experiment.getCreatedBy());
         assertThat(experimentBean.getCreationDate()).isNotNull();
         assertThat(experimentBean.getStartDate()).isNotNull();
         assertThat(experimentBean.getEndDate()).isNotNull();

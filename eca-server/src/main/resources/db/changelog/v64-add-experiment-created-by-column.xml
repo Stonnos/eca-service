@@ -17,4 +17,49 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="remove_experiment_email_column_from_global_filter" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">select count(*) from global_filter_field where global_filter_template_id = 1 and field_name = 'email'</sqlCheck>
+        </preConditions>
+        <delete tableName="global_filter_field">
+            <where>global_filter_template_id = 1 and field_name = 'email'</where>
+        </delete>
+    </changeSet>
+
+    <!-- Insert createdBy in global filter template for experiment entity -->
+    <changeSet id="insert_experiment_created_by_field_in_global_filter_template" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_filter_template"/>
+            <tableExists tableName="global_filter_field"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from global_filter_template where id = 1
+            </sqlCheck>
+            <sqlCheck expectedResult="0">
+                select count(*) from global_filter_field where global_filter_template_id = 1 and field_name = 'createdBy'
+            </sqlCheck>
+        </preConditions>
+        <insert tableName="global_filter_field">
+            <column name="field_name" value="createdBy"/>
+            <column name="global_filter_template_id" valueNumeric="1"/>
+        </insert>
+    </changeSet>
+
+    <!-- Insert createdBy in filter template for experiment entity -->
+    <changeSet id="insert_experiment_created_by_field_in_filter_template" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from filter_template where id = 1
+            </sqlCheck>
+            <sqlCheck expectedResult="1">
+                select count(*) from filter_field where filter_template_id = 1 and field_name = 'email'
+            </sqlCheck>
+        </preConditions>
+        <update tableName="filter_field">
+            <column name="field_name" value="createdBy"/>
+            <column name="description" value="Пользователь"/>
+            <column name="match_mode" value="EQUALS"/>
+            <where>filter_template_id = 1 and field_name = 'email'</where>
+        </update>
+    </changeSet>
+
 </databaseChangeLog>
