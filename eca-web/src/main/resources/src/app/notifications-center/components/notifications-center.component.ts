@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import {
-  PageDto, SimplePageRequestDto, UserNotificationDto, UserNotificationParameterDto, UserNotificationStatisticsDto,
+  PageDto, SimplePageRequestDto, UserNotificationDto, UserNotificationStatisticsDto,
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { MessageService } from "primeng/api";
 import { UserNotificationsService } from "../services/user-notifications.service";
@@ -10,6 +10,7 @@ import { PushMessageType } from "../../common/util/push-message.type";
 import { PushVariables } from "../../common/util/push-variables";
 import { RouterPaths } from "../../routing/router-paths";
 import { Router } from "@angular/router";
+import { Utils } from "../../common/util/utils";
 
 @Component({
   selector: 'app-notifications-center',
@@ -91,11 +92,11 @@ export class NotificationsCenterComponent {
 
   public onLinkClick(notification: UserNotificationDto): void {
     if (notification.messageType == PushMessageType.CLASSIFIER_CONFIGURATION_CHANGE) {
-      const configurationId = notification.parameters
-        .filter((parameter: UserNotificationParameterDto) => parameter.name == PushVariables.CLASSIFIERS_CONFIGURATION_ID)
-        .map((parameter: UserNotificationParameterDto) => parameter.value)
-        .pop();
+      const configurationId = Utils.getNotificationParam(notification, PushVariables.CLASSIFIERS_CONFIGURATION_ID);
       this.router.navigate([RouterPaths.CLASSIFIERS_CONFIGURATION_DETAILS_URL, configurationId]);
+    } else if (notification.messageType == PushMessageType.EXPERIMENT_STATUS_CHANGE) {
+      const experimentId = Utils.getNotificationParam(notification, PushVariables.EXPERIMENT_ID);
+      this.router.navigate([RouterPaths.EXPERIMENT_DETAILS_URL, experimentId]);
     } else {
       this.messageService.add({severity: 'error', summary: 'Ошибка', detail: `Can't handle user notification message ${notification.messageType} as link`});
     }

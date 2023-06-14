@@ -1,7 +1,7 @@
 import { EvaluationMethod } from "../model/evaluation-method.enum";
 import {
   ClassifiersConfigurationDto,
-  EnumDto
+  EnumDto, UserNotificationDto, UserNotificationParameterDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { AuthenticationKeys } from "../../auth/model/auth.keys";
 
@@ -41,5 +41,12 @@ export class Utils {
 
   public static getClassifiersConfigurationFile(classifiersConfiguration: ClassifiersConfigurationDto): string {
     return `${classifiersConfiguration.configurationName} configuration.xlsx`;
+  }
+
+  public static getNotificationParam(userNotificationDto: UserNotificationDto, paramName: string): string {
+    return userNotificationDto.parameters
+      .filter((parameter: UserNotificationParameterDto) => parameter.name == paramName)
+      .map((parameter: UserNotificationParameterDto) => parameter.value)
+      .pop();
   }
 }

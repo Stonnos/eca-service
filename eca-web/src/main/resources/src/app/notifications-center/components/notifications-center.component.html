@@ -34,6 +34,22 @@
           </button>
         </div>
       </ng-container>
+      <ng-container *ngSwitchCase="'EXPERIMENT_STATUS'">
+        <div class="ui-g text-bold text-left">
+          {{ notification?.messageText }}
+        </div>
+        <div class="ui-g text-left created-date">
+          {{ notification.created }}
+        </div>
+        <div class="ui-g mx-auto d-flex align-items-center justify-content-center">
+          <button
+            pButton
+            (click)="onLinkClick(notification)"
+            label="Открыть заявку"
+            type="button">
+          </button>
+        </div>
+      </ng-container>
       <ng-container *ngSwitchDefault>
         <div class="ui-g align-items-center justify-content-center text-bold text-center">
           {{ notification?.messageText }}
