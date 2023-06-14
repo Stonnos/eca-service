@@ -168,6 +168,7 @@ public class ExperimentService {
             @Override
             public void visit(ExperimentWebRequestData experimentWebRequestData) {
                 experiment.setChannel(Channel.WEB);
+                experiment.setCreatedBy(experimentWebRequestData.getCreatedBy());
             }
 
             @Override

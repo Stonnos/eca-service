@@ -30,6 +30,12 @@ import static com.ecaservice.server.util.FieldConstraints.EXPERIMENT_DOWNLOAD_UR
 public class Experiment extends AbstractEvaluationEntity {
 
     /**
+     * User name
+     */
+    @Column(name = "created_by")
+    private String createdBy;
+
+    /**
      * Email
      */
     @Column(name = "email", nullable = false)

@@ -68,6 +68,7 @@ public class ExperimentRequestWebApiService {
         log.info("User info has been fetched for experiment request [{}]", experimentRequestDto);
         var experimentWebRequestData = new ExperimentWebRequestData();
         experimentWebRequestData.setEmail(userInfoDto.getEmail());
+        experimentWebRequestData.setCreatedBy(userService.getCurrentUser());
         Instances data = downloadInstances(experimentRequestDto.getInstancesUuid());
         Instances filteredData = removeConstantAttributes(data);
         log.info("Constant attributes has been removed from data [{}]", filteredData.relationName());
