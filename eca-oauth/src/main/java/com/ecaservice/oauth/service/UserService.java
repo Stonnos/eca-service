@@ -124,6 +124,7 @@ public class UserService {
         UserEntity userEntity = userMapper.map(createUserDto);
         userEntity.setPassword(passwordEncoder.encode(password));
         populateUserRole(userEntity);
+        userEntity.setPushEnabled(true);
         userEntity.setForceChangePassword(true);
         userEntity.setCreationDate(LocalDateTime.now());
         return userEntityRepository.save(userEntity);
