@@ -4,8 +4,10 @@ import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.lock.annotation.Locked;
 import com.ecaservice.server.event.model.ExperimentEmailEvent;
 import com.ecaservice.server.event.model.ExperimentResponseEvent;
+import com.ecaservice.server.event.model.push.ExperimentSystemPushEvent;
 import com.ecaservice.server.event.model.push.ExperimentWebPushEvent;
 import com.ecaservice.server.model.entity.Channel;
+import com.ecaservice.server.model.entity.ChannelVisitor;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.repository.ExperimentRepository;
@@ -51,7 +53,10 @@ public class ExperimentRequestProcessor {
         }
         log.info("Starting to process new experiment [{}]", experiment.getRequestId());
         experimentService.startExperiment(experiment);
-        eventPublisher.publishEvent(new ExperimentWebPushEvent(this, experiment));
+        eventPublisher.publishEvent(new ExperimentSystemPushEvent(this, experiment));
+        if (Channel.WEB.equals(experiment.getChannel())) {
+            eventPublisher.publishEvent(new ExperimentWebPushEvent(this, experiment));
+        }
         eventPublisher.publishEvent(new ExperimentEmailEvent(this, experiment));
     }
 
@@ -94,12 +99,24 @@ public class ExperimentRequestProcessor {
         }
         log.info("Starting to finish experiment [{}]", experiment.getRequestId());
         experimentService.finishExperiment(experiment);
-        if (Channel.QUEUE.equals(experiment.getChannel())) {
-            eventPublisher.publishEvent(new ExperimentResponseEvent(this, experiment));
-        }
-        eventPublisher.publishEvent(new ExperimentWebPushEvent(this, experiment));
+        eventPublisher.publishEvent(new ExperimentSystemPushEvent(this, experiment));
+        sendFinalResponse(experiment);
         eventPublisher.publishEvent(new ExperimentEmailEvent(this, experiment));
         log.info("Experiment [{}] has been finished", experiment.getRequestId());
+    }
+
+    private void sendFinalResponse(Experiment experiment) {
+        experiment.getChannel().visit(new ChannelVisitor() {
+            @Override
+            public void visitWeb() {
+                eventPublisher.publishEvent(new ExperimentWebPushEvent(this, experiment));
+            }
+
+            @Override
+            public void visitQueue() {
+                eventPublisher.publishEvent(new ExperimentResponseEvent(this, experiment));
+            }
+        });
     }
 
     private Experiment getById(Long id) {

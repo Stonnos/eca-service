@@ -3,6 +3,7 @@ package com.ecaservice.server.service.experiment;
 import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.server.dto.CreateExperimentRequestDto;
 import com.ecaservice.server.event.model.ExperimentEmailEvent;
+import com.ecaservice.server.event.model.push.ExperimentSystemPushEvent;
 import com.ecaservice.server.event.model.push.ExperimentWebPushEvent;
 import com.ecaservice.server.exception.DataStorageBadRequestException;
 import com.ecaservice.server.exception.InstancesValidationException;
@@ -52,6 +53,7 @@ public class ExperimentRequestWebApiService {
                 experimentRequestDto.getEvaluationMethod());
         var experimentWebRequestData = createExperimentRequest(experimentRequestDto);
         var experiment = experimentService.createExperiment(experimentWebRequestData);
+        eventPublisher.publishEvent(new ExperimentSystemPushEvent(this, experiment));
         eventPublisher.publishEvent(new ExperimentWebPushEvent(this, experiment));
         eventPublisher.publishEvent(new ExperimentEmailEvent(this, experiment));
         log.info("Experiment request [{}] has been created for instances uuid [{}].", experiment.getRequestId(),

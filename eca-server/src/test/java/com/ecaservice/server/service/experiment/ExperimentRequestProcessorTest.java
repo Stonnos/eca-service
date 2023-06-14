@@ -2,7 +2,7 @@ package com.ecaservice.server.service.experiment;
 
 import com.ecaservice.server.event.model.ExperimentEmailEvent;
 import com.ecaservice.server.event.model.ExperimentResponseEvent;
-import com.ecaservice.server.event.model.push.ExperimentWebPushEvent;
+import com.ecaservice.server.event.model.push.ExperimentSystemPushEvent;
 import com.ecaservice.server.model.entity.Channel;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.RequestStatus;
@@ -58,7 +58,7 @@ class ExperimentRequestProcessorTest extends AbstractJpaTest {
         var experiment = createAndSaveExperiment(RequestStatus.NEW, Channel.QUEUE);
         experimentRequestProcessor.startExperiment(experiment.getId());
         verify(experimentService, atLeastOnce()).startExperiment(any(Experiment.class));
-        verify(applicationEventPublisher, atLeastOnce()).publishEvent(any(ExperimentWebPushEvent.class));
+        verify(applicationEventPublisher, atLeastOnce()).publishEvent(any(ExperimentSystemPushEvent.class));
         verify(applicationEventPublisher, atLeastOnce()).publishEvent(any(ExperimentEmailEvent.class));
     }
 
@@ -89,7 +89,7 @@ class ExperimentRequestProcessorTest extends AbstractJpaTest {
         experimentRequestProcessor.finishExperiment(experiment.getId());
         verify(experimentService, atLeastOnce()).finishExperiment(any(Experiment.class));
         verify(applicationEventPublisher, atLeastOnce()).publishEvent(any(ExperimentResponseEvent.class));
-        verify(applicationEventPublisher, atLeastOnce()).publishEvent(any(ExperimentWebPushEvent.class));
+        verify(applicationEventPublisher, atLeastOnce()).publishEvent(any(ExperimentSystemPushEvent.class));
         verify(applicationEventPublisher, atLeastOnce()).publishEvent(any(ExperimentEmailEvent.class));
     }
 
@@ -99,7 +99,7 @@ class ExperimentRequestProcessorTest extends AbstractJpaTest {
         experimentRequestProcessor.finishExperiment(experiment.getId());
         verify(experimentService, atLeastOnce()).finishExperiment(any(Experiment.class));
         verify(applicationEventPublisher, never()).publishEvent(any(ExperimentResponseEvent.class));
-        verify(applicationEventPublisher, atLeastOnce()).publishEvent(any(ExperimentWebPushEvent.class));
+        verify(applicationEventPublisher, atLeastOnce()).publishEvent(any(ExperimentSystemPushEvent.class));
         verify(applicationEventPublisher, atLeastOnce()).publishEvent(any(ExperimentEmailEvent.class));
     }
 

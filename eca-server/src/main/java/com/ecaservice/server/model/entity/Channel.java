@@ -10,10 +10,27 @@ public enum Channel {
     /**
      * Queue channel
      */
-    QUEUE,
+    QUEUE {
+        @Override
+        public void visit(ChannelVisitor visitor) {
+            visitor.visitQueue();
+        }
+    },
 
     /**
      * Web channel
      */
-    WEB
+    WEB {
+        @Override
+        public void visit(ChannelVisitor visitor) {
+            visitor.visitWeb();
+        }
+    };
+
+    /**
+     * Invokes visitor.
+     *
+     * @param visitor - visitor interface
+     */
+    public abstract void visit(ChannelVisitor visitor);
 }

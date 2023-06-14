@@ -221,7 +221,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
   }
 
   private subscribeForExperimentsUpdates(): void {
-    const filterPredicate = (pushRequestDto: PushRequestDto) => pushRequestDto.messageType == PushMessageType.EXPERIMENT_STATUS_CHANGE;
+    const filterPredicate = (pushRequestDto: PushRequestDto) => pushRequestDto.pushType == 'SYSTEM' && pushRequestDto.messageType == PushMessageType.EXPERIMENT_STATUS_CHANGE;
     this.experimentsUpdatesSubscriptions = this.pushService.pushMessageSubscribe(filterPredicate)
       .subscribe({
         next: (pushRequestDto: PushRequestDto) => {

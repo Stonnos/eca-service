@@ -3,7 +3,7 @@ package com.ecaservice.server.mq.listener;
 import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.server.event.model.ExperimentEmailEvent;
 import com.ecaservice.server.event.model.ExperimentResponseEvent;
-import com.ecaservice.server.event.model.push.ExperimentWebPushEvent;
+import com.ecaservice.server.event.model.push.ExperimentSystemPushEvent;
 import com.ecaservice.server.mapping.ExperimentMapper;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.experiment.ExperimentMessageRequestData;
@@ -45,7 +45,7 @@ public class ExperimentRequestListener {
         Experiment experiment = experimentService.createExperiment(experimentRequestData);
         log.info("Experiment request [{}] has been created.", experiment.getRequestId());
         eventPublisher.publishEvent(new ExperimentResponseEvent(this, experiment));
-        eventPublisher.publishEvent(new ExperimentWebPushEvent(this, experiment));
+        eventPublisher.publishEvent(new ExperimentSystemPushEvent(this, experiment));
         eventPublisher.publishEvent(new ExperimentEmailEvent(this, experiment));
     }
 

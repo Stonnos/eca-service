@@ -3,7 +3,7 @@ package com.ecaservice.server.mq.listener;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.event.model.ExperimentEmailEvent;
 import com.ecaservice.server.event.model.ExperimentResponseEvent;
-import com.ecaservice.server.event.model.push.ExperimentWebPushEvent;
+import com.ecaservice.server.event.model.push.ExperimentSystemPushEvent;
 import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.mapping.ExperimentMapper;
 import com.ecaservice.server.mapping.ExperimentMapperImpl;
@@ -64,6 +64,6 @@ class ExperimentRequestListenerTest {
         experimentRequestListener.handleMessage(experimentRequest, message);
         verify(eventPublisher, atLeastOnce()).publishEvent(any(ExperimentResponseEvent.class));
         verify(eventPublisher, atLeastOnce()).publishEvent(any(ExperimentEmailEvent.class));
-        verify(eventPublisher, atLeastOnce()).publishEvent(any(ExperimentWebPushEvent.class));
+        verify(eventPublisher, atLeastOnce()).publishEvent(any(ExperimentSystemPushEvent.class));
     }
 }
