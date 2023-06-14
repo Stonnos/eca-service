@@ -1,7 +1,7 @@
 package com.ecaservice.server.service.push.handler;
 
-import com.ecaservice.server.event.model.push.ExperimentWebPushEvent;
-import com.ecaservice.server.service.message.template.MessageTemplateProcessor;
+import com.ecaservice.server.event.model.push.ExperimentSystemPushEvent;
+import com.ecaservice.server.service.experiment.ExperimentMessageTemplateProcessor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -16,35 +16,33 @@ import static com.ecaservice.server.service.push.dictionary.PushProperties.EXPER
 import static com.ecaservice.server.service.push.dictionary.PushProperties.EXPERIMENT_REQUEST_STATUS_PROPERTY;
 import static com.ecaservice.server.service.push.dictionary.PushProperties.EXPERIMENT_STATUS_MESSAGE_TYPE;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyMap;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests for {@link ExperimentPushEventHandler} class.
+ * Unit tests for {@link ExperimentSystemPushEventHandler} class.
  *
  * @author Roman Batygin
  */
 @ExtendWith(MockitoExtension.class)
-class ExperimentPushEventHandlerTest {
+class ExperimentSystemPushEventHandlerTest {
 
     private static final String MESSAGE_TEXT = "Message text";
     private static final long ID = 1L;
 
     @Mock
-    private MessageTemplateProcessor messageTemplateProcessor;
+    private ExperimentMessageTemplateProcessor messageTemplateProcessor;
 
     @InjectMocks
-    private ExperimentPushEventHandler experimentPushEventHandler;
+    private ExperimentSystemPushEventHandler experimentSystemPushEventHandler;
 
 
     @Test
     void testHandleExperimentPush() {
         var experiment = createExperiment(UUID.randomUUID().toString());
         experiment.setId(ID);
-        when(messageTemplateProcessor.process(anyString(), anyMap())).thenReturn(MESSAGE_TEXT);
-        var event = new ExperimentWebPushEvent(this, experiment);
-        var pushRequest = experimentPushEventHandler.handleEvent(event);
+        when(messageTemplateProcessor.process(experiment)).thenReturn(MESSAGE_TEXT);
+        var event = new ExperimentSystemPushEvent(this, experiment);
+        var pushRequest = experimentSystemPushEventHandler.handleEvent(event);
         assertThat(pushRequest).isNotNull();
         assertThat(pushRequest.getRequestId()).isNotNull();
         assertThat(pushRequest.getMessageType()).isEqualTo(EXPERIMENT_STATUS_MESSAGE_TYPE);

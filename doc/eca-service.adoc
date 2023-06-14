@@ -763,7 +763,7 @@ image::./images/eca-web-push-db-schema.png[alt=Схема базы данных 
 |id                      |bigint            |+|+|+                               |Идентификатор записи (первичный ключ)
 |message_type            |varchar(255)      |+|+|-                               |Код сообщения
 |message_text            |varchar(255)      |-|-|-                               |Текст сообщения
-|initiator               |varchar(255)      |-|+|-                               |Инициатор уведомления
+|initiator               |varchar(255)      |-|-|-                               |Инициатор уведомления
 |receiver                |varchar(255)      |-|+|-                               |Получатель (пользователь)
 |message_status          |varchar(255)      |-|+|-                               |Статус уведомления (READ, NOT_READ)
 |created                 |timestamp         |-|+|-                               |Дата создания уведомления

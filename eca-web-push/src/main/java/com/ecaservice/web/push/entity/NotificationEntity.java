@@ -46,7 +46,6 @@ public class NotificationEntity {
     /**
      * Initiator user
      */
-    @Column(nullable = false)
     private String initiator;
 
     /**

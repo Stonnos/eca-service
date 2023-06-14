@@ -6,7 +6,7 @@ export class ExperimentFields {
   public static readonly REQUEST_STATUS: string = "requestStatus";
   public static readonly EVALUATION_METHOD_DESCRIPTION: string = "evaluationMethod.description";
   public static readonly EVALUATION_METHOD: string = "evaluationMethod";
-  public static readonly EMAIL: string = "email";
+  public static readonly CREATED_BY: string = "createdBy";
   public static readonly EXPERIMENT_PATH: string = "experimentPath";
   public static readonly CREATION_DATE: string = "creationDate";
   public static readonly START_DATE: string = "startDate";

@@ -196,11 +196,11 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
     if (!this.experimentUpdatesSubscription) {
       Logger.debug(`Subscribe experiment ${this.experimentDto.requestId} status change`);
       const filterPredicate = (pushRequestDto: PushRequestDto) => {
-        if (pushRequestDto.messageType != PushMessageType.EXPERIMENT_STATUS_CHANGE) {
-          return false;
+        if (pushRequestDto.pushType == 'SYSTEM' && pushRequestDto.messageType == PushMessageType.EXPERIMENT_STATUS_CHANGE) {
+          const id = pushRequestDto.additionalProperties[PushVariables.EXPERIMENT_ID];
+          return this.experimentDto.id == Number(id);
         }
-        const id = pushRequestDto.additionalProperties[PushVariables.EXPERIMENT_ID];
-        return this.experimentDto.id == Number(id);
+        return false;
       };
       this.experimentUpdatesSubscription = this.pushService.pushMessageSubscribe(filterPredicate)
         .subscribe({
@@ -244,7 +244,7 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
       { name: ExperimentFields.REQUEST_ID, label: "UUID заявки" },
       { name: ExperimentFields.REQUEST_STATUS_DESCRIPTION, label: "Статус заявки" },
       { name: ExperimentFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности" },
-      { name: ExperimentFields.EMAIL, label: "Email заявки" },
+      { name: ExperimentFields.CREATED_BY, label: "Пользователь" },
       { name: ExperimentFields.RELATION_NAME, label: "Обучающая выборка:" },
       { name: ExperimentFields.NUM_INSTANCES, label: "Число объектов:" },
       { name: ExperimentFields.NUM_ATTRIBUTES, label: "Число атрибутов:" },

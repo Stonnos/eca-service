@@ -24,10 +24,10 @@ import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
 public class ExperimentDto extends AbstractEvaluationDto {
 
     /**
-     * Email
+     * User name
      */
-    @Schema(description = "Request creator email", example = "test@mail.ru", maxLength = MAX_LENGTH_255)
-    private String email;
+    @Schema(description = "User name", example = "admin", maxLength = MAX_LENGTH_255)
+    private String createdBy;
 
     /**
      * Experiment file

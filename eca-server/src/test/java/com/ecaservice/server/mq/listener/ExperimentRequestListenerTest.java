@@ -1,22 +1,27 @@
 package com.ecaservice.server.mq.listener;
 
 import com.ecaservice.server.TestHelperUtils;
-import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.server.event.model.ExperimentEmailEvent;
 import com.ecaservice.server.event.model.ExperimentResponseEvent;
-import com.ecaservice.server.event.model.push.ExperimentWebPushEvent;
-import com.ecaservice.server.model.MsgProperties;
+import com.ecaservice.server.event.model.push.ExperimentSystemPushEvent;
+import com.ecaservice.server.mapping.DateTimeConverter;
+import com.ecaservice.server.mapping.ExperimentMapper;
+import com.ecaservice.server.mapping.ExperimentMapperImpl;
+import com.ecaservice.server.mapping.InstancesInfoMapperImpl;
+import com.ecaservice.server.model.experiment.AbstractExperimentRequestData;
 import com.ecaservice.server.service.experiment.ExperimentService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import javax.inject.Inject;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -29,28 +34,36 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@ExtendWith(MockitoExtension.class)
+@ExtendWith(SpringExtension.class)
+@Import({ExperimentMapperImpl.class, DateTimeConverter.class, InstancesInfoMapperImpl.class})
 class ExperimentRequestListenerTest {
 
-    @Mock
+    @MockBean
     private ExperimentService experimentService;
-    @Mock
+    @MockBean
     private ApplicationEventPublisher eventPublisher;
 
-    @InjectMocks
+    @Inject
+    private ExperimentMapper experimentMapper;
+
     private ExperimentRequestListener experimentRequestListener;
+
+    @BeforeEach
+    void init() {
+        experimentRequestListener = new ExperimentRequestListener(experimentService, experimentMapper, eventPublisher);
+    }
 
     @Test
     void testHandleMessage() {
-        ExperimentRequest evaluationRequest = TestHelperUtils.createExperimentRequest();
+        var experimentRequest = TestHelperUtils.createExperimentRequest();
         Message message = Mockito.mock(Message.class);
-        when(experimentService.createExperiment(any(ExperimentRequest.class), any(MsgProperties.class)))
+        when(experimentService.createExperiment(any(AbstractExperimentRequestData.class)))
                 .thenReturn(TestHelperUtils.createExperiment(UUID.randomUUID().toString()));
         MessageProperties messageProperties = TestHelperUtils.buildMessageProperties();
         when(message.getMessageProperties()).thenReturn(messageProperties);
-        experimentRequestListener.handleMessage(evaluationRequest, message);
+        experimentRequestListener.handleMessage(experimentRequest, message);
         verify(eventPublisher, atLeastOnce()).publishEvent(any(ExperimentResponseEvent.class));
         verify(eventPublisher, atLeastOnce()).publishEvent(any(ExperimentEmailEvent.class));
-        verify(eventPublisher, atLeastOnce()).publishEvent(any(ExperimentWebPushEvent.class));
+        verify(eventPublisher, atLeastOnce()).publishEvent(any(ExperimentSystemPushEvent.class));
     }
 }

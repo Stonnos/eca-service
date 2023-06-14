@@ -29,6 +29,6 @@ public abstract class AbstractSystemPushEventHandler<E extends AbstractSystemPus
      * @return show message flag
      */
     protected boolean isShowMessage() {
-        return true;
+        return false;
     }
 }

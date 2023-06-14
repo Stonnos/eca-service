@@ -8,7 +8,7 @@ import lombok.Getter;
  *
  * @author Roman Batygin
  */
-public class ExperimentWebPushEvent extends AbstractSystemPushEvent {
+public class ExperimentWebPushEvent extends AbstractUserPushNotificationEvent {
 
     /**
      * Experiment entity
@@ -23,7 +23,7 @@ public class ExperimentWebPushEvent extends AbstractSystemPushEvent {
      * @param experiment - experiment entity
      */
     public ExperimentWebPushEvent(Object source, Experiment experiment) {
-        super(source);
+        super(source, null);
         this.experiment = experiment;
     }
 }

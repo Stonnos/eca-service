@@ -1,13 +1,12 @@
-package com.ecaservice.server.service.push.handler;
+package com.ecaservice.server.service.experiment;
 
-import com.ecaservice.server.event.model.push.ExperimentWebPushEvent;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.RequestStatusVisitor;
 import com.ecaservice.server.service.message.template.MessageTemplateProcessor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
-import java.util.Map;
 
 import static com.ecaservice.server.service.message.template.dictionary.MessageTemplateCodes.ERROR_EXPERIMENT;
 import static com.ecaservice.server.service.message.template.dictionary.MessageTemplateCodes.FINISHED_EXPERIMENT;
@@ -15,39 +14,25 @@ import static com.ecaservice.server.service.message.template.dictionary.MessageT
 import static com.ecaservice.server.service.message.template.dictionary.MessageTemplateCodes.NEW_EXPERIMENT;
 import static com.ecaservice.server.service.message.template.dictionary.MessageTemplateCodes.TIMEOUT_EXPERIMENT;
 import static com.ecaservice.server.service.message.template.dictionary.MessageTemplateVariables.EXPERIMENT;
-import static com.ecaservice.server.service.push.dictionary.PushProperties.EXPERIMENT_ID_PROPERTY;
-import static com.ecaservice.server.service.push.dictionary.PushProperties.EXPERIMENT_REQUEST_ID_PROPERTY;
-import static com.ecaservice.server.service.push.dictionary.PushProperties.EXPERIMENT_REQUEST_STATUS_PROPERTY;
-import static com.ecaservice.server.service.push.dictionary.PushProperties.EXPERIMENT_STATUS_MESSAGE_TYPE;
 
 /**
- * Experiment web push event handler.
+ * Experiment message template processor.
  *
  * @author Roman Batygin
  */
 @Component
-public class ExperimentPushEventHandler extends AbstractSystemPushEventHandler<ExperimentWebPushEvent> {
+@RequiredArgsConstructor
+public class ExperimentMessageTemplateProcessor {
 
     private final MessageTemplateProcessor messageTemplateProcessor;
 
     /**
-     * Constructor with parameters.
+     * Processes experiment message template.
      *
-     * @param messageTemplateProcessor - message template processor
+     * @param experiment - experiment entity
+     * @return result message
      */
-    public ExperimentPushEventHandler(MessageTemplateProcessor messageTemplateProcessor) {
-        super(ExperimentWebPushEvent.class);
-        this.messageTemplateProcessor = messageTemplateProcessor;
-    }
-
-    @Override
-    protected String getMessageType() {
-        return EXPERIMENT_STATUS_MESSAGE_TYPE;
-    }
-
-    @Override
-    protected String getMessageText(ExperimentWebPushEvent experimentWebPushEvent) {
-        var experiment = experimentWebPushEvent.getExperiment();
+    public String process(Experiment experiment) {
         return experiment.getRequestStatus().handle(new RequestStatusVisitor<>() {
             @Override
             public String caseNew(Experiment exp) {
@@ -75,15 +60,5 @@ public class ExperimentPushEventHandler extends AbstractSystemPushEventHandler<E
                         Collections.singletonMap(EXPERIMENT, exp));
             }
         }, experiment);
-    }
-
-    @Override
-    protected Map<String, String> createAdditionalProperties(ExperimentWebPushEvent experimentWebPushEvent) {
-        var experiment = experimentWebPushEvent.getExperiment();
-        return Map.of(
-                EXPERIMENT_ID_PROPERTY, String.valueOf(experiment.getId()),
-                EXPERIMENT_REQUEST_ID_PROPERTY, experiment.getRequestId(),
-                EXPERIMENT_REQUEST_STATUS_PROPERTY, experiment.getRequestStatus().name()
-        );
     }
 }

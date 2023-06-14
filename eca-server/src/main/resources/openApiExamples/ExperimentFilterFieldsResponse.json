@@ -9,11 +9,11 @@
     "dictionary": null
   },
   {
-    "fieldName": "email",
-    "description": "Email заявки",
+    "fieldName": "createdBy",
+    "description": "Пользователь",
     "fieldOrder": 1,
     "filterFieldType": "TEXT",
-    "matchMode": "LIKE",
+    "matchMode": "EQUALS",
     "multiple": false,
     "dictionary": null
   },

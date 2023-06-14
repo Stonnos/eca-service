@@ -221,7 +221,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
   }
 
   private subscribeForExperimentsUpdates(): void {
-    const filterPredicate = (pushRequestDto: PushRequestDto) => pushRequestDto.messageType == PushMessageType.EXPERIMENT_STATUS_CHANGE;
+    const filterPredicate = (pushRequestDto: PushRequestDto) => pushRequestDto.pushType == 'SYSTEM' && pushRequestDto.messageType == PushMessageType.EXPERIMENT_STATUS_CHANGE;
     this.experimentsUpdatesSubscriptions = this.pushService.pushMessageSubscribe(filterPredicate)
       .subscribe({
         next: (pushRequestDto: PushRequestDto) => {
@@ -260,7 +260,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
       { name: ExperimentFields.EXPERIMENT_TYPE_DESCRIPTION, label: "Тип эксперимента", sortBy: ExperimentFields.EXPERIMENT_TYPE },
       { name: ExperimentFields.REQUEST_STATUS_DESCRIPTION, label: "Статус заявки", sortBy: ExperimentFields.REQUEST_STATUS },
       { name: ExperimentFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности", sortBy: ExperimentFields.EVALUATION_METHOD },
-      { name: ExperimentFields.EMAIL, label: "Email заявки" },
+      { name: ExperimentFields.CREATED_BY, label: "Пользователь" },
       { name: ExperimentFields.RELATION_NAME, label: "Обучающая выборка" },
       { name: ExperimentFields.EXPERIMENT_PATH, label: "Результаты эксперимента" },
       { name: ExperimentFields.EVALUATION_TOTAL_TIME, label: "Время построения эксперимента" },
