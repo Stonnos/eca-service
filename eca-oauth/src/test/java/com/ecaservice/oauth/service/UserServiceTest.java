@@ -351,6 +351,8 @@ class UserServiceTest extends AbstractJpaTest {
     @Test
     void testEnablePushNotifications() {
         UserEntity userEntity = createAndSaveUser();
+        userEntity.setPushEnabled(false);
+        userEntityRepository.save(userEntity);
         userService.enablePushNotifications(userEntity.getId());
         UserEntity actual = userEntityRepository.findById(userEntity.getId()).orElse(null);
         assertThat(actual).isNotNull();
@@ -384,6 +386,8 @@ class UserServiceTest extends AbstractJpaTest {
     @Test
     void testDisablePushNotificationsShouldThrowIllegalStateException() {
         UserEntity userEntity = createAndSaveUser();
+        userEntity.setPushEnabled(false);
+        userEntityRepository.save(userEntity);
         assertThrows(InvalidOperationException.class, () -> userService.disablePushNotifications(userEntity.getId()));
     }
 
