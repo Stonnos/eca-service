@@ -111,6 +111,17 @@ public class ExperimentController {
                                     schema = @Schema(implementation = CreateExperimentResultDto.class)
                             )
                     ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "CreateExperimentBadRequestResponse",
+                                                    ref = "#/components/examples/CreateExperimentBadRequestResponse"
+                                            )
+                                    }
+                            )
+                    ),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
