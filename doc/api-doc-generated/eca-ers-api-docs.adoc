@@ -44,7 +44,7 @@ a|
 {
   "requestId" : "04b1373f-7838-4535-b65a-88c088830879",
   "instances" : {
-    "structure" : "<data structure>",
+    "dataMd5Hash" : "3032e188204cb537f69fc7364f638641",
     "relationName" : "Glass",
     "numInstances" : 214,
     "numAttributes" : 10,
@@ -448,7 +448,7 @@ a|
 {
   "requestId" : "04b1373f-7838-4535-b65a-88c088830879",
   "instances" : {
-    "structure" : "<data structure>",
+    "dataMd5Hash" : "3032e188204cb537f69fc7364f638641",
     "relationName" : "Glass",
     "numInstances" : 214,
     "numAttributes" : 10,
@@ -765,7 +765,6 @@ a|
 ----
 {
   "requestId" : "f8cecbf7-405b-403b-9a94-f51e8fb73ed8",
-  "relationName" : "Glass",
   "dataHash" : "2aeb5c41423c895995e8cb304fe30b2d",
   "evaluationMethodReport" : {
     "evaluationMethod" : "CROSS_VALIDATION",
@@ -938,7 +937,7 @@ __string__
 
 
 
-*Max. length*: 1,000
+*Max. length*: 1 000
 
 
 
@@ -1131,7 +1130,7 @@ __string__
 
 *Min. length*: 1
 
-*Max. length*: 2,147,483,647
+*Max. length*: 2 147 483 647
 
 
 
@@ -1199,7 +1198,7 @@ __integer__
 
 *Minimum*: 0*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -1251,7 +1250,7 @@ __integer__
 
 *Minimum*: 2*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -1272,7 +1271,7 @@ __integer__
 
 *Minimum*: 1*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -1291,9 +1290,9 @@ __integer__
 
 
 
-*Minimum*: -9,223,372,036,854,775,808*
+*Minimum*: -9 223 372 036 854 775 808*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -1453,15 +1452,15 @@ __array__
 [width=100%]
 |===
 |*Name*|*Description*|*Schema*
-|*structure**
-|Training data structure
+|*dataMd5Hash**
+|Instances MD5 hash sum
 a|
 __string__
 
 
 *Min. length*: 1
 
-*Max. length*: 2,147,483,647
+*Max. length*: 255
 
 
 
@@ -1503,7 +1502,7 @@ __integer__
 
 *Minimum*: 2*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -1524,7 +1523,7 @@ __integer__
 
 *Minimum*: 2*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -1545,7 +1544,7 @@ __integer__
 
 *Minimum*: 2*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -1683,7 +1682,7 @@ __integer__
 
 *Minimum*: 2*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -1704,7 +1703,7 @@ __integer__
 
 *Minimum*: 0*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -1725,7 +1724,7 @@ __integer__
 
 *Minimum*: 0*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -1870,9 +1869,9 @@ __number__
 
 
 
-*Minimum*: -2,147,483,648*
+*Minimum*: -2 147 483 648*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -1891,9 +1890,9 @@ __number__
 
 
 
-*Minimum*: -2,147,483,648*
+*Minimum*: -2 147 483 648*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -2145,25 +2144,6 @@ __string__
 *Pattern*: `^[0-9a-f]{8}-[0-9a-f]{4}-[34][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`
 
 
-|*relationName**
-|Instances name
-a|
-__string__
-
-
-*Min. length*: 1
-
-*Max. length*: 255
-
-
-
-
-
-
-
-
-
-
 |*dataHash**
 |Instances MD5 hash sum
 a|
@@ -2202,11 +2182,11 @@ a|
 
 
 
-|*sortFields*
+|*evaluationResultsStatisticsSortFields*
 |-
 a|
 __array__
-<<<SortField>>
+<<<EvaluationResultsStatisticsSortField>>
 >
 
 
@@ -2218,27 +2198,24 @@ __array__
 
 *Min. items*: 0
 
-*Max. items*: 10
+*Max. items*: 3
 
 
 
 
 |===
-=== SortField
+=== EvaluationResultsStatisticsSortField
 :table-caption: Table
-.Sort field model
+.Evaluation results statistics sort field model
 [width=100%]
 |===
 |*Name*|*Description*|*Schema*
-|*fieldName**
+|*field**
 |Sort field name
 a|
 __string__
 
 
-*Min. length*: 1
-
-*Max. length*: 255
 
 
 
@@ -2249,7 +2226,17 @@ __string__
 
 
 
-|*direction*
+
+
+
+*Values*:
+
+* PCT_CORRECT
+
+* MAX_AUC_VALUE
+
+* VARIANCE_ERROR
+|*direction**
 |Sort direction
 a|
 __string__

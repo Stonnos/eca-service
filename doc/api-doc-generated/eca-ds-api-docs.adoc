@@ -40,6 +40,410 @@ __Scopes__:
 
 |===
 
+== Unselects attribute for classification
+
+__PUT__ */instances/unselect-attribute* - Unselects attribute for classification
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+
+*Request parameters*
+[width=100%]
+|===
+|*Name*|*Description*|*Location*|*Schema*
+|*id**
+|Attribute id
+|query
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 9 223 372 036 854 775 807*
+
+
+
+
+
+
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*-*
+|-
+a|
+-
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|
+__array__
+<<<ValidationErrorDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+[ {
+  "code" : "DataNotFound",
+  "errorMessage" : "Entity with search key [1] not found!"
+} ]
+----
+|===
+
+== Sets class attribute for specified instances
+
+__PUT__ */instances/set-class-attribute* - Sets class attribute for specified instances
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+
+*Request parameters*
+[width=100%]
+|===
+|*Name*|*Description*|*Location*|*Schema*
+|*classAttributeId**
+|Class attribute id
+|query
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 9 223 372 036 854 775 807*
+
+
+
+
+
+
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*-*
+|-
+a|
+-
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|
+__array__
+<<<ValidationErrorDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+[ {
+  "code" : "InvalidClassAttributeType",
+  "errorMessage" : "Class attribute [12] must be nominal"
+} ]
+----
+|===
+
+== Selects attribute for classification
+
+__PUT__ */instances/select-attribute* - Selects attribute for classification
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+
+*Request parameters*
+[width=100%]
+|===
+|*Name*|*Description*|*Location*|*Schema*
+|*id**
+|Attribute id
+|query
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 9 223 372 036 854 775 807*
+
+
+
+
+
+
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*-*
+|-
+a|
+-
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|
+__array__
+<<<ValidationErrorDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+[ {
+  "code" : "DataNotFound",
+  "errorMessage" : "Entity with search key [1] not found!"
+} ]
+----
+|===
+
+== Selects all attributes for classification
+
+__PUT__ */instances/select-all-attributes* - Selects all attributes for classification
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+
+*Request parameters*
+[width=100%]
+|===
+|*Name*|*Description*|*Location*|*Schema*
+|*id**
+|Instances id
+|query
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 9 223 372 036 854 775 807*
+
+
+
+
+
+
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*-*
+|-
+a|
+-
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|
+__array__
+<<<ValidationErrorDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+[ {
+  "code" : "DataNotFound",
+  "errorMessage" : "Entity with search key [1] not found!"
+} ]
+----
+|===
+
 == Renames data with specified id
 
 __PUT__ */instances/rename* - Renames data with specified id
@@ -76,7 +480,7 @@ __(int64)__
 
 *Minimum*: 1*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -288,6 +692,7 @@ a|
 ----
 {
   "id" : 1,
+  "uuid" : "1d2de514-3a87-4620-9b97-c260e24340de",
   "sourceFileName" : "iris.xls",
   "tableName" : "iris"
 }
@@ -419,11 +824,13 @@ a|
 {
   "content" : [ {
     "id" : 1,
+    "uuid" : "1d2de514-3a87-4620-9b97-c260e24340de",
     "tableName" : "iris",
     "numInstances" : 150,
     "numAttributes" : 5,
     "created" : "2021-07-01 14:00:00",
-    "createdBy" : "admin"
+    "createdBy" : "admin",
+    "classAttributeId" : 5
   } ],
   "page" : 0,
   "totalCount" : 1
@@ -548,7 +955,7 @@ __(int64)__
 
 *Minimum*: 1*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -773,7 +1180,7 @@ __(int64)__
 
 *Minimum*: 1*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -911,7 +1318,7 @@ __(int64)__
 
 *Minimum*: 1*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -951,11 +1358,13 @@ a|
 ----
 {
   "id" : 1,
+  "uuid" : "1d2de514-3a87-4620-9b97-c260e24340de",
   "tableName" : "iris",
   "numInstances" : 150,
   "numAttributes" : 5,
   "created" : "2021-07-01 14:00:00",
-  "createdBy" : "admin"
+  "createdBy" : "admin",
+  "classAttributeId" : 5
 }
 ----
 |401
@@ -1038,7 +1447,7 @@ __(int64)__
 
 *Minimum*: 1*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -1058,7 +1467,7 @@ __(int64)__
 |*application/json*
 |
 __array__
-<string
+<<<AttributeDto>>
 >
 
 
@@ -1078,7 +1487,65 @@ __array__
 a|
 [source,json]
 ----
-[ "x1", "x2", "x3", "x4", "class" ]
+[ {
+  "id" : 1,
+  "name" : "x1",
+  "index" : 0,
+  "selected" : true,
+  "type" : {
+    "value" : "NUMERIC",
+    "description" : "Числовой"
+  }
+}, {
+  "id" : 2,
+  "name" : "x2",
+  "index" : 1,
+  "selected" : true,
+  "type" : {
+    "value" : "NUMERIC",
+    "description" : "Числовой"
+  }
+}, {
+  "id" : 3,
+  "name" : "x3",
+  "index" : 2,
+  "selected" : true,
+  "type" : {
+    "value" : "NUMERIC",
+    "description" : "Числовой"
+  }
+}, {
+  "id" : 4,
+  "name" : "x4",
+  "index" : 3,
+  "selected" : true,
+  "type" : {
+    "value" : "NUMERIC",
+    "description" : "Числовой"
+  }
+}, {
+  "id" : 5,
+  "name" : "class",
+  "index" : 4,
+  "selected" : true,
+  "type" : {
+    "value" : "NOMINAL",
+    "description" : "Категориальный"
+  },
+  "values" : [ {
+    "id" : 133,
+    "index" : 0,
+    "value" : "Iris-setosa"
+  }, {
+    "id" : 133,
+    "index" : 1,
+    "value" : "Iris-versicolor"
+  }, {
+    "id" : 133,
+    "index" : 2,
+    "value" : "Iris-verginica"
+  } ]
+} ]
 ----
 |401
 |Not authorized
@@ -1124,6 +1591,92 @@ a|
 ----
 |===
 
+== Downloads valid json instances report with selected attributes and assigned class attribute
+
+__GET__ */api/internal/instances/download-valid-report* - Downloads valid json instances report with selected attributes and assigned class attribute
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+
+*Request parameters*
+[width=100%]
+|===
+|*Name*|*Description*|*Location*|*Schema*
+|*uuid**
+|Instances uuid
+|query
+a|
+__string__
+
+
+*Min. length*: 1
+
+*Max. length*: 36
+
+
+
+
+
+
+
+*Pattern*: `^[0-9a-f]{8}-[0-9a-f]{4}-[34][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*-*
+|-
+a|
+-
+|400
+|Bad request
+|*application/json*
+|
+__array__
+<<<ValidationErrorDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+[ {
+  "code" : "SelectedAttributesNumberIsTooLow",
+  "errorMessage" : "Selected attributes number must be greater than or equal to [2] for table [iris]"
+} ]
+----
+|===
+
 == Deletes instances with specified id
 
 __DELETE__ */instances/delete* - Deletes instances with specified id
@@ -1160,7 +1713,7 @@ __(int64)__
 
 *Minimum*: 1*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -1279,7 +1832,7 @@ __string__
 
 
 
-*Max. length*: 1,000
+*Max. length*: 1 000
 
 
 
@@ -1310,7 +1863,26 @@ __(int64)__
 
 *Minimum*: 1*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
+
+
+
+
+
+
+
+
+|*uuid**
+|Instances uuid
+a|
+__string__
+
+
+
+
+*Max. length*: 36
+
+
 
 
 
@@ -1377,7 +1949,26 @@ __(int64)__
 
 *Minimum*: 1*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
+
+
+
+
+
+
+
+
+|*uuid*
+|Instances uuid
+a|
+__string__
+
+
+
+
+*Max. length*: 36
+
+
 
 
 
@@ -1418,7 +2009,7 @@ __(int32)__
 
 *Minimum*: 0*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -1440,7 +2031,7 @@ __(int32)__
 
 *Minimum*: 0*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -1479,6 +2070,28 @@ __string__
 *Max. length*: 255
 
 
+
+
+
+
+
+
+
+
+|*classAttributeId*
+|Class attribute ID
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -1528,7 +2141,7 @@ __(int32)__
 
 *Minimum*: 0*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -1550,7 +2163,7 @@ __(int64)__
 
 *Minimum*: 0*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -1652,7 +2265,7 @@ __(int32)__
 
 *Minimum*: 0*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -1803,7 +2416,7 @@ __(int32)__
 
 *Minimum*: 0*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -1825,7 +2438,7 @@ __(int64)__
 
 *Minimum*: 0*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -1881,6 +2494,250 @@ __string__
 
 |*fileExtension*
 |Report file extension
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|===
+=== AttributeDto
+:table-caption: Table
+.Attribute model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*id*
+|ID
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 9 223 372 036 854 775 807*
+
+
+
+
+
+
+
+
+|*name*
+|Attribute name
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*index*
+|Attribute index
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|*selected*
+|Is attribute selected?
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*type*
+|-
+a|
+<<EnumDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*values*
+|-
+a|
+__array__
+<<<AttributeValueDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== AttributeValueDto
+:table-caption: Table
+.Attribute value model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*id*
+|ID
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 9 223 372 036 854 775 807*
+
+
+
+
+
+
+
+
+|*index*
+|Attribute value index
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|*value*
+|Attribute value
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|===
+=== EnumDto
+:table-caption: Table
+.Enum dto model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*value**
+|Enum value
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*description**
+|Enum value description
 a|
 __string__
 

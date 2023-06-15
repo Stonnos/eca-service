@@ -503,7 +503,7 @@ a|
   "description" : "ID корреляции",
   "fieldOrder" : 1,
   "filterFieldType" : "TEXT",
-  "matchMode" : "LIKE",
+  "matchMode" : "EQUALS",
   "multiple" : false
 }, {
   "fieldName" : "groupCode",
@@ -651,7 +651,7 @@ __string__
 
 
 
-*Max. length*: 1,000
+*Max. length*: 1 000
 
 
 
@@ -755,7 +755,7 @@ __(int32)__
 
 *Minimum*: 0*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -1083,7 +1083,7 @@ __(int32)__
 
 *Minimum*: 0*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -1105,7 +1105,7 @@ __(int64)__
 
 *Minimum*: 0*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -1167,7 +1167,7 @@ __string__
 
 *Min. length*: 1
 
-*Max. length*: 2,147,483,647
+*Max. length*: 2 147 483 647
 
 
 

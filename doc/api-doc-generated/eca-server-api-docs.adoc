@@ -411,7 +411,7 @@ a|
     "numTests" : 1,
     "seed" : 1,
     "evaluationTotalTime" : "00:00:1:43",
-    "email" : "test@mail.ru",
+    "createdBy" : "admin",
     "experimentPath" : "experiment-1d2de514-3a87-4620-9b97-c260e24340de.model",
     "instancesInfo" : {
       "relationName" : "iris",
@@ -501,10 +501,10 @@ a|
 [width=100%]
 |===
 |*Content type*|*Required*|*Schema*|*Example*
-|*multipart/form-data*
-|false
+|*application/json*
+|true
 |
-__object__
+<<CreateExperimentRequestDto>>
 
 
 
@@ -521,105 +521,17 @@ __object__
 
 
 a|
--
+[source,json]
+----
+{
+  "instancesUuid" : "c1c82d78-b90f-4ef2-88c8-eca3657363bf",
+  "experimentType" : "ADA_BOOST",
+  "evaluationMethod" : "CROSS_VALIDATION"
+}
+----
 |===
 
-*Multipart form data fields*
 
-[width=100%]
-|===
-|*Name*|*Description*|*Schema*
-|*trainingData**
-|Training data file
-a|
-__string__
-__(binary)__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|===
-
-*Request parameters*
-[width=100%]
-|===
-|*Name*|*Description*|*Location*|*Schema*
-|*experimentType**
-|Experiment type
-|query
-a|
-__string__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-*Values*:
-
-* NEURAL_NETWORKS
-
-* HETEROGENEOUS_ENSEMBLE
-
-* MODIFIED_HETEROGENEOUS_ENSEMBLE
-
-* ADA_BOOST
-
-* STACKING
-
-* KNN
-
-* RANDOM_FORESTS
-
-* STACKING_CV
-
-* DECISION_TREE
-|*evaluationMethod**
-|Evaluation method
-|query
-a|
-__string__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-*Values*:
-
-* TRAINING_DATA
-
-* CROSS_VALIDATION
-|===
 
 *Api responses*
 [width=100%]
@@ -652,6 +564,18 @@ a|
   "id" : 1,
   "requestId" : "1d2de514-3a87-4620-9b97-c260e24340de"
 }
+----
+|400
+|Bad request
+|*application/json*
+|-
+a|
+[source,json]
+----
+[ {
+  "code" : "CLASS_ATTRIBUTE_NOT_SELECTED",
+  "errorMessage" : "Bad request error while get valid instances with uuid [c1c82d78-b90f-4ef2-88c8-eca3657363bf] from data storage!"
+} ]
 ----
 |401
 |Not authorized
@@ -757,7 +681,7 @@ __(int64)__
 
 *Minimum*: 1*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -916,7 +840,7 @@ __(int64)__
 
 *Minimum*: 1*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -1114,7 +1038,7 @@ __(int64)__
 
 *Minimum*: 1*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -1241,7 +1165,7 @@ __(int64)__
 
 *Minimum*: 1*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -1655,7 +1579,7 @@ __(int64)__
 
 *Minimum*: 1*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -2392,11 +2316,11 @@ a|
   "matchMode" : "LIKE",
   "multiple" : false
 }, {
-  "fieldName" : "email",
-  "description" : "Email заявки",
+  "fieldName" : "createdBy",
+  "description" : "Пользователь",
   "fieldOrder" : 1,
   "filterFieldType" : "TEXT",
-  "matchMode" : "LIKE",
+  "matchMode" : "EQUALS",
   "multiple" : false
 }, {
   "fieldName" : "evaluationMethod",
@@ -3219,7 +3143,7 @@ __(int64)__
 
 *Minimum*: 1*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -3308,7 +3232,7 @@ a|
     "numTests" : 1,
     "seed" : 1,
     "evaluationTotalTime" : "00:00:1:43",
-    "email" : "test@mail.ru",
+    "createdBy" : "admin",
     "experimentPath" : "experiment-1d2de514-3a87-4620-9b97-c260e24340de.model",
     "instancesInfo" : {
       "relationName" : "iris",
@@ -3432,7 +3356,7 @@ __(int64)__
 
 *Minimum*: 1*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -3623,7 +3547,7 @@ __(int64)__
 
 *Minimum*: 1*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -3747,7 +3671,7 @@ __(int64)__
 
 *Minimum*: 1*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -3909,7 +3833,7 @@ __(int64)__
 
 *Minimum*: 1*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -3965,7 +3889,7 @@ a|
   "numTests" : 1,
   "seed" : 1,
   "evaluationTotalTime" : "00:00:1:43",
-  "email" : "test@mail.ru",
+  "createdBy" : "admin",
   "experimentPath" : "experiment-1d2de514-3a87-4620-9b97-c260e24340de.model",
   "instancesInfo" : {
     "relationName" : "iris",
@@ -4061,7 +3985,7 @@ __(int64)__
 
 *Minimum*: 1*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -4162,7 +4086,7 @@ __(int64)__
 
 *Minimum*: 1*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -4360,7 +4284,7 @@ __(int64)__
 
 *Minimum*: 1*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -5185,7 +5109,7 @@ __(int64)__
 
 *Minimum*: 1*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -5286,7 +5210,7 @@ __(int64)__
 
 *Minimum*: 1*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -5405,7 +5329,7 @@ __string__
 
 
 
-*Max. length*: 1,000
+*Max. length*: 1 000
 
 
 
@@ -5436,7 +5360,7 @@ __(int64)__
 
 *Minimum*: 1*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -5557,7 +5481,7 @@ __(int32)__
 
 *Minimum*: 0*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -5731,7 +5655,7 @@ __(int64)__
 
 *Minimum*: 1*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -5928,9 +5852,9 @@ __(int32)__
 
 
 
-*Minimum*: -2,147,483,648*
+*Minimum*: -2 147 483 648*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -5958,8 +5882,8 @@ __string__
 
 
 
-|*email*
-|Request creator email
+|*createdBy*
+|User name
 a|
 __string__
 
@@ -6075,7 +5999,7 @@ __(int32)__
 
 *Minimum*: 0*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -6097,7 +6021,7 @@ __(int64)__
 
 *Minimum*: 0*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -6145,7 +6069,7 @@ __(int32)__
 
 *Minimum*: 2*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -6167,7 +6091,7 @@ __(int32)__
 
 *Minimum*: 2*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -6189,7 +6113,7 @@ __(int32)__
 
 *Minimum*: 2*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -6237,7 +6161,7 @@ __(int64)__
 
 *Minimum*: 1*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -6266,6 +6190,94 @@ __string__
 
 
 |===
+=== CreateExperimentRequestDto
+:table-caption: Table
+.Experiment request
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*instancesUuid**
+|Instances uuid
+a|
+__string__
+
+
+*Min. length*: 1
+
+*Max. length*: 36
+
+
+
+
+
+
+
+*Pattern*: `^[0-9a-f]{8}-[0-9a-f]{4}-[34][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`
+
+
+|*experimentType**
+|Experiment type
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* NEURAL_NETWORKS
+
+* HETEROGENEOUS_ENSEMBLE
+
+* MODIFIED_HETEROGENEOUS_ENSEMBLE
+
+* ADA_BOOST
+
+* STACKING
+
+* KNN
+
+* RANDOM_FORESTS
+
+* STACKING_CV
+
+* DECISION_TREE
+|*evaluationMethod**
+|Evaluation method
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* TRAINING_DATA
+
+* CROSS_VALIDATION
+|===
 === CreateClassifierOptionsResultDto
 :table-caption: Table
 .Create classifier options model
@@ -6285,7 +6297,7 @@ __(int64)__
 
 *Minimum*: 1*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -6371,7 +6383,7 @@ __(int64)__
 
 *Minimum*: 1*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -6537,7 +6549,7 @@ __(int32)__
 
 *Minimum*: 0*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -6559,7 +6571,7 @@ __(int64)__
 
 *Minimum*: 0*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -6665,7 +6677,7 @@ __(double)__
 
 *Minimum*: 0
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -6713,7 +6725,7 @@ __(int32)__
 
 *Minimum*: 1*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -6755,9 +6767,9 @@ __(int32)__
 
 
 
-*Minimum*: -2,147,483,648*
+*Minimum*: -2 147 483 648*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -6779,7 +6791,7 @@ __(double)__
 
 *Minimum*: 0*
 
-*Maximum*: 0.5*
+*Maximum*: 0,5*
 
 
 
@@ -6801,7 +6813,7 @@ __(double)__
 
 *Minimum*: 0*
 
-*Maximum*: 0.5*
+*Maximum*: 0,5*
 
 
 
@@ -6975,7 +6987,7 @@ __(int32)__
 
 *Minimum*: 0*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -6997,7 +7009,7 @@ __(int32)__
 
 *Minimum*: 0*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -7038,7 +7050,7 @@ __(int32)__
 
 *Minimum*: 0*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -7098,7 +7110,7 @@ __(int32)__
 
 *Minimum*: 1*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -7118,9 +7130,9 @@ __(int32)__
 
 
 
-*Minimum*: -2,147,483,648*
+*Minimum*: -2 147 483 648*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -7209,7 +7221,7 @@ __(int32)__
 
 *Minimum*: 1*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -7251,9 +7263,9 @@ __(int32)__
 
 
 
-*Minimum*: -2,147,483,648*
+*Minimum*: -2 147 483 648*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -7275,7 +7287,7 @@ __(int32)__
 
 *Minimum*: 0*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -7297,7 +7309,7 @@ __(int32)__
 
 *Minimum*: 0*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -7319,7 +7331,7 @@ __(int32)__
 
 *Minimum*: 0*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -7369,7 +7381,7 @@ __(int32)__
 
 *Minimum*: 1*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -7436,7 +7448,7 @@ __(int32)__
 
 *Minimum*: 1*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -7478,9 +7490,9 @@ __(int32)__
 
 
 
-*Minimum*: -2,147,483,648*
+*Minimum*: -2 147 483 648*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -7502,7 +7514,7 @@ __(double)__
 
 *Minimum*: 0*
 
-*Maximum*: 0.5*
+*Maximum*: 0,5*
 
 
 
@@ -7524,7 +7536,7 @@ __(double)__
 
 *Minimum*: 0*
 
-*Maximum*: 0.5*
+*Maximum*: 0,5*
 
 
 
@@ -7678,7 +7690,7 @@ __(int32)__
 
 *Minimum*: 0*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -7786,7 +7798,7 @@ __(int32)__
 
 *Minimum*: 1*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -7806,7 +7818,7 @@ __(double)__
 
 
 
-*Minimum*: 0.5*
+*Minimum*: 0,5*
 
 *Maximum*: 1*
 
@@ -7884,7 +7896,7 @@ __(int32)__
 
 *Minimum*: 1*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -7951,7 +7963,7 @@ __(int32)__
 
 *Minimum*: 1*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -7973,7 +7985,7 @@ __(int32)__
 
 *Minimum*: 2*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -8012,9 +8024,9 @@ __(int32)__
 
 
 
-*Minimum*: -2,147,483,648*
+*Minimum*: -2 147 483 648*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -8036,7 +8048,7 @@ __(int32)__
 
 *Minimum*: 1*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -8144,7 +8156,7 @@ __(int32)__
 
 *Minimum*: 1*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -8186,9 +8198,9 @@ __(int32)__
 
 
 
-*Minimum*: -2,147,483,648*
+*Minimum*: -2 147 483 648*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -8210,7 +8222,7 @@ __(int32)__
 
 *Minimum*: 0*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -8232,7 +8244,7 @@ __(int32)__
 
 *Minimum*: 0*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -8254,7 +8266,7 @@ __(int32)__
 
 *Minimum*: 0*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -8330,7 +8342,7 @@ __(int32)__
 
 *Minimum*: 1*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -8372,9 +8384,9 @@ __(int32)__
 
 
 
-*Minimum*: -2,147,483,648*
+*Minimum*: -2 147 483 648*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -8396,7 +8408,7 @@ __(double)__
 
 *Minimum*: 0*
 
-*Maximum*: 0.5*
+*Maximum*: 0,5*
 
 
 
@@ -8418,7 +8430,7 @@ __(double)__
 
 *Minimum*: 0*
 
-*Maximum*: 0.5*
+*Maximum*: 0,5*
 
 
 
@@ -8524,9 +8536,9 @@ __(int32)__
 
 
 
-*Minimum*: -2,147,483,648*
+*Minimum*: -2 147 483 648*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -8595,7 +8607,7 @@ __(int64)__
 
 *Minimum*: 1*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -8731,7 +8743,7 @@ __(int64)__
 
 *Minimum*: 0*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -8807,7 +8819,7 @@ __(int32)__
 
 *Minimum*: 0*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -8829,7 +8841,7 @@ __(int64)__
 
 *Minimum*: 0*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -8858,7 +8870,7 @@ __(int64)__
 
 *Minimum*: 1*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -8984,7 +8996,7 @@ __(int32)__
 
 *Minimum*: 0*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -9006,7 +9018,7 @@ __(int64)__
 
 *Minimum*: 0*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -9160,7 +9172,7 @@ __(int64)__
 
 *Minimum*: 1*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -9357,9 +9369,9 @@ __(int32)__
 
 
 
-*Minimum*: -2,147,483,648*
+*Minimum*: -2 147 483 648*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -9447,7 +9459,7 @@ __(int32)__
 
 *Minimum*: 0*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -9469,7 +9481,7 @@ __(int64)__
 
 *Minimum*: 0*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -9616,9 +9628,9 @@ __(int32)__
 
 
 
-*Minimum*: -2,147,483,648*
+*Minimum*: -2 147 483 648*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -9706,7 +9718,7 @@ __(int32)__
 
 *Minimum*: 0*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -9728,7 +9740,7 @@ __(int64)__
 
 *Minimum*: 0*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -9887,7 +9899,7 @@ __(int32)__
 
 *Minimum*: 0*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -10044,7 +10056,7 @@ __(int64)__
 
 *Minimum*: 0*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -10073,7 +10085,7 @@ __(int64)__
 
 *Minimum*: 0*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -10319,7 +10331,7 @@ __integer__
 
 *Minimum*: 2*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -10340,7 +10352,7 @@ __integer__
 
 *Minimum*: 0*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -10361,7 +10373,7 @@ __integer__
 
 *Minimum*: 0*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -10506,9 +10518,9 @@ __number__
 
 
 
-*Minimum*: -2,147,483,648*
+*Minimum*: -2 147 483 648*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -10527,9 +10539,9 @@ __number__
 
 
 
-*Minimum*: -2,147,483,648*
+*Minimum*: -2 147 483 648*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -10558,7 +10570,7 @@ __(int64)__
 
 *Minimum*: 1*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -10599,7 +10611,7 @@ __(int32)__
 
 *Minimum*: 0*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -10701,7 +10713,7 @@ __string__
 
 
 
-*Max. length*: 1,024
+*Max. length*: 1 024
 
 
 
@@ -10732,7 +10744,7 @@ __(int64)__
 
 *Minimum*: 0*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -10754,7 +10766,7 @@ __(int64)__
 
 *Minimum*: 0*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -10776,7 +10788,7 @@ __(int64)__
 
 *Minimum*: 0*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -10798,7 +10810,7 @@ __(int64)__
 
 *Minimum*: 0*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -10820,7 +10832,7 @@ __(int64)__
 
 *Minimum*: 0*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -10842,7 +10854,7 @@ __(int64)__
 
 *Minimum*: 0*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -10957,7 +10969,7 @@ __(int64)__
 
 *Minimum*: 0*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -10979,7 +10991,7 @@ __(int64)__
 
 *Minimum*: 0*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -11048,7 +11060,7 @@ __(int64)__
 
 *Minimum*: 1*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -11089,7 +11101,7 @@ __(int32)__
 
 *Minimum*: 0*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -11158,7 +11170,7 @@ __(int64)__
 
 *Minimum*: 1*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -11355,9 +11367,9 @@ __(int32)__
 
 
 
-*Minimum*: -2,147,483,648*
+*Minimum*: -2 147 483 648*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -11573,7 +11585,7 @@ __(int32)__
 
 *Minimum*: 0*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -11624,7 +11636,7 @@ __number__
 
 *Minimum*: 0*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -11664,7 +11676,7 @@ __number__
 
 *Minimum*: 0*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -11705,7 +11717,7 @@ __(int32)__
 
 *Minimum*: 0*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 

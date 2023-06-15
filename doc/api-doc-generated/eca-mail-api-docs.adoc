@@ -225,7 +225,6 @@ a|
   "receiver" : "test@mail.ru",
   "templateCode" : "NEW_EXPERIMENT",
   "variables" : {
-    "firstName" : "Роман",
     "requestId" : "1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
     "experimentType" : "KNN"
   },
@@ -321,7 +320,7 @@ __(int64)__
 
 *Minimum*: 1*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -466,7 +465,7 @@ __(int64)__
 
 *Minimum*: 1*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -573,7 +572,7 @@ __(int32)__
 
 *Minimum*: 0*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -595,7 +594,7 @@ __(int64)__
 
 *Minimum*: 0*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -657,7 +656,7 @@ __string__
 
 
 
-*Max. length*: 1,000
+*Max. length*: 1 000
 
 
 
@@ -761,7 +760,7 @@ __(int32)__
 
 *Minimum*: 0*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
