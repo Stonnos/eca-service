@@ -83,11 +83,14 @@ export class AttributesComponent implements OnInit {
   }
 
   public selectedAttributesIsTooLow(): boolean {
+    if (this.attributes.length == 0) {
+      return false;
+    }
     return this.attributes.filter((attr: AttributeDto) => attr.selected).length < AttributesComponent.MIN_NUM_SELECTED_ATTRIBUTES;
   }
 
   public isClassNotSelected(): boolean {
-    return !this.classAttribute;
+    return this.classAttribute === null;
   }
 
   public forceSetClass(classAttribute: AttributeDto): void {

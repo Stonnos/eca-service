@@ -26,4 +26,12 @@
         </preConditions>
         <modifyDataType tableName="tfa_code" columnName="authentication" newDataType="text"/>
     </changeSet>
+
+    <changeSet id="add_tfa_authentication_column_noy_null_constraint" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="tfa_code"/>
+            <columnExists tableName="tfa_code" columnName="authentication"/>
+        </preConditions>
+        <addNotNullConstraint tableName="tfa_code" columnName="authentication"/>
+    </changeSet>
 </databaseChangeLog>
