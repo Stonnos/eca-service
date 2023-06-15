@@ -88,7 +88,7 @@ mvn clean install -Pquality
 
 4. Для загрузки образов в docker hub необходимо запустить скрипт:
 
-   sh push-images.sh
+   sh deploy-images.sh
 
 ВАЖНО! Данную команду необходимо выполнять из корневой папки проекта.
 
@@ -139,3 +139,15 @@ docker cp application.war container_name:/
 Для поднятия версии всех модулей необходимо выполнить команду:
 
 mvn versions:set -DnewVersion=version -DgenerateBackupPoms=false
+
+Статический анализ кода с Sonarcloud
+-------------------------------------------------------
+
+Для деплоя результатов анализа кода необходимо выполнить команду:
+
+mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -D sonar.projectKey=eca-service -D sonar.organization=eca -D sonar.host.url=https://sonarcloud.io -D sonar.login=<YOUR_TOKEN>
+
+где
+
+sonar.login - токен для доступа к API
+sonar.host.url - URL Sonarcloud
