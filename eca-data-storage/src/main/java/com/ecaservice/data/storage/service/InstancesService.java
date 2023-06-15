@@ -173,7 +173,6 @@ public class InstancesService {
         String query = buildSqlSelectQuery(instancesEntity, columns);
         var extractor = new InstancesModelResultSetExtractor(instancesEntity, attributes);
         extractor.setDateFormat(ecaDsConfig.getDateFormat());
-        extractor.setDateTimeFormatter(DateTimeFormatter.ofPattern(ecaDsConfig.getDateFormat()));
         var instancesModel = jdbcTemplate.query(query, extractor);
         log.info("Instances model has been fetched for table [{}]", instancesEntity.getTableName());
         return instancesModel;
