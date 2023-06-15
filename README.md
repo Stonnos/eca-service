@@ -150,4 +150,5 @@ mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -D so
 где
 
 sonar.login - токен для доступа к API
+
 sonar.host.url - URL Sonarcloud
