@@ -15,6 +15,8 @@ import com.ecaservice.classifier.options.model.NeuralNetworkOptions;
 import com.ecaservice.classifier.options.model.RandomForestsOptions;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import com.ecaservice.ers.dto.ClassifierOptionsResponse;
+import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
+import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.AssertionUtils;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
@@ -100,6 +102,7 @@ import static org.mockito.Mockito.when;
 class EvaluationOptimizerServiceTest extends AbstractJpaTest {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final String MODEL_DOWNLOAD_URL = "http//:localhost/model";
 
     @MockBean
     private ErsClient ersClient;
@@ -109,6 +112,8 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
     private EvaluationResultsService evaluationResultsService;
     @MockBean
     private ClassifierInitializerService classifierInitializerService;
+    @MockBean
+    private ObjectStorageService objectStorageService;
     @Inject
     private ErsConfig ersConfig;
     @Inject
@@ -138,6 +143,8 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         treeOptions.setDecisionTreeType(DecisionTreeType.CART);
         decisionTreeOptions = objectMapper.writeValueAsString(treeOptions);
         j48Options = objectMapper.writeValueAsString(TestHelperUtils.createJ48Options());
+        when(objectStorageService.getObjectPresignedProxyUrl(any(GetPresignedUrlObject.class)))
+                .thenReturn(MODEL_DOWNLOAD_URL);
     }
 
     @Override
@@ -420,7 +427,7 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         assertThat(evaluationResponse).isNotNull();
         assertThat(evaluationResponse.getRequestId()).isNotNull();
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.SUCCESS);
-        assertThat(evaluationResponse.getEvaluationResults()).isNotNull();
+        assertThat(evaluationResponse.getModelUrl()).isEqualTo(MODEL_DOWNLOAD_URL);
     }
 
     private void assertSuccessClassifierOptionsRequestModel(ClassifierOptionsRequestModel requestModel) {

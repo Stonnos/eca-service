@@ -18,10 +18,14 @@ import lombok.EqualsAndHashCode;
 public class EvaluationResponse extends EcaResponse {
 
     /**
+     * Model download url
+     */
+    private String modelUrl;
+
+    /**
      * Evaluation results
      */
     @JsonSerialize(using = EvaluationResultsSerializer.class)
     @JsonDeserialize(using = EvaluationResultsDeserializer.class)
     private EvaluationResults evaluationResults;
-
 }

@@ -6,7 +6,6 @@ import com.ecaservice.server.event.model.ExperimentResponseEvent;
 import com.ecaservice.server.event.model.push.ExperimentSystemPushEvent;
 import com.ecaservice.server.mapping.ExperimentMapper;
 import com.ecaservice.server.model.entity.Experiment;
-import com.ecaservice.server.model.experiment.ExperimentMessageRequestData;
 import com.ecaservice.server.service.experiment.ExperimentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,17 +46,5 @@ public class ExperimentRequestListener {
         eventPublisher.publishEvent(new ExperimentResponseEvent(this, experiment));
         eventPublisher.publishEvent(new ExperimentSystemPushEvent(this, experiment));
         eventPublisher.publishEvent(new ExperimentEmailEvent(this, experiment));
-    }
-
-    private ExperimentMessageRequestData createExperimentRequestData(ExperimentRequest experimentRequest,
-                                                                     Message inboundMessage) {
-        var experimentRequestData = new ExperimentMessageRequestData();
-        experimentRequestData.setData(experimentRequest.getData());
-        experimentRequestData.setExperimentType(experimentRequest.getExperimentType());
-        experimentRequestData.setEvaluationMethod(experimentRequest.getEvaluationMethod());
-        experimentRequestData.setEmail(experimentRequest.getEmail());
-        experimentRequestData.setReplyTo(inboundMessage.getMessageProperties().getReplyTo());
-        experimentRequestData.setCorrelationId(inboundMessage.getMessageProperties().getCorrelationId());
-        return experimentRequestData;
     }
 }

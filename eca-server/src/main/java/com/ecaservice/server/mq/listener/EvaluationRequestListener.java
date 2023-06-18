@@ -3,6 +3,7 @@ package com.ecaservice.server.mq.listener;
 import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.server.event.model.EvaluationFinishedEvent;
+import com.ecaservice.server.mapping.EvaluationLogMapper;
 import com.ecaservice.server.service.evaluation.EvaluationRequestService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +32,7 @@ public class EvaluationRequestListener {
     private final RabbitTemplate rabbitTemplate;
     private final EvaluationRequestService evaluationRequestService;
     private final ApplicationEventPublisher eventPublisher;
+    private final EvaluationLogMapper evaluationLogMapper;
 
     /**
      * Handles evaluation request message.
@@ -39,7 +41,8 @@ public class EvaluationRequestListener {
      */
     @RabbitListener(queues = "${queue.evaluationRequestQueue}")
     public void handleMessage(@Valid @Payload EvaluationRequest evaluationRequest, Message inboundMessage) {
-        EvaluationResponse evaluationResponse = evaluationRequestService.processRequest(evaluationRequest);
+        var evaluationRequestDataModel = evaluationLogMapper.map(evaluationRequest);
+        EvaluationResponse evaluationResponse = evaluationRequestService.processRequest(evaluationRequestDataModel);
         log.info("Evaluation response [{}] with status [{}] has been built.", evaluationResponse.getRequestId(),
                 evaluationResponse.getStatus());
         eventPublisher.publishEvent(new EvaluationFinishedEvent(this, evaluationResponse));

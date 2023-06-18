@@ -1,6 +1,5 @@
 package com.ecaservice.server.service.evaluation;
 
-import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.base.model.InstancesRequest;
 import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
@@ -10,6 +9,7 @@ import com.ecaservice.server.config.ers.ErsConfig;
 import com.ecaservice.server.mapping.ClassifierOptionsRequestMapper;
 import com.ecaservice.server.mapping.EvaluationRequestMapper;
 import com.ecaservice.server.model.ClassifierOptionsResult;
+import com.ecaservice.server.model.evaluation.EvaluationRequestDataModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -76,7 +76,7 @@ public class EvaluationOptimizerService {
                                              Instances data) {
         log.info("Starting to evaluate model for data [{}] with options [{}]", data.relationName(), options);
         AbstractClassifier classifier = classifierOptionsAdapter.convert(parseOptions(options));
-        EvaluationRequest evaluationRequest = evaluationRequestMapper.map(classifierOptionsRequest);
+        EvaluationRequestDataModel evaluationRequest = evaluationRequestMapper.map(classifierOptionsRequest);
         evaluationRequest.setData(data);
         evaluationRequest.setClassifier(classifier);
         return evaluationRequestService.processRequest(evaluationRequest);

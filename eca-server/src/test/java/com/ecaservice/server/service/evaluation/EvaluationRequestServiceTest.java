@@ -1,9 +1,10 @@
 package com.ecaservice.server.service.evaluation;
 
-import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
+import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
+import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.AssertionUtils;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.CrossValidationConfig;
@@ -15,6 +16,7 @@ import com.ecaservice.server.mapping.EvaluationLogMapperImpl;
 import com.ecaservice.server.mapping.InstancesInfoMapperImpl;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.RequestStatus;
+import com.ecaservice.server.model.evaluation.EvaluationRequestDataModel;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.evaluation.initializers.ClassifierInitializerService;
@@ -33,6 +35,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit tests that checks EvaluationRequestService functionality {@see EvaluationRequestService}.
@@ -43,6 +46,8 @@ import static org.mockito.Mockito.mock;
         EvaluationLogMapperImpl.class, EvaluationService.class, DateTimeConverter.class,
         InstancesInfoMapperImpl.class, ClassifierInfoMapperImpl.class})
 class EvaluationRequestServiceTest extends AbstractJpaTest {
+
+    private static final String MODEL_DOWNLOAD_URL = "http//:localhost/model";
 
     @Inject
     private CrossValidationConfig crossValidationConfig;
@@ -59,6 +64,8 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
     private ClassifierInitializerService classifierInitializerService;
     @Mock
     private ClassifierOptionsAdapter classifierOptionsAdapter;
+    @Mock
+    private ObjectStorageService objectStorageService;
 
     private EvaluationRequestService evaluationRequestService;
 
@@ -67,7 +74,7 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
         evaluationRequestService =
                 new EvaluationRequestService(crossValidationConfig, calculationExecutorService, evaluationService,
                         evaluationLogRepository, evaluationLogMapper, classifierInitializerService,
-                        classifierOptionsAdapter);
+                        classifierOptionsAdapter, objectStorageService);
     }
 
     @Override
@@ -77,13 +84,17 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
 
     @Test
     void testSuccessClassification() {
-        EvaluationRequest request = TestHelperUtils.createEvaluationRequest();
+        when(objectStorageService.getObjectPresignedProxyUrl(any(GetPresignedUrlObject.class)))
+                .thenReturn(MODEL_DOWNLOAD_URL);
+        EvaluationRequestDataModel request = TestHelperUtils.createEvaluationRequestData();
         EvaluationResponse evaluationResponse = evaluationRequestService.processRequest(request);
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.SUCCESS);
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
         AssertionUtils.hasOneElement(evaluationLogList);
-        assertThat(evaluationLogList.get(0).getRequestStatus()).isEqualTo(RequestStatus.FINISHED);
+        var evaluationLog = evaluationLogList.iterator().next();
+        assertThat(evaluationLog.getRequestStatus()).isEqualTo(RequestStatus.FINISHED);
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.SUCCESS);
+        assertThat(evaluationResponse.getModelUrl()).isEqualTo(MODEL_DOWNLOAD_URL);
         assertThat(evaluationResponse.getEvaluationResults()).isNotNull();
         assertThat(evaluationResponse.getEvaluationResults().getClassifier()).isNotNull();
         assertThat(evaluationResponse.getEvaluationResults().getEvaluation()).isNotNull();
@@ -91,12 +102,12 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
 
     @Test
     void testClassificationWithException() throws Exception {
-        EvaluationRequest request = TestHelperUtils.createEvaluationRequest();
+        EvaluationRequestDataModel request = TestHelperUtils.createEvaluationRequestData();
         CalculationExecutorServiceImpl executorService = mock(CalculationExecutorServiceImpl.class);
         EvaluationRequestService service =
                 new EvaluationRequestService(crossValidationConfig, executorService, evaluationService,
                         evaluationLogRepository, evaluationLogMapper, classifierInitializerService,
-                        classifierOptionsAdapter);
+                        classifierOptionsAdapter, objectStorageService);
         doThrow(new RuntimeException("Error")).when(executorService)
                 .execute(any(), anyLong(), any(TimeUnit.class));
         EvaluationResponse evaluationResponse = service.processRequest(request);
@@ -110,7 +121,7 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
 
     @Test
     void testClassificationWithError() {
-        EvaluationRequest request = TestHelperUtils.createEvaluationRequest();
+        EvaluationRequestDataModel request = TestHelperUtils.createEvaluationRequestData();
         request.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
         request.setNumFolds(1);
         EvaluationResponse evaluationResponse = evaluationRequestService.processRequest(request);
@@ -124,12 +135,12 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
 
     @Test
     void testTimeoutInClassification() throws Exception {
-        EvaluationRequest request = TestHelperUtils.createEvaluationRequest();
+        EvaluationRequestDataModel request = TestHelperUtils.createEvaluationRequestData();
         CalculationExecutorServiceImpl executorService = mock(CalculationExecutorServiceImpl.class);
         EvaluationRequestService service =
                 new EvaluationRequestService(crossValidationConfig, executorService, evaluationService,
                         evaluationLogRepository, evaluationLogMapper, classifierInitializerService,
-                        classifierOptionsAdapter);
+                        classifierOptionsAdapter, objectStorageService);
         doThrow(TimeoutException.class).when(executorService).execute(any(), anyLong(), any(TimeUnit.class));
         EvaluationResponse evaluationResponse = service.processRequest(request);
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.TIMEOUT);

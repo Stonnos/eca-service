@@ -48,6 +48,7 @@ import com.ecaservice.server.model.entity.ExperimentStepStatus;
 import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.evaluation.ClassifierOptionsRequestSource;
+import com.ecaservice.server.model.evaluation.EvaluationRequestDataModel;
 import com.ecaservice.server.model.experiment.ExperimentMessageRequestData;
 import com.ecaservice.server.model.experiment.InitializationParams;
 import com.ecaservice.web.dto.model.ClassifierOptionsDto;
@@ -262,6 +263,19 @@ public class TestHelperUtils {
      */
     public static EvaluationRequest createEvaluationRequest() {
         EvaluationRequest request = new EvaluationRequest();
+        request.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
+        request.setData(loadInstances());
+        request.setClassifier(new KNearestNeighbours());
+        return request;
+    }
+
+    /**
+     * Creates evaluation request data object.
+     *
+     * @return evaluation request data
+     */
+    public static EvaluationRequestDataModel createEvaluationRequestData() {
+        EvaluationRequestDataModel request = new EvaluationRequestDataModel();
         request.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         request.setData(loadInstances());
         request.setClassifier(new KNearestNeighbours());

@@ -1,9 +1,9 @@
 package com.ecaservice.server.service.evaluation;
 
-import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.model.evaluation.ClassificationResult;
+import com.ecaservice.server.model.evaluation.EvaluationRequestDataModel;
 import eca.core.evaluation.EvaluationMethod;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,7 +40,7 @@ class EvaluationServiceTest {
 
     @Test
     void testTrainingDataMethod() {
-        EvaluationRequest evaluationRequest = TestHelperUtils.createEvaluationRequest();
+        EvaluationRequestDataModel evaluationRequest = TestHelperUtils.createEvaluationRequestData();
         ClassificationResult result = evaluationService.evaluateModel(evaluationRequest);
         assertThat(result.isSuccess()).isTrue();
         assertThat(result.getEvaluationResults().getEvaluation().isKCrossValidationMethod()).isFalse();
@@ -48,7 +48,7 @@ class EvaluationServiceTest {
 
     @Test
     void testCrossValidationMethod() {
-        EvaluationRequest evaluationRequest = TestHelperUtils.createEvaluationRequest();
+        EvaluationRequestDataModel evaluationRequest = TestHelperUtils.createEvaluationRequestData();
         evaluationRequest.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
         evaluationRequest.setNumFolds(TestHelperUtils.NUM_FOLDS);
         evaluationRequest.setNumTests(TestHelperUtils.NUM_TESTS);
