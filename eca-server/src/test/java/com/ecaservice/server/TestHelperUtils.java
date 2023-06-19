@@ -995,10 +995,11 @@ public class TestHelperUtils {
      * @param requestId - request id
      * @return evaluation results data model
      */
-    public static EvaluationResultsDataModel createEvaluationResponseDataModel(String requestId) {
+    public static EvaluationResultsDataModel createEvaluationResultsDataModel(String requestId) {
         EvaluationResultsDataModel evaluationResultsDataModel = new EvaluationResultsDataModel();
         evaluationResultsDataModel.setRequestId(requestId);
         evaluationResultsDataModel.setStatus(RequestStatus.FINISHED);
+        evaluationResultsDataModel.setModelUrl(CLASSIFIER_MODEL);
         return evaluationResultsDataModel;
     }
 

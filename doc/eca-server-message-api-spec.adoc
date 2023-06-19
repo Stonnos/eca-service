@@ -98,8 +98,13 @@
 {
   "requestId": "1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
   "status": "SUCCESS",
-  "evaluationResults": "<Base64 evaluation results>",
-  "errors": null
+  "modelUrl": "http://localhost:8098/object-storage/eca-service/classifier-0f45c641-48e1-4f8f-a461-38c27a4befc3.model?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minio%2F20220727%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220727T061714Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=2ebb2d403962381a141efaf28767fe3ef622ce1477d9bd2f914560561579325c",
+  "numTestInstances": 150,
+  "numCorrect": 144,
+  "numIncorrect": 6,
+  "pctCorrect": 96,
+  "pctIncorrect": 4,
+  "meanAbsoluteError": 0.02869334024628254
 }
 ----
 
@@ -144,10 +149,40 @@
 |Список ошибок
 |Заполняется в случае, если произошла какая либо ошибка
 |4
-|evaluationResults
-|Base64 of EvaluationResults
+|modelUrl
+|string
 |-
-|Результаты классификации, включая построенную модель классификатора
+|Ссылка на скачивание модели с результатами классификации
+|Заполняется только в случае, если значение статуса SUCCESS
+|5
+|numTestsInstances
+|integer
+|-
+|Число объектов тестовых данных
+|Заполняется только в случае, если значение статуса SUCCESS
+|6
+|numCorrect
+|integer
+|-
+|Число верно лкассифицированных объектов
+|Заполняется только в случае, если значение статуса SUCCESS
+|7
+|numIncorrect
+|integer
+|-
+|Число неверно лкассифицированных объектов
+|Заполняется только в случае, если значение статуса SUCCESS
+|8
+|pctCorrect
+|decimal
+|-
+|Процент верно классифицированных объектов
+|Заполняется только в случае, если значение статуса SUCCESS
+|9
+|pctIncorrect
+|decimal
+|-
+|Процент неверно классифицированных объектов
 |Заполняется только в случае, если значение статуса SUCCESS
 |===
 

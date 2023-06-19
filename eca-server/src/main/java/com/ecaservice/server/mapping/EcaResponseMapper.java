@@ -8,12 +8,14 @@ import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
+import eca.core.evaluation.Evaluation;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.ValueMapping;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 
 import static com.ecaservice.server.util.Utils.error;
@@ -87,6 +89,13 @@ public interface EcaResponseMapper {
                              @MappingTarget EvaluationResponse evaluationResponse) {
         if (RequestStatus.FINISHED.equals(evaluationResultsDataModel.getStatus())) {
             evaluationResponse.setModelUrl(evaluationResultsDataModel.getModelUrl());
+            Evaluation evaluation = evaluationResultsDataModel.getEvaluationResults().getEvaluation();
+            evaluationResponse.setNumTestInstances((int) evaluation.numInstances());
+            evaluationResponse.setNumCorrect((int) evaluation.correct());
+            evaluationResponse.setNumIncorrect((int) evaluation.incorrect());
+            evaluationResponse.setPctCorrect(BigDecimal.valueOf(evaluation.pctCorrect()));
+            evaluationResponse.setPctIncorrect(BigDecimal.valueOf(evaluation.pctIncorrect()));
+            evaluationResponse.setMeanAbsoluteError(BigDecimal.valueOf(evaluation.meanAbsoluteError()));
         } else if (RequestStatus.ERROR.equals(evaluationResultsDataModel.getStatus())) {
             MessageError error = error(evaluationResultsDataModel.getErrorCode());
             evaluationResponse.setErrors(Collections.singletonList(error));

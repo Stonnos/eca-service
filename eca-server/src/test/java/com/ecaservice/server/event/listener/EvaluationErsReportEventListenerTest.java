@@ -17,7 +17,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static com.ecaservice.server.TestHelperUtils.createEvaluationLog;
-import static com.ecaservice.server.TestHelperUtils.createEvaluationResponseDataModel;
+import static com.ecaservice.server.TestHelperUtils.createEvaluationResultsDataModel;
 import static com.ecaservice.server.TestHelperUtils.getEvaluationResults;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.atLeastOnce;
@@ -55,7 +55,7 @@ class EvaluationErsReportEventListenerTest {
         when(evaluationLogRepository.findByRequestId(evaluationLog.getRequestId())).thenReturn(
                 Optional.of(evaluationLog));
         EvaluationResultsDataModel evaluationResponse =
-                createEvaluationResponseDataModel(evaluationLog.getRequestId());
+                createEvaluationResultsDataModel(evaluationLog.getRequestId());
         evaluationResponse.setEvaluationResults(getEvaluationResults());
         EvaluationErsReportEvent evaluationErsReportEvent = new EvaluationErsReportEvent(this, evaluationResponse);
         evaluationErsReportEventListener.handleEvent(evaluationErsReportEvent);
@@ -71,7 +71,7 @@ class EvaluationErsReportEventListenerTest {
         when(evaluationLogRepository.findByRequestId(evaluationLog.getRequestId())).thenReturn(
                 Optional.of(evaluationLog));
         EvaluationResultsDataModel evaluationResponse =
-                createEvaluationResponseDataModel(evaluationLog.getRequestId());
+                createEvaluationResultsDataModel(evaluationLog.getRequestId());
         evaluationResponse.setStatus(RequestStatus.ERROR);
         EvaluationErsReportEvent evaluationErsReportEvent = new EvaluationErsReportEvent(this, evaluationResponse);
         evaluationErsReportEventListener.handleEvent(evaluationErsReportEvent);
