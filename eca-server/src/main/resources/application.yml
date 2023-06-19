@@ -64,6 +64,7 @@ app:
   pageSize: 10
   modelDownloadUrlExpirationDays: 7
   shortLifeUrlExpirationMinutes: 5
+  maximumFractionDigits: 4
   notifications:
     webPushesEnabled: false
 

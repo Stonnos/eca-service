@@ -50,10 +50,10 @@ ECA server
    * experiment.ensemble.numFoldsForStacking - число блоков V - блочной кросс - проверки для алгоритма Stacking
    * experiment.lock.registryKey - ключ реестра для блокировок
    * experiment.lock.expireAfter - время жизни блокировки
-4) ers - настройки интеграции с сервисом eca-ers
+5) ers - настройки интеграции с сервисом eca-ers
    * ers.useClassifierOptionsCache - вкл./выкл. кеширование оптимальных настроек классификатора
    * ers.classifierOptionsCacheDurationInDays - период хранения оптимальных настроек классификатора, полученных от сервиса ERS
-5) app - общие настройки приложения
+6) app - общие настройки приложения
    * app.threadPoolSize - число потоков для асинхронных задач
    * app.maxPageSize - максимальное число элементов на странице (используется для запросов с пагинацией)
    * app.notifications.webPushesEnabled - вкл./выкл. отправки web пушей
@@ -62,8 +62,9 @@ ECA server
    * app.pageSize - размер страницы для постраничной обработки заявок
    * app.modelDownloadUrlExpirationDays - время жизни ссылки на скачивание модели эксперимента/классификатора
    * app.shortLifeUrlExpirationMinutes - время короткоживущей ссылки на получение модели эксперимента/классификатора
-6) cache.specs - настройки spring cache
-7) open-api - настройки Swagger
+   * app.maximumFractionDigits - макс. число знаков после запятой
+7) cache.specs - настройки spring cache
+8) open-api - настройки Swagger
    * open-api.tokenBaseUrl - базовый url - сервера авторизации
    * open-api.projectVersion - версия API
    * open-api.title - краткое название API
@@ -73,23 +74,23 @@ ECA server
    * open-api.basePath - базовый префикс для API
    * open-api.apiAuth - настройки авторизации
    * open-api.apiAuth.scopes - список scopes
-8) queue - настройки очередей
+9) queue - настройки очередей
    * queue.evaluationRequestQueue - входящая очередь для запросов на построение модели классификатора
    * queue.evaluationOptimizerRequestQueue - входящая очередь для запросов на построение оптимального классификатора
    * queue.experimentRequestQueue - входящая очередь для запросов на построение эксперимента
-9) auth-server - настройки интеграции с eca-oauth
+10) auth-server - настройки интеграции с eca-oauth
    * baseUrl - базовый url eca-oauth
    * clientId - идентификатор клиента
    * clientSecret - пароль клиента
-10) lock.enabled - вкл./выкл. использование блокировок
-11) redis-lock - настройки блокировок с использованием redis
+11) lock.enabled - вкл./выкл. использование блокировок
+12) redis-lock - настройки блокировок с использованием redis
    * registryKey - ключ реестра
    * expireAfter - время жизни блокировки
-12) audit.enabled - вкл./выкл. отправки событий аудита
-13) rabbit.enabled - вкл./выкл. подключения к очередям rabbit MQ
-14) mail.client - настройки библиотеки отправки email сообщений
-15) redelivery.enabled - вкл./выкл. библиотеки redelivery
-16) logging.mode - режим логирования
+13) audit.enabled - вкл./выкл. отправки событий аудита
+14) rabbit.enabled - вкл./выкл. подключения к очередям rabbit MQ
+15) mail.client - настройки библиотеки отправки email сообщений
+16) redelivery.enabled - вкл./выкл. библиотеки redelivery 
+17) logging.mode - режим логирования
    * text - текстовый формат
    * json - логи в формате json
 

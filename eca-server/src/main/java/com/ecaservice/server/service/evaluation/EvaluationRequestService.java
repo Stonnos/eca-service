@@ -14,6 +14,8 @@ import com.ecaservice.server.model.evaluation.EvaluationRequestDataModel;
 import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.service.evaluation.initializers.ClassifierInitializerService;
+import eca.core.evaluation.EvaluationResults;
+import eca.core.model.ClassificationModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,8 +34,8 @@ import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.putMdc;
 import static com.ecaservice.common.web.util.LogHelper.putMdcIfAbsent;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.toJsonString;
-import static com.ecaservice.server.util.Utils.buildInternalErrorEvaluationResultsModel;
 import static com.ecaservice.server.util.Utils.buildEvaluationResultsModel;
+import static com.ecaservice.server.util.Utils.buildInternalErrorEvaluationResultsModel;
 
 /**
  * Evaluation request service.
@@ -127,9 +129,16 @@ public class EvaluationRequestService {
         evaluationLog.getClassifierInfo().setClassifierOptions(toJsonString(classifierOptions));
     }
 
-    private void uploadModel(AbstractClassifier classifier, EvaluationLog evaluationLog) throws IOException {
+    private ClassificationModel buildClassificationModel(EvaluationResults evaluationResults) {
+        var classifier = (AbstractClassifier) evaluationResults.getClassifier();
+        return new ClassificationModel(classifier, evaluationResults.getEvaluation().getData(),
+                evaluationResults.getEvaluation(), appProperties.getMaximumFractionDigits());
+    }
+
+    private void uploadModel(EvaluationResults evaluationResults, EvaluationLog evaluationLog) throws IOException {
         String modelPath = String.format(CLASSIFIER_PATH_FORMAT, evaluationLog.getRequestId());
-        objectStorageService.uploadObject(classifier, modelPath);
+        ClassificationModel classificationModel = buildClassificationModel(evaluationResults);
+        objectStorageService.uploadObject(classificationModel, modelPath);
         evaluationLog.setModelPath(modelPath);
     }
 
@@ -145,8 +154,7 @@ public class EvaluationRequestService {
 
     private void handleSuccessModel(ClassificationResult classificationResult,
                                     EvaluationLog evaluationLog) throws IOException {
-        var classifier = (AbstractClassifier) classificationResult.getEvaluationResults().getClassifier();
-        uploadModel(classifier, evaluationLog);
+        uploadModel(classificationResult.getEvaluationResults(), evaluationLog);
         evaluationLog.setRequestStatus(RequestStatus.FINISHED);
         evaluationLog.setEndDate(LocalDateTime.now());
         evaluationLogRepository.save(evaluationLog);
