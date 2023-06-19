@@ -240,7 +240,6 @@ public class TestHelperUtils {
      */
     public static EvaluationResponse successEvaluationResponse() {
         EvaluationResponse evaluationResponse = new EvaluationResponse();
-        evaluationResponse.setEvaluationResults(getEvaluationResults());
         evaluationResponse.setRequestId(UUID.randomUUID().toString());
         evaluationResponse.setStatus(TechnicalStatus.SUCCESS);
         evaluationResponse.setModelUrl(MODEL_DOWNLOAD_URL);
