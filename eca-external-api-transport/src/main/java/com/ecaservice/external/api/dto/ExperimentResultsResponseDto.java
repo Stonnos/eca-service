@@ -7,7 +7,7 @@ import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import lombok.experimental.Tolerate;
 
-import static com.ecaservice.external.api.dto.Constraints.MAX_LENGTH_255;
+import static com.ecaservice.external.api.dto.Constraints.MODEL_URL_MAX_LENGTH;
 
 /**
  * Experiment response dto.
@@ -29,6 +29,6 @@ public class ExperimentResultsResponseDto extends SimpleEvaluationResponseDto {
     /**
      * Experiment model url
      */
-    @Schema(description = "Experiment model url", maxLength = MAX_LENGTH_255)
+    @Schema(description = "Experiment model url", maxLength = MODEL_URL_MAX_LENGTH)
     private String experimentModelUrl;
 }

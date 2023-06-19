@@ -17,7 +17,7 @@ public class InstancesBatchOptions {
     /**
      * Table name
      */
-    public String tableName;
+    private String tableName;
 
     /**
      * Instances object

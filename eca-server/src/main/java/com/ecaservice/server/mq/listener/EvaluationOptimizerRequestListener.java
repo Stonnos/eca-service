@@ -1,15 +1,16 @@
 package com.ecaservice.server.mq.listener;
 
-import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.base.model.InstancesRequest;
-import com.ecaservice.server.event.model.EvaluationFinishedEvent;
+import com.ecaservice.server.event.model.EvaluationErsReportEvent;
+import com.ecaservice.server.event.model.EvaluationResponseEvent;
+import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
+import com.ecaservice.server.model.evaluation.InstancesRequestDataModel;
 import com.ecaservice.server.service.evaluation.EvaluationOptimizerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -20,7 +21,6 @@ import java.util.UUID;
 
 import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.putMdc;
-
 
 /**
  * Rabbit MQ listener for evaluation optimizer request messages.
@@ -33,7 +33,6 @@ import static com.ecaservice.common.web.util.LogHelper.putMdc;
 @RequiredArgsConstructor
 public class EvaluationOptimizerRequestListener {
 
-    private final RabbitTemplate rabbitTemplate;
     private final EvaluationOptimizerService evaluationOptimizerService;
     private final ApplicationEventPublisher eventPublisher;
 
@@ -44,16 +43,18 @@ public class EvaluationOptimizerRequestListener {
      */
     @RabbitListener(queues = "${queue.evaluationOptimizerRequestQueue}")
     public void handleMessage(@Valid @Payload InstancesRequest instancesRequest, Message inboundMessage) {
-        putMdc(TX_ID, UUID.randomUUID().toString());
-        EvaluationResponse evaluationResponse =
-                evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequest);
-        log.info("Evaluation response [{}] with status [{}] has been built for evaluation optimizer request.",
-                evaluationResponse.getRequestId(), evaluationResponse.getStatus());
-        eventPublisher.publishEvent(new EvaluationFinishedEvent(this, evaluationResponse));
         MessageProperties inboundMessageProperties = inboundMessage.getMessageProperties();
-        rabbitTemplate.convertAndSend(inboundMessageProperties.getReplyTo(), evaluationResponse, outboundMessage -> {
-            outboundMessage.getMessageProperties().setCorrelationId(inboundMessageProperties.getCorrelationId());
-            return outboundMessage;
-        });
+        log.info("Received evaluation optimizer request with correlation id [{}]",
+                inboundMessageProperties.getCorrelationId());
+        var instancesRequestDataModel = new InstancesRequestDataModel(instancesRequest.getData());
+        EvaluationResultsDataModel evaluationResultsDataModel =
+                evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequestDataModel);
+        log.info("Evaluation response [{}] with status [{}] has been built for evaluation optimizer request.",
+                evaluationResultsDataModel.getRequestId(), evaluationResultsDataModel.getStatus());
+        eventPublisher.publishEvent(new EvaluationErsReportEvent(this, evaluationResultsDataModel));
+        eventPublisher.publishEvent(new EvaluationResponseEvent(this, evaluationResultsDataModel,
+                inboundMessageProperties.getCorrelationId(), inboundMessageProperties.getReplyTo()));
+        log.info("Evaluation optimizer request with correlation id [{}] has been processed",
+                inboundMessageProperties.getCorrelationId());
     }
 }

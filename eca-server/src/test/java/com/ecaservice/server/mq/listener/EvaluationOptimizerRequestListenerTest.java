@@ -1,23 +1,21 @@
 package com.ecaservice.server.mq.listener;
 
-import com.ecaservice.server.TestHelperUtils;
-import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.base.model.InstancesRequest;
-import com.ecaservice.server.event.model.EvaluationFinishedEvent;
+import com.ecaservice.server.TestHelperUtils;
+import com.ecaservice.server.event.model.EvaluationErsReportEvent;
+import com.ecaservice.server.event.model.EvaluationResponseEvent;
+import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
+import com.ecaservice.server.model.evaluation.InstancesRequestDataModel;
 import com.ecaservice.server.service.evaluation.EvaluationOptimizerService;
-import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.amqp.core.Message;
-import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.core.MessageProperties;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.context.ApplicationEventPublisher;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -34,8 +32,6 @@ import static org.mockito.Mockito.when;
 class EvaluationOptimizerRequestListenerTest {
 
     @Mock
-    private RabbitTemplate rabbitTemplate;
-    @Mock
     private EvaluationOptimizerService evaluationOptimizerService;
     @Mock
     private ApplicationEventPublisher eventPublisher;
@@ -43,21 +39,22 @@ class EvaluationOptimizerRequestListenerTest {
     @InjectMocks
     private EvaluationOptimizerRequestListener evaluationOptimizerRequestListener;
 
-    @Captor
-    private ArgumentCaptor<String> replyToCaptor;
+    @BeforeEach
+    void init() {
+        evaluationOptimizerRequestListener =
+                new EvaluationOptimizerRequestListener(evaluationOptimizerService, eventPublisher);
+    }
 
     @Test
     void testHandleMessage() {
         InstancesRequest instancesRequest = new InstancesRequest();
         Message message = Mockito.mock(Message.class);
-        when(evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequest)).thenReturn(
-                new EvaluationResponse());
+        when(evaluationOptimizerService.evaluateWithOptimalClassifierOptions(any(InstancesRequestDataModel.class)))
+                .thenReturn(new EvaluationResultsDataModel());
         MessageProperties messageProperties = TestHelperUtils.buildMessageProperties();
         when(message.getMessageProperties()).thenReturn(messageProperties);
         evaluationOptimizerRequestListener.handleMessage(instancesRequest, message);
-        verify(eventPublisher, atLeastOnce()).publishEvent(any(EvaluationFinishedEvent.class));
-        verify(rabbitTemplate).convertAndSend(replyToCaptor.capture(), any(EvaluationResponse.class),
-                any(MessagePostProcessor.class));
-        Assertions.assertThat(replyToCaptor.getValue()).isEqualTo(messageProperties.getReplyTo());
+        verify(eventPublisher, atLeastOnce()).publishEvent(any(EvaluationErsReportEvent.class));
+        verify(eventPublisher, atLeastOnce()).publishEvent(any(EvaluationResponseEvent.class));
     }
 }

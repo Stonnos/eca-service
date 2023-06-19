@@ -78,7 +78,7 @@ public class ExperimentErsReportProcessorStepHandler extends AbstractExperimentS
             stopWatch.start(
                     String.format("Load experiment history [%s] from local storage", experiment.getRequestId()));
             var experimentHistory =
-                    objectStorageService.getObject(experiment.getExperimentPath(), AbstractExperiment.class);
+                    objectStorageService.getObject(experiment.getModelPath(), AbstractExperiment.class);
             stopWatch.stop();
             log.info("Experiment history [{}] has been fetched from local storage", experiment.getRequestId());
             experimentContext.setExperimentHistory(experimentHistory);

@@ -72,7 +72,7 @@ export class ExperimentsService {
       )
       .subscribe({
         next: (blob: Blob) => {
-          saveAs(blob, experiment.experimentPath);
+          saveAs(blob, experiment.modelPath);
         },
         error: (error) => {
           onErrorCallback(error);

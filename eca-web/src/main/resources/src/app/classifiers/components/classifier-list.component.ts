@@ -40,7 +40,7 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
     super(injector.get(MessageService), injector.get(FieldService));
     this.defaultSortField = EvaluationLogFields.CREATION_DATE;
     this.linkColumns = [EvaluationLogFields.CLASSIFIER_DESCRIPTION, EvaluationLogFields.EVALUATION_METHOD_DESCRIPTION,
-      EvaluationLogFields.RELATION_NAME, EvaluationLogFields.REQUEST_ID];
+      EvaluationLogFields.RELATION_NAME, EvaluationLogFields.REQUEST_ID, EvaluationLogFields.MODEL_PATH];
     this.notSortableColumns = [EvaluationLogFields.EVALUATION_TOTAL_TIME];
     this.initColumns();
   }
@@ -93,9 +93,20 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
           this.toggleOverlayPanel(event, evaluationLog, column, overlayPanel);
         }
         break;
+      case EvaluationLogFields.MODEL_PATH:
+        this.downloadModel(evaluationLog);
+        break;
       default:
         this.toggleOverlayPanel(event, evaluationLog, column, overlayPanel);
     }
+  }
+
+  public downloadModel(evaluationLogDto: EvaluationLogDto): void {
+    this.loading = true;
+    this.classifiersService.downloadModel(evaluationLogDto,
+      () => this.loading = false,
+      (error) => this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message })
+    );
   }
 
   private toggleOverlayPanel(event, evaluationLog: EvaluationLogDto, column: string, overlayPanel: OverlayPanel): void {
@@ -109,12 +120,15 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
       { name: EvaluationLogFields.REQUEST_ID, label: "UUID заявки" },
       { name: EvaluationLogFields.CLASSIFIER_DESCRIPTION, label: "Классификатор", sortBy: EvaluationLogFields.CLASSIFIER_NAME },
       { name: EvaluationLogFields.REQUEST_STATUS_DESCRIPTION, label: "Статус заявки", sortBy: EvaluationLogFields.REQUEST_STATUS },
+      { name: EvaluationLogFields.PCT_CORRECT, label: "Точность классификатора" },
       { name: EvaluationLogFields.RELATION_NAME, label: "Обучающая выборка" },
       { name: EvaluationLogFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности", sortBy: EvaluationLogFields.EVALUATION_METHOD },
+      { name: EvaluationLogFields.MODEL_PATH, label: "Модель классификатора" },
       { name: EvaluationLogFields.EVALUATION_TOTAL_TIME, label: "Время построения модели" },
       { name: EvaluationLogFields.CREATION_DATE, label: "Дата создания заявки" },
       { name: EvaluationLogFields.START_DATE, label: "Дата начала построения модели" },
-      { name: EvaluationLogFields.END_DATE, label: "Дата окончания построения модели" }
+      { name: EvaluationLogFields.END_DATE, label: "Дата окончания построения модели" },
+      { name: EvaluationLogFields.DELETED_DATE, label: "Дата удаления модели" }
     ];
   }
 }

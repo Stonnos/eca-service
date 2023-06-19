@@ -109,7 +109,7 @@ class ExperimentMapperTest {
         experiment.setEndDate(experiment.getStartDate().minusMinutes(1L));
         experiment.setDeletedDate(experiment.getEndDate().plusMinutes(1L));
         experiment.setTrainingDataPath(DATA_PATH);
-        experiment.setExperimentPath(EXPERIMENT_PATH);
+        experiment.setModelPath(EXPERIMENT_PATH);
         experiment.setNumFolds(crossValidationConfig.getNumFolds());
         experiment.setNumTests(crossValidationConfig.getNumTests());
         experiment.setSeed(crossValidationConfig.getSeed());
@@ -132,7 +132,7 @@ class ExperimentMapperTest {
                 experiment.getExperimentType().getDescription());
         assertThat(experimentDto.getExperimentType().getValue()).isEqualTo(
                 experiment.getExperimentType().name());
-        assertThat(experimentDto.getExperimentPath()).isEqualTo(experiment.getExperimentPath());
+        assertThat(experimentDto.getModelPath()).isEqualTo(experiment.getModelPath());
         assertThat(experimentDto.getRequestId()).isEqualTo(experiment.getRequestId());
         assertThat(experimentDto.getNumFolds()).isEqualTo(experiment.getNumFolds());
         assertThat(experimentDto.getNumTests()).isEqualTo(experiment.getNumTests());
@@ -157,7 +157,7 @@ class ExperimentMapperTest {
         experiment.setEndDate(LocalDateTime.now());
         experiment.setDeletedDate(LocalDateTime.now());
         experiment.setTrainingDataPath(DATA_PATH);
-        experiment.setExperimentPath(EXPERIMENT_PATH);
+        experiment.setModelPath(EXPERIMENT_PATH);
         ExperimentBean experimentBean = experimentMapper.mapToBean(experiment);
         assertThat(experimentBean).isNotNull();
         assertThat(experimentBean.getCreatedBy()).isEqualTo(experiment.getCreatedBy());
@@ -168,7 +168,7 @@ class ExperimentMapperTest {
         assertThat(experimentBean.getEvaluationMethod()).isNotNull();
         assertThat(experimentBean.getRequestStatus()).isEqualTo(experiment.getRequestStatus().getDescription());
         assertThat(experimentBean.getExperimentType()).isEqualTo(experiment.getExperimentType().getDescription());
-        assertThat(experimentBean.getExperimentPath()).isEqualTo(experiment.getExperimentPath());
+        assertThat(experimentBean.getModelPath()).isEqualTo(experiment.getModelPath());
         assertThat(experimentBean.getRequestId()).isEqualTo(experiment.getRequestId());
         assertThat(experimentBean.getEvaluationTotalTime()).isNotNull();
         assertThat(experimentBean.getRelationName()).isEqualTo(experiment.getInstancesInfo().getRelationName());

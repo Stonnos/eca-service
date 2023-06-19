@@ -1,9 +1,8 @@
 package com.ecaservice.server.service.evaluation;
 
-
-import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.model.evaluation.ClassificationResult;
+import com.ecaservice.server.model.evaluation.EvaluationRequestDataModel;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationMethodVisitor;
 import eca.core.evaluation.EvaluationResults;
@@ -37,7 +36,7 @@ public class EvaluationService {
      * @param evaluationRequest - evaluation request
      * @return classification results {@link ClassificationResult}
      */
-    public ClassificationResult evaluateModel(EvaluationRequest evaluationRequest) {
+    public ClassificationResult evaluateModel(EvaluationRequestDataModel evaluationRequest) {
         ClassificationResult classificationResult = new ClassificationResult();
         try {
             final Classifier classifier = AbstractClassifier.makeCopy(evaluationRequest.getClassifier());

@@ -1,8 +1,8 @@
 package com.ecaservice.server.mapping;
 
-import com.ecaservice.base.model.InstancesRequest;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import com.ecaservice.server.config.CrossValidationConfig;
+import com.ecaservice.server.model.evaluation.InstancesRequestDataModel;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -33,7 +33,8 @@ public interface ClassifierOptionsRequestMapper {
     @Mapping(source = "crossValidationConfig.numFolds", target = "evaluationMethodReport.numFolds")
     @Mapping(source = "crossValidationConfig.numTests", target = "evaluationMethodReport.numTests")
     @Mapping(source = "crossValidationConfig.seed", target = "evaluationMethodReport.seed")
-    ClassifierOptionsRequest map(InstancesRequest instancesRequest, CrossValidationConfig crossValidationConfig);
+    ClassifierOptionsRequest map(InstancesRequestDataModel instancesRequest,
+                                 CrossValidationConfig crossValidationConfig);
 
     /**
      * Maps instances info.
@@ -42,7 +43,7 @@ public interface ClassifierOptionsRequestMapper {
      * @param classifierOptionsRequest - classifier options request
      */
     @AfterMapping
-    default void mapData(InstancesRequest instancesRequest,
+    default void mapData(InstancesRequestDataModel instancesRequest,
                          @MappingTarget ClassifierOptionsRequest classifierOptionsRequest) {
         if (Optional.ofNullable(instancesRequest.getData()).isPresent()) {
             String jsonData = toJson(instancesRequest.getData());

@@ -19,7 +19,7 @@ ECA server
 * Openjdk 1.11
 * maven => 3.3.9
 * Rabbit MQ => 3
-* eca-core 6.9.3
+* eca-core 6.9.4
 * Postgres Database для хранения информации => 13.9
 
 Описание ключевой конфигурации модуля
@@ -31,21 +31,17 @@ ECA server
    * cross-validation.numFolds - число блоков
    * cross-validation.numTests - число тестов
    * cross-validation.seed - начальное значение для генератора псевдослучайных чисел
-   * cross-validation.timeout - таймаут в сек. для оценки точности классификатора
-3) experiment - настройки параметров модуля Data Miner. Ниже приведено описание
+3) classifiers - настройка параметров для постороения моделей классификаторов
+   * classifiers.timeout - таймаут в сек. для оценки точности классификатора
+4) experiment - настройки параметров модуля Data Miner. Ниже приведено описание
    основных настроек:
    * experiment.resultSize - число наилучших конфигураций классификаторов
    * experiment.numIterations - число итераций эксперимента
    * experiment.individualClassifiersStoragePath - путь к папке в ресурсах для хранения json - конфигураций классификаторов,
    которые впоследствии будут использоваться при построении эксперимента
    * experiment.maximumFractionDigits - число десятичных знаков после запятой
-   * experiment.numberOfDaysForStorage - кол-во дней для хранения результатов экспериментов
-   * experiment.removeExperimentCron - крон выражение для удаления моделей с результатами экспериментов
    * experiment.timeout - время таймаута эксперимента в часах.
    * experiment.delaySeconds - интервал между запусками scheduler для обработки экспериметов
-   * experiment.pageSize - размер страницы для постраничной обработки заявок
-   * experiment.experimentDownloadUrlExpirationDays - время жизни ссылки на скачивание результатов эксперимента
-   * experiment.shortLifeUrlExpirationMinutes - время короткоживущей ссылки на получение результатов эксперимента
    * experiment.ensemble.numIterations - число итераций для ансамблевых алгоритмов
    * experiment.ensemble.numBestClassifiers - число наилучших по точности базовых классификаторов, которые впоследствии
    будут использоваться при построении ансамбля
@@ -54,15 +50,20 @@ ECA server
    * experiment.ensemble.numFoldsForStacking - число блоков V - блочной кросс - проверки для алгоритма Stacking
    * experiment.lock.registryKey - ключ реестра для блокировок
    * experiment.lock.expireAfter - время жизни блокировки
-4) ers - настройки интеграции с сервисом eca-ers
+5) ers - настройки интеграции с сервисом eca-ers
    * ers.useClassifierOptionsCache - вкл./выкл. кеширование оптимальных настроек классификатора
    * ers.classifierOptionsCacheDurationInDays - период хранения оптимальных настроек классификатора, полученных от сервиса ERS
-5) app - общие настройки приложения
+6) app - общие настройки приложения
    * app.threadPoolSize - число потоков для асинхронных задач
    * app.maxPageSize - максимальное число элементов на странице (используется для запросов с пагинацией)
-   * app.notifications.webPushesEnabled - вкл./выкл. отправки web пушей 
-6) cache.specs - настройки spring cache
-7) open-api - настройки Swagger
+   * app.notifications.webPushesEnabled - вкл./выкл. отправки web пушей
+   * app.removeModelCron - крон выражение для удаления моделей экспериментов/классификаторов
+   * app.numberOfDaysForStorage - кол-во дней для хранения моделей экспериментов/классификаторов
+   * app.pageSize - размер страницы для постраничной обработки заявок
+   * app.modelDownloadUrlExpirationDays - время жизни ссылки на скачивание модели эксперимента/классификатора
+   * app.shortLifeUrlExpirationMinutes - время короткоживущей ссылки на получение модели эксперимента/классификатора
+7) cache.specs - настройки spring cache
+8) open-api - настройки Swagger
    * open-api.tokenBaseUrl - базовый url - сервера авторизации
    * open-api.projectVersion - версия API
    * open-api.title - краткое название API
@@ -72,23 +73,23 @@ ECA server
    * open-api.basePath - базовый префикс для API
    * open-api.apiAuth - настройки авторизации
    * open-api.apiAuth.scopes - список scopes
-8) queue - настройки очередей
+9) queue - настройки очередей
    * queue.evaluationRequestQueue - входящая очередь для запросов на построение модели классификатора
    * queue.evaluationOptimizerRequestQueue - входящая очередь для запросов на построение оптимального классификатора
    * queue.experimentRequestQueue - входящая очередь для запросов на построение эксперимента
-9) auth-server - настройки интеграции с eca-oauth
+10) auth-server - настройки интеграции с eca-oauth
    * baseUrl - базовый url eca-oauth
    * clientId - идентификатор клиента
    * clientSecret - пароль клиента
-10) lock.enabled - вкл./выкл. использование блокировок
-11) redis-lock - настройки блокировок с использованием redis
+11) lock.enabled - вкл./выкл. использование блокировок
+12) redis-lock - настройки блокировок с использованием redis
    * registryKey - ключ реестра
    * expireAfter - время жизни блокировки
-12) audit.enabled - вкл./выкл. отправки событий аудита
-13) rabbit.enabled - вкл./выкл. подключения к очередям rabbit MQ
-14) mail.client - настройки библиотеки отправки email сообщений
-15) redelivery.enabled - вкл./выкл. библиотеки redelivery
-16) logging.mode - режим логирования
+13) audit.enabled - вкл./выкл. отправки событий аудита
+14) rabbit.enabled - вкл./выкл. подключения к очередям rabbit MQ
+15) mail.client - настройки библиотеки отправки email сообщений
+16) redelivery.enabled - вкл./выкл. библиотеки redelivery 
+17) logging.mode - режим логирования
    * text - текстовый формат
    * json - логи в формате json
 

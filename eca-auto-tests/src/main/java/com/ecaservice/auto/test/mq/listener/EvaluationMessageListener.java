@@ -2,7 +2,6 @@ package com.ecaservice.auto.test.mq.listener;
 
 import com.ecaservice.auto.test.entity.autotest.EvaluationRequestEntity;
 import com.ecaservice.auto.test.entity.autotest.RequestStageType;
-import com.ecaservice.auto.test.event.model.EvaluationResultsTestStepEvent;
 import com.ecaservice.auto.test.repository.autotest.EvaluationRequestRepository;
 import com.ecaservice.auto.test.repository.autotest.EvaluationResultsTestStepRepository;
 import com.ecaservice.auto.test.service.EvaluationRequestService;
@@ -12,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 import static com.ecaservice.auto.test.util.Utils.getFirstErrorMessage;
@@ -27,7 +25,6 @@ import static com.ecaservice.auto.test.util.Utils.getFirstErrorMessage;
 @RequiredArgsConstructor
 public class EvaluationMessageListener {
 
-    private final ApplicationEventPublisher applicationEventPublisher;
     private final EvaluationRequestService evaluationRequestService;
     private final EvaluationRequestRepository evaluationRequestRepository;
     private final EvaluationResultsTestStepRepository evaluationResultsTestStepRepository;
@@ -60,7 +57,7 @@ public class EvaluationMessageListener {
         if (TechnicalStatus.SUCCESS.equals(evaluationResponse.getStatus())) {
             evaluationRequestEntity.setStageType(RequestStageType.REQUEST_FINISHED);
             evaluationRequestRepository.save(evaluationRequestEntity);
-            handleSuccessResponse(evaluationRequestEntity, evaluationResponse);
+            handleSuccessResponse(evaluationRequestEntity, evaluationResponse, correlationId);
         } else {
             log.info("Got error response [{}] for evaluation request [{}], correlation id [{}]",
                     evaluationResponse.getStatus(),
@@ -72,15 +69,20 @@ public class EvaluationMessageListener {
     }
 
     private void handleSuccessResponse(EvaluationRequestEntity evaluationRequestEntity,
-                                       EvaluationResponse evaluationResponse) {
+                                       EvaluationResponse evaluationResponse,
+                                       String correlationId) {
         var evaluationResultsStep =
                 evaluationResultsTestStepRepository.findByEvaluationRequestEntity(evaluationRequestEntity);
         if (evaluationResultsStep == null) {
             log.warn("Evaluation results step not found for evaluation request with id [{}]",
                     evaluationRequestEntity.getRequestId());
         } else {
-            applicationEventPublisher.publishEvent(new EvaluationResultsTestStepEvent(this, evaluationResultsStep,
-                    evaluationResponse.getEvaluationResults()));
+            evaluationRequestEntity.setStageType(RequestStageType.REQUEST_FINISHED);
+            evaluationRequestEntity.setDownloadUrl(evaluationResponse.getModelUrl());
+            evaluationRequestRepository.save(evaluationRequestEntity);
+            log.info("Evaluation request [{}] has been finished for correlation id [{}]",
+                    evaluationResponse.getRequestId(),
+                    correlationId);
         }
     }
 }

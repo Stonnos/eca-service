@@ -6,7 +6,7 @@ spring:
   ## Auto tests datasource properties
   datasource:
     driver-class-name: org.postgresql.Driver
-    jdbc-url: jdbc:postgresql://localhost:5432/eca_auto_tests
+    jdbc-url: jdbc:postgresql://localhost:5433/eca_auto_tests
     username: postgres
     password: postgres
     jpa:
@@ -15,7 +15,7 @@ spring:
   ## Eca server datasource properties
   ecaserverdatasource:
     driver-class-name: org.postgresql.Driver
-    jdbc-url: jdbc:postgresql://localhost:5432/eca
+    jdbc-url: jdbc:postgresql://localhost:5433/eca
     username: postgres
     password: postgres
     jpa:

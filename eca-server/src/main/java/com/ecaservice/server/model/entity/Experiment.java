@@ -10,7 +10,6 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Index;
 import javax.persistence.Table;
-import java.time.LocalDateTime;
 
 import static com.ecaservice.server.util.FieldConstraints.EXPERIMENT_DOWNLOAD_URL_MAX_LENGTH;
 
@@ -42,12 +41,6 @@ public class Experiment extends AbstractEvaluationEntity {
     private String email;
 
     /**
-     * Experiment file path
-     */
-    @Column(name = "experiment_path")
-    private String experimentPath;
-
-    /**
      * Training data file path
      */
     @Column(name = "training_data_path")
@@ -60,12 +53,6 @@ public class Experiment extends AbstractEvaluationEntity {
     private Integer classIndex;
 
     /**
-     * Experiment files deleted date
-     */
-    @Column(name = "deleted_date")
-    private LocalDateTime deletedDate;
-
-    /**
      * Experiment type
      */
     @Enumerated(EnumType.STRING)
@@ -73,7 +60,7 @@ public class Experiment extends AbstractEvaluationEntity {
     private ExperimentType experimentType;
 
     /**
-     * Experiment download url
+     * Model download url
      */
     @Column(name = "experiment_download_url", length = EXPERIMENT_DOWNLOAD_URL_MAX_LENGTH)
     private String experimentDownloadUrl;

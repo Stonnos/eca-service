@@ -22,5 +22,5 @@ public class FieldSize {
     /**
      * Download url max length
      */
-    public static final int DOWNLOAD_URL_MAX_LENGTH = 1024;
+    public static final int MODEL_URL_MAX_LENGTH = 1024;
 }

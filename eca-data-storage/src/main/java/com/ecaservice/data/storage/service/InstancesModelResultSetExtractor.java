@@ -38,9 +38,6 @@ public class InstancesModelResultSetExtractor implements ResultSetExtractor<Inst
     @Getter
     @Setter
     private String dateFormat = "yyyy-MM-dd HH:mm:ss";
-    @Getter
-    @Setter
-    private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Override
     public InstancesModel extractData(ResultSet resultSet) throws SQLException, DataAccessException {
@@ -49,7 +46,7 @@ public class InstancesModelResultSetExtractor implements ResultSetExtractor<Inst
         instancesModel.setInstances(newArrayList());
         instancesModel.setRelationName(instancesEntity.getTableName());
         instancesModel.setAttributes(attributes);
-        var valueExtractor = new AttributeValueExtractor(resultSet, dateTimeFormatter);
+        var valueExtractor = new AttributeValueExtractor(resultSet, DateTimeFormatter.ofPattern(dateFormat));
         while (resultSet.next()) {
             InstanceModel instance = new InstanceModel();
             List<String> values = newArrayList();

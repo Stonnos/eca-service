@@ -6,7 +6,7 @@ spring:
   ## Datasource properties
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/eca_load_tests
+    url: jdbc:postgresql://localhost:5433/eca_load_tests
     username: postgres
     password: postgres
   jpa:

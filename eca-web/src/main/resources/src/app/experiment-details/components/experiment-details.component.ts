@@ -42,7 +42,7 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
 
   public loading = false;
 
-  public linkColumns: string[] = [ExperimentFields.EXPERIMENT_PATH];
+  public linkColumns: string[] = [ExperimentFields.MODEL_PATH];
 
   public blink = false;
 
@@ -122,11 +122,11 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
   }
 
   public showProgressBar(field: string): boolean {
-    return field == ExperimentFields.EXPERIMENT_PATH && this.loading;
+    return field == ExperimentFields.MODEL_PATH && this.loading;
   }
 
   public onLink(field: string) {
-    if (field === ExperimentFields.EXPERIMENT_PATH) {
+    if (field === ExperimentFields.MODEL_PATH) {
       this.getExperimentResultsFile();
     } else {
       this.messageService.add({severity: 'error', summary: 'Ошибка', detail: `Can't handle ${field} as link`});
@@ -250,12 +250,12 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
       { name: ExperimentFields.NUM_ATTRIBUTES, label: "Число атрибутов:" },
       { name: ExperimentFields.NUM_CLASSES, label: "Число классов:" },
       { name: ExperimentFields.CLASS_NAME, label: "Атрибут класса:" },
-      { name: ExperimentFields.EVALUATION_TOTAL_TIME, label: "Время построения эксперимента" },
-      { name: ExperimentFields.CREATION_DATE, label: "Дата создания заявки" },
-      { name: ExperimentFields.START_DATE, label: "Дата начала эксперимента" },
-      { name: ExperimentFields.END_DATE, label: "Дата окончания эксперимента" },
-      { name: ExperimentFields.DELETED_DATE, label: "Дата удаления результатов" },
-      { name: ExperimentFields.EXPERIMENT_PATH, label: "Результаты эксперимента" }
+      { name: ExperimentFields.EVALUATION_TOTAL_TIME, label: "Время построения эксперимента:" },
+      { name: ExperimentFields.CREATION_DATE, label: "Дата создания заявки:" },
+      { name: ExperimentFields.START_DATE, label: "Дата начала эксперимента:" },
+      { name: ExperimentFields.END_DATE, label: "Дата окончания эксперимента:" },
+      { name: ExperimentFields.MODEL_PATH, label: "Модель эксперимента:" },
+      { name: ExperimentFields.DELETED_DATE, label: "Дата удаления модели:" }
     ];
   }
 }

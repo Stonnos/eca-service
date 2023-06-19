@@ -1,8 +1,8 @@
 package com.ecaservice.server.mapping;
 
-import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import com.ecaservice.ers.dto.EvaluationMethodReport;
+import com.ecaservice.server.model.evaluation.EvaluationRequestDataModel;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
@@ -27,11 +27,11 @@ public abstract class EvaluationRequestMapper {
      * @return evaluation request
      */
     @Mapping(source = "classifierOptionsRequest.evaluationMethodReport.evaluationMethod", target = "evaluationMethod")
-    public abstract EvaluationRequest map(ClassifierOptionsRequest classifierOptionsRequest);
+    public abstract EvaluationRequestDataModel map(ClassifierOptionsRequest classifierOptionsRequest);
 
     @AfterMapping
     protected void afterMapping(ClassifierOptionsRequest classifierOptionsRequest,
-                                @MappingTarget EvaluationRequest evaluationRequest) {
+                                @MappingTarget EvaluationRequestDataModel evaluationRequest) {
         if (classifierOptionsRequest.getEvaluationMethodReport() != null &&
                 com.ecaservice.ers.dto.EvaluationMethod.CROSS_VALIDATION.equals(
                         classifierOptionsRequest.getEvaluationMethodReport().getEvaluationMethod())) {

@@ -21,14 +21,4 @@ public class ExperimentBean extends EvaluationBean {
      * User name
      */
     private String createdBy;
-
-    /**
-     * Experiment file
-     */
-    private String experimentPath;
-
-    /**
-     * Experiment files deleted date
-     */
-    private String deletedDate;
 }

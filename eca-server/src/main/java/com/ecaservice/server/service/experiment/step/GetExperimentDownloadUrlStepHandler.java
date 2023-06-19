@@ -3,7 +3,7 @@ package com.ecaservice.server.service.experiment.step;
 import com.ecaservice.s3.client.minio.exception.ObjectStorageException;
 import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
-import com.ecaservice.server.config.ExperimentConfig;
+import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentStep;
 import com.ecaservice.server.model.entity.ExperimentStepEntity;
@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class GetExperimentDownloadUrlStepHandler extends AbstractExperimentStepHandler {
 
-    private final ExperimentConfig experimentConfig;
+    private final AppProperties appProperties;
     private final ObjectStorageService objectStorageService;
     private final ExperimentStepService experimentStepService;
     private final ExperimentRepository experimentRepository;
@@ -33,17 +33,17 @@ public class GetExperimentDownloadUrlStepHandler extends AbstractExperimentStepH
     /**
      * Constructor with parameters.
      *
-     * @param experimentConfig      - experiment config
+     * @param appProperties         - app properties
      * @param objectStorageService  - object storage service
      * @param experimentStepService - experiment step service
      * @param experimentRepository  - experiment repository
      */
-    public GetExperimentDownloadUrlStepHandler(ExperimentConfig experimentConfig,
+    public GetExperimentDownloadUrlStepHandler(AppProperties appProperties,
                                                ObjectStorageService objectStorageService,
                                                ExperimentStepService experimentStepService,
                                                ExperimentRepository experimentRepository) {
         super(ExperimentStep.GET_EXPERIMENT_DOWNLOAD_URL);
-        this.experimentConfig = experimentConfig;
+        this.appProperties = appProperties;
         this.objectStorageService = objectStorageService;
         this.experimentStepService = experimentStepService;
         this.experimentRepository = experimentRepository;
@@ -56,7 +56,7 @@ public class GetExperimentDownloadUrlStepHandler extends AbstractExperimentStepH
             Experiment experiment = experimentContext.getExperiment();
             StopWatch stopWatch = experimentContext.getStopWatch();
             stopWatch.start(String.format("Gets experiment [%s] download url", experiment.getRequestId()));
-            String experimentDownloadUrl = getExperimentDownloadPresignedUrl(experiment.getExperimentPath());
+            String experimentDownloadUrl = getExperimentDownloadPresignedUrl(experiment.getModelPath());
             stopWatch.stop();
             experiment.setExperimentDownloadUrl(experimentDownloadUrl);
             experimentRepository.save(experiment);
@@ -76,7 +76,7 @@ public class GetExperimentDownloadUrlStepHandler extends AbstractExperimentStepH
         return objectStorageService.getObjectPresignedProxyUrl(
                 GetPresignedUrlObject.builder()
                         .objectPath(experimentPath)
-                        .expirationTime(experimentConfig.getExperimentDownloadUrlExpirationDays())
+                        .expirationTime(appProperties.getModelDownloadUrlExpirationDays())
                         .expirationTimeUnit(TimeUnit.DAYS)
                         .build()
         );

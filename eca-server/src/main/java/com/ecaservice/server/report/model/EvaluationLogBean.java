@@ -3,6 +3,8 @@ package com.ecaservice.server.report.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.math.BigDecimal;
+
 /**
  * Evaluation log report model.
  *
@@ -16,4 +18,9 @@ public class EvaluationLogBean extends EvaluationBean {
      * Classifier name
      */
     private String classifierName;
+
+    /**
+     * Correctly classified percentage
+     */
+    private BigDecimal pctCorrect;
 }

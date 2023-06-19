@@ -1,7 +1,7 @@
 package com.ecaservice.server.service.experiment;
 
 import com.ecaservice.core.lock.annotation.Locked;
-import com.ecaservice.server.config.ExperimentConfig;
+import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.repository.ExperimentRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ public class ExperimentDataCleaner {
 
     private final ExperimentRepository experimentRepository;
     private final ExperimentDataService experimentDataService;
-    private final ExperimentConfig experimentConfig;
+    private final AppProperties appProperties;
 
     /**
      * Removes experiments model files from S3.
@@ -41,12 +41,12 @@ public class ExperimentDataCleaner {
             waitForLock = false)
     public void removeExperimentsModels() {
         log.info("Starting to remove experiments models.");
-        LocalDateTime dateTime = LocalDateTime.now().minusDays(experimentConfig.getNumberOfDaysForStorage());
+        LocalDateTime dateTime = LocalDateTime.now().minusDays(appProperties.getNumberOfDaysForStorage());
         var experimentIds = experimentRepository.findExperimentsModelsToDelete(dateTime);
         log.info("Obtained {} experiments to remove model files", experimentIds.size());
         processWithPagination(experimentIds, experimentRepository::findByIdIn,
                 experiments -> removeData(experiments, experimentDataService::removeExperimentModel),
-                experimentConfig.getPageSize()
+                appProperties.getPageSize()
         );
         log.info("Experiments models removing has been finished.");
     }
@@ -58,12 +58,12 @@ public class ExperimentDataCleaner {
             waitForLock = false)
     public void removeExperimentsTrainingData() {
         log.info("Starting to remove experiments training data.");
-        LocalDateTime dateTime = LocalDateTime.now().minusDays(experimentConfig.getNumberOfDaysForStorage());
+        LocalDateTime dateTime = LocalDateTime.now().minusDays(appProperties.getNumberOfDaysForStorage());
         var experimentIds = experimentRepository.findExperimentsTrainingDataToDelete(dateTime);
         log.info("Obtained {} experiments to remove training data files", experimentIds.size());
         processWithPagination(experimentIds, experimentRepository::findByIdIn,
                 experiments -> removeData(experiments, experimentDataService::removeExperimentTrainingData),
-                experimentConfig.getPageSize()
+                appProperties.getPageSize()
         );
         log.info("Experiments training data removing has been finished.");
     }

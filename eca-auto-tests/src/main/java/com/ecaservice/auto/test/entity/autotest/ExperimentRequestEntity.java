@@ -34,10 +34,4 @@ public class ExperimentRequestEntity extends BaseEvaluationRequestEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "experiment_type")
     private ExperimentType experimentType;
-
-    /**
-     * Experiment download url
-     */
-    @Column(name = "download_url", length = DOWNLOAD_URL_MAX_LENGTH)
-    private String downloadUrl;
 }

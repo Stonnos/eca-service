@@ -32,12 +32,12 @@ public class ExperimentResponseHandler extends AbstractEcaResponseHandler<Experi
 
     @Override
     protected void internalHandleSuccessResponse(ExperimentRequestEntity requestEntity,
-                                                 ExperimentResponse ecaResponse) {
+                                                 ExperimentResponse experimentResponse) {
         log.info("Starting to process success experiment response [{}]", requestEntity.getCorrelationId());
-        Assert.notNull(ecaResponse.getDownloadUrl(),
-                String.format("Expected not experiment download url for correlation id [%s]",
+        Assert.notNull(experimentResponse.getDownloadUrl(),
+                String.format("Expected not null experiment download url for correlation id [%s]",
                         requestEntity.getCorrelationId()));
-        requestEntity.setExperimentDownloadUrl(ecaResponse.getDownloadUrl());
+        requestEntity.setExperimentDownloadUrl(experimentResponse.getDownloadUrl());
         log.info("Success experiment response [{}] has been processed", requestEntity.getCorrelationId());
     }
 }

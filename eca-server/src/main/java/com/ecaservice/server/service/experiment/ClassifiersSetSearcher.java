@@ -1,6 +1,5 @@
 package com.ecaservice.server.service.experiment;
 
-import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.server.config.CrossValidationConfig;
@@ -8,6 +7,7 @@ import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.exception.experiment.ExperimentException;
 import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.server.model.evaluation.ClassificationResult;
+import com.ecaservice.server.model.evaluation.EvaluationRequestDataModel;
 import com.ecaservice.server.service.classifiers.ClassifierOptionsService;
 import com.ecaservice.server.service.evaluation.EvaluationService;
 import com.ecaservice.server.service.experiment.handler.ClassifierInputDataHandler;
@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ClassifiersSetSearcher {
 
-    private static ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private final EvaluationService evaluationService;
     private final ClassifierOptionsService classifierOptionsService;
@@ -62,8 +62,9 @@ public class ClassifiersSetSearcher {
         ArrayList<EvaluationResults> finished = new ArrayList<>(classifiersSet.size());
 
         for (AbstractClassifier classifier : classifiersSet) {
-            EvaluationRequest evaluationRequest = createEvaluationRequest(classifier, data, evaluationMethod);
-            ClassificationResult classificationResult = evaluationService.evaluateModel(evaluationRequest);
+            EvaluationRequestDataModel evaluationRequestDataModel =
+                    createEvaluationRequest(classifier, data, evaluationMethod);
+            ClassificationResult classificationResult = evaluationService.evaluateModel(evaluationRequestDataModel);
             if (classificationResult.isSuccess()) {
                 classificationResult.getEvaluationResults().setClassifier(classifier);
                 finished.add(classificationResult.getEvaluationResults());
@@ -80,8 +81,10 @@ public class ClassifiersSetSearcher {
             classifiers.addClassifier(finished.get(i).getClassifier());
         }
         log.info("{} best classifiers has been built.",
-                classifiers.toList().stream().map(classifier -> classifier.getClass().getSimpleName()).collect(
-                        Collectors.toList()));
+                classifiers.toList()
+                        .stream()
+                        .map(classifier -> classifier.getClass().getSimpleName())
+                        .collect(Collectors.toList()));
         return classifiers;
     }
 
@@ -95,7 +98,7 @@ public class ClassifiersSetSearcher {
         try {
             for (ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel : classifierOptionsDatabaseModels) {
                 ClassifierOptions classifierOptions =
-                        objectMapper.readValue(classifierOptionsDatabaseModel.getConfig(), ClassifierOptions.class);
+                        OBJECT_MAPPER.readValue(classifierOptionsDatabaseModel.getConfig(), ClassifierOptions.class);
                 classifierList.add(classifierOptionsAdapter.convert(classifierOptions));
             }
         } catch (Exception ex) {
@@ -121,17 +124,18 @@ public class ClassifiersSetSearcher {
         });
     }
 
-    private EvaluationRequest createEvaluationRequest(AbstractClassifier classifier, Instances data,
-                                                      EvaluationMethod evaluationMethod) {
-        EvaluationRequest evaluationRequest = new EvaluationRequest();
-        evaluationRequest.setClassifier(classifier);
-        evaluationRequest.setData(data);
-        evaluationRequest.setEvaluationMethod(evaluationMethod);
+    private EvaluationRequestDataModel createEvaluationRequest(AbstractClassifier classifier,
+                                                               Instances data,
+                                                               EvaluationMethod evaluationMethod) {
+        EvaluationRequestDataModel evaluationRequestDataModel = new EvaluationRequestDataModel();
+        evaluationRequestDataModel.setClassifier(classifier);
+        evaluationRequestDataModel.setData(data);
+        evaluationRequestDataModel.setEvaluationMethod(evaluationMethod);
         if (EvaluationMethod.CROSS_VALIDATION.equals(evaluationMethod)) {
-            evaluationRequest.setNumFolds(crossValidationConfig.getNumFolds());
-            evaluationRequest.setNumTests(crossValidationConfig.getNumTests());
-            evaluationRequest.setSeed(crossValidationConfig.getSeed());
+            evaluationRequestDataModel.setNumFolds(crossValidationConfig.getNumFolds());
+            evaluationRequestDataModel.setNumTests(crossValidationConfig.getNumTests());
+            evaluationRequestDataModel.setSeed(crossValidationConfig.getSeed());
         }
-        return evaluationRequest;
+        return evaluationRequestDataModel;
     }
 }

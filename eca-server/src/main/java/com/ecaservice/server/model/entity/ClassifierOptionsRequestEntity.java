@@ -29,6 +29,12 @@ public class ClassifierOptionsRequestEntity {
     private Long id;
 
     /**
+     * Request id
+     */
+    @Column(name = "request_id")
+    private String requestId;
+
+    /**
      * Creation date
      */
     @Column(name = "creation_date")

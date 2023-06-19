@@ -14,6 +14,7 @@ import static com.ecaservice.web.dto.util.FieldConstraints.LOCAL_DATE_TIME_MAX_L
 import static com.ecaservice.web.dto.util.FieldConstraints.MAXIMUM_NUM_FOLDS_STRING;
 import static com.ecaservice.web.dto.util.FieldConstraints.MAXIMUM_NUM_TESTS_STRING;
 import static com.ecaservice.web.dto.util.FieldConstraints.MAX_INTEGER_VALUE_STRING;
+import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
 import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LONG_VALUE_STRING;
 import static com.ecaservice.web.dto.util.FieldConstraints.MINIMUM_NUM_FOLDS_STRING;
 import static com.ecaservice.web.dto.util.FieldConstraints.MINIMUM_NUM_TESTS_STRING;
@@ -76,6 +77,13 @@ public abstract class AbstractEvaluationDto {
     private LocalDateTime endDate;
 
     /**
+     * Model file
+     */
+    @Schema(description = "Model file", example = "model-1d2de514-3a87-4620-9b97-c260e24340de.model",
+            maxLength = MAX_LENGTH_255)
+    private String modelPath;
+
+    /**
      * Request status
      */
     @Schema(description = "Request status")
@@ -114,4 +122,13 @@ public abstract class AbstractEvaluationDto {
     @Schema(description = "Model evaluation total time in format HH:mm:ss:SS", example = "00:00:01:43",
             maxLength = EVALUATION_TOTAL_TIME_MAX_LENGTH)
     private String evaluationTotalTime;
+
+    /**
+     * Model deleted date
+     */
+    @Schema(description = "Model deleted date", type = "string", example = "2021-07-01 14:00:00",
+            maxLength = LOCAL_DATE_TIME_MAX_LENGTH)
+    @JsonFormat(pattern = DATE_TIME_PATTERN)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    private LocalDateTime deletedDate;
 }

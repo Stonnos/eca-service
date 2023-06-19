@@ -38,7 +38,7 @@ public class ExperimentScheduler {
     /**
      * Removes experiments data files from S3. Schedules by cron.
      */
-    @Scheduled(cron = "${experiment.removeExperimentCron}")
+    @Scheduled(cron = "${app.removeModelCron}")
     public void processRequestsToRemove() {
         log.info("Starting job to removes experiments data files from disk");
         experimentDataCleaner.removeExperimentsTrainingData();

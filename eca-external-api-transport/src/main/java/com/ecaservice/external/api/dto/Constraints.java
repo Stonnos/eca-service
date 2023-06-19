@@ -69,4 +69,10 @@ public class Constraints {
      * UUID max length
      */
     public static final int UUID_MAX_LENGTH = 36;
+
+
+    /**
+     * Download url max length
+     */
+    public static final int MODEL_URL_MAX_LENGTH = 1024;
 }

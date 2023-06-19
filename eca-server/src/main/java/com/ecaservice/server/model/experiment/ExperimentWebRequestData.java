@@ -12,7 +12,7 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class ExperimentWebRequestData  extends AbstractExperimentRequestData {
+public class ExperimentWebRequestData extends AbstractExperimentRequestData {
 
     /**
      * User name

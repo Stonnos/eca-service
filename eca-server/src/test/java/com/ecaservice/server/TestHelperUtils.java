@@ -1,10 +1,8 @@
 package com.ecaservice.server;
 
 import com.ecaservice.base.model.EvaluationRequest;
-import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.base.model.ExperimentType;
-import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.classifier.options.model.ActivationFunctionOptions;
 import com.ecaservice.classifier.options.model.AdaBoostOptions;
 import com.ecaservice.classifier.options.model.BackPropagationOptions;
@@ -48,6 +46,8 @@ import com.ecaservice.server.model.entity.ExperimentStepStatus;
 import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.evaluation.ClassifierOptionsRequestSource;
+import com.ecaservice.server.model.evaluation.EvaluationRequestDataModel;
+import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
 import com.ecaservice.server.model.experiment.ExperimentMessageRequestData;
 import com.ecaservice.server.model.experiment.InitializationParams;
 import com.ecaservice.web.dto.model.ClassifierOptionsDto;
@@ -95,13 +95,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 import static com.ecaservice.server.util.ClassifierOptionsHelper.toJsonString;
 import static com.google.common.collect.Lists.newArrayList;
-import static com.google.common.collect.Maps.newEnumMap;
 
 /**
  * Test data helper class.
@@ -165,6 +162,7 @@ public class TestHelperUtils {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     public static final String MESSAGE_TEXT = "Message text";
     private static final String DATA_MD_5_HASH = "3032e188204cb537f69fc7364f638641";
+    private static final String CLASSIFIER_MODEL = "classifier.model";
 
     /**
      * Creates page request dto.
@@ -269,6 +267,19 @@ public class TestHelperUtils {
     }
 
     /**
+     * Creates evaluation request data object.
+     *
+     * @return evaluation request data
+     */
+    public static EvaluationRequestDataModel createEvaluationRequestData() {
+        EvaluationRequestDataModel request = new EvaluationRequestDataModel();
+        request.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
+        request.setData(loadInstances());
+        request.setClassifier(new KNearestNeighbours());
+        return request;
+    }
+
+    /**
      * Creates experiment request.
      *
      * @return created experiment request
@@ -289,6 +300,7 @@ public class TestHelperUtils {
      */
     public static ExperimentMessageRequestData createExperimentMessageRequest() {
         ExperimentMessageRequestData experimentRequest = new ExperimentMessageRequestData();
+        experimentRequest.setRequestId(UUID.randomUUID().toString());
         experimentRequest.setExperimentType(ExperimentType.KNN);
         experimentRequest.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         experimentRequest.setData(loadInstances());
@@ -323,7 +335,7 @@ public class TestHelperUtils {
         experiment.setExperimentType(ExperimentType.KNN);
         experiment.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         experiment.setTrainingDataPath(TRAINING_DATA_PATH);
-        experiment.setExperimentPath(EXPERIMENT_PATH);
+        experiment.setModelPath(EXPERIMENT_PATH);
         experiment.setRequestId(requestId);
         experiment.setChannel(Channel.QUEUE);
         experiment.setReplyTo(REPLY_TO);
@@ -517,6 +529,8 @@ public class TestHelperUtils {
         evaluationLog.setNumTests(NUM_TESTS);
         evaluationLog.setSeed(SEED);
         evaluationLog.setRequestStatus(RequestStatus.FINISHED);
+        evaluationLog.setModelPath(CLASSIFIER_MODEL);
+        evaluationLog.setPctCorrect(BigDecimal.TEN);
         return evaluationLog;
     }
 
@@ -978,16 +992,17 @@ public class TestHelperUtils {
     }
 
     /**
-     * Creates evaluation response with specified request id.
+     * Creates evaluation results data model with specified request id.
      *
      * @param requestId - request id
-     * @return evaluation response
+     * @return evaluation results data model
      */
-    public static EvaluationResponse createEvaluationResponse(String requestId) {
-        EvaluationResponse evaluationResponse = new EvaluationResponse();
-        evaluationResponse.setRequestId(requestId);
-        evaluationResponse.setStatus(TechnicalStatus.SUCCESS);
-        return evaluationResponse;
+    public static EvaluationResultsDataModel createEvaluationResultsDataModel(String requestId) {
+        EvaluationResultsDataModel evaluationResultsDataModel = new EvaluationResultsDataModel();
+        evaluationResultsDataModel.setRequestId(requestId);
+        evaluationResultsDataModel.setStatus(RequestStatus.FINISHED);
+        evaluationResultsDataModel.setModelUrl(CLASSIFIER_MODEL);
+        return evaluationResultsDataModel;
     }
 
     /**
@@ -1022,19 +1037,6 @@ public class TestHelperUtils {
      */
     public static String bearerHeader(String token) {
         return String.format(BEARER_HEADER_FORMAT, token);
-    }
-
-    /**
-     * Creates experiment types statistics map.
-     *
-     * @return experiment types statistics map
-     */
-    public static Map<ExperimentType, Long> buildExperimentTypeStatisticMap() {
-        ExperimentType[] experimentTypes = ExperimentType.values();
-        Map<ExperimentType, Long> experimentTypesMap = newEnumMap(ExperimentType.class);
-        Stream.of(experimentTypes).forEach(
-                experimentType -> experimentTypesMap.put(experimentType, (long) experimentType.ordinal()));
-        return experimentTypesMap;
     }
 
     /**

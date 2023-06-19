@@ -95,7 +95,7 @@ class ExperimentDataServiceTest extends AbstractJpaTest {
         experimentDataService.removeExperimentModel(experiment);
         experiment = experimentRepository.findById(experiment.getId()).orElse(null);
         assertThat(experiment).isNotNull();
-        assertThat(experiment.getExperimentPath()).isNull();
+        assertThat(experiment.getModelPath()).isNull();
         assertThat(experiment.getExperimentDownloadUrl()).isNull();
         assertThat(experiment.getDeletedDate()).isNotNull();
     }
