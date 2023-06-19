@@ -79,8 +79,6 @@ cross-validation:
   numFolds: 10
   numTests: 1
   seed: 1
-  ## Cross validation timeout in minutes
-  timeout: 60
 
 classifiers-options:
   maximumFractionDigits: 4
@@ -104,6 +102,10 @@ springdoc:
       client-id: swagger
       client-secret: swagger_secret
     disable-swagger-default-url: true
+
+## Classifier properties
+classifiers:
+  timeout: 60
 
 ## Experiment properties
 experiment:

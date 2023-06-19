@@ -54,11 +54,6 @@ public class AppProperties {
     private Integer shortLifeUrlExpirationMinutes;
 
     /**
-     * Maximum fraction digits
-     */
-    private Integer maximumFractionDigits;
-
-    /**
      * Notification properties
      */
     @Data

@@ -132,8 +132,11 @@ public class EvaluationRequestService {
 
     private ClassificationModel buildClassificationModel(EvaluationResults evaluationResults) {
         var classifier = (AbstractClassifier) evaluationResults.getClassifier();
-        return new ClassificationModel(classifier, evaluationResults.getEvaluation().getData(),
-                evaluationResults.getEvaluation(), appProperties.getMaximumFractionDigits());
+        ClassificationModel classificationModel = new ClassificationModel();
+        classificationModel.setClassifier(classifier);
+        classificationModel.setData(evaluationResults.getEvaluation().getData());
+        classificationModel.setEvaluation(evaluationResults.getEvaluation());
+        return classificationModel;
     }
 
     private void uploadModel(EvaluationResults evaluationResults, EvaluationLog evaluationLog) throws IOException {

@@ -62,7 +62,6 @@ ECA server
    * app.pageSize - размер страницы для постраничной обработки заявок
    * app.modelDownloadUrlExpirationDays - время жизни ссылки на скачивание модели эксперимента/классификатора
    * app.shortLifeUrlExpirationMinutes - время короткоживущей ссылки на получение модели эксперимента/классификатора
-   * app.maximumFractionDigits - макс. число знаков после запятой
 7) cache.specs - настройки spring cache
 8) open-api - настройки Swagger
    * open-api.tokenBaseUrl - базовый url - сервера авторизации
