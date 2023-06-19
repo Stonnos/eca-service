@@ -1,7 +1,6 @@
 package com.ecaservice.server.service.evaluation;
 
 import com.ecaservice.base.model.ErrorCode;
-import com.ecaservice.base.model.InstancesRequest;
 import com.ecaservice.classifier.options.config.ClassifiersOptionsAutoConfiguration;
 import com.ecaservice.classifier.options.model.ActivationFunctionOptions;
 import com.ecaservice.classifier.options.model.ClassifierOptions;
@@ -38,6 +37,7 @@ import com.ecaservice.server.model.entity.ErsResponseStatus;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.evaluation.ClassifierOptionsRequestSource;
 import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
+import com.ecaservice.server.model.evaluation.InstancesRequestDataModel;
 import com.ecaservice.server.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.server.repository.ClassifierOptionsRequestRepository;
 import com.ecaservice.server.repository.ErsRequestRepository;
@@ -72,6 +72,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.DigestUtils;
 import weka.classifiers.AbstractClassifier;
+import weka.core.Instances;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -79,6 +80,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import static com.ecaservice.server.util.InstancesUtils.toJson;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -128,7 +130,7 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
     @Inject
     private EvaluationOptimizerService evaluationOptimizerService;
 
-    private InstancesRequest instancesRequest;
+    private InstancesRequestDataModel instancesRequestDataModel;
 
     private String decisionTreeOptions;
     private String j48Options;
@@ -136,9 +138,9 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
 
     @Override
     public void init() throws Exception {
-        instancesRequest = new InstancesRequest();
-        instancesRequest.setData(TestHelperUtils.loadInstances());
-        String instancesJson = toJson(instancesRequest.getData());
+        Instances data = TestHelperUtils.loadInstances();
+        instancesRequestDataModel = new InstancesRequestDataModel(UUID.randomUUID().toString(), data);
+        String instancesJson = toJson(instancesRequestDataModel.getData());
         dataMd5Hash = DigestUtils.md5DigestAsHex(instancesJson.getBytes(StandardCharsets.UTF_8));
         DecisionTreeOptions treeOptions = TestHelperUtils.createDecisionTreeOptions();
         treeOptions.setDecisionTreeType(DecisionTreeType.CART);
@@ -174,7 +176,7 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
                 .singletonList(TestHelperUtils.createClassifierReport(StringUtils.EMPTY)));
         when(ersClient.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
         EvaluationResultsDataModel evaluationResultsDataModel =
-                evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequest);
+                evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequestDataModel);
         assertThat(evaluationResultsDataModel).isNotNull();
         assertThat(evaluationResultsDataModel.getStatus()).isEqualTo(RequestStatus.ERROR);
         List<ClassifierOptionsRequestModel> optionsRequests = classifierOptionsRequestModelRepository.findAll();
@@ -191,7 +193,7 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
                 .singletonList(TestHelperUtils.createClassifierReport(decisionTreeOptions)));
         when(ersClient.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
         EvaluationResultsDataModel evaluationResultsDataModel =
-                evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequest);
+                evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequestDataModel);
         assertSuccessEvaluationResponse(evaluationResultsDataModel);
         List<ClassifierOptionsRequestModel> optionsRequests = classifierOptionsRequestModelRepository.findAll();
         AssertionUtils.hasOneElement(optionsRequests);
@@ -204,8 +206,8 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         ErsConfig ersConfig = new ErsConfig();
         ersConfig.setUseClassifierOptionsCache(false);
         ReflectionTestUtils.setField(evaluationOptimizerService, "ersConfig", ersConfig);
-        evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequest);
-        evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequest);
+        evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequestDataModel);
+        evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequestDataModel);
         assertThat(classifierOptionsRequestModelRepository.count()).isEqualTo(2L);
         assertThat(classifierOptionsRequestRepository.count()).isEqualTo(2L);
     }
@@ -232,7 +234,7 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
                 .singletonList(TestHelperUtils.createClassifierReport(decisionTreeOptions)));
         when(ersClient.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
         EvaluationResultsDataModel evaluationResultsDataModel =
-                evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequest);
+                evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequestDataModel);
         assertSuccessEvaluationResponse(evaluationResultsDataModel);
         List<ClassifierOptionsRequestModel> optionsRequests = classifierOptionsRequestModelRepository.findAll();
         assertThat(optionsRequests).hasSize(2);
@@ -248,7 +250,8 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
                 (requestModel.getRequestDate(), requestModel);
         classifierOptionsRequestModelRepository.save(requestModel);
         classifierOptionsRequestRepository.save(requestEntity);
-        evaluationResultsDataModel = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequest);
+        evaluationResultsDataModel = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
+                instancesRequestDataModel);
         assertSuccessEvaluationResponse(evaluationResultsDataModel);
         optionsRequests = classifierOptionsRequestModelRepository.findAll();
         assertThat(optionsRequests).hasSize(2);
@@ -264,7 +267,8 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
                 (requestModel.getRequestDate(), requestModel);
         classifierOptionsRequestModelRepository.save(requestModel);
         classifierOptionsRequestRepository.save(requestEntity);
-        evaluationResultsDataModel = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequest);
+        evaluationResultsDataModel = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
+                instancesRequestDataModel);
         assertSuccessEvaluationResponse(evaluationResultsDataModel);
         optionsRequests = classifierOptionsRequestModelRepository.findAll();
         assertThat(optionsRequests).hasSize(2);
@@ -280,7 +284,8 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
                 (requestModel.getRequestDate(), requestModel);
         classifierOptionsRequestModelRepository.save(requestModel);
         classifierOptionsRequestRepository.save(requestEntity);
-        evaluationResultsDataModel = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequest);
+        evaluationResultsDataModel = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
+                instancesRequestDataModel);
         assertSuccessEvaluationResponse(evaluationResultsDataModel);
         optionsRequests = classifierOptionsRequestModelRepository.findAll();
         assertThat(optionsRequests).hasSize(2);
@@ -297,7 +302,8 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
                 (requestModel.getRequestDate(), requestModel);
         classifierOptionsRequestModelRepository.save(requestModel);
         classifierOptionsRequestRepository.save(requestEntity);
-        evaluationResultsDataModel = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequest);
+        evaluationResultsDataModel = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
+                instancesRequestDataModel);
         assertSuccessEvaluationResponse(evaluationResultsDataModel);
         optionsRequests = classifierOptionsRequestModelRepository.findAll();
         assertThat(optionsRequests).hasSize(2);
@@ -326,7 +332,8 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
                 TestHelperUtils.createClassifierOptionsRequestEntity(LocalDateTime.now(), requestModel1);
         classifierOptionsRequestRepository.save(requestEntity);
         classifierOptionsRequestRepository.save(requestEntity1);
-        var evaluationResultsDataModel = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequest);
+        var evaluationResultsDataModel = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
+                instancesRequestDataModel);
         assertSuccessEvaluationResponse(evaluationResultsDataModel);
         EvaluationResults results = evaluationResultsDataModel.getEvaluationResults();
         assertThat(results.getClassifier()).isInstanceOf(J48.class);
@@ -394,7 +401,7 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
     private void internalTestErrorStatus(Exception ex, ErsResponseStatus expectedStatus, ErrorCode expectedErrorCode) {
         when(ersClient.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenThrow(ex);
         EvaluationResultsDataModel evaluationResultsDataModel =
-                evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequest);
+                evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequestDataModel);
         assertThat(evaluationResultsDataModel).isNotNull();
         assertThat(evaluationResultsDataModel.getStatus()).isEqualTo(RequestStatus.ERROR);
         assertThat(evaluationResultsDataModel.getEvaluationResults()).isNull();
@@ -414,7 +421,7 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
                 TestHelperUtils.createClassifierReport(objectMapper.writeValueAsString(options))));
         when(ersClient.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
         EvaluationResultsDataModel evaluationResultsDataModel =
-                evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequest);
+                evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequestDataModel);
         assertSuccessEvaluationResponse(evaluationResultsDataModel);
         assertThat(evaluationResultsDataModel.getEvaluationResults().getClassifier()).isInstanceOf(classifierClazz);
         deleteAll();

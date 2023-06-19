@@ -6,7 +6,7 @@ import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
 
 /**
- * Evaluation request data.
+ * Evaluation request data model.
  *
  * @author Roman Batygin
  */

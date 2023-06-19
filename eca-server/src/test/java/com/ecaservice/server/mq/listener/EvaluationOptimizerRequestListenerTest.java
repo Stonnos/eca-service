@@ -5,6 +5,7 @@ import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.event.model.EvaluationErsReportEvent;
 import com.ecaservice.server.event.model.EvaluationResponseEvent;
 import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
+import com.ecaservice.server.model.evaluation.InstancesRequestDataModel;
 import com.ecaservice.server.service.evaluation.EvaluationOptimizerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,7 +49,7 @@ class EvaluationOptimizerRequestListenerTest {
     void testHandleMessage() {
         InstancesRequest instancesRequest = new InstancesRequest();
         Message message = Mockito.mock(Message.class);
-        when(evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequest))
+        when(evaluationOptimizerService.evaluateWithOptimalClassifierOptions(any(InstancesRequestDataModel.class)))
                 .thenReturn(new EvaluationResultsDataModel());
         MessageProperties messageProperties = TestHelperUtils.buildMessageProperties();
         when(message.getMessageProperties()).thenReturn(messageProperties);

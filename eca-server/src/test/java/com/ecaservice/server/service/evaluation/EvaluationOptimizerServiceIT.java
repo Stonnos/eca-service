@@ -1,6 +1,5 @@
 package com.ecaservice.server.service.evaluation;
 
-import com.ecaservice.base.model.InstancesRequest;
 import com.ecaservice.classifier.options.config.ClassifiersOptionsAutoConfiguration;
 import com.ecaservice.classifier.options.model.DecisionTreeOptions;
 import com.ecaservice.core.lock.aspect.LockExecutionAspect;
@@ -24,6 +23,7 @@ import com.ecaservice.server.mapping.EvaluationRequestMapperImpl;
 import com.ecaservice.server.mapping.InstancesInfoMapperImpl;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestEntity;
 import com.ecaservice.server.model.evaluation.ClassifierOptionsRequestSource;
+import com.ecaservice.server.model.evaluation.InstancesRequestDataModel;
 import com.ecaservice.server.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.server.repository.ClassifierOptionsRequestRepository;
 import com.ecaservice.server.repository.ErsRequestRepository;
@@ -44,11 +44,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 import org.testcontainers.containers.DockerComposeContainer;
+import weka.core.Instances;
 
 import javax.inject.Inject;
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -96,7 +98,7 @@ class EvaluationOptimizerServiceIT extends AbstractJpaTest {
     @Inject
     private EvaluationOptimizerService evaluationOptimizerService;
 
-    private InstancesRequest instancesRequest;
+    private InstancesRequestDataModel instancesRequestDataModel;
 
     private String decisionTreeOptions;
 
@@ -115,8 +117,8 @@ class EvaluationOptimizerServiceIT extends AbstractJpaTest {
 
     @Override
     public void init() throws Exception {
-        instancesRequest = new InstancesRequest();
-        instancesRequest.setData(TestHelperUtils.loadInstances());
+        Instances data = TestHelperUtils.loadInstances();
+        instancesRequestDataModel = new InstancesRequestDataModel(UUID.randomUUID().toString(), data);
         DecisionTreeOptions treeOptions = TestHelperUtils.createDecisionTreeOptions();
         treeOptions.setDecisionTreeType(DecisionTreeType.CART);
         decisionTreeOptions = objectMapper.writeValueAsString(treeOptions);
@@ -139,7 +141,7 @@ class EvaluationOptimizerServiceIT extends AbstractJpaTest {
         for (int i = 0; i < NUM_THREADS; i++) {
             executorService.submit(() -> {
                 try {
-                    evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequest);
+                    evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequestDataModel);
                 } finally {
                     finishedLatch.countDown();
                 }

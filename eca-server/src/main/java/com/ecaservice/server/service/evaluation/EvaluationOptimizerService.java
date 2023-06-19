@@ -1,6 +1,5 @@
 package com.ecaservice.server.service.evaluation;
 
-import com.ecaservice.base.model.InstancesRequest;
 import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import com.ecaservice.server.config.CrossValidationConfig;
@@ -10,6 +9,7 @@ import com.ecaservice.server.mapping.EvaluationRequestMapper;
 import com.ecaservice.server.model.ClassifierOptionsResult;
 import com.ecaservice.server.model.evaluation.EvaluationRequestDataModel;
 import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
+import com.ecaservice.server.model.evaluation.InstancesRequestDataModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -42,19 +42,19 @@ public class EvaluationOptimizerService {
     /**
      * Evaluate model with optimal classifier options.
      *
-     * @param instancesRequest - instances request
+     * @param instancesRequestDataModel - instances request
      * @return evaluation response
      */
-    public EvaluationResultsDataModel evaluateWithOptimalClassifierOptions(InstancesRequest instancesRequest) {
-        Instances data = instancesRequest.getData();
+    public EvaluationResultsDataModel evaluateWithOptimalClassifierOptions(InstancesRequestDataModel instancesRequestDataModel) {
+        Instances data = instancesRequestDataModel.getData();
         log.info("Starting evaluation with optimal classifier options for data '{}'",
                 data.relationName());
         ClassifierOptionsRequest classifierOptionsRequest =
-                classifierOptionsRequestMapper.map(instancesRequest, crossValidationConfig);
+                classifierOptionsRequestMapper.map(instancesRequestDataModel, crossValidationConfig);
         classifierOptionsRequest.setRequestId(UUID.randomUUID().toString());
         ClassifierOptionsResult classifierOptionsResult = getOptimalClassifierOptions(classifierOptionsRequest);
         if (!classifierOptionsResult.isFound()) {
-            return buildErrorEvaluationResultsModel(UUID.randomUUID().toString(),
+            return buildErrorEvaluationResultsModel(instancesRequestDataModel.getRequestId(),
                     classifierOptionsResult.getErrorCode());
         } else {
             return evaluateModel(classifierOptionsRequest, classifierOptionsResult.getOptionsJson(), data);

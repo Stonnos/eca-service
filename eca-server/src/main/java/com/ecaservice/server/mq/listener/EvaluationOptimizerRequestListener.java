@@ -4,6 +4,7 @@ import com.ecaservice.base.model.InstancesRequest;
 import com.ecaservice.server.event.model.EvaluationErsReportEvent;
 import com.ecaservice.server.event.model.EvaluationResponseEvent;
 import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
+import com.ecaservice.server.model.evaluation.InstancesRequestDataModel;
 import com.ecaservice.server.service.evaluation.EvaluationOptimizerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,9 +43,11 @@ public class EvaluationOptimizerRequestListener {
      */
     @RabbitListener(queues = "${queue.evaluationOptimizerRequestQueue}")
     public void handleMessage(@Valid @Payload InstancesRequest instancesRequest, Message inboundMessage) {
-        putMdc(TX_ID, UUID.randomUUID().toString());
+        String requestId = UUID.randomUUID().toString();
+        putMdc(TX_ID, requestId);
+        var instancesRequestDataModel = new InstancesRequestDataModel(requestId, instancesRequest.getData());
         EvaluationResultsDataModel evaluationResultsDataModel =
-                evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequest);
+                evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequestDataModel);
         log.info("Evaluation response [{}] with status [{}] has been built for evaluation optimizer request.",
                 evaluationResultsDataModel.getRequestId(), evaluationResultsDataModel.getStatus());
         eventPublisher.publishEvent(new EvaluationErsReportEvent(this, evaluationResultsDataModel));
