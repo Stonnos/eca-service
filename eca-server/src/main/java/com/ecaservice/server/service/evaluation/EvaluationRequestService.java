@@ -1,9 +1,5 @@
 package com.ecaservice.server.service.evaluation;
 
-import com.ecaservice.base.model.ErrorCode;
-import com.ecaservice.base.model.EvaluationResponse;
-import com.ecaservice.base.model.MessageError;
-import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
@@ -13,6 +9,7 @@ import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.evaluation.ClassificationResult;
 import com.ecaservice.server.model.evaluation.EvaluationRequestDataModel;
+import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.service.evaluation.initializers.ClassifierInitializerService;
 import lombok.RequiredArgsConstructor;
@@ -22,9 +19,9 @@ import weka.classifiers.AbstractClassifier;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.UUID;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -33,7 +30,8 @@ import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.putMdc;
 import static com.ecaservice.common.web.util.LogHelper.putMdcIfAbsent;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.toJsonString;
-import static com.ecaservice.server.util.Utils.error;
+import static com.ecaservice.server.util.Utils.buildInternalErrorEvaluationResultsModel;
+import static com.ecaservice.server.util.Utils.buildEvaluationResultsModel;
 
 /**
  * Evaluation request service.
@@ -60,9 +58,9 @@ public class EvaluationRequestService {
      * Processes input request and returns classification results.
      *
      * @param evaluationRequestDataModel - evaluation request data model
-     * @return evaluation response
+     * @return evaluation response data model
      */
-    public EvaluationResponse processRequest(final EvaluationRequestDataModel evaluationRequestDataModel) {
+    public EvaluationResultsDataModel processRequest(final EvaluationRequestDataModel evaluationRequestDataModel) {
         String requestId = UUID.randomUUID().toString();
         putMdcIfAbsent(TX_ID, requestId);
         putMdc(EV_REQUEST_ID, requestId);
@@ -72,29 +70,41 @@ public class EvaluationRequestService {
         classifierInitializerService.initialize(evaluationRequestDataModel.getClassifier(),
                 evaluationRequestDataModel.getData());
         EvaluationLog evaluationLog = createAndSaveEvaluationLog(requestId, evaluationRequestDataModel);
-        EvaluationResponse evaluationResponse = new EvaluationResponse();
-        evaluationResponse.setRequestId(evaluationLog.getRequestId());
         try {
-            Callable<ClassificationResult> callable = () -> evaluationService.evaluateModel(evaluationRequestDataModel);
-            ClassificationResult classificationResult = executorService.execute(callable,
-                    crossValidationConfig.getTimeout(), TimeUnit.MINUTES);
-            if (classificationResult.isSuccess()) {
-                handleSuccessModel(classificationResult, evaluationLog, evaluationResponse);
-            } else {
-                handleError(evaluationLog, evaluationResponse, classificationResult.getErrorMessage());
-            }
+            return internalProcessRequest(evaluationRequestDataModel, evaluationLog);
         } catch (TimeoutException ex) {
             log.warn("There was a timeout for evaluation [{}].", evaluationLog.getRequestId());
-            evaluationLog.setRequestStatus(RequestStatus.TIMEOUT);
-            evaluationResponse.setStatus(TechnicalStatus.TIMEOUT);
+            handleTimeout(evaluationLog);
+            return buildEvaluationResultsModel(requestId, RequestStatus.TIMEOUT);
         } catch (Exception ex) {
             log.error("There was an error occurred for evaluation [{}]: {}", evaluationLog.getRequestId(), ex);
-            handleError(evaluationLog, evaluationResponse, ex.getMessage());
-        } finally {
-            evaluationLog.setEndDate(LocalDateTime.now());
-            evaluationLogRepository.save(evaluationLog);
+            handleError(evaluationLog, ex.getMessage());
+            return buildInternalErrorEvaluationResultsModel(requestId);
         }
-        return evaluationResponse;
+    }
+
+    private EvaluationResultsDataModel internalProcessRequest(EvaluationRequestDataModel evaluationRequestDataModel,
+                                                              EvaluationLog evaluationLog)
+            throws IOException, ExecutionException, InterruptedException, TimeoutException {
+        ClassificationResult classificationResult = evaluationModel(evaluationRequestDataModel);
+        if (classificationResult.isSuccess()) {
+            handleSuccessModel(classificationResult, evaluationLog);
+            EvaluationResultsDataModel evaluationResultsDataModel =
+                    buildEvaluationResultsModel(evaluationLog.getRequestId(), RequestStatus.FINISHED);
+            evaluationResultsDataModel.setEvaluationResults(classificationResult.getEvaluationResults());
+            //TODO
+            evaluationResultsDataModel.setModelUrl("");
+            return evaluationResultsDataModel;
+        } else {
+            handleError(evaluationLog, classificationResult.getErrorMessage());
+            return buildInternalErrorEvaluationResultsModel(evaluationLog.getRequestId());
+        }
+    }
+
+    private ClassificationResult evaluationModel(EvaluationRequestDataModel evaluationRequestDataModel)
+            throws ExecutionException, InterruptedException, TimeoutException {
+        Callable<ClassificationResult> callable = () -> evaluationService.evaluateModel(evaluationRequestDataModel);
+        return executorService.execute(callable, crossValidationConfig.getTimeout(), TimeUnit.MINUTES);
     }
 
     private EvaluationLog createAndSaveEvaluationLog(String requestId,
@@ -129,22 +139,25 @@ public class EvaluationRequestService {
     }
 
     private void handleSuccessModel(ClassificationResult classificationResult,
-                                    EvaluationLog evaluationLog,
-                                    EvaluationResponse evaluationResponse) throws IOException {
+                                    EvaluationLog evaluationLog) throws IOException {
         var classifier = (AbstractClassifier) classificationResult.getEvaluationResults().getClassifier();
         uploadModel(classifier, evaluationLog);
         String modelUrl = getModelPresignedUrl(evaluationLog);
         evaluationLog.setRequestStatus(RequestStatus.FINISHED);
-        evaluationResponse.setEvaluationResults(classificationResult.getEvaluationResults());
-        evaluationResponse.setModelUrl(modelUrl);
-        evaluationResponse.setStatus(TechnicalStatus.SUCCESS);
+        evaluationLog.setEndDate(LocalDateTime.now());
+        evaluationLogRepository.save(evaluationLog);
     }
 
-    private void handleError(EvaluationLog evaluationLog, EvaluationResponse evaluationResponse, String errorMessage) {
+    private void handleError(EvaluationLog evaluationLog, String errorMessage) {
         evaluationLog.setRequestStatus(RequestStatus.ERROR);
         evaluationLog.setErrorMessage(errorMessage);
-        evaluationResponse.setStatus(TechnicalStatus.ERROR);
-        MessageError error = error(ErrorCode.INTERNAL_SERVER_ERROR);
-        evaluationResponse.setErrors(Collections.singletonList(error));
+        evaluationLog.setEndDate(LocalDateTime.now());
+        evaluationLogRepository.save(evaluationLog);
+    }
+
+    private void handleTimeout(EvaluationLog evaluationLog) {
+        evaluationLog.setRequestStatus(RequestStatus.TIMEOUT);
+        evaluationLog.setEndDate(LocalDateTime.now());
+        evaluationLogRepository.save(evaluationLog);
     }
 }

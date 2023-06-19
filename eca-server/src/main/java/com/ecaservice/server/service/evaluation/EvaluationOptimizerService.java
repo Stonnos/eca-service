@@ -1,6 +1,5 @@
 package com.ecaservice.server.service.evaluation;
 
-import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.base.model.InstancesRequest;
 import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
@@ -10,6 +9,7 @@ import com.ecaservice.server.mapping.ClassifierOptionsRequestMapper;
 import com.ecaservice.server.mapping.EvaluationRequestMapper;
 import com.ecaservice.server.model.ClassifierOptionsResult;
 import com.ecaservice.server.model.evaluation.EvaluationRequestDataModel;
+import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,7 @@ import weka.core.Instances;
 import java.util.UUID;
 
 import static com.ecaservice.server.util.ClassifierOptionsHelper.parseOptions;
-import static com.ecaservice.server.util.Utils.buildEvaluationErrorResponse;
+import static com.ecaservice.server.util.Utils.buildErrorEvaluationResultsModel;
 
 /**
  * Implements classifier evaluation by searching optimal classifier options.
@@ -45,7 +45,7 @@ public class EvaluationOptimizerService {
      * @param instancesRequest - instances request
      * @return evaluation response
      */
-    public EvaluationResponse evaluateWithOptimalClassifierOptions(InstancesRequest instancesRequest) {
+    public EvaluationResultsDataModel evaluateWithOptimalClassifierOptions(InstancesRequest instancesRequest) {
         Instances data = instancesRequest.getData();
         log.info("Starting evaluation with optimal classifier options for data '{}'",
                 data.relationName());
@@ -54,7 +54,8 @@ public class EvaluationOptimizerService {
         classifierOptionsRequest.setRequestId(UUID.randomUUID().toString());
         ClassifierOptionsResult classifierOptionsResult = getOptimalClassifierOptions(classifierOptionsRequest);
         if (!classifierOptionsResult.isFound()) {
-            return buildEvaluationErrorResponse(classifierOptionsResult.getErrorCode());
+            return buildErrorEvaluationResultsModel(UUID.randomUUID().toString(),
+                    classifierOptionsResult.getErrorCode());
         } else {
             return evaluateModel(classifierOptionsRequest, classifierOptionsResult.getOptionsJson(), data);
         }
@@ -72,8 +73,9 @@ public class EvaluationOptimizerService {
         return Boolean.TRUE.equals(ersConfig.getUseClassifierOptionsCache());
     }
 
-    private EvaluationResponse evaluateModel(ClassifierOptionsRequest classifierOptionsRequest, String options,
-                                             Instances data) {
+    private EvaluationResultsDataModel evaluateModel(ClassifierOptionsRequest classifierOptionsRequest,
+                                                     String options,
+                                                     Instances data) {
         log.info("Starting to evaluate model for data [{}] with options [{}]", data.relationName(), options);
         AbstractClassifier classifier = classifierOptionsAdapter.convert(parseOptions(options));
         EvaluationRequestDataModel evaluationRequest = evaluationRequestMapper.map(classifierOptionsRequest);
