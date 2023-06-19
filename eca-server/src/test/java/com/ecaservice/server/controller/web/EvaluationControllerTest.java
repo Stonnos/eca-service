@@ -17,6 +17,7 @@ import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
+import com.ecaservice.web.dto.model.S3ContentResponseDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -56,6 +57,8 @@ class EvaluationControllerTest extends PageRequestControllerTest {
     private static final String LIST_URL = BASE_URL + "/list";
     private static final String REQUEST_STATUS_STATISTICS_URL = BASE_URL + "/request-statuses-statistics";
     private static final String CLASSIFIERS_STATISTICS_URL = BASE_URL + "/classifiers-statistics";
+    private static final String MODEL_CONTENT_URL = BASE_URL + "/model/{id}";
+    private static final String CONTENT_URL = "http://localhost:9000/content";
     private static final long ID = 1L;
 
     @MockBean
@@ -181,6 +184,32 @@ class EvaluationControllerTest extends PageRequestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(chartDto)));
+    }
 
+    @Test
+    void testGetClassifierModelContentUrlUnauthorized() throws Exception {
+        mockMvc.perform(get(MODEL_CONTENT_URL, ID))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testGetModelContentUrlForNotExistingEvaluationLog() throws Exception {
+        when(evaluationLogService.getModelContentUrl(ID)).thenThrow(EntityNotFoundException.class);
+        mockMvc.perform(get(MODEL_CONTENT_URL, ID)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testGetModelContentUrlOk() throws Exception {
+        var s3ContentResponseDto = S3ContentResponseDto.builder()
+                .contentUrl(CONTENT_URL)
+                .build();
+        when(evaluationLogService.getModelContentUrl(ID)).thenReturn(s3ContentResponseDto);
+        mockMvc.perform(get(MODEL_CONTENT_URL, ID)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(objectMapper.writeValueAsString(s3ContentResponseDto)));
     }
 }

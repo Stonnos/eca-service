@@ -2,6 +2,7 @@ package com.ecaservice.server.report;
 
 import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.report.model.BaseReportBean;
+import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.report.model.EvaluationLogBean;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
@@ -59,6 +60,8 @@ class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
     private ErsService ersService;
     @Mock
     private ClassifierOptionsProcessor classifierOptionsProcessor;
+    @Mock
+    private ObjectStorageService objectStorageService;
 
     @Inject
     private AppProperties appProperties;
@@ -77,7 +80,8 @@ class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
     public void init() {
         EvaluationLogService evaluationLogService =
                 new EvaluationLogService(appProperties, filterService, evaluationLogMapper, classifierOptionsProcessor,
-                        ersService, entityManager, evaluationLogRepository, evaluationResultsRequestEntityRepository);
+                        ersService, entityManager, objectStorageService, evaluationLogRepository,
+                        evaluationResultsRequestEntityRepository);
         evaluationLogsBaseReportDataFetcher =
                 new EvaluationLogsBaseReportDataFetcher(filterService, evaluationLogService, evaluationLogMapper);
         when(filterService.getFilterDictionary(CLASSIFIER_NAME)).thenReturn(createFilterDictionaryDto());

@@ -1,7 +1,10 @@
 package com.ecaservice.server.service.evaluation;
 
+import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.core.filter.specification.FilterFieldCustomizer;
+import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
+import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.filter.EvaluationLogFilter;
 import com.ecaservice.server.mapping.EvaluationLogMapper;
@@ -26,6 +29,7 @@ import com.ecaservice.web.dto.model.EvaluationResultsStatus;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
+import com.ecaservice.web.dto.model.S3ContentResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -45,6 +49,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -74,6 +79,7 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
     private final ClassifierOptionsProcessor classifierOptionsProcessor;
     private final ErsService ersService;
     private final EntityManager entityManager;
+    private final ObjectStorageService objectStorageService;
     private final EvaluationLogRepository evaluationLogRepository;
     private final EvaluationResultsRequestEntityRepository evaluationResultsRequestEntityRepository;
 
@@ -174,6 +180,39 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
         log.info("Classifiers statistics data has been fetched with created date from [{}] to [{}]: {}",
                 createdDateFrom, createdDateTo, chartData);
         return chartData;
+    }
+
+    /**
+     * Gets evaluation log by id.
+     *
+     * @param id - evaluation log id
+     * @return evaluation log entity
+     */
+    public EvaluationLog getById(Long id) {
+        return evaluationLogRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(EvaluationLog.class, id));
+    }
+
+    /**
+     * Gets classifier model content url.
+     *
+     * @param id - experiment id
+     * @return s3 content response dto
+     */
+    public S3ContentResponseDto getModelContentUrl(Long id) {
+        log.info("Starting to get classifier model [{}] results content url", id);
+        var evaluationLog = getById(id);
+        String contentUrl = objectStorageService.getObjectPresignedProxyUrl(
+                GetPresignedUrlObject.builder()
+                        .objectPath(evaluationLog.getModelPath())
+                        .expirationTime(appProperties.getShortLifeUrlExpirationMinutes())
+                        .expirationTimeUnit(TimeUnit.MINUTES)
+                        .build()
+        );
+        log.info("Classifier model [{}] content url has been fetched", id);
+        return S3ContentResponseDto.builder()
+                .contentUrl(contentUrl)
+                .build();
     }
 
     private CriteriaQuery<Tuple> buildClassifiersStatisticsDataCriteria(LocalDate createdDateFrom,

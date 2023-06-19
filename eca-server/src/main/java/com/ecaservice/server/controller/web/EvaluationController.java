@@ -12,6 +12,7 @@ import com.ecaservice.web.dto.model.EvaluationLogsPageDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
+import com.ecaservice.web.dto.model.S3ContentResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -272,5 +273,62 @@ public class EvaluationController {
         log.info("Received request to get classifiers statistics histogram data with created date from [{}] to [{}]",
                 createdDateFrom, createdDateTo);
         return evaluationLogService.getClassifiersStatisticsData(createdDateFrom, createdDateTo);
+    }
+
+    /**
+     * Gets classifier model content url.
+     *
+     * @param id - evaluation id
+     * @return s3 content response dto
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @Operation(
+            description = "Gets classifier model content url",
+            summary = "Gets classifier model content url",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "GetClassifierModelContentResponse",
+                                                    ref = "#/components/examples/GetClassifierModelContentResponse"
+                                            )
+                                    },
+                                    schema = @Schema(implementation = S3ContentResponseDto.class)
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            )
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "DataNotFoundResponse",
+                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                            )
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
+                            )
+                    )
+            }
+    )
+    @GetMapping(value = "/model/{id}")
+    public S3ContentResponseDto getModelContentUrl(
+            @Parameter(description = "Evaluation id", required = true)
+            @Min(VALUE_1) @Max(Long.MAX_VALUE) @PathVariable Long id) {
+        log.info("Received request to get classifier model [{}] result content url", id);
+        return evaluationLogService.getModelContentUrl(id);
     }
 }
