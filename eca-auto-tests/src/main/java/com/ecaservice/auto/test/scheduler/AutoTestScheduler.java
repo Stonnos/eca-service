@@ -2,11 +2,14 @@ package com.ecaservice.auto.test.scheduler;
 
 import com.ecaservice.auto.test.config.AutoTestsProperties;
 import com.ecaservice.auto.test.entity.autotest.BaseEvaluationRequestEntity;
+import com.ecaservice.auto.test.entity.autotest.EvaluationResultsTestStepEntity;
 import com.ecaservice.auto.test.entity.autotest.ExperimentResultsTestStepEntity;
+import com.ecaservice.auto.test.event.model.EvaluationResultsTestStepEvent;
 import com.ecaservice.auto.test.event.model.ExperimentResultsTestStepEvent;
 import com.ecaservice.auto.test.repository.autotest.AutoTestsJobRepository;
 import com.ecaservice.auto.test.repository.autotest.BaseEvaluationRequestRepository;
 import com.ecaservice.auto.test.repository.autotest.BaseTestStepRepository;
+import com.ecaservice.auto.test.repository.autotest.EvaluationResultsTestStepRepository;
 import com.ecaservice.auto.test.repository.autotest.ExperimentResultsTestStepRepository;
 import com.ecaservice.auto.test.service.AutoTestJobService;
 import com.ecaservice.auto.test.service.EvaluationRequestService;
@@ -49,6 +52,7 @@ public class AutoTestScheduler {
     private final BaseEvaluationRequestRepository baseEvaluationRequestRepository;
     private final BaseTestStepRepository baseTestStepRepository;
     private final ExperimentResultsTestStepRepository experimentResultsTestStepRepository;
+    private final EvaluationResultsTestStepRepository evaluationResultsTestStepRepository;
 
     /**
      * Processes new auto tests.
@@ -71,6 +75,17 @@ public class AutoTestScheduler {
         List<Long> ids = experimentResultsTestStepRepository.findStepsToCompareResults();
         processWithPagination(ids, experimentResultsTestStepRepository::findByIdInOrderByCreated,
                 this::processExperimentResultsSteps, autoTestsProperties.getPageSize());
+    }
+
+    /**
+     * Processes evaluation results test steps.
+     */
+    @Scheduled(fixedDelayString = "${auto-tests.delaySeconds}000")
+    public void processEvaluationResultsTestSteps() {
+        log.trace("Starting to process evaluation results test steps");
+        List<Long> ids = evaluationResultsTestStepRepository.findStepsToCompareResults();
+        processWithPagination(ids, evaluationResultsTestStepRepository::findByIdInOrderByCreated,
+                this::processEvaluationResultsSteps, autoTestsProperties.getPageSize());
     }
 
     /**
@@ -129,6 +144,12 @@ public class AutoTestScheduler {
     private void processExperimentResultsSteps(List<ExperimentResultsTestStepEntity> steps) {
         steps.forEach(step ->
                 applicationEventPublisher.publishEvent(new ExperimentResultsTestStepEvent(this, step))
+        );
+    }
+
+    private void processEvaluationResultsSteps(List<EvaluationResultsTestStepEntity> steps) {
+        steps.forEach(step ->
+                applicationEventPublisher.publishEvent(new EvaluationResultsTestStepEvent(this, step))
         );
     }
 
