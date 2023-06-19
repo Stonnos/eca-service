@@ -45,7 +45,8 @@ public class EvaluationOptimizerService {
      * @param instancesRequestDataModel - instances request
      * @return evaluation response
      */
-    public EvaluationResultsDataModel evaluateWithOptimalClassifierOptions(InstancesRequestDataModel instancesRequestDataModel) {
+    public EvaluationResultsDataModel evaluateWithOptimalClassifierOptions(
+            InstancesRequestDataModel instancesRequestDataModel) {
         Instances data = instancesRequestDataModel.getData();
         log.info("Starting evaluation with optimal classifier options for data '{}'",
                 data.relationName());
