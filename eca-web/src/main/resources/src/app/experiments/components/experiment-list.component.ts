@@ -75,7 +75,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
                      private router: Router) {
     super(injector.get(MessageService), injector.get(FieldService));
     this.defaultSortField = ExperimentFields.CREATION_DATE;
-    this.linkColumns = [ExperimentFields.RELATION_NAME, ExperimentFields.EXPERIMENT_PATH,
+    this.linkColumns = [ExperimentFields.RELATION_NAME, ExperimentFields.MODEL_PATH,
       ExperimentFields.REQUEST_ID, ExperimentFields.EVALUATION_METHOD_DESCRIPTION];
     this.notSortableColumns = [ExperimentFields.EVALUATION_TOTAL_TIME];
     this.initColumns();
@@ -122,7 +122,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
           this.toggleOverlayPanel(event, experiment, column, overlayPanel);
         }
         break;
-      case ExperimentFields.EXPERIMENT_PATH:
+      case ExperimentFields.MODEL_PATH:
         this.downloadExperimentResults(experiment);
         break;
       case ExperimentFields.REQUEST_ID:
@@ -262,12 +262,12 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
       { name: ExperimentFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности", sortBy: ExperimentFields.EVALUATION_METHOD },
       { name: ExperimentFields.CREATED_BY, label: "Пользователь" },
       { name: ExperimentFields.RELATION_NAME, label: "Обучающая выборка" },
-      { name: ExperimentFields.EXPERIMENT_PATH, label: "Результаты эксперимента" },
+      { name: ExperimentFields.MODEL_PATH, label: "Модель эксперимента" },
       { name: ExperimentFields.EVALUATION_TOTAL_TIME, label: "Время построения эксперимента" },
       { name: ExperimentFields.CREATION_DATE, label: "Дата создания заявки" },
       { name: ExperimentFields.START_DATE, label: "Дата начала эксперимента" },
       { name: ExperimentFields.END_DATE, label: "Дата окончания эксперимента" },
-      { name: ExperimentFields.DELETED_DATE, label: "Дата удаления результатов" }
+      { name: ExperimentFields.DELETED_DATE, label: "Дата удаления модели" }
     ];
   }
 }

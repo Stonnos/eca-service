@@ -7,7 +7,7 @@ export class ExperimentFields {
   public static readonly EVALUATION_METHOD_DESCRIPTION: string = "evaluationMethod.description";
   public static readonly EVALUATION_METHOD: string = "evaluationMethod";
   public static readonly CREATED_BY: string = "createdBy";
-  public static readonly EXPERIMENT_PATH: string = "experimentPath";
+  public static readonly MODEL_PATH: string = "modelPath";
   public static readonly CREATION_DATE: string = "creationDate";
   public static readonly START_DATE: string = "startDate";
   public static readonly END_DATE: string = "endDate";
@@ -47,6 +47,9 @@ export class EvaluationLogFields {
   public static readonly START_DATE: string = "startDate";
   public static readonly END_DATE: string = "endDate";
   public static readonly EVALUATION_TOTAL_TIME: string = "evaluationTotalTime";
+  public static readonly MODEL_PATH: string = "modelPath";
+  public static readonly DELETED_DATE: string = "deletedDate";
+  public static readonly PCT_CORRECT: string = "pctCorrect";
 }
 
 export class ClassifierOptionsRequestsFields {
