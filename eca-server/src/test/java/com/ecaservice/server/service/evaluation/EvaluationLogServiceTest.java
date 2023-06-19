@@ -318,6 +318,16 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
         assertThat(s3ContentResponseDto.getContentUrl()).isEqualTo(MODEL_DOWNLOAD_URL);
     }
 
+    @Test
+    void testSuccessRemoveClassifierModel() {
+        EvaluationLog evaluationLog = createAndSaveFinishedEvaluationLog();
+        evaluationLogService.removeModel(evaluationLog);
+        EvaluationLog actual = evaluationLogRepository.findById(evaluationLog.getId()).orElse(null);
+        assertThat(actual).isNotNull();
+        assertThat(actual.getModelPath()).isNull();
+        assertThat(actual.getDeletedDate()).isNotNull();
+    }
+
     private void verifyChartItem(List<ChartDataDto> items, String classifierName, long expectedCount) {
         var chartItem = items.stream()
                 .filter(chartDataDto -> chartDataDto.getName().equals(classifierName))

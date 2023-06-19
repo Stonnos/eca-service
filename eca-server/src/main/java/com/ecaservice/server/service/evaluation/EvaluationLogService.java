@@ -46,6 +46,7 @@ import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -213,6 +214,26 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
         return S3ContentResponseDto.builder()
                 .contentUrl(contentUrl)
                 .build();
+    }
+
+    /**
+     * Removes classifier model file from object storage.
+     *
+     * @param evaluationLog - evaluation log entity
+     */
+    public void removeModel(EvaluationLog evaluationLog) {
+        try {
+            log.info("Starting to remove classifier [{}] model file", evaluationLog.getRequestId());
+            String modelPath = evaluationLog.getModelPath();
+            objectStorageService.removeObject(modelPath);
+            evaluationLog.setModelPath(null);
+            evaluationLog.setDeletedDate(LocalDateTime.now());
+            evaluationLogRepository.save(evaluationLog);
+            log.info("Classifier [{}] model file has been deleted", evaluationLog.getRequestId());
+        } catch (Exception ex) {
+            log.error("There was an error while remove classifier [{}] model file: {}", evaluationLog.getRequestId(),
+                    ex.getMessage());
+        }
     }
 
     private CriteriaQuery<Tuple> buildClassifiersStatisticsDataCriteria(LocalDate createdDateFrom,

@@ -66,7 +66,7 @@ class ExperimentDataCleanerTest extends AbstractJpaTest {
         timeoutExperiment.setDeletedDate(LocalDateTime.now());
         experiments.add(timeoutExperiment);
         Experiment errorExperiment =
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.TIMEOUT);
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR);
         experiments.add(errorExperiment);
         experimentRepository.saveAll(experiments);
         experimentDataCleaner.removeExperimentsModels();

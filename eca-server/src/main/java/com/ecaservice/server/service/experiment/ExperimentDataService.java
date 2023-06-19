@@ -60,7 +60,7 @@ public class ExperimentDataService implements PageRequestService<Experiment> {
     private final FilterService filterService;
 
     /**
-     * Removes experiment model file from disk.
+     * Removes experiment model file from object storage.
      *
      * @param experiment - experiment entity
      */
