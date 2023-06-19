@@ -300,6 +300,7 @@ public class TestHelperUtils {
      */
     public static ExperimentMessageRequestData createExperimentMessageRequest() {
         ExperimentMessageRequestData experimentRequest = new ExperimentMessageRequestData();
+        experimentRequest.setRequestId(UUID.randomUUID().toString());
         experimentRequest.setExperimentType(ExperimentType.KNN);
         experimentRequest.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         experimentRequest.setData(loadInstances());

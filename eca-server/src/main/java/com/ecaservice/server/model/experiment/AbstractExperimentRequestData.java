@@ -14,6 +14,11 @@ import weka.core.Instances;
 public abstract class AbstractExperimentRequestData {
 
     /**
+     * Request id
+     */
+    private String requestId;
+
+    /**
      * Email
      */
     private String email;

@@ -17,6 +17,11 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
+import java.util.UUID;
+
+import static com.ecaservice.common.web.util.LogHelper.EV_REQUEST_ID;
+import static com.ecaservice.common.web.util.LogHelper.TX_ID;
+import static com.ecaservice.common.web.util.LogHelper.putMdc;
 
 /**
  * Rabbit MQ listener for experiment request messages.
@@ -40,9 +45,12 @@ public class ExperimentRequestListener {
      */
     @RabbitListener(queues = "${queue.experimentRequestQueue}")
     public void handleMessage(@Valid @Payload ExperimentRequest experimentRequest, Message inboundMessage) {
+        String requestId = UUID.randomUUID().toString();
+        putMdc(TX_ID, requestId);
+        putMdc(EV_REQUEST_ID, requestId);
         var experimentRequestData = experimentMapper.map(experimentRequest, inboundMessage);
+        experimentRequestData.setRequestId(requestId);
         Experiment experiment = experimentService.createExperiment(experimentRequestData);
-        log.info("Experiment request [{}] has been created.", experiment.getRequestId());
         eventPublisher.publishEvent(new ExperimentResponseEvent(this, experiment));
         eventPublisher.publishEvent(new ExperimentSystemPushEvent(this, experiment));
         eventPublisher.publishEvent(new ExperimentEmailEvent(this, experiment));
