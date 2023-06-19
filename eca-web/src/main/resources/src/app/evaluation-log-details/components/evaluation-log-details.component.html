@@ -22,17 +22,32 @@
               {{ field.label }}
             </div>
             <div class="ui-g-6 text-left text-wrap">
-              <ng-container [ngSwitch]="field.name">
-                <ng-container *ngSwitchCase="'requestId'">
-                  <span class="text-bold">{{ evaluationLogDetails?.requestId }}</span>
+              <a *ngIf="isLink(field.name)"
+                 [class.link]="!loading"
+                 [class.disabled-link]="loading"
+                 [routerLink]=""
+                 (click)="onLink(field.name)">
+                {{ getEvaluationLogValue(field.name) }}
+              </a>
+              <div *ngIf="!isLink(field.name)">
+                <ng-container [ngSwitch]="field.name">
+                  <ng-container *ngSwitchCase="'requestId'">
+                    <span class="text-bold">{{ evaluationLogDetails?.requestId }}</span>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'requestStatus.description'">
+                    <app-request-status [requestStatus]="evaluationLogDetails?.requestStatus"></app-request-status>
+                  </ng-container>
+                  <ng-container *ngSwitchDefault>
+                    {{ getEvaluationLogValue(field.name) }}
+                  </ng-container>
                 </ng-container>
-                <ng-container *ngSwitchCase="'requestStatus.description'">
-                  <app-request-status [requestStatus]="evaluationLogDetails?.requestStatus"></app-request-status>
-                </ng-container>
-                <ng-container *ngSwitchDefault>
-                  {{ getEvaluationLogValue(field.name) }}
-                </ng-container>
-              </ng-container>
+              </div>
+              <p-progressBar
+                *ngIf="showProgressBar(field.name)"
+                class="w-100"
+                [style]="{'height':'5px'}"
+                mode="indeterminate">
+              </p-progressBar>
             </div>
           </div>
         </p-fieldset>

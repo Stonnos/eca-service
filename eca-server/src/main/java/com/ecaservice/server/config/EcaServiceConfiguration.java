@@ -45,7 +45,8 @@ import java.util.concurrent.Executors;
 @EntityScan(basePackageClasses = AbstractEvaluationEntity.class)
 @EnableJpaRepositories(basePackageClasses = EvaluationLogRepository.class)
 @EnableConfigurationProperties(
-        {AppProperties.class, CrossValidationConfig.class, ExperimentConfig.class, ErsConfig.class})
+        {AppProperties.class, CrossValidationConfig.class, ExperimentConfig.class,
+                ErsConfig.class, ClassifiersProperties.class})
 @Import(FilterExceptionHandler.class)
 public class EcaServiceConfiguration {
 

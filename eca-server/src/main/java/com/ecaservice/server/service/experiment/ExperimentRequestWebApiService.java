@@ -20,6 +20,11 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import weka.core.Instances;
 
+import java.util.UUID;
+
+import static com.ecaservice.common.web.util.LogHelper.EV_REQUEST_ID;
+import static com.ecaservice.common.web.util.LogHelper.TX_ID;
+import static com.ecaservice.common.web.util.LogHelper.putMdc;
 import static com.ecaservice.server.config.audit.AuditCodes.CREATE_EXPERIMENT_REQUEST;
 import static com.ecaservice.server.util.InstancesUtils.removeConstantAttributes;
 
@@ -48,10 +53,14 @@ public class ExperimentRequestWebApiService {
      */
     @Audit(value = CREATE_EXPERIMENT_REQUEST, correlationIdKey = "#result.requestId")
     public CreateExperimentResultDto createExperiment(CreateExperimentRequestDto experimentRequestDto) {
-        log.info("Starting to create experiment request for instances uuid [{}], type [{}], evaluation method [{}]",
-                experimentRequestDto.getInstancesUuid(), experimentRequestDto.getExperimentType(),
+        String requestId = UUID.randomUUID().toString();
+        putMdc(TX_ID, requestId);
+        putMdc(EV_REQUEST_ID, requestId);
+        log.info("Starting to create experiment [{}] request for instances [{}], type [{}], evaluation method [{}]",
+                requestId, experimentRequestDto.getInstancesUuid(), experimentRequestDto.getExperimentType(),
                 experimentRequestDto.getEvaluationMethod());
         var experimentWebRequestData = createExperimentRequest(experimentRequestDto);
+        experimentWebRequestData.setRequestId(requestId);
         var experiment = experimentService.createExperiment(experimentWebRequestData);
         eventPublisher.publishEvent(new ExperimentSystemPushEvent(this, experiment));
         eventPublisher.publishEvent(new ExperimentWebPushEvent(this, experiment));

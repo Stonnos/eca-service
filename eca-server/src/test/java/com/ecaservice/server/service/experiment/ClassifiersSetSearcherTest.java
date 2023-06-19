@@ -1,6 +1,5 @@
 package com.ecaservice.server.service.experiment;
 
-import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.classifier.options.config.ClassifiersOptionsAutoConfiguration;
 import com.ecaservice.classifier.options.model.KNearestNeighboursOptions;
@@ -12,6 +11,7 @@ import com.ecaservice.server.exception.experiment.ExperimentException;
 import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.server.model.entity.ClassifiersConfiguration;
 import com.ecaservice.server.model.evaluation.ClassificationResult;
+import com.ecaservice.server.model.evaluation.EvaluationRequestDataModel;
 import com.ecaservice.server.service.classifiers.ClassifierOptionsService;
 import com.ecaservice.server.service.evaluation.EvaluationService;
 import com.ecaservice.server.service.experiment.handler.ClassifierInputDataHandler;
@@ -114,7 +114,7 @@ class ClassifiersSetSearcherTest {
                 objectMapper.writeValueAsString(new KNearestNeighboursOptions()), classifiersConfiguration);
         when(classifierOptionsService.getActiveClassifiersOptions()).thenReturn(
                 Arrays.asList(logisticModel, knnModel));
-        when(evaluationService.evaluateModel(any(EvaluationRequest.class))).thenReturn(classificationResult);
+        when(evaluationService.evaluateModel(any(EvaluationRequestDataModel.class))).thenReturn(classificationResult);
         assertThrows(ExperimentException.class,
                 () -> classifiersSetSearcher.findBestClassifiers(testInstances, EvaluationMethod.TRAINING_DATA));
     }
@@ -141,7 +141,7 @@ class ClassifiersSetSearcherTest {
         optionsList.add(TestHelperUtils.createClassifierOptionsDatabaseModel(
                 objectMapper.writeValueAsString(new LogisticOptions()), classifiersConfiguration));
         when(classifierOptionsService.getActiveClassifiersOptions()).thenReturn(optionsList);
-        when(evaluationService.evaluateModel(any(EvaluationRequest.class))).thenReturn(classificationResult);
+        when(evaluationService.evaluateModel(any(EvaluationRequestDataModel.class))).thenReturn(classificationResult);
         ClassifiersSet classifiers =
                 classifiersSetSearcher.findBestClassifiers(testInstances, EvaluationMethod.TRAINING_DATA);
         assertThat(classifiers.size()).isEqualTo(experimentConfig.getEnsemble().getNumBestClassifiers().intValue());

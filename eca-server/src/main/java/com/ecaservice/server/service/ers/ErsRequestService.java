@@ -61,7 +61,8 @@ public class ErsRequestService {
         var ersRequest = ersEvaluationRequestData.getErsRequest();
         ersRequest.setRequestId(UUID.randomUUID().toString());
         try {
-            EvaluationResultsRequest evaluationResultsRequest = evaluationResultsService.proceed(ersEvaluationRequestData);
+            EvaluationResultsRequest evaluationResultsRequest =
+                    evaluationResultsService.proceed(ersEvaluationRequestData);
             evaluationResultsRequest.setRequestId(ersRequest.getRequestId());
             saveEvaluationResults(evaluationResultsRequest, ersRequest);
         } catch (Exception ex) {
@@ -130,19 +131,23 @@ public class ErsRequestService {
                     classifierOptionsRequest.getDataHash());
             handleClassifierOptionsResponse(classifierOptionsRequest, response, requestModel, classifierOptionsResult);
         } catch (FeignException.ServiceUnavailable | RetryableException ex) {
-            log.error("Service unavailable error while sending classifier options request: {}.", ex.getMessage());
+            log.error("Service unavailable error while sending classifier options request [{}]: {}.",
+                    classifierOptionsRequest.getRequestId(), ex.getMessage());
             ersErrorHandler.handleErrorRequest(requestModel, ErsResponseStatus.SERVICE_UNAVAILABLE, ex.getMessage());
             setClassifierOptionsResultError(classifierOptionsResult, ErrorCode.SERVICE_UNAVAILABLE);
         } catch (FeignException.BadRequest ex) {
-            log.error("Bad request error while sending classifier options request: {}.", ex.getMessage());
+            log.error("Bad request error while sending classifier options request [{}]: {}.",
+                    classifierOptionsRequest.getRequestId(), ex.getMessage());
             handleBadRequest(requestModel, classifierOptionsResult, ex);
         } catch (Exception ex) {
-            log.error("Unknown error while sending classifier options request: {}.", ex.getMessage());
+            log.error("Unknown error while sending classifier options request [{}]: {}.",
+                    classifierOptionsRequest.getRequestId(), ex.getMessage());
             ersErrorHandler.handleErrorRequest(requestModel, ErsResponseStatus.ERROR, ex.getMessage());
             setClassifierOptionsResultError(classifierOptionsResult, ErrorCode.INTERNAL_SERVER_ERROR);
         }
-        log.info("Got optimal classifier options result [{}] for data md5 hash [{}]", classifierOptionsResult,
-                classifierOptionsRequest.getDataHash());
+        log.info("Got optimal classifier options result [{}] for data md5 hash [{}], options req id [{}]",
+                classifierOptionsResult, classifierOptionsRequest.getDataHash(),
+                classifierOptionsRequest.getRequestId());
         return classifierOptionsResult;
     }
 
@@ -160,8 +165,9 @@ public class ErsRequestService {
             parseOptions(classifierReport.getOptions());
             classifierOptionsResult.setOptionsJson(classifierReport.getOptions());
             classifierOptionsResult.setFound(true);
-            log.info("Optimal classifier options [{}] has been found for data md5 hash '{}'.",
-                    classifierReport.getOptions(), classifierOptionsRequest.getDataHash());
+            log.info("Optimal classifier options [{}] has been found for data md5 hash '{}', options req id [{}].",
+                    classifierReport.getOptions(), classifierOptionsRequest.getDataHash(),
+                    classifierOptionsRequest.getRequestId());
             requestModel.setClassifierOptionsResponseModels(
                     Collections.singletonList(classifierReportMapper.map(classifierReport)));
             requestModel.setResponseStatus(ErsResponseStatus.SUCCESS);

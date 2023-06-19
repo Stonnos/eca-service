@@ -49,4 +49,14 @@ public abstract class EvaluationBean {
      * Model evaluation total time
      */
     private String evaluationTotalTime;
+
+    /**
+     * Model file
+     */
+    private String modelPath;
+
+    /**
+     * Experiment files deleted date
+     */
+    private String deletedDate;
 }

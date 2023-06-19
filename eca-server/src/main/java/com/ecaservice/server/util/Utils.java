@@ -2,7 +2,6 @@ package com.ecaservice.server.util;
 
 import com.ecaservice.base.model.EcaResponse;
 import com.ecaservice.base.model.ErrorCode;
-import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.base.model.MessageError;
 import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.ers.dto.ClassifierOptionsResponse;
@@ -10,7 +9,9 @@ import com.ecaservice.ers.dto.ClassifierReport;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestEntity;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.server.model.entity.ClassifierOptionsResponseModel;
+import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.evaluation.ClassifierOptionsRequestSource;
+import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
@@ -54,21 +55,6 @@ public class Utils {
     }
 
     /**
-     * Creates evaluation response with error status.
-     *
-     * @param errorCode - error code
-     * @return evaluation response
-     */
-    public static EvaluationResponse buildEvaluationErrorResponse(ErrorCode errorCode) {
-        EvaluationResponse evaluationResponse = new EvaluationResponse();
-        evaluationResponse.setRequestId(UUID.randomUUID().toString());
-        evaluationResponse.setStatus(TechnicalStatus.ERROR);
-        MessageError error = error(errorCode);
-        evaluationResponse.setErrors(Collections.singletonList(error));
-        return evaluationResponse;
-    }
-
-    /**
      * Creates response with error status.
      *
      * @param errorCode - error code
@@ -95,6 +81,45 @@ public class Utils {
         ecaResponse.setStatus(TechnicalStatus.VALIDATION_ERROR);
         ecaResponse.setErrors(errors);
         return ecaResponse;
+    }
+
+    /**
+     * Build evaluation response data model.
+     *
+     * @param requestId - request id
+     * @param status    - request status
+     * @return evaluation response data model
+     */
+    public static EvaluationResultsDataModel buildEvaluationResultsModel(String requestId, RequestStatus status) {
+        EvaluationResultsDataModel evaluationResultsDataModel = new EvaluationResultsDataModel();
+        evaluationResultsDataModel.setRequestId(requestId);
+        evaluationResultsDataModel.setStatus(status);
+        return evaluationResultsDataModel;
+    }
+
+    /**
+     * Build evaluation data model error response.
+     *
+     * @param requestId - request id
+     * @param errorCode - error code
+     * @return evaluation model data response
+     */
+    public static EvaluationResultsDataModel buildErrorEvaluationResultsModel(String requestId,
+                                                                              ErrorCode errorCode) {
+        EvaluationResultsDataModel evaluationResultsDataModel =
+                buildEvaluationResultsModel(requestId, RequestStatus.ERROR);
+        evaluationResultsDataModel.setErrorCode(errorCode);
+        return evaluationResultsDataModel;
+    }
+
+    /**
+     * Build evaluation data model internal error response.
+     *
+     * @param requestId - request id
+     * @return evaluation model data response
+     */
+    public static EvaluationResultsDataModel buildInternalErrorEvaluationResultsModel(String requestId) {
+        return buildErrorEvaluationResultsModel(requestId, ErrorCode.INTERNAL_SERVER_ERROR);
     }
 
     /**

@@ -6,7 +6,6 @@ import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.config.AppProperties;
-import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.filter.ExperimentFilter;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.FilterTemplateType;
@@ -56,22 +55,21 @@ public class ExperimentDataService implements PageRequestService<Experiment> {
 
     private final ExperimentRepository experimentRepository;
     private final ObjectStorageService objectStorageService;
-    private final ExperimentConfig experimentConfig;
     private final EntityManager entityManager;
     private final AppProperties appProperties;
     private final FilterService filterService;
 
     /**
-     * Removes experiment model file from disk.
+     * Removes experiment model file from object storage.
      *
      * @param experiment - experiment entity
      */
     public void removeExperimentModel(Experiment experiment) {
         try {
             log.info("Starting to remove experiment [{}] model file", experiment.getRequestId());
-            String experimentPath = experiment.getExperimentPath();
+            String experimentPath = experiment.getModelPath();
             objectStorageService.removeObject(experimentPath);
-            experiment.setExperimentPath(null);
+            experiment.setModelPath(null);
             experiment.setExperimentDownloadUrl(null);
             experiment.setDeletedDate(LocalDateTime.now());
             experimentRepository.save(experiment);
@@ -185,8 +183,8 @@ public class ExperimentDataService implements PageRequestService<Experiment> {
         var experiment = getById(id);
         String contentUrl = objectStorageService.getObjectPresignedProxyUrl(
                 GetPresignedUrlObject.builder()
-                        .objectPath(experiment.getExperimentPath())
-                        .expirationTime(experimentConfig.getShortLifeUrlExpirationMinutes())
+                        .objectPath(experiment.getModelPath())
+                        .expirationTime(appProperties.getShortLifeUrlExpirationMinutes())
                         .expirationTimeUnit(TimeUnit.MINUTES)
                         .build()
         );

@@ -1,6 +1,8 @@
 package com.ecaservice.server.service.evaluation;
 
 import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
+import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.mapping.ClassifierInfoMapperImpl;
@@ -51,6 +53,7 @@ import java.util.UUID;
 import static com.ecaservice.server.service.filter.dictionary.FilterDictionaries.CLASSIFIER_NAME;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -62,6 +65,8 @@ import static org.mockito.Mockito.when;
 @Import({AppProperties.class, ClassifierInfoMapperImpl.class, EvaluationLogMapperImpl.class,
         InstancesInfoMapperImpl.class, DateTimeConverter.class})
 class EvaluationLogServiceTest extends AbstractJpaTest {
+
+    private static final String MODEL_DOWNLOAD_URL = "http://localhost:9000/classifier";
 
     private static final int PAGE_NUMBER = 0;
     private static final int PAGE_SIZE = 10;
@@ -87,13 +92,16 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
     private ErsService ersService;
     @Mock
     private ClassifierOptionsProcessor classifierOptionsProcessor;
+    @Mock
+    private ObjectStorageService objectStorageService;
     private EvaluationLogService evaluationLogService;
 
     @Override
     public void init() {
         evaluationLogService =
                 new EvaluationLogService(appProperties, filterService, evaluationLogMapper, classifierOptionsProcessor,
-                        ersService, entityManager, evaluationLogRepository, evaluationResultsRequestEntityRepository);
+                        ersService, entityManager, objectStorageService, evaluationLogRepository,
+                        evaluationResultsRequestEntityRepository);
         evaluationLogService.initialize();
     }
 
@@ -298,6 +306,26 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
         verifyChartItem(statisticsData.getDataItems(), C45.class.getSimpleName(), 1L);
         verifyChartItem(statisticsData.getDataItems(), KNearestNeighbours.class.getSimpleName(), 1L);
         verifyChartItem(statisticsData.getDataItems(), NeuralNetwork.class.getSimpleName(), 0L);
+    }
+
+    @Test
+    void testGetClassifierContentUrl() {
+        EvaluationLog evaluationLog = createAndSaveFinishedEvaluationLog();
+        when(objectStorageService.getObjectPresignedProxyUrl(any(GetPresignedUrlObject.class)))
+                .thenReturn(MODEL_DOWNLOAD_URL);
+        var s3ContentResponseDto = evaluationLogService.getModelContentUrl(evaluationLog.getId());
+        assertThat(s3ContentResponseDto).isNotNull();
+        assertThat(s3ContentResponseDto.getContentUrl()).isEqualTo(MODEL_DOWNLOAD_URL);
+    }
+
+    @Test
+    void testSuccessRemoveClassifierModel() {
+        EvaluationLog evaluationLog = createAndSaveFinishedEvaluationLog();
+        evaluationLogService.removeModel(evaluationLog);
+        EvaluationLog actual = evaluationLogRepository.findById(evaluationLog.getId()).orElse(null);
+        assertThat(actual).isNotNull();
+        assertThat(actual.getModelPath()).isNull();
+        assertThat(actual.getDeletedDate()).isNotNull();
     }
 
     private void verifyChartItem(List<ChartDataDto> items, String classifierName, long expectedCount) {

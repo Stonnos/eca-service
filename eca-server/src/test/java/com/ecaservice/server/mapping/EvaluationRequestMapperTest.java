@@ -1,10 +1,9 @@
 package com.ecaservice.server.mapping;
 
-import com.ecaservice.server.TestHelperUtils;
-import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
+import com.ecaservice.server.TestHelperUtils;
+import com.ecaservice.server.model.evaluation.EvaluationRequestDataModel;
 import eca.core.evaluation.EvaluationMethod;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.context.annotation.Import;
@@ -29,14 +28,14 @@ class EvaluationRequestMapperTest {
     @Test
     void testMapClassifierOptionsRequest() {
         ClassifierOptionsRequest classifierOptionsRequest = TestHelperUtils.createClassifierOptionsRequest();
-        EvaluationRequest evaluationRequest =
-                evaluationRequestMapper.map(classifierOptionsRequest);
-        Assertions.assertThat(evaluationRequest.getEvaluationMethod()).isEqualTo(EvaluationMethod.CROSS_VALIDATION);
-        assertThat(evaluationRequest.getNumFolds()).isEqualTo(
+        EvaluationRequestDataModel evaluationRequestDataModel = evaluationRequestMapper.map(classifierOptionsRequest);
+        assertThat(evaluationRequestDataModel.getEvaluationMethod()).isEqualTo(
+                EvaluationMethod.CROSS_VALIDATION);
+        assertThat(evaluationRequestDataModel.getNumFolds()).isEqualTo(
                 classifierOptionsRequest.getEvaluationMethodReport().getNumFolds().intValue());
-        assertThat(evaluationRequest.getNumTests()).isEqualTo(
+        assertThat(evaluationRequestDataModel.getNumTests()).isEqualTo(
                 classifierOptionsRequest.getEvaluationMethodReport().getNumTests().intValue());
-        assertThat(evaluationRequest.getSeed()).isEqualTo(
+        assertThat(evaluationRequestDataModel.getSeed()).isEqualTo(
                 classifierOptionsRequest.getEvaluationMethodReport().getSeed().intValue());
     }
 }

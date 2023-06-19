@@ -6,3 +6,5 @@ create database eca_external_api;
 create database evaluation_results_storage;
 create database audit_log;
 create database eca_web_push;
+create database eca_load_tests;
+create database eca_auto_tests;

@@ -4,6 +4,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.math.BigDecimal;
+
+import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_100_STRING;
+import static com.ecaservice.web.dto.util.FieldConstraints.ZERO_VALUE_STRING;
+
 /**
  * Evaluation log dto model.
  *
@@ -19,4 +24,11 @@ public class EvaluationLogDto extends AbstractEvaluationDto {
      */
     @Schema(description = "Classifier info")
     private ClassifierInfoDto classifierInfo;
+
+    /**
+     * Correctly classified percentage
+     */
+    @Schema(description = "Correctly classified percentage", example = "99", minimum = ZERO_VALUE_STRING,
+            maximum = VALUE_100_STRING)
+    private BigDecimal pctCorrect;
 }

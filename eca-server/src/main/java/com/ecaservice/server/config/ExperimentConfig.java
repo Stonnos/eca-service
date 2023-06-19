@@ -43,11 +43,6 @@ public class ExperimentConfig {
     private Integer maximumFractionDigits;
 
     /**
-     * Number of days for experiment storage
-     */
-    private Long numberOfDaysForStorage;
-
-    /**
      * Experiment timeout value in hours
      */
     private Integer timeout;
@@ -56,16 +51,6 @@ public class ExperimentConfig {
      * Delay value for scheduler in seconds
      */
     private Integer delaySeconds;
-
-    /**
-     * Page size for processing
-     */
-    private Integer pageSize;
-
-    /**
-     * Experiment download url expiration in days
-     */
-    private Integer experimentDownloadUrlExpirationDays;
 
     /**
      * Short life url expiration in minutes

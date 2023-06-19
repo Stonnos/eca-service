@@ -1,7 +1,6 @@
 package com.ecaservice.auto.test.event.model;
 
 import com.ecaservice.auto.test.entity.autotest.EvaluationResultsTestStepEntity;
-import eca.core.evaluation.EvaluationResults;
 import lombok.Getter;
 
 /**
@@ -13,7 +12,6 @@ import lombok.Getter;
 public class EvaluationResultsTestStepEvent extends AbstractTestStepEvent {
 
     private final EvaluationResultsTestStepEntity evaluationResultsTestStepEntity;
-    private final EvaluationResults evaluationResults;
 
     /**
      * Create a new {@code ApplicationEvent}.
@@ -21,13 +19,10 @@ public class EvaluationResultsTestStepEvent extends AbstractTestStepEvent {
      * @param source                          the object on which the event initially occurred or with
      *                                        which the event is associated (never {@code null})
      * @param evaluationResultsTestStepEntity - evaluation results test step entity
-     * @param evaluationResults               - evaluation results
      */
     public EvaluationResultsTestStepEvent(Object source,
-                                          EvaluationResultsTestStepEntity evaluationResultsTestStepEntity,
-                                          EvaluationResults evaluationResults) {
+                                          EvaluationResultsTestStepEntity evaluationResultsTestStepEntity) {
         super(source);
         this.evaluationResultsTestStepEntity = evaluationResultsTestStepEntity;
-        this.evaluationResults = evaluationResults;
     }
 }

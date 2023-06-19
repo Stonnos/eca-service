@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v65-add-evaluation-log-model-path-column.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="add_evaluation_log_model_path_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_log"/>
+            <not>
+                <columnExists tableName="evaluation_log" columnName="model_path"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="evaluation_log">
+            <column name="model_path" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add_evaluation_log_deleted_date_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_log"/>
+            <not>
+                <columnExists tableName="evaluation_log" columnName="deleted_date"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="evaluation_log">
+            <column name="deleted_date" type="timestamp"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="rename_experiment_path_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment"/>
+            <columnExists tableName="experiment" columnName="experiment_path"/>
+        </preConditions>
+        <renameColumn tableName="experiment" oldColumnName="experiment_path" newColumnName="model_path"/>
+    </changeSet>
+
+    <changeSet id="add_evaluation_log_pct_correct_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_log"/>
+            <not>
+                <columnExists tableName="evaluation_log" columnName="pct_correct"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="evaluation_log">
+            <column name="pct_correct" type="numeric(19,4)"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

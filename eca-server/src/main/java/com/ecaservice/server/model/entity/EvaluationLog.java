@@ -4,11 +4,16 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import java.math.BigDecimal;
+
+import static com.ecaservice.server.util.FieldConstraints.PRECISION;
+import static com.ecaservice.server.util.FieldConstraints.SCALE;
 
 /**
  * Evaluation log persistence entity.
@@ -32,4 +37,10 @@ public class EvaluationLog extends AbstractEvaluationEntity {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "classifier_info_id", nullable = false)
     private ClassifierInfo classifierInfo;
+
+    /**
+     * Correctly classified percentage
+     */
+    @Column(name = "pct_correct", precision = PRECISION, scale = SCALE)
+    private BigDecimal pctCorrect;
 }

@@ -30,8 +30,8 @@ spring:
   sleuth:
     log:
       slf4j:
-        whitelisted-mdc-keys: tx.id, ev.requestId
-    propagation-keys: tx.id, ev.requestId
+        whitelisted-mdc-keys: tx.id
+    propagation-keys: tx.id
 
 eureka:
   client:

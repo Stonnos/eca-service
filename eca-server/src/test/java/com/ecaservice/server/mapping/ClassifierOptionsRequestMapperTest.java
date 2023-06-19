@@ -1,10 +1,10 @@
 package com.ecaservice.server.mapping;
 
-import com.ecaservice.server.TestHelperUtils;
-import com.ecaservice.base.model.InstancesRequest;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import com.ecaservice.ers.dto.EvaluationMethod;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.CrossValidationConfig;
+import com.ecaservice.server.model.evaluation.InstancesRequestDataModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,6 +12,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import weka.core.Instances;
 
 import javax.inject.Inject;
 
@@ -33,17 +34,17 @@ class ClassifierOptionsRequestMapperTest {
     @Inject
     private CrossValidationConfig crossValidationConfig;
 
-    private InstancesRequest instancesRequest;
+    private InstancesRequestDataModel instancesRequestDataModel;
 
     @BeforeEach
     void init() {
-        instancesRequest = new InstancesRequest();
-        instancesRequest.setData(TestHelperUtils.loadInstances());
+        Instances data = TestHelperUtils.loadInstances();
+        instancesRequestDataModel = new InstancesRequestDataModel(data);
     }
 
     @Test
     void testMappingInstancesRequest() {
-        ClassifierOptionsRequest request = classifierOptionsRequestMapper.map(instancesRequest, crossValidationConfig);
+        ClassifierOptionsRequest request = classifierOptionsRequestMapper.map(instancesRequestDataModel, crossValidationConfig);
         assertThat(request.getEvaluationMethodReport()).isNotNull();
         assertThat(request.getEvaluationMethodReport().getEvaluationMethod()).isEqualTo(
                 EvaluationMethod.CROSS_VALIDATION);

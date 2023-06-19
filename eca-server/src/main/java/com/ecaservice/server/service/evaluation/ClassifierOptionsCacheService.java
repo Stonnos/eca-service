@@ -47,10 +47,11 @@ public class ClassifierOptionsCacheService {
      */
     public ClassifierOptionsResult getOptimalClassifierOptionsFromErs(
             ClassifierOptionsRequest classifierOptionsRequest) {
-        log.info("Starting to get optimal classifiers options from ERS for data md5 hash: {}",
-                classifierOptionsRequest.getDataHash());
+        log.info("Starting to get optimal classifiers options from ERS for data md5 hash: {}, options req id [{}]",
+                classifierOptionsRequest.getDataHash(), classifierOptionsRequest.getRequestId());
         ClassifierOptionsRequestEntity requestEntity =
                 createClassifierOptionsRequestEntity(ClassifierOptionsRequestSource.ERS);
+        requestEntity.setRequestId(classifierOptionsRequest.getRequestId());
         ClassifierOptionsRequestModel requestModel = classifierOptionsRequestModelMapper.map(classifierOptionsRequest);
         ClassifierOptionsResult classifierOptionsResult =
                 ersRequestService.getOptimalClassifierOptions(classifierOptionsRequest, requestModel);
@@ -69,15 +70,18 @@ public class ClassifierOptionsCacheService {
     public ClassifierOptionsResult getOptimalClassifierOptionsFromCache(
             ClassifierOptionsRequest classifierOptionsRequest) {
         String dataMd5Hash = classifierOptionsRequest.getDataHash();
-        log.info("Starting to get optimal classifiers options from cache for data md5 hash: {}",
-                classifierOptionsRequest.getDataHash());
+        log.info("Starting to get optimal classifiers options from cache for data md5 hash: {}, options req id [{}]",
+                classifierOptionsRequest.getDataHash(), classifierOptionsRequest.getRequestId());
         ClassifierOptionsRequestModel requestModel = getLastClassifierOptionsRequestModel(dataMd5Hash);
         ClassifierOptionsResponseModel responseModel = getFirstResponseModel(requestModel);
         if (responseModel != null) {
-            log.info("Optimal classifier options [{}] has been taken from last response for data md5 hash '{}'.",
-                    responseModel.getOptions(), classifierOptionsRequest.getDataHash());
+            log.info(
+                    "Optimal options [{}] has been taken from last response for data md5 hash '{}', options req id [{}]",
+                    responseModel.getOptions(), classifierOptionsRequest.getDataHash(),
+                    classifierOptionsRequest.getRequestId());
             ClassifierOptionsRequestEntity requestEntity =
                     createClassifierOptionsRequestEntity(ClassifierOptionsRequestSource.CACHE);
+            requestEntity.setRequestId(classifierOptionsRequest.getRequestId());
             requestEntity.setClassifierOptionsRequestModel(requestModel);
             classifierOptionsRequestRepository.save(requestEntity);
             ClassifierOptionsResult classifierOptionsResult = new ClassifierOptionsResult();

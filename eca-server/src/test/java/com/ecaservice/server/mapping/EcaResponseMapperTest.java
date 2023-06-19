@@ -13,7 +13,9 @@ import javax.inject.Inject;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.ecaservice.server.TestHelperUtils.createEvaluationResultsDataModel;
 import static com.ecaservice.server.TestHelperUtils.createExperiment;
+import static com.ecaservice.server.TestHelperUtils.getEvaluationResults;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -39,6 +41,30 @@ class EcaResponseMapperTest {
     @Test
     void testMapExperimentToEcaResponse() {
         requestStatusTechnicalStatusMap.forEach(this::internalTestMapExperimentToEcaResponse);
+    }
+
+    @Test
+    void testMapEvaluationResultsDataModel() {
+        var evaluationResultsDataModel = createEvaluationResultsDataModel(UUID.randomUUID().toString());
+        var evaluationResults = getEvaluationResults();
+        evaluationResultsDataModel.setEvaluationResults(evaluationResults);
+        var evaluationResponse = ecaResponseMapper.map(evaluationResultsDataModel);
+        assertThat(evaluationResponse).isNotNull();
+        assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.SUCCESS);
+        assertThat(evaluationResponse.getModelUrl()).isEqualTo(evaluationResultsDataModel.getModelUrl());
+        assertThat(evaluationResponse.getRequestId()).isEqualTo(evaluationResultsDataModel.getRequestId());
+        assertThat(evaluationResponse.getPctCorrect().doubleValue()).isEqualTo(
+                evaluationResults.getEvaluation().pctCorrect());
+        assertThat(evaluationResponse.getPctIncorrect().doubleValue()).isEqualTo(
+                evaluationResults.getEvaluation().pctIncorrect());
+        assertThat(evaluationResponse.getMeanAbsoluteError().doubleValue()).isEqualTo(
+                evaluationResults.getEvaluation().meanAbsoluteError());
+        assertThat(evaluationResponse.getNumTestInstances().doubleValue()).isEqualTo(
+                evaluationResults.getEvaluation().numInstances());
+        assertThat(evaluationResponse.getNumCorrect().doubleValue()).isEqualTo(
+                evaluationResults.getEvaluation().correct());
+        assertThat(evaluationResponse.getNumIncorrect().doubleValue()).isEqualTo(
+                evaluationResults.getEvaluation().incorrect());
     }
 
     private void internalTestMapExperimentToEcaResponse(RequestStatus requestStatus, TechnicalStatus expectedStatus) {

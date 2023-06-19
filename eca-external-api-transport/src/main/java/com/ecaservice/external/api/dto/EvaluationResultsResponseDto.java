@@ -10,7 +10,7 @@ import lombok.experimental.Tolerate;
 import java.math.BigDecimal;
 
 import static com.ecaservice.external.api.dto.Constraints.MAX_INTEGER_VALUE_STRING;
-import static com.ecaservice.external.api.dto.Constraints.MAX_LENGTH_255;
+import static com.ecaservice.external.api.dto.Constraints.MODEL_URL_MAX_LENGTH;
 import static com.ecaservice.external.api.dto.Constraints.VALUE_0_STRING;
 import static com.ecaservice.external.api.dto.Constraints.VALUE_100_STRING;
 import static com.ecaservice.external.api.dto.Constraints.VALUE_1_STRING;
@@ -36,7 +36,7 @@ public class EvaluationResultsResponseDto extends SimpleEvaluationResponseDto {
     /**
      * Classifier model url
      */
-    @Schema(description = "Model url", maxLength = MAX_LENGTH_255)
+    @Schema(description = "Model url", maxLength = MODEL_URL_MAX_LENGTH)
     private String modelUrl;
 
     /**

@@ -1,23 +1,23 @@
 package com.ecaservice.server.event.listener;
 
-import com.ecaservice.base.model.EvaluationResponse;
-import com.ecaservice.server.event.model.EvaluationFinishedEvent;
+import com.ecaservice.server.event.model.EvaluationErsReportEvent;
 import com.ecaservice.server.model.ErsEvaluationRequestData;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.RequestStatus;
+import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.service.ers.ErsRequestService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Optional;
 import java.util.UUID;
 
 import static com.ecaservice.server.TestHelperUtils.createEvaluationLog;
-import static com.ecaservice.server.TestHelperUtils.createEvaluationResponse;
+import static com.ecaservice.server.TestHelperUtils.createEvaluationResultsDataModel;
 import static com.ecaservice.server.TestHelperUtils.getEvaluationResults;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.atLeastOnce;
@@ -26,19 +26,25 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests for checking {@see EvaluationFinishedEventListener} functionality.
+ * Unit tests for checking {@link EvaluationErsReportEventListener} functionality.
  *
  * @author Roman Batygin
  */
-@ExtendWith(MockitoExtension.class)
-class EvaluationResultsFinishedEventListenerTest {
+@ExtendWith(SpringExtension.class)
+class EvaluationErsReportEventListenerTest {
 
-    @Mock
+    @MockBean
     private ErsRequestService ersRequestService;
-    @Mock
+    @MockBean
     private EvaluationLogRepository evaluationLogRepository;
-    @InjectMocks
-    private EvaluationFinishedEventListener evaluationFinishedEventListener;
+
+    private EvaluationErsReportEventListener evaluationErsReportEventListener;
+
+    @BeforeEach
+    void init() {
+        evaluationErsReportEventListener = new EvaluationErsReportEventListener(ersRequestService,
+                evaluationLogRepository);
+    }
 
     /**
      * Test evaluation results sent for evaluation log with status FINISHED.
@@ -48,10 +54,11 @@ class EvaluationResultsFinishedEventListenerTest {
         EvaluationLog evaluationLog = createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         when(evaluationLogRepository.findByRequestId(evaluationLog.getRequestId())).thenReturn(
                 Optional.of(evaluationLog));
-        EvaluationResponse evaluationResponse = createEvaluationResponse(evaluationLog.getRequestId());
+        EvaluationResultsDataModel evaluationResponse =
+                createEvaluationResultsDataModel(evaluationLog.getRequestId());
         evaluationResponse.setEvaluationResults(getEvaluationResults());
-        EvaluationFinishedEvent evaluationFinishedEvent = new EvaluationFinishedEvent(this, evaluationResponse);
-        evaluationFinishedEventListener.handleEvaluationFinishedEvent(evaluationFinishedEvent);
+        EvaluationErsReportEvent evaluationErsReportEvent = new EvaluationErsReportEvent(this, evaluationResponse);
+        evaluationErsReportEventListener.handleEvent(evaluationErsReportEvent);
         verify(ersRequestService, atLeastOnce()).saveEvaluationResults(any(ErsEvaluationRequestData.class));
     }
 
@@ -63,9 +70,11 @@ class EvaluationResultsFinishedEventListenerTest {
         EvaluationLog evaluationLog = createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.ERROR);
         when(evaluationLogRepository.findByRequestId(evaluationLog.getRequestId())).thenReturn(
                 Optional.of(evaluationLog));
-        EvaluationResponse evaluationResponse = createEvaluationResponse(evaluationLog.getRequestId());
-        EvaluationFinishedEvent evaluationFinishedEvent = new EvaluationFinishedEvent(this, evaluationResponse);
-        evaluationFinishedEventListener.handleEvaluationFinishedEvent(evaluationFinishedEvent);
+        EvaluationResultsDataModel evaluationResponse =
+                createEvaluationResultsDataModel(evaluationLog.getRequestId());
+        evaluationResponse.setStatus(RequestStatus.ERROR);
+        EvaluationErsReportEvent evaluationErsReportEvent = new EvaluationErsReportEvent(this, evaluationResponse);
+        evaluationErsReportEventListener.handleEvent(evaluationErsReportEvent);
         verify(ersRequestService, never()).saveEvaluationResults(any(ErsEvaluationRequestData.class));
     }
 }

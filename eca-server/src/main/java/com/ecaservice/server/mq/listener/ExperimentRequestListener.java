@@ -6,11 +6,11 @@ import com.ecaservice.server.event.model.ExperimentResponseEvent;
 import com.ecaservice.server.event.model.push.ExperimentSystemPushEvent;
 import com.ecaservice.server.mapping.ExperimentMapper;
 import com.ecaservice.server.model.entity.Experiment;
-import com.ecaservice.server.model.experiment.ExperimentMessageRequestData;
 import com.ecaservice.server.service.experiment.ExperimentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationEventPublisher;
@@ -18,6 +18,11 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
+import java.util.UUID;
+
+import static com.ecaservice.common.web.util.LogHelper.EV_REQUEST_ID;
+import static com.ecaservice.common.web.util.LogHelper.TX_ID;
+import static com.ecaservice.common.web.util.LogHelper.putMdc;
 
 /**
  * Rabbit MQ listener for experiment request messages.
@@ -41,23 +46,19 @@ public class ExperimentRequestListener {
      */
     @RabbitListener(queues = "${queue.experimentRequestQueue}")
     public void handleMessage(@Valid @Payload ExperimentRequest experimentRequest, Message inboundMessage) {
+        MessageProperties inboundMessageProperties = inboundMessage.getMessageProperties();
+        log.info("Received experiment [{}] request with correlation id [{}]",
+                experimentRequest.getExperimentType(), inboundMessageProperties.getCorrelationId());
+        String requestId = UUID.randomUUID().toString();
+        putMdc(TX_ID, requestId);
+        putMdc(EV_REQUEST_ID, requestId);
         var experimentRequestData = experimentMapper.map(experimentRequest, inboundMessage);
+        experimentRequestData.setRequestId(requestId);
         Experiment experiment = experimentService.createExperiment(experimentRequestData);
-        log.info("Experiment request [{}] has been created.", experiment.getRequestId());
         eventPublisher.publishEvent(new ExperimentResponseEvent(this, experiment));
         eventPublisher.publishEvent(new ExperimentSystemPushEvent(this, experiment));
         eventPublisher.publishEvent(new ExperimentEmailEvent(this, experiment));
-    }
-
-    private ExperimentMessageRequestData createExperimentRequestData(ExperimentRequest experimentRequest,
-                                                                     Message inboundMessage) {
-        var experimentRequestData = new ExperimentMessageRequestData();
-        experimentRequestData.setData(experimentRequest.getData());
-        experimentRequestData.setExperimentType(experimentRequest.getExperimentType());
-        experimentRequestData.setEvaluationMethod(experimentRequest.getEvaluationMethod());
-        experimentRequestData.setEmail(experimentRequest.getEmail());
-        experimentRequestData.setReplyTo(inboundMessage.getMessageProperties().getReplyTo());
-        experimentRequestData.setCorrelationId(inboundMessage.getMessageProperties().getCorrelationId());
-        return experimentRequestData;
+        log.info("Experiment [{}] request with correlation id [{}] has been processed",
+                experimentRequest.getExperimentType(), inboundMessageProperties.getCorrelationId());
     }
 }

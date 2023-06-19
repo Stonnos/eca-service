@@ -26,9 +26,4 @@ public class CrossValidationConfig {
      * Seed for random generator
      */
     private Integer seed;
-
-    /**
-     * Timeout value in minutes
-     */
-    private Integer timeout;
 }

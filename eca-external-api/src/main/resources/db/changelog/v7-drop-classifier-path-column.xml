@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v7-drop-classifier-path-column.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="drop_classifier_path_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_request"/>
+            <columnExists tableName="evaluation_request" columnName="classifier_path"/>
+        </preConditions>
+        <dropColumn tableName="evaluation_request" columnName="classifier_path"/>
+    </changeSet>
+
+    <changeSet id="drop_classifier_deleted_date_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_request"/>
+            <columnExists tableName="evaluation_request" columnName="deleted_date"/>
+        </preConditions>
+        <dropColumn tableName="evaluation_request" columnName="deleted_date"/>
+    </changeSet>
+
+</databaseChangeLog>
