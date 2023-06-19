@@ -13,8 +13,6 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
 
-import static com.ecaservice.auto.test.util.Constraints.DOWNLOAD_URL_MAX_LENGTH;
-
 /**
  * Experiment request persistence entity.
  *
