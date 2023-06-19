@@ -27,10 +27,13 @@ import org.mockito.Mock;
 import org.springframework.context.annotation.Import;
 
 import javax.inject.Inject;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import static com.ecaservice.server.util.FieldConstraints.SCALE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -99,6 +102,9 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
         AssertionUtils.hasOneElement(evaluationLogList);
         var evaluationLog = evaluationLogList.iterator().next();
         assertThat(evaluationLog.getRequestStatus()).isEqualTo(RequestStatus.FINISHED);
+        double pctCorrect = evaluationResultsDataModel.getEvaluationResults().getEvaluation().pctCorrect();
+        BigDecimal expected = BigDecimal.valueOf(pctCorrect).setScale(SCALE, RoundingMode.HALF_DOWN);
+        assertThat(evaluationLog.getPctCorrect().doubleValue()).isEqualTo(expected.doubleValue());
         assertThat(evaluationResultsDataModel.getStatus()).isEqualTo(RequestStatus.FINISHED);
         assertThat(evaluationResultsDataModel.getModelUrl()).isEqualTo(MODEL_DOWNLOAD_URL);
         assertThat(evaluationResultsDataModel.getEvaluationResults()).isNotNull();

@@ -529,6 +529,7 @@ public class TestHelperUtils {
         evaluationLog.setSeed(SEED);
         evaluationLog.setRequestStatus(RequestStatus.FINISHED);
         evaluationLog.setModelPath(CLASSIFIER_MODEL);
+        evaluationLog.setPctCorrect(BigDecimal.TEN);
         return evaluationLog;
     }
 

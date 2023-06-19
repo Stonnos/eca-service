@@ -37,40 +37,15 @@
         <renameColumn tableName="experiment" oldColumnName="experiment_path" newColumnName="model_path"/>
     </changeSet>
 
-    <!--
-     <changeSet id="insert_experiment_created_by_field_in_global_filter_template" author="roman.batygin@mail.ru" context="data">
-         <preConditions onFail="MARK_RAN">
-             <tableExists tableName="global_filter_template"/>
-             <tableExists tableName="global_filter_field"/>
-             <sqlCheck expectedResult="1">
-                 select count(*) from global_filter_template where id = 1
-             </sqlCheck>
-             <sqlCheck expectedResult="0">
-                 select count(*) from global_filter_field where global_filter_template_id = 1 and field_name = 'createdBy'
-             </sqlCheck>
-         </preConditions>
-         <insert tableName="global_filter_field">
-             <column name="field_name" value="createdBy"/>
-             <column name="global_filter_template_id" valueNumeric="1"/>
-         </insert>
-     </changeSet>-->
-
-    <!--
-    <changeSet id="insert_experiment_created_by_field_in_filter_template" author="roman.batygin@mail.ru" context="data">
+    <changeSet id="add_evaluation_log_pct_correct_column" author="roman.batygin@mail.ru" context="schema">
         <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="1">
-                select count(*) from filter_template where id = 1
-            </sqlCheck>
-            <sqlCheck expectedResult="1">
-                select count(*) from filter_field where filter_template_id = 1 and field_name = 'email'
-            </sqlCheck>
+            <tableExists tableName="evaluation_log"/>
+            <not>
+                <columnExists tableName="evaluation_log" columnName="pct_correct"/>
+            </not>
         </preConditions>
-        <update tableName="filter_field">
-            <column name="field_name" value="createdBy"/>
-            <column name="description" value="Пользователь"/>
-            <column name="match_mode" value="EQUALS"/>
-            <where>filter_template_id = 1 and field_name = 'email'</where>
-        </update>
-    </changeSet>-->
-
+        <addColumn tableName="evaluation_log">
+            <column name="pct_correct" type="numeric(19,4)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

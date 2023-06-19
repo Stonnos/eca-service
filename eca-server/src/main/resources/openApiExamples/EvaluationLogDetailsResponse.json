@@ -4,6 +4,7 @@
   "creationDate": "2021-07-01 14:00:00",
   "startDate": "2021-07-01 14:00:01",
   "endDate": "2021-07-01 14:00:12",
+  "modelPath": "classifier-1d2de514-3a87-4620-9b97-c260e24340de.model",
   "requestStatus": {
     "value": "FINISHED",
     "description": "Завершена"
@@ -16,6 +17,7 @@
   "numTests": 1,
   "seed": 1,
   "evaluationTotalTime": "00:00:00:11",
+  "deletedDate": null,
   "classifierInfo": {
     "classifierName": "RandomForests",
     "classifierDescription": "Алгоритм Случайные леса",
@@ -53,6 +55,7 @@
     ],
     "individualClassifiers": null
   },
+  "pctCorrect": 96,
   "instancesInfo": {
     "relationName": "iris",
     "numInstances": 150,

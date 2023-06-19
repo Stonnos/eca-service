@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import weka.classifiers.AbstractClassifier;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -156,6 +157,8 @@ public class EvaluationRequestService {
                                     EvaluationLog evaluationLog) throws IOException {
         uploadModel(classificationResult.getEvaluationResults(), evaluationLog);
         evaluationLog.setRequestStatus(RequestStatus.FINISHED);
+        double pctCorrect = classificationResult.getEvaluationResults().getEvaluation().pctCorrect();
+        evaluationLog.setPctCorrect(BigDecimal.valueOf(pctCorrect));
         evaluationLog.setEndDate(LocalDateTime.now());
         evaluationLogRepository.save(evaluationLog);
     }
