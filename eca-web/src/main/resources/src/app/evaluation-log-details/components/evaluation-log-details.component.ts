@@ -99,19 +99,19 @@ export class EvaluationLogDetailsComponent implements OnInit, FieldLink {
     this.evaluationLogFields = [
       { name: EvaluationLogFields.REQUEST_ID, label: "UUID заявки:" },
       { name: EvaluationLogFields.REQUEST_STATUS_DESCRIPTION, label: "Статус заявки:" },
-      { name: EvaluationLogFields.CREATION_DATE, label: "Дата создания заявки:" },
-      { name: EvaluationLogFields.START_DATE, label: "Дата начала построения модели:" },
-      { name: EvaluationLogFields.END_DATE, label: "Дата окончания построения модели:" },
       { name: EvaluationLogFields.RELATION_NAME, label: "Обучающая выборка:" },
       { name: EvaluationLogFields.NUM_INSTANCES, label: "Число объектов:" },
       { name: EvaluationLogFields.NUM_ATTRIBUTES, label: "Число атрибутов:" },
       { name: EvaluationLogFields.NUM_CLASSES, label: "Число классов:" },
       { name: EvaluationLogFields.CLASS_NAME, label: "Атрибут класса:" },
       { name: EvaluationLogFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности:" },
-      { name: EvaluationLogFields.EVALUATION_TOTAL_TIME, label: "Время построения модели:" },
       { name: EvaluationLogFields.PCT_CORRECT, label: "Точность классификатора:" },
+      { name: EvaluationLogFields.EVALUATION_TOTAL_TIME, label: "Время построения модели:" },
+      { name: EvaluationLogFields.CREATION_DATE, label: "Дата создания заявки:" },
+      { name: EvaluationLogFields.START_DATE, label: "Дата начала построения модели:" },
+      { name: EvaluationLogFields.END_DATE, label: "Дата окончания построения модели:" },
       { name: EvaluationLogFields.MODEL_PATH, label: "Модель классификатора:" },
-      { name: EvaluationLogFields.DELETED_DATE, label: "Дата удаления модели:" }
+      { name: EvaluationLogFields.DELETED_DATE, label: "Дата удаления модели:" },
     ];
   }
 }
