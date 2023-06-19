@@ -52,10 +52,10 @@ public class EvaluationOptimizerService {
         String requestId = UUID.randomUUID().toString();
         putMdc(TX_ID, requestId);
         Instances data = instancesRequestDataModel.getData();
-        log.info("Starting evaluation with optimal classifier options for data '{}'",
-                data.relationName());
         ClassifierOptionsRequest classifierOptionsRequest =
                 classifierOptionsRequestMapper.map(instancesRequestDataModel, crossValidationConfig);
+        log.info("Starting evaluation request with optimal classifier options for data hash '{}', request id [{}]",
+                classifierOptionsRequest.getDataHash(), requestId);
         classifierOptionsRequest.setRequestId(requestId);
         ClassifierOptionsResult classifierOptionsResult = getOptimalClassifierOptions(classifierOptionsRequest);
         if (!classifierOptionsResult.isFound()) {
@@ -80,11 +80,15 @@ public class EvaluationOptimizerService {
     private EvaluationResultsDataModel evaluateModel(ClassifierOptionsRequest classifierOptionsRequest,
                                                      String options,
                                                      Instances data) {
-        log.info("Starting to evaluate model for data [{}] with options [{}]", data.relationName(), options);
+        log.info("Starting to evaluate model for data hash [{}] with options [{}], options request id [{}]",
+                classifierOptionsRequest.getDataHash(), options, classifierOptionsRequest.getRequestId());
         AbstractClassifier classifier = classifierOptionsAdapter.convert(parseOptions(options));
         EvaluationRequestDataModel evaluationRequest = evaluationRequestMapper.map(classifierOptionsRequest);
         evaluationRequest.setData(data);
         evaluationRequest.setClassifier(classifier);
-        return evaluationRequestService.processRequest(evaluationRequest);
+        var evaluationResultsDataModel = evaluationRequestService.processRequest(evaluationRequest);
+        log.info("Model has been evaluated for data hash [{}] with options [{}], options request id [{}]",
+                classifierOptionsRequest.getDataHash(), options, classifierOptionsRequest.getRequestId());
+        return evaluationResultsDataModel;
     }
 }
