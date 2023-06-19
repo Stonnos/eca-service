@@ -18,6 +18,8 @@ import weka.core.Instances;
 
 import java.util.UUID;
 
+import static com.ecaservice.common.web.util.LogHelper.TX_ID;
+import static com.ecaservice.common.web.util.LogHelper.putMdc;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.parseOptions;
 import static com.ecaservice.server.util.Utils.buildErrorEvaluationResultsModel;
 
@@ -47,16 +49,17 @@ public class EvaluationOptimizerService {
      */
     public EvaluationResultsDataModel evaluateWithOptimalClassifierOptions(
             InstancesRequestDataModel instancesRequestDataModel) {
+        String requestId = UUID.randomUUID().toString();
+        putMdc(TX_ID, requestId);
         Instances data = instancesRequestDataModel.getData();
         log.info("Starting evaluation with optimal classifier options for data '{}'",
                 data.relationName());
         ClassifierOptionsRequest classifierOptionsRequest =
                 classifierOptionsRequestMapper.map(instancesRequestDataModel, crossValidationConfig);
-        classifierOptionsRequest.setRequestId(UUID.randomUUID().toString());
+        classifierOptionsRequest.setRequestId(requestId);
         ClassifierOptionsResult classifierOptionsResult = getOptimalClassifierOptions(classifierOptionsRequest);
         if (!classifierOptionsResult.isFound()) {
-            return buildErrorEvaluationResultsModel(instancesRequestDataModel.getRequestId(),
-                    classifierOptionsResult.getErrorCode());
+            return buildErrorEvaluationResultsModel(requestId, classifierOptionsResult.getErrorCode());
         } else {
             return evaluateModel(classifierOptionsRequest, classifierOptionsResult.getOptionsJson(), data);
         }

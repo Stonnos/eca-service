@@ -43,9 +43,7 @@ public class EvaluationOptimizerRequestListener {
      */
     @RabbitListener(queues = "${queue.evaluationOptimizerRequestQueue}")
     public void handleMessage(@Valid @Payload InstancesRequest instancesRequest, Message inboundMessage) {
-        String requestId = UUID.randomUUID().toString();
-        putMdc(TX_ID, requestId);
-        var instancesRequestDataModel = new InstancesRequestDataModel(requestId, instancesRequest.getData());
+        var instancesRequestDataModel = new InstancesRequestDataModel(instancesRequest.getData());
         EvaluationResultsDataModel evaluationResultsDataModel =
                 evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequestDataModel);
         log.info("Evaluation response [{}] with status [{}] has been built for evaluation optimizer request.",

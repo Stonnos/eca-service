@@ -80,7 +80,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 import static com.ecaservice.server.util.InstancesUtils.toJson;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -139,7 +138,7 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
     @Override
     public void init() throws Exception {
         Instances data = TestHelperUtils.loadInstances();
-        instancesRequestDataModel = new InstancesRequestDataModel(UUID.randomUUID().toString(), data);
+        instancesRequestDataModel = new InstancesRequestDataModel(data);
         String instancesJson = toJson(instancesRequestDataModel.getData());
         dataMd5Hash = DigestUtils.md5DigestAsHex(instancesJson.getBytes(StandardCharsets.UTF_8));
         DecisionTreeOptions treeOptions = TestHelperUtils.createDecisionTreeOptions();

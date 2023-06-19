@@ -15,7 +15,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import weka.core.Instances;
 
 import javax.inject.Inject;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -40,7 +39,7 @@ class ClassifierOptionsRequestMapperTest {
     @BeforeEach
     void init() {
         Instances data = TestHelperUtils.loadInstances();
-        instancesRequestDataModel = new InstancesRequestDataModel(UUID.randomUUID().toString(), data);
+        instancesRequestDataModel = new InstancesRequestDataModel(data);
     }
 
     @Test

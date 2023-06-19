@@ -51,6 +51,7 @@ public class ClassifierOptionsCacheService {
                 classifierOptionsRequest.getDataHash());
         ClassifierOptionsRequestEntity requestEntity =
                 createClassifierOptionsRequestEntity(ClassifierOptionsRequestSource.ERS);
+        requestEntity.setRequestId(classifierOptionsRequest.getRequestId());
         ClassifierOptionsRequestModel requestModel = classifierOptionsRequestModelMapper.map(classifierOptionsRequest);
         ClassifierOptionsResult classifierOptionsResult =
                 ersRequestService.getOptimalClassifierOptions(classifierOptionsRequest, requestModel);
@@ -78,6 +79,7 @@ public class ClassifierOptionsCacheService {
                     responseModel.getOptions(), classifierOptionsRequest.getDataHash());
             ClassifierOptionsRequestEntity requestEntity =
                     createClassifierOptionsRequestEntity(ClassifierOptionsRequestSource.CACHE);
+            requestEntity.setRequestId(classifierOptionsRequest.getRequestId());
             requestEntity.setClassifierOptionsRequestModel(requestModel);
             classifierOptionsRequestRepository.save(requestEntity);
             ClassifierOptionsResult classifierOptionsResult = new ClassifierOptionsResult();

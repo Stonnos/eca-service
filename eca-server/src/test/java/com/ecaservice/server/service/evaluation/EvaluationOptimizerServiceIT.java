@@ -50,7 +50,6 @@ import javax.inject.Inject;
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -118,7 +117,7 @@ class EvaluationOptimizerServiceIT extends AbstractJpaTest {
     @Override
     public void init() throws Exception {
         Instances data = TestHelperUtils.loadInstances();
-        instancesRequestDataModel = new InstancesRequestDataModel(UUID.randomUUID().toString(), data);
+        instancesRequestDataModel = new InstancesRequestDataModel(data);
         DecisionTreeOptions treeOptions = TestHelperUtils.createDecisionTreeOptions();
         treeOptions.setDecisionTreeType(DecisionTreeType.CART);
         decisionTreeOptions = objectMapper.writeValueAsString(treeOptions);

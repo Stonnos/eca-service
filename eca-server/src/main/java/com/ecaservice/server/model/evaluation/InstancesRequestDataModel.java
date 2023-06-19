@@ -14,11 +14,6 @@ import weka.core.Instances;
 public class InstancesRequestDataModel {
 
     /**
-     * Request id
-     */
-    private String requestId;
-
-    /**
      * Training data
      */
     private Instances data;
