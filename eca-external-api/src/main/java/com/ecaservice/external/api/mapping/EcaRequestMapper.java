@@ -1,6 +1,7 @@
 package com.ecaservice.external.api.mapping;
 
 import com.ecaservice.base.model.ErrorCode;
+import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.external.api.dto.EvaluationErrorCode;
 import com.ecaservice.external.api.dto.EvaluationRequestDto;
@@ -10,6 +11,7 @@ import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.ExperimentRequestEntity;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.ValueMapping;
 
@@ -38,6 +40,17 @@ public interface EcaRequestMapper {
      * @return experiment request entity
      */
     ExperimentRequestEntity map(ExperimentRequestDto experimentRequestDto);
+
+    /**
+     * Updates evaluation request entity.
+     *
+     * @param evaluationResponse      - evaluation response
+     * @param evaluationRequestEntity - evaluation request entity
+     */
+    @Mapping(target = "requestId", ignore = true)
+    @Mapping(target = "technicalStatus", ignore = true)
+    @Mapping(source = "modelUrl", target = "classifierDownloadUrl")
+    void update(EvaluationResponse evaluationResponse, @MappingTarget EvaluationRequestEntity evaluationRequestEntity);
 
     /**
      * Maps experiment external api experiment type to internal format.

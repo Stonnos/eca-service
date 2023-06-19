@@ -8,10 +8,7 @@ import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.mapping.EcaRequestMapperImpl;
 import com.ecaservice.external.api.repository.EvaluationRequestRepository;
-import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
-import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
 import javax.inject.Inject;
@@ -21,10 +18,6 @@ import static com.ecaservice.external.api.TestHelperUtils.createEvaluationReques
 import static com.ecaservice.external.api.TestHelperUtils.errorEvaluationResponse;
 import static com.ecaservice.external.api.TestHelperUtils.successEvaluationResponse;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for checking {@link EvaluationResponseHandler} functionality.
@@ -34,12 +27,6 @@ import static org.mockito.Mockito.when;
 @Import({EvaluationResponseHandler.class, ClassifiersOptionsAutoConfiguration.class, ExternalApiConfig.class,
         EcaRequestMapperImpl.class, RequestStageHandler.class})
 class EvaluationResponseHandlerTest extends AbstractJpaTest {
-
-    private static final String CLASSIFIER_MODEL_PATH_FORMAT = "classifier-%s.model";
-    private static final String CLASSIFIER_DOWNLOAD_URL = "http://localhost:9000/object-storage";
-
-    @MockBean
-    private ObjectStorageService objectStorageService;
 
     @Inject
     private EvaluationRequestRepository evaluationRequestRepository;
@@ -59,16 +46,10 @@ class EvaluationResponseHandlerTest extends AbstractJpaTest {
         evaluationRequestEntity.setUseOptimalClassifierOptions(true);
         evaluationRequestRepository.save(evaluationRequestEntity);
         EvaluationResponse evaluationResponse = successEvaluationResponse();
-        String expectedClassifierPath =
-                String.format(CLASSIFIER_MODEL_PATH_FORMAT, evaluationRequestEntity.getCorrelationId());
-        when(objectStorageService.getObjectPresignedProxyUrl(any(GetPresignedUrlObject.class)))
-                .thenReturn(CLASSIFIER_DOWNLOAD_URL);
         evaluationResponseHandler.handleResponse(evaluationRequestEntity, evaluationResponse);
         var actual =
                 internalTestResponseHandle(evaluationRequestEntity, evaluationResponse, RequestStageType.COMPLETED);
-        assertThat(actual.getClassifierPath()).isEqualTo(expectedClassifierPath);
-        assertThat(actual.getClassifierOptionsJson()).isNotNull();
-        assertThat(actual.getClassifierDownloadUrl()).isEqualTo(CLASSIFIER_DOWNLOAD_URL);
+        assertThat(actual.getClassifierDownloadUrl()).isEqualTo(evaluationResponse.getModelUrl());
     }
 
     @Test
@@ -77,16 +58,6 @@ class EvaluationResponseHandlerTest extends AbstractJpaTest {
                 createEvaluationRequestEntity(RequestStageType.REQUEST_SENT, null, LocalDateTime.now());
         evaluationRequestRepository.save(evaluationRequestEntity);
         EvaluationResponse evaluationResponse = errorEvaluationResponse();
-        internalTestResponseHandle(evaluationRequestEntity, evaluationResponse, RequestStageType.ERROR);
-    }
-
-    @Test
-    void testEvaluationResponseHandleWithError() throws Exception {
-        EvaluationRequestEntity evaluationRequestEntity =
-                createEvaluationRequestEntity(RequestStageType.REQUEST_SENT, null, LocalDateTime.now());
-        evaluationRequestRepository.save(evaluationRequestEntity);
-        EvaluationResponse evaluationResponse = successEvaluationResponse();
-        doThrow(IllegalStateException.class).when(objectStorageService).uploadObject(any(), anyString());
         internalTestResponseHandle(evaluationRequestEntity, evaluationResponse, RequestStageType.ERROR);
     }
 

@@ -53,6 +53,7 @@ public class TestHelperUtils {
     private static final String IRIS_XLS = "iris.xls";
     private static final String TRAIN_DATA_URL = "data://84327874";
     private static final String EXPERIMENT_DOWNLOAD_URL = "http://localhost:900/object-storage/experiment.model";
+    private static final String MODEL_DOWNLOAD_URL = "http://localhost:900/object-storage/classifier.model";
 
     /**
      * Generates the test data set.
@@ -242,6 +243,7 @@ public class TestHelperUtils {
         evaluationResponse.setEvaluationResults(getEvaluationResults());
         evaluationResponse.setRequestId(UUID.randomUUID().toString());
         evaluationResponse.setStatus(TechnicalStatus.SUCCESS);
+        evaluationResponse.setModelUrl(MODEL_DOWNLOAD_URL);
         return evaluationResponse;
     }
 

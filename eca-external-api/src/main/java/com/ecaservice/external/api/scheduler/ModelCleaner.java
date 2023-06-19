@@ -1,9 +1,7 @@
 package com.ecaservice.external.api.scheduler;
 
 import com.ecaservice.external.api.config.ExternalApiConfig;
-import com.ecaservice.external.api.repository.EvaluationRequestRepository;
 import com.ecaservice.external.api.repository.InstancesRepository;
-import com.ecaservice.external.api.service.EcaRequestService;
 import com.ecaservice.external.api.service.InstancesService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,26 +24,8 @@ import static com.ecaservice.common.web.util.PageHelper.processWithPagination;
 public class ModelCleaner {
 
     private final ExternalApiConfig externalApiConfig;
-    private final EcaRequestService ecaRequestService;
     private final InstancesService instancesService;
-    private final EvaluationRequestRepository evaluationRequestRepository;
     private final InstancesRepository instancesRepository;
-
-    /**
-     * Removes classifiers data files from S3 storage. Schedules by cron.
-     */
-    @Scheduled(cron = "${external-api.removeClassifiersCron}")
-    public void clearClassifiers() {
-        log.info("Starting to remove classifiers data.");
-        LocalDateTime dateTime = LocalDateTime.now().minusDays(externalApiConfig.getNumberOfDaysForStorage());
-        List<Long> ids = evaluationRequestRepository.findNotDeletedModels(dateTime);
-        log.info("Obtained {} classifiers files to remove", ids.size());
-        processWithPagination(ids, evaluationRequestRepository::findByIdIn,
-                pageContent -> pageContent.forEach(ecaRequestService::deleteClassifierModel),
-                externalApiConfig.getBatchSize()
-        );
-        log.info("Classifiers data removing has been finished.");
-    }
 
     /**
      * Removes train data from S3 storage. Schedules by cron.

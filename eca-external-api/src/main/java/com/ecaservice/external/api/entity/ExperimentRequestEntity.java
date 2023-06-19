@@ -11,7 +11,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
 
-import static com.ecaservice.external.api.util.FieldSize.DOWNLOAD_URL_MAX_LENGTH;
+import static com.ecaservice.external.api.util.FieldSize.MODEL_URL_MAX_LENGTH;
 
 /**
  * Experiment request persistence entity.
@@ -35,6 +35,6 @@ public class ExperimentRequestEntity extends EcaRequestEntity {
     /**
      * Experiment download url
      */
-    @Column(name = "experiment_download_url", length = DOWNLOAD_URL_MAX_LENGTH)
+    @Column(name = "experiment_download_url", length = MODEL_URL_MAX_LENGTH)
     private String experimentDownloadUrl;
 }
