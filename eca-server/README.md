@@ -31,21 +31,17 @@ ECA server
    * cross-validation.numFolds - число блоков
    * cross-validation.numTests - число тестов
    * cross-validation.seed - начальное значение для генератора псевдослучайных чисел
-   * cross-validation.timeout - таймаут в сек. для оценки точности классификатора
-3) experiment - настройки параметров модуля Data Miner. Ниже приведено описание
+3) classifiers - настройка параметров для постороения моделей классификаторов
+   * classifiers.timeout - таймаут в сек. для оценки точности классификатора
+4) experiment - настройки параметров модуля Data Miner. Ниже приведено описание
    основных настроек:
    * experiment.resultSize - число наилучших конфигураций классификаторов
    * experiment.numIterations - число итераций эксперимента
    * experiment.individualClassifiersStoragePath - путь к папке в ресурсах для хранения json - конфигураций классификаторов,
    которые впоследствии будут использоваться при построении эксперимента
    * experiment.maximumFractionDigits - число десятичных знаков после запятой
-   * experiment.numberOfDaysForStorage - кол-во дней для хранения результатов экспериментов
-   * experiment.removeExperimentCron - крон выражение для удаления моделей с результатами экспериментов
    * experiment.timeout - время таймаута эксперимента в часах.
    * experiment.delaySeconds - интервал между запусками scheduler для обработки экспериметов
-   * experiment.pageSize - размер страницы для постраничной обработки заявок
-   * experiment.experimentDownloadUrlExpirationDays - время жизни ссылки на скачивание результатов эксперимента
-   * experiment.shortLifeUrlExpirationMinutes - время короткоживущей ссылки на получение результатов эксперимента
    * experiment.ensemble.numIterations - число итераций для ансамблевых алгоритмов
    * experiment.ensemble.numBestClassifiers - число наилучших по точности базовых классификаторов, которые впоследствии
    будут использоваться при построении ансамбля
@@ -60,7 +56,12 @@ ECA server
 5) app - общие настройки приложения
    * app.threadPoolSize - число потоков для асинхронных задач
    * app.maxPageSize - максимальное число элементов на странице (используется для запросов с пагинацией)
-   * app.notifications.webPushesEnabled - вкл./выкл. отправки web пушей 
+   * app.notifications.webPushesEnabled - вкл./выкл. отправки web пушей
+   * app.removeModelCron - крон выражение для удаления моделей экспериментов/классификаторов
+   * app.numberOfDaysForStorage - кол-во дней для хранения моделей экспериментов/классификаторов
+   * app.pageSize - размер страницы для постраничной обработки заявок
+   * app.modelDownloadUrlExpirationDays - время жизни ссылки на скачивание модели эксперимента/классификатора
+   * app.shortLifeUrlExpirationMinutes - время короткоживущей ссылки на получение модели эксперимента/классификатора
 6) cache.specs - настройки spring cache
 7) open-api - настройки Swagger
    * open-api.tokenBaseUrl - базовый url - сервера авторизации

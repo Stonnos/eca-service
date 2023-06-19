@@ -59,6 +59,18 @@ public abstract class AbstractEvaluationEntity {
     private LocalDateTime endDate;
 
     /**
+     * Model path in object storage
+     */
+    @Column(name = "model_path")
+    private String modelPath;
+
+    /**
+     * Model deleted date
+     */
+    @Column(name = "deleted_date")
+    private LocalDateTime deletedDate;
+
+    /**
      * Request status
      */
     @Enumerated(EnumType.STRING)

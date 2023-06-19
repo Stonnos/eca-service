@@ -3,6 +3,8 @@ package com.ecaservice.server.service.evaluation;
 import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
+import com.ecaservice.server.config.AppProperties;
+import com.ecaservice.server.config.ClassifiersProperties;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.mapping.EvaluationLogMapper;
 import com.ecaservice.server.model.entity.EvaluationLog;
@@ -45,6 +47,8 @@ public class EvaluationRequestService {
 
     private static final String CLASSIFIER_PATH_FORMAT = "classifier-%s.model";
 
+    private final AppProperties appProperties;
+    private final ClassifiersProperties classifiersProperties;
     private final CrossValidationConfig crossValidationConfig;
     private final CalculationExecutorService executorService;
     private final EvaluationService evaluationService;
@@ -92,8 +96,8 @@ public class EvaluationRequestService {
             EvaluationResultsDataModel evaluationResultsDataModel =
                     buildEvaluationResultsModel(evaluationLog.getRequestId(), RequestStatus.FINISHED);
             evaluationResultsDataModel.setEvaluationResults(classificationResult.getEvaluationResults());
-            //TODO
-            evaluationResultsDataModel.setModelUrl("");
+            String modelUrl = getModelPresignedUrl(evaluationLog.getModelPath());
+            evaluationResultsDataModel.setModelUrl(modelUrl);
             return evaluationResultsDataModel;
         } else {
             handleError(evaluationLog, classificationResult.getErrorMessage());
@@ -104,7 +108,7 @@ public class EvaluationRequestService {
     private ClassificationResult evaluationModel(EvaluationRequestDataModel evaluationRequestDataModel)
             throws ExecutionException, InterruptedException, TimeoutException {
         Callable<ClassificationResult> callable = () -> evaluationService.evaluateModel(evaluationRequestDataModel);
-        return executorService.execute(callable, crossValidationConfig.getTimeout(), TimeUnit.MINUTES);
+        return executorService.execute(callable, classifiersProperties.getTimeout(), TimeUnit.MINUTES);
     }
 
     private EvaluationLog createAndSaveEvaluationLog(String requestId,
@@ -124,15 +128,16 @@ public class EvaluationRequestService {
     }
 
     private void uploadModel(AbstractClassifier classifier, EvaluationLog evaluationLog) throws IOException {
-        objectStorageService.uploadObject(classifier,
-                String.format(CLASSIFIER_PATH_FORMAT, evaluationLog.getRequestId()));
+        String modelPath = String.format(CLASSIFIER_PATH_FORMAT, evaluationLog.getRequestId());
+        objectStorageService.uploadObject(classifier, modelPath);
+        evaluationLog.setModelPath(modelPath);
     }
 
-    private String getModelPresignedUrl(EvaluationLog evaluationLog) {
+    private String getModelPresignedUrl(String modelPath) {
         return objectStorageService.getObjectPresignedProxyUrl(
                 GetPresignedUrlObject.builder()
-                        .objectPath(String.format("classifier-%s.model", evaluationLog.getRequestId()))
-                        .expirationTime(3)
+                        .objectPath(modelPath)
+                        .expirationTime(appProperties.getModelDownloadUrlExpirationDays())
                         .expirationTimeUnit(TimeUnit.DAYS)
                         .build()
         );
@@ -142,7 +147,6 @@ public class EvaluationRequestService {
                                     EvaluationLog evaluationLog) throws IOException {
         var classifier = (AbstractClassifier) classificationResult.getEvaluationResults().getClassifier();
         uploadModel(classifier, evaluationLog);
-        String modelUrl = getModelPresignedUrl(evaluationLog);
         evaluationLog.setRequestStatus(RequestStatus.FINISHED);
         evaluationLog.setEndDate(LocalDateTime.now());
         evaluationLogRepository.save(evaluationLog);

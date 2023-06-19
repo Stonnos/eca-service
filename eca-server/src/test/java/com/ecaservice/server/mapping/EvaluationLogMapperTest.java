@@ -117,6 +117,7 @@ class EvaluationLogMapperTest {
         assertThat(evaluationLogBean.getStartDate()).isNotNull();
         assertThat(evaluationLogBean.getEndDate()).isNotNull();
         assertThat(evaluationLogBean.getEvaluationTotalTime()).isNotNull();
+        assertThat(evaluationLogBean.getModelPath()).isEqualTo(evaluationLog.getModelPath());
     }
 
     private void assertEvaluationLogDto(EvaluationLogDto evaluationLogDto, EvaluationLog evaluationLog) {
@@ -139,6 +140,7 @@ class EvaluationLogMapperTest {
         assertThat(evaluationLogDto.getSeed()).isEqualTo(evaluationLog.getSeed());
         assertThat(evaluationLogDto.getInstancesInfo()).isNotNull();
         assertThat(evaluationLogDto.getEvaluationTotalTime()).isNotNull();
+        assertThat(evaluationLogDto.getModelPath()).isEqualTo(evaluationLog.getModelPath());
     }
 
     private void assertOptions(EvaluationLog evaluationLog, EvaluationRequestDataModel request) {

@@ -18,6 +18,7 @@ import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.AssertionUtils;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
+import com.ecaservice.server.config.ClassifiersProperties;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.config.ers.ErsConfig;
 import com.ecaservice.server.configuation.ExecutorConfiguration;
@@ -94,7 +95,7 @@ import static org.mockito.Mockito.when;
         CrossValidationConfig.class, EvaluationRequestService.class, InstancesInfoMapperImpl.class,
         ClassifierOptionsRequestModelMapperImpl.class, ClassifierReportMapperImpl.class,
         EvaluationRequestMapperImpl.class, ClassifierOptionsRequestMapperImpl.class,
-        ErsConfig.class, EvaluationLogMapperImpl.class,
+        ErsConfig.class, EvaluationLogMapperImpl.class, ClassifiersProperties.class,
         EvaluationService.class, ErsEvaluationMethodMapperImpl.class, ErsResponseStatusMapperImpl.class,
         InstancesInfoMapperImpl.class, ErsRequestService.class,
         EvaluationOptimizerService.class, ClassifierInfoMapperImpl.class, ErsErrorHandler.class,
@@ -423,8 +424,7 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         assertThat(evaluationResultsDataModel).isNotNull();
         assertThat(evaluationResultsDataModel.getRequestId()).isNotNull();
         assertThat(evaluationResultsDataModel.getStatus()).isEqualTo(RequestStatus.FINISHED);
-        //TODO
-        //assertThat(evaluationResponseDataModel.getModelUrl()).isEqualTo(MODEL_DOWNLOAD_URL);
+        assertThat(evaluationResultsDataModel.getModelUrl()).isEqualTo(MODEL_DOWNLOAD_URL);
     }
 
     private void assertSuccessClassifierOptionsRequestModel(ClassifierOptionsRequestModel requestModel) {

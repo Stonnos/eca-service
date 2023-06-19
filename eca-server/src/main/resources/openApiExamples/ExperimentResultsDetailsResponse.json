@@ -59,7 +59,7 @@
     "seed": 1,
     "evaluationTotalTime": "00:00:1:43",
     "createdBy": "admin",
-    "experimentPath": "experiment-1d2de514-3a87-4620-9b97-c260e24340de.model",
+    "modelPath": "experiment-1d2de514-3a87-4620-9b97-c260e24340de.model",
     "instancesInfo": {
       "relationName": "iris",
       "numInstances": 150,

@@ -34,6 +34,26 @@ public class AppProperties {
     private NotificationProperties notifications = new NotificationProperties();
 
     /**
+     * Number of days for models storage
+     */
+    private Long numberOfDaysForStorage;
+
+    /**
+     * Page size for processing
+     */
+    private Integer pageSize;
+
+    /**
+     * Model download url expiration in days
+     */
+    private Integer modelDownloadUrlExpirationDays;
+
+    /**
+     * Short life url expiration in minutes
+     */
+    private Integer shortLifeUrlExpirationMinutes;
+
+    /**
      * Notification properties
      */
     @Data

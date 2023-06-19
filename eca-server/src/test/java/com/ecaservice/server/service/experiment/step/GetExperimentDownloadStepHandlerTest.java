@@ -3,7 +3,7 @@ package com.ecaservice.server.service.experiment.step;
 import com.ecaservice.s3.client.minio.exception.ObjectStorageException;
 import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
-import com.ecaservice.server.config.ExperimentConfig;
+import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.model.entity.ExperimentStepStatus;
 import com.ecaservice.server.service.experiment.ExperimentStepService;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({ExperimentConfig.class, ExperimentStepService.class, GetExperimentDownloadUrlStepHandler.class})
+@Import({AppProperties.class, ExperimentStepService.class, GetExperimentDownloadUrlStepHandler.class})
 class GetExperimentDownloadStepHandlerTest extends AbstractStepHandlerTest {
 
     private static final String EXPERIMENT_DOWNLOAD_URL = "http://localhost:8099/object-storage";

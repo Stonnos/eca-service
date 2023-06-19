@@ -162,6 +162,7 @@ public class TestHelperUtils {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     public static final String MESSAGE_TEXT = "Message text";
     private static final String DATA_MD_5_HASH = "3032e188204cb537f69fc7364f638641";
+    private static final String CLASSIFIER_MODEL = "classifier.model";
 
     /**
      * Creates page request dto.
@@ -333,7 +334,7 @@ public class TestHelperUtils {
         experiment.setExperimentType(ExperimentType.KNN);
         experiment.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         experiment.setTrainingDataPath(TRAINING_DATA_PATH);
-        experiment.setExperimentPath(EXPERIMENT_PATH);
+        experiment.setModelPath(EXPERIMENT_PATH);
         experiment.setRequestId(requestId);
         experiment.setChannel(Channel.QUEUE);
         experiment.setReplyTo(REPLY_TO);
@@ -527,6 +528,7 @@ public class TestHelperUtils {
         evaluationLog.setNumTests(NUM_TESTS);
         evaluationLog.setSeed(SEED);
         evaluationLog.setRequestStatus(RequestStatus.FINISHED);
+        evaluationLog.setModelPath(CLASSIFIER_MODEL);
         return evaluationLog;
     }
 

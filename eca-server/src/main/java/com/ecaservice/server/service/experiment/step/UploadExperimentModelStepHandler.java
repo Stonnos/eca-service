@@ -90,7 +90,7 @@ public class UploadExperimentModelStepHandler extends AbstractExperimentStepHand
         stopWatch.start(String.format("Uploads experiment history [%s] to S3", experiment.getRequestId()));
         objectStorageService.uploadObject(abstractExperiment, experimentPath);
         stopWatch.stop();
-        experiment.setExperimentPath(experimentPath);
+        experiment.setModelPath(experimentPath);
         experimentRepository.save(experiment);
     }
 

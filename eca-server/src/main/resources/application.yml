@@ -58,6 +58,12 @@ ribbon:
 app:
   maxPageSize: 50
   threadPoolSize: 10
+  numberOfDaysForStorage: 14
+  ## Each day at midnight
+  removeModelCron: 0 0 0 * * *
+  pageSize: 10
+  modelDownloadUrlExpirationDays: 7
+  shortLifeUrlExpirationMinutes: 5
   notifications:
     webPushesEnabled: false
 
@@ -104,17 +110,10 @@ experiment:
   numIterations: 100
   individualClassifiersStoragePath: classpath*:classifiers/**/*.json
   maximumFractionDigits: ${classifiers-options.maximumFractionDigits}
-  numberOfDaysForStorage: 14
-  ## Each day at midnight
-  removeExperimentCron: 0 0 0 * * *
   ## Experiment timeout in hours
   timeout: 5
   ## Scheduler delay in seconds
   delaySeconds: 30
-  ## Experiments page size
-  pageSize: 10
-  experimentDownloadUrlExpirationDays: 7
-  shortLifeUrlExpirationMinutes: 5
   experimentLocalStoragePath: /home/experiment
   ensemble:
     numIterations: 25

@@ -73,4 +73,5 @@
     <include file="db/changelog/v62-drop-experiment-email-not-null-constraint.xml"/>
     <include file="db/changelog/v63-add-instances-info-md5-hash-column.xml"/>
     <include file="db/changelog/v64-add-experiment-created-by-column.xml"/>
+    <include file="db/changelog/v65-add-evaluation-log-model-path-column.xml"/>
 </databaseChangeLog>
