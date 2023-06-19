@@ -54,12 +54,19 @@ public class EvaluationOptimizerService {
         Instances data = instancesRequestDataModel.getData();
         ClassifierOptionsRequest classifierOptionsRequest =
                 classifierOptionsRequestMapper.map(instancesRequestDataModel, crossValidationConfig);
-        log.info("Starting evaluation request with optimal classifier options for data hash '{}', request id [{}]",
+        log.info(
+                "Starting evaluation request with optimal classifier options for data hash [{}], options request id [{}]",
                 classifierOptionsRequest.getDataHash(), requestId);
         classifierOptionsRequest.setRequestId(requestId);
         ClassifierOptionsResult classifierOptionsResult = getOptimalClassifierOptions(classifierOptionsRequest);
         if (!classifierOptionsResult.isFound()) {
-            return buildErrorEvaluationResultsModel(requestId, classifierOptionsResult.getErrorCode());
+            EvaluationResultsDataModel evaluationResultsDataModel =
+                    buildErrorEvaluationResultsModel(UUID.randomUUID().toString(),
+                            classifierOptionsResult.getErrorCode());
+            log.info("Response [{}] with error code [{}] has been build for data hash [{}], options request id [{}]",
+                    evaluationResultsDataModel.getRequestId(), evaluationResultsDataModel.getErrorCode(),
+                    classifierOptionsRequest.getDataHash(), classifierOptionsRequest.getRequestId());
+            return evaluationResultsDataModel;
         } else {
             return evaluateModel(classifierOptionsRequest, classifierOptionsResult.getOptionsJson(), data);
         }
