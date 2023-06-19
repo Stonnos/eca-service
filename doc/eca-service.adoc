@@ -279,6 +279,9 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |instances_info_id          |bigint           |-|+|+                                    |Внешний ключ, ID обучающей выборки
 |classifier_info_id         |bigint           |-|+|+                                    |Внешний ключ, ID информации о классификаторе
 |error_message              |text             |-|-|-                                    |Текст ошибки
+|model_path                 |varchar(255)     |-|-|-                                    |Путь к объекту в S3 с моделью классификатора
+|deleted_date               |timestamp        |-|-|-                                    |Дата удаления модели классификатора
+|pct_correct                |numeric(19,4)    |-|-|-                                         |Точность классификатора
 |===
 
 ==== Таблица 3.{counter:db-table-id} - 'experiment' - содержит данные о заявках на построение экспрериментов
@@ -299,7 +302,7 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |experiment_type              |varchar(255)     |-|+|-                                 |Тип эксперимента
 |email                        |varchar(255)     |-|-|-                                 |Email пользователя для отправки результатов эксперимента
 |training_data_path           |varchar(255)     |-|-|-                                 |Путь к объекту в S3 с обучающей выборкой
-|experiment_path              |varchar(255)     |-|-|-                                 |Путь к объекту в S3 с результатами эксперимента
+|model_path                   |varchar(255)     |-|-|-                                 |Путь к объекту в S3 с результатами эксперимента
 |error_message                |text             |-|-|-                                 |Текст ошибки
 |deleted_date                 |timestamp        |-|-|-                                 |Дата удаления файлов с результатами эксперимента
 |experiment_download_url      |varchar(1024)    |-|-|-                                 |Ссылка для скачивания результатов эксперимента из S3
