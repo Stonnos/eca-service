@@ -6,6 +6,7 @@ import com.ecaservice.external.api.mapping.EcaRequestMapper;
 import com.ecaservice.external.api.repository.EcaRequestRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 /**
  * Evaluation response handler.
@@ -38,6 +39,9 @@ public class EvaluationResponseHandler extends AbstractEcaResponseHandler<Evalua
     protected void internalHandleSuccessResponse(EvaluationRequestEntity requestEntity,
                                                  EvaluationResponse evaluationResponse) {
         log.info("Starting to process success evaluation response [{}]", requestEntity.getCorrelationId());
+        Assert.notNull(evaluationResponse.getModelUrl(),
+                String.format("Expected not null model download url for correlation id [%s]",
+                        requestEntity.getCorrelationId()));
         ecaRequestMapper.update(evaluationResponse, requestEntity);
         log.info("Success evaluation response [{}] has been processed", requestEntity.getCorrelationId());
     }
