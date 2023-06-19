@@ -43,14 +43,18 @@ public class EvaluationOptimizerRequestListener {
      */
     @RabbitListener(queues = "${queue.evaluationOptimizerRequestQueue}")
     public void handleMessage(@Valid @Payload InstancesRequest instancesRequest, Message inboundMessage) {
+        MessageProperties inboundMessageProperties = inboundMessage.getMessageProperties();
+        log.info("Received evaluation optimizer request with correlation id [{}]",
+                inboundMessageProperties.getCorrelationId());
         var instancesRequestDataModel = new InstancesRequestDataModel(instancesRequest.getData());
         EvaluationResultsDataModel evaluationResultsDataModel =
                 evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequestDataModel);
         log.info("Evaluation response [{}] with status [{}] has been built for evaluation optimizer request.",
                 evaluationResultsDataModel.getRequestId(), evaluationResultsDataModel.getStatus());
         eventPublisher.publishEvent(new EvaluationErsReportEvent(this, evaluationResultsDataModel));
-        MessageProperties inboundMessageProperties = inboundMessage.getMessageProperties();
         eventPublisher.publishEvent(new EvaluationResponseEvent(this, evaluationResultsDataModel,
                 inboundMessageProperties.getCorrelationId(), inboundMessageProperties.getReplyTo()));
+        log.info("Evaluation optimizer request with correlation id [{}] has been processed",
+                inboundMessageProperties.getCorrelationId());
     }
 }

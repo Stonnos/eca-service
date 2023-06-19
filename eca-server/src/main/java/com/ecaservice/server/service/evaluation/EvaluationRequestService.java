@@ -71,7 +71,7 @@ public class EvaluationRequestService {
         String requestId = UUID.randomUUID().toString();
         putMdcIfAbsent(TX_ID, requestId);
         putMdc(EV_REQUEST_ID, requestId);
-        log.info("Received request for classifier [{}] evaluation with data [{}]",
+        log.info("Starting to process request for classifier [{}] evaluation with data [{}]",
                 evaluationRequestDataModel.getClassifier().getClass().getSimpleName(),
                 evaluationRequestDataModel.getData().relationName());
         classifierInitializerService.initialize(evaluationRequestDataModel.getClassifier(),
@@ -101,6 +101,8 @@ public class EvaluationRequestService {
             evaluationResultsDataModel.setEvaluationResults(classificationResult.getEvaluationResults());
             String modelUrl = getModelPresignedUrl(evaluationLog.getModelPath());
             evaluationResultsDataModel.setModelUrl(modelUrl);
+            log.info("Evaluation request [{}] has been successfully finished.",
+                    evaluationResultsDataModel.getRequestId());
             return evaluationResultsDataModel;
         } else {
             handleError(evaluationLog, classificationResult.getErrorMessage());

@@ -10,6 +10,7 @@ import com.ecaservice.server.service.experiment.ExperimentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationEventPublisher;
@@ -45,6 +46,9 @@ public class ExperimentRequestListener {
      */
     @RabbitListener(queues = "${queue.experimentRequestQueue}")
     public void handleMessage(@Valid @Payload ExperimentRequest experimentRequest, Message inboundMessage) {
+        MessageProperties inboundMessageProperties = inboundMessage.getMessageProperties();
+        log.info("Received experiment [{}] request with correlation id [{}]",
+                experimentRequest.getExperimentType(), inboundMessageProperties.getCorrelationId());
         String requestId = UUID.randomUUID().toString();
         putMdc(TX_ID, requestId);
         putMdc(EV_REQUEST_ID, requestId);
@@ -54,5 +58,7 @@ public class ExperimentRequestListener {
         eventPublisher.publishEvent(new ExperimentResponseEvent(this, experiment));
         eventPublisher.publishEvent(new ExperimentSystemPushEvent(this, experiment));
         eventPublisher.publishEvent(new ExperimentEmailEvent(this, experiment));
+        log.info("Experiment [{}] request with correlation id [{}] has been processed",
+                experimentRequest.getExperimentType(), inboundMessageProperties.getCorrelationId());
     }
 }

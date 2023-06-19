@@ -40,14 +40,17 @@ public class EvaluationRequestListener {
      */
     @RabbitListener(queues = "${queue.evaluationRequestQueue}")
     public void handleMessage(@Valid @Payload EvaluationRequest evaluationRequest, Message inboundMessage) {
+        MessageProperties inboundMessageProperties = inboundMessage.getMessageProperties();
+        log.info("Received evaluation request with correlation id [{}]", inboundMessageProperties.getCorrelationId());
         var evaluationRequestDataModel = evaluationLogMapper.map(evaluationRequest);
         EvaluationResultsDataModel evaluationResultsDataModel =
                 evaluationRequestService.processRequest(evaluationRequestDataModel);
         log.info("Evaluation response [{}] with status [{}] has been built.",
                 evaluationResultsDataModel.getRequestId(), evaluationResultsDataModel.getStatus());
         eventPublisher.publishEvent(new EvaluationErsReportEvent(this, evaluationResultsDataModel));
-        MessageProperties inboundMessageProperties = inboundMessage.getMessageProperties();
         eventPublisher.publishEvent(new EvaluationResponseEvent(this, evaluationResultsDataModel,
                 inboundMessageProperties.getCorrelationId(), inboundMessageProperties.getReplyTo()));
+        log.info("Evaluation request with correlation id [{}] has been processed",
+                inboundMessageProperties.getCorrelationId());
     }
 }
