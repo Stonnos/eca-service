@@ -412,7 +412,7 @@ a|
     "seed" : 1,
     "evaluationTotalTime" : "00:00:1:43",
     "createdBy" : "admin",
-    "experimentPath" : "experiment-1d2de514-3a87-4620-9b97-c260e24340de.model",
+    "modelPath" : "experiment-1d2de514-3a87-4620-9b97-c260e24340de.model",
     "instancesInfo" : {
       "relationName" : "iris",
       "numInstances" : 150,
@@ -1965,6 +1965,7 @@ a|
     "creationDate" : "2021-07-01 14:00:00",
     "startDate" : "2021-07-01 14:00:01",
     "endDate" : "2021-07-01 14:00:12",
+    "modelPath" : "classifier-1d2de514-3a87-4620-9b97-c260e24340de.model",
     "requestStatus" : {
       "value" : "FINISHED",
       "description" : "Завершена"
@@ -2005,6 +2006,7 @@ a|
         "optionValue" : "1"
       } ]
     },
+    "pctCorrect" : 96,
     "instancesInfo" : {
       "relationName" : "iris",
       "numInstances" : 150,
@@ -3233,7 +3235,7 @@ a|
     "seed" : 1,
     "evaluationTotalTime" : "00:00:1:43",
     "createdBy" : "admin",
-    "experimentPath" : "experiment-1d2de514-3a87-4620-9b97-c260e24340de.model",
+    "modelPath" : "experiment-1d2de514-3a87-4620-9b97-c260e24340de.model",
     "instancesInfo" : {
       "relationName" : "iris",
       "numInstances" : 150,
@@ -3890,7 +3892,7 @@ a|
   "seed" : 1,
   "evaluationTotalTime" : "00:00:1:43",
   "createdBy" : "admin",
-  "experimentPath" : "experiment-1d2de514-3a87-4620-9b97-c260e24340de.model",
+  "modelPath" : "experiment-1d2de514-3a87-4620-9b97-c260e24340de.model",
   "instancesInfo" : {
     "relationName" : "iris",
     "numInstances" : 150,
@@ -4248,6 +4250,128 @@ a|
 ----
 |===
 
+== Gets classifier model content url
+
+__GET__ */evaluation/model/{id}* - Gets classifier model content url
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+
+*Request parameters*
+[width=100%]
+|===
+|*Name*|*Description*|*Location*|*Schema*
+|*id**
+|Evaluation id
+|path
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 9 223 372 036 854 775 807*
+
+
+
+
+
+
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+<<S3ContentResponseDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "contentUrl" : "http://localhost:8098/object-storage/eca-service/classifier-1e0e62b1-6d66-4ea6-92ca-f903c52b9229.model?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minio%2F20220720%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220720T120738Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=b828e7099ecdcca904db26e36a9de829aa3c7ac08e3fdd269cf75ed5dc21f38b"
+}
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|
+__array__
+<<<ValidationErrorDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+[ {
+  "code" : "DataNotFound",
+  "errorMessage" : "Entity with search key [1] not found!"
+} ]
+----
+|===
+
 == Gets evaluation log details
 
 __GET__ */evaluation/details/{id}* - Gets evaluation log details
@@ -4328,6 +4452,7 @@ a|
   "creationDate" : "2021-07-01 14:00:00",
   "startDate" : "2021-07-01 14:00:01",
   "endDate" : "2021-07-01 14:00:12",
+  "modelPath" : "classifier-1d2de514-3a87-4620-9b97-c260e24340de.model",
   "requestStatus" : {
     "value" : "FINISHED",
     "description" : "Завершена"
@@ -4368,6 +4493,7 @@ a|
       "optionValue" : "1"
     } ]
   },
+  "pctCorrect" : 96,
   "instancesInfo" : {
     "relationName" : "iris",
     "numInstances" : 150,
@@ -5759,6 +5885,25 @@ __string__
 
 
 
+|*modelPath*
+|Model file
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
 |*requestStatus*
 |-
 a|
@@ -5882,6 +6027,25 @@ __string__
 
 
 
+|*deletedDate*
+|Model deleted date
+a|
+__string__
+
+
+
+
+*Max. length*: 19
+
+
+
+
+
+
+
+
+
+
 |*createdBy*
 |User name
 a|
@@ -5891,44 +6055,6 @@ __string__
 
 
 *Max. length*: 255
-
-
-
-
-
-
-
-
-
-
-|*experimentPath*
-|Experiment file
-a|
-__string__
-
-
-
-
-*Max. length*: 255
-
-
-
-
-
-
-
-
-
-
-|*deletedDate*
-|Experiment files delete date
-a|
-__string__
-
-
-
-
-*Max. length*: 19
 
 
 
@@ -9276,6 +9402,25 @@ __string__
 
 
 
+|*modelPath*
+|Model file
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
 |*requestStatus*
 |-
 a|
@@ -9399,6 +9544,25 @@ __string__
 
 
 
+|*deletedDate*
+|Model deleted date
+a|
+__string__
+
+
+
+
+*Max. length*: 19
+
+
+
+
+
+
+
+
+
+
 |*classifierInfo*
 |-
 a|
@@ -9410,6 +9574,27 @@ a|
 
 
 
+
+
+
+
+
+
+
+
+|*pctCorrect*
+|Correctly classified percentage
+a|
+__number__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 100*
 
 
 
@@ -11274,6 +11459,25 @@ __string__
 
 
 
+|*modelPath*
+|Model file
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
 |*requestStatus*
 |-
 a|
@@ -11397,6 +11601,25 @@ __string__
 
 
 
+|*deletedDate*
+|Model deleted date
+a|
+__string__
+
+
+
+
+*Max. length*: 19
+
+
+
+
+
+
+
+
+
+
 |*classifierInfo*
 |-
 a|
@@ -11408,6 +11631,27 @@ a|
 
 
 
+
+
+
+
+
+
+
+
+|*pctCorrect*
+|Correctly classified percentage
+a|
+__number__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 100*
 
 
 
