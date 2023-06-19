@@ -79,10 +79,4 @@ public class EvaluationRequestEntity extends EcaRequestEntity {
      */
     @Column(name = "mean_absolute_error", precision = PRECISION, scale = SCALE)
     private BigDecimal meanAbsoluteError;
-
-    /**
-     * Classifier model file deleted date
-     */
-    @Column(name = "deleted_date")
-    private LocalDateTime deletedDate;
 }

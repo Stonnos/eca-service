@@ -13,4 +13,12 @@
         <dropColumn tableName="evaluation_request" columnName="classifier_path"/>
     </changeSet>
 
+    <changeSet id="drop_classifier_deleted_date_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_request"/>
+            <columnExists tableName="evaluation_request" columnName="deleted_date"/>
+        </preConditions>
+        <dropColumn tableName="evaluation_request" columnName="deleted_date"/>
+    </changeSet>
+
 </databaseChangeLog>
