@@ -56,7 +56,7 @@ public abstract class EvaluationBean {
     private String modelPath;
 
     /**
-     * Experiment files deleted date
+     * Model deleted date
      */
     private String deletedDate;
 }
