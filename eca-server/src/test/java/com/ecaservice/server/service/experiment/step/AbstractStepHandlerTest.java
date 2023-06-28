@@ -9,6 +9,7 @@ import com.ecaservice.server.model.experiment.ExperimentContext;
 import com.ecaservice.server.repository.ExperimentProgressRepository;
 import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.repository.ExperimentStepRepository;
+import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import lombok.Getter;
 import org.springframework.util.StopWatch;
@@ -38,6 +39,8 @@ abstract class AbstractStepHandlerTest extends AbstractJpaTest {
     @Getter
     @Inject
     private ExperimentRepository experimentRepository;
+    @Inject
+    private InstancesInfoRepository instancesInfoRepository;
 
     @Override
     public void init() {
@@ -49,6 +52,7 @@ abstract class AbstractStepHandlerTest extends AbstractJpaTest {
         experimentProgressRepository.deleteAll();
         experimentStepRepository.deleteAll();
         experimentRepository.deleteAll();
+        instancesInfoRepository.deleteAll();
     }
 
     void testStep(BiConsumer<ExperimentContext, ExperimentStepEntity> consumer,
@@ -69,6 +73,7 @@ abstract class AbstractStepHandlerTest extends AbstractJpaTest {
 
     private void createAndSaveExperimentStep() {
         var experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.IN_PROGRESS);
+        instancesInfoRepository.save(experiment.getInstancesInfo());
         experimentRepository.save(experiment);
         experimentStepEntity = TestHelperUtils.createExperimentStepEntity(experiment,
                 ExperimentStep.EXPERIMENT_PROCESSING, ExperimentStepStatus.READY);

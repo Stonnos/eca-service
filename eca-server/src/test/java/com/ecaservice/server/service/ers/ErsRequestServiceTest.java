@@ -20,6 +20,7 @@ import com.ecaservice.server.model.entity.EvaluationResultsRequestEntity;
 import com.ecaservice.server.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.server.repository.ErsRequestRepository;
 import com.ecaservice.server.repository.EvaluationLogRepository;
+import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.evaluation.EvaluationResultsService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -71,6 +72,8 @@ class ErsRequestServiceTest extends AbstractJpaTest {
     private ErsResponseStatusMapper ersResponseStatusMapper;
     @Inject
     private ErsRequestRepository ersRequestRepository;
+    @Inject
+    private InstancesInfoRepository instancesInfoRepository;
 
     private ErsRequestService ersRequestService;
 
@@ -90,11 +93,13 @@ class ErsRequestServiceTest extends AbstractJpaTest {
     public void deleteAll() {
         ersRequestRepository.deleteAll();
         evaluationLogRepository.deleteAll();
+        instancesInfoRepository.deleteAll();
     }
 
     @Test
     void testSuccessSaving() {
         EvaluationLog evaluationLog = TestHelperUtils.createEvaluationLog();
+        instancesInfoRepository.save(evaluationLog.getInstancesInfo());
         evaluationLogRepository.save(evaluationLog);
         EvaluationResultsRequest evaluationResultsRequest = new EvaluationResultsRequest();
         EvaluationResultsResponse resultsResponse = new EvaluationResultsResponse();
@@ -152,6 +157,7 @@ class ErsRequestServiceTest extends AbstractJpaTest {
 
     private void internalTestErrorStatus(Exception ex, ErsResponseStatus expectedStatus) {
         EvaluationLog evaluationLog = TestHelperUtils.createEvaluationLog();
+        instancesInfoRepository.save(evaluationLog.getInstancesInfo());
         evaluationLogRepository.save(evaluationLog);
         doThrow(ex).when(ersRequestSender).send(any(EvaluationResultsRequest.class));
         EvaluationResultsRequestEntity requestEntity = new EvaluationResultsRequestEntity();

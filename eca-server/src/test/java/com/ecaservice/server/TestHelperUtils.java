@@ -346,6 +346,22 @@ public class TestHelperUtils {
     }
 
     /**
+     * Creates experiment.
+     *
+     * @param requestId        - request id
+     * @param experimentStatus - experiment status
+     * @param instancesInfo    - instances info
+     * @return created experiment
+     */
+    public static Experiment createExperiment(String requestId,
+                                              RequestStatus experimentStatus,
+                                              InstancesInfo instancesInfo) {
+        Experiment experiment = createExperiment(requestId, experimentStatus);
+        experiment.setInstancesInfo(instancesInfo);
+        return experiment;
+    }
+
+    /**
      * Creates experiment initialization params.
      *
      * @param data training data
@@ -549,6 +565,23 @@ public class TestHelperUtils {
     }
 
     /**
+     * Creates evaluation log with specified request id and status.
+     *
+     * @param requestId     - request id
+     * @param requestStatus - request status
+     * @param instancesInfo - instances info
+     * @return evaluation log
+     */
+    public static EvaluationLog createEvaluationLog(String requestId, RequestStatus requestStatus,
+                                                    InstancesInfo instancesInfo) {
+        EvaluationLog evaluationLog = createEvaluationLog();
+        evaluationLog.setRequestStatus(requestStatus);
+        evaluationLog.setRequestId(requestId);
+        evaluationLog.setInstancesInfo(instancesInfo);
+        return evaluationLog;
+    }
+
+    /**
      * Creates instances info.
      *
      * @return instances info
@@ -561,6 +594,8 @@ public class TestHelperUtils {
         instancesInfo.setNumAttributes(NUM_ATTRIBUTES);
         instancesInfo.setNumClasses(NUM_CLASSES);
         instancesInfo.setDataMd5Hash(DATA_MD_5_HASH);
+        instancesInfo.setUuid(UUID.randomUUID().toString());
+        instancesInfo.setCreatedDate(LocalDateTime.now());
         return instancesInfo;
     }
 

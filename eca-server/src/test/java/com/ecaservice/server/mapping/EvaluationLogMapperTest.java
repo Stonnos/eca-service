@@ -46,17 +46,6 @@ class EvaluationLogMapperTest {
         assertThat(evaluationLog).isNotNull();
         assertThat(evaluationLog.getEvaluationMethod()).isEqualTo(evaluationRequestDataModel.getEvaluationMethod());
         assertThat(evaluationLog.getClassifierInfo()).isNotNull();
-        assertThat(evaluationLog.getInstancesInfo().getRelationName()).isEqualTo(
-                evaluationRequestDataModel.getData().relationName());
-        assertThat(evaluationLog.getInstancesInfo().getClassName()).isEqualTo(
-                evaluationRequestDataModel.getData().classAttribute().name());
-        assertThat(evaluationLog.getInstancesInfo().getNumAttributes().intValue()).isEqualTo(
-                evaluationRequestDataModel.getData().numAttributes());
-        assertThat(evaluationLog.getInstancesInfo().getNumClasses().intValue()).isEqualTo(
-                evaluationRequestDataModel.getData().numClasses());
-        assertThat(evaluationLog.getInstancesInfo().getNumInstances().intValue()).isEqualTo(
-                evaluationRequestDataModel.getData().numInstances());
-        assertThat(evaluationLog.getInstancesInfo().getDataMd5Hash()).isNotNull();
         assertThat(evaluationLog.getNumFolds()).isNull();
         assertThat(evaluationLog.getNumTests()).isNull();
         assertThat(evaluationLog.getSeed()).isNull();

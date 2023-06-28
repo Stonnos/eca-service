@@ -3,7 +3,6 @@ package com.ecaservice.server.model.entity;
 import eca.core.evaluation.EvaluationMethod;
 import lombok.Data;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -36,8 +35,8 @@ public abstract class AbstractEvaluationEntity {
     /**
      * Training data info
      */
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "instances_info_id")
+    @OneToOne
+    @JoinColumn(name = "instances_info_id", nullable = false)
     private InstancesInfo instancesInfo;
 
     /**

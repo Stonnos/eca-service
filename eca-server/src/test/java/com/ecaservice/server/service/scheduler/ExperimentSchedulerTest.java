@@ -9,6 +9,7 @@ import com.ecaservice.server.model.entity.ExperimentStepStatus;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.repository.ExperimentStepRepository;
+import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.experiment.ExperimentDataCleaner;
 import com.ecaservice.server.service.experiment.ExperimentProgressService;
@@ -38,6 +39,8 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
     private ExperimentRepository experimentRepository;
     @Inject
     private ExperimentStepRepository experimentStepRepository;
+    @Inject
+    private InstancesInfoRepository instancesInfoRepository;
 
     @MockBean
     private ExperimentService experimentService;
@@ -63,11 +66,13 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
     public void deleteAll() {
         experimentStepRepository.deleteAll();
         experimentRepository.deleteAll();
+        instancesInfoRepository.deleteAll();
     }
 
     @Test
     void testProcessNewExperiments() {
         var newExperiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        instancesInfoRepository.save(newExperiment.getInstancesInfo());
         experimentRepository.save(newExperiment);
         experimentScheduler.processExperiments();
         verify(experimentRequestProcessor, atLeastOnce()).startExperiment(newExperiment.getId());
@@ -76,6 +81,7 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
     @Test
     void testProcessExperiments() {
         var experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.IN_PROGRESS);
+        instancesInfoRepository.save(experiment.getInstancesInfo());
         experimentRepository.save(experiment);
         createAndSaveExperimentStep(experiment, ExperimentStep.EXPERIMENT_PROCESSING, ExperimentStepStatus.FAILED);
         createAndSaveExperimentStep(experiment, ExperimentStep.UPLOAD_EXPERIMENT_MODEL, ExperimentStepStatus.READY);
@@ -88,6 +94,7 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
     @Test
     void testProcessFinishedExperimentsWithErrorStep() {
         var experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.IN_PROGRESS);
+        instancesInfoRepository.save(experiment.getInstancesInfo());
         experimentRepository.save(experiment);
         createAndSaveExperimentStep(experiment, ExperimentStep.EXPERIMENT_PROCESSING, ExperimentStepStatus.ERROR);
         createAndSaveExperimentStep(experiment, ExperimentStep.UPLOAD_EXPERIMENT_MODEL, ExperimentStepStatus.CANCELED);
@@ -101,6 +108,7 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
     @Test
     void testProcessFinishedExperimentsWithAllCompletedSteps() {
         var experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.IN_PROGRESS);
+        instancesInfoRepository.save(experiment.getInstancesInfo());
         experimentRepository.save(experiment);
         createAndSaveExperimentStep(experiment, ExperimentStep.EXPERIMENT_PROCESSING, ExperimentStepStatus.COMPLETED);
         createAndSaveExperimentStep(experiment, ExperimentStep.UPLOAD_EXPERIMENT_MODEL, ExperimentStepStatus.COMPLETED);
@@ -114,6 +122,7 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
     @Test
     void testProcessFinishedExperimentsWithNotAllCompleted() {
         var experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.IN_PROGRESS);
+        instancesInfoRepository.save(experiment.getInstancesInfo());
         experimentRepository.save(experiment);
         createAndSaveExperimentStep(experiment, ExperimentStep.EXPERIMENT_PROCESSING, ExperimentStepStatus.COMPLETED);
         createAndSaveExperimentStep(experiment, ExperimentStep.UPLOAD_EXPERIMENT_MODEL, ExperimentStepStatus.COMPLETED);

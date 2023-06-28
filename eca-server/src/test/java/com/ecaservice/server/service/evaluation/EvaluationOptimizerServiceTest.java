@@ -43,6 +43,7 @@ import com.ecaservice.server.repository.ClassifierOptionsRequestRepository;
 import com.ecaservice.server.repository.ErsRequestRepository;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
+import com.ecaservice.server.service.InstancesInfoService;
 import com.ecaservice.server.service.ers.ErsClient;
 import com.ecaservice.server.service.ers.ErsErrorHandler;
 import com.ecaservice.server.service.ers.ErsRequestSender;
@@ -70,18 +71,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.util.DigestUtils;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
 
 import javax.inject.Inject;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
-import static com.ecaservice.server.util.InstancesUtils.toJson;
+import static com.ecaservice.server.util.InstancesUtils.md5Hash;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -98,7 +97,7 @@ import static org.mockito.Mockito.when;
         EvaluationRequestMapperImpl.class, ClassifierOptionsRequestMapperImpl.class,
         ErsConfig.class, EvaluationLogMapperImpl.class, ClassifiersProperties.class,
         EvaluationService.class, ErsEvaluationMethodMapperImpl.class, ErsResponseStatusMapperImpl.class,
-        InstancesInfoMapperImpl.class, ErsRequestService.class,
+        InstancesInfoMapperImpl.class, ErsRequestService.class, InstancesInfoService.class,
         EvaluationOptimizerService.class, ClassifierInfoMapperImpl.class, ErsErrorHandler.class,
         ClassifierOptionsCacheService.class, DateTimeConverter.class})
 class EvaluationOptimizerServiceTest extends AbstractJpaTest {
@@ -139,8 +138,7 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
     public void init() throws Exception {
         Instances data = TestHelperUtils.loadInstances();
         instancesRequestDataModel = new InstancesRequestDataModel(data);
-        String instancesJson = toJson(instancesRequestDataModel.getData());
-        dataMd5Hash = DigestUtils.md5DigestAsHex(instancesJson.getBytes(StandardCharsets.UTF_8));
+        dataMd5Hash = md5Hash(instancesRequestDataModel.getData());
         DecisionTreeOptions treeOptions = TestHelperUtils.createDecisionTreeOptions();
         treeOptions.setDecisionTreeType(DecisionTreeType.CART);
         decisionTreeOptions = objectMapper.writeValueAsString(treeOptions);

@@ -15,6 +15,7 @@ import com.ecaservice.server.mapping.InstancesInfoMapperImpl;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.Experiment_;
 import com.ecaservice.server.repository.ExperimentRepository;
+import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.experiment.ExperimentDataService;
 import com.ecaservice.server.service.experiment.ExperimentStepProcessor;
@@ -60,6 +61,8 @@ class ExperimentsBaseReportDataFetcherTest extends AbstractJpaTest {
 
     @Inject
     private ExperimentRepository experimentRepository;
+    @Inject
+    private InstancesInfoRepository instancesInfoRepository;
 
     @Inject
     private ExperimentsBaseReportDataFetcher experimentsBaseReportDataFetcher;
@@ -67,6 +70,7 @@ class ExperimentsBaseReportDataFetcherTest extends AbstractJpaTest {
     @Override
     public void deleteAll() {
         experimentRepository.deleteAll();
+        instancesInfoRepository.deleteAll();
     }
 
     @Test
@@ -74,6 +78,7 @@ class ExperimentsBaseReportDataFetcherTest extends AbstractJpaTest {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
         experiment.setCreationDate(CREATION_DATE);
         experiment.setExperimentType(ExperimentType.ADA_BOOST);
+        instancesInfoRepository.save(experiment.getInstancesInfo());
         experimentRepository.save(experiment);
         String searchQuery = experiment.getRequestId().substring(0, 10);
         PageRequestDto pageRequestDto =

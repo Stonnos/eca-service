@@ -16,6 +16,7 @@ import com.ecaservice.server.model.entity.EvaluationLog_;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.repository.EvaluationResultsRequestEntityRepository;
+import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.classifiers.ClassifierOptionsProcessor;
 import com.ecaservice.server.service.ers.ErsService;
@@ -72,6 +73,8 @@ class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
     @Inject
     private EvaluationLogRepository evaluationLogRepository;
     @Inject
+    private InstancesInfoRepository instancesInfoRepository;
+    @Inject
     private EvaluationResultsRequestEntityRepository evaluationResultsRequestEntityRepository;
 
     private EvaluationLogsBaseReportDataFetcher evaluationLogsBaseReportDataFetcher;
@@ -90,6 +93,7 @@ class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
     @Override
     public void deleteAll() {
         evaluationLogRepository.deleteAll();
+        instancesInfoRepository.deleteAll();
     }
 
     @Test
@@ -97,6 +101,7 @@ class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
         EvaluationLog evaluationLog = TestHelperUtils.createEvaluationLog();
         evaluationLog.setCreationDate(CREATION_DATE);
         evaluationLog.setRequestStatus(RequestStatus.FINISHED);
+        instancesInfoRepository.save(evaluationLog.getInstancesInfo());
         evaluationLogRepository.save(evaluationLog);
         String searchQuery = evaluationLog.getRequestId().substring(0, 10);
         PageRequestDto pageRequestDto =

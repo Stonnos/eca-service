@@ -7,12 +7,10 @@ import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.springframework.util.DigestUtils;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
-import static com.ecaservice.server.util.InstancesUtils.toJson;
+import static com.ecaservice.server.util.InstancesUtils.md5Hash;
 
 /**
  * Implements mapping to classifier options request.
@@ -46,8 +44,7 @@ public interface ClassifierOptionsRequestMapper {
     default void mapData(InstancesRequestDataModel instancesRequest,
                          @MappingTarget ClassifierOptionsRequest classifierOptionsRequest) {
         if (Optional.ofNullable(instancesRequest.getData()).isPresent()) {
-            String jsonData = toJson(instancesRequest.getData());
-            String dataMd5Hash = DigestUtils.md5DigestAsHex(jsonData.getBytes(StandardCharsets.UTF_8));
+            String dataMd5Hash = md5Hash(instancesRequest.getData());
             classifierOptionsRequest.setDataHash(dataMd5Hash);
         }
     }

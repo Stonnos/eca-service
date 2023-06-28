@@ -13,6 +13,7 @@ import com.ecaservice.server.model.evaluation.ClassificationResult;
 import com.ecaservice.server.model.evaluation.EvaluationRequestDataModel;
 import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
 import com.ecaservice.server.repository.EvaluationLogRepository;
+import com.ecaservice.server.service.InstancesInfoService;
 import com.ecaservice.server.service.evaluation.initializers.ClassifierInitializerService;
 import eca.core.evaluation.EvaluationResults;
 import eca.core.model.ClassificationModel;
@@ -35,6 +36,7 @@ import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.putMdc;
 import static com.ecaservice.common.web.util.LogHelper.putMdcIfAbsent;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.toJsonString;
+import static com.ecaservice.server.util.InstancesUtils.md5Hash;
 import static com.ecaservice.server.util.Utils.buildEvaluationResultsModel;
 import static com.ecaservice.server.util.Utils.buildInternalErrorEvaluationResultsModel;
 
@@ -60,6 +62,7 @@ public class EvaluationRequestService {
     private final ClassifierInitializerService classifierInitializerService;
     private final ClassifierOptionsAdapter classifierOptionsAdapter;
     private final ObjectStorageService objectStorageService;
+    private final InstancesInfoService instancesInfoService;
 
     /**
      * Processes input request and returns classification results.
@@ -118,7 +121,11 @@ public class EvaluationRequestService {
 
     private EvaluationLog createAndSaveEvaluationLog(String requestId,
                                                      EvaluationRequestDataModel evaluationRequestDataModel) {
+        String dataMd5Hash = md5Hash(evaluationRequestDataModel.getData());
+        var instancesInfo =
+                instancesInfoService.getOrSaveInstancesInfo(dataMd5Hash, evaluationRequestDataModel.getData());
         EvaluationLog evaluationLog = evaluationLogMapper.map(evaluationRequestDataModel, crossValidationConfig);
+        evaluationLog.setInstancesInfo(instancesInfo);
         processClassifierOptions(evaluationRequestDataModel.getClassifier(), evaluationLog);
         evaluationLog.setRequestStatus(RequestStatus.IN_PROGRESS);
         evaluationLog.setRequestId(requestId);

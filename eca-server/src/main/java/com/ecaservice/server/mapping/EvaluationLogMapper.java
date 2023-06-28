@@ -44,7 +44,6 @@ public abstract class EvaluationLogMapper extends AbstractEvaluationMapper {
      * @return evaluation log entity
      */
     @Mapping(source = "evaluationRequest.classifier", target = "classifierInfo")
-    @Mapping(source = "evaluationRequest.data", target = "instancesInfo", qualifiedByName = "mapInstancesInfo")
     @Mapping(target = "numFolds", ignore = true)
     @Mapping(target = "numTests", ignore = true)
     @Mapping(target = "seed", ignore = true)

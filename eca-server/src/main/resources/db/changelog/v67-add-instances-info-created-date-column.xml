@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v67-add-instances-info-created-date-column.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="add_instances_info_created_date_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="instances_info"/>
+            <not>
+                <columnExists tableName="instances_info" columnName="created_date"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="instances_info">
+            <column name="created_date" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add_instances_info_uuid_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="instances_info"/>
+            <not>
+                <columnExists tableName="instances_info" columnName="uuid"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="instances_info">
+            <column name="uuid" type="varchar(255)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="instances_info_uuid_unique_idx"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add_experiment_instances_info_id_not_null_constraint" author="roman.batygin@mail.ru"
+               context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment"/>
+            <columnExists tableName="experiment" columnName="instances_info_id"/>
+        </preConditions>
+        <addNotNullConstraint tableName="experiment" columnName="instances_info_id"/>
+    </changeSet>
+
+    <changeSet id="add_instances_info_data_md5_hash_not_null_constraint" author="roman.batygin@mail.ru"
+               context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="instances_info"/>
+            <columnExists tableName="instances_info" columnName="data_md5_hash"/>
+        </preConditions>
+        <addNotNullConstraint tableName="instances_info" columnName="data_md5_hash"/>
+    </changeSet>
+
+    <changeSet id="add_instances_info_data_md5_hash_unique_constraint" author="roman.batygin@mail.ru"
+               context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="instances_info"/>
+            <columnExists tableName="instances_info" columnName="data_md5_hash"/>
+        </preConditions>
+        <addUniqueConstraint tableName="instances_info" columnNames="data_md5_hash"
+                             constraintName="instances_info_data_md5_hash_unique_idx"/>
+    </changeSet>
+
+    <changeSet id="add_classifier_options_request_request_id_unique_constraint" author="roman.batygin@mail.ru"
+               context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="classifier_options_request"/>
+            <columnExists tableName="classifier_options_request" columnName="request_id"/>
+        </preConditions>
+        <addUniqueConstraint tableName="classifier_options_request" columnNames="request_id"
+                             constraintName="classifier_options_request_request_id_unique_idx"/>
+    </changeSet>
+
+</databaseChangeLog>
