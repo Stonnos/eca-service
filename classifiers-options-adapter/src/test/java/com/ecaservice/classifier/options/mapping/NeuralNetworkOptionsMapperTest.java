@@ -1,7 +1,6 @@
 package com.ecaservice.classifier.options.mapping;
 
 import com.ecaservice.classifier.options.TestHelperUtils;
-import com.ecaservice.classifier.options.config.ClassifiersOptionsConfig;
 import com.ecaservice.classifier.options.model.ActivationFunctionOptions;
 import com.ecaservice.classifier.options.model.NeuralNetworkOptions;
 import eca.neural.BackPropagation;
@@ -11,9 +10,7 @@ import eca.neural.functions.ActivationFunctionBuilder;
 import eca.neural.functions.ActivationFunctionType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
@@ -26,17 +23,13 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Roman Batygin
  */
 @ExtendWith(SpringExtension.class)
-@EnableConfigurationProperties
-@TestPropertySource("classpath:application.properties")
-@Import({NeuralNetworkOptionsMapperImpl.class, ClassifiersOptionsConfig.class})
+@Import(NeuralNetworkOptionsMapperImpl.class)
 class NeuralNetworkOptionsMapperTest {
 
     private static final double COEFFICIENT = 2.0d;
 
     @Inject
     private NeuralNetworkOptionsMapper neuralNetworkOptionsMapper;
-    @Inject
-    private ClassifiersOptionsConfig classifiersOptionsConfig;
 
     @Test
     void testMapNeuralNetworkOptions() {
@@ -57,8 +50,6 @@ class NeuralNetworkOptionsMapperTest {
                 (AbstractFunction) neuralNetwork.getMultilayerPerceptron().getActivationFunction();
         assertThat(activationFunction.getCoefficient()).isEqualTo(
                 neuralNetworkOptions.getActivationFunctionOptions().getCoefficient());
-        assertThat(neuralNetwork.getDecimalFormat().getMaximumFractionDigits()).isEqualTo(
-                classifiersOptionsConfig.getMaximumFractionDigits());
         assertThat(neuralNetwork.getMultilayerPerceptron().getNumInNeurons()).isEqualTo(
                 neuralNetworkOptions.getNumInNeurons());
         assertThat(neuralNetwork.getMultilayerPerceptron().getNumOutNeurons()).isEqualTo(

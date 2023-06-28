@@ -22,7 +22,9 @@ public class HeterogeneousClassifierFactory {
      */
     @ObjectFactory
     public HeterogeneousClassifier createHeterogeneousClassifier(HeterogeneousClassifierOptions options) {
-        return Boolean.TRUE.equals(options.getUseRandomSubspaces()) ? new ModifiedHeterogeneousClassifier() :
-                new HeterogeneousClassifier();
+        if (Boolean.TRUE.equals(options.getUseRandomSubspaces())) {
+            return new ModifiedHeterogeneousClassifier();
+        }
+        return new HeterogeneousClassifier();
     }
 }

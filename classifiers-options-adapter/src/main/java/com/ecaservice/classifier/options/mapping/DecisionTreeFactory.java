@@ -2,7 +2,6 @@ package com.ecaservice.classifier.options.mapping;
 
 import com.ecaservice.classifier.options.model.DecisionTreeOptions;
 import eca.ensemble.forests.DecisionTreeBuilder;
-import eca.trees.CART;
 import eca.trees.DecisionTreeClassifier;
 import org.mapstruct.ObjectFactory;
 import org.springframework.stereotype.Component;
@@ -25,7 +24,6 @@ public class DecisionTreeFactory {
      */
     @ObjectFactory
     public DecisionTreeClassifier createDecisionTreeClassifier(DecisionTreeOptions decisionTreeOptions) {
-        return decisionTreeOptions.getDecisionTreeType() != null ?
-                decisionTreeOptions.getDecisionTreeType().handle(DECISION_TREE_BUILDER) : new CART();
+        return decisionTreeOptions.getDecisionTreeType().handle(DECISION_TREE_BUILDER);
     }
 }

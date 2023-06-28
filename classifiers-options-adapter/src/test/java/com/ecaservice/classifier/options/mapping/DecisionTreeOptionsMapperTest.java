@@ -2,7 +2,6 @@ package com.ecaservice.classifier.options.mapping;
 
 import com.ecaservice.classifier.options.TestHelperUtils;
 import com.ecaservice.classifier.options.model.DecisionTreeOptions;
-import com.ecaservice.classifier.options.model.OptionsVariables;
 import eca.ensemble.forests.DecisionTreeBuilder;
 import eca.ensemble.forests.DecisionTreeType;
 import eca.trees.CHAID;
@@ -13,7 +12,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
-import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -50,17 +48,6 @@ class DecisionTreeOptionsMapperTest {
         assertThat(decisionTreeClassifier.isUseRandomSplits()).isFalse();
         assertThat(decisionTreeClassifier.isRandomTree()).isTrue();
 
-    }
-
-    @Test
-    void testMapChaidWithAlphaInAdditionalOptions() {
-        DecisionTreeOptions decisionTreeOptions = TestHelperUtils.createDecisionTreeOptions();
-        decisionTreeOptions.setDecisionTreeType(DecisionTreeType.CHAID);
-        decisionTreeOptions.setAdditionalOptions(
-                Collections.singletonMap(OptionsVariables.ALPHA, String.valueOf(ALPHA_VALUE)));
-        DecisionTreeClassifier decisionTreeClassifier = decisionTreeOptionsMapper.map(decisionTreeOptions);
-        assertThat(decisionTreeClassifier).isInstanceOf(CHAID.class);
-        assertThat(((CHAID) decisionTreeClassifier).getAlpha()).isEqualTo(ALPHA_VALUE);
     }
 
     @Test

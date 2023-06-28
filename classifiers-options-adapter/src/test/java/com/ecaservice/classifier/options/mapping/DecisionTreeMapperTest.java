@@ -46,7 +46,6 @@ class DecisionTreeMapperTest {
         DecisionTreeClassifier treeClassifier = TestHelperUtils.createDecisionTreeClassifier(DecisionTreeType.CHAID);
         DecisionTreeOptions options = decisionTreeMapper.map(treeClassifier);
         assertThat(options.getDecisionTreeType()).isEqualTo(DecisionTreeType.CHAID);
-        assertThat(options.getAdditionalOptions()).isNull();
         assertThat(options.getAlpha()).isEqualTo(((CHAID) treeClassifier).getAlpha());
     }
 
