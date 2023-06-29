@@ -18,11 +18,11 @@
     "dictionary": null
   },
   {
-    "fieldName": "instancesInfo.relationName",
+    "fieldName": "instancesInfo.id",
     "description": "Обучающая выборка",
     "fieldOrder": 2,
-    "filterFieldType": "TEXT",
-    "matchMode": "LIKE",
+    "filterFieldType": "LAZY_REFERENCE",
+    "matchMode": "EQUALS",
     "multiple": false,
     "dictionary": null
   },

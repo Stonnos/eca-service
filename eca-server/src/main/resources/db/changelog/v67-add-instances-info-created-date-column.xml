@@ -104,4 +104,38 @@
         </preConditions>
         <addNotNullConstraint tableName="experiment_results" columnName="pct_correct"/>
     </changeSet>
+
+    <changeSet id="insert_experiment_instances_info_id_field_in_filter_template" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from filter_template where id = 1
+            </sqlCheck>
+            <sqlCheck expectedResult="1">
+                select count(*) from filter_field where filter_template_id = 1 and field_name = 'instancesInfo.relationName'
+            </sqlCheck>
+        </preConditions>
+        <update tableName="filter_field">
+            <column name="field_name" value="instancesInfo.id"/>
+            <column name="filter_field_type" value="LAZY_REFERENCE"/>
+            <column name="match_mode" value="EQUALS"/>
+            <where>filter_template_id = 1 and field_name = 'instancesInfo.relationName'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="insert_evaluation_log_instances_info_id_field_in_filter_template" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from filter_template where id = 2
+            </sqlCheck>
+            <sqlCheck expectedResult="1">
+                select count(*) from filter_field where filter_template_id = 2 and field_name = 'instancesInfo.relationName'
+            </sqlCheck>
+        </preConditions>
+        <update tableName="filter_field">
+            <column name="field_name" value="instancesInfo.id"/>
+            <column name="filter_field_type" value="LAZY_REFERENCE"/>
+            <column name="match_mode" value="EQUALS"/>
+            <where>filter_template_id = 2 and field_name = 'instancesInfo.relationName'</where>
+        </update>
+    </changeSet>
 </databaseChangeLog>

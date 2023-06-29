@@ -983,7 +983,7 @@ image::./images/eca-web-push-db-schema.png[alt=Схема базы данных 
 |field_name                 |varchar(255)     |-|+|-                                 |Название поля в сущности
 |description                |varchar(255)     |-|+|-                                 |Описание поля
 |field_order                |integer          |-|+|-                                 |Порядок отображения поля в фильтре
-|filter_field_type          |varchar(255)     |-|+|-                                 |Тип поля для отображения, например TEXT, DATE, REFERENCE.
+|filter_field_type          |varchar(255)     |-|+|-                                 |Тип поля для отображения, например TEXT, DATE, REFERENCE, LAZY_REFERENCE.
 |match_mode                 |varchar(255)     |-|+|-                                 |Тип фильтрации по полю, например EQUALS, LIKE, RANGE.
 |multiple                   |boolean          |-|-|-                                 |Допускается фильтрация по нескольким значениям поля
 |filter_dictionary_id       |bigint           |-|-|fk_filter_field_dictionary_id     |Внешний ключ, ID словаря (заполняется для полей типа REFERENCE)

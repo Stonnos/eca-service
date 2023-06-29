@@ -1,7 +1,7 @@
 package com.ecaservice.web.dto.model;
 
 /**
- * Field field view type.
+ * Filter field view type.
  *
  * @author Roman Batygin
  */
@@ -13,12 +13,17 @@ public enum FilterFieldType {
     TEXT,
 
     /**
-     * Reference field filter
+     * Static reference field filter (used for select item)
      */
     REFERENCE,
 
     /**
      * Date field filter in format yyyy-MM-dd
      */
-    DATE
+    DATE,
+
+    /**
+     * Lazy reference field filter (used for lazy loading specific data)
+     */
+    LAZY_REFERENCE
 }
