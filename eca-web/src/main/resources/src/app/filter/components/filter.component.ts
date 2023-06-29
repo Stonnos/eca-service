@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Filter } from "../model/filter.model";
+import { AutocompleteItemModel } from "../model/autocomplete-item.model";
 
 @Component({
   selector: 'app-filter',
@@ -10,11 +11,18 @@ export class FilterComponent {
 
   public now: Date = new Date();
 
+  public autocompleted: boolean = false;
+
+  public selectedAutocompleteField: string;
+
   @Input()
   public filters: Filter[];
 
   @Output()
   public apply: EventEmitter<void> = new EventEmitter();
+
+  @Output()
+  public autocompleteField: EventEmitter<AutocompleteItemModel> = new EventEmitter<AutocompleteItemModel>();
 
   public onApply() {
     this.apply.emit();
@@ -26,5 +34,11 @@ export class FilterComponent {
       filter.currentValues = null;
     });
     this.apply.emit();
+  }
+
+  public onAutocompleteItem(fieldName: string, event): void {
+    this.autocompleted = true;
+    this.selectedAutocompleteField = fieldName;
+    this.autocompleteField.emit(new AutocompleteItemModel(fieldName, event.query));
   }
 }

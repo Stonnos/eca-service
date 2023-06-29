@@ -29,6 +29,7 @@ import { PushTokenService } from "./push/push-token.service";
 import { ChartBarStatisticsComponent } from "./chart-bar-statistics/chart-bar-statistics.component";
 import { NotBlankValidator } from "./validators/not-blank-validator.directive";
 import { InstancesAutocompleteComponent } from "./instances-autocomplete/instances-autocomplete.component";
+import { InstancesInfoService } from "./instances-info/services/instances-info.service";
 
 @NgModule({
   imports: [
@@ -78,6 +79,7 @@ import { InstancesAutocompleteComponent } from "./instances-autocomplete/instanc
     FieldService,
     ReportsService,
     ValidationService,
+    InstancesInfoService,
     ErrorHandler,
     WebAppService,
     WsService,

@@ -1,8 +1,8 @@
 import { Component, Injector } from '@angular/core';
 import {
-  AbstractEvaluationDto
+  InstancesInfoDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
-import { AbstractEvaluationDtoFields } from "../util/field-names";
+import { InstancesInfoDtoFields } from "../util/field-names";
 import { FieldService } from "../services/field.service";
 import { BaseDetailsComponent } from "../base-details/base-details.component";
 
@@ -11,7 +11,7 @@ import { BaseDetailsComponent } from "../base-details/base-details.component";
   templateUrl: './instances-info.html',
   styleUrls: ['./instances-info.scss']
 })
-export class InstancesInfo extends BaseDetailsComponent<AbstractEvaluationDto> {
+export class InstancesInfo extends BaseDetailsComponent<InstancesInfoDto> {
 
   public constructor(private injector: Injector) {
     super(injector.get(FieldService));
@@ -19,10 +19,10 @@ export class InstancesInfo extends BaseDetailsComponent<AbstractEvaluationDto> {
 
   public ngOnInit(): void {
     this.fields = [
-      { name: AbstractEvaluationDtoFields.NUM_INSTANCES, label: "Число объектов:" },
-      { name: AbstractEvaluationDtoFields.NUM_ATTRIBUTES, label: "Число атрибутов:" },
-      { name: AbstractEvaluationDtoFields.NUM_CLASSES, label: "Число классов:" },
-      { name: AbstractEvaluationDtoFields.CLASS_NAME, label: "Атрибут класса:" },
+      { name: InstancesInfoDtoFields.NUM_INSTANCES, label: "Число объектов:" },
+      { name: InstancesInfoDtoFields.NUM_ATTRIBUTES, label: "Число атрибутов:" },
+      { name: InstancesInfoDtoFields.NUM_CLASSES, label: "Число классов:" },
+      { name: InstancesInfoDtoFields.CLASS_NAME, label: "Атрибут класса:" },
     ];
   }
 }

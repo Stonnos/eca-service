@@ -1,6 +1,6 @@
 import { Component, Injector } from '@angular/core';
 import {
-  EvaluationLogDto, FilterFieldDto,
+  EvaluationLogDto, FilterFieldDto, InstancesInfoDto,
   PageDto,
   PageRequestDto, RequestStatusStatisticsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
@@ -13,10 +13,13 @@ import { FilterService } from "../../filter/services/filter.service";
 import { EvaluationMethod } from "../../common/model/evaluation-method.enum";
 import { Router } from "@angular/router";
 import { RouterPaths } from "../../routing/router-paths";
-import { EvaluationLogFields } from "../../common/util/field-names";
+import { EvaluationLogFields, InstancesInfoDtoFields } from "../../common/util/field-names";
 import { FieldService } from "../../common/services/field.service";
 import { ReportsService } from "../../common/services/report.service";
 import { ReportType } from "../../common/model/report-type.enum";
+import { InstancesInfoService } from "../../common/instances-info/services/instances-info.service";
+import { AutocompleteItemModel } from "../../filter/model/autocomplete-item.model";
+import { Filter } from "../../filter/model/filter.model";
 
 @Component({
   selector: 'app-classifier-list',
@@ -27,6 +30,8 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
 
   private static readonly EVALUATION_LOGS_REPORT_FILE_NAME = 'evaluation-logs-report.xlsx';
 
+  private instancesPageSize: number = 100;
+
   public requestStatusStatisticsDto: RequestStatusStatisticsDto;
 
   public selectedEvaluationLog: EvaluationLogDto;
@@ -36,6 +41,7 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
                      private classifiersService: ClassifiersService,
                      private filterService: FilterService,
                      private reportsService: ReportsService,
+                     private instancesInfoService: InstancesInfoService,
                      private router: Router) {
     super(injector.get(MessageService), injector.get(FieldService));
     this.defaultSortField = EvaluationLogFields.CREATION_DATE;
@@ -107,6 +113,47 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
       () => this.loading = false,
       (error) => this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message })
     );
+  }
+
+  public onFilterFieldAutocomplete(autocompleteItemModel: AutocompleteItemModel): void {
+    if (autocompleteItemModel.filterField == 'instancesInfo.id') {
+      const pageRequest: PageRequestDto = {
+        page: 0,
+        size: this.instancesPageSize,
+        sortField: InstancesInfoDtoFields.CREATED_DATE,
+        ascending: false,
+        searchQuery: null,
+        filters: [
+          {
+            name: InstancesInfoDtoFields.RELATION_NAME,
+            values: [autocompleteItemModel.searchQuery],
+            matchMode: 'LIKE'
+          }
+        ]
+      };
+      this.instancesInfoService.getInstancesInfoPage(pageRequest)
+        .subscribe({
+          next: (instancesInfoPage: PageDto<InstancesInfoDto>) => {
+            const filter = this.filters.filter((item: Filter) => item.name == autocompleteItemModel.filterField).pop();
+            filter.values = instancesInfoPage.content.map((item: InstancesInfoDto) => {
+              return {
+                label: item.relationName,
+                value: item
+              }
+            });
+          },
+          error: (error) => {
+            this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+          }
+        });
+    }
+  }
+
+  protected tramsFormLazyReferenceValue(filter: Filter, values: any[]): string[] {
+    if (filter.name == 'instancesInfo.id') {
+      return values.map((item) => item.value.id);
+    }
+    return super.tramsFormLazyReferenceValue(filter, values);
   }
 
   private toggleOverlayPanel(event, evaluationLog: EvaluationLogDto, column: string, overlayPanel: OverlayPanel): void {

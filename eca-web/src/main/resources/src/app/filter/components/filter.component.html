@@ -48,7 +48,33 @@
             </p-calendar>
           </div>
         </ng-container>
-
+        <ng-container *ngSwitchCase="'LAZY_REFERENCE'">
+          <div class="form-group">
+            <label class="filter-label">{{ filter.label }}</label>
+            <p-autoComplete required
+                            [(ngModel)]="filter.currentValue"
+                            [suggestions]="filter.values"
+                            (completeMethod)="onAutocompleteItem(filter.name, $event)"
+                            field="label"
+                            dropdownMode="current"
+                            emptyMessage="Данные не найдены"
+                            [forceSelection]="true"
+                            [dropdown]="true">
+              <!--Customize item template  -->
+              <ng-template let-item pTemplate="item">
+                <div [ngSwitch]="selectedAutocompleteField">
+                  <ng-container *ngSwitchCase="'instancesInfo.id'">
+                    <app-instances-info [item]="item.value">
+                    </app-instances-info>
+                  </ng-container>
+                  <ng-container *ngSwitchDefault>
+                    {{ item.label }}
+                  </ng-container>
+                </div>
+              </ng-template>
+            </p-autoComplete>
+          </div>
+        </ng-container>
         <ng-container *ngSwitchDefault>
           <label class="filter-label">{{ filter.label }}</label>
           <input pInputText type="text" [(ngModel)]="filter.currentValue" maxlength="255"/>

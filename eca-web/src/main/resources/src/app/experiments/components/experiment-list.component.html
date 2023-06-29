@@ -99,7 +99,7 @@
         </app-evaluation-method-info>
       </ng-container>
       <ng-container *ngSwitchCase="'instancesInfo.relationName'">
-        <app-instances-info [item]="selectedExperiment">
+        <app-instances-info [item]="selectedExperiment?.instancesInfo">
         </app-instances-info>
       </ng-container>
       <ng-container *ngSwitchDefault>
