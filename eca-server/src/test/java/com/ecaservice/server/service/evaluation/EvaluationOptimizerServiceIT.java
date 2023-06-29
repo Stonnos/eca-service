@@ -3,11 +3,14 @@ package com.ecaservice.server.service.evaluation;
 import com.ecaservice.classifier.options.config.ClassifiersOptionsAutoConfiguration;
 import com.ecaservice.classifier.options.model.DecisionTreeOptions;
 import com.ecaservice.core.lock.aspect.LockExecutionAspect;
+import com.ecaservice.core.lock.metrics.LockMeterService;
 import com.ecaservice.core.lock.redis.config.RedisLockAutoConfiguration;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import com.ecaservice.ers.dto.ClassifierOptionsResponse;
+import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
+import com.ecaservice.server.config.ClassifiersProperties;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.config.ers.ErsConfig;
 import com.ecaservice.server.configuation.ExecutorConfiguration;
@@ -28,6 +31,7 @@ import com.ecaservice.server.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.server.repository.ClassifierOptionsRequestRepository;
 import com.ecaservice.server.repository.ErsRequestRepository;
 import com.ecaservice.server.repository.EvaluationLogRepository;
+import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.InstancesInfoService;
 import com.ecaservice.server.service.ers.ErsClient;
@@ -37,6 +41,7 @@ import com.ecaservice.server.service.ers.ErsRequestService;
 import com.ecaservice.server.service.evaluation.initializers.ClassifierInitializerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.ensemble.forests.DecisionTreeType;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -68,10 +73,10 @@ import static org.mockito.Mockito.when;
 @Import({ExecutorConfiguration.class, ClassifiersOptionsAutoConfiguration.class, AppProperties.class,
         CrossValidationConfig.class, EvaluationRequestService.class, InstancesInfoMapperImpl.class,
         ClassifierOptionsRequestModelMapperImpl.class, ClassifierReportMapperImpl.class,
-        EvaluationRequestMapperImpl.class, ClassifierOptionsRequestMapperImpl.class,
+        EvaluationRequestMapperImpl.class, ClassifierOptionsRequestMapperImpl.class, ClassifiersProperties.class,
         ErsConfig.class, EvaluationLogMapperImpl.class, LockExecutionAspect.class, ErsErrorHandler.class,
         EvaluationService.class, ErsEvaluationMethodMapperImpl.class, ErsResponseStatusMapperImpl.class,
-        InstancesInfoMapperImpl.class, ErsRequestService.class, InstancesInfoService.class,
+        InstancesInfoMapperImpl.class, ErsRequestService.class, InstancesInfoService.class, LockMeterService.class,
         EvaluationOptimizerService.class, ClassifierInfoMapperImpl.class, RedisAutoConfiguration.class,
         ClassifierOptionsCacheService.class, DateTimeConverter.class, RedisLockAutoConfiguration.class})
 class EvaluationOptimizerServiceIT extends AbstractJpaTest {
@@ -81,6 +86,10 @@ class EvaluationOptimizerServiceIT extends AbstractJpaTest {
 
     @MockBean
     private ErsClient ersClient;
+    @MockBean
+    private MeterRegistry meterRegistry;
+    @MockBean
+    private ObjectStorageService objectStorageService;
     @MockBean
     private ClassifierInitializerService classifierInitializerService;
     @MockBean
@@ -93,6 +102,8 @@ class EvaluationOptimizerServiceIT extends AbstractJpaTest {
     private ErsRequestRepository ersRequestRepository;
     @Inject
     private EvaluationLogRepository evaluationLogRepository;
+    @Inject
+    private InstancesInfoRepository instancesInfoRepository;
     @Inject
     private ClassifierOptionsRequestRepository classifierOptionsRequestRepository;
     @Inject
@@ -129,6 +140,7 @@ class EvaluationOptimizerServiceIT extends AbstractJpaTest {
         classifierOptionsRequestRepository.deleteAll();
         ersRequestRepository.deleteAll();
         evaluationLogRepository.deleteAll();
+        instancesInfoRepository.deleteAll();
     }
 
     @Test
