@@ -6,7 +6,6 @@ import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.classifier.options.model.StackingOptions;
 import com.ecaservice.common.web.expression.SpelExpressionHelper;
 import com.ecaservice.core.filter.service.FilterService;
-import com.ecaservice.server.mapping.ClassifierInfoMapper;
 import com.ecaservice.server.model.entity.ClassifierInfo;
 import com.ecaservice.web.dto.model.ClassifierInfoDto;
 import com.ecaservice.web.dto.model.FieldDictionaryDto;
@@ -48,7 +47,6 @@ public class ClassifierOptionsProcessor {
 
     private static final DecimalFormat DEFAULT_DECIMAL_FORMAT = NumericFormatFactory.getInstance(Integer.MAX_VALUE);
 
-    private final ClassifierInfoMapper classifierInfoMapper;
     private final ClassifiersTemplateProvider classifiersTemplateProvider;
     private final FilterService filterService;
     private final ClassifiersOptionsConfig classifiersOptionsConfig;
@@ -87,15 +85,9 @@ public class ClassifierOptionsProcessor {
      */
     public ClassifierInfoDto processClassifierInfo(ClassifierInfo classifierInfo) {
         log.debug("Starting to process classifier info [{}]", classifierInfo.getClassifierName());
-        ClassifierInfoDto classifierInfoDto;
-        if (StringUtils.isNotEmpty(classifierInfo.getClassifierOptions())) {
-            var classifierOptions = parseOptions(classifierInfo.getClassifierOptions());
-            classifierInfoDto = processClassifierOptions(classifierOptions);
-            classifierInfoDto.setClassifierName(classifierInfo.getClassifierName());
-        } else {
-            //Returns classifiers options list (for old data)
-            classifierInfoDto = classifierInfoMapper.map(classifierInfo);
-        }
+        var classifierOptions = parseOptions(classifierInfo.getClassifierOptions());
+        ClassifierInfoDto classifierInfoDto = processClassifierOptions(classifierOptions);
+        classifierInfoDto.setClassifierName(classifierInfo.getClassifierName());
         var classifierName = getClassifierNameLabel(classifierInfo.getClassifierName());
         classifierInfoDto.setClassifierDescription(classifierName);
         return classifierInfoDto;

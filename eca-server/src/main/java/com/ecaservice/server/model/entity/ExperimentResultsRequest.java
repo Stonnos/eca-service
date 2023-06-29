@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -22,7 +22,7 @@ public class ExperimentResultsRequest extends ErsRequest {
     /**
      * Experiment results entity
      */
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "experiment_results_id", nullable = false, unique = true)
     private ExperimentResultsEntity experimentResults;
 }

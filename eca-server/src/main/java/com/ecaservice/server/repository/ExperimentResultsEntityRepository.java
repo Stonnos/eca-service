@@ -2,7 +2,6 @@ package com.ecaservice.server.repository;
 
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentResultsEntity;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,7 +17,6 @@ import java.util.Optional;
  */
 public interface ExperimentResultsEntityRepository extends JpaRepository<ExperimentResultsEntity, Long> {
 
-    @EntityGraph(value = "classifierInfo", type = EntityGraph.EntityGraphType.FETCH)
     Optional<ExperimentResultsEntity> findById(Long id);
 
     /**
@@ -27,7 +25,6 @@ public interface ExperimentResultsEntityRepository extends JpaRepository<Experim
      * @param experiment - experiment entity
      * @return experiment results list
      */
-    @EntityGraph(value = "classifierInfo", type = EntityGraph.EntityGraphType.FETCH)
     List<ExperimentResultsEntity> findByExperimentOrderByResultsIndex(Experiment experiment);
 
     /**

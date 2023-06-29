@@ -27,6 +27,7 @@ import org.mockito.Mock;
 import org.springframework.context.annotation.Import;
 
 import javax.inject.Inject;
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.UUID;
 
@@ -89,6 +90,7 @@ class ErsServiceTest extends AbstractJpaTest {
         ExperimentResultsEntity experimentResultsEntity = new ExperimentResultsEntity();
         experimentResultsEntity.setResultsIndex(0);
         experimentResultsEntity.setExperiment(experiment);
+        experimentResultsEntity.setPctCorrect(BigDecimal.TEN);
         experimentResultsEntity.setClassifierInfo(TestHelperUtils.createClassifierInfo());
         return experimentResultsEntityRepository.save(experimentResultsEntity);
     }

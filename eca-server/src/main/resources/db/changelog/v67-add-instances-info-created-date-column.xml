@@ -71,4 +71,28 @@
                              constraintName="classifier_options_request_request_id_unique_idx"/>
     </changeSet>
 
+    <changeSet id="drop_classifier_input_options_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="classifier_input_options"/>
+        </preConditions>
+        <dropTable tableName="classifier_input_options"/>
+    </changeSet>
+
+    <changeSet id="add_classifier_info_classifier_options_not_null_constraint" author="roman.batygin@mail.ru"
+               context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="classifier_info"/>
+            <columnExists tableName="classifier_info" columnName="classifier_options"/>
+        </preConditions>
+        <addNotNullConstraint tableName="classifier_info" columnName="classifier_options"/>
+    </changeSet>
+
+    <changeSet id="add_experiment_results_pct_correct_not_null_constraint" author="roman.batygin@mail.ru"
+               context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment_results"/>
+            <columnExists tableName="experiment_results" columnName="pct_correct"/>
+        </preConditions>
+        <addNotNullConstraint tableName="experiment_results" columnName="pct_correct"/>
+    </changeSet>
 </databaseChangeLog>

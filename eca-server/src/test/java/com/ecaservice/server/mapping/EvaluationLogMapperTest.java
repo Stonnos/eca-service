@@ -2,7 +2,6 @@ package com.ecaservice.server.mapping;
 
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.CrossValidationConfig;
-import com.ecaservice.server.model.entity.ClassifierInputOptions;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.evaluation.EvaluationRequestDataModel;
 import com.ecaservice.server.report.model.EvaluationLogBean;
@@ -16,7 +15,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -49,7 +47,6 @@ class EvaluationLogMapperTest {
         assertThat(evaluationLog.getNumFolds()).isNull();
         assertThat(evaluationLog.getNumTests()).isNull();
         assertThat(evaluationLog.getSeed()).isNull();
-        assertOptions(evaluationLog, evaluationRequestDataModel);
     }
 
     @Test
@@ -132,19 +129,5 @@ class EvaluationLogMapperTest {
         assertThat(evaluationLogDto.getEvaluationTotalTime()).isNotNull();
         assertThat(evaluationLogDto.getModelPath()).isEqualTo(evaluationLog.getModelPath());
         assertThat(evaluationLogDto.getPctCorrect()).isEqualTo(evaluationLog.getPctCorrect());
-    }
-
-    private void assertOptions(EvaluationLog evaluationLog, EvaluationRequestDataModel request) {
-        List<ClassifierInputOptions> classifierInputOptions =
-                evaluationLog.getClassifierInfo().getClassifierInputOptions();
-        assertThat(classifierInputOptions).isNotEmpty();
-        String[] options = request.getClassifier().getOptions();
-        assertThat(classifierInputOptions).hasSize(options.length / 2);
-        for (int i = 0; i < options.length; i += 2) {
-            ClassifierInputOptions inputOptions = classifierInputOptions.get(i / 2);
-            assertThat(inputOptions.getOptionName()).isEqualTo(options[i]);
-            assertThat(inputOptions.getOptionValue()).isEqualTo(options[i + 1]);
-            assertThat(inputOptions.getOptionOrder()).isEqualTo(i / 2);
-        }
     }
 }

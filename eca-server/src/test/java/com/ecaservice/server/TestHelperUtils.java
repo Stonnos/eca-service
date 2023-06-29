@@ -27,7 +27,6 @@ import com.ecaservice.ers.dto.StatisticsReport;
 import com.ecaservice.report.model.BaseReportBean;
 import com.ecaservice.server.model.entity.Channel;
 import com.ecaservice.server.model.entity.ClassifierInfo;
-import com.ecaservice.server.model.entity.ClassifierInputOptions;
 import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestEntity;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestModel;
@@ -507,11 +506,7 @@ public class TestHelperUtils {
     public static ClassifierInfo createClassifierInfo() {
         ClassifierInfo classifierInfo = new ClassifierInfo();
         classifierInfo.setClassifierName(CART.class.getSimpleName());
-        ClassifierInputOptions classifierInputOptions = new ClassifierInputOptions();
-        classifierInputOptions.setOptionName(OPTION_NAME);
-        classifierInputOptions.setOptionValue(OPTION_VALUE);
-        classifierInputOptions.setOptionOrder(0);
-        classifierInfo.setClassifierInputOptions(Collections.singletonList(classifierInputOptions));
+        classifierInfo.setClassifierOptions(toJsonString(createLogisticOptions()));
         return classifierInfo;
     }
 
@@ -902,6 +897,7 @@ public class TestHelperUtils {
         experimentResultsEntity.setExperiment(experiment);
         experimentResultsEntity.setResultsIndex(0);
         experimentResultsEntity.setClassifierInfo(createClassifierInfo());
+        experimentResultsEntity.setPctCorrect(BigDecimal.TEN);
         return experimentResultsEntity;
     }
 
