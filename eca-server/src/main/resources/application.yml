@@ -56,7 +56,6 @@ ribbon:
 
 ## Application properties
 app:
-  maxPageSize: 50
   threadPoolSize: 10
   numberOfDaysForStorage: 14
   ## Each day at midnight
@@ -64,7 +63,6 @@ app:
   pageSize: 10
   modelDownloadUrlExpirationDays: 7
   shortLifeUrlExpirationMinutes: 5
-  maximumFractionDigits: 4
   notifications:
     webPushesEnabled: false
 

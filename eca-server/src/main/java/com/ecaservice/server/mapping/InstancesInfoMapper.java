@@ -5,6 +5,8 @@ import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.web.dto.model.InstancesInfoDto;
 import org.mapstruct.Mapper;
 
+import java.util.List;
+
 /**
  * Implements mapping instances info entity to its dto model.
  */
@@ -18,6 +20,14 @@ public interface InstancesInfoMapper {
      * @return instances info dto
      */
     InstancesInfoDto map(InstancesInfo instancesInfo);
+
+    /**
+     * Maps instances info list to dto models list.
+     *
+     * @param instancesInfoList - instances info entities list
+     * @return instances info dto list
+     */
+    List<InstancesInfoDto> map(List<InstancesInfo> instancesInfoList);
 
     /**
      * Maps instances info to instances report.

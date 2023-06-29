@@ -1,6 +1,5 @@
 package com.ecaservice.audit.service;
 
-import com.ecaservice.audit.config.EcaAuditLogConfig;
 import com.ecaservice.audit.dto.AuditEventRequest;
 import com.ecaservice.audit.entity.AuditLogEntity;
 import com.ecaservice.audit.exception.DuplicateEventIdException;
@@ -33,7 +32,6 @@ import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 @RequiredArgsConstructor
 public class AuditLogService {
 
-    private final EcaAuditLogConfig ecaAuditLogConfig;
     private final AuditLogMapper auditLogMapper;
     private final FilterService filterService;
     private final AuditLogRepository auditLogRepository;
@@ -76,9 +74,8 @@ public class AuditLogService {
         List<String> globalFilterFields = filterService.getGlobalFilterFields(AUDIT_LOG_TEMPLATE);
         AuditLogFilter filter = new AuditLogFilter(pageRequestDto.getSearchQuery(), globalFilterFields,
                 pageRequestDto.getFilters());
-        int pageSize = Integer.min(pageRequestDto.getSize(), ecaAuditLogConfig.getMaxPageSize());
-        var auditLogsPage =
-                auditLogRepository.findAll(filter, PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
+        var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort);
+        var auditLogsPage = auditLogRepository.findAll(filter, pageRequest);
         log.info("Audit logs page [{} of {}] with size [{}] has been fetched for page request [{}]",
                 auditLogsPage.getNumber(), auditLogsPage.getTotalPages(), auditLogsPage.getNumberOfElements(),
                 pageRequestDto);

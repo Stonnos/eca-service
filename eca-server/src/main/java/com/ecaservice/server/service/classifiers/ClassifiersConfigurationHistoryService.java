@@ -2,7 +2,6 @@ package com.ecaservice.server.service.classifiers;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.filter.service.FilterService;
-import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.filter.ClassifiersConfigurationHistoryFilter;
 import com.ecaservice.server.mapping.ClassifiersConfigurationHistoryMapper;
 import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
@@ -45,7 +44,6 @@ import static com.ecaservice.server.service.message.template.dictionary.MessageT
 @RequiredArgsConstructor
 public class ClassifiersConfigurationHistoryService {
 
-    private final AppProperties appProperties;
     private final UserService userService;
     private final FilterService filterService;
     private final ClassifiersConfigurationHistoryMapper classifiersConfigurationHistoryMapper;
@@ -163,9 +161,9 @@ public class ClassifiersConfigurationHistoryService {
         var sort = buildSort(pageRequestDto.getSortField(), CREATED_AT, pageRequestDto.isAscending());
         var filter = new ClassifiersConfigurationHistoryFilter(classifiersConfiguration,
                 pageRequestDto.getSearchQuery(), globalFilterFields, pageRequestDto.getFilters());
-        var pageSize = Integer.min(pageRequestDto.getSize(), appProperties.getMaxPageSize());
-        var nextPage = classifiersConfigurationHistoryRepository.findAll(filter,
-                PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
+        var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort);
+        var nextPage =
+                classifiersConfigurationHistoryRepository.findAll(filter, pageRequest);
         var classifiersConfigurationHistoryDtoList = classifiersConfigurationHistoryMapper.map(nextPage.getContent());
         log.info("Configurations history page [{} of {}] with size [{}] has been fetched for page request [{}]",
                 nextPage.getNumber(), nextPage.getTotalPages(), nextPage.getNumberOfElements(), pageRequestDto);

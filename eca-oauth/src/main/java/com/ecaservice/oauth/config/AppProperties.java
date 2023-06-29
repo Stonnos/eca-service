@@ -19,12 +19,6 @@ import java.util.List;
 public class AppProperties {
 
     /**
-     * Maximum page size for paging requests
-     */
-    @NotNull
-    private Integer maxPageSize;
-
-    /**
      * Web application external base url
      */
     @NotEmpty

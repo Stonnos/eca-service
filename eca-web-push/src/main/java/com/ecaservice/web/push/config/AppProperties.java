@@ -17,12 +17,6 @@ import javax.validation.constraints.NotNull;
 public class AppProperties {
 
     /**
-     * Maximum page size for paging requests
-     */
-    @NotNull
-    private Integer maxPageSize;
-
-    /**
      * User notification life time in days
      */
     @NotNull

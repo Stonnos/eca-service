@@ -40,9 +40,6 @@ eureka:
 ribbon:
   ReadTimeout: 60000
 
-audit-log:
-  maxPageSize: 50
-
 ## Swagger properties
 open-api:
   basePath: /

@@ -17,12 +17,6 @@ import javax.validation.constraints.NotNull;
 public class AppProperties {
 
     /**
-     * Maximum page size for paging requests
-     */
-    @NotNull
-    private Integer maxPageSize;
-
-    /**
      * Thread pool size for async tasks
      */
     @NotNull

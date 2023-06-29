@@ -24,14 +24,13 @@
 Настройки для проекта находятся в файле application.yml. Ниже приведены основные параметры:
 1) spring.datasource - настройки БД для хранения информации
 2) app — основные настройки модуля:
-   * app.maxPageSize - максимальное число элементов на странице (используется для запросов с пагинацией)
    * app.notificationLifeTimeDays - время жизни уведомления для пользователя (в днях)
    * app.pushTokenValidityMinutes - время жизни токена для пуш уведомлений
    * app.encrypt.password - пароль для алгоритма генерации ключа PBKDF2WithHmacSHA1
    * app.encrypt.salt - соль для алгоритма генерации ключа PBKDF2WithHmacSHA1
-2) queues - настройки очередей для веб - сокетов
+3) queues - настройки очередей для веб - сокетов
     * pushQueue - название очереди для отправки пушей
-3) open-api - настройки Swagger
+4) open-api - настройки Swagger
    * open-api.tokenBaseUrl - базовый url - сервера авторизации
    * open-api.projectVersion - версия API
    * open-api.title - краткое название API
@@ -41,11 +40,11 @@
    * open-api.basePath - базовый префикс для API
    * open-api.apiAuth - настройки авторизации
    * open-api.apiAuth.scopes - список scopes
-4) auth-server - настройки интеграции с eca-oauth
+5) auth-server - настройки интеграции с eca-oauth
    * baseUrl - базовый url eca-oauth
    * clientId - идентификатор клиента
    * clientSecret - пароль клиента
-5) logging.mode - режим логирования
+6) logging.mode - режим логирования
    * text - текстовый формат
    * json - логи в формате json
     

@@ -3,7 +3,6 @@ package com.ecaservice.server.service.classifiers;
 import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.audit.annotation.Audit;
-import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.mapping.ClassifierOptionsDatabaseModelMapper;
 import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.server.model.entity.ClassifiersConfiguration;
@@ -46,7 +45,6 @@ import static com.ecaservice.server.util.ClassifierOptionsHelper.isEnsembleClass
 @RequiredArgsConstructor
 public class ClassifierOptionsService {
 
-    private final AppProperties appProperties;
     private final UserService userService;
     private final ClassifierOptionsProcessor classifierOptionsProcessor;
     private final ClassifiersTemplateProvider classifiersTemplateProvider;
@@ -118,10 +116,9 @@ public class ClassifierOptionsService {
         log.info("Gets classifiers configuration [{}] options next page: {}", configurationId, pageRequestDto);
         var classifiersConfiguration = getConfigurationById(configurationId);
         var sort = buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
-        var pageSize = Integer.min(pageRequestDto.getSize(), appProperties.getMaxPageSize());
+        var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort);
         var classifierOptionsPage =
-                classifierOptionsDatabaseModelRepository.findAllByConfiguration(classifiersConfiguration,
-                        PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
+                classifierOptionsDatabaseModelRepository.findAllByConfiguration(classifiersConfiguration, pageRequest);
         var classifierOptionsDtoList = classifierOptionsPage.getContent()
                 .stream()
                 .map(this::internalPopulateClassifierOptions)

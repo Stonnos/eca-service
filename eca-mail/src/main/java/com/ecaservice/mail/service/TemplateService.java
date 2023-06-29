@@ -49,8 +49,8 @@ public class TemplateService {
         TemplateFilter filter =
                 new TemplateFilter(pageRequestDto.getSearchQuery(), TEMPLATE_GLOBAL_FILTER_FIELDS,
                         pageRequestDto.getFilters());
-        int pageSize = Integer.min(pageRequestDto.getSize(), mailConfig.getMaxPageSize());
-        var templatesPage = templateRepository.findAll(filter, PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
+        var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort);
+        var templatesPage = templateRepository.findAll(filter, pageRequest);
         log.info("Email templates page [{} of {}] with size [{}] has been fetched for page request [{}]",
                 templatesPage.getNumber(), templatesPage.getTotalPages(), templatesPage.getNumberOfElements(),
                 pageRequestDto);

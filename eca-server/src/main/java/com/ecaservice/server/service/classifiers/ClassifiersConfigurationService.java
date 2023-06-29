@@ -5,15 +5,14 @@ import com.ecaservice.common.web.exception.InvalidOperationException;
 import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.core.lock.annotation.Locked;
-import com.ecaservice.server.report.model.ClassifierOptionsBean;
-import com.ecaservice.server.report.model.ClassifiersConfigurationBean;
-import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.filter.ClassifiersConfigurationFilter;
 import com.ecaservice.server.mapping.ClassifierOptionsDatabaseModelMapper;
 import com.ecaservice.server.mapping.ClassifiersConfigurationMapper;
 import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.server.model.entity.ClassifiersConfiguration;
 import com.ecaservice.server.model.entity.FilterTemplateType;
+import com.ecaservice.server.report.model.ClassifierOptionsBean;
+import com.ecaservice.server.report.model.ClassifiersConfigurationBean;
 import com.ecaservice.server.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.server.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.server.service.PageRequestService;
@@ -58,7 +57,6 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
     private final FilterService filterService;
     private final ClassifiersConfigurationMapper classifiersConfigurationMapper;
     private final ClassifierOptionsDatabaseModelMapper classifierOptionsDatabaseModelMapper;
-    private final AppProperties appProperties;
     private final ClassifiersConfigurationHistoryService classifiersConfigurationHistoryService;
     private final ClassifiersTemplateProvider classifiersTemplateProvider;
     private final ClassifiersConfigurationRepository classifiersConfigurationRepository;
@@ -186,9 +184,8 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
                 filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIERS_CONFIGURATION.name());
         var filter = new ClassifiersConfigurationFilter(pageRequestDto.getSearchQuery(),
                 globalFilterFields, pageRequestDto.getFilters());
-        var pageSize = Integer.min(pageRequestDto.getSize(), appProperties.getMaxPageSize());
-        var nextPage = classifiersConfigurationRepository.findAll(filter,
-                PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
+        var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort);
+        var nextPage = classifiersConfigurationRepository.findAll(filter, pageRequest);
         log.info("Classifiers configurations page [{} of {}] with size [{}] has been fetched for page request [{}]",
                 nextPage.getNumber(), nextPage.getTotalPages(), nextPage.getNumberOfElements(), pageRequestDto);
         return nextPage;

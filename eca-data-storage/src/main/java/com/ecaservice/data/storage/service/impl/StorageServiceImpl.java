@@ -83,9 +83,8 @@ public class StorageServiceImpl implements StorageService {
         Sort sort = buildSort(pageRequestDto.getSortField(), CREATED, pageRequestDto.isAscending());
         InstancesFilter filter = new InstancesFilter(pageRequestDto.getSearchQuery(), INSTANCES_GLOBAL_FILTER_FIELDS,
                 pageRequestDto.getFilters());
-        int pageSize = Integer.min(pageRequestDto.getSize(), ecaDsConfig.getMaxPageSize());
-        var instancesPage =
-                instancesRepository.findAll(filter, PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
+        var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort);
+        var instancesPage = instancesRepository.findAll(filter, pageRequest);
         log.info("Instances page [{} of {}] with size [{}] has been fetched for page request [{}]",
                 instancesPage.getNumber(), instancesPage.getTotalPages(), instancesPage.getNumberOfElements(),
                 pageRequestDto);

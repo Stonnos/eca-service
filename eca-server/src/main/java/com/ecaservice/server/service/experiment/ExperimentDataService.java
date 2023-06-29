@@ -106,9 +106,8 @@ public class ExperimentDataService implements PageRequestService<Experiment> {
         List<String> globalFilterFields = filterService.getGlobalFilterFields(FilterTemplateType.EXPERIMENT.name());
         ExperimentFilter filter =
                 new ExperimentFilter(pageRequestDto.getSearchQuery(), globalFilterFields, pageRequestDto.getFilters());
-        int pageSize = Integer.min(pageRequestDto.getSize(), appProperties.getMaxPageSize());
-        var experimentsPage =
-                experimentRepository.findAll(filter, PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
+        var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort);
+        var experimentsPage = experimentRepository.findAll(filter, pageRequest);
         log.info("Experiments page [{} of {}] with size [{}] has been fetched for page request [{}]",
                 experimentsPage.getNumber(), experimentsPage.getTotalPages(), experimentsPage.getNumberOfElements(),
                 pageRequestDto);
