@@ -1,5 +1,6 @@
 package com.ecaservice.server.service;
 
+import com.ecaservice.server.mapping.InstancesInfoMapperImpl;
 import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.server.model.entity.InstancesInfo_;
 import com.ecaservice.server.repository.InstancesInfoRepository;
@@ -23,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Roman Batygin
  */
-@Import(InstancesInfoService.class)
+@Import({InstancesInfoService.class, InstancesInfoMapperImpl.class})
 class InstancesInfoServiceTest extends AbstractJpaTest {
 
     @Inject
@@ -74,7 +75,7 @@ class InstancesInfoServiceTest extends AbstractJpaTest {
                 Collections.emptyList());
         var instancesInfoPage = instancesInfoService.getNextPage(pageRequestDto);
         assertThat(instancesInfoPage).isNotNull();
-        assertThat(instancesInfoPage.getPage()).isOne();
+        assertThat(instancesInfoPage.getPage()).isZero();
         assertThat(instancesInfoPage.getTotalCount()).isOne();
     }
 

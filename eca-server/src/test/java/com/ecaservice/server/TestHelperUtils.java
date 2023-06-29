@@ -883,6 +883,7 @@ public class TestHelperUtils {
     public static ClassifierOptionsRequestEntity createClassifierOptionsRequestEntity(LocalDateTime creationDate,
                                                                                       ClassifierOptionsRequestModel requestModel) {
         ClassifierOptionsRequestEntity requestEntity = new ClassifierOptionsRequestEntity();
+        requestEntity.setRequestId(UUID.randomUUID().toString());
         requestEntity.setCreationDate(creationDate);
         requestEntity.setClassifierOptionsRequestModel(requestModel);
         requestEntity.setSource(ClassifierOptionsRequestSource.ERS);
