@@ -59,6 +59,7 @@ import com.ecaservice.web.dto.model.FilterDictionaryDto;
 import com.ecaservice.web.dto.model.FilterFieldDto;
 import com.ecaservice.web.dto.model.FilterFieldType;
 import com.ecaservice.web.dto.model.FormTemplateDto;
+import com.ecaservice.web.dto.model.InstancesInfoDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -592,6 +593,22 @@ public class TestHelperUtils {
         instancesInfo.setUuid(UUID.randomUUID().toString());
         instancesInfo.setCreatedDate(LocalDateTime.now());
         return instancesInfo;
+    }
+
+    /**
+     * Creates instances info dto.
+     *
+     * @return instances info dto
+     */
+    public static InstancesInfoDto createInstancesInfoDto() {
+        InstancesInfoDto instancesInfoDto = new InstancesInfoDto();
+        instancesInfoDto.setRelationName(RELATION_NAME);
+        instancesInfoDto.setClassName(CLASS_NAME);
+        instancesInfoDto.setNumInstances(NUM_INSTANCES);
+        instancesInfoDto.setNumAttributes(NUM_ATTRIBUTES);
+        instancesInfoDto.setNumClasses(NUM_CLASSES);
+        instancesInfoDto.setCreatedDate(LocalDateTime.now());
+        return instancesInfoDto;
     }
 
     /**

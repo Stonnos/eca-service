@@ -59,11 +59,13 @@
       },
       "pctCorrect": 96,
       "instancesInfo": {
-        "relationName": "iris",
-        "numInstances": 150,
-        "numAttributes": 5,
-        "numClasses": 4,
-        "className": "class"
+        "id": 1,
+        "relation": "glass",
+        "numInstances": 214,
+        "numAttributes": 10,
+        "numClasses": 6,
+        "className": "class",
+        "createdDate": "2021-07-01 14:00:00"
       }
     }
   ],

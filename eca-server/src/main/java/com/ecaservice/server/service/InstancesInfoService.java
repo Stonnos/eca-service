@@ -2,13 +2,15 @@ package com.ecaservice.server.service;
 
 import com.ecaservice.core.lock.annotation.Locked;
 import com.ecaservice.server.filter.InstancesInfoFilter;
+import com.ecaservice.server.mapping.InstancesInfoMapper;
 import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.server.model.entity.InstancesInfo_;
 import com.ecaservice.server.repository.InstancesInfoRepository;
+import com.ecaservice.web.dto.model.InstancesInfoDto;
+import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -30,11 +32,12 @@ import static com.ecaservice.server.model.entity.InstancesInfo_.CREATED_DATE;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class InstancesInfoService implements PageRequestService<InstancesInfo> {
+public class InstancesInfoService {
 
     private static final List<String> INSTANCES_INFO_GLOBAL_FILTER_FIELDS =
             Collections.singletonList(InstancesInfo_.RELATION_NAME);
 
+    private final InstancesInfoMapper instancesInfoMapper;
     private final InstancesInfoRepository instancesInfoRepository;
 
     /**
@@ -56,8 +59,7 @@ public class InstancesInfoService implements PageRequestService<InstancesInfo> {
         return instancesInfo;
     }
 
-    @Override
-    public Page<InstancesInfo> getNextPage(PageRequestDto pageRequestDto) {
+    public PageDto<InstancesInfoDto> getNextPage(PageRequestDto pageRequestDto) {
         log.info("Gets instances info next page: {}", pageRequestDto);
         Sort sort = buildSort(pageRequestDto.getSortField(), CREATED_DATE, pageRequestDto.isAscending());
         var filter = new InstancesInfoFilter(pageRequestDto.getSearchQuery(), INSTANCES_INFO_GLOBAL_FILTER_FIELDS,
@@ -67,7 +69,8 @@ public class InstancesInfoService implements PageRequestService<InstancesInfo> {
         log.info("Instances info page [{} of {}] with size [{}] has been fetched for page request [{}]",
                 instancesInfoPage.getNumber(), instancesInfoPage.getTotalPages(),
                 instancesInfoPage.getNumberOfElements(), pageRequestDto);
-        return instancesInfoPage;
+        var instancesInfoDtoList = instancesInfoMapper.map(instancesInfoPage.getContent());
+        return PageDto.of(instancesInfoDtoList, pageRequestDto.getPage(), instancesInfoPage.getTotalElements());
     }
 
     private InstancesInfo createAndSaveNewInstancesInfo(String dataMd5Hash, Instances data) {

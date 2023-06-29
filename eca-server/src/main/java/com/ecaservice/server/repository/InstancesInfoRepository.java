@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
  * @author Roman Batygin
  */
 public interface InstancesInfoRepository
-        extends JpaRepository<InstancesInfo, String>, JpaSpecificationExecutor<InstancesInfo> {
+        extends JpaRepository<InstancesInfo, Long>, JpaSpecificationExecutor<InstancesInfo> {
 
     /**
      * Finds instances info by md5 hash.
