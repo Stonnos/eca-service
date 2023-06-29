@@ -33,7 +33,7 @@ public interface ExperimentResultsEntityRepository extends JpaRepository<Experim
      * @param ids - experiment results ids list
      * @return experiment results ids
      */
-    @Query("select distinct er.id from ExperimentResultsEntity er join ExperimentResultsRequest err " +
+    @Query("select er.id from ExperimentResultsEntity er join ExperimentResultsRequest err " +
             "on err.experimentResults = er where er.id in (:ids) and err.responseStatus = 'SUCCESS'")
     List<Long> findSentResultsIds(@Param("ids") Collection<Long> ids);
 }
