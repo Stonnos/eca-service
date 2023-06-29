@@ -5,8 +5,6 @@ import {
   PageRequestDto, PushRequestDto, RequestStatusStatisticsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ExperimentsService } from "../services/experiments.service";
-import { MessageService } from "primeng/api";
-import { BaseListComponent } from "../../common/lists/base-list.component";
 import { OverlayPanel } from "primeng/primeng";
 import { Observable } from "rxjs/internal/Observable";
 import { FilterService } from "../../filter/services/filter.service";
@@ -15,7 +13,6 @@ import { ExperimentRequest } from "../../create-experiment/model/experiment-requ
 import { Router } from "@angular/router";
 import { RouterPaths } from "../../routing/router-paths";
 import { ExperimentFields } from "../../common/util/field-names";
-import { FieldService } from "../../common/services/field.service";
 import { ReportsService } from "../../common/services/report.service";
 import { EvaluationMethod } from "../../common/model/evaluation-method.enum";
 import { ReportType } from "../../common/model/report-type.enum";
@@ -28,13 +25,15 @@ import { PushMessageType } from "../../common/util/push-message.type";
 import { Logger } from "../../common/util/logging";
 import { CreateExperimentRequestDto } from "../../create-experiment/model/create-experiment-request.model";
 import { ErrorHandler } from "../../common/services/error-handler";
+import { BaseEvaluationListComponent } from "../../common/lists/base-evaluation-list.component";
+import { InstancesInfoService } from "../../common/instances-info/services/instances-info.service";
 
 @Component({
   selector: 'app-experiment-list',
   templateUrl: './experiment-list.component.html',
   styleUrls: ['./experiment-list.component.scss']
 })
-export class ExperimentListComponent extends BaseListComponent<ExperimentDto> implements OnInit, OnDestroy {
+export class ExperimentListComponent extends BaseEvaluationListComponent<ExperimentDto> implements OnInit, OnDestroy {
 
   private static readonly EXPERIMENTS_REPORT_FILE_NAME = 'experiments-report.xlsx';
 
@@ -65,7 +64,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
 
   public experimentRequest: ExperimentRequest = new ExperimentRequest();
 
-  public constructor(private injector: Injector,
+  public constructor(injector: Injector,
                      private experimentsService: ExperimentsService,
                      private filterService: FilterService,
                      private reportsService: ReportsService,
@@ -73,7 +72,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
                      private errorHandler: ErrorHandler,
                      private pushService: PushService,
                      private router: Router) {
-    super(injector.get(MessageService), injector.get(FieldService));
+    super(injector, injector.get(InstancesInfoService));
     this.defaultSortField = ExperimentFields.CREATION_DATE;
     this.linkColumns = [ExperimentFields.RELATION_NAME, ExperimentFields.MODEL_PATH,
       ExperimentFields.REQUEST_ID, ExperimentFields.EVALUATION_METHOD_DESCRIPTION];

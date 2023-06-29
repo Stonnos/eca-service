@@ -24,7 +24,10 @@
 </div>
 <div class="row">
   <div class="filter-sidebar">
-    <app-filter [filters]="filters" (apply)="onApplyFilter()"></app-filter>
+    <app-filter [filters]="filters"
+                (apply)="onApplyFilter()"
+                (autocompleteField)="onFilterFieldAutocomplete($event)">
+    </app-filter>
   </div>
   <div class="data-table">
     <p-table
