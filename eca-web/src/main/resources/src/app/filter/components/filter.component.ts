@@ -11,8 +11,6 @@ export class FilterComponent {
 
   public now: Date = new Date();
 
-  public autocompleted: boolean = false;
-
   public selectedAutocompleteField: string;
 
   @Input()
@@ -37,7 +35,6 @@ export class FilterComponent {
   }
 
   public onAutocompleteItem(fieldName: string, event): void {
-    this.autocompleted = true;
     this.selectedAutocompleteField = fieldName;
     this.autocompleteField.emit(new AutocompleteItemModel(fieldName, event.query));
   }
