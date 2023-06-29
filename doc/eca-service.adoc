@@ -189,18 +189,7 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                      |bigint           |+|+|+                              |Идентификатор записи (первичный ключ)
 |classifier_name         |varchar(255)     |-|+|-                              |Название классификатора
-|classifier_options      |text             |-|-|-                              |Настройки классификатора в формате json
-|===
-
-==== Таблица 3.{counter:db-table-id} - 'classifier_input_options' - содержит данные о входных параметрах классификатора
-[cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
-|===
-|Название колонки|Тип|Unique|Not NULL|Индекс|Описание
-|id                      |bigint           |+|+|+                                               |Идентификатор записи (первичный ключ)
-|option_name             |varchar(255)     |-|+|-                                               |Название параметра
-|option_value            |varchar(255)     |-|-|-                                               |Значение параметра
-|option_order            |integer          |-|+|-                                               |Порядковый номер параметра
-|classifier_info_id      |bigint           |-|+|fk_classifier_input_options_classifier_info_id  |Внешний ключ classifier_info
+|classifier_options      |text             |-|+|-                              |Настройки классификатора в формате json
 |===
 
 ==== Таблица 3.{counter:db-table-id} - 'classifiers_configuration' - содержит мета информацию о конфигурациях индивидуальных классификаторов для построения экспериментов с использованием ансамблевых алгоритмов
@@ -253,13 +242,15 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
-|id                      |bigint           |+|+|+                       |Идентификатор записи (первичный ключ)
-|relation_name           |varchar(255)     |-|+|-                       |Название обучающей выборки
-|num_instances           |integer          |-|+|-                       |Число объектов обучающей выборки
-|num_attributes          |integer          |-|+|-                       |Число атрибутов обучающей выборки
-|num_classes             |integer          |-|+|-                       |Число классов
-|class_name              |varchar(255)     |-|+|-                       |Название атрибута класса
-|data_md5_hash           |varchar(255)     |-|-|-                       |MD5 хэш обучающей выборки
+|id                      |bigint           |+|+|+                                        |Идентификатор записи (первичный ключ)
+|uuid                    |varchar(255)     |+|+|instances_info_uuid_unique_idx           |Уникальный UUID выборки
+|relation_name           |varchar(255)     |-|+|-                                        |Название обучающей выборки
+|num_instances           |integer          |-|+|-                                        |Число объектов обучающей выборки
+|num_attributes          |integer          |-|+|-                                        |Число атрибутов обучающей выборки
+|num_classes             |integer          |-|+|-                                        |Число классов
+|class_name              |varchar(255)     |-|+|-                                        |Название атрибута класса
+|data_md5_hash           |varchar(255)     |-|+|instances_info_data_md5_hash_unique_idx  |MD5 хэш обучающей выборки
+|created_date            |timestamp        |-|+|-                                        |Дата создания
 |===
 
 ==== Таблица 3.{counter:db-table-id} - 'evaluation_log' - содержит данные о запросах на построение моделей классификаторов
@@ -309,6 +300,7 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |channel_type                 |varchar(255)     |-|+|-                                 |Канал поступления заявки (QUEUE или WEB)
 |reply_to                     |varchar(255)     |-|-|-                                 |Название очереди для отправки ответных сообщений в MQ
 |correlation_id               |varchar(255)     |-|-|-                                 |Значение для корреляции запрос/ответ
+|instances_info_id            |bigint           |-|+|+                                 |Внешний ключ, ID обучающей выборки
 |created_by                   |varchar(255)     |-|-|-                                 |Пользователь, создавший заявку через WEB
 |===
 
@@ -349,7 +341,7 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |results_index                |integer          |-|+|-                                         |Индекс результатов классификации в истории экспериментов
 |classifier_info_id           |bigint           |-|+|fk_experiment_results_classifier_info_id  |Внешний ключ, ID информации о классификаторе
 |experiment_id                |bigint           |-|+|fk_experiment_results_experiment_id       |Внешний ключ, ID эксперимента
-|pct_correct                  |numeric(19,4)    |-|-|-                                         |Точность классификатора
+|pct_correct                  |numeric(19,4)    |-|+|-                                         |Точность классификатора
 |===
 
 ==== Таблица 3.{counter:db-table-id} - 'ers_request' - системная таблица для интеграции с сервисом eca-ers
@@ -407,10 +399,11 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
-|id                                  |bigint           |+|+|fk_classifier_options_request_id    |Идентификатор записи (первичный ключ)
-|creation_date                       |timestamp        |-|-|-                                   |Дата запроса
-|source                              |varchar(255)     |-|-|-                                   |Тип источника данных (CACHE или ERS)
-|classifier_options_request_model_id |bigint           |-|+|fk_options_request_model_id         |Внешний ключ, ID classifier_options_request_model
+|id                                  |bigint           |+|+|fk_classifier_options_request_id                   |Идентификатор записи (первичный ключ)
+|request_id                          |varchar(255)     |+|+|classifier_options_request_request_id_unique_idx   |Уникальный UUID запроса
+|creation_date                       |timestamp        |-|-|-                                                  |Дата запроса
+|source                              |varchar(255)     |-|-|-                                                  |Тип источника данных (CACHE или ERS)
+|classifier_options_request_model_id |bigint           |-|+|fk_options_request_model_id                        |Внешний ключ, ID classifier_options_request_model
 |===
 
 Таблицы *databasechangeloglock* и *databasechangeloglock* предназначены для управления миграциями базы данных.

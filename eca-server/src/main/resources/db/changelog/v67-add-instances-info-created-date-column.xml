@@ -61,6 +61,15 @@
                              constraintName="instances_info_data_md5_hash_unique_idx"/>
     </changeSet>
 
+    <changeSet id="add_classifier_options_request_request_id_not_null_constraint" author="roman.batygin@mail.ru"
+               context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="classifier_options_request"/>
+            <columnExists tableName="classifier_options_request" columnName="request_id"/>
+        </preConditions>
+        <addNotNullConstraint tableName="classifier_options_request" columnName="request_id"/>
+    </changeSet>
+
     <changeSet id="add_classifier_options_request_request_id_unique_constraint" author="roman.batygin@mail.ru"
                context="schema">
         <preConditions onFail="MARK_RAN">
@@ -95,25 +104,4 @@
         </preConditions>
         <addNotNullConstraint tableName="experiment_results" columnName="pct_correct"/>
     </changeSet>
-
-    <changeSet id="add_experiment_results_request_experiment_results_id_unique_idx" author="roman.batygin@mail.ru"
-               context="schema">
-        <preConditions onFail="MARK_RAN">
-            <tableExists tableName="experiment_results_request"/>
-            <columnExists tableName="experiment_results_request" columnName="experiment_results_id"/>
-        </preConditions>
-        <addUniqueConstraint tableName="experiment_results_request" columnNames="experiment_results_id"
-                             constraintName="idx_experiment_results_request_experiment_results_id_unique_idx"/>
-    </changeSet>
-
-    <changeSet id="add_idx_evaluation_results_request_evaluation_log_id_unique_idx" author="roman.batygin@mail.ru"
-               context="schema">
-        <preConditions onFail="MARK_RAN">
-            <tableExists tableName="evaluation_results_request"/>
-            <columnExists tableName="evaluation_results_request" columnName="evaluation_log_id"/>
-        </preConditions>
-        <addUniqueConstraint tableName="evaluation_results_request" columnNames="evaluation_log_id"
-                             constraintName="idx_evaluation_results_request_evaluation_log_id_unique_idx"/>
-    </changeSet>
-
 </databaseChangeLog>

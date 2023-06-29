@@ -31,7 +31,7 @@ public class ClassifierOptionsRequestEntity {
     /**
      * Request id
      */
-    @Column(name = "request_id")
+    @Column(name = "request_id", nullable = false)
     private String requestId;
 
     /**
