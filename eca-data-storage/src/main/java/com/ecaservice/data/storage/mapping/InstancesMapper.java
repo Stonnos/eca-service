@@ -23,7 +23,7 @@ public interface InstancesMapper {
      * @param instancesEntity - instances entity
      * @return instances dto
      */
-    @Mapping(source = "classAttribute.id", target = "classAttributeId")
+    @Mapping(source = "classAttribute.columnName", target = "className")
     InstancesDto map(InstancesEntity instancesEntity);
 
     /**

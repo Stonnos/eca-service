@@ -5,6 +5,8 @@ import {
 import { InstancesService } from "../../instances/services/instances.service";
 import { MessageService } from "primeng/components/common/messageservice";
 import { InstancesFields } from "../util/field-names";
+import { FieldService } from "../services/field.service";
+import { Utils } from "../util/utils";
 
 @Component({
   selector: 'app-instances-autocomplete',
@@ -12,6 +14,8 @@ import { InstancesFields } from "../util/field-names";
   styleUrls: ['./instances-autocomplete.component.scss']
 })
 export class InstancesAutocompleteComponent implements OnInit {
+
+  public fields: any[] = [];
 
   public autocompleted: boolean = false;
 
@@ -30,10 +34,20 @@ export class InstancesAutocompleteComponent implements OnInit {
   public onInstancesUnselected: EventEmitter<any> = new EventEmitter<any>();
 
   public constructor(private instancesService: InstancesService,
+                     private fieldService: FieldService,
                      private messageService: MessageService) {
   }
 
   public ngOnInit() {
+    this.fields = [
+      { name: InstancesFields.NUM_INSTANCES, label: "Число объектов:" },
+      { name: InstancesFields.NUM_ATTRIBUTES, label: "Число атрибутов:" },
+      { name: InstancesFields.CLASS_NAME, label: "Атрибут класса:" },
+    ];
+  }
+
+  public getFieldValue(field: string, item: InstancesDto) {
+    return this.fieldService.getFieldValue(field, item, Utils.MISSING_VALUE);
   }
 
   public onComplete(event): void {

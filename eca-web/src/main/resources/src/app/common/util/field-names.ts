@@ -132,6 +132,7 @@ export class InstancesFields {
   public static readonly NUM_ATTRIBUTES: string = "numAttributes";
   public static readonly CREATED: string = "created";
   public static readonly CREATED_BY: string = "createdBy";
+  public static readonly CLASS_NAME: string = "className";
 }
 
 export class AuditLogFields {

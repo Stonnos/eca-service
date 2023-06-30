@@ -39,6 +39,7 @@ export class InstancesListComponent extends BaseListComponent<InstancesDto> impl
     super(injector.get(MessageService), injector.get(FieldService));
     this.defaultSortField = InstancesFields.CREATED;
     this.linkColumns = [InstancesFields.TABLE_NAME];
+    this.notSortableColumns = [InstancesFields.CLASS_NAME];
     this.initColumns();
   }
 
@@ -126,6 +127,7 @@ export class InstancesListComponent extends BaseListComponent<InstancesDto> impl
       { name: InstancesFields.TABLE_NAME, label: "Название таблицы" },
       { name: InstancesFields.NUM_INSTANCES, label: "Число объектов" },
       { name: InstancesFields.NUM_ATTRIBUTES, label: "Число атрибутов" },
+      { name: InstancesFields.CLASS_NAME, label: "Атрибут класса" },
       { name: InstancesFields.CREATED, label: "Дата создания" },
       { name: InstancesFields.CREATED_BY, label: "Пользователь" },
     ];

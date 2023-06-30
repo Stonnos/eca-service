@@ -42,7 +42,7 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
 
   public instancesDto: InstancesDto;
 
-  public attributedLoading: boolean = false;
+  public attributesLoading: boolean = false;
   public attributes: AttributeDto[] = [];
   public classAttribute: AttributeDto;
 
@@ -90,11 +90,11 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
   }
 
   public onSelectAll(): void {
-    this.attributedLoading = true;
+    this.attributesLoading = true;
     this.instancesService.selectAllAttributes(this.id)
       .pipe(
         finalize(() => {
-          this.attributedLoading = false;
+          this.attributesLoading = false;
         })
       )
       .subscribe({
@@ -108,11 +108,11 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
   }
 
   public onSetClass(attribute: AttributeDto): void {
-    this.attributedLoading = true;
+    this.attributesLoading = true;
     this.instancesService.setClassAttribute(attribute.id)
       .pipe(
         finalize(() => {
-          this.attributedLoading = false;
+          this.attributesLoading = false;
         })
       )
       .subscribe({
@@ -181,8 +181,8 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
   }
 
   private setClassIfAbsent(): void {
-    if (this.instancesDto.classAttributeId) {
-      this.classAttribute = this.attributes.filter((attr: AttributeDto) => attr.id == this.instancesDto.classAttributeId).pop();
+    if (this.instancesDto.className) {
+      this.classAttribute = this.attributes.filter((attr: AttributeDto) => attr.name == this.instancesDto.className).pop();
     } else {
       this.classAttribute = null;
     }
@@ -203,11 +203,11 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
   }
 
   private selectAttribute(id: number): void {
-    this.attributedLoading = true;
+    this.attributesLoading = true;
     this.instancesService.selectAttribute(id)
       .pipe(
         finalize(() => {
-          this.attributedLoading = false;
+          this.attributesLoading = false;
         })
       )
       .subscribe({
@@ -221,11 +221,11 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
   }
 
   private unselectAttribute(id: number): void {
-    this.attributedLoading = true;
+    this.attributesLoading = true;
     this.instancesService.unselectAttribute(id)
       .pipe(
         finalize(() => {
-          this.attributedLoading = false;
+          this.attributesLoading = false;
         })
       )
       .subscribe({
