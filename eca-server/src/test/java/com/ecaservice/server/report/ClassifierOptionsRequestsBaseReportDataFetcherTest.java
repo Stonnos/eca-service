@@ -5,11 +5,12 @@ import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.mapping.ClassifierOptionsRequestModelMapperImpl;
 import com.ecaservice.server.mapping.DateTimeConverter;
-import com.ecaservice.server.mapping.ErsEvaluationMethodMapperImpl;
+import com.ecaservice.server.mapping.InstancesInfoMapperImpl;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.server.model.entity.ErsRequest_;
 import com.ecaservice.server.model.entity.ErsResponseStatus;
 import com.ecaservice.server.repository.ClassifierOptionsRequestModelRepository;
+import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.classifiers.ClassifierOptionsProcessor;
 import com.ecaservice.server.service.classifiers.ClassifiersTemplateProvider;
@@ -37,11 +38,9 @@ import static com.google.common.collect.Lists.newArrayList;
  * @author Roman Batygin
  */
 @Import({AppProperties.class, ClassifierOptionsRequestModelMapperImpl.class, DateTimeConverter.class,
-        ClassifierOptionsRequestsBaseReportDataFetcher.class, ErsEvaluationMethodMapperImpl.class,
-        ClassifierOptionsRequestService.class})
+        InstancesInfoMapperImpl.class,
+        ClassifierOptionsRequestsBaseReportDataFetcher.class, ClassifierOptionsRequestService.class})
 class ClassifierOptionsRequestsBaseReportDataFetcherTest extends AbstractJpaTest {
-
-    private static final String DATA_MD_5_HASH = "dataMd5";
 
     @MockBean
     private FilterService filterService;
@@ -52,6 +51,8 @@ class ClassifierOptionsRequestsBaseReportDataFetcherTest extends AbstractJpaTest
 
     @Inject
     private ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository;
+    @Inject
+    private InstancesInfoRepository instancesInfoRepository;
 
     @Inject
     private ClassifierOptionsRequestsBaseReportDataFetcher classifierOptionsRequestsBaseReportDataFetcher;
@@ -59,13 +60,15 @@ class ClassifierOptionsRequestsBaseReportDataFetcherTest extends AbstractJpaTest
     @Override
     public void deleteAll() {
         classifierOptionsRequestModelRepository.deleteAll();
+        instancesInfoRepository.deleteAll();
     }
 
     @Test
     void testFetchClassifierOptionsRequestsData() {
         ClassifierOptionsRequestModel requestModel =
-                TestHelperUtils.createClassifierOptionsRequestModel(DATA_MD_5_HASH, LocalDateTime.now(),
+                TestHelperUtils.createClassifierOptionsRequestModel(TestHelperUtils.createInstancesInfo(), LocalDateTime.now(),
                         ErsResponseStatus.SUCCESS, Collections.emptyList());
+        instancesInfoRepository.save(requestModel.getInstancesInfo());
         classifierOptionsRequestModelRepository.save(requestModel);
         PageRequestDto pageRequestDto =
                 new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, ErsRequest_.REQUEST_DATE, false, StringUtils.EMPTY,

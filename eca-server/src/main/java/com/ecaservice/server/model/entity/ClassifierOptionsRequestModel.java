@@ -10,8 +10,8 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.Index;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.List;
@@ -24,21 +24,15 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name = "classifier_options_request_model",
-        indexes = @Index(name = "idx_data_md5_hash", columnList = "data_md5_hash"))
+@Table(name = "classifier_options_request_model")
 public class ClassifierOptionsRequestModel extends ErsRequest {
 
     /**
-     * Training data name
+     * Training data info
      */
-    @Column(name = "relation_name")
-    private String relationName;
-
-    /**
-     * Training data MD5 hash
-     */
-    @Column(name = "data_md5_hash")
-    private String dataMd5Hash;
+    @ManyToOne
+    @JoinColumn(name = "instances_info_id", nullable = false)
+    private InstancesInfo instancesInfo;
 
     /**
      * Evaluation method

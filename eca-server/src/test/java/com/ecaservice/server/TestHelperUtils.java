@@ -98,6 +98,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.ecaservice.server.util.ClassifierOptionsHelper.toJsonString;
+import static com.ecaservice.server.util.InstancesUtils.md5Hash;
 import static com.google.common.collect.Lists.newArrayList;
 
 /**
@@ -274,7 +275,9 @@ public class TestHelperUtils {
     public static EvaluationRequestDataModel createEvaluationRequestData() {
         EvaluationRequestDataModel request = new EvaluationRequestDataModel();
         request.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
-        request.setData(loadInstances());
+        Instances data = loadInstances();
+        request.setDataMd5Hash(md5Hash(data));
+        request.setData(data);
         request.setClassifier(new KNearestNeighbours());
         return request;
     }
@@ -849,20 +852,19 @@ public class TestHelperUtils {
     /**
      * Creates classifier options request model.
      *
-     * @param dataMd5Hash                     - data MD5 hash
+     * @param instancesInfo                     - instances info
      * @param requestDate                     - request date
      * @param responseStatus                  - response status
      * @param classifierOptionsResponseModels - classifier options response models list
      * @return classifier options request model
      */
-    public static ClassifierOptionsRequestModel createClassifierOptionsRequestModel(String dataMd5Hash,
+    public static ClassifierOptionsRequestModel createClassifierOptionsRequestModel(InstancesInfo instancesInfo,
                                                                                     LocalDateTime requestDate,
                                                                                     ErsResponseStatus responseStatus,
                                                                                     List<ClassifierOptionsResponseModel> classifierOptionsResponseModels) {
         ClassifierOptionsRequestModel requestModel = new ClassifierOptionsRequestModel();
         requestModel.setRequestId(UUID.randomUUID().toString());
-        requestModel.setRelationName(RELATION_NAME);
-        requestModel.setDataMd5Hash(dataMd5Hash);
+        requestModel.setInstancesInfo(instancesInfo);
         requestModel.setRequestDate(requestDate);
         requestModel.setResponseStatus(responseStatus);
         requestModel.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);

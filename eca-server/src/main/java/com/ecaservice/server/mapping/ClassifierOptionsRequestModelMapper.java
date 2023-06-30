@@ -1,8 +1,8 @@
 package com.ecaservice.server.mapping;
 
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
-import com.ecaservice.server.report.model.ClassifierOptionsRequestBean;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestModel;
+import com.ecaservice.server.report.model.ClassifierOptionsRequestBean;
 import com.ecaservice.web.dto.model.ClassifierOptionsRequestDto;
 import com.ecaservice.web.dto.model.EnumDto;
 import org.mapstruct.AfterMapping;
@@ -18,8 +18,7 @@ import static com.ecaservice.server.util.Utils.getEvaluationMethodDescription;
  *
  * @author Roman Batygin
  */
-@Mapper(uses = {ErsEvaluationMethodMapper.class, DateTimeConverter.class},
-        injectionStrategy = InjectionStrategy.CONSTRUCTOR)
+@Mapper(uses = {DateTimeConverter.class, InstancesInfoMapper.class}, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public abstract class ClassifierOptionsRequestModelMapper {
 
     /**
@@ -32,7 +31,6 @@ public abstract class ClassifierOptionsRequestModelMapper {
     @Mapping(source = "evaluationMethodReport.numFolds", target = "numFolds")
     @Mapping(source = "evaluationMethodReport.numTests", target = "numTests")
     @Mapping(source = "evaluationMethodReport.seed", target = "seed")
-    @Mapping(source = "dataHash", target = "dataMd5Hash")
     public abstract ClassifierOptionsRequestModel map(ClassifierOptionsRequest classifierOptionsRequest);
 
     /**
@@ -53,6 +51,7 @@ public abstract class ClassifierOptionsRequestModelMapper {
     @Mapping(target = "evaluationMethod", ignore = true)
     @Mapping(source = "requestDate", target = "requestDate", qualifiedByName = "formatLocalDateTime")
     @Mapping(source = "responseStatus.description", target = "responseStatus")
+    @Mapping(source = "instancesInfo.relationName", target = "relationName")
     @Mapping(target = "classifierName", ignore = true)
     @Mapping(target = "classifierOptions", ignore = true)
     public abstract ClassifierOptionsRequestBean mapToBean(ClassifierOptionsRequestModel classifierOptionsRequestModel);

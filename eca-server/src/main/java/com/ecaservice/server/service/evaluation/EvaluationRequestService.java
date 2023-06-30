@@ -36,7 +36,6 @@ import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.putMdc;
 import static com.ecaservice.common.web.util.LogHelper.putMdcIfAbsent;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.toJsonString;
-import static com.ecaservice.server.util.InstancesUtils.md5Hash;
 import static com.ecaservice.server.util.Utils.buildEvaluationResultsModel;
 import static com.ecaservice.server.util.Utils.buildInternalErrorEvaluationResultsModel;
 
@@ -121,9 +120,9 @@ public class EvaluationRequestService {
 
     private EvaluationLog createAndSaveEvaluationLog(String requestId,
                                                      EvaluationRequestDataModel evaluationRequestDataModel) {
-        String dataMd5Hash = md5Hash(evaluationRequestDataModel.getData());
         var instancesInfo =
-                instancesInfoService.getOrSaveInstancesInfo(dataMd5Hash, evaluationRequestDataModel.getData());
+                instancesInfoService.getOrSaveInstancesInfo(evaluationRequestDataModel.getDataMd5Hash(),
+                evaluationRequestDataModel.getData());
         EvaluationLog evaluationLog = evaluationLogMapper.map(evaluationRequestDataModel, crossValidationConfig);
         evaluationLog.setInstancesInfo(instancesInfo);
         processClassifierOptions(evaluationRequestDataModel.getClassifier(), evaluationLog);

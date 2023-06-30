@@ -21,6 +21,7 @@ import java.util.UUID;
 
 import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.putMdc;
+import static com.ecaservice.server.util.InstancesUtils.md5Hash;
 
 /**
  * Rabbit MQ listener for evaluation optimizer request messages.
@@ -46,7 +47,11 @@ public class EvaluationOptimizerRequestListener {
         MessageProperties inboundMessageProperties = inboundMessage.getMessageProperties();
         log.info("Received evaluation optimizer request with correlation id [{}]",
                 inboundMessageProperties.getCorrelationId());
-        var instancesRequestDataModel = new InstancesRequestDataModel(instancesRequest.getData());
+        String requestId = UUID.randomUUID().toString();
+        putMdc(TX_ID, requestId);
+        String dataMd5Hash = md5Hash(instancesRequest.getData());
+        var instancesRequestDataModel =
+                new InstancesRequestDataModel(requestId, dataMd5Hash, instancesRequest.getData());
         EvaluationResultsDataModel evaluationResultsDataModel =
                 evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequestDataModel);
         log.info("Evaluation response [{}] with status [{}] has been built for evaluation optimizer request.",

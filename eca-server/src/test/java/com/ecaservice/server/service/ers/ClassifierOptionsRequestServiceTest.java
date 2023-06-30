@@ -1,22 +1,22 @@
 package com.ecaservice.server.service.ers;
 
 import com.ecaservice.core.filter.service.FilterService;
-import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.mapping.ClassifierOptionsRequestModelMapper;
 import com.ecaservice.server.mapping.ClassifierOptionsRequestModelMapperImpl;
 import com.ecaservice.server.mapping.DateTimeConverter;
-import com.ecaservice.server.mapping.ErsEvaluationMethodMapperImpl;
+import com.ecaservice.server.mapping.InstancesInfoMapperImpl;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestModel_;
 import com.ecaservice.server.model.entity.ErsResponseStatus;
 import com.ecaservice.server.model.entity.FilterTemplateType;
+import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.server.repository.ClassifierOptionsRequestModelRepository;
+import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.classifiers.ClassifierOptionsProcessor;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.context.annotation.Import;
@@ -29,6 +29,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.UUID;
 
+import static com.ecaservice.server.TestHelperUtils.createClassifierOptionsRequestModel;
+import static com.ecaservice.server.TestHelperUtils.createInstancesInfo;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -39,9 +41,10 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({ClassifierOptionsRequestModelMapperImpl.class, ErsEvaluationMethodMapperImpl.class, DateTimeConverter.class})
+@Import({ClassifierOptionsRequestModelMapperImpl.class, DateTimeConverter.class, InstancesInfoMapperImpl.class})
 class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
 
+    private static final String INSTANCES_INFO_RELATION_NAME = "instancesInfo.relationName";
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     private static final int PAGE_NUMBER = 0;
@@ -49,6 +52,8 @@ class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
 
     @Inject
     private ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository;
+    @Inject
+    private InstancesInfoRepository instancesInfoRepository;
     @Inject
     private ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper;
     @Mock
@@ -58,48 +63,47 @@ class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
 
     private ClassifierOptionsRequestService classifierOptionsRequestService;
 
+    private InstancesInfo instancesInfo;
+
     @Override
     public void init() {
         classifierOptionsRequestService = new ClassifierOptionsRequestService(filterService,
                 classifierOptionsProcessor, classifierOptionsRequestModelMapper,
                 classifierOptionsRequestModelRepository);
+        instancesInfo = createInstancesInfo();
+        instancesInfoRepository.save(instancesInfo);
     }
 
     @Override
     public void deleteAll() {
         classifierOptionsRequestModelRepository.deleteAll();
+        instancesInfoRepository.deleteAll();
     }
 
     /**
-     * Tests global filtering relationName "gla" search query and response status equals to SUCCESS.
+     * Tests global filtering relationName search query and response status equals to SUCCESS.
      */
     @Test
     void testGlobalFilter() {
         ClassifierOptionsRequestModel requestModel =
-                TestHelperUtils.createClassifierOptionsRequestModel(StringUtils.EMPTY, LocalDateTime.now(),
-                        ErsResponseStatus.ERROR, Collections.emptyList());
-        requestModel.setRelationName("relation1");
+                createClassifierOptionsRequestModel(instancesInfo, LocalDateTime.now(),
+                        ErsResponseStatus.SUCCESS, Collections.emptyList());
+        InstancesInfo anotherInstancesInfo = createInstancesInfo();
+        anotherInstancesInfo.setDataMd5Hash("anotherHash");
+        anotherInstancesInfo.setRelationName("anotherData");
+        instancesInfoRepository.save(anotherInstancesInfo);
         ClassifierOptionsRequestModel requestModel1 =
-                TestHelperUtils.createClassifierOptionsRequestModel(StringUtils.EMPTY, LocalDateTime.now(),
+                createClassifierOptionsRequestModel(anotherInstancesInfo, LocalDateTime.now(),
                         ErsResponseStatus.SUCCESS, Collections.emptyList());
-        requestModel1.setRelationName("relation2");
-        ClassifierOptionsRequestModel requestModel2 =
-                TestHelperUtils.createClassifierOptionsRequestModel(StringUtils.EMPTY, LocalDateTime.now(),
-                        ErsResponseStatus.SUCCESS, Collections.emptyList());
-        requestModel2.setRelationName("glass");
-        ClassifierOptionsRequestModel requestModel3 =
-                TestHelperUtils.createClassifierOptionsRequestModel(StringUtils.EMPTY, LocalDateTime.now(),
-                        ErsResponseStatus.RESULTS_NOT_FOUND, Collections.emptyList());
-        requestModel3.setRelationName("glass");
-        classifierOptionsRequestModelRepository.saveAll(
-                Arrays.asList(requestModel, requestModel1, requestModel2, requestModel3));
+        classifierOptionsRequestModelRepository.saveAll(Arrays.asList(requestModel, requestModel1));
         PageRequestDto pageRequestDto =
-                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, ClassifierOptionsRequestModel_.REQUEST_DATE, false, "gla",
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, ClassifierOptionsRequestModel_.REQUEST_DATE, false,
+                        instancesInfo.getRelationName(),
                         newArrayList());
         pageRequestDto.getFilters().add(new FilterRequestDto(ClassifierOptionsRequestModel_.RESPONSE_STATUS,
                 Collections.singletonList(ErsResponseStatus.SUCCESS.name()), MatchMode.EQUALS));
         when(filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST.name())).thenReturn(
-                Arrays.asList(ClassifierOptionsRequestModel_.RELATION_NAME, ClassifierOptionsRequestModel_.REQUEST_ID));
+                Arrays.asList(INSTANCES_INFO_RELATION_NAME, ClassifierOptionsRequestModel_.REQUEST_ID));
         var classifierOptionsRequestDtoPage =
                 classifierOptionsRequestService.getClassifierOptionsRequestsPage(pageRequestDto);
         assertThat(classifierOptionsRequestDtoPage).isNotNull();
@@ -109,15 +113,15 @@ class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
     @Test
     void testFilterByRequestId() {
         ClassifierOptionsRequestModel requestModel =
-                TestHelperUtils.createClassifierOptionsRequestModel(StringUtils.EMPTY, LocalDateTime.now(),
+                createClassifierOptionsRequestModel(instancesInfo, LocalDateTime.now(),
                         ErsResponseStatus.SUCCESS, Collections.emptyList());
         classifierOptionsRequestModelRepository.save(requestModel);
         ClassifierOptionsRequestModel requestModel2 =
-                TestHelperUtils.createClassifierOptionsRequestModel(StringUtils.EMPTY, LocalDateTime.now(),
+                createClassifierOptionsRequestModel(instancesInfo, LocalDateTime.now(),
                         ErsResponseStatus.SUCCESS, Collections.emptyList());
         classifierOptionsRequestModelRepository.save(requestModel2);
         ClassifierOptionsRequestModel requestModel3 =
-                TestHelperUtils.createClassifierOptionsRequestModel(StringUtils.EMPTY, LocalDateTime.now(),
+                createClassifierOptionsRequestModel(instancesInfo, LocalDateTime.now(),
                         ErsResponseStatus.SUCCESS, Collections.emptyList());
         classifierOptionsRequestModelRepository.save(requestModel3);
         PageRequestDto pageRequestDto =
@@ -145,7 +149,7 @@ class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
     @Test
     void testRangeFilterForStringField() {
         ClassifierOptionsRequestModel requestModel =
-                TestHelperUtils.createClassifierOptionsRequestModel(StringUtils.EMPTY, LocalDateTime.now(),
+                createClassifierOptionsRequestModel(instancesInfo, LocalDateTime.now(),
                         ErsResponseStatus.ERROR, Collections.emptyList());
         requestModel.setRequestId(UUID.randomUUID().toString());
         classifierOptionsRequestModelRepository.save(requestModel);
@@ -163,7 +167,7 @@ class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
     @Test
     void testEqualsFilterByDateField() {
         ClassifierOptionsRequestModel requestModel =
-                TestHelperUtils.createClassifierOptionsRequestModel(StringUtils.EMPTY, LocalDateTime.now(),
+                createClassifierOptionsRequestModel(instancesInfo, LocalDateTime.now(),
                         ErsResponseStatus.ERROR, Collections.emptyList());
         classifierOptionsRequestModelRepository.save(requestModel);
         PageRequestDto pageRequestDto =
@@ -189,7 +193,7 @@ class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
         when(filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST.name())).thenReturn(
                 Collections.singletonList(ClassifierOptionsRequestModel_.REQUEST_DATE));
         ClassifierOptionsRequestModel requestModel =
-                TestHelperUtils.createClassifierOptionsRequestModel(StringUtils.EMPTY, LocalDateTime.now(),
+                createClassifierOptionsRequestModel(instancesInfo, LocalDateTime.now(),
                         ErsResponseStatus.ERROR, Collections.emptyList());
         classifierOptionsRequestModelRepository.save(requestModel);
         PageRequestDto pageRequestDto =
@@ -201,7 +205,7 @@ class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
 
     private void testFilterForIllegalFieldType(FilterRequestDto filterRequestDto) {
         ClassifierOptionsRequestModel requestModel =
-                TestHelperUtils.createClassifierOptionsRequestModel(StringUtils.EMPTY, LocalDateTime.now(),
+                createClassifierOptionsRequestModel(instancesInfo, LocalDateTime.now(),
                         ErsResponseStatus.ERROR, Collections.emptyList());
         classifierOptionsRequestModelRepository.save(requestModel);
         PageRequestDto pageRequestDto =

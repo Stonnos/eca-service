@@ -2,7 +2,6 @@ package com.ecaservice.server.mapping;
 
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import com.ecaservice.ers.dto.EvaluationMethod;
-import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.model.evaluation.InstancesRequestDataModel;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +15,10 @@ import weka.core.Instances;
 
 import javax.inject.Inject;
 
+import java.util.UUID;
+
+import static com.ecaservice.server.TestHelperUtils.loadInstances;
+import static com.ecaservice.server.util.InstancesUtils.md5Hash;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -38,8 +41,8 @@ class ClassifierOptionsRequestMapperTest {
 
     @BeforeEach
     void init() {
-        Instances data = TestHelperUtils.loadInstances();
-        instancesRequestDataModel = new InstancesRequestDataModel(data);
+        Instances data = loadInstances();
+        instancesRequestDataModel = new InstancesRequestDataModel(UUID.randomUUID().toString(), md5Hash(data), data);
     }
 
     @Test

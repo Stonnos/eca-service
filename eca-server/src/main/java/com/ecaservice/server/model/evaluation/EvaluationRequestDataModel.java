@@ -19,6 +19,11 @@ public class EvaluationRequestDataModel {
     private AbstractClassifier classifier;
 
     /**
+     * Training data md5 hash
+     */
+    private String dataMd5Hash;
+
+    /**
      * Training data
      */
     private Instances data;

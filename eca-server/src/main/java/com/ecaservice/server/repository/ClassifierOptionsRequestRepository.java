@@ -26,7 +26,7 @@ public interface ClassifierOptionsRequestRepository extends JpaRepository<Classi
      * @return classifier options request list
      */
     @Query("select req from ClassifierOptionsRequestEntity req join req.classifierOptionsRequestModel cm " +
-            "where cm.dataMd5Hash = :dataMd5Hash and cm.responseStatus in (:responseStatuses) and " +
+            "where cm.instancesInfo.dataMd5Hash = :dataMd5Hash and cm.responseStatus in (:responseStatuses) and " +
             "cm.requestDate > :requestDate order by req.creationDate desc")
     List<ClassifierOptionsRequestEntity> findLastRequests(@Param("dataMd5Hash") String dataMd5Hash,
                                                           @Param("responseStatuses")

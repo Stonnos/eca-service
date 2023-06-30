@@ -1,16 +1,20 @@
 package com.ecaservice.server.service.evaluation;
 
 import com.ecaservice.core.lock.annotation.Locked;
-import com.ecaservice.ers.dto.ClassifierOptionsRequest;
+import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.config.ers.ErsConfig;
+import com.ecaservice.server.mapping.ClassifierOptionsRequestMapper;
 import com.ecaservice.server.mapping.ClassifierOptionsRequestModelMapper;
 import com.ecaservice.server.model.ClassifierOptionsResult;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestEntity;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.server.model.entity.ClassifierOptionsResponseModel;
 import com.ecaservice.server.model.entity.ErsResponseStatus;
+import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.server.model.evaluation.ClassifierOptionsRequestSource;
+import com.ecaservice.server.model.evaluation.InstancesRequestDataModel;
 import com.ecaservice.server.repository.ClassifierOptionsRequestRepository;
+import com.ecaservice.server.service.InstancesInfoService;
 import com.ecaservice.server.service.ers.ErsRequestService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,24 +39,33 @@ import static com.ecaservice.server.util.Utils.getFirstResponseModel;
 public class ClassifierOptionsCacheService {
 
     private final ErsConfig ersConfig;
+    private final CrossValidationConfig crossValidationConfig;
     private final ErsRequestService ersRequestService;
+    private final InstancesInfoService instancesInfoService;
+    private final ClassifierOptionsRequestMapper classifierOptionsRequestMapper;
     private final ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper;
     private final ClassifierOptionsRequestRepository classifierOptionsRequestRepository;
 
     /**
      * Gets optimal classifiers options from ERS service.
      *
-     * @param classifierOptionsRequest - classifier options request
-     * @return classifier options
+     * @param instancesRequestDataModel - instances request data model
+     * @return classifier options result
      */
     public ClassifierOptionsResult getOptimalClassifierOptionsFromErs(
-            ClassifierOptionsRequest classifierOptionsRequest) {
+            InstancesRequestDataModel instancesRequestDataModel) {
         log.info("Starting to get optimal classifiers options from ERS for data md5 hash: {}, options req id [{}]",
-                classifierOptionsRequest.getDataHash(), classifierOptionsRequest.getRequestId());
+                instancesRequestDataModel.getDataMd5Hash(), instancesRequestDataModel.getRequestId());
+        var classifierOptionsRequest =
+                classifierOptionsRequestMapper.map(instancesRequestDataModel, crossValidationConfig);
         ClassifierOptionsRequestEntity requestEntity =
                 createClassifierOptionsRequestEntity(ClassifierOptionsRequestSource.ERS);
         requestEntity.setRequestId(classifierOptionsRequest.getRequestId());
         ClassifierOptionsRequestModel requestModel = classifierOptionsRequestModelMapper.map(classifierOptionsRequest);
+        InstancesInfo instancesInfo =
+                instancesInfoService.getOrSaveInstancesInfo(instancesRequestDataModel.getDataMd5Hash(),
+                        instancesRequestDataModel.getData());
+        requestModel.setInstancesInfo(instancesInfo);
         ClassifierOptionsResult classifierOptionsResult =
                 ersRequestService.getOptimalClassifierOptions(classifierOptionsRequest, requestModel);
         requestEntity.setClassifierOptionsRequestModel(requestModel);
@@ -63,25 +76,24 @@ public class ClassifierOptionsCacheService {
     /**
      * Gets optimal classifiers options from cache.
      *
-     * @param classifierOptionsRequest - classifier options request
-     * @return classifier options string
+     * @param instancesRequestDataModel - instances request data model
+     * @return classifier options result
      */
-    @Locked(lockName = "getOptimalClassifierOptions", key = "#classifierOptionsRequest.dataMd5Hash")
+    @Locked(lockName = "getOptimalClassifierOptions", key = "#instancesRequestDataModel.dataMd5Hash")
     public ClassifierOptionsResult getOptimalClassifierOptionsFromCache(
-            ClassifierOptionsRequest classifierOptionsRequest) {
-        String dataMd5Hash = classifierOptionsRequest.getDataHash();
+            InstancesRequestDataModel instancesRequestDataModel) {
+        String dataMd5Hash = instancesRequestDataModel.getDataMd5Hash();
         log.info("Starting to get optimal classifiers options from cache for data md5 hash: {}, options req id [{}]",
-                classifierOptionsRequest.getDataHash(), classifierOptionsRequest.getRequestId());
+                dataMd5Hash, instancesRequestDataModel.getRequestId());
         ClassifierOptionsRequestModel requestModel = getLastClassifierOptionsRequestModel(dataMd5Hash);
         ClassifierOptionsResponseModel responseModel = getFirstResponseModel(requestModel);
         if (responseModel != null) {
             log.info(
                     "Optimal options [{}] has been taken from last response for data md5 hash '{}', options req id [{}]",
-                    responseModel.getOptions(), classifierOptionsRequest.getDataHash(),
-                    classifierOptionsRequest.getRequestId());
+                    responseModel.getOptions(), dataMd5Hash, instancesRequestDataModel.getRequestId());
             ClassifierOptionsRequestEntity requestEntity =
                     createClassifierOptionsRequestEntity(ClassifierOptionsRequestSource.CACHE);
-            requestEntity.setRequestId(classifierOptionsRequest.getRequestId());
+            requestEntity.setRequestId(instancesRequestDataModel.getRequestId());
             requestEntity.setClassifierOptionsRequestModel(requestModel);
             classifierOptionsRequestRepository.save(requestEntity);
             ClassifierOptionsResult classifierOptionsResult = new ClassifierOptionsResult();
@@ -89,7 +101,7 @@ public class ClassifierOptionsCacheService {
             classifierOptionsResult.setFound(true);
             return classifierOptionsResult;
         } else {
-            return getOptimalClassifierOptionsFromErs(classifierOptionsRequest);
+            return getOptimalClassifierOptionsFromErs(instancesRequestDataModel);
         }
     }
 

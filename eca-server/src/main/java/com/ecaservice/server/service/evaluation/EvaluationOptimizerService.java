@@ -1,10 +1,8 @@
 package com.ecaservice.server.service.evaluation;
 
 import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
-import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.config.ers.ErsConfig;
-import com.ecaservice.server.mapping.ClassifierOptionsRequestMapper;
 import com.ecaservice.server.mapping.EvaluationRequestMapper;
 import com.ecaservice.server.model.ClassifierOptionsResult;
 import com.ecaservice.server.model.evaluation.EvaluationRequestDataModel;
@@ -18,8 +16,6 @@ import weka.core.Instances;
 
 import java.util.UUID;
 
-import static com.ecaservice.common.web.util.LogHelper.TX_ID;
-import static com.ecaservice.common.web.util.LogHelper.putMdc;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.parseOptions;
 import static com.ecaservice.server.util.Utils.buildErrorEvaluationResultsModel;
 
@@ -37,7 +33,6 @@ public class EvaluationOptimizerService {
     private final ErsConfig ersConfig;
     private final EvaluationRequestService evaluationRequestService;
     private final EvaluationRequestMapper evaluationRequestMapper;
-    private final ClassifierOptionsRequestMapper classifierOptionsRequestMapper;
     private final ClassifierOptionsAdapter classifierOptionsAdapter;
     private final ClassifierOptionsCacheService classifierOptionsCacheService;
 
@@ -49,34 +44,29 @@ public class EvaluationOptimizerService {
      */
     public EvaluationResultsDataModel evaluateWithOptimalClassifierOptions(
             InstancesRequestDataModel instancesRequestDataModel) {
-        String requestId = UUID.randomUUID().toString();
-        putMdc(TX_ID, requestId);
         Instances data = instancesRequestDataModel.getData();
-        ClassifierOptionsRequest classifierOptionsRequest =
-                classifierOptionsRequestMapper.map(instancesRequestDataModel, crossValidationConfig);
         log.info(
                 "Starting evaluation request with optimal classifier options for data hash [{}], options request id [{}]",
-                classifierOptionsRequest.getDataHash(), requestId);
-        classifierOptionsRequest.setRequestId(requestId);
-        ClassifierOptionsResult classifierOptionsResult = getOptimalClassifierOptions(classifierOptionsRequest);
+                instancesRequestDataModel.getDataMd5Hash(), instancesRequestDataModel.getRequestId());
+        ClassifierOptionsResult classifierOptionsResult = getOptimalClassifierOptions(instancesRequestDataModel);
         if (!classifierOptionsResult.isFound()) {
             EvaluationResultsDataModel evaluationResultsDataModel =
                     buildErrorEvaluationResultsModel(UUID.randomUUID().toString(),
                             classifierOptionsResult.getErrorCode());
             log.info("Response [{}] with error code [{}] has been build for data hash [{}], options request id [{}]",
                     evaluationResultsDataModel.getRequestId(), evaluationResultsDataModel.getErrorCode(),
-                    classifierOptionsRequest.getDataHash(), classifierOptionsRequest.getRequestId());
+                    instancesRequestDataModel.getDataMd5Hash(), instancesRequestDataModel.getRequestId());
             return evaluationResultsDataModel;
         } else {
-            return evaluateModel(classifierOptionsRequest, classifierOptionsResult.getOptionsJson(), data);
+            return evaluateModel(instancesRequestDataModel, classifierOptionsResult.getOptionsJson(), data);
         }
     }
 
-    private ClassifierOptionsResult getOptimalClassifierOptions(ClassifierOptionsRequest classifierOptionsRequest) {
+    private ClassifierOptionsResult getOptimalClassifierOptions(InstancesRequestDataModel instancesRequestDataModel) {
         if (isUseClassifierOptionsCache()) {
-            return classifierOptionsCacheService.getOptimalClassifierOptionsFromCache(classifierOptionsRequest);
+            return classifierOptionsCacheService.getOptimalClassifierOptionsFromCache(instancesRequestDataModel);
         } else {
-            return classifierOptionsCacheService.getOptimalClassifierOptionsFromErs(classifierOptionsRequest);
+            return classifierOptionsCacheService.getOptimalClassifierOptionsFromErs(instancesRequestDataModel);
         }
     }
 
@@ -84,18 +74,19 @@ public class EvaluationOptimizerService {
         return Boolean.TRUE.equals(ersConfig.getUseClassifierOptionsCache());
     }
 
-    private EvaluationResultsDataModel evaluateModel(ClassifierOptionsRequest classifierOptionsRequest,
+    private EvaluationResultsDataModel evaluateModel(InstancesRequestDataModel instancesRequestDataModel,
                                                      String options,
                                                      Instances data) {
         log.info("Starting to evaluate model for data hash [{}] with options [{}], options request id [{}]",
-                classifierOptionsRequest.getDataHash(), options, classifierOptionsRequest.getRequestId());
+                instancesRequestDataModel.getDataMd5Hash(), options, instancesRequestDataModel.getRequestId());
         AbstractClassifier classifier = classifierOptionsAdapter.convert(parseOptions(options));
-        EvaluationRequestDataModel evaluationRequest = evaluationRequestMapper.map(classifierOptionsRequest);
+        EvaluationRequestDataModel evaluationRequest =
+                evaluationRequestMapper.map(instancesRequestDataModel, crossValidationConfig);
         evaluationRequest.setData(data);
         evaluationRequest.setClassifier(classifier);
         var evaluationResultsDataModel = evaluationRequestService.processRequest(evaluationRequest);
         log.info("Model has been evaluated for data hash [{}] with options [{}], options request id [{}]",
-                classifierOptionsRequest.getDataHash(), options, classifierOptionsRequest.getRequestId());
+                instancesRequestDataModel.getDataMd5Hash(), options, instancesRequestDataModel.getRequestId());
         return evaluationResultsDataModel;
     }
 }

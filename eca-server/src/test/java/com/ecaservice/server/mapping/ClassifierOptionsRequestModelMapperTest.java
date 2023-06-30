@@ -2,11 +2,11 @@ package com.ecaservice.server.mapping;
 
 
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
-import com.ecaservice.server.report.model.ClassifierOptionsRequestBean;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.server.model.entity.ClassifierOptionsResponseModel;
 import com.ecaservice.server.model.entity.ErsResponseStatus;
+import com.ecaservice.server.report.model.ClassifierOptionsRequestBean;
 import com.ecaservice.web.dto.model.ClassifierOptionsRequestDto;
 import eca.core.evaluation.EvaluationMethod;
 import org.junit.jupiter.api.Test;
@@ -18,6 +18,10 @@ import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.Collections;
 
+import static com.ecaservice.server.TestHelperUtils.createClassifierOptionsRequest;
+import static com.ecaservice.server.TestHelperUtils.createClassifierOptionsRequestModel;
+import static com.ecaservice.server.TestHelperUtils.createClassifierOptionsResponseModel;
+import static com.ecaservice.server.TestHelperUtils.createInstancesInfo;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -26,10 +30,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Roman Batygin
  */
 @ExtendWith(SpringExtension.class)
-@Import({ClassifierOptionsRequestModelMapperImpl.class, ErsEvaluationMethodMapperImpl.class, DateTimeConverter.class})
+@Import({ClassifierOptionsRequestModelMapperImpl.class, DateTimeConverter.class, InstancesInfoMapperImpl.class})
 class ClassifierOptionsRequestModelMapperTest {
 
-    private static final String DATA_MD5_HASH = "hash";
     private static final String OPTIONS = "options";
 
     @Inject
@@ -37,21 +40,20 @@ class ClassifierOptionsRequestModelMapperTest {
 
     @Test
     void testMapClassifierOptionsRequest() {
-        ClassifierOptionsRequest request = TestHelperUtils.createClassifierOptionsRequest();
+        ClassifierOptionsRequest request = createClassifierOptionsRequest();
         ClassifierOptionsRequestModel requestModel = classifierOptionsRequestModelMapper.map(request);
         assertThat(requestModel.getEvaluationMethod()).isEqualTo(EvaluationMethod.CROSS_VALIDATION);
         assertThat(requestModel.getNumFolds()).isEqualTo(request.getEvaluationMethodReport().getNumFolds().intValue());
         assertThat(requestModel.getNumTests()).isEqualTo(request.getEvaluationMethodReport().getNumTests().intValue());
         assertThat(requestModel.getSeed()).isEqualTo(request.getEvaluationMethodReport().getSeed().intValue());
-        assertThat(requestModel.getDataMd5Hash()).isEqualTo(request.getDataHash());
     }
 
     @Test
     void testMapClassifierOptionsRequestModel() {
         ClassifierOptionsRequestModel requestModel =
-                TestHelperUtils.createClassifierOptionsRequestModel(DATA_MD5_HASH, LocalDateTime.now(),
-                        ErsResponseStatus.SUCCESS,
-                        Collections.singletonList(TestHelperUtils.createClassifierOptionsResponseModel(OPTIONS)));
+                createClassifierOptionsRequestModel(TestHelperUtils.createInstancesInfo(), LocalDateTime.now(),
+                        ErsResponseStatus.SUCCESS, Collections.singletonList(
+                                createClassifierOptionsResponseModel(OPTIONS)));
         ClassifierOptionsRequestDto classifierOptionsRequestDto = classifierOptionsRequestModelMapper.map(requestModel);
         assertThat(classifierOptionsRequestDto).isNotNull();
         assertThat(classifierOptionsRequestDto.getRequestDate()).isEqualTo(requestModel.getRequestDate());
@@ -60,7 +62,9 @@ class ClassifierOptionsRequestModelMapperTest {
                 requestModel.getResponseStatus().getDescription());
         assertThat(classifierOptionsRequestDto.getResponseStatus().getValue()).isEqualTo(
                 requestModel.getResponseStatus().name());
-        assertThat(classifierOptionsRequestDto.getRelationName()).isEqualTo(requestModel.getRelationName());
+        assertThat(classifierOptionsRequestDto.getInstancesInfo()).isNotNull();
+        assertThat(classifierOptionsRequestDto.getInstancesInfo().getRelationName()).isEqualTo(
+                requestModel.getInstancesInfo().getRelationName());
         assertThat(classifierOptionsRequestDto.getNumFolds()).isEqualTo(requestModel.getNumFolds());
         assertThat(classifierOptionsRequestDto.getNumTests()).isEqualTo(requestModel.getNumTests());
         assertThat(classifierOptionsRequestDto.getSeed()).isEqualTo(requestModel.getSeed());
@@ -72,9 +76,9 @@ class ClassifierOptionsRequestModelMapperTest {
 
     @Test
     void testMapToClassifierOptionsRequestBean() {
-        ClassifierOptionsResponseModel responseModel = TestHelperUtils.createClassifierOptionsResponseModel(OPTIONS);
+        ClassifierOptionsResponseModel responseModel = createClassifierOptionsResponseModel(OPTIONS);
         ClassifierOptionsRequestModel requestModel =
-                TestHelperUtils.createClassifierOptionsRequestModel(DATA_MD5_HASH, LocalDateTime.now(),
+                createClassifierOptionsRequestModel(createInstancesInfo(), LocalDateTime.now(),
                         ErsResponseStatus.SUCCESS,
                         Collections.singletonList(responseModel));
         ClassifierOptionsRequestBean classifierOptionsRequestBean =
@@ -82,7 +86,8 @@ class ClassifierOptionsRequestModelMapperTest {
         assertThat(classifierOptionsRequestBean).isNotNull();
         assertThat(classifierOptionsRequestBean.getRequestDate()).isNotNull();
         assertThat(classifierOptionsRequestBean.getEvaluationMethod()).isNotNull();
-        assertThat(classifierOptionsRequestBean.getRelationName()).isEqualTo(requestModel.getRelationName());
+        assertThat(classifierOptionsRequestBean.getRelationName()).isEqualTo(
+                requestModel.getInstancesInfo().getRelationName());
         assertThat(classifierOptionsRequestBean.getRequestId()).isEqualTo(requestModel.getRequestId());
         assertThat(classifierOptionsRequestBean.getResponseStatus()).isEqualTo(
                 requestModel.getResponseStatus().getDescription());
