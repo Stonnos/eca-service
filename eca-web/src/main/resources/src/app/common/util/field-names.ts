@@ -59,7 +59,7 @@ export class EvaluationLogFields {
 
 export class ClassifierOptionsRequestsFields {
   public static readonly REQUEST_ID: string = "requestId";
-  public static readonly RELATION_NAME: string = "relationName";
+  public static readonly RELATION_NAME: string = "instancesInfo.relationName";
   public static readonly CLASSIFIER_NAME: string = "classifierName";
   public static readonly EVALUATION_METHOD_DESCRIPTION: string = "evaluationMethod.description";
   public static readonly EVALUATION_METHOD: string = "evaluationMethod";
