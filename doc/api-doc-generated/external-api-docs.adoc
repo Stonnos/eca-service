@@ -1729,7 +1729,7 @@ __string__
 
 
 
-|*decisionTreeType*
+|*decisionTreeType**
 |Decision tree algorithm
 a|
 __string__
@@ -1938,25 +1938,6 @@ __(double)__
 *Minimum*: 0
 
 *Maximum*: 1
-
-
-
-
-
-
-
-
-|*additionalOptions*
-|Additional options map
-a|
-__object__
-
-
-
-
-
-
-
 
 
 

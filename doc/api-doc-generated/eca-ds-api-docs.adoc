@@ -830,7 +830,7 @@ a|
     "numAttributes" : 5,
     "created" : "2021-07-01 14:00:00",
     "createdBy" : "admin",
-    "classAttributeId" : 5
+    "className" : "class"
   } ],
   "page" : 0,
   "totalCount" : 1
@@ -1364,7 +1364,7 @@ a|
   "numAttributes" : 5,
   "created" : "2021-07-01 14:00:00",
   "createdBy" : "admin",
-  "classAttributeId" : 5
+  "className" : "class"
 }
 ----
 |401
@@ -2040,6 +2040,25 @@ __(int32)__
 
 
 
+|*className*
+|Class name
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
 |*created*
 |Instances creation date
 a|
@@ -2070,28 +2089,6 @@ __string__
 *Max. length*: 255
 
 
-
-
-
-
-
-
-
-
-|*classAttributeId*
-|Class attribute ID
-a|
-__integer__
-__(int64)__
-
-
-
-
-
-
-*Minimum*: 1*
-
-*Maximum*: 9 223 372 036 854 775 807*
 
 
 
