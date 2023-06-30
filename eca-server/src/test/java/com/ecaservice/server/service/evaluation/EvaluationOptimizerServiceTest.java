@@ -215,17 +215,8 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         assertThat(classifierOptionsRequestRepository.count()).isEqualTo(2L);
     }
 
-    /**
-     * Tests for checking exceeded cache cases:
-     * Case 1: It's already been N days after last request
-     * Case 2: Last response status is ERROR
-     * Case 3: Requests with specified data MD5 hash doesn't exists
-     * Case 4: Last response status is SUCCESS, but doesn't contains any classifier options response model
-     * Case 5: Last response status is SUCCESS, but classifier options response model has invalid options string
-     */
     @Test
-    void testExceededClassifierOptionsCache() {
-        //Case 1
+    void testExceededClassifierOptionsCacheWithLastResponseIsAfterNDays() {
         ClassifierOptionsRequestModel requestModel = TestHelperUtils.createClassifierOptionsRequestModel(instancesInfo,
                 LocalDateTime.now().minusDays(ersConfig.getClassifierOptionsCacheDurationInDays() + 1),
                 ErsResponseStatus.SUCCESS, Collections.emptyList());
@@ -235,9 +226,7 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         classifierOptionsRequestRepository.save(requestEntity);
         ClassifierOptionsResponse response = TestHelperUtils.createClassifierOptionsResponse(Collections
                 .singletonList(TestHelperUtils.createClassifierReport(decisionTreeOptions)));
-        when(ersClient.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
-        EvaluationResultsDataModel evaluationResultsDataModel =
-                evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequestDataModel);
+        EvaluationResultsDataModel evaluationResultsDataModel = evaluate();
         assertSuccessEvaluationResponse(evaluationResultsDataModel);
         List<ClassifierOptionsRequestModel> optionsRequests = classifierOptionsRequestModelRepository.findAll();
         assertThat(optionsRequests).hasSize(2);
@@ -245,76 +234,81 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         List<ClassifierOptionsRequestEntity> requestEntities = classifierOptionsRequestRepository.findAll();
         assertThat(requestEntities).hasSize(2);
         assertThat(requestEntities.get(1).getSource()).isEqualTo(ClassifierOptionsRequestSource.ERS);
-        deleteAll();
-        //Case 2
-        requestModel = TestHelperUtils.createClassifierOptionsRequestModel(instancesInfo,
+    }
+
+    @Test
+    void testExceededClassifierOptionsCacheWithLastHasErrorStatus() {
+        var requestModel = TestHelperUtils.createClassifierOptionsRequestModel(instancesInfo,
                 LocalDateTime.now(), ErsResponseStatus.ERROR, Collections.emptyList());
-        requestEntity = TestHelperUtils.createClassifierOptionsRequestEntity
+        var requestEntity = TestHelperUtils.createClassifierOptionsRequestEntity
                 (requestModel.getRequestDate(), requestModel);
         classifierOptionsRequestModelRepository.save(requestModel);
         classifierOptionsRequestRepository.save(requestEntity);
-        evaluationResultsDataModel = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
-                instancesRequestDataModel);
+        EvaluationResultsDataModel evaluationResultsDataModel = evaluate();
         assertSuccessEvaluationResponse(evaluationResultsDataModel);
-        optionsRequests = classifierOptionsRequestModelRepository.findAll();
+        var optionsRequests = classifierOptionsRequestModelRepository.findAll();
         assertThat(optionsRequests).hasSize(2);
         assertSuccessClassifierOptionsRequestModel(optionsRequests.get(1));
-        requestEntities = classifierOptionsRequestRepository.findAll();
+        var requestEntities = classifierOptionsRequestRepository.findAll();
         assertThat(requestEntities).hasSize(2);
         assertThat(requestEntities.get(1).getSource()).isEqualTo(ClassifierOptionsRequestSource.ERS);
-        deleteAll();
+    }
+
+    @Test
+    void testExceededClassifierOptionsCacheWithDataMd5HashDoesntExists() {
         var anotherInstancesInfo = createInstancesInfo();
         anotherInstancesInfo.setDataMd5Hash("anotherHash");
         instancesInfoRepository.save(anotherInstancesInfo);
-        //Case 3
-        requestModel = TestHelperUtils.createClassifierOptionsRequestModel(anotherInstancesInfo, LocalDateTime.now(),
+        var requestModel = TestHelperUtils.createClassifierOptionsRequestModel(anotherInstancesInfo,
+                LocalDateTime.now(),
                 ErsResponseStatus.SUCCESS, Collections.emptyList());
-        requestEntity = TestHelperUtils.createClassifierOptionsRequestEntity
+        var requestEntity = TestHelperUtils.createClassifierOptionsRequestEntity
                 (requestModel.getRequestDate(), requestModel);
         classifierOptionsRequestModelRepository.save(requestModel);
         classifierOptionsRequestRepository.save(requestEntity);
-        evaluationResultsDataModel = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
-                instancesRequestDataModel);
+        EvaluationResultsDataModel evaluationResultsDataModel = evaluate();
         assertSuccessEvaluationResponse(evaluationResultsDataModel);
-        optionsRequests = classifierOptionsRequestModelRepository.findAll();
+        var optionsRequests = classifierOptionsRequestModelRepository.findAll();
         assertThat(optionsRequests).hasSize(2);
         assertSuccessClassifierOptionsRequestModel(optionsRequests.get(1));
-        requestEntities = classifierOptionsRequestRepository.findAll();
+        var requestEntities = classifierOptionsRequestRepository.findAll();
         assertThat(requestEntities).hasSize(2);
         assertThat(requestEntities.get(1).getSource()).isEqualTo(ClassifierOptionsRequestSource.ERS);
-        deleteAll();
-        //Case 4
-        requestModel = TestHelperUtils.createClassifierOptionsRequestModel(instancesInfo, LocalDateTime.now(),
+    }
+
+    @Test
+    void testExceededClassifierOptionsCacheWithLastResponseIsSuccessButDoesntContainsAnyClassifierOptionsResponseModel() {
+        var requestModel = TestHelperUtils.createClassifierOptionsRequestModel(instancesInfo, LocalDateTime.now(),
                 ErsResponseStatus.SUCCESS, Collections.emptyList());
-        requestEntity = TestHelperUtils.createClassifierOptionsRequestEntity
+        var requestEntity = TestHelperUtils.createClassifierOptionsRequestEntity
                 (requestModel.getRequestDate(), requestModel);
         classifierOptionsRequestModelRepository.save(requestModel);
         classifierOptionsRequestRepository.save(requestEntity);
-        evaluationResultsDataModel = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
-                instancesRequestDataModel);
+        EvaluationResultsDataModel evaluationResultsDataModel = evaluate();
         assertSuccessEvaluationResponse(evaluationResultsDataModel);
-        optionsRequests = classifierOptionsRequestModelRepository.findAll();
+        var optionsRequests = classifierOptionsRequestModelRepository.findAll();
         assertThat(optionsRequests).hasSize(2);
         assertSuccessClassifierOptionsRequestModel(optionsRequests.get(1));
-        requestEntities = classifierOptionsRequestRepository.findAll();
+        var requestEntities = classifierOptionsRequestRepository.findAll();
         assertThat(requestEntities).hasSize(2);
         assertThat(requestEntities.get(1).getSource()).isEqualTo(ClassifierOptionsRequestSource.ERS);
-        deleteAll();
-        //Case 5
-        requestModel = TestHelperUtils.createClassifierOptionsRequestModel(instancesInfo, LocalDateTime.now(),
+    }
+
+    @Test
+    void testExceededClassifierOptionsCacheWithLastResponseIsSuccessButHasInvalidClassifierOptionsStringInResponse() {
+        var requestModel = TestHelperUtils.createClassifierOptionsRequestModel(instancesInfo, LocalDateTime.now(),
                 ErsResponseStatus.SUCCESS,
                 Collections.singletonList(TestHelperUtils.createClassifierOptionsResponseModel("OPTIONS")));
-        requestEntity = TestHelperUtils.createClassifierOptionsRequestEntity
+        var requestEntity = TestHelperUtils.createClassifierOptionsRequestEntity
                 (requestModel.getRequestDate(), requestModel);
         classifierOptionsRequestModelRepository.save(requestModel);
         classifierOptionsRequestRepository.save(requestEntity);
-        evaluationResultsDataModel = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
-                instancesRequestDataModel);
+        EvaluationResultsDataModel evaluationResultsDataModel = evaluate();
         assertSuccessEvaluationResponse(evaluationResultsDataModel);
-        optionsRequests = classifierOptionsRequestModelRepository.findAll();
+        var optionsRequests = classifierOptionsRequestModelRepository.findAll();
         assertThat(optionsRequests).hasSize(2);
         assertSuccessClassifierOptionsRequestModel(optionsRequests.get(1));
-        requestEntities = classifierOptionsRequestRepository.findAll();
+        var requestEntities = classifierOptionsRequestRepository.findAll();
         assertThat(requestEntities).hasSize(2);
         assertThat(requestEntities.get(1).getSource()).isEqualTo(ClassifierOptionsRequestSource.ERS);
     }
@@ -402,6 +396,13 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         performClassifierEvaluationTest(TestHelperUtils.createHeterogeneousClassifierOptions(true),
                 ModifiedHeterogeneousClassifier.class);
 
+    }
+
+    private EvaluationResultsDataModel evaluate() {
+        ClassifierOptionsResponse response = TestHelperUtils.createClassifierOptionsResponse(Collections
+                .singletonList(TestHelperUtils.createClassifierReport(decisionTreeOptions)));
+        when(ersClient.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
+        return evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequestDataModel);
     }
 
     private void internalTestErrorStatus(Exception ex, ErsResponseStatus expectedStatus, ErrorCode expectedErrorCode) {
