@@ -4,18 +4,14 @@ import {
   PageRequestDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { OverlayPanel} from "primeng/primeng";
-import { JsonPipe } from "@angular/common";
 import { ClassifierOptionsRequestService } from "../services/classifier-options-request.service";
 import { Observable } from "rxjs/internal/Observable";
-import { saveAs } from 'file-saver/dist/FileSaver';
 import { FilterService } from "../../filter/services/filter.service";
 import { ClassifierOptionsRequestsFields } from "../../common/util/field-names";
 import { ReportType } from "../../common/model/report-type.enum";
 import { ReportsService } from "../../common/services/report.service";
 import { BaseEvaluationListComponent } from "../../common/lists/base-evaluation-list.component";
 import { InstancesInfoService } from "../../common/instances-info/services/instances-info.service";
-
-declare var Prism: any;
 
 @Component({
   selector: 'app-classifier-options-requests',
@@ -74,32 +70,10 @@ export class ClassifierOptionsRequestsComponent extends BaseEvaluationListCompon
     }
   }
 
-  public saveClassifierOptions() {
-    if (this.selectedRequest) {
-      const classifierConfig = this.selectedRequest.classifierInfo.classifierOptionsJson;
-      if (classifierConfig) {
-        let blob: Blob = new Blob([classifierConfig], {type: 'application/json'});
-        saveAs(blob, `${this.selectedRequest.classifierInfo.classifierName}_${this.selectedRequest.requestId}.json`);
-      }
-    }
-  }
-
   public onSelect(event, classifierOptionsRequestDto: ClassifierOptionsRequestDto, column: string, overlayPanel: OverlayPanel) {
     this.selectedRequest = classifierOptionsRequestDto;
     this.selectedColumn = column;
     overlayPanel.toggle(event);
-  }
-
-  public getFormattedJsonConfig(): string {
-    if (this.selectedRequest.classifierInfo) {
-      const classifierConfig = this.selectedRequest.classifierInfo.classifierOptionsJson;
-      if (classifierConfig) {
-        const configObj = JSON.parse(classifierConfig);
-        const json = new JsonPipe().transform(configObj);
-        return Prism.highlight(json, Prism.languages['json']);
-      }
-    }
-    return null;
   }
 
   private initColumns() {
