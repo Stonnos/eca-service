@@ -2,7 +2,6 @@ package com.ecaservice.server.service.evaluation;
 
 import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.server.config.CrossValidationConfig;
-import com.ecaservice.server.config.ers.ErsConfig;
 import com.ecaservice.server.mapping.EvaluationRequestMapper;
 import com.ecaservice.server.model.ClassifierOptionsResult;
 import com.ecaservice.server.model.evaluation.EvaluationRequestDataModel;
@@ -30,11 +29,10 @@ import static com.ecaservice.server.util.Utils.buildErrorEvaluationResultsModel;
 public class EvaluationOptimizerService {
 
     private final CrossValidationConfig crossValidationConfig;
-    private final ErsConfig ersConfig;
     private final EvaluationRequestService evaluationRequestService;
     private final EvaluationRequestMapper evaluationRequestMapper;
     private final ClassifierOptionsAdapter classifierOptionsAdapter;
-    private final ClassifierOptionsCacheService classifierOptionsCacheService;
+    private final OptimalClassifierOptionsFetcher optimalClassifierOptionsFetcher;
 
     /**
      * Evaluate model with optimal classifier options.
@@ -48,7 +46,8 @@ public class EvaluationOptimizerService {
         log.info(
                 "Starting evaluation request with optimal classifier options for data hash [{}], options request id [{}]",
                 instancesRequestDataModel.getDataMd5Hash(), instancesRequestDataModel.getRequestId());
-        ClassifierOptionsResult classifierOptionsResult = getOptimalClassifierOptions(instancesRequestDataModel);
+        ClassifierOptionsResult classifierOptionsResult =
+                optimalClassifierOptionsFetcher.getOptimalClassifierOptions(instancesRequestDataModel);
         if (!classifierOptionsResult.isFound()) {
             EvaluationResultsDataModel evaluationResultsDataModel =
                     buildErrorEvaluationResultsModel(UUID.randomUUID().toString(),
@@ -60,18 +59,6 @@ public class EvaluationOptimizerService {
         } else {
             return evaluateModel(instancesRequestDataModel, classifierOptionsResult.getOptionsJson(), data);
         }
-    }
-
-    private ClassifierOptionsResult getOptimalClassifierOptions(InstancesRequestDataModel instancesRequestDataModel) {
-        if (isUseClassifierOptionsCache()) {
-            return classifierOptionsCacheService.getOptimalClassifierOptionsFromCache(instancesRequestDataModel);
-        } else {
-            return classifierOptionsCacheService.getOptimalClassifierOptionsFromErs(instancesRequestDataModel);
-        }
-    }
-
-    private boolean isUseClassifierOptionsCache() {
-        return Boolean.TRUE.equals(ersConfig.getUseClassifierOptionsCache());
     }
 
     private EvaluationResultsDataModel evaluateModel(InstancesRequestDataModel instancesRequestDataModel,

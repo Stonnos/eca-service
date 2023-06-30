@@ -71,7 +71,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.util.ReflectionTestUtils;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
 
@@ -99,10 +98,10 @@ import static org.mockito.Mockito.when;
         ClassifierOptionsRequestModelMapperImpl.class, ClassifierReportMapperImpl.class,
         EvaluationRequestMapperImpl.class, ClassifierOptionsRequestMapperImpl.class,
         ErsConfig.class, EvaluationLogMapperImpl.class, ClassifiersProperties.class,
-        EvaluationService.class, ErsResponseStatusMapperImpl.class,
+        EvaluationService.class, ErsResponseStatusMapperImpl.class, OptimalClassifierOptionsFetcherImpl.class,
         InstancesInfoMapperImpl.class, ErsRequestService.class, InstancesInfoService.class,
         EvaluationOptimizerService.class, ClassifierInfoMapperImpl.class, ErsErrorHandler.class,
-        ClassifierOptionsCacheService.class, DateTimeConverter.class})
+        OptimalClassifierOptionsCacheService.class, DateTimeConverter.class})
 class EvaluationOptimizerServiceTest extends AbstractJpaTest {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
@@ -201,18 +200,6 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         AssertionUtils.hasOneElement(optionsRequests);
         assertSuccessClassifierOptionsRequestModel(optionsRequests.get(0));
         assertErsSource();
-    }
-
-    @Test
-    void testDisabledCache() {
-        ErsConfig ersConfig = new ErsConfig();
-        ersConfig.setUseClassifierOptionsCache(false);
-        ReflectionTestUtils.setField(evaluationOptimizerService, "ersConfig", ersConfig);
-        evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequestDataModel);
-        instancesRequestDataModel.setRequestId(UUID.randomUUID().toString());
-        evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequestDataModel);
-        assertThat(classifierOptionsRequestModelRepository.count()).isEqualTo(2L);
-        assertThat(classifierOptionsRequestRepository.count()).isEqualTo(2L);
     }
 
     @Test
