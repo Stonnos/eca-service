@@ -1,12 +1,12 @@
 package com.ecaservice.server.report;
 
 import com.ecaservice.core.filter.service.FilterService;
-import com.ecaservice.report.data.fetcher.AbstractBaseReportDataFetcher;
 import com.ecaservice.server.mapping.ClassifierOptionsRequestModelMapper;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.server.model.entity.FilterTemplateType;
 import com.ecaservice.server.report.model.BaseReportType;
 import com.ecaservice.server.report.model.ClassifierOptionsRequestBean;
+import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.classifiers.ClassifiersTemplateProvider;
 import com.ecaservice.server.service.ers.ClassifierOptionsRequestService;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -27,7 +27,7 @@ import static com.ecaservice.server.util.ClassifierOptionsHelper.parseOptions;
  */
 @Component
 public class ClassifierOptionsRequestsBaseReportDataFetcher
-        extends AbstractBaseReportDataFetcher<ClassifierOptionsRequestModel, ClassifierOptionsRequestBean> {
+        extends AbstractEvaluationBaseReportDataFetcher<ClassifierOptionsRequestModel, ClassifierOptionsRequestBean> {
 
     private final ClassifierOptionsRequestService classifierOptionsRequestService;
     private final ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper;
@@ -37,17 +37,19 @@ public class ClassifierOptionsRequestsBaseReportDataFetcher
      * Constructor with spring dependency injection.
      *
      * @param filterService                       - filter service bean
+     * @param instancesInfoRepository             - instances info repository
      * @param classifierOptionsRequestService     - classifier options request service bean
      * @param classifierOptionsRequestModelMapper - classifier options request model mapper bean
      * @param classifiersTemplateProvider         - classifiers template provider
      */
     @Inject
     public ClassifierOptionsRequestsBaseReportDataFetcher(FilterService filterService,
+                                                          InstancesInfoRepository instancesInfoRepository,
                                                           ClassifierOptionsRequestService classifierOptionsRequestService,
                                                           ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper,
                                                           ClassifiersTemplateProvider classifiersTemplateProvider) {
         super(BaseReportType.CLASSIFIERS_OPTIONS_REQUESTS.name(), ClassifierOptionsRequestModel.class,
-                FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST.name(), filterService);
+                FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST.name(), filterService, instancesInfoRepository);
         this.classifierOptionsRequestService = classifierOptionsRequestService;
         this.classifierOptionsRequestModelMapper = classifierOptionsRequestModelMapper;
         this.classifiersTemplateProvider = classifiersTemplateProvider;

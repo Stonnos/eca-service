@@ -86,7 +86,8 @@ class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
                         ersService, entityManager, objectStorageService, evaluationLogRepository,
                         evaluationResultsRequestEntityRepository);
         evaluationLogsBaseReportDataFetcher =
-                new EvaluationLogsBaseReportDataFetcher(filterService, evaluationLogService, evaluationLogMapper);
+                new EvaluationLogsBaseReportDataFetcher(filterService, instancesInfoRepository, evaluationLogService,
+                        evaluationLogMapper);
         when(filterService.getFilterDictionary(CLASSIFIER_NAME)).thenReturn(createFilterDictionaryDto());
     }
 

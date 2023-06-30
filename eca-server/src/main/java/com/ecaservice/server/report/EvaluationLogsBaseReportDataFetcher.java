@@ -1,12 +1,12 @@
 package com.ecaservice.server.report;
 
 import com.ecaservice.core.filter.service.FilterService;
-import com.ecaservice.report.data.fetcher.AbstractBaseReportDataFetcher;
 import com.ecaservice.server.mapping.EvaluationLogMapper;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.FilterTemplateType;
 import com.ecaservice.server.report.model.BaseReportType;
 import com.ecaservice.server.report.model.EvaluationLogBean;
+import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.evaluation.EvaluationLogService;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import org.springframework.data.domain.Page;
@@ -25,7 +25,7 @@ import static com.ecaservice.server.service.filter.dictionary.FilterDictionaries
  */
 @Component
 public class EvaluationLogsBaseReportDataFetcher extends
-        AbstractBaseReportDataFetcher<EvaluationLog, EvaluationLogBean> {
+        AbstractEvaluationBaseReportDataFetcher<EvaluationLog, EvaluationLogBean> {
 
     private final EvaluationLogService evaluationLogService;
     private final EvaluationLogMapper evaluationLogMapper;
@@ -33,16 +33,18 @@ public class EvaluationLogsBaseReportDataFetcher extends
     /**
      * Constructor with spring dependency injection.
      *
-     * @param filterService        - filter service bean
-     * @param evaluationLogService - evaluation log service bean
-     * @param evaluationLogMapper  - evaluation log mapper bean
+     * @param filterService           - filter service bean
+     * @param instancesInfoRepository - instances info repository
+     * @param evaluationLogService    - evaluation log service bean
+     * @param evaluationLogMapper     - evaluation log mapper bean
      */
     @Inject
     public EvaluationLogsBaseReportDataFetcher(FilterService filterService,
+                                               InstancesInfoRepository instancesInfoRepository,
                                                EvaluationLogService evaluationLogService,
                                                EvaluationLogMapper evaluationLogMapper) {
         super(BaseReportType.EVALUATION_LOGS.name(), EvaluationLog.class, FilterTemplateType.EVALUATION_LOG.name(),
-                filterService);
+                filterService, instancesInfoRepository);
         this.evaluationLogService = evaluationLogService;
         this.evaluationLogMapper = evaluationLogMapper;
     }
