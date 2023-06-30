@@ -38,6 +38,13 @@ export abstract class BaseEvaluationListComponent<T> extends BaseListComponent<T
         ]
       };
       this.getInstancesInfoFilterValues(autocompleteItemModel.filterField, pageRequest);
+    } else {
+      this.messageService.add(
+        { severity: 'error',
+          summary: 'Ошибка',
+          detail: `Can't handle ${autocompleteItemModel.filterField} as filter autocomplete field`
+        }
+      );
     }
   }
 
