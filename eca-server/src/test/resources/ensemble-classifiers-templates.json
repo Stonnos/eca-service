@@ -277,7 +277,7 @@
     "templateName": "RANDOM_FORESTS",
     "templateTitle": "Случайные леса",
     "objectClass": "RandomForestsOptions",
-    "objectType": "RandomForestsOptions",
+    "objectType": "random_forests",
     "fields": [
       {
         "fieldName": "decisionTreeType",

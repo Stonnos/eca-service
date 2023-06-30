@@ -3,8 +3,6 @@ import {
   ClassifierOptionsRequestDto, FilterFieldDto, PageDto,
   PageRequestDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
-import { MessageService } from "primeng/api";
-import { BaseListComponent } from "../../common/lists/base-list.component";
 import { OverlayPanel} from "primeng/primeng";
 import { JsonPipe } from "@angular/common";
 import { ClassifierOptionsRequestService } from "../services/classifier-options-request.service";
@@ -12,9 +10,10 @@ import { Observable } from "rxjs/internal/Observable";
 import { saveAs } from 'file-saver/dist/FileSaver';
 import { FilterService } from "../../filter/services/filter.service";
 import { ClassifierOptionsRequestsFields } from "../../common/util/field-names";
-import { FieldService } from "../../common/services/field.service";
 import { ReportType } from "../../common/model/report-type.enum";
 import { ReportsService } from "../../common/services/report.service";
+import { BaseEvaluationListComponent } from "../../common/lists/base-evaluation-list.component";
+import { InstancesInfoService } from "../../common/instances-info/services/instances-info.service";
 
 declare var Prism: any;
 
@@ -23,20 +22,21 @@ declare var Prism: any;
   templateUrl: './classifier-options-requests.component.html',
   styleUrls: ['./classifier-options-requests.component.scss']
 })
-export class ClassifierOptionsRequestsComponent extends BaseListComponent<ClassifierOptionsRequestDto> implements OnInit {
+export class ClassifierOptionsRequestsComponent extends BaseEvaluationListComponent<ClassifierOptionsRequestDto> implements OnInit {
 
   private static readonly CLASSIFIER_OPTIONS_REQUESTS_REPORT_FILE_NAME = 'classifier-options-requests-report.xlsx';
 
   public selectedRequest: ClassifierOptionsRequestDto;
   public selectedColumn: string;
 
-  public constructor(private injector: Injector,
+  public constructor(injector: Injector,
                      private classifierOptionsService: ClassifierOptionsRequestService,
                      private filterService: FilterService,
                      private reportsService: ReportsService) {
-    super(injector.get(MessageService), injector.get(FieldService));
+    super(injector, injector.get(InstancesInfoService));
     this.defaultSortField = ClassifierOptionsRequestsFields.REQUEST_DATE;
-    this.linkColumns = [ClassifierOptionsRequestsFields.CLASSIFIER_NAME, ClassifierOptionsRequestsFields.EVALUATION_METHOD_DESCRIPTION];
+    this.linkColumns = [ClassifierOptionsRequestsFields.RELATION_NAME,
+      ClassifierOptionsRequestsFields.CLASSIFIER_NAME, ClassifierOptionsRequestsFields.EVALUATION_METHOD_DESCRIPTION];
     this.notSortableColumns = [ClassifierOptionsRequestsFields.CLASSIFIER_NAME];
     this.initColumns();
   }

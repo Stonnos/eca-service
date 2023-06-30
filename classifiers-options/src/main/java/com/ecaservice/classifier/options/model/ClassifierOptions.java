@@ -20,7 +20,7 @@ import java.io.Serializable;
         @JsonSubTypes.Type(value = NeuralNetworkOptions.class, name = ClassifierOptionsType.NEURAL_NETWORK),
         @JsonSubTypes.Type(value = J48Options.class, name = ClassifierOptionsType.J48),
         @JsonSubTypes.Type(value = StackingOptions.class, name = ClassifierOptionsType.STACKING),
-        @JsonSubTypes.Type(value = RandomForestsOptions.class),
+        @JsonSubTypes.Type(value = RandomForestsOptions.class, name = ClassifierOptionsType.RANDOM_FORESTS),
         @JsonSubTypes.Type(value = RandomNetworkOptions.class, name = ClassifierOptionsType.RANDOM_NETWORKS),
         @JsonSubTypes.Type(value = AdaBoostOptions.class, name = ClassifierOptionsType.ADA_BOOST),
         @JsonSubTypes.Type(value = HeterogeneousClassifierOptions.class, name = ClassifierOptionsType.HEC),

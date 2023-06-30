@@ -13,6 +13,7 @@ import com.ecaservice.server.model.evaluation.ClassificationResult;
 import com.ecaservice.server.model.evaluation.EvaluationRequestDataModel;
 import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
 import com.ecaservice.server.repository.EvaluationLogRepository;
+import com.ecaservice.server.service.InstancesInfoService;
 import com.ecaservice.server.service.evaluation.initializers.ClassifierInitializerService;
 import eca.core.evaluation.EvaluationResults;
 import eca.core.model.ClassificationModel;
@@ -60,6 +61,7 @@ public class EvaluationRequestService {
     private final ClassifierInitializerService classifierInitializerService;
     private final ClassifierOptionsAdapter classifierOptionsAdapter;
     private final ObjectStorageService objectStorageService;
+    private final InstancesInfoService instancesInfoService;
 
     /**
      * Processes input request and returns classification results.
@@ -118,7 +120,11 @@ public class EvaluationRequestService {
 
     private EvaluationLog createAndSaveEvaluationLog(String requestId,
                                                      EvaluationRequestDataModel evaluationRequestDataModel) {
+        var instancesInfo =
+                instancesInfoService.getOrSaveInstancesInfo(evaluationRequestDataModel.getDataMd5Hash(),
+                evaluationRequestDataModel.getData());
         EvaluationLog evaluationLog = evaluationLogMapper.map(evaluationRequestDataModel, crossValidationConfig);
+        evaluationLog.setInstancesInfo(instancesInfo);
         processClassifierOptions(evaluationRequestDataModel.getClassifier(), evaluationLog);
         evaluationLog.setRequestStatus(RequestStatus.IN_PROGRESS);
         evaluationLog.setRequestId(requestId);

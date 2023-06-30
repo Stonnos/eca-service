@@ -9,11 +9,11 @@
     "dictionary": null
   },
   {
-    "fieldName": "relationName",
+    "fieldName": "instancesInfo.id",
     "description": "Обучающая выборка",
     "fieldOrder": 1,
-    "filterFieldType": "TEXT",
-    "matchMode": "LIKE",
+    "filterFieldType": "LAZY_REFERENCE",
+    "matchMode": "EQUALS",
     "multiple": false,
     "dictionary": null
   },

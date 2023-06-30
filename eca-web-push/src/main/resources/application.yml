@@ -40,7 +40,6 @@ eureka:
 
 ## Application properties
 app:
-  maxPageSize: 50
   notificationLifeTimeDays: 7
   pushTokenValidityMinutes: 240
   encrypt:

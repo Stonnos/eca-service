@@ -4,7 +4,6 @@ import com.ecaservice.classifier.options.config.ClassifiersOptionsConfig;
 import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.core.form.template.service.FormTemplateProvider;
-import com.ecaservice.server.mapping.ClassifierInfoMapperImpl;
 import com.ecaservice.web.dto.model.ClassifierInfoDto;
 import com.ecaservice.web.dto.model.FormTemplateDto;
 import com.ecaservice.web.dto.model.InputOptionDto;
@@ -53,8 +52,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
-@Import({ClassifiersTemplateProvider.class, ClassifierOptionsProcessor.class, ClassifierInfoMapperImpl.class,
-        ClassifiersOptionsConfig.class})
+@Import({ClassifiersTemplateProvider.class, ClassifierOptionsProcessor.class, ClassifiersOptionsConfig.class})
 class ClassifierOptionsProcessorTest {
 
     private static final String CLASSIFIERS = "classifiers";
@@ -128,7 +126,7 @@ class ClassifierOptionsProcessorTest {
     @Inject
     private ClassifierOptionsProcessor classifierOptionsProcessor;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
     void init() {

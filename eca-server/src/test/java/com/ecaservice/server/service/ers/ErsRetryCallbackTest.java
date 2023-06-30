@@ -8,6 +8,7 @@ import com.ecaservice.server.model.entity.ErsResponseStatus;
 import com.ecaservice.server.model.entity.EvaluationResultsRequestEntity;
 import com.ecaservice.server.repository.ErsRequestRepository;
 import com.ecaservice.server.repository.EvaluationLogRepository;
+import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import feign.FeignException;
 import org.junit.jupiter.api.Test;
@@ -34,6 +35,8 @@ class ErsRetryCallbackTest extends AbstractJpaTest {
     @Inject
     private ErsRequestRepository ersRequestRepository;
     @Inject
+    private InstancesInfoRepository instancesInfoRepository;
+    @Inject
     private ErsRetryCallback ersRetryCallback;
 
     private ErsRequest ersRequest;
@@ -47,6 +50,7 @@ class ErsRetryCallbackTest extends AbstractJpaTest {
     public void deleteAll() {
         ersRequestRepository.deleteAll();
         evaluationLogRepository.deleteAll();
+        instancesInfoRepository.deleteAll();
     }
 
     @Test
@@ -71,6 +75,7 @@ class ErsRetryCallbackTest extends AbstractJpaTest {
 
     private ErsRequest createAndSaveErsRequest() {
         var evaluationLog = TestHelperUtils.createEvaluationLog();
+        instancesInfoRepository.save(evaluationLog.getInstancesInfo());
         evaluationLogRepository.save(evaluationLog);
         var requestEntity = new EvaluationResultsRequestEntity();
         requestEntity.setRequestId(UUID.randomUUID().toString());

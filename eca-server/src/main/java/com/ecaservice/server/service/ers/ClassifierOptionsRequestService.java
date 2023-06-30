@@ -1,7 +1,6 @@
 package com.ecaservice.server.service.ers;
 
 import com.ecaservice.core.filter.service.FilterService;
-import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.filter.ClassifierOptionsRequestModelFilter;
 import com.ecaservice.server.mapping.ClassifierOptionsRequestModelMapper;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestModel;
@@ -38,7 +37,6 @@ import static com.ecaservice.server.util.ClassifierOptionsHelper.parseOptions;
 @RequiredArgsConstructor
 public class ClassifierOptionsRequestService implements PageRequestService<ClassifierOptionsRequestModel> {
 
-    private final AppProperties appProperties;
     private final FilterService filterService;
     private final ClassifierOptionsProcessor classifierOptionsProcessor;
     private final ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper;
@@ -53,9 +51,9 @@ public class ClassifierOptionsRequestService implements PageRequestService<Class
         ClassifierOptionsRequestModelFilter filter =
                 new ClassifierOptionsRequestModelFilter(pageRequestDto.getSearchQuery(), globalFilterFields,
                         pageRequestDto.getFilters());
-        int pageSize = Integer.min(pageRequestDto.getSize(), appProperties.getMaxPageSize());
-        var classifierOptionsRequestsPage = classifierOptionsRequestModelRepository.findAll(filter,
-                PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
+        var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort);
+        var classifierOptionsRequestsPage =
+                classifierOptionsRequestModelRepository.findAll(filter, pageRequest);
         log.info("Classifier options requests page [{} of {}] with size [{}] has been fetched for page request [{}]",
                 classifierOptionsRequestsPage.getNumber(), classifierOptionsRequestsPage.getTotalPages(),
                 classifierOptionsRequestsPage.getNumberOfElements(), pageRequestDto);

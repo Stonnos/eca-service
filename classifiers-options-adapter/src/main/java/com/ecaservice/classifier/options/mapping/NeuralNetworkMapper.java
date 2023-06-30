@@ -11,12 +11,14 @@ import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.springframework.core.annotation.Order;
 
 /**
  * Implements mapping Neural network classifier to its options model.
  *
  * @author Roman Batygin
  */
+@Order(Ordered.NEURAL_NETWORK_ORDER)
 @Mapper
 public abstract class NeuralNetworkMapper extends AbstractClassifierMapper<NeuralNetwork, NeuralNetworkOptions> {
 

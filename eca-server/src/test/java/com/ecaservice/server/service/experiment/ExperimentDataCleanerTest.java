@@ -3,8 +3,10 @@ package com.ecaservice.server.service.experiment;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.model.entity.Experiment;
+import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.repository.ExperimentRepository;
+import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -32,6 +34,8 @@ class ExperimentDataCleanerTest extends AbstractJpaTest {
 
     @Inject
     private ExperimentRepository experimentRepository;
+    @Inject
+    private InstancesInfoRepository instancesInfoRepository;
 
     @MockBean
     private ExperimentDataService experimentDataService;
@@ -45,28 +49,38 @@ class ExperimentDataCleanerTest extends AbstractJpaTest {
     @Captor
     private ArgumentCaptor<Experiment> argumentCaptor;
 
+    private InstancesInfo instancesInfo;
+
+    @Override
+    public void init() {
+        instancesInfo = TestHelperUtils.createInstancesInfo();
+        instancesInfoRepository.save(instancesInfo);
+    }
+
     @Override
     public void deleteAll() {
         experimentRepository.deleteAll();
+        instancesInfoRepository.deleteAll();
     }
 
     @Test
     void testRemoveExperimentModels() {
         List<Experiment> experiments = newArrayList();
-        experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED));
+        experiments.add(
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED, instancesInfo));
         Experiment experimentToRemove =
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED, instancesInfo);
         experimentToRemove.setEndDate(LocalDateTime.now().minusDays(appProperties.getNumberOfDaysForStorage() + 1));
         experiments.add(experimentToRemove);
         Experiment finishedExperiment =
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED, instancesInfo);
         experiments.add(finishedExperiment);
         Experiment timeoutExperiment =
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.TIMEOUT);
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.TIMEOUT, instancesInfo);
         timeoutExperiment.setDeletedDate(LocalDateTime.now());
         experiments.add(timeoutExperiment);
         Experiment errorExperiment =
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR);
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR, instancesInfo);
         experiments.add(errorExperiment);
         experimentRepository.saveAll(experiments);
         experimentDataCleaner.removeExperimentsModels();
@@ -77,10 +91,12 @@ class ExperimentDataCleanerTest extends AbstractJpaTest {
     @Test
     void testRemoveExperimentTrainingData() {
         List<Experiment> experiments = newArrayList();
-        experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED));
+        experiments.add(
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED, instancesInfo));
         Experiment experimentToRemove =
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        experimentToRemove.setCreationDate(LocalDateTime.now().minusDays(appProperties.getNumberOfDaysForStorage() + 1));
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED, instancesInfo);
+        experimentToRemove.setCreationDate(
+                LocalDateTime.now().minusDays(appProperties.getNumberOfDaysForStorage() + 1));
         experiments.add(experimentToRemove);
         experimentRepository.saveAll(experiments);
         experimentDataCleaner.removeExperimentsTrainingData();

@@ -15,10 +15,12 @@ import com.ecaservice.server.mapping.InstancesInfoMapperImpl;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.Experiment_;
 import com.ecaservice.server.model.entity.FilterTemplateType;
+import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.repository.ExperimentProgressRepository;
 import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.repository.ExperimentStepRepository;
+import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.web.dto.model.ChartDataDto;
 import com.ecaservice.web.dto.model.FilterDictionaryDto;
@@ -67,6 +69,8 @@ class ExperimentDataServiceTest extends AbstractJpaTest {
     @Inject
     private ExperimentRepository experimentRepository;
     @Inject
+    private InstancesInfoRepository instancesInfoRepository;
+    @Inject
     private ExperimentStepRepository experimentStepRepository;
     @Inject
     private ExperimentProgressRepository experimentProgressRepository;
@@ -80,16 +84,26 @@ class ExperimentDataServiceTest extends AbstractJpaTest {
     @Inject
     private ExperimentDataService experimentDataService;
 
+    private InstancesInfo instancesInfo;
+
+    @Override
+    public void init() {
+        instancesInfo = TestHelperUtils.createInstancesInfo();
+        instancesInfoRepository.save(instancesInfo);
+    }
+
     @Override
     public void deleteAll() {
         experimentProgressRepository.deleteAll();
         experimentStepRepository.deleteAll();
         experimentRepository.deleteAll();
+        instancesInfoRepository.deleteAll();
     }
 
     @Test
     void testSuccessRemoveExperimentModel() {
-        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
+        Experiment experiment =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW, instancesInfo);
         experiment.setExperimentDownloadUrl(EXPERIMENT_DOWNLOAD_URL);
         experimentRepository.save(experiment);
         experimentDataService.removeExperimentModel(experiment);
@@ -102,7 +116,8 @@ class ExperimentDataServiceTest extends AbstractJpaTest {
 
     @Test
     void testSuccessRemoveExperimentTrainingData() {
-        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
+        Experiment experiment =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW, instancesInfo);
         experimentRepository.save(experiment);
         experimentDataService.removeExperimentTrainingData(experiment);
         experiment = experimentRepository.findById(experiment.getId()).orElse(null);
@@ -113,18 +128,24 @@ class ExperimentDataServiceTest extends AbstractJpaTest {
 
     @Test
     void testRequestsStatusesStatisticsCalculation() {
-        experimentRepository.save(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW));
-        experimentRepository.save(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW));
         experimentRepository.save(
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED));
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW, instancesInfo));
         experimentRepository.save(
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED));
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW, instancesInfo));
         experimentRepository.save(
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED));
-        experimentRepository.save(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR));
-        experimentRepository.save(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR));
-        experimentRepository.save(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR));
-        experimentRepository.save(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR));
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED, instancesInfo));
+        experimentRepository.save(
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED, instancesInfo));
+        experimentRepository.save(
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED, instancesInfo));
+        experimentRepository.save(
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR, instancesInfo));
+        experimentRepository.save(
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR, instancesInfo));
+        experimentRepository.save(
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR, instancesInfo));
+        experimentRepository.save(
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR, instancesInfo));
         var requestStatusStatisticsDto = experimentDataService.getRequestStatusesStatistics();
         assertThat(requestStatusStatisticsDto).isNotNull();
         assertThat(requestStatusStatisticsDto.getNewRequestsCount()).isEqualTo(2L);
@@ -140,10 +161,14 @@ class ExperimentDataServiceTest extends AbstractJpaTest {
      */
     @Test
     void testGlobalFilter() {
-        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
-        Experiment experiment1 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        Experiment experiment2 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        Experiment experiment3 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR);
+        Experiment experiment =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW, instancesInfo);
+        Experiment experiment1 =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED, instancesInfo);
+        Experiment experiment2 =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED, instancesInfo);
+        Experiment experiment3 =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR, instancesInfo);
         experimentRepository.saveAll(Arrays.asList(experiment, experiment1, experiment2, experiment3));
         PageRequestDto pageRequestDto =
                 new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, Experiment_.CREATION_DATE, false,
@@ -163,10 +188,14 @@ class ExperimentDataServiceTest extends AbstractJpaTest {
      */
     @Test
     void testGlobalFilterByRequestStatus() {
-        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
-        Experiment experiment1 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        Experiment experiment2 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.TIMEOUT);
-        Experiment experiment3 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR);
+        Experiment experiment =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW, instancesInfo);
+        Experiment experiment1 =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED, instancesInfo);
+        Experiment experiment2 =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.TIMEOUT, instancesInfo);
+        Experiment experiment3 =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR, instancesInfo);
         experimentRepository.saveAll(Arrays.asList(experiment, experiment1, experiment2, experiment3));
         PageRequestDto pageRequestDto = new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, Experiment_.CREATION_DATE, false,
                 RequestStatus.FINISHED.getDescription().substring(0, 2), newArrayList());
@@ -182,9 +211,12 @@ class ExperimentDataServiceTest extends AbstractJpaTest {
      */
     @Test
     void testGlobalFilterByRequestStatusWithEmptyData() {
-        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
-        Experiment experiment1 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        Experiment experiment2 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        Experiment experiment =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW, instancesInfo);
+        Experiment experiment1 =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED, instancesInfo);
+        Experiment experiment2 =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED, instancesInfo);
         experimentRepository.saveAll(Arrays.asList(experiment, experiment1, experiment2));
         PageRequestDto pageRequestDto = new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, Experiment_.CREATION_DATE, false,
                 "query", newArrayList());
@@ -199,22 +231,26 @@ class ExperimentDataServiceTest extends AbstractJpaTest {
      */
     @Test
     void testExperimentsFilterByTypeAndStatusOrderByCreationDate() {
-        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        Experiment experiment =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW, instancesInfo);
         experiment.setExperimentType(ExperimentType.ADA_BOOST);
         experiment.setRequestStatus(RequestStatus.NEW);
         experiment.setCreationDate(LocalDateTime.of(2018, 2, 1, 0, 0, 0));
         experimentRepository.save(experiment);
-        Experiment experiment1 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        Experiment experiment1 =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW, instancesInfo);
         experiment1.setExperimentType(ExperimentType.ADA_BOOST);
         experiment1.setRequestStatus(RequestStatus.NEW);
         experiment1.setCreationDate(LocalDateTime.of(2018, 3, 1, 0, 0, 0));
         experimentRepository.save(experiment1);
-        Experiment experiment2 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        Experiment experiment2 =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW, instancesInfo);
         experiment2.setExperimentType(ExperimentType.ADA_BOOST);
         experiment2.setRequestStatus(RequestStatus.FINISHED);
         experiment2.setCreationDate(LocalDateTime.of(2018, 1, 1, 12, 0, 0));
         experimentRepository.save(experiment2);
-        Experiment experiment3 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        Experiment experiment3 =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW, instancesInfo);
         experiment3.setExperimentType(ExperimentType.KNN);
         experiment3.setRequestStatus(RequestStatus.NEW);
         experiment3.setCreationDate(LocalDateTime.of(2018, 1, 1, 9, 0, 0));
@@ -240,16 +276,20 @@ class ExperimentDataServiceTest extends AbstractJpaTest {
      */
     @Test
     void testExperimentsFilterByCreationDateBetween() {
-        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        Experiment experiment =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW, instancesInfo);
         experiment.setCreationDate(LocalDateTime.of(2018, 2, 1, 0, 0, 0));
         experimentRepository.save(experiment);
-        Experiment experiment1 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        Experiment experiment1 =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW, instancesInfo);
         experiment1.setCreationDate(LocalDateTime.of(2018, 3, 1, 0, 0, 0));
         experimentRepository.save(experiment1);
-        Experiment experiment2 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        Experiment experiment2 =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW, instancesInfo);
         experiment2.setCreationDate(LocalDateTime.of(2018, 6, 1, 12, 0, 0));
         experimentRepository.save(experiment2);
-        Experiment experiment3 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        Experiment experiment3 =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW, instancesInfo);
         experiment3.setCreationDate(LocalDateTime.of(2018, 7, 1, 9, 0, 0));
         experimentRepository.save(experiment3);
         PageRequestDto pageRequestDto =
@@ -274,13 +314,16 @@ class ExperimentDataServiceTest extends AbstractJpaTest {
     @Test
     void testExperimentFilterByCreationDateSmallInterval() {
         //Case 1
-        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        Experiment experiment =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW, instancesInfo);
         experiment.setCreationDate(LocalDateTime.of(2018, 1, 1, 0, 0, 0));
         experimentRepository.save(experiment);
-        Experiment experiment1 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        Experiment experiment1 =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW, instancesInfo);
         experiment1.setCreationDate(LocalDateTime.of(2018, 1, 1, 12, 0, 0));
         experimentRepository.save(experiment1);
-        Experiment experiment2 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        Experiment experiment2 =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW, instancesInfo);
         experiment2.setCreationDate(LocalDateTime.of(2018, 1, 2, 23, 59, 59));
         experimentRepository.save(experiment2);
         PageRequestDto pageRequestDto =
@@ -295,10 +338,10 @@ class ExperimentDataServiceTest extends AbstractJpaTest {
         assertThat(experimentList).hasSize(3);
         experimentRepository.deleteAll();
         //Case 2
-        experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW, instancesInfo);
         experiment.setCreationDate(LocalDateTime.of(2018, 1, 1, 0, 0, 0));
         experimentRepository.save(experiment);
-        experiment1 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        experiment1 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW, instancesInfo);
         experiment1.setCreationDate(LocalDateTime.of(2018, 1, 1, 23, 59, 59));
         experimentRepository.save(experiment1);
         pageRequestDto =
@@ -328,7 +371,8 @@ class ExperimentDataServiceTest extends AbstractJpaTest {
 
     @Test
     void testGetExperiment() {
-        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
+        Experiment experiment =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW, instancesInfo);
         experimentRepository.save(experiment);
         Experiment actual = experimentDataService.getById(experiment.getId());
         assertThat(actual).isNotNull();
@@ -342,7 +386,8 @@ class ExperimentDataServiceTest extends AbstractJpaTest {
 
     @Test
     void testGetExperimentContentUrl() {
-        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
+        Experiment experiment =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW, instancesInfo);
         experimentRepository.save(experiment);
         when(objectStorageService.getObjectPresignedProxyUrl(any(GetPresignedUrlObject.class)))
                 .thenReturn(EXPERIMENT_DOWNLOAD_URL);
@@ -352,15 +397,19 @@ class ExperimentDataServiceTest extends AbstractJpaTest {
     }
 
     private void createAndSaveDataForExperimentsStatistics() {
-        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        Experiment experiment =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW, instancesInfo);
         experiment.setCreationDate(LocalDateTime.of(2018, 1, 1, 0, 0, 0));
         experiment.setExperimentType(ExperimentType.ADA_BOOST);
-        Experiment experiment1 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        Experiment experiment1 =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW, instancesInfo);
         experiment1.setCreationDate(LocalDateTime.of(2018, 1, 2, 12, 0, 0));
         experiment1.setExperimentType(ExperimentType.ADA_BOOST);
-        Experiment experiment2 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        Experiment experiment2 =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW, instancesInfo);
         experiment2.setCreationDate(LocalDateTime.of(2018, 1, 3, 23, 59, 59));
-        Experiment experiment3 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        Experiment experiment3 =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW, instancesInfo);
         experiment3.setCreationDate(LocalDateTime.of(2018, 1, 4, 0, 0, 0));
         experiment3.setExperimentType(ExperimentType.DECISION_TREE);
         experimentRepository.saveAll(List.of(experiment, experiment1, experiment2, experiment3));

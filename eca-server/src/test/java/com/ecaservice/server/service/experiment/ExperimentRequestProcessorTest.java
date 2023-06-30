@@ -7,6 +7,7 @@ import com.ecaservice.server.model.entity.Channel;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.repository.ExperimentRepository;
+import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,6 +35,8 @@ class ExperimentRequestProcessorTest extends AbstractJpaTest {
 
     @Inject
     private ExperimentRepository experimentRepository;
+    @Inject
+    private InstancesInfoRepository instancesInfoRepository;
 
     @Mock
     private ExperimentService experimentService;
@@ -51,6 +54,7 @@ class ExperimentRequestProcessorTest extends AbstractJpaTest {
     @Override
     public void deleteAll() {
         experimentRepository.deleteAll();
+        instancesInfoRepository.deleteAll();
     }
 
     @Test
@@ -113,6 +117,7 @@ class ExperimentRequestProcessorTest extends AbstractJpaTest {
     private Experiment createAndSaveExperiment(RequestStatus requestStatus, Channel channel) {
         var experiment = createExperiment(UUID.randomUUID().toString(), requestStatus);
         experiment.setChannel(channel);
+        instancesInfoRepository.save(experiment.getInstancesInfo());
         return experimentRepository.save(experiment);
     }
 }

@@ -57,6 +57,12 @@ public class InstancesDto {
     private Integer numAttributes;
 
     /**
+     * Class name
+     */
+    @Schema(description = "Class name", example = "class", maxLength = MAX_LENGTH_255)
+    private String className;
+
+    /**
      * Instances created date
      */
     @JsonFormat(pattern = DATE_TIME_PATTERN)
@@ -70,11 +76,4 @@ public class InstancesDto {
      */
     @Schema(description = "User name", example = "admin", maxLength = MAX_LENGTH_255)
     private String createdBy;
-
-    /**
-     * Class attribute ID
-     */
-    @Schema(description = "Class attribute ID", example = "1", minimum = VALUE_1_STRING,
-            maximum = MAX_LONG_VALUE_STRING)
-    private Long classAttributeId;
 }

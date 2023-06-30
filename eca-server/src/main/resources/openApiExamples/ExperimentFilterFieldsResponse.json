@@ -18,9 +18,18 @@
     "dictionary": null
   },
   {
+    "fieldName": "instancesInfo.id",
+    "description": "Обучающая выборка",
+    "fieldOrder": 2,
+    "filterFieldType": "LAZY_REFERENCE",
+    "matchMode": "EQUALS",
+    "multiple": false,
+    "dictionary": null
+  },
+  {
     "fieldName": "evaluationMethod",
     "description": "Метод оценки точности",
-    "fieldOrder": 2,
+    "fieldOrder": 3,
     "filterFieldType": "REFERENCE",
     "matchMode": "EQUALS",
     "multiple": false,
@@ -41,7 +50,7 @@
   {
     "fieldName": "requestStatus",
     "description": "Статус заявки",
-    "fieldOrder": 3,
+    "fieldOrder": 4,
     "filterFieldType": "REFERENCE",
     "matchMode": "EQUALS",
     "multiple": false,
@@ -74,7 +83,7 @@
   {
     "fieldName": "experimentType",
     "description": "Тип эксперимента",
-    "fieldOrder": 4,
+    "fieldOrder": 5,
     "filterFieldType": "REFERENCE",
     "matchMode": "EQUALS",
     "multiple": true,
@@ -123,7 +132,7 @@
   {
     "fieldName": "creationDate",
     "description": "Дата создания заявки",
-    "fieldOrder": 5,
+    "fieldOrder": 6,
     "filterFieldType": "DATE",
     "matchMode": "RANGE",
     "multiple": true,

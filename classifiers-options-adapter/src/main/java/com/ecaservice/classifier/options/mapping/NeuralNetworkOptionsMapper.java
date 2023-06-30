@@ -1,6 +1,5 @@
 package com.ecaservice.classifier.options.mapping;
 
-import com.ecaservice.classifier.options.config.ClassifiersOptionsConfig;
 import com.ecaservice.classifier.options.model.ActivationFunctionOptions;
 import com.ecaservice.classifier.options.model.BackPropagationOptions;
 import com.ecaservice.classifier.options.model.NeuralNetworkOptions;
@@ -12,21 +11,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
-
-import javax.inject.Inject;
+import org.springframework.core.annotation.Order;
 
 /**
  * Implements neural network input options mapping to neural network model.
  *
  * @author Roman Batygin
  */
+@Order(Ordered.NEURAL_NETWORK_ORDER)
 @Mapper
 public abstract class NeuralNetworkOptionsMapper extends ClassifierOptionsMapper<NeuralNetworkOptions, NeuralNetwork> {
 
     private static final ActivationFunctionBuilder ACTIVATION_FUNCTION_BUILDER = new ActivationFunctionBuilder();
-
-    @Inject
-    private ClassifiersOptionsConfig classifiersOptionsConfig;
 
     protected NeuralNetworkOptionsMapper() {
         super(NeuralNetworkOptions.class);
@@ -43,15 +39,6 @@ public abstract class NeuralNetworkOptionsMapper extends ClassifierOptionsMapper
                 activationFunction.setCoefficient(activationFunctionOptions.getCoefficient());
             }
             neuralNetwork.getMultilayerPerceptron().setActivationFunction(activationFunction);
-        }
-    }
-
-    @AfterMapping
-    protected void mapMaxFractionDigits(NeuralNetworkOptions networkOptions,
-                                        @MappingTarget NeuralNetwork neuralNetwork) {
-        if (classifiersOptionsConfig.getMaximumFractionDigits() != null) {
-            neuralNetwork.getDecimalFormat().setMaximumFractionDigits(
-                    classifiersOptionsConfig.getMaximumFractionDigits());
         }
     }
 

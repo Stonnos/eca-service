@@ -4,8 +4,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -16,13 +17,17 @@ import javax.persistence.Table;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name = "experiment_results_request")
+@Table(name = "experiment_results_request",
+        indexes = {
+                @Index(name = "idx_experiment_results_request_experiment_results_id_unique_idx",
+                        columnList = "experiment_results_id")
+        })
 public class ExperimentResultsRequest extends ErsRequest {
 
     /**
      * Experiment results entity
      */
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "experiment_results_id", nullable = false, unique = true)
     private ExperimentResultsEntity experimentResults;
 }

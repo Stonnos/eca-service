@@ -179,22 +179,6 @@ services:
       - eca-db
       - discovery-server
 
-  eca-external-api:
-    image: eca-external-api
-    container_name: eca-external-api
-    restart: always
-    environment:
-      TZ: ${TIME_ZONE}
-      SPRING_PROFILES_ACTIVE: "docker"
-      JAVA_OPTS: "-Xmx1g"
-      OPENAPI_BASEPATH: "/external-api"
-    networks:
-      - default
-    depends_on:
-      - eca-db
-      - rabbitmq
-      - discovery-server
-
   eca-web:
     image: eca-web
     container_name: eca-web

@@ -26,7 +26,6 @@ import com.ecaservice.server.mapping.ClassifierOptionsRequestMapperImpl;
 import com.ecaservice.server.mapping.ClassifierOptionsRequestModelMapperImpl;
 import com.ecaservice.server.mapping.ClassifierReportMapperImpl;
 import com.ecaservice.server.mapping.DateTimeConverter;
-import com.ecaservice.server.mapping.ErsEvaluationMethodMapperImpl;
 import com.ecaservice.server.mapping.ErsResponseStatusMapperImpl;
 import com.ecaservice.server.mapping.EvaluationLogMapperImpl;
 import com.ecaservice.server.mapping.EvaluationRequestMapperImpl;
@@ -34,6 +33,7 @@ import com.ecaservice.server.mapping.InstancesInfoMapperImpl;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestEntity;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.server.model.entity.ErsResponseStatus;
+import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.evaluation.ClassifierOptionsRequestSource;
 import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
@@ -42,7 +42,9 @@ import com.ecaservice.server.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.server.repository.ClassifierOptionsRequestRepository;
 import com.ecaservice.server.repository.ErsRequestRepository;
 import com.ecaservice.server.repository.EvaluationLogRepository;
+import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
+import com.ecaservice.server.service.InstancesInfoService;
 import com.ecaservice.server.service.ers.ErsClient;
 import com.ecaservice.server.service.ers.ErsErrorHandler;
 import com.ecaservice.server.service.ers.ErsRequestSender;
@@ -69,19 +71,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.util.DigestUtils;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
 
 import javax.inject.Inject;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
-import static com.ecaservice.server.util.InstancesUtils.toJson;
+import static com.ecaservice.server.TestHelperUtils.createInstancesInfo;
+import static com.ecaservice.server.util.InstancesUtils.md5Hash;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -97,10 +98,10 @@ import static org.mockito.Mockito.when;
         ClassifierOptionsRequestModelMapperImpl.class, ClassifierReportMapperImpl.class,
         EvaluationRequestMapperImpl.class, ClassifierOptionsRequestMapperImpl.class,
         ErsConfig.class, EvaluationLogMapperImpl.class, ClassifiersProperties.class,
-        EvaluationService.class, ErsEvaluationMethodMapperImpl.class, ErsResponseStatusMapperImpl.class,
-        InstancesInfoMapperImpl.class, ErsRequestService.class,
+        EvaluationService.class, ErsResponseStatusMapperImpl.class, OptimalClassifierOptionsFetcherImpl.class,
+        InstancesInfoMapperImpl.class, ErsRequestService.class, InstancesInfoService.class,
         EvaluationOptimizerService.class, ClassifierInfoMapperImpl.class, ErsErrorHandler.class,
-        ClassifierOptionsCacheService.class, DateTimeConverter.class})
+        OptimalClassifierOptionsCacheService.class, DateTimeConverter.class})
 class EvaluationOptimizerServiceTest extends AbstractJpaTest {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
@@ -125,6 +126,8 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
     @Inject
     private EvaluationLogRepository evaluationLogRepository;
     @Inject
+    private InstancesInfoRepository instancesInfoRepository;
+    @Inject
     private ClassifierOptionsRequestRepository classifierOptionsRequestRepository;
     @Inject
     private EvaluationOptimizerService evaluationOptimizerService;
@@ -133,14 +136,12 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
 
     private String decisionTreeOptions;
     private String j48Options;
-    private String dataMd5Hash;
+
+    private InstancesInfo instancesInfo;
 
     @Override
     public void init() throws Exception {
-        Instances data = TestHelperUtils.loadInstances();
-        instancesRequestDataModel = new InstancesRequestDataModel(data);
-        String instancesJson = toJson(instancesRequestDataModel.getData());
-        dataMd5Hash = DigestUtils.md5DigestAsHex(instancesJson.getBytes(StandardCharsets.UTF_8));
+        initInstancesData();
         DecisionTreeOptions treeOptions = TestHelperUtils.createDecisionTreeOptions();
         treeOptions.setDecisionTreeType(DecisionTreeType.CART);
         decisionTreeOptions = objectMapper.writeValueAsString(treeOptions);
@@ -154,6 +155,7 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         classifierOptionsRequestRepository.deleteAll();
         ersRequestRepository.deleteAll();
         evaluationLogRepository.deleteAll();
+        instancesInfoRepository.deleteAll();
     }
 
     @Test
@@ -201,28 +203,8 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    void testDisabledCache() {
-        ErsConfig ersConfig = new ErsConfig();
-        ersConfig.setUseClassifierOptionsCache(false);
-        ReflectionTestUtils.setField(evaluationOptimizerService, "ersConfig", ersConfig);
-        evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequestDataModel);
-        evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequestDataModel);
-        assertThat(classifierOptionsRequestModelRepository.count()).isEqualTo(2L);
-        assertThat(classifierOptionsRequestRepository.count()).isEqualTo(2L);
-    }
-
-    /**
-     * Tests for checking exceeded cache cases:
-     * Case 1: It's already been N days after last request
-     * Case 2: Last response status is ERROR
-     * Case 3: Requests with specified data MD5 hash doesn't exists
-     * Case 4: Last response status is SUCCESS, but doesn't contains any classifier options response model
-     * Case 5: Last response status is SUCCESS, but classifier options response model has invalid options string
-     */
-    @Test
-    void testExceededClassifierOptionsCache() {
-        //Case 1
-        ClassifierOptionsRequestModel requestModel = TestHelperUtils.createClassifierOptionsRequestModel(dataMd5Hash,
+    void testExceededClassifierOptionsCacheWithLastResponseIsAfterNDays() {
+        ClassifierOptionsRequestModel requestModel = TestHelperUtils.createClassifierOptionsRequestModel(instancesInfo,
                 LocalDateTime.now().minusDays(ersConfig.getClassifierOptionsCacheDurationInDays() + 1),
                 ErsResponseStatus.SUCCESS, Collections.emptyList());
         ClassifierOptionsRequestEntity requestEntity = TestHelperUtils.createClassifierOptionsRequestEntity
@@ -231,9 +213,7 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         classifierOptionsRequestRepository.save(requestEntity);
         ClassifierOptionsResponse response = TestHelperUtils.createClassifierOptionsResponse(Collections
                 .singletonList(TestHelperUtils.createClassifierReport(decisionTreeOptions)));
-        when(ersClient.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
-        EvaluationResultsDataModel evaluationResultsDataModel =
-                evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequestDataModel);
+        EvaluationResultsDataModel evaluationResultsDataModel = evaluate();
         assertSuccessEvaluationResponse(evaluationResultsDataModel);
         List<ClassifierOptionsRequestModel> optionsRequests = classifierOptionsRequestModelRepository.findAll();
         assertThat(optionsRequests).hasSize(2);
@@ -241,73 +221,81 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         List<ClassifierOptionsRequestEntity> requestEntities = classifierOptionsRequestRepository.findAll();
         assertThat(requestEntities).hasSize(2);
         assertThat(requestEntities.get(1).getSource()).isEqualTo(ClassifierOptionsRequestSource.ERS);
-        deleteAll();
-        //Case 2
-        requestModel = TestHelperUtils.createClassifierOptionsRequestModel(dataMd5Hash,
+    }
+
+    @Test
+    void testExceededClassifierOptionsCacheWithLastHasErrorStatus() {
+        var requestModel = TestHelperUtils.createClassifierOptionsRequestModel(instancesInfo,
                 LocalDateTime.now(), ErsResponseStatus.ERROR, Collections.emptyList());
-        requestEntity = TestHelperUtils.createClassifierOptionsRequestEntity
+        var requestEntity = TestHelperUtils.createClassifierOptionsRequestEntity
                 (requestModel.getRequestDate(), requestModel);
         classifierOptionsRequestModelRepository.save(requestModel);
         classifierOptionsRequestRepository.save(requestEntity);
-        evaluationResultsDataModel = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
-                instancesRequestDataModel);
+        EvaluationResultsDataModel evaluationResultsDataModel = evaluate();
         assertSuccessEvaluationResponse(evaluationResultsDataModel);
-        optionsRequests = classifierOptionsRequestModelRepository.findAll();
+        var optionsRequests = classifierOptionsRequestModelRepository.findAll();
         assertThat(optionsRequests).hasSize(2);
         assertSuccessClassifierOptionsRequestModel(optionsRequests.get(1));
-        requestEntities = classifierOptionsRequestRepository.findAll();
+        var requestEntities = classifierOptionsRequestRepository.findAll();
         assertThat(requestEntities).hasSize(2);
         assertThat(requestEntities.get(1).getSource()).isEqualTo(ClassifierOptionsRequestSource.ERS);
-        deleteAll();
-        //Case 3
-        requestModel = TestHelperUtils.createClassifierOptionsRequestModel(StringUtils.EMPTY, LocalDateTime.now(),
+    }
+
+    @Test
+    void testExceededClassifierOptionsCacheWithDataMd5HashDoesntExists() {
+        var anotherInstancesInfo = createInstancesInfo();
+        anotherInstancesInfo.setDataMd5Hash("anotherHash");
+        instancesInfoRepository.save(anotherInstancesInfo);
+        var requestModel = TestHelperUtils.createClassifierOptionsRequestModel(anotherInstancesInfo,
+                LocalDateTime.now(),
                 ErsResponseStatus.SUCCESS, Collections.emptyList());
-        requestEntity = TestHelperUtils.createClassifierOptionsRequestEntity
+        var requestEntity = TestHelperUtils.createClassifierOptionsRequestEntity
                 (requestModel.getRequestDate(), requestModel);
         classifierOptionsRequestModelRepository.save(requestModel);
         classifierOptionsRequestRepository.save(requestEntity);
-        evaluationResultsDataModel = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
-                instancesRequestDataModel);
+        EvaluationResultsDataModel evaluationResultsDataModel = evaluate();
         assertSuccessEvaluationResponse(evaluationResultsDataModel);
-        optionsRequests = classifierOptionsRequestModelRepository.findAll();
+        var optionsRequests = classifierOptionsRequestModelRepository.findAll();
         assertThat(optionsRequests).hasSize(2);
         assertSuccessClassifierOptionsRequestModel(optionsRequests.get(1));
-        requestEntities = classifierOptionsRequestRepository.findAll();
+        var requestEntities = classifierOptionsRequestRepository.findAll();
         assertThat(requestEntities).hasSize(2);
         assertThat(requestEntities.get(1).getSource()).isEqualTo(ClassifierOptionsRequestSource.ERS);
-        deleteAll();
-        //Case 4
-        requestModel = TestHelperUtils.createClassifierOptionsRequestModel(dataMd5Hash, LocalDateTime.now(),
+    }
+
+    @Test
+    void testExceededClassifierOptionsCacheWithLastResponseIsSuccessButDoesntContainsAnyClassifierOptionsResponseModel() {
+        var requestModel = TestHelperUtils.createClassifierOptionsRequestModel(instancesInfo, LocalDateTime.now(),
                 ErsResponseStatus.SUCCESS, Collections.emptyList());
-        requestEntity = TestHelperUtils.createClassifierOptionsRequestEntity
+        var requestEntity = TestHelperUtils.createClassifierOptionsRequestEntity
                 (requestModel.getRequestDate(), requestModel);
         classifierOptionsRequestModelRepository.save(requestModel);
         classifierOptionsRequestRepository.save(requestEntity);
-        evaluationResultsDataModel = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
-                instancesRequestDataModel);
+        EvaluationResultsDataModel evaluationResultsDataModel = evaluate();
         assertSuccessEvaluationResponse(evaluationResultsDataModel);
-        optionsRequests = classifierOptionsRequestModelRepository.findAll();
+        var optionsRequests = classifierOptionsRequestModelRepository.findAll();
         assertThat(optionsRequests).hasSize(2);
         assertSuccessClassifierOptionsRequestModel(optionsRequests.get(1));
-        requestEntities = classifierOptionsRequestRepository.findAll();
+        var requestEntities = classifierOptionsRequestRepository.findAll();
         assertThat(requestEntities).hasSize(2);
         assertThat(requestEntities.get(1).getSource()).isEqualTo(ClassifierOptionsRequestSource.ERS);
-        deleteAll();
-        //Case 5
-        requestModel = TestHelperUtils.createClassifierOptionsRequestModel(dataMd5Hash, LocalDateTime.now(),
+    }
+
+    @Test
+    void testExceededClassifierOptionsCacheWithLastResponseIsSuccessButHasInvalidClassifierOptionsStringInResponse() {
+        var requestModel = TestHelperUtils.createClassifierOptionsRequestModel(instancesInfo, LocalDateTime.now(),
                 ErsResponseStatus.SUCCESS,
                 Collections.singletonList(TestHelperUtils.createClassifierOptionsResponseModel("OPTIONS")));
-        requestEntity = TestHelperUtils.createClassifierOptionsRequestEntity
+        var requestEntity = TestHelperUtils.createClassifierOptionsRequestEntity
                 (requestModel.getRequestDate(), requestModel);
         classifierOptionsRequestModelRepository.save(requestModel);
         classifierOptionsRequestRepository.save(requestEntity);
-        evaluationResultsDataModel = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
-                instancesRequestDataModel);
+        EvaluationResultsDataModel evaluationResultsDataModel = evaluate();
         assertSuccessEvaluationResponse(evaluationResultsDataModel);
-        optionsRequests = classifierOptionsRequestModelRepository.findAll();
+        var optionsRequests = classifierOptionsRequestModelRepository.findAll();
         assertThat(optionsRequests).hasSize(2);
         assertSuccessClassifierOptionsRequestModel(optionsRequests.get(1));
-        requestEntities = classifierOptionsRequestRepository.findAll();
+        var requestEntities = classifierOptionsRequestRepository.findAll();
         assertThat(requestEntities).hasSize(2);
         assertThat(requestEntities.get(1).getSource()).isEqualTo(ClassifierOptionsRequestSource.ERS);
     }
@@ -315,11 +303,11 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
     @Test
     void testClassifierOptionsCache() {
         ClassifierOptionsRequestModel requestModel =
-                TestHelperUtils.createClassifierOptionsRequestModel(dataMd5Hash, LocalDateTime.now().minusDays(1),
+                TestHelperUtils.createClassifierOptionsRequestModel(instancesInfo, LocalDateTime.now().minusDays(1),
                         ErsResponseStatus.SUCCESS, Collections.singletonList(
                                 TestHelperUtils.createClassifierOptionsResponseModel(decisionTreeOptions)));
         ClassifierOptionsRequestModel requestModel1 =
-                TestHelperUtils.createClassifierOptionsRequestModel(dataMd5Hash, LocalDateTime.now(),
+                TestHelperUtils.createClassifierOptionsRequestModel(instancesInfo, LocalDateTime.now(),
                         ErsResponseStatus.SUCCESS,
                         Collections.singletonList(TestHelperUtils.createClassifierOptionsResponseModel(j48Options)));
         classifierOptionsRequestModelRepository.save(requestModel);
@@ -397,6 +385,13 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
 
     }
 
+    private EvaluationResultsDataModel evaluate() {
+        ClassifierOptionsResponse response = TestHelperUtils.createClassifierOptionsResponse(Collections
+                .singletonList(TestHelperUtils.createClassifierReport(decisionTreeOptions)));
+        when(ersClient.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
+        return evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequestDataModel);
+    }
+
     private void internalTestErrorStatus(Exception ex, ErsResponseStatus expectedStatus, ErrorCode expectedErrorCode) {
         when(ersClient.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenThrow(ex);
         EvaluationResultsDataModel evaluationResultsDataModel =
@@ -434,7 +429,8 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
     }
 
     private void assertSuccessClassifierOptionsRequestModel(ClassifierOptionsRequestModel requestModel) {
-        assertThat(requestModel.getDataMd5Hash()).isNotNull();
+        assertThat(requestModel.getInstancesInfo()).isNotNull();
+        assertThat(requestModel.getInstancesInfo().getDataMd5Hash()).isNotNull();
         assertThat(requestModel.getResponseStatus()).isEqualTo(ErsResponseStatus.SUCCESS);
         assertThat(requestModel.getRequestId()).isNotNull();
         assertThat(requestModel.getNumFolds()).isNotNull();
@@ -448,5 +444,14 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         List<ClassifierOptionsRequestEntity> requestEntities = classifierOptionsRequestRepository.findAll();
         AssertionUtils.hasOneElement(requestEntities);
         assertThat(requestEntities.get(0).getSource()).isEqualTo(ClassifierOptionsRequestSource.ERS);
+    }
+
+    private void initInstancesData() {
+        Instances data = TestHelperUtils.loadInstances();
+        String dataMd5Hash = md5Hash(data);
+        instancesInfo = createInstancesInfo();
+        instancesInfo.setDataMd5Hash(dataMd5Hash);
+        instancesInfoRepository.save(instancesInfo);
+        instancesRequestDataModel = new InstancesRequestDataModel(UUID.randomUUID().toString(), dataMd5Hash, data);
     }
 }

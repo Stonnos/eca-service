@@ -92,8 +92,8 @@ public class UserService {
         Sort sort = buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
         UserFilter filter =
                 new UserFilter(pageRequestDto.getSearchQuery(), USER_GLOBAL_FILTER_FIELDS, pageRequestDto.getFilters());
-        int pageSize = Integer.min(pageRequestDto.getSize(), appProperties.getMaxPageSize());
-        var usersPage = userEntityRepository.findAll(filter, PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
+        var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort);
+        var usersPage = userEntityRepository.findAll(filter, pageRequest);
         log.info("Users page [{} of {}] with size [{}] has been fetched for page request [{}]", usersPage.getNumber(),
                 usersPage.getTotalPages(), usersPage.getNumberOfElements(), pageRequestDto);
         return usersPage;

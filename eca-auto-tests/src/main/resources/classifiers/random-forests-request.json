@@ -1,7 +1,7 @@
 {
   "trainDataPath": "classpath:/data/credit.xlsx",
   "classifierOptions": {
-    "type": "RandomForestsOptions",
+    "type": "random_forests",
     "numIterations": 10,
     "numThreads": 4,
     "minObj": 2,

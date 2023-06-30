@@ -4,7 +4,7 @@
   "request": {
     "trainDataUrl": "http://kt.ijs.si/Branax/Repository/WEKA/Iris.xls",
     "classifierOptions": {
-      "type": "RandomForestsOptions",
+      "type": "random_forests",
       "numIterations": -1,
       "numThreads": 4,
       "minObj": 2,

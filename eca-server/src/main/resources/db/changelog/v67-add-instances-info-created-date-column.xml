@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v67-add-instances-info-created-date-column.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="add_instances_info_created_date_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="instances_info"/>
+            <not>
+                <columnExists tableName="instances_info" columnName="created_date"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="instances_info">
+            <column name="created_date" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add_instances_info_uuid_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="instances_info"/>
+            <not>
+                <columnExists tableName="instances_info" columnName="uuid"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="instances_info">
+            <column name="uuid" type="varchar(255)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="instances_info_uuid_unique_idx"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add_experiment_instances_info_id_not_null_constraint" author="roman.batygin@mail.ru"
+               context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment"/>
+            <columnExists tableName="experiment" columnName="instances_info_id"/>
+        </preConditions>
+        <addNotNullConstraint tableName="experiment" columnName="instances_info_id"/>
+    </changeSet>
+
+    <changeSet id="add_instances_info_data_md5_hash_not_null_constraint" author="roman.batygin@mail.ru"
+               context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="instances_info"/>
+            <columnExists tableName="instances_info" columnName="data_md5_hash"/>
+        </preConditions>
+        <addNotNullConstraint tableName="instances_info" columnName="data_md5_hash"/>
+    </changeSet>
+
+    <changeSet id="add_instances_info_data_md5_hash_unique_constraint" author="roman.batygin@mail.ru"
+               context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="instances_info"/>
+            <columnExists tableName="instances_info" columnName="data_md5_hash"/>
+        </preConditions>
+        <addUniqueConstraint tableName="instances_info" columnNames="data_md5_hash"
+                             constraintName="instances_info_data_md5_hash_unique_idx"/>
+    </changeSet>
+
+    <changeSet id="add_classifier_options_request_request_id_not_null_constraint" author="roman.batygin@mail.ru"
+               context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="classifier_options_request"/>
+            <columnExists tableName="classifier_options_request" columnName="request_id"/>
+        </preConditions>
+        <addNotNullConstraint tableName="classifier_options_request" columnName="request_id"/>
+    </changeSet>
+
+    <changeSet id="add_classifier_options_request_request_id_unique_constraint" author="roman.batygin@mail.ru"
+               context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="classifier_options_request"/>
+            <columnExists tableName="classifier_options_request" columnName="request_id"/>
+        </preConditions>
+        <addUniqueConstraint tableName="classifier_options_request" columnNames="request_id"
+                             constraintName="classifier_options_request_request_id_unique_idx"/>
+    </changeSet>
+
+    <changeSet id="drop_classifier_input_options_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="classifier_input_options"/>
+        </preConditions>
+        <dropTable tableName="classifier_input_options"/>
+    </changeSet>
+
+    <changeSet id="add_classifier_info_classifier_options_not_null_constraint" author="roman.batygin@mail.ru"
+               context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="classifier_info"/>
+            <columnExists tableName="classifier_info" columnName="classifier_options"/>
+        </preConditions>
+        <addNotNullConstraint tableName="classifier_info" columnName="classifier_options"/>
+    </changeSet>
+
+    <changeSet id="add_experiment_results_pct_correct_not_null_constraint" author="roman.batygin@mail.ru"
+               context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment_results"/>
+            <columnExists tableName="experiment_results" columnName="pct_correct"/>
+        </preConditions>
+        <addNotNullConstraint tableName="experiment_results" columnName="pct_correct"/>
+    </changeSet>
+
+    <changeSet id="insert_experiment_instances_info_id_field_in_filter_template" author="roman.batygin@mail.ru"
+               context="data">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from filter_template where id = 1
+            </sqlCheck>
+            <sqlCheck expectedResult="1">
+                select count(*) from filter_field where filter_template_id = 1 and field_name = 'instancesInfo.relationName'
+            </sqlCheck>
+        </preConditions>
+        <update tableName="filter_field">
+            <column name="field_name" value="instancesInfo.id"/>
+            <column name="filter_field_type" value="LAZY_REFERENCE"/>
+            <column name="match_mode" value="EQUALS"/>
+            <where>filter_template_id = 1 and field_name = 'instancesInfo.relationName'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="insert_evaluation_log_instances_info_id_field_in_filter_template" author="roman.batygin@mail.ru"
+               context="data">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from filter_template where id = 2
+            </sqlCheck>
+            <sqlCheck expectedResult="1">
+                select count(*) from filter_field where filter_template_id = 2 and field_name = 'instancesInfo.relationName'
+            </sqlCheck>
+        </preConditions>
+        <update tableName="filter_field">
+            <column name="field_name" value="instancesInfo.id"/>
+            <column name="filter_field_type" value="LAZY_REFERENCE"/>
+            <column name="match_mode" value="EQUALS"/>
+            <where>filter_template_id = 2 and field_name = 'instancesInfo.relationName'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="add_classifier_options_request_model_instances_info_id_column" author="roman.batygin@mail.ru"
+               context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="classifier_options_request_model"/>
+            <not>
+                <columnExists tableName="classifier_options_request_model" columnName="instances_info_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="classifier_options_request_model">
+            <column name="instances_info_id" type="bigint">
+                <constraints foreignKeyName="fk_classifier_options_request_model_instances_info_id"
+                             referencedTableName="instances_info" referencedColumnNames="id" nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="drop_classifier_options_request_relation_name_column" author="roman.batygin@mail.ru"
+               context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="classifier_options_request_model"/>
+            <columnExists tableName="classifier_options_request_model" columnName="relation_name"/>
+        </preConditions>
+        <dropColumn tableName="classifier_options_request_model" columnName="relation_name"/>
+    </changeSet>
+
+    <changeSet id="drop_classifier_options_request_data_md5_hash_column" author="roman.batygin@mail.ru"
+               context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="classifier_options_request_model"/>
+            <columnExists tableName="classifier_options_request_model" columnName="data_md5_hash"/>
+        </preConditions>
+        <dropColumn tableName="classifier_options_request_model" columnName="data_md5_hash"/>
+    </changeSet>
+
+    <changeSet id="insert_classifier_options_request_instances_info_id_field_in_filter_template" author="roman.batygin@mail.ru"
+               context="data">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from filter_template where id = 3
+            </sqlCheck>
+            <sqlCheck expectedResult="1">
+                select count(*) from filter_field where filter_template_id = 3 and field_name = 'relationName'
+            </sqlCheck>
+        </preConditions>
+        <update tableName="filter_field">
+            <column name="field_name" value="instancesInfo.id"/>
+            <column name="filter_field_type" value="LAZY_REFERENCE"/>
+            <column name="match_mode" value="EQUALS"/>
+            <where>filter_template_id = 3 and field_name = 'relationName'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="update_classifier_options_request_relation_name_field_in_global_filter_template" author="roman.batygin@mail.ru"
+               context="data">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from global_filter_template where id = 3
+            </sqlCheck>
+            <sqlCheck expectedResult="1">
+                select count(*) from global_filter_field where global_filter_template_id = 3 and field_name = 'relationName'
+            </sqlCheck>
+        </preConditions>
+        <update tableName="global_filter_field">
+            <column name="field_name" value="instancesInfo.relationName"/>
+            <where>global_filter_template_id = 3 and field_name = 'relationName'</where>
+        </update>
+    </changeSet>
+
+</databaseChangeLog>

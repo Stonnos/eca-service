@@ -1,7 +1,6 @@
 package com.ecaservice.audit.service;
 
 import com.ecaservice.audit.AbstractJpaTest;
-import com.ecaservice.audit.config.EcaAuditLogConfig;
 import com.ecaservice.audit.entity.AuditLogEntity;
 import com.ecaservice.audit.exception.DuplicateEventIdException;
 import com.ecaservice.audit.mapping.AuditLogMapperImpl;
@@ -19,7 +18,6 @@ import org.springframework.data.domain.Page;
 import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -42,7 +40,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({AuditLogMapperImpl.class, AuditLogService.class, EcaAuditLogConfig.class})
+@Import({AuditLogMapperImpl.class, AuditLogService.class})
 class AuditLogServiceTest extends AbstractJpaTest {
 
     private static final int PAGE_NUMBER = 0;

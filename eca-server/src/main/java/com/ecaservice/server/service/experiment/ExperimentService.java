@@ -16,6 +16,7 @@ import com.ecaservice.server.model.experiment.ExperimentRequestDataVisitor;
 import com.ecaservice.server.model.experiment.ExperimentWebRequestData;
 import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.repository.ExperimentStepRepository;
+import com.ecaservice.server.service.InstancesInfoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static com.ecaservice.server.util.InstancesUtils.md5Hash;
 
 /**
  * Experiment service.
@@ -49,6 +52,7 @@ public class ExperimentService {
     private final ObjectStorageService objectStorageService;
     private final CrossValidationConfig crossValidationConfig;
     private final ExperimentProgressService experimentProgressService;
+    private final InstancesInfoService instancesInfoService;
 
     /**
      * Creates experiment request.
@@ -62,6 +66,10 @@ public class ExperimentService {
                 experimentRequest.getEvaluationMethod(), experimentRequest.getEmail());
         try {
             Experiment experiment = experimentMapper.map(experimentRequest, crossValidationConfig);
+            String dataMd5Hash = md5Hash(experimentRequest.getData());
+            var instancesInfo =
+                    instancesInfoService.getOrSaveInstancesInfo(dataMd5Hash, experimentRequest.getData());
+            experiment.setInstancesInfo(instancesInfo);
             setAdditionalProperties(experiment, experimentRequest);
             experiment.setRequestStatus(RequestStatus.NEW);
             experiment.setRequestId(experimentRequest.getRequestId());

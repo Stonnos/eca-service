@@ -78,7 +78,6 @@ auth-server:
 mail-config:
   maxFailedAttemptsToSent: 25
   pageSize: 10
-  maxPageSize: 50
   delaySeconds: 3
   sender: rbatsw@gmail.com
   encrypt:

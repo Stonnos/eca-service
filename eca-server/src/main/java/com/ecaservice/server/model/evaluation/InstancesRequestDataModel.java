@@ -14,6 +14,16 @@ import weka.core.Instances;
 public class InstancesRequestDataModel {
 
     /**
+     * Request id
+     */
+    private String requestId;
+
+    /**
+     * Training data md5 hash
+     */
+    private String dataMd5Hash;
+
+    /**
      * Training data
      */
     private Instances data;

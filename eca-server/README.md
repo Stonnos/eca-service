@@ -55,7 +55,6 @@ ECA server
    * ers.classifierOptionsCacheDurationInDays - период хранения оптимальных настроек классификатора, полученных от сервиса ERS
 6) app - общие настройки приложения
    * app.threadPoolSize - число потоков для асинхронных задач
-   * app.maxPageSize - максимальное число элементов на странице (используется для запросов с пагинацией)
    * app.notifications.webPushesEnabled - вкл./выкл. отправки web пушей
    * app.removeModelCron - крон выражение для удаления моделей экспериментов/классификаторов
    * app.numberOfDaysForStorage - кол-во дней для хранения моделей экспериментов/классификаторов

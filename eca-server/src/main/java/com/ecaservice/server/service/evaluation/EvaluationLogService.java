@@ -102,9 +102,8 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
         var filter = new EvaluationLogFilter(pageRequestDto.getSearchQuery(), globalFilterFields,
                 pageRequestDto.getFilters());
         filter.setGlobalFilterFieldsCustomizers(globalFilterFieldCustomizers);
-        int pageSize = Integer.min(pageRequestDto.getSize(), appProperties.getMaxPageSize());
-        var evaluationLogsPage =
-                evaluationLogRepository.findAll(filter, PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
+        var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort);
+        var evaluationLogsPage = evaluationLogRepository.findAll(filter, pageRequest);
         log.info("Evaluation logs page [{} of {}] with size [{}] has been fetched for page request [{}]",
                 evaluationLogsPage.getNumber(), evaluationLogsPage.getTotalPages(),
                 evaluationLogsPage.getNumberOfElements(), pageRequestDto);

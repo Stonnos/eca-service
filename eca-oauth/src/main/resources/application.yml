@@ -39,7 +39,6 @@ ribbon:
 
 ## Application properties
 app:
-  maxPageSize: 50
   webExternalBaseUrl: http://localhost:8085
   validUserPhotoFileExtensions: png, jpg, jpeg, gif
   resetPassword:

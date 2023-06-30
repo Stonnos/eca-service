@@ -4,7 +4,7 @@ import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.mapping.ClassifierOptionsRequestModelMapper;
 import com.ecaservice.server.mapping.ClassifierOptionsRequestModelMapperImpl;
 import com.ecaservice.server.mapping.DateTimeConverter;
-import com.ecaservice.server.mapping.ErsEvaluationMethodMapperImpl;
+import com.ecaservice.server.mapping.InstancesInfoMapperImpl;
 import com.ecaservice.server.model.entity.ErsResponseStatus;
 import com.ecaservice.server.service.ers.ClassifierOptionsRequestService;
 import com.ecaservice.web.dto.model.PageDto;
@@ -23,6 +23,7 @@ import java.util.Collections;
 import static com.ecaservice.server.PageRequestUtils.PAGE_NUMBER;
 import static com.ecaservice.server.PageRequestUtils.TOTAL_ELEMENTS;
 import static com.ecaservice.server.TestHelperUtils.bearerHeader;
+import static com.ecaservice.server.TestHelperUtils.createInstancesInfo;
 import static com.ecaservice.server.TestHelperUtils.createPageRequestDto;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -36,12 +37,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Roman Batygin
  */
 @WebMvcTest(controllers = ClassifierOptionsRequestController.class)
-@Import({ClassifierOptionsRequestModelMapperImpl.class, ErsEvaluationMethodMapperImpl.class, DateTimeConverter.class})
+@Import({ClassifierOptionsRequestModelMapperImpl.class, DateTimeConverter.class, InstancesInfoMapperImpl.class})
 class ClassifierOptionsRequestControllerTest extends PageRequestControllerTest {
 
     private static final String LIST_URL = "/classifiers-options-requests";
-
-    private static final String DATA_MD5_HASH = "hash";
 
     @MockBean
     private ClassifierOptionsRequestService classifierOptionsRequestService;
@@ -87,7 +86,7 @@ class ClassifierOptionsRequestControllerTest extends PageRequestControllerTest {
     @Test
     void testGetClassifierOptionsRequestsOk() throws Exception {
         var classifierOptionsRequestModel =
-                TestHelperUtils.createClassifierOptionsRequestModel(DATA_MD5_HASH, LocalDateTime.now(),
+                TestHelperUtils.createClassifierOptionsRequestModel(createInstancesInfo(), LocalDateTime.now(),
                         ErsResponseStatus.RESULTS_NOT_FOUND, Collections.emptyList());
         var classifierOptionsRequestDtoList =
                 Collections.singletonList(classifierOptionsRequestModelMapper.map(classifierOptionsRequestModel));

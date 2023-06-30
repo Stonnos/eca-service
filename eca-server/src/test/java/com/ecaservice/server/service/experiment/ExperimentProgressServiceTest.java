@@ -6,6 +6,7 @@ import com.ecaservice.server.model.entity.ExperimentProgressEntity;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.repository.ExperimentProgressRepository;
 import com.ecaservice.server.repository.ExperimentRepository;
+import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Import;
@@ -31,6 +32,8 @@ class ExperimentProgressServiceTest extends AbstractJpaTest {
     @Inject
     private ExperimentRepository experimentRepository;
     @Inject
+    private InstancesInfoRepository instancesInfoRepository;
+    @Inject
     private ExperimentProgressRepository experimentProgressRepository;
     @Inject
     private ExperimentProgressService experimentProgressService;
@@ -39,6 +42,7 @@ class ExperimentProgressServiceTest extends AbstractJpaTest {
     public void deleteAll() {
         experimentProgressRepository.deleteAll();
         experimentRepository.deleteAll();
+        instancesInfoRepository.deleteAll();
     }
 
     @Test
@@ -94,6 +98,7 @@ class ExperimentProgressServiceTest extends AbstractJpaTest {
 
     private Experiment createAndSaveExperiment() {
         Experiment experiment = createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        instancesInfoRepository.save(experiment.getInstancesInfo());
         return experimentRepository.save(experiment);
     }
 }

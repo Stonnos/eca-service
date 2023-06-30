@@ -1,8 +1,15 @@
-<div class="ui-g" *ngFor="let field of fields">
-  <div class="ui-g-6 text-left text-bold text-wrap">
-    {{ field.label }}
+<p-panel>
+  <p-header>
+    <div class="d-flex mx-auto align-items-center justify-content-center text-bold">
+      Данные: {{ item.relationName }}
+    </div>
+  </p-header>
+  <div class="ui-g" *ngFor="let field of fields">
+    <div class="ui-g-8 text-left text-bold text-wrap">
+      {{ field.label }}
+    </div>
+    <div class="ui-g-4 text-left text-wrap">
+      {{ getFieldValue(field.name) }}
+    </div>
   </div>
-  <div class="ui-g-6 text-left text-wrap">
-    {{ getFieldValue(field.name) }}
-  </div>
-</div>
+</p-panel>

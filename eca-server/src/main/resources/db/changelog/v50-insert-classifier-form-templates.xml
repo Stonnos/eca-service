@@ -16,7 +16,7 @@
                 file="classifiers-form-templates/templates-group.csv"/>
     </changeSet>
 
-    <changeSet author="roman.batygin@mail.ru" id="insert_classifier_form_templates_2" context="data">
+    <changeSet author="roman.batygin@mail.ru" id="insert_classifier_form_templates_3" context="data">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="form_template"/>
         </preConditions>

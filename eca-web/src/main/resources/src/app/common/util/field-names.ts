@@ -20,14 +20,19 @@ export class ExperimentFields {
   public static readonly CLASS_NAME: string = "instancesInfo.className";
 }
 
+export class InstancesInfoDtoFields {
+  public static readonly RELATION_NAME: string = "relationName";
+  public static readonly NUM_INSTANCES: string = "numInstances";
+  public static readonly NUM_ATTRIBUTES: string = "numAttributes";
+  public static readonly NUM_CLASSES: string = "numClasses";
+  public static readonly CLASS_NAME: string = "className";
+  public static readonly CREATED_DATE: string = "createdDate";
+}
+
 export class AbstractEvaluationDtoFields {
   public static readonly NUM_FOLDS: string = "numFolds";
   public static readonly NUM_TESTS: string = "numTests";
   public static readonly SEED: string = "seed";
-  public static readonly NUM_INSTANCES: string = "instancesInfo.numInstances";
-  public static readonly NUM_ATTRIBUTES: string = "instancesInfo.numAttributes";
-  public static readonly NUM_CLASSES: string = "instancesInfo.numClasses";
-  public static readonly CLASS_NAME: string = "instancesInfo.className";
 }
 
 export class EvaluationLogFields {
@@ -54,7 +59,7 @@ export class EvaluationLogFields {
 
 export class ClassifierOptionsRequestsFields {
   public static readonly REQUEST_ID: string = "requestId";
-  public static readonly RELATION_NAME: string = "relationName";
+  public static readonly RELATION_NAME: string = "instancesInfo.relationName";
   public static readonly CLASSIFIER_NAME: string = "classifierName";
   public static readonly EVALUATION_METHOD_DESCRIPTION: string = "evaluationMethod.description";
   public static readonly EVALUATION_METHOD: string = "evaluationMethod";
@@ -127,6 +132,7 @@ export class InstancesFields {
   public static readonly NUM_ATTRIBUTES: string = "numAttributes";
   public static readonly CREATED: string = "created";
   public static readonly CREATED_BY: string = "createdBy";
+  public static readonly CLASS_NAME: string = "className";
 }
 
 export class AuditLogFields {

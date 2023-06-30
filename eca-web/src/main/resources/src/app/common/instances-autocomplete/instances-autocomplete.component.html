@@ -20,18 +20,12 @@
           Данные: {{ instance.tableName }}
         </div>
       </p-header>
-      <div class="ui-g">
-        <div class="ui-g-4 text-left text-bold text-wrap font-10">
-          Число объектов:
+      <div class="ui-g" *ngFor="let field of fields">
+        <div class="ui-g-8 text-left text-bold text-wrap">
+          {{ field.label }}
         </div>
-        <div class="ui-g-8 text-left text-wrap font-10">
-          {{ instance.numInstances }}
-        </div>
-        <div class="ui-g-4 text-left text-bold text-wrap font-10">
-          Число атрибутов:
-        </div>
-        <div class="ui-g-8 text-left text-wrap font-10">
-          {{ instance.numAttributes }}
+        <div class="ui-g-4 text-left text-wrap">
+          {{ getFieldValue(field.name, instance) }}
         </div>
       </div>
     </p-panel>

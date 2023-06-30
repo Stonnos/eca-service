@@ -7,7 +7,6 @@ import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.dto.CreateExperimentRequestDto;
-import com.ecaservice.server.event.model.ExperimentEmailEvent;
 import com.ecaservice.server.mapping.DataStorageErrorCodeMapperImpl;
 import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.mapping.ExperimentMapperImpl;
@@ -16,6 +15,7 @@ import com.ecaservice.server.model.entity.Channel;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
+import com.ecaservice.server.service.InstancesInfoService;
 import com.ecaservice.server.service.UserService;
 import com.ecaservice.server.service.auth.UsersClient;
 import com.ecaservice.server.service.ds.DataStorageService;
@@ -32,10 +32,6 @@ import java.util.UUID;
 
 import static com.ecaservice.server.TestHelperUtils.loadInstances;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.atLeast;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -44,7 +40,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import({ExperimentMapperImpl.class, ExperimentConfig.class, AppProperties.class, CrossValidationConfig.class,
-        DateTimeConverter.class, InstancesInfoMapperImpl.class, ExperimentService.class,
+        DateTimeConverter.class, InstancesInfoMapperImpl.class, ExperimentService.class, InstancesInfoService.class,
         ExperimentProgressService.class, ExperimentRequestWebApiService.class, DataStorageErrorCodeMapperImpl.class})
 class ExperimentRequestWebApiServiceTest extends AbstractJpaTest {
 

@@ -50,7 +50,6 @@ public abstract class ExperimentMapper extends AbstractEvaluationMapper {
      * @param crossValidationConfig - cross - validation config
      * @return experiment entity
      */
-    @Mapping(source = "experimentRequest.data", target = "instancesInfo", qualifiedByName = "mapInstancesInfo")
     @Mapping(target = "numFolds", ignore = true)
     @Mapping(target = "numTests", ignore = true)
     @Mapping(target = "seed", ignore = true)

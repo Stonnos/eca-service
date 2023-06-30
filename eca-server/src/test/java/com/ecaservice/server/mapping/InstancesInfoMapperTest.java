@@ -33,5 +33,7 @@ class InstancesInfoMapperTest {
         assertThat(instancesInfoDto.getNumInstances()).isEqualTo(instancesInfo.getNumInstances());
         assertThat(instancesInfoDto.getNumAttributes()).isEqualTo(instancesInfo.getNumAttributes());
         assertThat(instancesInfoDto.getNumClasses()).isEqualTo(instancesInfo.getNumClasses());
+        assertThat(instancesInfoDto.getId()).isEqualTo(instancesInfo.getId());
+        assertThat(instancesInfoDto.getCreatedDate()).isEqualTo(instancesInfo.getCreatedDate());
     }
 }

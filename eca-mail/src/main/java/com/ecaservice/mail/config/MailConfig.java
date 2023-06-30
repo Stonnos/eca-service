@@ -29,12 +29,6 @@ public class MailConfig {
     private Integer pageSize;
 
     /**
-     * Maximum page size for paging requests
-     */
-    @NotNull
-    private Integer maxPageSize;
-
-    /**
      * Delay in seconds for sent email job
      */
     @NotNull

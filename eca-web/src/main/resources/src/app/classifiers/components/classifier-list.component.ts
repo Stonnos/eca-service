@@ -4,8 +4,6 @@ import {
   PageDto,
   PageRequestDto, RequestStatusStatisticsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
-import { BaseListComponent } from "../../common/lists/base-list.component";
-import { MessageService } from "primeng/api";
 import { ClassifiersService } from "../services/classifiers.service";
 import { OverlayPanel } from "primeng/primeng";
 import { Observable } from "rxjs/internal/Observable";
@@ -14,16 +12,17 @@ import { EvaluationMethod } from "../../common/model/evaluation-method.enum";
 import { Router } from "@angular/router";
 import { RouterPaths } from "../../routing/router-paths";
 import { EvaluationLogFields } from "../../common/util/field-names";
-import { FieldService } from "../../common/services/field.service";
 import { ReportsService } from "../../common/services/report.service";
 import { ReportType } from "../../common/model/report-type.enum";
+import { InstancesInfoService } from "../../common/instances-info/services/instances-info.service";
+import { BaseEvaluationListComponent } from "../../common/lists/base-evaluation-list.component";
 
 @Component({
   selector: 'app-classifier-list',
   templateUrl: './classifier-list.component.html',
   styleUrls: ['./classifier-list.component.scss']
 })
-export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto> {
+export class ClassifierListComponent extends BaseEvaluationListComponent<EvaluationLogDto> {
 
   private static readonly EVALUATION_LOGS_REPORT_FILE_NAME = 'evaluation-logs-report.xlsx';
 
@@ -32,12 +31,12 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
   public selectedEvaluationLog: EvaluationLogDto;
   public selectedColumn: string;
 
-  public constructor(private injector: Injector,
+  public constructor(injector: Injector,
                      private classifiersService: ClassifiersService,
                      private filterService: FilterService,
                      private reportsService: ReportsService,
                      private router: Router) {
-    super(injector.get(MessageService), injector.get(FieldService));
+    super(injector, injector.get(InstancesInfoService));
     this.defaultSortField = EvaluationLogFields.CREATION_DATE;
     this.linkColumns = [EvaluationLogFields.CLASSIFIER_DESCRIPTION, EvaluationLogFields.EVALUATION_METHOD_DESCRIPTION,
       EvaluationLogFields.RELATION_NAME, EvaluationLogFields.REQUEST_ID, EvaluationLogFields.MODEL_PATH];

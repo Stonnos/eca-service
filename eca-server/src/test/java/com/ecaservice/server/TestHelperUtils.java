@@ -27,7 +27,6 @@ import com.ecaservice.ers.dto.StatisticsReport;
 import com.ecaservice.report.model.BaseReportBean;
 import com.ecaservice.server.model.entity.Channel;
 import com.ecaservice.server.model.entity.ClassifierInfo;
-import com.ecaservice.server.model.entity.ClassifierInputOptions;
 import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestEntity;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestModel;
@@ -60,6 +59,7 @@ import com.ecaservice.web.dto.model.FilterDictionaryDto;
 import com.ecaservice.web.dto.model.FilterFieldDto;
 import com.ecaservice.web.dto.model.FilterFieldType;
 import com.ecaservice.web.dto.model.FormTemplateDto;
+import com.ecaservice.web.dto.model.InstancesInfoDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -98,6 +98,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.ecaservice.server.util.ClassifierOptionsHelper.toJsonString;
+import static com.ecaservice.server.util.InstancesUtils.md5Hash;
 import static com.google.common.collect.Lists.newArrayList;
 
 /**
@@ -274,7 +275,9 @@ public class TestHelperUtils {
     public static EvaluationRequestDataModel createEvaluationRequestData() {
         EvaluationRequestDataModel request = new EvaluationRequestDataModel();
         request.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
-        request.setData(loadInstances());
+        Instances data = loadInstances();
+        request.setDataMd5Hash(md5Hash(data));
+        request.setData(data);
         request.setClassifier(new KNearestNeighbours());
         return request;
     }
@@ -342,6 +345,22 @@ public class TestHelperUtils {
         experiment.setCorrelationId(UUID.randomUUID().toString());
         experiment.setClassIndex(0);
         experiment.setInstancesInfo(createInstancesInfo());
+        return experiment;
+    }
+
+    /**
+     * Creates experiment.
+     *
+     * @param requestId        - request id
+     * @param experimentStatus - experiment status
+     * @param instancesInfo    - instances info
+     * @return created experiment
+     */
+    public static Experiment createExperiment(String requestId,
+                                              RequestStatus experimentStatus,
+                                              InstancesInfo instancesInfo) {
+        Experiment experiment = createExperiment(requestId, experimentStatus);
+        experiment.setInstancesInfo(instancesInfo);
         return experiment;
     }
 
@@ -491,11 +510,7 @@ public class TestHelperUtils {
     public static ClassifierInfo createClassifierInfo() {
         ClassifierInfo classifierInfo = new ClassifierInfo();
         classifierInfo.setClassifierName(CART.class.getSimpleName());
-        ClassifierInputOptions classifierInputOptions = new ClassifierInputOptions();
-        classifierInputOptions.setOptionName(OPTION_NAME);
-        classifierInputOptions.setOptionValue(OPTION_VALUE);
-        classifierInputOptions.setOptionOrder(0);
-        classifierInfo.setClassifierInputOptions(Collections.singletonList(classifierInputOptions));
+        classifierInfo.setClassifierOptions(toJsonString(createLogisticOptions()));
         return classifierInfo;
     }
 
@@ -549,6 +564,23 @@ public class TestHelperUtils {
     }
 
     /**
+     * Creates evaluation log with specified request id and status.
+     *
+     * @param requestId     - request id
+     * @param requestStatus - request status
+     * @param instancesInfo - instances info
+     * @return evaluation log
+     */
+    public static EvaluationLog createEvaluationLog(String requestId, RequestStatus requestStatus,
+                                                    InstancesInfo instancesInfo) {
+        EvaluationLog evaluationLog = createEvaluationLog();
+        evaluationLog.setRequestStatus(requestStatus);
+        evaluationLog.setRequestId(requestId);
+        evaluationLog.setInstancesInfo(instancesInfo);
+        return evaluationLog;
+    }
+
+    /**
      * Creates instances info.
      *
      * @return instances info
@@ -561,7 +593,25 @@ public class TestHelperUtils {
         instancesInfo.setNumAttributes(NUM_ATTRIBUTES);
         instancesInfo.setNumClasses(NUM_CLASSES);
         instancesInfo.setDataMd5Hash(DATA_MD_5_HASH);
+        instancesInfo.setUuid(UUID.randomUUID().toString());
+        instancesInfo.setCreatedDate(LocalDateTime.now());
         return instancesInfo;
+    }
+
+    /**
+     * Creates instances info dto.
+     *
+     * @return instances info dto
+     */
+    public static InstancesInfoDto createInstancesInfoDto() {
+        InstancesInfoDto instancesInfoDto = new InstancesInfoDto();
+        instancesInfoDto.setRelationName(RELATION_NAME);
+        instancesInfoDto.setClassName(CLASS_NAME);
+        instancesInfoDto.setNumInstances(NUM_INSTANCES);
+        instancesInfoDto.setNumAttributes(NUM_ATTRIBUTES);
+        instancesInfoDto.setNumClasses(NUM_CLASSES);
+        instancesInfoDto.setCreatedDate(LocalDateTime.now());
+        return instancesInfoDto;
     }
 
     /**
@@ -802,20 +852,19 @@ public class TestHelperUtils {
     /**
      * Creates classifier options request model.
      *
-     * @param dataMd5Hash                     - data MD5 hash
+     * @param instancesInfo                     - instances info
      * @param requestDate                     - request date
      * @param responseStatus                  - response status
      * @param classifierOptionsResponseModels - classifier options response models list
      * @return classifier options request model
      */
-    public static ClassifierOptionsRequestModel createClassifierOptionsRequestModel(String dataMd5Hash,
+    public static ClassifierOptionsRequestModel createClassifierOptionsRequestModel(InstancesInfo instancesInfo,
                                                                                     LocalDateTime requestDate,
                                                                                     ErsResponseStatus responseStatus,
                                                                                     List<ClassifierOptionsResponseModel> classifierOptionsResponseModels) {
         ClassifierOptionsRequestModel requestModel = new ClassifierOptionsRequestModel();
         requestModel.setRequestId(UUID.randomUUID().toString());
-        requestModel.setRelationName(RELATION_NAME);
-        requestModel.setDataMd5Hash(dataMd5Hash);
+        requestModel.setInstancesInfo(instancesInfo);
         requestModel.setRequestDate(requestDate);
         requestModel.setResponseStatus(responseStatus);
         requestModel.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
@@ -836,6 +885,7 @@ public class TestHelperUtils {
     public static ClassifierOptionsRequestEntity createClassifierOptionsRequestEntity(LocalDateTime creationDate,
                                                                                       ClassifierOptionsRequestModel requestModel) {
         ClassifierOptionsRequestEntity requestEntity = new ClassifierOptionsRequestEntity();
+        requestEntity.setRequestId(UUID.randomUUID().toString());
         requestEntity.setCreationDate(creationDate);
         requestEntity.setClassifierOptionsRequestModel(requestModel);
         requestEntity.setSource(ClassifierOptionsRequestSource.ERS);
@@ -867,6 +917,7 @@ public class TestHelperUtils {
         experimentResultsEntity.setExperiment(experiment);
         experimentResultsEntity.setResultsIndex(0);
         experimentResultsEntity.setClassifierInfo(createClassifierInfo());
+        experimentResultsEntity.setPctCorrect(BigDecimal.TEN);
         return experimentResultsEntity;
     }
 

@@ -21,7 +21,9 @@ import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.repository.ExperimentProgressRepository;
 import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.repository.ExperimentStepRepository;
+import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
+import com.ecaservice.server.service.InstancesInfoService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -49,13 +51,15 @@ import static org.mockito.Mockito.doThrow;
  */
 @Import({ExperimentMapperImpl.class, ExperimentConfig.class, AppProperties.class, CrossValidationConfig.class,
         DateTimeConverter.class, InstancesInfoMapperImpl.class, ExperimentService.class,
-        ExperimentProgressService.class})
+        ExperimentProgressService.class, InstancesInfoService.class})
 class ExperimentServiceTest extends AbstractJpaTest {
 
     @Inject
     private ExperimentRepository experimentRepository;
     @Inject
     private ExperimentStepRepository experimentStepRepository;
+    @Inject
+    private InstancesInfoRepository instancesInfoRepository;
     @Inject
     private ExperimentProgressRepository experimentProgressRepository;
     @MockBean
@@ -73,6 +77,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
         experimentProgressRepository.deleteAll();
         experimentStepRepository.deleteAll();
         experimentRepository.deleteAll();
+        instancesInfoRepository.deleteAll();
     }
 
     @Test
@@ -155,6 +160,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
 
     private Experiment createAndSaveExperiment(RequestStatus requestStatus) {
         var experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), requestStatus);
+        instancesInfoRepository.save(experiment.getInstancesInfo());
         return experimentRepository.save(experiment);
     }
 

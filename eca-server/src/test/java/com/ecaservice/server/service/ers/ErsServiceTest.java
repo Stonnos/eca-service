@@ -13,6 +13,7 @@ import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentResultsEntity;
 import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.repository.ExperimentResultsEntityRepository;
+import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
@@ -26,6 +27,7 @@ import org.mockito.Mock;
 import org.springframework.context.annotation.Import;
 
 import javax.inject.Inject;
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.UUID;
 
@@ -54,6 +56,8 @@ class ErsServiceTest extends AbstractJpaTest {
     @Inject
     private ExperimentResultsEntityRepository experimentResultsEntityRepository;
     @Inject
+    private InstancesInfoRepository instancesInfoRepository;
+    @Inject
     private ExperimentRepository experimentRepository;
 
     private ErsService ersService;
@@ -67,6 +71,7 @@ class ErsServiceTest extends AbstractJpaTest {
     public void deleteAll() {
         experimentResultsEntityRepository.deleteAll();
         experimentRepository.deleteAll();
+        instancesInfoRepository.deleteAll();
     }
 
     @Test
@@ -80,10 +85,12 @@ class ErsServiceTest extends AbstractJpaTest {
 
     private ExperimentResultsEntity createExperimentResults() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
+        instancesInfoRepository.save(experiment.getInstancesInfo());
         experimentRepository.save(experiment);
         ExperimentResultsEntity experimentResultsEntity = new ExperimentResultsEntity();
         experimentResultsEntity.setResultsIndex(0);
         experimentResultsEntity.setExperiment(experiment);
+        experimentResultsEntity.setPctCorrect(BigDecimal.TEN);
         experimentResultsEntity.setClassifierInfo(TestHelperUtils.createClassifierInfo());
         return experimentResultsEntityRepository.save(experimentResultsEntity);
     }

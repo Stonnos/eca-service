@@ -6,6 +6,7 @@ import com.ecaservice.report.model.FilterBean;
 import com.ecaservice.web.dto.model.FilterDictionaryDto;
 import com.ecaservice.web.dto.model.FilterDictionaryValueDto;
 import com.ecaservice.web.dto.model.FilterFieldDto;
+import com.ecaservice.web.dto.model.FilterFieldType;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -35,7 +36,7 @@ import static com.google.common.collect.Lists.newArrayList;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class AbstractBaseReportDataFetcher<E, B> {
 
-    private static final String VALUES_SEPARATOR = ", ";
+    public static final String VALUES_SEPARATOR = ", ";
 
     @Getter
     private final String reportType;
@@ -109,15 +110,26 @@ public abstract class AbstractBaseReportDataFetcher<E, B> {
 
     private String getFilterValuesAsString(FilterRequestDto filterRequestDto, List<String> values,
                                            FilterFieldDto filterFieldDto) {
-        if (MatchMode.RANGE.equals(filterRequestDto.getMatchMode())) {
-            return getRangeAsString(values, filterRequestDto);
-        } else {
-            if (Optional.ofNullable(filterFieldDto).map(FilterFieldDto::getDictionary).map(
-                    FilterDictionaryDto::getValues).isPresent()) {
-                return getValuesFromDictionary(values, filterFieldDto.getDictionary());
+        if (filterFieldDto != null) {
+            if (FilterFieldType.DATE.equals(filterFieldDto.getFilterFieldType())
+                    && MatchMode.RANGE.equals(filterRequestDto.getMatchMode())) {
+                return getDateRangeAsString(values, filterRequestDto);
+            } else {
+                if (FilterFieldType.REFERENCE.equals(filterFieldDto.getFilterFieldType())
+                        && Optional.ofNullable(filterFieldDto.getDictionary())
+                        .map(FilterDictionaryDto::getValues).isPresent()) {
+                    return getValuesFromDictionary(values, filterFieldDto.getDictionary());
+                } else if (FilterFieldType.LAZY_REFERENCE.equals(filterFieldDto.getFilterFieldType())) {
+                    return getLazyReferenceFilterValuesAsString(values, filterFieldDto);
+                }
             }
-            return StringUtils.join(values, VALUES_SEPARATOR);
         }
+        return StringUtils.join(values, VALUES_SEPARATOR);
+    }
+
+    protected String getLazyReferenceFilterValuesAsString(List<String> values,
+                                                          FilterFieldDto filterFieldDto) {
+        return StringUtils.join(values, VALUES_SEPARATOR);
     }
 
     protected String getDictionaryLabelByCode(String dictionaryName, String code) {
@@ -139,7 +151,7 @@ public abstract class AbstractBaseReportDataFetcher<E, B> {
         return StringUtils.join(resultValues, VALUES_SEPARATOR);
     }
 
-    private String getRangeAsString(List<String> values, FilterRequestDto filterRequestDto) {
+    private String getDateRangeAsString(List<String> values, FilterRequestDto filterRequestDto) {
         Class fieldClazz = getFieldType(filterRequestDto.getName(), entityClazz);
         if (!LocalDateTime.class.isAssignableFrom(fieldClazz)) {
             throw new IllegalStateException(

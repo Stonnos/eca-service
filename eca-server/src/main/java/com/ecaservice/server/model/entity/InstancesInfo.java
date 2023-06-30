@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.time.LocalDateTime;
 
 /**
  * Input data information model.
@@ -21,6 +22,12 @@ public class InstancesInfo {
     @Id
     @GeneratedValue
     private Long id;
+
+    /**
+     * Instances uuid
+     */
+    @Column(nullable = false, unique = true)
+    private String uuid;
 
     /**
      * Instances name
@@ -53,9 +60,15 @@ public class InstancesInfo {
     private String className;
 
     /**
-     * Instances MD5 hash
+     * Json instances MD5 hash
      */
-    @Column(name = "data_md5_hash")
+    @Column(name = "data_md5_hash", nullable = false, unique = true)
     private String dataMd5Hash;
+
+    /**
+     * Created date
+     */
+    @Column(name = "created_date", nullable = false)
+    private LocalDateTime createdDate;
 
 }

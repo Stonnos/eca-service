@@ -17,7 +17,10 @@
   </div>
   <div class="row">
     <div class="filter-sidebar">
-      <app-filter [filters]="filters" (apply)="onApplyFilter()"></app-filter>
+      <app-filter [filters]="filters"
+                  (apply)="onApplyFilter()"
+                  (autocompleteField)="onFilterFieldAutocomplete($event)">
+      </app-filter>
     </div>
     <div class="data-table">
       <p-table
@@ -92,7 +95,7 @@
         </app-evaluation-method-info>
       </ng-container>
       <ng-container *ngSwitchCase="'instancesInfo.relationName'">
-        <app-instances-info [item]="selectedEvaluationLog">
+        <app-instances-info [item]="selectedEvaluationLog?.instancesInfo">
         </app-instances-info>
       </ng-container>
       <ng-container *ngSwitchDefault>

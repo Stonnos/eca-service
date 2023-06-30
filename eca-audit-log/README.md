@@ -18,9 +18,7 @@
 ----------------------------------------
 Настройки для проекта eca-audit-log находятся в application.yml. Основные параметры:
 1) spring.datasource - настройки БД для хранения информации
-2) audit-log — основные настройки модуля:
-   * audit-log.maxPageSize - максимальное число элементов на странице (используется для запросов с пагинацией)
-3) open-api - настройки Swagger
+2) open-api - настройки Swagger
    * open-api.tokenBaseUrl - базовый url - сервера авторизации
    * open-api.projectVersion - версия API
    * open-api.title - краткое название API
@@ -30,11 +28,11 @@
    * open-api.basePath - базовый префикс для API
    * open-api.apiAuth - настройки авторизации
    * open-api.apiAuth.scopes - список scopes
-4) auth-server - настройки интеграции с eca-oauth
+3) auth-server - настройки интеграции с eca-oauth
    * baseUrl - базовый url eca-oauth
    * clientId - идентификатор клиента
    * clientSecret - пароль клиента
-5) logging.mode - режим логирования
+4) logging.mode - режим логирования
    * text - текстовый формат
    * json - логи в формате json
     

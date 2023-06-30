@@ -62,9 +62,8 @@ public class UserNotificationService {
     public PageDto<UserNotificationDto> getNextPage(SimplePageRequestDto pageRequestDto) {
         String currentUser = userService.getCurrentUser();
         log.info("Gets user [{}] notifications next page: {}", currentUser, pageRequestDto);
-        int pageSize = Integer.min(pageRequestDto.getSize(), appProperties.getMaxPageSize());
         LocalDateTime date = LocalDateTime.now().minusDays(appProperties.getNotificationLifeTimeDays());
-        var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageSize);
+        var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize());
         var notificationsPage =
                 notificationRepository.findByReceiverAndCreatedIsAfterOrderByCreatedDesc(currentUser, date,
                         pageRequest);

@@ -15,9 +15,11 @@ import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.EvaluationLog_;
 import com.ecaservice.server.model.entity.EvaluationResultsRequestEntity;
 import com.ecaservice.server.model.entity.FilterTemplateType;
+import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.repository.EvaluationResultsRequestEntityRepository;
+import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.classifiers.ClassifierOptionsProcessor;
 import com.ecaservice.server.service.ers.ErsService;
@@ -71,12 +73,15 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
     private static final int PAGE_NUMBER = 0;
     private static final int PAGE_SIZE = 10;
     private static final String INSTANCES_INFO_RELATION_NAME = "instancesInfo.relationName";
+    private static final String INSTANCES_INFO_ID = "instancesInfo.id";
     private static final String CLASSIFIER_INFO_CLASSIFIER_NAME = "classifierInfo.classifierName";
     private static final String CART_DESCRIPTION = "Алгоритм CART";
     private static final String C45_DESCRIPTION = "Алгоритм C45";
 
     @Inject
     private EvaluationLogRepository evaluationLogRepository;
+    @Inject
+    private InstancesInfoRepository instancesInfoRepository;
     @Inject
     private EvaluationResultsRequestEntityRepository evaluationResultsRequestEntityRepository;
     @Inject
@@ -96,8 +101,12 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
     private ObjectStorageService objectStorageService;
     private EvaluationLogService evaluationLogService;
 
+    private InstancesInfo instancesInfo;
+
     @Override
     public void init() {
+        instancesInfo = TestHelperUtils.createInstancesInfo();
+        instancesInfoRepository.save(instancesInfo);
         evaluationLogService =
                 new EvaluationLogService(appProperties, filterService, evaluationLogMapper, classifierOptionsProcessor,
                         ersService, entityManager, objectStorageService, evaluationLogRepository,
@@ -109,26 +118,30 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
     public void deleteAll() {
         evaluationResultsRequestEntityRepository.deleteAll();
         evaluationLogRepository.deleteAll();
+        instancesInfoRepository.deleteAll();
     }
 
     @Test
     void testRequestsStatusesStatisticsCalculation() {
         evaluationLogRepository.save(
-                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.NEW));
+                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.NEW, instancesInfo));
         evaluationLogRepository.save(
-                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.NEW));
+                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.NEW, instancesInfo));
         evaluationLogRepository.save(
-                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.ERROR));
+                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.ERROR, instancesInfo));
         evaluationLogRepository.save(
-                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.ERROR));
+                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.ERROR, instancesInfo));
         evaluationLogRepository.save(
-                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.ERROR));
+                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.ERROR, instancesInfo));
         evaluationLogRepository.save(
-                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.TIMEOUT));
+                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.TIMEOUT,
+                        instancesInfo));
         evaluationLogRepository.save(
-                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED));
+                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED,
+                        instancesInfo));
         evaluationLogRepository.save(
-                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.IN_PROGRESS));
+                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.IN_PROGRESS,
+                        instancesInfo));
         var requestStatusStatisticsDto = evaluationLogService.getRequestStatusesStatistics();
         assertThat(requestStatusStatisticsDto).isNotNull();
         assertThat(requestStatusStatisticsDto.getNewRequestsCount()).isEqualTo(2L);
@@ -145,23 +158,26 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
     @Test
     void testFilterByStatusAndClassifierNameLikeOrderByClassifierName() {
         EvaluationLog evaluationLog =
-                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED,
+                        instancesInfo);
         evaluationLog.getClassifierInfo().setClassifierName(CART.class.getSimpleName());
         evaluationLogRepository.save(evaluationLog);
         EvaluationLog evaluationLog1 =
-                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED,
+                        instancesInfo);
         evaluationLog1.getClassifierInfo().setClassifierName(C45.class.getSimpleName());
         evaluationLogRepository.save(evaluationLog1);
         EvaluationLog evaluationLog2 =
-                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.ERROR);
+                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.ERROR, instancesInfo);
         evaluationLog2.getClassifierInfo().setClassifierName(CART.class.getSimpleName());
         evaluationLogRepository.save(evaluationLog2);
         EvaluationLog evaluationLog3 =
-                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED,
+                        instancesInfo);
         evaluationLog3.getClassifierInfo().setClassifierName(KNearestNeighbours.class.getSimpleName());
         evaluationLogRepository.save(evaluationLog3);
         EvaluationLog evaluationLog4 =
-                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.ERROR);
+                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.ERROR, instancesInfo);
         evaluationLog4.getClassifierInfo().setClassifierName(NeuralNetwork.class.getSimpleName());
         evaluationLogRepository.save(evaluationLog4);
         PageRequestDto pageRequestDto =
@@ -181,22 +197,22 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    void testFilterByRelationName() {
+    void testFilterByInstancesId() {
         EvaluationLog evaluationLog =
-                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        evaluationLog.setInstancesInfo(TestHelperUtils.createInstancesInfo());
-        evaluationLog.getInstancesInfo().setRelationName("Data");
+                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED,
+                        instancesInfo);
         evaluationLogRepository.save(evaluationLog);
         EvaluationLog evaluationLog1 =
                 TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         evaluationLog1.setInstancesInfo(TestHelperUtils.createInstancesInfo());
-        evaluationLog1.getInstancesInfo().setRelationName("Relation");
+        evaluationLog1.getInstancesInfo().setDataMd5Hash("md5Hash");
+        instancesInfoRepository.save(evaluationLog1.getInstancesInfo());
         evaluationLogRepository.save(evaluationLog1);
         PageRequestDto pageRequestDto =
                 new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, CLASSIFIER_INFO_CLASSIFIER_NAME, false, null,
                         newArrayList());
-        pageRequestDto.getFilters().add(
-                new FilterRequestDto(INSTANCES_INFO_RELATION_NAME, Collections.singletonList("Dat"), MatchMode.LIKE));
+        pageRequestDto.getFilters().add(new FilterRequestDto(INSTANCES_INFO_ID,
+                Collections.singletonList(String.valueOf(evaluationLog.getInstancesInfo().getId())), MatchMode.EQUALS));
         Page<EvaluationLog> evaluationLogPage = evaluationLogService.getNextPage(pageRequestDto);
         assertThat(evaluationLogPage).isNotNull();
         assertThat(evaluationLogPage.getTotalElements()).isOne();
@@ -208,17 +224,16 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
     @Test
     void testGlobalFilter() {
         EvaluationLog evaluationLog =
-                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED,
+                        instancesInfo);
         evaluationLog.getClassifierInfo().setClassifierName(CART.class.getSimpleName());
-        evaluationLog.setInstancesInfo(TestHelperUtils.createInstancesInfo());
         EvaluationLog evaluationLog1 =
-                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.ERROR);
+                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.ERROR, instancesInfo);
         evaluationLog1.getClassifierInfo().setClassifierName(CART.class.getSimpleName());
-        evaluationLog1.setInstancesInfo(TestHelperUtils.createInstancesInfo());
         EvaluationLog evaluationLog2 =
-                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED,
+                        instancesInfo);
         evaluationLog2.getClassifierInfo().setClassifierName(ID3.class.getSimpleName());
-        evaluationLog2.setInstancesInfo(TestHelperUtils.createInstancesInfo());
         evaluationLogRepository.saveAll(Arrays.asList(evaluationLog, evaluationLog1, evaluationLog2));
         PageRequestDto pageRequestDto =
                 new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, EvaluationLog_.CREATION_DATE, false, "car", newArrayList());
@@ -236,14 +251,15 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
     @Test
     void testGetEvaluationLogDetailsWithInProgressStatus() {
         EvaluationLog evaluationLog =
-                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.IN_PROGRESS);
+                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.IN_PROGRESS,
+                        instancesInfo);
         testGetEvaluationLogDetails(evaluationLog, EvaluationResultsStatus.EVALUATION_IN_PROGRESS);
     }
 
     @Test
     void testGetEvaluationLogDetailsWithEvaluationErrorStatus() {
         EvaluationLog evaluationLog =
-                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.ERROR);
+                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.ERROR, instancesInfo);
         testGetEvaluationLogDetails(evaluationLog, EvaluationResultsStatus.EVALUATION_ERROR);
     }
 
@@ -255,7 +271,8 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
     void testGetEvaluationLogDetailsWithNotSentStatus() {
         //Case 1
         EvaluationLog evaluationLog =
-                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED,
+                        instancesInfo);
         evaluationLogRepository.save(evaluationLog);
         testGetEvaluationLogDetails(evaluationLog, EvaluationResultsStatus.RESULTS_NOT_SENT);
         //Case 2
@@ -339,16 +356,19 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
 
     private List<EvaluationLog> createAndSaveTestDataForGetClassifiersStatisticsData() {
         EvaluationLog evaluationLog =
-                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED,
+                        instancesInfo);
         evaluationLog.getClassifierInfo().setClassifierName(CART.class.getSimpleName());
         EvaluationLog evaluationLog1 =
-                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED,
+                        instancesInfo);
         evaluationLog1.getClassifierInfo().setClassifierName(C45.class.getSimpleName());
         EvaluationLog evaluationLog2 =
-                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.ERROR);
+                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.ERROR, instancesInfo);
         evaluationLog2.getClassifierInfo().setClassifierName(CART.class.getSimpleName());
         EvaluationLog evaluationLog3 =
-                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED,
+                        instancesInfo);
         evaluationLog3.getClassifierInfo().setClassifierName(KNearestNeighbours.class.getSimpleName());
         return evaluationLogRepository.saveAll(List.of(evaluationLog, evaluationLog1, evaluationLog2, evaluationLog3));
     }
@@ -371,7 +391,8 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
 
     private EvaluationLog createAndSaveFinishedEvaluationLog() {
         EvaluationLog evaluationLog =
-                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED,
+                        instancesInfo);
         EvaluationResultsRequestEntity evaluationResultsRequestEntity = new EvaluationResultsRequestEntity();
         evaluationResultsRequestEntity.setRequestDate(LocalDateTime.now().minusDays(1L));
         evaluationResultsRequestEntity.setRequestId(UUID.randomUUID().toString());

@@ -13,7 +13,6 @@ import static com.ecaservice.web.dto.util.FieldConstraints.LOCAL_DATE_TIME_MAX_L
 import static com.ecaservice.web.dto.util.FieldConstraints.MAXIMUM_NUM_FOLDS_STRING;
 import static com.ecaservice.web.dto.util.FieldConstraints.MAXIMUM_NUM_TESTS_STRING;
 import static com.ecaservice.web.dto.util.FieldConstraints.MAX_INTEGER_VALUE_STRING;
-import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
 import static com.ecaservice.web.dto.util.FieldConstraints.MINIMUM_NUM_FOLDS_STRING;
 import static com.ecaservice.web.dto.util.FieldConstraints.MINIMUM_NUM_TESTS_STRING;
 import static com.ecaservice.web.dto.util.FieldConstraints.MIN_INTEGER_VALUE_STRING;
@@ -43,10 +42,10 @@ public class ClassifierOptionsRequestDto {
     private String requestId;
 
     /**
-     * Training data name
+     * Training data info
      */
-    @Schema(description = "Training data name", example = "glass", maxLength = MAX_LENGTH_255)
-    private String relationName;
+    @Schema(description = "Training data info")
+    private InstancesInfoDto instancesInfo;
 
     /**
      * Evaluation method

@@ -10,6 +10,7 @@ import eca.trees.ID3;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
+import org.springframework.core.annotation.Order;
 
 import java.util.Map;
 
@@ -20,6 +21,7 @@ import static com.google.common.collect.Maps.newLinkedHashMap;
  *
  * @author Roman Batygin
  */
+@Order(Ordered.DECISION_TREE_ORDER)
 @Mapper
 public abstract class DecisionTreeMapper extends AbstractClassifierMapper<DecisionTreeClassifier, DecisionTreeOptions> {
 

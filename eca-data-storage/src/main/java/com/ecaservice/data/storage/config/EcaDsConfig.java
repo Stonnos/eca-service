@@ -13,11 +13,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class EcaDsConfig {
 
     /**
-     * Maximum page size for paging requests
-     */
-    private Integer maxPageSize;
-
-    /**
      * Date format for date attributes
      */
     private String dateFormat;

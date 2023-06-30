@@ -2,6 +2,7 @@ package com.ecaservice.classifier.options.adapter;
 
 import com.ecaservice.classifier.options.TestHelperUtils;
 import com.ecaservice.classifier.options.config.ClassifiersOptionsAutoConfiguration;
+import com.ecaservice.classifier.options.config.ClassifiersOptionsConfig;
 import com.ecaservice.classifier.options.model.AdaBoostOptions;
 import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.classifier.options.model.DecisionTreeOptions;
@@ -32,16 +33,18 @@ import eca.neural.functions.SoftSignFunction;
 import eca.regression.Logistic;
 import eca.trees.CART;
 import eca.trees.J48;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.bayes.BayesNet;
 
 import javax.inject.Inject;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
@@ -50,11 +53,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * @author Roman Batygin
  */
 @ExtendWith(SpringExtension.class)
+@EnableConfigurationProperties
+@TestPropertySource("classpath:application.properties")
 @Import({ClassifiersOptionsAutoConfiguration.class, ClassifierOptionsAdapter.class})
 class ClassifierOptionsAdapterTest {
 
     @Inject
     private ClassifierOptionsAdapter classifierOptionsAdapter;
+    @Inject
+    private ClassifiersOptionsConfig classifiersOptionsConfig;
 
     @Test
     void testUnsupportedClassifier() {
@@ -65,31 +72,31 @@ class ClassifierOptionsAdapterTest {
     @Test
     void testMapLogistic() {
         ClassifierOptions options = classifierOptionsAdapter.convert(new Logistic());
-        Assertions.assertThat(options).isInstanceOf(LogisticOptions.class);
+        assertThat(options).isInstanceOf(LogisticOptions.class);
     }
 
     @Test
     void testDecisionTree() {
         ClassifierOptions options = classifierOptionsAdapter.convert(new CART());
-        Assertions.assertThat(options).isInstanceOf(DecisionTreeOptions.class);
+        assertThat(options).isInstanceOf(DecisionTreeOptions.class);
     }
 
     @Test
     void testMapJ48() {
         ClassifierOptions options = classifierOptionsAdapter.convert(new J48());
-        Assertions.assertThat(options).isInstanceOf(J48Options.class);
+        assertThat(options).isInstanceOf(J48Options.class);
     }
 
     @Test
     void testMapKNN() {
         ClassifierOptions options = classifierOptionsAdapter.convert(new KNearestNeighbours());
-        Assertions.assertThat(options).isInstanceOf(KNearestNeighboursOptions.class);
+        assertThat(options).isInstanceOf(KNearestNeighboursOptions.class);
     }
 
     @Test
     void testMapNeuralNetwork() {
         ClassifierOptions options = classifierOptionsAdapter.convert(new NeuralNetwork());
-        Assertions.assertThat(options).isInstanceOf(NeuralNetworkOptions.class);
+        assertThat(options).isInstanceOf(NeuralNetworkOptions.class);
     }
 
     @Test
@@ -105,10 +112,10 @@ class ClassifierOptionsAdapterTest {
         heterogeneousClassifier.getClassifiersSet().addClassifier(
                 TestHelperUtils.createDecisionTreeClassifier(DecisionTreeType.ID3));
         ClassifierOptions options = classifierOptionsAdapter.convert(heterogeneousClassifier);
-        Assertions.assertThat(options).isInstanceOf(HeterogeneousClassifierOptions.class);
+        assertThat(options).isInstanceOf(HeterogeneousClassifierOptions.class);
         HeterogeneousClassifierOptions heterogeneousClassifierOptions = (HeterogeneousClassifierOptions) options;
-        Assertions.assertThat(heterogeneousClassifierOptions.getClassifierOptions()).isNotEmpty();
-        Assertions.assertThat(heterogeneousClassifierOptions.getClassifierOptions()).hasSameSizeAs(
+        assertThat(heterogeneousClassifierOptions.getClassifierOptions()).isNotEmpty();
+        assertThat(heterogeneousClassifierOptions.getClassifierOptions()).hasSameSizeAs(
                 heterogeneousClassifier.getClassifiersSet());
     }
 
@@ -123,10 +130,10 @@ class ClassifierOptionsAdapterTest {
         adaBoostClassifier.getClassifiersSet().addClassifier(
                 TestHelperUtils.createDecisionTreeClassifier(DecisionTreeType.C45));
         ClassifierOptions options = classifierOptionsAdapter.convert(adaBoostClassifier);
-        Assertions.assertThat(options).isInstanceOf(AdaBoostOptions.class);
+        assertThat(options).isInstanceOf(AdaBoostOptions.class);
         AdaBoostOptions adaBoostOptions = (AdaBoostOptions) options;
-        Assertions.assertThat(adaBoostOptions.getClassifierOptions()).isNotEmpty();
-        Assertions.assertThat(adaBoostOptions.getClassifierOptions()).hasSameSizeAs(
+        assertThat(adaBoostOptions.getClassifierOptions()).isNotEmpty();
+        assertThat(adaBoostOptions.getClassifierOptions()).hasSameSizeAs(
                 adaBoostOptions.getClassifierOptions());
     }
 
@@ -144,31 +151,31 @@ class ClassifierOptionsAdapterTest {
         stackingClassifier.getClassifiers().addClassifier(
                 TestHelperUtils.createNeuralNetwork(new HyperbolicTangentFunction()));
         ClassifierOptions options = classifierOptionsAdapter.convert(stackingClassifier);
-        Assertions.assertThat(options).isInstanceOf(StackingOptions.class);
+        assertThat(options).isInstanceOf(StackingOptions.class);
         StackingOptions stackingOptions = (StackingOptions) options;
-        Assertions.assertThat(stackingOptions.getMetaClassifierOptions()).isNotNull();
-        Assertions.assertThat(stackingOptions.getMetaClassifierOptions()).isInstanceOf(NeuralNetworkOptions.class);
-        Assertions.assertThat(stackingOptions.getClassifierOptions()).isNotEmpty();
-        Assertions.assertThat(stackingOptions.getClassifierOptions()).hasSameSizeAs(
+        assertThat(stackingOptions.getMetaClassifierOptions()).isNotNull();
+        assertThat(stackingOptions.getMetaClassifierOptions()).isInstanceOf(NeuralNetworkOptions.class);
+        assertThat(stackingOptions.getClassifierOptions()).isNotEmpty();
+        assertThat(stackingOptions.getClassifierOptions()).hasSameSizeAs(
                 stackingClassifier.getClassifiers());
     }
 
     @Test
     void testMapRandomForests() {
         ClassifierOptions options = classifierOptionsAdapter.convert(new RandomForests());
-        Assertions.assertThat(options).isInstanceOf(RandomForestsOptions.class);
+        assertThat(options).isInstanceOf(RandomForestsOptions.class);
     }
 
     @Test
     void testMapExtraTrees() {
         ClassifierOptions options = classifierOptionsAdapter.convert(new ExtraTreesClassifier());
-        Assertions.assertThat(options).isInstanceOf(ExtraTreesOptions.class);
+        assertThat(options).isInstanceOf(ExtraTreesOptions.class);
     }
 
     @Test
     void testMapRandomNetworks() {
         ClassifierOptions options = classifierOptionsAdapter.convert(new RandomNetworks());
-        Assertions.assertThat(options).isInstanceOf(RandomNetworkOptions.class);
+        assertThat(options).isInstanceOf(RandomNetworkOptions.class);
     }
 
     @Test
@@ -176,9 +183,9 @@ class ClassifierOptionsAdapterTest {
         HeterogeneousClassifierOptions heterogeneousClassifierOptions =
                 TestHelperUtils.createHeterogeneousClassifierOptions(false);
         AbstractClassifier classifier = classifierOptionsAdapter.convert(heterogeneousClassifierOptions);
-        Assertions.assertThat(classifier).isInstanceOf(HeterogeneousClassifier.class);
+        assertThat(classifier).isInstanceOf(HeterogeneousClassifier.class);
         HeterogeneousClassifier heterogeneousClassifier = (HeterogeneousClassifier) classifier;
-        Assertions.assertThat(heterogeneousClassifier.getClassifiersSet().size()).isEqualTo(
+        assertThat(heterogeneousClassifier.getClassifiersSet().size()).isEqualTo(
                 heterogeneousClassifierOptions.getClassifierOptions().size());
     }
 
@@ -186,10 +193,20 @@ class ClassifierOptionsAdapterTest {
     void testMapStackingClassifierOptions() {
         StackingOptions stackingOptions = TestHelperUtils.createStackingOptions();
         AbstractClassifier classifier = classifierOptionsAdapter.convert(stackingOptions);
-        Assertions.assertThat(classifier).isInstanceOf(StackingClassifier.class);
+        assertThat(classifier).isInstanceOf(StackingClassifier.class);
         StackingClassifier stackingClassifier = (StackingClassifier) classifier;
-        Assertions.assertThat(stackingClassifier.getClassifiers().size()).isEqualTo(
+        assertThat(stackingClassifier.getClassifiers().size()).isEqualTo(
                 stackingOptions.getClassifierOptions().size());
-        Assertions.assertThat(stackingClassifier.getMetaClassifier()).isInstanceOf(J48.class);
+        assertThat(stackingClassifier.getMetaClassifier()).isInstanceOf(J48.class);
+    }
+
+    @Test
+    void testMapKnnOptions() {
+        KNearestNeighboursOptions kNearestNeighboursOptions = TestHelperUtils.createKNearestNeighboursOptions();
+        AbstractClassifier classifier = classifierOptionsAdapter.convert(kNearestNeighboursOptions);
+        assertThat(classifier).isInstanceOf(KNearestNeighbours.class);
+        KNearestNeighbours kNearestNeighbours = (KNearestNeighbours) classifier;
+        assertThat(kNearestNeighbours.getDecimalFormat().getMaximumFractionDigits()).isEqualTo(
+                classifiersOptionsConfig.getMaximumFractionDigits());
     }
 }

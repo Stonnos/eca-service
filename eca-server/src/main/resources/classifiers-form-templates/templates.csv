@@ -6,7 +6,7 @@ id;template_name;template_title;object_class;object_type;group_id
 5;NEURAL_NETWORK;Нейронная сеть (Многослойный персептрон);NeuralNetworkOptions;neural_network;1
 6;ADA_BOOST;Алгоритм AdaBoost;AdaBoostOptions;ada_boost;2
 7;HETEROGENEOUS_CLASSIFIER;Неоднородный ансамблевый алгоритм;HeterogeneousClassifierOptions;heterogeneous_classifier;2
-8;RANDOM_FORESTS;Случайные леса;RandomForestsOptions;RandomForestsOptions;2
+8;RANDOM_FORESTS;Случайные леса;RandomForestsOptions;random_forests;2
 9;EXTRA_TREES;Алгоритм Extra trees;ExtraTreesOptions;extra_trees;2
 10;STACKING;Алгоритм Stacking;StackingOptions;stacking;2
 11;RANDOM_NETWORKS;Алгоритм Случайные сети;RandomNetworkOptions;random_networks;2

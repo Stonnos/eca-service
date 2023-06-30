@@ -17,7 +17,10 @@
   </div>
   <div class="row">
     <div class="filter-sidebar">
-      <app-filter [filters]="filters" (apply)="onApplyFilter()"></app-filter>
+      <app-filter [filters]="filters"
+                  (apply)="onApplyFilter()"
+                  (autocompleteField)="onFilterFieldAutocomplete($event)">
+      </app-filter>
     </div>
     <div class="data-table">
       <p-table
@@ -71,6 +74,10 @@
       <ng-container *ngSwitchCase="'classifierName'">
         <app-classifier-options-info [classifierInfo]="selectedRequest?.classifierInfo">
         </app-classifier-options-info>
+      </ng-container>
+      <ng-container *ngSwitchCase="'instancesInfo.relationName'">
+        <app-instances-info [item]="selectedRequest?.instancesInfo">
+        </app-instances-info>
       </ng-container>
       <ng-container *ngSwitchCase="'evaluationMethod.description'">
         <div class="evaluation-method-content">

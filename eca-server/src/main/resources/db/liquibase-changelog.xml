@@ -75,4 +75,5 @@
     <include file="db/changelog/v64-add-experiment-created-by-column.xml"/>
     <include file="db/changelog/v65-add-evaluation-log-model-path-column.xml"/>
     <include file="db/changelog/v66-add-classifier-options-request-request-id-column.xml"/>
+    <include file="db/changelog/v67-add-instances-info-created-date-column.xml"/>
 </databaseChangeLog>

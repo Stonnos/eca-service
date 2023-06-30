@@ -9,7 +9,7 @@ import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import java.util.Map;
+import javax.validation.constraints.NotNull;
 
 import static com.ecaservice.classifier.options.model.Constraints.DECIMAL_VALUE_0_STRING;
 import static com.ecaservice.classifier.options.model.Constraints.DECIMAL_VALUE_1_STRING;
@@ -30,6 +30,7 @@ public class DecisionTreeOptions extends ClassifierOptions {
     /**
      * Decision tree algorithm
      */
+    @NotNull
     @Schema(description = "Decision tree algorithm", maxLength = MAX_LENGTH_255)
     private DecisionTreeType decisionTreeType;
 
@@ -98,10 +99,4 @@ public class DecisionTreeOptions extends ClassifierOptions {
     @DecimalMax(value = DECIMAL_VALUE_1_STRING, inclusive = false)
     @Schema(description = "Alpha value for chi square test")
     private Double alpha;
-
-    /**
-     * Additional options map
-     */
-    @Schema(description = "Additional options map")
-    private Map<String, String> additionalOptions;
 }

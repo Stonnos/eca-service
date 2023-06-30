@@ -7,7 +7,10 @@ import eca.data.file.converter.InstancesConverter;
 import eca.data.file.model.InstancesModel;
 import eca.filter.ConstantAttributesFilter;
 import lombok.experimental.UtilityClass;
+import org.springframework.util.DigestUtils;
 import weka.core.Instances;
+
+import java.nio.charset.StandardCharsets;
 
 /**
  * Instances utility class.
@@ -33,6 +36,17 @@ public class InstancesUtils {
         } catch (JsonProcessingException ex) {
             throw new IllegalStateException(ex.getMessage());
         }
+    }
+
+    /**
+     * Gets instances md5 hash for json format.
+     *
+     * @param instances - instances object
+     * @return instances md5 hash
+     */
+    public static String md5Hash(Instances instances) {
+        String jsonData = toJson(instances);
+        return DigestUtils.md5DigestAsHex(jsonData.getBytes(StandardCharsets.UTF_8));
     }
 
     /**

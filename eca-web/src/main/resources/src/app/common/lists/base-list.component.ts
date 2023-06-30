@@ -175,8 +175,14 @@ export abstract class BaseListComponent<T> implements FieldLink {
         return values.map((item) => this.datePipe.transform(item, this.dateFormat));
       case "REFERENCE":
         return values.map((item) => item.value);
+      case "LAZY_REFERENCE":
+        return this.tramsFormLazyReferenceValue(filter, values);
       default:
         return values;
     }
+  }
+
+  protected tramsFormLazyReferenceValue(filter: Filter, values: any[]): string[] {
+    return values.map((item) => item.value);
   }
 }

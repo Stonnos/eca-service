@@ -73,18 +73,6 @@ class ExperimentMapperTest {
         assertThat(experiment.getSeed()).isNull();
         assertThat(experiment.getExperimentType()).isEqualTo(experimentMessageRequest.getExperimentType());
         assertThat(experiment.getClassIndex()).isEqualTo(experimentMessageRequest.getData().classIndex());
-        assertThat(experiment.getInstancesInfo()).isNotNull();
-        assertThat(experiment.getInstancesInfo().getRelationName()).isEqualTo(
-                experimentMessageRequest.getData().relationName());
-        assertThat(experiment.getInstancesInfo().getClassName()).isEqualTo(
-                experimentMessageRequest.getData().classAttribute().name());
-        assertThat(experiment.getInstancesInfo().getNumAttributes().intValue()).isEqualTo(
-                experimentMessageRequest.getData().numAttributes());
-        assertThat(experiment.getInstancesInfo().getNumClasses().intValue()).isEqualTo(
-                experimentMessageRequest.getData().numClasses());
-        assertThat(experiment.getInstancesInfo().getNumInstances().intValue()).isEqualTo(
-                experimentMessageRequest.getData().numInstances());
-        assertThat(experiment.getInstancesInfo().getDataMd5Hash()).isNotNull();
     }
 
     @Test
