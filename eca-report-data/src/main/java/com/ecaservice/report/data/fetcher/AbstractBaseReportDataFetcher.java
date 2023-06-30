@@ -110,19 +110,21 @@ public abstract class AbstractBaseReportDataFetcher<E, B> {
 
     private String getFilterValuesAsString(FilterRequestDto filterRequestDto, List<String> values,
                                            FilterFieldDto filterFieldDto) {
-        if (FilterFieldType.DATE.equals(filterFieldDto.getFilterFieldType())
-                && MatchMode.RANGE.equals(filterRequestDto.getMatchMode())) {
-            return getRangeAsString(values, filterRequestDto);
-        } else {
-            if (FilterFieldType.REFERENCE.equals(filterFieldDto.getFilterFieldType())
-                    && Optional.ofNullable(filterFieldDto.getDictionary())
-                    .map(FilterDictionaryDto::getValues).isPresent()) {
-                return getValuesFromDictionary(values, filterFieldDto.getDictionary());
-            } else if (FilterFieldType.LAZY_REFERENCE.equals(filterFieldDto.getFilterFieldType())) {
-                return getLazyReferenceFilterValuesAsString(values, filterFieldDto);
+        if (filterFieldDto != null) {
+            if (FilterFieldType.DATE.equals(filterFieldDto.getFilterFieldType())
+                    && MatchMode.RANGE.equals(filterRequestDto.getMatchMode())) {
+                return getDateRangeAsString(values, filterRequestDto);
+            } else {
+                if (FilterFieldType.REFERENCE.equals(filterFieldDto.getFilterFieldType())
+                        && Optional.ofNullable(filterFieldDto.getDictionary())
+                        .map(FilterDictionaryDto::getValues).isPresent()) {
+                    return getValuesFromDictionary(values, filterFieldDto.getDictionary());
+                } else if (FilterFieldType.LAZY_REFERENCE.equals(filterFieldDto.getFilterFieldType())) {
+                    return getLazyReferenceFilterValuesAsString(values, filterFieldDto);
+                }
             }
-            return StringUtils.join(values, VALUES_SEPARATOR);
         }
+        return StringUtils.join(values, VALUES_SEPARATOR);
     }
 
     protected String getLazyReferenceFilterValuesAsString(List<String> values,
@@ -149,7 +151,7 @@ public abstract class AbstractBaseReportDataFetcher<E, B> {
         return StringUtils.join(resultValues, VALUES_SEPARATOR);
     }
 
-    private String getRangeAsString(List<String> values, FilterRequestDto filterRequestDto) {
+    private String getDateRangeAsString(List<String> values, FilterRequestDto filterRequestDto) {
         Class fieldClazz = getFieldType(filterRequestDto.getName(), entityClazz);
         if (!LocalDateTime.class.isAssignableFrom(fieldClazz)) {
             throw new IllegalStateException(
