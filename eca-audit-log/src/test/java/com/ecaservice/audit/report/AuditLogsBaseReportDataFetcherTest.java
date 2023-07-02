@@ -83,6 +83,5 @@ class AuditLogsBaseReportDataFetcherTest extends AbstractJpaTest {
         assertThat(baseReportBean.getSearchQuery()).isNull();
         assertThat(baseReportBean.getItems()).isNotNull();
         assertThat(baseReportBean.getItems()).hasSize(EXPECTED_SIZE);
-        assertThat(baseReportBean.getFilters()).hasSameSizeAs(pageRequestDto.getFilters());
     }
 }

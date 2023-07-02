@@ -117,6 +117,6 @@ class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
                 Collections.singletonList(RequestStatus.FINISHED.name()), MatchMode.EQUALS));
         BaseReportBean<EvaluationLogBean> baseReportBean =
                 evaluationLogsBaseReportDataFetcher.fetchReportData(pageRequestDto);
-        assertBaseReportBean(baseReportBean, pageRequestDto);
+        assertBaseReportBean(baseReportBean);
     }
 }

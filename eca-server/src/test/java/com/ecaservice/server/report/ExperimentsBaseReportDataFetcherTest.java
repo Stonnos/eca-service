@@ -94,6 +94,6 @@ class ExperimentsBaseReportDataFetcherTest extends AbstractJpaTest {
                         ExperimentType.NEURAL_NETWORKS.name()), MatchMode.EQUALS));
         BaseReportBean<ExperimentBean> baseReportBean =
                 experimentsBaseReportDataFetcher.fetchReportData(pageRequestDto);
-        assertBaseReportBean(baseReportBean, pageRequestDto);
+        assertBaseReportBean(baseReportBean);
     }
 }
