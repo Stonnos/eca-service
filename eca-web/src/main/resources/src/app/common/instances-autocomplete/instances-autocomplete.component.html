@@ -8,7 +8,7 @@
                 (onSelect)="onSelect()"
                 (onUnselect)="onUnselect()"
                 (onClear)="onUnselect()"
-                field="tableName"
+                field="relationName"
                 dropdownMode="current"
                 emptyMessage="Не найдено ни одной обучающей выборки"
                 [forceSelection]="true"
@@ -17,7 +17,7 @@
     <p-panel>
       <p-header>
         <div class="d-flex mx-auto align-items-center justify-content-center text-bold">
-          Данные: {{ instance.tableName }}
+          Данные: {{ instance.relationName }}
         </div>
       </p-header>
       <div class="ui-g" *ngFor="let field of fields">
