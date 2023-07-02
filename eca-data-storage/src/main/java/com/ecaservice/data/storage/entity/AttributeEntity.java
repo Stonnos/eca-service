@@ -30,7 +30,9 @@ import java.util.List;
         @UniqueConstraint(columnNames = {"instances_id", "_index"},
                 name = "instances_id_index_unique_index"),
         @UniqueConstraint(columnNames = {"instances_id", "column_name"},
-                name = "instances_id_column_name_unique_index")
+                name = "instances_id_column_name_unique_index"),
+        @UniqueConstraint(columnNames = {"instances_id", "attribute_name"},
+                name = "instances_id_attribute_name_unique_index"),
 })
 @NamedEntityGraph(name = "attributeValues",
         attributeNodes = {
@@ -43,6 +45,12 @@ public class AttributeEntity {
     @Id
     @GeneratedValue
     private Long id;
+
+    /**
+     * Attribute name
+     */
+    @Column(name = "attribute_name", nullable = false, updatable = false)
+    private String attributeName;
 
     /**
      * Column name in database

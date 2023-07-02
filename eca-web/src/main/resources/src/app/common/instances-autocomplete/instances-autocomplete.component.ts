@@ -65,7 +65,7 @@ export class InstancesAutocompleteComponent implements OnInit {
       searchQuery: null,
       filters: [
         {
-          name: InstancesFields.TABLE_NAME,
+          name: InstancesFields.RELATION_NAME,
           values: [query],
           matchMode: 'LIKE'
         }

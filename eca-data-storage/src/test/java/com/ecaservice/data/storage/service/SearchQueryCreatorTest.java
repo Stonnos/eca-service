@@ -31,10 +31,10 @@ import static org.mockito.Mockito.when;
 class SearchQueryCreatorTest {
 
     private static final List<AttributeInfo> ATTRIBUTES = List.of(
-            new AttributeInfo("column1", AttributeType.NOMINAL, Arrays.asList("a", "b")),
-            new AttributeInfo("column2", AttributeType.NOMINAL, Collections.emptyList()),
-            new AttributeInfo("column3", AttributeType.NOMINAL, Collections.emptyList()),
-            new AttributeInfo("column4", AttributeType.NUMERIC, Collections.emptyList())
+            new AttributeInfo("column1", "column1", AttributeType.NOMINAL, Arrays.asList("a", "b")),
+            new AttributeInfo("column2", "column2", AttributeType.NOMINAL, Collections.emptyList()),
+            new AttributeInfo("column3", "column3", AttributeType.NOMINAL, Collections.emptyList()),
+            new AttributeInfo("column4", "column4", AttributeType.NUMERIC, Collections.emptyList())
     );
 
     private static final String TABLE_NAME = "table";

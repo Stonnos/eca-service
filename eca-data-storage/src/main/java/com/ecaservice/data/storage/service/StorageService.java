@@ -29,10 +29,10 @@ public interface StorageService {
     /**
      * Saves training data file into database.
      *
-     * @param instances - instances
-     * @param tableName - table name
+     * @param instances    - instances
+     * @param relationName - relation name
      */
-    InstancesEntity saveData(Instances instances, String tableName);
+    InstancesEntity saveData(Instances instances, String relationName);
 
     /**
      * Gets instances by id.
@@ -55,7 +55,7 @@ public interface StorageService {
      *
      * @param id      - instances id
      * @param newName - new instances name
-     * @return old table name
+     * @return old instances name
      */
     String renameData(long id, String newName);
 
@@ -63,7 +63,7 @@ public interface StorageService {
      * Deletes data with specified id.
      *
      * @param id - instances id
-     * @return deleted table name
+     * @return deleted instances name
      */
     String deleteData(long id);
 

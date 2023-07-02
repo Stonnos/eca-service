@@ -46,13 +46,13 @@ public class ConcurrentStorageService implements StorageService {
     }
 
     @Override
-    public InstancesEntity saveData(Instances instances, String tableName) {
+    public InstancesEntity saveData(Instances instances, String relationName) {
         InstancesEntity instancesEntity;
-        tableNamesMonitorsMap.putIfAbsent(tableName, new Object());
-        synchronized (tableNamesMonitorsMap.get(tableName)) {
-            instancesEntity = storageService.saveData(instances, tableName);
+        tableNamesMonitorsMap.putIfAbsent(relationName, new Object());
+        synchronized (tableNamesMonitorsMap.get(relationName)) {
+            instancesEntity = storageService.saveData(instances, relationName);
         }
-        tableNamesMonitorsMap.remove(tableName);
+        tableNamesMonitorsMap.remove(relationName);
         return instancesEntity;
     }
 

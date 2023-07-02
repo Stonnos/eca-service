@@ -24,9 +24,9 @@ public enum DsErrorCode implements ErrorDetails {
     INVALID_CLASS_ATTRIBUTE_TYPE("InvalidClassAttributeType"),
 
     /**
-     * Table name duplication error code
+     * Instances name duplication error code
      */
-    TABLE_NAME_DUPLICATION("UniqueTableName");
+    INSTANCES_NAME_DUPLICATION("DuplicateInstancesName");
 
     /**
      * Error code

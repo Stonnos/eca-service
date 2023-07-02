@@ -76,4 +76,5 @@
     <include file="db/changelog/v65-add-evaluation-log-model-path-column.xml"/>
     <include file="db/changelog/v66-add-classifier-options-request-request-id-column.xml"/>
     <include file="db/changelog/v67-add-instances-info-created-date-column.xml"/>
+    <include file="db/changelog/v68-add-experiment-max-pct-correct-column.xml"/>
 </databaseChangeLog>

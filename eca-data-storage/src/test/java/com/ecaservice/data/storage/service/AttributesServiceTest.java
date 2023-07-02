@@ -15,7 +15,9 @@ import weka.core.Instances;
 
 import javax.inject.Inject;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.ecaservice.data.storage.TestHelperUtils.createAttributeEntity;
@@ -65,7 +67,10 @@ class AttributesServiceTest extends AbstractJpaTest {
 
     @Test
     void testSaveAttributes() {
-        attributeService.saveAttributes(instancesEntity, instances);
+        List<String> attributeNames = IntStream.range(0, instances.numAttributes())
+                .mapToObj(i -> instances.attribute(i).name())
+                .collect(Collectors.toList());
+        attributeService.saveAttributes(instancesEntity, instances, attributeNames);
         verifySavedAttributes();
     }
 

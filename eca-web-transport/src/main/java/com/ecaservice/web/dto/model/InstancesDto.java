@@ -39,8 +39,8 @@ public class InstancesDto {
     /**
      * Instances name
      */
-    @Schema(description = "Table name", example = "iris", maxLength = MAX_LENGTH_255)
-    private String tableName;
+    @Schema(description = "Instances name", example = "iris", maxLength = MAX_LENGTH_255)
+    private String relationName;
 
     /**
      * Instances size

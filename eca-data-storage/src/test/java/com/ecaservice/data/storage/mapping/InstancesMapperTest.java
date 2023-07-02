@@ -37,7 +37,7 @@ class InstancesMapperTest {
         instancesEntity.setId(ID);
         InstancesDto instancesDto = instancesMapper.map(instancesEntity);
         assertThat(instancesDto).isNotNull();
-        assertThat(instancesDto.getTableName()).isEqualTo(instancesEntity.getTableName());
+        assertThat(instancesDto.getRelationName()).isEqualTo(instancesEntity.getTableName());
         assertThat(instancesDto.getNumInstances()).isEqualTo(instancesEntity.getNumInstances());
         assertThat(instancesDto.getNumAttributes()).isEqualTo(instancesEntity.getNumAttributes());
         assertThat(instancesDto.getCreated()).isEqualTo(instancesEntity.getCreated());

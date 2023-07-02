@@ -3,7 +3,7 @@ package com.ecaservice.data.storage.service;
 import com.ecaservice.data.storage.AbstractJpaTest;
 import com.ecaservice.data.storage.config.StorageTestConfiguration;
 import com.ecaservice.data.storage.entity.InstancesEntity;
-import com.ecaservice.data.storage.exception.TableExistsException;
+import com.ecaservice.data.storage.exception.InstancesExistsException;
 import com.ecaservice.data.storage.mapping.AttributeMapperImpl;
 import com.ecaservice.data.storage.repository.AttributeRepository;
 import com.ecaservice.data.storage.repository.AttributeValueRepository;
@@ -39,9 +39,9 @@ import static org.mockito.Mockito.when;
 class ConcurrentStorageServiceTest extends AbstractJpaTest {
 
     private static final int NUM_THREADS = 2;
-    private static final String TEST_TABLE = "test_table";
-    private static final String NEW_TABLE_NAME = "new_table_name";
-    private static final String TEST_TABLE_2 = "test_table2";
+    private static final String TEST_RELATION_NAME = "test_relation_name";
+    private static final String NEW_RELATION_NAME = "new_relation_name";
+    private static final String TEST_RELATION_NAME_2 = "test_relation_name_2";
     private static final String USER_NAME = "admin";
 
     @Inject
@@ -85,7 +85,7 @@ class ConcurrentStorageServiceTest extends AbstractJpaTest {
             executorService.submit(() -> {
                 try {
                     concurrentStorageService.saveData(instances, TABLE_NAME);
-                } catch (TableExistsException ex) {
+                } catch (InstancesExistsException ex) {
                     tableExistsErrors.incrementAndGet();
                 } finally {
                     countDownLatch.countDown();
@@ -101,8 +101,8 @@ class ConcurrentStorageServiceTest extends AbstractJpaTest {
 
     @Test
     void testConcurrentRenameData() throws Exception {
-        InstancesEntity first = createAndSaveInstancesEntity(TEST_TABLE);
-        InstancesEntity second = createAndSaveInstancesEntity(TEST_TABLE_2);
+        InstancesEntity first = createAndSaveInstancesEntity(TEST_RELATION_NAME);
+        InstancesEntity second = createAndSaveInstancesEntity(TEST_RELATION_NAME_2);
         final AtomicInteger tableExistsErrors = new AtomicInteger();
         final CountDownLatch countDownLatch = new CountDownLatch(NUM_THREADS);
         ExecutorService executorService = Executors.newFixedThreadPool(NUM_THREADS);
@@ -118,8 +118,8 @@ class ConcurrentStorageServiceTest extends AbstractJpaTest {
                             AtomicInteger tableExistsErrors, CountDownLatch countDownLatch) {
         executorService.submit(() -> {
             try {
-                concurrentStorageService.renameData(instancesEntity.getId(), NEW_TABLE_NAME);
-            } catch (TableExistsException ex) {
+                concurrentStorageService.renameData(instancesEntity.getId(), NEW_RELATION_NAME);
+            } catch (InstancesExistsException ex) {
                 tableExistsErrors.incrementAndGet();
             } finally {
                 countDownLatch.countDown();
@@ -127,9 +127,10 @@ class ConcurrentStorageServiceTest extends AbstractJpaTest {
         });
     }
 
-    private InstancesEntity createAndSaveInstancesEntity(String tableName) {
+    private InstancesEntity createAndSaveInstancesEntity(String relationName) {
         InstancesEntity instancesEntity = createInstancesEntity();
-        instancesEntity.setTableName(tableName);
+        instancesEntity.setTableName(relationName);
+        instancesEntity.setRelationName(relationName);
         instancesEntity.setUuid(UUID.randomUUID().toString());
         instancesEntity.setIdColumnName(UUID.randomUUID().toString());
         return instancesRepository.save(instancesEntity);

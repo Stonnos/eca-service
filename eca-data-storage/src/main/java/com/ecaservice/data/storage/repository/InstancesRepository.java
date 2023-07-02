@@ -15,12 +15,12 @@ public interface InstancesRepository
         extends JpaRepository<InstancesEntity, Long>, JpaSpecificationExecutor<InstancesEntity> {
 
     /**
-     * Checks instances exists with specified table name.
+     * Checks instances exists with specified name.
      *
-     * @param tableName - table name
+     * @param relationName - relation name
      * @return {@code true} if instances exists, otherwise {@code  false}
      */
-    boolean existsByTableName(String tableName);
+    boolean existsByRelationName(String relationName);
 
     /**
      * Finds instances entity by uuid.

@@ -119,7 +119,7 @@ export class ClassifierListComponent extends BaseEvaluationListComponent<Evaluat
       { name: EvaluationLogFields.REQUEST_ID, label: "UUID заявки" },
       { name: EvaluationLogFields.CLASSIFIER_DESCRIPTION, label: "Классификатор", sortBy: EvaluationLogFields.CLASSIFIER_NAME },
       { name: EvaluationLogFields.REQUEST_STATUS_DESCRIPTION, label: "Статус заявки", sortBy: EvaluationLogFields.REQUEST_STATUS },
-      { name: EvaluationLogFields.PCT_CORRECT, label: "Точность классификатора" },
+      { name: EvaluationLogFields.PCT_CORRECT, label: "Точность классификатора, %" },
       { name: EvaluationLogFields.RELATION_NAME, label: "Обучающая выборка" },
       { name: EvaluationLogFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности", sortBy: EvaluationLogFields.EVALUATION_METHOD },
       { name: EvaluationLogFields.MODEL_PATH, label: "Модель классификатора" },

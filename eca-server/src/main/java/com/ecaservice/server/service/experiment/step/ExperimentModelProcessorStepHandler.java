@@ -9,6 +9,7 @@ import com.ecaservice.server.model.entity.ExperimentStep;
 import com.ecaservice.server.model.entity.ExperimentStepEntity;
 import com.ecaservice.server.model.experiment.ExperimentContext;
 import com.ecaservice.server.model.experiment.InitializationParams;
+import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.service.evaluation.CalculationExecutorService;
 import com.ecaservice.server.service.experiment.ExperimentProcessorService;
 import com.ecaservice.server.service.experiment.ExperimentProgressService;
@@ -21,6 +22,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 import weka.core.Instances;
 
+import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -40,6 +43,7 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
     private final CalculationExecutorService executorService;
     private final ExperimentStepService experimentStepService;
     private final ExperimentProgressService experimentProgressService;
+    private final ExperimentRepository experimentRepository;
 
     /**
      * Constructor with parameters.
@@ -50,14 +54,16 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
      * @param executorService            - executor service
      * @param experimentStepService      - experiment step service
      * @param experimentProgressService  - experiment progress service
+     * @param experimentRepository       - experiment repository
      */
     public ExperimentModelProcessorStepHandler(ExperimentConfig experimentConfig,
                                                ObjectStorageService objectStorageService,
                                                ExperimentProcessorService experimentProcessorService,
                                                @Qualifier("calculationExecutorServiceImpl")
-                                                       CalculationExecutorService executorService,
+                                               CalculationExecutorService executorService,
                                                ExperimentStepService experimentStepService,
-                                               ExperimentProgressService experimentProgressService) {
+                                               ExperimentProgressService experimentProgressService,
+                                               ExperimentRepository experimentRepository) {
         super(ExperimentStep.EXPERIMENT_PROCESSING);
         this.experimentConfig = experimentConfig;
         this.objectStorageService = objectStorageService;
@@ -65,6 +71,7 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
         this.executorService = executorService;
         this.experimentStepService = experimentStepService;
         this.experimentProgressService = experimentProgressService;
+        this.experimentRepository = experimentRepository;
     }
 
     @Override
@@ -73,6 +80,7 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
         try {
             Instances data = getInstances(experimentContext);
             processExperiment(data, experimentContext);
+            saveMaxPctCorrectValue(experimentContext);
             experimentProgressService.finish(experimentStepEntity.getExperiment());
             experimentStepService.complete(experimentStepEntity);
         } catch (ObjectStorageException ex) {
@@ -116,5 +124,18 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
                 executorService.execute(callable, experimentConfig.getTimeout(), TimeUnit.HOURS);
         stopWatch.stop();
         experimentContext.setExperimentHistory(abstractExperiment);
+    }
+
+    private void saveMaxPctCorrectValue(ExperimentContext experimentContext) {
+        Experiment experiment = experimentContext.getExperiment();
+        var bestEvaluationResults = experimentContext.getExperimentHistory()
+                .getHistory()
+                .stream()
+                .max(Comparator.comparing(evaluationResults -> evaluationResults.getEvaluation().pctCorrect()))
+                .orElseThrow(() -> new ExperimentException(
+                        String.format("Can't find best evaluation results for experiment [%s]",
+                                experiment.getRequestId())));
+        experiment.setMaxPctCorrect(BigDecimal.valueOf(bestEvaluationResults.getEvaluation().pctCorrect()));
+        experimentRepository.save(experiment);
     }
 }
