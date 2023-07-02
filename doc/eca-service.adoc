@@ -532,6 +532,7 @@ image::./images/eca-ers-db-schema.png[alt=Схема базы данных eca-e
 |num_attributes          |integer          |-|+|-                       |Число атрибутов обучающей выборки
 |num_classes             |integer          |-|+|-                       |Число классов
 |class_name              |varchar(255)     |-|+|-                       |Название атрибута класса
+|created_date            |timestamp        |-|+|-                                        |Дата создания
 |===
 
 ==== Таблица 3.{counter:db-table-id} - 'classifier_options_info' - содержит данные о классификаторах

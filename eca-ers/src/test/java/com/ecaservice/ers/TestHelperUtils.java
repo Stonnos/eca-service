@@ -110,6 +110,7 @@ public class TestHelperUtils {
         instancesInfo.setNumAttributes(BigInteger.TEN.intValue());
         instancesInfo.setNumClasses(BigInteger.TEN.intValue());
         instancesInfo.setClassName(CLASS_NAME);
+        instancesInfo.setCreatedDate(LocalDateTime.now());
         return instancesInfo;
     }
 

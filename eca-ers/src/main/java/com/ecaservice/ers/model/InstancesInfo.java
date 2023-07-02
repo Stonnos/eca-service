@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.Table;
+import java.time.LocalDateTime;
 
 /**
  * Instances info persistence entity.
@@ -58,4 +59,11 @@ public class InstancesInfo {
      */
     @Column(name = "class_name", nullable = false)
     private String className;
+
+
+    /**
+     * Created date
+     */
+    @Column(name = "created_date", nullable = false)
+    private LocalDateTime createdDate;
 }

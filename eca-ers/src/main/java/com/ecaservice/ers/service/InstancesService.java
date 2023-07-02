@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -41,6 +42,7 @@ public class InstancesService {
             instancesInfo = instancesInfoRepository.findByDataMd5Hash(dataMd5Hash);
             if (instancesInfo == null) {
                 instancesInfo = instancesMapper.map(evaluationResultsRequest.getInstances());
+                instancesInfo.setCreatedDate(LocalDateTime.now());
                 instancesInfoRepository.save(instancesInfo);
                 log.info("New instances [{}] with md5 hash [{}] has been saved",
                         evaluationResultsRequest.getInstances().getRelationName(), dataMd5Hash);
