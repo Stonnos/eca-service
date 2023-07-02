@@ -489,8 +489,8 @@ __(int64)__
 
 
 
-|*tableName**
-|Table name
+|*relationName**
+|Relation name
 |query
 a|
 __string__
@@ -506,7 +506,7 @@ __string__
 
 
 
-*Pattern*: `^[a-z][0-9a-z_]*$`
+
 
 
 |===
@@ -559,8 +559,8 @@ a|
 [source,json]
 ----
 [ {
-  "code" : "UniqueTableName",
-  "errorMessage" : "Table with name [iris] already exists!"
+  "code" : "DuplicateInstancesName",
+  "errorMessage" : "Instances with name [iris] already exists!"
 } ]
 ----
 |===
@@ -641,8 +641,8 @@ __(binary)__
 [width=100%]
 |===
 |*Name*|*Description*|*Location*|*Schema*
-|*tableName**
-|Table name
+|*relationName**
+|Relation name
 |query
 a|
 __string__
@@ -658,7 +658,7 @@ __string__
 
 
 
-*Pattern*: `^[a-z][0-9a-z_]*$`
+
 
 
 |===
@@ -694,7 +694,7 @@ a|
   "id" : 1,
   "uuid" : "1d2de514-3a87-4620-9b97-c260e24340de",
   "sourceFileName" : "iris.xls",
-  "tableName" : "iris"
+  "relationName" : "iris"
 }
 ----
 |401
@@ -735,8 +735,8 @@ a|
 [source,json]
 ----
 [ {
-  "code" : "UniqueTableName",
-  "errorMessage" : "Table with name [iris] already exists!"
+  "code" : "DuplicateInstancesName",
+  "errorMessage" : "Instances with name [iris] already exists!"
 } ]
 ----
 |===
@@ -825,7 +825,7 @@ a|
   "content" : [ {
     "id" : 1,
     "uuid" : "1d2de514-3a87-4620-9b97-c260e24340de",
-    "tableName" : "iris",
+    "relationName" : "iris",
     "numInstances" : 150,
     "numAttributes" : 5,
     "created" : "2021-07-01 14:00:00",
@@ -1359,7 +1359,7 @@ a|
 {
   "id" : 1,
   "uuid" : "1d2de514-3a87-4620-9b97-c260e24340de",
-  "tableName" : "iris",
+  "relationName" : "iris",
   "numInstances" : 150,
   "numAttributes" : 5,
   "created" : "2021-07-01 14:00:00",
@@ -1910,8 +1910,8 @@ __string__
 
 
 
-|*tableName**
-|Database table name
+|*relationName**
+|Relation name
 a|
 __string__
 
@@ -1977,8 +1977,8 @@ __string__
 
 
 
-|*tableName*
-|Table name
+|*relationName*
+|Instances name
 a|
 __string__
 

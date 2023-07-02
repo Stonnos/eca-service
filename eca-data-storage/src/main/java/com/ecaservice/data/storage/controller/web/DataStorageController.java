@@ -309,7 +309,7 @@ public class DataStorageController {
     @PutMapping(value = "/rename")
     public void rename(@Parameter(description = "Instances id", example = "1", required = true)
                        @Min(VALUE_1) @Max(Long.MAX_VALUE) @RequestParam long id,
-                       @Parameter(description = "Table name", required = true)
+                       @Parameter(description = "Relation name", required = true)
                        @Size(min = VALUE_1, max = MAX_TABLE_NAME_LENGTH) @RequestParam String relationName) {
         storageService.renameData(id, relationName);
     }

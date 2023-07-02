@@ -573,7 +573,8 @@ a|
     "experimentType" : {
       "value" : "RANDOM_FORESTS",
       "description" : "Случайные леса"
-    }
+    },
+    "maxPctCorrect" : 99.56
   } ],
   "page" : 0,
   "totalCount" : 1
@@ -3415,7 +3416,8 @@ a|
     "experimentType" : {
       "value" : "RANDOM_FORESTS",
       "description" : "Случайные леса"
-    }
+    },
+    "maxPctCorrect" : 99.56
   },
   "evaluationResultsDto" : {
     "evaluationResultsStatus" : {
@@ -4074,7 +4076,8 @@ a|
   "experimentType" : {
     "value" : "RANDOM_FORESTS",
     "description" : "Случайные леса"
-  }
+  },
+  "maxPctCorrect" : 99.56
 }
 ----
 |401
@@ -6472,6 +6475,27 @@ a|
 
 
 
+
+
+
+
+
+
+
+
+|*maxPctCorrect*
+|The best classifier correctly classified percentage
+a|
+__number__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 100*
 
 
 
