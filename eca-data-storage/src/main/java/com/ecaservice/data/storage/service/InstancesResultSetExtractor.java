@@ -40,9 +40,9 @@ public class InstancesResultSetExtractor implements ResultSetExtractor<Instances
 
     @Override
     public Instances extractData(ResultSet resultSet) throws SQLException, DataAccessException {
-        String tableName = instancesEntity.getTableName();
         ArrayList<Attribute> attributes = createAttributes();
-        Instances instances = new Instances(tableName, attributes, instancesEntity.getNumInstances());
+        Instances instances =
+                new Instances(instancesEntity.getRelationName(), attributes, instancesEntity.getNumInstances());
         while (resultSet.next()) {
             Instance instance = new DenseInstance(instances.numAttributes());
             for (int i = 1; i <= instances.numAttributes(); i++) {

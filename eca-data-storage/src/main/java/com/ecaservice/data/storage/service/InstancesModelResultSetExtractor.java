@@ -44,7 +44,7 @@ public class InstancesModelResultSetExtractor implements ResultSetExtractor<Inst
         ArrayList<AttributeModel> attributes = createAttributes();
         InstancesModel instancesModel = new InstancesModel();
         instancesModel.setInstances(newArrayList());
-        instancesModel.setRelationName(instancesEntity.getTableName());
+        instancesModel.setRelationName(instancesEntity.getRelationName());
         instancesModel.setAttributes(attributes);
         var valueExtractor = new AttributeValueExtractor(resultSet, DateTimeFormatter.ofPattern(dateFormat));
         while (resultSet.next()) {
