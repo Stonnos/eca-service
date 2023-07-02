@@ -21,16 +21,15 @@
         </app-upload-training-data>
       </div>
       <div class="ui-g-10 mx-auto mb-5">
-        <label class="text-bold control-label">Название таблицы</label>
+        <label class="text-bold control-label">Название датасета</label>
         <input
           required
           pInputText
-          [pattern]="tableNameRegex"
           id="tableName"
           name="tableName"
           type="text"
-          placeholder="Введите название таблицы"
-          [(ngModel)]="item.tableName"
+          placeholder="Введите название датасета"
+          [(ngModel)]="item.relationName"
           #tableName="ngModel"
           [disabled]="loading"
           maxlength="30"
@@ -38,15 +37,11 @@
           class="form-control d-block w-100">
         <div class="text-danger error-message" *ngIf="tableName.invalid && (tableName.dirty || tableName.touched || submitted)">
           <div *ngIf="tableName?.errors?.required">
-            Заполните название таблицы
-          </div>
-          <div *ngIf="tableName?.errors?.pattern">
-            <span>Разрешены только цифры, символ подчеркивания и латинские символы в нижнем регистре.</span>
-            <span class="d-block">Название таблицы должно начинаться с латинской буквы в нижнем регистре</span>
+            Заполните название датасета
           </div>
         </div>
         <div class="text-danger error-message" *ngIf="hasSameTableName && submitted">
-          Таблица с таким именем уже существует в БД
+          Датасет с таким названием уже существует
         </div>
       </div>
     </div>

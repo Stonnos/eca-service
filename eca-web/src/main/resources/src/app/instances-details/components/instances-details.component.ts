@@ -159,7 +159,7 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
   }
 
   public onExportInstances(): void {
-    this.exportInstancesModel = new ExportInstancesModel(this.instancesDto.id, this.instancesDto.tableName);
+    this.exportInstancesModel = new ExportInstancesModel(this.instancesDto.id, this.instancesDto.relationName);
     this.exportInstancesDialogVisibility = true;
   }
 
@@ -172,7 +172,7 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
   }
 
   public renameInstances(): void {
-    this.createEditInstancesModel = new CreateEditInstancesModel(this.id, this.instancesDto.tableName);
+    this.createEditInstancesModel = new CreateEditInstancesModel(this.id, this.instancesDto.relationName);
     this.createEditInstancesDialogVisibility = true;
   }
 
@@ -193,7 +193,7 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
       .subscribe({
         next: () => {
           this.messageService.add({ severity: 'success',
-            summary: `Данные ${this.instancesDto.tableName} были успешно удалены`, detail: '' });
+            summary: `Данные ${this.instancesDto.relationName} были успешно удалены`, detail: '' });
           this.router.navigate(['/dashboard/instances']);
         },
         error: (error) => {

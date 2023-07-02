@@ -40,8 +40,8 @@ public class CreateInstancesResultDto {
     private String sourceFileName;
 
     /**
-     * Database table name
+     * Relation name
      */
-    @Schema(description = "Database table name", required = true, example = "iris", maxLength = MAX_LENGTH_255)
-    private String tableName;
+    @Schema(description = "Relation name", required = true, example = "iris", maxLength = MAX_LENGTH_255)
+    private String relationName;
 }

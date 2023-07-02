@@ -64,7 +64,7 @@ public class InstancesModelResultSetExtractor implements ResultSetExtractor<Inst
             instancesModel.getInstances().add(instance);
         }
         if (instancesEntity.getClassAttribute() != null) {
-            instancesModel.setClassName(instancesEntity.getClassAttribute().getColumnName());
+            instancesModel.setClassName(instancesEntity.getClassAttribute().getAttributeName());
         }
         return instancesModel;
     }
@@ -109,7 +109,7 @@ public class InstancesModelResultSetExtractor implements ResultSetExtractor<Inst
 
             AttributeModel createAttributeModel() {
                 AttributeModel attributeModel = new AttributeModel();
-                attributeModel.setName(attributeEntity.getColumnName());
+                attributeModel.setName(attributeEntity.getAttributeName());
                 return attributeModel;
             }
         });

@@ -128,7 +128,7 @@ export class UserFields {
 
 export class InstancesFields {
   public static readonly ID: string = "id";
-  public static readonly TABLE_NAME: string = "tableName";
+  public static readonly RELATION_NAME: string = "relationName";
   public static readonly NUM_INSTANCES: string = "numInstances";
   public static readonly NUM_ATTRIBUTES: string = "numAttributes";
   public static readonly CREATED: string = "created";

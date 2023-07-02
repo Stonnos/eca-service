@@ -42,7 +42,7 @@ export class InstancesService {
     });
     const formData = new FormData();
     formData.append('trainingData', file, file.name);
-    formData.append('tableName', tableName);
+    formData.append('relationName', tableName);
     return this.http.post<CreateInstancesResultDto>(this.serviceUrl + '/save', formData, { headers: headers });
   }
 
@@ -52,7 +52,7 @@ export class InstancesService {
     });
     const formData = new FormData();
     formData.append('id', id.toString());
-    formData.append('tableName', newTableName);
+    formData.append('relationName', newTableName);
     return this.http.put(this.serviceUrl + '/rename', formData, { headers: headers });
   }
 

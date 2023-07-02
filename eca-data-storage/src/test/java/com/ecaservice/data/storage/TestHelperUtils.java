@@ -83,6 +83,7 @@ public class TestHelperUtils {
         InstancesEntity instancesEntity = new InstancesEntity();
         instancesEntity.setUuid(UUID.randomUUID().toString());
         instancesEntity.setIdColumnName(ID_COLUMN_NAME);
+        instancesEntity.setRelationName(TABLE_NAME);
         instancesEntity.setTableName(TABLE_NAME);
         instancesEntity.setNumInstances(NUM_INSTANCES);
         instancesEntity.setNumAttributes(NUM_ATTRIBUTES);
@@ -113,6 +114,7 @@ public class TestHelperUtils {
     public static AttributeEntity createAttributeEntity(String columnName, int index, AttributeType attributeType) {
         var attributeEntity = new AttributeEntity();
         attributeEntity.setColumnName(columnName);
+        attributeEntity.setAttributeName(columnName);
         attributeEntity.setIndex(index);
         attributeEntity.setSelected(true);
         attributeEntity.setType(attributeType);
@@ -129,6 +131,7 @@ public class TestHelperUtils {
     public static AttributeEntity createNominalAttributeEntity(String columnName, int index) {
         var attributeEntity = new AttributeEntity();
         attributeEntity.setColumnName(columnName);
+        attributeEntity.setAttributeName(columnName);
         attributeEntity.setIndex(index);
         attributeEntity.setSelected(true);
         attributeEntity.setType(AttributeType.NOMINAL);

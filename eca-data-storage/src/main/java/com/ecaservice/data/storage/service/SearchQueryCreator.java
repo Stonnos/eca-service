@@ -37,8 +37,6 @@ public class SearchQueryCreator {
     private static final String EQUAL_OR_PART = " %s = ? or";
     private static final String DESC = "desc";
     private static final String ASC = "asc";
-    private static final String NUMERIC_TYPE = "numeric";
-    private static final String VARCHAR_TYPE = "character varying";
     private static final String COUNT_QUERY_PART = "select count(*) from %s%s";
 
     private final AttributeService attributeService;
@@ -62,11 +60,12 @@ public class SearchQueryCreator {
         var sqlPreparedQueryBuilder = SqlPreparedQuery.builder();
         StringBuilder queryString = new StringBuilder();
         if (StringUtils.isNotBlank(pageRequestDto.getSearchQuery())) {
-            appendSearchQuery(instancesEntity, pageRequestDto.getSearchQuery().toLowerCase(), sqlPreparedQueryBuilder, queryString);
+            appendSearchQuery(instancesEntity, pageRequestDto.getSearchQuery().toLowerCase(), sqlPreparedQueryBuilder,
+                    queryString);
         }
         String sqlCountQuery = String.format(COUNT_QUERY_PART, instancesEntity.getTableName(), queryString);
         if (StringUtils.isNotBlank(pageRequestDto.getSortField())) {
-            appendOrderBy(queryString, pageRequestDto);
+            appendOrderBy(instancesEntity, queryString, pageRequestDto);
         } else {
             //Sort by id column default behavior
             queryString.append(String.format(ORDER_BY_PART, instancesEntity.getIdColumnName(), ASC));
@@ -84,9 +83,18 @@ public class SearchQueryCreator {
         queryString.append(String.format(LIMIT_OFFSET_PART, pageRequestDto.getSize(), offset));
     }
 
-    private void appendOrderBy(StringBuilder queryString, PageRequestDto pageRequestDto) {
+    private void appendOrderBy(InstancesEntity instancesEntity,
+                               StringBuilder queryString,
+                               PageRequestDto pageRequestDto) {
+        var attributes = attributeService.getsAttributesInfo(instancesEntity);
+        String sortColumn = attributes.stream()
+                .filter(attributeInfo -> attributeInfo.getAttributeName().equals(pageRequestDto.getSortField()))
+                .map(AttributeInfo::getColumnName)
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException(
+                        String.format("Can't find sort column for attribute [%s]", pageRequestDto.getSortField())));
         String sortMode = pageRequestDto.isAscending() ? ASC : DESC;
-        queryString.append(String.format(ORDER_BY_PART, pageRequestDto.getSortField(), sortMode));
+        queryString.append(String.format(ORDER_BY_PART, sortColumn, sortMode));
     }
 
     private void appendSearchQuery(InstancesEntity instancesEntity,
@@ -145,6 +153,6 @@ public class SearchQueryCreator {
         }
         var attributes = attributeService.getsAttributesInfo(instancesEntity);
         return attributes.stream()
-                .anyMatch(attributeEntity -> attributeEntity.getColumnName().equals(pageRequestDto.getSortField()));
+                .anyMatch(attributeEntity -> attributeEntity.getAttributeName().equals(pageRequestDto.getSortField()));
     }
 }

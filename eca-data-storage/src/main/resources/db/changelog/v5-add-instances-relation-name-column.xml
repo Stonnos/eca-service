@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v5-add-instances-relation-name-column.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="add_instances_relation_name_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="instances"/>
+            <not>
+                <columnExists tableName="instances" columnName="relation_name"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="instances">
+            <column name="relation_name" type="varchar(255)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="instances_relation_name_unique_idx"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add_attribute_name_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="attribute"/>
+            <not>
+                <columnExists tableName="attribute" columnName="attribute_name"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="attribute">
+            <column name="attribute_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add_instances_id_attribute_name_unique_index" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="attribute"/>
+            <columnExists tableName="attribute" columnName="instances_id"/>
+            <columnExists tableName="attribute" columnName="attribute_name"/>
+        </preConditions>
+        <addUniqueConstraint tableName="attribute" columnNames="instances_id, attribute_name"
+                             constraintName="instances_id_attribute_name_unique_index"/>
+    </changeSet>
+</databaseChangeLog>

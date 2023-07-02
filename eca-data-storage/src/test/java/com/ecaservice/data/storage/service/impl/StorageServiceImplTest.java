@@ -57,16 +57,8 @@ import static org.mockito.Mockito.when;
         InstancesResultSetConverter.class, InstancesExtractor.class})
 class StorageServiceImplTest extends AbstractJpaTest {
 
-    private static final String TEST_TABLE = "test_table";
-    private static final String TEST_TABLE_2 = "test_table_2";
-    private static final String TEST_TABLE_3 = "test_table_3";
-    private static final String TEST_TABLE_4 = "test_table_4";
-    private static final String TEST_TABLE_5 = "test_table_5";
-    private static final String TEST_TABLE_6 = "test_table_6";
-    private static final String TEST_TABLE_7 = "test_table_7";
-    private static final String TEST_TABLE_8 = "test_table_8";
-    private static final String TEST_TABLE_9 = "test_table_9";
-    private static final String NEW_TABLE_NAME = "new_table_name";
+    private static final String TEST_RELATION_NAME = "test_relation_name";
+    private static final String NEW_RELATION_NAME = "new_relation_name";
     private static final long ID = 2L;
     private static final String USER_NAME = "admin";
     private static final String SEARCH_QUERY = "good";
@@ -109,26 +101,26 @@ class StorageServiceImplTest extends AbstractJpaTest {
 
     @Test
     void testSaveData() {
-        InstancesEntity expected = internalSaveData(TEST_TABLE_2);
+        InstancesEntity expected = internalSaveData(TEST_RELATION_NAME);
         InstancesEntity actual = instancesRepository.findById(expected.getId()).orElse(null);
         assertThat(actual).isNotNull();
-        assertThat(actual.getTableName()).isEqualTo(TEST_TABLE_2);
+        assertThat(actual.getRelationName()).isEqualTo(TEST_RELATION_NAME);
         assertThat(actual.getCreatedBy()).isEqualTo(USER_NAME);
         assertThat(actual.getClassAttribute()).isNotNull();
-        assertThat(actual.getClassAttribute().getColumnName()).isEqualTo(EXPECTED_CLASS_NAME);
+        assertThat(actual.getClassAttribute().getAttributeName()).isEqualTo(EXPECTED_CLASS_NAME);
     }
 
     @Test
     void testRenameData() {
-        storageService.renameData(instancesEntity.getId(), NEW_TABLE_NAME);
+        storageService.renameData(instancesEntity.getId(), NEW_RELATION_NAME);
         InstancesEntity actual = instancesRepository.findById(instancesEntity.getId()).orElse(null);
         assertThat(actual).isNotNull();
-        assertThat(actual.getTableName()).isEqualTo(NEW_TABLE_NAME);
+        assertThat(actual.getRelationName()).isEqualTo(NEW_RELATION_NAME);
     }
 
     @Test
     void testDeleteData() {
-        var instances = internalSaveData(TEST_TABLE_4);
+        var instances = internalSaveData(TEST_RELATION_NAME);
         storageService.deleteData(instances.getId());
         assertThat(instancesRepository.existsById(instances.getId())).isFalse();
         assertThat(attributeRepository.count()).isZero();
@@ -137,7 +129,7 @@ class StorageServiceImplTest extends AbstractJpaTest {
 
     @Test
     void testSetClassSuccess() {
-        var instances = internalSaveData(TEST_TABLE_5);
+        var instances = internalSaveData(TEST_RELATION_NAME);
         var classAttribute = getAttribute(instances, EXPECTED_CLASS_NAME);
         storageService.setClassAttribute(classAttribute.getId());
         InstancesEntity actual = instancesRepository.findById(instances.getId()).orElse(null);
@@ -148,7 +140,7 @@ class StorageServiceImplTest extends AbstractJpaTest {
 
     @Test
     void testSetNumericClass() {
-        var instances = internalSaveData(TEST_TABLE_6);
+        var instances = internalSaveData(TEST_RELATION_NAME);
         var classAttribute = getAttribute(instances, DURATION_ATTRIBUTE);
         assertThrows(InvalidClassAttributeTypeException.class,
                 () -> storageService.setClassAttribute(classAttribute.getId()));
@@ -194,7 +186,7 @@ class StorageServiceImplTest extends AbstractJpaTest {
 
     @Test
     void testGetTableDataWithPageParams() {
-        var savedInstances = internalSaveData(TEST_TABLE_3);
+        var savedInstances = internalSaveData(TEST_RELATION_NAME);
         var pageRequest = createPageRequestDto();
         pageRequest.setSearchQuery(SEARCH_QUERY);
         pageRequest.setSize(PAGE_SIZE);
@@ -206,7 +198,7 @@ class StorageServiceImplTest extends AbstractJpaTest {
 
     @Test
     void testGetTableFullData() {
-        var savedInstances = internalSaveData(TEST_TABLE_8);
+        var savedInstances = internalSaveData(TEST_RELATION_NAME);
         var pageRequest = createPageRequestDto();
         pageRequest.setSize(instances.numInstances());
         var instancesPage = storageService.getData(savedInstances.getId(), pageRequest);
@@ -218,27 +210,27 @@ class StorageServiceImplTest extends AbstractJpaTest {
 
     @Test
     void testGetInstances() {
-        var instancesEntity = internalSaveData(TEST_TABLE_7);
+        var instancesEntity = internalSaveData(TEST_RELATION_NAME);
         var actual = storageService.getInstances(instancesEntity);
         assertInstances(instances, actual);
     }
 
     @Test
     void testGetValidInstancesModel() {
-        var savedInstances = internalSaveData(TEST_TABLE_9);
+        var savedInstances = internalSaveData(TEST_RELATION_NAME);
         var instancesModel = storageService.getValidInstancesModel(savedInstances);
         assertInstancesModel(instances, instancesModel);
     }
 
-    private InstancesEntity internalSaveData(String tableName) {
+    private InstancesEntity internalSaveData(String relationName) {
         when(userService.getCurrentUser()).thenReturn(USER_NAME);
         instances = loadInstances();
-        return storageService.saveData(instances, tableName);
+        return storageService.saveData(instances, relationName);
     }
 
     private void createAndSaveInstancesEntity() {
         instancesEntity = createInstancesEntity();
-        instancesEntity.setTableName(TEST_TABLE);
+        instancesEntity.setTableName(TEST_RELATION_NAME);
         instancesEntity.setUuid(UUID.randomUUID().toString());
         instancesEntity.setIdColumnName(UUID.randomUUID().toString());
         instancesRepository.save(instancesEntity);
@@ -259,7 +251,7 @@ class StorageServiceImplTest extends AbstractJpaTest {
 
     private AttributeEntity getAttribute(InstancesEntity instances, String columnName) {
         return attributeRepository.findByInstancesEntityOrderByIndex(instances).stream()
-                .filter(attributeEntity -> attributeEntity.getColumnName().equals(columnName))
+                .filter(attributeEntity -> attributeEntity.getAttributeName().equals(columnName))
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException(
                         String.format("Can't find attribute [%s] for instances [%s]", columnName,

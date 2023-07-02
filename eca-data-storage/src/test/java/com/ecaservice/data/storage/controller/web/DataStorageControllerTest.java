@@ -1,7 +1,7 @@
 package com.ecaservice.data.storage.controller.web;
 
 import com.ecaservice.data.storage.entity.InstancesEntity;
-import com.ecaservice.data.storage.exception.TableExistsException;
+import com.ecaservice.data.storage.exception.InstancesExistsException;
 import com.ecaservice.data.storage.mapping.InstancesMapper;
 import com.ecaservice.data.storage.mapping.InstancesMapperImpl;
 import com.ecaservice.data.storage.model.MultipartFileResource;
@@ -86,7 +86,7 @@ class DataStorageControllerTest extends AbstractControllerTest {
 
     private static final String TRAINING_DATA_PARAM = "trainingData";
     private static final String TABLE_NAME = "table";
-    private static final String TABLE_NAME_PARAM = "tableName";
+    private static final String RELATION_NAME_PARAM = "relationName";
 
     private static final String ID_PARAM = "id";
     private static final String REPORT_TYPE_PARAM = "reportType";
@@ -119,7 +119,7 @@ class DataStorageControllerTest extends AbstractControllerTest {
     void testSaveInstancesUnauthorized() throws Exception {
         mockMvc.perform(multipart(SAVE_URL)
                 .file(trainingData)
-                .param(TABLE_NAME_PARAM, TABLE_NAME))
+                .param(RELATION_NAME_PARAM, TABLE_NAME))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -133,13 +133,13 @@ class DataStorageControllerTest extends AbstractControllerTest {
         CreateInstancesResultDto expected = CreateInstancesResultDto.builder()
                 .id(instancesEntity.getId())
                 .uuid(instancesEntity.getUuid())
-                .tableName(instancesEntity.getTableName())
+                .relationName(instancesEntity.getRelationName())
                 .sourceFileName(trainingData.getOriginalFilename())
                 .build();
         mockMvc.perform(multipart(SAVE_URL)
                 .file(trainingData)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .param(TABLE_NAME_PARAM, TABLE_NAME))
+                .param(RELATION_NAME_PARAM, TABLE_NAME))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(expected)));
@@ -150,11 +150,11 @@ class DataStorageControllerTest extends AbstractControllerTest {
         Instances instances = loadInstances();
         when(instancesLoader.load(any(MultipartFileResource.class))).thenReturn(instances);
         when(storageService.saveData(any(Instances.class), anyString())).thenThrow(
-                new TableExistsException(TABLE_NAME));
+                new InstancesExistsException(TABLE_NAME));
         mockMvc.perform(multipart(SAVE_URL)
                 .file(trainingData)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .param(TABLE_NAME_PARAM, TABLE_NAME))
+                .param(RELATION_NAME_PARAM, TABLE_NAME))
                 .andExpect(status().isBadRequest());
     }
 
@@ -162,7 +162,7 @@ class DataStorageControllerTest extends AbstractControllerTest {
     void testRenameDataUnauthorized() throws Exception {
         mockMvc.perform(put(RENAME_URL)
                 .param(ID_PARAM, String.valueOf(ID))
-                .param(TABLE_NAME_PARAM, TABLE_NAME)).andExpect(status().isUnauthorized());
+                .param(RELATION_NAME_PARAM, TABLE_NAME)).andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -170,16 +170,16 @@ class DataStorageControllerTest extends AbstractControllerTest {
         mockMvc.perform(put(RENAME_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(ID_PARAM, String.valueOf(ID))
-                .param(TABLE_NAME_PARAM, TABLE_NAME)).andExpect(status().isOk());
+                .param(RELATION_NAME_PARAM, TABLE_NAME)).andExpect(status().isOk());
     }
 
     @Test
     void testRenameDataWithExistingTableName() throws Exception {
-        doThrow(new TableExistsException(TABLE_NAME)).when(storageService).renameData(ID, TABLE_NAME);
+        doThrow(new InstancesExistsException(TABLE_NAME)).when(storageService).renameData(ID, TABLE_NAME);
         mockMvc.perform(put(RENAME_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(ID_PARAM, String.valueOf(ID))
-                .param(TABLE_NAME_PARAM, TABLE_NAME)).andExpect(status().isBadRequest());
+                .param(RELATION_NAME_PARAM, TABLE_NAME)).andExpect(status().isBadRequest());
     }
 
     @Test

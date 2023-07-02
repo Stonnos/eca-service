@@ -49,7 +49,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.List;
 
@@ -69,8 +68,6 @@ import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 @RequestMapping("/instances")
 @RequiredArgsConstructor
 public class DataStorageController {
-
-    private static final String TABLE_NAME_REGEX = "^[a-z][0-9a-z_]*$";
     private static final int MAX_TABLE_NAME_LENGTH = 30;
 
     private final StorageService storageService;
@@ -149,7 +146,7 @@ public class DataStorageController {
      * Saves instances into database.
      *
      * @param trainingData - training data file with format, such as csv, xls, xlsx, arff, json, docx, data, txt
-     * @param tableName    - table name
+     * @param relationName - relation name
      * @return create instances results dto
      */
     @PreAuthorize("#oauth2.hasScope('web')")
@@ -186,8 +183,8 @@ public class DataStorageController {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
                                             @ExampleObject(
-                                                    name = "UniqueTableNameErrorCodeResponse",
-                                                    ref = "#/components/examples/UniqueTableNameErrorCodeResponse"
+                                                    name = "DuplicateInstancesNameErrorCodeResponse",
+                                                    ref = "#/components/examples/DuplicateInstancesNameErrorCodeResponse"
                                             ),
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
@@ -198,19 +195,18 @@ public class DataStorageController {
     @PostMapping(value = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public CreateInstancesResultDto saveInstances(
             @Parameter(description = "Training data file", required = true) @RequestParam MultipartFile trainingData,
-            @Parameter(description = "Table name", required = true)
-            @Pattern(regexp = TABLE_NAME_REGEX)
-            @Size(min = VALUE_1, max = MAX_TABLE_NAME_LENGTH) @RequestParam String tableName) {
-        log.info("Received request for saving instances '{}' into table [{}]",
-                trainingData.getOriginalFilename(), tableName);
+            @Parameter(description = "Relation name", required = true)
+            @Size(min = VALUE_1, max = MAX_TABLE_NAME_LENGTH) @RequestParam String relationName) {
+        log.info("Received request for saving instances file [{}] with relation name [{}]",
+                trainingData.getOriginalFilename(), relationName);
         MultipartFileResource multipartFileResource = new MultipartFileResource(trainingData);
         Instances instances = instancesLoader.load(multipartFileResource);
-        InstancesEntity instancesEntity = storageService.saveData(instances, tableName);
+        InstancesEntity instancesEntity = storageService.saveData(instances, relationName);
         return CreateInstancesResultDto.builder()
                 .id(instancesEntity.getId())
                 .uuid(instancesEntity.getUuid())
                 .sourceFileName(trainingData.getOriginalFilename())
-                .tableName(instancesEntity.getTableName())
+                .relationName(instancesEntity.getRelationName())
                 .build();
     }
 
@@ -275,8 +271,8 @@ public class DataStorageController {
     /**
      * Renames data with specified id.
      *
-     * @param id        - instances id
-     * @param tableName - new table name
+     * @param id           - instances id
+     * @param relationName - new relation name
      */
     @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
@@ -301,8 +297,8 @@ public class DataStorageController {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
                                             @ExampleObject(
-                                                    name = "UniqueTableNameErrorCodeResponse",
-                                                    ref = "#/components/examples/UniqueTableNameErrorCodeResponse"
+                                                    name = "DuplicateInstancesNameErrorCodeResponse",
+                                                    ref = "#/components/examples/DuplicateInstancesNameErrorCodeResponse"
                                             ),
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
@@ -314,9 +310,8 @@ public class DataStorageController {
     public void rename(@Parameter(description = "Instances id", example = "1", required = true)
                        @Min(VALUE_1) @Max(Long.MAX_VALUE) @RequestParam long id,
                        @Parameter(description = "Table name", required = true)
-                       @Pattern(regexp = TABLE_NAME_REGEX)
-                       @Size(min = VALUE_1, max = MAX_TABLE_NAME_LENGTH) @RequestParam String tableName) {
-        storageService.renameData(id, tableName);
+                       @Size(min = VALUE_1, max = MAX_TABLE_NAME_LENGTH) @RequestParam String relationName) {
+        storageService.renameData(id, relationName);
     }
 
     /**

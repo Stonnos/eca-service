@@ -32,7 +32,7 @@ class AttributeMapperTest {
         attributeEntity.setId(ID);
         var attributeDto = attributeMapper.map(attributeEntity);
         assertThat(attributeDto).isNotNull();
-        assertThat(attributeDto.getName()).isEqualTo(attributeEntity.getColumnName());
+        assertThat(attributeDto.getName()).isEqualTo(attributeEntity.getAttributeName());
         assertThat(attributeDto.getIndex()).isEqualTo(attributeEntity.getIndex());
         assertThat(attributeDto.isSelected()).isEqualTo(attributeEntity.isSelected());
         assertThat(attributeDto.getType().getValue()).isEqualTo(attributeEntity.getType().name());

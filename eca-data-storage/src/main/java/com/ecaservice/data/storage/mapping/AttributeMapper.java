@@ -26,7 +26,7 @@ public interface AttributeMapper {
      * @param attributeEntity - attribute entity
      * @return attribute dto
      */
-    @Mapping(source = "columnName", target = "name")
+    @Mapping(source = "attributeName", target = "name")
     @Mapping(target = "type", ignore = true)
     AttributeDto map(AttributeEntity attributeEntity);
 
