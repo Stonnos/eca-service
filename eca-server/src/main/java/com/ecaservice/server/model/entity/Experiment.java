@@ -11,7 +11,11 @@ import javax.persistence.Enumerated;
 import javax.persistence.Index;
 import javax.persistence.Table;
 
+import java.math.BigDecimal;
+
 import static com.ecaservice.server.util.FieldConstraints.EXPERIMENT_DOWNLOAD_URL_MAX_LENGTH;
+import static com.ecaservice.server.util.FieldConstraints.PRECISION;
+import static com.ecaservice.server.util.FieldConstraints.SCALE;
 
 /**
  * Experiment persistence entity.
@@ -83,4 +87,10 @@ public class Experiment extends AbstractEvaluationEntity {
      */
     @Column(name = "correlation_id")
     private String correlationId;
+
+    /**
+     * The best classifier correctly classified percentage
+     */
+    @Column(name = "max_pct_correct", precision = PRECISION, scale = SCALE)
+    private BigDecimal maxPctCorrect;
 }

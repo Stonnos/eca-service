@@ -73,7 +73,8 @@
     "experimentType": {
       "value": "RANDOM_FORESTS",
       "description": "Случайные леса"
-    }
+    },
+    "maxPctCorrect": 99.56
   },
   "evaluationResultsDto": {
     "evaluationResultsStatus": {

@@ -105,7 +105,7 @@ export class EvaluationLogDetailsComponent implements OnInit, FieldLink {
       { name: EvaluationLogFields.NUM_CLASSES, label: "Число классов:" },
       { name: EvaluationLogFields.CLASS_NAME, label: "Атрибут класса:" },
       { name: EvaluationLogFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности:" },
-      { name: EvaluationLogFields.PCT_CORRECT, label: "Точность классификатора:" },
+      { name: EvaluationLogFields.PCT_CORRECT, label: "Точность классификатора, %:" },
       { name: EvaluationLogFields.EVALUATION_TOTAL_TIME, label: "Время построения модели:" },
       { name: EvaluationLogFields.CREATION_DATE, label: "Дата создания заявки:" },
       { name: EvaluationLogFields.START_DATE, label: "Дата начала построения модели:" },

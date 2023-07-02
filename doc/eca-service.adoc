@@ -272,7 +272,7 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |error_message              |text             |-|-|-                                    |Текст ошибки
 |model_path                 |varchar(255)     |-|-|-                                    |Путь к объекту в S3 с моделью классификатора
 |deleted_date               |timestamp        |-|-|-                                    |Дата удаления модели классификатора
-|pct_correct                |numeric(19,4)    |-|-|-                                         |Точность классификатора
+|pct_correct                |numeric(19,4)    |-|-|-                                    |Точность классификатора
 |===
 
 ==== Таблица 3.{counter:db-table-id} - 'experiment' - содержит данные о заявках на построение экспрериментов
@@ -302,6 +302,7 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |correlation_id               |varchar(255)     |-|-|-                                 |Значение для корреляции запрос/ответ
 |instances_info_id            |bigint           |-|+|+                                 |Внешний ключ, ID обучающей выборки
 |created_by                   |varchar(255)     |-|-|-                                 |Пользователь, создавший заявку через WEB
+|max_pct_correct              |numeric(19,4)    |-|-|-                                 |Точность наилучшего классификатора из истории эксперимента
 |===
 
 ==== Таблица 3.{counter:db-table-id} - 'experiment_progress' - содержит данные о статусах построения экспериментов
