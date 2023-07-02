@@ -67,7 +67,7 @@ public class StorageServiceImpl implements StorageService {
     );
 
     private static final String ID_COLUMN_NAME_FORMAT = "id_%s";
-    private static final String TABLE_NAME_FORMAT = "instances_%s";
+    private static final String TABLE_NAME_FORMAT = "data_set_%s";
 
     private final InstancesService instancesService;
     private final AttributeService attributeService;
