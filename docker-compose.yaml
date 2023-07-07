@@ -192,9 +192,9 @@ services:
       - eca-server
       - discovery-server
 
-  zuul-gate:
-    image: zuul-gate
-    container_name: zuul-gate
+  api-gateway:
+    image: api-gateway
+    container_name: api-gateway
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"

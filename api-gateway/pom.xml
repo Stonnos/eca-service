@@ -9,11 +9,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>zuul-gate</artifactId>
+    <artifactId>api-gateway</artifactId>
     <packaging>jar</packaging>
 
     <properties>
-        <spring.cloud.zuul.version>2.2.10.RELEASE</spring.cloud.zuul.version>
         <sonar.coverage.exclusions>**/*.*</sonar.coverage.exclusions>
     </properties>
 
@@ -25,22 +24,6 @@
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
 
-       <!-- <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-tomcat</artifactId>
-            <scope>provided</scope>
-        </dependency>-->
-
-       <!-- <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-netflix-zuul</artifactId>
-            <version>${spring.cloud.zuul.version}</version>
-        </dependency>-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-gateway</artifactId>
@@ -65,12 +48,6 @@
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
         </dependency>
-
-       <!-- <dependency>
-            <groupId>eca.service</groupId>
-            <artifactId>common-web</artifactId>
-            <version>${project.version}</version>
-        </dependency>-->
 
     </dependencies>
 

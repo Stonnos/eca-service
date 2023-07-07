@@ -1,10 +1,11 @@
 spring:
   application:
-    name: zuul-gate
+    name: api-gateway
   cloud:
     gateway:
       discovery:
         locator:
+          ## Enables eureka discovery integration
           enabled: true
       routes:
         - id: eca-server

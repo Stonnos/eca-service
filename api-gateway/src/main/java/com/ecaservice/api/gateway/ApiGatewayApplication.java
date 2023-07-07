@@ -1,20 +1,17 @@
-package com.ecaservice.zuul;
+package com.ecaservice.api.gateway;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 
 /**
- * Main class for Zuul Gate application.
+ * Main class for application.
  *
  * @author Roman Batygin
  */
 @SpringBootApplication
-//@EnableZuulProxy
 @EnableEurekaClient
-public class ZuulGateApplication {
+public class ApiGatewayApplication {
 
     /**
      * Runs application.
@@ -22,6 +19,6 @@ public class ZuulGateApplication {
      * @param args command line arguments
      */
     public static void main(String[] args) {
-        SpringApplication.run(ZuulGateApplication.class, args);
+        SpringApplication.run(ApiGatewayApplication.class, args);
     }
 }

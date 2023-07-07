@@ -48,7 +48,7 @@
         <module>eca-audit-log</module>
         <module>eca-external-api</module>
         <module>eca-web</module>
-        <module>zuul-gate</module>
+        <module>api-gateway</module>
         <module>discovery-server</module>
         <module>eca-load-tests</module>
         <module>eca-external-api-tests</module>

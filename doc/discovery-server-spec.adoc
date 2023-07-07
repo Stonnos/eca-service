@@ -74,8 +74,8 @@ curl -X GET "http://eca-service:8761/api/prometheus/sd-configs"
             "5760a5ab801b:8030"
         ],
         "labels": {
-            "__meta_discovery_app_name": "zuul-gate",
-            "__meta_discovery_app_instance_name": "zuul-gate-1",
+            "__meta_discovery_app_name": "api-gateway",
+            "__meta_discovery_app_instance_name": "api-gateway-1",
             "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
             "__meta_discovery_app_instance_status": "UP",
             "__meta_discovery_app_instance_last_updated_date": "2022-12-16 13:17:02"
