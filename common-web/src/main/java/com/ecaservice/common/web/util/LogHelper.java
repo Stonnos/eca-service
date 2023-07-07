@@ -1,6 +1,6 @@
 package com.ecaservice.common.web.util;
 
-import brave.propagation.ExtraFieldPropagation;
+import brave.baggage.BaggageField;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
@@ -32,7 +32,10 @@ public class LogHelper {
     public static void putMdc(String key, String value) {
         if (!StringUtils.isEmpty(key) && !StringUtils.isEmpty(value)) {
             MDC.put(key, value);
-            ExtraFieldPropagation.set(key, value);
+            BaggageField field = BaggageField.getByName(key);
+            if (field != null) {
+                field.updateValue(value);
+            }
         }
     }
 
