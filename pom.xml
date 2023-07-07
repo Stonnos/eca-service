@@ -106,6 +106,7 @@
         <micrometer-registry-prometheus.version>1.9.12</micrometer-registry-prometheus.version>
         <hibernate-validator.version>6.2.5.Final</hibernate-validator.version>
         <commons.csv.version>1.10.0</commons.csv.version>
+        <jedis-client.version>3.8.0</jedis-client.version>
     </properties>
 
     <dependencyManagement>
@@ -176,6 +177,11 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-csv</artifactId>
                 <version>${commons.csv.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>redis.clients</groupId>
+                <artifactId>jedis</artifactId>
+                <version>${jedis-client.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

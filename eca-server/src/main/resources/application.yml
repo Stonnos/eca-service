@@ -23,6 +23,8 @@ spring:
     change-log: classpath:db/liquibase-changelog.xml
   cache:
     type: caffeine
+  redis:
+    client-type: jedis
   rabbitmq:
     listener:
       simple:
