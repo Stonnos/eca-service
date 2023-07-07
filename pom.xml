@@ -103,7 +103,7 @@
         <janino.version>3.1.7</janino.version>
         <jacoco-plugin.version>0.8.10</jacoco-plugin.version>
         <jacoco.minCoverage>0.0</jacoco.minCoverage>
-        <micrometer-registry-prometheus.version>1.11.1</micrometer-registry-prometheus.version>
+        <micrometer-registry-prometheus.version>1.9.12</micrometer-registry-prometheus.version>
         <hibernate-validator.version>6.2.5.Final</hibernate-validator.version>
         <commons.csv.version>1.10.0</commons.csv.version>
     </properties>
