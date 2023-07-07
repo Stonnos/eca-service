@@ -20,10 +20,9 @@ spring:
     contexts: schema,data
     change-log: classpath:db/liquibase-changelog.xml
   sleuth:
-    log:
-      slf4j:
-        whitelisted-mdc-keys: tx.id
-    propagation-keys: tx.id
+    baggage:
+      correlation-fields: tx.id
+      remote-fields: tx.id
   cache:
     cache-names: attributes
     caffeine:

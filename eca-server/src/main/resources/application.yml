@@ -36,10 +36,9 @@ spring:
       repositories:
         enabled: false
   sleuth:
-    log:
-      slf4j:
-        whitelisted-mdc-keys: tx.id, ev.requestId
-    propagation-keys: tx.id, ev.requestId
+    baggage:
+      correlation-fields: tx.id, ev.requestId
+      remote-fields: tx.id, ev.requestId
 
 eureka:
   client:
