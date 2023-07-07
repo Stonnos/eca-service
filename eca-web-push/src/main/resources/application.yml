@@ -1,12 +1,6 @@
 spring:
   application:
     name: eca-web-push
-  jmx:
-    default-domain: eca-web-push
-  cloud:
-    loadbalancer:
-      ribbon:
-        enabled: false
   ## Datasource properties
   datasource:
     driver-class-name: org.postgresql.Driver
@@ -27,11 +21,11 @@ spring:
   liquibase:
     contexts: schema,data
     change-log: classpath:db/liquibase-changelog.xml
-  sleuth:
-    log:
-      slf4j:
-        whitelisted-mdc-keys: tx.id
-    propagation-keys: tx.id
+  #sleuth:
+  #  log:
+  #    slf4j:
+  #      whitelisted-mdc-keys: tx.id
+  #  propagation-keys: tx.id
 
 eureka:
   client:

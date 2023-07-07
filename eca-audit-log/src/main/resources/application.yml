@@ -1,12 +1,6 @@
 spring:
   application:
     name: eca-audit-log
-  jmx:
-    default-domain: eca-audit-log
-  cloud:
-    loadbalancer:
-      ribbon:
-        enabled: false
   ## Datasource properties
   datasource:
     driver-class-name: org.postgresql.Driver
@@ -36,9 +30,6 @@ eureka:
   client:
     registerWithEureka: false
     fetchRegistry: false
-
-ribbon:
-  ReadTimeout: 60000
 
 ## Swagger properties
 open-api:

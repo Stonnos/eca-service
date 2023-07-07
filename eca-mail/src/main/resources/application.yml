@@ -1,12 +1,6 @@
 spring:
   application:
     name: eca-mail
-  jmx:
-    default-domain: eca-mail
-  cloud:
-    loadbalancer:
-      ribbon:
-        enabled: false
   ## Email properties
   mail:
     host: smtp.gmail.com
@@ -36,19 +30,16 @@ spring:
   liquibase:
     contexts: schema,data
     change-log: classpath:db/liquibase-changelog.xml
-  sleuth:
-    log:
-      slf4j:
-        whitelisted-mdc-keys: tx.id
-    propagation-keys: tx.id
+  #sleuth:
+  #  log:
+  #    slf4j:
+  #      whitelisted-mdc-keys: tx.id
+  #  propagation-keys: tx.id
 
 eureka:
   client:
     registerWithEureka: false
     fetchRegistry: false
-
-ribbon:
-  ReadTimeout: 60000
 
 ## Swagger properties
 open-api:

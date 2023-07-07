@@ -11,9 +11,9 @@
 
 Необходимый софт
 ----------------------------------------
-* Openjdk 1.11
-* maven => 3.3.9
-* Rabbit MQ => 3
+* Openjdk 11
+* maven => 3.9.2
+* Rabbit MQ => 3.8.14
 * eca-core 6.9.4
 * Postgres Database для хранения информации 13.9
 

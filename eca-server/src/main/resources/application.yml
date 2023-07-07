@@ -1,12 +1,6 @@
 spring:
   application:
     name: eca-server
-  jmx:
-    default-domain: eca-server
-  cloud:
-    loadbalancer:
-      ribbon:
-        enabled: false
   ## Eca datasource properties
   datasource:
     driver-class-name: org.postgresql.Driver
@@ -41,18 +35,16 @@ spring:
     redis:
       repositories:
         enabled: false
-  sleuth:
-    log:
-      slf4j:
-        whitelisted-mdc-keys: tx.id, ev.requestId
-    propagation-keys: tx.id, ev.requestId
+  #sleuth:
+  #  log:
+  #    slf4j:
+  #      whitelisted-mdc-keys: tx.id, ev.requestId
+  #  propagation-keys: tx.id, ev.requestId
+
 eureka:
   client:
     registerWithEureka: false
     fetchRegistry: false
-
-ribbon:
-  ReadTimeout: 60000
 
 ## Application properties
 app:

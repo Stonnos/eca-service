@@ -1,8 +1,6 @@
 spring:
   application:
     name: eca-auto-tests
-  jmx:
-    default-domain: eca-auto-tests
   ## Auto tests datasource properties
   datasource:
     driver-class-name: org.postgresql.Driver

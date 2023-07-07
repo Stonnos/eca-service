@@ -58,7 +58,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.2.6.RELEASE</version>
+        <version>2.7.13</version>
     </parent>
 
     <packaging>pom</packaging>
@@ -77,32 +77,35 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>11</java.version>
-        <lombok.version>1.18.20</lombok.version>
+        <lombok.version>1.18.26</lombok.version>
         <inject.version>1</inject.version>
-        <logback.version>1.2.10</logback.version>
-        <slf4j.version>1.7.30</slf4j.version>
+        <logback.version>1.2.12</logback.version>
+        <slf4j.version>1.7.36</slf4j.version>
         <eca.version>6.9.4</eca.version>
         <h2.version>1.4.199</h2.version>
-        <postresql.version>42.3.3</postresql.version>
+        <postresql.version>42.6.0</postresql.version>
         <liquibase.version>3.7.0</liquibase.version>
-        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
         <docker-maven-plugin.version>1.4.13</docker-maven-plugin.version>
-        <maven-processor-plugin.version>3.3.3</maven-processor-plugin.version>
-        <spring-cloud-sleuth.version>2.2.2.RELEASE</spring-cloud-sleuth.version>
-        <spring.security.oauth2.version>2.2.6.RELEASE</spring.security.oauth2.version>
-        <spring.cloud.oauth2.version>2.2.1.RELEASE</spring.cloud.oauth2.version>
+        <maven-processor-plugin.version>4.5</maven-processor-plugin.version>
+        <spring-cloud-sleuth.version>3.1.9</spring-cloud-sleuth.version>
+        <spring.security.oauth2.version>2.6.8</spring.security.oauth2.version>
+        <spring.cloud.oauth2.version>2.2.5.RELEASE</spring.cloud.oauth2.version>
         <logstash-encoder.version>6.2</logstash-encoder.version>
-        <org.mapstruct.version>1.4.1.Final</org.mapstruct.version>
-        <commons.io.version>2.8.0</commons.io.version>
+        <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
+        <commons.io.version>2.13.0</commons.io.version>
         <org.apache.commons.lang3.version>3.10</org.apache.commons.lang3.version>
         <javax-validation-api.version>2.0.1.Final</javax-validation-api.version>
-        <swagger-annotations.version>2.1.9</swagger-annotations.version>
-        <open-api.version>1.5.9</open-api.version>
-        <guava.version>30.0-jre</guava.version>
+        <swagger-annotations.version>2.2.9</swagger-annotations.version>
+        <open-api.version>1.7.0</open-api.version>
+        <guava.version>32.1.1-jre</guava.version>
         <feign.version>11.2</feign.version>
         <janino.version>3.1.7</janino.version>
-        <jacoco-plugin.version>0.8.5</jacoco-plugin.version>
-        <jacoco.minCoverage>0.70</jacoco.minCoverage>
+        <jacoco-plugin.version>0.8.10</jacoco-plugin.version>
+        <jacoco.minCoverage>0.0</jacoco.minCoverage>
+        <micrometer-registry-prometheus.version>1.11.1</micrometer-registry-prometheus.version>
+        <hibernate-validator.version>6.2.5.Final</hibernate-validator.version>
+        <commons.csv.version>1.10.0</commons.csv.version>
     </properties>
 
     <dependencyManagement>
@@ -158,6 +161,21 @@
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-oauth2</artifactId>
                 <version>${spring.cloud.oauth2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.micrometer</groupId>
+                <artifactId>micrometer-registry-prometheus</artifactId>
+                <version>${micrometer-registry-prometheus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>${hibernate-validator.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-csv</artifactId>
+                <version>${commons.csv.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -5,7 +5,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
-import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 
 /**
  * Main class for Zuul Gate application.
@@ -13,9 +12,9 @@ import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
  * @author Roman Batygin
  */
 @SpringBootApplication
-@EnableZuulProxy
+//@EnableZuulProxy
 @EnableEurekaClient
-public class ZuulGateApplication extends SpringBootServletInitializer {
+public class ZuulGateApplication {
 
     /**
      * Runs application.
@@ -24,10 +23,5 @@ public class ZuulGateApplication extends SpringBootServletInitializer {
      */
     public static void main(String[] args) {
         SpringApplication.run(ZuulGateApplication.class, args);
-    }
-
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-        return builder.sources(ZuulGateApplication.class);
     }
 }
