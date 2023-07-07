@@ -57,6 +57,6 @@
    
 2. Запустить проект с помощью команды:
 
-    java -jar /target/eca-web-push.war
+    java -jar /target/eca-web-push.jar
 
    

@@ -62,7 +62,7 @@ ECA external API
     
 2. Запустить проект с помощью команды:
 
-    java -jar /target/eca-external-api.war
+    java -jar /target/eca-external-api.jar
          
 3. Страница с документацией swagger находится по адресу http://[host]:[port]/eca-external-api/swagger-ui.html, где host и port
 соответственно адрес машины и порт на котором развернуто приложение.

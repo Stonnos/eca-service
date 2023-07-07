@@ -45,7 +45,7 @@
     
 2. Запустить проект с помощью команды:
 
-    java -jar /target/eca-audit-log.war
+    java -jar /target/eca-audit-log.jar
 
 Страница с документацией swagger находится по адресу http://[host]:[port]/eca-audit-log/swagger-ui.html, где host и port
 соответственно адрес машины и порт на котором развернуто приложение.

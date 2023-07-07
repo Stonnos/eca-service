@@ -28,4 +28,4 @@
     
 2. Запустить проект с помощью команды:
 
-    java -jar /target/zuul-gate.war
+    java -jar /target/zuul-gate.jar

@@ -101,7 +101,7 @@ ECA server
     
 2. Запустить проект с помощью команды:
 
-    java -jar /target/eca-server.war
+    java -jar /target/eca-server.jar
 
     С помощью следующих настроек можно отключить все внешние интеграции:
     

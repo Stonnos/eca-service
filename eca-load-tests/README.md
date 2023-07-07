@@ -55,7 +55,7 @@
 
 2. Запустить проект с помощью команды:
 
-    java -jar /target/eca-load-tests.war
+    java -jar /target/eca-load-tests.jar
          
 3. Страница с документацией swagger находится по адресу http://[host]:[port]/ eca-load-tests/swagger-ui.html, где host и port
 соответственно адрес машины и порт на котором развернуто приложение.

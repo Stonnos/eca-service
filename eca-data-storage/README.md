@@ -51,7 +51,7 @@
     
 2. Запустить проект с помощью команды:
 
-    java -jar /target/eca-data-storage.war
+    java -jar /target/eca-data-storage.jar
 
 Страница с документацией swagger находится по адресу http://[host]:[port]/eca-data-storage/swagger-ui.html, где host и port
 соответственно адрес машины и порт на котором развернуто приложение.

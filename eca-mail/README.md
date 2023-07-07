@@ -46,6 +46,6 @@
    
 2. Запустить проект с помощью команды:
 
-    java -jar /target/eca-mail.war
+    java -jar /target/eca-mail.jar
 
    

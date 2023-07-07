@@ -25,4 +25,4 @@
     
 2. Запустить проект с помощью команды:
 
-    java -jar /target/discovery-server.war
+    java -jar /target/discovery-server.jar
