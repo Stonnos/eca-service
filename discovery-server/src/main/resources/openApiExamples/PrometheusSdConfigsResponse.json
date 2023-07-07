@@ -25,7 +25,7 @@
   },
   {
     "targets": [
-      "329a34741260:8099"
+      "329a34741260:8080"
     ],
     "labels": {
       "__meta_discovery_app_name": "eca-web-push",

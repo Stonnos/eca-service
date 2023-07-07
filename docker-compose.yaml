@@ -210,11 +210,8 @@ services:
     image: eca-web-push
     container_name: eca-web-push
     restart: always
-    ports:
-      - "8099:8099"
     environment:
       TZ: ${TIME_ZONE}
-      SERVER_PORT: "8099"
       SPRING_PROFILES_ACTIVE: "docker"
       JAVA_OPTS: "-Xmx512m"
       OPENAPI_BASEPATH: "/eca-web-push"
