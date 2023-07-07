@@ -17,14 +17,6 @@ spring:
       ddl-auto: update
     database-platform: org.hibernate.dialect.H2Dialect
 
-security:
-  oauth2:
-    client:
-      clientId: external-api
-      clientSecret: external_api_secret
-      accessTokenUri: http://localhost:8080/eca-oauth/oauth/token
-      grant-type: client_credentials
-
 external-api-tests:
   url: http://localhost:8080
   evaluationTestDataPath: classpath*:evaluation-requests/**/*.json
@@ -34,6 +26,10 @@ external-api-tests:
   pageSize: 25
   delaySeconds: 2
   expectedExperimentNumModels: 5
+  auth:
+    clientId: external-api
+    clientSecret: external_api_secret
+    tokenUrl: http://localhost:8080/eca-oauth/oauth/token
 
 process:
   ids:

@@ -1,8 +1,10 @@
 package com.ecaservice.external.api.test.config.oauth2;
 
+import com.ecaservice.external.api.test.config.ExternalApiTestsConfig;
 import feign.RequestInterceptor;
 import feign.codec.Encoder;
 import feign.form.spring.SpringFormEncoder;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.cloud.openfeign.support.SpringEncoder;
@@ -16,18 +18,19 @@ import org.springframework.security.oauth2.client.token.grant.client.ClientCrede
  *
  * @author Roman Batygin
  */
+@Slf4j
 @Configuration
 public class FeignClientConfiguration {
 
     /**
      * Creates oauth2 request interceptor.
      *
-     * @param clientCredentialsResourceDetails - client credentials resource details
+     * @param externalApiTestsConfig - external api confog
      * @return request interceptor bean
      */
     @Bean
-    public RequestInterceptor oauth2FeignRequestInterceptor(
-            ClientCredentialsResourceDetails clientCredentialsResourceDetails) {
+    public RequestInterceptor oauth2FeignRequestInterceptor(ExternalApiTestsConfig externalApiTestsConfig) {
+        var clientCredentialsResourceDetails = createClientCredentialsResourceDetails(externalApiTestsConfig.getAuth());
         return new BearerTokenRequestInterceptor(new DefaultOAuth2ClientContext(), clientCredentialsResourceDetails);
     }
 
@@ -40,5 +43,15 @@ public class FeignClientConfiguration {
     @Bean
     public Encoder feignFormEncoder(ObjectFactory<HttpMessageConverters> messageConverters) {
         return new SpringFormEncoder(new SpringEncoder(messageConverters));
+    }
+
+    public ClientCredentialsResourceDetails createClientCredentialsResourceDetails(
+            ExternalApiTestsConfig.AuthProperties authProperties) {
+        var clientCredentialsResourceDetails = new ClientCredentialsResourceDetails();
+        clientCredentialsResourceDetails.setAccessTokenUri(authProperties.getTokenUrl());
+        clientCredentialsResourceDetails.setClientId(authProperties.getClientId());
+        clientCredentialsResourceDetails.setClientSecret(authProperties.getClientSecret());
+        log.info("Client credentials details has been configured");
+        return clientCredentialsResourceDetails;
     }
 }
