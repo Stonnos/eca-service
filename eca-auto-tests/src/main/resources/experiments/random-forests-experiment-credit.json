@@ -1,5 +1,5 @@
 {
   "experimentType": "RANDOM_FORESTS",
-  "trainDataPath": "classpath:/data/glass.arff",
+  "trainDataPath": "classpath:/data/credit.json",
   "evaluationMethod": "CROSS_VALIDATION"
 }

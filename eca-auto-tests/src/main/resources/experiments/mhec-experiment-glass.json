@@ -1,5 +1,5 @@
 {
   "experimentType": "MODIFIED_HETEROGENEOUS_ENSEMBLE",
-  "trainDataPath": "classpath:/data/glass.arff",
+  "trainDataPath": "classpath:/data/glass.json",
   "evaluationMethod": "CROSS_VALIDATION"
 }
