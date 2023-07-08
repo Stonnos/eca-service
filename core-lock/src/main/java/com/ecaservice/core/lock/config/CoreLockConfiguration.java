@@ -2,6 +2,7 @@ package com.ecaservice.core.lock.config;
 
 import com.ecaservice.core.lock.fallback.DefaultFallbackHandler;
 import com.ecaservice.core.lock.fallback.FallbackHandler;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,7 @@ import org.springframework.integration.support.locks.DefaultLockRegistry;
  */
 @Configuration
 @ComponentScan({"com.ecaservice.core.lock"})
+@ConditionalOnProperty(value = "lock.enabled", havingValue = "true")
 public class CoreLockConfiguration {
 
     /**
