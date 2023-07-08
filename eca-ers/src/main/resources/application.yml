@@ -33,8 +33,8 @@ eureka:
     registerWithEureka: false
     fetchRegistry: false
 
-ribbon:
-  ReadTimeout: 60000
+lock:
+  enabled: true
 
 ## Swagger properties
 open-api:

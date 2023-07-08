@@ -1,12 +1,12 @@
 package com.ecaservice.mail.service;
 
-import com.ecaservice.common.web.crypto.EncryptorBase64AdapterService;
+import com.ecaservice.core.lock.annotation.EnableLocks;
+import com.ecaservice.core.lock.metrics.LockMeterService;
 import com.ecaservice.mail.AbstractJpaTest;
 import com.ecaservice.mail.TestHelperUtils;
 import com.ecaservice.mail.config.EncryptorConfiguration;
 import com.ecaservice.mail.config.MailConfig;
 import com.ecaservice.mail.exception.DuplicateRequestIdException;
-import com.ecaservice.mail.mapping.EmailRequestMapper;
 import com.ecaservice.mail.mapping.EmailRequestMapperImpl;
 import com.ecaservice.mail.model.Email;
 import com.ecaservice.mail.model.TemplateEntity;
@@ -16,7 +16,8 @@ import com.ecaservice.mail.service.template.TemplateProcessorService;
 import com.ecaservice.notification.dto.EmailRequest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 
 import javax.inject.Inject;
@@ -36,26 +37,24 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({EmailRequestMapperImpl.class, EncryptorConfiguration.class, MailConfig.class})
+@EnableAspectJAutoProxy
+@EnableLocks
+@Import({EmailRequestMapperImpl.class, EncryptorConfiguration.class, MailConfig.class, EmailService.class})
 class EmailServiceTest extends AbstractJpaTest {
 
     private static final String EMAIL_MESSAGE = "message";
-    private static final String SENDER_MAIL = "sender@mail.ru";
     private static final int NUM_THREADS = 2;
 
-    @Mock
-    private MailConfig mailConfig;
-    @Mock
+    @MockBean
     private TemplateProcessorService templateProcessorService;
-    @Mock
+    @MockBean
     private TemplateRepository templateRepository;
+    @MockBean
+    private LockMeterService lockMeterService;
     @Inject
     private EmailRepository emailRepository;
-    @Inject
-    private EmailRequestMapper emailRequestMapper;
-    @Inject
-    private EncryptorBase64AdapterService encryptorBase64AdapterService;
 
+    @Inject
     private EmailService emailService;
 
     private EmailRequest emailRequest;
@@ -63,8 +62,6 @@ class EmailServiceTest extends AbstractJpaTest {
 
     @Override
     public void init() {
-        emailService = new EmailService(mailConfig, emailRequestMapper, templateProcessorService,
-                encryptorBase64AdapterService, emailRepository, templateRepository);
         prepareTestEmailRequest();
     }
 
@@ -114,7 +111,6 @@ class EmailServiceTest extends AbstractJpaTest {
     private void prepareTestEmailRequest() {
         emailRequest = TestHelperUtils.createEmailRequest();
         templateEntity = createTemplateEntity();
-        when(mailConfig.getSender()).thenReturn(SENDER_MAIL);
         when(templateRepository.findByCode(templateEntity.getCode())).thenReturn(Optional.of(templateEntity));
         when(templateProcessorService.process(templateEntity.getCode(), emailRequest.getVariables()))
                 .thenReturn(EMAIL_MESSAGE);

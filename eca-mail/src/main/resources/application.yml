@@ -40,6 +40,9 @@ eureka:
     registerWithEureka: false
     fetchRegistry: false
 
+lock:
+  enabled: true
+
 ## Swagger properties
 open-api:
   basePath: /
