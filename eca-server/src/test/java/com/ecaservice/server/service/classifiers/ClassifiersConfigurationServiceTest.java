@@ -50,7 +50,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({ClassifiersConfigurationService.class, ClassifiersConfigurationMapperImpl.class, AppProperties.class,
+@Import({ClassifiersConfigurationServiceImpl.class, ClassifiersConfigurationMapperImpl.class, AppProperties.class,
         DateTimeConverter.class, ClassifierOptionsDatabaseModelMapperImpl.class,
         ClassifiersConfigurationHistoryService.class, ClassifiersConfigurationHistoryMapperImpl.class})
 class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
