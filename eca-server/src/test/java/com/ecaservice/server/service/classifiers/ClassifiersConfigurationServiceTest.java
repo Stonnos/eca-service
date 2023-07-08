@@ -3,7 +3,8 @@ package com.ecaservice.server.service.classifiers;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.common.web.exception.InvalidOperationException;
 import com.ecaservice.core.filter.service.FilterService;
-import com.ecaservice.server.report.model.ClassifiersConfigurationBean;
+import com.ecaservice.core.lock.config.CoreLockAutoConfiguration;
+import com.ecaservice.core.lock.metrics.LockMeterService;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.mapping.ClassifierOptionsDatabaseModelMapperImpl;
@@ -13,6 +14,7 @@ import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.model.entity.ClassifiersConfiguration;
 import com.ecaservice.server.model.entity.ClassifiersConfigurationActionType;
 import com.ecaservice.server.model.entity.FilterTemplateType;
+import com.ecaservice.server.report.model.ClassifiersConfigurationBean;
 import com.ecaservice.server.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.server.repository.ClassifiersConfigurationHistoryRepository;
 import com.ecaservice.server.repository.ClassifiersConfigurationRepository;
@@ -27,6 +29,7 @@ import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.UpdateClassifiersConfigurationDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 
 import javax.inject.Inject;
@@ -35,10 +38,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static com.ecaservice.server.model.entity.BaseEntity_.CREATION_DATE;
+import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyMap;
@@ -50,11 +58,14 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
+@EnableAspectJAutoProxy
 @Import({ClassifiersConfigurationServiceImpl.class, ClassifiersConfigurationMapperImpl.class, AppProperties.class,
         DateTimeConverter.class, ClassifierOptionsDatabaseModelMapperImpl.class,
+        ConcurrentClassifiersConfigurationService.class, CoreLockAutoConfiguration.class,
         ClassifiersConfigurationHistoryService.class, ClassifiersConfigurationHistoryMapperImpl.class})
 class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
 
+    private static final int NUM_THREADS = 4;
     private static final String TEST_CONFIG = "test_config";
     private static final String TEST_CONFIGURATION_NAME = "TestConfiguration";
     private static final String TEST_CONFIGURATION_UPDATED_NAME = "UpdatedTestName";
@@ -77,6 +88,8 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
     private FilterService filterService;
     @MockBean
     private UserService userService;
+    @MockBean
+    private LockMeterService lockMeterService;
     @MockBean
     private ClassifiersTemplateProvider classifiersTemplateProvider;
     @MockBean
@@ -198,6 +211,31 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
         assertThat(actualNotActive.isActive()).isFalse();
         verifyClassifiersConfigurationHistory(actualActive, ClassifiersConfigurationActionType.SET_ACTIVE);
         verifyClassifiersConfigurationHistory(lastActive, ClassifiersConfigurationActionType.DEACTIVATE);
+    }
+
+    @Test
+    void testConcurrentSetActiveConfiguration() throws InterruptedException {
+        saveConfiguration(true, false);
+        List<ClassifiersConfiguration> newActiveConfigurations = newArrayList();
+        IntStream.range(0, NUM_THREADS).forEach(i -> newActiveConfigurations.add(saveConfiguration(false, false)));
+        final CountDownLatch countDownLatch = new CountDownLatch(NUM_THREADS);
+        ExecutorService executorService = Executors.newFixedThreadPool(NUM_THREADS);
+        for (int i = 0; i < NUM_THREADS; i++) {
+            var newActive = newActiveConfigurations.get(i);
+            executorService.submit(() -> {
+                try {
+                    classifiersConfigurationService.setActive(newActive.getId());
+                } finally {
+                    countDownLatch.countDown();
+                }
+            });
+        }
+        countDownLatch.await();
+        executorService.shutdownNow();
+        long countActive = classifiersConfigurationRepository.findAll().stream()
+                .filter(ClassifiersConfiguration::isActive)
+                .count();
+        assertThat(countActive).isOne();
     }
 
     @Test
