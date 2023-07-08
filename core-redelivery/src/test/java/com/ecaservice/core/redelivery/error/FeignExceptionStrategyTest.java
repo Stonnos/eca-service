@@ -35,7 +35,7 @@ class FeignExceptionStrategyTest {
     @Test
     void testServiceUnavailableException() {
         boolean result = feignExceptionStrategy.notFatal(
-                new FeignException.ServiceUnavailable(MESSAGE, request, null));
+                new FeignException.ServiceUnavailable(MESSAGE, request, null, null));
         assertThat(result).isTrue();
     }
 
@@ -49,7 +49,7 @@ class FeignExceptionStrategyTest {
     @Test
     void testRuntimeException() {
         boolean result = feignExceptionStrategy.notFatal(
-                new FeignException.BadRequest(MESSAGE, request, null));
+                new FeignException.BadRequest(MESSAGE, request, null, null));
         assertThat(result).isFalse();
     }
 }
