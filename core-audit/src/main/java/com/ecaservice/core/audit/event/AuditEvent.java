@@ -58,4 +58,16 @@ public class AuditEvent extends ApplicationEvent {
         this.initiator = initiator;
         this.auditContextParams = auditContextParams;
     }
+
+    /**
+     * Create a new {@code AbstractNotificationEvent}.
+     *
+     * @param source             the object on which the event initially occurred or with
+     *                           which the event is associated (never {@code null})
+     * @param auditCode          - audit code
+     * @param initiator          - event initiator
+     */
+    public AuditEvent(Object source, String auditCode, String initiator) {
+        this(source, auditCode, EventType.SUCCESS, null, initiator, null);
+    }
 }

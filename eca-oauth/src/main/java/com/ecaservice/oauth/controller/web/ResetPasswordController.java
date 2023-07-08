@@ -1,6 +1,8 @@
 package com.ecaservice.oauth.controller.web;
 
+import com.ecaservice.audit.dto.EventType;
 import com.ecaservice.common.error.model.ValidationErrorDto;
+import com.ecaservice.core.audit.event.AuditEvent;
 import com.ecaservice.oauth.dto.CreateResetPasswordRequest;
 import com.ecaservice.oauth.dto.ResetPasswordRequest;
 import com.ecaservice.oauth.event.model.PasswordResetNotificationEvent;
@@ -30,6 +32,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
+import static com.ecaservice.oauth.config.audit.AuditCodes.CREATE_RESET_PASSWORD_REQUEST;
+import static com.ecaservice.oauth.config.audit.AuditCodes.RESET_PASSWORD;
 import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
@@ -89,6 +93,8 @@ public class ResetPasswordController {
         var tokenModel = resetPasswordService.createResetPasswordRequest(createResetPasswordRequest);
         log.info("Reset password request [{}] has been created for user [{}]", tokenModel.getTokenId(),
                 tokenModel.getLogin());
+        applicationEventPublisher.publishEvent(
+                new AuditEvent(this, CREATE_RESET_PASSWORD_REQUEST, tokenModel.getLogin()));
         applicationEventPublisher.publishEvent(new ResetPasswordRequestNotificationEvent(this, tokenModel));
     }
 
@@ -158,6 +164,8 @@ public class ResetPasswordController {
     public void resetPassword(@Valid @RequestBody ResetPasswordRequest resetPasswordRequest) {
         log.info("Received reset password request");
         var resetPasswordRequestEntity = resetPasswordService.resetPassword(resetPasswordRequest);
+        applicationEventPublisher.publishEvent(
+                new AuditEvent(this, RESET_PASSWORD, resetPasswordRequestEntity.getUserEntity().getLogin()));
         applicationEventPublisher.publishEvent(
                 new PasswordResetNotificationEvent(this, resetPasswordRequestEntity.getUserEntity()));
     }

@@ -1,6 +1,5 @@
 package com.ecaservice.oauth.service;
 
-import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.oauth.config.AppProperties;
 import com.ecaservice.oauth.dto.CreateResetPasswordRequest;
 import com.ecaservice.oauth.dto.ResetPasswordRequest;
@@ -23,8 +22,6 @@ import java.time.LocalDateTime;
 
 import static com.ecaservice.common.web.util.MaskUtils.mask;
 import static com.ecaservice.common.web.util.RandomUtils.generateToken;
-import static com.ecaservice.oauth.config.audit.AuditCodes.CREATE_RESET_PASSWORD_REQUEST;
-import static com.ecaservice.oauth.config.audit.AuditCodes.RESET_PASSWORD;
 import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 
 /**
@@ -49,7 +46,6 @@ public class ResetPasswordService {
      * @param createResetPasswordRequest - reset password request data
      * @return reset password request token
      */
-    @Audit(value = CREATE_RESET_PASSWORD_REQUEST, initiatorKey = "#result.login")
     public TokenModel createResetPasswordRequest(CreateResetPasswordRequest createResetPasswordRequest) {
         UserEntity userEntity = userEntityRepository.findByEmail(createResetPasswordRequest.getEmail())
                 .orElseThrow(() -> new IllegalStateException(
@@ -84,7 +80,6 @@ public class ResetPasswordService {
      *
      * @param resetPasswordRequest - reset password request
      */
-    @Audit(value = RESET_PASSWORD, initiatorKey = "#result.userEntity.login")
     @Transactional
     public ResetPasswordRequestEntity resetPassword(ResetPasswordRequest resetPasswordRequest) {
         log.info("Starting to reset password for token [{}]", mask(resetPasswordRequest.getToken()));
