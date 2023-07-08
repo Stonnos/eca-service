@@ -23,7 +23,7 @@ import static com.ecaservice.core.lock.redis.config.RedisLockAutoConfiguration.R
  */
 @Slf4j
 @Primary
-@Service("classifiersConfigurationServiceImpl")
+@Service
 public class ConcurrentClassifiersConfigurationService implements ClassifiersConfigurationService {
 
     private final ClassifiersConfigurationService classifiersConfigurationService;
