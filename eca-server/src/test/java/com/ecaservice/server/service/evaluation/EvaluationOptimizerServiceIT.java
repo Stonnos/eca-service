@@ -40,7 +40,6 @@ import com.ecaservice.server.service.ers.ErsRequestService;
 import com.ecaservice.server.service.evaluation.initializers.ClassifierInitializerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.ensemble.forests.DecisionTreeType;
-import io.micrometer.core.instrument.MeterRegistry;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -77,7 +76,7 @@ import static org.mockito.Mockito.when;
         EvaluationRequestMapperImpl.class, ClassifierOptionsRequestMapperImpl.class, ClassifiersProperties.class,
         ErsConfig.class, EvaluationLogMapperImpl.class, LockExecutionAspect.class, ErsErrorHandler.class,
         EvaluationService.class, ErsResponseStatusMapperImpl.class, OptimalClassifierOptionsFetcherImpl.class,
-        InstancesInfoMapperImpl.class, ErsRequestService.class, InstancesInfoService.class, LockMeterService.class,
+        InstancesInfoMapperImpl.class, ErsRequestService.class, InstancesInfoService.class,
         EvaluationOptimizerService.class, ClassifierInfoMapperImpl.class, RedisAutoConfiguration.class,
         OptimalClassifierOptionsCacheService.class, DateTimeConverter.class, RedisLockAutoConfiguration.class})
 class EvaluationOptimizerServiceIT extends AbstractJpaTest {
@@ -88,7 +87,7 @@ class EvaluationOptimizerServiceIT extends AbstractJpaTest {
     @MockBean
     private ErsClient ersClient;
     @MockBean
-    private MeterRegistry meterRegistry;
+    private LockMeterService lockMeterService;
     @MockBean
     private ObjectStorageService objectStorageService;
     @MockBean
@@ -110,7 +109,7 @@ class EvaluationOptimizerServiceIT extends AbstractJpaTest {
     @Inject
     private EvaluationOptimizerService evaluationOptimizerService;
 
-    private InstancesRequestDataModel instancesRequestDataModel;
+    private Instances data;
 
     private String decisionTreeOptions;
 
@@ -129,8 +128,7 @@ class EvaluationOptimizerServiceIT extends AbstractJpaTest {
 
     @Override
     public void init() throws Exception {
-        Instances data = TestHelperUtils.loadInstances();
-        instancesRequestDataModel = new InstancesRequestDataModel(UUID.randomUUID().toString(), md5Hash(data), data);
+        data = TestHelperUtils.loadInstances();
         DecisionTreeOptions treeOptions = TestHelperUtils.createDecisionTreeOptions();
         treeOptions.setDecisionTreeType(DecisionTreeType.CART);
         decisionTreeOptions = objectMapper.writeValueAsString(treeOptions);
@@ -154,6 +152,7 @@ class EvaluationOptimizerServiceIT extends AbstractJpaTest {
         for (int i = 0; i < NUM_THREADS; i++) {
             executorService.submit(() -> {
                 try {
+                    var instancesRequestDataModel = new InstancesRequestDataModel(UUID.randomUUID().toString(), md5Hash(data), data);
                     evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequestDataModel);
                 } finally {
                     finishedLatch.countDown();
