@@ -1,5 +1,7 @@
 package com.ecaservice.data.storage.service;
 
+import com.ecaservice.core.lock.annotation.EnableLocks;
+import com.ecaservice.core.lock.metrics.LockMeterService;
 import com.ecaservice.data.storage.AbstractJpaTest;
 import com.ecaservice.data.storage.config.StorageTestConfiguration;
 import com.ecaservice.data.storage.entity.InstancesEntity;
@@ -11,6 +13,7 @@ import com.ecaservice.data.storage.repository.InstancesRepository;
 import com.ecaservice.data.storage.service.impl.StorageServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.oauth2.common.util.RandomValueStringGenerator;
 import weka.core.Instances;
@@ -33,8 +36,10 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
+@EnableAspectJAutoProxy
+@EnableLocks
 @Import({StorageServiceImpl.class, InstancesService.class, InstancesBatchService.class,
-        RandomValueStringGenerator.class, StorageTestConfiguration.class,
+        RandomValueStringGenerator.class, StorageTestConfiguration.class, ConcurrentStorageService.class,
         AttributeService.class, AttributeMapperImpl.class, InstancesTransformer.class})
 class ConcurrentStorageServiceTest extends AbstractJpaTest {
 
@@ -43,9 +48,6 @@ class ConcurrentStorageServiceTest extends AbstractJpaTest {
     private static final String NEW_RELATION_NAME = "new_relation_name";
     private static final String TEST_RELATION_NAME_2 = "test_relation_name_2";
     private static final String USER_NAME = "admin";
-
-    @Inject
-    private StorageServiceImpl storageService;
 
     @Inject
     private InstancesRepository instancesRepository;
@@ -57,14 +59,12 @@ class ConcurrentStorageServiceTest extends AbstractJpaTest {
     @MockBean
     private UserService userService;
     @MockBean
+    private LockMeterService lockMeterService;
+    @MockBean
     private SearchQueryCreator searchQueryCreator;
 
-    private ConcurrentStorageService concurrentStorageService;
-
-    @Override
-    public void init() {
-        concurrentStorageService = new ConcurrentStorageService(storageService);
-    }
+    @Inject
+    private StorageService storageService;
 
     @Override
     public void deleteAll() {
@@ -84,7 +84,7 @@ class ConcurrentStorageServiceTest extends AbstractJpaTest {
         for (int i = 0; i < NUM_THREADS; i++) {
             executorService.submit(() -> {
                 try {
-                    concurrentStorageService.saveData(instances, TABLE_NAME);
+                    storageService.saveData(instances, TABLE_NAME);
                 } catch (InstancesExistsException ex) {
                     tableExistsErrors.incrementAndGet();
                 } finally {
@@ -118,7 +118,7 @@ class ConcurrentStorageServiceTest extends AbstractJpaTest {
                             AtomicInteger tableExistsErrors, CountDownLatch countDownLatch) {
         executorService.submit(() -> {
             try {
-                concurrentStorageService.renameData(instancesEntity.getId(), NEW_RELATION_NAME);
+                storageService.renameData(instancesEntity.getId(), NEW_RELATION_NAME);
             } catch (InstancesExistsException ex) {
                 tableExistsErrors.incrementAndGet();
             } finally {

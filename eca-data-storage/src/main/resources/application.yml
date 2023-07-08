@@ -36,6 +36,9 @@ eureka:
     registerWithEureka: false
     fetchRegistry: false
 
+lock:
+  enabled: true
+
 eca-ds:
   dateFormat: yyyy-MM-dd HH:mm:ss
   batchSize: 100
