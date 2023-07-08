@@ -4,7 +4,6 @@ import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.common.web.exception.InvalidOperationException;
 import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.core.filter.service.FilterService;
-import com.ecaservice.core.lock.annotation.Locked;
 import com.ecaservice.server.filter.ClassifiersConfigurationFilter;
 import com.ecaservice.server.mapping.ClassifierOptionsDatabaseModelMapper;
 import com.ecaservice.server.mapping.ClassifiersConfigurationMapper;
@@ -37,11 +36,11 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
-import static com.ecaservice.core.lock.redis.config.RedisLockAutoConfiguration.REDIS_LOCK_REGISTRY;
 import static com.ecaservice.server.config.audit.AuditCodes.ADD_CONFIGURATION;
 import static com.ecaservice.server.config.audit.AuditCodes.COPY_CONFIGURATION;
 import static com.ecaservice.server.config.audit.AuditCodes.DELETE_CONFIGURATION;
 import static com.ecaservice.server.config.audit.AuditCodes.RENAME_CONFIGURATION;
+import static com.ecaservice.server.config.audit.AuditCodes.SET_ACTIVE_CONFIGURATION;
 import static com.ecaservice.server.model.entity.BaseEntity_.CREATION_DATE;
 
 /**
@@ -154,7 +153,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
      * @param id - configuration id
      * @return active classifiers configuration entity
      */
-    @Locked(lockName = "setActiveClassifiersConfiguration", lockRegistry = REDIS_LOCK_REGISTRY)
+    @Audit(value = SET_ACTIVE_CONFIGURATION, correlationIdKey = "#id")
     @Transactional
     public ClassifiersConfiguration setActive(long id) {
         log.info("Request to set classifiers configuration [{}] as active", id);

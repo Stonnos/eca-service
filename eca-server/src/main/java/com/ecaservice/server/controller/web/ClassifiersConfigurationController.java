@@ -2,6 +2,7 @@ package com.ecaservice.server.controller.web;
 
 import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.core.audit.annotation.Audit;
+import com.ecaservice.core.lock.annotation.Locked;
 import com.ecaservice.server.event.model.push.RenameClassifiersConfigurationPushEvent;
 import com.ecaservice.server.event.model.push.SetActiveClassifiersConfigurationPushEvent;
 import com.ecaservice.server.mapping.ClassifiersConfigurationMapper;
@@ -51,6 +52,7 @@ import java.io.IOException;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
+import static com.ecaservice.core.lock.redis.config.RedisLockAutoConfiguration.REDIS_LOCK_REGISTRY;
 import static com.ecaservice.server.config.audit.AuditCodes.GENERATE_CONFIGURATION_REPORT;
 import static com.ecaservice.server.config.audit.AuditCodes.SET_ACTIVE_CONFIGURATION;
 import static com.ecaservice.server.report.ReportTemplates.CLASSIFIERS_CONFIGURATION_TEMPLATE;
@@ -427,7 +429,7 @@ public class ClassifiersConfigurationController {
      *
      * @param id - configuration id
      */
-    @Audit(value = SET_ACTIVE_CONFIGURATION, correlationIdKey = "#id")
+    @Locked(lockName = "setActiveClassifiersConfiguration", lockRegistry = REDIS_LOCK_REGISTRY)
     @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
             description = "Sets classifiers configuration as active",
