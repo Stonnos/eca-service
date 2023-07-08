@@ -12,7 +12,7 @@ public class TestCounterService {
 
     private static final long DELAY = 200L;
 
-    private Map<String, Integer> counters = newHashMap();
+    private final Map<String, Integer> counters = newHashMap();
 
     @Locked(lockName = "counter", key = "#key")
     public void incrementBy(String key, int value) {

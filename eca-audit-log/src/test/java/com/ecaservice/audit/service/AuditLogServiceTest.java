@@ -7,7 +7,7 @@ import com.ecaservice.audit.mapping.AuditLogMapperImpl;
 import com.ecaservice.audit.repository.AuditLogRepository;
 import com.ecaservice.core.filter.exception.FieldNotFoundException;
 import com.ecaservice.core.filter.service.FilterService;
-import com.ecaservice.core.lock.annotation.EnableLocks;
+import com.ecaservice.core.lock.config.CoreLockAutoConfiguration;
 import com.ecaservice.core.lock.metrics.LockMeterService;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
@@ -44,8 +44,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @EnableAspectJAutoProxy
-@EnableLocks
-@Import({AuditLogMapperImpl.class, AuditLogService.class})
+@Import({AuditLogMapperImpl.class, AuditLogService.class, CoreLockAutoConfiguration.class})
 class AuditLogServiceTest extends AbstractJpaTest {
 
     private static final int PAGE_NUMBER = 0;

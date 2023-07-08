@@ -1,6 +1,6 @@
 package com.ecaservice.data.storage.service;
 
-import com.ecaservice.core.lock.annotation.EnableLocks;
+import com.ecaservice.core.lock.config.CoreLockAutoConfiguration;
 import com.ecaservice.core.lock.metrics.LockMeterService;
 import com.ecaservice.data.storage.AbstractJpaTest;
 import com.ecaservice.data.storage.config.StorageTestConfiguration;
@@ -37,10 +37,10 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @EnableAspectJAutoProxy
-@EnableLocks
 @Import({StorageServiceImpl.class, InstancesService.class, InstancesBatchService.class,
         RandomValueStringGenerator.class, StorageTestConfiguration.class, ConcurrentStorageService.class,
-        AttributeService.class, AttributeMapperImpl.class, InstancesTransformer.class})
+        AttributeService.class, AttributeMapperImpl.class, InstancesTransformer.class,
+        CoreLockAutoConfiguration.class})
 class ConcurrentStorageServiceTest extends AbstractJpaTest {
 
     private static final int NUM_THREADS = 2;

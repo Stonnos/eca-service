@@ -1,0 +1,67 @@
+= Библиотека core-lock
+:toc:
+:toc-title: Оглавление
+
+== Введение
+
+Библиотека реализует функционал для работы с распределенными блокировками.
+
+== 1. Базовые настройки библиотеки
+
+Для начала, необходимо добавить зависимость в pom.xml
+
+[source,xml]
+----
+<dependency>
+    <groupId>eca.service</groupId>
+    <artifactId>core-lock</artifactId>
+    <version>${project.version}</version>
+</dependency>
+----
+
+В файле application.yml добавить настройки библиотеки
+
+[source,yml]
+----
+lock:
+  ## Вкл./выкл. распределенных блокировок.
+  enabled: true
+  ## Использовать простые reentrant locks
+  registryType: IN_MEMORY
+----
+
+== 2. Настройка использования блокировок для кластерной среды на примере redis
+
+В pom.xml также необходимо добавить зависимости для интеграции с redis
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.springframework.integration</groupId>
+    <artifactId>spring-integration-redis</artifactId>
+</dependency>
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-redis</artifactId>
+</dependency>
+----
+
+В файле application.yml добавить следующие настройки
+
+[source,yml]
+----
+spring:
+  redis:
+    host: localhost
+    port: 6379
+lock:
+  ## Вкл./выкл. распределенных блокировок.
+  enabled: true
+  registryType: REDIS
+  redis:
+    registryKey: your-registry-key
+    ## Время действия блокировки в милисекундах.
+    expireAfter: 60000
+----
+

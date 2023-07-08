@@ -80,15 +80,16 @@ ECA server
    * baseUrl - базовый url eca-oauth
    * clientId - идентификатор клиента
    * clientSecret - пароль клиента
-11) lock.enabled - вкл./выкл. использование блокировок
-12) redis-lock - настройки блокировок с использованием redis
-   * registryKey - ключ реестра
-   * expireAfter - время жизни блокировки
-13) audit.enabled - вкл./выкл. отправки событий аудита
-14) rabbit.enabled - вкл./выкл. подключения к очередям rabbit MQ
-15) mail.client - настройки библиотеки отправки email сообщений
-16) redelivery.enabled - вкл./выкл. библиотеки redelivery 
-17) logging.mode - режим логирования
+11) lock.enabled - настройки блокировок
+   * lock.enabled - вкл./выкл. использование блокировок
+   * lock.registryType - тип блокировок REDIS, IN_MEMORY
+   * lock.redis.registryKey - ключ реестра для Redis
+   * lock.redis.expireAfter - время жизни блокировки для Redis
+12) audit.enabled - вкл./выкл. отправки событий аудита
+13) rabbit.enabled - вкл./выкл. подключения к очередям rabbit MQ
+14) mail.client - настройки библиотеки отправки email сообщений
+15) redelivery.enabled - вкл./выкл. библиотеки redelivery 
+16) logging.mode - режим логирования
    * text - текстовый формат
    * json - логи в формате json
 

@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
-import static com.ecaservice.core.lock.redis.config.RedisLockAutoConfiguration.REDIS_LOCK_REGISTRY;
 import static com.ecaservice.server.model.entity.InstancesInfo_.CREATED_DATE;
 
 /**
@@ -48,7 +47,7 @@ public class InstancesInfoService {
      * @param data        - instances object
      * @return instances info
      */
-    @Locked(lockName = "getOrSaveInstancesInfo", key = "#dataMd5Hash", lockRegistry = REDIS_LOCK_REGISTRY)
+    @Locked(lockName = "getOrSaveInstancesInfo", key = "#dataMd5Hash")
     public InstancesInfo getOrSaveInstancesInfo(String dataMd5Hash, Instances data) {
         log.info("Gets instances info [{}] with md5 hash [{}]", data.relationName(), dataMd5Hash);
         var instancesInfo = instancesInfoRepository.findByDataMd5Hash(dataMd5Hash);

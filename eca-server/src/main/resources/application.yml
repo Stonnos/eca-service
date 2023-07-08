@@ -153,10 +153,6 @@ auth-server:
   clientId: eca_service_tech
   clientSecret: 02#eca_service_tech6
 
-redis-lock:
-  expireAfter: 60000
-  registryKey: eca-server-lock
-
 management:
   metrics:
     tags:

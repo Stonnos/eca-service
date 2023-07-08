@@ -116,25 +116,12 @@ lock:
   ## Используется для scheduler повторной отправки событий аудита.
   ## Необходимо использовать в случае, если запущено несколько инстансов приложения, во избежании data race
   enabled: true
+  registryType: REDIS
+  redis:
+    registryKey: your-registry-key
+    ## Время действия блокировки в милисекундах.
+    expireAfter: 60000
 ----
-
-Добавить конфигурацию бина redeliveryLockRegistry для управления блокировками
-
-[source,java]
-----
-// Подключить библиотеку блокировок
-@EnableLocks
-@Configuration
-public class AuditLockConfiguration {
-
-    @Bean(name = "redeliveryLockRegistry")
-    public LockRegistry redisLockRegistry(RedisConnectionFactory redisConnectionFactory) {
-        return new RedisLockRegistry(redisConnectionFactory, "yourRegistryKey");
-    }
-}
-----
-
-Примечание: Также можно использовать любую другу реализацию LockRegistry от spring integration.
 
 == 4. Описание таблиц для хранения шаблонов аудита
 

@@ -5,8 +5,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import static com.ecaservice.core.lock.config.CoreLockConfiguration.DEFAULT_FALLBACK_HANDLER;
-import static com.ecaservice.core.lock.config.CoreLockConfiguration.DEFAULT_LOCK_REGISTRY;
+import static com.ecaservice.core.lock.config.CoreLockAutoConfiguration.DEFAULT_FALLBACK_HANDLER;
+import static com.ecaservice.core.lock.config.CoreLockAutoConfiguration.LOCK_REGISTRY;
 
 /**
  * Annotated method must be locked.
@@ -34,7 +34,7 @@ public @interface Locked {
      *
      * @return lock registry bean name
      */
-    String lockRegistry() default DEFAULT_LOCK_REGISTRY;
+    String lockRegistry() default LOCK_REGISTRY;
 
     /**
      * Waits for lock? If the value is true then the thread waits for the monitor to become free.

@@ -1,6 +1,6 @@
 package com.ecaservice.ers.service;
 
-import com.ecaservice.core.lock.annotation.EnableLocks;
+import com.ecaservice.core.lock.config.CoreLockAutoConfiguration;
 import com.ecaservice.core.lock.metrics.LockMeterService;
 import com.ecaservice.ers.AbstractJpaTest;
 import com.ecaservice.ers.dto.EvaluationMethod;
@@ -45,12 +45,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * @author Roman Batygin
  */
 @EnableAspectJAutoProxy
-@EnableLocks
 @Import({EvaluationResultsMapperImpl.class, ClassificationCostsReportMapperImpl.class,
         ConfusionMatrixMapperImpl.class, StatisticsReportMapperImpl.class, InstancesMapperImpl.class,
         RocCurveReportMapperImpl.class, InstancesService.class,
         EvaluationResultsService.class, ClassifierReportMapperImpl.class,
-        ClassifierOptionsInfoMapperImpl.class})
+        ClassifierOptionsInfoMapperImpl.class, CoreLockAutoConfiguration.class})
 class EvaluationResultsServiceTest extends AbstractJpaTest {
 
     private static final int NUM_THREADS = 2;

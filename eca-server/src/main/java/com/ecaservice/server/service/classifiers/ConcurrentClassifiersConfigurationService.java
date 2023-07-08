@@ -14,8 +14,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import static com.ecaservice.core.lock.redis.config.RedisLockAutoConfiguration.REDIS_LOCK_REGISTRY;
-
 /**
  * Classifiers configuration service.
  *
@@ -64,7 +62,7 @@ public class ConcurrentClassifiersConfigurationService implements ClassifiersCon
     }
 
     @Override
-    @Locked(lockName = "setActiveClassifiersConfiguration", lockRegistry = REDIS_LOCK_REGISTRY)
+    @Locked(lockName = "setActiveClassifiersConfiguration")
     public ClassifiersConfiguration setActive(long id) {
         return classifiersConfigurationService.setActive(id);
     }

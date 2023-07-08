@@ -22,7 +22,6 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
-import static com.ecaservice.core.lock.redis.config.RedisLockAutoConfiguration.REDIS_LOCK_REGISTRY;
 import static com.ecaservice.server.util.Utils.createClassifierOptionsRequestEntity;
 import static com.ecaservice.server.util.Utils.getFirstResponseModel;
 
@@ -72,8 +71,7 @@ public class OptimalClassifierOptionsCacheService implements OptimalClassifierOp
      * @return classifier options result
      */
     @Override
-    @Locked(lockName = "getOptimalClassifierOptions", key = "#instancesRequestDataModel.dataMd5Hash",
-            lockRegistry = REDIS_LOCK_REGISTRY)
+    @Locked(lockName = "getOptimalClassifierOptions", key = "#instancesRequestDataModel.dataMd5Hash")
     public ClassifierOptionsResult getOptimalClassifierOptions(InstancesRequestDataModel instancesRequestDataModel) {
         String dataMd5Hash = instancesRequestDataModel.getDataMd5Hash();
         log.info("Starting to get optimal classifiers options from cache for data md5 hash: {}, options req id [{}]",

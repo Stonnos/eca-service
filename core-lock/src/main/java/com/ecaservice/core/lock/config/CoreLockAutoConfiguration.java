@@ -3,10 +3,10 @@ package com.ecaservice.core.lock.config;
 import com.ecaservice.core.lock.fallback.DefaultFallbackHandler;
 import com.ecaservice.core.lock.fallback.FallbackHandler;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.integration.support.locks.DefaultLockRegistry;
 
 /**
  * Core lock configuration.
@@ -14,9 +14,10 @@ import org.springframework.integration.support.locks.DefaultLockRegistry;
  * @author Roman Batygin
  */
 @Configuration
+@EnableConfigurationProperties(LockProperties.class)
 @ComponentScan({"com.ecaservice.core.lock"})
 @ConditionalOnProperty(value = "lock.enabled", havingValue = "true")
-public class CoreLockConfiguration {
+public class CoreLockAutoConfiguration {
 
     /**
      * Default fallback handler bean
@@ -24,9 +25,9 @@ public class CoreLockConfiguration {
     public static final String DEFAULT_FALLBACK_HANDLER = "defaultFallbackHandler";
 
     /**
-     * Default lock registry bean
+     * Lock registry bean
      */
-    public static final String DEFAULT_LOCK_REGISTRY = "defaultLockRegistry";
+    public static final String LOCK_REGISTRY = "lockRegistry";
 
     /**
      * Creates default fallback handler bean.
@@ -36,15 +37,5 @@ public class CoreLockConfiguration {
     @Bean(DEFAULT_FALLBACK_HANDLER)
     public FallbackHandler fallbackHandler() {
         return new DefaultFallbackHandler();
-    }
-
-    /**
-     * Creates default lock registry bean.
-     *
-     * @return default lock registry bean
-     */
-    @Bean(DEFAULT_LOCK_REGISTRY)
-    public DefaultLockRegistry lockRegistry() {
-        return new DefaultLockRegistry();
     }
 }

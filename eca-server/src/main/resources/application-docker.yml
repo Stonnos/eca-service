@@ -45,9 +45,10 @@ auth-server:
 
 lock:
   enabled: true
-
-redis-lock:
-  registryKey: eca-server
+  registryType: REDIS
+  redis:
+    expireAfter: 60000
+    registryKey: eca-server-lock
 
 rabbit:
   enabled: true

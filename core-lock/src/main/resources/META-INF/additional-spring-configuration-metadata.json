@@ -1,9 +1,0 @@
-{
-  "properties": [
-    {
-      "name": "lock.enabled",
-      "type": "java.lang.Boolean",
-      "description": "Use locks?"
-    }
-  ]
-}
