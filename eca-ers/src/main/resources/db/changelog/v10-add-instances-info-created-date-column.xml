@@ -18,4 +18,12 @@
             </column>
         </addColumn>
     </changeSet>
+
+    <changeSet id="add_instances_info_data_md5_hash_unique_idx" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="instances_info"/>
+            <columnExists tableName="instances_info" columnName="data_md5_hash"/>
+        </preConditions>
+        <addUniqueConstraint tableName="instances_info" columnNames="data_md5_hash" constraintName="instances_info_data_md5_hash_unique_idx"/>
+    </changeSet>
 </databaseChangeLog>
