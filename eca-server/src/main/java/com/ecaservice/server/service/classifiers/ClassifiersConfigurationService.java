@@ -37,6 +37,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
+import static com.ecaservice.core.lock.redis.config.RedisLockAutoConfiguration.REDIS_LOCK_REGISTRY;
 import static com.ecaservice.server.config.audit.AuditCodes.ADD_CONFIGURATION;
 import static com.ecaservice.server.config.audit.AuditCodes.COPY_CONFIGURATION;
 import static com.ecaservice.server.config.audit.AuditCodes.DELETE_CONFIGURATION;
@@ -153,7 +154,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
      * @param id - configuration id
      * @return active classifiers configuration entity
      */
-    @Locked(lockName = "setActiveClassifiersConfiguration")
+    @Locked(lockName = "setActiveClassifiersConfiguration", lockRegistry = REDIS_LOCK_REGISTRY)
     @Transactional
     public ClassifiersConfiguration setActive(long id) {
         log.info("Request to set classifiers configuration [{}] as active", id);

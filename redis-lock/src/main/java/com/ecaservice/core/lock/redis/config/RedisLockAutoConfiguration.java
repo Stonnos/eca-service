@@ -18,13 +18,18 @@ import org.springframework.integration.redis.util.RedisLockRegistry;
 public class RedisLockAutoConfiguration {
 
     /**
+     * Redis lock registry bean
+     */
+    public static final String REDIS_LOCK_REGISTRY = "redisLockRegistry";
+
+    /**
      * Creates redis lock registry.
      *
      * @param redisConnectionFactory - redis connection factory
      * @param redisLockProperties    - redis lock properties
      * @return redis lock registry
      */
-    @Bean
+    @Bean(REDIS_LOCK_REGISTRY)
     public RedisLockRegistry redisLockRegistry(final RedisConnectionFactory redisConnectionFactory,
                                                final RedisLockProperties redisLockProperties) {
         var redisLockRegistry = new RedisLockRegistry(redisConnectionFactory, redisLockProperties.getRegistryKey(),

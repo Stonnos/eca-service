@@ -5,6 +5,7 @@ import com.ecaservice.core.lock.fallback.FallbackHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.integration.support.locks.DefaultLockRegistry;
 
 /**
  * Core lock configuration.
@@ -16,9 +17,14 @@ import org.springframework.context.annotation.Configuration;
 public class CoreLockConfiguration {
 
     /**
-     * Default fallback handler bean.
+     * Default fallback handler bean
      */
     public static final String DEFAULT_FALLBACK_HANDLER = "defaultFallbackHandler";
+
+    /**
+     * Default lock registry bean
+     */
+    public static final String DEFAULT_LOCK_REGISTRY = "defaultLockRegistry";
 
     /**
      * Creates default fallback handler bean.
@@ -28,5 +34,15 @@ public class CoreLockConfiguration {
     @Bean(DEFAULT_FALLBACK_HANDLER)
     public FallbackHandler fallbackHandler() {
         return new DefaultFallbackHandler();
+    }
+
+    /**
+     * Creates default lock registry bean.
+     *
+     * @return default lock registry bean
+     */
+    @Bean(DEFAULT_LOCK_REGISTRY)
+    public DefaultLockRegistry lockRegistry() {
+        return new DefaultLockRegistry();
     }
 }
