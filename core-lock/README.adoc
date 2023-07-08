@@ -27,7 +27,7 @@ lock:
   ## Вкл./выкл. распределенных блокировок.
   enabled: true
   ## Использовать простые reentrant locks
-  registryType: IN_MEMORY
+  registry-type: IN_MEMORY
 ----
 
 == 2. Настройка использования блокировок для кластерной среды на примере redis
@@ -58,7 +58,7 @@ spring:
 lock:
   ## Вкл./выкл. распределенных блокировок.
   enabled: true
-  registryType: REDIS
+  registry-type: REDIS
   redis:
     registryKey: your-registry-key
     ## Время действия блокировки в милисекундах.

@@ -21,7 +21,7 @@ import static com.ecaservice.core.lock.config.CoreLockAutoConfiguration.LOCK_REG
 @Slf4j
 @Configuration
 @ConditionalOnClass(RedisLockRegistry.class)
-@ConditionalOnProperty(value = "lock.registryType", havingValue = "REDIS")
+@ConditionalOnProperty(value = "lock.registry-type", havingValue = "REDIS")
 public class RedisLockConfiguration {
 
     /**

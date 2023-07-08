@@ -82,7 +82,7 @@ ECA server
    * clientSecret - пароль клиента
 11) lock.enabled - настройки блокировок
    * lock.enabled - вкл./выкл. использование блокировок
-   * lock.registryType - тип блокировок REDIS, IN_MEMORY
+   * lock.registry-type - тип блокировок REDIS, IN_MEMORY
    * lock.redis.registryKey - ключ реестра для Redis
    * lock.redis.expireAfter - время жизни блокировки для Redis
 12) audit.enabled - вкл./выкл. отправки событий аудита

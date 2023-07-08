@@ -138,7 +138,7 @@ lock:
   ## Используется для scheduler повторной отправки данных.
   ## Необходимо использовать в случае, если запущено несколько инстансов приложения, во избежании data race
   enabled: true
-  registryType: REDIS
+  registry-type: REDIS
   redis:
     registryKey: your-registry-key
     ## Время действия блокировки в милисекундах.

@@ -88,7 +88,7 @@ public class EcaServiceConfiguration {
      * @return experiment redis lock registry
      */
     @Bean(EXPERIMENT_REDIS_LOCK_REGISTRY_BEAN)
-    @ConditionalOnProperty(value = "lock.registryType", havingValue = "REDIS")
+    @ConditionalOnProperty(value = "lock.registry-type", havingValue = "REDIS")
     @ConditionalOnBean(RedisConnectionFactory.class)
     public RedisLockRegistry lockRegistry(RedisConnectionFactory redisConnectionFactory,
                                           ExperimentConfig experimentConfig) {
@@ -106,7 +106,7 @@ public class EcaServiceConfiguration {
      * @return experiment redis lock registry
      */
     @Bean(EXPERIMENT_REDIS_LOCK_REGISTRY_BEAN)
-    @ConditionalOnProperty(value = "lock.registryType", havingValue = "IN_MEMORY")
+    @ConditionalOnProperty(value = "lock.registry-type", havingValue = "IN_MEMORY")
     public LockRegistry lockRegistry() {
         var lockRegistry = new DefaultLockRegistry();
         log.info("Default lock registry has been initialized for experiment processing");

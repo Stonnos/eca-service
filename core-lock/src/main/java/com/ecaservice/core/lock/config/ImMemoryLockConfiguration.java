@@ -1,5 +1,6 @@
 package com.ecaservice.core.lock.config;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -15,8 +16,11 @@ import static com.ecaservice.core.lock.config.CoreLockAutoConfiguration.LOCK_REG
  */
 @Slf4j
 @Configuration
-@ConditionalOnProperty(value = "lock.registryType", havingValue = "IN_MEMORY", matchIfMissing = true)
+@ConditionalOnProperty(value = "lock.registry-type", havingValue = "IN_MEMORY", matchIfMissing = true)
+@RequiredArgsConstructor
 public class ImMemoryLockConfiguration {
+
+    private final LockProperties lockProperties;
 
     /**
      * Creates default lock registry bean.
