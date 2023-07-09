@@ -14,7 +14,7 @@
 
     <properties>
         <sonar.coverage.exclusions>**/*.*</sonar.coverage.exclusions>
-        <spring-boot-camunda-bpm.version>7.14.0</spring-boot-camunda-bpm.version>
+        <spring-boot-camunda-bpm.version>7.19.0</spring-boot-camunda-bpm.version>
     </properties>
 
     <dependencies>
