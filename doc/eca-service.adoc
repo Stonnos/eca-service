@@ -526,14 +526,14 @@ image::./images/eca-ers-db-schema.png[alt=Схема базы данных eca-e
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
-|id                      |bigint           |+|+|+                       |Идентификатор записи (первичный ключ)
-|data_md5_hash           |varchar(255)     |-|+|-                       |MD5 хеш данных
-|relation_name           |varchar(255)     |-|+|-                       |Название обучающей выборки
-|num_instances           |integer          |-|+|-                       |Число объектов обучающей выборки
-|num_attributes          |integer          |-|+|-                       |Число атрибутов обучающей выборки
-|num_classes             |integer          |-|+|-                       |Число классов
-|class_name              |varchar(255)     |-|+|-                       |Название атрибута класса
-|created_date            |timestamp        |-|+|-                                        |Дата создания
+|id                      |bigint           |+|+|+                                           |Идентификатор записи (первичный ключ)
+|data_md5_hash           |varchar(255)     |-|+|instances_info_data_md5_hash_unique_idx     |MD5 хеш данных
+|relation_name           |varchar(255)     |-|+|-                                           |Название обучающей выборки
+|num_instances           |integer          |-|+|-                                           |Число объектов обучающей выборки
+|num_attributes          |integer          |-|+|-                                           |Число атрибутов обучающей выборки
+|num_classes             |integer          |-|+|-                                           |Число классов
+|class_name              |varchar(255)     |-|+|-                                           |Название атрибута класса
+|created_date            |timestamp        |-|+|-                                            |Дата создания
 |===
 
 ==== Таблица 3.{counter:db-table-id} - 'classifier_options_info' - содержит данные о классификаторах
