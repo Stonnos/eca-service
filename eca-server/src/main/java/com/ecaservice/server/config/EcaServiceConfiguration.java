@@ -10,8 +10,6 @@ import com.ecaservice.server.config.ers.ErsConfig;
 import com.ecaservice.server.model.entity.AbstractEvaluationEntity;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.annotation.EnableCaching;
@@ -19,10 +17,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.integration.redis.util.RedisLockRegistry;
-import org.springframework.integration.support.locks.DefaultLockRegistry;
-import org.springframework.integration.support.locks.LockRegistry;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -79,37 +73,5 @@ public class EcaServiceConfiguration {
         executor.setCorePoolSize(appProperties.getThreadPoolSize());
         executor.setMaxPoolSize(appProperties.getThreadPoolSize());
         return executor;
-    }
-
-    /**
-     * Creates redis lock registry for experiments processing.
-     *
-     * @param redisConnectionFactory - redis connection factory
-     * @return experiment redis lock registry
-     */
-    @Bean(EXPERIMENT_REDIS_LOCK_REGISTRY_BEAN)
-    @ConditionalOnProperty(value = "lock.registry-type", havingValue = "REDIS")
-    @ConditionalOnBean(RedisConnectionFactory.class)
-    public RedisLockRegistry lockRegistry(RedisConnectionFactory redisConnectionFactory,
-                                          ExperimentConfig experimentConfig) {
-        ExperimentConfig.LockProperties lockProperties = experimentConfig.getLock();
-        var lockRegistry = new RedisLockRegistry(redisConnectionFactory, lockProperties.getRegistryKey(),
-                lockProperties.getExpireAfter());
-        log.info("Redis lock registry [{}] has been initialized for experiment processing. Lock expiration [{}] ms.",
-                experimentConfig.getLock().getRegistryKey(), experimentConfig.getLock().getExpireAfter());
-        return lockRegistry;
-    }
-
-    /**
-     * Creates default lock registry for experiments processing.
-     *
-     * @return experiment redis lock registry
-     */
-    @Bean(EXPERIMENT_REDIS_LOCK_REGISTRY_BEAN)
-    @ConditionalOnProperty(value = "lock.registry-type", havingValue = "IN_MEMORY")
-    public LockRegistry lockRegistry() {
-        var lockRegistry = new DefaultLockRegistry();
-        log.info("Default lock registry has been initialized for experiment processing");
-        return lockRegistry;
     }
 }
