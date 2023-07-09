@@ -20,8 +20,6 @@ import static com.ecaservice.core.lock.config.CoreLockAutoConfiguration.LOCK_REG
 @RequiredArgsConstructor
 public class ImMemoryLockConfiguration {
 
-    private final LockProperties lockProperties;
-
     /**
      * Creates default lock registry bean.
      *

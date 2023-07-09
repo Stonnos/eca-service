@@ -39,7 +39,8 @@ public class RedisLockConfiguration {
         var redisLockProperties = lockProperties.getRedis();
         var redisLockRegistry = new RedisLockRegistry(redisConnectionFactory, redisLockProperties.getRegistryKey(),
                 redisLockProperties.getExpireAfter());
-        log.info("Redis lock registry [{}] has been initialized", redisLockProperties.getRegistryKey());
+        log.info("Redis lock registry [{}] has been initialized. Lock expiration [{}] ms",
+                redisLockProperties.getRegistryKey(), redisLockProperties.getExpireAfter());
         return redisLockRegistry;
     }
 }
