@@ -27,6 +27,7 @@ public class CreateClassifiersConfigurationDto {
      */
     @NotBlank
     @Size(min = VALUE_1, max = FieldConstraints.CONFIGURATION_NAME_MAX_LENGTH)
-    @Schema(description = "Configuration name", example = "Classifiers configuration", required = true)
+    @Schema(description = "Configuration name", example = "Classifiers configuration",
+            requiredMode = Schema.RequiredMode.REQUIRED)
     private String configurationName;
 }

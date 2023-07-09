@@ -53,7 +53,7 @@ public abstract class AbstractPushRequest {
     @Pattern(regexp = UUID_PATTERN)
     @Size(min = VALUE_1, max = UUID_MAX_LENGTH)
     @Schema(description = "Request id (used for cross system logging)",
-            example = "1d2de514-3a87-4620-9b97-c260e24340de", required = true)
+            example = "1d2de514-3a87-4620-9b97-c260e24340de", requiredMode = Schema.RequiredMode.REQUIRED)
     private String requestId;
 
     /**
@@ -61,7 +61,7 @@ public abstract class AbstractPushRequest {
      */
     @NotBlank
     @Size(min = VALUE_1, max = MAX_LENGTH_255)
-    @Schema(description = "Message type", example = "EXPERIMENT_STATUS", required = true)
+    @Schema(description = "Message type", example = "EXPERIMENT_STATUS", requiredMode = Schema.RequiredMode.REQUIRED)
     private String messageType;
 
     /**

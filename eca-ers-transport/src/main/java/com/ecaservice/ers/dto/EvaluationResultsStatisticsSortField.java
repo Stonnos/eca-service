@@ -20,7 +20,7 @@ public class EvaluationResultsStatisticsSortField {
      * Sort field name
      */
     @NotNull
-    @Schema(description = "Sort field name", required = true)
+    @Schema(description = "Sort field name", requiredMode = Schema.RequiredMode.REQUIRED)
     private EvaluationResultsStatisticsField field;
 
     /**

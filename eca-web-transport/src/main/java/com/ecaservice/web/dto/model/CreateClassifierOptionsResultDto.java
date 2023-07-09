@@ -23,20 +23,22 @@ public class CreateClassifierOptionsResultDto {
     /**
      * Classifier options id
      */
-    @Schema(description = "Classifier options id", required = true, example = "1", minimum = VALUE_1_STRING,
+    @Schema(description = "Classifier options id", requiredMode = Schema.RequiredMode.REQUIRED, example = "1",
+            minimum = VALUE_1_STRING,
             maximum = MAX_LONG_VALUE_STRING)
     private Long id;
 
     /**
      * Source file name
      */
-    @Schema(description = "Source file name", required = true, example = "cart.json", maxLength = MAX_LENGTH_255)
+    @Schema(description = "Source file name", requiredMode = Schema.RequiredMode.REQUIRED, example = "cart.json",
+            maxLength = MAX_LENGTH_255)
     private String sourceFileName;
 
     /**
      * Is classifier options successfully saved?
      */
-    @Schema(description = "Classifier options saved boolean flag", required = true)
+    @Schema(description = "Classifier options saved boolean flag", requiredMode = Schema.RequiredMode.REQUIRED)
     private Boolean success;
 
     /**

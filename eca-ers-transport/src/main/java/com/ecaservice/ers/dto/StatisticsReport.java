@@ -34,7 +34,7 @@ public class StatisticsReport {
     @NotNull
     @Min(MIN_2)
     @Max(Integer.MAX_VALUE)
-    @Schema(description = "Test instances number", example = "100", required = true)
+    @Schema(description = "Test instances number", example = "100", requiredMode = Schema.RequiredMode.REQUIRED)
     private BigInteger numTestInstances;
 
     /**
@@ -43,7 +43,8 @@ public class StatisticsReport {
     @NotNull
     @Min(MIN_ZERO)
     @Max(Integer.MAX_VALUE)
-    @Schema(description = "Correctly classified instances number", example = "100", required = true)
+    @Schema(description = "Correctly classified instances number", example = "100",
+            requiredMode = Schema.RequiredMode.REQUIRED)
     private BigInteger numCorrect;
 
     /**
@@ -52,7 +53,8 @@ public class StatisticsReport {
     @NotNull
     @Min(MIN_ZERO)
     @Max(Integer.MAX_VALUE)
-    @Schema(description = "Incorrectly classified instances number", example = "0", required = true)
+    @Schema(description = "Incorrectly classified instances number", example = "0",
+            requiredMode = Schema.RequiredMode.REQUIRED)
     private BigInteger numIncorrect;
 
     /**
@@ -61,7 +63,8 @@ public class StatisticsReport {
     @NotNull
     @DecimalMin(value = DECIMAL_MIN_ZERO)
     @DecimalMax(value = DECIMAL_MAX_100)
-    @Schema(description = "Correctly classified percentage", example = "100.0", required = true)
+    @Schema(description = "Correctly classified percentage", example = "100.0",
+            requiredMode = Schema.RequiredMode.REQUIRED)
     private BigDecimal pctCorrect;
 
     /**
@@ -70,7 +73,8 @@ public class StatisticsReport {
     @NotNull
     @DecimalMin(value = DECIMAL_MIN_ZERO)
     @DecimalMax(value = DECIMAL_MAX_100)
-    @Schema(description = "Incorrectly classified percentage", example = "0.0", required = true)
+    @Schema(description = "Incorrectly classified percentage", example = "0.0",
+            requiredMode = Schema.RequiredMode.REQUIRED)
     private BigDecimal pctIncorrect;
 
     /**

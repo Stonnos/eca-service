@@ -28,7 +28,7 @@ public class ConfusionMatrixReport {
      */
     @NotBlank
     @Size(min = MIN_1, max = MAX_LENGTH_255)
-    @Schema(description = "Actual class", example = "Iris-setosa", required = true)
+    @Schema(description = "Actual class", example = "Iris-setosa", requiredMode = Schema.RequiredMode.REQUIRED)
     private String actualClass;
 
     /**
@@ -36,7 +36,7 @@ public class ConfusionMatrixReport {
      */
     @NotBlank
     @Size(min = MIN_1, max = MAX_LENGTH_255)
-    @Schema(description = "Predicted class", example = "Iris-versicolor", required = true)
+    @Schema(description = "Predicted class", example = "Iris-versicolor", requiredMode = Schema.RequiredMode.REQUIRED)
     private String predictedClass;
 
     /**
@@ -45,6 +45,6 @@ public class ConfusionMatrixReport {
     @NotNull
     @Min(MIN_ZERO)
     @Max(Integer.MAX_VALUE)
-    @Schema(description = "Instances number", example = "10", required = true)
+    @Schema(description = "Instances number", example = "10", requiredMode = Schema.RequiredMode.REQUIRED)
     private BigInteger numInstances;
 }

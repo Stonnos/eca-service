@@ -36,7 +36,8 @@ public class EmailRequest {
     @NotBlank
     @Pattern(regexp = UUID_PATTERN)
     @Size(min = VALUE_1, max = UUID_MAX_SIZE)
-    @Schema(description = "Request id", example = "1d2de514-3a87-4620-9b97-c260e24340de", required = true)
+    @Schema(description = "Request id", example = "1d2de514-3a87-4620-9b97-c260e24340de",
+            requiredMode = Schema.RequiredMode.REQUIRED)
     private String requestId;
 
     /**
@@ -45,7 +46,7 @@ public class EmailRequest {
     @NotBlank
     @Email(regexp = EMAIL_REGEX)
     @Size(min = VALUE_1, max = EMAIL_MAX_SIZE)
-    @Schema(description = "Receiver email", example = "bat1238@yandex.ru", required = true)
+    @Schema(description = "Receiver email", example = "bat1238@yandex.ru", requiredMode = Schema.RequiredMode.REQUIRED)
     private String receiver;
 
     /**
@@ -53,7 +54,8 @@ public class EmailRequest {
      */
     @NotBlank
     @Size(min = VALUE_1, max = MAX_LENGTH_255)
-    @Schema(description = "Email template code", example = "NEW_EXPERIMENT", required = true)
+    @Schema(description = "Email template code", example = "NEW_EXPERIMENT",
+            requiredMode = Schema.RequiredMode.REQUIRED)
     private String templateCode;
 
     /**

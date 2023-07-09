@@ -25,13 +25,13 @@ public class ExperimentRequestDto extends AbstractEvaluationRequestDto {
      * Experiment type
      */
     @NotNull
-    @Schema(description = "Experiment type", required = true, maxLength = MAX_LENGTH_255)
+    @Schema(description = "Experiment type", requiredMode = Schema.RequiredMode.REQUIRED, maxLength = MAX_LENGTH_255)
     private ExApiExperimentType experimentType;
 
     /**
      * Evaluation method
      */
     @NotNull
-    @Schema(description = "Evaluation method", required = true, maxLength = MAX_LENGTH_255)
+    @Schema(description = "Evaluation method", requiredMode = Schema.RequiredMode.REQUIRED, maxLength = MAX_LENGTH_255)
     private EvaluationMethod evaluationMethod;
 }

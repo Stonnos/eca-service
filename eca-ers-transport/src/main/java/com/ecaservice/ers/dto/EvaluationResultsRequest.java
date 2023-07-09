@@ -29,7 +29,8 @@ public class EvaluationResultsRequest {
     @NotBlank
     @Pattern(regexp = UUID_PATTERN)
     @Size(min = MIN_1, max = UUID_MAX_SIZE)
-    @Schema(description = "Request id", example = "1d2de514-3a87-4620-9b97-c260e24340de", required = true)
+    @Schema(description = "Request id", example = "1d2de514-3a87-4620-9b97-c260e24340de",
+            requiredMode = Schema.RequiredMode.REQUIRED)
     private String requestId;
 
     /**
@@ -37,7 +38,7 @@ public class EvaluationResultsRequest {
      */
     @NotNull
     @Valid
-    @Schema(description = "Instances report", required = true)
+    @Schema(description = "Instances report", requiredMode = Schema.RequiredMode.REQUIRED)
     private InstancesReport instances;
 
     /**
@@ -45,7 +46,7 @@ public class EvaluationResultsRequest {
      */
     @NotNull
     @Valid
-    @Schema(description = "Classifier report", required = true)
+    @Schema(description = "Classifier report", requiredMode = Schema.RequiredMode.REQUIRED)
     private ClassifierReport classifierReport;
 
     /**
@@ -53,7 +54,7 @@ public class EvaluationResultsRequest {
      */
     @NotNull
     @Valid
-    @Schema(description = "Evaluation method report", required = true)
+    @Schema(description = "Evaluation method report", requiredMode = Schema.RequiredMode.REQUIRED)
     private EvaluationMethodReport evaluationMethodReport;
 
     /**
@@ -61,7 +62,7 @@ public class EvaluationResultsRequest {
      */
     @NotNull
     @Valid
-    @Schema(description = "Statistics report", required = true)
+    @Schema(description = "Statistics report", requiredMode = Schema.RequiredMode.REQUIRED)
     private StatisticsReport statistics;
 
     /**

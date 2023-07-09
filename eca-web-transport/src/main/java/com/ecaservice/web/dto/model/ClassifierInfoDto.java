@@ -32,7 +32,8 @@ public class ClassifierInfoDto {
     /**
      * Classifier options json config
      */
-    @Schema(description = "Classifier options json config", required = true, example = "Json config")
+    @Schema(description = "Classifier options json config", requiredMode = Schema.RequiredMode.REQUIRED,
+            example = "Json config")
     private String classifierOptionsJson;
 
     /**

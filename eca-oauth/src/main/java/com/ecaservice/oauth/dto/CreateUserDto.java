@@ -36,7 +36,7 @@ public class CreateUserDto {
     @Size(min = LOGIN_MIN_LENGTH, max = LOGIN_MAX_LENGTH)
     @Pattern(regexp = LOGIN_REGEX)
     @UniqueLogin
-    @Schema(description = "User login", example = "user", required = true)
+    @Schema(description = "User login", example = "user", requiredMode = Schema.RequiredMode.REQUIRED)
     private String login;
 
     /**
@@ -45,7 +45,7 @@ public class CreateUserDto {
     @Email(regexp = EMAIL_REGEX)
     @Size(min = VALUE_1, max = EMAIL_MAX_SIZE)
     @UniqueEmail
-    @Schema(description = "User email", example = "bat1238@yandex.ru", required = true)
+    @Schema(description = "User email", example = "bat1238@yandex.ru", requiredMode = Schema.RequiredMode.REQUIRED)
     private String email;
 
     /**
@@ -54,7 +54,7 @@ public class CreateUserDto {
     @NotBlank
     @Size(min = PERSON_NAME_MIN_SIZE, max = PERSON_NAME_MAX_SIZE)
     @Pattern(regexp = PERSON_NAME_REGEX)
-    @Schema(description = "First name", example = "Roman", required = true)
+    @Schema(description = "First name", example = "Roman", requiredMode = Schema.RequiredMode.REQUIRED)
     private String firstName;
 
     /**
@@ -63,7 +63,7 @@ public class CreateUserDto {
     @NotBlank
     @Size(min = PERSON_NAME_MIN_SIZE, max = PERSON_NAME_MAX_SIZE)
     @Pattern(regexp = PERSON_NAME_REGEX)
-    @Schema(description = "Last name", example = "Batygin", required = true)
+    @Schema(description = "Last name", example = "Batygin", requiredMode = Schema.RequiredMode.REQUIRED)
     private String lastName;
 
     /**
@@ -72,6 +72,6 @@ public class CreateUserDto {
     @NotBlank
     @Size(min = PERSON_NAME_MIN_SIZE, max = PERSON_NAME_MAX_SIZE)
     @Pattern(regexp = PERSON_NAME_REGEX)
-    @Schema(description = "Middle name", example = "Igorevich", required = true)
+    @Schema(description = "Middle name", example = "Igorevich", requiredMode = Schema.RequiredMode.REQUIRED)
     private String middleName;
 }

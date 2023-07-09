@@ -30,8 +30,8 @@ public class ResetPasswordRequest {
      */
     @NotBlank
     @Size(min = VALUE_1, max = MAX_LENGTH_255)
-    @Schema(description = "Token value",
-            example = "MDhmNTg4MDdiMTI0Y2Y4OWNmN2UxYmE1OTljYjUzOWU6MTYxNjE1MzM4MDMzMQ==", required = true)
+    @Schema(description = "Token value", example = "MDhmNTg4MDdiMTI0Y2Y4OWNmN2UxYmE1OTljYjUzOWU6MTYxNjE1MzM4MDMzMQ==",
+            requiredMode = Schema.RequiredMode.REQUIRED)
     private String token;
 
     /**
@@ -40,6 +40,6 @@ public class ResetPasswordRequest {
     @NotBlank
     @Pattern(regexp = PASSWORD_REGEX)
     @Size(min = MIN_PASSWORD_LENGTH, max = MAX_LENGTH_255)
-    @Schema(description = "New password", example = "passw0rd!", required = true)
+    @Schema(description = "New password", example = "passw0rd!", requiredMode = Schema.RequiredMode.REQUIRED)
     private String password;
 }
