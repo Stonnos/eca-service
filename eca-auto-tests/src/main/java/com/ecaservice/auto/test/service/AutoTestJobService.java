@@ -124,6 +124,8 @@ public class AutoTestJobService {
         autoTestsJobEntity.setExecutionStatus(ExecutionStatus.ERROR);
         autoTestsJobEntity.setFinished(LocalDateTime.now());
         autoTestsJobRepository.save(autoTestsJobEntity);
+        log.info("Auto tests job [{}] has been finished with error [{}]", autoTestsJobEntity.getJobUuid(),
+                errorMessage);
     }
 
     private List<BaseEvaluationRequestDto> getEvaluationRequests(AutoTestsJobEntity autoTestsJobEntity,

@@ -42,6 +42,9 @@ springdoc:
   swagger-ui:
     disable-swagger-default-url: true
 
+classifiers-options:
+  maximumFractionDigits: 4
+
 mail:
   userName: rbatsw@gmail.com
   password: czawqizcrdxfqlrv
