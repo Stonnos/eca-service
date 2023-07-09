@@ -34,9 +34,12 @@ public class AuditEventCsvReportGenerator implements AuditEventReportGenerator<S
     @Override
     public String generate() throws IOException {
         log.info("Gets audit events csv report");
+        var csvFormat = CSVFormat.EXCEL.builder()
+                .setHeader(REPORT_HEADERS)
+                .setDelimiter(HEADER_DELIMITER)
+                .build();
         @Cleanup StringWriter stringWriter = new StringWriter();
-        @Cleanup var csvPrinter = new CSVPrinter(stringWriter,
-                CSVFormat.EXCEL.withHeader(REPORT_HEADERS).withDelimiter(HEADER_DELIMITER));
+        @Cleanup var csvPrinter = new CSVPrinter(stringWriter, csvFormat);
         var auditCodes = auditCodeRepository.findAll();
         log.info("Fetched [{}] audit events", auditCodes.size());
         printReport(auditCodes, csvPrinter);

@@ -187,8 +187,11 @@ public class ExperimentAutoTestsScvReportGenerator
                 testStep.getEvaluationRequestEntity().getRequestId());
         log.info("Starting to write file [{}] into zip archive", fileName);
         zipOutputStream.putNextEntry(new ZipEntry(fileName));
-        var printer = new CSVPrinter(outputStreamWriter,
-                CSVFormat.EXCEL.withHeader(getResultsReportHeaders()).withDelimiter(getHeaderDelimiter()));
+        var printer = new CSVPrinter(outputStreamWriter, CSVFormat.EXCEL.builder()
+                .setHeader(getResultsReportHeaders())
+                .setDelimiter(getHeaderDelimiter())
+                .build()
+        );
         printer.printRecord(Arrays.asList(
                 testStep.getEvaluationRequestEntity().getExperimentType().getDescription(),
                 testStep.getEvaluationRequestEntity().getRequestId(),
@@ -232,10 +235,13 @@ public class ExperimentAutoTestsScvReportGenerator
         try {
             String fileName = String.format(EXPERIMENT_EMAILS_TOTAL_REPORT_CSV_FILE_NAME_FORMAT,
                     experimentRequestEntity.getRequestId());
+            var csvFormat = CSVFormat.EXCEL.builder()
+                    .setHeader(EMAIL_STEP_TEST_RESULTS_HEADERS)
+                    .setDelimiter(getHeaderDelimiter())
+                    .build();
             log.info("Starting to write file [{}] into zip archive", fileName);
             zipOutputStream.putNextEntry(new ZipEntry(fileName));
-            var printer = new CSVPrinter(outputStreamWriter,
-                    CSVFormat.EXCEL.withHeader(EMAIL_STEP_TEST_RESULTS_HEADERS).withDelimiter(getHeaderDelimiter()));
+            var printer = new CSVPrinter(outputStreamWriter, csvFormat);
             for (var testStep : testSteps) {
                 printer.printRecord(Arrays.asList(
                         testStep.getEvaluationRequestEntity().getExperimentType().getDescription(),

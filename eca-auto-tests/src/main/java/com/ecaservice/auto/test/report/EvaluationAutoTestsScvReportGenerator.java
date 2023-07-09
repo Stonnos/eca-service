@@ -159,10 +159,13 @@ public class EvaluationAutoTestsScvReportGenerator
             throws IOException {
         String fileName = String.format(EVALUATION_RESULT_TOTAL_REPORT_CSV_FILE_NAME_FORMAT,
                 testStep.getEvaluationRequestEntity().getRequestId());
+        var csvFormat = CSVFormat.EXCEL.builder()
+                .setHeader(getResultsReportHeaders())
+                .setDelimiter(getHeaderDelimiter())
+                .build();
         log.info("Starting to write file [{}] into zip archive", fileName);
         zipOutputStream.putNextEntry(new ZipEntry(fileName));
-        var printer = new CSVPrinter(outputStreamWriter,
-                CSVFormat.EXCEL.withHeader(getResultsReportHeaders()).withDelimiter(getHeaderDelimiter()));
+        var printer = new CSVPrinter(outputStreamWriter, csvFormat);
         printer.printRecord(Arrays.asList(
                 testStep.getEvaluationRequestEntity().getClassifierName(),
                 testStep.getEvaluationRequestEntity().getRequestId(),
