@@ -106,7 +106,7 @@ public class InstancesService {
         extractor.setDateTimeFormatter(DateTimeFormatter.ofPattern(ecaDsConfig.getDateFormat()));
         var dataList = jdbcTemplate.query(sqlPreparedQuery.getQuery(), sqlPreparedQuery.getArgs(), extractor);
         Long totalElements =
-                jdbcTemplate.queryForObject(sqlPreparedQuery.getCountQuery(), sqlPreparedQuery.getArgs(), Long.class);
+                jdbcTemplate.queryForObject(sqlPreparedQuery.getCountQuery(), Long.class, sqlPreparedQuery.getArgs());
         Assert.notNull(totalElements, String.format("Expected not null total elements for table [%s]", tableName));
         log.info("Instances [{}] has been fetched for table [{}], page request [{}]", instancesEntity.getRelationName(),
                 tableName, pageRequestDto);

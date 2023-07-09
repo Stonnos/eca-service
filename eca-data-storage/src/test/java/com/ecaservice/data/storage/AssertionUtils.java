@@ -61,7 +61,7 @@ public class AssertionUtils {
      * @param dataList  - data list
      */
     public static void assertDataList(Instances instances, List<List<String>> dataList) {
-        assertThat(dataList.size()).isEqualTo(instances.numInstances());
+        assertThat(dataList).hasSize(instances.numInstances());
         IntStream.range(0, instances.numInstances()).forEach(i -> {
             var expected = instances.instance(i);
             var actual = dataList.get(i);
@@ -97,7 +97,7 @@ public class AssertionUtils {
     public static void assertInstancesModel(Instances instances, InstancesModel instancesModel) {
         assertThat(instancesModel.getClassName()).isEqualTo(instances.classAttribute().name());
         assertThat(instancesModel.getAttributes()).isNotEmpty();
-        assertThat(instancesModel.getAttributes().size()).isEqualTo(instances.numAttributes());
+        assertThat(instancesModel.getAttributes()).hasSize(instances.numAttributes());
         assertInstancesModelAttributes(instances, instancesModel);
         assertInstancesModelValues(instances, instancesModel);
     }
@@ -115,7 +115,7 @@ public class AssertionUtils {
                 case Attribute.NOMINAL:
                     assertThat(actual.getType()).isEqualTo(AttributeType.NOMINAL);
                     assertThat(actual.getValues()).isNotEmpty();
-                    assertThat(actual.getValues().size()).isEqualTo(expected.numValues());
+                    assertThat(actual.getValues()).hasSize(expected.numValues());
                     IntStream.range(0, expected.numValues()).forEach(
                             j -> assertThat(actual.getValues().get(j)).isEqualTo(expected.value(j)));
                     break;
