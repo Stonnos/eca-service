@@ -1,0 +1,5 @@
+{
+  "experimentType": "RANDOM_FORESTS",
+  "trainDataPath": "classpath:/data/glass.json",
+  "evaluationMethod": "CROSS_VALIDATION"
+}

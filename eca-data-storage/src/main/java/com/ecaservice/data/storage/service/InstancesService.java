@@ -104,9 +104,9 @@ public class InstancesService {
         var sqlPreparedQuery = searchQueryCreator.buildSqlQuery(instancesEntity, pageRequestDto);
         var extractor = new DataListResultSetExtractor(instancesEntity, attributes);
         extractor.setDateTimeFormatter(DateTimeFormatter.ofPattern(ecaDsConfig.getDateFormat()));
-        var dataList = jdbcTemplate.query(sqlPreparedQuery.getQuery(), sqlPreparedQuery.getArgs(), extractor);
+        var dataList = jdbcTemplate.query(sqlPreparedQuery.getQuery(), extractor, sqlPreparedQuery.getArgs());
         Long totalElements =
-                jdbcTemplate.queryForObject(sqlPreparedQuery.getCountQuery(), sqlPreparedQuery.getArgs(), Long.class);
+                jdbcTemplate.queryForObject(sqlPreparedQuery.getCountQuery(), Long.class, sqlPreparedQuery.getArgs());
         Assert.notNull(totalElements, String.format("Expected not null total elements for table [%s]", tableName));
         log.info("Instances [{}] has been fetched for table [{}], page request [{}]", instancesEntity.getRelationName(),
                 tableName, pageRequestDto);

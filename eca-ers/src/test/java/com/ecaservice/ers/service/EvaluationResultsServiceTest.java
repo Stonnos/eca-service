@@ -1,5 +1,7 @@
 package com.ecaservice.ers.service;
 
+import com.ecaservice.core.lock.config.CoreLockAutoConfiguration;
+import com.ecaservice.core.lock.metrics.LockMeterService;
 import com.ecaservice.ers.AbstractJpaTest;
 import com.ecaservice.ers.dto.EvaluationMethod;
 import com.ecaservice.ers.dto.EvaluationResultsRequest;
@@ -21,6 +23,8 @@ import com.ecaservice.ers.model.EvaluationResultsInfo;
 import com.ecaservice.ers.repository.EvaluationResultsInfoRepository;
 import com.ecaservice.ers.repository.InstancesInfoRepository;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 
 import javax.inject.Inject;
@@ -40,14 +44,18 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  *
  * @author Roman Batygin
  */
+@EnableAspectJAutoProxy
 @Import({EvaluationResultsMapperImpl.class, ClassificationCostsReportMapperImpl.class,
         ConfusionMatrixMapperImpl.class, StatisticsReportMapperImpl.class, InstancesMapperImpl.class,
         RocCurveReportMapperImpl.class, InstancesService.class,
         EvaluationResultsService.class, ClassifierReportMapperImpl.class,
-        ClassifierOptionsInfoMapperImpl.class})
+        ClassifierOptionsInfoMapperImpl.class, CoreLockAutoConfiguration.class})
 class EvaluationResultsServiceTest extends AbstractJpaTest {
 
     private static final int NUM_THREADS = 2;
+
+    @MockBean
+    private LockMeterService lockMeterService;
 
     @Inject
     private EvaluationResultsService evaluationResultsService;

@@ -23,19 +23,22 @@ public class ChartDataDto {
     /**
      * Chart item name
      */
-    @Schema(description = "Chart item name", required = true, example = "key", maxLength = MAX_LENGTH_255)
+    @Schema(description = "Chart item name", requiredMode = Schema.RequiredMode.REQUIRED, example = "key",
+            maxLength = MAX_LENGTH_255)
     private String name;
 
     /**
      * Chart item label
      */
-    @Schema(description = "Chart item label", required = true, example = "label value", maxLength = MAX_LENGTH_255)
+    @Schema(description = "Chart item label", requiredMode = Schema.RequiredMode.REQUIRED, example = "label value",
+            maxLength = MAX_LENGTH_255)
     private String label;
 
     /**
      * Chart item value
      */
-    @Schema(description = "Chart item value", required = true, example = "10", minimum = ZERO_VALUE_STRING,
+    @Schema(description = "Chart item value", requiredMode = Schema.RequiredMode.REQUIRED, example = "10",
+            minimum = ZERO_VALUE_STRING,
             maximum = MAX_LONG_VALUE_STRING)
     private Long count;
 }

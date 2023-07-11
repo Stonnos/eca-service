@@ -24,18 +24,17 @@ spring:
     contexts: schema,data
     change-log: classpath:db/liquibase-changelog.xml
   sleuth:
-    log:
-      slf4j:
-        whitelisted-mdc-keys: tx.id
-    propagation-keys: tx.id
+    baggage:
+      correlation-fields: tx.id
+      remote-fields: tx.id
 
 eureka:
   client:
     registerWithEureka: false
     fetchRegistry: false
 
-ribbon:
-  ReadTimeout: 60000
+lock:
+  enabled: true
 
 ## Swagger properties
 open-api:

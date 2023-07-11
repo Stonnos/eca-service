@@ -1,0 +1,5 @@
+{
+  "experimentType": "ADA_BOOST",
+  "trainDataPath": "classpath:/data/glass.json",
+  "evaluationMethod": "CROSS_VALIDATION"
+}

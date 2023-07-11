@@ -1,7 +1,7 @@
 {
   "displayName": "J48 unpruned tree request using data storage API",
   "trainDataSource": "API_DATA_STORAGE",
-  "trainDataPath": "classpath:/data/credit.xlsx",
+  "trainDataPath": "classpath:/data/credit.json",
   "request": {
     "classifierOptions": {
       "type": "j48",

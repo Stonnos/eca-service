@@ -16,9 +16,9 @@ ECA server
 
 Необходимый софт
 ----------------------------------------
-* Openjdk 1.11
-* maven => 3.3.9
-* Rabbit MQ => 3
+* Openjdk 11
+* maven => 3.9.2
+* Rabbit MQ => 3.8.14
 * eca-core 6.9.4
 * Postgres Database для хранения информации => 13.9
 
@@ -80,15 +80,16 @@ ECA server
    * baseUrl - базовый url eca-oauth
    * clientId - идентификатор клиента
    * clientSecret - пароль клиента
-11) lock.enabled - вкл./выкл. использование блокировок
-12) redis-lock - настройки блокировок с использованием redis
-   * registryKey - ключ реестра
-   * expireAfter - время жизни блокировки
-13) audit.enabled - вкл./выкл. отправки событий аудита
-14) rabbit.enabled - вкл./выкл. подключения к очередям rabbit MQ
-15) mail.client - настройки библиотеки отправки email сообщений
-16) redelivery.enabled - вкл./выкл. библиотеки redelivery 
-17) logging.mode - режим логирования
+11) lock.enabled - настройки блокировок
+   * lock.enabled - вкл./выкл. использование блокировок
+   * lock.registry-type - тип блокировок REDIS, IN_MEMORY
+   * lock.redis.registryKey - ключ реестра для Redis
+   * lock.redis.expireAfter - время жизни блокировки для Redis
+12) audit.enabled - вкл./выкл. отправки событий аудита
+13) rabbit.enabled - вкл./выкл. подключения к очередям rabbit MQ
+14) mail.client - настройки библиотеки отправки email сообщений
+15) redelivery.enabled - вкл./выкл. библиотеки redelivery 
+16) logging.mode - режим логирования
    * text - текстовый формат
    * json - логи в формате json
 
@@ -101,7 +102,7 @@ ECA server
     
 2. Запустить проект с помощью команды:
 
-    java -jar /target/eca-server.war
+    java -jar /target/eca-server.jar
 
     С помощью следующих настроек можно отключить все внешние интеграции:
     

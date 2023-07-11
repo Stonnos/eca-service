@@ -22,26 +22,30 @@ public class CreateInstancesResultDto {
     /**
      * Instances id
      */
-    @Schema(description = "Instances id", required = true, example = "1", minimum = VALUE_1_STRING,
+    @Schema(description = "Instances id", requiredMode = Schema.RequiredMode.REQUIRED, example = "1",
+            minimum = VALUE_1_STRING,
             maximum = MAX_LONG_VALUE_STRING)
     private Long id;
 
     /**
      * Instances uuid
      */
-    @Schema(description = "Instances uuid", required = true, example = "1d2de514-3a87-4620-9b97-c260e24340de",
+    @Schema(description = "Instances uuid", requiredMode = Schema.RequiredMode.REQUIRED,
+            example = "1d2de514-3a87-4620-9b97-c260e24340de",
             maxLength = UUID_MAX_LENGTH)
     private String uuid;
 
     /**
      * Source file name
      */
-    @Schema(description = "Source file name", required = true, example = "iris.xls", maxLength = MAX_LENGTH_255)
+    @Schema(description = "Source file name", requiredMode = Schema.RequiredMode.REQUIRED, example = "iris.xls",
+            maxLength = MAX_LENGTH_255)
     private String sourceFileName;
 
     /**
      * Relation name
      */
-    @Schema(description = "Relation name", required = true, example = "iris", maxLength = MAX_LENGTH_255)
+    @Schema(description = "Relation name", requiredMode = Schema.RequiredMode.REQUIRED, example = "iris",
+            maxLength = MAX_LENGTH_255)
     private String relationName;
 }

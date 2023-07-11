@@ -29,6 +29,6 @@ public class CreateResetPasswordRequest {
     @NotBlank
     @UserEmail
     @Size(min = VALUE_1, max = MAX_LENGTH_255)
-    @Schema(description = "User email", example = "bat1238@yandex.ru", required = true)
+    @Schema(description = "User email", example = "bat1238@yandex.ru", requiredMode = Schema.RequiredMode.REQUIRED)
     private String email;
 }

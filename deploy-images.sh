@@ -10,8 +10,8 @@ docker tag eca-ers dockerbatygin/eca:eca-ers
 docker push dockerbatygin/eca:eca-ers
 docker tag eca-web dockerbatygin/eca:eca-web
 docker push dockerbatygin/eca:eca-web
-docker tag zuul-gate dockerbatygin/eca:zuul-gate
-docker push dockerbatygin/eca:zuul-gate
+docker tag api-gateway dockerbatygin/eca:api-gateway
+docker push dockerbatygin/eca:api-gateway
 docker tag discovery-server dockerbatygin/eca:discovery-server
 docker push dockerbatygin/eca:discovery-server
 docker tag eca-web-push dockerbatygin/eca:eca-web-push

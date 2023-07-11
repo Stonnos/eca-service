@@ -20,6 +20,7 @@ public class PushTokenDto {
      * Token id
      */
     @Schema(description = "Token id",
-            maxLength = MAX_LENGTH_255, example = "1d2de514-3a87-4620-9b97-c260e24340de", required = true)
+            maxLength = MAX_LENGTH_255, example = "1d2de514-3a87-4620-9b97-c260e24340de",
+            requiredMode = Schema.RequiredMode.REQUIRED)
     private String tokenId;
 }

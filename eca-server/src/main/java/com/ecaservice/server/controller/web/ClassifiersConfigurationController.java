@@ -52,7 +52,6 @@ import java.io.IOException;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
 import static com.ecaservice.server.config.audit.AuditCodes.GENERATE_CONFIGURATION_REPORT;
-import static com.ecaservice.server.config.audit.AuditCodes.SET_ACTIVE_CONFIGURATION;
 import static com.ecaservice.server.report.ReportTemplates.CLASSIFIERS_CONFIGURATION_TEMPLATE;
 import static com.ecaservice.server.util.ReportHelper.download;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
@@ -427,7 +426,6 @@ public class ClassifiersConfigurationController {
      *
      * @param id - configuration id
      */
-    @Audit(value = SET_ACTIVE_CONFIGURATION, correlationIdKey = "#id")
     @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
             description = "Sets classifiers configuration as active",

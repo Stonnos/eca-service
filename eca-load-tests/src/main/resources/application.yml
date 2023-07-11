@@ -1,8 +1,6 @@
 spring:
   application:
     name: eca-load-tests
-  jmx:
-    default-domain: eca-load-tests
   ## Datasource properties
   datasource:
     driver-class-name: org.postgresql.Driver

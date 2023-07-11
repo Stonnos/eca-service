@@ -24,7 +24,7 @@ public class LoadTestDto {
     /**
      * Test uuid
      */
-    @Schema(description = "Test uuid", required = true)
+    @Schema(description = "Test uuid", requiredMode = Schema.RequiredMode.REQUIRED)
     private String testUuid;
 
     /**

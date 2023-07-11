@@ -8,9 +8,9 @@
 
 Необходимый софт
 ----------------------------------------
-* Openjdk 1.11
-* maven => 3.3.9
-* Rabbit MQ => 3
+* Openjdk 11
+* maven => 3.9.2
+* Rabbit MQ => 3.8.14
 * eca-core 6.9.4
 * Postgres Database для хранения информации 13.9
 * Docker, Docker-compose
@@ -23,7 +23,6 @@
 * common-error-model - модуль содержит модельные классы для ошибок
 * common-web - модуль содержит общие классы, используемые во всех сервисах
 * core-lock - библиотека для работы с блокирующими операциями
-* redis-lock - библиотека для работы с блокирующими операциями с использованием redis
 * eca-model - модуль содержит модель сообщений с классификаторами для передачи через rabbit mq
 * eca-user-model - модуль содержит основные классы для работы с пользовательским контекстом
 * eca-mail-transport - модуль содержит dto классы для сервиса eca-mail
@@ -46,7 +45,6 @@
 * classifiers-options-adapter - модуль для конвертации настроек классификаторов
 * eca-report - модуль генерации отчетов
 * eca-report-data - общая библиотека формирования данных для отчетов
-* feign-metrics - общая библиотека провайдера метрик для feign client
 * eca-tests-common - общая библиотека для модулей авто тестов
 * eca-oauth - модуль авторизации
 * eca-server - основной модуль, который принимает сообщения для обучения моделей классификаторов
@@ -57,7 +55,7 @@
 * eca-audit-log - модуль для сбора и хранения событий аудита
 * eca-external-api - предоставляет внешний API (web proxy) для обучения моделей классификаторов
 * eca-web - реализует web клиент для администрирования
-* zuul-gate - Zuul proxy  (API gateway)
+* api-gateway - реализует единую точку входа для микросервисов (API gateway)
 * discovery-server - Eureka discovery server
 * eca-load-tests - модуль для нагрузочного тестирования eca-server
 * eca-external-api-tests - модуль автоматических тестов для внешнего API
@@ -129,7 +127,7 @@ docker exec -it container_name bash
 
 Для копирования новой версии war файла в контейнер (container_name), необходимо выполнить команду:
 
-docker cp application.war container_name:/
+docker cp application.jar container_name:/
 
 ВАЖНО! Данную команду необходимо выполнять из директории, в которой лежит war файл. Либо можно указать абсолютный путь к war - файлу.
 

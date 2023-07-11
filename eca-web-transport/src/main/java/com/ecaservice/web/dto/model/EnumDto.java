@@ -21,12 +21,14 @@ public class EnumDto {
     /**
      * Enum value
      */
-    @Schema(description = "Enum value", required = true, example = "Enum code", maxLength = MAX_LENGTH_255)
+    @Schema(description = "Enum value", requiredMode = Schema.RequiredMode.REQUIRED, example = "Enum code",
+            maxLength = MAX_LENGTH_255)
     private String value;
 
     /**
      * Enum value description
      */
-    @Schema(description = "Enum value description", required = true, example = "Enum value", maxLength = MAX_LENGTH_255)
+    @Schema(description = "Enum value description", requiredMode = Schema.RequiredMode.REQUIRED, example = "Enum value",
+            maxLength = MAX_LENGTH_255)
     private String description;
 }

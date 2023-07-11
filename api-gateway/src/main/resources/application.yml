@@ -1,0 +1,88 @@
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          ## Enables eureka discovery integration
+          enabled: true
+      routes:
+        - id: eca-server
+          uri: lb://eca-server
+          predicates:
+            - Path=/eca-server/**
+          filters:
+            - StripPrefix=1
+        - id: eca-oauth
+          uri: lb://eca-oauth
+          predicates:
+            - Path=/eca-oauth/**
+          filters:
+              - StripPrefix=1
+        - id: eca-data-storage
+          uri: lb://eca-data-storage
+          predicates:
+            - Path=/eca-ds/**
+          filters:
+            - StripPrefix=1
+        - id: external-api
+          uri: lb://eca-external-api
+          predicates:
+            - Path=/external-api/**
+          filters:
+            - StripPrefix=1
+        - id: eca-mail
+          uri: lb://eca-mail
+          predicates:
+            - Path=/eca-mail/**
+          filters:
+            - StripPrefix=1
+        - id: eca-ers
+          uri: lb://eca-ers
+          predicates:
+            - Path=/eca-ers/**
+          filters:
+            - StripPrefix=1
+        - id: eca-web-push
+          uri: lb://eca-web-push
+          predicates:
+            - Path=/eca-web-push/**
+          filters:
+            - StripPrefix=1
+        - id: eca-audit-log
+          uri: lb://eca-audit-log
+          predicates:
+            - Path=/eca-audit-log/**
+          filters:
+            - StripPrefix=1
+        - id: eca-web
+          uri: lb://eca-web
+          predicates:
+            - Path=/**
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://discovery-server:8761/eureka
+
+management:
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+  info:
+    git:
+      enabled: true
+      mode: full
+  server:
+    port: 8030
+
+server:
+  forward-headers-strategy: framework

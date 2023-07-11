@@ -30,7 +30,7 @@ public class ClassificationCostsReport {
      */
     @NotBlank
     @Size(min = MIN_1, max = MAX_LENGTH_255)
-    @Schema(description = "Class value", example = "classValue", required = true)
+    @Schema(description = "Class value", example = "classValue", requiredMode = Schema.RequiredMode.REQUIRED)
     private String classValue;
 
     /**
@@ -39,7 +39,7 @@ public class ClassificationCostsReport {
     @NotNull
     @DecimalMin(value = DECIMAL_MIN_ZERO)
     @DecimalMax(value = DECIMAL_MAX_ONE)
-    @Schema(description = "True positive rate", example = "0.75", required = true)
+    @Schema(description = "True positive rate", example = "0.75", requiredMode = Schema.RequiredMode.REQUIRED)
     private BigDecimal truePositiveRate;
 
     /**
@@ -48,7 +48,7 @@ public class ClassificationCostsReport {
     @NotNull
     @DecimalMin(value = DECIMAL_MIN_ZERO)
     @DecimalMax(value = DECIMAL_MAX_ONE)
-    @Schema(description = "False positive rate", example = "0.25", required = true)
+    @Schema(description = "False positive rate", example = "0.25", requiredMode = Schema.RequiredMode.REQUIRED)
     private BigDecimal falsePositiveRate;
 
     /**
@@ -57,7 +57,7 @@ public class ClassificationCostsReport {
     @NotNull
     @DecimalMin(value = DECIMAL_MIN_ZERO)
     @DecimalMax(value = DECIMAL_MAX_ONE)
-    @Schema(description = "True negative rate", example = "0.25", required = true)
+    @Schema(description = "True negative rate", example = "0.25", requiredMode = Schema.RequiredMode.REQUIRED)
     private BigDecimal trueNegativeRate;
 
     /**
@@ -66,7 +66,7 @@ public class ClassificationCostsReport {
     @NotNull
     @DecimalMin(value = DECIMAL_MIN_ZERO)
     @DecimalMax(value = DECIMAL_MAX_ONE)
-    @Schema(description = "False negative rate", example = "0.5", required = true)
+    @Schema(description = "False negative rate", example = "0.5", requiredMode = Schema.RequiredMode.REQUIRED)
     private BigDecimal falseNegativeRate;
 
     /**

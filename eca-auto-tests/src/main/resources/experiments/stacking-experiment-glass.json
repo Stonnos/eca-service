@@ -1,0 +1,5 @@
+{
+  "experimentType": "STACKING",
+  "trainDataPath": "classpath:/data/glass.json",
+  "evaluationMethod": "CROSS_VALIDATION"
+}

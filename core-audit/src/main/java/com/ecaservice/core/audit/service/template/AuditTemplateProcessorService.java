@@ -24,6 +24,5 @@ public interface AuditTemplateProcessorService {
      * @return result message
      */
     @NotBlank
-    String process(@NotBlank String auditCode, @NotNull EventType eventType,
-                   @NotNull AuditContextParams auditContextParams);
+    String process(@NotBlank String auditCode, @NotNull EventType eventType, AuditContextParams auditContextParams);
 }

@@ -1,12 +1,6 @@
 spring:
   application:
     name: eca-data-storage
-  jmx:
-    default-domain: eca-data-storage
-  cloud:
-    loadbalancer:
-      ribbon:
-        enabled: false
   ## Datasource properties
   datasource:
     driver-class-name: org.postgresql.Driver
@@ -26,10 +20,9 @@ spring:
     contexts: schema,data
     change-log: classpath:db/liquibase-changelog.xml
   sleuth:
-    log:
-      slf4j:
-        whitelisted-mdc-keys: tx.id
-    propagation-keys: tx.id
+    baggage:
+      correlation-fields: tx.id
+      remote-fields: tx.id
   cache:
     cache-names: attributes
     caffeine:
@@ -43,8 +36,8 @@ eureka:
     registerWithEureka: false
     fetchRegistry: false
 
-ribbon:
-  ReadTimeout: 60000
+lock:
+  enabled: true
 
 eca-ds:
   dateFormat: yyyy-MM-dd HH:mm:ss

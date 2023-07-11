@@ -26,7 +26,7 @@ public class UpdateUserInfoDto {
     @NotBlank
     @Size(min = PERSON_NAME_MIN_SIZE, max = PERSON_NAME_MAX_SIZE)
     @Pattern(regexp = PERSON_NAME_REGEX)
-    @Schema(description = "First name", example = "Roman", required = true)
+    @Schema(description = "First name", example = "Roman", requiredMode = Schema.RequiredMode.REQUIRED)
     private String firstName;
 
     /**
@@ -35,7 +35,7 @@ public class UpdateUserInfoDto {
     @NotBlank
     @Size(min = PERSON_NAME_MIN_SIZE, max = PERSON_NAME_MAX_SIZE)
     @Pattern(regexp = PERSON_NAME_REGEX)
-    @Schema(description = "Last name", example = "Batygin", required = true)
+    @Schema(description = "Last name", example = "Batygin", requiredMode = Schema.RequiredMode.REQUIRED)
     private String lastName;
 
     /**
@@ -44,6 +44,6 @@ public class UpdateUserInfoDto {
     @NotBlank
     @Size(min = PERSON_NAME_MIN_SIZE, max = PERSON_NAME_MAX_SIZE)
     @Pattern(regexp = PERSON_NAME_REGEX)
-    @Schema(description = "Middle name", example = "Igorevich", required = true)
+    @Schema(description = "Middle name", example = "Igorevich", requiredMode = Schema.RequiredMode.REQUIRED)
     private String middleName;
 }

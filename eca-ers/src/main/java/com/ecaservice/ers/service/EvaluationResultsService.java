@@ -1,5 +1,6 @@
 package com.ecaservice.ers.service;
 
+import com.ecaservice.core.lock.annotation.Locked;
 import com.ecaservice.ers.dto.EvaluationResultsRequest;
 import com.ecaservice.ers.dto.EvaluationResultsResponse;
 import com.ecaservice.ers.dto.GetEvaluationResultsRequest;
@@ -15,7 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Implements service for saving evaluation results into database.
@@ -31,35 +31,30 @@ public class EvaluationResultsService {
     private final EvaluationResultsMapper evaluationResultsMapper;
     private final EvaluationResultsInfoRepository evaluationResultsInfoRepository;
 
-    private final ConcurrentHashMap<String, Object> cachedRequestIds = new ConcurrentHashMap<>();
-
     /**
      * Saves evaluation results report into database.
      *
      * @param evaluationResultsRequest - evaluation results report
      * @return evaluation results response
      */
+    @Locked(lockName = "saveEvaluationResults", key = "#evaluationResultsRequest.requestId")
     public EvaluationResultsResponse saveEvaluationResults(EvaluationResultsRequest evaluationResultsRequest) {
         log.info("Starting to save evaluation results report with request id = {}.",
                 evaluationResultsRequest.getRequestId());
-        cachedRequestIds.putIfAbsent(evaluationResultsRequest.getRequestId(), new Object());
-        synchronized (cachedRequestIds.get(evaluationResultsRequest.getRequestId())) {
-            if (evaluationResultsInfoRepository.existsByRequestId(evaluationResultsRequest.getRequestId())) {
-                log.error("Evaluation results with request id = {} is already exists!",
-                        evaluationResultsRequest.getRequestId());
-                throw new DuplicateRequestIdException(evaluationResultsRequest.getRequestId());
-            } else {
-                InstancesInfo instancesInfo = instancesService.getOrSaveInstancesInfo(evaluationResultsRequest);
-                EvaluationResultsInfo evaluationResultsInfo =
-                        evaluationResultsMapper.map(evaluationResultsRequest);
-                evaluationResultsInfo.setInstances(instancesInfo);
-                evaluationResultsInfo.setSaveDate(LocalDateTime.now());
-                evaluationResultsInfoRepository.save(evaluationResultsInfo);
-                log.info("Evaluation results report with request id = {} has been successfully saved.",
-                        evaluationResultsRequest.getRequestId());
-            }
+        if (evaluationResultsInfoRepository.existsByRequestId(evaluationResultsRequest.getRequestId())) {
+            log.error("Evaluation results with request id = {} is already exists!",
+                    evaluationResultsRequest.getRequestId());
+            throw new DuplicateRequestIdException(evaluationResultsRequest.getRequestId());
+        } else {
+            InstancesInfo instancesInfo = instancesService.getOrSaveInstancesInfo(evaluationResultsRequest);
+            EvaluationResultsInfo evaluationResultsInfo =
+                    evaluationResultsMapper.map(evaluationResultsRequest);
+            evaluationResultsInfo.setInstances(instancesInfo);
+            evaluationResultsInfo.setSaveDate(LocalDateTime.now());
+            evaluationResultsInfoRepository.save(evaluationResultsInfo);
+            log.info("Evaluation results report with request id = {} has been successfully saved.",
+                    evaluationResultsRequest.getRequestId());
         }
-        cachedRequestIds.remove(evaluationResultsRequest.getRequestId());
         return EvaluationResultsResponse.builder()
                 .requestId(evaluationResultsRequest.getRequestId())
                 .build();

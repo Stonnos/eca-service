@@ -11,9 +11,9 @@
 
 Необходимый софт
 ----------------------------------------
-* Openjdk 1.11
-* maven => 3.3.9
-* Rabbit MQ => 3
+* Openjdk 11
+* maven => 3.9.2
+* Rabbit MQ => 3.8.14
 * eca-core 6.9.4
 * Postgres Database для хранения информации 13.9
 
@@ -58,7 +58,7 @@
 
 2. Запустить проект с помощью команды:
 
-    java -jar /target/eca-auto-tests.war
+    java -jar /target/eca-auto-tests.jar
          
 3. Страница с документацией swagger находится по адресу http://[host]:[port]/eca-auto-tests/swagger-ui.html, где host и port
 соответственно адрес машины и порт на котором развернуто приложение.

@@ -1,20 +1,11 @@
 spring:
   application:
     name: eca-web
-  jmx:
-    default-domain: eca-web
-  cloud:
-    loadbalancer:
-      ribbon:
-        enabled: false
 
 eureka:
   client:
     registerWithEureka: false
     fetchRegistry: false
-
-ribbon:
-  ReadTimeout: 60000
 
 ## Swagger properties
 open-api:

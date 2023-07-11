@@ -5,14 +5,14 @@
     <parent>
         <artifactId>eca-service</artifactId>
         <groupId>eca.service</groupId>
-        <version>6.4.4</version>
+        <version>6.4.5</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>common-web</artifactId>
 
     <properties>
-        <hibernate-validator.version>6.0.18.Final</hibernate-validator.version>
+        <spring-web.version>5.3.28</spring-web.version>
         <sonar.coverage.exclusions>
             **/dto/**/*,
             **/util/**/*,
@@ -33,7 +33,6 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>${hibernate-validator.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -42,6 +41,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
+            <version>${spring-web.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>

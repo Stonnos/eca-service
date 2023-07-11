@@ -1,0 +1,12 @@
+{
+  "displayName": "KNN experiment request with external data url",
+  "trainDataSource": "API_DATA_STORAGE",
+  "trainDataPath": "classpath:/data/glass.json",
+  "request": {
+    "evaluationMethod": "TRAINING_DATA",
+    "experimentType": "KNN"
+  },
+  "expectedResponse": {
+    "responseCode": "SUCCESS"
+  }
+}

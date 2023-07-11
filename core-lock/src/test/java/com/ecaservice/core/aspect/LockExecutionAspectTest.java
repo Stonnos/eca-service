@@ -2,6 +2,7 @@ package com.ecaservice.core.aspect;
 
 import com.ecaservice.core.config.TestLockConfiguration;
 import com.ecaservice.core.lock.aspect.LockExecutionAspect;
+import com.ecaservice.core.lock.config.ImMemoryLockConfiguration;
 import com.ecaservice.core.lock.metrics.LockMeterService;
 import com.ecaservice.core.test.TestCounterService;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
 @EnableAspectJAutoProxy
-@Import({LockExecutionAspect.class, TestLockConfiguration.class})
+@Import({LockExecutionAspect.class, TestLockConfiguration.class, ImMemoryLockConfiguration.class})
 class LockExecutionAspectTest {
 
     private static final String KEY = "key";

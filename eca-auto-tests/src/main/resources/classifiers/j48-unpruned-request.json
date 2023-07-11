@@ -1,5 +1,5 @@
 {
-  "trainDataPath": "classpath:/data/credit.xlsx",
+  "trainDataPath": "classpath:/data/credit.json",
   "classifierOptions": {
     "type": "j48",
     "unpruned": true,

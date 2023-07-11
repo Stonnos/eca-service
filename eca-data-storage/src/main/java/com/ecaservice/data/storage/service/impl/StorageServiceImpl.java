@@ -56,7 +56,7 @@ import static com.ecaservice.data.storage.util.Utils.MIN_NUM_CLASSES;
  * @author Roman Batygin
  */
 @Slf4j
-@Service
+@Service("storageServiceImpl")
 @RequiredArgsConstructor
 public class StorageServiceImpl implements StorageService {
 

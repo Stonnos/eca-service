@@ -10,14 +10,12 @@ import org.springframework.integration.support.locks.LockRegistry;
 @TestConfiguration
 public class TestLockConfiguration {
 
-    public static final String DEFAULT_LOCK_REGISTRY = "defaultLockRegistry";
-
     @Bean
     public TestCounterService testCounterService() {
         return new TestCounterService();
     }
 
-    @Bean(DEFAULT_LOCK_REGISTRY)
+    @Bean
     public LockRegistry defaultLockRegistry() {
         return new DefaultLockRegistry();
     }

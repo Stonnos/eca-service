@@ -22,8 +22,8 @@ public class ChartDto {
     /**
      * Total items
      */
-    @Schema(description = "Total items", required = true, example = "10", minimum = ZERO_VALUE_STRING,
-            maximum = MAX_LONG_VALUE_STRING)
+    @Schema(description = "Total items", requiredMode = Schema.RequiredMode.REQUIRED, example = "10",
+            minimum = ZERO_VALUE_STRING, maximum = MAX_LONG_VALUE_STRING)
     private Long total;
 
     /**

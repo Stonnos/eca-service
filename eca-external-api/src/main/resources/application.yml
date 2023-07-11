@@ -1,12 +1,6 @@
 spring:
   application:
     name: eca-external-api
-  jmx:
-    default-domain: eca-external-api
-  cloud:
-    loadbalancer:
-      ribbon:
-        enabled: false
   ## Datasource properties
   datasource:
     driver-class-name: org.postgresql.Driver
@@ -41,9 +35,6 @@ eureka:
   client:
     registerWithEureka: false
     fetchRegistry: false
-
-ribbon:
-  ReadTimeout: 60000
 
 external-api:
   dateFormat: yyyy-MM-dd HH:mm:ss

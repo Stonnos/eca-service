@@ -27,7 +27,7 @@ public class InstancesInfo {
     /**
      * Data MD5 hash
      */
-    @Column(name = "data_md5_hash", nullable = false)
+    @Column(name = "data_md5_hash", nullable = false, unique = true)
     private String dataMd5Hash;
 
     /**

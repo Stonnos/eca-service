@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationContext;
 import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.integration.support.locks.LockRegistry;
@@ -25,7 +24,6 @@ import org.springframework.util.StringUtils;
 @Slf4j
 @Aspect
 @Component
-@ConditionalOnProperty(value = "lock.enabled", havingValue = "true")
 public class LockExecutionAspect {
 
     private static final String LOCK_KEY_FORMAT = "%s-%s";

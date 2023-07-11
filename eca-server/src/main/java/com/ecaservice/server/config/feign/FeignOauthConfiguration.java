@@ -2,7 +2,7 @@ package com.ecaservice.server.config.feign;
 
 import com.ecaservice.oauth2.config.AuthServerConfig;
 import feign.RequestInterceptor;
-import org.springframework.cloud.security.oauth2.client.feign.OAuth2FeignRequestInterceptor;
+import org.springframework.cloud.openfeign.security.OAuth2FeignRequestInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.oauth2.client.DefaultOAuth2ClientContext;
 import org.springframework.security.oauth2.client.token.grant.client.ClientCredentialsResourceDetails;

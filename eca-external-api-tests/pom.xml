@@ -5,17 +5,16 @@
     <parent>
         <artifactId>eca-service</artifactId>
         <groupId>eca.service</groupId>
-        <version>6.4.4</version>
+        <version>6.4.5</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>eca-external-api-tests</artifactId>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 
     <properties>
-        <commons.csv.version>1.8</commons.csv.version>
         <sonar.coverage.exclusions>**/*.*</sonar.coverage.exclusions>
-        <spring-boot-camunda-bpm.version>7.14.0</spring-boot-camunda-bpm.version>
+        <spring-boot-camunda-bpm.version>7.19.0</spring-boot-camunda-bpm.version>
     </properties>
 
     <dependencies>
@@ -29,7 +28,6 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-csv</artifactId>
-            <version>${commons.csv.version}</version>
         </dependency>
 
         <dependency>

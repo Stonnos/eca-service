@@ -7,6 +7,7 @@ import com.ecaservice.audit.filter.AuditLogFilter;
 import com.ecaservice.audit.mapping.AuditLogMapper;
 import com.ecaservice.audit.repository.AuditLogRepository;
 import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.lock.annotation.Locked;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +17,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static com.ecaservice.audit.dictionary.FilterDictionaries.AUDIT_LOG_TEMPLATE;
 import static com.ecaservice.audit.entity.AuditLogEntity_.EVENT_DATE;
@@ -36,29 +36,23 @@ public class AuditLogService {
     private final FilterService filterService;
     private final AuditLogRepository auditLogRepository;
 
-    private final ConcurrentHashMap<String, Object> eventIdsMap = new ConcurrentHashMap<>();
-
     /**
      * Saves audit event into database.
      *
      * @param auditEventRequest - audit event request
      * @return audit log entity
      */
+    @Locked(lockName = "saveAuditEvent", key = "#auditEventRequest.eventId")
     public AuditLogEntity save(AuditEventRequest auditEventRequest) {
         log.info("Starting to save audit event [{}], code [{}] type [{}]", auditEventRequest.getEventId(),
                 auditEventRequest.getCode(), auditEventRequest.getEventType());
-        AuditLogEntity auditLogEntity;
-        eventIdsMap.putIfAbsent(auditEventRequest.getEventId(), new Object());
-        synchronized (eventIdsMap.get(auditEventRequest.getEventId())) {
-            if (auditLogRepository.existsByEventId(auditEventRequest.getEventId())) {
-                throw new DuplicateEventIdException(auditEventRequest.getEventId());
-            }
-            auditLogEntity = auditLogMapper.map(auditEventRequest);
-            auditLogRepository.save(auditLogEntity);
-            log.info("Audit event [{}] with code [{}], type [{}] has been saved", auditEventRequest.getEventId(),
-                    auditEventRequest.getCode(), auditEventRequest.getEventType());
+        if (auditLogRepository.existsByEventId(auditEventRequest.getEventId())) {
+            throw new DuplicateEventIdException(auditEventRequest.getEventId());
         }
-        eventIdsMap.remove(auditEventRequest.getEventId());
+        AuditLogEntity auditLogEntity = auditLogMapper.map(auditEventRequest);
+        auditLogRepository.save(auditLogEntity);
+        log.info("Audit event [{}] with code [{}], type [{}] has been saved", auditEventRequest.getEventId(),
+                auditEventRequest.getCode(), auditEventRequest.getEventType());
         return auditLogEntity;
     }
 
