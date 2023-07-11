@@ -2,8 +2,6 @@ package com.ecaservice.load.test;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
 /**
  * Main class for load tests application.
@@ -11,12 +9,7 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
  * @author Roman Batygin
  */
 @SpringBootApplication
-public class EcaLoadTestsApplication extends SpringBootServletInitializer {
-
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-        return builder.sources(EcaLoadTestsApplication.class);
-    }
+public class EcaLoadTestsApplication {
 
     /**
      * Runs application.

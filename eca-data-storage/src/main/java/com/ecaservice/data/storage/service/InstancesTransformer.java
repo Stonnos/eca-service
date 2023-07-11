@@ -23,10 +23,13 @@ import static com.google.common.collect.Lists.newArrayList;
 @Component
 public class InstancesTransformer {
 
+    private static final String ATTRIBUTE_NAME_FORMAT = "attribute_%d";
+
     /**
      * Transforms specified instances. Transformation includes:
      * 1. Reindexing all nominal attributes according to their order in the data table.
-     * 2. Removed unused nominal attribute values
+     * 2. Removed unused nominal attribute values.
+     * 3. Renames each attribute name with format attribute_<<attribute_index>> for database column.
      *
      * @param sourceData - source instances
      * @return result instances
@@ -61,12 +64,13 @@ public class InstancesTransformer {
         return IntStream.range(0, data.numAttributes())
                 .mapToObj(i -> {
                     Attribute a = data.attribute(i);
+                    String attributeName = String.format(ATTRIBUTE_NAME_FORMAT, i);
                     if (a.isDate()) {
-                        return new Attribute(a.name(), a.getDateFormat());
+                        return new Attribute(attributeName, a.getDateFormat());
                     } else if (a.isNumeric()) {
-                        return new Attribute(a.name());
+                        return new Attribute(attributeName);
                     } else {
-                        return new Attribute(a.name(), createNominalAttributeValues(data, a));
+                        return new Attribute(attributeName, createNominalAttributeValues(data, a));
                     }
                 }).collect(Collectors.toCollection(ArrayList::new));
     }

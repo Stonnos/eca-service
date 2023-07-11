@@ -141,6 +141,78 @@ a|`core_lock_acquire_error_total{application="eca-server",lockName="setActiveCla
 |*core_unlock_error_total{application="eca-server",lockName="setActiveClassifiersConfiguration",}*
 |Счетчик числа ошибок при попытке снять блокировку setActiveClassifiersConfiguration
 a|`core_unlock_error_total{application="eca-server",lockName="setActiveClassifiersConfiguration",} 2.0`
+|*core_lock_success_total{application="eca-data-storage",lockName="saveOrUpdateDataset",}*
+|Счетчик числа успешных блокировок saveOrUpdateDataset (сохранение/обновление данных о датасете)
+a|`core_lock_success_total{application="eca-data-storage",lockName="saveOrUpdateDataset",} 2.0`
+|*core_unlock_success_total{application="eca-data-storage",lockName="saveOrUpdateDataset",}*
+|Счетчик числа успешных операций снятия блокировок saveOrUpdateDataset
+a|`core_unlock_success_total{application="eca-data-storage",lockName="saveOrUpdateDataset",} 2.0`
+|*core_lock_acquire_error_total{application="eca-data-storage",lockName="saveOrUpdateDataset",}*
+|Счетчик числа ошибок при получении блокировки saveOrUpdateDataset
+a|`core_lock_acquire_error_total{application="eca-data-storage",lockName="saveOrUpdateDataset",} 2.0`
+|*core_unlock_error_total{application="eca-data-storage",lockName="saveOrUpdateDataset",}*
+|Счетчик числа ошибок при попытке снять блокировку saveOrUpdateDataset
+a|`core_unlock_error_total{application="eca-data-storage",lockName="saveOrUpdateDataset",} 2.0`
+|*core_lock_success_total{application="eca-mail",lockName="saveEmail",}*
+|Счетчик числа успешных блокировок saveEmail (сохранение запроса на отправку email)
+a|`core_lock_success_total{application="eca-mail",lockName="saveEmail",} 2.0`
+|*core_unlock_success_total{application="eca-mail",lockName="saveEmail",}*
+|Счетчик числа успешных операций снятия блокировок saveEmail
+a|`core_unlock_success_total{application="eca-mail",lockName="saveEmail",} 2.0`
+|*core_lock_acquire_error_total{application="eca-mail",lockName="saveEmail",}*
+|Счетчик числа ошибок при получении блокировки saveEmail
+a|`core_lock_acquire_error_total{application="eca-mail",lockName="saveEmail",} 2.0`
+|*core_unlock_error_total{application="eca-mail",lockName="saveEmail",}*
+|Счетчик числа ошибок при попытке снять блокировку saveEmail
+a|`core_unlock_error_total{application="eca-mail",lockName="saveEmail",} 2.0`
+|*core_lock_success_total{application="eca-ers",lockName="saveEvaluationResults",}*
+|Счетчик числа успешных блокировок saveEvaluationResults (сохранение результатов классификации в ERS)
+a|`core_lock_success_total{application="eca-ers",lockName="saveEvaluationResults",} 2.0`
+|*core_unlock_success_total{application="eca-ers",lockName="saveEvaluationResults",}*
+|Счетчик числа успешных операций снятия блокировок saveEvaluationResults
+a|`core_unlock_success_total{application="eca-ers",lockName="saveEvaluationResults",} 2.0`
+|*core_lock_acquire_error_total{application="eca-ers",lockName="saveEvaluationResults",}*
+|Счетчик числа ошибок при получении блокировки saveEvaluationResults
+a|`core_lock_acquire_error_total{application="eca-ers",lockName="saveEvaluationResults",} 2.0`
+|*core_unlock_error_total{application="eca-ers",lockName="saveEvaluationResults",}*
+|Счетчик числа ошибок при попытке снять блокировку saveEvaluationResults
+a|`core_unlock_error_total{application="eca-ers",lockName="saveEvaluationResults",} 2.0`
+|*core_lock_success_total{application="eca-audit-log",lockName="saveAuditEvent",}*
+|Счетчик числа успешных блокировок saveAuditEvent (сохранение события аудита)
+a|`core_lock_success_total{application="eca-audit-log",lockName="saveAuditEvent",} 2.0`
+|*core_unlock_success_total{application="eca-audit-log",lockName="saveAuditEvent",}*
+|Счетчик числа успешных операций снятия блокировок saveAuditEvent
+a|`core_unlock_success_total{application="eca-audit-log",lockName="saveAuditEvent",} 2.0`
+|*core_lock_acquire_error_total{application="eca-audit-log",lockName="saveAuditEvent",}*
+|Счетчик числа ошибок при получении блокировки saveAuditEvent
+a|`core_lock_acquire_error_total{application="eca-audit-log",lockName="saveAuditEvent",} 2.0`
+|*core_unlock_error_total{application="eca-audit-log",lockName="saveAuditEvent",}*
+|Счетчик числа ошибок при попытке снять блокировку saveAuditEvent
+a|`core_unlock_error_total{application="eca-audit-log",lockName="saveAuditEvent",} 2.0`
+|*core_lock_success_total{application="eca-ers",lockName="getOrSaveErsInstancesInfo",}*
+|Счетчик числа успешных блокировок getOrSaveErsInstancesInfo (сохранение обучающей выборки в ERS)
+a|`core_lock_success_total{application="eca-ers",lockName="getOrSaveErsInstancesInfo",} 2.0`
+|*core_unlock_success_total{application="eca-ers",lockName="getOrSaveErsInstancesInfo",}*
+|Счетчик числа успешных операций снятия блокировок getOrSaveErsInstancesInfo
+a|`core_unlock_success_total{application="eca-ers",lockName="getOrSaveErsInstancesInfo",} 2.0`
+|*core_lock_acquire_error_total{application="eca-ers",lockName="getOrSaveErsInstancesInfo",}*
+|Счетчик числа ошибок при получении блокировки getOrSaveErsInstancesInfo
+a|`core_lock_acquire_error_total{application="eca-ers",lockName="getOrSaveErsInstancesInfo",} 2.0`
+|*core_unlock_error_total{application="eca-ers",lockName="getOrSaveErsInstancesInfo",}*
+|Счетчик числа ошибок при попытке снять блокировку getOrSaveErsInstancesInfo
+a|`core_unlock_error_total{application="eca-server",lockName="getOrSaveErsInstancesInfo",} 2.0`
+|*core_lock_success_total{application="eca-server",lockName="getOrSaveInstancesInfo",}*
+|Счетчик числа успешных блокировок getOrSaveInstancesInfo (сохранение обучающей выборки)
+a|`core_lock_success_total{application="eca-server",lockName="getOrSaveInstancesInfo",} 2.0`
+|*core_unlock_success_total{application="eca-server",lockName="getOrSaveInstancesInfo",}*
+|Счетчик числа успешных операций снятия блокировок getOrSaveInstancesInfo
+a|`core_unlock_success_total{application="eca-server",lockName="getOrSaveInstancesInfo",} 2.0`
+|*core_lock_acquire_error_total{application="eca-server",lockName="getOrSaveInstancesInfo",}*
+|Счетчик числа ошибок при получении блокировки getOrSaveInstancesInfo
+a|`core_lock_acquire_error_total{application="eca-server",lockName="getOrSaveInstancesInfo",} 2.0`
+|*core_unlock_error_total{application="eca-server",lockName="getOrSaveInstancesInfo",}*
+|Счетчик числа ошибок при попытке снять блокировку getOrSaveInstancesInfo
+a|`core_unlock_error_total{application="eca-server",lockName="getOrSaveInstancesInfo",} 2.0`
 |*core_lock_success_total{application="eca-server",lockName="experiment",}*
 |Счетчик числа успешных блокировок experiment (обработка заявки на эксперимент)
 a|`core_lock_success_total{application="eca-server",lockName="experiment",} 2.0`

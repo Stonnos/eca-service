@@ -21,14 +21,16 @@ public class CreateExperimentResultDto {
     /**
      * Experiment id
      */
-    @Schema(description = "Experiment id", required = true, example = "1", minimum = VALUE_1_STRING,
+    @Schema(description = "Experiment id", requiredMode = Schema.RequiredMode.REQUIRED, example = "1",
+            minimum = VALUE_1_STRING,
             maximum = MAX_LONG_VALUE_STRING)
     private Long id;
 
     /**
      * Request id
      */
-    @Schema(description = "Request id", required = true, example = "1d2de514-3a87-4620-9b97-c260e24340de",
+    @Schema(description = "Request id", requiredMode = Schema.RequiredMode.REQUIRED,
+            example = "1d2de514-3a87-4620-9b97-c260e24340de",
             maxLength = UUID_MAX_LENGTH)
     private String requestId;
 }

@@ -21,8 +21,6 @@ import { Utils } from "../../common/util/utils";
 })
 export class CreateEditInstancesComponent extends BaseCreateDialogComponent<CreateEditInstancesModel> implements OnInit {
 
-  public tableNameRegex: string = '[a-z][0-9a-z_]*';
-
   public loading: boolean = false;
 
   public hasSameTableName: boolean = false;
@@ -59,7 +57,7 @@ export class CreateEditInstancesComponent extends BaseCreateDialogComponent<Crea
 
   private renameData(): void {
     this.loading = true;
-    this.instancesService.renameData(this.item.id, this.item.tableName)
+    this.instancesService.renameData(this.item.id, this.item.relationName)
       .pipe(
         finalize(() => {
           this.loading = false;
@@ -78,7 +76,7 @@ export class CreateEditInstancesComponent extends BaseCreateDialogComponent<Crea
 
   private saveData(): void {
     this.loading = true;
-    this.instancesService.saveData(this.item.file, this.item.tableName)
+    this.instancesService.saveData(this.item.file, this.item.relationName)
       .pipe(
         finalize(() => {
           this.loading = false;
@@ -111,7 +109,7 @@ export class CreateEditInstancesComponent extends BaseCreateDialogComponent<Crea
           summary: 'Не удалось добавить датасет. Датасет должен содержать хотя бы одну строку с данными', detail: '' });
         return;
       }
-      this.hasSameTableName = this.validationService.hasErrorCode(errors, ValidationErrorCode.UNIQUE_TABLE_NAME);
+      this.hasSameTableName = this.validationService.hasErrorCode(errors, ValidationErrorCode.DUPLICATE_INSTANCES_NAME);
     } else {
       this.messageService.add({ severity: 'error', summary: 'Не удалось загрузить датасет', detail: error.message });
     }
@@ -126,7 +124,7 @@ export class CreateEditInstancesComponent extends BaseCreateDialogComponent<Crea
   public onUpload(file: File): void {
     this.hasSameTableName = false;
     this.item.file = file;
-    this.item.tableName = Utils.getFileNameWithoutExtension(file.name);
+    this.item.relationName = Utils.getFileNameWithoutExtension(file.name);
     this.fileUpload.resetUpload();
   }
 

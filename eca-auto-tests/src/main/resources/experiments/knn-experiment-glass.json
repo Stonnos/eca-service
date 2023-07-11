@@ -1,0 +1,5 @@
+{
+  "experimentType": "KNN",
+  "trainDataPath": "classpath:/data/glass.json",
+  "evaluationMethod": "CROSS_VALIDATION"
+}

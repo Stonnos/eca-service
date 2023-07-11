@@ -23,7 +23,7 @@ public class ClassifierReport {
      */
     @NotBlank
     @Size(min = MIN_1, max = MAX_LENGTH_255)
-    @Schema(description = "Classifier name", example = "CART", required = true)
+    @Schema(description = "Classifier name", example = "CART", requiredMode = Schema.RequiredMode.REQUIRED)
     private String classifierName;
 
     /**
@@ -38,6 +38,7 @@ public class ClassifierReport {
      */
     @NotBlank
     @Size(min = MIN_1)
-    @Schema(description = "Classifier options string", example = "classifier options string", required = true)
+    @Schema(description = "Classifier options string", example = "classifier options string",
+            requiredMode = Schema.RequiredMode.REQUIRED)
     private String options;
 }

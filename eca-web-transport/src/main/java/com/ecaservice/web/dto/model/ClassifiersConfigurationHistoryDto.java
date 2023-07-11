@@ -26,26 +26,27 @@ public class ClassifiersConfigurationHistoryDto {
     /**
      * ID
      */
-    @Schema(description = "ID", example = "1", required = true, minimum = VALUE_1_STRING,
+    @Schema(description = "ID", example = "1", requiredMode = Schema.RequiredMode.REQUIRED, minimum = VALUE_1_STRING,
             maximum = MAX_LONG_VALUE_STRING)
     private Long id;
 
     /**
      * Action type
      */
-    @Schema(description = "Action type", required = true)
+    @Schema(description = "Action type", requiredMode = Schema.RequiredMode.REQUIRED)
     private EnumDto actionType;
 
     /**
      * Message text
      */
-    @Schema(description = "Message text", required = true, example = "Message text")
+    @Schema(description = "Message text", requiredMode = Schema.RequiredMode.REQUIRED, example = "Message text")
     private String messageText;
 
     /**
      * Creation date
      */
-    @Schema(description = "Creation date", required = true, type = "string", example = "2021-07-01 14:00:00",
+    @Schema(description = "Creation date", requiredMode = Schema.RequiredMode.REQUIRED, type = "string",
+            example = "2021-07-01 14:00:00",
             maxLength = LOCAL_DATE_TIME_MAX_LENGTH)
     @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
@@ -54,6 +55,7 @@ public class ClassifiersConfigurationHistoryDto {
     /**
      * User name
      */
-    @Schema(description = "User name", example = "admin", required = true, maxLength = MAX_LENGTH_255)
+    @Schema(description = "User name", example = "admin", requiredMode = Schema.RequiredMode.REQUIRED,
+            maxLength = MAX_LENGTH_255)
     private String createdBy;
 }

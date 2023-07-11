@@ -5,15 +5,14 @@
     <parent>
         <artifactId>eca-service</artifactId>
         <groupId>eca.service</groupId>
-        <version>6.4.4</version>
+        <version>6.4.5</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>eca-auto-tests</artifactId>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 
     <properties>
-        <commons.csv.version>1.8</commons.csv.version>
         <jsonb.support.version>2.14.0</jsonb.support.version>
         <sonar.coverage.exclusions>**/*.*</sonar.coverage.exclusions>
     </properties>

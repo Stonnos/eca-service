@@ -1,12 +1,6 @@
 spring:
   application:
     name: eca-server
-  jmx:
-    default-domain: eca-server
-  cloud:
-    loadbalancer:
-      ribbon:
-        enabled: false
   ## Eca datasource properties
   datasource:
     driver-class-name: org.postgresql.Driver
@@ -29,6 +23,8 @@ spring:
     change-log: classpath:db/liquibase-changelog.xml
   cache:
     type: caffeine
+  redis:
+    client-type: jedis
   rabbitmq:
     listener:
       simple:
@@ -42,17 +38,14 @@ spring:
       repositories:
         enabled: false
   sleuth:
-    log:
-      slf4j:
-        whitelisted-mdc-keys: tx.id, ev.requestId
-    propagation-keys: tx.id, ev.requestId
+    baggage:
+      correlation-fields: tx.id, ev.requestId
+      remote-fields: tx.id, ev.requestId
+
 eureka:
   client:
     registerWithEureka: false
     fetchRegistry: false
-
-ribbon:
-  ReadTimeout: 60000
 
 ## Application properties
 app:
@@ -159,10 +152,6 @@ auth-server:
   baseUrl: http://localhost:8085/eca-oauth
   clientId: eca_service_tech
   clientSecret: 02#eca_service_tech6
-
-redis-lock:
-  expireAfter: 60000
-  registryKey: eca-server-lock
 
 management:
   metrics:

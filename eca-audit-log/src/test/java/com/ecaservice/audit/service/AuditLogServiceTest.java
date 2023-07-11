@@ -7,11 +7,14 @@ import com.ecaservice.audit.mapping.AuditLogMapperImpl;
 import com.ecaservice.audit.repository.AuditLogRepository;
 import com.ecaservice.core.filter.exception.FieldNotFoundException;
 import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.lock.config.CoreLockAutoConfiguration;
+import com.ecaservice.core.lock.metrics.LockMeterService;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 
@@ -40,7 +43,8 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({AuditLogMapperImpl.class, AuditLogService.class})
+@EnableAspectJAutoProxy
+@Import({AuditLogMapperImpl.class, AuditLogService.class, CoreLockAutoConfiguration.class})
 class AuditLogServiceTest extends AbstractJpaTest {
 
     private static final int PAGE_NUMBER = 0;
@@ -55,6 +59,8 @@ class AuditLogServiceTest extends AbstractJpaTest {
 
     @MockBean
     private FilterService filterService;
+    @MockBean
+    private LockMeterService lockMeterService;
 
     @Override
     public void deleteAll() {

@@ -44,7 +44,7 @@ public class InstancesModelResultSetExtractor implements ResultSetExtractor<Inst
         ArrayList<AttributeModel> attributes = createAttributes();
         InstancesModel instancesModel = new InstancesModel();
         instancesModel.setInstances(newArrayList());
-        instancesModel.setRelationName(instancesEntity.getTableName());
+        instancesModel.setRelationName(instancesEntity.getRelationName());
         instancesModel.setAttributes(attributes);
         var valueExtractor = new AttributeValueExtractor(resultSet, DateTimeFormatter.ofPattern(dateFormat));
         while (resultSet.next()) {
@@ -64,7 +64,7 @@ public class InstancesModelResultSetExtractor implements ResultSetExtractor<Inst
             instancesModel.getInstances().add(instance);
         }
         if (instancesEntity.getClassAttribute() != null) {
-            instancesModel.setClassName(instancesEntity.getClassAttribute().getColumnName());
+            instancesModel.setClassName(instancesEntity.getClassAttribute().getAttributeName());
         }
         return instancesModel;
     }
@@ -109,7 +109,7 @@ public class InstancesModelResultSetExtractor implements ResultSetExtractor<Inst
 
             AttributeModel createAttributeModel() {
                 AttributeModel attributeModel = new AttributeModel();
-                attributeModel.setName(attributeEntity.getColumnName());
+                attributeModel.setName(attributeEntity.getAttributeName());
                 return attributeModel;
             }
         });

@@ -31,19 +31,22 @@ public class ClassifierOptionsDto {
     /**
      * Options name
      */
-    @Schema(description = "Options name", required = true, example = "DecisionTreeOptions", maxLength = MAX_LENGTH_255)
+    @Schema(description = "Options name", requiredMode = Schema.RequiredMode.REQUIRED, example = "DecisionTreeOptions",
+            maxLength = MAX_LENGTH_255)
     private String optionsName;
 
     /**
      * Options description
      */
-    @Schema(description = "Options description", required = true, example = "Decision tree", maxLength = MAX_LENGTH_255)
+    @Schema(description = "Options description", requiredMode = Schema.RequiredMode.REQUIRED, example = "Decision tree",
+            maxLength = MAX_LENGTH_255)
     private String optionsDescription;
 
     /**
      * Creation date
      */
-    @Schema(description = "Creation date", required = true, type = "string", example = "2021-07-01 14:00:00",
+    @Schema(description = "Creation date", requiredMode = Schema.RequiredMode.REQUIRED, type = "string",
+            example = "2021-07-01 14:00:00",
             maxLength = LOCAL_DATE_TIME_MAX_LENGTH)
     @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
@@ -58,7 +61,7 @@ public class ClassifierOptionsDto {
     /**
      * Json config
      */
-    @Schema(description = "Json config", required = true, example = "Json config")
+    @Schema(description = "Json config", requiredMode = Schema.RequiredMode.REQUIRED, example = "Json config")
     private String config;
 
     /**

@@ -38,7 +38,7 @@ export class InstancesListComponent extends BaseListComponent<InstancesDto> impl
                      private router: Router) {
     super(injector.get(MessageService), injector.get(FieldService));
     this.defaultSortField = InstancesFields.CREATED;
-    this.linkColumns = [InstancesFields.TABLE_NAME];
+    this.linkColumns = [InstancesFields.RELATION_NAME];
     this.notSortableColumns = [InstancesFields.CLASS_NAME];
     this.initColumns();
   }
@@ -56,7 +56,7 @@ export class InstancesListComponent extends BaseListComponent<InstancesDto> impl
 
   public showCreateEditInstancesDialog(item?: InstancesDto): void {
     if (item && item.id) {
-      this.createEditInstancesModel = new CreateEditInstancesModel(item.id, item.tableName);
+      this.createEditInstancesModel = new CreateEditInstancesModel(item.id, item.relationName);
     } else {
       this.createEditInstancesModel = new CreateEditInstancesModel();
     }
@@ -69,7 +69,7 @@ export class InstancesListComponent extends BaseListComponent<InstancesDto> impl
 
   public onCreateInstances(createInstancesResultDto: CreateInstancesResultDto): void {
     this.messageService.add({ severity: 'success',
-      summary: `Добавлен новый датасет ${createInstancesResultDto.tableName}`, detail: '' });
+      summary: `Добавлен новый датасет ${createInstancesResultDto.relationName}`, detail: '' });
     this.lastCreatedId = createInstancesResultDto.id;
     this.reloadPageWithLoader();
   }
@@ -86,7 +86,7 @@ export class InstancesListComponent extends BaseListComponent<InstancesDto> impl
   }
 
   public onLink(item: InstancesDto, column: string): void {
-    if (column == InstancesFields.TABLE_NAME) {
+    if (column == InstancesFields.RELATION_NAME) {
       this.router.navigate([RouterPaths.INSTANCES_DETAILS_URL, item.id]);
     } else {
       this.messageService.add({severity: 'error', summary: 'Ошибка', detail: `Can't handle ${column} as link`});
@@ -94,7 +94,7 @@ export class InstancesListComponent extends BaseListComponent<InstancesDto> impl
   }
 
   public onExportInstances(item: InstancesDto): void {
-    this.exportInstancesModel = new ExportInstancesModel(item.id, item.tableName);
+    this.exportInstancesModel = new ExportInstancesModel(item.id, item.relationName);
     this.exportInstancesDialogVisibility = true;
   }
 
@@ -112,7 +112,7 @@ export class InstancesListComponent extends BaseListComponent<InstancesDto> impl
       )
       .subscribe({
         next: () => {
-          this.messageService.add({ severity: 'success', summary: `Данные ${item.tableName} были успешно удалены`, detail: '' });
+          this.messageService.add({ severity: 'success', summary: `Данные ${item.relationName} были успешно удалены`, detail: '' });
           this.reloadPageWithLoader();
         },
         error: (error) => {
@@ -124,7 +124,7 @@ export class InstancesListComponent extends BaseListComponent<InstancesDto> impl
   private initColumns() {
     this.columns = [
       { name: InstancesFields.ID, label: "#" },
-      { name: InstancesFields.TABLE_NAME, label: "Название таблицы" },
+      { name: InstancesFields.RELATION_NAME, label: "Название данных" },
       { name: InstancesFields.NUM_INSTANCES, label: "Число объектов" },
       { name: InstancesFields.NUM_ATTRIBUTES, label: "Число атрибутов" },
       { name: InstancesFields.CLASS_NAME, label: "Атрибут класса" },

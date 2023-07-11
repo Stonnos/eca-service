@@ -77,6 +77,6 @@ class ClassifierOptionsRequestsBaseReportDataFetcherTest extends AbstractJpaTest
                 new FilterRequestDto(ErsRequest_.REQUEST_ID, Collections.singletonList(requestModel.getRequestId()),
                         MatchMode.LIKE));
         var baseReportBean = classifierOptionsRequestsBaseReportDataFetcher.fetchReportData(pageRequestDto);
-        assertBaseReportBean(baseReportBean, pageRequestDto);
+        assertBaseReportBean(baseReportBean);
     }
 }

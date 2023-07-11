@@ -93,14 +93,14 @@ public abstract class AbstractBaseReportDataFetcher<E, B> {
                             .map(String::trim)
                             .collect(Collectors.toList());
                     if (!CollectionUtils.isEmpty(values)) {
-                        FilterBean filterBean = new FilterBean();
                         FilterFieldDto filterFieldDto = filterFieldsMap.get(filterRequestDto.getName());
-                        String description =
-                                Optional.ofNullable(filterFieldDto).map(FilterFieldDto::getDescription).orElse(null);
-                        filterBean.setDescription(description);
-                        String filterData = getFilterValuesAsString(filterRequestDto, values, filterFieldDto);
-                        filterBean.setFilterData(filterData);
-                        filterBeans.add(filterBean);
+                        if (filterFieldDto != null) {
+                            FilterBean filterBean = new FilterBean();
+                            filterBean.setDescription(filterFieldDto.getDescription());
+                            String filterData = getFilterValuesAsString(filterRequestDto, values, filterFieldDto);
+                            filterBean.setFilterData(filterData);
+                            filterBeans.add(filterBean);
+                        }
                     }
                 }
             });
@@ -110,18 +110,16 @@ public abstract class AbstractBaseReportDataFetcher<E, B> {
 
     private String getFilterValuesAsString(FilterRequestDto filterRequestDto, List<String> values,
                                            FilterFieldDto filterFieldDto) {
-        if (filterFieldDto != null) {
-            if (FilterFieldType.DATE.equals(filterFieldDto.getFilterFieldType())
-                    && MatchMode.RANGE.equals(filterRequestDto.getMatchMode())) {
-                return getDateRangeAsString(values, filterRequestDto);
-            } else {
-                if (FilterFieldType.REFERENCE.equals(filterFieldDto.getFilterFieldType())
-                        && Optional.ofNullable(filterFieldDto.getDictionary())
-                        .map(FilterDictionaryDto::getValues).isPresent()) {
-                    return getValuesFromDictionary(values, filterFieldDto.getDictionary());
-                } else if (FilterFieldType.LAZY_REFERENCE.equals(filterFieldDto.getFilterFieldType())) {
-                    return getLazyReferenceFilterValuesAsString(values, filterFieldDto);
-                }
+        if (FilterFieldType.DATE.equals(filterFieldDto.getFilterFieldType())
+                && MatchMode.RANGE.equals(filterRequestDto.getMatchMode())) {
+            return getDateRangeAsString(values, filterRequestDto);
+        } else {
+            if (FilterFieldType.REFERENCE.equals(filterFieldDto.getFilterFieldType())
+                    && Optional.ofNullable(filterFieldDto.getDictionary())
+                    .map(FilterDictionaryDto::getValues).isPresent()) {
+                return getValuesFromDictionary(values, filterFieldDto.getDictionary());
+            } else if (FilterFieldType.LAZY_REFERENCE.equals(filterFieldDto.getFilterFieldType())) {
+                return getLazyReferenceFilterValuesAsString(values, filterFieldDto);
             }
         }
         return StringUtils.join(values, VALUES_SEPARATOR);

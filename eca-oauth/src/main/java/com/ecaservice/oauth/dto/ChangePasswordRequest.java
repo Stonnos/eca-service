@@ -30,7 +30,7 @@ public class ChangePasswordRequest {
      */
     @NotBlank
     @Size(min = VALUE_1, max = MAX_LENGTH_255)
-    @Schema(description = "Old password", example = "oldPassw0rd!", required = true)
+    @Schema(description = "Old password", example = "oldPassw0rd!", requiredMode = Schema.RequiredMode.REQUIRED)
     private String oldPassword;
 
     /**
@@ -39,6 +39,6 @@ public class ChangePasswordRequest {
     @NotBlank
     @Pattern(regexp = PASSWORD_REGEX)
     @Size(min = MIN_PASSWORD_LENGTH, max = MAX_LENGTH_255)
-    @Schema(description = "New password", example = "newPassw0rd!", required = true)
+    @Schema(description = "New password", example = "newPassw0rd!", requiredMode = Schema.RequiredMode.REQUIRED)
     private String newPassword;
 }

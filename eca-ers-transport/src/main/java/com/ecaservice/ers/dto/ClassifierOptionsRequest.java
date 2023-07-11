@@ -33,7 +33,8 @@ public class ClassifierOptionsRequest {
     @NotBlank
     @Pattern(regexp = UUID_PATTERN)
     @Size(min = MIN_1, max = UUID_MAX_SIZE)
-    @Schema(description = "Request id", example = "1d2de514-3a87-4620-9b97-c260e24340de", required = true)
+    @Schema(description = "Request id", example = "1d2de514-3a87-4620-9b97-c260e24340de",
+            requiredMode = Schema.RequiredMode.REQUIRED)
     private String requestId;
 
     /**
@@ -41,7 +42,8 @@ public class ClassifierOptionsRequest {
      */
     @NotBlank
     @Size(min = MIN_1, max = MAX_LENGTH_255)
-    @Schema(description = "Instances MD5 hash sum", example = "3032e188204cb537f69fc7364f638641", required = true)
+    @Schema(description = "Instances MD5 hash sum", example = "3032e188204cb537f69fc7364f638641",
+            requiredMode = Schema.RequiredMode.REQUIRED)
     private String dataHash;
 
     /**
@@ -49,7 +51,7 @@ public class ClassifierOptionsRequest {
      */
     @Valid
     @NotNull
-    @Schema(description = "Evaluation method report", required = true)
+    @Schema(description = "Evaluation method report", requiredMode = Schema.RequiredMode.REQUIRED)
     private EvaluationMethodReport evaluationMethodReport;
 
     /**

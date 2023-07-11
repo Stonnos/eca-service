@@ -1,5 +1,0 @@
-{
-  "experimentType": "KNN",
-  "trainDataPath": "classpath:/data/glass.arff",
-  "evaluationMethod": "CROSS_VALIDATION"
-}

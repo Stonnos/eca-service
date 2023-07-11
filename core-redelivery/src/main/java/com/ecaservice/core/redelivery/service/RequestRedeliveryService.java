@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.putMdc;
 import static com.ecaservice.common.web.util.PageHelper.processWithPagination;
-import static com.ecaservice.core.redelivery.config.RedeliveryCoreAutoConfiguration.REDELIVERY_LOCK_REGISTRY;
 
 /**
  * Retry requests redelivery service.
@@ -34,7 +33,7 @@ public class RequestRedeliveryService {
     /**
      * Retries all not sent requests.
      */
-    @Locked(lockName = "processNotSentRetryRequests", lockRegistry = REDELIVERY_LOCK_REGISTRY, waitForLock = false)
+    @Locked(lockName = "processNotSentRetryRequests", waitForLock = false)
     public void processNotSentRequests() {
         log.debug("Starting redeliver requests");
         var pageRequest = PageRequest.of(0, redeliveryProperties.getMaxRequests());

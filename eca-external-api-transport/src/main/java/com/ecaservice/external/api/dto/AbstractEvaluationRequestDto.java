@@ -25,6 +25,6 @@ public class AbstractEvaluationRequestDto implements Serializable {
     @DataURL
     @Size(min = MIN_LENGTH_1, max = MAX_LENGTH_255)
     @Schema(description = "Train data url", example = "http://kt.ijs.si/Branax/Repository/WEKA/Iris.xls",
-            required = true)
+            requiredMode = Schema.RequiredMode.REQUIRED)
     private String trainDataUrl;
 }

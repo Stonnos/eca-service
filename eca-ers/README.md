@@ -11,9 +11,9 @@ Evaluation results service
 
 Необходимый софт
 ----------------------------------------
-* Openjdk 1.11
-* maven >= 3.3.9
-* База данных PostgreSQL для хранения информации.
+* Openjdk 11
+* maven => 3.9.2
+* База данных PostgreSQL 13.9 для хранения информации.
 
 Описание ключевой конфигурации модуля
 ----------------------------------------
@@ -44,4 +44,4 @@ Evaluation results service
    
 2. Запустить проект с помощью команды:
 
-    java -jar /target/eca-ers.war
+    java -jar /target/eca-ers.jar

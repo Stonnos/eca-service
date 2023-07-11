@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -101,6 +102,7 @@ class ExperimentMapperTest {
         experiment.setNumFolds(crossValidationConfig.getNumFolds());
         experiment.setNumTests(crossValidationConfig.getNumTests());
         experiment.setSeed(crossValidationConfig.getSeed());
+        experiment.setMaxPctCorrect(BigDecimal.TEN);
         ExperimentDto experimentDto = experimentMapper.map(experiment);
         assertThat(experimentDto).isNotNull();
         assertThat(experimentDto.getCreatedBy()).isEqualTo(experiment.getCreatedBy());
@@ -127,6 +129,7 @@ class ExperimentMapperTest {
         assertThat(experimentDto.getSeed()).isEqualTo(experiment.getSeed());
         assertThat(experimentDto.getEvaluationTotalTime()).isNotNull();
         assertThat(experimentDto.getInstancesInfo()).isNotNull();
+        assertThat(experimentDto.getMaxPctCorrect()).isEqualTo(experiment.getMaxPctCorrect());
     }
 
     @Test
@@ -146,6 +149,7 @@ class ExperimentMapperTest {
         experiment.setDeletedDate(LocalDateTime.now());
         experiment.setTrainingDataPath(DATA_PATH);
         experiment.setModelPath(EXPERIMENT_PATH);
+        experiment.setMaxPctCorrect(BigDecimal.TEN);
         ExperimentBean experimentBean = experimentMapper.mapToBean(experiment);
         assertThat(experimentBean).isNotNull();
         assertThat(experimentBean.getCreatedBy()).isEqualTo(experiment.getCreatedBy());
@@ -160,5 +164,6 @@ class ExperimentMapperTest {
         assertThat(experimentBean.getRequestId()).isEqualTo(experiment.getRequestId());
         assertThat(experimentBean.getEvaluationTotalTime()).isNotNull();
         assertThat(experimentBean.getRelationName()).isEqualTo(experiment.getInstancesInfo().getRelationName());
+        assertThat(experimentBean.getMaxPctCorrect()).isEqualTo(experiment.getMaxPctCorrect());
     }
 }

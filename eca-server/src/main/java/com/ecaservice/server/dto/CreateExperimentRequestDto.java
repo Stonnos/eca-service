@@ -35,7 +35,8 @@ public class CreateExperimentRequestDto {
     @NotBlank
     @Pattern(regexp = UUID_PATTERN)
     @Size(min = MIN_1, max = UUID_MAX_SIZE)
-    @Schema(description = "Instances uuid", required = true, example = "1d2de514-3a87-4620-9b97-c260e24340de",
+    @Schema(description = "Instances uuid", requiredMode = Schema.RequiredMode.REQUIRED,
+            example = "1d2de514-3a87-4620-9b97-c260e24340de",
             maxLength = UUID_MAX_LENGTH)
     private String instancesUuid;
 
@@ -43,13 +44,13 @@ public class CreateExperimentRequestDto {
      * Experiment type
      */
     @NotNull
-    @Schema(description = "Experiment type", required = true, maxLength = MAX_LENGTH_255)
+    @Schema(description = "Experiment type", requiredMode = Schema.RequiredMode.REQUIRED, maxLength = MAX_LENGTH_255)
     private ExperimentType experimentType;
 
     /**
      * Evaluation method
      */
     @NotNull
-    @Schema(description = "Evaluation method", required = true, maxLength = MAX_LENGTH_255)
+    @Schema(description = "Evaluation method", requiredMode = Schema.RequiredMode.REQUIRED, maxLength = MAX_LENGTH_255)
     private EvaluationMethod evaluationMethod;
 }

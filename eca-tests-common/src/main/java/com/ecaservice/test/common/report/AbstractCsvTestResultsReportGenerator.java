@@ -30,21 +30,27 @@ public abstract class AbstractCsvTestResultsReportGenerator<T> implements TestRe
     @Override
     public void generateReport(T data, OutputStream outputStream) throws IOException {
         var counter = new TestResultsCounter();
+        var resultsCsvFormat = CSVFormat.EXCEL.builder()
+                .setHeader(getResultsReportHeaders())
+                .setDelimiter(getHeaderDelimiter())
+                .build();
+        var totalCsvFormat = CSVFormat.EXCEL.builder()
+                .setHeader(getTotalReportHeaders())
+                .setDelimiter(getHeaderDelimiter())
+                .build();
         @Cleanup var zipOutputStream = new ZipOutputStream(outputStream);
         @Cleanup var writer = new OutputStreamWriter(zipOutputStream, StandardCharsets.UTF_8);
 
         log.info("Starting to write file [{}] into zip archive", TEST_RUN_LOGS_CSV);
         zipOutputStream.putNextEntry(new ZipEntry(TEST_RUN_LOGS_CSV));
-        @Cleanup var resultsPrinter = new CSVPrinter(writer, CSVFormat.EXCEL.withHeader(getResultsReportHeaders())
-                .withDelimiter(getHeaderDelimiter()));
+        @Cleanup var resultsPrinter = new CSVPrinter(writer, resultsCsvFormat);
         printReportTestResults(resultsPrinter, data, counter);
         flush(zipOutputStream, writer);
         log.info("File [{}] has been written into zip archive", TEST_RUN_LOGS_CSV);
 
         log.info("Starting to write file [{}] into zip archive", TEST_RUN_TOTALS_CSV);
         zipOutputStream.putNextEntry(new ZipEntry(TEST_RUN_TOTALS_CSV));
-        @Cleanup var totalPrinter = new CSVPrinter(writer, CSVFormat.EXCEL.withHeader(getTotalReportHeaders())
-                .withDelimiter(getHeaderDelimiter()));
+        @Cleanup var totalPrinter = new CSVPrinter(writer, totalCsvFormat);
         printReportTotal(totalPrinter, data, counter);
         flush(zipOutputStream, writer);
         log.info("File [{}] has been written into zip archive", TEST_RUN_TOTALS_CSV);

@@ -1,8 +1,6 @@
 spring:
   application:
     name: eca-auto-tests
-  jmx:
-    default-domain: eca-auto-tests
   ## Auto tests datasource properties
   datasource:
     driver-class-name: org.postgresql.Driver
@@ -43,6 +41,9 @@ open-api:
 springdoc:
   swagger-ui:
     disable-swagger-default-url: true
+
+classifiers-options:
+  maximumFractionDigits: 4
 
 mail:
   userName: rbatsw@gmail.com

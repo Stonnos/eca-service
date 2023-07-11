@@ -28,7 +28,8 @@ public class InstancesReport {
      */
     @NotBlank
     @Size(min = MIN_1, max = MAX_LENGTH_255)
-    @Schema(description = "Instances MD5 hash sum", example = "3032e188204cb537f69fc7364f638641", required = true)
+    @Schema(description = "Instances MD5 hash sum", example = "3032e188204cb537f69fc7364f638641",
+            requiredMode = Schema.RequiredMode.REQUIRED)
     private String dataMd5Hash;
 
     /**
@@ -36,7 +37,7 @@ public class InstancesReport {
      */
     @NotBlank
     @Size(min = MIN_1, max = MAX_LENGTH_255)
-    @Schema(description = "Relation name", example = "iris", required = true)
+    @Schema(description = "Relation name", example = "iris", requiredMode = Schema.RequiredMode.REQUIRED)
     private String relationName;
 
     /**
@@ -45,7 +46,7 @@ public class InstancesReport {
     @NotNull
     @Min(MIN_2)
     @Max(Integer.MAX_VALUE)
-    @Schema(description = "Instances number", example = "150", required = true)
+    @Schema(description = "Instances number", example = "150", requiredMode = Schema.RequiredMode.REQUIRED)
     private BigInteger numInstances;
 
     /**
@@ -54,7 +55,7 @@ public class InstancesReport {
     @NotNull
     @Min(MIN_2)
     @Max(Integer.MAX_VALUE)
-    @Schema(description = "Attributes number", example = "5", required = true)
+    @Schema(description = "Attributes number", example = "5", requiredMode = Schema.RequiredMode.REQUIRED)
     private BigInteger numAttributes;
 
     /**
@@ -63,7 +64,7 @@ public class InstancesReport {
     @NotNull
     @Min(MIN_2)
     @Max(Integer.MAX_VALUE)
-    @Schema(description = "Classes number", example = "4", required = true)
+    @Schema(description = "Classes number", example = "4", requiredMode = Schema.RequiredMode.REQUIRED)
     private BigInteger numClasses;
 
     /**
@@ -71,6 +72,6 @@ public class InstancesReport {
      */
     @NotBlank
     @Size(min = MIN_1, max = MAX_LENGTH_255)
-    @Schema(description = "Class name", example = "class", required = true)
+    @Schema(description = "Class name", example = "class", requiredMode = Schema.RequiredMode.REQUIRED)
     private String className;
 }

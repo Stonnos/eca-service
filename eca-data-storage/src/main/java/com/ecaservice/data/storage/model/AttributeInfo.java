@@ -18,6 +18,11 @@ import java.util.List;
 public class AttributeInfo {
 
     /**
+     * Attribute name
+     */
+    private String attributeName;
+
+    /**
      * Column name
      */
     private String columnName;

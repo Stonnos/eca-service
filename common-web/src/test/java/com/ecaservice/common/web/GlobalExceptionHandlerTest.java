@@ -15,9 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import javax.validation.ConstraintViolation;
@@ -54,27 +52,16 @@ class GlobalExceptionHandlerTest {
     private Path path;
 
     @Mock
-    private MethodArgumentNotValidException methodArgumentNotValidException;
-    @Mock
     private MethodArgumentTypeMismatchException methodArgumentTypeMismatchException;
     @Mock
     private BindException bindException;
-    @Mock
-    private BindingResult bindingResult;
 
-    private GlobalExceptionHandler exceptionHandler = new GlobalExceptionHandler();
+    private final GlobalExceptionHandler exceptionHandler = new GlobalExceptionHandler();
 
     @Test
     void testHandleConstraintViolation() {
         mockConstraintViolation();
         var errorResponse = exceptionHandler.handleConstraintViolation(constraintViolationException);
-        assertResponse(errorResponse, null, EMAIL_RECEIVER, ERROR_MESSAGE);
-    }
-
-    @Test
-    void testHandleMethodArgumentNotValid() {
-        mockMethodArgumentNotValid();
-        var errorResponse = exceptionHandler.handleMethodArgumentNotValid(methodArgumentNotValidException);
         assertResponse(errorResponse, null, EMAIL_RECEIVER, ERROR_MESSAGE);
     }
 
@@ -120,12 +107,6 @@ class GlobalExceptionHandlerTest {
         var errorResponse =
                 exceptionHandler.handleMethodArgumentTypeMismatchException(methodArgumentTypeMismatchException);
         assertResponse(errorResponse, ERROR_CODE, EMAIL_RECEIVER, ERROR_MESSAGE);
-    }
-
-    private void mockMethodArgumentNotValid() {
-        when(methodArgumentNotValidException.getBindingResult()).thenReturn(bindingResult);
-        var fieldError = new FieldError(Object.class.getSimpleName(), EMAIL_RECEIVER, ERROR_MESSAGE);
-        when(bindingResult.getAllErrors()).thenReturn(Collections.singletonList(fieldError));
     }
 
     private void mockBindException() {

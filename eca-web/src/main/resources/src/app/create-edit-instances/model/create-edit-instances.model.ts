@@ -1,10 +1,10 @@
 export class CreateEditInstancesModel {
   id: number;
-  tableName: string;
+  relationName: string;
   file: File;
 
-  constructor(id?: number, tableName?: string) {
+  constructor(id?: number, relationName?: string) {
     this.id = id;
-    this.tableName = tableName;
+    this.relationName = relationName;
   }
 }

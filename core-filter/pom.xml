@@ -5,7 +5,7 @@
     <parent>
         <artifactId>eca-service</artifactId>
         <groupId>eca.service</groupId>
-        <version>6.4.4</version>
+        <version>6.4.5</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -13,7 +13,6 @@
     <packaging>jar</packaging>
 
     <properties>
-        <hibernate-validator.version>6.0.18.Final</hibernate-validator.version>
         <sonar.coverage.exclusions>
             **/entity/**/*,
             **/config/**/*,
@@ -45,7 +44,6 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>${hibernate-validator.version}</version>
         </dependency>
         <dependency>
             <groupId>eca.service</groupId>

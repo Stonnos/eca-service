@@ -2,16 +2,15 @@ package com.ecaservice.data.storage.service.impl;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.audit.annotation.Audit;
-import com.ecaservice.data.storage.config.EcaDsConfig;
 import com.ecaservice.data.storage.entity.AttributeEntity;
 import com.ecaservice.data.storage.entity.AttributeType;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.entity.InstancesEntity_;
 import com.ecaservice.data.storage.exception.ClassAttributeValuesIsTooLowException;
 import com.ecaservice.data.storage.exception.EmptyDataException;
+import com.ecaservice.data.storage.exception.InstancesExistsException;
 import com.ecaservice.data.storage.exception.InstancesNotFoundException;
 import com.ecaservice.data.storage.exception.InvalidClassAttributeTypeException;
-import com.ecaservice.data.storage.exception.TableExistsException;
 import com.ecaservice.data.storage.filter.InstancesFilter;
 import com.ecaservice.data.storage.mapping.AttributeMapper;
 import com.ecaservice.data.storage.repository.AttributeRepository;
@@ -27,6 +26,7 @@ import com.ecaservice.web.dto.model.PageRequestDto;
 import eca.data.file.model.InstancesModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -38,6 +38,8 @@ import weka.core.Instances;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.data.storage.config.audit.AuditCodes.DELETE_INSTANCES;
@@ -47,7 +49,6 @@ import static com.ecaservice.data.storage.config.audit.AuditCodes.SELECT_ALL_ATT
 import static com.ecaservice.data.storage.config.audit.AuditCodes.SET_CLASS_ATTRIBUTE;
 import static com.ecaservice.data.storage.entity.InstancesEntity_.CREATED;
 import static com.ecaservice.data.storage.util.Utils.MIN_NUM_CLASSES;
-import static eca.data.db.SqlQueryHelper.formatName;
 
 /**
  * Service for saving data file into database.
@@ -55,7 +56,7 @@ import static eca.data.db.SqlQueryHelper.formatName;
  * @author Roman Batygin
  */
 @Slf4j
-@Service
+@Service("storageServiceImpl")
 @RequiredArgsConstructor
 public class StorageServiceImpl implements StorageService {
 
@@ -64,9 +65,10 @@ public class StorageServiceImpl implements StorageService {
             InstancesEntity_.TABLE_NAME,
             InstancesEntity_.CREATED_BY
     );
-    private static final String ID_COLUMN_NAME_FORMAT = "id_%s";
 
-    private final EcaDsConfig ecaDsConfig;
+    private static final String ID_COLUMN_NAME_FORMAT = "id_%s";
+    private static final String TABLE_NAME_FORMAT = "data_set_%s";
+
     private final InstancesService instancesService;
     private final AttributeService attributeService;
     private final UserService userService;
@@ -94,20 +96,24 @@ public class StorageServiceImpl implements StorageService {
     @Override
     @Audit(value = SAVE_INSTANCES, correlationIdKey = "#result.id")
     @Transactional
-    public InstancesEntity saveData(Instances instances, String tableName) {
-        log.info("Starting to save instances into table [{}]", tableName);
-        if (instancesRepository.existsByTableName(tableName)) {
-            throw new TableExistsException(tableName);
+    public InstancesEntity saveData(Instances instances, String relationName) {
+        log.info("Starting to save instances with relation name [{}]", relationName);
+        if (instancesRepository.existsByRelationName(relationName)) {
+            throw new InstancesExistsException(relationName);
         }
         if (instances.isEmpty()) {
             throw new EmptyDataException();
         }
         var transformedInstances = instancesTransformer.transform(instances);
-        var instancesEntity = saveInstancesEntity(tableName, transformedInstances);
-        var attributes = attributeService.saveAttributes(instancesEntity, transformedInstances);
+        var instancesEntity = saveInstancesEntity(relationName, transformedInstances);
+        //Gets original attribute names
+        List<String> attributeNames = IntStream.range(0, instances.numAttributes())
+                .mapToObj(i -> instances.attribute(i).name())
+                .collect(Collectors.toList());
+        var attributes = attributeService.saveAttributes(instancesEntity, transformedInstances, attributeNames);
         setClassAttribute(transformedInstances, instancesEntity, attributes);
         instancesService.saveInstances(instancesEntity, transformedInstances);
-        log.info("Instances has been saved into table [{}]", tableName);
+        log.info("Instances [{}] has been saved", relationName);
         return instancesEntity;
     }
 
@@ -121,8 +127,8 @@ public class StorageServiceImpl implements StorageService {
         unsetClassAttribute(instancesEntity);
         attributeService.deleteAttributes(instancesEntity);
         instancesRepository.deleteById(id);
-        log.info("Instances [{}] has been deleted", id);
-        return instancesEntity.getTableName();
+        log.info("Instances [{}] with id [{}] has been deleted", instancesEntity.getRelationName(), id);
+        return instancesEntity.getRelationName();
     }
 
     @Override
@@ -166,8 +172,8 @@ public class StorageServiceImpl implements StorageService {
         var instancesEntity = attribute.getInstancesEntity();
         instancesEntity.setClassAttribute(attribute);
         instancesRepository.save(instancesEntity);
-        log.info("Class attribute [{}] has been set for instances with [{}]", classAttributeId,
-                attribute.getInstancesEntity().getTableName());
+        log.info("Class attribute [{}] has been set for instances [{}]", classAttributeId,
+                attribute.getInstancesEntity().getRelationName());
         return attribute;
     }
 
@@ -178,7 +184,7 @@ public class StorageServiceImpl implements StorageService {
         log.info("Starting to select all attributes for instances [{}]", id);
         var instancesEntity = getById(id);
         attributeRepository.selectAll(instancesEntity);
-        log.info("All attributes has been selected for instances [{}] with table name [{}]", id,
+        log.info("All attributes has been selected for instances [{}] with relation name [{}]", id,
                 instancesEntity.getId());
         return instancesEntity;
     }
@@ -189,18 +195,17 @@ public class StorageServiceImpl implements StorageService {
     public String renameData(long id, String newName) {
         log.info("Starting to rename instances [{}] with new name [{}]", id, newName);
         InstancesEntity instancesEntity = getById(id);
-        String oldTableName = instancesEntity.getTableName();
-        if (!instancesEntity.getTableName().equals(newName)) {
-            if (instancesRepository.existsByTableName(newName)) {
-                throw new TableExistsException(newName);
+        String oldRelationName = instancesEntity.getRelationName();
+        if (!instancesEntity.getRelationName().equals(newName)) {
+            if (instancesRepository.existsByRelationName(newName)) {
+                throw new InstancesExistsException(newName);
             }
-            instancesService.renameInstances(instancesEntity.getTableName(), newName);
-            instancesEntity.setTableName(newName);
+            instancesEntity.setRelationName(newName);
             instancesRepository.save(instancesEntity);
             log.info("Instances [{}] has been renamed to [{}]", id, newName);
         }
         log.info("Rename instances [{}] has been finished", instancesEntity.getId());
-        return oldTableName;
+        return oldRelationName;
     }
 
     @Override
@@ -217,11 +222,13 @@ public class StorageServiceImpl implements StorageService {
                 .orElseThrow(() -> new InstancesNotFoundException(String.format("Instances [%s] not found!", uuid)));
     }
 
-    private InstancesEntity saveInstancesEntity(String tableName, Instances instances) {
+    private InstancesEntity saveInstancesEntity(String relationName, Instances instances) {
         InstancesEntity instancesEntity = new InstancesEntity();
         instancesEntity.setUuid(UUID.randomUUID().toString());
         instancesEntity.setIdColumnName(String.format(ID_COLUMN_NAME_FORMAT, randomValueStringGenerator.generate()));
-        instancesEntity.setTableName(tableName);
+        instancesEntity.setRelationName(relationName);
+        String transformedUuid = StringUtils.replaceChars(instancesEntity.getUuid(), '-', '_');
+        instancesEntity.setTableName(String.format(TABLE_NAME_FORMAT, transformedUuid));
         instancesEntity.setNumAttributes(instances.numAttributes());
         instancesEntity.setNumInstances(instances.numInstances());
         instancesEntity.setCreatedBy(userService.getCurrentUser());
@@ -235,12 +242,12 @@ public class StorageServiceImpl implements StorageService {
         var classAttribute = instances.classAttribute();
         if (classAttribute.isNumeric()) {
             log.warn("Class attribute [{}] is numeric or date for instances [{}]. Ignore class setting",
-                    classAttribute.name(), instancesEntity.getTableName());
+                    classAttribute.name(), instancesEntity.getRelationName());
         } else if (classAttribute.numValues() < MIN_NUM_CLASSES) {
             log.warn("Class attribute [{}] has less than 2 values for instances [{}]. Ignore class setting",
-                    classAttribute.name(), instancesEntity.getTableName());
+                    classAttribute.name(), instancesEntity.getRelationName());
         } else {
-            var className = formatName(classAttribute.name());
+            var className = classAttribute.name();
             var classAttributeEntity = attributeEntities.stream()
                     .filter(attributeEntity -> attributeEntity.getColumnName().equals(className))
                     .findFirst()
@@ -248,7 +255,8 @@ public class StorageServiceImpl implements StorageService {
                             String.format("Can't find class attribute entity [%s]", className)));
             instancesEntity.setClassAttribute(classAttributeEntity);
             instancesRepository.save(instancesEntity);
-            log.info("Class attribute [{}] has been set for instances [{}]", className, instancesEntity.getTableName());
+            log.info("Class attribute [{}] has been set for instances [{}]", className,
+                    instancesEntity.getRelationName());
         }
     }
 
@@ -258,7 +266,7 @@ public class StorageServiceImpl implements StorageService {
             instancesEntity.setClassAttribute(null);
             instancesRepository.save(instancesEntity);
             log.info("Class [{}] attribute has been unset for instances [{}]", classAttribute.getColumnName(),
-                    instancesEntity.getTableName());
+                    instancesEntity.getRelationName());
         }
     }
 }

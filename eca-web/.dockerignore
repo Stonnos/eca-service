@@ -1,5 +1,5 @@
 target/
-!target/*.war
+!target/*.jar
 src/
 doc/
 .git

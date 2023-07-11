@@ -27,6 +27,12 @@ public class InstancesEntity {
     private Long id;
 
     /**
+     * Relation name
+     */
+    @Column(name = "relation_name", unique = true, nullable = false)
+    private String relationName;
+
+    /**
      * Table name in database
      */
     @Column(name = "table_name", unique = true, nullable = false)

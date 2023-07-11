@@ -10,4 +10,5 @@
     <include file="db/changelog/v2-create-attribute-table.xml"/>
     <include file="db/changelog/v3-add-class-attribute-column.xml"/>
     <include file="db/changelog/v4-add-id-column-name-column.xml"/>
+    <include file="db/changelog/v5-add-instances-relation-name-column.xml"/>
 </databaseChangeLog>

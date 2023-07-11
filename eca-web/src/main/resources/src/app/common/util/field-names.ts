@@ -12,6 +12,7 @@ export class ExperimentFields {
   public static readonly START_DATE: string = "startDate";
   public static readonly END_DATE: string = "endDate";
   public static readonly DELETED_DATE: string = "deletedDate";
+  public static readonly MAX_PCT_CORRECT: string = "maxPctCorrect";
   public static readonly EVALUATION_TOTAL_TIME: string = "evaluationTotalTime";
   public static readonly RELATION_NAME: string = "instancesInfo.relationName";
   public static readonly NUM_INSTANCES: string = "instancesInfo.numInstances";
@@ -127,7 +128,7 @@ export class UserFields {
 
 export class InstancesFields {
   public static readonly ID: string = "id";
-  public static readonly TABLE_NAME: string = "tableName";
+  public static readonly RELATION_NAME: string = "relationName";
   public static readonly NUM_INSTANCES: string = "numInstances";
   public static readonly NUM_ATTRIBUTES: string = "numAttributes";
   public static readonly CREATED: string = "created";

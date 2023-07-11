@@ -11,8 +11,8 @@
 
 Необходимый софт
 ----------------------------------------
-* Openjdk 1.11
-* maven => 3.3.9
+* Openjdk 11
+* maven => 3.9.2
 
 Описание ключевой конфигурации модуля
 ----------------------------------------
@@ -54,7 +54,7 @@
     
 2. Запустить проект с помощью команды:
 
-    java -jar /target/eca-external-api-tests.war
+    java -jar /target/eca-external-api-tests.jar
          
 3. Страница с документацией swagger находится по адресу http://[host]:[port]/eca-external-api-tests/swagger-ui.html, где host и port
 соответственно адрес машины и порт на котором развернуто приложение.

@@ -34,14 +34,14 @@ public class EvaluationRequestDto extends AbstractEvaluationRequestDto {
      */
     @Valid
     @NotNull
-    @Schema(description = "Classifier options json", required = true)
+    @Schema(description = "Classifier options json", requiredMode = Schema.RequiredMode.REQUIRED)
     private ClassifierOptions classifierOptions;
 
     /**
      * Evaluation method
      */
     @NotNull
-    @Schema(description = "Evaluation method", required = true, maxLength = MAX_LENGTH_255)
+    @Schema(description = "Evaluation method", requiredMode = Schema.RequiredMode.REQUIRED, maxLength = MAX_LENGTH_255)
     private EvaluationMethod evaluationMethod;
 
     /**

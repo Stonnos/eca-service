@@ -43,11 +43,6 @@ public class RedeliveryCoreAutoConfiguration {
     public static final String RETRY_REQUEST_THREAD_POOL_TASK_SCHEDULER = "retryRequestThreadPoolTaskScheduler";
 
     /**
-     * Redelivery lock registry bean name
-     */
-    public static final String REDELIVERY_LOCK_REGISTRY = "redeliveryLockRegistry";
-
-    /**
      * Json message converter bean name
      */
     public static final String JSON_REQUEST_MESSAGE_CONVERTER = "jsonRequestMessageConverter";

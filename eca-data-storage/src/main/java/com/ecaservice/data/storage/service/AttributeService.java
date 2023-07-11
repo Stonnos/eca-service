@@ -25,7 +25,6 @@ import static com.ecaservice.data.storage.config.audit.AuditCodes.SELECT_ATTRIBU
 import static com.ecaservice.data.storage.config.audit.AuditCodes.UNSELECT_ATTRIBUTE;
 import static com.ecaservice.data.storage.util.Utils.getAttributeType;
 import static com.ecaservice.data.storage.util.Utils.getAttributeValues;
-import static eca.data.db.SqlQueryHelper.formatName;
 
 /**
  * Attributes service.
@@ -37,27 +36,28 @@ import static eca.data.db.SqlQueryHelper.formatName;
 @RequiredArgsConstructor
 public class AttributeService {
 
+    private static final String COLUMN_NAME_FORMAT = "column_%d";
+
     private final AttributeRepository attributeRepository;
 
     /**
      * Saves instances attributes info into database.
-     * Each attribute is formatted according to the following rules:
-     * 1. Each special character is transformed to '_' symbol
-     * 2. Each attribute name is truncated to 255 length, if its length greater than 255 symbols
-     * 3. Each attribute name is casted to lower case
      *
      * @param instancesEntity - instances entity
      * @param instances       - instances
+     * @param attributeNames  - attribute names list
      * @return saved attributes list
      */
-    public List<AttributeEntity> saveAttributes(InstancesEntity instancesEntity, Instances instances) {
-        log.info("Starting to save attributes info for instances [{}]", instancesEntity.getTableName());
+    public List<AttributeEntity> saveAttributes(InstancesEntity instancesEntity,
+                                                Instances instances,
+                                                List<String> attributeNames) {
+        log.info("Starting to save attributes info for instances [{}]", instancesEntity.getRelationName());
         var attributesToSave = IntStream.range(0, instances.numAttributes())
-                .mapToObj(i -> createAttributeEntity(instances.attribute(i), instancesEntity))
+                .mapToObj(i -> createAttributeEntity(attributeNames.get(i), instances.attribute(i), instancesEntity))
                 .collect(Collectors.toList());
         attributeRepository.saveAll(attributesToSave);
         log.info("[{}] attributes info has been saved for instances [{}]", attributesToSave.size(),
-                instancesEntity.getTableName());
+                instancesEntity.getRelationName());
         return attributesToSave;
     }
 
@@ -68,7 +68,7 @@ public class AttributeService {
      * @return attributes list
      */
     public List<AttributeEntity> getAttributes(InstancesEntity instancesEntity) {
-        log.debug("Gets attributes list for instances [{}]", instancesEntity.getTableName());
+        log.debug("Gets attributes list for instances [{}]", instancesEntity.getRelationName());
         return attributeRepository.findByInstancesEntityOrderByIndex(instancesEntity);
     }
 
@@ -79,7 +79,7 @@ public class AttributeService {
      * @return attributes list
      */
     public List<AttributeEntity> getSelectedAttributes(InstancesEntity instancesEntity) {
-        log.debug("Gets selected attributes list for instances [{}]", instancesEntity.getTableName());
+        log.debug("Gets selected attributes list for instances [{}]", instancesEntity.getRelationName());
         return attributeRepository.findByInstancesEntityAndSelectedIsTrueOrderByIndex(instancesEntity);
     }
 
@@ -91,7 +91,7 @@ public class AttributeService {
      */
     @Cacheable(value = CacheNames.ATTRIBUTES_CACHE, key = "#instancesEntity.id")
     public List<AttributeInfo> getsAttributesInfo(InstancesEntity instancesEntity) {
-        log.info("Gets attributes info list for instances [{}]", instancesEntity.getTableName());
+        log.info("Gets attributes info list for instances [{}]", instancesEntity.getRelationName());
         var attributes = attributeRepository.findByInstancesEntityOrderByIndex(instancesEntity);
         log.info("[{}] attributes info has been fetched for instances [{}]", attributes.size(),
                 instancesEntity.getTableName());
@@ -99,6 +99,7 @@ public class AttributeService {
                 .map(attributeEntity -> {
                     var attributeInfo = new AttributeInfo();
                     attributeInfo.setColumnName(attributeEntity.getColumnName());
+                    attributeInfo.setAttributeName(attributeEntity.getAttributeName());
                     attributeInfo.setType(attributeEntity.getType());
                     if (AttributeType.NOMINAL.equals(attributeEntity.getType())) {
                         var values = attributeEntity.getValues()
@@ -118,11 +119,11 @@ public class AttributeService {
      * @param instancesEntity - instances entity
      */
     public void deleteAttributes(InstancesEntity instancesEntity) {
-        log.info("Starting to delete instances [{}] attributes", instancesEntity.getTableName());
+        log.info("Starting to delete instances [{}] attributes", instancesEntity.getRelationName());
         var attributes = attributeRepository.findByInstancesEntityOrderByIndex(instancesEntity);
         attributeRepository.deleteAll(attributes);
         log.info("[{}] attributes has been deleted for instances [{}]", attributes.size(),
-                instancesEntity.getTableName());
+                instancesEntity.getRelationName());
     }
 
     /**
@@ -173,9 +174,12 @@ public class AttributeService {
         return attribute;
     }
 
-    private AttributeEntity createAttributeEntity(Attribute attribute, InstancesEntity instancesEntity) {
+    private AttributeEntity createAttributeEntity(String attributeName,
+                                                  Attribute attribute,
+                                                  InstancesEntity instancesEntity) {
         var attributeEntity = new AttributeEntity();
-        attributeEntity.setColumnName(formatName(attribute.name()));
+        attributeEntity.setAttributeName(attributeName);
+        attributeEntity.setColumnName(attribute.name());
         attributeEntity.setIndex(attribute.index());
         attributeEntity.setType(getAttributeType(attribute));
         if (attribute.isNominal()) {

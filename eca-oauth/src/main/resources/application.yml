@@ -1,16 +1,10 @@
 spring:
   application:
     name: eca-oauth
-  jmx:
-    default-domain: eca-oauth
-  cloud:
-    loadbalancer:
-      ribbon:
-        enabled: false
   ## Datasource properties
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/eca_oauth
+    url: jdbc:postgresql://localhost:5433/eca_oauth
     username: postgres
     password: postgres
   jpa:
@@ -33,9 +27,6 @@ eureka:
   client:
     registerWithEureka: false
     fetchRegistry: false
-
-ribbon:
-  ReadTimeout: 60000
 
 ## Application properties
 app:

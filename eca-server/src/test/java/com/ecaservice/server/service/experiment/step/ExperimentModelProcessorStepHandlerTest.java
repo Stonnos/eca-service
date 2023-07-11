@@ -7,6 +7,7 @@ import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentStepStatus;
 import com.ecaservice.server.model.experiment.InitializationParams;
+import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.service.evaluation.CalculationExecutorService;
 import com.ecaservice.server.service.evaluation.CalculationExecutorServiceImpl;
 import com.ecaservice.server.service.experiment.ExperimentProcessorService;
@@ -54,6 +55,8 @@ class ExperimentModelProcessorStepHandlerTest extends AbstractStepHandlerTest {
     private ExperimentStepService experimentStepService;
     @Inject
     private ExperimentProgressService experimentProgressService;
+    @Inject
+    private ExperimentRepository experimentRepository;
 
     private ExperimentModelProcessorStepHandler experimentModelProcessorStepHandler;
 
@@ -66,7 +69,7 @@ class ExperimentModelProcessorStepHandlerTest extends AbstractStepHandlerTest {
         var executorService = new CalculationExecutorServiceImpl(Executors.newCachedThreadPool());
         experimentModelProcessorStepHandler = new ExperimentModelProcessorStepHandler(experimentConfig,
                 objectStorageService, experimentProcessorService, executorService, experimentStepService,
-                experimentProgressService);
+                experimentProgressService, experimentRepository);
     }
 
     @Test
@@ -77,6 +80,10 @@ class ExperimentModelProcessorStepHandlerTest extends AbstractStepHandlerTest {
                 any(InitializationParams.class))).thenReturn(experimentHistory);
         testStep(experimentModelProcessorStepHandler::handle, ExperimentStepStatus.COMPLETED);
         verifyProgressFinished();
+        var actualExperiment =
+                experimentRepository.findById(getExperimentStepEntity().getExperiment().getId()).orElse(null);
+        assertThat(actualExperiment).isNotNull();
+        assertThat(actualExperiment.getMaxPctCorrect()).isNotNull();
     }
 
     @Test
@@ -107,7 +114,8 @@ class ExperimentModelProcessorStepHandlerTest extends AbstractStepHandlerTest {
 
     private void verifyProgressFinished() {
         var experimentProgressEntity =
-                getExperimentProgressRepository().findByExperiment(getExperimentStepEntity().getExperiment()).orElse(null);
+                getExperimentProgressRepository().findByExperiment(getExperimentStepEntity().getExperiment()).orElse(
+                        null);
         assertThat(experimentProgressEntity).isNotNull();
         assertThat(experimentProgressEntity.isFinished()).isTrue();
         assertThat(experimentProgressEntity.getProgress()).isEqualTo(FULL_PROGRESS);

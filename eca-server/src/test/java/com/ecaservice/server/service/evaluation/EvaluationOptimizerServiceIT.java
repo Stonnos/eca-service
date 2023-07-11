@@ -3,8 +3,8 @@ package com.ecaservice.server.service.evaluation;
 import com.ecaservice.classifier.options.config.ClassifiersOptionsAutoConfiguration;
 import com.ecaservice.classifier.options.model.DecisionTreeOptions;
 import com.ecaservice.core.lock.aspect.LockExecutionAspect;
+import com.ecaservice.core.lock.config.CoreLockAutoConfiguration;
 import com.ecaservice.core.lock.metrics.LockMeterService;
-import com.ecaservice.core.lock.redis.config.RedisLockAutoConfiguration;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import com.ecaservice.ers.dto.ClassifierOptionsResponse;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
@@ -40,7 +40,6 @@ import com.ecaservice.server.service.ers.ErsRequestService;
 import com.ecaservice.server.service.evaluation.initializers.ClassifierInitializerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.ensemble.forests.DecisionTreeType;
-import io.micrometer.core.instrument.MeterRegistry;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -48,6 +47,7 @@ import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.containers.DockerComposeContainer;
 import weka.core.Instances;
 
@@ -77,9 +77,10 @@ import static org.mockito.Mockito.when;
         EvaluationRequestMapperImpl.class, ClassifierOptionsRequestMapperImpl.class, ClassifiersProperties.class,
         ErsConfig.class, EvaluationLogMapperImpl.class, LockExecutionAspect.class, ErsErrorHandler.class,
         EvaluationService.class, ErsResponseStatusMapperImpl.class, OptimalClassifierOptionsFetcherImpl.class,
-        InstancesInfoMapperImpl.class, ErsRequestService.class, InstancesInfoService.class, LockMeterService.class,
+        InstancesInfoMapperImpl.class, ErsRequestService.class, InstancesInfoService.class,
         EvaluationOptimizerService.class, ClassifierInfoMapperImpl.class, RedisAutoConfiguration.class,
-        OptimalClassifierOptionsCacheService.class, DateTimeConverter.class, RedisLockAutoConfiguration.class})
+        OptimalClassifierOptionsCacheService.class, DateTimeConverter.class, CoreLockAutoConfiguration.class})
+@TestPropertySource("classpath:application-it.properties")
 class EvaluationOptimizerServiceIT extends AbstractJpaTest {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
@@ -88,7 +89,7 @@ class EvaluationOptimizerServiceIT extends AbstractJpaTest {
     @MockBean
     private ErsClient ersClient;
     @MockBean
-    private MeterRegistry meterRegistry;
+    private LockMeterService lockMeterService;
     @MockBean
     private ObjectStorageService objectStorageService;
     @MockBean
@@ -110,7 +111,7 @@ class EvaluationOptimizerServiceIT extends AbstractJpaTest {
     @Inject
     private EvaluationOptimizerService evaluationOptimizerService;
 
-    private InstancesRequestDataModel instancesRequestDataModel;
+    private Instances data;
 
     private String decisionTreeOptions;
 
@@ -129,8 +130,7 @@ class EvaluationOptimizerServiceIT extends AbstractJpaTest {
 
     @Override
     public void init() throws Exception {
-        Instances data = TestHelperUtils.loadInstances();
-        instancesRequestDataModel = new InstancesRequestDataModel(UUID.randomUUID().toString(), md5Hash(data), data);
+        data = TestHelperUtils.loadInstances();
         DecisionTreeOptions treeOptions = TestHelperUtils.createDecisionTreeOptions();
         treeOptions.setDecisionTreeType(DecisionTreeType.CART);
         decisionTreeOptions = objectMapper.writeValueAsString(treeOptions);
@@ -154,6 +154,7 @@ class EvaluationOptimizerServiceIT extends AbstractJpaTest {
         for (int i = 0; i < NUM_THREADS; i++) {
             executorService.submit(() -> {
                 try {
+                    var instancesRequestDataModel = new InstancesRequestDataModel(UUID.randomUUID().toString(), md5Hash(data), data);
                     evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequestDataModel);
                 } finally {
                     finishedLatch.countDown();

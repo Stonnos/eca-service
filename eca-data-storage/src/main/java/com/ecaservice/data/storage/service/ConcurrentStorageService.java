@@ -1,5 +1,6 @@
 package com.ecaservice.data.storage.service;
 
+import com.ecaservice.core.lock.annotation.Locked;
 import com.ecaservice.data.storage.entity.AttributeEntity;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.web.dto.model.AttributeDto;
@@ -14,8 +15,6 @@ import org.springframework.stereotype.Service;
 import weka.core.Instances;
 
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Implements storage service supporting concurrent operations.
@@ -28,8 +27,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ConcurrentStorageService implements StorageService {
 
     private final StorageService storageService;
-
-    private final Map<String, Object> tableNamesMonitorsMap = new ConcurrentHashMap<>();
 
     /**
      * Constructor with spring dependency injection.
@@ -46,14 +43,9 @@ public class ConcurrentStorageService implements StorageService {
     }
 
     @Override
-    public InstancesEntity saveData(Instances instances, String tableName) {
-        InstancesEntity instancesEntity;
-        tableNamesMonitorsMap.putIfAbsent(tableName, new Object());
-        synchronized (tableNamesMonitorsMap.get(tableName)) {
-            instancesEntity = storageService.saveData(instances, tableName);
-        }
-        tableNamesMonitorsMap.remove(tableName);
-        return instancesEntity;
+    @Locked(lockName = "saveOrUpdateDataSet", key = "#relationName")
+    public InstancesEntity saveData(Instances instances, String relationName) {
+        return storageService.saveData(instances, relationName);
     }
 
     @Override
@@ -67,14 +59,9 @@ public class ConcurrentStorageService implements StorageService {
     }
 
     @Override
+    @Locked(lockName = "saveOrUpdateDataSet", key = "#newTableName")
     public String renameData(long id, String newTableName) {
-        String oldTableName;
-        tableNamesMonitorsMap.putIfAbsent(newTableName, new Object());
-        synchronized (tableNamesMonitorsMap.get(newTableName)) {
-            oldTableName = storageService.renameData(id, newTableName);
-        }
-        tableNamesMonitorsMap.remove(newTableName);
-        return oldTableName;
+        return storageService.renameData(id, newTableName);
     }
 
     @Override

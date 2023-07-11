@@ -40,9 +40,9 @@ public class InstancesResultSetExtractor implements ResultSetExtractor<Instances
 
     @Override
     public Instances extractData(ResultSet resultSet) throws SQLException, DataAccessException {
-        String tableName = instancesEntity.getTableName();
         ArrayList<Attribute> attributes = createAttributes();
-        Instances instances = new Instances(tableName, attributes, instancesEntity.getNumInstances());
+        Instances instances =
+                new Instances(instancesEntity.getRelationName(), attributes, instancesEntity.getNumInstances());
         while (resultSet.next()) {
             Instance instance = new DenseInstance(instances.numAttributes());
             for (int i = 1; i <= instances.numAttributes(); i++) {
@@ -60,7 +60,7 @@ public class InstancesResultSetExtractor implements ResultSetExtractor<Instances
             instances.add(instance);
         }
         if (instancesEntity.getClassAttribute() != null) {
-            var classAttribute = instances.attribute(instancesEntity.getClassAttribute().getColumnName());
+            var classAttribute = instances.attribute(instancesEntity.getClassAttribute().getAttributeName());
             instances.setClass(classAttribute);
         }
         return instances;
@@ -79,17 +79,17 @@ public class InstancesResultSetExtractor implements ResultSetExtractor<Instances
         return attributeInfo.getType().handle(new AttributeTypeVisitor<>() {
             @Override
             public Attribute caseNumeric() {
-                return new Attribute(attributeInfo.getColumnName());
+                return new Attribute(attributeInfo.getAttributeName());
             }
 
             @Override
             public Attribute caseNominal() {
-                return new Attribute(attributeInfo.getColumnName(), attributeInfo.getValues());
+                return new Attribute(attributeInfo.getAttributeName(), attributeInfo.getValues());
             }
 
             @Override
             public Attribute caseDate() {
-                return new Attribute(attributeInfo.getColumnName(), dateFormat);
+                return new Attribute(attributeInfo.getAttributeName(), dateFormat);
             }
         });
     }
