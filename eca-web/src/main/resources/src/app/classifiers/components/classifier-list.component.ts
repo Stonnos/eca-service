@@ -15,14 +15,18 @@ import { EvaluationLogFields } from "../../common/util/field-names";
 import { ReportsService } from "../../common/services/report.service";
 import { ReportType } from "../../common/model/report-type.enum";
 import { InstancesInfoService } from "../../common/instances-info/services/instances-info.service";
-import { BaseEvaluationListComponent } from "../../common/lists/base-evaluation-list.component";
+import { BaseListComponent } from "../../common/lists/base-list.component";
+import { MessageService } from "primeng/api";
+import { FieldService } from "../../common/services/field.service";
+import { InstancesInfoFilterValueTransformer } from "../../filter/autocomplete/transformer/instances-info-filter-value-transformer";
+import { InstancesInfoAutocompleteHandler } from "../../filter/autocomplete/handler/instances-info-autocomplete-handler";
 
 @Component({
   selector: 'app-classifier-list',
   templateUrl: './classifier-list.component.html',
   styleUrls: ['./classifier-list.component.scss']
 })
-export class ClassifierListComponent extends BaseEvaluationListComponent<EvaluationLogDto> {
+export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto> {
 
   private static readonly EVALUATION_LOGS_REPORT_FILE_NAME = 'evaluation-logs-report.xlsx';
 
@@ -31,12 +35,13 @@ export class ClassifierListComponent extends BaseEvaluationListComponent<Evaluat
   public selectedEvaluationLog: EvaluationLogDto;
   public selectedColumn: string;
 
-  public constructor(injector: Injector,
+  public constructor(private injector: Injector,
                      private classifiersService: ClassifiersService,
                      private filterService: FilterService,
                      private reportsService: ReportsService,
+                     private instancesInfoService: InstancesInfoService,
                      private router: Router) {
-    super(injector, injector.get(InstancesInfoService));
+    super(injector.get(MessageService), injector.get(FieldService));
     this.defaultSortField = EvaluationLogFields.CREATION_DATE;
     this.linkColumns = [EvaluationLogFields.CLASSIFIER_DESCRIPTION, EvaluationLogFields.EVALUATION_METHOD_DESCRIPTION,
       EvaluationLogFields.RELATION_NAME, EvaluationLogFields.REQUEST_ID, EvaluationLogFields.MODEL_PATH];
@@ -45,6 +50,8 @@ export class ClassifierListComponent extends BaseEvaluationListComponent<Evaluat
   }
 
   public ngOnInit() {
+    this.addLazyReferenceTransformers(new InstancesInfoFilterValueTransformer());
+    this.addAutoCompleteHandler(new InstancesInfoAutocompleteHandler(this.instancesInfoService, this.messageService));
     this.getFilterFields();
     this.getRequestStatusesStatistics();
   }
