@@ -1,9 +1,11 @@
 package com.ecaservice.server.report;
 
 import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.report.data.fetcher.AbstractBaseReportDataFetcher;
 import com.ecaservice.server.mapping.ClassifierOptionsRequestModelMapper;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.server.model.entity.FilterTemplateType;
+import com.ecaservice.server.report.customize.InstancesInfoFilterReportCustomizer;
 import com.ecaservice.server.report.model.BaseReportType;
 import com.ecaservice.server.report.model.ClassifierOptionsRequestBean;
 import com.ecaservice.server.repository.InstancesInfoRepository;
@@ -14,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,11 +30,12 @@ import static com.ecaservice.server.util.ClassifierOptionsHelper.parseOptions;
  */
 @Component
 public class ClassifierOptionsRequestsBaseReportDataFetcher
-        extends AbstractEvaluationBaseReportDataFetcher<ClassifierOptionsRequestModel, ClassifierOptionsRequestBean> {
+        extends AbstractBaseReportDataFetcher<ClassifierOptionsRequestModel, ClassifierOptionsRequestBean> {
 
     private final ClassifierOptionsRequestService classifierOptionsRequestService;
     private final ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper;
     private final ClassifiersTemplateProvider classifiersTemplateProvider;
+    private final InstancesInfoRepository instancesInfoRepository;
 
     /**
      * Constructor with spring dependency injection.
@@ -48,11 +52,17 @@ public class ClassifierOptionsRequestsBaseReportDataFetcher
                                                           ClassifierOptionsRequestService classifierOptionsRequestService,
                                                           ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper,
                                                           ClassifiersTemplateProvider classifiersTemplateProvider) {
-        super(BaseReportType.CLASSIFIERS_OPTIONS_REQUESTS.name(), ClassifierOptionsRequestModel.class,
-                FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST.name(), filterService, instancesInfoRepository);
+        super(BaseReportType.CLASSIFIERS_OPTIONS_REQUESTS.name(),
+                FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST.name(), filterService);
         this.classifierOptionsRequestService = classifierOptionsRequestService;
         this.classifierOptionsRequestModelMapper = classifierOptionsRequestModelMapper;
         this.classifiersTemplateProvider = classifiersTemplateProvider;
+        this.instancesInfoRepository = instancesInfoRepository;
+    }
+
+    @PostConstruct
+    public void init() {
+        addFilterValueReportCustomizer(new InstancesInfoFilterReportCustomizer(instancesInfoRepository));
     }
 
     @Override
