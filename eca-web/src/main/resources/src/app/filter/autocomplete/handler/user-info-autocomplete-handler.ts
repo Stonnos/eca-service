@@ -40,9 +40,9 @@ export class UserInfoAutocompleteHandler extends AutocompleteHandler {
   private getUsersFilterValues(filters: Filter[], filterField: string, pageRequest: PageRequestDto): void {
     this.usersService.getUsers(pageRequest)
       .subscribe({
-        next: (instancesInfoPage: PageDto<UserDto>) => {
+        next: (userInfoPage: PageDto<UserDto>) => {
           const filter = filters.filter((item: Filter) => item.name == filterField).pop();
-          filter.values = instancesInfoPage.content.map((item: UserDto) => {
+          filter.values = userInfoPage.content.map((item: UserDto) => {
             return {
               label: item.login,
               value: item

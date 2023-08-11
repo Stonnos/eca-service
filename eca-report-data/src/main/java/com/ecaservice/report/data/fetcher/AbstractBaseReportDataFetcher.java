@@ -138,7 +138,7 @@ public abstract class AbstractBaseReportDataFetcher<E, B> {
 
     private FilterValueReportCustomizer getFilterValueReportCustomizer(FilterRequestDto filterRequestDto) {
         return filterValueReportCustomizers.stream()
-                .filter(filterValueReportCustomizer -> filterValueReportCustomizer.getFilterField() == filterRequestDto.getName())
+                .filter(filterValueReportCustomizer -> filterValueReportCustomizer.getFilterField().equals(filterRequestDto.getName()))
                 .findFirst()
                 .orElse(null);
     }
