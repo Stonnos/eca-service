@@ -46,8 +46,8 @@
     "fieldName": "initiator",
     "description": "Инициатор события",
     "fieldOrder": 3,
-    "filterFieldType": "TEXT",
-    "matchMode": "LIKE",
+    "filterFieldType": "LAZY_REFERENCE",
+    "matchMode": "EQUALS",
     "multiple": false,
     "dictionary": null
   },

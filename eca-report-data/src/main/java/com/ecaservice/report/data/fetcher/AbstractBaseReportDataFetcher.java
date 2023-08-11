@@ -1,6 +1,7 @@
 package com.ecaservice.report.data.fetcher;
 
 import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.report.data.customize.FilterValueReportCustomizer;
 import com.ecaservice.report.model.BaseReportBean;
 import com.ecaservice.report.model.FilterBean;
 import com.ecaservice.web.dto.model.FilterDictionaryDto;
@@ -17,14 +18,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.util.CollectionUtils;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.ecaservice.core.filter.util.ReflectionUtils.getFieldType;
 import static com.ecaservice.report.data.util.RangeUtils.formatDateRange;
 import static com.google.common.collect.Lists.newArrayList;
 
@@ -36,13 +36,14 @@ import static com.google.common.collect.Lists.newArrayList;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class AbstractBaseReportDataFetcher<E, B> {
 
-    public static final String VALUES_SEPARATOR = ", ";
+    private static final String VALUES_SEPARATOR = ", ";
 
     @Getter
     private final String reportType;
-    private final Class<E> entityClazz;
     private final String filterTemplateType;
     private final FilterService filterService;
+
+    private final List<FilterValueReportCustomizer> filterValueReportCustomizers = new ArrayList<>();
 
     /**
      * Fetches entities page for base report from database
@@ -79,6 +80,15 @@ public abstract class AbstractBaseReportDataFetcher<E, B> {
                 .items(beans).build();
     }
 
+    /**
+     * Adds filter value report customizer.
+     *
+     * @param filterValueReportCustomizer - filter value report customizer
+     */
+    public void addFilterValueReportCustomizer(FilterValueReportCustomizer filterValueReportCustomizer) {
+        this.filterValueReportCustomizers.add(filterValueReportCustomizer);
+    }
+
     private List<FilterBean> getFilterBeans(PageRequestDto pageRequestDto) {
         Map<String, FilterFieldDto> filterFieldsMap = filterService.getFilterFields(filterTemplateType)
                 .stream()
@@ -110,24 +120,27 @@ public abstract class AbstractBaseReportDataFetcher<E, B> {
 
     private String getFilterValuesAsString(FilterRequestDto filterRequestDto, List<String> values,
                                            FilterFieldDto filterFieldDto) {
-        if (FilterFieldType.DATE.equals(filterFieldDto.getFilterFieldType())
-                && MatchMode.RANGE.equals(filterRequestDto.getMatchMode())) {
-            return getDateRangeAsString(values, filterRequestDto);
+        var filterValueReportCustomizer = getFilterValueReportCustomizer(filterRequestDto);
+        if (filterValueReportCustomizer != null) {
+            return filterValueReportCustomizer.getFilterValuesAsString(values);
         } else {
-            if (FilterFieldType.REFERENCE.equals(filterFieldDto.getFilterFieldType())
+            if (FilterFieldType.DATE.equals(filterFieldDto.getFilterFieldType())
+                    && MatchMode.RANGE.equals(filterRequestDto.getMatchMode())) {
+                return getDateRangeAsString(values);
+            } else if (FilterFieldType.REFERENCE.equals(filterFieldDto.getFilterFieldType())
                     && Optional.ofNullable(filterFieldDto.getDictionary())
                     .map(FilterDictionaryDto::getValues).isPresent()) {
                 return getValuesFromDictionary(values, filterFieldDto.getDictionary());
-            } else if (FilterFieldType.LAZY_REFERENCE.equals(filterFieldDto.getFilterFieldType())) {
-                return getLazyReferenceFilterValuesAsString(values, filterFieldDto);
             }
+            return StringUtils.join(values, VALUES_SEPARATOR);
         }
-        return StringUtils.join(values, VALUES_SEPARATOR);
     }
 
-    protected String getLazyReferenceFilterValuesAsString(List<String> values,
-                                                          FilterFieldDto filterFieldDto) {
-        return StringUtils.join(values, VALUES_SEPARATOR);
+    private FilterValueReportCustomizer getFilterValueReportCustomizer(FilterRequestDto filterRequestDto) {
+        return filterValueReportCustomizers.stream()
+                .filter(filterValueReportCustomizer -> filterValueReportCustomizer.getFilterField().equals(filterRequestDto.getName()))
+                .findFirst()
+                .orElse(null);
     }
 
     protected String getDictionaryLabelByCode(String dictionaryName, String code) {
@@ -149,15 +162,9 @@ public abstract class AbstractBaseReportDataFetcher<E, B> {
         return StringUtils.join(resultValues, VALUES_SEPARATOR);
     }
 
-    private String getDateRangeAsString(List<String> values, FilterRequestDto filterRequestDto) {
-        Class fieldClazz = getFieldType(filterRequestDto.getName(), entityClazz);
-        if (!LocalDateTime.class.isAssignableFrom(fieldClazz)) {
-            throw new IllegalStateException(
-                    String.format("Can't get range value as string for field class %s", fieldClazz.getSimpleName()));
-        } else {
-            String lowerBound = values.get(0);
-            String upperBound = values.size() > 1 ? values.get(1) : null;
-            return formatDateRange(lowerBound, upperBound);
-        }
+    private String getDateRangeAsString(List<String> values) {
+        String lowerBound = values.get(0);
+        String upperBound = values.size() > 1 ? values.get(1) : null;
+        return formatDateRange(lowerBound, upperBound);
     }
 }

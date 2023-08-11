@@ -14,6 +14,9 @@ import { FieldService } from "../services/field.service";
 import { FieldLink } from "../model/field-link";
 import { ColumnModel } from "../model/column.model";
 import { saveAs } from 'file-saver/dist/FileSaver';
+import { LazyReferenceFilterValueTransformer } from "../../filter/autocomplete/transformer/lazy-reference-filter-value-transformer";
+import { AutocompleteHandler } from "../../filter/autocomplete/handler/autocomplete-handler";
+import { AutocompleteItemModel } from "../../filter/model/autocomplete-item.model";
 
 export abstract class BaseListComponent<T> implements FieldLink {
 
@@ -43,8 +46,19 @@ export abstract class BaseListComponent<T> implements FieldLink {
 
   private dateFormat: string = "yyyy-MM-dd";
 
+  private lazyReferenceTransformers: LazyReferenceFilterValueTransformer[] = [];
+  private autoCompleteHandlers: AutocompleteHandler[] = [];
+
   protected constructor(public messageService: MessageService,
                         public fieldService: FieldService) {
+  }
+
+  public addLazyReferenceTransformers(transformer: LazyReferenceFilterValueTransformer): void {
+    this.lazyReferenceTransformers.push(transformer);
+  }
+
+  public addAutoCompleteHandler(autocompleteHandler: AutocompleteHandler): void {
+    this.autoCompleteHandlers.push(autocompleteHandler);
   }
 
   public getNextPage(pageRequest: PageRequestDto, showLoader: boolean) {
@@ -146,6 +160,15 @@ export abstract class BaseListComponent<T> implements FieldLink {
     return this.blinkId && this.blinkId == item.id;
   }
 
+  public onFilterFieldAutocomplete(autocompleteItemModel: AutocompleteItemModel): void {
+    const autocompleteHandler = this.autoCompleteHandlers
+      .filter((item: AutocompleteHandler) => item.getFilterField() == autocompleteItemModel.filterField)
+      .pop();
+    if (autocompleteHandler) {
+      autocompleteHandler.onFilterFieldAutocomplete(this.filters, autocompleteItemModel);
+    }
+  }
+
   private getSortField(columnName: string): string {
     const column: ColumnModel = this.columns.find((column: ColumnModel) => columnName == column.name);
     if (column) {
@@ -176,13 +199,19 @@ export abstract class BaseListComponent<T> implements FieldLink {
       case "REFERENCE":
         return values.map((item) => item.value);
       case "LAZY_REFERENCE":
-        return this.tramsFormLazyReferenceValue(filter, values);
+        return this.transformLazyReferenceValue(filter, values);
       default:
         return values;
     }
   }
 
-  protected tramsFormLazyReferenceValue(filter: Filter, values: any[]): string[] {
+  private transformLazyReferenceValue(filter: Filter, values: any[]): string[] {
+    const transformer = this.lazyReferenceTransformers
+      .filter((item: LazyReferenceFilterValueTransformer) => item.getFilterField() == filter.name)
+      .pop();
+    if (transformer) {
+      return transformer.transformValues(filter, values);
+    }
     return values.map((item) => item.value);
   }
 }

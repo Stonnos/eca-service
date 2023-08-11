@@ -25,15 +25,19 @@ import { PushMessageType } from "../../common/util/push-message.type";
 import { Logger } from "../../common/util/logging";
 import { CreateExperimentRequestDto } from "../../create-experiment/model/create-experiment-request.model";
 import { ErrorHandler } from "../../common/services/error-handler";
-import { BaseEvaluationListComponent } from "../../common/lists/base-evaluation-list.component";
 import { InstancesInfoService } from "../../common/instances-info/services/instances-info.service";
+import { BaseListComponent } from "../../common/lists/base-list.component";
+import { InstancesInfoFilterValueTransformer } from "../../filter/autocomplete/transformer/instances-info-filter-value-transformer";
+import { InstancesInfoAutocompleteHandler } from "../../filter/autocomplete/handler/instances-info-autocomplete-handler";
+import { MessageService } from "primeng/api";
+import { FieldService } from "../../common/services/field.service";
 
 @Component({
   selector: 'app-experiment-list',
   templateUrl: './experiment-list.component.html',
   styleUrls: ['./experiment-list.component.scss']
 })
-export class ExperimentListComponent extends BaseEvaluationListComponent<ExperimentDto> implements OnInit, OnDestroy {
+export class ExperimentListComponent extends BaseListComponent<ExperimentDto> implements OnInit, OnDestroy {
 
   private static readonly EXPERIMENTS_REPORT_FILE_NAME = 'experiments-report.xlsx';
 
@@ -64,15 +68,16 @@ export class ExperimentListComponent extends BaseEvaluationListComponent<Experim
 
   public experimentRequest: ExperimentRequest = new ExperimentRequest();
 
-  public constructor(injector: Injector,
+  public constructor(private injector: Injector,
                      private experimentsService: ExperimentsService,
                      private filterService: FilterService,
                      private reportsService: ReportsService,
                      private validationService: ValidationService,
                      private errorHandler: ErrorHandler,
                      private pushService: PushService,
+                     private instancesInfoService: InstancesInfoService,
                      private router: Router) {
-    super(injector, injector.get(InstancesInfoService));
+    super(injector.get(MessageService), injector.get(FieldService));
     this.defaultSortField = ExperimentFields.CREATION_DATE;
     this.linkColumns = [ExperimentFields.RELATION_NAME, ExperimentFields.MODEL_PATH,
       ExperimentFields.REQUEST_ID, ExperimentFields.EVALUATION_METHOD_DESCRIPTION];
@@ -81,6 +86,8 @@ export class ExperimentListComponent extends BaseEvaluationListComponent<Experim
   }
 
   public ngOnInit(): void {
+    this.addLazyReferenceTransformers(new InstancesInfoFilterValueTransformer());
+    this.addAutoCompleteHandler(new InstancesInfoAutocompleteHandler(this.instancesInfoService, this.messageService));
     this.getFilterFields();
     this.getRequestStatusesStatistics();
     this.getEvaluationMethods();

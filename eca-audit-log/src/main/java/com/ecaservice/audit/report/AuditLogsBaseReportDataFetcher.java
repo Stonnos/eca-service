@@ -37,7 +37,7 @@ public class AuditLogsBaseReportDataFetcher extends AbstractBaseReportDataFetche
     public AuditLogsBaseReportDataFetcher(FilterService filterService,
                                           AuditLogService auditLogService,
                                           AuditLogMapper auditLogMapper) {
-        super("AUDIT_LOGS", AuditLogEntity.class, AUDIT_LOG_TEMPLATE, filterService);
+        super("AUDIT_LOGS", AUDIT_LOG_TEMPLATE, filterService);
         this.auditLogService = auditLogService;
         this.auditLogMapper = auditLogMapper;
     }
