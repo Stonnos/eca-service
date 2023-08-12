@@ -138,6 +138,9 @@ cache:
     global-filters:
       expireAfterWriteSeconds: 18000
       maxSize: 100
+    sort-fields:
+      expireAfterWriteSeconds: 18000
+      maxSize: 100
     filter-templates:
       expireAfterWriteSeconds: 18000
       maxSize: 100
