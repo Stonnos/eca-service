@@ -20,12 +20,12 @@ import javax.validation.ConstraintValidatorContext;
 @RequiredArgsConstructor
 public class PageRequestValidator implements ConstraintValidator<ValidPageRequest, PageRequestDto> {
 
-    private static final String FILTERS_NODE_FORMAT = "filters[%s]";
+    private static final String FILTERS_NODE_FORMAT = "filters[%d].name";
 
-    private static final String SORT_FIELD_NODE_FORMAT = "sortField[%s]";
     private static final String INVALID_FILTER_REQUEST_FIELD_NAME_TEMPLATE = "{invalid.filter.request.field.name}";
 
     private static final String INVALID_SORT_FIELD_TEMPLATE = "{invalid.sort.field.name}";
+    private static final String SORT_FIELD = "sortField";
 
     private String filterTemplateName;
 
@@ -47,12 +47,13 @@ public class PageRequestValidator implements ConstraintValidator<ValidPageReques
         boolean valid = true;
         if (!CollectionUtils.isEmpty(pageRequestDto.getFilters())) {
             var filterFields = filterService.getFilterFields(filterTemplateName);
-            for (FilterRequestDto filterRequestDto : pageRequestDto.getFilters()) {
+            for (int i = 0; i < pageRequestDto.getFilters().size(); i++) {
+                var filterRequestDto = pageRequestDto.getFilters().get(i);
                 if (filterFields.stream().noneMatch(
                         filterFieldDto -> filterFieldDto.getFieldName().equals(filterRequestDto.getName()))) {
                     valid = false;
                     buildConstraintViolationWithTemplate(context, INVALID_FILTER_REQUEST_FIELD_NAME_TEMPLATE,
-                            String.format(FILTERS_NODE_FORMAT, filterRequestDto.getName()));
+                            String.format(FILTERS_NODE_FORMAT, i));
                 }
             }
         }
@@ -62,8 +63,7 @@ public class PageRequestValidator implements ConstraintValidator<ValidPageReques
     private boolean validateSortField(PageRequestDto pageRequestDto, ConstraintValidatorContext context) {
         var sortFields = filterService.getSortFields(filterTemplateName);
         if (!sortFields.contains(pageRequestDto.getSortField())) {
-            buildConstraintViolationWithTemplate(context, INVALID_SORT_FIELD_TEMPLATE,
-                    String.format(SORT_FIELD_NODE_FORMAT, pageRequestDto.getSortField()));
+            buildConstraintViolationWithTemplate(context, INVALID_SORT_FIELD_TEMPLATE, SORT_FIELD);
             return false;
         }
         return true;

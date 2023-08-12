@@ -28,5 +28,5 @@ public class CacheNames {
     /**
      * Sort fields cache name
      */
-    public static final String SORT_FIELDS_CACHE_NAME = "sort-filters";
+    public static final String SORT_FIELDS_CACHE_NAME = "sort-fields";
 }
