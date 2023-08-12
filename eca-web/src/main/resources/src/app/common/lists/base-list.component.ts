@@ -172,7 +172,7 @@ export abstract class BaseListComponent<T> implements FieldLink {
   private getSortField(columnName: string): string {
     const column: ColumnModel = this.columns.find((column: ColumnModel) => columnName == column.name);
     if (column) {
-      return column.sortBy ? column.sortBy : column.name;
+      return column.sortBy;
     }
     return null;
   }

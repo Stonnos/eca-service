@@ -1,11 +1,8 @@
 export class ExperimentFields {
   public static readonly REQUEST_ID: string = "requestId";
   public static readonly EXPERIMENT_TYPE_DESCRIPTION: string = "experimentType.description";
-  public static readonly EXPERIMENT_TYPE: string = "experimentType";
   public static readonly REQUEST_STATUS_DESCRIPTION: string = "requestStatus.description";
-  public static readonly REQUEST_STATUS: string = "requestStatus";
   public static readonly EVALUATION_METHOD_DESCRIPTION: string = "evaluationMethod.description";
-  public static readonly EVALUATION_METHOD: string = "evaluationMethod";
   public static readonly CREATED_BY: string = "createdBy";
   public static readonly MODEL_PATH: string = "modelPath";
   public static readonly CREATION_DATE: string = "creationDate";
@@ -38,17 +35,14 @@ export class AbstractEvaluationDtoFields {
 
 export class EvaluationLogFields {
   public static readonly REQUEST_ID: string = "requestId";
-  public static readonly CLASSIFIER_NAME: string = "classifierInfo.classifierName";
   public static readonly CLASSIFIER_DESCRIPTION: string = "classifierInfo.classifierDescription";
   public static readonly REQUEST_STATUS_DESCRIPTION: string = "requestStatus.description";
-  public static readonly REQUEST_STATUS: string = "requestStatus";
   public static readonly RELATION_NAME: string = "instancesInfo.relationName";
   public static readonly NUM_INSTANCES: string = "instancesInfo.numInstances";
   public static readonly NUM_ATTRIBUTES: string = "instancesInfo.numAttributes";
   public static readonly NUM_CLASSES: string = "instancesInfo.numClasses";
   public static readonly CLASS_NAME: string = "instancesInfo.className";
   public static readonly EVALUATION_METHOD_DESCRIPTION: string = "evaluationMethod.description";
-  public static readonly EVALUATION_METHOD: string = "evaluationMethod";
   public static readonly CREATION_DATE: string = "creationDate";
   public static readonly START_DATE: string = "startDate";
   public static readonly END_DATE: string = "endDate";
@@ -63,10 +57,8 @@ export class ClassifierOptionsRequestsFields {
   public static readonly RELATION_NAME: string = "instancesInfo.relationName";
   public static readonly CLASSIFIER_NAME: string = "classifierName";
   public static readonly EVALUATION_METHOD_DESCRIPTION: string = "evaluationMethod.description";
-  public static readonly EVALUATION_METHOD: string = "evaluationMethod";
   public static readonly REQUEST_DATE: string = "requestDate";
   public static readonly RESPONSE_STATUS_DESCRIPTION: string = "responseStatus.description";
-  public static readonly RESPONSE_STATUS: string = "responseStatus";
 }
 
 export class ClassifierOptionsFields {
@@ -160,7 +152,6 @@ export class EmailTemplateParameterFields {
 }
 
 export class ClassifiersConfigurationHistoryFields {
-  public static readonly ACTION_TYPE: string = "actionType";
   public static readonly ACTION_TYPE_DESCRIPTION: string = "actionType.description";
   public static readonly CREATED_BY: string = "createdBy";
   public static readonly CREATED_AT: string = "createdAt";
