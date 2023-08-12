@@ -18,5 +18,5 @@ public interface FilterTemplateRepository extends JpaRepository<FilterTemplate, 
      * @param templateType - template type
      * @return filter template entity
      */
-    Optional<FilterTemplate> findFirstByTemplateType(String templateType);
+    Optional<FilterTemplate> findByTemplateType(String templateType);
 }

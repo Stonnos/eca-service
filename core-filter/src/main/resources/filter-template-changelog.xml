@@ -187,4 +187,31 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="add_filter_template_type_unique_idx" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_template"/>
+            <columnExists tableName="filter_template" columnName="template_type"/>
+        </preConditions>
+        <addUniqueConstraint tableName="filter_template" columnNames="template_type"
+                             constraintName="filter_template_type_unique_idx"/>
+    </changeSet>
+
+    <changeSet id="add_global_filter_template_type_unique_idx" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_filter_template"/>
+            <columnExists tableName="global_filter_template" columnName="template_type"/>
+        </preConditions>
+        <addUniqueConstraint tableName="global_filter_template" columnNames="template_type"
+                             constraintName="global_filter_template_type_unique_idx"/>
+    </changeSet>
+
+    <changeSet id="add_filter_dictionary_name_unique_idx" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_dictionary"/>
+            <columnExists tableName="filter_dictionary" columnName="name"/>
+        </preConditions>
+        <addUniqueConstraint tableName="filter_dictionary" columnNames="name"
+                             constraintName="filter_dictionary_name_unique_idx"/>
+    </changeSet>
+
 </databaseChangeLog>

@@ -49,7 +49,7 @@ public class FilterService {
      */
     @Cacheable(CacheNames.GLOBAL_FILTERS_CACHE_NAME)
     public List<String> getGlobalFilterFields(String filterTemplateType) {
-        return globalFilterTemplateRepository.findFirstByTemplateType(filterTemplateType)
+        return globalFilterTemplateRepository.findByTemplateType(filterTemplateType)
                 .map(GlobalFilterTemplate::getFields)
                 .map(globalFilterFields -> globalFilterFields.stream().map(GlobalFilterField::getFieldName)
                         .collect(Collectors.toList()))
@@ -65,7 +65,7 @@ public class FilterService {
     @Cacheable(CacheNames.FILTER_TEMPLATES_CACHE_NAME)
     public List<FilterFieldDto> getFilterFields(String templateType) {
         log.info("Fetch filter fields for template type [{}]", templateType);
-        var filterFields = filterTemplateRepository.findFirstByTemplateType(templateType)
+        var filterFields = filterTemplateRepository.findByTemplateType(templateType)
                 .map(FilterTemplate::getFields)
                 .map(filterFieldMapper::map)
                 .orElseThrow(() -> new EntityNotFoundException(FilterTemplate.class, templateType));

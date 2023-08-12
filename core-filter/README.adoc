@@ -66,9 +66,9 @@ spring:
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
-|id                      |bigint           |+|+|+                  |Идентификатор записи (первичный ключ)
-|filter_name             |varchar(255)     |-|+|-                  |Название фильтра
-|template_type           |varchar(255)     |-|+|-                  |Тип шаблона
+|id                      |bigint           |+|+|+                                |Идентификатор записи (первичный ключ)
+|filter_name             |varchar(255)     |-|+|-                                |Название фильтра
+|template_type           |varchar(255)     |-|+|filter_template_type_unique_idx  |Тип шаблона
 |===
 
 Таблица 2.2 - 'global_filter_field' - содержит данные полей для глобального поиска
@@ -84,18 +84,18 @@ spring:
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
-|id                      |bigint           |+|+|+                  |Идентификатор записи (первичный ключ)
-|template_name           |varchar(255)     |-|+|-                  |Название шаблона
-|template_type           |varchar(255)     |-|+|-                  |Тип шаблона
-|created                 |timestamp        |-|+|-                  |Дата создания шаблона
+|id                      |bigint           |+|+|+                                 |Идентификатор записи (первичный ключ)
+|template_name           |varchar(255)     |-|+|-                                 |Название шаблона
+|template_type           |varchar(255)     |-|+|filter_template_type_unique_idx   |Тип шаблона
+|created                 |timestamp        |-|+|-                                 |Дата создания шаблона
 |===
 
 Таблица 2.4 - 'filter_dictionary' - содержит данные словарей
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
-|id                         |bigint           |+|+|+                                 |Идентификатор записи (первичный ключ)
-|name                       |varchar(255)     |-|+|-                                 |Название словаря
+|id                         |bigint           |+|+|+                                   |Идентификатор записи (первичный ключ)
+|name                       |varchar(255)     |-|+|filter_dictionary_name_unique_idx   |Название словаря
 |===
 
 Таблица 2.5 - 'filter_dictionary_value' - содержит данные значений словарей
