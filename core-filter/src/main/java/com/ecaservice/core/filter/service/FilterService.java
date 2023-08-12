@@ -6,11 +6,14 @@ import com.ecaservice.core.filter.entity.FilterDictionary;
 import com.ecaservice.core.filter.entity.FilterTemplate;
 import com.ecaservice.core.filter.entity.GlobalFilterField;
 import com.ecaservice.core.filter.entity.GlobalFilterTemplate;
+import com.ecaservice.core.filter.entity.SortField;
+import com.ecaservice.core.filter.entity.SortTemplate;
 import com.ecaservice.core.filter.mapping.FilterDictionaryMapper;
 import com.ecaservice.core.filter.mapping.FilterFieldMapper;
 import com.ecaservice.core.filter.repository.FilterDictionaryRepository;
 import com.ecaservice.core.filter.repository.FilterTemplateRepository;
 import com.ecaservice.core.filter.repository.GlobalFilterTemplateRepository;
+import com.ecaservice.core.filter.repository.SortTemplateRepository;
 import com.ecaservice.web.dto.model.FilterDictionaryDto;
 import com.ecaservice.web.dto.model.FilterFieldDto;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +39,7 @@ public class FilterService {
     private final GlobalFilterTemplateRepository globalFilterTemplateRepository;
     private final FilterTemplateRepository filterTemplateRepository;
     private final FilterDictionaryRepository filterDictionaryRepository;
+    private final SortTemplateRepository sortTemplateRepository;
 
     /**
      * Finds global filter fields by template type.
@@ -61,10 +65,12 @@ public class FilterService {
     @Cacheable(CacheNames.FILTER_TEMPLATES_CACHE_NAME)
     public List<FilterFieldDto> getFilterFields(String templateType) {
         log.info("Fetch filter fields for template type [{}]", templateType);
-        return filterTemplateRepository.findFirstByTemplateType(templateType)
+        var filterFields = filterTemplateRepository.findFirstByTemplateType(templateType)
                 .map(FilterTemplate::getFields)
                 .map(filterFieldMapper::map)
                 .orElseThrow(() -> new EntityNotFoundException(FilterTemplate.class, templateType));
+        log.info("Filter fields has been fetched for template type [{}]", templateType);
+        return filterFields;
     }
 
     /**
@@ -79,5 +85,25 @@ public class FilterService {
         return filterDictionaryRepository.findByName(name)
                 .map(filterDictionaryMapper::map)
                 .orElseThrow(() -> new EntityNotFoundException(FilterDictionary.class, name));
+    }
+
+    /**
+     * Finds sort fields by template type.
+     *
+     * @param templateType - sort template type
+     * @return sort fields list
+     */
+    @Cacheable(CacheNames.SORT_FIELDS_CACHE_NAME)
+    public List<String> getSortFields(String templateType) {
+        log.info("Gets sort fields with template [{}]", templateType);
+        var sortFieldsList = sortTemplateRepository.findByTemplateType(templateType)
+                .map(SortTemplate::getSortFields)
+                .map(sortFields -> sortFields.stream()
+                        .map(SortField::getFieldName)
+                        .collect(Collectors.toList())
+                )
+                .orElseThrow(() -> new EntityNotFoundException(SortTemplate.class, templateType));
+        log.info("{} sort fields has been fetched for template [{}]", sortFieldsList, templateType);
+        return sortFieldsList;
     }
 }

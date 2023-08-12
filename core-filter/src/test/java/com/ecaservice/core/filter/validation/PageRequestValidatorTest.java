@@ -58,6 +58,8 @@ class PageRequestValidatorTest {
         when(validPageRequest.filterTemplateName()).thenReturn(FILTER_TEMPLATE_NAME);
         pageRequestValidator.initialize(validPageRequest);
         mockFilterFields();
+        when(context.buildConstraintViolationWithTemplate(anyString())).thenReturn(constraintViolationBuilder);
+        when(constraintViolationBuilder.addPropertyNode(anyString())).thenReturn(customizableContext);
     }
 
     @Test
@@ -71,6 +73,15 @@ class PageRequestValidatorTest {
 
     @Test
     void testInvalidFilterFields() {
+        var pageRequestDto = new PageRequestDto(PAGE, PAGE_SIZE, "field3", false, StringUtils.EMPTY, newArrayList());
+        pageRequestDto.getFilters().add(
+                new FilterRequestDto(FIELD_1, Collections.singletonList(VALUE), MatchMode.LIKE));
+        boolean valid = pageRequestValidator.isValid(pageRequestDto, context);
+        assertThat(valid).isFalse();
+    }
+
+    @Test
+    void testInvalidSortFields() {
         var pageRequestDto = new PageRequestDto(PAGE, PAGE_SIZE, FIELD_1, false, StringUtils.EMPTY, newArrayList());
         pageRequestDto.getFilters().add(
                 new FilterRequestDto("field3", Collections.singletonList(VALUE), MatchMode.LIKE));
@@ -86,5 +97,6 @@ class PageRequestValidatorTest {
         FilterFieldDto second = new FilterFieldDto();
         second.setFieldName(FIELD_2);
         when(filterService.getFilterFields(FILTER_TEMPLATE_NAME)).thenReturn(List.of(first, second));
+        when(filterService.getSortFields(FILTER_TEMPLATE_NAME)).thenReturn(List.of(FIELD_1, FIELD_2));
     }
 }

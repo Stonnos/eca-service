@@ -12,6 +12,7 @@ import com.ecaservice.core.filter.mapping.FilterFieldMapperImpl;
 import com.ecaservice.core.filter.repository.FilterDictionaryRepository;
 import com.ecaservice.core.filter.repository.FilterTemplateRepository;
 import com.ecaservice.core.filter.repository.GlobalFilterTemplateRepository;
+import com.ecaservice.core.filter.repository.SortTemplateRepository;
 import com.ecaservice.web.dto.model.FilterDictionaryDto;
 import com.ecaservice.web.dto.model.FilterFieldDto;
 import org.junit.jupiter.api.Test;
@@ -39,6 +40,8 @@ class FilterServiceTest extends AbstractJpaTest {
     @Inject
     private GlobalFilterTemplateRepository globalFilterTemplateRepository;
     @Inject
+    private SortTemplateRepository sortTemplateRepository;
+    @Inject
     private FilterDictionaryRepository filterDictionaryRepository;
 
     @Inject
@@ -49,6 +52,7 @@ class FilterServiceTest extends AbstractJpaTest {
         filterTemplateRepository.deleteAll();
         globalFilterTemplateRepository.deleteAll();
         filterDictionaryRepository.deleteAll();
+        sortTemplateRepository.deleteAll();
     }
 
     @Test
@@ -95,5 +99,19 @@ class FilterServiceTest extends AbstractJpaTest {
     void testNotExistingFilterDictionary() {
         assertThrows(EntityNotFoundException.class,
                 () -> filterService.getFilterDictionary(DICTIONARY_NAME));
+    }
+
+    @Test
+    void testGetSortFilterTemplateFields() {
+        var sortTemplate = TestHelperUtils.createSortTemplate(FILTER_TEMPLATE_TYPE);
+        sortTemplateRepository.save(sortTemplate);
+        List<String> fields = filterService.getSortFields(FILTER_TEMPLATE_TYPE);
+        assertThat(fields).hasSameSizeAs(sortTemplate.getSortFields());
+    }
+
+    @Test
+    void testNotExistingSortTemplate() {
+        assertThrows(EntityNotFoundException.class,
+                () -> filterService.getFilterFields(FILTER_TEMPLATE_TYPE));
     }
 }
