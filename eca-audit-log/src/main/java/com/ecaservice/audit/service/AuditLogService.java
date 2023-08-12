@@ -7,6 +7,7 @@ import com.ecaservice.audit.filter.AuditLogFilter;
 import com.ecaservice.audit.mapping.AuditLogMapper;
 import com.ecaservice.audit.repository.AuditLogRepository;
 import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
 import com.ecaservice.core.lock.annotation.Locked;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 
@@ -28,6 +30,7 @@ import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
  * @author Roman Batygin
  */
 @Slf4j
+@Validated
 @Service
 @RequiredArgsConstructor
 public class AuditLogService {
@@ -62,7 +65,8 @@ public class AuditLogService {
      * @param pageRequestDto - page request dto
      * @return audit logs page
      */
-    public Page<AuditLogEntity> getNextPage(PageRequestDto pageRequestDto) {
+    public Page<AuditLogEntity> getNextPage(
+            @ValidPageRequest(filterTemplateName = AUDIT_LOG_TEMPLATE) PageRequestDto pageRequestDto) {
         log.info("Gets audit logs next page: {}", pageRequestDto);
         Sort sort = buildSort(pageRequestDto.getSortField(), EVENT_DATE, pageRequestDto.isAscending());
         List<String> globalFilterFields = filterService.getGlobalFilterFields(AUDIT_LOG_TEMPLATE);
