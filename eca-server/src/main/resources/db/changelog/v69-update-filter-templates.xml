@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v69-update-filter-templates.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet author="roman.batygin@mail.ru" id="insert_sort_templates_1" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="sort_template"/>
+        </preConditions>
+        <loadUpdateData
+                tableName="sort_template"
+                primaryKey="id"
+                separator=";"
+                file="filter-templates/sort-templates.csv"/>
+    </changeSet>
+
+    <changeSet author="roman.batygin@mail.ru" id="insert_sort_templates_fields_1" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="sort_template"/>
+            <tableExists tableName="sort_field"/>
+        </preConditions>
+        <loadUpdateData
+                tableName="sort_field"
+                primaryKey="id"
+                separator=";"
+                file="filter-templates/sort-fields.csv"/>
+    </changeSet>
+
+</databaseChangeLog>
