@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -39,6 +40,12 @@ public class FilterTemplate {
      */
     @Column(name = "template_type", nullable = false, unique = true)
     private String templateType;
+
+    /**
+     * Created date
+     */
+    @Column(nullable = false)
+    private LocalDateTime created;
 
     /**
      * Filter fields list
