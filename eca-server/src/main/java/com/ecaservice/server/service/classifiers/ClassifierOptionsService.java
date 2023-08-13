@@ -3,6 +3,7 @@ package com.ecaservice.server.service.classifiers;
 import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.audit.annotation.Audit;
+import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
 import com.ecaservice.server.mapping.ClassifierOptionsDatabaseModelMapper;
 import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.server.model.entity.ClassifiersConfiguration;
@@ -31,6 +32,7 @@ import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.server.config.audit.AuditCodes.ADD_CLASSIFIER_OPTIONS;
 import static com.ecaservice.server.config.audit.AuditCodes.DELETE_CLASSIFIER_OPTIONS;
 import static com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel_.CREATION_DATE;
+import static com.ecaservice.server.model.entity.FilterTemplateType.CLASSIFIER_OPTIONS;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.createClassifierOptionsDatabaseModel;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.isEnsembleClassifierOptions;
 
@@ -112,7 +114,9 @@ public class ClassifierOptionsService {
      * @param pageRequestDto  - page request dto
      * @return classifiers options page
      */
-    public PageDto<ClassifierOptionsDto> getNextPage(long configurationId, PageRequestDto pageRequestDto) {
+    public PageDto<ClassifierOptionsDto> getNextPage(long configurationId,
+                                                     @ValidPageRequest(filterTemplateName = CLASSIFIER_OPTIONS)
+                                                     PageRequestDto pageRequestDto) {
         log.info("Gets classifiers configuration [{}] options next page: {}", configurationId, pageRequestDto);
         var classifiersConfiguration = getConfigurationById(configurationId);
         var sort = buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());

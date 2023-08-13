@@ -17,7 +17,6 @@ import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.projections.RequestStatusStatistics;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.repository.EvaluationResultsRequestEntityRepository;
-import com.ecaservice.server.service.PageRequestService;
 import com.ecaservice.server.service.classifiers.ClassifierOptionsProcessor;
 import com.ecaservice.server.service.ers.ErsService;
 import com.ecaservice.server.service.filter.dictionary.FilterDictionaries;
@@ -75,7 +74,7 @@ import static com.google.common.collect.Lists.newArrayList;
 @Validated
 @Service
 @RequiredArgsConstructor
-public class EvaluationLogService implements PageRequestService<EvaluationLog> {
+public class EvaluationLogService {
 
     private final AppProperties appProperties;
     private final FilterService filterService;
@@ -97,7 +96,12 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
         globalFilterFieldCustomizers.add(new ClassifierNameFilterFieldCustomizer(filterService));
     }
 
-    @Override
+    /**
+     * Gets evaluation logs page.
+     *
+     * @param pageRequestDto - page request dto
+     * @return evaluation logs page
+     */
     public Page<EvaluationLog> getNextPage(
             @ValidPageRequest(filterTemplateName = EVALUATION_LOG) PageRequestDto pageRequestDto) {
         log.info("Gets evaluation logs next page: {}", pageRequestDto);

@@ -39,4 +39,9 @@ public class FilterTemplateType {
      * Instances info filter template type
      */
     public static final String INSTANCES_INFO = "INSTANCES_INFO";
+
+    /**
+     * Classifier options filter template type
+     */
+    public static final String CLASSIFIER_OPTIONS = "CLASSIFIER_OPTIONS";
 }

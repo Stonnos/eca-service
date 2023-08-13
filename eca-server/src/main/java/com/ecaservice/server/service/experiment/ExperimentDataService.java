@@ -11,7 +11,6 @@ import com.ecaservice.server.filter.ExperimentFilter;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.projections.RequestStatusStatistics;
 import com.ecaservice.server.repository.ExperimentRepository;
-import com.ecaservice.server.service.PageRequestService;
 import com.ecaservice.server.service.filter.dictionary.FilterDictionaries;
 import com.ecaservice.web.dto.model.ChartDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -54,7 +53,7 @@ import static com.ecaservice.server.util.StatisticsHelper.calculateRequestStatus
 @Validated
 @Service
 @RequiredArgsConstructor
-public class ExperimentDataService implements PageRequestService<Experiment> {
+public class ExperimentDataService {
 
     private final ExperimentRepository experimentRepository;
     private final ObjectStorageService objectStorageService;
@@ -102,7 +101,12 @@ public class ExperimentDataService implements PageRequestService<Experiment> {
         }
     }
 
-    @Override
+    /**
+     * Gets experiments page.
+     *
+     * @param pageRequestDto - page request dto
+     * @return experiments page
+     */
     public Page<Experiment> getNextPage(
             @ValidPageRequest(filterTemplateName = EXPERIMENT) PageRequestDto pageRequestDto) {
         log.info("Gets experiments next page: {}", pageRequestDto);

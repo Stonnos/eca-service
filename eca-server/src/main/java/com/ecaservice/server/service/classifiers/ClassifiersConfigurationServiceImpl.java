@@ -4,7 +4,6 @@ import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.common.web.exception.InvalidOperationException;
 import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.core.filter.service.FilterService;
-import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
 import com.ecaservice.server.filter.ClassifiersConfigurationFilter;
 import com.ecaservice.server.mapping.ClassifierOptionsDatabaseModelMapper;
 import com.ecaservice.server.mapping.ClassifiersConfigurationMapper;
@@ -27,7 +26,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
-import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -50,7 +48,6 @@ import static com.ecaservice.server.model.entity.FilterTemplateType.CLASSIFIERS_
  * @author Roman Batygin
  */
 @Slf4j
-@Validated
 @Service("classifiersConfigurationServiceImpl")
 @RequiredArgsConstructor
 public class ClassifiersConfigurationServiceImpl implements ClassifiersConfigurationService {
@@ -170,8 +167,7 @@ public class ClassifiersConfigurationServiceImpl implements ClassifiersConfigura
     }
 
     @Override
-    public PageDto<ClassifiersConfigurationDto> getClassifiersConfigurations(
-            @ValidPageRequest(filterTemplateName = CLASSIFIERS_CONFIGURATION) PageRequestDto pageRequestDto) {
+    public PageDto<ClassifiersConfigurationDto> getClassifiersConfigurations(PageRequestDto pageRequestDto) {
         var classifiersConfigurationsPage = getNextPage(pageRequestDto);
         var configurationDtoList = classifiersConfigurationMapper.map(classifiersConfigurationsPage.getContent());
         if (classifiersConfigurationsPage.hasContent()) {
