@@ -59,3 +59,17 @@ export class ClassifiersConfigurationHistoryFilterFields {
   public static readonly CREATED_AT: string = "createdAt";
   public static readonly MESSAGE_TEXT: string = "messageText";
 }
+
+export class EmailTemplateFilterFields {
+  public static readonly CODE: string = "code";
+  public static readonly DESCRIPTION: string = "description";
+  public static readonly SUBJECT: string = "subject";
+  public static readonly CREATED: string = "created";
+}
+
+export class UserFilterFields {
+  public static readonly LOGIN: string = "login";
+  public static readonly EMAIL: string = "email";
+  public static readonly FULL_NAME: string = "fullName";
+  public static readonly CREATION_DATE: string = "creationDate";
+}
