@@ -6,7 +6,6 @@ import com.ecaservice.server.filter.ClassifierOptionsRequestModelFilter;
 import com.ecaservice.server.mapping.ClassifierOptionsRequestModelMapper;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.server.model.entity.ErsResponseStatus;
-import com.ecaservice.server.model.entity.FilterTemplateType;
 import com.ecaservice.server.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.server.service.classifiers.ClassifierOptionsProcessor;
 import com.ecaservice.web.dto.model.ClassifierOptionsRequestDto;
@@ -21,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
@@ -51,8 +49,7 @@ public class ClassifierOptionsRequestService {
      * @param pageRequestDto - page request dto
      * @return classifier options requests models page
      */
-    public Page<ClassifierOptionsRequestModel> getNextPage(
-            @ValidPageRequest(filterTemplateName = CLASSIFIER_OPTIONS_REQUEST) PageRequestDto pageRequestDto) {
+    public Page<ClassifierOptionsRequestModel> getNextPage(PageRequestDto pageRequestDto) {
         log.info("Gets classifier options requests next page: {}", pageRequestDto);
         Sort sort = buildSort(pageRequestDto.getSortField(), REQUEST_DATE, pageRequestDto.isAscending());
         var globalFilterFields = filterService.getGlobalFilterFields(CLASSIFIER_OPTIONS_REQUEST);
@@ -74,7 +71,8 @@ public class ClassifierOptionsRequestService {
      * @param pageRequestDto - page request dto
      * @return classifier options requests dto page
      */
-    public PageDto<ClassifierOptionsRequestDto> getClassifierOptionsRequestsPage(PageRequestDto pageRequestDto) {
+    public PageDto<ClassifierOptionsRequestDto> getClassifierOptionsRequestsPage(
+            @ValidPageRequest(filterTemplateName = CLASSIFIER_OPTIONS_REQUEST) PageRequestDto pageRequestDto) {
         var classifierOptionsRequestsPage = getNextPage(pageRequestDto);
         var classifierOptionsRequestsDtoPage = classifierOptionsRequestsPage.getContent()
                 .stream()
