@@ -2,10 +2,10 @@ package com.ecaservice.data.storage.service.impl;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.audit.annotation.Audit;
+import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.data.storage.entity.AttributeEntity;
 import com.ecaservice.data.storage.entity.AttributeType;
 import com.ecaservice.data.storage.entity.InstancesEntity;
-import com.ecaservice.data.storage.entity.InstancesEntity_;
 import com.ecaservice.data.storage.exception.ClassAttributeValuesIsTooLowException;
 import com.ecaservice.data.storage.exception.EmptyDataException;
 import com.ecaservice.data.storage.exception.InstancesExistsException;
@@ -47,6 +47,7 @@ import static com.ecaservice.data.storage.config.audit.AuditCodes.RENAME_INSTANC
 import static com.ecaservice.data.storage.config.audit.AuditCodes.SAVE_INSTANCES;
 import static com.ecaservice.data.storage.config.audit.AuditCodes.SELECT_ALL_ATTRIBUTES;
 import static com.ecaservice.data.storage.config.audit.AuditCodes.SET_CLASS_ATTRIBUTE;
+import static com.ecaservice.data.storage.dictionary.FilterDictionaries.INSTANCES_TEMPLATE;
 import static com.ecaservice.data.storage.entity.InstancesEntity_.CREATED;
 import static com.ecaservice.data.storage.util.Utils.MIN_NUM_CLASSES;
 
@@ -60,15 +61,10 @@ import static com.ecaservice.data.storage.util.Utils.MIN_NUM_CLASSES;
 @RequiredArgsConstructor
 public class StorageServiceImpl implements StorageService {
 
-    private static final List<String> INSTANCES_GLOBAL_FILTER_FIELDS = List.of(
-            InstancesEntity_.ID,
-            InstancesEntity_.TABLE_NAME,
-            InstancesEntity_.CREATED_BY
-    );
-
     private static final String ID_COLUMN_NAME_FORMAT = "id_%s";
     private static final String TABLE_NAME_FORMAT = "data_set_%s";
 
+    private final FilterService filterService;
     private final InstancesService instancesService;
     private final AttributeService attributeService;
     private final UserService userService;
@@ -83,8 +79,9 @@ public class StorageServiceImpl implements StorageService {
     public Page<InstancesEntity> getNextPage(PageRequestDto pageRequestDto) {
         log.info("Gets instances next page: {}", pageRequestDto);
         Sort sort = buildSort(pageRequestDto.getSortField(), CREATED, pageRequestDto.isAscending());
-        InstancesFilter filter = new InstancesFilter(pageRequestDto.getSearchQuery(), INSTANCES_GLOBAL_FILTER_FIELDS,
-                pageRequestDto.getFilters());
+        var globalFilterFields = filterService.getGlobalFilterFields(INSTANCES_TEMPLATE);
+        var filter =
+                new InstancesFilter(pageRequestDto.getSearchQuery(), globalFilterFields, pageRequestDto.getFilters());
         var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort);
         var instancesPage = instancesRepository.findAll(filter, pageRequest);
         log.info("Instances page [{} of {}] with size [{}] has been fetched for page request [{}]",

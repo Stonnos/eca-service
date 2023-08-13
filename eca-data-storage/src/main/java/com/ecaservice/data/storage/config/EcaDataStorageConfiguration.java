@@ -2,6 +2,7 @@ package com.ecaservice.data.storage.config;
 
 import com.ecaservice.common.web.annotation.EnableGlobalExceptionHandler;
 import com.ecaservice.config.swagger.annotation.EnableOpenApi;
+import com.ecaservice.core.filter.annotation.EnableFilters;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.repository.InstancesRepository;
 import com.ecaservice.oauth2.annotation.Oauth2ResourceServer;
@@ -26,6 +27,7 @@ import static org.springframework.web.context.WebApplicationContext.SCOPE_REQUES
 @Configuration
 @EnableOpenApi
 @Oauth2ResourceServer
+@EnableFilters
 @EnableCaching
 @EntityScan(basePackageClasses = InstancesEntity.class)
 @EnableJpaRepositories(basePackageClasses = InstancesRepository.class)

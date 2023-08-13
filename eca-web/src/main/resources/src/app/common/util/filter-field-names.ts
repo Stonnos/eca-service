@@ -82,7 +82,15 @@ export class InstancesInfoFilterFields {
 export class ClassifierOptionsFilterFields {
   public static readonly ID: string = "id";
   public static readonly OPTIONS_NAME: string = "optionsName";
-  public static readonly OPTIONS_DESCRIPTION: string = "optionsDescription";
   public static readonly CREATION_DATE: string = "creationDate";
+  public static readonly CREATED_BY: string = "createdBy";
+}
+
+export class InstancesFilterFields {
+  public static readonly ID: string = "id";
+  public static readonly RELATION_NAME: string = "relationName";
+  public static readonly NUM_INSTANCES: string = "numInstances";
+  public static readonly NUM_ATTRIBUTES: string = "numAttributes";
+  public static readonly CREATED: string = "created";
   public static readonly CREATED_BY: string = "createdBy";
 }
