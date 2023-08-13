@@ -86,8 +86,7 @@ public class UserService {
      * @param pageRequestDto - page request
      * @return users entities page
      */
-    public Page<UserEntity> getNextPage(
-            @ValidPageRequest(filterTemplateName = USERS_TEMPLATE) PageRequestDto pageRequestDto) {
+    public Page<UserEntity> getNextPage(PageRequestDto pageRequestDto) {
         log.info("Gets users next page: {}", pageRequestDto);
         Sort sort = buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
         var globalFilterFields = filterService.getGlobalFilterFields(USERS_TEMPLATE);
@@ -106,7 +105,8 @@ public class UserService {
      * @param pageRequestDto - page request
      * @return users dto page
      */
-    public PageDto<UserDto> getUsersPage(PageRequestDto pageRequestDto) {
+    public PageDto<UserDto> getUsersPage(
+            @ValidPageRequest(filterTemplateName = USERS_TEMPLATE) PageRequestDto pageRequestDto) {
         var usersPage = getNextPage(pageRequestDto);
         var userDtoList = userMapper.map(usersPage.getContent());
         populateUsersPhotoIds(usersPage.getContent(), userDtoList);
