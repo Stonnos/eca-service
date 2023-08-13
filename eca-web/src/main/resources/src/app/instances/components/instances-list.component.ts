@@ -16,6 +16,7 @@ import { CreateEditInstancesModel } from "../../create-edit-instances/model/crea
 import { RouterPaths } from "../../routing/router-paths";
 import { Router } from "@angular/router";
 import { ExportInstancesModel } from "../../export-instances/model/export-instances.model";
+import { InstancesFilterFields } from "../../common/util/filter-field-names";
 
 @Component({
   selector: 'app-instances-list',
@@ -123,13 +124,13 @@ export class InstancesListComponent extends BaseListComponent<InstancesDto> impl
 
   private initColumns() {
     this.columns = [
-      { name: InstancesFields.ID, label: "#" },
-      { name: InstancesFields.RELATION_NAME, label: "Название данных" },
-      { name: InstancesFields.NUM_INSTANCES, label: "Число объектов" },
-      { name: InstancesFields.NUM_ATTRIBUTES, label: "Число атрибутов" },
+      { name: InstancesFields.ID, label: "#", sortBy: InstancesFilterFields.ID },
+      { name: InstancesFields.RELATION_NAME, label: "Название данных", sortBy: InstancesFilterFields.RELATION_NAME },
+      { name: InstancesFields.NUM_INSTANCES, label: "Число объектов", sortBy: InstancesFilterFields.NUM_INSTANCES },
+      { name: InstancesFields.NUM_ATTRIBUTES, label: "Число атрибутов", sortBy: InstancesFilterFields.NUM_ATTRIBUTES },
       { name: InstancesFields.CLASS_NAME, label: "Атрибут класса" },
-      { name: InstancesFields.CREATED, label: "Дата создания" },
-      { name: InstancesFields.CREATED_BY, label: "Пользователь" },
+      { name: InstancesFields.CREATED, label: "Дата создания", sortBy: InstancesFilterFields.CREATED },
+      { name: InstancesFields.CREATED_BY, label: "Пользователь", sortBy: InstancesFilterFields.CREATED_BY },
     ];
   }
 }

@@ -149,4 +149,69 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="create_sort_template" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="sort_template"/>
+            </not>
+        </preConditions>
+        <createTable tableName="sort_template">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="template_type" type="varchar(255)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="sort_template_type_unique_idx"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_sort_filter_field" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="sort_template"/>
+            <not>
+                <tableExists tableName="sort_field"/>
+            </not>
+        </preConditions>
+        <createTable tableName="sort_field">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="field_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sort_template_id" type="bigint">
+                <constraints foreignKeyName="fk_sort_field_sort_template_id"
+                             referencedTableName="sort_template" referencedColumnNames="id"
+                             nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="add_filter_template_type_unique_idx" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_template"/>
+            <columnExists tableName="filter_template" columnName="template_type"/>
+        </preConditions>
+        <addUniqueConstraint tableName="filter_template" columnNames="template_type"
+                             constraintName="filter_template_type_unique_idx"/>
+    </changeSet>
+
+    <changeSet id="add_global_filter_template_type_unique_idx" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_filter_template"/>
+            <columnExists tableName="global_filter_template" columnName="template_type"/>
+        </preConditions>
+        <addUniqueConstraint tableName="global_filter_template" columnNames="template_type"
+                             constraintName="global_filter_template_type_unique_idx"/>
+    </changeSet>
+
+    <changeSet id="add_filter_dictionary_name_unique_idx" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_dictionary"/>
+            <columnExists tableName="filter_dictionary" columnName="name"/>
+        </preConditions>
+        <addUniqueConstraint tableName="filter_dictionary" columnNames="name"
+                             constraintName="filter_dictionary_name_unique_idx"/>
+    </changeSet>
+
 </databaseChangeLog>

@@ -11,6 +11,7 @@ import { FieldService } from "../../common/services/field.service";
 import { UsersService } from "../services/users.service";
 import { CreateUserModel } from "../../create-user/model/create-user.model";
 import { finalize } from "rxjs/internal/operators";
+import { UserFilterFields } from "../../common/util/filter-field-names";
 
 @Component({
   selector: 'app-users-list',
@@ -123,10 +124,10 @@ export class UsersListComponent extends BaseListComponent<UserDto> implements On
 
   private initColumns() {
     this.columns = [
-      { name: UserFields.LOGIN, label: "Логин" },
-      { name: UserFields.EMAIL, label: "Email пользователя" },
-      { name: UserFields.FULL_NAME, label: "ФИО пользователя" },
-      { name: UserFields.CREATION_DATE, label: "Дата создания" },
+      { name: UserFields.LOGIN, label: "Логин", sortBy: UserFilterFields.LOGIN },
+      { name: UserFields.EMAIL, label: "Email пользователя", sortBy: UserFilterFields.EMAIL },
+      { name: UserFields.FULL_NAME, label: "ФИО пользователя", sortBy: UserFilterFields.FULL_NAME },
+      { name: UserFields.CREATION_DATE, label: "Дата создания", sortBy: UserFilterFields.CREATION_DATE },
       { name: UserFields.ROLES, label: "Роли" }
     ];
   }

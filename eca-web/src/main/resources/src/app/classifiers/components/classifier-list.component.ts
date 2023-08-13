@@ -20,6 +20,7 @@ import { MessageService } from "primeng/api";
 import { FieldService } from "../../common/services/field.service";
 import { InstancesInfoFilterValueTransformer } from "../../filter/autocomplete/transformer/instances-info-filter-value-transformer";
 import { InstancesInfoAutocompleteHandler } from "../../filter/autocomplete/handler/instances-info-autocomplete-handler";
+import { EvaluationLogFilterFields } from "../../common/util/filter-field-names";
 
 @Component({
   selector: 'app-classifier-list',
@@ -123,18 +124,18 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
 
   private initColumns() {
     this.columns = [
-      { name: EvaluationLogFields.REQUEST_ID, label: "UUID заявки" },
-      { name: EvaluationLogFields.CLASSIFIER_DESCRIPTION, label: "Классификатор", sortBy: EvaluationLogFields.CLASSIFIER_NAME },
-      { name: EvaluationLogFields.REQUEST_STATUS_DESCRIPTION, label: "Статус заявки", sortBy: EvaluationLogFields.REQUEST_STATUS },
-      { name: EvaluationLogFields.PCT_CORRECT, label: "Точность классификатора, %" },
-      { name: EvaluationLogFields.RELATION_NAME, label: "Обучающая выборка" },
-      { name: EvaluationLogFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности", sortBy: EvaluationLogFields.EVALUATION_METHOD },
-      { name: EvaluationLogFields.MODEL_PATH, label: "Модель классификатора" },
+      { name: EvaluationLogFields.REQUEST_ID, label: "UUID заявки", sortBy: EvaluationLogFilterFields.REQUEST_ID },
+      { name: EvaluationLogFields.CLASSIFIER_DESCRIPTION, label: "Классификатор", sortBy: EvaluationLogFilterFields.CLASSIFIER_NAME },
+      { name: EvaluationLogFields.REQUEST_STATUS_DESCRIPTION, label: "Статус заявки", sortBy: EvaluationLogFilterFields.REQUEST_STATUS },
+      { name: EvaluationLogFields.PCT_CORRECT, label: "Точность классификатора, %", sortBy: EvaluationLogFilterFields.PCT_CORRECT },
+      { name: EvaluationLogFields.RELATION_NAME, label: "Обучающая выборка", sortBy: EvaluationLogFilterFields.RELATION_NAME },
+      { name: EvaluationLogFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности", sortBy: EvaluationLogFilterFields.EVALUATION_METHOD },
+      { name: EvaluationLogFields.MODEL_PATH, label: "Модель классификатора", sortBy: EvaluationLogFilterFields.MODEL_PATH },
       { name: EvaluationLogFields.EVALUATION_TOTAL_TIME, label: "Время построения модели" },
-      { name: EvaluationLogFields.CREATION_DATE, label: "Дата создания заявки" },
-      { name: EvaluationLogFields.START_DATE, label: "Дата начала построения модели" },
-      { name: EvaluationLogFields.END_DATE, label: "Дата окончания построения модели" },
-      { name: EvaluationLogFields.DELETED_DATE, label: "Дата удаления модели" }
+      { name: EvaluationLogFields.CREATION_DATE, label: "Дата создания заявки", sortBy: EvaluationLogFilterFields.CREATION_DATE },
+      { name: EvaluationLogFields.START_DATE, label: "Дата начала построения модели", sortBy: EvaluationLogFilterFields.START_DATE },
+      { name: EvaluationLogFields.END_DATE, label: "Дата окончания построения модели", sortBy: EvaluationLogFilterFields.END_DATE },
+      { name: EvaluationLogFields.DELETED_DATE, label: "Дата удаления модели", sortBy: EvaluationLogFilterFields.DELETED_DATE }
     ];
   }
 }

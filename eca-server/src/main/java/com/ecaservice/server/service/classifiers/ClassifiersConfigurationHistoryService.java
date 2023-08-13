@@ -2,13 +2,13 @@ package com.ecaservice.server.service.classifiers;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
 import com.ecaservice.server.filter.ClassifiersConfigurationHistoryFilter;
 import com.ecaservice.server.mapping.ClassifiersConfigurationHistoryMapper;
 import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.server.model.entity.ClassifiersConfiguration;
 import com.ecaservice.server.model.entity.ClassifiersConfigurationActionType;
 import com.ecaservice.server.model.entity.ClassifiersConfigurationHistoryEntity;
-import com.ecaservice.server.model.entity.FilterTemplateType;
 import com.ecaservice.server.repository.ClassifiersConfigurationHistoryRepository;
 import com.ecaservice.server.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.server.service.UserService;
@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -30,6 +31,7 @@ import java.util.stream.Collectors;
 
 import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.server.model.entity.ClassifiersConfigurationHistoryEntity_.CREATED_AT;
+import static com.ecaservice.server.model.entity.FilterTemplateType.CLASSIFIERS_CONFIGURATION_HISTORY;
 import static com.ecaservice.server.service.message.template.dictionary.MessageTemplateVariables.CLASSIFIERS_CONFIGURATION_PARAM;
 import static com.ecaservice.server.service.message.template.dictionary.MessageTemplateVariables.CLASSIFIER_OPTIONS_DESCRIPTION;
 import static com.ecaservice.server.service.message.template.dictionary.MessageTemplateVariables.CLASSIFIER_OPTIONS_ID;
@@ -40,6 +42,7 @@ import static com.ecaservice.server.service.message.template.dictionary.MessageT
  * @author Roman Batygin
  */
 @Slf4j
+@Validated
 @Service
 @RequiredArgsConstructor
 public class ClassifiersConfigurationHistoryService {
@@ -152,12 +155,14 @@ public class ClassifiersConfigurationHistoryService {
      * @return classifiers configuration history page
      */
     public PageDto<ClassifiersConfigurationHistoryDto> getNextPage(long configurationId,
+                                                                   @ValidPageRequest(
+                                                                           filterTemplateName = CLASSIFIERS_CONFIGURATION_HISTORY)
                                                                    PageRequestDto pageRequestDto) {
         log.info("Gets classifiers configuration [{}] history next page: {}", configurationId, pageRequestDto);
         var classifiersConfiguration = classifiersConfigurationRepository.findById(configurationId)
                 .orElseThrow(() -> new EntityNotFoundException(ClassifiersConfiguration.class, configurationId));
         var globalFilterFields =
-                filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIERS_CONFIGURATION_HISTORY.name());
+                filterService.getGlobalFilterFields(CLASSIFIERS_CONFIGURATION_HISTORY);
         var sort = buildSort(pageRequestDto.getSortField(), CREATED_AT, pageRequestDto.isAscending());
         var filter = new ClassifiersConfigurationHistoryFilter(classifiersConfiguration,
                 pageRequestDto.getSearchQuery(), globalFilterFields, pageRequestDto.getFilters());

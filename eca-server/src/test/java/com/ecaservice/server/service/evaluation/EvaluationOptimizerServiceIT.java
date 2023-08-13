@@ -2,6 +2,7 @@ package com.ecaservice.server.service.evaluation;
 
 import com.ecaservice.classifier.options.config.ClassifiersOptionsAutoConfiguration;
 import com.ecaservice.classifier.options.model.DecisionTreeOptions;
+import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.core.lock.aspect.LockExecutionAspect;
 import com.ecaservice.core.lock.config.CoreLockAutoConfiguration;
 import com.ecaservice.core.lock.metrics.LockMeterService;
@@ -90,6 +91,8 @@ class EvaluationOptimizerServiceIT extends AbstractJpaTest {
     private ErsClient ersClient;
     @MockBean
     private LockMeterService lockMeterService;
+    @MockBean
+    private FilterService filterService;
     @MockBean
     private ObjectStorageService objectStorageService;
     @MockBean

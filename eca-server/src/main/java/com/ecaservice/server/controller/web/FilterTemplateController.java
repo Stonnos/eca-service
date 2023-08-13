@@ -78,7 +78,7 @@ public class FilterTemplateController {
     )
     @GetMapping(value = "/experiment")
     public List<FilterFieldDto> getExperimentFilter() {
-        return filterService.getFilterFields(FilterTemplateType.EXPERIMENT.name());
+        return filterService.getFilterFields(FilterTemplateType.EXPERIMENT);
     }
 
     /**
@@ -119,7 +119,7 @@ public class FilterTemplateController {
     )
     @GetMapping(value = "/evaluation")
     public List<FilterFieldDto> getEvaluationLogFilter() {
-        return filterService.getFilterFields(FilterTemplateType.EVALUATION_LOG.name());
+        return filterService.getFilterFields(FilterTemplateType.EVALUATION_LOG);
     }
 
     /**
@@ -160,7 +160,7 @@ public class FilterTemplateController {
     )
     @GetMapping(value = "/classifier-options-request")
     public List<FilterFieldDto> getClassifierOptionsRequestFilter() {
-        return filterService.getFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST.name());
+        return filterService.getFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST);
     }
 
     /**
@@ -283,6 +283,6 @@ public class FilterTemplateController {
     )
     @GetMapping(value = "/classifiers-configuration-history")
     public List<FilterFieldDto> getClassifiersConfigurationHistoryFilter() {
-        return filterService.getFilterFields(FilterTemplateType.CLASSIFIERS_CONFIGURATION_HISTORY.name());
+        return filterService.getFilterFields(FilterTemplateType.CLASSIFIERS_CONFIGURATION_HISTORY);
     }
 }

@@ -18,5 +18,5 @@ public interface GlobalFilterTemplateRepository extends JpaRepository<GlobalFilt
      * @param templateType - template type
      * @return global filter template entity
      */
-    Optional<GlobalFilterTemplate> findFirstByTemplateType(String templateType);
+    Optional<GlobalFilterTemplate> findByTemplateType(String templateType);
 }

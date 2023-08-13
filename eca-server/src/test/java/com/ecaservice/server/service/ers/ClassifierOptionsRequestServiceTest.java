@@ -102,7 +102,7 @@ class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
                         newArrayList());
         pageRequestDto.getFilters().add(new FilterRequestDto(ClassifierOptionsRequestModel_.RESPONSE_STATUS,
                 Collections.singletonList(ErsResponseStatus.SUCCESS.name()), MatchMode.EQUALS));
-        when(filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST.name())).thenReturn(
+        when(filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST)).thenReturn(
                 Arrays.asList(INSTANCES_INFO_RELATION_NAME, ClassifierOptionsRequestModel_.REQUEST_ID));
         var classifierOptionsRequestDtoPage =
                 classifierOptionsRequestService.getClassifierOptionsRequestsPage(pageRequestDto);
@@ -190,7 +190,7 @@ class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
 
     @Test
     void testGlobalFilterForNotStringField() {
-        when(filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST.name())).thenReturn(
+        when(filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST)).thenReturn(
                 Collections.singletonList(ClassifierOptionsRequestModel_.REQUEST_DATE));
         ClassifierOptionsRequestModel requestModel =
                 createClassifierOptionsRequestModel(instancesInfo, LocalDateTime.now(),

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v70-insert-instances-info-filter-template.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="insert_instances_info_filter_template" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from filter_template where id = 5
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="filter_template">
+            <column name="id" valueNumeric="5"/>
+            <column name="template_name" value="Фильтр по обучающим выборкам"/>
+            <column name="template_type" value="INSTANCES_INFO"/>
+            <column name="created" valueDate="now()"/>
+        </insert>
+
+        <insert tableName="filter_field">
+            <column name="field_name" value="relationName"/>
+            <column name="description" value="Обучающая выборка"/>
+            <column name="field_order" valueNumeric="0"/>
+            <column name="filter_field_type" value="TEXT"/>
+            <column name="match_mode" value="LIKE"/>
+            <column name="filter_template_id" valueNumeric="5"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert_instances_info_global_filter_template" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_filter_template"/>
+            <sqlCheck expectedResult="0">
+                select count(*) from global_filter_template where id = 6
+            </sqlCheck>
+        </preConditions>
+        <insert tableName="global_filter_template">
+            <column name="id" valueNumeric="6"/>
+            <column name="filter_name" value="instancesInfoFilter"/>
+            <column name="template_type" value="INSTANCES_INFO"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert_relation_name_in_instances_info_global_filter_template"
+               author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_filter_field"/>
+            <sqlCheck expectedResult="0">
+                select count(*) from global_filter_field where global_filter_template_id = 6 and field_name = 'relationName'
+            </sqlCheck>
+        </preConditions>
+        <insert tableName="global_filter_field">
+            <column name="field_name" value="relationName"/>
+            <column name="global_filter_template_id" valueNumeric="6"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

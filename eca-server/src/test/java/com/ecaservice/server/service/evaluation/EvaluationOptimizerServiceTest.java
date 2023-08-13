@@ -10,6 +10,7 @@ import com.ecaservice.classifier.options.model.KNearestNeighboursOptions;
 import com.ecaservice.classifier.options.model.LogisticOptions;
 import com.ecaservice.classifier.options.model.NeuralNetworkOptions;
 import com.ecaservice.classifier.options.model.RandomForestsOptions;
+import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import com.ecaservice.ers.dto.ClassifierOptionsResponse;
 import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
@@ -109,6 +110,8 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
 
     @MockBean
     private ErsClient ersClient;
+    @MockBean
+    private FilterService filterService;
     @MockBean
     private ErsRequestSender ersRequestSender;
     @MockBean

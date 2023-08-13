@@ -13,6 +13,7 @@ import { FieldService } from "../../common/services/field.service";
 import { ActivatedRoute } from "@angular/router";
 import { ClassifiersConfigurationsService } from "../../classifiers-configurations/services/classifiers-configurations.service";
 import { FilterService } from "../../filter/services/filter.service";
+import { ClassifiersConfigurationHistoryFilterFields } from "../../common/util/filter-field-names";
 
 @Component({
   selector: 'app-classifiers-configuration-history',
@@ -55,10 +56,10 @@ export class ClassifiersConfigurationHistoryComponent extends BaseListComponent<
 
   private initColumns() {
     this.columns = [
-      { name: ClassifiersConfigurationHistoryFields.ACTION_TYPE_DESCRIPTION, label: "Тип события", sortBy: ClassifiersConfigurationHistoryFields.ACTION_TYPE },
-      { name: ClassifiersConfigurationHistoryFields.CREATED_BY, label: "Пользователь" },
-      { name: ClassifiersConfigurationHistoryFields.CREATED_AT, label: "Дата события" },
-      { name: ClassifiersConfigurationHistoryFields.MESSAGE_TEXT, label: "Текст сообщения" },
+      { name: ClassifiersConfigurationHistoryFields.ACTION_TYPE_DESCRIPTION, label: "Тип события", sortBy: ClassifiersConfigurationHistoryFilterFields.ACTION_TYPE },
+      { name: ClassifiersConfigurationHistoryFields.CREATED_BY, label: "Пользователь", sortBy: ClassifiersConfigurationHistoryFilterFields.CREATED_BY },
+      { name: ClassifiersConfigurationHistoryFields.CREATED_AT, label: "Дата события", sortBy: ClassifiersConfigurationHistoryFilterFields.CREATED_AT },
+      { name: ClassifiersConfigurationHistoryFields.MESSAGE_TEXT, label: "Текст сообщения", sortBy: ClassifiersConfigurationHistoryFilterFields.MESSAGE_TEXT },
     ];
   }
 }

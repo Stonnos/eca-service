@@ -53,7 +53,7 @@ public class ClassifierOptionsRequestsBaseReportDataFetcher
                                                           ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper,
                                                           ClassifiersTemplateProvider classifiersTemplateProvider) {
         super(BaseReportType.CLASSIFIERS_OPTIONS_REQUESTS.name(),
-                FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST.name(), filterService);
+                FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST, filterService);
         this.classifierOptionsRequestService = classifierOptionsRequestService;
         this.classifierOptionsRequestModelMapper = classifierOptionsRequestModelMapper;
         this.classifiersTemplateProvider = classifiersTemplateProvider;

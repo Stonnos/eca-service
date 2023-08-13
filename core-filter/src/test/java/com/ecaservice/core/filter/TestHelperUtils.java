@@ -5,6 +5,8 @@ import com.ecaservice.core.filter.entity.FilterField;
 import com.ecaservice.core.filter.entity.FilterTemplate;
 import com.ecaservice.core.filter.entity.GlobalFilterField;
 import com.ecaservice.core.filter.entity.GlobalFilterTemplate;
+import com.ecaservice.core.filter.entity.SortField;
+import com.ecaservice.core.filter.entity.SortTemplate;
 import com.ecaservice.web.dto.model.FilterFieldType;
 import com.ecaservice.web.dto.model.MatchMode;
 import lombok.experimental.UtilityClass;
@@ -24,7 +26,6 @@ public class TestHelperUtils {
     private static final String LABEL = "label";
     private static final String VALUE = "value";
     private static final String FILTER_NAME = "name";
-    private static final String FILTER_DESCRIPTION = "description";
     private static final int FILTER_TEMPLATE_FIELDS = 5;
     private static final String DESCRIPTION = "description";
 
@@ -98,5 +99,31 @@ public class TestHelperUtils {
         GlobalFilterField filterField = new GlobalFilterField();
         filterField.setFieldName(name);
         return filterField;
+    }
+
+    /**
+     * Creates sort template.
+     *
+     * @param templateType - filter template type
+     * @return global filter template
+     */
+    public static SortTemplate createSortTemplate(String templateType) {
+        SortTemplate filterTemplate = new SortTemplate();
+        filterTemplate.setTemplateType(templateType);
+        filterTemplate.setSortFields(IntStream.range(0, FILTER_TEMPLATE_FIELDS).mapToObj(
+                i -> createSortFilterField(String.valueOf(i))).collect(Collectors.toList()));
+        return filterTemplate;
+    }
+
+    /**
+     * Creates sort field.
+     *
+     * @param name - field name
+     * @return sort field
+     */
+    public static SortField createSortFilterField(String name) {
+        SortField sortField = new SortField();
+        sortField.setFieldName(name);
+        return sortField;
     }
 }

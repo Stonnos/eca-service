@@ -5,12 +5,13 @@ import com.ecaservice.common.web.exception.FileProcessingException;
 import com.ecaservice.common.web.exception.InvalidFileException;
 import com.ecaservice.common.web.exception.InvalidOperationException;
 import com.ecaservice.core.audit.annotation.Audit;
+import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
 import com.ecaservice.oauth.config.AppProperties;
 import com.ecaservice.oauth.dto.CreateUserDto;
 import com.ecaservice.oauth.dto.UpdateUserInfoDto;
 import com.ecaservice.oauth.entity.RoleEntity;
 import com.ecaservice.oauth.entity.UserEntity;
-import com.ecaservice.oauth.entity.UserEntity_;
 import com.ecaservice.oauth.entity.UserPhoto;
 import com.ecaservice.oauth.exception.UserLockNotAllowedException;
 import com.ecaservice.oauth.exception.UserLockedException;
@@ -34,6 +35,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -53,6 +55,7 @@ import static com.ecaservice.oauth.config.audit.AuditCodes.LOCK_USER;
 import static com.ecaservice.oauth.config.audit.AuditCodes.UNLOCK_USER;
 import static com.ecaservice.oauth.config.audit.AuditCodes.UPDATE_PERSONAL_DATA;
 import static com.ecaservice.oauth.config.audit.AuditCodes.UPDATE_PHOTO;
+import static com.ecaservice.oauth.dictionary.FilterDictionaries.USERS_TEMPLATE;
 import static com.ecaservice.oauth.entity.UserEntity_.CREATION_DATE;
 import static com.ecaservice.oauth.util.Utils.isSuperAdmin;
 import static com.ecaservice.user.model.Role.ROLE_ECA_USER;
@@ -63,20 +66,16 @@ import static com.ecaservice.user.model.Role.ROLE_ECA_USER;
  * @author Roman Batygin
  */
 @Slf4j
+@Validated
 @Service
 @RequiredArgsConstructor
 public class UserService {
-
-    private static final List<String> USER_GLOBAL_FILTER_FIELDS = List.of(
-            UserEntity_.LOGIN,
-            UserEntity_.EMAIL,
-            UserEntity_.FULL_NAME
-    );
 
     private final AppProperties appProperties;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
     private final Oauth2TokenService oauth2TokenService;
+    private final FilterService filterService;
     private final UserEntityRepository userEntityRepository;
     private final RoleRepository roleRepository;
     private final UserPhotoRepository userPhotoRepository;
@@ -90,8 +89,9 @@ public class UserService {
     public Page<UserEntity> getNextPage(PageRequestDto pageRequestDto) {
         log.info("Gets users next page: {}", pageRequestDto);
         Sort sort = buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
+        var globalFilterFields = filterService.getGlobalFilterFields(USERS_TEMPLATE);
         UserFilter filter =
-                new UserFilter(pageRequestDto.getSearchQuery(), USER_GLOBAL_FILTER_FIELDS, pageRequestDto.getFilters());
+                new UserFilter(pageRequestDto.getSearchQuery(), globalFilterFields, pageRequestDto.getFilters());
         var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort);
         var usersPage = userEntityRepository.findAll(filter, pageRequest);
         log.info("Users page [{} of {}] with size [{}] has been fetched for page request [{}]", usersPage.getNumber(),
@@ -105,7 +105,8 @@ public class UserService {
      * @param pageRequestDto - page request
      * @return users dto page
      */
-    public PageDto<UserDto> getUsersPage(PageRequestDto pageRequestDto) {
+    public PageDto<UserDto> getUsersPage(
+            @ValidPageRequest(filterTemplateName = USERS_TEMPLATE) PageRequestDto pageRequestDto) {
         var usersPage = getNextPage(pageRequestDto);
         var userDtoList = userMapper.map(usersPage.getContent());
         populateUsersPhotoIds(usersPage.getContent(), userDtoList);

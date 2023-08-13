@@ -3,6 +3,7 @@ package com.ecaservice.server.service.evaluation;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.core.filter.specification.FilterFieldCustomizer;
+import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
 import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.config.AppProperties;
@@ -12,12 +13,10 @@ import com.ecaservice.server.model.entity.ClassifierInfo;
 import com.ecaservice.server.model.entity.ErsResponseStatus;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.EvaluationResultsRequestEntity;
-import com.ecaservice.server.model.entity.FilterTemplateType;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.projections.RequestStatusStatistics;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.repository.EvaluationResultsRequestEntityRepository;
-import com.ecaservice.server.service.PageRequestService;
 import com.ecaservice.server.service.classifiers.ClassifierOptionsProcessor;
 import com.ecaservice.server.service.ers.ErsService;
 import com.ecaservice.server.service.filter.dictionary.FilterDictionaries;
@@ -36,6 +35,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
@@ -58,6 +58,7 @@ import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.server.model.entity.AbstractEvaluationEntity_.CREATION_DATE;
 import static com.ecaservice.server.model.entity.ClassifierInfo_.CLASSIFIER_NAME;
 import static com.ecaservice.server.model.entity.EvaluationLog_.CLASSIFIER_INFO;
+import static com.ecaservice.server.model.entity.FilterTemplateType.EVALUATION_LOG;
 import static com.ecaservice.server.util.QueryHelper.buildGroupByStatisticsQuery;
 import static com.ecaservice.server.util.StatisticsHelper.calculateChartData;
 import static com.ecaservice.server.util.StatisticsHelper.calculateRequestStatusesStatistics;
@@ -70,9 +71,10 @@ import static com.google.common.collect.Lists.newArrayList;
  * @author Roman Batygin
  */
 @Slf4j
+@Validated
 @Service
 @RequiredArgsConstructor
-public class EvaluationLogService implements PageRequestService<EvaluationLog> {
+public class EvaluationLogService {
 
     private final AppProperties appProperties;
     private final FilterService filterService;
@@ -94,11 +96,17 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
         globalFilterFieldCustomizers.add(new ClassifierNameFilterFieldCustomizer(filterService));
     }
 
-    @Override
-    public Page<EvaluationLog> getNextPage(PageRequestDto pageRequestDto) {
+    /**
+     * Gets evaluation logs page.
+     *
+     * @param pageRequestDto - page request dto
+     * @return evaluation logs page
+     */
+    public Page<EvaluationLog> getNextPage(
+            @ValidPageRequest(filterTemplateName = EVALUATION_LOG) PageRequestDto pageRequestDto) {
         log.info("Gets evaluation logs next page: {}", pageRequestDto);
         Sort sort = buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
-        List<String> globalFilterFields = filterService.getGlobalFilterFields(FilterTemplateType.EVALUATION_LOG.name());
+        List<String> globalFilterFields = filterService.getGlobalFilterFields(EVALUATION_LOG);
         var filter = new EvaluationLogFilter(pageRequestDto.getSearchQuery(), globalFilterFields,
                 pageRequestDto.getFilters());
         filter.setGlobalFilterFieldsCustomizers(globalFilterFieldCustomizers);
@@ -116,7 +124,8 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
      * @param pageRequestDto - pafe request dto
      * @return evaluation logs page
      */
-    public PageDto<EvaluationLogDto> getEvaluationLogsPage(PageRequestDto pageRequestDto) {
+    public PageDto<EvaluationLogDto> getEvaluationLogsPage(
+            @ValidPageRequest(filterTemplateName = EVALUATION_LOG) PageRequestDto pageRequestDto) {
         var evaluationLogsPage = getNextPage(pageRequestDto);
         List<EvaluationLogDto> evaluationLogDtoList = evaluationLogsPage.getContent()
                 .stream()

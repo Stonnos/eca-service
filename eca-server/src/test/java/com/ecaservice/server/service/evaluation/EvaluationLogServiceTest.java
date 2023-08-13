@@ -239,7 +239,7 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
                 new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, EvaluationLog_.CREATION_DATE, false, "car", newArrayList());
         pageRequestDto.getFilters().add(new FilterRequestDto(EvaluationLog_.REQUEST_STATUS,
                 Collections.singletonList(RequestStatus.FINISHED.name()), MatchMode.EQUALS));
-        when(filterService.getGlobalFilterFields(FilterTemplateType.EVALUATION_LOG.name())).thenReturn(
+        when(filterService.getGlobalFilterFields(FilterTemplateType.EVALUATION_LOG)).thenReturn(
                 Arrays.asList(CLASSIFIER_INFO_CLASSIFIER_NAME, EvaluationLog_.REQUEST_ID,
                         INSTANCES_INFO_RELATION_NAME));
         mockClassifiersDictionary();

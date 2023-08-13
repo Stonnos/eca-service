@@ -139,17 +139,17 @@ class FilterTemplateControllerTest extends AbstractControllerTest {
                 FilterTemplateType.CLASSIFIERS_CONFIGURATION_HISTORY);
     }
 
-    private void testGetFilterTemplateNotFound(String templateUrl, FilterTemplateType filterTemplateType)
+    private void testGetFilterTemplateNotFound(String templateUrl, String filterTemplateType)
             throws Exception {
-        when(filterService.getFilterFields(filterTemplateType.name())).thenThrow(EntityNotFoundException.class);
+        when(filterService.getFilterFields(filterTemplateType)).thenThrow(EntityNotFoundException.class);
         mockMvc.perform(get(templateUrl)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isBadRequest());
     }
 
-    private void testGetFilterTemplateOk(String templateUrl, FilterTemplateType filterTemplateType) throws Exception {
+    private void testGetFilterTemplateOk(String templateUrl, String filterTemplateType) throws Exception {
         List<FilterFieldDto> filterFieldDtoList = Collections.singletonList(TestHelperUtils.createFilterFieldDto());
-        when(filterService.getFilterFields(filterTemplateType.name())).thenReturn(filterFieldDtoList);
+        when(filterService.getFilterFields(filterTemplateType)).thenReturn(filterFieldDtoList);
         mockMvc.perform(get(templateUrl)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk())

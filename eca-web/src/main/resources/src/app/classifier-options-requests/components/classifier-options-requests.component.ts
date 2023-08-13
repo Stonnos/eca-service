@@ -16,6 +16,7 @@ import { MessageService } from "primeng/api";
 import { FieldService } from "../../common/services/field.service";
 import { InstancesInfoFilterValueTransformer } from "../../filter/autocomplete/transformer/instances-info-filter-value-transformer";
 import { InstancesInfoAutocompleteHandler } from "../../filter/autocomplete/handler/instances-info-autocomplete-handler";
+import { ClassifierOptionsRequestsFilterFields } from "../../common/util/filter-field-names";
 
 @Component({
   selector: 'app-classifier-options-requests',
@@ -85,12 +86,12 @@ export class ClassifierOptionsRequestsComponent extends BaseListComponent<Classi
 
   private initColumns() {
     this.columns = [
-      { name: ClassifierOptionsRequestsFields.REQUEST_ID, label: "UUID заявки" },
-      { name: ClassifierOptionsRequestsFields.RELATION_NAME, label: "Обучающая выборка" },
+      { name: ClassifierOptionsRequestsFields.REQUEST_ID, label: "UUID заявки", sortBy: ClassifierOptionsRequestsFilterFields.REQUEST_ID },
+      { name: ClassifierOptionsRequestsFields.RELATION_NAME, label: "Обучающая выборка", sortBy: ClassifierOptionsRequestsFilterFields.RELATION_NAME },
       { name: ClassifierOptionsRequestsFields.CLASSIFIER_NAME, label: "Классификатор" },
-      { name: ClassifierOptionsRequestsFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности", sortBy: ClassifierOptionsRequestsFields.EVALUATION_METHOD },
-      { name: ClassifierOptionsRequestsFields.REQUEST_DATE, label: "Дата отправки запроса в ERS" },
-      { name: ClassifierOptionsRequestsFields.RESPONSE_STATUS_DESCRIPTION, label: "Статус ответа от ERS", sortBy: ClassifierOptionsRequestsFields.RESPONSE_STATUS }
+      { name: ClassifierOptionsRequestsFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности", sortBy: ClassifierOptionsRequestsFilterFields.EVALUATION_METHOD },
+      { name: ClassifierOptionsRequestsFields.REQUEST_DATE, label: "Дата отправки запроса в ERS", sortBy: ClassifierOptionsRequestsFilterFields.REQUEST_DATE },
+      { name: ClassifierOptionsRequestsFields.RESPONSE_STATUS_DESCRIPTION, label: "Статус ответа от ERS", sortBy: ClassifierOptionsRequestsFilterFields.RESPONSE_STATUS }
     ];
   }
 }

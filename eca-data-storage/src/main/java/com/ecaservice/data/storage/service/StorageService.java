@@ -1,5 +1,6 @@
 package com.ecaservice.data.storage.service;
 
+import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
 import com.ecaservice.data.storage.entity.AttributeEntity;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.web.dto.model.AttributeDto;
@@ -7,15 +8,19 @@ import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import eca.data.file.model.InstancesModel;
 import org.springframework.data.domain.Page;
+import org.springframework.validation.annotation.Validated;
 import weka.core.Instances;
 
 import java.util.List;
+
+import static com.ecaservice.data.storage.dictionary.FilterDictionaries.INSTANCES_TEMPLATE;
 
 /**
  * Interface for saving data file into database.
  *
  * @author Roman Batygin
  */
+@Validated
 public interface StorageService {
 
     /**
@@ -24,7 +29,8 @@ public interface StorageService {
      * @param pageRequestDto - page request
      * @return entities page
      */
-    Page<InstancesEntity> getNextPage(PageRequestDto pageRequestDto);
+    Page<InstancesEntity> getNextPage(
+            @ValidPageRequest(filterTemplateName = INSTANCES_TEMPLATE) PageRequestDto pageRequestDto);
 
     /**
      * Saves training data file into database.

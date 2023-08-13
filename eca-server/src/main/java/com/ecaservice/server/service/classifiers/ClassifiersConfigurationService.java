@@ -1,20 +1,33 @@
 package com.ecaservice.server.service.classifiers;
 
+import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
 import com.ecaservice.server.model.entity.ClassifiersConfiguration;
 import com.ecaservice.server.report.model.ClassifiersConfigurationBean;
-import com.ecaservice.server.service.PageRequestService;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.UpdateClassifiersConfigurationDto;
+import org.springframework.data.domain.Page;
+import org.springframework.validation.annotation.Validated;
+
+import static com.ecaservice.server.model.entity.FilterTemplateType.CLASSIFIERS_CONFIGURATION;
 
 /**
  * Classifiers configuration interface.
  *
  * @author Roman Batygin
  */
-public interface ClassifiersConfigurationService extends PageRequestService<ClassifiersConfiguration> {
+@Validated
+public interface ClassifiersConfigurationService {
+
+    /**
+     * Gets next classifiers configuration page.
+     *
+     * @param pageRequestDto - page request dto
+     * @return classifiers configuration page
+     */
+    Page<ClassifiersConfiguration> getNextPage(PageRequestDto pageRequestDto);
 
     /**
      * Saves new classifiers configuration.
@@ -45,7 +58,7 @@ public interface ClassifiersConfigurationService extends PageRequestService<Clas
      * @param configurationDto - configuration data
      * @return classifiers configuration copy entity
      */
-   ClassifiersConfiguration copy(UpdateClassifiersConfigurationDto configurationDto);
+    ClassifiersConfiguration copy(UpdateClassifiersConfigurationDto configurationDto);
 
     /**
      * Sets classifiers configuration as active.
@@ -61,7 +74,8 @@ public interface ClassifiersConfigurationService extends PageRequestService<Clas
      * @param pageRequestDto - page request object
      * @return classifiers configurations dto models page
      */
-    PageDto<ClassifiersConfigurationDto> getClassifiersConfigurations(PageRequestDto pageRequestDto);
+    PageDto<ClassifiersConfigurationDto> getClassifiersConfigurations(
+            @ValidPageRequest(filterTemplateName = CLASSIFIERS_CONFIGURATION) PageRequestDto pageRequestDto);
 
     /**
      * Gets classifiers configuration details by id.

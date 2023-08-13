@@ -20,6 +20,7 @@ import { FormTemplatesService } from "../../form-templates/services/form-templat
 import { FormTemplatesMapper } from "../../form-templates/services/form-templates.mapper";
 import { FormField } from "../../form-templates/model/form-template.model";
 import { ClassifierOptionsService } from "../../classifiers-configuration-details/services/classifier-options.service";
+import { ClassifiersConfigurationFilterFields } from "../../common/util/filter-field-names";
 
 @Component({
   selector: 'app-classifiers-configurations',
@@ -156,10 +157,10 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
   private initColumns() {
     this.columns = [
       { name: ClassifiersConfigurationFields.ID, label: "#" },
-      { name: ClassifiersConfigurationFields.CONFIGURATION_NAME, label: "Конфигурация" },
-      { name: ClassifiersConfigurationFields.CREATION_DATE, label: "Дата создания" },
-      { name: ClassifiersConfigurationFields.UPDATED, label: "Дата обновления" },
-      { name: ClassifiersConfigurationFields.CREATED_BY, label: "Пользователь" },
+      { name: ClassifiersConfigurationFields.CONFIGURATION_NAME, label: "Конфигурация", sortBy: ClassifiersConfigurationFilterFields.CONFIGURATION_NAME },
+      { name: ClassifiersConfigurationFields.CREATION_DATE, label: "Дата создания", sortBy: ClassifiersConfigurationFilterFields.CREATION_DATE },
+      { name: ClassifiersConfigurationFields.UPDATED, label: "Дата обновления", sortBy: ClassifiersConfigurationFilterFields.UPDATED },
+      { name: ClassifiersConfigurationFields.CREATED_BY, label: "Пользователь", sortBy: ClassifiersConfigurationFilterFields.CREATED_BY },
       { name: ClassifiersConfigurationFields.CLASSIFIERS_OPTIONS_COUNT, label: "Число настроек классификаторов" },
     ];
   }

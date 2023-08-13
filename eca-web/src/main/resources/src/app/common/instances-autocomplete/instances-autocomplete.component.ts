@@ -7,6 +7,7 @@ import { MessageService } from "primeng/components/common/messageservice";
 import { InstancesFields } from "../util/field-names";
 import { FieldService } from "../services/field.service";
 import { Utils } from "../util/utils";
+import { InstancesFilterFields } from "../util/filter-field-names";
 
 @Component({
   selector: 'app-instances-autocomplete',
@@ -60,12 +61,12 @@ export class InstancesAutocompleteComponent implements OnInit {
     const pageRequest: PageRequestDto = {
       page: 0,
       size: this.pageSize,
-      sortField: InstancesFields.CREATED,
+      sortField: InstancesFilterFields.CREATED,
       ascending: false,
       searchQuery: null,
       filters: [
         {
-          name: InstancesFields.RELATION_NAME,
+          name: InstancesFilterFields.RELATION_NAME,
           values: [query],
           matchMode: 'LIKE'
         }

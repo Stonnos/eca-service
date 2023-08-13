@@ -11,4 +11,6 @@
     <include file="db/changelog/v3-add-class-attribute-column.xml"/>
     <include file="db/changelog/v4-add-id-column-name-column.xml"/>
     <include file="db/changelog/v5-add-instances-relation-name-column.xml"/>
+    <include file="../filter-template-changelog.xml" relativeToChangelogFile="true"/>
+    <include file="db/changelog/v6-update-filter-templates.xml"/>
 </databaseChangeLog>

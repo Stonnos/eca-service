@@ -15,6 +15,7 @@ import { AuditLogService } from "../services/audit-log.service";
 import { UsersService } from "../../users/services/users.service";
 import { UserInfoFilterValueTransformer } from "../../filter/autocomplete/transformer/user-info-filter-value-transformer";
 import { UserInfoAutocompleteHandler } from "../../filter/autocomplete/handler/user-info-autocomplete-handler";
+import { AuditLogFilterFields } from "../../common/util/filter-field-names";
 
 @Component({
   selector: 'app-audit-logs',
@@ -63,13 +64,13 @@ export class AuditLogsComponent extends BaseListComponent<AuditLogDto> {
 
   private initColumns() {
     this.columns = [
-      { name: AuditLogFields.EVENT_ID, label: "ID события" },
-      { name: AuditLogFields.CORRELATION_ID, label: "ID корреляции" },
-      { name: AuditLogFields.EVENT_DATE, label: "Дата события" },
-      { name: AuditLogFields.GROUP_TITLE, label: "Группа событий" },
-      { name: AuditLogFields.CODE_TITLE, label: "Код события" },
-      { name: AuditLogFields.MESSAGE, label: "Текст сообщения" },
-      { name: AuditLogFields.INITIATOR, label: "Инициатор события" },
+      { name: AuditLogFields.EVENT_ID, label: "ID события", sortBy: AuditLogFilterFields.EVENT_ID },
+      { name: AuditLogFields.CORRELATION_ID, label: "ID корреляции", sortBy: AuditLogFilterFields.CORRELATION_ID },
+      { name: AuditLogFields.EVENT_DATE, label: "Дата события", sortBy: AuditLogFilterFields.EVENT_DATE },
+      { name: AuditLogFields.GROUP_TITLE, label: "Группа событий", sortBy: AuditLogFilterFields.GROUP_TITLE },
+      { name: AuditLogFields.CODE_TITLE, label: "Код события", sortBy: AuditLogFilterFields.CODE_TITLE },
+      { name: AuditLogFields.MESSAGE, label: "Текст сообщения", sortBy: AuditLogFilterFields.MESSAGE },
+      { name: AuditLogFields.INITIATOR, label: "Инициатор события", sortBy: AuditLogFilterFields.INITIATOR },
     ];
   }
 }
