@@ -6,6 +6,7 @@ import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
 
 import javax.validation.ConstraintValidator;
@@ -61,10 +62,12 @@ public class PageRequestValidator implements ConstraintValidator<ValidPageReques
     }
 
     private boolean validateSortField(PageRequestDto pageRequestDto, ConstraintValidatorContext context) {
-        var sortFields = filterService.getSortFields(filterTemplateName);
-        if (!sortFields.contains(pageRequestDto.getSortField())) {
-            buildConstraintViolationWithTemplate(context, INVALID_SORT_FIELD_TEMPLATE, SORT_FIELD);
-            return false;
+        if (StringUtils.isNotBlank(pageRequestDto.getSortField())) {
+            var sortFields = filterService.getSortFields(filterTemplateName);
+            if (!sortFields.contains(pageRequestDto.getSortField())) {
+                buildConstraintViolationWithTemplate(context, INVALID_SORT_FIELD_TEMPLATE, SORT_FIELD);
+                return false;
+            }
         }
         return true;
     }
