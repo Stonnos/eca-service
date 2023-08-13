@@ -72,7 +72,7 @@ class ClassifiersConfigurationHistoryServiceTest extends AbstractJpaTest {
 
     @Test
     void testGetClassifiersConfigurationHistory() {
-        when(filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIERS_CONFIGURATION_HISTORY.name()))
+        when(filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIERS_CONFIGURATION_HISTORY))
                 .thenReturn(List.of(CREATED_BY, MESSAGE_TEXT, ACTION_TYPE));
         var classifiersConfiguration = createAndSaveConfiguration();
         saveClassifiersConfigurationHistory(classifiersConfiguration,

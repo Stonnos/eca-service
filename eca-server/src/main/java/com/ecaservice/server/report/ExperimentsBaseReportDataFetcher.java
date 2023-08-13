@@ -43,7 +43,7 @@ public class ExperimentsBaseReportDataFetcher extends AbstractBaseReportDataFetc
                                             InstancesInfoRepository instancesInfoRepository,
                                             ExperimentDataService experimentDataService,
                                             ExperimentMapper experimentMapper) {
-        super(BaseReportType.EXPERIMENTS.name(), FilterTemplateType.EXPERIMENT.name(), filterService);
+        super(BaseReportType.EXPERIMENTS.name(), FilterTemplateType.EXPERIMENT, filterService);
         this.experimentDataService = experimentDataService;
         this.experimentMapper = experimentMapper;
         this.instancesInfoRepository = instancesInfoRepository;

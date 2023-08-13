@@ -157,7 +157,7 @@ public class ClassifiersConfigurationServiceImpl implements ClassifiersConfigura
         log.info("Gets classifiers configurations next page: {}", pageRequestDto);
         var sort = buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
         var globalFilterFields =
-                filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIERS_CONFIGURATION.name());
+                filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIERS_CONFIGURATION);
         var filter = new ClassifiersConfigurationFilter(pageRequestDto.getSearchQuery(),
                 globalFilterFields, pageRequestDto.getFilters());
         var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort);

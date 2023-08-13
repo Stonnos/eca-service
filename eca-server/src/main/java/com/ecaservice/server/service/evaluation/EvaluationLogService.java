@@ -98,7 +98,7 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
     public Page<EvaluationLog> getNextPage(PageRequestDto pageRequestDto) {
         log.info("Gets evaluation logs next page: {}", pageRequestDto);
         Sort sort = buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
-        List<String> globalFilterFields = filterService.getGlobalFilterFields(FilterTemplateType.EVALUATION_LOG.name());
+        List<String> globalFilterFields = filterService.getGlobalFilterFields(FilterTemplateType.EVALUATION_LOG);
         var filter = new EvaluationLogFilter(pageRequestDto.getSearchQuery(), globalFilterFields,
                 pageRequestDto.getFilters());
         filter.setGlobalFilterFieldsCustomizers(globalFilterFieldCustomizers);

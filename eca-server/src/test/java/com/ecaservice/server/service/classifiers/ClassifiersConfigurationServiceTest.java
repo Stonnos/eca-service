@@ -276,7 +276,7 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
 
     @Test
     void testGetClassifiersConfigurations() {
-        when(filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIERS_CONFIGURATION.name()))
+        when(filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIERS_CONFIGURATION))
                 .thenReturn(Collections.emptyList());
         ClassifiersConfiguration firstConfiguration = saveConfiguration(true, true);
         ClassifiersConfiguration secondConfiguration = saveConfiguration(false, false);

@@ -47,7 +47,7 @@ public class EvaluationLogsBaseReportDataFetcher extends
                                                InstancesInfoRepository instancesInfoRepository,
                                                EvaluationLogService evaluationLogService,
                                                EvaluationLogMapper evaluationLogMapper) {
-        super(BaseReportType.EVALUATION_LOGS.name(), FilterTemplateType.EVALUATION_LOG.name(), filterService);
+        super(BaseReportType.EVALUATION_LOGS.name(), FilterTemplateType.EVALUATION_LOG, filterService);
         this.evaluationLogService = evaluationLogService;
         this.evaluationLogMapper = evaluationLogMapper;
         this.instancesInfoRepository = instancesInfoRepository;

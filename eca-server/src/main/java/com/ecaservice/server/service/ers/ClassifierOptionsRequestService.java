@@ -47,7 +47,7 @@ public class ClassifierOptionsRequestService implements PageRequestService<Class
         log.info("Gets classifier options requests next page: {}", pageRequestDto);
         Sort sort = buildSort(pageRequestDto.getSortField(), REQUEST_DATE, pageRequestDto.isAscending());
         List<String> globalFilterFields =
-                filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST.name());
+                filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST);
         ClassifierOptionsRequestModelFilter filter =
                 new ClassifierOptionsRequestModelFilter(pageRequestDto.getSearchQuery(), globalFilterFields,
                         pageRequestDto.getFilters());
