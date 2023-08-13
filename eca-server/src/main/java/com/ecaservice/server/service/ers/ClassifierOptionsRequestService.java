@@ -49,7 +49,8 @@ public class ClassifierOptionsRequestService {
      * @param pageRequestDto - page request dto
      * @return classifier options requests models page
      */
-    public Page<ClassifierOptionsRequestModel> getNextPage(PageRequestDto pageRequestDto) {
+    public Page<ClassifierOptionsRequestModel> getNextPage(
+            @ValidPageRequest(filterTemplateName = CLASSIFIER_OPTIONS_REQUEST) PageRequestDto pageRequestDto) {
         log.info("Gets classifier options requests next page: {}", pageRequestDto);
         Sort sort = buildSort(pageRequestDto.getSortField(), REQUEST_DATE, pageRequestDto.isAscending());
         var globalFilterFields = filterService.getGlobalFilterFields(CLASSIFIER_OPTIONS_REQUEST);
