@@ -73,3 +73,8 @@ export class UserFilterFields {
   public static readonly FULL_NAME: string = "fullName";
   public static readonly CREATION_DATE: string = "creationDate";
 }
+
+export class InstancesInfoFilterFields {
+  public static readonly RELATION_NAME: string = "relationName";
+  public static readonly CREATED_DATE: string = "createdDate";
+}

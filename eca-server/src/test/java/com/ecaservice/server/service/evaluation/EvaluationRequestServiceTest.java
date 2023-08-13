@@ -1,6 +1,7 @@
 package com.ecaservice.server.service.evaluation;
 
 import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
+import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.AssertionUtils;
@@ -25,6 +26,7 @@ import com.ecaservice.server.service.evaluation.initializers.ClassifierInitializ
 import eca.core.evaluation.EvaluationMethod;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
 import javax.inject.Inject;
@@ -54,6 +56,9 @@ import static org.mockito.Mockito.when;
 class EvaluationRequestServiceTest extends AbstractJpaTest {
 
     private static final String MODEL_DOWNLOAD_URL = "http//:localhost/model";
+
+    @MockBean
+    private FilterService filterService;
 
     @Inject
     private CrossValidationConfig crossValidationConfig;

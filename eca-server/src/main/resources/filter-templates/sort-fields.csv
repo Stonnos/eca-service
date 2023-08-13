@@ -35,3 +35,5 @@ id;field_name;sort_template_id
 34;createdBy;5
 35;createdAt;5
 36;messageText;5
+37;relationName;6
+38;createdDate;6

@@ -1,5 +1,7 @@
 package com.ecaservice.server.service;
 
+import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
 import com.ecaservice.core.lock.annotation.Locked;
 import com.ecaservice.server.filter.InstancesInfoFilter;
 import com.ecaservice.server.mapping.InstancesInfoMapper;
@@ -14,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 import weka.core.Instances;
 
 import java.time.LocalDateTime;
@@ -22,6 +25,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
+import static com.ecaservice.server.model.entity.FilterTemplateType.INSTANCES_INFO;
 import static com.ecaservice.server.model.entity.InstancesInfo_.CREATED_DATE;
 
 /**
@@ -30,13 +34,12 @@ import static com.ecaservice.server.model.entity.InstancesInfo_.CREATED_DATE;
  * @author Roman Batygin
  */
 @Slf4j
+@Validated
 @Service
 @RequiredArgsConstructor
 public class InstancesInfoService {
 
-    private static final List<String> INSTANCES_INFO_GLOBAL_FILTER_FIELDS =
-            Collections.singletonList(InstancesInfo_.RELATION_NAME);
-
+    private final FilterService filterService;
     private final InstancesInfoMapper instancesInfoMapper;
     private final InstancesInfoRepository instancesInfoRepository;
 
@@ -59,10 +62,12 @@ public class InstancesInfoService {
         return instancesInfo;
     }
 
-    public PageDto<InstancesInfoDto> getNextPage(PageRequestDto pageRequestDto) {
+    public PageDto<InstancesInfoDto> getNextPage(
+            @ValidPageRequest(filterTemplateName = INSTANCES_INFO) PageRequestDto pageRequestDto) {
         log.info("Gets instances info next page: {}", pageRequestDto);
         Sort sort = buildSort(pageRequestDto.getSortField(), CREATED_DATE, pageRequestDto.isAscending());
-        var filter = new InstancesInfoFilter(pageRequestDto.getSearchQuery(), INSTANCES_INFO_GLOBAL_FILTER_FIELDS,
+        var globalFilterFields = filterService.getGlobalFilterFields(INSTANCES_INFO);
+        var filter = new InstancesInfoFilter(pageRequestDto.getSearchQuery(), globalFilterFields,
                 pageRequestDto.getFilters());
         var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort);
         var instancesInfoPage = instancesInfoRepository.findAll(filter, pageRequest);

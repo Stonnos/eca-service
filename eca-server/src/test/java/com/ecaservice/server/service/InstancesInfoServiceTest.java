@@ -1,11 +1,13 @@
 package com.ecaservice.server.service;
 
+import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.server.mapping.InstancesInfoMapperImpl;
 import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.server.model.entity.InstancesInfo_;
 import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import weka.core.Instances;
 
@@ -16,8 +18,10 @@ import java.util.Collections;
 import static com.ecaservice.server.PageRequestUtils.PAGE_NUMBER;
 import static com.ecaservice.server.PageRequestUtils.PAGE_SIZE;
 import static com.ecaservice.server.TestHelperUtils.loadInstances;
+import static com.ecaservice.server.model.entity.FilterTemplateType.INSTANCES_INFO;
 import static com.ecaservice.server.util.InstancesUtils.md5Hash;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for {@link  InstancesInfoService} class.
@@ -26,6 +30,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @Import({InstancesInfoService.class, InstancesInfoMapperImpl.class})
 class InstancesInfoServiceTest extends AbstractJpaTest {
+
+    @MockBean
+    private FilterService filterService;
 
     @Inject
     private InstancesInfoRepository instancesInfoRepository;
@@ -43,6 +50,8 @@ class InstancesInfoServiceTest extends AbstractJpaTest {
     @Override
     public void init() {
         data = loadInstances();
+        when(filterService.getGlobalFilterFields(INSTANCES_INFO)).thenReturn(
+                Collections.singletonList(InstancesInfo_.RELATION_NAME));
     }
 
     @Test

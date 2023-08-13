@@ -19,12 +19,10 @@ export class ExperimentFields {
 }
 
 export class InstancesInfoDtoFields {
-  public static readonly RELATION_NAME: string = "relationName";
   public static readonly NUM_INSTANCES: string = "numInstances";
   public static readonly NUM_ATTRIBUTES: string = "numAttributes";
   public static readonly NUM_CLASSES: string = "numClasses";
   public static readonly CLASS_NAME: string = "className";
-  public static readonly CREATED_DATE: string = "createdDate";
 }
 
 export class AbstractEvaluationDtoFields {

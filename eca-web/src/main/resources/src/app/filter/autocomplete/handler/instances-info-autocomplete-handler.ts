@@ -6,9 +6,9 @@ import {
   PageDto,
   PageRequestDto
 } from "../../../../../../../../target/generated-sources/typescript/eca-web-dto";
-import { InstancesInfoDtoFields } from "../../../common/util/field-names";
 import { AutocompleteItemModel}  from "../../model/autocomplete-item.model";
 import { MessageService } from "primeng/api";
+import { InstancesInfoFilterFields } from "../../../common/util/filter-field-names";
 
 export class InstancesInfoAutocompleteHandler extends AutocompleteHandler {
 
@@ -23,12 +23,12 @@ export class InstancesInfoAutocompleteHandler extends AutocompleteHandler {
     const pageRequest: PageRequestDto = {
       page: 0,
       size: this.pageSize,
-      sortField: InstancesInfoDtoFields.CREATED_DATE,
+      sortField: InstancesInfoFilterFields.CREATED_DATE,
       ascending: false,
       searchQuery: null,
       filters: [
         {
-          name: InstancesInfoDtoFields.RELATION_NAME,
+          name: InstancesInfoFilterFields.RELATION_NAME,
           values: [autocompleteItemModel.searchQuery],
           matchMode: 'LIKE'
         }
