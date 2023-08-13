@@ -87,7 +87,6 @@ spring:
 |id                      |bigint           |+|+|+                                 |Идентификатор записи (первичный ключ)
 |template_name           |varchar(255)     |-|+|-                                 |Название шаблона
 |template_type           |varchar(255)     |-|+|filter_template_type_unique_idx   |Тип шаблона
-|created                 |timestamp        |-|+|-                                 |Дата создания шаблона
 |===
 
 Таблица 2.4 - 'filter_dictionary' - содержит данные словарей

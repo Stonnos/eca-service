@@ -214,4 +214,12 @@
                              constraintName="filter_dictionary_name_unique_idx"/>
     </changeSet>
 
+    <changeSet id="drop_filter_template_created_date_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_template"/>
+            <columnExists tableName="filter_template" columnName="created"/>
+        </preConditions>
+        <dropColumn tableName="filter_template" columnName="created"/>
+    </changeSet>
+
 </databaseChangeLog>

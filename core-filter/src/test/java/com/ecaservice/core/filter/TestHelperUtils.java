@@ -11,7 +11,6 @@ import com.ecaservice.web.dto.model.FilterFieldType;
 import com.ecaservice.web.dto.model.MatchMode;
 import lombok.experimental.UtilityClass;
 
-import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -68,7 +67,6 @@ public class TestHelperUtils {
         FilterTemplate filterTemplate = new FilterTemplate();
         filterTemplate.setTemplateName(FILTER_NAME);
         filterTemplate.setTemplateType(filterTemplateType);
-        filterTemplate.setCreated(LocalDateTime.now());
         filterTemplate.setFields(IntStream.range(0, FILTER_TEMPLATE_FIELDS).mapToObj(
                 i -> createFilterField(String.valueOf(i), i)).collect(Collectors.toList()));
         return filterTemplate;
