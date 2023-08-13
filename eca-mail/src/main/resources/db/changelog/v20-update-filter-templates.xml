@@ -5,6 +5,21 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
+    <changeSet id="insert_email_filter_template" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from filter_template where id = 1
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="filter_template">
+            <column name="id" valueNumeric="1"/>
+            <column name="template_name" value="Фильтр для шаблонов email сообщений"/>
+            <column name="template_type" value="EMAIL_TEMPLATES"/>
+            <column name="created" valueDate="now()"/>
+        </insert>
+    </changeSet>
+
     <changeSet author="roman.batygin@mail.ru" id="insert_sort_templates_1" context="data">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="sort_template"/>
@@ -49,17 +64,6 @@
                 primaryKey="id"
                 separator=";"
                 file="filter-templates/global-filter-fields.csv"/>
-    </changeSet>
-
-    <changeSet author="roman.batygin@mail.ru" id="insert_filter_templates_1" context="data">
-        <preConditions onFail="MARK_RAN">
-            <tableExists tableName="filter_template"/>
-        </preConditions>
-        <loadUpdateData
-                tableName="filter_template"
-                primaryKey="id"
-                separator=";"
-                file="filter-templates/filter-templates.csv"/>
     </changeSet>
 
 </databaseChangeLog>
