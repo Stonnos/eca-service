@@ -4,17 +4,16 @@ import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.common.web.exception.InvalidOperationException;
 import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
 import com.ecaservice.server.filter.ClassifiersConfigurationFilter;
 import com.ecaservice.server.mapping.ClassifierOptionsDatabaseModelMapper;
 import com.ecaservice.server.mapping.ClassifiersConfigurationMapper;
 import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.server.model.entity.ClassifiersConfiguration;
-import com.ecaservice.server.model.entity.FilterTemplateType;
 import com.ecaservice.server.report.model.ClassifierOptionsBean;
 import com.ecaservice.server.report.model.ClassifiersConfigurationBean;
 import com.ecaservice.server.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.server.repository.ClassifiersConfigurationRepository;
-import com.ecaservice.server.service.PageRequestService;
 import com.ecaservice.server.service.UserService;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
@@ -28,6 +27,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -42,6 +42,7 @@ import static com.ecaservice.server.config.audit.AuditCodes.DELETE_CONFIGURATION
 import static com.ecaservice.server.config.audit.AuditCodes.RENAME_CONFIGURATION;
 import static com.ecaservice.server.config.audit.AuditCodes.SET_ACTIVE_CONFIGURATION;
 import static com.ecaservice.server.model.entity.BaseEntity_.CREATION_DATE;
+import static com.ecaservice.server.model.entity.FilterTemplateType.CLASSIFIERS_CONFIGURATION;
 
 /**
  * Classifiers configuration service.
@@ -49,6 +50,7 @@ import static com.ecaservice.server.model.entity.BaseEntity_.CREATION_DATE;
  * @author Roman Batygin
  */
 @Slf4j
+@Validated
 @Service("classifiersConfigurationServiceImpl")
 @RequiredArgsConstructor
 public class ClassifiersConfigurationServiceImpl implements ClassifiersConfigurationService {
@@ -157,7 +159,7 @@ public class ClassifiersConfigurationServiceImpl implements ClassifiersConfigura
         log.info("Gets classifiers configurations next page: {}", pageRequestDto);
         var sort = buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
         var globalFilterFields =
-                filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIERS_CONFIGURATION);
+                filterService.getGlobalFilterFields(CLASSIFIERS_CONFIGURATION);
         var filter = new ClassifiersConfigurationFilter(pageRequestDto.getSearchQuery(),
                 globalFilterFields, pageRequestDto.getFilters());
         var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort);
@@ -168,7 +170,8 @@ public class ClassifiersConfigurationServiceImpl implements ClassifiersConfigura
     }
 
     @Override
-    public PageDto<ClassifiersConfigurationDto> getClassifiersConfigurations(PageRequestDto pageRequestDto) {
+    public PageDto<ClassifiersConfigurationDto> getClassifiersConfigurations(
+            @ValidPageRequest(filterTemplateName = CLASSIFIERS_CONFIGURATION) PageRequestDto pageRequestDto) {
         var classifiersConfigurationsPage = getNextPage(pageRequestDto);
         var configurationDtoList = classifiersConfigurationMapper.map(classifiersConfigurationsPage.getContent());
         if (classifiersConfigurationsPage.hasContent()) {
