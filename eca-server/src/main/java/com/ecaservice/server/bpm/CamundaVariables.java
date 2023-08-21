@@ -21,6 +21,11 @@ public class CamundaVariables {
     public static final String EXPERIMENT_ID = "experimentId";
 
     /**
+     * Experiment model variable
+     */
+    public static final String EXPERIMENT = "experiment";
+
+    /**
      * Error code
      */
     public static final String ERROR_CODE = "errorCode";

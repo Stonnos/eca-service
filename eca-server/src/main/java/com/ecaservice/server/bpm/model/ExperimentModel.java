@@ -44,4 +44,9 @@ public class ExperimentModel implements Serializable {
      * Channel.
      */
     private Channel channel;
+
+    /**
+     * Experiment steps number to process.
+     */
+    private Long stepsCountToProcess;
 }

@@ -36,18 +36,6 @@ public class CamundaUtils {
     }
 
     /**
-     * Safely set variable value to execution. If value is null then exception will be thrown.
-     *
-     * @param execution    - execution context
-     * @param variableName - variable name
-     * @param value        - variable value
-     */
-    public static void setVariableSafe(DelegateExecution execution, String variableName, Object value) {
-        Assert.notNull(value, String.format("Expected not null variable [%s] to set", variableName));
-        execution.setVariable(variableName, value);
-    }
-
-    /**
      * Gets enum value from execution.
      *
      * @param execution    - execution context

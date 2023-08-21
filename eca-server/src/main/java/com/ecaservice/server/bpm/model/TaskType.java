@@ -48,6 +48,11 @@ public enum TaskType {
     SENT_EXPERIMENT_WEB_PUSH,
 
     /**
+     * Sent experiment response to MQ
+     */
+    SENT_EXPERIMENT_RESPONSE,
+
+    /**
      * Error task type
      */
     ERROR

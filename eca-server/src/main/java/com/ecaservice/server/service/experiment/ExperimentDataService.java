@@ -6,8 +6,10 @@ import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
 import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
+import com.ecaservice.server.bpm.model.ExperimentModel;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.filter.ExperimentFilter;
+import com.ecaservice.server.mapping.ExperimentMapper;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.projections.RequestStatusStatistics;
 import com.ecaservice.server.repository.ExperimentRepository;
@@ -60,6 +62,7 @@ public class ExperimentDataService {
     private final EntityManager entityManager;
     private final AppProperties appProperties;
     private final FilterService filterService;
+    private final ExperimentMapper experimentMapper;
 
     /**
      * Removes experiment model file from object storage.
@@ -199,5 +202,16 @@ public class ExperimentDataService {
         return S3ContentResponseDto.builder()
                 .contentUrl(contentUrl)
                 .build();
+    }
+
+    /**
+     * Gets experiment model by id.
+     *
+     * @param id - experiment id
+     * @return experiment model
+     */
+    public ExperimentModel getExperimentModel(Long id) {
+        var experiment = getById(id);
+        return experimentMapper.mapToModel(experiment);
     }
 }
