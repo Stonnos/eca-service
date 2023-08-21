@@ -1,14 +1,16 @@
 package com.ecaservice.server.service.scheduler;
 
 import com.ecaservice.server.repository.ExperimentRepository;
-import com.ecaservice.server.repository.ExperimentStepRepository;
 import com.ecaservice.server.service.experiment.ExperimentDataCleaner;
-import com.ecaservice.server.service.experiment.ExperimentRequestProcessor;
+import com.ecaservice.server.service.experiment.ExperimentProcessManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+
+import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * Experiment scheduler.
@@ -20,10 +22,9 @@ import org.springframework.util.CollectionUtils;
 @RequiredArgsConstructor
 public class ExperimentScheduler {
 
-    private final ExperimentRequestProcessor experimentRequestProcessor;
+    private final ExperimentProcessManager experimentProcessManager;
     private final ExperimentDataCleaner experimentDataCleaner;
     private final ExperimentRepository experimentRepository;
-    private final ExperimentStepRepository experimentStepRepository;
 
     /**
      * Processes experiment requests.
@@ -32,7 +33,7 @@ public class ExperimentScheduler {
     public void processExperiments() {
         processNewRequests();
         processInProgressRequests();
-        processFinishedRequests();
+        processRequestsToFinish();
     }
 
     /**
@@ -51,15 +52,7 @@ public class ExperimentScheduler {
      */
     private void processNewRequests() {
         log.trace("Starting to process new experiments.");
-        var newExperimentIds = experimentRepository.findNewExperiments();
-        if (!CollectionUtils.isEmpty(newExperimentIds)) {
-            log.info("Fetched {} new experiments", newExperimentIds.size());
-            newExperimentIds.forEach(id -> {
-                experimentRequestProcessor.startExperiment(id);
-                experimentRequestProcessor.processExperiment(id);
-                finishExperiment(id);
-            });
-        }
+        processExperiments(experimentRepository::findNewExperiments);
         log.trace("New experiments processing has been successfully finished.");
     }
 
@@ -68,37 +61,24 @@ public class ExperimentScheduler {
      */
     private void processInProgressRequests() {
         log.trace("Starting to process new experiments.");
-        var ids = experimentRepository.findExperimentsToProcess();
-        if (!CollectionUtils.isEmpty(ids)) {
-            log.info("Fetched {} experiments to process", ids.size());
-            ids.forEach(id -> {
-                experimentRequestProcessor.processExperiment(id);
-                finishExperiment(id);
-            });
-        }
+        processExperiments(experimentRepository::findExperimentsToProcess);
         log.trace("New experiments processing has been successfully finished.");
     }
 
     /**
-     * Processing finished experiment requests.
+     * Processing experiment requests to finish.
      */
-    private void processFinishedRequests() {
-        log.trace("Starting to process finished experiments.");
-        var ids = experimentRepository.findExperimentsToFinish();
-        if (!CollectionUtils.isEmpty(ids)) {
-            log.info("Fetched {} finished experiments", ids.size());
-            ids.forEach(experimentRequestProcessor::finishExperiment);
-        }
+    private void processRequestsToFinish() {
+        log.trace("Starting to process experiments to finish.");
+        processExperiments(experimentRepository::findExperimentsToFinish);
         log.trace("Finished experiments processing has been successfully finished.");
     }
 
-    private void finishExperiment(long experimentId) {
-        if (processed(experimentId)) {
-            experimentRequestProcessor.finishExperiment(experimentId);
+    private void processExperiments(Supplier<List<Long>> getExperimentsIdsSupplier) {
+        var ids = getExperimentsIdsSupplier.get();
+        if (!CollectionUtils.isEmpty(ids)) {
+            log.info("Fetched [{}] experiments to process", ids.size());
+            ids.forEach(experimentProcessManager::processExperiment);
         }
-    }
-
-    private boolean processed(long experimentId) {
-        return experimentStepRepository.getExperimentStepsCountToProcess(experimentId) == 0L;
     }
 }

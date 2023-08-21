@@ -12,8 +12,8 @@ import com.ecaservice.server.repository.ExperimentStepRepository;
 import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.experiment.ExperimentDataCleaner;
+import com.ecaservice.server.service.experiment.ExperimentProcessManager;
 import com.ecaservice.server.service.experiment.ExperimentProgressService;
-import com.ecaservice.server.service.experiment.ExperimentRequestProcessor;
 import com.ecaservice.server.service.experiment.ExperimentService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -24,7 +24,6 @@ import javax.inject.Inject;
 import java.util.UUID;
 
 import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 /**
@@ -52,14 +51,14 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
     private ApplicationEventPublisher eventPublisher;
 
     @MockBean
-    private ExperimentRequestProcessor experimentRequestProcessor;
+    private ExperimentProcessManager experimentProcessManager;
 
     private ExperimentScheduler experimentScheduler;
 
     @Override
     public void init() {
-        experimentScheduler = new ExperimentScheduler(experimentRequestProcessor, experimentDataCleaner,
-                experimentRepository, experimentStepRepository);
+        experimentScheduler =
+                new ExperimentScheduler(experimentProcessManager, experimentDataCleaner, experimentRepository);
     }
 
     @Override
@@ -75,7 +74,7 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
         instancesInfoRepository.save(newExperiment.getInstancesInfo());
         experimentRepository.save(newExperiment);
         experimentScheduler.processExperiments();
-        verify(experimentRequestProcessor, atLeastOnce()).startExperiment(newExperiment.getId());
+        verify(experimentProcessManager, atLeastOnce()).processExperiment(newExperiment.getId());
     }
 
     @Test
@@ -87,8 +86,7 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
         createAndSaveExperimentStep(experiment, ExperimentStep.UPLOAD_EXPERIMENT_MODEL, ExperimentStepStatus.READY);
         createAndSaveExperimentStep(experiment, ExperimentStep.GET_EXPERIMENT_DOWNLOAD_URL, ExperimentStepStatus.READY);
         experimentScheduler.processExperiments();
-        verify(experimentRequestProcessor, never()).finishExperiment(experiment.getId());
-        verify(experimentRequestProcessor, atLeastOnce()).processExperiment(experiment.getId());
+        verify(experimentProcessManager, atLeastOnce()).processExperiment(experiment.getId());
     }
 
     @Test
@@ -101,8 +99,7 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
         createAndSaveExperimentStep(experiment, ExperimentStep.GET_EXPERIMENT_DOWNLOAD_URL,
                 ExperimentStepStatus.CANCELED);
         experimentScheduler.processExperiments();
-        verify(experimentRequestProcessor, never()).processExperiment(experiment.getId());
-        verify(experimentRequestProcessor, atLeastOnce()).finishExperiment(experiment.getId());
+        verify(experimentProcessManager, atLeastOnce()).processExperiment(experiment.getId());
     }
 
     @Test
@@ -115,8 +112,7 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
         createAndSaveExperimentStep(experiment, ExperimentStep.GET_EXPERIMENT_DOWNLOAD_URL,
                 ExperimentStepStatus.COMPLETED);
         experimentScheduler.processExperiments();
-        verify(experimentRequestProcessor, never()).processExperiment(experiment.getId());
-        verify(experimentRequestProcessor, atLeastOnce()).finishExperiment(experiment.getId());
+        verify(experimentProcessManager, atLeastOnce()).processExperiment(experiment.getId());
     }
 
     @Test
@@ -128,8 +124,7 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
         createAndSaveExperimentStep(experiment, ExperimentStep.UPLOAD_EXPERIMENT_MODEL, ExperimentStepStatus.COMPLETED);
         createAndSaveExperimentStep(experiment, ExperimentStep.GET_EXPERIMENT_DOWNLOAD_URL, ExperimentStepStatus.READY);
         experimentScheduler.processExperiments();
-        verify(experimentRequestProcessor, atLeastOnce()).processExperiment(experiment.getId());
-        verify(experimentRequestProcessor, never()).finishExperiment(experiment.getId());
+        verify(experimentProcessManager, atLeastOnce()).processExperiment(experiment.getId());
     }
 
     private void createAndSaveExperimentStep(Experiment experiment,
