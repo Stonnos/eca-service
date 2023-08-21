@@ -4,6 +4,7 @@ import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.oauth2.test.controller.AbstractControllerTest;
 import com.ecaservice.server.TestHelperUtils;
+import com.ecaservice.server.configuation.annotation.EnableCamundaMock;
 import com.ecaservice.server.model.entity.FilterTemplateType;
 import com.ecaservice.server.service.filter.dictionary.FilterDictionaries;
 import com.ecaservice.web.dto.model.FilterDictionaryDto;
@@ -28,6 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @author Roman Batygin
  */
+@EnableCamundaMock
 @WebMvcTest(controllers = FilterTemplateController.class)
 class FilterTemplateControllerTest extends AbstractControllerTest {
 

@@ -1,6 +1,7 @@
 package com.ecaservice.server.controller.web;
 
 import com.ecaservice.oauth2.test.controller.AbstractControllerTest;
+import com.ecaservice.server.configuation.annotation.EnableCamundaMock;
 import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel_;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
@@ -20,6 +21,7 @@ import static com.ecaservice.server.TestHelperUtils.createPageRequestDto;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@EnableCamundaMock
 abstract class PageRequestControllerTest extends AbstractControllerTest {
 
     public void testGetPageUnauthorized(String url, Map<String, List<String>> params) throws Exception {
