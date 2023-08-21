@@ -8,3 +8,4 @@ create database audit_log;
 create database eca_web_push;
 create database eca_load_tests;
 create database eca_auto_tests;
+create database eca_camunda;
