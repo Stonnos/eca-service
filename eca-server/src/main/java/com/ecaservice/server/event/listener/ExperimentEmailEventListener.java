@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ExperimentNotificationEventListener {
+public class ExperimentEmailEventListener {
 
     private final ExperimentEmailEventVisitor experimentEmailEventVisitor;
     private final ApplicationEventPublisher applicationEventPublisher;

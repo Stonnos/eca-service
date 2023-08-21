@@ -18,29 +18,29 @@ import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 
 /**
- * Unit tests for checking {@link ExperimentNotificationEventListener} functionality.
+ * Unit tests for checking {@link ExperimentEmailEventListener} functionality.
  *
  * @author Roman Batygin
  */
 @ExtendWith(MockitoExtension.class)
-class ExperimentNotificationEventListenerTest {
+class ExperimentEmailEventListenerTest {
 
     @Mock
     private ApplicationEventPublisher applicationEventPublisher;
 
-    private ExperimentNotificationEventListener experimentNotificationEventListener;
+    private ExperimentEmailEventListener experimentEmailEventListener;
 
     @BeforeEach
     void init() {
-        experimentNotificationEventListener =
-                new ExperimentNotificationEventListener(new ExperimentEmailEventVisitor(), applicationEventPublisher);
+        experimentEmailEventListener =
+                new ExperimentEmailEventListener(new ExperimentEmailEventVisitor(), applicationEventPublisher);
     }
 
     @Test
     void testHandleEmailEvent() {
         var experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
         var experimentEmailEvent = new ExperimentEmailEvent(this, experiment);
-        experimentNotificationEventListener.handleExperimentEmailEvent(experimentEmailEvent);
+        experimentEmailEventListener.handleExperimentEmailEvent(experimentEmailEvent);
         verify(applicationEventPublisher, atLeastOnce()).publishEvent(any(AbstractExperimentEmailEvent.class));
     }
 }
