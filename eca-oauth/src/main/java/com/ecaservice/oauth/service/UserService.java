@@ -5,7 +5,7 @@ import com.ecaservice.common.web.exception.FileProcessingException;
 import com.ecaservice.common.web.exception.InvalidFileException;
 import com.ecaservice.common.web.exception.InvalidOperationException;
 import com.ecaservice.core.audit.annotation.Audit;
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
 import com.ecaservice.oauth.config.AppProperties;
 import com.ecaservice.oauth.dto.CreateUserDto;
@@ -75,7 +75,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
     private final Oauth2TokenService oauth2TokenService;
-    private final FilterService filterService;
+    private final FilterTemplateService filterTemplateService;
     private final UserEntityRepository userEntityRepository;
     private final RoleRepository roleRepository;
     private final UserPhotoRepository userPhotoRepository;
@@ -89,7 +89,7 @@ public class UserService {
     public Page<UserEntity> getNextPage(PageRequestDto pageRequestDto) {
         log.info("Gets users next page: {}", pageRequestDto);
         Sort sort = buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
-        var globalFilterFields = filterService.getGlobalFilterFields(USERS_TEMPLATE);
+        var globalFilterFields = filterTemplateService.getGlobalFilterFields(USERS_TEMPLATE);
         UserFilter filter =
                 new UserFilter(pageRequestDto.getSearchQuery(), globalFilterFields, pageRequestDto.getFilters());
         var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort);

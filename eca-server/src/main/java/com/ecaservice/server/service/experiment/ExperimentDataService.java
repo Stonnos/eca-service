@@ -2,7 +2,7 @@ package com.ecaservice.server.service.experiment;
 
 import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
 import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
@@ -61,7 +61,7 @@ public class ExperimentDataService {
     private final ObjectStorageService objectStorageService;
     private final EntityManager entityManager;
     private final AppProperties appProperties;
-    private final FilterService filterService;
+    private final FilterTemplateService filterTemplateService;
     private final ExperimentMapper experimentMapper;
 
     /**
@@ -114,7 +114,7 @@ public class ExperimentDataService {
             @ValidPageRequest(filterTemplateName = EXPERIMENT) PageRequestDto pageRequestDto) {
         log.info("Gets experiments next page: {}", pageRequestDto);
         Sort sort = buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
-        List<String> globalFilterFields = filterService.getGlobalFilterFields(EXPERIMENT);
+        List<String> globalFilterFields = filterTemplateService.getGlobalFilterFields(EXPERIMENT);
         ExperimentFilter filter =
                 new ExperimentFilter(pageRequestDto.getSearchQuery(), globalFilterFields, pageRequestDto.getFilters());
         var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort);
@@ -178,7 +178,7 @@ public class ExperimentDataService {
     }
 
     private ChartDto populateExperimentsChartData(Map<String, Long> statisticsMap) {
-        var experimentTypesDictionary = filterService.getFilterDictionary(FilterDictionaries.EXPERIMENT_TYPE);
+        var experimentTypesDictionary = filterTemplateService.getFilterDictionary(FilterDictionaries.EXPERIMENT_TYPE);
         return calculateChartData(experimentTypesDictionary, statisticsMap);
     }
 

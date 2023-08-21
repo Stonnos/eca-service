@@ -1,6 +1,6 @@
 package com.ecaservice.server.service.ers;
 
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
 import com.ecaservice.server.filter.ClassifierOptionsRequestModelFilter;
 import com.ecaservice.server.mapping.ClassifierOptionsRequestModelMapper;
@@ -38,7 +38,7 @@ import static com.ecaservice.server.util.ClassifierOptionsHelper.parseOptions;
 @RequiredArgsConstructor
 public class ClassifierOptionsRequestService {
 
-    private final FilterService filterService;
+    private final FilterTemplateService filterTemplateService;
     private final ClassifierOptionsProcessor classifierOptionsProcessor;
     private final ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper;
     private final ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository;
@@ -53,7 +53,7 @@ public class ClassifierOptionsRequestService {
             @ValidPageRequest(filterTemplateName = CLASSIFIER_OPTIONS_REQUEST) PageRequestDto pageRequestDto) {
         log.info("Gets classifier options requests next page: {}", pageRequestDto);
         Sort sort = buildSort(pageRequestDto.getSortField(), REQUEST_DATE, pageRequestDto.isAscending());
-        var globalFilterFields = filterService.getGlobalFilterFields(CLASSIFIER_OPTIONS_REQUEST);
+        var globalFilterFields = filterTemplateService.getGlobalFilterFields(CLASSIFIER_OPTIONS_REQUEST);
         ClassifierOptionsRequestModelFilter filter =
                 new ClassifierOptionsRequestModelFilter(pageRequestDto.getSearchQuery(), globalFilterFields,
                         pageRequestDto.getFilters());

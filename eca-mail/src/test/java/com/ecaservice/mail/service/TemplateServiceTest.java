@@ -1,6 +1,6 @@
 package com.ecaservice.mail.service;
 
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.mail.AbstractJpaTest;
 import com.ecaservice.mail.config.MailConfig;
 import com.ecaservice.mail.model.TemplateEntity;
@@ -37,7 +37,7 @@ class TemplateServiceTest extends AbstractJpaTest {
     private static final int SIZE = 10;
 
     @MockBean
-    private FilterService filterService;
+    private FilterTemplateService filterTemplateService;
 
     @Inject
     private TemplateRepository templateRepository;
@@ -47,7 +47,7 @@ class TemplateServiceTest extends AbstractJpaTest {
 
     @Override
     public void init() {
-        when(filterService.getGlobalFilterFields(EMAIL_TEMPLATES)).thenReturn(
+        when(filterTemplateService.getGlobalFilterFields(EMAIL_TEMPLATES)).thenReturn(
                 List.of(
                         TemplateEntity_.CODE,
                         TemplateEntity_.DESCRIPTION,

@@ -1,6 +1,6 @@
 package com.ecaservice.server.report;
 
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.report.data.fetcher.AbstractBaseReportDataFetcher;
 import com.ecaservice.server.mapping.EvaluationLogMapper;
 import com.ecaservice.server.model.entity.EvaluationLog;
@@ -37,17 +37,17 @@ public class EvaluationLogsBaseReportDataFetcher extends
     /**
      * Constructor with spring dependency injection.
      *
-     * @param filterService           - filter service bean
+     * @param filterTemplateService           - filter service bean
      * @param instancesInfoRepository - instances info repository
      * @param evaluationLogService    - evaluation log service bean
      * @param evaluationLogMapper     - evaluation log mapper bean
      */
     @Inject
-    public EvaluationLogsBaseReportDataFetcher(FilterService filterService,
+    public EvaluationLogsBaseReportDataFetcher(FilterTemplateService filterTemplateService,
                                                InstancesInfoRepository instancesInfoRepository,
                                                EvaluationLogService evaluationLogService,
                                                EvaluationLogMapper evaluationLogMapper) {
-        super(BaseReportType.EVALUATION_LOGS.name(), FilterTemplateType.EVALUATION_LOG, filterService);
+        super(BaseReportType.EVALUATION_LOGS.name(), FilterTemplateType.EVALUATION_LOG, filterTemplateService);
         this.evaluationLogService = evaluationLogService;
         this.evaluationLogMapper = evaluationLogMapper;
         this.instancesInfoRepository = instancesInfoRepository;

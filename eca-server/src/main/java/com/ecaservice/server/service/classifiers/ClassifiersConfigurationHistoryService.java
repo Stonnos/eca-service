@@ -1,7 +1,7 @@
 package com.ecaservice.server.service.classifiers;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
 import com.ecaservice.server.filter.ClassifiersConfigurationHistoryFilter;
 import com.ecaservice.server.mapping.ClassifiersConfigurationHistoryMapper;
@@ -48,7 +48,7 @@ import static com.ecaservice.server.service.message.template.dictionary.MessageT
 public class ClassifiersConfigurationHistoryService {
 
     private final UserService userService;
-    private final FilterService filterService;
+    private final FilterTemplateService filterTemplateService;
     private final ClassifiersConfigurationHistoryMapper classifiersConfigurationHistoryMapper;
     private final MessageTemplateProcessor messageTemplateProcessor;
     private final ClassifiersTemplateProvider classifiersTemplateProvider;
@@ -162,7 +162,7 @@ public class ClassifiersConfigurationHistoryService {
         var classifiersConfiguration = classifiersConfigurationRepository.findById(configurationId)
                 .orElseThrow(() -> new EntityNotFoundException(ClassifiersConfiguration.class, configurationId));
         var globalFilterFields =
-                filterService.getGlobalFilterFields(CLASSIFIERS_CONFIGURATION_HISTORY);
+                filterTemplateService.getGlobalFilterFields(CLASSIFIERS_CONFIGURATION_HISTORY);
         var sort = buildSort(pageRequestDto.getSortField(), CREATED_AT, pageRequestDto.isAscending());
         var filter = new ClassifiersConfigurationHistoryFilter(classifiersConfiguration,
                 pageRequestDto.getSearchQuery(), globalFilterFields, pageRequestDto.getFilters());

@@ -1,6 +1,6 @@
 package com.ecaservice.report.data.fetcher;
 
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.report.data.customize.FilterValueReportCustomizer;
 import com.ecaservice.report.model.BaseReportBean;
 import com.ecaservice.report.model.FilterBean;
@@ -41,7 +41,7 @@ public abstract class AbstractBaseReportDataFetcher<E, B> {
     @Getter
     private final String reportType;
     private final String filterTemplateType;
-    private final FilterService filterService;
+    private final FilterTemplateService filterTemplateService;
 
     private final List<FilterValueReportCustomizer> filterValueReportCustomizers = new ArrayList<>();
 
@@ -90,7 +90,7 @@ public abstract class AbstractBaseReportDataFetcher<E, B> {
     }
 
     private List<FilterBean> getFilterBeans(PageRequestDto pageRequestDto) {
-        Map<String, FilterFieldDto> filterFieldsMap = filterService.getFilterFields(filterTemplateType)
+        Map<String, FilterFieldDto> filterFieldsMap = filterTemplateService.getFilterFields(filterTemplateType)
                 .stream()
                 .collect(Collectors.toMap(FilterFieldDto::getFieldName, Function.identity()));
         List<FilterBean> filterBeans = newArrayList();
@@ -144,7 +144,7 @@ public abstract class AbstractBaseReportDataFetcher<E, B> {
     }
 
     protected String getDictionaryLabelByCode(String dictionaryName, String code) {
-        return filterService.getFilterDictionary(dictionaryName)
+        return filterTemplateService.getFilterDictionary(dictionaryName)
                 .getValues()
                 .stream()
                 .filter(filterDictionaryValueDto -> filterDictionaryValueDto.getValue().equals(code))

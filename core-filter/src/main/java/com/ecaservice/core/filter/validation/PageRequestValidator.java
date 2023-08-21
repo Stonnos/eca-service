@@ -1,8 +1,7 @@
 package com.ecaservice.core.filter.validation;
 
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
-import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +29,7 @@ public class PageRequestValidator implements ConstraintValidator<ValidPageReques
 
     private String filterTemplateName;
 
-    private final FilterService filterService;
+    private final FilterTemplateService filterTemplateService;
 
     @Override
     public void initialize(ValidPageRequest constraintAnnotation) {
@@ -47,7 +46,7 @@ public class PageRequestValidator implements ConstraintValidator<ValidPageReques
     private boolean validateFilterFields(PageRequestDto pageRequestDto, ConstraintValidatorContext context) {
         boolean valid = true;
         if (!CollectionUtils.isEmpty(pageRequestDto.getFilters())) {
-            var filterFields = filterService.getFilterFields(filterTemplateName);
+            var filterFields = filterTemplateService.getFilterFields(filterTemplateName);
             for (int i = 0; i < pageRequestDto.getFilters().size(); i++) {
                 var filterRequestDto = pageRequestDto.getFilters().get(i);
                 if (filterFields.stream().noneMatch(
@@ -63,7 +62,7 @@ public class PageRequestValidator implements ConstraintValidator<ValidPageReques
 
     private boolean validateSortField(PageRequestDto pageRequestDto, ConstraintValidatorContext context) {
         if (StringUtils.isNotBlank(pageRequestDto.getSortField())) {
-            var sortFields = filterService.getSortFields(filterTemplateName);
+            var sortFields = filterTemplateService.getSortFields(filterTemplateName);
             if (!sortFields.contains(pageRequestDto.getSortField())) {
                 buildConstraintViolationWithTemplate(context, INVALID_SORT_FIELD_TEMPLATE, SORT_FIELD);
                 return false;

@@ -3,7 +3,7 @@ package com.ecaservice.server.service.classifiers;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.common.web.exception.InvalidOperationException;
 import com.ecaservice.core.audit.annotation.Audit;
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.server.filter.ClassifiersConfigurationFilter;
 import com.ecaservice.server.mapping.ClassifierOptionsDatabaseModelMapper;
 import com.ecaservice.server.mapping.ClassifiersConfigurationMapper;
@@ -53,7 +53,7 @@ import static com.ecaservice.server.model.entity.FilterTemplateType.CLASSIFIERS_
 public class ClassifiersConfigurationServiceImpl implements ClassifiersConfigurationService {
 
     private final UserService userService;
-    private final FilterService filterService;
+    private final FilterTemplateService filterTemplateService;
     private final ClassifiersConfigurationMapper classifiersConfigurationMapper;
     private final ClassifierOptionsDatabaseModelMapper classifierOptionsDatabaseModelMapper;
     private final ClassifiersConfigurationHistoryService classifiersConfigurationHistoryService;
@@ -156,7 +156,7 @@ public class ClassifiersConfigurationServiceImpl implements ClassifiersConfigura
         log.info("Gets classifiers configurations next page: {}", pageRequestDto);
         var sort = buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
         var globalFilterFields =
-                filterService.getGlobalFilterFields(CLASSIFIERS_CONFIGURATION);
+                filterTemplateService.getGlobalFilterFields(CLASSIFIERS_CONFIGURATION);
         var filter = new ClassifiersConfigurationFilter(pageRequestDto.getSearchQuery(),
                 globalFilterFields, pageRequestDto.getFilters());
         var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort);

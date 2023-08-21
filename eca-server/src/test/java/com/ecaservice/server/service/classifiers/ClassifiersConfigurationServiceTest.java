@@ -2,7 +2,7 @@ package com.ecaservice.server.service.classifiers;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.common.web.exception.InvalidOperationException;
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.lock.config.CoreLockAutoConfiguration;
 import com.ecaservice.core.lock.metrics.LockMeterService;
 import com.ecaservice.server.TestHelperUtils;
@@ -85,7 +85,7 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
     @Inject
     private ClassifiersConfigurationService classifiersConfigurationService;
     @MockBean
-    private FilterService filterService;
+    private FilterTemplateService filterTemplateService;
     @MockBean
     private UserService userService;
     @MockBean
@@ -276,7 +276,7 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
 
     @Test
     void testGetClassifiersConfigurations() {
-        when(filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIERS_CONFIGURATION))
+        when(filterTemplateService.getGlobalFilterFields(FilterTemplateType.CLASSIFIERS_CONFIGURATION))
                 .thenReturn(Collections.emptyList());
         ClassifiersConfiguration firstConfiguration = saveConfiguration(true, true);
         ClassifiersConfiguration secondConfiguration = saveConfiguration(false, false);

@@ -1,6 +1,6 @@
 package com.ecaservice.server.report;
 
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.report.data.fetcher.AbstractBaseReportDataFetcher;
 import com.ecaservice.server.mapping.ExperimentMapper;
 import com.ecaservice.server.model.entity.Experiment;
@@ -33,17 +33,17 @@ public class ExperimentsBaseReportDataFetcher extends AbstractBaseReportDataFetc
     /**
      * Constructor with spring dependency injection.
      *
-     * @param filterService           - filter service bean
+     * @param filterTemplateService           - filter service bean
      * @param instancesInfoRepository - instances info repository
      * @param experimentDataService   - experiments data service bean
      * @param experimentMapper        - experiment mapper bean
      */
     @Inject
-    public ExperimentsBaseReportDataFetcher(FilterService filterService,
+    public ExperimentsBaseReportDataFetcher(FilterTemplateService filterTemplateService,
                                             InstancesInfoRepository instancesInfoRepository,
                                             ExperimentDataService experimentDataService,
                                             ExperimentMapper experimentMapper) {
-        super(BaseReportType.EXPERIMENTS.name(), FilterTemplateType.EXPERIMENT, filterService);
+        super(BaseReportType.EXPERIMENTS.name(), FilterTemplateType.EXPERIMENT, filterTemplateService);
         this.experimentDataService = experimentDataService;
         this.experimentMapper = experimentMapper;
         this.instancesInfoRepository = instancesInfoRepository;

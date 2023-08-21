@@ -25,13 +25,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
- * Unit tests for checking {@link FilterService} functionality.
+ * Unit tests for checking {@link FilterTemplateService} functionality.
  *
  * @author Roman Batygin
  */
 @Import({FilterFieldMapperImpl.class, FilterDictionaryMapperImpl.class, FilterDictionaryValueMapperImpl.class,
-        FilterService.class})
-class FilterServiceTest extends AbstractJpaTest {
+        FilterTemplateService.class})
+class FilterTemplateServiceTest extends AbstractJpaTest {
 
     public static final String FILTER_TEMPLATE_TYPE = "template";
     public static final String DICTIONARY_NAME = "dictionaryName";
@@ -45,7 +45,7 @@ class FilterServiceTest extends AbstractJpaTest {
     private FilterDictionaryRepository filterDictionaryRepository;
 
     @Inject
-    private FilterService filterService;
+    private FilterTemplateService filterTemplateService;
 
     @Override
     public void deleteAll() {
@@ -59,14 +59,14 @@ class FilterServiceTest extends AbstractJpaTest {
     void testGetFilterTemplateFields() {
         FilterTemplate filterTemplate = TestHelperUtils.createFilterTemplate(FILTER_TEMPLATE_TYPE);
         filterTemplateRepository.save(filterTemplate);
-        List<FilterFieldDto> filterFieldDtoList = filterService.getFilterFields(FILTER_TEMPLATE_TYPE);
+        List<FilterFieldDto> filterFieldDtoList = filterTemplateService.getFilterFields(FILTER_TEMPLATE_TYPE);
         assertThat(filterFieldDtoList).hasSameSizeAs(filterTemplate.getFields());
     }
 
     @Test
     void testNotExistingFilterTemplate() {
         assertThrows(EntityNotFoundException.class,
-                () -> filterService.getFilterFields(FILTER_TEMPLATE_TYPE));
+                () -> filterTemplateService.getFilterFields(FILTER_TEMPLATE_TYPE));
     }
 
     @Test
@@ -74,14 +74,14 @@ class FilterServiceTest extends AbstractJpaTest {
         GlobalFilterTemplate filterTemplate =
                 TestHelperUtils.createGlobalFilterTemplate(FILTER_TEMPLATE_TYPE);
         globalFilterTemplateRepository.save(filterTemplate);
-        List<String> fields = filterService.getGlobalFilterFields(FILTER_TEMPLATE_TYPE);
+        List<String> fields = filterTemplateService.getGlobalFilterFields(FILTER_TEMPLATE_TYPE);
         assertThat(fields).hasSameSizeAs(filterTemplate.getFields());
     }
 
     @Test
     void testNotExistingGlobalFilterTemplate() {
         assertThrows(EntityNotFoundException.class,
-                () -> filterService.getGlobalFilterFields(FILTER_TEMPLATE_TYPE));
+                () -> filterTemplateService.getGlobalFilterFields(FILTER_TEMPLATE_TYPE));
     }
 
     @Test
@@ -90,7 +90,7 @@ class FilterServiceTest extends AbstractJpaTest {
         filterDictionary.setName(DICTIONARY_NAME);
         filterDictionaryRepository.save(filterDictionary);
         FilterDictionaryDto filterDictionaryDto =
-                filterService.getFilterDictionary(DICTIONARY_NAME);
+                filterTemplateService.getFilterDictionary(DICTIONARY_NAME);
         assertThat(filterDictionaryDto).isNotNull();
         assertThat(filterDictionaryDto.getName()).isEqualTo(filterDictionary.getName());
     }
@@ -98,20 +98,20 @@ class FilterServiceTest extends AbstractJpaTest {
     @Test
     void testNotExistingFilterDictionary() {
         assertThrows(EntityNotFoundException.class,
-                () -> filterService.getFilterDictionary(DICTIONARY_NAME));
+                () -> filterTemplateService.getFilterDictionary(DICTIONARY_NAME));
     }
 
     @Test
     void testGetSortFilterTemplateFields() {
         var sortTemplate = TestHelperUtils.createSortTemplate(FILTER_TEMPLATE_TYPE);
         sortTemplateRepository.save(sortTemplate);
-        List<String> fields = filterService.getSortFields(FILTER_TEMPLATE_TYPE);
+        List<String> fields = filterTemplateService.getSortFields(FILTER_TEMPLATE_TYPE);
         assertThat(fields).hasSameSizeAs(sortTemplate.getSortFields());
     }
 
     @Test
     void testNotExistingSortTemplate() {
         assertThrows(EntityNotFoundException.class,
-                () -> filterService.getFilterFields(FILTER_TEMPLATE_TYPE));
+                () -> filterTemplateService.getFilterFields(FILTER_TEMPLATE_TYPE));
     }
 }

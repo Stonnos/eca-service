@@ -1,6 +1,6 @@
 package com.ecaservice.server.service;
 
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.server.mapping.InstancesInfoMapperImpl;
 import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.server.model.entity.InstancesInfo_;
@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
 class InstancesInfoServiceTest extends AbstractJpaTest {
 
     @MockBean
-    private FilterService filterService;
+    private FilterTemplateService filterTemplateService;
 
     @Inject
     private InstancesInfoRepository instancesInfoRepository;
@@ -50,7 +50,7 @@ class InstancesInfoServiceTest extends AbstractJpaTest {
     @Override
     public void init() {
         data = loadInstances();
-        when(filterService.getGlobalFilterFields(INSTANCES_INFO)).thenReturn(
+        when(filterTemplateService.getGlobalFilterFields(INSTANCES_INFO)).thenReturn(
                 Collections.singletonList(InstancesInfo_.RELATION_NAME));
     }
 
