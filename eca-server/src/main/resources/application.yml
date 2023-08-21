@@ -161,6 +161,9 @@ auth-server:
   clientId: eca_service_tech
   clientSecret: 02#eca_service_tech6
 
+processes:
+  processExperimentId: ExperimentProcess
+
 management:
   metrics:
     tags:

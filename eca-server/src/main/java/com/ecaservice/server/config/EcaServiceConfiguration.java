@@ -42,7 +42,7 @@ import java.util.concurrent.Executors;
 @EnableJpaRepositories(basePackageClasses = EvaluationLogRepository.class)
 @EnableConfigurationProperties(
         {AppProperties.class, CrossValidationConfig.class, ExperimentConfig.class,
-                ErsConfig.class, ClassifiersProperties.class})
+                ErsConfig.class, ClassifiersProperties.class, ProcessConfig.class})
 public class EcaServiceConfiguration {
 
     public static final String ECA_THREAD_POOL_TASK_EXECUTOR = "ecaThreadPoolTaskExecutor";
