@@ -28,12 +28,12 @@ public class ExperimentModel implements Serializable {
     /**
      * Request status
      */
-    private RequestStatus requestStatus;
+    private String requestStatus;
 
     /**
      * Experiment type
      */
-    private ExperimentType experimentType;
+    private String experimentType;
 
     /**
      * Email
@@ -43,7 +43,7 @@ public class ExperimentModel implements Serializable {
     /**
      * Channel.
      */
-    private Channel channel;
+    private String channel;
 
     /**
      * Experiment steps number to process.

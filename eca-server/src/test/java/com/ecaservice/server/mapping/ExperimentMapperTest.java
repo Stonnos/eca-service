@@ -172,11 +172,11 @@ class ExperimentMapperTest {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
         var experimentModel = experimentMapper.mapToModel(experiment);
         assertThat(experimentModel).isNotNull();
-        assertThat(experimentModel.getRequestStatus()).isEqualTo(experiment.getRequestStatus());
-        assertThat(experimentModel.getExperimentType()).isEqualTo(experiment.getExperimentType());
-        assertThat(experimentModel.getExperimentType()).isEqualTo(experiment.getExperimentType());
+        assertThat(experimentModel.getRequestStatus()).isEqualTo(experiment.getRequestStatus().name());
+        assertThat(experimentModel.getExperimentType()).isEqualTo(experiment.getExperimentType().name());
+        assertThat(experimentModel.getExperimentType()).isEqualTo(experiment.getExperimentType().name());
         assertThat(experimentModel.getRequestId()).isEqualTo(experiment.getRequestId());
         assertThat(experimentModel.getEmail()).isEqualTo(experiment.getEmail());
-        assertThat(experimentModel.getChannel()).isEqualTo(experiment.getChannel());
+        assertThat(experimentModel.getChannel()).isEqualTo(experiment.getChannel().name());
     }
 }

@@ -72,7 +72,7 @@
       "implementation": false,
       "delegate": false,
       "asyncBefore": false,
-      "asyncAfter": false
+      "asyncAfter": true
     }
   },
   {

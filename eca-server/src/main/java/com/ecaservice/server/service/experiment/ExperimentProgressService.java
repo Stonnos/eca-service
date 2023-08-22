@@ -36,9 +36,17 @@ public class ExperimentProgressService {
      */
     public void start(Experiment experiment) {
         log.info("Starting experiment [{}] progress bar", experiment.getRequestId());
-        ExperimentProgressEntity experimentProgressEntity = getOrCreateExperimentProgress(experiment);
+        var experimentProgressEntity = experimentProgressRepository.findByExperiment(experiment)
+                .orElse(null);
+        if (experimentProgressEntity != null) {
+            throw new IllegalStateException(
+                    String.format("Experiment [%s] progress already exists!", experiment.getRequestId()));
+        }
+        experimentProgressEntity = new ExperimentProgressEntity();
+        experimentProgressEntity.setExperiment(experiment);
         experimentProgressEntity.setProgress(MIN_PROGRESS);
         experimentProgressRepository.save(experimentProgressEntity);
+        log.info("Experiment progress [{}] has been started", experiment.getRequestId());
     }
 
     /**
@@ -49,7 +57,7 @@ public class ExperimentProgressService {
      */
     public void onProgress(Experiment experiment, @NotNull @Min(MIN_PROGRESS) @Max(MAX_PROGRESS) Integer progress) {
         log.debug("Update experiment [{}] progress bar with value {}", experiment.getRequestId(), progress);
-        ExperimentProgressEntity experimentProgressEntity = getOrCreateExperimentProgress(experiment);
+        ExperimentProgressEntity experimentProgressEntity = getExperimentProgress(experiment);
         experimentProgressEntity.setProgress(progress);
         experimentProgressRepository.save(experimentProgressEntity);
     }
@@ -61,7 +69,7 @@ public class ExperimentProgressService {
      */
     public void finish(Experiment experiment) {
         log.info("Finished experiment [{}] progress", experiment.getRequestId());
-        ExperimentProgressEntity experimentProgressEntity = getOrCreateExperimentProgress(experiment);
+        ExperimentProgressEntity experimentProgressEntity = getExperimentProgress(experiment);
         experimentProgressEntity.setProgress(MAX_PROGRESS);
         experimentProgressEntity.setFinished(true);
         experimentProgressRepository.save(experimentProgressEntity);
@@ -77,15 +85,5 @@ public class ExperimentProgressService {
         return experimentProgressRepository.findByExperiment(experiment)
                 .orElseThrow(() -> new EntityNotFoundException(ExperimentProgressEntity.class,
                         String.format("Experiment id [%s]", experiment.getId())));
-    }
-
-    private ExperimentProgressEntity getOrCreateExperimentProgress(Experiment experiment) {
-        ExperimentProgressEntity experimentProgressEntity = experimentProgressRepository.findByExperiment(experiment)
-                .orElse(null);
-        if (experimentProgressEntity == null) {
-            experimentProgressEntity = new ExperimentProgressEntity();
-            experimentProgressEntity.setExperiment(experiment);
-        }
-        return experimentProgressEntity;
     }
 }
