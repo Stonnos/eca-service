@@ -128,6 +128,11 @@ ers:
   useClassifierOptionsCache: false
   classifierOptionsCacheDurationInDays: 2
 
+camunda:
+  bpm:
+    job-execution:
+      lock-time-in-millis: 18060000
+
 minio:
   url: http://localhost:9000
   proxyUrl: http://localhost:9000
