@@ -34,11 +34,12 @@ public class GetExperimentProcessStatusTaskHandler extends AbstractTaskHandler {
     @Override
     public void handle(DelegateExecution execution) {
         var experimentModel = getVariable(execution, EXPERIMENT, ExperimentModel.class);
-        log.info("Gets experiment [{}] steps count to process", experimentModel.getRequestId());
+        log.info("Gets experiment [{}] steps count to process. Process uuid [{}]", experimentModel.getRequestId(),
+                execution.getProcessBusinessKey());
         long stepsCountToProcess = experimentStepRepository.getExperimentStepsCountToProcess(experimentModel.getId());
         experimentModel.setStepsCountToProcess(stepsCountToProcess);
         execution.setVariable(EXPERIMENT, experimentModel);
-        log.info("Got experiment [{}] steps count to process: [{}]", experimentModel.getRequestId(),
-                experimentModel.getStepsCountToProcess());
+        log.info("Got experiment [{}] steps count to process: [{}]. Process uuid [{}]", experimentModel.getRequestId(),
+                experimentModel.getStepsCountToProcess(), execution.getProcessBusinessKey());
     }
 }

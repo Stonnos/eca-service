@@ -38,10 +38,10 @@ public class ExperimentSystemPushTaskHandler extends AbstractTaskHandler {
 
     @Override
     public void handle(DelegateExecution execution) {
-        log.info("Starting to process experiment [{}] system push task", execution.getProcessBusinessKey());
+        log.info("Starting to process experiment process [{}] system push task", execution.getProcessBusinessKey());
         Long id = getVariable(execution, EXPERIMENT_ID, Long.class);
         var experiment = experimentDataService.getById(id);
         eventPublisher.publishEvent(new ExperimentSystemPushEvent(this, experiment));
-        log.info("Experiment [{}] system push task has been processed", execution.getProcessBusinessKey());
+        log.info("Experiment process [{}] system push task has been processed", execution.getProcessBusinessKey());
     }
 }

@@ -37,10 +37,10 @@ public class ExperimentProcessorTaskHandler extends AbstractTaskHandler {
 
     @Override
     public void handle(DelegateExecution execution) {
-        log.info("Starting to handle experiment [{}] processing task", execution.getProcessBusinessKey());
+        log.info("Starting to handle experiment process [{}] processing task", execution.getProcessBusinessKey());
         Long id = getVariable(execution, EXPERIMENT_ID, Long.class);
         var experiment = experimentDataService.getById(id);
         experimentService.processExperiment(experiment);
-        log.info("Experiment [{}] processing task has been finished", execution.getProcessBusinessKey());
+        log.info("Experiment process [{}] processing task has been finished", execution.getProcessBusinessKey());
     }
 }
