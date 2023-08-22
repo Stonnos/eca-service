@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static com.ecaservice.common.web.util.LogHelper.EV_REQUEST_ID;
+import static com.ecaservice.common.web.util.LogHelper.TX_ID;
+import static com.ecaservice.common.web.util.LogHelper.putMdc;
 import static com.ecaservice.server.bpm.CamundaVariables.TASK_TYPE;
 import static com.ecaservice.server.util.CamundaUtils.getEnumFromExecution;
 
@@ -27,6 +30,8 @@ public class TaskExecutionListener implements JavaDelegate {
 
     @Override
     public void execute(DelegateExecution execution) {
+        putMdc(TX_ID, execution.getProcessBusinessKey());
+        putMdc(EV_REQUEST_ID, execution.getProcessBusinessKey());
         log.debug("Starting delegate execution for process key [{}], execution id [{}]",
                 execution.getProcessBusinessKey(), execution.getId());
         var taskType = getEnumFromExecution(execution, TaskType.class, TASK_TYPE);
