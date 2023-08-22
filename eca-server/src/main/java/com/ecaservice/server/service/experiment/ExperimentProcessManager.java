@@ -15,7 +15,6 @@ import static com.ecaservice.common.web.util.LogHelper.EV_REQUEST_ID;
 import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.putMdc;
 import static com.ecaservice.server.bpm.CamundaVariables.EXPERIMENT_ID;
-import static com.ecaservice.server.config.EcaServiceConfiguration.EXPERIMENT_REDIS_LOCK_REGISTRY_BEAN;
 
 /**
  * Experiment process manager.
@@ -37,8 +36,7 @@ public class ExperimentProcessManager {
      *
      * @param id - experiment id
      */
-    @Locked(lockName = "experiment", key = "#id", lockRegistry = EXPERIMENT_REDIS_LOCK_REGISTRY_BEAN,
-            waitForLock = false)
+    @Locked(lockName = "experiment", key = "#id")
     public void processExperiment(Long id) {
         var experiment = experimentDataService.getById(id);
         if (hasActiveProcess(experiment)) {
