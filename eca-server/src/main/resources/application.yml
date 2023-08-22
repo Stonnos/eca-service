@@ -4,7 +4,7 @@ spring:
   ## Eca datasource properties
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/eca
+    jdbc-url: jdbc:postgresql://localhost:5432/eca
     username: postgres
     password: postgres
   camunda:
