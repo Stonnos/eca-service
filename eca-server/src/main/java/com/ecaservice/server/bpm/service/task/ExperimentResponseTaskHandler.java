@@ -38,10 +38,10 @@ public class ExperimentResponseTaskHandler extends AbstractTaskHandler {
 
     @Override
     public void handle(DelegateExecution execution) {
-        log.info("Starting to process experiment process [{}] response task", execution.getProcessBusinessKey());
+        log.info("Starting to process experiment [{}] response task", execution.getProcessBusinessKey());
         Long id = getVariable(execution, EXPERIMENT_ID, Long.class);
         var experiment = experimentDataService.getById(id);
         eventPublisher.publishEvent(new ExperimentResponseEvent(this, experiment));
-        log.info("Experiment process [{}] response task has been processed", execution.getProcessBusinessKey());
+        log.info("Experiment [{}] response task has been processed", execution.getProcessBusinessKey());
     }
 }

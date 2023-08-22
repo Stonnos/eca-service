@@ -34,9 +34,9 @@ public class GetExperimentDetailsTaskHandler extends AbstractTaskHandler {
     @Override
     public void handle(DelegateExecution execution) {
         Long id = getVariable(execution, EXPERIMENT_ID, Long.class);
-        log.info("Starting to get experiment process [{}] details for process", execution.getProcessBusinessKey());
+        log.info("Starting to get experiment [{}] details for process", execution.getProcessBusinessKey());
         var experimentModel = experimentDataService.getExperimentModel(id);
         execution.setVariable(EXPERIMENT, experimentModel);
-        log.info("Experiment process [{}] details has been fetched for process", execution.getProcessBusinessKey());
+        log.info("Experiment [{}] details has been fetched for process", execution.getProcessBusinessKey());
     }
 }

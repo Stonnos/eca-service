@@ -2,9 +2,6 @@
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_167go3c" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
   <bpmn:process id="ExperimentProcess" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1">
-      <bpmn:extensionElements>
-        <camunda:executionListener class="com.ecaservice.server.bpm.listeners.StartExperimentProcessListener" event="end" />
-      </bpmn:extensionElements>
       <bpmn:outgoing>Flow_0fliwzc</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:exclusiveGateway id="Gateway_0dqc1ka" default="Flow_0ahwoue">
@@ -150,9 +147,6 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${experiment.email != null}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:endEvent id="Event_0m3e557">
-      <bpmn:extensionElements>
-        <camunda:executionListener class="com.ecaservice.server.bpm.listeners.FinishExperimentProcessListener" event="end" />
-      </bpmn:extensionElements>
       <bpmn:incoming>Flow_0fhgzq4</bpmn:incoming>
       <bpmn:incoming>Flow_0rz5lb3</bpmn:incoming>
       <bpmn:incoming>Flow_15zrl33</bpmn:incoming>

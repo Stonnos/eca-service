@@ -52,7 +52,7 @@ public class ExperimentScheduler {
      */
     private void processNewRequests() {
         log.trace("Starting to process new experiments.");
-        processExperiments(experimentRepository::findNewExperiments, "Fetched [{}] new experiments to process");
+        processExperiments(experimentRepository::findNewExperiments);
         log.trace("New experiments processing has been successfully finished.");
     }
 
@@ -61,7 +61,7 @@ public class ExperimentScheduler {
      */
     private void processInProgressRequests() {
         log.trace("Starting to process new experiments.");
-        processExperiments(experimentRepository::findExperimentsToProcess, "Fetched [{}] experiments to process");
+        processExperiments(experimentRepository::findExperimentsToProcess);
         log.trace("New experiments processing has been successfully finished.");
     }
 
@@ -70,14 +70,14 @@ public class ExperimentScheduler {
      */
     private void processRequestsToFinish() {
         log.trace("Starting to process experiments to finish.");
-        processExperiments(experimentRepository::findExperimentsToFinish, "Fetched [{}] experiments to finish");
+        processExperiments(experimentRepository::findExperimentsToFinish);
         log.trace("Finished experiments processing has been successfully finished.");
     }
 
-    private void processExperiments(Supplier<List<Long>> getExperimentsIdsSupplier, String infoLogMessage) {
+    private void processExperiments(Supplier<List<Long>> getExperimentsIdsSupplier) {
         var ids = getExperimentsIdsSupplier.get();
         if (!CollectionUtils.isEmpty(ids)) {
-            log.info(infoLogMessage, ids.size());
+            log.info("Fetched [{}] experiments to process", ids.size());
             ids.forEach(experimentProcessManager::processExperiment);
         }
     }
