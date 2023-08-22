@@ -50,10 +50,5 @@ public enum TaskType {
     /**
      * Sent experiment response to MQ
      */
-    SENT_EXPERIMENT_RESPONSE,
-
-    /**
-     * Error task type
-     */
-    ERROR
+    SENT_EXPERIMENT_RESPONSE
 }

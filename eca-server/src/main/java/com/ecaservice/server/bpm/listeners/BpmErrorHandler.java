@@ -1,9 +1,9 @@
-package com.ecaservice.server.bpm.service.task;
+package com.ecaservice.server.bpm.listeners;
 
-import com.ecaservice.server.bpm.model.TaskType;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.stereotype.Component;
 
 import static com.ecaservice.server.bpm.CamundaVariables.ERROR_CODE;
@@ -17,14 +17,10 @@ import static com.ecaservice.server.util.CamundaUtils.getVariable;
  */
 @Slf4j
 @Component
-public class ErrorHandler extends AbstractTaskHandler {
-
-    public ErrorHandler() {
-        super(TaskType.ERROR);
-    }
+public class BpmErrorHandler implements JavaDelegate {
 
     @Override
-    public void handle(DelegateExecution execution) {
+    public void execute(DelegateExecution execution) {
         log.debug("Handles error for execution [{}], process id [{}]", execution.getId(),
                 execution.getProcessBusinessKey());
         String errorCode =  getVariable(execution, ERROR_CODE, String.class);

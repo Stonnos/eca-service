@@ -14,7 +14,7 @@
     <bpmn:sequenceFlow id="Flow_101zncf" name="Новая заявка?" sourceRef="Gateway_0dqc1ka" targetRef="Activity_0nisie8">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${experiment.requestStatus == 'NEW'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="Activity_0nisie8" name="Перевести заявку в работу">
+    <bpmn:serviceTask id="Activity_0nisie8" name="Перевести заявку в работу" camunda:modelerTemplate="com.ecaservice.server.bpm.listeners.TaskExecutionListener" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="taskType">START_EXPERIMENT</camunda:inputParameter>
@@ -24,7 +24,7 @@
       <bpmn:outgoing>Flow_1jp7krt</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1jp7krt" sourceRef="Activity_0nisie8" targetRef="Activity_1yc7la5" />
-    <bpmn:serviceTask id="Activity_1yc7la5" name="Отправка системного push о начале обработки заявки">
+    <bpmn:serviceTask id="Activity_1yc7la5" name="Отправка системного push о начале обработки заявки" camunda:modelerTemplate="com.ecaservice.server.bpm.listeners.TaskExecutionListener" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="taskType">SENT_EXPERIMENT_SYSTEM_PUSH</camunda:inputParameter>
@@ -53,7 +53,7 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${experiment.email != null}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0g9vecp" sourceRef="Activity_1nezpw3" targetRef="Gateway_03g9cp4" />
-    <bpmn:serviceTask id="Activity_1nezpw3" name="Отправка push уведомления пользователю о начале обработки заявки">
+    <bpmn:serviceTask id="Activity_1nezpw3" name="Отправка push уведомления пользователю о начале обработки заявки" camunda:modelerTemplate="com.ecaservice.server.bpm.listeners.TaskExecutionListener" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="taskType">SENT_EXPERIMENT_WEB_PUSH</camunda:inputParameter>
@@ -62,7 +62,7 @@
       <bpmn:incoming>Flow_0huk5ak</bpmn:incoming>
       <bpmn:outgoing>Flow_0g9vecp</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_0os54gm" name="Отправка email о начале обработки заявки">
+    <bpmn:serviceTask id="Activity_0os54gm" name="Отправка email о начале обработки заявки" camunda:modelerTemplate="com.ecaservice.server.bpm.listeners.TaskExecutionListener" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="taskType">SENT_EXPERIMENT_EMAIL</camunda:inputParameter>
@@ -80,7 +80,7 @@
     <bpmn:sequenceFlow id="Flow_1hlezkn" sourceRef="Gateway_14mp0ww" targetRef="Activity_1d6gjo2">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${experiment.stepsCountToProcess == 0}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="Activity_1d6gjo2" name="Завершить работу с заявкой">
+    <bpmn:serviceTask id="Activity_1d6gjo2" name="Завершить работу с заявкой" camunda:modelerTemplate="com.ecaservice.server.bpm.listeners.TaskExecutionListener" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="taskType">FINISH_EXPERIMENT</camunda:inputParameter>
@@ -90,7 +90,7 @@
       <bpmn:incoming>Flow_1hlezkn</bpmn:incoming>
       <bpmn:outgoing>Flow_1g2ysnv</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_0fijn8h" name="Отправка системного push о завершении заявки">
+    <bpmn:serviceTask id="Activity_0fijn8h" name="Отправка системного push о завершении заявки" camunda:modelerTemplate="com.ecaservice.server.bpm.listeners.TaskExecutionListener" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="taskType">SENT_EXPERIMENT_SYSTEM_PUSH</camunda:inputParameter>
@@ -106,7 +106,7 @@
       <bpmn:outgoing>Flow_0byd624</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_0icfty5" sourceRef="Activity_0fijn8h" targetRef="Gateway_0a8nskc" />
-    <bpmn:serviceTask id="Activity_0sk8uu1" name="Отправка push уведомления пользователю о завершении заявки">
+    <bpmn:serviceTask id="Activity_0sk8uu1" name="Отправка push уведомления пользователю о завершении заявки" camunda:modelerTemplate="com.ecaservice.server.bpm.listeners.TaskExecutionListener" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="taskType">SENT_EXPERIMENT_WEB_PUSH</camunda:inputParameter>
@@ -118,7 +118,7 @@
     <bpmn:sequenceFlow id="Flow_0z62k36" name="WEB" sourceRef="Gateway_0a8nskc" targetRef="Activity_0sk8uu1">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${experiment.channel == 'WEB'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="Activity_1vneurn" name="Отправка сообщения с результатами эксперимента в очередь">
+    <bpmn:serviceTask id="Activity_1vneurn" name="Отправка сообщения с результатами эксперимента в очередь" camunda:modelerTemplate="com.ecaservice.server.bpm.listeners.TaskExecutionListener" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="taskType">SENT_EXPERIMENT_RESPONSE</camunda:inputParameter>
@@ -134,7 +134,7 @@
       <bpmn:outgoing>Flow_1trsqrn</bpmn:outgoing>
       <bpmn:outgoing>Flow_0fhgzq4</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="Activity_1ifwl8u" name="Отправка email с результатами эксперимента">
+    <bpmn:serviceTask id="Activity_1ifwl8u" name="Отправка email с результатами эксперимента" camunda:modelerTemplate="com.ecaservice.server.bpm.listeners.TaskExecutionListener" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="taskType">SENT_EXPERIMENT_EMAIL</camunda:inputParameter>
@@ -163,7 +163,7 @@
     <bpmn:sequenceFlow id="Flow_0zr8nzy" sourceRef="Activity_0sk8uu1" targetRef="Gateway_1wrqrqq" />
     <bpmn:sequenceFlow id="Flow_0s06k1e" sourceRef="Gateway_1wrqrqq" targetRef="Gateway_048iy0h" />
     <bpmn:sequenceFlow id="Flow_1hb7dsw" sourceRef="Activity_1a4v8dt" targetRef="Activity_0cidw5f" />
-    <bpmn:serviceTask id="Activity_0fhuwc7" name="Получить информацию о статусе построения эксперимента">
+    <bpmn:serviceTask id="Activity_0fhuwc7" name="Получить информацию о статусе построения эксперимента" camunda:modelerTemplate="com.ecaservice.server.bpm.listeners.TaskExecutionListener" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="taskType">GET_EXPERIMENT_PROCESS_STATUS</camunda:inputParameter>
@@ -185,7 +185,7 @@
     <bpmn:sequenceFlow id="Flow_0px7hmh" name="Построение эксперимента завершено?" sourceRef="Gateway_1ydr5d1" targetRef="Activity_1d6gjo2">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${experiment.stepsCountToProcess == 0}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="Activity_0cidw5f" name="Получить информацию о статусе построения эксперимента">
+    <bpmn:serviceTask id="Activity_0cidw5f" name="Получить информацию о статусе построения эксперимента" camunda:modelerTemplate="com.ecaservice.server.bpm.listeners.TaskExecutionListener" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="taskType">GET_EXPERIMENT_PROCESS_STATUS</camunda:inputParameter>
@@ -195,19 +195,8 @@
       <bpmn:outgoing>Flow_032p6tz</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_032p6tz" sourceRef="Activity_0cidw5f" targetRef="Gateway_14mp0ww" />
-    <bpmn:serviceTask id="Activity_1adelcm" name="Ошибка: передана заявка с недопустимым статусом">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="errorMessage">Can't process experiment with status [${experiment.requestStatus}]</camunda:inputParameter>
-          <camunda:inputParameter name="errorCode">INVALID_EXPERIMENT_STATUS</camunda:inputParameter>
-          <camunda:inputParameter name="taskType">ERROR</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0ahwoue</bpmn:incoming>
-      <bpmn:outgoing>Flow_1w4s3rs</bpmn:outgoing>
-    </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0ahwoue" sourceRef="Gateway_0dqc1ka" targetRef="Activity_1adelcm" />
-    <bpmn:serviceTask id="Activity_0sqdg4p" name="Получить данные о заявке">
+    <bpmn:serviceTask id="Activity_0sqdg4p" name="Получить данные о заявке" camunda:modelerTemplate="com.ecaservice.server.bpm.listeners.TaskExecutionListener" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="taskType">GET_EXPERIMENT_DETAILS</camunda:inputParameter>
@@ -217,7 +206,7 @@
       <bpmn:outgoing>Flow_00frjhd</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_00frjhd" sourceRef="Activity_0sqdg4p" targetRef="Gateway_0dqc1ka" />
-    <bpmn:serviceTask id="Activity_1a4v8dt" name="Начать или продолжить построение эксперимента">
+    <bpmn:serviceTask id="Activity_1a4v8dt" name="Начать или продолжить построение эксперимента" camunda:modelerTemplate="com.ecaservice.server.bpm.listeners.TaskExecutionListener" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="taskType">PROCESS_EXPERIMENT</camunda:inputParameter>
@@ -232,9 +221,24 @@
       <bpmn:incoming>Flow_1w4s3rs</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_1w4s3rs" sourceRef="Activity_1adelcm" targetRef="Event_0pe23xb" />
+    <bpmn:serviceTask id="Activity_1adelcm" name="Ошибка: передана заявка с недопустимым статусом" camunda:modelerTemplate="com.ecaservice.server.bpm.listeners.BpmErrorHandler" camunda:class="com.ecaservice.server.bpm.listeners.BpmErrorHandler">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="errorCode">UNKNOWN_ERROR</camunda:inputParameter>
+          <camunda:inputParameter name="taskType">INVALID_EXPERIMENT_REQUEST_STATUS</camunda:inputParameter>
+          <camunda:inputParameter name="errorMessage">Can't handle experiment ${experiment.requestId} with status ${experiment.requestStatus}</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0ahwoue</bpmn:incoming>
+      <bpmn:outgoing>Flow_1w4s3rs</bpmn:outgoing>
+    </bpmn:serviceTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="ExperimentProcess">
+      <bpmndi:BPMNEdge id="Flow_1w4s3rs_di" bpmnElement="Flow_1w4s3rs">
+        <di:waypoint x="930" y="340" />
+        <di:waypoint x="1022" y="340" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_00frjhd_di" bpmnElement="Flow_00frjhd">
         <di:waypoint x="640" y="260" />
         <di:waypoint x="640" y="315" />
@@ -397,15 +401,14 @@
         <di:waypoint x="640" y="118" />
         <di:waypoint x="640" y="180" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1w4s3rs_di" bpmnElement="Flow_1w4s3rs">
-        <di:waypoint x="930" y="340" />
-        <di:waypoint x="1022" y="340" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="622" y="82" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0dqc1ka_di" bpmnElement="Gateway_0dqc1ka" isMarkerVisible="true">
         <dc:Bounds x="615" y="315" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0twnjxx_di" bpmnElement="Activity_0nisie8">
+        <dc:Bounds x="590" y="430" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_03e9rw0_di" bpmnElement="Activity_1yc7la5">
         <dc:Bounds x="590" y="570" width="100" height="80" />
@@ -473,14 +476,11 @@
       <bpmndi:BPMNShape id="Activity_0mxq8a7_di" bpmnElement="Activity_1a4v8dt">
         <dc:Bounds x="590" y="910" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1adelcm_di" bpmnElement="Activity_1adelcm">
-        <dc:Bounds x="830" y="300" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0pe23xb_di" bpmnElement="Event_0pe23xb">
         <dc:Bounds x="1022" y="322" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0twnjxx_di" bpmnElement="Activity_0nisie8">
-        <dc:Bounds x="590" y="430" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_13ar1aa_di" bpmnElement="Activity_1adelcm">
+        <dc:Bounds x="830" y="300" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
