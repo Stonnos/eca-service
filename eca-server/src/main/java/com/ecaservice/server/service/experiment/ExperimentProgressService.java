@@ -38,12 +38,10 @@ public class ExperimentProgressService {
         log.info("Starting experiment [{}] progress bar", experiment.getRequestId());
         var experimentProgressEntity = experimentProgressRepository.findByExperiment(experiment)
                 .orElse(null);
-        if (experimentProgressEntity != null) {
-            throw new IllegalStateException(
-                    String.format("Experiment [%s] progress already exists!", experiment.getRequestId()));
+        if (experimentProgressEntity == null) {
+            experimentProgressEntity = new ExperimentProgressEntity();
+            experimentProgressEntity.setExperiment(experiment);
         }
-        experimentProgressEntity = new ExperimentProgressEntity();
-        experimentProgressEntity.setExperiment(experiment);
         experimentProgressEntity.setProgress(MIN_PROGRESS);
         experimentProgressRepository.save(experimentProgressEntity);
         log.info("Experiment progress [{}] has been started", experiment.getRequestId());
