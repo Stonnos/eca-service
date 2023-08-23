@@ -18,9 +18,9 @@ import javax.sql.DataSource;
 public class EcaServerDatabaseConfiguration {
 
     /**
-     * Creates camunda datasource bean.
+     * Creates eca server datasource bean.
      *
-     * @return camunda datasource bean
+     * @return eca server datasource bean
      */
     @Primary
     @Bean
