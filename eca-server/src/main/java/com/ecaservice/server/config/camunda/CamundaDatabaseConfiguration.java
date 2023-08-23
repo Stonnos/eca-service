@@ -1,4 +1,4 @@
-package com.ecaservice.server.config;
+package com.ecaservice.server.config.camunda;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
