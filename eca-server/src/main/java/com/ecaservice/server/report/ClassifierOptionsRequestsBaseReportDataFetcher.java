@@ -1,6 +1,6 @@
 package com.ecaservice.server.report;
 
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.report.data.fetcher.AbstractBaseReportDataFetcher;
 import com.ecaservice.server.mapping.ClassifierOptionsRequestModelMapper;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestModel;
@@ -40,20 +40,20 @@ public class ClassifierOptionsRequestsBaseReportDataFetcher
     /**
      * Constructor with spring dependency injection.
      *
-     * @param filterService                       - filter service bean
+     * @param filterTemplateService                       - filter service bean
      * @param instancesInfoRepository             - instances info repository
      * @param classifierOptionsRequestService     - classifier options request service bean
      * @param classifierOptionsRequestModelMapper - classifier options request model mapper bean
      * @param classifiersTemplateProvider         - classifiers template provider
      */
     @Inject
-    public ClassifierOptionsRequestsBaseReportDataFetcher(FilterService filterService,
+    public ClassifierOptionsRequestsBaseReportDataFetcher(FilterTemplateService filterTemplateService,
                                                           InstancesInfoRepository instancesInfoRepository,
                                                           ClassifierOptionsRequestService classifierOptionsRequestService,
                                                           ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper,
                                                           ClassifiersTemplateProvider classifiersTemplateProvider) {
         super(BaseReportType.CLASSIFIERS_OPTIONS_REQUESTS.name(),
-                FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST, filterService);
+                FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST, filterTemplateService);
         this.classifierOptionsRequestService = classifierOptionsRequestService;
         this.classifierOptionsRequestModelMapper = classifierOptionsRequestModelMapper;
         this.classifiersTemplateProvider = classifiersTemplateProvider;

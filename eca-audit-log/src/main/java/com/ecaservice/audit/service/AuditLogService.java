@@ -6,7 +6,7 @@ import com.ecaservice.audit.exception.DuplicateEventIdException;
 import com.ecaservice.audit.filter.AuditLogFilter;
 import com.ecaservice.audit.mapping.AuditLogMapper;
 import com.ecaservice.audit.repository.AuditLogRepository;
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
 import com.ecaservice.core.lock.annotation.Locked;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -36,7 +36,7 @@ import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 public class AuditLogService {
 
     private final AuditLogMapper auditLogMapper;
-    private final FilterService filterService;
+    private final FilterTemplateService filterTemplateService;
     private final AuditLogRepository auditLogRepository;
 
     /**
@@ -69,7 +69,7 @@ public class AuditLogService {
             @ValidPageRequest(filterTemplateName = AUDIT_LOG_TEMPLATE) PageRequestDto pageRequestDto) {
         log.info("Gets audit logs next page: {}", pageRequestDto);
         Sort sort = buildSort(pageRequestDto.getSortField(), EVENT_DATE, pageRequestDto.isAscending());
-        List<String> globalFilterFields = filterService.getGlobalFilterFields(AUDIT_LOG_TEMPLATE);
+        List<String> globalFilterFields = filterTemplateService.getGlobalFilterFields(AUDIT_LOG_TEMPLATE);
         AuditLogFilter filter = new AuditLogFilter(pageRequestDto.getSearchQuery(), globalFilterFields,
                 pageRequestDto.getFilters());
         var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort);

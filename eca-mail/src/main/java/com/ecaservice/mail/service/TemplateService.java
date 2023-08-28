@@ -1,6 +1,6 @@
 package com.ecaservice.mail.service;
 
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
 import com.ecaservice.mail.filter.TemplateFilter;
 import com.ecaservice.mail.model.TemplateEntity;
@@ -29,7 +29,7 @@ import static com.ecaservice.mail.model.BaseEntity_.CREATED;
 @RequiredArgsConstructor
 public class TemplateService {
 
-    private final FilterService filterService;
+    private final FilterTemplateService filterTemplateService;
     private final TemplateRepository templateRepository;
 
     /**
@@ -42,7 +42,7 @@ public class TemplateService {
             @ValidPageRequest(filterTemplateName = EMAIL_TEMPLATES) PageRequestDto pageRequestDto) {
         log.info("Gets email templates next page: {}", pageRequestDto);
         Sort sort = buildSort(pageRequestDto.getSortField(), CREATED, pageRequestDto.isAscending());
-        var globalFilterFields = filterService.getGlobalFilterFields(EMAIL_TEMPLATES);
+        var globalFilterFields = filterTemplateService.getGlobalFilterFields(EMAIL_TEMPLATES);
         TemplateFilter filter =
                 new TemplateFilter(pageRequestDto.getSearchQuery(), globalFilterFields, pageRequestDto.getFilters());
         var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort);

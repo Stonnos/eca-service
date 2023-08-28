@@ -2,7 +2,7 @@ package com.ecaservice.server.service.classifiers;
 
 import com.ecaservice.classifier.options.config.ClassifiersOptionsConfig;
 import com.ecaservice.classifier.options.model.ClassifierOptions;
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.form.template.service.FormTemplateProvider;
 import com.ecaservice.web.dto.model.ClassifierInfoDto;
 import com.ecaservice.web.dto.model.FormTemplateDto;
@@ -121,7 +121,7 @@ class ClassifierOptionsProcessorTest {
     @MockBean
     private FormTemplateProvider formTemplateProvider;
     @MockBean
-    private FilterService filterService;
+    private FilterTemplateService filterTemplateService;
 
     @Inject
     private ClassifierOptionsProcessor classifierOptionsProcessor;
@@ -134,7 +134,7 @@ class ClassifierOptionsProcessorTest {
         List<FormTemplateDto> ensembleTemplates = loadEnsembleClassifiersTemplates();
         when(formTemplateProvider.getTemplates(CLASSIFIERS)).thenReturn(templates);
         when(formTemplateProvider.getTemplates(ENSEMBLE_CLASSIFIERS)).thenReturn(ensembleTemplates);
-        when(filterService.getFilterDictionary(CLASSIFIER_NAME)).thenReturn(createFilterDictionaryDto());
+        when(filterTemplateService.getFilterDictionary(CLASSIFIER_NAME)).thenReturn(createFilterDictionaryDto());
         classifierOptionsProcessor.initialize();
     }
 

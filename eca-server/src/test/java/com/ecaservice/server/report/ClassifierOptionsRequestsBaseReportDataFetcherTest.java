@@ -1,6 +1,6 @@
 package com.ecaservice.server.report;
 
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.mapping.ClassifierOptionsRequestModelMapperImpl;
@@ -43,7 +43,7 @@ import static com.google.common.collect.Lists.newArrayList;
 class ClassifierOptionsRequestsBaseReportDataFetcherTest extends AbstractJpaTest {
 
     @MockBean
-    private FilterService filterService;
+    private FilterTemplateService filterTemplateService;
     @MockBean
     private ClassifierOptionsProcessor classifierOptionsProcessor;
     @MockBean

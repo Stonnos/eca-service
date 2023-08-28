@@ -1,12 +1,11 @@
 package com.ecaservice.server.service;
 
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
 import com.ecaservice.core.lock.annotation.Locked;
 import com.ecaservice.server.filter.InstancesInfoFilter;
 import com.ecaservice.server.mapping.InstancesInfoMapper;
 import com.ecaservice.server.model.entity.InstancesInfo;
-import com.ecaservice.server.model.entity.InstancesInfo_;
 import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.web.dto.model.InstancesInfoDto;
 import com.ecaservice.web.dto.model.PageDto;
@@ -20,8 +19,6 @@ import org.springframework.validation.annotation.Validated;
 import weka.core.Instances;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 
 import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
@@ -39,7 +36,7 @@ import static com.ecaservice.server.model.entity.InstancesInfo_.CREATED_DATE;
 @RequiredArgsConstructor
 public class InstancesInfoService {
 
-    private final FilterService filterService;
+    private final FilterTemplateService filterTemplateService;
     private final InstancesInfoMapper instancesInfoMapper;
     private final InstancesInfoRepository instancesInfoRepository;
 
@@ -66,7 +63,7 @@ public class InstancesInfoService {
             @ValidPageRequest(filterTemplateName = INSTANCES_INFO) PageRequestDto pageRequestDto) {
         log.info("Gets instances info next page: {}", pageRequestDto);
         Sort sort = buildSort(pageRequestDto.getSortField(), CREATED_DATE, pageRequestDto.isAscending());
-        var globalFilterFields = filterService.getGlobalFilterFields(INSTANCES_INFO);
+        var globalFilterFields = filterTemplateService.getGlobalFilterFields(INSTANCES_INFO);
         var filter = new InstancesInfoFilter(pageRequestDto.getSearchQuery(), globalFilterFields,
                 pageRequestDto.getFilters());
         var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort);

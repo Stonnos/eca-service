@@ -3,7 +3,7 @@ package com.ecaservice.oauth.service;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.common.web.exception.InvalidFileException;
 import com.ecaservice.common.web.exception.InvalidOperationException;
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.oauth.AbstractJpaTest;
 import com.ecaservice.oauth.TestHelperUtils;
 import com.ecaservice.oauth.config.AppProperties;
@@ -84,7 +84,7 @@ class UserServiceTest extends AbstractJpaTest {
     @MockBean
     private Oauth2TokenService oauth2TokenService;
     @MockBean
-    private FilterService filterService;
+    private FilterTemplateService filterTemplateService;
 
     private UserService userService;
 
@@ -92,9 +92,10 @@ class UserServiceTest extends AbstractJpaTest {
     public void init() {
         roleRepository.save(createRoleEntity());
         PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        userService = new UserService(appProperties, passwordEncoder, userMapper, oauth2TokenService, filterService,
+        userService = new UserService(appProperties, passwordEncoder, userMapper, oauth2TokenService,
+                filterTemplateService,
                 userEntityRepository, roleRepository, userPhotoRepository);
-        when(filterService.getGlobalFilterFields(USERS_TEMPLATE)).thenReturn(
+        when(filterTemplateService.getGlobalFilterFields(USERS_TEMPLATE)).thenReturn(
                 List.of(UserEntity_.LOGIN,
                         UserEntity_.EMAIL,
                         UserEntity_.FULL_NAME)

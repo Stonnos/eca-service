@@ -6,7 +6,7 @@ import com.ecaservice.audit.exception.DuplicateEventIdException;
 import com.ecaservice.audit.mapping.AuditLogMapperImpl;
 import com.ecaservice.audit.repository.AuditLogRepository;
 import com.ecaservice.core.filter.exception.FieldNotFoundException;
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.lock.config.CoreLockAutoConfiguration;
 import com.ecaservice.core.lock.metrics.LockMeterService;
 import com.ecaservice.web.dto.model.FilterRequestDto;
@@ -58,7 +58,7 @@ class AuditLogServiceTest extends AbstractJpaTest {
     private AuditLogRepository auditLogRepository;
 
     @MockBean
-    private FilterService filterService;
+    private FilterTemplateService filterTemplateService;
     @MockBean
     private LockMeterService lockMeterService;
 
@@ -117,7 +117,7 @@ class AuditLogServiceTest extends AbstractJpaTest {
         saveAuditLogs();
         PageRequestDto pageRequestDto =
                 new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, EVENT_DATE, false, "XGroup3", newArrayList());
-        when(filterService.getGlobalFilterFields(AUDIT_LOG_TEMPLATE)).thenReturn(
+        when(filterTemplateService.getGlobalFilterFields(AUDIT_LOG_TEMPLATE)).thenReturn(
                 Arrays.asList(EVENT_ID, GROUP_CODE, CODE));
         Page<AuditLogEntity> auditLogsPage = auditLogService.getNextPage(pageRequestDto);
         assertThat(auditLogsPage).isNotNull();
@@ -132,7 +132,7 @@ class AuditLogServiceTest extends AbstractJpaTest {
         saveAuditLogs();
         PageRequestDto pageRequestDto =
                 new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, EVENT_DATE, false, null, newArrayList());
-        when(filterService.getGlobalFilterFields(AUDIT_LOG_TEMPLATE)).thenReturn(Collections.emptyList());
+        when(filterTemplateService.getGlobalFilterFields(AUDIT_LOG_TEMPLATE)).thenReturn(Collections.emptyList());
         pageRequestDto.getFilters().add(
                 new FilterRequestDto(CODE, Collections.singletonList("Code2"), MatchMode.EQUALS));
         Page<AuditLogEntity> auditLogsPage = auditLogService.getNextPage(pageRequestDto);
@@ -145,7 +145,7 @@ class AuditLogServiceTest extends AbstractJpaTest {
         saveAuditLogs();
         PageRequestDto pageRequestDto =
                 new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, EVENT_DATE, false, null, newArrayList());
-        when(filterService.getGlobalFilterFields(AUDIT_LOG_TEMPLATE)).thenReturn(Collections.emptyList());
+        when(filterTemplateService.getGlobalFilterFields(AUDIT_LOG_TEMPLATE)).thenReturn(Collections.emptyList());
         pageRequestDto.getFilters().add(
                 new FilterRequestDto(INVALID_FIELD_NAME, Collections.singletonList("Value"), MatchMode.EQUALS));
         assertThrows(FieldNotFoundException.class, () -> auditLogService.getNextPage(pageRequestDto));

@@ -1,7 +1,7 @@
 package com.ecaservice.data.storage.service.impl;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.data.storage.AbstractJpaTest;
 import com.ecaservice.data.storage.config.StorageTestConfiguration;
 import com.ecaservice.data.storage.entity.AttributeEntity;
@@ -86,7 +86,7 @@ class StorageServiceImplTest extends AbstractJpaTest {
     @MockBean
     private UserService userService;
     @MockBean
-    private FilterService filterService;
+    private FilterTemplateService filterTemplateService;
 
     private Instances instances;
 
@@ -95,7 +95,7 @@ class StorageServiceImplTest extends AbstractJpaTest {
     @Override
     public void init() {
         createAndSaveInstancesEntity();
-        when(filterService.getGlobalFilterFields(INSTANCES_TEMPLATE)).thenReturn(
+        when(filterTemplateService.getGlobalFilterFields(INSTANCES_TEMPLATE)).thenReturn(
                 List.of(
                         InstancesEntity_.ID,
                         InstancesEntity_.RELATION_NAME,

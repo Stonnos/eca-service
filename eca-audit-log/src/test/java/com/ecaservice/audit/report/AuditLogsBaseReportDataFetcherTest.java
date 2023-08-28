@@ -5,7 +5,7 @@ import com.ecaservice.audit.entity.AuditLogEntity_;
 import com.ecaservice.audit.mapping.AuditLogMapperImpl;
 import com.ecaservice.audit.repository.AuditLogRepository;
 import com.ecaservice.audit.service.AuditLogService;
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -46,7 +46,7 @@ class AuditLogsBaseReportDataFetcherTest extends AbstractJpaTest {
     private static final LocalDateTime THIRD_DATE = LocalDateTime.of(2019, 2, 2, 0, 0, 0);
 
     @MockBean
-    private FilterService filterService;
+    private FilterTemplateService filterTemplateService;
 
     @Inject
     private AuditLogRepository auditLogRepository;

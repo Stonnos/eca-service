@@ -1,6 +1,6 @@
 package com.ecaservice.core.filter.validation;
 
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
 import com.ecaservice.web.dto.model.FilterFieldDto;
 import com.ecaservice.web.dto.model.FilterRequestDto;
@@ -47,13 +47,13 @@ class PageRequestValidatorTest {
     private ConstraintValidatorContext.ConstraintViolationBuilder.NodeBuilderCustomizableContext customizableContext;
 
     @MockBean
-    private FilterService filterService;
+    private FilterTemplateService filterTemplateService;
 
     private PageRequestValidator pageRequestValidator;
 
     @BeforeEach
     void init() {
-        pageRequestValidator = new PageRequestValidator(filterService);
+        pageRequestValidator = new PageRequestValidator(filterTemplateService);
         var validPageRequest = mock(ValidPageRequest.class);
         when(validPageRequest.filterTemplateName()).thenReturn(FILTER_TEMPLATE_NAME);
         pageRequestValidator.initialize(validPageRequest);
@@ -96,7 +96,7 @@ class PageRequestValidatorTest {
         first.setFieldName(FIELD_1);
         FilterFieldDto second = new FilterFieldDto();
         second.setFieldName(FIELD_2);
-        when(filterService.getFilterFields(FILTER_TEMPLATE_NAME)).thenReturn(List.of(first, second));
-        when(filterService.getSortFields(FILTER_TEMPLATE_NAME)).thenReturn(List.of(FIELD_1, FIELD_2));
+        when(filterTemplateService.getFilterFields(FILTER_TEMPLATE_NAME)).thenReturn(List.of(first, second));
+        when(filterTemplateService.getSortFields(FILTER_TEMPLATE_NAME)).thenReturn(List.of(FIELD_1, FIELD_2));
     }
 }
