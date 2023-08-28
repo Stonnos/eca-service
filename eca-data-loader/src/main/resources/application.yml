@@ -1,0 +1,82 @@
+spring:
+  application:
+    name: eca-data-loader
+  ## Datasource properties
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/data_loader
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+  liquibase:
+    contexts: schema,data
+    change-log: classpath:db/liquibase-changelog.xml
+  servlet:
+    multipart:
+      max-file-size: 10MB
+
+eureka:
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+
+app:
+  tempFilesLocation: /opt
+
+minio:
+  url: http://localhost:9000
+  accessKey: minio
+  secretKey: minio-pa66word
+  bucketName: eca-service
+
+## Swagger properties
+open-api:
+  basePath: /
+  title: Microservice for loading training data sets
+  description: API provides operations for loading training data sets
+  author: Roman Batygin
+  email: roman.batygin@mail.ru
+  projectVersion: @project.version@
+  tokenBaseUrl: http://localhost:8080
+  apiAuth:
+    CLIENT_CREDENTIALS:
+      scopes: external-api
+
+springdoc:
+  swagger-ui:
+    oauth:
+      client-id: external-api
+      client-secret: external_api_secret
+    disable-swagger-default-url: true
+
+auth-server:
+  baseUrl: http://localhost:8085/eca-oauth
+  clientId: eca_service_tech
+  clientSecret: 02#eca_service_tech6
+
+management:
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+  info:
+    git:
+      enabled: true
+      mode: full
+
+server:
+  forward-headers-strategy: framework

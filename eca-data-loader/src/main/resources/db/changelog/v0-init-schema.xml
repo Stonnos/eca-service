@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v0-init-schema.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="create_hibernate_sequence" author="roman.batygin@mail.ru">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="hibernate_sequence"/>
+            </not>
+        </preConditions>
+        <createSequence sequenceName="hibernate_sequence" startValue="1" incrementBy="1" minValue="1"/>
+    </changeSet>
+
+    <changeSet id="create_instances_object_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="instances_object"/>
+            </not>
+        </preConditions>
+        <createTable tableName="instances">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="md5_hash" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="object_path" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_instances_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="instances"/>
+            </not>
+            <tableExists tableName="instances_object"/>
+        </preConditions>
+        <createTable tableName="instances">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="uuid" type="varchar(255)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="instances_uuid_unique_index"/>
+            </column>
+            <column name="relation_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="num_instances" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="num_attributes" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="class_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="instances_object_id" type="bigint">
+                <constraints foreignKeyName="fk_instances_instances_object_id"
+                             referencedTableName="instances_object" referencedColumnNames="id"
+                             nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

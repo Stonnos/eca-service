@@ -1,0 +1,9 @@
+{
+  "uuid": "1d2de514-3a87-4620-9b97-c260e24340de",
+  "relationName": "iris",
+  "numInstances": 150,
+  "numAttributes": 5,
+  "className": "class",
+  "md5Hash": "3032e188204cb537f69fc7364f638641",
+  "objectPath": "instances-1d2de514-3a87-4620-9b97-c260e24340de.json"
+}

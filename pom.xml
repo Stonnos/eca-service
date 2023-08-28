@@ -42,6 +42,7 @@
         <module>eca-mail</module>
         <module>eca-ers</module>
         <module>eca-data-storage</module>
+        <module>eca-data-loader</module>
         <module>eca-web-push</module>
         <module>eca-audit-log</module>
         <module>eca-external-api</module>
