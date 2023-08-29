@@ -35,12 +35,6 @@
             <artifactId>liquibase-core</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>eca.service</groupId>
-            <artifactId>eca-s3-minio-client</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
         <!-- Spring Boot -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -90,6 +84,18 @@
         <dependency>
             <groupId>eca.service</groupId>
             <artifactId>common-web</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>eca.service</groupId>
+            <artifactId>eca-s3-minio-client</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>eca.service</groupId>
+            <artifactId>eca-data-loader-transport</artifactId>
             <version>${project.version}</version>
         </dependency>
 

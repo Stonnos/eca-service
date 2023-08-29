@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 
-import static com.ecaservice.data.loader.util.FieldConstraints.UUID_MAX_SIZE;
+import static com.ecaservice.data.loader.dto.FieldConstraints.UUID_MAX_SIZE;
 
 /**
  * Upload instances response dto.
