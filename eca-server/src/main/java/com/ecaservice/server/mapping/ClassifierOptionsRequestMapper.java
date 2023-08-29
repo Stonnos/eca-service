@@ -26,7 +26,6 @@ public interface ClassifierOptionsRequestMapper {
     @Mapping(source = "crossValidationConfig.numFolds", target = "evaluationMethodReport.numFolds")
     @Mapping(source = "crossValidationConfig.numTests", target = "evaluationMethodReport.numTests")
     @Mapping(source = "crossValidationConfig.seed", target = "evaluationMethodReport.seed")
-    @Mapping(source = "instancesRequest.dataMd5Hash", target = "dataHash")
     ClassifierOptionsRequest map(InstancesRequestDataModel instancesRequest,
                                  CrossValidationConfig crossValidationConfig);
 }

@@ -55,8 +55,6 @@ class ExperimentMapperTest {
         assertThat(experimentMessageRequest.getEmail()).isEqualTo(experimentRequest.getEmail());
         assertThat(experimentMessageRequest.getExperimentType()).isEqualTo(experimentRequest.getExperimentType());
         assertThat(experimentMessageRequest.getEvaluationMethod()).isEqualTo(experimentRequest.getEvaluationMethod());
-        assertThat(experimentMessageRequest.getData().relationName()).isEqualTo(
-                experimentRequest.getData().relationName());
         assertThat(experimentMessageRequest.getReplyTo()).isEqualTo(message.getMessageProperties().getReplyTo());
         assertThat(experimentMessageRequest.getCorrelationId()).isEqualTo(
                 message.getMessageProperties().getCorrelationId());
@@ -73,7 +71,6 @@ class ExperimentMapperTest {
         assertThat(experiment.getNumTests()).isNull();
         assertThat(experiment.getSeed()).isNull();
         assertThat(experiment.getExperimentType()).isEqualTo(experimentMessageRequest.getExperimentType());
-        assertThat(experiment.getClassIndex()).isEqualTo(experimentMessageRequest.getData().classIndex());
     }
 
     @Test

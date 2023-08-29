@@ -37,10 +37,8 @@ class EvaluationLogMapperTest {
     void testMapToEvaluationLogWithTrainingDataEvaluationMethod() {
         EvaluationRequestDataModel evaluationRequestDataModel = new EvaluationRequestDataModel();
         evaluationRequestDataModel.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
-        evaluationRequestDataModel.setData(TestHelperUtils.loadInstances());
         evaluationRequestDataModel.setClassifier(new KNearestNeighbours());
         EvaluationLog evaluationLog = evaluationLogMapper.map(evaluationRequestDataModel, crossValidationConfig);
-
         assertThat(evaluationLog).isNotNull();
         assertThat(evaluationLog.getEvaluationMethod()).isEqualTo(evaluationRequestDataModel.getEvaluationMethod());
         assertThat(evaluationLog.getClassifierInfo()).isNotNull();

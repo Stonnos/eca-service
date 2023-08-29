@@ -1,6 +1,5 @@
 package com.ecaservice.server.service.experiment;
 
-import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.exception.experiment.ExperimentException;
 import com.ecaservice.server.mapping.ExperimentMapper;
@@ -17,6 +16,7 @@ import com.ecaservice.server.model.experiment.ExperimentWebRequestData;
 import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.repository.ExperimentStepRepository;
 import com.ecaservice.server.service.InstancesInfoService;
+import com.ecaservice.server.service.data.InstancesMetaDataService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,8 +27,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static com.ecaservice.server.util.InstancesUtils.md5Hash;
 
 /**
  * Experiment service.
@@ -49,9 +47,9 @@ public class ExperimentService {
     private final ExperimentStepRepository experimentStepRepository;
     private final ExperimentMapper experimentMapper;
     private final ExperimentStepProcessor experimentStepProcessor;
-    private final ObjectStorageService objectStorageService;
     private final CrossValidationConfig crossValidationConfig;
     private final ExperimentProgressService experimentProgressService;
+    private final InstancesMetaDataService instancesMetaDataService;
     private final InstancesInfoService instancesInfoService;
 
     /**
@@ -61,21 +59,23 @@ public class ExperimentService {
      * @return created experiment entity
      */
     public Experiment createExperiment(AbstractExperimentRequestData experimentRequest) {
-        log.info("Starting to create experiment [{}] request for data '{}', evaluation method [{}], email '{}'",
-                experimentRequest.getExperimentType(), experimentRequest.getData().relationName(),
+        log.info("Starting to create experiment [{}] request for data uuid [{}], evaluation method [{}], email [{}]",
+                experimentRequest.getExperimentType(), experimentRequest.getDataUuid(),
                 experimentRequest.getEvaluationMethod(), experimentRequest.getEmail());
         try {
             Experiment experiment = experimentMapper.map(experimentRequest, crossValidationConfig);
-            String dataMd5Hash = md5Hash(experimentRequest.getData());
-            var instancesInfo =
-                    instancesInfoService.getOrSaveInstancesInfo(dataMd5Hash, experimentRequest.getData());
+            var instancesMetaDataModel =
+                    instancesMetaDataService.getInstancesMetaData(experimentRequest.getDataUuid());
+            var instancesInfo = instancesInfoService.getOrSaveInstancesInfo(instancesMetaDataModel);
             experiment.setInstancesInfo(instancesInfo);
             setAdditionalProperties(experiment, experimentRequest);
             experiment.setRequestStatus(RequestStatus.NEW);
             experiment.setRequestId(experimentRequest.getRequestId());
-            String objectPath = String.format(EXPERIMENT_TRAIN_DATA_PATH_FORMAT, experiment.getRequestId());
-            objectStorageService.uploadObject(experimentRequest.getData(), objectPath);
-            experiment.setTrainingDataPath(objectPath);
+            //TODO added experiment.data_uuid column, removed training_data_path column
+            //TODO removed experiment.class_index column
+          //  String objectPath = String.format(EXPERIMENT_TRAIN_DATA_PATH_FORMAT, experiment.getRequestId());
+         //   objectStorageService.uploadObject(experimentRequest.getData(), objectPath);
+            experiment.setTrainingDataPath(experimentRequest.getDataUuid());
             experiment.setCreationDate(LocalDateTime.now());
             experimentRepository.save(experiment);
             log.info("Experiment request [{}] has been created.", experiment.getRequestId());

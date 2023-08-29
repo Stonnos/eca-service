@@ -10,10 +10,13 @@ import com.ecaservice.server.mapping.EvaluationLogMapper;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.evaluation.ClassificationResult;
+import com.ecaservice.server.model.evaluation.EvaluationInputDataModel;
 import com.ecaservice.server.model.evaluation.EvaluationRequestDataModel;
 import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.service.InstancesInfoService;
+import com.ecaservice.server.service.data.InstancesLoaderService;
+import com.ecaservice.server.service.data.InstancesMetaDataService;
 import com.ecaservice.server.service.evaluation.initializers.ClassifierInitializerService;
 import eca.core.evaluation.EvaluationResults;
 import eca.core.model.ClassificationModel;
@@ -21,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import weka.classifiers.AbstractClassifier;
+import weka.core.Instances;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -62,6 +66,8 @@ public class EvaluationRequestService {
     private final ClassifierOptionsAdapter classifierOptionsAdapter;
     private final ObjectStorageService objectStorageService;
     private final InstancesInfoService instancesInfoService;
+    private final InstancesMetaDataService instancesMetaDataService;
+    private final InstancesLoaderService instancesLoaderService;
 
     /**
      * Processes input request and returns classification results.
@@ -73,14 +79,14 @@ public class EvaluationRequestService {
         String requestId = UUID.randomUUID().toString();
         putMdcIfAbsent(TX_ID, requestId);
         putMdc(EV_REQUEST_ID, requestId);
-        log.info("Starting to process request for classifier [{}] evaluation with data [{}]",
+        log.info("Starting to process request for classifier [{}] evaluation with data uuid [{}]",
                 evaluationRequestDataModel.getClassifier().getClass().getSimpleName(),
-                evaluationRequestDataModel.getData().relationName());
-        classifierInitializerService.initialize(evaluationRequestDataModel.getClassifier(),
-                evaluationRequestDataModel.getData());
+                evaluationRequestDataModel.getDataUuid());
+        Instances data = instancesLoaderService.loadInstances(evaluationRequestDataModel.getDataUuid());
+        classifierInitializerService.initialize(evaluationRequestDataModel.getClassifier(), data);
         EvaluationLog evaluationLog = createAndSaveEvaluationLog(requestId, evaluationRequestDataModel);
         try {
-            return internalProcessRequest(evaluationRequestDataModel, evaluationLog);
+            return internalProcessRequest(evaluationRequestDataModel, evaluationLog, data);
         } catch (TimeoutException ex) {
             log.warn("There was a timeout for evaluation [{}].", evaluationLog.getRequestId());
             handleTimeout(evaluationLog);
@@ -93,9 +99,10 @@ public class EvaluationRequestService {
     }
 
     private EvaluationResultsDataModel internalProcessRequest(EvaluationRequestDataModel evaluationRequestDataModel,
-                                                              EvaluationLog evaluationLog)
+                                                              EvaluationLog evaluationLog,
+                                                              Instances data)
             throws IOException, ExecutionException, InterruptedException, TimeoutException {
-        ClassificationResult classificationResult = evaluationModel(evaluationRequestDataModel);
+        ClassificationResult classificationResult = evaluationModel(evaluationRequestDataModel, data);
         if (classificationResult.isSuccess()) {
             handleSuccessModel(classificationResult, evaluationLog);
             EvaluationResultsDataModel evaluationResultsDataModel =
@@ -112,17 +119,24 @@ public class EvaluationRequestService {
         }
     }
 
-    private ClassificationResult evaluationModel(EvaluationRequestDataModel evaluationRequestDataModel)
+    private ClassificationResult evaluationModel(EvaluationRequestDataModel evaluationRequestDataModel, Instances data)
             throws ExecutionException, InterruptedException, TimeoutException {
-        Callable<ClassificationResult> callable = () -> evaluationService.evaluateModel(evaluationRequestDataModel);
+        var evaluationInputDataModel = new EvaluationInputDataModel();
+        evaluationInputDataModel.setClassifier(evaluationRequestDataModel.getClassifier());
+        evaluationInputDataModel.setData(data);
+        evaluationInputDataModel.setEvaluationMethod(evaluationRequestDataModel.getEvaluationMethod());
+        evaluationInputDataModel.setNumFolds(evaluationRequestDataModel.getNumFolds());
+        evaluationInputDataModel.setNumTests(evaluationRequestDataModel.getNumTests());
+        evaluationInputDataModel.setSeed(evaluationRequestDataModel.getSeed());
+        Callable<ClassificationResult> callable = () -> evaluationService.evaluateModel(evaluationInputDataModel);
         return executorService.execute(callable, classifiersProperties.getTimeout(), TimeUnit.MINUTES);
     }
 
     private EvaluationLog createAndSaveEvaluationLog(String requestId,
                                                      EvaluationRequestDataModel evaluationRequestDataModel) {
-        var instancesInfo =
-                instancesInfoService.getOrSaveInstancesInfo(evaluationRequestDataModel.getDataMd5Hash(),
-                evaluationRequestDataModel.getData());
+        var instancesMetaDataModel =
+                instancesMetaDataService.getInstancesMetaData(evaluationRequestDataModel.getDataUuid());
+        var instancesInfo = instancesInfoService.getOrSaveInstancesInfo(instancesMetaDataModel);
         EvaluationLog evaluationLog = evaluationLogMapper.map(evaluationRequestDataModel, crossValidationConfig);
         evaluationLog.setInstancesInfo(instancesInfo);
         processClassifierOptions(evaluationRequestDataModel.getClassifier(), evaluationLog);

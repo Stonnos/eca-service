@@ -27,7 +27,7 @@ import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.putMdc;
 import static com.ecaservice.server.config.audit.AuditCodes.CREATE_EXPERIMENT_REQUEST;
 import static com.ecaservice.server.util.InstancesUtils.removeConstantAttributes;
-
+//TODO refactoring after changed eca-data-storage api
 /**
  * Experiment request web api service.
  *
@@ -83,7 +83,7 @@ public class ExperimentRequestWebApiService {
         Instances data = downloadInstances(experimentRequestDto.getInstancesUuid());
         Instances filteredData = removeConstantAttributes(data);
         log.info("Constant attributes has been removed from data [{}]", filteredData.relationName());
-        experimentWebRequestData.setData(filteredData);
+       // experimentWebRequestData.setData(filteredData);
         experimentWebRequestData.setExperimentType(experimentRequestDto.getExperimentType());
         experimentWebRequestData.setEvaluationMethod(experimentRequestDto.getEvaluationMethod());
         return experimentWebRequestData;

@@ -45,6 +45,7 @@ import com.ecaservice.server.model.entity.ExperimentStepStatus;
 import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.evaluation.ClassifierOptionsRequestSource;
+import com.ecaservice.server.model.evaluation.EvaluationInputDataModel;
 import com.ecaservice.server.model.evaluation.EvaluationRequestDataModel;
 import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
 import com.ecaservice.server.model.experiment.ExperimentMessageRequestData;
@@ -98,7 +99,6 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.ecaservice.server.util.ClassifierOptionsHelper.toJsonString;
-import static com.ecaservice.server.util.InstancesUtils.md5Hash;
 import static com.google.common.collect.Lists.newArrayList;
 
 /**
@@ -275,11 +275,23 @@ public class TestHelperUtils {
     public static EvaluationRequestDataModel createEvaluationRequestData() {
         EvaluationRequestDataModel request = new EvaluationRequestDataModel();
         request.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
-        Instances data = loadInstances();
-        request.setDataMd5Hash(md5Hash(data));
-        request.setData(data);
+        request.setDataUuid(UUID.randomUUID().toString());
         request.setClassifier(new KNearestNeighbours());
         return request;
+    }
+
+    /**
+     * Creates evaluation input data model object.
+     *
+     * @return evaluation input data model
+     */
+    public static EvaluationInputDataModel createEvaluationInputDataModel() {
+        EvaluationInputDataModel evaluationInputDataModel = new EvaluationInputDataModel();
+        evaluationInputDataModel.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
+        Instances data = loadInstances();
+        evaluationInputDataModel.setData(data);
+        evaluationInputDataModel.setClassifier(new KNearestNeighbours());
+        return evaluationInputDataModel;
     }
 
     /**
@@ -304,9 +316,9 @@ public class TestHelperUtils {
     public static ExperimentMessageRequestData createExperimentMessageRequest() {
         ExperimentMessageRequestData experimentRequest = new ExperimentMessageRequestData();
         experimentRequest.setRequestId(UUID.randomUUID().toString());
+        experimentRequest.setDataUuid(UUID.randomUUID().toString());
         experimentRequest.setExperimentType(ExperimentType.KNN);
         experimentRequest.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
-        experimentRequest.setData(loadInstances());
         experimentRequest.setEmail(TEST_MAIL_RU);
         experimentRequest.setReplyTo(REPLY_TO);
         experimentRequest.setCorrelationId(UUID.randomUUID().toString());
@@ -852,7 +864,7 @@ public class TestHelperUtils {
     /**
      * Creates classifier options request model.
      *
-     * @param instancesInfo                     - instances info
+     * @param instancesInfo                   - instances info
      * @param requestDate                     - request date
      * @param responseStatus                  - response status
      * @param classifierOptionsResponseModels - classifier options response models list

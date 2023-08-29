@@ -1,13 +1,13 @@
 package com.ecaservice.server.service.experiment.step;
 
 import com.ecaservice.s3.client.minio.exception.ObjectStorageException;
-import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentStepStatus;
 import com.ecaservice.server.model.experiment.InitializationParams;
 import com.ecaservice.server.repository.ExperimentRepository;
+import com.ecaservice.server.service.data.InstancesLoaderService;
 import com.ecaservice.server.service.evaluation.CalculationExecutorService;
 import com.ecaservice.server.service.evaluation.CalculationExecutorServiceImpl;
 import com.ecaservice.server.service.experiment.ExperimentProcessorService;
@@ -45,7 +45,7 @@ class ExperimentModelProcessorStepHandlerTest extends AbstractStepHandlerTest {
     private static final int FULL_PROGRESS = 100;
 
     @Mock
-    private ObjectStorageService objectStorageService;
+    private InstancesLoaderService instancesLoaderService;
     @Mock
     private ExperimentProcessorService experimentProcessorService;
 
@@ -67,14 +67,14 @@ class ExperimentModelProcessorStepHandlerTest extends AbstractStepHandlerTest {
         super.init();
         data = TestHelperUtils.loadInstances();
         var executorService = new CalculationExecutorServiceImpl(Executors.newCachedThreadPool());
-        experimentModelProcessorStepHandler = new ExperimentModelProcessorStepHandler(experimentConfig,
-                objectStorageService, experimentProcessorService, executorService, experimentStepService,
-                experimentProgressService, experimentRepository);
+        experimentModelProcessorStepHandler =
+                new ExperimentModelProcessorStepHandler(experimentConfig, instancesLoaderService, experimentProcessorService,
+                        executorService, experimentStepService, experimentProgressService, experimentRepository);
     }
 
     @Test
-    void testProcessExperimentWithSuccessStatus() throws Exception {
-        when(objectStorageService.getObject(anyString(), any())).thenReturn(data);
+    void testProcessExperimentWithSuccessStatus() {
+        when(instancesLoaderService.loadInstances(anyString())).thenReturn(data);
         var experimentHistory = createExperimentHistory(data);
         when(experimentProcessorService.processExperimentHistory(any(Experiment.class),
                 any(InitializationParams.class))).thenReturn(experimentHistory);
@@ -87,21 +87,21 @@ class ExperimentModelProcessorStepHandlerTest extends AbstractStepHandlerTest {
     }
 
     @Test
-    void testProcessExperimentWithErrorWhileGetInstances() throws Exception {
-        when(objectStorageService.getObject(anyString(), any())).thenThrow(new RuntimeException());
+    void testProcessExperimentWithErrorWhileGetInstances() {
+        when(instancesLoaderService.loadInstances(anyString())).thenThrow(new RuntimeException());
         testStep(experimentModelProcessorStepHandler::handle, ExperimentStepStatus.ERROR);
     }
 
     @Test
-    void testProcessExperimentFailedWhileGetInstances() throws Exception {
-        when(objectStorageService.getObject(anyString(), any())).thenThrow(
-                new ObjectStorageException(new RuntimeException()));
+    void testProcessExperimentFailedWhileGetInstances() {
+        when(instancesLoaderService.loadInstances(anyString()))
+                .thenThrow(new ObjectStorageException(new RuntimeException()));
         testStep(experimentModelProcessorStepHandler::handle, ExperimentStepStatus.FAILED);
     }
 
     @Test
     void testProcessExperimentWithTimeoutStatus() throws Exception {
-        when(objectStorageService.getObject(anyString(), any())).thenReturn(data);
+        when(instancesLoaderService.loadInstances(anyString())).thenReturn(data);
         var experimentHistory = createExperimentHistory(data);
         when(experimentProcessorService.processExperimentHistory(any(Experiment.class),
                 any(InitializationParams.class))).thenReturn(experimentHistory);

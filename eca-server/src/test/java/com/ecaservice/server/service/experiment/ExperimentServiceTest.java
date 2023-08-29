@@ -1,8 +1,6 @@
 package com.ecaservice.server.service.experiment;
 
 import com.ecaservice.core.filter.service.FilterService;
-import com.ecaservice.s3.client.minio.exception.ObjectStorageException;
-import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.AssertionUtils;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
@@ -12,6 +10,7 @@ import com.ecaservice.server.exception.experiment.ExperimentException;
 import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.mapping.ExperimentMapperImpl;
 import com.ecaservice.server.mapping.InstancesInfoMapperImpl;
+import com.ecaservice.server.model.data.InstancesMetaDataModel;
 import com.ecaservice.server.model.entity.Channel;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentStep;
@@ -24,24 +23,26 @@ import com.ecaservice.server.repository.ExperimentStepRepository;
 import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.InstancesInfoService;
+import com.ecaservice.server.service.data.InstancesLoaderService;
+import com.ecaservice.server.service.data.InstancesMetaDataService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import weka.core.Instances;
 
 import javax.inject.Inject;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.ecaservice.server.TestHelperUtils.loadInstances;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 
 
 /**
@@ -54,6 +55,8 @@ import static org.mockito.Mockito.doThrow;
         ExperimentProgressService.class, InstancesInfoService.class})
 class ExperimentServiceTest extends AbstractJpaTest {
 
+    private static final String DATA_MD_5_HASH = "3032e188204cb537f69fc7364f638641";
+
     @Inject
     private ExperimentRepository experimentRepository;
     @Inject
@@ -63,7 +66,9 @@ class ExperimentServiceTest extends AbstractJpaTest {
     @Inject
     private ExperimentProgressRepository experimentProgressRepository;
     @MockBean
-    private ObjectStorageService objectStorageService;
+    private InstancesMetaDataService instancesMetaDataService;
+    @MockBean
+    private InstancesLoaderService instancesLoaderService;
     @MockBean
     private FilterService filterService;
     @MockBean
@@ -71,6 +76,11 @@ class ExperimentServiceTest extends AbstractJpaTest {
 
     @Inject
     private ExperimentService experimentService;
+
+    @Override
+    public void init() {
+        mockLoadInstances();
+    }
 
     @Override
     public void deleteAll() {
@@ -99,9 +109,8 @@ class ExperimentServiceTest extends AbstractJpaTest {
     @Test
     void testExperimentRequestCreationWithError() throws IOException {
         var experimentMessageRequest = TestHelperUtils.createExperimentMessageRequest();
-        doThrow(ObjectStorageException.class)
-                .when(objectStorageService)
-                .uploadObject(any(Serializable.class), anyString());
+        when(instancesMetaDataService.getInstancesMetaData(experimentMessageRequest.getDataUuid()))
+                .thenThrow(new RuntimeException());
         assertThrows(ExperimentException.class, () -> experimentService.createExperiment(experimentMessageRequest));
     }
 
@@ -193,5 +202,13 @@ class ExperimentServiceTest extends AbstractJpaTest {
         assertThat(actual).isNotNull();
         assertThat(actual.getRequestStatus()).isEqualTo(expectedStatus);
         assertThat(actual.getEndDate()).isNotNull();
+    }
+
+    private void mockLoadInstances() {
+        Instances data = loadInstances();
+        var instancesDataModel = new InstancesMetaDataModel(data.relationName(), data.numInstances(),
+                data.numAttributes(), data.numClasses(), data.classAttribute().name(), DATA_MD_5_HASH, "instances");
+        when(instancesMetaDataService.getInstancesMetaData(anyString())).thenReturn(instancesDataModel);
+        when(instancesLoaderService.loadInstances(anyString())).thenReturn(data);
     }
 }

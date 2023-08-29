@@ -16,7 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 
 import javax.inject.Inject;
-
 import java.util.UUID;
 
 import static com.ecaservice.server.TestHelperUtils.createExperiment;

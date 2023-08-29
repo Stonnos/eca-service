@@ -1,10 +1,10 @@
 package com.ecaservice.server.mq.listener;
 
-import com.ecaservice.base.model.ErrorCode;
-import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.base.model.EcaResponse;
+import com.ecaservice.base.model.ErrorCode;
 import com.ecaservice.base.model.MessageError;
 import com.ecaservice.base.model.TechnicalStatus;
+import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.mq.listener.support.AbstractExceptionTranslator;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;

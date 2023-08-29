@@ -31,6 +31,7 @@ import com.ecaservice.server.mapping.ErsResponseStatusMapperImpl;
 import com.ecaservice.server.mapping.EvaluationLogMapperImpl;
 import com.ecaservice.server.mapping.EvaluationRequestMapperImpl;
 import com.ecaservice.server.mapping.InstancesInfoMapperImpl;
+import com.ecaservice.server.model.data.InstancesMetaDataModel;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestEntity;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.server.model.entity.ErsResponseStatus;
@@ -46,6 +47,8 @@ import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.InstancesInfoService;
+import com.ecaservice.server.service.data.InstancesLoaderService;
+import com.ecaservice.server.service.data.InstancesMetaDataService;
 import com.ecaservice.server.service.ers.ErsClient;
 import com.ecaservice.server.service.ers.ErsErrorHandler;
 import com.ecaservice.server.service.ers.ErsRequestSender;
@@ -83,7 +86,6 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.ecaservice.server.TestHelperUtils.createInstancesInfo;
-import static com.ecaservice.server.util.InstancesUtils.md5Hash;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -105,6 +107,7 @@ import static org.mockito.Mockito.when;
         OptimalClassifierOptionsCacheService.class, DateTimeConverter.class})
 class EvaluationOptimizerServiceTest extends AbstractJpaTest {
 
+    private static final String DATA_MD_5_HASH = "3032e188204cb537f69fc7364f638641";
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final String MODEL_DOWNLOAD_URL = "http//:localhost/model";
 
@@ -120,6 +123,10 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
     private ClassifierInitializerService classifierInitializerService;
     @MockBean
     private ObjectStorageService objectStorageService;
+    @MockBean
+    private InstancesMetaDataService instancesMetaDataService;
+    @MockBean
+    private InstancesLoaderService instancesLoaderService;
     @Inject
     private ErsConfig ersConfig;
     @Inject
@@ -140,11 +147,15 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
     private String decisionTreeOptions;
     private String j48Options;
 
+    private String dataUuid;
+    private Instances data;
+
     private InstancesInfo instancesInfo;
 
     @Override
     public void init() throws Exception {
         initInstancesData();
+        mockLoadInstances();
         DecisionTreeOptions treeOptions = TestHelperUtils.createDecisionTreeOptions();
         treeOptions.setDecisionTreeType(DecisionTreeType.CART);
         decisionTreeOptions = objectMapper.writeValueAsString(treeOptions);
@@ -214,7 +225,7 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
                 (requestModel.getRequestDate(), requestModel);
         classifierOptionsRequestModelRepository.save(requestModel);
         classifierOptionsRequestRepository.save(requestEntity);
-        ClassifierOptionsResponse response = TestHelperUtils.createClassifierOptionsResponse(Collections
+        TestHelperUtils.createClassifierOptionsResponse(Collections
                 .singletonList(TestHelperUtils.createClassifierReport(decisionTreeOptions)));
         EvaluationResultsDataModel evaluationResultsDataModel = evaluate();
         assertSuccessEvaluationResponse(evaluationResultsDataModel);
@@ -322,8 +333,8 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
                 TestHelperUtils.createClassifierOptionsRequestEntity(LocalDateTime.now(), requestModel1);
         classifierOptionsRequestRepository.save(requestEntity);
         classifierOptionsRequestRepository.save(requestEntity1);
-        var evaluationResultsDataModel = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
-                instancesRequestDataModel);
+        var evaluationResultsDataModel =
+                evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequestDataModel);
         assertSuccessEvaluationResponse(evaluationResultsDataModel);
         EvaluationResults results = evaluationResultsDataModel.getEvaluationResults();
         assertThat(results.getClassifier()).isInstanceOf(J48.class);
@@ -450,11 +461,19 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
     }
 
     private void initInstancesData() {
-        Instances data = TestHelperUtils.loadInstances();
-        String dataMd5Hash = md5Hash(data);
+        data = TestHelperUtils.loadInstances();
+        dataUuid = UUID.randomUUID().toString();
         instancesInfo = createInstancesInfo();
-        instancesInfo.setDataMd5Hash(dataMd5Hash);
+        instancesInfo.setDataMd5Hash(DATA_MD_5_HASH);
         instancesInfoRepository.save(instancesInfo);
-        instancesRequestDataModel = new InstancesRequestDataModel(UUID.randomUUID().toString(), dataMd5Hash, data);
+        instancesRequestDataModel =
+                new InstancesRequestDataModel(UUID.randomUUID().toString(), dataUuid);
+    }
+
+    private void mockLoadInstances() {
+        var instancesDataModel = new InstancesMetaDataModel(data.relationName(), data.numInstances(),
+                data.numAttributes(), data.numClasses(), data.classAttribute().name(), DATA_MD_5_HASH, "instances");
+        when(instancesMetaDataService.getInstancesMetaData(dataUuid)).thenReturn(instancesDataModel);
+        when(instancesLoaderService.loadInstances(dataUuid)).thenReturn(data);
     }
 }

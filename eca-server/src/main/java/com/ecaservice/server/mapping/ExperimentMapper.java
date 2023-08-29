@@ -35,7 +35,6 @@ public abstract class ExperimentMapper extends AbstractEvaluationMapper {
      * @param message           - mq message
      * @return experiment request data model
      */
-    @Mapping(source = "experimentRequest.data", target = "data")
     @Mapping(source = "experimentRequest.email", target = "email")
     @Mapping(source = "experimentRequest.experimentType", target = "experimentType")
     @Mapping(source = "experimentRequest.evaluationMethod", target = "evaluationMethod")
@@ -112,12 +111,6 @@ public abstract class ExperimentMapper extends AbstractEvaluationMapper {
             experiment.setNumTests(crossValidationConfig.getNumTests());
             experiment.setSeed(crossValidationConfig.getSeed());
         }
-    }
-
-    @AfterMapping
-    protected void postMappingExperimentRequest(AbstractExperimentRequestData experimentRequest,
-                                                @MappingTarget Experiment experiment) {
-        experiment.setClassIndex(experimentRequest.getData().classIndex());
     }
 
     @AfterMapping

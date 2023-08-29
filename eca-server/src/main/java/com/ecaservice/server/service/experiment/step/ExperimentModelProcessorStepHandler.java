@@ -1,7 +1,6 @@
 package com.ecaservice.server.service.experiment.step;
 
 import com.ecaservice.s3.client.minio.exception.ObjectStorageException;
-import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.exception.experiment.ExperimentException;
 import com.ecaservice.server.model.entity.Experiment;
@@ -10,6 +9,7 @@ import com.ecaservice.server.model.entity.ExperimentStepEntity;
 import com.ecaservice.server.model.experiment.ExperimentContext;
 import com.ecaservice.server.model.experiment.InitializationParams;
 import com.ecaservice.server.repository.ExperimentRepository;
+import com.ecaservice.server.service.data.InstancesLoaderService;
 import com.ecaservice.server.service.evaluation.CalculationExecutorService;
 import com.ecaservice.server.service.experiment.ExperimentProcessorService;
 import com.ecaservice.server.service.experiment.ExperimentProgressService;
@@ -38,7 +38,7 @@ import java.util.concurrent.TimeoutException;
 public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepHandler {
 
     private final ExperimentConfig experimentConfig;
-    private final ObjectStorageService objectStorageService;
+    private final InstancesLoaderService instancesLoaderService;
     private final ExperimentProcessorService experimentProcessorService;
     private final CalculationExecutorService executorService;
     private final ExperimentStepService experimentStepService;
@@ -49,7 +49,7 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
      * Constructor with parameters.
      *
      * @param experimentConfig           - experiment config
-     * @param objectStorageService       - object storage service
+     * @param instancesLoaderService     - instances loader service
      * @param experimentProcessorService - experiment processor service
      * @param executorService            - executor service
      * @param experimentStepService      - experiment step service
@@ -57,7 +57,7 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
      * @param experimentRepository       - experiment repository
      */
     public ExperimentModelProcessorStepHandler(ExperimentConfig experimentConfig,
-                                               ObjectStorageService objectStorageService,
+                                               InstancesLoaderService instancesLoaderService,
                                                ExperimentProcessorService experimentProcessorService,
                                                @Qualifier("calculationExecutorServiceImpl")
                                                CalculationExecutorService executorService,
@@ -66,7 +66,7 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
                                                ExperimentRepository experimentRepository) {
         super(ExperimentStep.EXPERIMENT_PROCESSING);
         this.experimentConfig = experimentConfig;
-        this.objectStorageService = objectStorageService;
+        this.instancesLoaderService = instancesLoaderService;
         this.experimentProcessorService = experimentProcessorService;
         this.executorService = executorService;
         this.experimentStepService = experimentStepService;
@@ -98,7 +98,7 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
         }
     }
 
-    private Instances getInstances(ExperimentContext experimentContext) throws Exception {
+    private Instances getInstances(ExperimentContext experimentContext) {
         StopWatch stopWatch = experimentContext.getStopWatch();
         Experiment experiment = experimentContext.getExperiment();
         if (StringUtils.isEmpty(experiment.getTrainingDataPath())) {
@@ -106,7 +106,8 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
                     experiment.getRequestId()));
         }
         stopWatch.start(String.format("Loading data for experiment [%s]", experiment.getRequestId()));
-        Instances data = objectStorageService.getObject(experiment.getTrainingDataPath(), Instances.class);
+        Instances data = instancesLoaderService.loadInstances(experiment.getTrainingDataPath());
+        //TODO set class name from experiment.instances_info.class_name
         data.setClassIndex(experiment.getClassIndex());
         stopWatch.stop();
         return data;

@@ -3,6 +3,7 @@ package com.ecaservice.server.model.evaluation;
 import eca.core.evaluation.EvaluationMethod;
 import lombok.Data;
 import weka.classifiers.AbstractClassifier;
+import weka.core.Instances;
 
 /**
  * Evaluation request data model.
@@ -10,17 +11,17 @@ import weka.classifiers.AbstractClassifier;
  * @author Roman Batygin
  */
 @Data
-public class EvaluationRequestDataModel {
-
-    /**
-     * Train data uuid
-     */
-    private String dataUuid;
+public class EvaluationInputDataModel {
 
     /**
      * Classifier model
      */
     private AbstractClassifier classifier;
+
+    /**
+     * Training data
+     */
+    private Instances data;
 
     /**
      * Evaluation method

@@ -4,7 +4,6 @@ import com.ecaservice.core.lock.annotation.Locked;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.repository.EvaluationLogRepository;
-import com.ecaservice.server.service.evaluation.EvaluationLogService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

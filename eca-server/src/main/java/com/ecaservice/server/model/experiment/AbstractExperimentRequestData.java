@@ -3,7 +3,6 @@ package com.ecaservice.server.model.experiment;
 import com.ecaservice.base.model.ExperimentType;
 import eca.core.evaluation.EvaluationMethod;
 import lombok.Data;
-import weka.core.Instances;
 
 /**
  * Abstract experiment request data model.
@@ -19,6 +18,11 @@ public abstract class AbstractExperimentRequestData {
     private String requestId;
 
     /**
+     * Train data uuid
+     */
+    private String dataUuid;
+
+    /**
      * Email
      */
     private String email;
@@ -27,11 +31,6 @@ public abstract class AbstractExperimentRequestData {
      * Experiment type
      */
     private ExperimentType experimentType;
-
-    /**
-     * Training data
-     */
-    private Instances data;
 
     /**
      * Evaluation method
