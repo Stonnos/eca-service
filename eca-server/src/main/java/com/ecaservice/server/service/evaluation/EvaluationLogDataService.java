@@ -1,7 +1,7 @@
 package com.ecaservice.server.service.evaluation;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.filter.specification.FilterFieldCustomizer;
 import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
 import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
@@ -77,7 +77,7 @@ import static com.google.common.collect.Lists.newArrayList;
 public class EvaluationLogDataService {
 
     private final AppProperties appProperties;
-    private final FilterService filterService;
+    private final FilterTemplateService filterTemplateService;
     private final EvaluationLogMapper evaluationLogMapper;
     private final ClassifierOptionsProcessor classifierOptionsProcessor;
     private final ErsService ersService;
@@ -93,7 +93,7 @@ public class EvaluationLogDataService {
      */
     @PostConstruct
     public void initialize() {
-        globalFilterFieldCustomizers.add(new ClassifierNameFilterFieldCustomizer(filterService));
+        globalFilterFieldCustomizers.add(new ClassifierNameFilterFieldCustomizer(filterTemplateService));
     }
 
     /**
@@ -106,7 +106,7 @@ public class EvaluationLogDataService {
             @ValidPageRequest(filterTemplateName = EVALUATION_LOG) PageRequestDto pageRequestDto) {
         log.info("Gets evaluation logs next page: {}", pageRequestDto);
         Sort sort = buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
-        List<String> globalFilterFields = filterService.getGlobalFilterFields(EVALUATION_LOG);
+        List<String> globalFilterFields = filterTemplateService.getGlobalFilterFields(EVALUATION_LOG);
         var filter = new EvaluationLogFilter(pageRequestDto.getSearchQuery(), globalFilterFields,
                 pageRequestDto.getFilters());
         filter.setGlobalFilterFieldsCustomizers(globalFilterFieldCustomizers);
@@ -259,7 +259,7 @@ public class EvaluationLogDataService {
     }
 
     private ChartDto populateClassifiersChartData(Map<String, Long> classifiersStatisticsMap) {
-        var classifiers = filterService.getFilterDictionary(FilterDictionaries.CLASSIFIER_NAME);
+        var classifiers = filterTemplateService.getFilterDictionary(FilterDictionaries.CLASSIFIER_NAME);
         return calculateChartData(classifiers, classifiersStatisticsMap);
     }
 

@@ -1,6 +1,6 @@
 package com.ecaservice.server.report;
 
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.report.model.BaseReportBean;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.TestHelperUtils;
@@ -56,7 +56,7 @@ class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
     private static final LocalDateTime CREATION_DATE = LocalDateTime.of(2018, 1, 5, 0, 0, 0);
 
     @Mock
-    private FilterService filterService;
+    private FilterTemplateService filterTemplateService;
     @Mock
     private ErsService ersService;
     @Mock
@@ -82,14 +82,14 @@ class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
     @Override
     public void init() {
         EvaluationLogDataService evaluationLogDataService =
-                new EvaluationLogDataService(appProperties, filterService, evaluationLogMapper, classifierOptionsProcessor,
+                new EvaluationLogDataService(appProperties, filterTemplateService, evaluationLogMapper, classifierOptionsProcessor,
                         ersService, entityManager, objectStorageService, evaluationLogRepository,
                         evaluationResultsRequestEntityRepository);
         evaluationLogsBaseReportDataFetcher =
-                new EvaluationLogsBaseReportDataFetcher(filterService, instancesInfoRepository,
+                new EvaluationLogsBaseReportDataFetcher(filterTemplateService, instancesInfoRepository,
                         evaluationLogDataService,
                         evaluationLogMapper);
-        when(filterService.getFilterDictionary(CLASSIFIER_NAME)).thenReturn(createFilterDictionaryDto());
+        when(filterTemplateService.getFilterDictionary(CLASSIFIER_NAME)).thenReturn(createFilterDictionaryDto());
     }
 
     @Override

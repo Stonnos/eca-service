@@ -37,7 +37,7 @@ public class EvaluationLogsBaseReportDataFetcher extends
     /**
      * Constructor with spring dependency injection.
      *
-     * @param filterService            - filter service bean
+     * @param filterService            - filter template service bean
      * @param instancesInfoRepository  - instances info repository
      * @param evaluationLogDataService - evaluation log service bean
      * @param evaluationLogMapper      - evaluation log mapper bean
