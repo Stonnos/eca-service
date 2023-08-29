@@ -5,7 +5,7 @@ import com.ecaservice.audit.mapping.AuditLogMapper;
 import com.ecaservice.audit.report.AuditLogsBaseReportDataFetcher;
 import com.ecaservice.audit.service.AuditLogService;
 import com.ecaservice.common.error.model.ValidationErrorDto;
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.web.dto.model.AuditLogDto;
 import com.ecaservice.web.dto.model.AuditLogsPageDto;
 import com.ecaservice.web.dto.model.FilterFieldDto;
@@ -60,7 +60,7 @@ public class AuditLogController {
     private static final String ATTACHMENT_FORMAT = "attachment; filename=%s";
 
     private final AuditLogService auditLogService;
-    private final FilterService filterService;
+    private final FilterTemplateService filterTemplateService;
     private final AuditLogMapper auditLogMapper;
     private final AuditLogsBaseReportDataFetcher auditLogsBaseReportDataFetcher;
 
@@ -200,7 +200,7 @@ public class AuditLogController {
     )
     @GetMapping(value = "/filter-templates/fields")
     public List<FilterFieldDto> getAuditLogFilter() {
-        return filterService.getFilterFields(AUDIT_LOG_TEMPLATE);
+        return filterTemplateService.getFilterFields(AUDIT_LOG_TEMPLATE);
     }
 
     /**

@@ -1,6 +1,6 @@
 package com.ecaservice.data.storage.service;
 
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.lock.config.CoreLockAutoConfiguration;
 import com.ecaservice.core.lock.metrics.LockMeterService;
 import com.ecaservice.data.storage.AbstractJpaTest;
@@ -60,7 +60,7 @@ class ConcurrentStorageServiceTest extends AbstractJpaTest {
     @MockBean
     private UserService userService;
     @MockBean
-    private FilterService filterService;
+    private FilterTemplateService filterTemplateService;
     @MockBean
     private LockMeterService lockMeterService;
     @MockBean

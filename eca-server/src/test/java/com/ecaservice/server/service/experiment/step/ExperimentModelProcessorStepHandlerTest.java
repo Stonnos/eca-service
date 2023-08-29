@@ -78,6 +78,7 @@ class ExperimentModelProcessorStepHandlerTest extends AbstractStepHandlerTest {
         var experimentHistory = createExperimentHistory(data);
         when(experimentProcessorService.processExperimentHistory(any(Experiment.class),
                 any(InitializationParams.class))).thenReturn(experimentHistory);
+        experimentProgressService.start(getExperimentStepEntity().getExperiment());
         testStep(experimentModelProcessorStepHandler::handle, ExperimentStepStatus.COMPLETED);
         verifyProgressFinished();
         var actualExperiment =

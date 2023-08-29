@@ -1,7 +1,7 @@
 package com.ecaservice.server.service.experiment;
 
 import com.ecaservice.base.model.ExperimentType;
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.config.CrossValidationConfig;
@@ -60,7 +60,7 @@ class ExperimentRequestWebApiServiceTest extends AbstractJpaTest {
     @MockBean
     private ObjectStorageService objectStorageService;
     @MockBean
-    private FilterService filterService;
+    private FilterTemplateService filterTemplateService;
     @MockBean
     private ExperimentStepProcessor experimentStepProcessor;
 

@@ -5,7 +5,7 @@ import com.ecaservice.classifier.options.model.AbstractHeterogeneousClassifierOp
 import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.classifier.options.model.StackingOptions;
 import com.ecaservice.common.web.expression.SpelExpressionHelper;
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.server.model.entity.ClassifierInfo;
 import com.ecaservice.web.dto.model.ClassifierInfoDto;
 import com.ecaservice.web.dto.model.FieldDictionaryDto;
@@ -48,7 +48,7 @@ public class ClassifierOptionsProcessor {
     private static final DecimalFormat DEFAULT_DECIMAL_FORMAT = NumericFormatFactory.getInstance(Integer.MAX_VALUE);
 
     private final ClassifiersTemplateProvider classifiersTemplateProvider;
-    private final FilterService filterService;
+    private final FilterTemplateService filterTemplateService;
     private final ClassifiersOptionsConfig classifiersOptionsConfig;
     private final SpelExpressionHelper spelExpressionHelper = new SpelExpressionHelper();
 
@@ -195,7 +195,7 @@ public class ClassifierOptionsProcessor {
     }
 
     private String getClassifierNameLabel(String classifierName) {
-        var classifiersDictionary = filterService.getFilterDictionary(CLASSIFIER_NAME);
+        var classifiersDictionary = filterTemplateService.getFilterDictionary(CLASSIFIER_NAME);
         return classifiersDictionary.getValues()
                 .stream()
                 .filter(fieldDictionaryValue -> fieldDictionaryValue.getValue().equals(classifierName))

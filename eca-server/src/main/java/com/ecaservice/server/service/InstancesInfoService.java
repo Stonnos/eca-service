@@ -1,6 +1,6 @@
 package com.ecaservice.server.service;
 
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
 import com.ecaservice.core.lock.annotation.Locked;
 import com.ecaservice.server.filter.InstancesInfoFilter;
@@ -36,7 +36,7 @@ import static com.ecaservice.server.model.entity.InstancesInfo_.CREATED_DATE;
 @RequiredArgsConstructor
 public class InstancesInfoService {
 
-    private final FilterService filterService;
+    private final FilterTemplateService filterTemplateService;
     private final InstancesInfoMapper instancesInfoMapper;
     private final InstancesInfoRepository instancesInfoRepository;
 
@@ -65,7 +65,7 @@ public class InstancesInfoService {
             @ValidPageRequest(filterTemplateName = INSTANCES_INFO) PageRequestDto pageRequestDto) {
         log.info("Gets instances info next page: {}", pageRequestDto);
         Sort sort = buildSort(pageRequestDto.getSortField(), CREATED_DATE, pageRequestDto.isAscending());
-        var globalFilterFields = filterService.getGlobalFilterFields(INSTANCES_INFO);
+        var globalFilterFields = filterTemplateService.getGlobalFilterFields(INSTANCES_INFO);
         var filter = new InstancesInfoFilter(pageRequestDto.getSearchQuery(), globalFilterFields,
                 pageRequestDto.getFilters());
         var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort);

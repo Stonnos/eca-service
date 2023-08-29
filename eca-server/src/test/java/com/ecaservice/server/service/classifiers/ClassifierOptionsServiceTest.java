@@ -3,7 +3,7 @@ package com.ecaservice.server.service.classifiers;
 import com.ecaservice.classifier.options.model.AdaBoostOptions;
 import com.ecaservice.classifier.options.model.LogisticOptions;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.mapping.ClassifierOptionsDatabaseModelMapperImpl;
@@ -69,7 +69,7 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
     @MockBean
     private UserService userService;
     @MockBean
-    private FilterService filterService;
+    private FilterTemplateService filterTemplateService;
     @MockBean
     private ClassifierOptionsProcessor classifierOptionsProcessor;
     @MockBean

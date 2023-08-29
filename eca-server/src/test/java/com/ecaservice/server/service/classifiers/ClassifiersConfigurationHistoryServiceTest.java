@@ -1,6 +1,6 @@
 package com.ecaservice.server.service.classifiers;
 
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.mapping.ClassifiersConfigurationHistoryMapperImpl;
 import com.ecaservice.server.model.entity.ClassifiersConfiguration;
@@ -51,7 +51,7 @@ class ClassifiersConfigurationHistoryServiceTest extends AbstractJpaTest {
     @Inject
     private ClassifiersConfigurationHistoryService classifiersConfigurationHistoryService;
     @MockBean
-    private FilterService filterService;
+    private FilterTemplateService filterTemplateService;
     @MockBean
     private UserService userService;
     @MockBean
@@ -72,7 +72,7 @@ class ClassifiersConfigurationHistoryServiceTest extends AbstractJpaTest {
 
     @Test
     void testGetClassifiersConfigurationHistory() {
-        when(filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIERS_CONFIGURATION_HISTORY))
+        when(filterTemplateService.getGlobalFilterFields(FilterTemplateType.CLASSIFIERS_CONFIGURATION_HISTORY))
                 .thenReturn(List.of(CREATED_BY, MESSAGE_TEXT, ACTION_TYPE));
         var classifiersConfiguration = createAndSaveConfiguration();
         saveClassifiersConfigurationHistory(classifiersConfiguration,

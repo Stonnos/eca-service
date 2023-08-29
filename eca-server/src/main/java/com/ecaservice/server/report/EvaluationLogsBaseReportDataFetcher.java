@@ -1,6 +1,6 @@
 package com.ecaservice.server.report;
 
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.report.data.fetcher.AbstractBaseReportDataFetcher;
 import com.ecaservice.server.mapping.EvaluationLogMapper;
 import com.ecaservice.server.model.entity.EvaluationLog;
@@ -43,7 +43,7 @@ public class EvaluationLogsBaseReportDataFetcher extends
      * @param evaluationLogMapper      - evaluation log mapper bean
      */
     @Inject
-    public EvaluationLogsBaseReportDataFetcher(FilterService filterService,
+    public EvaluationLogsBaseReportDataFetcher(FilterTemplateService filterService,
                                                InstancesInfoRepository instancesInfoRepository,
                                                EvaluationLogDataService evaluationLogDataService,
                                                EvaluationLogMapper evaluationLogMapper) {

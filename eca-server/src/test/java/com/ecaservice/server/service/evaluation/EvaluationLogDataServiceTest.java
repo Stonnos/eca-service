@@ -1,6 +1,6 @@
 package com.ecaservice.server.service.evaluation;
 
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.TestHelperUtils;
@@ -92,7 +92,7 @@ class EvaluationLogDataServiceTest extends AbstractJpaTest {
     private EvaluationLogMapper evaluationLogMapper;
 
     @Mock
-    private FilterService filterService;
+    private FilterTemplateService filterTemplateService;
     @Mock
     private ErsService ersService;
     @Mock
@@ -108,7 +108,7 @@ class EvaluationLogDataServiceTest extends AbstractJpaTest {
         instancesInfo = TestHelperUtils.createInstancesInfo();
         instancesInfoRepository.save(instancesInfo);
         evaluationLogDataService =
-                new EvaluationLogDataService(appProperties, filterService, evaluationLogMapper, classifierOptionsProcessor,
+                new EvaluationLogDataService(appProperties, filterTemplateService, evaluationLogMapper, classifierOptionsProcessor,
                         ersService, entityManager, objectStorageService, evaluationLogRepository,
                         evaluationResultsRequestEntityRepository);
         evaluationLogDataService.initialize();
@@ -239,7 +239,7 @@ class EvaluationLogDataServiceTest extends AbstractJpaTest {
                 new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, EvaluationLog_.CREATION_DATE, false, "car", newArrayList());
         pageRequestDto.getFilters().add(new FilterRequestDto(EvaluationLog_.REQUEST_STATUS,
                 Collections.singletonList(RequestStatus.FINISHED.name()), MatchMode.EQUALS));
-        when(filterService.getGlobalFilterFields(FilterTemplateType.EVALUATION_LOG)).thenReturn(
+        when(filterTemplateService.getGlobalFilterFields(FilterTemplateType.EVALUATION_LOG)).thenReturn(
                 Arrays.asList(CLASSIFIER_INFO_CLASSIFIER_NAME, EvaluationLog_.REQUEST_ID,
                         INSTANCES_INFO_RELATION_NAME));
         mockClassifiersDictionary();
@@ -413,6 +413,6 @@ class EvaluationLogDataServiceTest extends AbstractJpaTest {
                 KNearestNeighbours.class.getSimpleName()));
         classifiersDictionary.getValues().add(new FilterDictionaryValueDto(NeuralNetwork.class.getSimpleName(),
                 NeuralNetwork.class.getSimpleName()));
-        when(filterService.getFilterDictionary(CLASSIFIER_NAME)).thenReturn(classifiersDictionary);
+        when(filterTemplateService.getFilterDictionary(CLASSIFIER_NAME)).thenReturn(classifiersDictionary);
     }
 }

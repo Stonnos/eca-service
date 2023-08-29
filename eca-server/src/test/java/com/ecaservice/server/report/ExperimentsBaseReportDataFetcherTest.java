@@ -1,7 +1,7 @@
 package com.ecaservice.server.report;
 
 import com.ecaservice.base.model.ExperimentType;
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.report.model.BaseReportBean;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.TestHelperUtils;
@@ -55,7 +55,7 @@ class ExperimentsBaseReportDataFetcherTest extends AbstractJpaTest {
     @MockBean
     private ObjectStorageService objectStorageService;
     @MockBean
-    private FilterService filterService;
+    private FilterTemplateService filterTemplateService;
     @MockBean
     private ExperimentStepProcessor experimentStepProcessor;
 

@@ -2,12 +2,14 @@ package com.ecaservice.server.service.experiment;
 
 import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
 import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
+import com.ecaservice.server.bpm.model.ExperimentModel;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.filter.ExperimentFilter;
+import com.ecaservice.server.mapping.ExperimentMapper;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.projections.RequestStatusStatistics;
 import com.ecaservice.server.repository.ExperimentRepository;
@@ -59,7 +61,8 @@ public class ExperimentDataService {
     private final ObjectStorageService objectStorageService;
     private final EntityManager entityManager;
     private final AppProperties appProperties;
-    private final FilterService filterService;
+    private final FilterTemplateService filterTemplateService;
+    private final ExperimentMapper experimentMapper;
 
     /**
      * Removes experiment model file from object storage.
@@ -111,7 +114,7 @@ public class ExperimentDataService {
             @ValidPageRequest(filterTemplateName = EXPERIMENT) PageRequestDto pageRequestDto) {
         log.info("Gets experiments next page: {}", pageRequestDto);
         Sort sort = buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
-        List<String> globalFilterFields = filterService.getGlobalFilterFields(EXPERIMENT);
+        List<String> globalFilterFields = filterTemplateService.getGlobalFilterFields(EXPERIMENT);
         ExperimentFilter filter =
                 new ExperimentFilter(pageRequestDto.getSearchQuery(), globalFilterFields, pageRequestDto.getFilters());
         var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort);
@@ -175,7 +178,7 @@ public class ExperimentDataService {
     }
 
     private ChartDto populateExperimentsChartData(Map<String, Long> statisticsMap) {
-        var experimentTypesDictionary = filterService.getFilterDictionary(FilterDictionaries.EXPERIMENT_TYPE);
+        var experimentTypesDictionary = filterTemplateService.getFilterDictionary(FilterDictionaries.EXPERIMENT_TYPE);
         return calculateChartData(experimentTypesDictionary, statisticsMap);
     }
 
@@ -199,5 +202,16 @@ public class ExperimentDataService {
         return S3ContentResponseDto.builder()
                 .contentUrl(contentUrl)
                 .build();
+    }
+
+    /**
+     * Gets experiment model by id.
+     *
+     * @param id - experiment id
+     * @return experiment model
+     */
+    public ExperimentModel getExperimentModel(Long id) {
+        var experiment = getById(id);
+        return experimentMapper.mapToModel(experiment);
     }
 }

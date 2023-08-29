@@ -6,7 +6,7 @@ import com.ecaservice.audit.mapping.AuditLogMapperImpl;
 import com.ecaservice.audit.report.AuditLogsBaseReportDataFetcher;
 import com.ecaservice.audit.service.AuditLogService;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.oauth2.test.controller.AbstractControllerTest;
 import com.ecaservice.web.dto.model.AuditLogDto;
 import com.ecaservice.web.dto.model.PageDto;
@@ -55,7 +55,7 @@ class AuditLogControllerTest extends AbstractControllerTest {
     @MockBean
     private AuditLogService auditLogService;
     @MockBean
-    private FilterService filterService;
+    private FilterTemplateService filterTemplateService;
     @MockBean
     private AuditLogsBaseReportDataFetcher auditLogsBaseReportDataFetcher;
 
@@ -94,7 +94,7 @@ class AuditLogControllerTest extends AbstractControllerTest {
 
     @Test
     void testGetAuditLogFilterTemplateBadRequest() throws Exception {
-        when(filterService.getFilterFields(AUDIT_LOG_TEMPLATE)).thenThrow(EntityNotFoundException.class);
+        when(filterTemplateService.getFilterFields(AUDIT_LOG_TEMPLATE)).thenThrow(EntityNotFoundException.class);
         mockMvc.perform(get(AUDIT_LOG_TEMPLATE_URL)
                 .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isBadRequest());
@@ -103,7 +103,7 @@ class AuditLogControllerTest extends AbstractControllerTest {
     @Test
     void testGetAuditLogFilterTemplateOk() throws Exception {
         var filterFieldDtoList = Collections.singletonList(createFilterFieldDto());
-        when(filterService.getFilterFields(AUDIT_LOG_TEMPLATE)).thenReturn(filterFieldDtoList);
+        when(filterTemplateService.getFilterFields(AUDIT_LOG_TEMPLATE)).thenReturn(filterFieldDtoList);
         mockMvc.perform(get(AUDIT_LOG_TEMPLATE_URL)
                 .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk())

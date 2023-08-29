@@ -2,7 +2,7 @@ package com.ecaservice.data.storage.service.impl;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.audit.annotation.Audit;
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.data.storage.entity.AttributeEntity;
 import com.ecaservice.data.storage.entity.AttributeType;
 import com.ecaservice.data.storage.entity.InstancesEntity;
@@ -64,7 +64,7 @@ public class StorageServiceImpl implements StorageService {
     private static final String ID_COLUMN_NAME_FORMAT = "id_%s";
     private static final String TABLE_NAME_FORMAT = "data_set_%s";
 
-    private final FilterService filterService;
+    private final FilterTemplateService filterTemplateService;
     private final InstancesService instancesService;
     private final AttributeService attributeService;
     private final UserService userService;
@@ -79,7 +79,7 @@ public class StorageServiceImpl implements StorageService {
     public Page<InstancesEntity> getNextPage(PageRequestDto pageRequestDto) {
         log.info("Gets instances next page: {}", pageRequestDto);
         Sort sort = buildSort(pageRequestDto.getSortField(), CREATED, pageRequestDto.isAscending());
-        var globalFilterFields = filterService.getGlobalFilterFields(INSTANCES_TEMPLATE);
+        var globalFilterFields = filterTemplateService.getGlobalFilterFields(INSTANCES_TEMPLATE);
         var filter =
                 new InstancesFilter(pageRequestDto.getSearchQuery(), globalFilterFields, pageRequestDto.getFilters());
         var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort);

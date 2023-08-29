@@ -1,6 +1,7 @@
 package com.ecaservice.server.mapping;
 
 import com.ecaservice.base.model.ExperimentRequest;
+import com.ecaservice.server.bpm.model.ExperimentModel;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.experiment.AbstractExperimentRequestData;
@@ -69,6 +70,14 @@ public abstract class ExperimentMapper extends AbstractEvaluationMapper {
     @Mapping(target = "numTests", ignore = true)
     @Mapping(target = "seed", ignore = true)
     public abstract ExperimentDto map(Experiment experiment);
+
+    /**
+     * Maps experiment entity to experiment bpmn model.
+     *
+     * @param experiment - experiment entity
+     * @return experiment bpmn model
+     */
+    public abstract ExperimentModel mapToModel(Experiment experiment);
 
     /**
      * Maps experiments entities to experiments dto models.

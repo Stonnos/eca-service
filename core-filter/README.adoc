@@ -152,7 +152,7 @@ spring:
 @RequiredArgsConstructor
 public class FilterController {
 
-    private final FilterService filterService;
+    private final FilterTemplateService filterTemplateService;
 
     /**
      * Gets filter fields.
@@ -161,7 +161,7 @@ public class FilterController {
      */
     @GetMapping(value = "/fields")
     public List<FilterFieldDto> getFilterFields() {
-        return filterService.getFilterFields("filterName");
+        return filterTemplateService.getFilterFields("filterName");
     }
 
     /**
@@ -171,7 +171,7 @@ public class FilterController {
      */
     @GetMapping(value = "/dictionary")
     public FilterDictionaryDto getFilterDictionary() {
-        return filterService.getFilterDictionary("dictionaryName");
+        return filterTemplateService.getFilterDictionary("dictionaryName");
     }
 }
 ----
@@ -185,7 +185,7 @@ public class FilterController {
 @RequiredArgsConstructor
 public class AppService {
 
-    private final FilterService filterService;
+    private final FilterTemplateService filterTemplateService;
     private final MyEntityRepository myEntityRepository;
 
     public Page<MyEntity> getNextPage(PageRequestDto pageRequestDto) {
