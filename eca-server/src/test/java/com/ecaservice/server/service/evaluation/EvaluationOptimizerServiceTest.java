@@ -99,7 +99,7 @@ import static org.mockito.Mockito.when;
 @Import({ExecutorConfiguration.class, ClassifiersOptionsAutoConfiguration.class, AppProperties.class,
         CrossValidationConfig.class, EvaluationRequestService.class, InstancesInfoMapperImpl.class,
         ClassifierOptionsRequestModelMapperImpl.class, ClassifierReportMapperImpl.class,
-        EvaluationRequestMapperImpl.class, ClassifierOptionsRequestMapperImpl.class,
+        EvaluationRequestMapperImpl.class, ClassifierOptionsRequestMapperImpl.class, EvaluationLogService.class,
         ErsConfig.class, EvaluationLogMapperImpl.class, ClassifiersProperties.class,
         EvaluationService.class, ErsResponseStatusMapperImpl.class, OptimalClassifierOptionsFetcherImpl.class,
         InstancesInfoMapperImpl.class, ErsRequestService.class, InstancesInfoService.class,

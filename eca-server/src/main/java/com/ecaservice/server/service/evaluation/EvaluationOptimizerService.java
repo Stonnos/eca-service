@@ -67,6 +67,7 @@ public class EvaluationOptimizerService {
         EvaluationRequestDataModel evaluationRequest =
                 evaluationRequestMapper.map(instancesRequestDataModel, crossValidationConfig);
         evaluationRequest.setClassifier(classifier);
+        evaluationRequest.setRequestId(UUID.randomUUID().toString());
         var evaluationResultsDataModel = evaluationRequestService.processRequest(evaluationRequest);
         log.info("Model has been evaluated for data uuid [{}] with options [{}], options request id [{}]",
                 instancesRequestDataModel.getDataUuid(), options, instancesRequestDataModel.getRequestId());

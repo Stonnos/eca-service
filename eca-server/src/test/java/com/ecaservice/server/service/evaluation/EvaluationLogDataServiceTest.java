@@ -60,13 +60,13 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests for checking {@link EvaluationLogService} functionality.
+ * Unit tests for checking {@link EvaluationLogDataService} functionality.
  *
  * @author Roman Batygin
  */
 @Import({AppProperties.class, ClassifierInfoMapperImpl.class, EvaluationLogMapperImpl.class,
         InstancesInfoMapperImpl.class, DateTimeConverter.class})
-class EvaluationLogServiceTest extends AbstractJpaTest {
+class EvaluationLogDataServiceTest extends AbstractJpaTest {
 
     private static final String MODEL_DOWNLOAD_URL = "http://localhost:9000/classifier";
 
@@ -99,7 +99,7 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
     private ClassifierOptionsProcessor classifierOptionsProcessor;
     @Mock
     private ObjectStorageService objectStorageService;
-    private EvaluationLogService evaluationLogService;
+    private EvaluationLogDataService evaluationLogDataService;
 
     private InstancesInfo instancesInfo;
 
@@ -107,11 +107,11 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
     public void init() {
         instancesInfo = TestHelperUtils.createInstancesInfo();
         instancesInfoRepository.save(instancesInfo);
-        evaluationLogService =
-                new EvaluationLogService(appProperties, filterService, evaluationLogMapper, classifierOptionsProcessor,
+        evaluationLogDataService =
+                new EvaluationLogDataService(appProperties, filterService, evaluationLogMapper, classifierOptionsProcessor,
                         ersService, entityManager, objectStorageService, evaluationLogRepository,
                         evaluationResultsRequestEntityRepository);
-        evaluationLogService.initialize();
+        evaluationLogDataService.initialize();
     }
 
     @Override
@@ -142,7 +142,7 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
         evaluationLogRepository.save(
                 TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.IN_PROGRESS,
                         instancesInfo));
-        var requestStatusStatisticsDto = evaluationLogService.getRequestStatusesStatistics();
+        var requestStatusStatisticsDto = evaluationLogDataService.getRequestStatusesStatistics();
         assertThat(requestStatusStatisticsDto).isNotNull();
         assertThat(requestStatusStatisticsDto.getNewRequestsCount()).isEqualTo(2L);
         assertThat(requestStatusStatisticsDto.getInProgressRequestsCount()).isEqualTo(1L);
@@ -187,7 +187,7 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
                 Collections.singletonList(RequestStatus.FINISHED.name()), MatchMode.EQUALS));
         pageRequestDto.getFilters().add(
                 new FilterRequestDto(CLASSIFIER_INFO_CLASSIFIER_NAME, Collections.singletonList("C"), MatchMode.LIKE));
-        Page<EvaluationLog> evaluationLogPage = evaluationLogService.getNextPage(pageRequestDto);
+        Page<EvaluationLog> evaluationLogPage = evaluationLogDataService.getNextPage(pageRequestDto);
         List<EvaluationLog> evaluationLogs = evaluationLogPage.getContent();
         assertThat(evaluationLogPage).isNotNull();
         assertThat(evaluationLogPage.getTotalElements()).isEqualTo(2);
@@ -213,7 +213,7 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
                         newArrayList());
         pageRequestDto.getFilters().add(new FilterRequestDto(INSTANCES_INFO_ID,
                 Collections.singletonList(String.valueOf(evaluationLog.getInstancesInfo().getId())), MatchMode.EQUALS));
-        Page<EvaluationLog> evaluationLogPage = evaluationLogService.getNextPage(pageRequestDto);
+        Page<EvaluationLog> evaluationLogPage = evaluationLogDataService.getNextPage(pageRequestDto);
         assertThat(evaluationLogPage).isNotNull();
         assertThat(evaluationLogPage.getTotalElements()).isOne();
     }
@@ -243,7 +243,7 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
                 Arrays.asList(CLASSIFIER_INFO_CLASSIFIER_NAME, EvaluationLog_.REQUEST_ID,
                         INSTANCES_INFO_RELATION_NAME));
         mockClassifiersDictionary();
-        var evaluationLogPage = evaluationLogService.getEvaluationLogsPage(pageRequestDto);
+        var evaluationLogPage = evaluationLogDataService.getEvaluationLogsPage(pageRequestDto);
         assertThat(evaluationLogPage).isNotNull();
         assertThat(evaluationLogPage.getTotalCount()).isOne();
     }
@@ -316,7 +316,7 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
     void testGetClassifiersStatisticsData() {
         var evaluationLogs = createAndSaveTestDataForGetClassifiersStatisticsData();
         mockClassifiersDictionary();
-        var statisticsData = evaluationLogService.getClassifiersStatisticsData(LocalDate.now(), LocalDate.now());
+        var statisticsData = evaluationLogDataService.getClassifiersStatisticsData(LocalDate.now(), LocalDate.now());
         assertThat(statisticsData).isNotNull();
         assertThat(statisticsData.getTotal()).isEqualTo(evaluationLogs.size());
         verifyChartItem(statisticsData.getDataItems(), CART.class.getSimpleName(), 2L);
@@ -330,7 +330,7 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
         EvaluationLog evaluationLog = createAndSaveFinishedEvaluationLog();
         when(objectStorageService.getObjectPresignedProxyUrl(any(GetPresignedUrlObject.class)))
                 .thenReturn(MODEL_DOWNLOAD_URL);
-        var s3ContentResponseDto = evaluationLogService.getModelContentUrl(evaluationLog.getId());
+        var s3ContentResponseDto = evaluationLogDataService.getModelContentUrl(evaluationLog.getId());
         assertThat(s3ContentResponseDto).isNotNull();
         assertThat(s3ContentResponseDto.getContentUrl()).isEqualTo(MODEL_DOWNLOAD_URL);
     }
@@ -338,7 +338,7 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
     @Test
     void testSuccessRemoveClassifierModel() {
         EvaluationLog evaluationLog = createAndSaveFinishedEvaluationLog();
-        evaluationLogService.removeModel(evaluationLog);
+        evaluationLogDataService.removeModel(evaluationLog);
         EvaluationLog actual = evaluationLogRepository.findById(evaluationLog.getId()).orElse(null);
         assertThat(actual).isNotNull();
         assertThat(actual.getModelPath()).isNull();
@@ -374,7 +374,7 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
     }
 
     private void testGetEvaluationLogDetails(EvaluationLog evaluationLog, EvaluationResultsStatus expectedStatus) {
-        EvaluationLogDetailsDto evaluationLogDetailsDto = evaluationLogService.getEvaluationLogDetails(evaluationLog);
+        EvaluationLogDetailsDto evaluationLogDetailsDto = evaluationLogDataService.getEvaluationLogDetails(evaluationLog);
         Assertions.assertThat(evaluationLogDetailsDto).isNotNull();
         Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsDto()).isNotNull();
         Assertions.assertThat(

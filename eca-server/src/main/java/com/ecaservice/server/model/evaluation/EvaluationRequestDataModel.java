@@ -13,6 +13,11 @@ import weka.classifiers.AbstractClassifier;
 public class EvaluationRequestDataModel {
 
     /**
+     * Request id
+     */
+    private String requestId;
+
+    /**
      * Train data uuid
      */
     private String dataUuid;

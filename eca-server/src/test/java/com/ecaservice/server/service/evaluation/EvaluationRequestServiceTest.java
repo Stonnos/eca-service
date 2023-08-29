@@ -55,7 +55,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({ExecutorConfiguration.class, CrossValidationConfig.class,
+@Import({ExecutorConfiguration.class, CrossValidationConfig.class, EvaluationLogService.class,
         ClassifiersProperties.class, AppProperties.class, InstancesInfoService.class,
         EvaluationLogMapperImpl.class, EvaluationService.class, DateTimeConverter.class,
         InstancesInfoMapperImpl.class, ClassifierInfoMapperImpl.class})
@@ -83,14 +83,16 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
     private AppProperties appProperties;
     @Inject
     private InstancesInfoService instancesInfoService;
+    @Inject
+    private EvaluationLogService evaluationLogService;
 
     @Mock
     private ClassifierInitializerService classifierInitializerService;
-    @Mock
+    @MockBean
     private ClassifierOptionsAdapter classifierOptionsAdapter;
     @Mock
     private ObjectStorageService objectStorageService;
-    @Mock
+    @MockBean
     private InstancesMetaDataService instancesMetaDataService;
     @Mock
     private InstancesLoaderService instancesLoaderService;
@@ -100,10 +102,9 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
     @Override
     public void init() {
         evaluationRequestService =
-                new EvaluationRequestService(appProperties, classifiersProperties, crossValidationConfig,
-                        calculationExecutorService, evaluationService, evaluationLogRepository, evaluationLogMapper,
-                        classifierInitializerService, classifierOptionsAdapter, objectStorageService,
-                        instancesInfoService, instancesMetaDataService, instancesLoaderService);
+                new EvaluationRequestService(appProperties, classifiersProperties, calculationExecutorService,
+                        evaluationService, classifierInitializerService, objectStorageService, instancesLoaderService,
+                        evaluationLogService);
         mockLoadInstances();
     }
 
@@ -138,10 +139,9 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
         EvaluationRequestDataModel request = TestHelperUtils.createEvaluationRequestData();
         CalculationExecutorServiceImpl executorService = mock(CalculationExecutorServiceImpl.class);
         EvaluationRequestService service =
-                new EvaluationRequestService(appProperties, classifiersProperties, crossValidationConfig,
-                        executorService, evaluationService, evaluationLogRepository, evaluationLogMapper,
-                        classifierInitializerService, classifierOptionsAdapter, objectStorageService,
-                        instancesInfoService, instancesMetaDataService, instancesLoaderService);
+                new EvaluationRequestService(appProperties, classifiersProperties, executorService,
+                        evaluationService, classifierInitializerService, objectStorageService, instancesLoaderService,
+                        evaluationLogService);
         doThrow(new RuntimeException("Error")).when(executorService)
                 .execute(any(), anyLong(), any(TimeUnit.class));
         EvaluationResultsDataModel evaluationResultsDataModel = service.processRequest(request);
@@ -172,10 +172,9 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
         EvaluationRequestDataModel request = TestHelperUtils.createEvaluationRequestData();
         CalculationExecutorServiceImpl executorService = mock(CalculationExecutorServiceImpl.class);
         EvaluationRequestService service =
-                new EvaluationRequestService(appProperties, classifiersProperties, crossValidationConfig,
-                        executorService, evaluationService, evaluationLogRepository, evaluationLogMapper,
-                        classifierInitializerService, classifierOptionsAdapter, objectStorageService,
-                        instancesInfoService, instancesMetaDataService, instancesLoaderService);
+                new EvaluationRequestService(appProperties, classifiersProperties, executorService,
+                        evaluationService, classifierInitializerService, objectStorageService, instancesLoaderService,
+                        evaluationLogService);
         doThrow(TimeoutException.class).when(executorService).execute(any(), anyLong(), any(TimeUnit.class));
         EvaluationResultsDataModel evaluationResultsDataModel = service.processRequest(request);
         assertThat(evaluationResultsDataModel.getStatus()).isEqualTo(RequestStatus.TIMEOUT);

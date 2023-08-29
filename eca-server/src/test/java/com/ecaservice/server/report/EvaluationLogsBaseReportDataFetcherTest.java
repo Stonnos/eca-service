@@ -20,7 +20,7 @@ import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.classifiers.ClassifierOptionsProcessor;
 import com.ecaservice.server.service.ers.ErsService;
-import com.ecaservice.server.service.evaluation.EvaluationLogService;
+import com.ecaservice.server.service.evaluation.EvaluationLogDataService;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -81,12 +81,13 @@ class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
 
     @Override
     public void init() {
-        EvaluationLogService evaluationLogService =
-                new EvaluationLogService(appProperties, filterService, evaluationLogMapper, classifierOptionsProcessor,
+        EvaluationLogDataService evaluationLogDataService =
+                new EvaluationLogDataService(appProperties, filterService, evaluationLogMapper, classifierOptionsProcessor,
                         ersService, entityManager, objectStorageService, evaluationLogRepository,
                         evaluationResultsRequestEntityRepository);
         evaluationLogsBaseReportDataFetcher =
-                new EvaluationLogsBaseReportDataFetcher(filterService, instancesInfoRepository, evaluationLogService,
+                new EvaluationLogsBaseReportDataFetcher(filterService, instancesInfoRepository,
+                        evaluationLogDataService,
                         evaluationLogMapper);
         when(filterService.getFilterDictionary(CLASSIFIER_NAME)).thenReturn(createFilterDictionaryDto());
     }

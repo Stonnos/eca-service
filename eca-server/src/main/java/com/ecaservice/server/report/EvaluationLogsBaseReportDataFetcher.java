@@ -9,7 +9,7 @@ import com.ecaservice.server.report.customize.InstancesInfoFilterReportCustomize
 import com.ecaservice.server.report.model.BaseReportType;
 import com.ecaservice.server.report.model.EvaluationLogBean;
 import com.ecaservice.server.repository.InstancesInfoRepository;
-import com.ecaservice.server.service.evaluation.EvaluationLogService;
+import com.ecaservice.server.service.evaluation.EvaluationLogDataService;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
@@ -30,25 +30,25 @@ import static com.ecaservice.server.service.filter.dictionary.FilterDictionaries
 public class EvaluationLogsBaseReportDataFetcher extends
         AbstractBaseReportDataFetcher<EvaluationLog, EvaluationLogBean> {
 
-    private final EvaluationLogService evaluationLogService;
+    private final EvaluationLogDataService evaluationLogDataService;
     private final EvaluationLogMapper evaluationLogMapper;
     private final InstancesInfoRepository instancesInfoRepository;
 
     /**
      * Constructor with spring dependency injection.
      *
-     * @param filterService           - filter service bean
-     * @param instancesInfoRepository - instances info repository
-     * @param evaluationLogService    - evaluation log service bean
-     * @param evaluationLogMapper     - evaluation log mapper bean
+     * @param filterService            - filter service bean
+     * @param instancesInfoRepository  - instances info repository
+     * @param evaluationLogDataService - evaluation log service bean
+     * @param evaluationLogMapper      - evaluation log mapper bean
      */
     @Inject
     public EvaluationLogsBaseReportDataFetcher(FilterService filterService,
                                                InstancesInfoRepository instancesInfoRepository,
-                                               EvaluationLogService evaluationLogService,
+                                               EvaluationLogDataService evaluationLogDataService,
                                                EvaluationLogMapper evaluationLogMapper) {
         super(BaseReportType.EVALUATION_LOGS.name(), FilterTemplateType.EVALUATION_LOG, filterService);
-        this.evaluationLogService = evaluationLogService;
+        this.evaluationLogDataService = evaluationLogDataService;
         this.evaluationLogMapper = evaluationLogMapper;
         this.instancesInfoRepository = instancesInfoRepository;
     }
@@ -63,7 +63,7 @@ public class EvaluationLogsBaseReportDataFetcher extends
 
     @Override
     protected Page<EvaluationLog> getItemsPage(PageRequestDto pageRequestDto) {
-        return evaluationLogService.getNextPage(pageRequestDto);
+        return evaluationLogDataService.getNextPage(pageRequestDto);
     }
 
     @Override

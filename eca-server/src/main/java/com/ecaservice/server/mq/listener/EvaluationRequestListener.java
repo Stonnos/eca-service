@@ -17,6 +17,12 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
+import java.util.UUID;
+
+import static com.ecaservice.common.web.util.LogHelper.EV_REQUEST_ID;
+import static com.ecaservice.common.web.util.LogHelper.TX_ID;
+import static com.ecaservice.common.web.util.LogHelper.putMdc;
+import static com.ecaservice.common.web.util.LogHelper.putMdcIfAbsent;
 
 /**
  * Rabbit MQ listener for evaluation request messages.
@@ -43,6 +49,7 @@ public class EvaluationRequestListener {
         MessageProperties inboundMessageProperties = inboundMessage.getMessageProperties();
         log.info("Received evaluation request with correlation id [{}]", inboundMessageProperties.getCorrelationId());
         var evaluationRequestDataModel = evaluationLogMapper.map(evaluationRequest);
+        evaluationRequestDataModel.setRequestId(UUID.randomUUID().toString());
         EvaluationResultsDataModel evaluationResultsDataModel =
                 evaluationRequestService.processRequest(evaluationRequestDataModel);
         log.info("Evaluation response [{}] with status [{}] has been built.",
