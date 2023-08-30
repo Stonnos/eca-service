@@ -37,7 +37,6 @@ import static org.mockito.Mockito.when;
 class ExperimentMapperTest {
 
     private static final String EXPERIMENT_PATH = "experiment.model";
-    private static final String DATA_PATH = "data.model";
 
     @Inject
     private CrossValidationConfig crossValidationConfig;
@@ -94,7 +93,6 @@ class ExperimentMapperTest {
         experiment.setStartDate(LocalDateTime.now().plusHours(1L));
         experiment.setEndDate(experiment.getStartDate().minusMinutes(1L));
         experiment.setDeletedDate(experiment.getEndDate().plusMinutes(1L));
-        experiment.setTrainingDataPath(DATA_PATH);
         experiment.setModelPath(EXPERIMENT_PATH);
         experiment.setNumFolds(crossValidationConfig.getNumFolds());
         experiment.setNumTests(crossValidationConfig.getNumTests());
@@ -144,7 +142,6 @@ class ExperimentMapperTest {
         experiment.setStartDate(LocalDateTime.now());
         experiment.setEndDate(LocalDateTime.now());
         experiment.setDeletedDate(LocalDateTime.now());
-        experiment.setTrainingDataPath(DATA_PATH);
         experiment.setModelPath(EXPERIMENT_PATH);
         experiment.setMaxPctCorrect(BigDecimal.TEN);
         ExperimentBean experimentBean = experimentMapper.mapToBean(experiment);

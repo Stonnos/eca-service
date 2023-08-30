@@ -16,7 +16,6 @@ import com.ecaservice.server.service.experiment.ExperimentProgressService;
 import com.ecaservice.server.service.experiment.ExperimentStepService;
 import eca.dataminer.AbstractExperiment;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
@@ -102,12 +101,8 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
     private Instances getInstances(ExperimentContext experimentContext) {
         StopWatch stopWatch = experimentContext.getStopWatch();
         Experiment experiment = experimentContext.getExperiment();
-        if (StringUtils.isEmpty(experiment.getTrainingDataPath())) {
-            throw new ExperimentException(String.format("Training data path is not specified for experiment [%s]!",
-                    experiment.getRequestId()));
-        }
         stopWatch.start(String.format("Loading data for experiment [%s]", experiment.getRequestId()));
-        Instances data = instancesLoaderService.loadInstances(experiment.getTrainingDataPath());
+        Instances data = instancesLoaderService.loadInstances(experiment.getTrainingDataUuid());
         Attribute classAttribute = data.attribute(experiment.getInstancesInfo().getClassName());
         data.setClass(classAttribute);
         stopWatch.stop();

@@ -121,7 +121,6 @@ public class TestHelperUtils {
     public static final int PAGE_NUMBER = 0;
 
     private static final String TEST_MAIL_RU = "test@mail.ru";
-    private static final String TRAINING_DATA_PATH = "data.model";
     private static final String EXPERIMENT_PATH = "experiment.model";
     private static final String CLASSIFIERS_TEMPLATES_JSON = "classifiers-templates.json";
     private static final String ENSEMBLE_CLASSIFIER_TEMPLATES_JSON = "ensemble-classifiers-templates.json";
@@ -142,7 +141,7 @@ public class TestHelperUtils {
     private static final double MIN_ERROR_THRESHOLD = 0.0d;
     private static final double MAX_ERROR_THRESHOLD = 0.5d;
     private static final String RELATION_NAME = "Relation";
-    private static final String CLASS_NAME = "Class";
+    private static final String CLASS_NAME = "class";
     private static final int NUM_INSTANCES = 100;
     private static final int NUM_ATTRIBUTES = 10;
     private static final int NUM_CLASSES = 2;
@@ -350,7 +349,7 @@ public class TestHelperUtils {
         experiment.setCreationDate(LocalDateTime.now());
         experiment.setExperimentType(ExperimentType.KNN);
         experiment.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
-        experiment.setTrainingDataPath(TRAINING_DATA_PATH);
+        experiment.setTrainingDataUuid(UUID.randomUUID().toString());
         experiment.setModelPath(EXPERIMENT_PATH);
         experiment.setRequestId(requestId);
         experiment.setChannel(Channel.QUEUE);

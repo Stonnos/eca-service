@@ -1,8 +1,6 @@
 package com.ecaservice.server.service.experiment;
 
 import com.ecaservice.core.filter.service.FilterTemplateService;
-import com.ecaservice.s3.client.minio.exception.ObjectStorageException;
-import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.AssertionUtils;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
@@ -105,7 +103,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
         assertThat(experiment.getChannel()).isEqualTo(Channel.QUEUE);
         assertThat(experiment.getReplyTo()).isEqualTo(experimentMessageRequest.getReplyTo());
         assertThat(experiment.getCorrelationId()).isEqualTo(experimentMessageRequest.getCorrelationId());
-        assertThat(experiment.getTrainingDataPath()).isNotNull();
+        assertThat(experiment.getTrainingDataUuid()).isNotNull();
     }
 
     @Test

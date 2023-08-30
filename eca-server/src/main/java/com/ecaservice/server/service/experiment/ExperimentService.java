@@ -38,8 +38,6 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class ExperimentService {
 
-    private static final String EXPERIMENT_TRAIN_DATA_PATH_FORMAT = "experiment-train-data-%s.model";
-
     private static final List<ExperimentStepStatus> EXPERIMENT_STEP_STATUSES_TO_PROCESS =
             List.of(ExperimentStepStatus.READY, ExperimentStepStatus.FAILED);
 
@@ -71,11 +69,7 @@ public class ExperimentService {
             setAdditionalProperties(experiment, experimentRequest);
             experiment.setRequestStatus(RequestStatus.NEW);
             experiment.setRequestId(experimentRequest.getRequestId());
-            //TODO added experiment.data_uuid column, removed training_data_path column
-            //TODO removed experiment.class_index column
-          //  String objectPath = String.format(EXPERIMENT_TRAIN_DATA_PATH_FORMAT, experiment.getRequestId());
-         //   objectStorageService.uploadObject(experimentRequest.getData(), objectPath);
-            experiment.setTrainingDataPath(experimentRequest.getDataUuid());
+            experiment.setTrainingDataUuid(experimentRequest.getDataUuid());
             experiment.setCreationDate(LocalDateTime.now());
             experimentRepository.save(experiment);
             log.info("Experiment request [{}] has been created.", experiment.getRequestId());

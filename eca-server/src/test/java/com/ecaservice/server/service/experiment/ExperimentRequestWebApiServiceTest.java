@@ -100,7 +100,7 @@ class ExperimentRequestWebApiServiceTest extends AbstractJpaTest {
         assertThat(experiment.getRequestId()).isNotNull();
         assertThat(experiment.getCreationDate()).isNotNull();
         assertThat(experiment.getChannel()).isEqualTo(Channel.WEB);
-        assertThat(experiment.getTrainingDataPath()).isNotNull();
+        assertThat(experiment.getTrainingDataUuid()).isNotNull();
         assertThat(experiment.getCreatedBy()).isEqualTo(USER);
     }
 }

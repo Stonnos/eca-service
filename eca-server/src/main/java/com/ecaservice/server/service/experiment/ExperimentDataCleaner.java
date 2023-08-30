@@ -49,22 +49,6 @@ public class ExperimentDataCleaner {
         log.info("Experiments models removing has been finished.");
     }
 
-    /**
-     * Removes experiments training data files from S3.
-     */
-    @Locked(lockName = EXPERIMENTS_CRON_JOB_KEY, waitForLock = false)
-    public void removeExperimentsTrainingData() {
-        log.info("Starting to remove experiments training data.");
-        LocalDateTime dateTime = LocalDateTime.now().minusDays(appProperties.getNumberOfDaysForStorage());
-        var experimentIds = experimentRepository.findExperimentsTrainingDataToDelete(dateTime);
-        log.info("Obtained {} experiments to remove training data files", experimentIds.size());
-        processWithPagination(experimentIds, experimentRepository::findByIdIn,
-                experiments -> removeData(experiments, experimentDataService::removeExperimentTrainingData),
-                appProperties.getPageSize()
-        );
-        log.info("Experiments training data removing has been finished.");
-    }
-
     private void removeData(List<Experiment> experiments, Consumer<Experiment> removeDataConsumer) {
         experiments.forEach(experiment -> {
             putMdc(TX_ID, experiment.getRequestId());
