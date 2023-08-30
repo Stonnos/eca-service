@@ -1,4 +1,4 @@
-package com.ecaservice.server.service.ds;
+package com.ecaservice.server.service.client;
 
 import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.data.storage.dto.DsInternalApiErrorCode;
@@ -17,15 +17,15 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests for checking {@link DataStorageErrorHandler} class.
+ * Unit tests for checking {@link FeignClientErrorHandler} class.
  *
  * @author Roman Batygin
  */
-class DataStorageErrorHandlerTest {
+class FeignClientErrorHandlerTest {
 
     private static final String INVALID_RESPONSE = "response";
     private static final String INVALID_ERROR_CODE = "abc";
-    private final DataStorageErrorHandler dataStorageErrorHandler = new DataStorageErrorHandler();
+    private final FeignClientErrorHandler feignClientErrorHandler = new FeignClientErrorHandler();
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -33,7 +33,9 @@ class DataStorageErrorHandlerTest {
     void testValidErrorCodes() throws JsonProcessingException {
         for (DsInternalApiErrorCode expectedDsErrorCode : DsInternalApiErrorCode.values()) {
             var badRequestEx = mockErrorCodeException(expectedDsErrorCode.getCode());
-            var actualErrorCode = dataStorageErrorHandler.handleBadRequest(UUID.randomUUID().toString(), badRequestEx);
+            var actualErrorCode =
+                    feignClientErrorHandler.handleBadRequest(UUID.randomUUID().toString(), badRequestEx,
+                            DsInternalApiErrorCode.class);
             assertThat(actualErrorCode).isNotNull();
             assertThat(actualErrorCode).isEqualTo(expectedDsErrorCode);
         }
@@ -43,7 +45,8 @@ class DataStorageErrorHandlerTest {
     void testInvalidErrorCodes() throws JsonProcessingException {
         var badRequestEx = mockErrorCodeException(INVALID_ERROR_CODE);
         assertThrows(DataStorageException.class,
-                () -> dataStorageErrorHandler.handleBadRequest(UUID.randomUUID().toString(), badRequestEx));
+                () -> feignClientErrorHandler.handleBadRequest(UUID.randomUUID().toString(), badRequestEx,
+                        DsInternalApiErrorCode.class));
     }
 
     @Test
@@ -51,7 +54,8 @@ class DataStorageErrorHandlerTest {
         var badRequestEx = mock(FeignException.BadRequest.class);
         when(badRequestEx.contentUTF8()).thenReturn(INVALID_RESPONSE);
         assertThrows(DataStorageException.class,
-                () -> dataStorageErrorHandler.handleBadRequest(UUID.randomUUID().toString(), badRequestEx));
+                () -> feignClientErrorHandler.handleBadRequest(UUID.randomUUID().toString(), badRequestEx,
+                        DsInternalApiErrorCode.class));
     }
 
     private FeignException.BadRequest mockErrorCodeException(String errorCode) throws JsonProcessingException {
