@@ -1,11 +1,13 @@
 package com.ecaservice.data.loader.service;
 
 import com.ecaservice.common.web.exception.FileProcessingException;
+import com.ecaservice.common.web.exception.InternalServiceUnavailableException;
 import com.ecaservice.common.web.exception.InvalidFileException;
 import com.ecaservice.data.loader.dto.UploadInstancesResponseDto;
 import com.ecaservice.data.loader.entity.InstancesEntity;
 import com.ecaservice.data.loader.entity.InstancesObject;
 import com.ecaservice.data.loader.repository.InstancesRepository;
+import com.ecaservice.s3.client.minio.exception.ObjectStorageException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.data.file.model.InstancesModel;
 import lombok.Cleanup;
@@ -70,6 +72,10 @@ public class UploadInstancesService {
             log.error("There was an error while load data from file {}: {}", instancesFile.getOriginalFilename(),
                     ex.getMessage());
             throw new FileProcessingException(ex.getMessage());
+        } catch (ObjectStorageException ex) {
+            log.error("Object storage error while load data from file {}: {}", instancesFile.getOriginalFilename(),
+                    ex.getMessage());
+            throw new InternalServiceUnavailableException(ex.getMessage());
         }
     }
 
