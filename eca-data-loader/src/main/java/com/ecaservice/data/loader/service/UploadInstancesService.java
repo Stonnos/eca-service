@@ -30,7 +30,7 @@ import static com.ecaservice.data.loader.util.Utils.validateInstances;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class InstancesLoaderService {
+public class UploadInstancesService {
 
     private static final String INSTANCES_OBJECT_PATH_FORMAT = "instances-%s.json";
     private static final String JSON_EXTENSION = "json";

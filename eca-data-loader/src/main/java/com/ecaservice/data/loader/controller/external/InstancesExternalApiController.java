@@ -2,7 +2,7 @@ package com.ecaservice.data.loader.controller.external;
 
 import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.data.loader.dto.UploadInstancesResponseDto;
-import com.ecaservice.data.loader.service.InstancesLoaderService;
+import com.ecaservice.data.loader.service.UploadInstancesService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -32,7 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class InstancesExternalApiController {
 
-    private final InstancesLoaderService instancesLoaderService;
+    private final UploadInstancesService uploadInstancesService;
 
     /**
      * Uploads train data file to storage.
@@ -87,6 +87,6 @@ public class InstancesExternalApiController {
             @Parameter(description = "Training data file", required = true)
             @RequestParam MultipartFile instancesFile) {
         log.info("Request to upload train data file [{}]", instancesFile.getOriginalFilename());
-        return instancesLoaderService.uploadInstances(instancesFile);
+        return uploadInstancesService.uploadInstances(instancesFile);
     }
 }
