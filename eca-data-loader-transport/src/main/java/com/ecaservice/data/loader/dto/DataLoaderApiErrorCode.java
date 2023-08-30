@@ -16,7 +16,27 @@ public enum DataLoaderApiErrorCode implements ErrorDetails {
     /**
      * Invalid train data format
      */
-    INVALID_TRAIN_DATA_FORMAT("InvalidTrainDataFormat");
+    INVALID_TRAIN_DATA_FORMAT("InvalidTrainDataFormat"),
+
+    /**
+     * Max. upload size exceeded code
+     */
+    MAX_UPLOAD_SIZE_EXCEEDED_CODE("MaxUploadSizeExceeded"),
+
+    /**
+     * Data not found code
+     */
+    DATA_NOT_FOUND("DataNotFound"),
+
+    /**
+     * Process file error code
+     */
+    PROCESS_FILE_ERROR("ProcessFileError"),
+
+    /**
+     * Invalid file extension code
+     */
+    INVALID_FILE("InvalidFile");
 
     /**
      * Error code
