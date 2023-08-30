@@ -46,17 +46,17 @@ public class InstancesMetaDataService {
             log.info("Instances [{}] meta data has been fetched", uuid);
             return instancesMetaDataModel;
         } catch (FeignException.ServiceUnavailable | RetryableException ex) {
-            log.error("Service unavailable error [{}] while get valid instances with uuid [{}] from data storage: {}",
+            log.error("Service unavailable error [{}] while get instances [{}] meta data from data storage: {}",
                     ex.getClass().getSimpleName(), uuid, ex.getMessage());
             throw new InternalServiceUnavailableException(
-                    String.format("Data loader unavailable while get valid instances meta data with uuid [%s]", uuid));
+                    String.format("Data loader unavailable while get instances meta data with uuid [%s]", uuid));
         } catch (FeignException.BadRequest ex) {
-            log.error("Bad request error while get valid instances with uuid [{}] from data storage: {}", uuid,
+            log.error("Bad request error while get instances [{}] meta data from data storage: {}", uuid,
                     ex.getMessage());
             var errorCode =
                     feignClientErrorHandler.handleBadRequest(uuid, ex, DataLoaderApiErrorCode.class);
             String errorMessage =
-                    String.format("Bad request error while get valid instances with uuid [%s] from data storage", uuid);
+                    String.format("Bad request error while get instances [%s] meta data from data storage", uuid);
             throw new DataLoaderBadRequestException(errorCode, errorMessage);
         } catch (Exception ex) {
             log.error("Unknown error while get instances [{}] meta data: {}", uuid, ex.getMessage());
