@@ -28,9 +28,6 @@ eureka:
     registerWithEureka: false
     fetchRegistry: false
 
-app:
-  tempFilesLocation: /opt
-
 minio:
   url: http://localhost:9000
   accessKey: minio

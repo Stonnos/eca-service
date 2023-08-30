@@ -1,12 +1,6 @@
 [
   {
-    "fieldName": "page",
-    "code": "Min",
-    "errorMessage": "must be greater than or equal to 0"
-  },
-  {
-    "fieldName": "size",
-    "code": "Min",
-    "errorMessage": "must be greater than or equal to 1"
+    "code": "InvalidTrainDataFormat",
+    "errorMessage": "Got empty data list"
   }
 ]

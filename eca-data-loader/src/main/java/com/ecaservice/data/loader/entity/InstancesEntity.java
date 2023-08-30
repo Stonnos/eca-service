@@ -50,6 +50,12 @@ public class InstancesEntity {
     private Integer numAttributes;
 
     /**
+     * Classes number
+     */
+    @Column(name = "num_classes", nullable = false)
+    private Integer numClasses;
+
+    /**
      * Class attribute name
      */
     @Column(name = "class_name", nullable = false)
