@@ -356,7 +356,6 @@ public class TestHelperUtils {
         experiment.setChannel(Channel.QUEUE);
         experiment.setReplyTo(REPLY_TO);
         experiment.setCorrelationId(UUID.randomUUID().toString());
-        experiment.setClassIndex(0);
         experiment.setInstancesInfo(createInstancesInfo());
         return experiment;
     }

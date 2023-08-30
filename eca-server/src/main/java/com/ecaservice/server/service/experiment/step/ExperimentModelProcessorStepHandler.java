@@ -20,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
+import weka.core.Attribute;
 import weka.core.Instances;
 
 import java.math.BigDecimal;
@@ -107,8 +108,8 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
         }
         stopWatch.start(String.format("Loading data for experiment [%s]", experiment.getRequestId()));
         Instances data = instancesLoaderService.loadInstances(experiment.getTrainingDataPath());
-        //TODO set class name from experiment.instances_info.class_name
-        data.setClassIndex(experiment.getClassIndex());
+        Attribute classAttribute = data.attribute(experiment.getInstancesInfo().getClassName());
+        data.setClass(classAttribute);
         stopWatch.stop();
         return data;
     }

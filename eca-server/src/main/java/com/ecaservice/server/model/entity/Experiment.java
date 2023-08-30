@@ -50,12 +50,6 @@ public class Experiment extends AbstractEvaluationEntity {
     private String trainingDataPath;
 
     /**
-     * Class attribute index
-     */
-    @Column(name = "class_index")
-    private Integer classIndex;
-
-    /**
      * Experiment type
      */
     @Enumerated(EnumType.STRING)
