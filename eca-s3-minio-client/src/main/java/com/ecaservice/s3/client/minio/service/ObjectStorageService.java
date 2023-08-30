@@ -38,7 +38,6 @@ public class ObjectStorageService {
      * @param objectPath - object path in S3
      * @throws IOException in case of I/O error
      */
-    @Timed(value = OBJECT_REQUEST_METRIC)
     public void uploadObject(Serializable object, String objectPath) throws IOException {
         log.info("Starting to upload object [{}] to storage", objectPath);
         log.info("Starting to serialize object [{}]", objectPath);
@@ -104,7 +103,6 @@ public class ObjectStorageService {
      * @param presignedUrlObject - presigned url object
      * @return presigned proxy url
      */
-    @Timed(value = OBJECT_REQUEST_METRIC)
     public String getObjectPresignedProxyUrl(GetPresignedUrlObject presignedUrlObject) {
         return minioStorageService.getObjectPresignedProxyUrl(presignedUrlObject);
     }
@@ -114,7 +112,6 @@ public class ObjectStorageService {
      *
      * @param objectPath - object path
      */
-    @Timed(value = OBJECT_REQUEST_METRIC)
     public void removeObject(String objectPath) {
         minioStorageService.removeObject(objectPath);
     }
