@@ -41,6 +41,13 @@ public class InstancesMetaInfoDto {
     private Integer numAttributes;
 
     /**
+     * Classes number
+     */
+    @Schema(description = "Classes number", example = "4", minimum = FieldConstraints.ZERO_VALUE_STRING,
+            maximum = FieldConstraints.MAX_INTEGER_VALUE_STRING)
+    private Integer numClasses;
+
+    /**
      * Class name
      */
     @Schema(description = "Class name", example = "class", maxLength = FieldConstraints.MAX_LENGTH_255)
