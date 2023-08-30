@@ -59,6 +59,9 @@
             <column name="num_attributes" type="integer">
                 <constraints nullable="false"/>
             </column>
+            <column name="num_classes" type="integer">
+                <constraints nullable="false"/>
+            </column>
             <column name="class_name" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
