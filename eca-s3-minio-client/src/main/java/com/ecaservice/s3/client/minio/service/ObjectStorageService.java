@@ -1,12 +1,13 @@
 package com.ecaservice.s3.client.minio.service;
 
+import com.ecaservice.s3.client.minio.databind.FstDeserializer;
+import com.ecaservice.s3.client.minio.databind.ObjectDeserializer;
 import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.model.UploadObject;
 import io.micrometer.core.annotation.Timed;
 import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.nustaq.serialization.FSTObjectInput;
 import org.nustaq.serialization.FSTObjectOutput;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -69,13 +70,28 @@ public class ObjectStorageService {
      */
     @Timed(value = OBJECT_REQUEST_METRIC)
     public <T> T getObject(String objectPath, Class<T> targetClazz) throws IOException, ClassNotFoundException {
+        return getObject(objectPath, targetClazz, new FstDeserializer<>());
+    }
+
+    /**
+     * Gets object from S3 storage.
+     *
+     * @param objectPath         - object path
+     * @param targetClazz        - target class
+     * @param objectDeserializer - object deserializer
+     * @param <T>                - object generic type
+     * @return original object
+     * @throws IOException            in case of I/O error
+     * @throws ClassNotFoundException in case of class not found errors
+     */
+    @Timed(value = OBJECT_REQUEST_METRIC)
+    public <T> T getObject(String objectPath, Class<T> targetClazz, ObjectDeserializer<T> objectDeserializer)
+            throws IOException, ClassNotFoundException {
         log.info("Starting to get object [{}] with class [{}] from storage", objectPath, targetClazz.getName());
         var stopWatch = new StopWatch();
         stopWatch.start();
         @Cleanup var inputStream = minioStorageService.downloadObject(objectPath);
-        @Cleanup var in = new FSTObjectInput(inputStream);
-        Object readObject = in.readObject();
-        T targetObject = targetClazz.cast(readObject);
+        T targetObject = objectDeserializer.deserialize(inputStream, targetClazz);
         stopWatch.stop();
         log.info("Object [{}] with class [{}] has been fetched from storage for {} s.", objectPath,
                 targetClazz.getName(), stopWatch.getTotalTimeSeconds());
