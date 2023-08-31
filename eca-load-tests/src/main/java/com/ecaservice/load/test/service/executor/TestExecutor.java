@@ -15,13 +15,12 @@ import com.ecaservice.load.test.service.InstancesTestDataProvider;
 import com.ecaservice.load.test.service.LoadTestDataIterator;
 import com.ecaservice.load.test.service.TestWorkerService;
 import com.ecaservice.test.common.model.ExecutionStatus;
-import com.ecaservice.test.common.service.InstancesLoader;
+import com.ecaservice.test.common.service.DataLoaderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import weka.classifiers.AbstractClassifier;
-import weka.core.Instances;
 import weka.core.Randomizable;
 
 import java.time.LocalDateTime;
@@ -47,7 +46,7 @@ public class TestExecutor {
     private final ClassifiersTestDataProvider classifiersTestDataProvider;
     private final TestWorkerService testWorkerService;
     private final ClassifierOptionsAdapter classifierOptionsAdapter;
-    private final InstancesLoader instancesLoader;
+    private final DataLoaderService dataLoaderService;
     private final LoadTestMapper loadTestMapper;
     private final LoadTestRepository loadTestRepository;
     private final EvaluationRequestRepository evaluationRequestRepository;
@@ -111,10 +110,10 @@ public class TestExecutor {
     }
 
     private EvaluationRequest createEvaluationRequest(LoadTestEntity loadTestEntity, TestDataModel testDataModel) {
-        Instances instances = instancesLoader.loadInstances(testDataModel.getDataResource());
+        String dataUuid = dataLoaderService.uploadInstances(testDataModel.getDataResource());
         AbstractClassifier classifier = initializeNextClassifier(testDataModel);
         EvaluationRequest evaluationRequest = loadTestMapper.map(loadTestEntity);
-        evaluationRequest.setData(instances);
+        evaluationRequest.setDataUuid(dataUuid);
         evaluationRequest.setClassifier(classifier);
         return evaluationRequest;
     }
