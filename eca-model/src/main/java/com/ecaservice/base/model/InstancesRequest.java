@@ -23,6 +23,11 @@ import javax.validation.constraints.NotNull;
 public class InstancesRequest implements EcaRequest {
 
     /**
+     * Train data uuid
+     */
+    private String dataUuid;
+
+    /**
      * Training data
      */
     @NotNull

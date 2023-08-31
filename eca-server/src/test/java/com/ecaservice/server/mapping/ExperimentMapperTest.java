@@ -57,6 +57,7 @@ class ExperimentMapperTest {
         assertThat(experimentMessageRequest.getReplyTo()).isEqualTo(message.getMessageProperties().getReplyTo());
         assertThat(experimentMessageRequest.getCorrelationId()).isEqualTo(
                 message.getMessageProperties().getCorrelationId());
+        assertThat(experimentMessageRequest.getDataUuid()).isEqualTo(experimentRequest.getDataUuid());
     }
 
     @Test

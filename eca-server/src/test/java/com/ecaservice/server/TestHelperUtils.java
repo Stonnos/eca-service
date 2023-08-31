@@ -260,6 +260,7 @@ public class TestHelperUtils {
      */
     public static EvaluationRequest createEvaluationRequest() {
         EvaluationRequest request = new EvaluationRequest();
+        request.setDataUuid(UUID.randomUUID().toString());
         request.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         request.setData(loadInstances());
         request.setClassifier(new KNearestNeighbours());
@@ -301,6 +302,7 @@ public class TestHelperUtils {
      */
     public static ExperimentRequest createExperimentRequest() {
         ExperimentRequest experimentRequest = new ExperimentRequest();
+        experimentRequest.setDataUuid(UUID.randomUUID().toString());
         experimentRequest.setExperimentType(ExperimentType.KNN);
         experimentRequest.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         experimentRequest.setData(loadInstances());

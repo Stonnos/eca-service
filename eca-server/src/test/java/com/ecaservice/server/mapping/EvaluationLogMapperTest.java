@@ -34,6 +34,16 @@ class EvaluationLogMapperTest {
     private EvaluationLogMapper evaluationLogMapper;
 
     @Test
+    void testMapEvaluationRequest() {
+        var evaluationRequest = TestHelperUtils.createEvaluationRequest();
+        var evaluationRequestDataModel = evaluationLogMapper.map(evaluationRequest);
+        assertThat(evaluationRequestDataModel).isNotNull();
+        assertThat(evaluationRequestDataModel.getEvaluationMethod()).isEqualTo(evaluationRequest.getEvaluationMethod());
+        assertThat(evaluationRequestDataModel.getDataUuid()).isEqualTo(evaluationRequest.getDataUuid());
+        assertThat(evaluationRequestDataModel.getClassifier()).isNotNull();
+    }
+
+    @Test
     void testMapToEvaluationLogWithTrainingDataEvaluationMethod() {
         EvaluationRequestDataModel evaluationRequestDataModel = new EvaluationRequestDataModel();
         evaluationRequestDataModel.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);

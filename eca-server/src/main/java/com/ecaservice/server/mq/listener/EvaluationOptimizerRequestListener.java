@@ -48,7 +48,7 @@ public class EvaluationOptimizerRequestListener {
                 inboundMessageProperties.getCorrelationId());
         String requestId = UUID.randomUUID().toString();
         putMdc(TX_ID, requestId);
-        var instancesRequestDataModel = new InstancesRequestDataModel(requestId, UUID.randomUUID().toString());
+        var instancesRequestDataModel = new InstancesRequestDataModel(requestId, instancesRequest.getDataUuid());
         EvaluationResultsDataModel evaluationResultsDataModel =
                 evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequestDataModel);
         log.info("Evaluation response [{}] with status [{}] has been built for evaluation optimizer request.",

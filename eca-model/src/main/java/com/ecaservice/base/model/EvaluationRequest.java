@@ -23,6 +23,11 @@ import javax.validation.constraints.NotNull;
 public class EvaluationRequest implements EcaRequest {
 
     /**
+     * Train data uuid
+     */
+    private String dataUuid;
+
+    /**
      * Classifier model
      */
     @NotNull

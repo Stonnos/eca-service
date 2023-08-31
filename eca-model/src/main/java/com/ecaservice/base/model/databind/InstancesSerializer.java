@@ -20,7 +20,11 @@ public class InstancesSerializer extends JsonSerializer<Instances> {
     public void serialize(Instances instances,
                           JsonGenerator jsonGenerator,
                           SerializerProvider provider) throws IOException {
-        byte[] dataBytes = SerializationUtils.serialize(instances);
-        jsonGenerator.writeString(Base64.getEncoder().encodeToString(dataBytes));
+        if (instances == null) {
+            jsonGenerator.writeNull();
+        } else {
+            byte[] dataBytes = SerializationUtils.serialize(instances);
+            jsonGenerator.writeString(Base64.getEncoder().encodeToString(dataBytes));
+        }
     }
 }

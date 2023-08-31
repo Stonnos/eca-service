@@ -20,7 +20,11 @@ public class InstancesDeserializer extends JsonDeserializer<Instances> {
     @Override
     public Instances deserialize(JsonParser jsonParser, DeserializationContext context) throws IOException {
         JsonNode jsonNode = jsonParser.getCodec().readTree(jsonParser);
-        byte[] dataBytes = Base64.getDecoder().decode(jsonNode.textValue());
-        return (Instances) SerializationUtils.deserialize(dataBytes);
+        if (jsonNode.isNull()) {
+            return null;
+        } else {
+            byte[] dataBytes = Base64.getDecoder().decode(jsonNode.textValue());
+            return (Instances) SerializationUtils.deserialize(dataBytes);
+        }
     }
 }

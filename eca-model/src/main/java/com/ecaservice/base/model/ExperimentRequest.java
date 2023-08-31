@@ -25,6 +25,11 @@ import static com.ecaservice.base.model.util.FieldConstraints.EMAIL_REGEX;
 public class ExperimentRequest implements EcaRequest {
 
     /**
+     * Train data uuid
+     */
+    private String dataUuid;
+
+    /**
      * Email
      */
     @Email(regexp = EMAIL_REGEX)
