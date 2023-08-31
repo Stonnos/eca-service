@@ -20,7 +20,7 @@
                 <tableExists tableName="instances_object"/>
             </not>
         </preConditions>
-        <createTable tableName="instances">
+        <createTable tableName="instances_object">
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
