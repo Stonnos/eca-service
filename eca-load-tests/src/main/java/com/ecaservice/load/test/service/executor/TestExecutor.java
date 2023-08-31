@@ -6,6 +6,7 @@ import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.load.test.config.EcaLoadTestsConfig;
 import com.ecaservice.load.test.entity.EvaluationRequestEntity;
 import com.ecaservice.load.test.entity.LoadTestEntity;
+import com.ecaservice.load.test.entity.RequestStageType;
 import com.ecaservice.load.test.mapping.LoadTestMapper;
 import com.ecaservice.load.test.model.TestDataModel;
 import com.ecaservice.load.test.repository.EvaluationRequestRepository;
@@ -15,21 +16,25 @@ import com.ecaservice.load.test.service.InstancesTestDataProvider;
 import com.ecaservice.load.test.service.LoadTestDataIterator;
 import com.ecaservice.load.test.service.TestWorkerService;
 import com.ecaservice.test.common.model.ExecutionStatus;
+import com.ecaservice.test.common.model.TestResult;
 import com.ecaservice.test.common.service.DataLoaderService;
+import com.ecaservice.test.common.service.InstancesLoader;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import weka.classifiers.AbstractClassifier;
+import weka.core.Instances;
 import weka.core.Randomizable;
 
 import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
-import static com.ecaservice.load.test.util.Utils.createEvaluationRequestEntity;
 
 /**
  * Abstract test executor.
@@ -42,11 +47,13 @@ import static com.ecaservice.load.test.util.Utils.createEvaluationRequestEntity;
 public class TestExecutor {
 
     private final EcaLoadTestsConfig ecaLoadTestsConfig;
+    private final ObjectMapper objectMapper;
     private final InstancesTestDataProvider instancesTestDataProvider;
     private final ClassifiersTestDataProvider classifiersTestDataProvider;
     private final TestWorkerService testWorkerService;
     private final ClassifierOptionsAdapter classifierOptionsAdapter;
     private final DataLoaderService dataLoaderService;
+    private final InstancesLoader instancesLoader;
     private final LoadTestMapper loadTestMapper;
     private final LoadTestRepository loadTestRepository;
     private final EvaluationRequestRepository evaluationRequestRepository;
@@ -86,7 +93,8 @@ public class TestExecutor {
                 ClassifierOptions classifierOptions =
                         classifierOptionsAdapter.convert(evaluationRequest.getClassifier());
                 EvaluationRequestEntity evaluationRequestEntity =
-                        createAndSaveEvaluationRequest(loadTestEntity, classifierOptions, evaluationRequest);
+                        createAndSaveEvaluationRequest(loadTestEntity, testDataModel, classifierOptions,
+                                evaluationRequest);
                 Runnable task = createTask(evaluationRequestEntity.getId(), evaluationRequest, countDownLatch);
                 executor.submit(task);
             }
@@ -128,10 +136,21 @@ public class TestExecutor {
     }
 
     private EvaluationRequestEntity createAndSaveEvaluationRequest(LoadTestEntity loadTestEntity,
+                                                                   TestDataModel testDataModel,
                                                                    ClassifierOptions classifierOptions,
-                                                                   EvaluationRequest evaluationRequest) {
-        EvaluationRequestEntity evaluationRequestEntity =
-                createEvaluationRequestEntity(loadTestEntity, classifierOptions, evaluationRequest);
+                                                                   EvaluationRequest evaluationRequest)
+            throws JsonProcessingException {
+        EvaluationRequestEntity evaluationRequestEntity = new EvaluationRequestEntity();
+        evaluationRequestEntity.setCorrelationId(UUID.randomUUID().toString());
+        evaluationRequestEntity.setStageType(RequestStageType.READY);
+        evaluationRequestEntity.setTestResult(TestResult.UNKNOWN);
+        evaluationRequestEntity.setLoadTestEntity(loadTestEntity);
+        evaluationRequestEntity.setClassifierOptions(objectMapper.writeValueAsString(classifierOptions));
+        Instances instances = instancesLoader.loadInstances(testDataModel.getDataResource());
+        evaluationRequestEntity.setRelationName(instances.relationName());
+        evaluationRequestEntity.setNumAttributes(instances.numAttributes());
+        evaluationRequestEntity.setNumInstances(instances.numInstances());
+        evaluationRequestEntity.setClassifierName(evaluationRequest.getClassifier().getClass().getSimpleName());
         return evaluationRequestRepository.save(evaluationRequestEntity);
     }
 

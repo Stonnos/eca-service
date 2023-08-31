@@ -10,8 +10,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import weka.core.Instances;
 
-import javax.validation.constraints.NotNull;
-
 /**
  * Instances request dto.
  *
@@ -30,7 +28,6 @@ public class InstancesRequest implements EcaRequest {
     /**
      * Training data
      */
-    @NotNull
     @JsonSerialize(using = InstancesSerializer.class)
     @JsonDeserialize(using = InstancesDeserializer.class)
     private Instances data;

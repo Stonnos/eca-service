@@ -3,6 +3,7 @@ package com.ecaservice.data.loader.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
+import lombok.experimental.Tolerate;
 
 import static com.ecaservice.data.loader.dto.FieldConstraints.UUID_MAX_SIZE;
 
@@ -15,6 +16,11 @@ import static com.ecaservice.data.loader.dto.FieldConstraints.UUID_MAX_SIZE;
 @Builder
 @Schema(description = "Upload instances response dto")
 public class UploadInstancesResponseDto {
+
+    @Tolerate
+    public UploadInstancesResponseDto() {
+        //default constructor
+    }
 
     /**
      * Instances uuid

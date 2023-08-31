@@ -45,7 +45,6 @@ public class ExperimentRequest implements EcaRequest {
     /**
      * Training data
      */
-    @NotNull
     @JsonSerialize(using = InstancesSerializer.class)
     @JsonDeserialize(using = InstancesDeserializer.class)
     private Instances data;
