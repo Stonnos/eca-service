@@ -1,5 +1,6 @@
 package com.ecaservice.server.service.data;
 
+import com.ecaservice.common.web.error.WebClientErrorHandler;
 import com.ecaservice.common.web.exception.InternalServiceUnavailableException;
 import com.ecaservice.data.loader.dto.DataLoaderApiErrorCode;
 import com.ecaservice.data.loader.dto.InstancesMetaInfoDto;
@@ -7,7 +8,6 @@ import com.ecaservice.server.exception.DataLoaderBadRequestException;
 import com.ecaservice.server.exception.DataLoaderException;
 import com.ecaservice.server.mapping.InstancesInfoMapper;
 import com.ecaservice.server.model.data.InstancesMetaDataModel;
-import com.ecaservice.server.service.client.FeignClientErrorHandler;
 import feign.FeignException;
 import feign.RetryableException;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ public class InstancesMetaDataService {
 
     private final DataLoaderClient dataLoaderClient;
     private final InstancesInfoMapper instancesInfoMapper;
-    private final FeignClientErrorHandler feignClientErrorHandler;
+    private final WebClientErrorHandler webClientErrorHandler = new WebClientErrorHandler();
 
     /**
      * Gets instances meta data.
@@ -54,7 +54,7 @@ public class InstancesMetaDataService {
             log.error("Bad request error while get instances [{}] meta data from data storage: {}", uuid,
                     ex.getMessage());
             var errorCode =
-                    feignClientErrorHandler.handleBadRequest(uuid, ex, DataLoaderApiErrorCode.class);
+                    webClientErrorHandler.handleBadRequest(uuid, ex.contentUTF8(), DataLoaderApiErrorCode.class);
             String errorMessage =
                     String.format("Bad request error while get instances [%s] meta data from data storage", uuid);
             throw new DataLoaderBadRequestException(errorCode, errorMessage);

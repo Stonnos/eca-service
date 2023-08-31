@@ -1,11 +1,11 @@
 package com.ecaservice.server.service.ds;
 
+import com.ecaservice.common.web.error.WebClientErrorHandler;
 import com.ecaservice.common.web.exception.InternalServiceUnavailableException;
 import com.ecaservice.data.storage.dto.DsInternalApiErrorCode;
 import com.ecaservice.server.exception.DataStorageBadRequestException;
 import com.ecaservice.server.exception.DataStorageException;
 import com.ecaservice.server.service.DataStorageLoader;
-import com.ecaservice.server.service.client.FeignClientErrorHandler;
 import eca.data.file.converter.InstancesConverter;
 import feign.FeignException;
 import feign.RetryableException;
@@ -25,7 +25,7 @@ import weka.core.Instances;
 public class DataStorageService {
 
     private final DataStorageLoader dataStorageLoader;
-    private final FeignClientErrorHandler feignClientErrorHandler;
+    private final WebClientErrorHandler webClientErrorHandler = new WebClientErrorHandler();
     private final InstancesConverter instancesConverter = new InstancesConverter();
 
     /**
@@ -50,7 +50,7 @@ public class DataStorageService {
             log.error("Bad request error while get valid instances with uuid [{}] from data storage: {}", uuid,
                     ex.getMessage());
             var dsErrorCode =
-                    feignClientErrorHandler.handleBadRequest(uuid, ex, DsInternalApiErrorCode.class);
+                    webClientErrorHandler.handleBadRequest(uuid, ex.contentUTF8(), DsInternalApiErrorCode.class);
             String errorMessage =
                     String.format("Bad request error while get valid instances with uuid [%s] from data storage", uuid);
             throw new DataStorageBadRequestException(dsErrorCode, errorMessage);
