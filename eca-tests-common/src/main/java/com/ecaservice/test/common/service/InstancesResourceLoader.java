@@ -16,7 +16,7 @@ import weka.core.Instances;
  */
 @Slf4j
 @Service
-public class InstancesLoader {
+public class InstancesResourceLoader {
 
     /**
      * Loads training data from file.

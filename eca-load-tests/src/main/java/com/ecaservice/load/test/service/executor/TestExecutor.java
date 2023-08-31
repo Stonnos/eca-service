@@ -18,7 +18,7 @@ import com.ecaservice.load.test.service.TestWorkerService;
 import com.ecaservice.test.common.model.ExecutionStatus;
 import com.ecaservice.test.common.model.TestResult;
 import com.ecaservice.test.common.service.DataLoaderService;
-import com.ecaservice.test.common.service.InstancesLoader;
+import com.ecaservice.test.common.service.InstancesResourceLoader;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -53,7 +53,7 @@ public class TestExecutor {
     private final TestWorkerService testWorkerService;
     private final ClassifierOptionsAdapter classifierOptionsAdapter;
     private final DataLoaderService dataLoaderService;
-    private final InstancesLoader instancesLoader;
+    private final InstancesResourceLoader instancesResourceLoader;
     private final LoadTestMapper loadTestMapper;
     private final LoadTestRepository loadTestRepository;
     private final EvaluationRequestRepository evaluationRequestRepository;
@@ -89,7 +89,8 @@ public class TestExecutor {
                     testDataIterator(loadTestEntity, instancesTestDataProvider, classifiersTestDataProvider);
             while (iterator.hasNext()) {
                 TestDataModel testDataModel = iterator.next();
-                EvaluationRequest evaluationRequest = createEvaluationRequest(loadTestEntity, testDataModel);
+                String dataUuid = dataLoaderService.uploadInstances(testDataModel.getDataResource());
+                EvaluationRequest evaluationRequest = createEvaluationRequest(loadTestEntity, testDataModel, dataUuid);
                 ClassifierOptions classifierOptions =
                         classifierOptionsAdapter.convert(evaluationRequest.getClassifier());
                 EvaluationRequestEntity evaluationRequestEntity =
@@ -117,8 +118,8 @@ public class TestExecutor {
         loadTestRepository.save(loadTestEntity);
     }
 
-    private EvaluationRequest createEvaluationRequest(LoadTestEntity loadTestEntity, TestDataModel testDataModel) {
-        String dataUuid = dataLoaderService.uploadInstances(testDataModel.getDataResource());
+    private EvaluationRequest createEvaluationRequest(LoadTestEntity loadTestEntity, TestDataModel testDataModel,
+                                                      String dataUuid) {
         AbstractClassifier classifier = initializeNextClassifier(testDataModel);
         EvaluationRequest evaluationRequest = loadTestMapper.map(loadTestEntity);
         evaluationRequest.setDataUuid(dataUuid);
@@ -146,7 +147,7 @@ public class TestExecutor {
         evaluationRequestEntity.setTestResult(TestResult.UNKNOWN);
         evaluationRequestEntity.setLoadTestEntity(loadTestEntity);
         evaluationRequestEntity.setClassifierOptions(objectMapper.writeValueAsString(classifierOptions));
-        Instances instances = instancesLoader.loadInstances(testDataModel.getDataResource());
+        Instances instances = instancesResourceLoader.loadInstances(testDataModel.getDataResource());
         evaluationRequestEntity.setRelationName(instances.relationName());
         evaluationRequestEntity.setNumAttributes(instances.numAttributes());
         evaluationRequestEntity.setNumInstances(instances.numInstances());
