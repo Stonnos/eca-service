@@ -3,6 +3,8 @@ package com.ecaservice.auto.test.model;
 import com.ecaservice.classifier.options.model.ClassifierOptions;
 import eca.core.evaluation.EvaluationMethod;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * Classifier test data model.
@@ -10,12 +12,9 @@ import lombok.Data;
  * @author Roman Batygin
  */
 @Data
-public class ClassifierTestDataModel {
-
-    /**
-     * Train data path in resources directory
-     */
-    private String trainDataPath;
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+public class ClassifierTestDataModel extends AbstractEvaluationTestDataModel {
 
     /**
      * Classifier options
