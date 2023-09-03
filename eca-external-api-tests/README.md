@@ -27,12 +27,10 @@
    * external-api-tests.evaluationTestDataPath - относительный путь к директории (в resources) с автотестами для построения моделей классификаторов
    * external-api-tests.experimentTestDataPath - относительный путь к директории (в resources) с автотестами для построения экспериментов
    * external-api.expectedExperimentNumModels - ожидаемое число моделей в истории эксперимента
-3) security.oauth2.client - настройки клиента для oauth2 авторизации
-   * security.oauth2.client.clientId - идентификатор клиента
-   * security.oauth2.client.clientSecret - секретный ключ или пароль клиента
-   * security.oauth2.client.accessTokenUri - endpoint для получения access token
-   * security.oauth2.client.grant-type - тип авторизации
-4) open-api - настройки Swagger
+   * external-api.auth.clientId - идентификатор клиента
+   * external-api.auth.clientSecret - секретный ключ или пароль клиента
+   * external-api.auth.tokenUrl - endpoint для получения access token
+3) open-api - настройки Swagger
    * open-api.tokenBaseUrl - базовый url - сервера авторизации
    * open-api.projectVersion - версия API
    * open-api.title - краткое название API
@@ -42,7 +40,7 @@
    * open-api.basePath - базовый префикс для API
    * open-api.apiAuth - настройки авторизации
    * open-api.apiAuth.scopes - список scopes
-5) process - настройки бизнес - процесса
+4) process - настройки бизнес - процесса
    * ids - идентификаторы бизнес - процессов
 
 Инструкция по развертыванию
