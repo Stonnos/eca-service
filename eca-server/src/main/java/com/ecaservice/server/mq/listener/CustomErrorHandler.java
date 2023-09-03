@@ -35,15 +35,19 @@ public class CustomErrorHandler implements ErrorHandler {
     public void handleError(Throwable ex) {
         if (ex instanceof ListenerExecutionFailedException) {
             ListenerExecutionFailedException failedException = (ListenerExecutionFailedException) ex;
-            EcaResponse errorResponse = translate(failedException);
             Message failedMessage = failedException.getFailedMessage();
             MessageProperties messageProperties = failedMessage.getMessageProperties();
-            log.error("There was an error while message [{}] processing: {}", messageProperties.getCorrelationId(),
-                    errorResponse);
+            log.error("There was an error while message processing with correlation id [{}]: {}",
+                    messageProperties.getCorrelationId(), ex.getMessage());
+            EcaResponse errorResponse = translate(failedException);
+            log.error("Sent error response {} for message with correlation id [{}]",
+                    messageProperties.getCorrelationId(), errorResponse);
             rabbitTemplate.convertAndSend(messageProperties.getReplyTo(), errorResponse, outboundMessage -> {
                 outboundMessage.getMessageProperties().setCorrelationId(messageProperties.getCorrelationId());
                 return outboundMessage;
             });
+            log.error("Error response {} has been sent for message with correlation id [{}]",
+                    messageProperties.getCorrelationId(), errorResponse);
         } else {
             log.error("Unknown error while message handling: {}", ex.getCause().getMessage());
         }

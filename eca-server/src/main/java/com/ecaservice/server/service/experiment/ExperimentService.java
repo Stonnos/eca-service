@@ -60,10 +60,10 @@ public class ExperimentService {
         log.info("Starting to create experiment [{}] request for data uuid [{}], evaluation method [{}], email [{}]",
                 experimentRequest.getExperimentType(), experimentRequest.getDataUuid(),
                 experimentRequest.getEvaluationMethod(), experimentRequest.getEmail());
+        var instancesMetaDataModel =
+                instancesMetaDataService.getInstancesMetaData(experimentRequest.getDataUuid());
         try {
             Experiment experiment = experimentMapper.map(experimentRequest, crossValidationConfig);
-            var instancesMetaDataModel =
-                    instancesMetaDataService.getInstancesMetaData(experimentRequest.getDataUuid());
             var instancesInfo = instancesInfoService.getOrSaveInstancesInfo(instancesMetaDataModel);
             experiment.setInstancesInfo(instancesInfo);
             setAdditionalProperties(experiment, experimentRequest);

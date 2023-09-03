@@ -31,7 +31,6 @@ import org.springframework.context.annotation.Import;
 import weka.core.Instances;
 
 import javax.inject.Inject;
-import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
@@ -104,14 +103,6 @@ class ExperimentServiceTest extends AbstractJpaTest {
         assertThat(experiment.getReplyTo()).isEqualTo(experimentMessageRequest.getReplyTo());
         assertThat(experiment.getCorrelationId()).isEqualTo(experimentMessageRequest.getCorrelationId());
         assertThat(experiment.getTrainingDataUuid()).isNotNull();
-    }
-
-    @Test
-    void testExperimentRequestCreationWithError() throws IOException {
-        var experimentMessageRequest = TestHelperUtils.createExperimentMessageRequest();
-        when(instancesMetaDataService.getInstancesMetaData(experimentMessageRequest.getDataUuid()))
-                .thenThrow(new RuntimeException());
-        assertThrows(ExperimentException.class, () -> experimentService.createExperiment(experimentMessageRequest));
     }
 
     @Test
