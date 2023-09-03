@@ -1,11 +1,8 @@
 {
   "displayName": "NULL evaluation method request",
-  "trainDataSource": "EXTERNAL_DATA_URL",
+  "trainDataPath": "classpath:/data/glass.json",
   "request": {
-    "trainDataUrl": "http://kt.ijs.si/Branax/Repository/WEKA/Iris.xls",
     "experimentType": "RANDOM_FORESTS"
   },
-  "expectedResponse": {
-    "responseCode": "VALIDATION_ERROR"
-  }
+  "expectedResponseCode": "SUCCESS"
 }

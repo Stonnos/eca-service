@@ -1,12 +1,9 @@
 {
-  "displayName": "Stacking experiment request with external data url",
-  "trainDataSource": "API_DATA_STORAGE",
+  "displayName": "Stacking experiment request",
   "trainDataPath": "classpath:/data/glass.json",
   "request": {
     "evaluationMethod": "TRAINING_DATA",
     "experimentType": "STACKING"
   },
-  "expectedResponse": {
-    "responseCode": "SUCCESS"
-  }
+  "expectedResponseCode": "SUCCESS"
 }

@@ -1,12 +1,9 @@
 {
-  "displayName": "Heterogeneous classifier experiment request with data storage",
-  "trainDataSource": "API_DATA_STORAGE",
+  "displayName": "Heterogeneous classifier experiment request",
   "trainDataPath": "classpath:/data/glass.json",
   "request": {
     "evaluationMethod": "TRAINING_DATA",
     "experimentType": "HETEROGENEOUS_ENSEMBLE"
   },
-  "expectedResponse": {
-    "responseCode": "SUCCESS"
-  }
+  "expectedResponseCode": "SUCCESS"
 }
