@@ -1,11 +1,7 @@
-{
-  "payload": [
-    {
-      "fieldName": null,
-      "code": "DataNotFound",
-      "errorMessage": "Entity with search key [1] not found!"
-    }
-  ],
-  "responseCode": "VALIDATION_ERROR",
-  "errorDescription": "Validation errors"
-}
+[
+  {
+    "fieldName": null,
+    "code": "DataNotFound",
+    "errorMessage": "Entity with search key [1] not found!"
+  }
+]

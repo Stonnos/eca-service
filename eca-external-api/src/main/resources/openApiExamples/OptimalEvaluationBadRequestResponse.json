@@ -1,11 +1,7 @@
-{
-  "payload": [
-    {
-      "fieldName": "trainDataUuid",
-      "code": "NotBlank",
-      "errorMessage": "must be not blank"
-    }
-  ],
-  "responseCode": "VALIDATION_ERROR",
-  "errorDescription": "Validation errors"
-}
+[
+  {
+    "fieldName": "trainDataUuid",
+    "code": "NotBlank",
+    "errorMessage": "must be not blank"
+  }
+]
