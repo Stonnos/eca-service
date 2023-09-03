@@ -18,7 +18,8 @@ import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.context.ApplicationEventPublisher;
 
-import static com.ecaservice.server.TestHelperUtils.loadInstances;
+import java.util.UUID;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
@@ -49,7 +50,7 @@ class EvaluationOptimizerRequestListenerTest {
     @Test
     void testHandleMessage() {
         InstancesRequest instancesRequest = new InstancesRequest();
-        instancesRequest.setData(loadInstances());
+        instancesRequest.setDataUuid(UUID.randomUUID().toString());
         Message message = Mockito.mock(Message.class);
         when(evaluationOptimizerService.evaluateWithOptimalClassifierOptions(any(InstancesRequestDataModel.class)))
                 .thenReturn(new EvaluationResultsDataModel());
