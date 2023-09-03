@@ -13,11 +13,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class ExternalApiConfig {
 
     /**
-     * Date format for date attributes
-     */
-    private String dateFormat;
-
-    /**
      * Batch size for pagination
      */
     private Integer batchSize;

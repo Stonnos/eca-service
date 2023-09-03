@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import weka.classifiers.AbstractClassifier;
-import weka.core.Instances;
 
 import java.time.LocalDateTime;
 
@@ -32,7 +31,6 @@ import java.time.LocalDateTime;
 public class EvaluationApiService {
 
     private final EcaRequestMapper ecaRequestMapper;
-    private final InstancesService instancesService;
     private final ClassifierOptionsAdapter classifierOptionsAdapter;
     private final RabbitSender rabbitSender;
     private final EcaRequestRepository ecaRequestRepository;
@@ -46,7 +44,7 @@ public class EvaluationApiService {
     @RequestExecution
     public void processRequest(EcaRequestEntity ecaRequestEntity, EvaluationRequestDto evaluationRequestDto) {
         log.info("Starting to process evaluation request [{}]", ecaRequestEntity.getCorrelationId());
-        EvaluationRequest evaluationRequest = createEvaluationRequest(ecaRequestEntity, evaluationRequestDto);
+        EvaluationRequest evaluationRequest = createEvaluationRequest(evaluationRequestDto);
         rabbitSender.sendEvaluationRequest(evaluationRequest, ecaRequestEntity.getCorrelationId());
         saveAsSent(ecaRequestEntity);
         log.info("Evaluation request [{}] has been sent to eca-server", ecaRequestEntity.getCorrelationId());
@@ -62,10 +60,8 @@ public class EvaluationApiService {
     public void processRequest(EcaRequestEntity ecaRequestEntity, InstancesRequestDto instancesRequestDto) {
         log.info("Starting to process request [{}] for optimal classifier evaluation",
                 ecaRequestEntity.getCorrelationId());
-        Instances instances =
-                loadInstances(instancesRequestDto.getTrainDataUrl(), ecaRequestEntity.getCorrelationId());
         InstancesRequest instancesRequest = new InstancesRequest();
-        instancesRequest.setData(instances);
+        instancesRequest.setDataUuid(instancesRequestDto.getTrainDataUuid());
         rabbitSender.sendInstancesRequest(instancesRequest, ecaRequestEntity.getCorrelationId());
         saveAsSent(ecaRequestEntity);
         log.info("Optimal classifier evaluation request [{}] has been sent to eca-server",
@@ -81,10 +77,8 @@ public class EvaluationApiService {
     @RequestExecution
     public void processRequest(EcaRequestEntity ecaRequestEntity, ExperimentRequestDto experimentRequestDto) {
         log.info("Starting to process experiment request [{}]", ecaRequestEntity.getCorrelationId());
-        Instances instances =
-                loadInstances(experimentRequestDto.getTrainDataUrl(), ecaRequestEntity.getCorrelationId());
         ExperimentRequest experimentRequest = new ExperimentRequest();
-        experimentRequest.setData(instances);
+        experimentRequest.setDataUuid(experimentRequestDto.getTrainDataUuid());
         experimentRequest.setEvaluationMethod(experimentRequestDto.getEvaluationMethod());
         experimentRequest.setExperimentType(ecaRequestMapper.map(experimentRequestDto.getExperimentType()));
         rabbitSender.sendExperimentRequest(experimentRequest, ecaRequestEntity.getCorrelationId());
@@ -98,14 +92,11 @@ public class EvaluationApiService {
         ecaRequestRepository.save(ecaRequestEntity);
     }
 
-    private EvaluationRequest createEvaluationRequest(EcaRequestEntity ecaRequestEntity,
-                                                      EvaluationRequestDto evaluationRequestDto) {
-        Instances instances =
-                loadInstances(evaluationRequestDto.getTrainDataUrl(), ecaRequestEntity.getCorrelationId());
+    private EvaluationRequest createEvaluationRequest(EvaluationRequestDto evaluationRequestDto) {
         AbstractClassifier classifier =
                 classifierOptionsAdapter.convert(evaluationRequestDto.getClassifierOptions());
         EvaluationRequest evaluationRequest = new EvaluationRequest();
-        evaluationRequest.setData(instances);
+        evaluationRequest.setDataUuid(evaluationRequestDto.getTrainDataUuid());
         evaluationRequest.setClassifier(classifier);
         evaluationRequest.setEvaluationMethod(evaluationRequestDto.getEvaluationMethod());
         if (EvaluationMethod.CROSS_VALIDATION.equals(evaluationRequestDto.getEvaluationMethod())) {
@@ -114,13 +105,5 @@ public class EvaluationApiService {
             evaluationRequest.setSeed(evaluationRequestDto.getSeed());
         }
         return evaluationRequest;
-    }
-
-    private Instances loadInstances(String url, String correlationId) {
-        log.info("Starting to load train data from [{}] for request [{}]", url, correlationId);
-        Instances instances = instancesService.loadInstances(url);
-        log.info("Train data has been loaded from [{}] for request [{}]", url, correlationId);
-        return instances;
-
     }
 }

@@ -26,9 +26,6 @@ ECA external API
    * external-api.evaluationRequestTimeoutMinutes - таймаут в мин. для построения моделей
    * external-api.experimentRequestTimeoutMinutes - таймаут в мин. для построения экспериментов
    * external-api.classifierDownloadUrlExpirationDays - время жизни ссылки на скачивание моделей
-   * external-api.numberOfDaysForStorage - число дней для хранения файлов с моделями и обучающими выборками.
-   * external-api.removeClassifiersCron - крон выражение для удаления файлов с моделями
-   * external-api.removeDataCron - крон выражение для удаления файлов с обучающими выборками
 3) queue - настройки очередей rabbit mq
    * queue.evaluationRequestQueue - очередь для запросов на построение классификаторов
    * queue.experimentRequestQueue - очедерь для запросов на построение экспериментов

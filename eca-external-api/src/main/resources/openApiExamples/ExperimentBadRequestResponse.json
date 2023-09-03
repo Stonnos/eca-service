@@ -1,9 +1,9 @@
 {
   "payload": [
     {
-      "fieldName": "trainDataUrl",
-      "code": "DataURL",
-      "errorMessage": "train data url must have one of the protocols such as http, ftp, data"
+      "fieldName": "evaluationMethod",
+      "code": "NotNull",
+      "errorMessage": "must not be null"
     }
   ],
   "responseCode": "VALIDATION_ERROR",

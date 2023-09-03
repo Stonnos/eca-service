@@ -19,7 +19,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import weka.core.Instances;
 
 import javax.inject.Inject;
 import java.util.UUID;
@@ -29,11 +28,8 @@ import static com.ecaservice.external.api.TestHelperUtils.createEvaluationReques
 import static com.ecaservice.external.api.TestHelperUtils.createExperimentRequestDto;
 import static com.ecaservice.external.api.TestHelperUtils.createExperimentRequestEntity;
 import static com.ecaservice.external.api.TestHelperUtils.createInstancesRequestDto;
-import static com.ecaservice.external.api.TestHelperUtils.loadInstances;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for checking {@link EvaluationApiService} functionality.
@@ -43,8 +39,6 @@ import static org.mockito.Mockito.when;
 @Import({EvaluationApiService.class, ClassifiersOptionsAutoConfiguration.class, EcaRequestMapperImpl.class})
 class EvaluationApiServiceTest extends AbstractJpaTest {
 
-    @MockBean
-    private InstancesService instancesService;
     @MockBean
     private RabbitSender rabbitSender;
 
@@ -63,14 +57,6 @@ class EvaluationApiServiceTest extends AbstractJpaTest {
     private ArgumentCaptor<ExperimentRequest> experimentRequestArgumentCaptor;
     @Captor
     private ArgumentCaptor<String> correlationIdCaptor;
-
-    private Instances testInstances;
-
-    @Override
-    public void init() {
-        testInstances = loadInstances();
-        when(instancesService.loadInstances(anyString())).thenReturn(testInstances);
-    }
 
     @Override
     public void deleteAll() {
@@ -97,9 +83,7 @@ class EvaluationApiServiceTest extends AbstractJpaTest {
         assertThat(evaluationRequest.getNumFolds()).isEqualTo(evaluationRequestDto.getNumFolds());
         assertThat(evaluationRequest.getNumTests()).isEqualTo(evaluationRequestDto.getNumTests());
         assertThat(evaluationRequest.getSeed()).isEqualTo(evaluationRequestDto.getSeed());
-        assertThat(evaluationRequest.getData()).isNotNull();
-        assertThat(evaluationRequest.getData().relationName()).isEqualTo(testInstances.relationName());
-        assertThat(evaluationRequest.getData().numInstances()).isEqualTo(testInstances.numInstances());
+        assertThat(evaluationRequest.getDataUuid()).isEqualTo(evaluationRequestDto.getTrainDataUuid());
         assertThat(evaluationRequest.getClassifier()).isNotNull();
         assertThat(evaluationRequest.getClassifier()).isInstanceOf(Logistic.class);
     }
@@ -120,9 +104,7 @@ class EvaluationApiServiceTest extends AbstractJpaTest {
         assertThat(correlationIdCaptor.getValue()).isEqualTo(evaluationRequestEntity.getCorrelationId());
         InstancesRequest instancesRequest = instancesRequestArgumentCaptor.getValue();
         assertThat(instancesRequest).isNotNull();
-        assertThat(instancesRequest.getData()).isNotNull();
-        assertThat(instancesRequest.getData().relationName()).isEqualTo(testInstances.relationName());
-        assertThat(instancesRequest.getData().numInstances()).isEqualTo(testInstances.numInstances());
+        assertThat(instancesRequest.getDataUuid()).isEqualTo(instancesRequestDto.getTrainDataUuid());
     }
 
     @Test
@@ -141,7 +123,7 @@ class EvaluationApiServiceTest extends AbstractJpaTest {
         assertThat(correlationIdCaptor.getValue()).isEqualTo(experimentRequestEntity.getCorrelationId());
         var experimentRequest = experimentRequestArgumentCaptor.getValue();
         assertThat(experimentRequest).isNotNull();
-        assertThat(experimentRequest.getData()).isNotNull();
+        assertThat(experimentRequest.getDataUuid()).isEqualTo(experimentRequestDto.getTrainDataUuid());
         assertThat(experimentRequest.getEvaluationMethod()).isEqualTo(experimentRequestDto.getEvaluationMethod());
         assertThat(experimentRequest.getExperimentType()).isEqualTo(ExperimentType.RANDOM_FORESTS);
     }

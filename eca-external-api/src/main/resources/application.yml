@@ -37,7 +37,6 @@ eureka:
     fetchRegistry: false
 
 external-api:
-  dateFormat: yyyy-MM-dd HH:mm:ss
   batchSize: 25
   requestTimeoutSeconds: 60
   evaluationRequestTimeoutMinutes: 120
@@ -45,9 +44,6 @@ external-api:
   numberOfDaysForStorage: 14
   classifierDownloadUrlExpirationDays: 7
   delaySeconds: 10
-  ## Each day at midnight
-  removeClassifiersCron: 0 0 0 * * *
-  removeDataCron: 0 0 0 * * *
 
 classifiers-options:
   maximumFractionDigits: 4
