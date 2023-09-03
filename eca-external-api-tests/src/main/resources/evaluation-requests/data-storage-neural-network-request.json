@@ -1,6 +1,5 @@
 {
-  "displayName": "Neural network request using data storage API",
-  "trainDataSource": "API_DATA_STORAGE",
+  "displayName": "Neural network request",
   "trainDataPath": "classpath:/data/credit.json",
   "request": {
     "classifierOptions": {
@@ -12,7 +11,5 @@
     },
     "evaluationMethod": "TRAINING_DATA"
   },
-  "expectedResponse": {
-    "responseCode": "SUCCESS"
-  }
+  "expectedResponseCode": "SUCCESS"
 }
