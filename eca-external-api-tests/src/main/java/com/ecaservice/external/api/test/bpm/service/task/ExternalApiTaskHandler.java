@@ -1,8 +1,8 @@
 package com.ecaservice.external.api.test.bpm.service.task;
 
 import com.ecaservice.common.error.model.ValidationErrorDto;
-import com.ecaservice.external.api.dto.ResponseDto;
 import com.ecaservice.external.api.test.bpm.model.TaskType;
+import com.ecaservice.external.api.test.entity.ResponseCode;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,6 +14,7 @@ import org.springframework.util.Assert;
 import java.util.List;
 
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.API_RESPONSE;
+import static com.ecaservice.external.api.test.bpm.CamundaVariables.RESPONSE_CODE;
 import static com.ecaservice.external.api.test.util.CamundaUtils.setVariableSafe;
 
 /**
@@ -41,6 +42,7 @@ public abstract class ExternalApiTaskHandler extends AbstractTaskHandler {
                 execution.getProcessBusinessKey());
         try {
             internalHandle(execution);
+            setVariableSafe(execution, RESPONSE_CODE, ResponseCode.SUCCESS);
         } catch (FeignException.BadRequest ex) {
             handleBadRequest(execution, ex);
         }
@@ -56,9 +58,10 @@ public abstract class ExternalApiTaskHandler extends AbstractTaskHandler {
                 execution.getProcessBusinessKey());
         String responseBody = ex.contentUTF8();
         Assert.notNull(responseBody, "Expected not empty response body");
-        ResponseDto<List<ValidationErrorDto>> responseDto =
+        List<ValidationErrorDto> validationErrorsResponse =
                 OBJECT_MAPPER.readValue(responseBody, new TypeReference<>() {
                 });
-        setVariableSafe(execution, API_RESPONSE, responseDto);
+        setVariableSafe(execution, RESPONSE_CODE, ResponseCode.VALIDATION_ERROR);
+        setVariableSafe(execution, API_RESPONSE, validationErrorsResponse);
     }
 }

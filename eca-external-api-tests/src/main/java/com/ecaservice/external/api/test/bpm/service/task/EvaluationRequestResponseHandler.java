@@ -1,21 +1,17 @@
 package com.ecaservice.external.api.test.bpm.service.task;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
-import com.ecaservice.external.api.dto.ResponseDto;
 import com.ecaservice.external.api.dto.SimpleEvaluationResponseDto;
 import com.ecaservice.external.api.test.bpm.model.TaskType;
 import com.ecaservice.external.api.test.entity.AutoTestEntity;
 import com.ecaservice.external.api.test.repository.AutoTestRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
 
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.API_RESPONSE;
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.AUTO_TEST_ID;
 import static com.ecaservice.external.api.test.util.CamundaUtils.getVariable;
-import static com.ecaservice.external.api.test.util.Utils.getValueSafe;
 
 /**
  * Handler for processing evaluation request response.
@@ -25,10 +21,6 @@ import static com.ecaservice.external.api.test.util.Utils.getValueSafe;
 @Slf4j
 @Component
 public class EvaluationRequestResponseHandler extends AbstractTaskHandler {
-
-    private static final ParameterizedTypeReference<ResponseDto<SimpleEvaluationResponseDto>> API_RESPONSE_TYPE_REFERENCE =
-            new ParameterizedTypeReference<ResponseDto<SimpleEvaluationResponseDto>>() {
-            };
 
     private final AutoTestRepository autoTestRepository;
 
@@ -47,21 +39,17 @@ public class EvaluationRequestResponseHandler extends AbstractTaskHandler {
         log.debug("Handles evaluation request response for execution [{}], process key [{}]", execution.getId(),
                 execution.getProcessBusinessKey());
         Long autoTestId = getVariable(execution, AUTO_TEST_ID, Long.class);
-        var responseDto = getVariable(execution, API_RESPONSE, API_RESPONSE_TYPE_REFERENCE);
-        Assert.notNull(responseDto.getPayload(),
-                String.format("Expected not null evaluation response for auto test [%d]", autoTestId));
-        Assert.notNull(responseDto.getPayload().getRequestId(),
-                String.format("Expected not null evaluation request ID for auto test [%d]", autoTestId));
-        saveRequestId(autoTestId, responseDto);
+        var evaluationResponseDto
+                = getVariable(execution, API_RESPONSE, SimpleEvaluationResponseDto.class);
+        saveRequestId(autoTestId, evaluationResponseDto);
         log.debug("Instances evaluation request for execution [{}], process key [{}] has been processed",
                 execution.getId(), execution.getProcessBusinessKey());
     }
 
-    private void saveRequestId(long autoTestId, ResponseDto<SimpleEvaluationResponseDto> responseDto) {
+    private void saveRequestId(long autoTestId, SimpleEvaluationResponseDto responseDto) {
         AutoTestEntity autoTestEntity = autoTestRepository.findById(autoTestId)
                 .orElseThrow(() -> new EntityNotFoundException(AutoTestEntity.class, autoTestId));
-        String requestId = getValueSafe(responseDto, SimpleEvaluationResponseDto::getRequestId);
-        autoTestEntity.setRequestId(requestId);
+        autoTestEntity.setRequestId(responseDto.getRequestId());
         autoTestRepository.save(autoTestEntity);
     }
 }

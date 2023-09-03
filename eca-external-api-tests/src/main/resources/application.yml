@@ -31,6 +31,9 @@ external-api-tests:
     clientSecret: external_api_secret
     tokenUrl: http://localhost:8080/eca-oauth/oauth/token
 
+data-loader:
+  url: http://localhost:8080/eca-data-loader
+
 process:
   ids:
     EVALUATION_REQUEST_PROCESS: EvaluationApiAutoTestProcess

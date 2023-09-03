@@ -4,35 +4,21 @@ import com.ecaservice.external.api.dto.EvaluationRequestDto;
 import com.ecaservice.external.api.dto.EvaluationResultsResponseDto;
 import com.ecaservice.external.api.dto.ExperimentRequestDto;
 import com.ecaservice.external.api.dto.ExperimentResultsResponseDto;
-import com.ecaservice.external.api.dto.InstancesDto;
-import com.ecaservice.external.api.dto.ResponseDto;
 import com.ecaservice.external.api.dto.SimpleEvaluationResponseDto;
+import com.ecaservice.external.api.test.config.oauth2.FeignClientConfiguration;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * External API client.
  *
  * @author Roman Batygin
  */
-@FeignClient(name = "external-api-client", url = "${external-api-tests.url}/external-api")
+@FeignClient(name = "external-api-client", url = "${external-api-tests.url}/external-api", configuration = FeignClientConfiguration.class)
 public interface ExternalApiClient {
-
-    /**
-     * Uploads train data file to server.
-     *
-     * @param trainingData - train data file
-     * @return instances dto
-     */
-    @PostMapping(value = "/uploads-train-data", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<InstancesDto> uploadInstances(@RequestPart("trainingData") MultipartFile trainingData);
 
     /**
      * Creates evaluation request.
@@ -41,7 +27,7 @@ public interface ExternalApiClient {
      * @return evaluation response dto
      */
     @PostMapping(value = "/evaluation-request")
-    ResponseDto<SimpleEvaluationResponseDto> evaluateRequest(@RequestBody EvaluationRequestDto evaluationRequestDto);
+    SimpleEvaluationResponseDto evaluateRequest(@RequestBody EvaluationRequestDto evaluationRequestDto);
 
     /**
      * Creates experiment request.
@@ -50,7 +36,7 @@ public interface ExternalApiClient {
      * @return evaluation response dto
      */
     @PostMapping(value = "/experiment-request")
-    ResponseDto<SimpleEvaluationResponseDto> experimentRequest(@RequestBody ExperimentRequestDto experimentRequestDto);
+    SimpleEvaluationResponseDto experimentRequest(@RequestBody ExperimentRequestDto experimentRequestDto);
 
     /**
      * Gets evaluation results.
@@ -59,7 +45,7 @@ public interface ExternalApiClient {
      * @return evaluation results response dto
      */
     @GetMapping(value = "/evaluation-results/{requestId}")
-    ResponseDto<EvaluationResultsResponseDto> getEvaluationResults(@PathVariable String requestId);
+    EvaluationResultsResponseDto getEvaluationResults(@PathVariable String requestId);
 
     /**
      * Gets experiment results.
@@ -68,5 +54,5 @@ public interface ExternalApiClient {
      * @return experiment results response dto
      */
     @GetMapping(value = "/experiment-results/{requestId}")
-    ResponseDto<ExperimentResultsResponseDto> getExperimentResults(@PathVariable String requestId);
+    ExperimentResultsResponseDto getExperimentResults(@PathVariable String requestId);
 }
