@@ -6,8 +6,6 @@ import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.exception.InstancesReportException;
 import com.ecaservice.data.storage.model.report.ReportType;
 import com.ecaservice.data.storage.service.StorageService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import eca.data.file.model.InstancesModel;
 import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +36,6 @@ public class InstancesReportService {
     private final EcaDsConfig ecaDsConfig;
     private final StorageService storageService;
     private final ReportProvider reportProvider;
-    private final ObjectMapper objectMapper;
 
     /**
      * Generates instances report with specified type.
@@ -60,36 +57,11 @@ public class InstancesReportService {
         log.info("Report [{}] has been generated for instances with id [{}]", reportType, instancesEntity.getId());
     }
 
-    /**
-     * Generates valid instances report with selected attributes and assigned class attribute.
-     *
-     * @param instancesEntity     - instances entity
-     * @param httpServletResponse - http servlet response
-     * @throws Exception in case of error
-     */
-    public void generateValidJsonInstancesReport(InstancesEntity instancesEntity,
-                                                 HttpServletResponse httpServletResponse) throws Exception {
-        log.info("Starting to generate valid json report for instances with id [{}]", instancesEntity.getId());
-        var instancesModel = storageService.getValidInstancesModel(instancesEntity);
-        String reportName = String.format("%s.json", instancesEntity.getTableName());
-        generate(httpServletResponse, reportName,
-                outputStream -> generateJsonInstancesReport(instancesModel, outputStream));
-        log.info("Valid json report has been generated for instances with id [{}]", instancesEntity.getId());
-    }
-
     private void generateInstancesReport(Instances instances, ReportType reportType, OutputStream outputStream) {
         try {
             var reportSaver = reportType.handle(reportProvider);
             reportSaver.setDateFormat(ecaDsConfig.getDateFormat());
             reportSaver.write(instances, outputStream);
-        } catch (Exception ex) {
-            throw new InstancesReportException(ex);
-        }
-    }
-
-    private void generateJsonInstancesReport(InstancesModel instanceModel, OutputStream outputStream) {
-        try {
-            objectMapper.writeValue(outputStream, instanceModel);
         } catch (Exception ex) {
             throw new InstancesReportException(ex);
         }

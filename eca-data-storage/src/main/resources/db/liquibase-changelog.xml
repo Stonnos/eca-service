@@ -13,4 +13,6 @@
     <include file="db/changelog/v5-add-instances-relation-name-column.xml"/>
     <include file="../filter-template-changelog.xml" relativeToChangelogFile="true"/>
     <include file="db/changelog/v6-update-filter-templates.xml"/>
+    <include file="db/changelog/v7-add-instances-updates-counter-column.xml"/>
+    <include file="db/changelog/v8-create-export-instances-object-table.xml"/>
 </databaseChangeLog>

@@ -55,6 +55,7 @@ public class InstancesMetaDataService {
                     ex.getMessage());
             var errorCode =
                     webClientErrorHandler.handleBadRequest(uuid, ex.contentUTF8(), DataLoaderApiErrorCode.class);
+            log.error("Bad request error code [{}] while get instances [{}] meta data", errorCode, uuid);
             String errorMessage =
                     String.format("Bad request error while get instances [%s] meta data from data storage", uuid);
             throw new DataLoaderBadRequestException(errorCode, errorMessage);

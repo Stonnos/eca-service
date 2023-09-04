@@ -144,6 +144,12 @@
         </dependency>
 
         <dependency>
+            <groupId>eca.service</groupId>
+            <artifactId>eca-data-loader-transport</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>io.github.openfeign</groupId>
             <artifactId>feign-micrometer</artifactId>
         </dependency>

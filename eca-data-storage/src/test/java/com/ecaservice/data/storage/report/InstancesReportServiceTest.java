@@ -7,7 +7,6 @@ import com.ecaservice.data.storage.model.report.ReportType;
 import com.ecaservice.data.storage.service.StorageService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.data.file.FileDataLoader;
-import eca.data.file.model.InstancesModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,7 +43,6 @@ import static org.mockito.Mockito.when;
 class InstancesReportServiceTest {
 
     private static final String ATTACHMENT_FORMAT = "attachment; filename=%s";
-    private static final String RELATION_NAME = "table";
 
     @MockBean
     private StorageService storageService;
@@ -74,20 +72,6 @@ class InstancesReportServiceTest {
                     expectedContentDisposition);
             assertResponse(expectedFileName, httpServletResponse);
         }
-    }
-
-    @Test
-    void testGenerateValidJsonInstancesReport() throws Exception {
-        var httpServletResponse = new MockHttpServletResponse();
-        InstancesModel instancesModel = new InstancesModel();
-        instancesModel.setRelationName(RELATION_NAME);
-        when(storageService.getValidInstancesModel(instancesEntity)).thenReturn(instancesModel);
-        instancesReportService.generateValidJsonInstancesReport(instancesEntity, httpServletResponse);
-        assertThat(httpServletResponse.getContentType()).isEqualTo(MediaType.APPLICATION_OCTET_STREAM_VALUE);
-        String expectedFileName = String.format("%s.json", instancesModel.getRelationName());
-        String expectedContentDisposition = String.format(ATTACHMENT_FORMAT, expectedFileName);
-        assertThat(httpServletResponse.getHeader(HttpHeaders.CONTENT_DISPOSITION)).isEqualTo(
-                expectedContentDisposition);
     }
 
     private void assertResponse(String expectedFileName, MockHttpServletResponse httpServletResponse) throws Exception {

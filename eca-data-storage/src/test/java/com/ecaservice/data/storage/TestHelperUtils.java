@@ -8,13 +8,18 @@ import com.ecaservice.data.storage.model.report.ReportProperties;
 import com.ecaservice.data.storage.model.report.ReportType;
 import com.ecaservice.web.dto.model.AttributeDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import eca.data.file.model.InstancesModel;
 import eca.data.file.resource.FileResource;
 import eca.data.file.xls.XLSLoader;
+import lombok.Cleanup;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import weka.core.Instances;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.UUID;
@@ -41,6 +46,22 @@ public class TestHelperUtils {
     private static final int PAGE_NUMBER = 0;
     private static final int NUM_ATTR_VALUES = 3;
     private static final String ID_COLUMN_NAME = "ID";
+
+    private static final String CREDIT_JSON = "credit.json";
+
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+    /**
+     * Loads instances model from resource.
+     *
+     * @return instances model
+     * @throws IOException in case of I/O error
+     */
+    public static InstancesModel loadInstancesModel() throws IOException {
+        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+        @Cleanup InputStream inputStream = classLoader.getResourceAsStream(CREDIT_JSON);
+        return OBJECT_MAPPER.readValue(inputStream, InstancesModel.class);
+    }
 
     /**
      * Creates page request dto.

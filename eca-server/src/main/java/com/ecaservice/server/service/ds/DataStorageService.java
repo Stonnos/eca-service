@@ -48,6 +48,8 @@ public class DataStorageService {
                     ex.getMessage());
             var dsErrorCode =
                     webClientErrorHandler.handleBadRequest(uuid, ex.contentUTF8(), DsInternalApiErrorCode.class);
+            log.error("Bad request error code [{}] while export valid instances [{}] to central data storage",
+                    dsErrorCode, uuid);
             String errorMessage =
                     String.format("Bad request error while export valid instances [%s] to central data storage", uuid);
             throw new DataStorageBadRequestException(dsErrorCode, errorMessage);
