@@ -6,7 +6,7 @@ import com.ecaservice.data.loader.dto.DataLoaderApiErrorCode;
 import com.ecaservice.data.loader.dto.UploadInstancesResponseDto;
 import com.ecaservice.data.storage.exception.DataLoaderBadRequestException;
 import com.ecaservice.data.storage.exception.DataLoaderException;
-import com.ecaservice.data.storage.multipart.ByteArrayMultipartFile;
+import com.ecaservice.data.storage.model.multipart.ByteArrayMultipartFile;
 import com.ecaservice.data.storage.service.api.DataLoaderApiClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.data.file.model.InstancesModel;
@@ -55,14 +55,12 @@ public class UploadInstancesObjectService {
         } catch (FeignException.BadRequest ex) {
             log.error("Bad request error while upload instances [{}] to central data storage: {}", instancesUuid,
                     ex.getMessage());
-            var errorCode =
-                    webClientErrorHandler.handleBadRequest(instancesUuid, ex.contentUTF8(),
-                            DataLoaderApiErrorCode.class);
+            var errorCode = webClientErrorHandler.handleBadRequest(instancesUuid, ex.contentUTF8(),
+                    DataLoaderApiErrorCode.class);
             log.error("Bad request error code [{}] while upload instances [{}] to central data storage", errorCode,
                     instancesUuid);
-            String errorMessage =
-                    String.format("Bad request error while upload instances [%s] to central data storage",
-                            instancesUuid);
+            String errorMessage = String.format("Bad request error while upload instances [%s] to central data storage",
+                    instancesUuid);
             throw new DataLoaderBadRequestException(errorCode, errorMessage);
         } catch (Exception ex) {
             log.error("Unknown error while upload instances [{}] to central data storage: {}", instancesUuid,

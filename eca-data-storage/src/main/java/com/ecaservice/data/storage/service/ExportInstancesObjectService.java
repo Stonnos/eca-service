@@ -1,10 +1,12 @@
 package com.ecaservice.data.storage.service;
 
+import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.data.loader.dto.UploadInstancesResponseDto;
 import com.ecaservice.data.storage.dto.ExportInstancesResponseDto;
 import com.ecaservice.data.storage.entity.ExportInstancesObjectEntity;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.repository.ExportInstancesObjectRepository;
+import com.ecaservice.data.storage.repository.InstancesRepository;
 import com.ecaservice.data.storage.service.data.UploadInstancesObjectService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +26,7 @@ public class ExportInstancesObjectService {
 
     private final StorageService storageService;
     private final UploadInstancesObjectService uploadInstancesObjectService;
+    private final InstancesRepository instancesRepository;
     private final ExportInstancesObjectRepository exportInstancesObjectRepository;
 
     /**
@@ -33,7 +36,8 @@ public class ExportInstancesObjectService {
      */
     public ExportInstancesResponseDto exportValidInstances(String uuid) {
         log.info("Starting to export instances [{}] to central data storage", uuid);
-        var instancesEntity = storageService.getByUuid(uuid);
+        var instancesEntity = instancesRepository.findByUuid(uuid)
+                .orElseThrow(() -> new EntityNotFoundException(InstancesEntity.class, uuid));
         var lastExportInstancesObject =
                 exportInstancesObjectRepository.findFirstByInstancesUuidOrderByCreatedDesc(uuid);
         if (lastExportInstancesObject == null) {

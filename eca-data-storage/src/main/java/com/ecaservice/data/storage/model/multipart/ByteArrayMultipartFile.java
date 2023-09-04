@@ -1,4 +1,4 @@
-package com.ecaservice.data.storage.multipart;
+package com.ecaservice.data.storage.model.multipart;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
