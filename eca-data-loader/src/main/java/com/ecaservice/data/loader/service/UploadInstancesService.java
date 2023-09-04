@@ -67,6 +67,7 @@ public class UploadInstancesService {
                     instancesFile.getOriginalFilename(), uuid, objectPath);
             return UploadInstancesResponseDto.builder()
                     .uuid(uuid)
+                    .md5Hash(instancesObject.getMd5Hash())
                     .build();
         } catch (IOException ex) {
             log.error("There was an error while load data from file {}: {}", instancesFile.getOriginalFilename(),

@@ -27,4 +27,11 @@ public class UploadInstancesResponseDto {
      */
     @Schema(description = "Instances uuid", example = "f8cecbf7-405b-403b-9a94-f51e8fb73ed8", maxLength = UUID_MAX_SIZE)
     private String uuid;
+
+    /**
+     * Instances file MD5 hash sum
+     */
+    @Schema(description = "Instances file MD5 hash sum", example = "3032e188204cb537f69fc7364f638641",
+            maxLength = FieldConstraints.MAX_LENGTH_255)
+    private String md5Hash;
 }
