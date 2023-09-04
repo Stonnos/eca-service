@@ -28,7 +28,7 @@ public enum ErrorCode {
     CLASSIFIER_OPTIONS_NOT_FOUND("Classifier options not found for specified request"),
 
     /**
-     * Training data not found in common data storage
+     * Training data not found in central data storage
      */
     TRAINING_DATA_NOT_FOUND("Training data not found for specified request"),
 

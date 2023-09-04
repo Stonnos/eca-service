@@ -1,6 +1,7 @@
 package com.ecaservice.server.service.experiment;
 
 import com.ecaservice.core.audit.annotation.Audit;
+import com.ecaservice.data.storage.dto.ExportInstancesResponseDto;
 import com.ecaservice.server.dto.CreateExperimentRequestDto;
 import com.ecaservice.server.event.model.ExperimentEmailEvent;
 import com.ecaservice.server.event.model.push.ExperimentSystemPushEvent;
@@ -18,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
-import weka.core.Instances;
 
 import java.util.UUID;
 
@@ -26,8 +26,7 @@ import static com.ecaservice.common.web.util.LogHelper.EV_REQUEST_ID;
 import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.putMdc;
 import static com.ecaservice.server.config.audit.AuditCodes.CREATE_EXPERIMENT_REQUEST;
-import static com.ecaservice.server.util.InstancesUtils.removeConstantAttributes;
-//TODO refactoring after changed eca-data-storage api
+
 /**
  * Experiment request web api service.
  *
@@ -80,10 +79,9 @@ public class ExperimentRequestWebApiService {
         var experimentWebRequestData = new ExperimentWebRequestData();
         experimentWebRequestData.setEmail(userInfoDto.getEmail());
         experimentWebRequestData.setCreatedBy(userService.getCurrentUser());
-        Instances data = downloadInstances(experimentRequestDto.getInstancesUuid());
-        Instances filteredData = removeConstantAttributes(data);
-        log.info("Constant attributes has been removed from data [{}]", filteredData.relationName());
-       // experimentWebRequestData.setData(filteredData);
+        var exportInstancesResponseDto = exportInstances(experimentRequestDto.getInstancesUuid());
+        //TODO remove constant attributes
+        experimentWebRequestData.setDataUuid(exportInstancesResponseDto.getExternalDataUuid());
         experimentWebRequestData.setExperimentType(experimentRequestDto.getExperimentType());
         experimentWebRequestData.setEvaluationMethod(experimentRequestDto.getEvaluationMethod());
         return experimentWebRequestData;
@@ -94,9 +92,9 @@ public class ExperimentRequestWebApiService {
         return usersClient.getUserInfo(user);
     }
 
-    private Instances downloadInstances(String uuid) {
+    private ExportInstancesResponseDto exportInstances(String uuid) {
         try {
-            return dataStorageService.getValidInstances(uuid);
+            return dataStorageService.exportValidInstances(uuid);
         } catch (DataStorageBadRequestException ex) {
             var dsErrorCode = dataStorageErrorCodeMapper.mapErrorCode(ex.getDsErrorCode());
             throw new InstancesValidationException(dsErrorCode, ex.getMessage());
