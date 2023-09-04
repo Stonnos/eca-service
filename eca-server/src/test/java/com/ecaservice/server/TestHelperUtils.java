@@ -16,6 +16,7 @@ import com.ecaservice.classifier.options.model.LogisticOptions;
 import com.ecaservice.classifier.options.model.NeuralNetworkOptions;
 import com.ecaservice.classifier.options.model.RandomForestsOptions;
 import com.ecaservice.classifier.options.model.StackingOptions;
+import com.ecaservice.data.loader.dto.InstancesMetaInfoDto;
 import com.ecaservice.ers.dto.ClassificationCostsReport;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import com.ecaservice.ers.dto.ClassifierOptionsResponse;
@@ -163,6 +164,7 @@ public class TestHelperUtils {
     public static final String MESSAGE_TEXT = "Message text";
     private static final String DATA_MD_5_HASH = "3032e188204cb537f69fc7364f638641";
     private static final String CLASSIFIER_MODEL = "classifier.model";
+    private static final String INSTANCES_OBJECT_PATH = "instances.json";
 
     /**
      * Creates page request dto.
@@ -1170,6 +1172,24 @@ public class TestHelperUtils {
         experimentStepEntity.setCreated(LocalDateTime.now());
         experimentStepEntity.setExperiment(experiment);
         return experimentStepEntity;
+    }
+
+    /**
+     * Creates instances info meta info dto.
+     *
+     * @return instances info meta info dto
+     */
+    public static InstancesMetaInfoDto createInstancesMetaInfoInfo() {
+        return InstancesMetaInfoDto.builder()
+                .relationName(RELATION_NAME)
+                .className(CLASS_NAME)
+                .numInstances(NUM_INSTANCES)
+                .numAttributes(NUM_ATTRIBUTES)
+                .numClasses(NUM_CLASSES)
+                .md5Hash(DATA_MD_5_HASH)
+                .uuid(UUID.randomUUID().toString())
+                .objectPath(INSTANCES_OBJECT_PATH)
+                .build();
     }
 
     private static <T> T loadConfig(String path, TypeReference<T> tTypeReference) {
