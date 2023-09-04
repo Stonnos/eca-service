@@ -30,7 +30,7 @@ public class ExportInstancesObjectService {
     private final ExportInstancesObjectRepository exportInstancesObjectRepository;
 
     /**
-     * Exports valid instances with selected attributes and assigned class attribute.
+     * Exports valid instances with selected attributes and assigned class attribute to central data storage.
      *
      * @param uuid - instances uuid
      */
