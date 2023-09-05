@@ -28,6 +28,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import static com.ecaservice.server.util.InstancesUtils.removeConstantAttributes;
+
 /**
  * Step handler for experiment model processing.
  *
@@ -79,7 +81,8 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
                        ExperimentStepEntity experimentStepEntity) {
         try {
             Instances data = getInstances(experimentContext);
-            processExperiment(data, experimentContext);
+            Instances filteredInstances = removeConstantAttributes(data);
+            processExperiment(filteredInstances, experimentContext);
             saveMaxPctCorrectValue(experimentContext);
             experimentProgressService.finish(experimentStepEntity.getExperiment());
             experimentStepService.complete(experimentStepEntity);

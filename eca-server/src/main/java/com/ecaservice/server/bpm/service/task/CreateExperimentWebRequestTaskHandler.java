@@ -52,7 +52,6 @@ public class CreateExperimentWebRequestTaskHandler extends AbstractTaskHandler {
                 getVariable(execution, EXPERIMENT_REQUEST_DATA, CreateExperimentRequestDto.class);
         var userInfoDto = getVariable(execution, USER_INFO, UserInfoDto.class);
         String trainDataUuid = getVariable(execution, TRAIN_DATA_UUID, String.class);
-        // TODO remove constant attributes
         var experimentWebRequestData = new ExperimentWebRequestData();
         experimentWebRequestData.setRequestId(execution.getProcessBusinessKey());
         experimentWebRequestData.setDataUuid(trainDataUuid);
