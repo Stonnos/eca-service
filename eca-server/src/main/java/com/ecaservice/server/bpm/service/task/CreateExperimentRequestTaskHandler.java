@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.springframework.stereotype.Component;
 
+import static com.ecaservice.server.bpm.CamundaVariables.EXPERIMENT_ID;
 import static com.ecaservice.server.bpm.CamundaVariables.EXPERIMENT_REQUEST_DATA;
 import static com.ecaservice.server.util.CamundaUtils.getVariable;
 
@@ -36,7 +37,8 @@ public class CreateExperimentRequestTaskHandler extends AbstractTaskHandler {
         log.info("Starting to create experiment [{}] for process", execution.getProcessBusinessKey());
         var experimentMessageRequestData =
                 getVariable(execution, EXPERIMENT_REQUEST_DATA, ExperimentMessageRequestData.class);
-        experimentService.createExperiment(experimentMessageRequestData);
+        var experiment = experimentService.createExperiment(experimentMessageRequestData);
+        execution.setVariable(EXPERIMENT_ID, experiment.getId());
         log.info("Experiment [{}] has been created for process", execution.getProcessBusinessKey());
     }
 }
