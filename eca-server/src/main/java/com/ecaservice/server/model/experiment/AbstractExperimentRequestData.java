@@ -4,13 +4,15 @@ import com.ecaservice.base.model.ExperimentType;
 import eca.core.evaluation.EvaluationMethod;
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * Abstract experiment request data model.
  *
  * @author Roman Batygin
  */
 @Data
-public abstract class AbstractExperimentRequestData {
+public abstract class AbstractExperimentRequestData implements Serializable {
 
     /**
      * Request id

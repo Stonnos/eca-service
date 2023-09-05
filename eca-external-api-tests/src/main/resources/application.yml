@@ -33,7 +33,7 @@ data-loader:
 service:
   feign:
     oauth:
-      tokenUrl: http://localhost:8080/eca-oauth/eca-oauth
+      tokenUrl: http://localhost:8080/eca-oauth
       clientId: external-api
       clientSecret: external_api_secret
 
