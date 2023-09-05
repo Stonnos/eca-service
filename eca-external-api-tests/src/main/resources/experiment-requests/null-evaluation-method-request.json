@@ -4,5 +4,5 @@
   "request": {
     "experimentType": "RANDOM_FORESTS"
   },
-  "expectedResponseCode": "SUCCESS"
+  "expectedResponseCode": "VALIDATION_ERROR"
 }

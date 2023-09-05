@@ -4,5 +4,5 @@
   "request": {
     "evaluationMethod": "TRAINING_DATA"
   },
-  "expectedResponseCode": "SUCCESS"
+  "expectedResponseCode": "VALIDATION_ERROR"
 }
