@@ -2,6 +2,7 @@ package com.ecaservice.feign.oauth.config;
 
 import com.ecaservice.feign.oauth.interceptor.BearerTokenRequestInterceptor;
 import feign.RequestInterceptor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.oauth2.client.DefaultOAuth2ClientContext;
 import org.springframework.security.oauth2.client.token.grant.client.ClientCredentialsResourceDetails;
@@ -11,6 +12,7 @@ import org.springframework.security.oauth2.client.token.grant.client.ClientCrede
  *
  * @author Roman Batygin
  */
+@Slf4j
 public class FeignClientOauth2Configuration {
 
     private static final String TOKEN_URL_FORMAT = "%s/oauth/token";
@@ -35,6 +37,8 @@ public class FeignClientOauth2Configuration {
         clientCredentialsResourceDetails.setGrantType(CLIENT_CREDENTIALS);
         clientCredentialsResourceDetails.setAccessTokenUri(
                 String.format(TOKEN_URL_FORMAT, feignOauthProperties.getTokenUrl()));
+        log.info("Feign client oauth2 client [{}] has been configured. Token url: {}",
+                clientCredentialsResourceDetails.getClientId(), clientCredentialsResourceDetails.getAccessTokenUri());
         return clientCredentialsResourceDetails;
     }
 }

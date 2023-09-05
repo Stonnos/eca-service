@@ -45,9 +45,9 @@ data-loader:
 service:
   feign:
     oauth:
-      tokenUrl: eca_service_tech
-      clientId: 02#eca_service_tech6
-      clientSecret: http://localhost:8085/eca-oauth
+      tokenUrl: external-api
+      clientId: external_api_secret
+      clientSecret: http://localhost:8080/eca-oauth/eca-oauth
 
 queue:
   evaluationRequestQueue: evaluation-request-queue
