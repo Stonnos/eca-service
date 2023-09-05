@@ -45,7 +45,7 @@ open-api:
   tokenBaseUrl: http://localhost:8080
   apiAuth:
     CLIENT_CREDENTIALS:
-      scopes: external-api
+      scopes: data-loader-api
 
 springdoc:
   swagger-ui:
