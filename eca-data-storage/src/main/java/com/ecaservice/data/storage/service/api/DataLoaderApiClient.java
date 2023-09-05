@@ -1,6 +1,7 @@
 package com.ecaservice.data.storage.service.api;
 
 import com.ecaservice.data.loader.dto.UploadInstancesResponseDto;
+import com.ecaservice.feign.oauth.config.FeignClientOauth2Configuration;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
  *
  * @author Roman Batygin
  */
-@FeignClient(name = "eca-data-loader", path = "/api/external")
+@FeignClient(name = "eca-data-loader", path = "/api/external", configuration = FeignClientOauth2Configuration.class)
 public interface DataLoaderApiClient {
 
     /**

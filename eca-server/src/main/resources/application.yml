@@ -166,6 +166,13 @@ auth-server:
   clientId: eca_service_tech
   clientSecret: 02#eca_service_tech6
 
+service:
+  feign:
+    oauth:
+      tokenUrl: eca_service_tech
+      clientId: 02#eca_service_tech6
+      clientSecret: http://localhost:8085/eca-oauth
+
 processes:
   processExperimentId: ExperimentProcess
   createExperimentRequestProcessId: CreateExperimentRequestProcess

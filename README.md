@@ -32,6 +32,7 @@
 * eca-external-api-transport - модуль содержит dto классы для внешнего API
 * eca-audit-transport - модуль содержит dto классы для сервиса журнала аудита
 * eca-report-model - модуль содержит модельные классы для отчетов
+* feign-oauth - обзщая библиотека для поддержки аутентификации feign client с помощью протокола oauth2
 * eca-web-transport - модуль содержит dto классы для REST API WEB
 * core-redelivery - общая библиотека для поддержки механизмов redelivery
 * core-audit - библиотека для отправки событий аудита

@@ -5,7 +5,7 @@ import com.ecaservice.external.api.dto.EvaluationResultsResponseDto;
 import com.ecaservice.external.api.dto.ExperimentRequestDto;
 import com.ecaservice.external.api.dto.ExperimentResultsResponseDto;
 import com.ecaservice.external.api.dto.SimpleEvaluationResponseDto;
-import com.ecaservice.external.api.test.config.oauth2.FeignClientConfiguration;
+import com.ecaservice.feign.oauth.config.FeignClientOauth2Configuration;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,7 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
  *
  * @author Roman Batygin
  */
-@FeignClient(name = "external-api-client", url = "${external-api-tests.url}/external-api", configuration = FeignClientConfiguration.class)
+@FeignClient(name = "external-api-client", url = "${external-api-tests.url}/external-api",
+        configuration = FeignClientOauth2Configuration.class)
 public interface ExternalApiClient {
 
     /**

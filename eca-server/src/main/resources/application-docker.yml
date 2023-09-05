@@ -48,6 +48,11 @@ minio:
 auth-server:
   baseUrl: http://eca-oauth:8080
 
+service:
+  feign:
+    oauth:
+      tokenUrl: http://eca-oauth:8080
+
 lock:
   enabled: true
   registry-type: REDIS

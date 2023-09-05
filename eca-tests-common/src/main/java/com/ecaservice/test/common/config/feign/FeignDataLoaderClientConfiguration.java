@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Bean;
  *
  * @author Roman Batygin
  */
-public class FeignClientConfiguration {
+public class FeignDataLoaderClientConfiguration {
 
     /**
      * Creates form encoder bean.

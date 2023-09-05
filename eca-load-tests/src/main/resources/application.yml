@@ -42,6 +42,13 @@ eca-load-tests:
 data-loader:
   url: http://localhost:8080/eca-data-loader
 
+service:
+  feign:
+    oauth:
+      tokenUrl: eca_service_tech
+      clientId: 02#eca_service_tech6
+      clientSecret: http://localhost:8085/eca-oauth
+
 queue:
   evaluationRequestQueue: evaluation-request-queue
   replyToQueue: load-tests-response-queue

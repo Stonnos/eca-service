@@ -25,6 +25,7 @@
         <module>eca-audit-transport</module>
         <module>eca-web-transport</module>
         <module>eca-report-model</module>
+        <module>feign-oauth</module>
         <module>core-redelivery</module>
         <module>core-audit</module>
         <module>core-filter</module>

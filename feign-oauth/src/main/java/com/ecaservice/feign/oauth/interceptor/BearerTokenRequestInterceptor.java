@@ -1,4 +1,4 @@
-package com.ecaservice.external.api.test.config.oauth2;
+package com.ecaservice.feign.oauth.interceptor;
 
 import org.springframework.cloud.openfeign.security.OAuth2FeignRequestInterceptor;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
