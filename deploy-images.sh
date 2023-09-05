@@ -18,3 +18,5 @@ docker tag eca-web-push dockerbatygin/eca:eca-web-push
 docker push dockerbatygin/eca:eca-web-push
 docker tag eca-audit-log dockerbatygin/eca:eca-audit-log
 docker push dockerbatygin/eca:eca-audit-log
+docker tag eca-data-loader dockerbatygin/eca:eca-data-loader
+docker push dockerbatygin/eca:eca-data-loader
