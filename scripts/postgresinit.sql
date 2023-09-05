@@ -1,3 +1,4 @@
+ALTER SYSTEM SET max_connections = 500;
 create database eca;
 create database eca_oauth;
 create database mail;
