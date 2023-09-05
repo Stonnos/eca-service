@@ -37,4 +37,5 @@
     <include file="db/changelog/v28-added-code-column-to-tfa-code-table.xml"/>
     <include file="../filter-template-changelog.xml" relativeToChangelogFile="true"/>
     <include file="db/changelog/v29-update-filter-templates.xml"/>
+    <include file="db/changelog/v30-assign-data-loader-api-scope.xml"/>
 </databaseChangeLog>
