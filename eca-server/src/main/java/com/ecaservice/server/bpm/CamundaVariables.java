@@ -49,4 +49,9 @@ public class CamundaVariables {
      * Train data uuid
      */
     public static final String TRAIN_DATA_UUID = "trainDataUuid";
+
+    /**
+     * Application instance uuid
+     */
+    public static final String APP_INSTANCES_UUID = "appInstanceUuid";
 }

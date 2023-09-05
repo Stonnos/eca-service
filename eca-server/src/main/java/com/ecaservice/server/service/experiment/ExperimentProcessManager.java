@@ -13,10 +13,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.UUID;
 
 import static com.ecaservice.common.web.util.LogHelper.EV_REQUEST_ID;
 import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.putMdc;
+import static com.ecaservice.server.bpm.CamundaVariables.APP_INSTANCES_UUID;
 import static com.ecaservice.server.bpm.CamundaVariables.EXPERIMENT_ID;
 import static com.ecaservice.server.bpm.CamundaVariables.EXPERIMENT_REQUEST_DATA;
 
@@ -29,6 +31,8 @@ import static com.ecaservice.server.bpm.CamundaVariables.EXPERIMENT_REQUEST_DATA
 @Service
 @RequiredArgsConstructor
 public class ExperimentProcessManager {
+
+    private final String appInstanceUuid = UUID.randomUUID().toString();
 
     private final ExperimentDataService experimentDataService;
     private final ProcessManager processManager;
@@ -44,15 +48,23 @@ public class ExperimentProcessManager {
     public void processExperiment(Long id) {
         var experiment = experimentDataService.getById(id);
         if (hasActiveProcess(experiment)) {
-            log.warn("Experiment [{}] has active process, Skipped experiment processing...",
+            log.warn("Experiment [{}] has active process. Skipped experiment processing...",
                     experiment.getRequestId());
         } else {
-            putMdc(TX_ID, experiment.getRequestId());
-            putMdc(EV_REQUEST_ID, experiment.getRequestId());
-            log.info("Starting experiment [{}] business process. Experiment request status [{}], channel [{}]",
-                    experiment.getRequestId(), experiment.getRequestStatus(), experiment.getChannel());
-            Map<String, Object> variables = Collections.singletonMap(EXPERIMENT_ID, experiment.getId());
-            processManager.startProcess(processConfig.getProcessExperimentId(), experiment.getRequestId(), variables);
+            long activeExperimentProcessesForAppInstance = getActiveExperimentProcessesForAppInstance();
+            if (activeExperimentProcessesForAppInstance >= processConfig.getMaxConcurrentExperimentProcesses()) {
+                log.warn("Got maximum [{}] active experiment processes. Skipped experiment [{}] processing...",
+                        activeExperimentProcessesForAppInstance, experiment.getRequestId());
+            } else {
+                putMdc(TX_ID, experiment.getRequestId());
+                putMdc(EV_REQUEST_ID, experiment.getRequestId());
+                log.info("Starting experiment [{}] business process. Experiment request status [{}], channel [{}]",
+                        experiment.getRequestId(), experiment.getRequestStatus(), experiment.getChannel());
+                Map<String, Object> variables =
+                        Map.of(EXPERIMENT_ID, experiment.getId(), APP_INSTANCES_UUID, appInstanceUuid);
+                processManager.startProcess(processConfig.getProcessExperimentId(), experiment.getRequestId(),
+                        variables);
+            }
         }
     }
 
@@ -85,10 +97,18 @@ public class ExperimentProcessManager {
     }
 
     private boolean hasActiveProcess(Experiment experiment) {
-        var activeProcessInstances = runtimeService.createProcessInstanceQuery()
+        var activeProcessInstancesCount = runtimeService.createProcessInstanceQuery()
                 .processInstanceBusinessKey(experiment.getRequestId())
                 .active()
-                .list();
-        return activeProcessInstances.size() > 0L;
+                .count();
+        return activeProcessInstancesCount > 0L;
+    }
+
+    private long getActiveExperimentProcessesForAppInstance() {
+        return runtimeService.createProcessInstanceQuery()
+                .processDefinitionKey(processConfig.getProcessExperimentId())
+                .variableValueEquals(APP_INSTANCES_UUID, appInstanceUuid)
+                .active()
+                .count();
     }
 }
