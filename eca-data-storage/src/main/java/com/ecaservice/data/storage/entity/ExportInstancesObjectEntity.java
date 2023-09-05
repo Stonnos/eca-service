@@ -30,13 +30,13 @@ public class ExportInstancesObjectEntity {
     /**
      * Instances uuid
      */
-    @Column(nullable = false)
+    @Column(name = "instances_uuid", nullable = false)
     private String instancesUuid;
 
     /**
      * External data uuid in central data storage
      */
-    @Column(nullable = false)
+    @Column(name = "external_data_uuid", nullable = false)
     private String externalDataUuid;
 
     /**
