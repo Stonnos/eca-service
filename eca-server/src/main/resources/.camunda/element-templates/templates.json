@@ -53,8 +53,24 @@
             "value": "SENT_EXPERIMENT_WEB_PUSH"
           },
           {
-            "name": "Отправить ответное сообщение в очерердь с результатами эксперимента",
+            "name": "Отправить ответное сообщение в очередь для заявки на эксперимент",
             "value": "SENT_EXPERIMENT_RESPONSE"
+          },
+          {
+            "name": "Получить данные о пользователе",
+            "value": "GET_USER_INFO"
+          },
+          {
+            "name": "Сформировать обучающую выборку на основе данных из data-storage",
+            "value": "EXPORT_VALID_INSTANCES"
+          },
+          {
+            "name": "Создать заявку на эксперимент",
+            "value": "CREATE_EXPERIMENT_REQUEST"
+          },
+          {
+            "name": "Создать заявку на эксперимент через web",
+            "value": "CREATE_EXPERIMENT_WEB_REQUEST"
           }
         ],
         "binding": {

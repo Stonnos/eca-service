@@ -12,6 +12,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import java.io.Serializable;
+
 import static com.ecaservice.ers.dto.Constraints.MIN_1;
 import static com.ecaservice.ers.dto.Constraints.UUID_MAX_SIZE;
 import static com.ecaservice.ers.dto.Constraints.UUID_PATTERN;
@@ -27,7 +29,7 @@ import static com.ecaservice.web.dto.util.FieldConstraints.UUID_MAX_LENGTH;
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "Experiment request")
-public class CreateExperimentRequestDto {
+public class CreateExperimentRequestDto implements Serializable {
 
     /**
      * Instances uuid

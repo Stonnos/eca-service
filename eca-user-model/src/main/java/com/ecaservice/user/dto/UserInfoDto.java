@@ -3,6 +3,8 @@ package com.ecaservice.user.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.io.Serializable;
+
 import static com.ecaservice.user.util.FieldConstraints.MAX_LENGTH_255;
 
 /**
@@ -12,7 +14,7 @@ import static com.ecaservice.user.util.FieldConstraints.MAX_LENGTH_255;
  */
 @Data
 @Schema(description = "User model")
-public class UserInfoDto {
+public class UserInfoDto implements Serializable {
 
     /**
      * User login

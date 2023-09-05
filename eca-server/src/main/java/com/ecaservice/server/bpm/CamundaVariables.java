@@ -34,4 +34,19 @@ public class CamundaVariables {
      * Error message
      */
     public static final String ERROR_MESSAGE = "errorMessage";
+
+    /**
+     * Experiment request data
+     */
+    public static final String EXPERIMENT_REQUEST_DATA = "experimentRequestData";
+
+    /**
+     * User info
+     */
+    public static final String USER_INFO = "userInfo";
+
+    /**
+     * Train data uuid
+     */
+    public static final String TRAIN_DATA_UUID = "trainDataUuid";
 }

@@ -21,4 +21,16 @@ public class ProcessConfig {
      */
     @NotEmpty
    private String processExperimentId;
+
+    /**
+     * Create experiment request process id
+     */
+    @NotEmpty
+    private String createExperimentRequestProcessId;
+
+    /**
+     * Create experiment web request process id
+     */
+    @NotEmpty
+    private String createExperimentWebRequestProcessId;
 }

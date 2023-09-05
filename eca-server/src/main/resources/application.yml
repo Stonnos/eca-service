@@ -168,6 +168,8 @@ auth-server:
 
 processes:
   processExperimentId: ExperimentProcess
+  createExperimentRequestProcessId: CreateExperimentRequestProcess
+  createExperimentWebRequestProcessId: CreateExperimentWebRequestProcess
 
 management:
   metrics:

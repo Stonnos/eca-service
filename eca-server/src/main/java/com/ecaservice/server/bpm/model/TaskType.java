@@ -50,5 +50,25 @@ public enum TaskType {
     /**
      * Sent experiment response to MQ
      */
-    SENT_EXPERIMENT_RESPONSE
+    SENT_EXPERIMENT_RESPONSE,
+
+    /**
+     * Gets user info
+     */
+    GET_USER_INFO,
+
+    /**
+     * Export valid instances to central data storage
+     */
+    EXPORT_VALID_INSTANCES,
+
+    /**
+     * Create experiment request
+     */
+    CREATE_EXPERIMENT_REQUEST,
+
+    /**
+     * Create experiment web request
+     */
+    CREATE_EXPERIMENT_WEB_REQUEST
 }

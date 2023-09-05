@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Implements repository that manages with {@link Experiment} entities.
@@ -17,6 +18,14 @@ import java.util.List;
  * @author Roman Batygin
  */
 public interface ExperimentRepository extends JpaRepository<Experiment, Long>, JpaSpecificationExecutor<Experiment> {
+
+    /**
+     * Finds experiment by request id.
+     *
+     * @param requestId - request id
+     * @return experiment entity
+     */
+    Optional<Experiment> findByRequestId(String requestId);
 
     /**
      * Finds new experiments.
