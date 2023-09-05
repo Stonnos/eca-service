@@ -11,7 +11,7 @@
                 <tableExists tableName="export_instances_object"/>
             </not>
         </preConditions>
-        <createTable tableName="export_instances_object_table">
+        <createTable tableName="export_instances_object">
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>

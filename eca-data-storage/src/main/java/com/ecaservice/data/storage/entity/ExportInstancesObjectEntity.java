@@ -42,7 +42,7 @@ public class ExportInstancesObjectEntity {
     /**
      * Instances md5 hash
      */
-    @Column(nullable = false)
+    @Column(name = "md5_hash", nullable = false)
     private String md5Hash;
 
     /**

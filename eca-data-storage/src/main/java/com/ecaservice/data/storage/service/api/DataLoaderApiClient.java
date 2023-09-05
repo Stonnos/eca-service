@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
  *
  * @author Roman Batygin
  */
-@FeignClient(name = "eca-data-loader")
+@FeignClient(name = "eca-data-loader", path = "/api/external")
 public interface DataLoaderApiClient {
 
     /**

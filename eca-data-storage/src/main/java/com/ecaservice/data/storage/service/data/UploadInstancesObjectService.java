@@ -39,7 +39,7 @@ public class UploadInstancesObjectService {
      */
     public UploadInstancesResponseDto uploadInstances(String instancesUuid, InstancesModel instancesModel) {
         try {
-            log.info("Starting to upload instances [{}] to central data storage", instancesModel);
+            log.info("Starting to upload instances [{}] to central data storage", instancesUuid);
             String instancesFilename = String.format("instances-%s.json", instancesUuid);
             byte[] instancesBytes = objectMapper.writeValueAsBytes(instancesModel);
             var multipartFile = new ByteArrayMultipartFile(instancesFilename, instancesFilename, instancesBytes);
