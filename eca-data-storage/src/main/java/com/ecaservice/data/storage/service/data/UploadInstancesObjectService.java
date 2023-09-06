@@ -2,11 +2,11 @@ package com.ecaservice.data.storage.service.data;
 
 import com.ecaservice.common.web.error.WebClientErrorHandler;
 import com.ecaservice.common.web.exception.InternalServiceUnavailableException;
+import com.ecaservice.common.web.multipart.ByteArrayMultipartFile;
 import com.ecaservice.data.loader.dto.DataLoaderApiErrorCode;
 import com.ecaservice.data.loader.dto.UploadInstancesResponseDto;
 import com.ecaservice.data.storage.exception.DataLoaderBadRequestException;
 import com.ecaservice.data.storage.exception.DataLoaderException;
-import com.ecaservice.data.storage.model.multipart.ByteArrayMultipartFile;
 import com.ecaservice.data.storage.service.api.DataLoaderApiClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.data.file.model.InstancesModel;

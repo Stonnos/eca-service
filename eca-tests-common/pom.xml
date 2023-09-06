@@ -53,6 +53,12 @@
 
         <dependency>
             <groupId>eca.service</groupId>
+            <artifactId>common-web</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>eca.service</groupId>
             <artifactId>feign-oauth2</artifactId>
             <version>${project.version}</version>
         </dependency>

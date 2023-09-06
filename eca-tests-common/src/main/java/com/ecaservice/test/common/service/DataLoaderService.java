@@ -1,8 +1,8 @@
 package com.ecaservice.test.common.service;
 
+import com.ecaservice.common.web.multipart.ByteArrayMultipartFile;
 import com.ecaservice.data.loader.dto.UploadInstancesResponseDto;
 import com.ecaservice.test.common.exception.DataLoaderException;
-import com.ecaservice.test.common.multipart.ByteArrayMultipartFile;
 import com.ecaservice.test.common.service.api.DataLoaderApiClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

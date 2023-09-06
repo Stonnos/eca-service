@@ -1,4 +1,4 @@
-package com.ecaservice.test.common.multipart;
+package com.ecaservice.common.web.multipart;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
