@@ -19,9 +19,7 @@ API provides operations to performs classifiers evaluation requests
 |*oauth2*
 |Oauth2 authentication
 
-*Client credentials location:* __header__
 
-*Bearer format:* __Authorization: Bearer <access token>__
 a|
 
 *Flow*
@@ -37,161 +35,6 @@ __Scopes__:
 
 * external-api
 
-|===
-
-== Uploads train data file
-
-__POST__ */uploads-train-data* - Uploads train data file
-
-*Security requirement*
-
-[cols="^50%,^50%",options="header"]
-|===
-|*Name*|*Scopes*
-|
-<<EcaAuth>>
-a|
-
-* external-api
-
-|===
-
-*Request body*
-
-[width=100%]
-|===
-|*Content type*|*Required*|*Schema*|*Example*
-|*multipart/form-data*
-|false
-|
-__object__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-a|
--
-|===
-
-*Multipart form data fields*
-
-[width=100%]
-|===
-|*Name*|*Description*|*Schema*
-|*trainingData**
-|Training data file
-a|
-__string__
-__(binary)__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|===
-
-
-*Api responses*
-[width=100%]
-|===
-|*Code*|*Description*|*Content type*|*Schema*|*Example*
-|200
-|OK
-|*application/json*
-|
-<<InstancesResponseDto>>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-a|
-[source,json]
-----
-{
-  "payload" : {
-    "dataId" : "2a35bffe-27ad-4a50-a7e0-8c871cfd7cc5",
-    "dataUrl" : "data://2a35bffe-27ad-4a50-a7e0-8c871cfd7cc5"
-  },
-  "responseCode" : "SUCCESS"
-}
-----
-|401
-|Not authorized
-|*application/json*
-|-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|400
-|Bad request
-|*application/json*
-|
-<<ValidationErrorResponsePayloadDto>>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-a|
-[source,json]
-----
-{
-  "payload" : [ {
-    "fieldName" : "trainingData",
-    "code" : "ValidTrainData",
-    "errorMessage" : "Invalid train data extension. Must be one of xls, xlsx, csv, arff, json, xml, txt, data, docx"
-  } ],
-  "responseCode" : "VALIDATION_ERROR",
-  "errorDescription" : "Validation errors"
-}
-----
 |===
 
 == Processes evaluation request using optimal classifier model
@@ -239,7 +82,7 @@ a|
 [source,json]
 ----
 {
-  "trainDataUrl" : "http://kt.ijs.si/Branax/Repository/WEKA/Iris.xls"
+  "trainDataUuid" : "1d2de514-3a87-4620-9b97-c260e24340de"
 }
 ----
 |===
@@ -254,7 +97,7 @@ a|
 |OK
 |*application/json*
 |
-<<SimpleEvaluationResponsePayloadDto>>
+<<SimpleEvaluationResponseDto>>
 
 
 
@@ -274,11 +117,16 @@ a|
 [source,json]
 ----
 {
-  "payload" : {
-    "requestId" : "1cbe6c49-8432-4c81-9afa-90f04a803fed",
-    "evaluationStatus" : "IN_PROGRESS"
-  },
-  "responseCode" : "SUCCESS"
+  "requestId" : "1cbe6c49-8432-4c81-9afa-90f04a803fed",
+  "evaluationStatus" : "IN_PROGRESS",
+  "errorCode" : null,
+  "modelUrl" : null,
+  "numTestInstances" : null,
+  "numCorrect" : null,
+  "numIncorrect" : null,
+  "pctCorrect" : null,
+  "pctIncorrect" : null,
+  "meanAbsoluteError" : null
 }
 ----
 |401
@@ -297,7 +145,9 @@ a|
 |Bad request
 |*application/json*
 |
-<<ValidationErrorResponsePayloadDto>>
+__array__
+<<<ValidationErrorDto>>
+>
 
 
 
@@ -316,15 +166,11 @@ a|
 a|
 [source,json]
 ----
-{
-  "payload" : [ {
-    "fieldName" : "trainDataUrl",
-    "code" : "DataURL",
-    "errorMessage" : "train data url must have one of the protocols such as http, ftp, data"
-  } ],
-  "responseCode" : "VALIDATION_ERROR",
-  "errorDescription" : "Validation errors"
-}
+[ {
+  "fieldName" : "trainDataUuid",
+  "code" : "NotBlank",
+  "errorMessage" : "must be not blank"
+} ]
 ----
 |===
 
@@ -373,7 +219,7 @@ a|
 [source,json]
 ----
 {
-  "trainDataUrl" : "http://kt.ijs.si/Branax/Repository/WEKA/Iris.xls",
+  "trainDataUuid" : "1d2de514-3a87-4620-9b97-c260e24340de",
   "experimentType" : "RANDOM_FORESTS",
   "evaluationMethod" : "CROSS_VALIDATION"
 }
@@ -390,7 +236,7 @@ a|
 |OK
 |*application/json*
 |
-<<SimpleEvaluationResponsePayloadDto>>
+<<SimpleEvaluationResponseDto>>
 
 
 
@@ -410,11 +256,9 @@ a|
 [source,json]
 ----
 {
-  "payload" : {
-    "requestId" : "1cbe6c49-8432-4c81-9afa-90f04a803fed",
-    "evaluationStatus" : "IN_PROGRESS"
-  },
-  "responseCode" : "SUCCESS"
+  "requestId" : "1cbe6c49-8432-4c81-9afa-90f04a803fed",
+  "evaluationStatus" : "IN_PROGRESS",
+  "errorCode" : null
 }
 ----
 |401
@@ -433,7 +277,9 @@ a|
 |Bad request
 |*application/json*
 |
-<<ValidationErrorResponsePayloadDto>>
+__array__
+<<<ValidationErrorDto>>
+>
 
 
 
@@ -452,15 +298,11 @@ a|
 a|
 [source,json]
 ----
-{
-  "payload" : [ {
-    "fieldName" : "trainDataUrl",
-    "code" : "DataURL",
-    "errorMessage" : "train data url must have one of the protocols such as http, ftp, data"
-  } ],
-  "responseCode" : "VALIDATION_ERROR",
-  "errorDescription" : "Validation errors"
-}
+[ {
+  "fieldName" : "evaluationMethod",
+  "code" : "NotNull",
+  "errorMessage" : "must not be null"
+} ]
 ----
 |===
 
@@ -509,7 +351,7 @@ a|
 [source,json]
 ----
 {
-  "trainDataUrl" : "http://kt.ijs.si/Branax/Repository/WEKA/Iris.xls",
+  "trainDataUuid" : "1d2de514-3a87-4620-9b97-c260e24340de",
   "classifierOptions" : {
     "type" : "logistic",
     "maxIts" : 200,
@@ -533,7 +375,7 @@ a|
 |OK
 |*application/json*
 |
-<<SimpleEvaluationResponsePayloadDto>>
+<<SimpleEvaluationResponseDto>>
 
 
 
@@ -553,11 +395,16 @@ a|
 [source,json]
 ----
 {
-  "payload" : {
-    "requestId" : "1cbe6c49-8432-4c81-9afa-90f04a803fed",
-    "evaluationStatus" : "IN_PROGRESS"
-  },
-  "responseCode" : "SUCCESS"
+  "requestId" : "1cbe6c49-8432-4c81-9afa-90f04a803fed",
+  "evaluationStatus" : "IN_PROGRESS",
+  "errorCode" : null,
+  "modelUrl" : null,
+  "numTestInstances" : null,
+  "numCorrect" : null,
+  "numIncorrect" : null,
+  "pctCorrect" : null,
+  "pctIncorrect" : null,
+  "meanAbsoluteError" : null
 }
 ----
 |401
@@ -576,7 +423,9 @@ a|
 |Bad request
 |*application/json*
 |
-<<ValidationErrorResponsePayloadDto>>
+__array__
+<<<ValidationErrorDto>>
+>
 
 
 
@@ -595,19 +444,15 @@ a|
 a|
 [source,json]
 ----
-{
-  "payload" : [ {
-    "fieldName" : "classifierOptions",
-    "code" : "NotNull",
-    "errorMessage" : "must not be null"
-  }, {
-    "fieldName" : "evaluationMethod",
-    "code" : "NotNull",
-    "errorMessage" : "must not be null"
-  } ],
-  "responseCode" : "VALIDATION_ERROR",
-  "errorDescription" : "Validation errors"
-}
+[ {
+  "fieldName" : "classifierOptions",
+  "code" : "NotNull",
+  "errorMessage" : "must not be null"
+}, {
+  "fieldName" : "evaluationMethod",
+  "code" : "NotNull",
+  "errorMessage" : "must not be null"
+} ]
 ----
 |===
 
@@ -663,7 +508,7 @@ __string__
 |OK
 |*application/json*
 |
-<<ExperimentResultsResponsePayloadDto>>
+<<ExperimentResultsResponseDto>>
 
 
 
@@ -683,12 +528,10 @@ a|
 [source,json]
 ----
 {
-  "payload" : {
-    "requestId" : "1cbe6c49-8432-4c81-9afa-90f04a803fed",
-    "evaluationStatus" : "FINISHED",
-    "experimentModelUrl" : "http://localhost:8098/object-storage/eca-service/experiment-0f45c641-48e1-4f8f-a461-38c27a4befc3.model?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minio%2F20220727%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220727T061714Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=2ebb2d403962381a141efaf28767fe3ef622ce1477d9bd2f914560561579325c"
-  },
-  "responseCode" : "SUCCESS"
+  "requestId" : "1cbe6c49-8432-4c81-9afa-90f04a803fed",
+  "evaluationStatus" : "FINISHED",
+  "errorCode" : null,
+  "experimentModelUrl" : "http://localhost:8098/object-storage/eca-service/experiment-0f45c641-48e1-4f8f-a461-38c27a4befc3.model?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minio%2F20220727%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220727T061714Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=2ebb2d403962381a141efaf28767fe3ef622ce1477d9bd2f914560561579325c"
 }
 ----
 |401
@@ -707,7 +550,9 @@ a|
 |Bad request
 |*application/json*
 |
-<<ValidationErrorResponsePayloadDto>>
+__array__
+<<<ValidationErrorDto>>
+>
 
 
 
@@ -726,14 +571,11 @@ a|
 a|
 [source,json]
 ----
-{
-  "payload" : [ {
-    "code" : "DataNotFound",
-    "errorMessage" : "Entity with search key [1] not found!"
-  } ],
-  "responseCode" : "VALIDATION_ERROR",
-  "errorDescription" : "Validation errors"
-}
+[ {
+  "fieldName" : null,
+  "code" : "DataNotFound",
+  "errorMessage" : "Entity with search key [1] not found!"
+} ]
 ----
 |===
 
@@ -789,7 +631,7 @@ __string__
 |OK
 |*application/json*
 |
-<<EvaluationResultsResponsePayloadDto>>
+<<EvaluationResultsResponseDto>>
 
 
 
@@ -809,18 +651,16 @@ a|
 [source,json]
 ----
 {
-  "payload" : {
-    "requestId" : "1cbe6c49-8432-4c81-9afa-90f04a803fed",
-    "evaluationStatus" : "FINISHED",
-    "modelUrl" : "http://localhost:8098/object-storage/eca-service/classifier-0f45c641-48e1-4f8f-a461-38c27a4befc3.model?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minio%2F20220727%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220727T061714Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=2ebb2d403962381a141efaf28767fe3ef622ce1477d9bd2f914560561579325c",
-    "numTestInstances" : 150,
-    "numCorrect" : 144,
-    "numIncorrect" : 6,
-    "pctCorrect" : 96,
-    "pctIncorrect" : 4,
-    "meanAbsoluteError" : 0.02869334024628254
-  },
-  "responseCode" : "SUCCESS"
+  "requestId" : "1cbe6c49-8432-4c81-9afa-90f04a803fed",
+  "evaluationStatus" : "FINISHED",
+  "errorCode" : null,
+  "modelUrl" : "http://localhost:8098/object-storage/eca-service/classifier-0f45c641-48e1-4f8f-a461-38c27a4befc3.model?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minio%2F20220727%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220727T061714Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=2ebb2d403962381a141efaf28767fe3ef622ce1477d9bd2f914560561579325c",
+  "numTestInstances" : 150,
+  "numCorrect" : 144,
+  "numIncorrect" : 6,
+  "pctCorrect" : 96,
+  "pctIncorrect" : 4,
+  "meanAbsoluteError" : 0.02869334024628254
 }
 ----
 |401
@@ -839,233 +679,6 @@ a|
 |Bad request
 |*application/json*
 |
-<<ValidationErrorResponsePayloadDto>>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-a|
-[source,json]
-----
-{
-  "payload" : [ {
-    "code" : "DataNotFound",
-    "errorMessage" : "Entity with search key [1] not found!"
-  } ],
-  "responseCode" : "VALIDATION_ERROR",
-  "errorDescription" : "Validation errors"
-}
-----
-|===
-
-
-== Components
-=== InstancesDto
-:table-caption: Table
-.Instances model
-[width=100%]
-|===
-|*Name*|*Description*|*Schema*
-|*dataId*
-|Data id
-a|
-__string__
-
-
-
-
-*Max. length*: 36
-
-
-
-
-
-
-
-
-
-
-|*dataUrl*
-|Train data url in internal format data://dataId
-a|
-__string__
-
-
-
-
-*Max. length*: 255
-
-
-
-
-
-
-
-
-
-
-|===
-=== InstancesResponseDto
-:table-caption: Table
-.Instances response wrapper model
-[width=100%]
-|===
-|*Name*|*Description*|*Schema*
-|*payload*
-|-
-a|
-<<InstancesDto>>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*responseCode*
-|Response code
-a|
-__string__
-
-
-
-
-*Max. length*: 255
-
-
-
-
-
-
-
-
-
-
-*Values*:
-
-* SUCCESS
-
-* VALIDATION_ERROR
-
-* DATA_NOT_FOUND
-
-* ERROR
-
-* TIMEOUT
-
-* SERVICE_UNAVAILABLE
-|*errorDescription*
-|Error message
-a|
-__string__
-
-
-
-
-*Max. length*: 255
-
-
-
-
-
-
-
-
-
-
-|===
-=== ValidationErrorDto
-:table-caption: Table
-.Validation error model
-[width=100%]
-|===
-|*Name*|*Description*|*Schema*
-|*fieldName*
-|Field name
-a|
-__string__
-
-
-
-
-*Max. length*: 255
-
-
-
-
-
-
-
-
-
-
-|*code*
-|Error code
-a|
-__string__
-
-
-
-
-*Max. length*: 255
-
-
-
-
-
-
-
-
-
-
-|*errorMessage*
-|Error message
-a|
-__string__
-
-
-
-
-*Max. length*: 1 000
-
-
-
-
-
-
-
-
-
-
-|===
-=== ValidationErrorResponsePayloadDto
-:table-caption: Table
-.Validation error response payload model
-[width=100%]
-|===
-|*Name*|*Description*|*Schema*
-|*payload*
-|Response payload
-a|
 __array__
 <<<ValidationErrorDto>>
 >
@@ -1084,58 +697,19 @@ __array__
 
 
 
-|*responseCode*
-|Response code
 a|
-__string__
-
-
-
-
-*Max. length*: 255
-
-
-
-
-
-
-
-
-
-
-*Values*:
-
-* SUCCESS
-
-* VALIDATION_ERROR
-
-* DATA_NOT_FOUND
-
-* ERROR
-
-* TIMEOUT
-
-* SERVICE_UNAVAILABLE
-|*errorDescription*
-|Error message
-a|
-__string__
-
-
-
-
-*Max. length*: 255
-
-
-
-
-
-
-
-
-
-
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "DataNotFound",
+  "errorMessage" : "Entity with search key [1] not found!"
+} ]
+----
 |===
+
+
+== Components
 === SimpleEvaluationResponseDto
 :table-caption: Table
 .Simple evaluation response model
@@ -1218,33 +792,14 @@ __string__
 
 * TRAINING_DATA_NOT_FOUND
 |===
-=== SimpleEvaluationResponsePayloadDto
+=== ValidationErrorDto
 :table-caption: Table
-.Simple evaluation response response payload model
+.Validation error model
 [width=100%]
 |===
 |*Name*|*Description*|*Schema*
-|*payload*
-|-
-a|
-<<SimpleEvaluationResponseDto>>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*responseCode*
-|Response code
+|*fieldName*
+|Field name
 a|
 __string__
 
@@ -1262,20 +817,26 @@ __string__
 
 
 
-*Values*:
+|*code*
+|Error code
+a|
+__string__
 
-* SUCCESS
 
-* VALIDATION_ERROR
 
-* DATA_NOT_FOUND
 
-* ERROR
+*Max. length*: 255
 
-* TIMEOUT
 
-* SERVICE_UNAVAILABLE
-|*errorDescription*
+
+
+
+
+
+
+
+
+|*errorMessage*
 |Error message
 a|
 __string__
@@ -1283,7 +844,7 @@ __string__
 
 
 
-*Max. length*: 255
+*Max. length*: 1 000
 
 
 
@@ -1301,8 +862,8 @@ __string__
 [width=100%]
 |===
 |*Name*|*Description*|*Schema*
-|*trainDataUrl**
-|Train data url
+|*trainDataUuid**
+|Training data uuid
 a|
 __string__
 
@@ -1327,8 +888,8 @@ __string__
 [width=100%]
 |===
 |*Name*|*Description*|*Schema*
-|*trainDataUrl**
-|Train data url
+|*trainDataUuid**
+|Training data uuid
 a|
 __string__
 
@@ -1953,8 +1514,8 @@ __(double)__
 [width=100%]
 |===
 |*Name*|*Description*|*Schema*
-|*trainDataUrl**
-|Train data url
+|*trainDataUuid**
+|Training data uuid
 a|
 __string__
 
@@ -3611,83 +3172,6 @@ __string__
 
 
 |===
-=== ExperimentResultsResponsePayloadDto
-:table-caption: Table
-.Experiment results response payload model
-[width=100%]
-|===
-|*Name*|*Description*|*Schema*
-|*payload*
-|-
-a|
-<<ExperimentResultsResponseDto>>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*responseCode*
-|Response code
-a|
-__string__
-
-
-
-
-*Max. length*: 255
-
-
-
-
-
-
-
-
-
-
-*Values*:
-
-* SUCCESS
-
-* VALIDATION_ERROR
-
-* DATA_NOT_FOUND
-
-* ERROR
-
-* TIMEOUT
-
-* SERVICE_UNAVAILABLE
-|*errorDescription*
-|Error message
-a|
-__string__
-
-
-
-
-*Max. length*: 255
-
-
-
-
-
-
-
-
-
-
-|===
 === EvaluationResultsResponseDto
 :table-caption: Table
 .Evaluation results response model
@@ -3909,83 +3393,6 @@ __number__
 *Minimum*: 0*
 
 *Maximum*: 1*
-
-
-
-
-
-
-
-
-|===
-=== EvaluationResultsResponsePayloadDto
-:table-caption: Table
-.Evaluation results response payload model
-[width=100%]
-|===
-|*Name*|*Description*|*Schema*
-|*payload*
-|-
-a|
-<<EvaluationResultsResponseDto>>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*responseCode*
-|Response code
-a|
-__string__
-
-
-
-
-*Max. length*: 255
-
-
-
-
-
-
-
-
-
-
-*Values*:
-
-* SUCCESS
-
-* VALIDATION_ERROR
-
-* DATA_NOT_FOUND
-
-* ERROR
-
-* TIMEOUT
-
-* SERVICE_UNAVAILABLE
-|*errorDescription*
-|Error message
-a|
-__string__
-
-
-
-
-*Max. length*: 255
-
-
 
 
 
