@@ -46,6 +46,7 @@ import java.util.concurrent.Executors;
 public class EcaServiceConfiguration {
 
     public static final String ECA_THREAD_POOL_TASK_EXECUTOR = "ecaThreadPoolTaskExecutor";
+    public static final String EXPERIMENT_REDIS_LOCK_REGISTRY_BEAN = "experimentRedisLockRegistry";
 
     /**
      * Creates executor service bean.

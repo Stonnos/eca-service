@@ -120,6 +120,9 @@ experiment:
     multiThreadModeEnabled: true
     numThreads:
     numFoldsForStacking: 10
+  lock:
+    registryKey: experiments-registry
+    expireAfter: 18060000
 
 ers:
   useClassifierOptionsCache: false

@@ -33,6 +33,11 @@ public class ExperimentConfig {
     private EnsembleConfig ensemble;
 
     /**
+     * Lock config
+     */
+    private LockProperties lock;
+
+    /**
      * Maximum fraction digits
      */
     private Integer maximumFractionDigits;
@@ -88,5 +93,22 @@ public class ExperimentConfig {
          * meta data set creation
          */
         private Integer numFoldsForStacking;
+    }
+
+    /**
+     * Lock properties
+     */
+    @Data
+    public static class LockProperties {
+
+        /**
+         * Registry key
+         */
+        private String registryKey;
+
+        /**
+         * Lock duration in millis.
+         */
+        private Long expireAfter;
     }
 }
