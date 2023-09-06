@@ -833,7 +833,7 @@ image::./images/eca-web-push-db-schema.png[alt=Схема базы данных 
 
 === 3.15 Схема БД eca-data-loader
 
-На рисунке 3.7 приведена схема базы данных eca-data-loader:
+На рисунке 3.8 приведена схема базы данных eca-data-loader:
 
 image::./images/data-loader-db-schema.png[alt=Схема базы данных eca-data-loader,scaledwidth=80%]
 
