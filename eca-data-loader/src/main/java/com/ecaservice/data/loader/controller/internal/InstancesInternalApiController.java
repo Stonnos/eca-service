@@ -60,8 +60,8 @@ public class InstancesInternalApiController {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
                                             @ExampleObject(
-                                                    name = "DataNotFoundResponse",
-                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                                    name = "ExpiredDataResponse",
+                                                    ref = "#/components/examples/ExpiredDataResponse"
                                             ),
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
