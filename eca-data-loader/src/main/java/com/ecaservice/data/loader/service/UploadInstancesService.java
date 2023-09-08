@@ -5,9 +5,10 @@ import com.ecaservice.common.web.exception.InternalServiceUnavailableException;
 import com.ecaservice.common.web.exception.InvalidFileException;
 import com.ecaservice.data.loader.dto.UploadInstancesResponseDto;
 import com.ecaservice.data.loader.entity.InstancesEntity;
-import com.ecaservice.data.loader.entity.InstancesObject;
 import com.ecaservice.data.loader.repository.InstancesRepository;
 import com.ecaservice.s3.client.minio.exception.ObjectStorageException;
+import com.ecaservice.s3.client.minio.model.UploadObject;
+import com.ecaservice.s3.client.minio.service.MinioStorageService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.data.file.model.InstancesModel;
 import lombok.Cleanup;
@@ -15,9 +16,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -37,7 +41,7 @@ public class UploadInstancesService {
     private static final String INSTANCES_OBJECT_PATH_FORMAT = "instances-%s.json";
     private static final String JSON_EXTENSION = "json";
 
-    private final InstancesObjectService instancesObjectService;
+    private final MinioStorageService minioStorageService;
     private final ObjectMapper objectMapper;
     private final InstancesRepository instancesRepository;
 
@@ -59,15 +63,16 @@ public class UploadInstancesService {
             validateInstances(instancesModel);
             String uuid = UUID.randomUUID().toString();
             String objectPath = String.format(INSTANCES_OBJECT_PATH_FORMAT, uuid);
+            String md5Hash = DigestUtils.md5DigestAsHex(jsonData);
             log.info("Starting to upload instances file [{}] with uuid [{}], object path [{}]",
                     instancesFile.getOriginalFilename(), uuid, objectPath);
-            var instancesObject = instancesObjectService.uploadObject(jsonData, objectPath);
-            createAndSaveInstancesEntity(uuid, instancesObject, instancesModel);
+            uploadInstancesToS3(objectPath, jsonData);
+            createAndSaveInstancesEntity(uuid, objectPath, md5Hash, instancesModel);
             log.info("Instances file [{}] has been uploaded with uuid [{}], object path [{}]",
                     instancesFile.getOriginalFilename(), uuid, objectPath);
             return UploadInstancesResponseDto.builder()
                     .uuid(uuid)
-                    .md5Hash(instancesObject.getMd5Hash())
+                    .md5Hash(md5Hash)
                     .build();
         } catch (IOException ex) {
             log.error("There was an error while load data from file {}: {}", instancesFile.getOriginalFilename(),
@@ -81,7 +86,8 @@ public class UploadInstancesService {
     }
 
     private void createAndSaveInstancesEntity(String uuid,
-                                              InstancesObject instancesObject,
+                                              String objectPath,
+                                              String md5Hash,
                                               InstancesModel instancesModel) {
         var instancesEntity = new InstancesEntity();
         instancesEntity.setRelationName(instancesModel.getRelationName());
@@ -97,13 +103,24 @@ public class UploadInstancesService {
         instancesEntity.setNumClasses(classAttribute.getValues().size());
         instancesEntity.setClassName(instancesModel.getClassName());
         instancesEntity.setUuid(uuid);
+        instancesEntity.setObjectPath(objectPath);
+        instancesEntity.setMd5Hash(md5Hash);
         instancesEntity.setCreated(LocalDateTime.now());
-        instancesEntity.setInstancesObject(instancesObject);
         instancesRepository.save(instancesEntity);
     }
 
     private byte[] loadData(MultipartFile instancesFile) throws IOException {
         @Cleanup var inputStream = instancesFile.getInputStream();
         return IOUtils.toByteArray(inputStream);
+    }
+
+    private void uploadInstancesToS3(String objectPath, byte[] instances) {
+        minioStorageService.uploadObject(
+                UploadObject.builder()
+                        .objectPath(objectPath)
+                        .inputStream(() -> new ByteArrayInputStream(instances))
+                        .contentType(MediaType.APPLICATION_OCTET_STREAM_VALUE)
+                        .build()
+        );
     }
 }

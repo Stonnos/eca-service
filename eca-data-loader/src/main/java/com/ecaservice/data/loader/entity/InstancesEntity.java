@@ -68,9 +68,14 @@ public class InstancesEntity {
     private LocalDateTime created;
 
     /**
-     * Instances object
+     * Instances md5 hash
      */
-    @OneToOne
-    @JoinColumn(name = "instances_object_id", nullable = false)
-    private InstancesObject instancesObject;
+    @Column(name = "md5_hash", nullable = false)
+    private String md5Hash;
+
+    /**
+     * Instances object path
+     */
+    @Column(name = "object_path", nullable = false)
+    private String objectPath;
 }

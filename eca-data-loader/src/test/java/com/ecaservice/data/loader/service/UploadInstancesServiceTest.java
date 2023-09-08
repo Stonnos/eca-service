@@ -30,7 +30,7 @@ import static org.mockito.Mockito.doThrow;
  *
  * @author Roman Batygin
  */
-@Import({UploadInstancesService.class, InstancesObjectService.class, ObjectMapper.class})
+@Import({UploadInstancesService.class, ObjectMapper.class})
 class UploadInstancesServiceTest extends AbstractJpaTest {
 
     @MockBean
@@ -60,10 +60,8 @@ class UploadInstancesServiceTest extends AbstractJpaTest {
         assertThat(actual.getRelationName()).isEqualTo(instancesModel.getRelationName());
         assertThat(actual.getNumInstances()).isEqualTo(instancesModel.getInstances().size());
         assertThat(actual.getNumAttributes()).isEqualTo(instancesModel.getAttributes().size());
-        assertThat(actual.getInstancesObject()).isNotNull();
-        assertThat(actual.getInstancesObject().getCreated()).isNotNull();
-        assertThat(actual.getInstancesObject().getObjectPath()).isNotNull();
-        assertThat(actual.getInstancesObject().getMd5Hash()).isNotNull();
+        assertThat(actual.getObjectPath()).isNotNull();
+        assertThat(actual.getMd5Hash()).isNotNull();
         assertNumClasses(instancesModel, actual);
     }
 

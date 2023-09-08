@@ -1,7 +1,6 @@
 package com.ecaservice.data.loader;
 
 import com.ecaservice.data.loader.entity.InstancesEntity;
-import com.ecaservice.data.loader.entity.InstancesObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.data.file.model.InstancesModel;
 import lombok.Cleanup;
@@ -75,7 +74,7 @@ public class TestHelperUtils {
      * @param instancesObject - instances object
      * @return instances entity
      */
-    public static InstancesEntity createInstancesEntity(InstancesObject instancesObject) {
+    public static InstancesEntity createInstancesEntity() {
         InstancesEntity instancesEntity = new InstancesEntity();
         instancesEntity.setUuid(UUID.randomUUID().toString());
         instancesEntity.setRelationName(RELATION_NAME);
@@ -83,21 +82,9 @@ public class TestHelperUtils {
         instancesEntity.setNumInstances(NUM_INSTANCES);
         instancesEntity.setNumAttributes(NUM_ATTRIBUTES);
         instancesEntity.setNumClasses(NUM_CLASSES);
-        instancesEntity.setInstancesObject(instancesObject);
+        instancesEntity.setObjectPath(OBJECT_PATH);
+        instancesEntity.setMd5Hash(MD_5_HASH);
         instancesEntity.setCreated(LocalDateTime.now());
         return instancesEntity;
-    }
-
-    /**
-     * Creates instances object.
-     *
-     * @return instances object
-     */
-    public static InstancesObject createInstancesObject() {
-        InstancesObject instancesObject = new InstancesObject();
-        instancesObject.setObjectPath(OBJECT_PATH);
-        instancesObject.setMd5Hash(MD_5_HASH);
-        instancesObject.setCreated(LocalDateTime.now());
-        return instancesObject;
     }
 }

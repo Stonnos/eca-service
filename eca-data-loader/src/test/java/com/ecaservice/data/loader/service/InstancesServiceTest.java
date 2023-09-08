@@ -4,7 +4,6 @@ import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.data.loader.AbstractJpaTest;
 import com.ecaservice.data.loader.entity.InstancesEntity;
 import com.ecaservice.data.loader.mapping.InstancesMapperImpl;
-import com.ecaservice.data.loader.repository.InstancesObjectRepository;
 import com.ecaservice.data.loader.repository.InstancesRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Import;
@@ -12,7 +11,6 @@ import org.springframework.context.annotation.Import;
 import javax.inject.Inject;
 
 import static com.ecaservice.data.loader.TestHelperUtils.createInstancesEntity;
-import static com.ecaservice.data.loader.TestHelperUtils.createInstancesObject;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -26,8 +24,6 @@ class InstancesServiceTest extends AbstractJpaTest {
 
     @Inject
     private InstancesRepository instancesRepository;
-    @Inject
-    private InstancesObjectRepository instancesObjectRepository;
 
     @Inject
     private InstancesService instancesService;
@@ -36,16 +32,13 @@ class InstancesServiceTest extends AbstractJpaTest {
 
     @Override
     public void init() {
-        var instancesObject = createInstancesObject();
-        instancesObjectRepository.save(instancesObject);
-        var instances = createInstancesEntity(instancesObject);
+        var instances = createInstancesEntity();
         instancesEntity = instancesRepository.save(instances);
     }
 
     @Override
     public void deleteAll() {
         instancesRepository.deleteAll();
-        instancesObjectRepository.deleteAll();
     }
 
     @Test
@@ -57,8 +50,8 @@ class InstancesServiceTest extends AbstractJpaTest {
         assertThat(instancesMetaInfo.getRelationName()).isEqualTo(instancesEntity.getRelationName());
         assertThat(instancesMetaInfo.getClassName()).isEqualTo(instancesEntity.getClassName());
         assertThat(instancesMetaInfo.getUuid()).isEqualTo(instancesEntity.getUuid());
-        assertThat(instancesMetaInfo.getMd5Hash()).isEqualTo(instancesEntity.getInstancesObject().getMd5Hash());
-        assertThat(instancesMetaInfo.getObjectPath()).isEqualTo(instancesEntity.getInstancesObject().getObjectPath());
+        assertThat(instancesMetaInfo.getMd5Hash()).isEqualTo(instancesEntity.getMd5Hash());
+        assertThat(instancesMetaInfo.getObjectPath()).isEqualTo(instancesEntity.getObjectPath());
     }
 
     @Test

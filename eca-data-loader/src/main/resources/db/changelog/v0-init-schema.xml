@@ -14,34 +14,11 @@
         <createSequence sequenceName="hibernate_sequence" startValue="1" incrementBy="1" minValue="1"/>
     </changeSet>
 
-    <changeSet id="create_instances_object_table" author="roman.batygin@mail.ru" context="schema">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="instances_object"/>
-            </not>
-        </preConditions>
-        <createTable tableName="instances_object">
-            <column name="id" type="bigint">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="md5_hash" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="object_path" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="created" type="timestamp">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-    </changeSet>
-
     <changeSet id="create_instances_table" author="roman.batygin@mail.ru" context="schema">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="instances"/>
             </not>
-            <tableExists tableName="instances_object"/>
         </preConditions>
         <createTable tableName="instances">
             <column name="id" type="bigint">
@@ -68,10 +45,11 @@
             <column name="created" type="timestamp">
                 <constraints nullable="false"/>
             </column>
-            <column name="instances_object_id" type="bigint">
-                <constraints foreignKeyName="fk_instances_instances_object_id"
-                             referencedTableName="instances_object" referencedColumnNames="id"
-                             nullable="false"/>
+            <column name="md5_hash" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="object_path" type="varchar(255)">
+                <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
