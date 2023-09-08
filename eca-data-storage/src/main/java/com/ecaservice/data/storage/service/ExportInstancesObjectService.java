@@ -43,6 +43,9 @@ public class ExportInstancesObjectService {
         if (lastExportInstancesObject == null) {
             log.info("No one export instances [{}] object has been found. Starting to export new instances", uuid);
             return exportValidInstances(instancesEntity);
+        } else if (LocalDateTime.now().isAfter(lastExportInstancesObject.getExpireAt())) {
+            log.info("Instances [{}] data has been expired. Starting to export new instances", uuid);
+            return exportValidInstances(instancesEntity);
         } else if (instancesEntity.getUpdatesCounter() != lastExportInstancesObject.getUpdatesCounter()) {
             log.info("Instances [{}] data has been changed. Starting to export new instances", uuid);
             return exportValidInstances(instancesEntity);
@@ -72,6 +75,7 @@ public class ExportInstancesObjectService {
         exportInstancesObjectEntity.setExternalDataUuid(uploadInstancesResponseDto.getUuid());
         exportInstancesObjectEntity.setMd5Hash(uploadInstancesResponseDto.getMd5Hash());
         exportInstancesObjectEntity.setUpdatesCounter(instancesEntity.getUpdatesCounter());
+        exportInstancesObjectEntity.setExpireAt(uploadInstancesResponseDto.getExpireAt());
         exportInstancesObjectEntity.setCreated(LocalDateTime.now());
         exportInstancesObjectRepository.save(exportInstancesObjectEntity);
     }

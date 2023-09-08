@@ -25,6 +25,9 @@
                 <constraints nullable="false"/>
             </column>
             <column name="updates_counter" type="integer" defaultValueNumeric="0"/>
+            <column name="expire_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
             <column name="creation_date" type="timestamp">
                 <constraints nullable="false"/>
             </column>
