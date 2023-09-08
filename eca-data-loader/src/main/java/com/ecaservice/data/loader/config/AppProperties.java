@@ -13,6 +13,11 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class AppProperties {
 
     /**
+     * Batch size for pagination
+     */
+    private Integer batchSize;
+
+    /**
      * Instances object expiration time in days
      */
     private Integer instancesExpireDays;

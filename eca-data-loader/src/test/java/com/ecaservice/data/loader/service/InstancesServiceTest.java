@@ -6,7 +6,9 @@ import com.ecaservice.data.loader.entity.InstancesEntity;
 import com.ecaservice.data.loader.exception.ExpiredDataException;
 import com.ecaservice.data.loader.mapping.InstancesMapperImpl;
 import com.ecaservice.data.loader.repository.InstancesRepository;
+import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
 import javax.inject.Inject;
@@ -23,6 +25,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  */
 @Import({InstancesService.class, InstancesMapperImpl.class})
 class InstancesServiceTest extends AbstractJpaTest {
+
+    @MockBean
+    private ObjectStorageService objectStorageService;
 
     @Inject
     private InstancesRepository instancesRepository;

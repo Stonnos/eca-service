@@ -29,6 +29,7 @@ eureka:
     fetchRegistry: false
 
 app:
+  batchSize: 50
   instancesExpireDays: 30
   removeDataCron: 0 0 0 * * *
 

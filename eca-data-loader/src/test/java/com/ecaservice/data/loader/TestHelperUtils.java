@@ -87,4 +87,16 @@ public class TestHelperUtils {
         instancesEntity.setExpireAt(LocalDateTime.now().plusDays(1L));
         return instancesEntity;
     }
+
+    /**
+     * Creates instances entity.
+     *
+     * @param expireAt - expire at date
+     * @return instances entity
+     */
+    public static InstancesEntity createInstancesEntity(LocalDateTime expireAt) {
+        InstancesEntity instancesEntity = createInstancesEntity();
+        instancesEntity.setExpireAt(expireAt);
+        return instancesEntity;
+    }
 }
