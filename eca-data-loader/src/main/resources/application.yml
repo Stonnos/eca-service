@@ -28,6 +28,10 @@ eureka:
     registerWithEureka: false
     fetchRegistry: false
 
+app:
+  instancesExpireDays: 30
+  removeDataCron: 0 0 0 * * *
+
 minio:
   url: http://localhost:9000
   accessKey: minio

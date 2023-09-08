@@ -42,6 +42,9 @@
             <column name="class_name" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
+            <column name="expire_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
             <column name="created" type="timestamp">
                 <constraints nullable="false"/>
             </column>

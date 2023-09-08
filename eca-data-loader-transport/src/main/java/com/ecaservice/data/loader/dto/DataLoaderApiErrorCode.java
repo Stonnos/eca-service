@@ -36,7 +36,12 @@ public enum DataLoaderApiErrorCode implements ErrorDetails {
     /**
      * Invalid file extension code
      */
-    INVALID_FILE("InvalidFile");
+    INVALID_FILE("InvalidFile"),
+
+    /**
+     * Expired data
+     */
+    EXPIRED_DATA("ExpiredData");
 
     /**
      * Error code

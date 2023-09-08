@@ -3,6 +3,7 @@ package com.ecaservice.data.loader.service;
 import com.ecaservice.common.web.exception.InternalServiceUnavailableException;
 import com.ecaservice.common.web.exception.InvalidFileException;
 import com.ecaservice.data.loader.AbstractJpaTest;
+import com.ecaservice.data.loader.config.AppProperties;
 import com.ecaservice.data.loader.entity.InstancesEntity;
 import com.ecaservice.data.loader.repository.InstancesRepository;
 import com.ecaservice.s3.client.minio.exception.ObjectStorageException;
@@ -30,7 +31,7 @@ import static org.mockito.Mockito.doThrow;
  *
  * @author Roman Batygin
  */
-@Import({UploadInstancesService.class, ObjectMapper.class})
+@Import({UploadInstancesService.class, ObjectMapper.class, AppProperties.class})
 class UploadInstancesServiceTest extends AbstractJpaTest {
 
     @MockBean
@@ -62,6 +63,7 @@ class UploadInstancesServiceTest extends AbstractJpaTest {
         assertThat(actual.getNumAttributes()).isEqualTo(instancesModel.getAttributes().size());
         assertThat(actual.getObjectPath()).isNotNull();
         assertThat(actual.getMd5Hash()).isNotNull();
+        assertThat(actual.getExpireAt()).isNotNull();
         assertNumClasses(instancesModel, actual);
     }
 

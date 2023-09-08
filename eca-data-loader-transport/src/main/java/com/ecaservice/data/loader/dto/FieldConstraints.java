@@ -29,4 +29,14 @@ public class FieldConstraints {
      * Max. integer value
      */
     public static final String MAX_INTEGER_VALUE_STRING = "2147483647";
+
+    /**
+     * Date time pattern
+     */
+    public static final String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
+
+    /**
+     * Local date time max length
+     */
+    public static final int LOCAL_DATE_TIME_MAX_LENGTH = 19;
 }

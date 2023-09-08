@@ -3,6 +3,7 @@ package com.ecaservice.data.loader.service;
 import com.ecaservice.common.web.exception.FileProcessingException;
 import com.ecaservice.common.web.exception.InternalServiceUnavailableException;
 import com.ecaservice.common.web.exception.InvalidFileException;
+import com.ecaservice.data.loader.config.AppProperties;
 import com.ecaservice.data.loader.dto.UploadInstancesResponseDto;
 import com.ecaservice.data.loader.entity.InstancesEntity;
 import com.ecaservice.data.loader.repository.InstancesRepository;
@@ -41,6 +42,7 @@ public class UploadInstancesService {
     private static final String INSTANCES_OBJECT_PATH_FORMAT = "instances-%s.json";
     private static final String JSON_EXTENSION = "json";
 
+    private final AppProperties appProperties;
     private final MinioStorageService minioStorageService;
     private final ObjectMapper objectMapper;
     private final InstancesRepository instancesRepository;
@@ -105,6 +107,7 @@ public class UploadInstancesService {
         instancesEntity.setUuid(uuid);
         instancesEntity.setObjectPath(objectPath);
         instancesEntity.setMd5Hash(md5Hash);
+        instancesEntity.setExpireAt(LocalDateTime.now().plusDays(appProperties.getInstancesExpireDays()));
         instancesEntity.setCreated(LocalDateTime.now());
         instancesRepository.save(instancesEntity);
     }

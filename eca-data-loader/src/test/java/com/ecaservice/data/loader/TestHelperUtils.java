@@ -71,7 +71,6 @@ public class TestHelperUtils {
     /**
      * Creates instances entity.
      *
-     * @param instancesObject - instances object
      * @return instances entity
      */
     public static InstancesEntity createInstancesEntity() {
@@ -85,6 +84,7 @@ public class TestHelperUtils {
         instancesEntity.setObjectPath(OBJECT_PATH);
         instancesEntity.setMd5Hash(MD_5_HASH);
         instancesEntity.setCreated(LocalDateTime.now());
+        instancesEntity.setExpireAt(LocalDateTime.now().plusDays(1L));
         return instancesEntity;
     }
 }
