@@ -69,12 +69,13 @@ public class UploadInstancesService {
             log.info("Starting to upload instances file [{}] with uuid [{}], object path [{}]",
                     instancesFile.getOriginalFilename(), uuid, objectPath);
             uploadInstancesToS3(objectPath, jsonData);
-            createAndSaveInstancesEntity(uuid, objectPath, md5Hash, instancesModel);
+            var instancesEntity = createAndSaveInstancesEntity(uuid, objectPath, md5Hash, instancesModel);
             log.info("Instances file [{}] has been uploaded with uuid [{}], object path [{}]",
                     instancesFile.getOriginalFilename(), uuid, objectPath);
             return UploadInstancesResponseDto.builder()
                     .uuid(uuid)
                     .md5Hash(md5Hash)
+                    .expireAt(instancesEntity.getExpireAt())
                     .build();
         } catch (IOException ex) {
             log.error("There was an error while load data from file {}: {}", instancesFile.getOriginalFilename(),
@@ -87,10 +88,10 @@ public class UploadInstancesService {
         }
     }
 
-    private void createAndSaveInstancesEntity(String uuid,
-                                              String objectPath,
-                                              String md5Hash,
-                                              InstancesModel instancesModel) {
+    private InstancesEntity createAndSaveInstancesEntity(String uuid,
+                                                         String objectPath,
+                                                         String md5Hash,
+                                                         InstancesModel instancesModel) {
         var instancesEntity = new InstancesEntity();
         instancesEntity.setRelationName(instancesModel.getRelationName());
         instancesEntity.setNumInstances(instancesModel.getInstances().size());
@@ -109,7 +110,7 @@ public class UploadInstancesService {
         instancesEntity.setMd5Hash(md5Hash);
         instancesEntity.setExpireAt(LocalDateTime.now().plusDays(appProperties.getInstancesExpireDays()));
         instancesEntity.setCreated(LocalDateTime.now());
-        instancesRepository.save(instancesEntity);
+        return instancesRepository.save(instancesEntity);
     }
 
     private byte[] loadData(MultipartFile instancesFile) throws IOException {
