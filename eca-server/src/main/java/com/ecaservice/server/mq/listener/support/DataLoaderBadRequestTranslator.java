@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
+import java.util.List;
 
 import static com.ecaservice.server.util.Utils.buildErrorResponse;
 import static com.ecaservice.server.util.Utils.buildValidationError;
@@ -31,7 +32,8 @@ public class DataLoaderBadRequestTranslator extends AbstractExceptionTranslator<
 
     @Override
     public EcaResponse translate(DataLoaderBadRequestException exception) {
-        if (DataLoaderApiErrorCode.DATA_NOT_FOUND.equals(exception.getApiErrorCode())) {
+        if (DataLoaderApiErrorCode.DATA_NOT_FOUND.equals(exception.getApiErrorCode()) ||
+                DataLoaderApiErrorCode.EXPIRED_DATA.equals(exception.getApiErrorCode())) {
             var messageError = error(ErrorCode.TRAINING_DATA_NOT_FOUND);
             return buildValidationError(Collections.singletonList(messageError));
         } else {
