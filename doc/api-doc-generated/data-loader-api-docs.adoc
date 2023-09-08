@@ -139,7 +139,8 @@ a|
 ----
 {
   "uuid" : "1d2de514-3a87-4620-9b97-c260e24340de",
-  "md5Hash" : "3032e188204cb537f69fc7364f638641"
+  "md5Hash" : "3032e188204cb537f69fc7364f638641",
+  "expireAt" : "2021-07-01 14:00:00"
 }
 ----
 |401
@@ -283,8 +284,8 @@ a|
 ----
 [ {
   "fieldName" : null,
-  "code" : "DataNotFound",
-  "errorMessage" : "Entity with search key [f8cecbf7-405b-403b-9a94-f51e8fb73ed8] not found!"
+  "code" : "ExpiredData",
+  "errorMessage" : "Instances [f8cecbf7-405b-403b-9a94-f51e8fb73ed8] object has been expired"
 } ]
 ----
 |===
@@ -325,6 +326,25 @@ __string__
 
 
 *Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*expireAt*
+|Object expiration date
+a|
+__string__
+
+
+
+
+*Max. length*: 19
 
 
 
