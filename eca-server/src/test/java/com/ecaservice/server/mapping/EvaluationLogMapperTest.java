@@ -40,7 +40,6 @@ class EvaluationLogMapperTest {
         assertThat(evaluationRequestDataModel).isNotNull();
         assertThat(evaluationRequestDataModel.getEvaluationMethod()).isEqualTo(evaluationRequest.getEvaluationMethod());
         assertThat(evaluationRequestDataModel.getDataUuid()).isEqualTo(evaluationRequest.getDataUuid());
-        assertThat(evaluationRequestDataModel.getClassifier()).isNotNull();
     }
 
     @Test

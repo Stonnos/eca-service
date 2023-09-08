@@ -34,6 +34,7 @@ public abstract class EvaluationLogMapper extends AbstractEvaluationMapper {
      * @param evaluationRequest - evaluation request
      * @return evaluation request internal data model
      */
+    @Mapping(target = "classifier", ignore = true)
     public abstract EvaluationRequestDataModel map(EvaluationRequest evaluationRequest);
 
     /**

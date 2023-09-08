@@ -14,14 +14,12 @@ import com.ecaservice.auto.test.service.AutoTestJobService;
 import com.ecaservice.auto.test.service.AutoTestWorkerService;
 import com.ecaservice.auto.test.service.ClassifierTestDataProvider;
 import com.ecaservice.base.model.EvaluationRequest;
-import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.test.common.model.ExecutionStatus;
 import com.ecaservice.test.common.service.DataLoaderService;
 import com.ecaservice.test.common.service.InstancesResourceLoader;
 import eca.core.evaluation.EvaluationMethod;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import weka.classifiers.AbstractClassifier;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -41,7 +39,6 @@ public class ClassifierAutoTestRunner
         extends AbstractAutoTestRunner<EvaluationRequestEntity, ClassifierTestDataModel, EvaluationRequest> {
 
     private final ClassifierTestDataProvider classifierTestDataProvider;
-    private final ClassifierOptionsAdapter classifierOptionsAdapter;
 
     /**
      * Constructor with parameters.
@@ -52,7 +49,6 @@ public class ClassifierAutoTestRunner
      * @param instancesResourceLoader         - instances resource loader
      * @param dataLoaderService               - data loader service
      * @param classifierTestDataProvider      - classifier test data provider
-     * @param classifierOptionsAdapter        - classifier options adapter
      */
     public ClassifierAutoTestRunner(AutoTestJobService autoTestJobService,
                                     AutoTestWorkerService autoTestWorkerService,
@@ -60,21 +56,18 @@ public class ClassifierAutoTestRunner
                                     BaseTestStepRepository baseTestStepRepository,
                                     InstancesResourceLoader instancesResourceLoader,
                                     DataLoaderService dataLoaderService,
-                                    ClassifierTestDataProvider classifierTestDataProvider,
-                                    ClassifierOptionsAdapter classifierOptionsAdapter) {
+                                    ClassifierTestDataProvider classifierTestDataProvider) {
         super(AutoTestType.EVALUATION_REQUEST_PROCESS, autoTestJobService, autoTestWorkerService,
                 instancesResourceLoader, dataLoaderService, baseEvaluationRequestRepository, baseTestStepRepository);
         this.classifierTestDataProvider = classifierTestDataProvider;
-        this.classifierOptionsAdapter = classifierOptionsAdapter;
     }
 
     @Override
     protected EvaluationRequestEntity createSpecificRequestEntity(ClassifierTestDataModel testDataModel,
                                                                   EvaluationRequest evaluationRequest) {
         EvaluationRequestEntity evaluationRequestEntity = new EvaluationRequestEntity();
-        evaluationRequestEntity.setClassifierName(evaluationRequest.getClassifier().getClass().getSimpleName());
-        var classifierOptions = classifierOptionsAdapter.convert(evaluationRequest.getClassifier());
-        evaluationRequestEntity.setClassifierOptions(toJson(classifierOptions));
+        evaluationRequestEntity.setClassifierName(evaluationRequest.getClassifierOptions().getClass().getSimpleName());
+        evaluationRequestEntity.setClassifierOptions(toJson(evaluationRequest.getClassifierOptions()));
         evaluationRequestEntity.setEvaluationMethod(testDataModel.getEvaluationMethod());
         evaluationRequestEntity.setNumFolds(testDataModel.getNumFolds());
         evaluationRequestEntity.setNumTests(testDataModel.getNumTests());
@@ -86,9 +79,7 @@ public class ClassifierAutoTestRunner
     protected EvaluationRequest createEcaRequest(ClassifierTestDataModel classifierTestDataModel, String dataUuid) {
         EvaluationRequest evaluationRequest = new EvaluationRequest();
         evaluationRequest.setDataUuid(dataUuid);
-        AbstractClassifier classifier =
-                classifierOptionsAdapter.convert(classifierTestDataModel.getClassifierOptions());
-        evaluationRequest.setClassifier(classifier);
+        evaluationRequest.setClassifierOptions(classifierTestDataModel.getClassifierOptions());
         evaluationRequest.setEvaluationMethod(classifierTestDataModel.getEvaluationMethod());
         if (EvaluationMethod.CROSS_VALIDATION.equals(classifierTestDataModel.getEvaluationMethod())) {
             evaluationRequest.setNumFolds(classifierTestDataModel.getNumFolds());

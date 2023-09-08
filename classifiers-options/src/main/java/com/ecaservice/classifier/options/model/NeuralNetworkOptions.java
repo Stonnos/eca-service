@@ -27,7 +27,7 @@ import static com.ecaservice.classifier.options.model.Constraints.VALUE_2;
 @Data
 @Schema(description = "Neural network classifier options")
 @EqualsAndHashCode(callSuper = true)
-public class NeuralNetworkOptions extends ClassifierOptions {
+public class NeuralNetworkOptions extends ClassifierOptions implements RandomizeOptions {
 
     /**
      * Neurons number in input layer

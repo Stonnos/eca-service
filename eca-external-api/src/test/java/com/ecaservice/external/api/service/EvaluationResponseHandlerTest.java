@@ -1,7 +1,6 @@
 package com.ecaservice.external.api.service;
 
 import com.ecaservice.base.model.EvaluationResponse;
-import com.ecaservice.classifier.options.config.ClassifiersOptionsAutoConfiguration;
 import com.ecaservice.external.api.AbstractJpaTest;
 import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
@@ -24,8 +23,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Roman Batygin
  */
-@Import({EvaluationResponseHandler.class, ClassifiersOptionsAutoConfiguration.class, ExternalApiConfig.class,
-        EcaRequestMapperImpl.class, RequestStageHandler.class})
+@Import({EvaluationResponseHandler.class, ExternalApiConfig.class, EcaRequestMapperImpl.class,
+        RequestStageHandler.class})
 class EvaluationResponseHandlerTest extends AbstractJpaTest {
 
     @Inject

@@ -4,7 +4,6 @@ import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.base.model.InstancesRequest;
-import com.ecaservice.classifier.options.config.ClassifiersOptionsAutoConfiguration;
 import com.ecaservice.external.api.AbstractJpaTest;
 import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.dto.EvaluationRequestDto;
@@ -14,7 +13,6 @@ import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.mapping.EcaRequestMapperImpl;
 import com.ecaservice.external.api.repository.EvaluationRequestRepository;
 import com.ecaservice.external.api.repository.ExperimentRequestRepository;
-import eca.regression.Logistic;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -34,7 +32,7 @@ import static org.mockito.Mockito.verify;
  *
  * @author Roman Batygin
  */
-@Import({EvaluationApiService.class, ClassifiersOptionsAutoConfiguration.class, EcaRequestMapperImpl.class,
+@Import({EvaluationApiService.class, EcaRequestMapperImpl.class,
         EcaRequestService.class, ExternalApiConfig.class, RequestStageHandler.class})
 class EvaluationApiServiceTest extends AbstractJpaTest {
 
@@ -81,8 +79,7 @@ class EvaluationApiServiceTest extends AbstractJpaTest {
         assertThat(evaluationRequest.getNumTests()).isEqualTo(evaluationRequestDto.getNumTests());
         assertThat(evaluationRequest.getSeed()).isEqualTo(evaluationRequestDto.getSeed());
         assertThat(evaluationRequest.getDataUuid()).isEqualTo(evaluationRequestDto.getTrainDataUuid());
-        assertThat(evaluationRequest.getClassifier()).isNotNull();
-        assertThat(evaluationRequest.getClassifier()).isInstanceOf(Logistic.class);
+        assertThat(evaluationRequest.getClassifierOptions()).isNotNull();
     }
 
     @Test

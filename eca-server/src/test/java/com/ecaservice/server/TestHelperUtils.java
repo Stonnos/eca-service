@@ -264,7 +264,7 @@ public class TestHelperUtils {
         EvaluationRequest request = new EvaluationRequest();
         request.setDataUuid(UUID.randomUUID().toString());
         request.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
-        request.setClassifier(new KNearestNeighbours());
+        request.setClassifierOptions(new KNearestNeighboursOptions());
         return request;
     }
 

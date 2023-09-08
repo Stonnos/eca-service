@@ -25,7 +25,7 @@ import static com.ecaservice.classifier.options.model.Constraints.ZERO_VALUE;
 @Data
 @Schema(description = "Decision tree classifier options")
 @EqualsAndHashCode(callSuper = true)
-public class DecisionTreeOptions extends ClassifierOptions {
+public class DecisionTreeOptions extends ClassifierOptions implements RandomizeOptions {
 
     /**
      * Decision tree algorithm

@@ -4,7 +4,6 @@ import com.ecaservice.base.model.EcaRequest;
 import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.base.model.InstancesRequest;
-import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.external.api.dto.EvaluationRequestDto;
 import com.ecaservice.external.api.dto.EvaluationStatus;
 import com.ecaservice.external.api.dto.ExperimentRequestDto;
@@ -18,7 +17,6 @@ import eca.core.evaluation.EvaluationMethod;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import weka.classifiers.AbstractClassifier;
 
 import java.time.LocalDateTime;
 import java.util.function.BiConsumer;
@@ -35,7 +33,6 @@ public class EvaluationApiService {
 
     private final EcaRequestService ecaRequestService;
     private final EcaRequestMapper ecaRequestMapper;
-    private final ClassifierOptionsAdapter classifierOptionsAdapter;
     private final RabbitSender rabbitSender;
     private final RequestStageHandler requestStageHandler;
     private final EcaRequestRepository ecaRequestRepository;
@@ -127,11 +124,9 @@ public class EvaluationApiService {
     }
 
     private EvaluationRequest createEvaluationRequest(EvaluationRequestDto evaluationRequestDto) {
-        AbstractClassifier classifier =
-                classifierOptionsAdapter.convert(evaluationRequestDto.getClassifierOptions());
         EvaluationRequest evaluationRequest = new EvaluationRequest();
         evaluationRequest.setDataUuid(evaluationRequestDto.getTrainDataUuid());
-        evaluationRequest.setClassifier(classifier);
+        evaluationRequest.setClassifierOptions(evaluationRequestDto.getClassifierOptions());
         evaluationRequest.setEvaluationMethod(evaluationRequestDto.getEvaluationMethod());
         if (EvaluationMethod.CROSS_VALIDATION.equals(evaluationRequestDto.getEvaluationMethod())) {
             evaluationRequest.setNumFolds(evaluationRequestDto.getNumFolds());
