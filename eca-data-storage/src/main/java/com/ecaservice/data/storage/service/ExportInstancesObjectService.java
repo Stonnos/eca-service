@@ -63,6 +63,8 @@ public class ExportInstancesObjectService {
         var uploadInstancesResponseDto =
                 uploadInstancesObjectService.uploadInstances(instancesEntity.getUuid(), instancesModel);
         createAndSaveExportInstancesObject(instancesEntity, uploadInstancesResponseDto);
+        log.info("Instances [{}] has been exported with external uuid [{}]", instancesEntity.getUuid(),
+                uploadInstancesResponseDto.getUuid());
         return ExportInstancesResponseDto.builder()
                 .externalDataUuid(uploadInstancesResponseDto.getUuid())
                 .build();
