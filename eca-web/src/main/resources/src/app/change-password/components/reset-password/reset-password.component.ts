@@ -12,6 +12,10 @@ import { LogoutService } from "../../../auth/services/logout.service";
 import { ValidationErrorCode } from "../../../common/model/validation-error-code";
 import { ValidationService } from "../../../common/services/validation.service";
 import { ErrorHandler } from "../../../common/services/error-handler";
+import {
+  PasswordRuleResultDto, PasswordValidationErrorDto,
+  ValidationErrorDto
+} from "../../../../../../../../target/generated-sources/typescript/eca-web-dto";
 
 @Component({
   selector: 'app-reset-password',
@@ -27,7 +31,7 @@ export class ResetPasswordComponent implements BaseForm, OnInit {
   @ViewChild(NgForm, { static: true })
   public form: NgForm;
 
-  public safePassword: boolean = false;
+  public notSafePassword: boolean = false;
 
   public token: string;
   public password: string;
@@ -38,8 +42,9 @@ export class ResetPasswordComponent implements BaseForm, OnInit {
   public errorCode: string;
 
   public passwordRegex: string = Utils.PASSWORD_REGEX;
-  public minPasswordLength: number = Utils.MIN_PASSWORD_LENGTH;
   public passwordTooltipText: string = 'Разрешены только цифры, символы латинского алфавита и спец. символы кроме пробелов';
+
+  public passwordValidationRuleDetails: PasswordRuleResultDto[] = [];
 
   private readonly errorCodes: string[] = [
     ValidationErrorCode.USER_LOCKED,
@@ -74,7 +79,7 @@ export class ResetPasswordComponent implements BaseForm, OnInit {
 
   public submit(): void {
     this.submitted = true;
-    if (this.isValid() && this.safePassword) {
+    if (this.isValid()) {
       this.loading = true;
       const resetPasswordRequest: ResetPasswordRequest = new ResetPasswordRequest(this.token, this.password);
       this.resetPasswordService.resetPassword(resetPasswordRequest)
@@ -100,10 +105,6 @@ export class ResetPasswordComponent implements BaseForm, OnInit {
     return this.errorCode && this.errorCodesMap.get(this.errorCode);
   }
 
-  public onStrengthChange(score: number): void {
-    this.safePassword = score >= Utils.PASSWORD_STRENGTH_CUTOFF;
-  }
-
   private verifyToken(): void {
     this.loading = true;
     this.resetPasswordService.verifyToken(this.token)
@@ -124,11 +125,22 @@ export class ResetPasswordComponent implements BaseForm, OnInit {
 
   private handleError(error): void {
     if (error instanceof HttpErrorResponse && error.status === 400) {
-      this.tokenValid = !this.validationService.hasErrorCode(error.error, ValidationErrorCode.INVALID_TOKEN);
+      const errors: ValidationErrorDto[] = error.error;
+      this.tokenValid = !this.validationService.hasErrorCode(errors, ValidationErrorCode.INVALID_TOKEN);
+      this.notSafePassword = this.validationService.hasErrorCode(errors, ValidationErrorCode.NOT_SAFE_PASSWORD);
+      if (this.notSafePassword) {
+        this.handlePasswordValidationError(errors);
+      }
       this.errorCode = this.errorHandler.getFirstErrorCode(error, this.errorCodes);
       this.message = this.errorCodesMap.get(this.errorCode);
     } else {
       this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
     }
+  }
+
+  private handlePasswordValidationError(errors: ValidationErrorDto[]): void {
+    const error = errors.pop();
+    const passwordValidationError = error as PasswordValidationErrorDto;
+    this.passwordValidationRuleDetails = passwordValidationError.details;
   }
 }
