@@ -127,10 +127,7 @@ export class ResetPasswordComponent implements BaseForm, OnInit {
     if (error instanceof HttpErrorResponse && error.status === 400) {
       const errors: ValidationErrorDto[] = error.error;
       this.tokenValid = !this.validationService.hasErrorCode(errors, ValidationErrorCode.INVALID_TOKEN);
-      this.notSafePassword = this.validationService.hasErrorCode(errors, ValidationErrorCode.NOT_SAFE_PASSWORD);
-      if (this.notSafePassword) {
-        this.handlePasswordValidationError(errors);
-      }
+      this.handlePasswordValidationError(errors);
       this.errorCode = this.errorHandler.getFirstErrorCode(error, this.errorCodes);
       this.message = this.errorCodesMap.get(this.errorCode);
     } else {
@@ -139,8 +136,11 @@ export class ResetPasswordComponent implements BaseForm, OnInit {
   }
 
   private handlePasswordValidationError(errors: ValidationErrorDto[]): void {
-    const error = errors.pop();
-    const passwordValidationError = error as PasswordValidationErrorDto;
-    this.passwordValidationRuleDetails = passwordValidationError.details;
+    if (this.validationService.hasErrorCode(errors, ValidationErrorCode.NOT_SAFE_PASSWORD)) {
+      this.notSafePassword = true;
+      const error = errors.pop();
+      const passwordValidationError = error as PasswordValidationErrorDto;
+      this.passwordValidationRuleDetails = passwordValidationError.details;
+    }
   }
 }
