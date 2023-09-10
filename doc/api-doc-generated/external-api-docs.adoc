@@ -1091,7 +1091,7 @@ __(int32)__
 
 *Minimum*: 1*
 
-*Maximum*: 10*
+*Maximum*: 24*
 
 
 
@@ -1726,7 +1726,7 @@ __(int32)__
 
 *Minimum*: 1*
 
-*Maximum*: 10*
+*Maximum*: 24*
 
 
 
@@ -1953,7 +1953,7 @@ __(int32)__
 
 *Minimum*: 1*
 
-*Maximum*: 10*
+*Maximum*: 24*
 
 
 
@@ -2661,7 +2661,7 @@ __(int32)__
 
 *Minimum*: 1*
 
-*Maximum*: 10*
+*Maximum*: 24*
 
 
 
@@ -2847,7 +2847,7 @@ __(int32)__
 
 *Minimum*: 1*
 
-*Maximum*: 10*
+*Maximum*: 24*
 
 
 
