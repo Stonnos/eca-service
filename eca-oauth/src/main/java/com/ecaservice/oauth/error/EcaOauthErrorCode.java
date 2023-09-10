@@ -56,7 +56,12 @@ public enum EcaOauthErrorCode implements ErrorDetails {
     /**
      * User locked error code
      */
-    USER_LOCKED("UserLocked");
+    USER_LOCKED("UserLocked"),
+
+    /**
+     * Not safe password error code
+     */
+    NOT_SAFE_PASSWORD("NotSafePassword");
 
     /**
      * Error code
