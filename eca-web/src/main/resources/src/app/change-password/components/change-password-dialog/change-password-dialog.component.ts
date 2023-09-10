@@ -5,7 +5,11 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { BaseCreateDialogComponent } from "../../../common/dialog/base-create-dialog.component";
 import { ChangePasswordRequest } from "../../model/change-password.request";
 import { ChangePasswordService } from "../../services/change-password.service";
-import { ValidationErrorDto } from "../../../../../../../../target/generated-sources/typescript/eca-web-dto";
+import {
+  PasswordRuleResultDto,
+  PasswordValidationErrorDto,
+  ValidationErrorDto
+} from "../../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ValidationErrorCode } from "../../../common/model/validation-error-code";
 import { ValidationService } from "../../../common/services/validation.service";
 import { Utils } from "../../../common/util/utils";
@@ -24,20 +28,22 @@ export class ChangePasswordDialogComponent extends BaseCreateDialogComponent<Cha
 
   public invalidPassword: boolean = false;
 
-  public safePassword: boolean = false;
+  public notSafePassword: boolean = false;
 
   public message: string;
 
   public errorCode: string;
 
   public passwordRegex: string = Utils.PASSWORD_REGEX;
-  public minPasswordLength: number = Utils.MIN_PASSWORD_LENGTH;
   public passwordTooltipText: string = 'Разрешены только цифры, символы латинского алфавита и спец. символы кроме пробелов';
+
+  public passwordValidationRuleDetails: PasswordRuleResultDto[] = [];
 
   private readonly errorCodes: string[] = [
     ValidationErrorCode.USER_LOCKED,
     ValidationErrorCode.ACTIVE_CHANGE_PASSWORD_REQUEST,
-    ValidationErrorCode.PASSWORDS_MATCHED
+    ValidationErrorCode.PASSWORDS_MATCHED,
+    ValidationErrorCode.NOT_SAFE_PASSWORD
   ];
 
   private readonly errorCodesMap = new Map<string, string>()
@@ -62,7 +68,7 @@ export class ChangePasswordDialogComponent extends BaseCreateDialogComponent<Cha
 
   public submit(): void {
     this.submitted = true;
-    if (this.isValid() && this.safePassword) {
+    if (this.isValid()) {
       this.loading = true;
       this.changePasswordService.changePassword(this.item)
         .pipe(
@@ -82,10 +88,6 @@ export class ChangePasswordDialogComponent extends BaseCreateDialogComponent<Cha
     }
   }
 
-  public onStrengthChange(score: number): void {
-    this.safePassword = score >= Utils.PASSWORD_STRENGTH_CUTOFF;
-  }
-
   public onOldPasswordFocus(event): void {
     this.invalidPassword = false;
   }
@@ -98,10 +100,20 @@ export class ChangePasswordDialogComponent extends BaseCreateDialogComponent<Cha
     if (error instanceof HttpErrorResponse && error.status === 400) {
       const errors: ValidationErrorDto[] = error.error;
       this.invalidPassword = this.validationService.hasErrorCode(errors, ValidationErrorCode.INVALID_PASSWORD);
+      this.notSafePassword = this.validationService.hasErrorCode(errors, ValidationErrorCode.NOT_SAFE_PASSWORD);
+      if (this.notSafePassword) {
+        this.handlePasswordValidationError(errors);
+      }
       this.errorCode = this.errorHandler.getFirstErrorCode(error, this.errorCodes);
       this.message = this.errorCodesMap.get(this.errorCode);
     } else {
       this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
     }
+  }
+
+  private handlePasswordValidationError(errors: ValidationErrorDto[]): void {
+    const error = errors.pop();
+    const passwordValidationError = error as PasswordValidationErrorDto;
+    this.passwordValidationRuleDetails = passwordValidationError.details;
   }
 }
