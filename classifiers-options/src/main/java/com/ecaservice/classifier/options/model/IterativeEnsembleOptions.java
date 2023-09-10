@@ -8,7 +8,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
 import static com.ecaservice.classifier.options.model.Constraints.VALUE_1;
-import static com.ecaservice.classifier.options.model.Constraints.VALUE_10;
+import static com.ecaservice.classifier.options.model.Constraints.MAX_THREADS;
 
 /**
  * Iterative ensemble classifier options model.
@@ -31,7 +31,7 @@ public abstract class IterativeEnsembleOptions extends ClassifierOptions impleme
      * Threads number
      */
     @Min(VALUE_1)
-    @Max(VALUE_10)
+    @Max(MAX_THREADS)
     @Schema(description = "Threads number")
     private Integer numThreads;
 

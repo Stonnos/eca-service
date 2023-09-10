@@ -31,9 +31,9 @@ public class Constraints {
     public static final int VALUE_2 = 2;
 
     /**
-     * Value 10
+     * Max threads
      */
-    public static final int VALUE_10 = 10;
+    public static final int MAX_THREADS = 24;
 
     /**
      * Value 100

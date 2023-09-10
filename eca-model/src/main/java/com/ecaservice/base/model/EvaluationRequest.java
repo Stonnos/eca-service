@@ -5,6 +5,7 @@ import com.ecaservice.classifier.options.model.ClassifierOptions;
 import eca.core.evaluation.EvaluationMethod;
 import lombok.Data;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -25,6 +26,7 @@ public class EvaluationRequest implements EcaRequest {
     /**
      * Classifier options
      */
+    @Valid
     @NotNull
     private ClassifierOptions classifierOptions;
 
