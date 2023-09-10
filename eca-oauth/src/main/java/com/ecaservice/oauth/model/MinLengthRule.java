@@ -10,14 +10,14 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class MinLengthRuleModel extends AbstractPasswordRule {
+public class MinLengthRule extends AbstractPasswordRule {
 
     /**
      * Min. length value
      */
     private int minLength;
 
-    public MinLengthRuleModel() {
+    public MinLengthRule() {
         super(PasswordRuleType.MIN_LENGTH);
     }
 

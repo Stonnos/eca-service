@@ -2,19 +2,23 @@ package com.ecaservice.oauth.service;
 
 import com.ecaservice.oauth.config.PasswordConfig;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.passay.CharacterRule;
+import org.passay.EnglishCharacterData;
 import org.passay.PasswordGenerator;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * Password service.
  *
  * @author Roman Batygin
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PasswordService {
@@ -22,17 +26,16 @@ public class PasswordService {
     private final PasswordGenerator passwordGenerator;
     private final PasswordConfig passwordConfig;
 
-    private List<CharacterRule> rules;
+    private final List<CharacterRule> rules = newArrayList();
 
     /**
      * Initialize rules.
      */
     @PostConstruct
     public void initializeRules() {
-        this.rules = passwordConfig.getGeneratorRules()
-                .stream()
-                .map(rule -> new CharacterRule(rule.getCharacterData()))
-                .collect(Collectors.toList());
+        this.rules.add(new CharacterRule(EnglishCharacterData.Digit));
+        this.rules.add(new CharacterRule(EnglishCharacterData.UpperCase));
+        this.rules.add(new CharacterRule(EnglishCharacterData.LowerCase));
     }
 
     /**

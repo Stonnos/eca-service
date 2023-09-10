@@ -2,24 +2,23 @@ package com.ecaservice.oauth.model;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.passay.EnglishCharacterData;
 
 /**
- * Character rule.
+ * Repeat characters rule.
  *
  * @author Roman Batygin
  */
 @Getter
 @Setter
-public class CharacterRuleModel extends AbstractPasswordRule {
+public class RepeatCharacterRule extends AbstractPasswordRule {
 
     /**
-     * Character data
+     * Repeat characters sequence length
      */
-    private EnglishCharacterData characterData;
+    private int sequenceLength;
 
-    public CharacterRuleModel() {
-        super(PasswordRuleType.CHARACTER);
+    public RepeatCharacterRule() {
+        super(PasswordRuleType.REPEAT_CHARACTERS);
     }
 
     @Override

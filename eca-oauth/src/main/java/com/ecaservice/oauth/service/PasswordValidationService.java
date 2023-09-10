@@ -1,6 +1,5 @@
 package com.ecaservice.oauth.service;
 
-import com.ecaservice.oauth.config.PasswordConfig;
 import com.ecaservice.oauth.model.AbstractPasswordRule;
 import com.ecaservice.oauth.model.PasswordValidationResult;
 import com.ecaservice.oauth.model.RuleResultDetails;
@@ -31,7 +30,7 @@ import static com.google.common.collect.Lists.newArrayList;
 @RequiredArgsConstructor
 public class PasswordValidationService {
 
-    private static final String VALIDATION_RULES_JSON = "validation-rules.json";
+    private static final String VALIDATION_RULES_JSON = "password-validation-rules.json";
 
     private final PasswordRuleHandler passwordRuleHandler;
     private final ObjectMapper objectMapper;

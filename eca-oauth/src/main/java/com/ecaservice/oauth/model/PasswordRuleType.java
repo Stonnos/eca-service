@@ -13,9 +13,24 @@ public enum PasswordRuleType {
     MIN_LENGTH,
 
     /**
-     * Character rule
+     * Special character rule
      */
-    CHARACTER,
+    SPECIAL_CHARACTER,
+
+    /**
+     * Digit rule
+     */
+    DIGIT,
+
+    /**
+     * Lower case character rule
+     */
+    LOWER_CASE_CHARACTER,
+
+    /**
+     * Upper case character rule
+     */
+    UPPER_CASE_CHARACTER,
 
     /**
      * Repeat character rule

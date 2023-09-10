@@ -36,7 +36,7 @@ class PasswordValidationServiceTest {
 
     @Test
     void testValidatePasswordWithRepeatCharacters() {
-       testNotValidRule("#1223dCgrh56$f", PasswordRuleType.REPEAT_CHARACTERS);
+        testNotValidRule("#1223dCgrh56$f", PasswordRuleType.REPEAT_CHARACTERS);
     }
 
     @Test
@@ -46,31 +46,31 @@ class PasswordValidationServiceTest {
 
     @Test
     void testValidatePasswordWithoutLowerCaseCharacters() {
-       testNotValidRule("#1223CFECXDFS56$", PasswordRuleType.CHARACTER);
+        testNotValidRule("#1223CFECXDFS56$", PasswordRuleType.LOWER_CASE_CHARACTER);
     }
 
     @Test
     void testValidatePasswordWithoutDigits() {
-        testNotValidRule("#DELDCFECdwXDFSDV$", PasswordRuleType.CHARACTER);
+        testNotValidRule("#DELDCFECdwXDFSDV$", PasswordRuleType.DIGIT);
     }
 
     @Test
     void testValidatePasswordWithoutSpecialCharacter() {
-       testNotValidRule("#DELDCFECdwXDFSDV$", PasswordRuleType.CHARACTER);
+        testNotValidRule("DELDCFECdwXDFSDV5", PasswordRuleType.SPECIAL_CHARACTER);
     }
 
     @Test
     void testValidatePasswordWithoutUpperCaseCharacters() {
-        testNotValidRule("#104859fgf84bvr$", PasswordRuleType.CHARACTER);
+        testNotValidRule("#104859fgf84bvr$", PasswordRuleType.UPPER_CASE_CHARACTER);
     }
 
     private void testNotValidRule(String password, PasswordRuleType expectedNotValidRuleType) {
         var result = passwordValidationService.validate(password);
         var details = result.getDetails().stream()
-                .filter(ruleResultDetails -> ruleResultDetails.getRuleType().equals(expectedNotValidRuleType)
-                        && !ruleResultDetails.isValid())
+                .filter(ruleResultDetails -> ruleResultDetails.getRuleType().equals(expectedNotValidRuleType))
                 .findFirst()
                 .orElse(null);
         assertThat(details).isNotNull();
+        assertThat(details.isValid()).isFalse();
     }
 }

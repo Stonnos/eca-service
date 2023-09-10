@@ -17,9 +17,12 @@ import lombok.Setter;
         include = JsonTypeInfo.As.EXISTING_PROPERTY,
         property = "ruleType")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = MinLengthRuleModel.class, name = "MIN_LENGTH"),
-        @JsonSubTypes.Type(value = CharacterRuleModel.class, name = "CHARACTER"),
-        @JsonSubTypes.Type(value = RepeatCharactersRuleModel.class, name = "REPEAT_CHARACTERS"),
+        @JsonSubTypes.Type(value = MinLengthRule.class, name = "MIN_LENGTH"),
+        @JsonSubTypes.Type(value = SpecialCharacterRule.class, name = "SPECIAL_CHARACTER"),
+        @JsonSubTypes.Type(value = LowerCaseCharacterRule.class, name = "LOWER_CASE_CHARACTER"),
+        @JsonSubTypes.Type(value = UpperCaseCharacterRule.class, name = "UPPER_CASE_CHARACTER"),
+        @JsonSubTypes.Type(value = DigitRule.class, name = "DIGIT"),
+        @JsonSubTypes.Type(value = RepeatCharacterRule.class, name = "REPEAT_CHARACTERS"),
 })
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class AbstractPasswordRule {

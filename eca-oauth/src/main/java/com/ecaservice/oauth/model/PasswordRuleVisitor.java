@@ -11,24 +11,48 @@ public interface PasswordRuleVisitor<T> {
     /**
      * Visit min. length rule.
      *
-     * @param minLengthRuleModel - min length rule model
+     * @param minLengthRule - min length rule
      * @return result
      */
-    T handle(MinLengthRuleModel minLengthRuleModel);
+    T handle(MinLengthRule minLengthRule);
 
     /**
-     * Visit character rule.
+     * Visit special character rule.
      *
-     * @param characterRuleModel - character rule model
+     * @param specialCharacterRule - character rule
      * @return result
      */
-    T handle(CharacterRuleModel characterRuleModel);
+    T handle(SpecialCharacterRule specialCharacterRule);
+
+    /**
+     * Visit special character rule.
+     *
+     * @param digitRule - character rule
+     * @return result
+     */
+    T handle(DigitRule digitRule);
+
+    /**
+     * Visit special character rule.
+     *
+     * @param lowerCaseCharacterRule - lower case character rule
+     * @return result
+     */
+    T handle(LowerCaseCharacterRule lowerCaseCharacterRule);
+
+    /**
+     * Visit special character rule.
+     *
+     * @param upperCaseCharacterRule - upper case character rule
+     * @return result
+     */
+    T handle(UpperCaseCharacterRule upperCaseCharacterRule);
 
     /**
      * Visit repeat characters rule.
      *
-     * @param repeatCharactersRuleModel - repeat characters rule model
+     * @param repeatCharacterRule - repeat characters rule
      * @return result
      */
-    T handle(RepeatCharactersRuleModel repeatCharactersRuleModel);
+    T handle(RepeatCharacterRule repeatCharacterRule);
 }

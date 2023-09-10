@@ -58,10 +58,6 @@ mail:
 ## Password generator configs
 password:
   length: 12
-  generatorRules:
-     - characterData: Digit
-     - characterData: UpperCase
-     - characterData: LowerCase
 
 tfa:
   codeValiditySeconds: 120
