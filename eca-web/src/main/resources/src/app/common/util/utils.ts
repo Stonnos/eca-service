@@ -15,8 +15,6 @@ export class Utils {
   public static readonly PERSON_NAME_MAX_LENGTH: number = 30;
 
   public static readonly MISSING_VALUE: string = "-";
-  public static readonly PASSWORD_STRENGTH_CUTOFF: number = 3;
-  public static readonly MIN_PASSWORD_LENGTH: number = 8;
 
   public static getEvaluationMethodDescription(evaluationMethod: EnumDto, numFolds: number, numTests: number): string {
     if (evaluationMethod.value == EvaluationMethod.CROSS_VALIDATION) {
