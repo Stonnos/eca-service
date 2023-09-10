@@ -1,7 +1,10 @@
 package com.ecaservice.oauth.config;
 
+import com.ecaservice.oauth.model.CharacterRuleModel;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+
+import java.util.List;
 
 /**
  * Password config.
@@ -18,17 +21,7 @@ public class PasswordConfig {
     private Integer length;
 
     /**
-     * Use digits?
+     * Password generator rules
      */
-    private Boolean useDigits;
-
-    /**
-     * Use upper case symbols?
-     */
-    private Boolean useUpperCaseSymbols;
-
-    /**
-     * Use lower case symbols?
-     */
-    private Boolean useLowerCaseSymbols;
+    private List<CharacterRuleModel> generatorRules;
 }

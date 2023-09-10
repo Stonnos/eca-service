@@ -1,0 +1,32 @@
+[
+  {
+    "ruleType": "MIN_LENGTH",
+    "minLength": 12,
+    "message": "12 и более символов"
+  },
+  {
+    "ruleType": "CHARACTER",
+    "characterData": "Digit",
+    "message": "Цифры"
+  },
+  {
+    "ruleType": "CHARACTER",
+    "characterData": "UpperCase",
+    "message": "Латинские буквы в верхнем регистре"
+  },
+  {
+    "ruleType": "CHARACTER",
+    "characterData": "LowerCase",
+    "message": "Латинские буквы в нижнем регистре"
+  },
+  {
+    "ruleType": "CHARACTER",
+    "characterData": "Special",
+    "message": "Специальные символы (!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~)"
+  },
+  {
+    "ruleType": "REPEAT_CHARACTERS",
+    "sequenceLength": 2,
+    "message": "Нет одинаковых подряд идущих символов"
+  }
+]
