@@ -14,6 +14,7 @@ import com.ecaservice.oauth.exception.UserLockedException;
 import com.ecaservice.oauth.model.TokenModel;
 import com.ecaservice.oauth.repository.ChangePasswordRequestRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -38,16 +39,18 @@ import static org.mockito.Mockito.verify;
  *
  * @author Roman Batygin
  */
-@Import(AppProperties.class)
+@Import({AppProperties.class, PasswordRuleHandler.class, PasswordValidationService.class, ObjectMapper.class})
 class ChangePasswordServiceTest extends AbstractJpaTest {
 
-    private static final String NEW_PASSWORD = "тewPassword";
+    private static final String NEW_PASSWORD = "#123dCgrh56$f";
     private static final long INVALID_USER_ID = 1000L;
     private static final String PASSWORD = "pa66word!";
     private static final String TOKEN = "token";
 
     @Inject
     private AppProperties appProperties;
+    @Inject
+    private PasswordValidationService passwordValidationService;
     @Inject
     private UserEntityRepository userEntityRepository;
     @Inject
@@ -66,7 +69,7 @@ class ChangePasswordServiceTest extends AbstractJpaTest {
     public void init() {
         passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         changePasswordService = new ChangePasswordService(appProperties, passwordEncoder, oauth2TokenService,
-                changePasswordRequestRepository, userEntityRepository);
+                passwordValidationService, changePasswordRequestRepository, userEntityRepository);
         userEntity = createAndSaveUser();
     }
 

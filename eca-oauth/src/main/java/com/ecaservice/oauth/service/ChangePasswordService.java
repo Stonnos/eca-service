@@ -9,6 +9,7 @@ import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.exception.ChangePasswordRequestAlreadyExistsException;
 import com.ecaservice.oauth.exception.InvalidPasswordException;
 import com.ecaservice.oauth.exception.InvalidTokenException;
+import com.ecaservice.oauth.exception.NotSafePasswordException;
 import com.ecaservice.oauth.exception.PasswordsMatchedException;
 import com.ecaservice.oauth.exception.UserLockedException;
 import com.ecaservice.oauth.model.TokenModel;
@@ -42,6 +43,7 @@ public class ChangePasswordService {
     private final AppProperties appProperties;
     private final PasswordEncoder passwordEncoder;
     private final Oauth2TokenService oauth2TokenService;
+    private final PasswordValidationService passwordValidationService;
     private final ChangePasswordRequestRepository changePasswordRequestRepository;
     private final UserEntityRepository userEntityRepository;
 
@@ -64,6 +66,11 @@ public class ChangePasswordService {
         }
         if (isPasswordsMatched(userEntity, changePasswordRequest)) {
             throw new PasswordsMatchedException(userId);
+        }
+        var validationResult
+                = passwordValidationService.validate(changePasswordRequest.getNewPassword());
+        if (!validationResult.isValid()) {
+            throw new NotSafePasswordException(validationResult.getDetails());
         }
         LocalDateTime now = LocalDateTime.now();
         ChangePasswordRequestEntity changePasswordRequestEntity =

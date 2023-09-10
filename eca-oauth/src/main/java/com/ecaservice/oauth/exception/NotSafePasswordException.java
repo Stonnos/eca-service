@@ -21,10 +21,9 @@ public class NotSafePasswordException extends ValidationErrorException {
      * Creates exception object.
      *
      * @param details - validation rules result details
-     * @param message - error message
      */
-    public NotSafePasswordException(List<RuleResultDetails> details, String message) {
-        super(EcaOauthErrorCode.NOT_SAFE_PASSWORD, message);
+    public NotSafePasswordException(List<RuleResultDetails> details) {
+        super(EcaOauthErrorCode.NOT_SAFE_PASSWORD, "Password not safe");
         this.details = details;
     }
 }
