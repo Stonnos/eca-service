@@ -24,12 +24,17 @@ public class TfaCodeNotificationEventHandler extends AbstractUserNotificationEve
      * Creates tfa code notification event handler.
      */
     public TfaCodeNotificationEventHandler() {
-        super(TfaCodeNotificationEvent.class, Templates.TFA_CODE);
+        super(TfaCodeNotificationEvent.class);
     }
 
     @Override
     public Map<String, String> createVariables(TfaCodeNotificationEvent event) {
         return Collections.singletonMap(TFA_CODE, event.getTfaCode());
+    }
+
+    @Override
+    public String getTemplateCode(TfaCodeNotificationEvent emailEvent) {
+        return Templates.TFA_CODE;
     }
 
     @Override

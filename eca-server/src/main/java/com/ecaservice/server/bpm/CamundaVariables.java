@@ -54,4 +54,14 @@ public class CamundaVariables {
      * Application instance uuid
      */
     public static final String APP_INSTANCES_UUID = "appInstanceUuid";
+
+    /**
+     * Email template code
+     */
+    public static final String EMAIL_TEMPLATE_CODE = "emailTemplateCode";
+
+    /**
+     * Email template variables
+     */
+    public static final String EMAIL_TEMPLATE_VARIABLES = "emailTemplateVariables";
 }

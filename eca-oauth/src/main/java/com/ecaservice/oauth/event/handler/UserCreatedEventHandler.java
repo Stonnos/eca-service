@@ -25,7 +25,12 @@ public class UserCreatedEventHandler extends AbstractUserNotificationEventHandle
      * Creates user created event handler.
      */
     public UserCreatedEventHandler() {
-        super(UserCreatedEvent.class, Templates.NEW_USER);
+        super(UserCreatedEvent.class);
+    }
+
+    @Override
+    public String getTemplateCode(UserCreatedEvent emailEvent) {
+        return Templates.NEW_USER;
     }
 
     @Override

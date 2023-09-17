@@ -12,8 +12,8 @@ import com.ecaservice.oauth.event.model.AbstractUserNotificationEvent;
 public abstract class AbstractUserNotificationEventHandler<T extends AbstractUserNotificationEvent>
         extends AbstractEmailEventHandler<T> {
 
-    protected AbstractUserNotificationEventHandler(Class<T> type, String templateCode) {
-        super(type, templateCode);
+    protected AbstractUserNotificationEventHandler(Class<T> type) {
+        super(type);
     }
 
     @Override

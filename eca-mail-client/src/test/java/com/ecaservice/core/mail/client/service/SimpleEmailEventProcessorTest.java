@@ -49,6 +49,6 @@ class SimpleEmailEventProcessorTest {
         var emailRequest = emailRequestArgumentCaptor.getValue();
         assertThat(emailRequest).isNotNull();
         assertThat(emailRequest.getRequestId()).isNotNull();
-        assertThat(emailRequest.getTemplateCode()).isEqualTo(testEmailEventHandler.getTemplateCode());
+        assertThat(emailRequest.getTemplateCode()).isEqualTo(testEmailEventHandler.getTemplateCode(testEmailEvent));
     }
 }

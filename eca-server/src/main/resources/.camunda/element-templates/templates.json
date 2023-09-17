@@ -1,7 +1,7 @@
 [
   {
     "name": "Выполнение задачи",
-    "id": "com.ecaservice.server.bpm.listeners.TaskExecutionListener",
+    "id": "TaskExecution",
     "isDefault": false,
     "appliesTo": [
       "bpmn:ServiceTask"
@@ -93,7 +93,7 @@
   },
   {
     "name": "Задача для работы с ошибками",
-    "id": "com.ecaservice.server.bpm.listeners.BpmErrorHandler",
+    "id": "ErrorHandler",
     "isDefault": false,
     "appliesTo": [
       "bpmn:ServiceTask"
@@ -145,6 +145,82 @@
       "delegate": false,
       "asyncBefore": false,
       "asyncAfter": false
+    }
+  },
+  {
+    "name": "Отправка email для заявки на эксперимент",
+    "id": "ExperimentEmailSender",
+    "isDefault": false,
+    "appliesTo": [
+      "bpmn:ServiceTask"
+    ],
+    "properties": [
+      {
+        "type": "Hidden",
+        "value": "com.ecaservice.server.bpm.listeners.TaskExecutionListener",
+        "binding": {
+          "type": "property",
+          "name": "camunda:class"
+        }
+      },
+      {
+        "type": "Hidden",
+        "value": "SENT_EXPERIMENT_EMAIL",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "taskType"
+        }
+      },
+      {
+        "label": "Код шаблона сообщения",
+        "type": "Dropdown",
+        "value": "NEW_EXPERIMENT",
+        "choices": [
+          {
+            "name": "Сообщение о новой заявке на эксперимент",
+            "value": "NEW_EXPERIMENT"
+          },
+          {
+            "name": "Сообщение о поступлении заявки на эксперимент в работу",
+            "value": "IN_PROGRESS_EXPERIMENT"
+          },
+          {
+            "name": "Сообщение о завершении эксперимента",
+            "value": "FINISHED_EXPERIMENT"
+          },
+          {
+            "name": "Сообщение об ошибке при построении эксперимента",
+            "value": "ERROR_EXPERIMENT"
+          },
+          {
+            "name": "Сообщение о таймауте при построении эксперимента",
+            "value": "TIMEOUT_EXPERIMENT"
+          }
+        ],
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "emailTemplateCode"
+        }
+      },
+      {
+        "label": "Переменные шаблона сообщения",
+        "type": "String",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "emailTemplateVariables"
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "candidateUsers": false,
+      "candidateGroups": false,
+      "property": true,
+      "class": false,
+      "implementation": false,
+      "delegate": false,
+      "asyncBefore": false,
+      "asyncAfter": true
     }
   }
 ]
