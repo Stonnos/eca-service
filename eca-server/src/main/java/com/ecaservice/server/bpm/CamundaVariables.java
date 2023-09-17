@@ -84,4 +84,9 @@ public class CamundaVariables {
      * Push message template context variable
      */
     public static final String PUSH_TEMPLATE_CONTEXT_VARIABLE = "pushTemplateContextVariable";
+
+    /**
+     * Evaluation request status
+     */
+    public static final String EVALUATION_REQUEST_STATUS = "requestStatus";
 }

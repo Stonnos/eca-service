@@ -23,6 +23,16 @@ public enum TaskType {
     FINISH_EXPERIMENT,
 
     /**
+     * Finishes experiment with error
+     */
+    FINISH_EXPERIMENT_WITH_ERROR,
+
+    /**
+     * Finishes experiment with timeout
+     */
+    FINISH_EXPERIMENT_WITH_TIMEOUT,
+
+    /**
      * Process experiment
      */
     PROCESS_EXPERIMENT,
@@ -70,5 +80,10 @@ public enum TaskType {
     /**
      * Create experiment web request
      */
-    CREATE_EXPERIMENT_WEB_REQUEST
+    CREATE_EXPERIMENT_WEB_REQUEST,
+
+    /**
+     * Calculates experiment final status
+     */
+    CALCULATE_EXPERIMENT_FINAL_STATUS
 }

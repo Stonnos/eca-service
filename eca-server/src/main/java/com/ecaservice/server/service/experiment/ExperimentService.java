@@ -21,10 +21,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -37,9 +35,6 @@ import java.util.stream.Stream;
 @Service
 @RequiredArgsConstructor
 public class ExperimentService {
-
-    private static final List<ExperimentStepStatus> EXPERIMENT_STEP_STATUSES_TO_PROCESS =
-            List.of(ExperimentStepStatus.READY, ExperimentStepStatus.FAILED);
 
     private final ExperimentRepository experimentRepository;
     private final ExperimentStepRepository experimentStepRepository;
@@ -114,8 +109,29 @@ public class ExperimentService {
      * @param experiment - experiment entity
      */
     public void finishExperiment(Experiment experiment) {
-        log.info("Starting to set experiment [{}] final status", experiment.getRequestId());
-        RequestStatus requestStatus = calculateFinalStatus(experiment);
+        internalFinishExperiment(experiment, RequestStatus.FINISHED);
+    }
+
+    /**
+     * Finishes experiment with error.
+     *
+     * @param experiment - experiment entity
+     */
+    public void finishExperimentWithError(Experiment experiment) {
+        internalFinishExperiment(experiment, RequestStatus.ERROR);
+    }
+
+    /**
+     * Finishes experiment with timeout.
+     *
+     * @param experiment - experiment entity
+     */
+    public void finishExperimentWithTimeout(Experiment experiment) {
+        internalFinishExperiment(experiment, RequestStatus.TIMEOUT);
+    }
+
+    private void internalFinishExperiment(Experiment experiment, RequestStatus requestStatus) {
+        log.info("Starting to set experiment [{}] final status [{}]", experiment.getRequestId(), requestStatus);
         experiment.setRequestStatus(requestStatus);
         experiment.setEndDate(LocalDateTime.now());
         experimentRepository.save(experiment);
@@ -137,27 +153,6 @@ public class ExperimentService {
         experimentStepRepository.saveAll(steps);
         var stepNames = steps.stream().map(ExperimentStepEntity::getStep).collect(Collectors.toList());
         log.info("{} steps has been saved for experiment [{}]", stepNames, experiment.getRequestId());
-    }
-
-    private RequestStatus calculateFinalStatus(Experiment experiment) {
-        var stepStatuses = experimentStepRepository.getStepStatuses(experiment);
-        if (CollectionUtils.isEmpty(stepStatuses)) {
-            throw new ExperimentException(
-                    String.format("Got empty steps for experiment [%s]", experiment.getRequestId()));
-        }
-        if (stepStatuses.stream().anyMatch(EXPERIMENT_STEP_STATUSES_TO_PROCESS::contains)) {
-            String error =
-                    String.format("Can't calculate experiment [%s] final status. Steps contains one of %s status",
-                            experiment.getRequestId(), EXPERIMENT_STEP_STATUSES_TO_PROCESS);
-            throw new ExperimentException(error);
-        }
-        if (stepStatuses.stream().anyMatch(ExperimentStepStatus.ERROR::equals)) {
-            return RequestStatus.ERROR;
-        }
-        if (stepStatuses.stream().anyMatch(ExperimentStepStatus.TIMEOUT::equals)) {
-            return RequestStatus.TIMEOUT;
-        }
-        return RequestStatus.FINISHED;
     }
 
     private void setAdditionalProperties(Experiment experiment, AbstractExperimentRequestData experimentRequestData) {

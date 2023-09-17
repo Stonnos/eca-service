@@ -33,6 +33,14 @@
             "value": "FINISH_EXPERIMENT"
           },
           {
+            "name": "Заврешить заявку на эксперимент с ошибкой",
+            "value": "FINISH_EXPERIMENT_WITH_ERROR"
+          },
+          {
+            "name": "Заврешить заявку на эксперимент с таймаутом",
+            "value": "FINISH_EXPERIMENT_WITH_TIMEOUT"
+          },
+          {
             "name": "Начать или продолжить построение эксперимента",
             "value": "PROCESS_EXPERIMENT"
           },
@@ -41,16 +49,8 @@
             "value": "GET_EXPERIMENT_PROCESS_STATUS"
           },
           {
-            "name": "Отправить email для заявки на эксперимент",
-            "value": "SENT_EXPERIMENT_EMAIL"
-          },
-          {
-            "name": "Отправить системное пуш уведомление для заявки на эксперимент",
-            "value": "SENT_EXPERIMENT_SYSTEM_PUSH"
-          },
-          {
-            "name": "Отправить пуш уведомление пользователю для заявки на эксперимент",
-            "value": "SENT_EXPERIMENT_WEB_PUSH"
+            "name": "Вычислить финальный статус заявки на эксперимент",
+            "value": "CALCULATE_EXPERIMENT_FINAL_STATUS"
           },
           {
             "name": "Отправить ответное сообщение в очередь для заявки на эксперимент",

@@ -6,7 +6,6 @@ import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.config.ExperimentConfig;
-import com.ecaservice.server.exception.experiment.ExperimentException;
 import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.mapping.ExperimentMapperImpl;
 import com.ecaservice.server.mapping.InstancesInfoMapperImpl;
@@ -39,7 +38,6 @@ import java.util.stream.Stream;
 
 import static com.ecaservice.server.TestHelperUtils.loadInstances;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -121,54 +119,30 @@ class ExperimentServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    void testFinishExperimentWith() {
+    void testFinishExperiment() {
         var experiment = createAndSaveExperiment(RequestStatus.IN_PROGRESS);
-        createAndSaveExperimentStep(experiment, ExperimentStep.EXPERIMENT_PROCESSING, ExperimentStepStatus.COMPLETED);
-        createAndSaveExperimentStep(experiment, ExperimentStep.UPLOAD_EXPERIMENT_MODEL, ExperimentStepStatus.COMPLETED);
-        createAndSaveExperimentStep(experiment, ExperimentStep.GET_EXPERIMENT_DOWNLOAD_URL,
-                ExperimentStepStatus.COMPLETED);
-        internalTestFinishExperiment(experiment, RequestStatus.FINISHED);
+        experimentService.finishExperiment(experiment);
+        assertFinishExperiment(experiment, RequestStatus.FINISHED);
     }
 
     @Test
     void testFinishExperimentWithError() {
         var experiment = createAndSaveExperiment(RequestStatus.IN_PROGRESS);
-        createAndSaveExperimentStep(experiment, ExperimentStep.EXPERIMENT_PROCESSING, ExperimentStepStatus.COMPLETED);
-        createAndSaveExperimentStep(experiment, ExperimentStep.UPLOAD_EXPERIMENT_MODEL, ExperimentStepStatus.ERROR);
-        createAndSaveExperimentStep(experiment, ExperimentStep.GET_EXPERIMENT_DOWNLOAD_URL,
-                ExperimentStepStatus.CANCELED);
-        internalTestFinishExperiment(experiment, RequestStatus.ERROR);
+        experimentService.finishExperimentWithError(experiment);
+        assertFinishExperiment(experiment, RequestStatus.ERROR);
     }
 
     @Test
     void testFinishExperimentWithTimeout() {
         var experiment = createAndSaveExperiment(RequestStatus.IN_PROGRESS);
-        createAndSaveExperimentStep(experiment, ExperimentStep.EXPERIMENT_PROCESSING, ExperimentStepStatus.COMPLETED);
-        createAndSaveExperimentStep(experiment, ExperimentStep.UPLOAD_EXPERIMENT_MODEL, ExperimentStepStatus.TIMEOUT);
-        createAndSaveExperimentStep(experiment, ExperimentStep.GET_EXPERIMENT_DOWNLOAD_URL,
-                ExperimentStepStatus.CANCELED);
-        internalTestFinishExperiment(experiment, RequestStatus.TIMEOUT);
-    }
-
-    @Test
-    void testFinishExperimentWithInvalidStepStatuses() {
-        var experiment = createAndSaveExperiment(RequestStatus.IN_PROGRESS);
-        createAndSaveExperimentStep(experiment, ExperimentStep.EXPERIMENT_PROCESSING, ExperimentStepStatus.READY);
-        createAndSaveExperimentStep(experiment, ExperimentStep.UPLOAD_EXPERIMENT_MODEL, ExperimentStepStatus.FAILED);
-        assertThrows(ExperimentException.class, () -> experimentService.finishExperiment(experiment));
+        experimentService.finishExperimentWithTimeout(experiment);
+        assertFinishExperiment(experiment, RequestStatus.TIMEOUT);
     }
 
     private Experiment createAndSaveExperiment(RequestStatus requestStatus) {
         var experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), requestStatus);
         instancesInfoRepository.save(experiment.getInstancesInfo());
         return experimentRepository.save(experiment);
-    }
-
-    private void createAndSaveExperimentStep(Experiment experiment,
-                                             ExperimentStep experimentStep,
-                                             ExperimentStepStatus stepStatus) {
-        var experimentStepEntity = TestHelperUtils.createExperimentStepEntity(experiment, experimentStep, stepStatus);
-        experimentStepRepository.save(experimentStepEntity);
     }
 
     private void verifySavedSteps(Experiment experiment) {
@@ -187,8 +161,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
         });
     }
 
-    private void internalTestFinishExperiment(Experiment experiment, RequestStatus expectedStatus) {
-        experimentService.finishExperiment(experiment);
+    private void assertFinishExperiment(Experiment experiment, RequestStatus expectedStatus) {
         var actual = experimentRepository.findById(experiment.getId()).orElse(null);
         assertThat(actual).isNotNull();
         assertThat(actual.getRequestStatus()).isEqualTo(expectedStatus);
