@@ -2,7 +2,7 @@ package com.ecaservice.server.bpm.extract;
 
 import com.ecaservice.server.event.model.push.PushMessageParams;
 import com.ecaservice.server.service.push.dictionary.ExperimentPushProperty;
-import org.apache.commons.lang3.StringUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +14,7 @@ import static com.ecaservice.server.bpm.CamundaVariables.PUSH_MESSAGE_PROPERTIES
 import static com.ecaservice.server.bpm.CamundaVariables.PUSH_MESSAGE_TYPE;
 import static com.ecaservice.server.bpm.CamundaVariables.PUSH_TEMPLATE_CODE;
 import static com.ecaservice.server.bpm.CamundaVariables.PUSH_TEMPLATE_CONTEXT_VARIABLE;
+import static com.ecaservice.server.util.CamundaUtils.getValuesAsArray;
 import static com.ecaservice.server.util.CamundaUtils.getVariable;
 
 /**
@@ -21,10 +22,9 @@ import static com.ecaservice.server.util.CamundaUtils.getVariable;
  *
  * @author Roman Batygin
  */
+@Slf4j
 @Component
 public class PushMessageParamsExtractor {
-
-    private static final String COMMA_SEPARATOR = ",";
 
     /**
      * Extracts push message params from execution.
@@ -36,20 +36,17 @@ public class PushMessageParamsExtractor {
         String messageType = getVariable(execution, PUSH_MESSAGE_TYPE, String.class);
         String templateCode = getVariable(execution, PUSH_TEMPLATE_CODE, String.class);
         String messageTemplateContextVariable = getVariable(execution, PUSH_TEMPLATE_CONTEXT_VARIABLE, String.class);
-        List<ExperimentPushProperty> messageProperties = getMessageProperties(execution);
+        String[] messagePropertiesArray = getValuesAsArray(execution, PUSH_MESSAGE_PROPERTIES);
+        List<ExperimentPushProperty> messageProperties = Stream.of(messagePropertiesArray)
+                .map(ExperimentPushProperty::valueOf)
+                .collect(Collectors.toList());
+        log.debug("Push message type [{}], template code [{}], properties [{}] for execution [{}]", messageType,
+                templateCode, messageProperties, execution.getProcessBusinessKey());
         return PushMessageParams.builder()
                 .messageType(messageType)
                 .templateCode(templateCode)
                 .templateContextVariable(messageTemplateContextVariable)
                 .messageProperties(messageProperties)
                 .build();
-    }
-
-    private List<ExperimentPushProperty> getMessageProperties(DelegateExecution execution) {
-        String messagePropertiesValue = getVariable(execution, PUSH_MESSAGE_PROPERTIES, String.class);
-        String[] messageProperties = StringUtils.split(messagePropertiesValue, COMMA_SEPARATOR);
-        return Stream.of(messageProperties)
-                .map(ExperimentPushProperty::valueOf)
-                .collect(Collectors.toList());
     }
 }
