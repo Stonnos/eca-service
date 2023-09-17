@@ -24,10 +24,14 @@
       <bpmn:outgoing>Flow_1jp7krt</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1jp7krt" sourceRef="Activity_0nisie8" targetRef="Activity_1yc7la5" />
-    <bpmn:serviceTask id="Activity_1yc7la5" name="Отправка системного push о начале обработки заявки" camunda:modelerTemplate="TaskExecution" camunda:asyncBefore="true" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
+    <bpmn:serviceTask id="Activity_1yc7la5" name="Отправка системного push о начале обработки заявки" camunda:modelerTemplate="ExperimentPushSender" camunda:asyncBefore="true" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="taskType">SENT_EXPERIMENT_SYSTEM_PUSH</camunda:inputParameter>
+          <camunda:inputParameter name="pushMessageType">EXPERIMENT_STATUS</camunda:inputParameter>
+          <camunda:inputParameter name="pushTemplateContextVariable">experiment</camunda:inputParameter>
+          <camunda:inputParameter name="pushMessageProperties">ID,REQUEST_ID,REQUEST_STATUS</camunda:inputParameter>
+          <camunda:inputParameter name="pushTemplateCode">IN_PROGRESS_EXPERIMENT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1jp7krt</bpmn:incoming>
@@ -53,9 +57,13 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${experiment.email != null}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0g9vecp" sourceRef="Activity_1nezpw3" targetRef="Gateway_03g9cp4" />
-    <bpmn:serviceTask id="Activity_1nezpw3" name="Отправка push уведомления пользователю о начале обработки заявки" camunda:modelerTemplate="TaskExecution" camunda:asyncBefore="true" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
+    <bpmn:serviceTask id="Activity_1nezpw3" name="Отправка push уведомления пользователю о начале обработки заявки" camunda:modelerTemplate="ExperimentPushSender" camunda:asyncBefore="true" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
+          <camunda:inputParameter name="pushMessageType">EXPERIMENT_STATUS</camunda:inputParameter>
+          <camunda:inputParameter name="pushTemplateContextVariable">experiment</camunda:inputParameter>
+          <camunda:inputParameter name="pushMessageProperties">ID,REQUEST_ID,REQUEST_STATUS</camunda:inputParameter>
+          <camunda:inputParameter name="pushTemplateCode">IN_PROGRESS_EXPERIMENT</camunda:inputParameter>
           <camunda:inputParameter name="taskType">SENT_EXPERIMENT_WEB_PUSH</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>

@@ -1,13 +1,9 @@
 package com.ecaservice.server.service.push.handler;
 
 import com.ecaservice.server.event.model.push.ExperimentSystemPushEvent;
-import com.ecaservice.server.service.experiment.ExperimentMessageTemplateProcessor;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
-
-import static com.ecaservice.server.service.push.dictionary.PushProperties.EXPERIMENT_STATUS_MESSAGE_TYPE;
-import static com.ecaservice.server.service.push.dictionary.PushPropertiesHelper.createExperimentProperties;
 
 /**
  * Experiment web push event handler.
@@ -17,32 +13,32 @@ import static com.ecaservice.server.service.push.dictionary.PushPropertiesHelper
 @Component
 public class ExperimentSystemPushEventHandler extends AbstractSystemPushEventHandler<ExperimentSystemPushEvent> {
 
-    private final ExperimentMessageTemplateProcessor experimentMessageTemplateProcessor;
+    private final ExperimentPushMessageHandler experimentPushMessageHandler;
 
     /**
      * Constructor with parameters.
      *
-     * @param experimentMessageTemplateProcessor - message template processor
+     * @param experimentPushMessageHandler - experiment push message handler
      */
-    public ExperimentSystemPushEventHandler(ExperimentMessageTemplateProcessor experimentMessageTemplateProcessor) {
+    public ExperimentSystemPushEventHandler(ExperimentPushMessageHandler experimentPushMessageHandler) {
         super(ExperimentSystemPushEvent.class);
-        this.experimentMessageTemplateProcessor = experimentMessageTemplateProcessor;
+        this.experimentPushMessageHandler = experimentPushMessageHandler;
     }
 
     @Override
-    protected String getMessageType() {
-        return EXPERIMENT_STATUS_MESSAGE_TYPE;
+    protected String getMessageType(ExperimentSystemPushEvent experimentSystemPushEvent) {
+        return experimentSystemPushEvent.getPushMessageParams().getMessageType();
     }
 
     @Override
     protected String getMessageText(ExperimentSystemPushEvent experimentSystemPushEvent) {
-        var experiment = experimentSystemPushEvent.getExperiment();
-        return experimentMessageTemplateProcessor.process(experiment);
+        return experimentPushMessageHandler.processMessageText(experimentSystemPushEvent.getPushMessageParams(),
+                experimentSystemPushEvent.getExperiment());
     }
 
     @Override
     protected Map<String, String> createAdditionalProperties(ExperimentSystemPushEvent experimentSystemPushEvent) {
-        var experiment = experimentSystemPushEvent.getExperiment();
-        return createExperimentProperties(experiment);
+        return experimentPushMessageHandler.processAdditionalProperties(
+                experimentSystemPushEvent.getPushMessageParams(), experimentSystemPushEvent.getExperiment());
     }
 }
