@@ -13,6 +13,11 @@ public enum ExperimentStep {
     EXPERIMENT_PROCESSING,
 
     /**
+     * Creates ers report
+     */
+    CREATE_ERS_REPORT,
+
+    /**
      * Upload experiment model to S3
      */
     UPLOAD_EXPERIMENT_MODEL,
@@ -20,10 +25,5 @@ public enum ExperimentStep {
     /**
      * Gets experiment download url
      */
-    GET_EXPERIMENT_DOWNLOAD_URL,
-
-    /**
-     * Creates ers report
-     */
-    CREATE_ERS_REPORT
+    GET_EXPERIMENT_DOWNLOAD_URL
 }
