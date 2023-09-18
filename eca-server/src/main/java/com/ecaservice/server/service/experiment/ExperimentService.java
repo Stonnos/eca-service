@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -35,6 +36,9 @@ import java.util.stream.Stream;
 @Service
 @RequiredArgsConstructor
 public class ExperimentService {
+
+    private static final List<RequestStatus> FINAL_STATUSES =
+            List.of(RequestStatus.FINISHED, RequestStatus.ERROR, RequestStatus.TIMEOUT);
 
     private final ExperimentRepository experimentRepository;
     private final ExperimentStepRepository experimentStepRepository;
@@ -106,32 +110,16 @@ public class ExperimentService {
     /**
      * Finishes experiment.
      *
-     * @param experiment - experiment entity
+     * @param experiment    - experiment entity
+     * @param requestStatus - final request status (FINISHED, ERROR, TIMEOUT)
      */
-    public void finishExperiment(Experiment experiment) {
-        internalFinishExperiment(experiment, RequestStatus.FINISHED);
-    }
-
-    /**
-     * Finishes experiment with error.
-     *
-     * @param experiment - experiment entity
-     */
-    public void finishExperimentWithError(Experiment experiment) {
-        internalFinishExperiment(experiment, RequestStatus.ERROR);
-    }
-
-    /**
-     * Finishes experiment with timeout.
-     *
-     * @param experiment - experiment entity
-     */
-    public void finishExperimentWithTimeout(Experiment experiment) {
-        internalFinishExperiment(experiment, RequestStatus.TIMEOUT);
-    }
-
-    private void internalFinishExperiment(Experiment experiment, RequestStatus requestStatus) {
+    public void finishExperiment(Experiment experiment, RequestStatus requestStatus) {
         log.info("Starting to set experiment [{}] final status [{}]", experiment.getRequestId(), requestStatus);
+        if (!FINAL_STATUSES.contains(requestStatus)) {
+            throw new IllegalArgumentException(
+                    String.format("Invalid final request status [%s] for experiment [%s]", requestStatus,
+                            experiment.getRequestId()));
+        }
         experiment.setRequestStatus(requestStatus);
         experiment.setEndDate(LocalDateTime.now());
         experimentRepository.save(experiment);

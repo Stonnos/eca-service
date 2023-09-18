@@ -121,22 +121,11 @@ class ExperimentServiceTest extends AbstractJpaTest {
     @Test
     void testFinishExperiment() {
         var experiment = createAndSaveExperiment(RequestStatus.IN_PROGRESS);
-        experimentService.finishExperiment(experiment);
-        assertFinishExperiment(experiment, RequestStatus.FINISHED);
-    }
-
-    @Test
-    void testFinishExperimentWithError() {
-        var experiment = createAndSaveExperiment(RequestStatus.IN_PROGRESS);
-        experimentService.finishExperimentWithError(experiment);
-        assertFinishExperiment(experiment, RequestStatus.ERROR);
-    }
-
-    @Test
-    void testFinishExperimentWithTimeout() {
-        var experiment = createAndSaveExperiment(RequestStatus.IN_PROGRESS);
-        experimentService.finishExperimentWithTimeout(experiment);
-        assertFinishExperiment(experiment, RequestStatus.TIMEOUT);
+        experimentService.finishExperiment(experiment, RequestStatus.FINISHED);
+        var actual = experimentRepository.findById(experiment.getId()).orElse(null);
+        assertThat(actual).isNotNull();
+        assertThat(actual.getRequestStatus()).isEqualTo(RequestStatus.FINISHED);
+        assertThat(actual.getEndDate()).isNotNull();
     }
 
     private Experiment createAndSaveExperiment(RequestStatus requestStatus) {
@@ -159,13 +148,6 @@ class ExperimentServiceTest extends AbstractJpaTest {
             assertThat(step.getExperiment()).isNotNull();
             assertThat(step.getExperiment().getId()).isEqualTo(experiment.getId());
         });
-    }
-
-    private void assertFinishExperiment(Experiment experiment, RequestStatus expectedStatus) {
-        var actual = experimentRepository.findById(experiment.getId()).orElse(null);
-        assertThat(actual).isNotNull();
-        assertThat(actual.getRequestStatus()).isEqualTo(expectedStatus);
-        assertThat(actual.getEndDate()).isNotNull();
     }
 
     private void mockLoadInstances() {

@@ -29,23 +29,11 @@
             "value": "START_EXPERIMENT"
           },
           {
-            "name": "Завершить работу с заявкой на эксперимент",
-            "value": "FINISH_EXPERIMENT"
-          },
-          {
-            "name": "Заврешить заявку на эксперимент с ошибкой",
-            "value": "FINISH_EXPERIMENT_WITH_ERROR"
-          },
-          {
-            "name": "Заврешить заявку на эксперимент с таймаутом",
-            "value": "FINISH_EXPERIMENT_WITH_TIMEOUT"
-          },
-          {
             "name": "Начать или продолжить построение эксперимента",
             "value": "PROCESS_EXPERIMENT"
           },
           {
-            "name": "Получить статус постояния эксперимента",
+            "name": "Получить статус построения эксперимента",
             "value": "GET_EXPERIMENT_PROCESS_STATUS"
           },
           {
@@ -314,6 +302,66 @@
         "binding": {
           "type": "camunda:inputParameter",
           "name": "pushMessageProperties"
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "candidateUsers": false,
+      "candidateGroups": false,
+      "property": true,
+      "class": false,
+      "implementation": false,
+      "delegate": false,
+      "asyncBefore": false,
+      "asyncAfter": true
+    }
+  },
+  {
+    "name": "Завершение заявки на эксперимент",
+    "id": "FinishExperiment",
+    "isDefault": false,
+    "appliesTo": [
+      "bpmn:ServiceTask"
+    ],
+    "properties": [
+      {
+        "type": "Hidden",
+        "value": "com.ecaservice.server.bpm.listeners.TaskExecutionListener",
+        "binding": {
+          "type": "property",
+          "name": "camunda:class"
+        }
+      },
+      {
+        "type": "Hidden",
+        "value": "FINISH_EXPERIMENT",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "taskType"
+        }
+      },
+      {
+        "label": "Статус заявки",
+        "type": "Dropdown",
+        "value": "FINISHED",
+        "choices": [
+          {
+            "name": "Завершена",
+            "value": "FINISHED"
+          },
+          {
+            "name": "Таймаут",
+            "value": "TIMEOUT"
+          },
+          {
+            "name": "Ошибка",
+            "value": "ERROR"
+          }
+        ],
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "requestStatus"
         }
       }
     ],

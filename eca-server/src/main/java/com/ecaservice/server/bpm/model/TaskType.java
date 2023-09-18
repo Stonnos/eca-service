@@ -23,16 +23,6 @@ public enum TaskType {
     FINISH_EXPERIMENT,
 
     /**
-     * Finishes experiment with error
-     */
-    FINISH_EXPERIMENT_WITH_ERROR,
-
-    /**
-     * Finishes experiment with timeout
-     */
-    FINISH_EXPERIMENT_WITH_TIMEOUT,
-
-    /**
      * Process experiment
      */
     PROCESS_EXPERIMENT,
