@@ -340,14 +340,14 @@ public class TestHelperUtils {
     /**
      * Creates experiment.
      *
-     * @param requestId        - request id
-     * @param experimentStatus - experiment status
+     * @param requestId     - request id
+     * @param requestStatus - request status
      * @return created experiment
      */
-    public static Experiment createExperiment(String requestId, RequestStatus experimentStatus) {
+    public static Experiment createExperiment(String requestId, RequestStatus requestStatus) {
         Experiment experiment = new Experiment();
         experiment.setEmail(TEST_MAIL_RU);
-        experiment.setRequestStatus(experimentStatus);
+        experiment.setRequestStatus(requestStatus);
         experiment.setCreationDate(LocalDateTime.now());
         experiment.setExperimentType(ExperimentType.KNN);
         experiment.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);

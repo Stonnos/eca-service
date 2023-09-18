@@ -14,6 +14,7 @@
 
     <properties>
         <spring-boot-camunda-bpm.version>7.19.0</spring-boot-camunda-bpm.version>
+        <awaitility.version>4.2.0</awaitility.version>
         <sonar.coverage.exclusions>
             **/model/**/*,
             **/dto/**/*,
@@ -258,6 +259,13 @@
             <groupId>eca.service</groupId>
             <artifactId>oauth2-test</artifactId>
             <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
+            <version>${awaitility.version}</version>
             <scope>test</scope>
         </dependency>
 
