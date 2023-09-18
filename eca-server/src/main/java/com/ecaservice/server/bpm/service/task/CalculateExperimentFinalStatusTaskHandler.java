@@ -52,7 +52,7 @@ public class CalculateExperimentFinalStatusTaskHandler extends AbstractTaskHandl
         Long id = getVariable(execution, EXPERIMENT_ID, Long.class);
         var experiment = experimentDataService.getById(id);
         RequestStatus finalStatus = calculateFinalStatus(experiment);
-        execution.setVariable(EVALUATION_REQUEST_STATUS, finalStatus);
+        execution.setVariable(EVALUATION_REQUEST_STATUS, finalStatus.name());
         log.info("Experiment [{}] final status [{}] has been calculated", execution.getProcessBusinessKey(),
                 finalStatus);
     }

@@ -210,7 +210,9 @@
       <bpmn:incoming>Flow_1po5yji</bpmn:incoming>
       <bpmn:outgoing>Flow_1ahuycf</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1po5yji" name="Успешно" sourceRef="Gateway_0xa1952" targetRef="Activity_0sk8uu1" />
+    <bpmn:sequenceFlow id="Flow_1po5yji" name="Успешно" sourceRef="Gateway_0xa1952" targetRef="Activity_0sk8uu1">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${requestStatus == 'FINISHED'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
     <bpmn:serviceTask id="Activity_0qgkua8" name="Отправка push уведомления пользователю о таймауте при построении эксперимента" camunda:modelerTemplate="ExperimentPushSender" camunda:asyncBefore="true" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -224,7 +226,9 @@
       <bpmn:incoming>Flow_1xjtvpp</bpmn:incoming>
       <bpmn:outgoing>Flow_01vwbu7</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1xjtvpp" name="Таймаут" sourceRef="Gateway_0xa1952" targetRef="Activity_0qgkua8" />
+    <bpmn:sequenceFlow id="Flow_1xjtvpp" name="Таймаут" sourceRef="Gateway_0xa1952" targetRef="Activity_0qgkua8">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${requestStatus == 'TIMEOUT'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
     <bpmn:serviceTask id="Activity_0q84pzj" name="Отправка push уведомления пользователю об ошибке при обработке заявки" camunda:modelerTemplate="ExperimentPushSender" camunda:asyncBefore="true" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
