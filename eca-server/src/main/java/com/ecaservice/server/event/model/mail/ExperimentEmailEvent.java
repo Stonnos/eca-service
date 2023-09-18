@@ -2,7 +2,6 @@ package com.ecaservice.server.event.model.mail;
 
 import com.ecaservice.core.mail.client.event.model.AbstractEmailEvent;
 import com.ecaservice.server.model.entity.Experiment;
-import com.ecaservice.server.service.experiment.mail.ExperimentEmailTemplateVariable;
 import lombok.Getter;
 
 import java.util.List;
@@ -28,7 +27,7 @@ public class ExperimentEmailEvent extends AbstractEmailEvent {
      * Template variables
      */
     @Getter
-    private final List<ExperimentEmailTemplateVariable> templateVariables;
+    private final List<String> templateVariables;
 
     /**
      * Create a new event.
@@ -41,7 +40,7 @@ public class ExperimentEmailEvent extends AbstractEmailEvent {
     public ExperimentEmailEvent(Object source,
                                 Experiment experiment,
                                 String templateCode,
-                                List<ExperimentEmailTemplateVariable> templateVariables) {
+                                List<String> templateVariables) {
         super(source);
         this.experiment = experiment;
         this.templateCode = templateCode;

@@ -7,6 +7,7 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.springframework.util.Assert;
 
 import java.text.MessageFormat;
+import java.util.List;
 
 /**
  * Camunda utility class.
@@ -63,8 +64,9 @@ public class CamundaUtils {
      * @param variableName - variable name
      * @return values array
      */
-    public static String[] getValuesAsArray(DelegateExecution execution, String variableName) {
+    public static List<String> getValuesAsArray(DelegateExecution execution, String variableName) {
         String messagePropertiesValue = getVariable(execution, variableName, String.class);
-        return StringUtils.split(messagePropertiesValue, COMMA_SEPARATOR);
+        String[] messageProperties = StringUtils.split(messagePropertiesValue, COMMA_SEPARATOR);
+        return List.of(messageProperties);
     }
 }

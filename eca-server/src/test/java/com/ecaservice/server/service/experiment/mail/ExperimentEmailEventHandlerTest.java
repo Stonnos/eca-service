@@ -41,8 +41,11 @@ class ExperimentEmailEventHandlerTest {
     void testHandleEmailEvent() {
         Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.TEST_UUID, RequestStatus.FINISHED);
         ExperimentEmailEvent emailEvent = new ExperimentEmailEvent(this, experiment, TEMPLATE_CODE,
-                List.of(ExperimentEmailTemplateVariable.EXPERIMENT_TYPE, ExperimentEmailTemplateVariable.REQUEST_ID,
-                        ExperimentEmailTemplateVariable.DOWNLOAD_URL));
+                List.of(ExperimentEmailTemplateVariable.EXPERIMENT_TYPE.name(),
+                        ExperimentEmailTemplateVariable.REQUEST_ID.name(),
+                        ExperimentEmailTemplateVariable.DOWNLOAD_URL.name()
+                )
+        );
         EmailRequest emailRequest = experimentEmailEventHandler.handle(emailEvent);
         assertEmailRequest(emailRequest, experiment, emailEvent.getTemplateCode());
         String actualUrl =

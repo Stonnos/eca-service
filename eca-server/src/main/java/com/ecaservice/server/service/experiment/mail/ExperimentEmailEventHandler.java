@@ -32,7 +32,8 @@ public class ExperimentEmailEventHandler extends AbstractEmailEventHandler<Exper
     public Map<String, String> createVariables(ExperimentEmailEvent event) {
         var experiment = event.getExperiment();
         Map<String, String> variablesMap = newHashMap();
-        event.getTemplateVariables().forEach(experimentEmailTemplateVariable -> {
+        event.getTemplateVariables().forEach(variable -> {
+            var experimentEmailTemplateVariable = ExperimentEmailTemplateVariable.valueOf(variable);
             String variableValue =
                     experimentEmailTemplateVariable.visit(experimentEmailTemplateVariableVisitor, experiment);
             variablesMap.put(experimentEmailTemplateVariable.getVariableName(), variableValue);

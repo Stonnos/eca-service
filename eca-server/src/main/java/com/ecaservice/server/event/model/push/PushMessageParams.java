@@ -1,8 +1,8 @@
 package com.ecaservice.server.event.model.push;
 
-import com.ecaservice.server.service.push.dictionary.ExperimentPushProperty;
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -12,7 +12,8 @@ import java.util.List;
  * @author Roman Batygin
  */
 @Data
-@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class PushMessageParams {
 
     /**
@@ -33,5 +34,5 @@ public class PushMessageParams {
     /**
      * Push message additional properties names
      */
-    private List<ExperimentPushProperty> messageProperties;
+    private List<String> messageProperties;
 }

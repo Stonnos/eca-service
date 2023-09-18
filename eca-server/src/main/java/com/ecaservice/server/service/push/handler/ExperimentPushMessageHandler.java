@@ -3,6 +3,7 @@ package com.ecaservice.server.service.push.handler;
 import com.ecaservice.server.event.model.push.PushMessageParams;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.service.message.template.MessageTemplateProcessor;
+import com.ecaservice.server.service.push.dictionary.ExperimentPushProperty;
 import com.ecaservice.server.service.push.dictionary.ExperimentPushPropertyVisitor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -47,7 +48,8 @@ public class ExperimentPushMessageHandler {
      */
     public Map<String, String> processAdditionalProperties(PushMessageParams pushMessageParams, Experiment experiment) {
         Map<String, String> variables = newHashMap();
-        pushMessageParams.getMessageProperties().forEach(experimentPushProperty -> {
+        pushMessageParams.getMessageProperties().forEach(property -> {
+            ExperimentPushProperty experimentPushProperty = ExperimentPushProperty.valueOf(property);
             String value = experimentPushProperty.visit(experimentPushPropertyVisitor, experiment);
             variables.put(experimentPushProperty.getPropertyName(), value);
         });

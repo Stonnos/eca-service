@@ -170,7 +170,7 @@
     <bpmn:sequenceFlow id="Flow_1420u4j" sourceRef="Activity_1c87q39" targetRef="Gateway_08e98ax" />
     <bpmn:sequenceFlow id="Flow_0d0ao21" sourceRef="Activity_1ifwl8u" targetRef="Gateway_08e98ax" />
     <bpmn:sequenceFlow id="Flow_02hi90i" sourceRef="Activity_08tc12k" targetRef="Gateway_08e98ax" />
-    <bpmn:exclusiveGateway id="Gateway_08b8k9d" name="Источник заявки">
+    <bpmn:exclusiveGateway id="Gateway_08b8k9d" name="Источник заявки" default="Flow_090v5bm">
       <bpmn:incoming>Flow_1vqioiz</bpmn:incoming>
       <bpmn:incoming>Flow_19a25mv</bpmn:incoming>
       <bpmn:outgoing>Flow_003xhid</bpmn:outgoing>
