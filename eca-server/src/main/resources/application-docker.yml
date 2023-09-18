@@ -27,8 +27,9 @@ eureka:
       defaultZone: http://discovery-server:8761/eureka
 
 app:
-  notifications:
-    webPushesEnabled: true
+  push:
+    enabled: true
+    async: true
 
 ## Swagger properties
 open-api:

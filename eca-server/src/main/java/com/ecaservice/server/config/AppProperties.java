@@ -23,9 +23,9 @@ public class AppProperties {
     private Integer threadPoolSize;
 
     /**
-     * Notification properties
+     * Web push properties
      */
-    private NotificationProperties notifications = new NotificationProperties();
+    private WebPushProperties push = new WebPushProperties();
 
     /**
      * Number of days for models storage
@@ -51,11 +51,16 @@ public class AppProperties {
      * Notification properties
      */
     @Data
-    public static class NotificationProperties {
+    public static class WebPushProperties {
 
         /**
          * Web pushes enabled?
          */
-        private Boolean webPushesEnabled;
+        private Boolean enabled;
+
+        /**
+         * Use async sending?
+         */
+        private Boolean async;
     }
 }

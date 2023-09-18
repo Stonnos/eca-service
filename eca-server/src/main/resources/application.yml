@@ -61,8 +61,8 @@ app:
   pageSize: 10
   modelDownloadUrlExpirationDays: 7
   shortLifeUrlExpirationMinutes: 5
-  notifications:
-    webPushesEnabled: false
+  push:
+    enabled: false
 
 ## Queues properties
 queue:
