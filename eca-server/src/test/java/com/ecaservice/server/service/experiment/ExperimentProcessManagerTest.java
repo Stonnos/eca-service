@@ -48,6 +48,8 @@ import org.springframework.test.context.jdbc.Sql;
 import weka.core.Instances;
 
 import javax.inject.Inject;
+import java.io.IOException;
+import java.io.Serializable;
 import java.time.Duration;
 import java.util.UUID;
 
@@ -59,6 +61,7 @@ import static org.awaitility.Awaitility.await;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -85,6 +88,7 @@ class ExperimentProcessManagerTest {
     private static final String NEW_EXPERIMENT_EMAIL_TEMPLATE_CODE = "NEW_EXPERIMENT";
     private static final String IN_PROGRESS_EXPERIMENT_EMAIL_TEMPLATE_CODE = "IN_PROGRESS_EXPERIMENT";
     private static final String FINISHED_EXPERIMENT_EMAIL_TEMPLATE_CODE = "FINISHED_EXPERIMENT";
+    private static final String ERROR_EXPERIMENT_EMAIL_TEMPLATE_CODE = "ERROR_EXPERIMENT";
     private static final String REPLY_YO = "reply-yo";
     private static final String CREATED_BY = "user";
     private static final String TEST_MAIL_RU = "test@mail.ru";
@@ -224,6 +228,26 @@ class ExperimentProcessManagerTest {
         );
     }
 
+    @Test
+    void testProcessErrorExperimentWithQueueChannel() throws IOException {
+        Experiment experiment = createAndSaveExperiment(Channel.QUEUE);
+        doThrow(IOException.class).when(objectStorageService).uploadObject(any(Serializable.class), anyString());
+        testProcessExperiment(experiment);
+
+        var actualExperiment = getExperiment(experiment.getRequestId());
+
+        assertThat(emailRequestArgumentCaptor.getAllValues()).hasSize(2);
+        assertThat(pushRequestArgumentCaptor.getAllValues()).hasSize(2);
+
+        verifyTestSteps(actualExperiment,
+                new RequestStatusVerifier(RequestStatus.ERROR),
+                new InProgressEmailRequestVerifier(),
+                new PushRequestVerifier(PushType.SYSTEM, RequestStatus.IN_PROGRESS, 0),
+                new ErrorEmailRequestVerifier(),
+                new PushRequestVerifier(PushType.SYSTEM, RequestStatus.ERROR, 1)
+        );
+    }
+
     private void testProcessExperiment(Experiment experiment) {
         experimentProcessManager.processExperiment(experiment.getId());
 
@@ -343,6 +367,13 @@ class ExperimentProcessManagerTest {
                     ExperimentEmailTemplateVariable.DOWNLOAD_URL.getVariableName(),
                     experiment.getExperimentDownloadUrl()
             );
+        }
+    }
+
+    private class ErrorEmailRequestVerifier extends AbstractEmailRequestVerifier {
+
+        public ErrorEmailRequestVerifier() {
+            super(ERROR_EXPERIMENT_EMAIL_TEMPLATE_CODE, 1);
         }
     }
 
