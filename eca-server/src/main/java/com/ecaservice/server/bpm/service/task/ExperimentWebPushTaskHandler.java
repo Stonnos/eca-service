@@ -46,7 +46,7 @@ public class ExperimentWebPushTaskHandler extends AbstractTaskHandler {
         log.info("Starting to process experiment [{}] web push task", execution.getProcessBusinessKey());
         Long id = getVariable(execution, EXPERIMENT_ID, Long.class);
         var experiment = experimentDataService.getById(id);
-        var pushMessageParams = pushMessageParamsExtractor.extractPushMessageParams(execution);
+        var pushMessageParams = pushMessageParamsExtractor.extract(execution);
         eventPublisher.publishEvent(new ExperimentWebPushEvent(this, experiment, pushMessageParams));
         log.info("Experiment [{}] web push task has been processed", execution.getProcessBusinessKey());
     }

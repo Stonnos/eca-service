@@ -21,7 +21,7 @@ import static com.ecaservice.server.util.CamundaUtils.getVariable;
  */
 @Slf4j
 @Component
-public class PushMessageParamsExtractor {
+public class PushMessageParamsExtractor implements ValueExtractor<PushMessageParams> {
 
     /**
      * Extracts push message params from execution.
@@ -29,7 +29,8 @@ public class PushMessageParamsExtractor {
      * @param execution - delegate execution
      * @return push message params
      */
-    public PushMessageParams extractPushMessageParams(DelegateExecution execution) {
+    @Override
+    public PushMessageParams extract(DelegateExecution execution) {
         String messageType = getVariable(execution, PUSH_MESSAGE_TYPE, String.class);
         String templateCode = getVariable(execution, PUSH_TEMPLATE_CODE, String.class);
         String messageTemplateContextVariable = getVariable(execution, PUSH_TEMPLATE_CONTEXT_VARIABLE, String.class);

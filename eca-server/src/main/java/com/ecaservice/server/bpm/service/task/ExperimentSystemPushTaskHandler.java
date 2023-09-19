@@ -45,7 +45,7 @@ public class ExperimentSystemPushTaskHandler extends AbstractTaskHandler {
     public void handle(DelegateExecution execution) {
         log.info("Starting to process experiment [{}] system push task", execution.getProcessBusinessKey());
         Long id = getVariable(execution, EXPERIMENT_ID, Long.class);
-        var pushMessageParams = pushMessageParamsExtractor.extractPushMessageParams(execution);
+        var pushMessageParams = pushMessageParamsExtractor.extract(execution);
         var experiment = experimentDataService.getById(id);
         eventPublisher.publishEvent(new ExperimentSystemPushEvent(this, experiment, pushMessageParams));
         log.info("Experiment [{}] system push task has been processed", execution.getProcessBusinessKey());
