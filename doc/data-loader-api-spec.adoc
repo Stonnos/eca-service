@@ -1,0 +1,97 @@
+= DATA LOADER API
+:toc:
+:toc-title: Оглавление
+
+== Введение
+
+В данном документе приведено описание внешнего REST API для загрузки обучающих выборок в единое хранилище для последующей классификации.
+
+== 1. Список доступных методов
+
+|===
+|Endpoint|Тип запроса|Описание|Формат запроса|Формат ответа
+|http://eca-service:8080/api/external/upload-train-data
+|POST
+|Загрузка файла с обучающей выборкой в единое хранилище данных
+|multipart/form-data
+|application/json
+|===
+
+== 2. Получение токена доступа к API
+
+Авторизация клиентского приложения осуществляется по протоколу oauth2. Все запросы к API должны сопровождаться авторизационным токеном в заголовке запроса:
+
+Authorization: Bearer YOUR_TOKEN
+
+Для получения авторизационного токена необходимо выполнить следующий запрос:
+
+[source,bash]
+----
+curl external-api:external_api_secret@eca-service:8080/eca-oauth/oauth/token -d grant_type=client_credentials
+----
+
+где external-api:external_api_secret - пара clientId и clientSecret
+
+Запрос возвращает access_token для доступа к API:
+
+[source,json]
+----
+{
+  "access_token": "cf4cd583-b9f1-4dce-8dcc-afefd1510974",
+  "token_type": "bearer",
+  "expires_in": 2591999,
+  "scope": "external-api"
+}
+----
+
+где expires_in - время жизни access_token в секундах.
+
+== 3. Описание формата запросов
+
+==== 3.1. Пример загрузки обучающей выборки на сервер
+
+[source,bash]
+----
+curl -X POST "http://localhost:8080/api/external/upload-train-data" -H "accept: */*" -H "authorization: Bearer cf4cd583-b9f1-4dce-8dcc-afefd1510974" -H "Content-Type: multipart/form-data" -F "instancesFile=@credit.json"
+----
+
+* Примечание: размер файла не должен превышать 10мб.
+* Примечание: допускаются только файлы формата json
+
+==== 3.2. Пример ответа на запрос о загрузке обучающей выборки на сервер
+
+[source,json]
+----
+{
+  "uuid": "1d2de514-3a87-4620-9b97-c260e24340de",
+  "md5Hash": "3032e188204cb537f69fc7364f638641",
+  "expireAt": "2021-07-01 14:00:00"
+}
+----
+
+==== 3.3. Описание параметров ответа на запрос о загрузке обучающей выборки на сервер
+
+|===
+|Название поля/атрибута|Тип|Обязательное|Описание|Комментарий
+|uuid
+|string
+|+
+|UUID обучающей выборки
+|
+|md5Hash
+|string
+|+
+|MD5 hash обучающей выборки
+|
+|expireAt
+|string
+|+
+|Дата истечения срока жизни обучающей выборки
+|
+|===
+
+==== 3.4. Пример файла с обучающей выборкой
+
+link:data/credit.json
+
+

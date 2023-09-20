@@ -83,7 +83,7 @@ curl external-api:external_api_secret@eca-service:8080/eca-oauth/oauth/token -d 
 
 [source,bash]
 ----
-curl -X POST "http://localhost:8080/api/external/upload-train-data" -H "accept: */*" -H "authorization: Bearer cf4cd583-b9f1-4dce-8dcc-afefd1510974" -H "Content-Type: multipart/form-data" -F "trainingData=@iris.xls;type=application/vnd.ms-excel"
+curl -X POST "http://localhost:8080/api/external/upload-train-data" -H "accept: */*" -H "authorization: Bearer cf4cd583-b9f1-4dce-8dcc-afefd1510974" -H "Content-Type: multipart/form-data" -F "instancesFile=@credit.json"
 ----
 
 * Примечание: размер файла не должен превышать 10мб.
