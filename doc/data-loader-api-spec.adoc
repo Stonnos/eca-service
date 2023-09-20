@@ -137,7 +137,7 @@ link:data/credit.json[credit.json]
 |Тип атрибута
 |Заполняется по справочнику <<Справочник типов атрибута>>.
 |dateFormat
-|array<AttributeModel>
+|string
 |-
 |Формат даты для атрибутов типа даты
 |
