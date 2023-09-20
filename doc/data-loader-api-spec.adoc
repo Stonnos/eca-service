@@ -92,6 +92,6 @@ curl -X POST "http://localhost:8080/api/external/upload-train-data" -H "accept: 
 
 ==== 3.4. Пример файла с обучающей выборкой
 
-link:data/credit.json[Open the JSON file]
+link:data/credit.json[credit.json]
 
 
