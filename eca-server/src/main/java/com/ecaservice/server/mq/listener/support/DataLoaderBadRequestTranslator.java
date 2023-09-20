@@ -8,7 +8,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
-import java.util.List;
 
 import static com.ecaservice.server.util.Utils.buildErrorResponse;
 import static com.ecaservice.server.util.Utils.buildValidationError;

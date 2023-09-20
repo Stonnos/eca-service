@@ -1,7 +1,6 @@
 package com.ecaservice.data.loader.util;
 
 import com.ecaservice.data.loader.exception.InvalidTrainDataFormatException;
-import eca.data.file.model.AttributeModel;
 import eca.data.file.model.AttributeType;
 import eca.data.file.model.InstancesModel;
 import lombok.experimental.UtilityClass;

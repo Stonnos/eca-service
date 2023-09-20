@@ -2,8 +2,6 @@ package com.ecaservice.server.service.push.dictionary;
 
 
 import com.ecaservice.server.model.entity.Experiment;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 /**
  * Experiment push property visitor.
