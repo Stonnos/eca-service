@@ -6,6 +6,8 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
 
@@ -28,5 +30,16 @@ public class EcaServerDatabaseConfiguration {
     @ConfigurationProperties(prefix = "spring.datasource")
     public DataSource datasource() {
         return DataSourceBuilder.create().build();
+    }
+
+    /**
+     * Creates transaction manager bean.
+     *
+     * @return transaction manager
+     */
+    @Primary
+    @Bean
+    public PlatformTransactionManager transactionManager() {
+        return new JpaTransactionManager();
     }
 }

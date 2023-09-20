@@ -29,7 +29,7 @@ public interface ErsResponseStatusMapper {
      * @return error code
      */
     @ValueMapping(source = "DUPLICATE_REQUEST_ID", target = "INTERNAL_SERVER_ERROR")
-    @ValueMapping(source = "DATA_NOT_FOUND", target = "TRAINING_DATA_NOT_FOUND")
+    @ValueMapping(source = "DATA_NOT_FOUND", target = "CLASSIFIER_OPTIONS_NOT_FOUND")
     @ValueMapping(source = "RESULTS_NOT_FOUND", target = "CLASSIFIER_OPTIONS_NOT_FOUND")
     ErrorCode mapErrorCode(ErsErrorCode ersErrorCode);
 }

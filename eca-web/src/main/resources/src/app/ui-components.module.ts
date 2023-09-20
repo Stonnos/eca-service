@@ -28,7 +28,6 @@ import { TabViewModule } from 'primeng/tabview';
 import { CardModule } from "primeng/card";
 import { FieldsetModule } from 'primeng/fieldset';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
-import { PasswordStrengthMeterModule } from "angular-password-strength-meter";
 import { ToastModule } from "primeng/toast";
 
 @NgModule({
@@ -68,7 +67,6 @@ import { ToastModule } from "primeng/toast";
     CheckboxModule,
     FieldsetModule,
     ScrollPanelModule,
-    PasswordStrengthMeterModule,
     MenuModule,
     EditorModule,
     ToastModule

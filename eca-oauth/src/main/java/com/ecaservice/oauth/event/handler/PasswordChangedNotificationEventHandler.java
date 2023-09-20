@@ -19,6 +19,11 @@ public class PasswordChangedNotificationEventHandler
      * Creates password changed notification event handler.
      */
     public PasswordChangedNotificationEventHandler() {
-        super(PasswordChangedNotificationEvent.class, Templates.PASSWORD_CHANGED);
+        super(PasswordChangedNotificationEvent.class);
+    }
+
+    @Override
+    public String getTemplateCode(PasswordChangedNotificationEvent emailEvent) {
+        return Templates.PASSWORD_CHANGED;
     }
 }

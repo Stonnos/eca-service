@@ -14,7 +14,7 @@
     <bpmn:sequenceFlow id="Flow_101zncf" name="Новая заявка?" sourceRef="Gateway_0dqc1ka" targetRef="Activity_0nisie8">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${experiment.requestStatus == 'NEW'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="Activity_0nisie8" name="Перевести заявку в работу" camunda:modelerTemplate="com.ecaservice.server.bpm.listeners.TaskExecutionListener" camunda:asyncBefore="true" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
+    <bpmn:serviceTask id="Activity_0nisie8" name="Перевести заявку в работу" camunda:modelerTemplate="TaskExecution" camunda:asyncBefore="true" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="taskType">START_EXPERIMENT</camunda:inputParameter>
@@ -24,10 +24,14 @@
       <bpmn:outgoing>Flow_1jp7krt</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1jp7krt" sourceRef="Activity_0nisie8" targetRef="Activity_1yc7la5" />
-    <bpmn:serviceTask id="Activity_1yc7la5" name="Отправка системного push о начале обработки заявки" camunda:modelerTemplate="com.ecaservice.server.bpm.listeners.TaskExecutionListener" camunda:asyncBefore="true" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
+    <bpmn:serviceTask id="Activity_1yc7la5" name="Отправка системного push о начале обработки заявки" camunda:modelerTemplate="ExperimentPushSender" camunda:asyncBefore="true" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="taskType">SENT_EXPERIMENT_SYSTEM_PUSH</camunda:inputParameter>
+          <camunda:inputParameter name="pushMessageType">EXPERIMENT_STATUS</camunda:inputParameter>
+          <camunda:inputParameter name="pushTemplateContextVariable">experiment</camunda:inputParameter>
+          <camunda:inputParameter name="pushMessageProperties">ID,REQUEST_ID,REQUEST_STATUS</camunda:inputParameter>
+          <camunda:inputParameter name="pushTemplateCode">IN_PROGRESS_EXPERIMENT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1jp7krt</bpmn:incoming>
@@ -53,19 +57,25 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${experiment.email != null}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0g9vecp" sourceRef="Activity_1nezpw3" targetRef="Gateway_03g9cp4" />
-    <bpmn:serviceTask id="Activity_1nezpw3" name="Отправка push уведомления пользователю о начале обработки заявки" camunda:modelerTemplate="com.ecaservice.server.bpm.listeners.TaskExecutionListener" camunda:asyncBefore="true" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
+    <bpmn:serviceTask id="Activity_1nezpw3" name="Отправка push уведомления пользователю о начале обработки заявки" camunda:modelerTemplate="ExperimentPushSender" camunda:asyncBefore="true" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
+          <camunda:inputParameter name="pushMessageType">EXPERIMENT_STATUS</camunda:inputParameter>
+          <camunda:inputParameter name="pushTemplateContextVariable">experiment</camunda:inputParameter>
+          <camunda:inputParameter name="pushMessageProperties">ID,REQUEST_ID,REQUEST_STATUS</camunda:inputParameter>
+          <camunda:inputParameter name="pushTemplateCode">IN_PROGRESS_EXPERIMENT</camunda:inputParameter>
           <camunda:inputParameter name="taskType">SENT_EXPERIMENT_WEB_PUSH</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0huk5ak</bpmn:incoming>
       <bpmn:outgoing>Flow_0g9vecp</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_0os54gm" name="Отправка email о начале обработки заявки" camunda:modelerTemplate="com.ecaservice.server.bpm.listeners.TaskExecutionListener" camunda:asyncBefore="true" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
+    <bpmn:serviceTask id="Activity_0os54gm" name="Отправка email о начале обработки заявки" camunda:modelerTemplate="ExperimentEmailSender" camunda:asyncBefore="true" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="taskType">SENT_EXPERIMENT_EMAIL</camunda:inputParameter>
+          <camunda:inputParameter name="emailTemplateCode">IN_PROGRESS_EXPERIMENT</camunda:inputParameter>
+          <camunda:inputParameter name="emailTemplateVariables">EXPERIMENT_TYPE,REQUEST_ID</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0p9af6x</bpmn:incoming>
@@ -80,90 +90,14 @@
     <bpmn:sequenceFlow id="Flow_1hlezkn" sourceRef="Gateway_14mp0ww" targetRef="Activity_1d6gjo2">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${experiment.stepsCountToProcess == 0}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="Activity_1d6gjo2" name="Завершить работу с заявкой" camunda:modelerTemplate="com.ecaservice.server.bpm.listeners.TaskExecutionListener" camunda:asyncBefore="true" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="taskType">FINISH_EXPERIMENT</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0px7hmh</bpmn:incoming>
-      <bpmn:incoming>Flow_1hlezkn</bpmn:incoming>
-      <bpmn:outgoing>Flow_1g2ysnv</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_0fijn8h" name="Отправка системного push о завершении заявки" camunda:modelerTemplate="com.ecaservice.server.bpm.listeners.TaskExecutionListener" camunda:asyncBefore="true" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="taskType">SENT_EXPERIMENT_SYSTEM_PUSH</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1g2ysnv</bpmn:incoming>
-      <bpmn:outgoing>Flow_0icfty5</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1g2ysnv" sourceRef="Activity_1d6gjo2" targetRef="Activity_0fijn8h" />
-    <bpmn:exclusiveGateway id="Gateway_0a8nskc" name="Источник заявки" default="Flow_0byd624">
-      <bpmn:incoming>Flow_0icfty5</bpmn:incoming>
-      <bpmn:outgoing>Flow_0z62k36</bpmn:outgoing>
-      <bpmn:outgoing>Flow_0byd624</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_0icfty5" sourceRef="Activity_0fijn8h" targetRef="Gateway_0a8nskc" />
-    <bpmn:serviceTask id="Activity_0sk8uu1" name="Отправка push уведомления пользователю о завершении заявки" camunda:modelerTemplate="com.ecaservice.server.bpm.listeners.TaskExecutionListener" camunda:asyncBefore="true" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="taskType">SENT_EXPERIMENT_WEB_PUSH</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0z62k36</bpmn:incoming>
-      <bpmn:outgoing>Flow_0zr8nzy</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0z62k36" name="WEB" sourceRef="Gateway_0a8nskc" targetRef="Activity_0sk8uu1">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${experiment.channel == 'WEB'}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="Activity_1vneurn" name="Отправка сообщения с результатами эксперимента в очередь" camunda:modelerTemplate="com.ecaservice.server.bpm.listeners.TaskExecutionListener" camunda:asyncBefore="true" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="taskType">SENT_EXPERIMENT_RESPONSE</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0byd624</bpmn:incoming>
-      <bpmn:outgoing>Flow_06daoym</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0byd624" name="MQ" sourceRef="Gateway_0a8nskc" targetRef="Activity_1vneurn" />
     <bpmn:sequenceFlow id="Flow_0duf2cg" sourceRef="Activity_0os54gm" targetRef="Activity_1a4v8dt" />
-    <bpmn:exclusiveGateway id="Gateway_048iy0h" default="Flow_0fhgzq4">
-      <bpmn:incoming>Flow_0s06k1e</bpmn:incoming>
-      <bpmn:outgoing>Flow_1trsqrn</bpmn:outgoing>
-      <bpmn:outgoing>Flow_0fhgzq4</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="Activity_1ifwl8u" name="Отправка email с результатами эксперимента" camunda:modelerTemplate="com.ecaservice.server.bpm.listeners.TaskExecutionListener" camunda:asyncBefore="true" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="taskType">SENT_EXPERIMENT_EMAIL</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1trsqrn</bpmn:incoming>
-      <bpmn:outgoing>Flow_0rz5lb3</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1trsqrn" name="Задан email для заявки?" sourceRef="Gateway_048iy0h" targetRef="Activity_1ifwl8u">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${experiment.email != null}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
     <bpmn:endEvent id="Event_0m3e557">
-      <bpmn:incoming>Flow_0fhgzq4</bpmn:incoming>
-      <bpmn:incoming>Flow_0rz5lb3</bpmn:incoming>
       <bpmn:incoming>Flow_15zrl33</bpmn:incoming>
+      <bpmn:incoming>Flow_16cn1ss</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_0fhgzq4" sourceRef="Gateway_048iy0h" targetRef="Event_0m3e557" />
-    <bpmn:sequenceFlow id="Flow_0rz5lb3" sourceRef="Activity_1ifwl8u" targetRef="Event_0m3e557" />
     <bpmn:sequenceFlow id="Flow_15zrl33" name="Построение эксперимента завершено?" sourceRef="Gateway_14mp0ww" targetRef="Event_0m3e557" />
-    <bpmn:inclusiveGateway id="Gateway_1wrqrqq">
-      <bpmn:incoming>Flow_06daoym</bpmn:incoming>
-      <bpmn:incoming>Flow_0zr8nzy</bpmn:incoming>
-      <bpmn:outgoing>Flow_0s06k1e</bpmn:outgoing>
-    </bpmn:inclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_06daoym" sourceRef="Activity_1vneurn" targetRef="Gateway_1wrqrqq" />
-    <bpmn:sequenceFlow id="Flow_0zr8nzy" sourceRef="Activity_0sk8uu1" targetRef="Gateway_1wrqrqq" />
-    <bpmn:sequenceFlow id="Flow_0s06k1e" sourceRef="Gateway_1wrqrqq" targetRef="Gateway_048iy0h" />
     <bpmn:sequenceFlow id="Flow_1hb7dsw" sourceRef="Activity_1a4v8dt" targetRef="Activity_0cidw5f" />
-    <bpmn:serviceTask id="Activity_0fhuwc7" name="Получить информацию о статусе построения эксперимента" camunda:modelerTemplate="com.ecaservice.server.bpm.listeners.TaskExecutionListener" camunda:asyncBefore="true" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
+    <bpmn:serviceTask id="Activity_0fhuwc7" name="Получить информацию о статусе построения эксперимента" camunda:modelerTemplate="TaskExecution" camunda:asyncBefore="true" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="taskType">GET_EXPERIMENT_PROCESS_STATUS</camunda:inputParameter>
@@ -185,7 +119,7 @@
     <bpmn:sequenceFlow id="Flow_0px7hmh" name="Построение эксперимента завершено?" sourceRef="Gateway_1ydr5d1" targetRef="Activity_1d6gjo2">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${experiment.stepsCountToProcess == 0}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="Activity_0cidw5f" name="Получить информацию о статусе построения эксперимента" camunda:modelerTemplate="com.ecaservice.server.bpm.listeners.TaskExecutionListener" camunda:asyncBefore="true" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
+    <bpmn:serviceTask id="Activity_0cidw5f" name="Получить информацию о статусе построения эксперимента" camunda:modelerTemplate="TaskExecution" camunda:asyncBefore="true" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="taskType">GET_EXPERIMENT_PROCESS_STATUS</camunda:inputParameter>
@@ -196,7 +130,7 @@
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_032p6tz" sourceRef="Activity_0cidw5f" targetRef="Gateway_14mp0ww" />
     <bpmn:sequenceFlow id="Flow_0ahwoue" sourceRef="Gateway_0dqc1ka" targetRef="Activity_1adelcm" />
-    <bpmn:serviceTask id="Activity_0sqdg4p" name="Получить данные о заявке" camunda:modelerTemplate="com.ecaservice.server.bpm.listeners.TaskExecutionListener" camunda:asyncBefore="true" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
+    <bpmn:serviceTask id="Activity_0sqdg4p" name="Получить данные о заявке" camunda:modelerTemplate="TaskExecution" camunda:asyncBefore="true" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="taskType">GET_EXPERIMENT_DETAILS</camunda:inputParameter>
@@ -206,7 +140,7 @@
       <bpmn:outgoing>Flow_00frjhd</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_00frjhd" sourceRef="Activity_0sqdg4p" targetRef="Gateway_0dqc1ka" />
-    <bpmn:serviceTask id="Activity_1a4v8dt" name="Начать или продолжить построение эксперимента" camunda:modelerTemplate="com.ecaservice.server.bpm.listeners.TaskExecutionListener" camunda:asyncBefore="true" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
+    <bpmn:serviceTask id="Activity_1a4v8dt" name="Начать или продолжить построение эксперимента" camunda:modelerTemplate="TaskExecution" camunda:asyncBefore="true" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="taskType">PROCESS_EXPERIMENT</camunda:inputParameter>
@@ -221,7 +155,7 @@
       <bpmn:incoming>Flow_1w4s3rs</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_1w4s3rs" sourceRef="Activity_1adelcm" targetRef="Event_0pe23xb" />
-    <bpmn:serviceTask id="Activity_1adelcm" name="Ошибка: передана заявка с недопустимым статусом" camunda:modelerTemplate="com.ecaservice.server.bpm.listeners.BpmErrorHandler" camunda:class="com.ecaservice.server.bpm.listeners.BpmErrorHandler">
+    <bpmn:serviceTask id="Activity_1adelcm" name="Ошибка: передана заявка с недопустимым статусом" camunda:modelerTemplate="ErrorHandler" camunda:class="com.ecaservice.server.bpm.listeners.BpmErrorHandler">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="errorCode">UNKNOWN_ERROR</camunda:inputParameter>
@@ -232,6 +166,17 @@
       <bpmn:incoming>Flow_0ahwoue</bpmn:incoming>
       <bpmn:outgoing>Flow_1w4s3rs</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_16cn1ss" sourceRef="Activity_1d6gjo2" targetRef="Event_0m3e557" />
+    <bpmn:callActivity id="Activity_1d6gjo2" name="Завершить работу с заявкой" camunda:asyncBefore="true" calledElement="FinishExperiment">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+        <camunda:out variables="all" />
+        <camunda:in businessKey="#{execution.processBusinessKey}" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1hlezkn</bpmn:incoming>
+      <bpmn:incoming>Flow_0px7hmh</bpmn:incoming>
+      <bpmn:outgoing>Flow_16cn1ss</bpmn:outgoing>
+    </bpmn:callActivity>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="ExperimentProcess">
@@ -282,71 +227,18 @@
         <di:waypoint x="640" y="990" />
         <di:waypoint x="640" y="1050" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0s06k1e_di" bpmnElement="Flow_0s06k1e">
-        <di:waypoint x="640" y="1735" />
-        <di:waypoint x="640" y="1775" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0zr8nzy_di" bpmnElement="Flow_0zr8nzy">
-        <di:waypoint x="840" y="1660" />
-        <di:waypoint x="840" y="1710" />
-        <di:waypoint x="665" y="1710" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_06daoym_di" bpmnElement="Flow_06daoym">
-        <di:waypoint x="460" y="1660" />
-        <di:waypoint x="460" y="1710" />
-        <di:waypoint x="615" y="1710" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_15zrl33_di" bpmnElement="Flow_15zrl33">
         <di:waypoint x="665" y="1200" />
-        <di:waypoint x="1030" y="1200" />
-        <di:waypoint x="1030" y="1900" />
-        <di:waypoint x="658" y="1900" />
+        <di:waypoint x="880" y="1200" />
+        <di:waypoint x="880" y="1332" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="544" y="1240" width="72" height="40" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0rz5lb3_di" bpmnElement="Flow_0rz5lb3">
-        <di:waypoint x="820" y="1840" />
-        <di:waypoint x="820" y="1900" />
-        <di:waypoint x="658" y="1900" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0fhgzq4_di" bpmnElement="Flow_0fhgzq4">
-        <di:waypoint x="640" y="1825" />
-        <di:waypoint x="640" y="1882" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1trsqrn_di" bpmnElement="Flow_1trsqrn">
-        <di:waypoint x="665" y="1800" />
-        <di:waypoint x="770" y="1800" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="668" y="1766" width="83" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0duf2cg_di" bpmnElement="Flow_0duf2cg">
         <di:waypoint x="860" y="890" />
         <di:waypoint x="860" y="950" />
         <di:waypoint x="690" y="950" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0byd624_di" bpmnElement="Flow_0byd624">
-        <di:waypoint x="615" y="1620" />
-        <di:waypoint x="510" y="1620" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="561" y="1593" width="18" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0z62k36_di" bpmnElement="Flow_0z62k36">
-        <di:waypoint x="665" y="1620" />
-        <di:waypoint x="790" y="1620" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="708" y="1593" width="25" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0icfty5_di" bpmnElement="Flow_0icfty5">
-        <di:waypoint x="640" y="1520" />
-        <di:waypoint x="640" y="1595" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1g2ysnv_di" bpmnElement="Flow_1g2ysnv">
-        <di:waypoint x="640" y="1390" />
-        <di:waypoint x="640" y="1440" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1hlezkn_di" bpmnElement="Flow_1hlezkn">
         <di:waypoint x="640" y="1225" />
@@ -401,6 +293,10 @@
         <di:waypoint x="640" y="118" />
         <di:waypoint x="640" y="180" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_16cn1ss_di" bpmnElement="Flow_16cn1ss">
+        <di:waypoint x="690" y="1350" />
+        <di:waypoint x="862" y="1350" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="622" y="82" width="36" height="36" />
       </bpmndi:BPMNShape>
@@ -431,36 +327,6 @@
       <bpmndi:BPMNShape id="Gateway_14mp0ww_di" bpmnElement="Gateway_14mp0ww" isMarkerVisible="true">
         <dc:Bounds x="615" y="1175" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1lrvkys_di" bpmnElement="Activity_1d6gjo2">
-        <dc:Bounds x="590" y="1310" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0fijn8h_di" bpmnElement="Activity_0fijn8h">
-        <dc:Bounds x="590" y="1440" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_0a8nskc_di" bpmnElement="Gateway_0a8nskc" isMarkerVisible="true">
-        <dc:Bounds x="615" y="1595" width="50" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="598" y="1652" width="85" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0sk8uu1_di" bpmnElement="Activity_0sk8uu1">
-        <dc:Bounds x="790" y="1580" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1vneurn_di" bpmnElement="Activity_1vneurn">
-        <dc:Bounds x="410" y="1580" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_048iy0h_di" bpmnElement="Gateway_048iy0h" isMarkerVisible="true">
-        <dc:Bounds x="615" y="1775" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1ifwl8u_di" bpmnElement="Activity_1ifwl8u">
-        <dc:Bounds x="770" y="1760" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0m3e557_di" bpmnElement="Event_0m3e557">
-        <dc:Bounds x="622" y="1882" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_00pj0vs_di" bpmnElement="Gateway_1wrqrqq">
-        <dc:Bounds x="615" y="1685" width="50" height="50" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0fhuwc7_di" bpmnElement="Activity_0fhuwc7">
         <dc:Bounds x="160" y="800" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -481,6 +347,12 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_13ar1aa_di" bpmnElement="Activity_1adelcm">
         <dc:Bounds x="830" y="300" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0m3e557_di" bpmnElement="Event_0m3e557">
+        <dc:Bounds x="862" y="1332" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1q6jczy_di" bpmnElement="Activity_1d6gjo2">
+        <dc:Bounds x="590" y="1310" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

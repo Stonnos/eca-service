@@ -23,3 +23,8 @@ open-api:
 
 auth-server:
   baseUrl: http://eca-oauth:8080
+
+service:
+  feign:
+    oauth:
+      tokenUrl: http://eca-oauth:8080

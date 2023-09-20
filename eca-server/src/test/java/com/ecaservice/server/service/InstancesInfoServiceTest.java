@@ -2,6 +2,7 @@ package com.ecaservice.server.service;
 
 import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.server.mapping.InstancesInfoMapperImpl;
+import com.ecaservice.server.model.data.InstancesMetaDataModel;
 import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.server.model.entity.InstancesInfo_;
 import com.ecaservice.server.repository.InstancesInfoRepository;
@@ -12,14 +13,12 @@ import org.springframework.context.annotation.Import;
 import weka.core.Instances;
 
 import javax.inject.Inject;
-
 import java.util.Collections;
 
 import static com.ecaservice.server.PageRequestUtils.PAGE_NUMBER;
 import static com.ecaservice.server.PageRequestUtils.PAGE_SIZE;
 import static com.ecaservice.server.TestHelperUtils.loadInstances;
 import static com.ecaservice.server.model.entity.FilterTemplateType.INSTANCES_INFO;
-import static com.ecaservice.server.util.InstancesUtils.md5Hash;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -30,6 +29,8 @@ import static org.mockito.Mockito.when;
  */
 @Import({InstancesInfoService.class, InstancesInfoMapperImpl.class})
 class InstancesInfoServiceTest extends AbstractJpaTest {
+
+    private static final String DATA_MD_5_HASH = "3032e188204cb537f69fc7364f638641";
 
     @MockBean
     private FilterTemplateService filterTemplateService;
@@ -89,7 +90,8 @@ class InstancesInfoServiceTest extends AbstractJpaTest {
     }
 
     private InstancesInfo saveInstancesInfo(Instances data) {
-        String dataMd5Hash = md5Hash(data);
-        return instancesInfoService.getOrSaveInstancesInfo(dataMd5Hash, data);
+        var instancesDataModel = new InstancesMetaDataModel(data.relationName(), data.numInstances(),
+                data.numAttributes(), data.numClasses(), data.classAttribute().name(), DATA_MD_5_HASH, "instances");
+        return instancesInfoService.getOrSaveInstancesInfo(instancesDataModel);
     }
 }

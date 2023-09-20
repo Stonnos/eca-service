@@ -1,16 +1,12 @@
-{
-  "payload": [
-    {
-      "fieldName": "classifierOptions",
-      "code": "NotNull",
-      "errorMessage": "must not be null"
-    },
-    {
-      "fieldName": "evaluationMethod",
-      "code": "NotNull",
-      "errorMessage": "must not be null"
-    }
-  ],
-  "responseCode": "VALIDATION_ERROR",
-  "errorDescription": "Validation errors"
-}
+[
+  {
+    "fieldName": "classifierOptions",
+    "code": "NotNull",
+    "errorMessage": "must not be null"
+  },
+  {
+    "fieldName": "evaluationMethod",
+    "code": "NotNull",
+    "errorMessage": "must not be null"
+  }
+]

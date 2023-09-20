@@ -37,7 +37,6 @@ import static org.mockito.Mockito.when;
 class ExperimentMapperTest {
 
     private static final String EXPERIMENT_PATH = "experiment.model";
-    private static final String DATA_PATH = "data.model";
 
     @Inject
     private CrossValidationConfig crossValidationConfig;
@@ -55,11 +54,10 @@ class ExperimentMapperTest {
         assertThat(experimentMessageRequest.getEmail()).isEqualTo(experimentRequest.getEmail());
         assertThat(experimentMessageRequest.getExperimentType()).isEqualTo(experimentRequest.getExperimentType());
         assertThat(experimentMessageRequest.getEvaluationMethod()).isEqualTo(experimentRequest.getEvaluationMethod());
-        assertThat(experimentMessageRequest.getData().relationName()).isEqualTo(
-                experimentRequest.getData().relationName());
         assertThat(experimentMessageRequest.getReplyTo()).isEqualTo(message.getMessageProperties().getReplyTo());
         assertThat(experimentMessageRequest.getCorrelationId()).isEqualTo(
                 message.getMessageProperties().getCorrelationId());
+        assertThat(experimentMessageRequest.getDataUuid()).isEqualTo(experimentRequest.getDataUuid());
     }
 
     @Test
@@ -73,7 +71,6 @@ class ExperimentMapperTest {
         assertThat(experiment.getNumTests()).isNull();
         assertThat(experiment.getSeed()).isNull();
         assertThat(experiment.getExperimentType()).isEqualTo(experimentMessageRequest.getExperimentType());
-        assertThat(experiment.getClassIndex()).isEqualTo(experimentMessageRequest.getData().classIndex());
     }
 
     @Test
@@ -97,7 +94,6 @@ class ExperimentMapperTest {
         experiment.setStartDate(LocalDateTime.now().plusHours(1L));
         experiment.setEndDate(experiment.getStartDate().minusMinutes(1L));
         experiment.setDeletedDate(experiment.getEndDate().plusMinutes(1L));
-        experiment.setTrainingDataPath(DATA_PATH);
         experiment.setModelPath(EXPERIMENT_PATH);
         experiment.setNumFolds(crossValidationConfig.getNumFolds());
         experiment.setNumTests(crossValidationConfig.getNumTests());
@@ -147,7 +143,6 @@ class ExperimentMapperTest {
         experiment.setStartDate(LocalDateTime.now());
         experiment.setEndDate(LocalDateTime.now());
         experiment.setDeletedDate(LocalDateTime.now());
-        experiment.setTrainingDataPath(DATA_PATH);
         experiment.setModelPath(EXPERIMENT_PATH);
         experiment.setMaxPctCorrect(BigDecimal.TEN);
         ExperimentBean experimentBean = experimentMapper.mapToBean(experiment);

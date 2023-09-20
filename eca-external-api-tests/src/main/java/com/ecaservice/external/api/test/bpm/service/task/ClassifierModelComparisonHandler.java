@@ -2,18 +2,15 @@ package com.ecaservice.external.api.test.bpm.service.task;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.external.api.dto.EvaluationResultsResponseDto;
-import com.ecaservice.external.api.dto.ResponseDto;
 import com.ecaservice.external.api.test.bpm.model.TaskType;
 import com.ecaservice.external.api.test.entity.EvaluationRequestAutoTestEntity;
 import com.ecaservice.external.api.test.repository.EvaluationRequestAutoTestRepository;
-import com.ecaservice.external.api.test.service.ExternalApiService;
 import com.ecaservice.test.common.model.MatchResult;
 import com.ecaservice.test.common.service.TestResultsMatcher;
 import eca.core.evaluation.Evaluation;
 import eca.core.model.ClassificationModel;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -21,6 +18,7 @@ import java.math.BigDecimal;
 
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.API_RESPONSE;
 import static com.ecaservice.external.api.test.util.CamundaUtils.getVariable;
+import static com.ecaservice.external.api.test.util.ModelUtils.downloadModel;
 import static com.ecaservice.external.api.test.util.Utils.getScaledValue;
 
 /**
@@ -32,24 +30,15 @@ import static com.ecaservice.external.api.test.util.Utils.getScaledValue;
 @Component
 public class ClassifierModelComparisonHandler extends ComparisonTaskHandler {
 
-    private static final ParameterizedTypeReference<ResponseDto<EvaluationResultsResponseDto>>
-            API_RESPONSE_TYPE_REFERENCE =
-            new ParameterizedTypeReference<ResponseDto<EvaluationResultsResponseDto>>() {
-            };
-
-    private final ExternalApiService externalApiService;
     private final EvaluationRequestAutoTestRepository evaluationRequestAutoTestRepository;
 
     /**
      * Constructor with parameters.
      *
-     * @param externalApiService                  - external api service bean
      * @param evaluationRequestAutoTestRepository - evaluation request auto test repository
      */
-    public ClassifierModelComparisonHandler(ExternalApiService externalApiService,
-                                            EvaluationRequestAutoTestRepository evaluationRequestAutoTestRepository) {
+    public ClassifierModelComparisonHandler(EvaluationRequestAutoTestRepository evaluationRequestAutoTestRepository) {
         super(TaskType.COMPARE_CLASSIFIER_MODEL_RESULT);
-        this.externalApiService = externalApiService;
         this.evaluationRequestAutoTestRepository = evaluationRequestAutoTestRepository;
     }
 
@@ -61,13 +50,13 @@ public class ClassifierModelComparisonHandler extends ComparisonTaskHandler {
                 execution.getProcessBusinessKey());
         var autoTestEntity = evaluationRequestAutoTestRepository.findById(autoTestId)
                 .orElseThrow(() -> new EntityNotFoundException(EvaluationRequestAutoTestEntity.class, autoTestId));
-        var responseDto = getVariable(execution, API_RESPONSE, API_RESPONSE_TYPE_REFERENCE);
+        var evaluationResultsResponseDto
+                = getVariable(execution, API_RESPONSE, EvaluationResultsResponseDto.class);
         log.debug("Starting to download model for test [{}]", autoTestEntity.getId());
-        ClassificationModel classificationModel =
-                externalApiService.downloadModel(responseDto.getPayload().getModelUrl());
+        ClassificationModel classificationModel = downloadModel(evaluationResultsResponseDto.getModelUrl());
         log.debug("Classifier model has been downloaded for test [{}]", autoTestEntity.getId());
         //Compare and match classifier model fields
-        compareAndMatchEvaluationFields(autoTestEntity, responseDto.getPayload(), classificationModel, matcher);
+        compareAndMatchEvaluationFields(autoTestEntity, evaluationResultsResponseDto, classificationModel, matcher);
         evaluationRequestAutoTestRepository.save(autoTestEntity);
         log.debug("Comparison classifier model has been finished for execution id [{}], process key [{}]",
                 execution.getId(), execution.getProcessBusinessKey());

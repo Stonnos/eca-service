@@ -24,6 +24,7 @@ import com.ecaservice.server.mapping.ErsResponseStatusMapperImpl;
 import com.ecaservice.server.mapping.EvaluationLogMapperImpl;
 import com.ecaservice.server.mapping.EvaluationRequestMapperImpl;
 import com.ecaservice.server.mapping.InstancesInfoMapperImpl;
+import com.ecaservice.server.model.data.InstancesMetaDataModel;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestEntity;
 import com.ecaservice.server.model.evaluation.ClassifierOptionsRequestSource;
 import com.ecaservice.server.model.evaluation.InstancesRequestDataModel;
@@ -34,6 +35,8 @@ import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.InstancesInfoService;
+import com.ecaservice.server.service.data.InstancesLoaderService;
+import com.ecaservice.server.service.data.InstancesMetaDataService;
 import com.ecaservice.server.service.ers.ErsClient;
 import com.ecaservice.server.service.ers.ErsErrorHandler;
 import com.ecaservice.server.service.ers.ErsRequestSender;
@@ -61,7 +64,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static com.ecaservice.server.util.InstancesUtils.md5Hash;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -78,12 +80,13 @@ import static org.mockito.Mockito.when;
         EvaluationRequestMapperImpl.class, ClassifierOptionsRequestMapperImpl.class, ClassifiersProperties.class,
         ErsConfig.class, EvaluationLogMapperImpl.class, LockExecutionAspect.class, ErsErrorHandler.class,
         EvaluationService.class, ErsResponseStatusMapperImpl.class, OptimalClassifierOptionsFetcherImpl.class,
-        InstancesInfoMapperImpl.class, ErsRequestService.class, InstancesInfoService.class,
+        InstancesInfoMapperImpl.class, ErsRequestService.class, InstancesInfoService.class, EvaluationLogService.class,
         EvaluationOptimizerService.class, ClassifierInfoMapperImpl.class, RedisAutoConfiguration.class,
         OptimalClassifierOptionsCacheService.class, DateTimeConverter.class, CoreLockAutoConfiguration.class})
 @TestPropertySource("classpath:application-it.properties")
 class EvaluationOptimizerServiceIT extends AbstractJpaTest {
 
+    private static final String DATA_MD_5_HASH = "3032e188204cb537f69fc7364f638641";
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final int NUM_THREADS = 2;
 
@@ -95,6 +98,10 @@ class EvaluationOptimizerServiceIT extends AbstractJpaTest {
     private FilterTemplateService filterTemplateService;
     @MockBean
     private ObjectStorageService objectStorageService;
+    @MockBean
+    private InstancesMetaDataService instancesMetaDataService;
+    @MockBean
+    private InstancesLoaderService instancesLoaderService;
     @MockBean
     private ClassifierInitializerService classifierInitializerService;
     @MockBean
@@ -115,6 +122,7 @@ class EvaluationOptimizerServiceIT extends AbstractJpaTest {
     private EvaluationOptimizerService evaluationOptimizerService;
 
     private Instances data;
+    private String dataUuid;
 
     private String decisionTreeOptions;
 
@@ -134,9 +142,18 @@ class EvaluationOptimizerServiceIT extends AbstractJpaTest {
     @Override
     public void init() throws Exception {
         data = TestHelperUtils.loadInstances();
+        dataUuid = UUID.randomUUID().toString();
         DecisionTreeOptions treeOptions = TestHelperUtils.createDecisionTreeOptions();
         treeOptions.setDecisionTreeType(DecisionTreeType.CART);
         decisionTreeOptions = objectMapper.writeValueAsString(treeOptions);
+        mockLoadInstances();
+    }
+
+    private void mockLoadInstances() {
+        var instancesDataModel = new InstancesMetaDataModel(data.relationName(), data.numInstances(),
+                data.numAttributes(), data.numClasses(), data.classAttribute().name(), DATA_MD_5_HASH, "instances");
+        when(instancesMetaDataService.getInstancesMetaData(dataUuid)).thenReturn(instancesDataModel);
+        when(instancesLoaderService.loadInstances(dataUuid)).thenReturn(data);
     }
 
     @Override
@@ -157,7 +174,8 @@ class EvaluationOptimizerServiceIT extends AbstractJpaTest {
         for (int i = 0; i < NUM_THREADS; i++) {
             executorService.submit(() -> {
                 try {
-                    var instancesRequestDataModel = new InstancesRequestDataModel(UUID.randomUUID().toString(), md5Hash(data), data);
+                    var instancesRequestDataModel =
+                            new InstancesRequestDataModel(UUID.randomUUID().toString(), dataUuid);
                     evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequestDataModel);
                 } finally {
                     finishedLatch.countDown();

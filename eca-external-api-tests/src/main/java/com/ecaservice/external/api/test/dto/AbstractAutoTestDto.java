@@ -1,6 +1,6 @@
 package com.ecaservice.external.api.test.dto;
 
-import com.ecaservice.external.api.dto.ResponseCode;
+import com.ecaservice.external.api.test.entity.ResponseCode;
 import com.ecaservice.test.common.model.MatchResult;
 import com.ecaservice.test.common.model.TestResult;
 import com.fasterxml.jackson.annotation.JsonSubTypes;

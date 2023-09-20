@@ -1,11 +1,12 @@
 package com.ecaservice.load.test.service.executor;
 
 import com.ecaservice.base.model.EvaluationRequest;
-import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.classifier.options.model.ClassifierOptions;
+import com.ecaservice.classifier.options.model.RandomizeOptions;
 import com.ecaservice.load.test.config.EcaLoadTestsConfig;
 import com.ecaservice.load.test.entity.EvaluationRequestEntity;
 import com.ecaservice.load.test.entity.LoadTestEntity;
+import com.ecaservice.load.test.entity.RequestStageType;
 import com.ecaservice.load.test.mapping.LoadTestMapper;
 import com.ecaservice.load.test.model.TestDataModel;
 import com.ecaservice.load.test.repository.EvaluationRequestRepository;
@@ -15,22 +16,23 @@ import com.ecaservice.load.test.service.InstancesTestDataProvider;
 import com.ecaservice.load.test.service.LoadTestDataIterator;
 import com.ecaservice.load.test.service.TestWorkerService;
 import com.ecaservice.test.common.model.ExecutionStatus;
-import com.ecaservice.test.common.service.InstancesLoader;
+import com.ecaservice.test.common.model.TestResult;
+import com.ecaservice.test.common.service.DataLoaderService;
+import com.ecaservice.test.common.service.InstancesResourceLoader;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
-import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
-import weka.core.Randomizable;
 
 import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
-import static com.ecaservice.load.test.util.Utils.createEvaluationRequestEntity;
 
 /**
  * Abstract test executor.
@@ -43,11 +45,12 @@ import static com.ecaservice.load.test.util.Utils.createEvaluationRequestEntity;
 public class TestExecutor {
 
     private final EcaLoadTestsConfig ecaLoadTestsConfig;
+    private final ObjectMapper objectMapper;
     private final InstancesTestDataProvider instancesTestDataProvider;
     private final ClassifiersTestDataProvider classifiersTestDataProvider;
     private final TestWorkerService testWorkerService;
-    private final ClassifierOptionsAdapter classifierOptionsAdapter;
-    private final InstancesLoader instancesLoader;
+    private final DataLoaderService dataLoaderService;
+    private final InstancesResourceLoader instancesResourceLoader;
     private final LoadTestMapper loadTestMapper;
     private final LoadTestRepository loadTestRepository;
     private final EvaluationRequestRepository evaluationRequestRepository;
@@ -83,11 +86,10 @@ public class TestExecutor {
                     testDataIterator(loadTestEntity, instancesTestDataProvider, classifiersTestDataProvider);
             while (iterator.hasNext()) {
                 TestDataModel testDataModel = iterator.next();
-                EvaluationRequest evaluationRequest = createEvaluationRequest(loadTestEntity, testDataModel);
-                ClassifierOptions classifierOptions =
-                        classifierOptionsAdapter.convert(evaluationRequest.getClassifier());
+                String dataUuid = dataLoaderService.uploadInstances(testDataModel.getDataResource());
+                EvaluationRequest evaluationRequest = createEvaluationRequest(loadTestEntity, testDataModel, dataUuid);
                 EvaluationRequestEntity evaluationRequestEntity =
-                        createAndSaveEvaluationRequest(loadTestEntity, classifierOptions, evaluationRequest);
+                        createAndSaveEvaluationRequest(loadTestEntity, testDataModel, evaluationRequest);
                 Runnable task = createTask(evaluationRequestEntity.getId(), evaluationRequest, countDownLatch);
                 executor.submit(task);
             }
@@ -110,29 +112,38 @@ public class TestExecutor {
         loadTestRepository.save(loadTestEntity);
     }
 
-    private EvaluationRequest createEvaluationRequest(LoadTestEntity loadTestEntity, TestDataModel testDataModel) {
-        Instances instances = instancesLoader.loadInstances(testDataModel.getDataResource());
-        AbstractClassifier classifier = initializeNextClassifier(testDataModel);
+    private EvaluationRequest createEvaluationRequest(LoadTestEntity loadTestEntity, TestDataModel testDataModel,
+                                                      String dataUuid) {
+        initializeClassifierOptions(testDataModel);
         EvaluationRequest evaluationRequest = loadTestMapper.map(loadTestEntity);
-        evaluationRequest.setData(instances);
-        evaluationRequest.setClassifier(classifier);
+        evaluationRequest.setDataUuid(dataUuid);
+        evaluationRequest.setClassifierOptions(testDataModel.getClassifierOptions());
         return evaluationRequest;
     }
 
-    private AbstractClassifier initializeNextClassifier(TestDataModel testDataModel) {
+    private void initializeClassifierOptions(TestDataModel testDataModel) {
         ClassifierOptions classifierOptions = testDataModel.getClassifierOptions();
-        AbstractClassifier classifier = classifierOptionsAdapter.convert(classifierOptions);
-        if (classifier instanceof Randomizable) {
-            ((Randomizable) classifier).setSeed(ecaLoadTestsConfig.getSeed());
+        if (classifierOptions instanceof RandomizeOptions) {
+            ((RandomizeOptions) classifierOptions).setSeed(ecaLoadTestsConfig.getSeed());
         }
-        return classifier;
     }
 
     private EvaluationRequestEntity createAndSaveEvaluationRequest(LoadTestEntity loadTestEntity,
-                                                                   ClassifierOptions classifierOptions,
-                                                                   EvaluationRequest evaluationRequest) {
-        EvaluationRequestEntity evaluationRequestEntity =
-                createEvaluationRequestEntity(loadTestEntity, classifierOptions, evaluationRequest);
+                                                                   TestDataModel testDataModel,
+                                                                   EvaluationRequest evaluationRequest)
+            throws JsonProcessingException {
+        EvaluationRequestEntity evaluationRequestEntity = new EvaluationRequestEntity();
+        evaluationRequestEntity.setCorrelationId(UUID.randomUUID().toString());
+        evaluationRequestEntity.setStageType(RequestStageType.READY);
+        evaluationRequestEntity.setTestResult(TestResult.UNKNOWN);
+        evaluationRequestEntity.setLoadTestEntity(loadTestEntity);
+        evaluationRequestEntity.setClassifierOptions(
+                objectMapper.writeValueAsString(evaluationRequest.getClassifierOptions()));
+        Instances instances = instancesResourceLoader.loadInstances(testDataModel.getDataResource());
+        evaluationRequestEntity.setRelationName(instances.relationName());
+        evaluationRequestEntity.setNumAttributes(instances.numAttributes());
+        evaluationRequestEntity.setNumInstances(instances.numInstances());
+        evaluationRequestEntity.setClassifierName(evaluationRequest.getClassifierOptions().getClass().getSimpleName());
         return evaluationRequestRepository.save(evaluationRequestEntity);
     }
 

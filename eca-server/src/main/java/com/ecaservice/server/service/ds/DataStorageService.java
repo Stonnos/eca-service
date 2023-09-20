@@ -1,16 +1,16 @@
 package com.ecaservice.server.service.ds;
 
+import com.ecaservice.common.web.error.WebClientErrorHandler;
 import com.ecaservice.common.web.exception.InternalServiceUnavailableException;
+import com.ecaservice.data.storage.dto.DsInternalApiErrorCode;
+import com.ecaservice.data.storage.dto.ExportInstancesResponseDto;
 import com.ecaservice.server.exception.DataStorageBadRequestException;
 import com.ecaservice.server.exception.DataStorageException;
-import com.ecaservice.server.service.DataStorageLoader;
-import eca.data.file.converter.InstancesConverter;
 import feign.FeignException;
 import feign.RetryableException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import weka.core.Instances;
 
 /**
  * Data storage service.
@@ -22,40 +22,42 @@ import weka.core.Instances;
 @RequiredArgsConstructor
 public class DataStorageService {
 
-    private final DataStorageLoader dataStorageLoader;
-    private final DataStorageErrorHandler dataStorageErrorHandler;
-    private final InstancesConverter instancesConverter = new InstancesConverter();
+    private final DataStorageClient dataStorageClient;
+    private final WebClientErrorHandler webClientErrorHandler = new WebClientErrorHandler();
 
     /**
-     * Gets valid instances with specified uuid.
+     * Export valid instances with specified uuid to central data storage.
      *
      * @param uuid - instances uuid
      * @return instances object
      */
-    public Instances getValidInstances(String uuid) {
-        log.info("Gets valid instances with uuid [{}] from data storage", uuid);
+    public ExportInstancesResponseDto exportValidInstances(String uuid) {
+        log.info("Starting to export valid instances [{}] from data editor to central data storage", uuid);
         try {
-            var instancesModel = dataStorageLoader.downloadValidInstancesReport(uuid);
-            var instances = instancesConverter.convert(instancesModel);
-            log.info("Instances [{}] has been fetched from data storage", uuid);
-            return instances;
+            var exportInstancesResponseDto = dataStorageClient.exportValidInstances(uuid);
+            log.info("Instances [{}] has been exported to central data storage with uuid [{}]",
+                    uuid, exportInstancesResponseDto.getExternalDataUuid());
+            return exportInstancesResponseDto;
         } catch (FeignException.ServiceUnavailable | RetryableException ex) {
-            log.error("Service unavailable error [{}] while get valid instances with uuid [{}] from data storage: {}",
+            log.error("Service unavailable error [{}] while export valid instances [{}] to central data storage: {}",
                     ex.getClass().getSimpleName(), uuid, ex.getMessage());
             throw new InternalServiceUnavailableException(
-                    String.format("Data storage unavailable while get valid instances with uuid [%s]", uuid));
+                    String.format("Data storage unavailable while export valid instances [%s]", uuid));
         } catch (FeignException.BadRequest ex) {
-            log.error("Bad request error while get valid instances with uuid [{}] from data storage: {}", uuid,
+            log.error("Bad request error while export valid instances[{}] to central data storage: {}", uuid,
                     ex.getMessage());
-            var dsErrorCode = dataStorageErrorHandler.handleBadRequest(uuid, ex);
+            var dsErrorCode =
+                    webClientErrorHandler.handleBadRequest(uuid, ex.contentUTF8(), DsInternalApiErrorCode.class);
+            log.error("Bad request error code [{}] while export valid instances [{}] to central data storage",
+                    dsErrorCode, uuid);
             String errorMessage =
-                    String.format("Bad request error while get valid instances with uuid [%s] from data storage", uuid);
+                    String.format("Bad request error while export valid instances [%s] to central data storage", uuid);
             throw new DataStorageBadRequestException(dsErrorCode, errorMessage);
         } catch (Exception ex) {
-            log.error("Unknown error while get valid instances with uuid [{}] from data storage: {}", uuid,
+            log.error("Unknown error while export valid instances [{}] to central data storage: {}", uuid,
                     ex.getMessage());
             throw new DataStorageException(
-                    String.format("Unknown error while get valid instances with uuid [%s] from data storage", uuid));
+                    String.format("Unknown error while export valid instances [%s] to central data storage", uuid));
         }
     }
 }

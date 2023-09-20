@@ -3,6 +3,8 @@ package com.ecaservice.auto.test.model;
 import com.ecaservice.base.model.ExperimentType;
 import eca.core.evaluation.EvaluationMethod;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * Experiment test data model.
@@ -10,17 +12,14 @@ import lombok.Data;
  * @author Roman Batygin
  */
 @Data
-public class ExperimentTestDataModel {
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+public class ExperimentTestDataModel extends AbstractEvaluationTestDataModel {
 
     /**
      * Experiment type
      */
     private ExperimentType experimentType;
-
-    /**
-     * Train data path in resources directory
-     */
-    private String trainDataPath;
 
     /**
      * Evaluation method

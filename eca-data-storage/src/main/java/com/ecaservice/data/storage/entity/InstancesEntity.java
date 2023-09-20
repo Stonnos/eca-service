@@ -81,4 +81,17 @@ public class InstancesEntity {
     @ManyToOne
     @JoinColumn(name = "class_attribute_id")
     private AttributeEntity classAttribute;
+
+    /**
+     * Instances updates counter
+     */
+    @Column(name = "updates_counter")
+    private int updatesCounter;
+
+    /**
+     * Increases updates counter.
+     */
+    public void increaseUpdatesCounter() {
+        ++updatesCounter;
+    }
 }

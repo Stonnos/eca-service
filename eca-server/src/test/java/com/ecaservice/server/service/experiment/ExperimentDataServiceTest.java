@@ -115,18 +115,6 @@ class ExperimentDataServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    void testSuccessRemoveExperimentTrainingData() {
-        Experiment experiment =
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW, instancesInfo);
-        experimentRepository.save(experiment);
-        experimentDataService.removeExperimentTrainingData(experiment);
-        experiment = experimentRepository.findById(experiment.getId()).orElse(null);
-        assertThat(experiment).isNotNull();
-        assertThat(experiment.getTrainingDataPath()).isNull();
-        assertThat(experiment.getDeletedDate()).isNull();
-    }
-
-    @Test
     void testRequestsStatusesStatisticsCalculation() {
         experimentRepository.save(
                 TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW, instancesInfo));

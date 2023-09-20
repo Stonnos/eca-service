@@ -1,6 +1,7 @@
 package com.ecaservice.server.mq.listener;
 
 import com.ecaservice.base.model.EvaluationRequest;
+import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.event.model.EvaluationErsReportEvent;
 import com.ecaservice.server.event.model.EvaluationResponseEvent;
@@ -44,6 +45,8 @@ class EvaluationRequestListenerTest {
     private EvaluationRequestService evaluationRequestService;
     @MockBean
     private ApplicationEventPublisher eventPublisher;
+    @MockBean
+    private ClassifierOptionsAdapter classifierOptionsAdapter;
 
     @Inject
     private EvaluationLogMapper evaluationLogMapper;
@@ -52,7 +55,8 @@ class EvaluationRequestListenerTest {
 
     @BeforeEach
     void init() {
-        evaluationRequestListener = new EvaluationRequestListener(evaluationRequestService, eventPublisher, evaluationLogMapper);
+        evaluationRequestListener = new EvaluationRequestListener(evaluationRequestService, eventPublisher,
+                evaluationLogMapper, classifierOptionsAdapter);
     }
 
     @Test

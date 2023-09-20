@@ -3,6 +3,8 @@ package com.ecaservice.common.web;
 import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.common.web.exception.ValidationErrorException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
@@ -22,6 +24,7 @@ import java.util.List;
  */
 @Slf4j
 @ControllerAdvice
+@Order(0)
 public class GlobalExceptionHandler {
 
     /**

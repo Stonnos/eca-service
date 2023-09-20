@@ -1,16 +1,11 @@
 package com.ecaservice.base.model;
 
-import com.ecaservice.base.model.databind.InstancesDeserializer;
-import com.ecaservice.base.model.databind.InstancesSerializer;
 import com.ecaservice.base.model.visitor.EcaRequestVisitor;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import weka.core.Instances;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 
 /**
  * Instances request dto.
@@ -23,12 +18,10 @@ import javax.validation.constraints.NotNull;
 public class InstancesRequest implements EcaRequest {
 
     /**
-     * Training data
+     * Train data uuid
      */
-    @NotNull
-    @JsonSerialize(using = InstancesSerializer.class)
-    @JsonDeserialize(using = InstancesDeserializer.class)
-    private Instances data;
+    @NotBlank
+    private String dataUuid;
 
     @Override
     public void visit(EcaRequestVisitor ecaRequestVisitor) {

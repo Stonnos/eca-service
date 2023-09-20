@@ -27,8 +27,9 @@ eureka:
       defaultZone: http://discovery-server:8761/eureka
 
 app:
-  notifications:
-    webPushesEnabled: true
+  push:
+    enabled: true
+    async: true
 
 ## Swagger properties
 open-api:
@@ -47,6 +48,11 @@ minio:
 
 auth-server:
   baseUrl: http://eca-oauth:8080
+
+service:
+  feign:
+    oauth:
+      tokenUrl: http://eca-oauth:8080
 
 lock:
   enabled: true

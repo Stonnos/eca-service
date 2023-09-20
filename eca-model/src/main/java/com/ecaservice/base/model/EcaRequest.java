@@ -1,7 +1,6 @@
 package com.ecaservice.base.model;
 
 import com.ecaservice.base.model.visitor.EcaRequestVisitor;
-import weka.core.Instances;
 
 /**
  * Eca request marker interface.
@@ -9,13 +8,6 @@ import weka.core.Instances;
  * @author Roman Batygin
  */
 public interface EcaRequest {
-
-    /**
-     * Gets instances.
-     *
-     * @return instances
-     */
-    Instances getData();
 
     /**
      * Applies visitor.

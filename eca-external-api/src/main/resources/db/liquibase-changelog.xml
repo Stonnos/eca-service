@@ -12,4 +12,5 @@
     <include file="db/changelog/v5-create-experiment-request-table.xml"/>
     <include file="db/changelog/v6-add-request-timeout-date-column.xml"/>
     <include file="db/changelog/v7-drop-classifier-path-column.xml"/>
+    <include file="db/changelog/v8-drop-instances-table.xml"/>
 </databaseChangeLog>

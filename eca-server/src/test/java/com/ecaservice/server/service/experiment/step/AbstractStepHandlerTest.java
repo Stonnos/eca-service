@@ -55,8 +55,7 @@ abstract class AbstractStepHandlerTest extends AbstractJpaTest {
         instancesInfoRepository.deleteAll();
     }
 
-    void testStep(BiConsumer<ExperimentContext, ExperimentStepEntity> consumer,
-                                  ExperimentStepStatus expectedStatus) {
+    void testStep(BiConsumer<ExperimentContext, ExperimentStepEntity> consumer, ExperimentStepStatus expectedStatus) {
         ExperimentContext context = ExperimentContext.builder()
                 .stopWatch(new StopWatch())
                 .experiment(experimentStepEntity.getExperiment())
@@ -72,7 +71,8 @@ abstract class AbstractStepHandlerTest extends AbstractJpaTest {
     }
 
     private void createAndSaveExperimentStep() {
-        var experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.IN_PROGRESS);
+        var experiment =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.IN_PROGRESS);
         instancesInfoRepository.save(experiment.getInstancesInfo());
         experimentRepository.save(experiment);
         experimentStepEntity = TestHelperUtils.createExperimentStepEntity(experiment,

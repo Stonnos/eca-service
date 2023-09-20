@@ -21,7 +21,6 @@ import java.util.UUID;
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.AUTO_TEST_ID;
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.TEST_DATA_MODEL;
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.TEST_RESULTS_MATCHER;
-import static com.ecaservice.external.api.test.bpm.CamundaVariables.TRAINS_DATA_SOURCE;
 import static com.google.common.collect.Maps.newHashMap;
 
 /**
@@ -46,7 +45,7 @@ public class TestWorkerService {
      * @param testId        - test id
      * @param testDataModel - test data model
      */
-    public void execute(long testId, AbstractTestDataModel<?, ?> testDataModel) {
+    public void execute(long testId, AbstractTestDataModel<?> testDataModel) {
         AutoTestEntity autoTestEntity = autoTestRepository.findById(testId)
                 .orElseThrow(() -> new EntityNotFoundException(AutoTestEntity.class, testId));
         try {
@@ -61,14 +60,13 @@ public class TestWorkerService {
         }
     }
 
-    private void executeNextTest(AutoTestEntity autoTestEntity, AbstractTestDataModel<?, ?> testDataModel) {
+    private void executeNextTest(AutoTestEntity autoTestEntity, AbstractTestDataModel<?> testDataModel) {
         String processId = getProcessId(autoTestEntity);
         Assert.notNull(processId, String.format("Expected not null BPM process id for auto test [%d]",
                 autoTestEntity.getId()));
         TestResultsMatcher matcher = new TestResultsMatcher();
         Map<String, Object> variables = newHashMap();
         variables.put(AUTO_TEST_ID, autoTestEntity.getId());
-        variables.put(TRAINS_DATA_SOURCE, testDataModel.getTrainDataSource().name());
         variables.put(TEST_DATA_MODEL, testDataModel);
         variables.put(TEST_RESULTS_MATCHER, matcher);
         processManager.startProcess(processId, UUID.randomUUID().toString(), variables);

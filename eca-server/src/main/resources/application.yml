@@ -61,8 +61,8 @@ app:
   pageSize: 10
   modelDownloadUrlExpirationDays: 7
   shortLifeUrlExpirationMinutes: 5
-  notifications:
-    webPushesEnabled: false
+  push:
+    enabled: false
 
 ## Queues properties
 queue:
@@ -157,14 +157,26 @@ cache:
     message-templates:
       expireAfterWriteSeconds: 18000
       maxSize: 100
+    instances-meta-data:
+      expireAfterWriteSeconds: 18000
+      maxSize: 100
 
 auth-server:
   baseUrl: http://localhost:8085/eca-oauth
   clientId: eca_service_tech
   clientSecret: 02#eca_service_tech6
 
+service:
+  feign:
+    oauth:
+      tokenUrl: http://localhost:8085/eca-oauth
+      clientId: eca_service_tech
+      clientSecret: 02#eca_service_tech6
+
 processes:
   processExperimentId: ExperimentProcess
+  createExperimentRequestProcessId: CreateExperimentRequestProcess
+  createExperimentWebRequestProcessId: CreateExperimentWebRequestProcess
 
 management:
   metrics:

@@ -1,7 +1,6 @@
 package com.ecaservice.server.service.push.handler;
 
 import com.ecaservice.server.event.model.push.ExperimentWebPushEvent;
-import com.ecaservice.server.service.experiment.ExperimentMessageTemplateProcessor;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -9,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.ecaservice.server.service.push.dictionary.PushProperties.EXPERIMENT_STATUS_MESSAGE_TYPE;
-import static com.ecaservice.server.service.push.dictionary.PushPropertiesHelper.createExperimentProperties;
 
 /**
  * Experiment web push event handler.
@@ -19,33 +17,33 @@ import static com.ecaservice.server.service.push.dictionary.PushPropertiesHelper
 @Component
 public class ExperimentWebPushEventHandler extends AbstractUserPushNotificationEventHandler<ExperimentWebPushEvent> {
 
-    private final ExperimentMessageTemplateProcessor experimentMessageTemplateProcessor;
+    private final ExperimentPushMessageHandler experimentPushMessageHandler;
 
     /**
      * Constructor with parameters.
      *
-     * @param experimentMessageTemplateProcessor - message template processor
+     * @param experimentPushMessageHandler - experiment push message handler
      */
-    public ExperimentWebPushEventHandler(ExperimentMessageTemplateProcessor experimentMessageTemplateProcessor) {
+    public ExperimentWebPushEventHandler(ExperimentPushMessageHandler experimentPushMessageHandler) {
         super(ExperimentWebPushEvent.class);
-        this.experimentMessageTemplateProcessor = experimentMessageTemplateProcessor;
+        this.experimentPushMessageHandler = experimentPushMessageHandler;
     }
 
     @Override
-    protected String getMessageType() {
+    protected String getMessageType(ExperimentWebPushEvent experimentWebPushEvent) {
         return EXPERIMENT_STATUS_MESSAGE_TYPE;
     }
 
     @Override
     protected String getMessageText(ExperimentWebPushEvent experimentWebPushEvent) {
-        var experiment = experimentWebPushEvent.getExperiment();
-        return experimentMessageTemplateProcessor.process(experiment);
+        return experimentPushMessageHandler.processMessageText(experimentWebPushEvent.getPushMessageParams(),
+                experimentWebPushEvent.getExperiment());
     }
 
     @Override
     protected Map<String, String> createAdditionalProperties(ExperimentWebPushEvent experimentWebPushEvent) {
-        var experiment = experimentWebPushEvent.getExperiment();
-        return createExperimentProperties(experiment);
+        return experimentPushMessageHandler.processAdditionalProperties(experimentWebPushEvent.getPushMessageParams(),
+                experimentWebPushEvent.getExperiment());
     }
 
     @Override

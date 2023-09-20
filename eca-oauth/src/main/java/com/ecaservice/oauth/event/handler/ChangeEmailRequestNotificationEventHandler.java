@@ -33,8 +33,13 @@ public class ChangeEmailRequestNotificationEventHandler
      * @param appProperties - app properties
      */
     public ChangeEmailRequestNotificationEventHandler(AppProperties appProperties) {
-        super(ChangeEmailRequestNotificationEvent.class, Templates.CHANGE_EMAIL);
+        super(ChangeEmailRequestNotificationEvent.class);
         this.appProperties = appProperties;
+    }
+
+    @Override
+    public String getTemplateCode(ChangeEmailRequestNotificationEvent emailEvent) {
+        return Templates.CHANGE_EMAIL;
     }
 
     @Override

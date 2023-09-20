@@ -11,14 +11,10 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import weka.core.Instances;
 
 import javax.inject.Inject;
-
 import java.util.UUID;
 
-import static com.ecaservice.server.TestHelperUtils.loadInstances;
-import static com.ecaservice.server.util.InstancesUtils.md5Hash;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -41,13 +37,14 @@ class ClassifierOptionsRequestMapperTest {
 
     @BeforeEach
     void init() {
-        Instances data = loadInstances();
-        instancesRequestDataModel = new InstancesRequestDataModel(UUID.randomUUID().toString(), md5Hash(data), data);
+        instancesRequestDataModel =
+                new InstancesRequestDataModel(UUID.randomUUID().toString(), UUID.randomUUID().toString());
     }
 
     @Test
     void testMappingInstancesRequest() {
-        ClassifierOptionsRequest request = classifierOptionsRequestMapper.map(instancesRequestDataModel, crossValidationConfig);
+        ClassifierOptionsRequest request =
+                classifierOptionsRequestMapper.map(instancesRequestDataModel, crossValidationConfig);
         assertThat(request.getEvaluationMethodReport()).isNotNull();
         assertThat(request.getEvaluationMethodReport().getEvaluationMethod()).isEqualTo(
                 EvaluationMethod.CROSS_VALIDATION);
@@ -57,6 +54,5 @@ class ClassifierOptionsRequestMapperTest {
                 crossValidationConfig.getNumTests());
         assertThat(request.getEvaluationMethodReport().getSeed().intValue()).isEqualTo(
                 crossValidationConfig.getSeed());
-        assertThat(request.getDataHash()).isNotNull();
     }
 }

@@ -28,7 +28,7 @@ public class ClassifiersDataCleaner {
     private static final String CLASSIFIERS_CRON_JOB_KEY = "classifiersCronJob";
 
     private final EvaluationLogRepository evaluationLogRepository;
-    private final EvaluationLogService evaluationLogService;
+    private final EvaluationLogDataService evaluationLogDataService;
     private final AppProperties appProperties;
 
     /**
@@ -50,6 +50,6 @@ public class ClassifiersDataCleaner {
     private void removeModel(EvaluationLog evaluationLog) {
         putMdc(TX_ID, evaluationLog.getRequestId());
         putMdc(EV_REQUEST_ID, evaluationLog.getRequestId());
-        evaluationLogService.removeModel(evaluationLog);
+        evaluationLogDataService.removeModel(evaluationLog);
     }
 }

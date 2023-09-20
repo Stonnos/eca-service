@@ -19,6 +19,11 @@ public class EmailChangedNotificationEventHandler
      * Creates email changed notification event handler.
      */
     public EmailChangedNotificationEventHandler() {
-        super(EmailChangedNotificationEvent.class, Templates.EMAIL_CHANGED);
+        super(EmailChangedNotificationEvent.class);
+    }
+
+    @Override
+    public String getTemplateCode(EmailChangedNotificationEvent emailEvent) {
+        return Templates.EMAIL_CHANGED;
     }
 }

@@ -79,12 +79,6 @@
 
         <dependency>
             <groupId>eca.service</groupId>
-            <artifactId>classifiers-options-adapter</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>eca.service</groupId>
             <artifactId>eca-tests-common</artifactId>
             <version>${project.version}</version>
         </dependency>

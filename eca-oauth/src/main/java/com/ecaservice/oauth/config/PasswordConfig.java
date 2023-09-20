@@ -16,19 +16,4 @@ public class PasswordConfig {
      * Password length
      */
     private Integer length;
-
-    /**
-     * Use digits?
-     */
-    private Boolean useDigits;
-
-    /**
-     * Use upper case symbols?
-     */
-    private Boolean useUpperCaseSymbols;
-
-    /**
-     * Use lower case symbols?
-     */
-    private Boolean useLowerCaseSymbols;
 }

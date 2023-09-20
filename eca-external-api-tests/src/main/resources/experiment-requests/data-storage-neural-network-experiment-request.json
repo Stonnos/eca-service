@@ -1,12 +1,9 @@
 {
-  "displayName": "Neural networks experiment request with external data url",
-  "trainDataSource": "API_DATA_STORAGE",
+  "displayName": "Neural networks experiment request",
   "trainDataPath": "classpath:/data/glass.json",
   "request": {
     "evaluationMethod": "TRAINING_DATA",
     "experimentType": "NEURAL_NETWORKS"
   },
-  "expectedResponse": {
-    "responseCode": "SUCCESS"
-  }
+  "expectedResponseCode": "SUCCESS"
 }

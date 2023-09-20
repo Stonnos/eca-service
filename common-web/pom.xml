@@ -16,6 +16,7 @@
         <sonar.coverage.exclusions>
             **/dto/**/*,
             **/util/**/*,
+            **/multipart/**/*,
             **/exception/**/*
         </sonar.coverage.exclusions>
     </properties>

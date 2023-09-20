@@ -1,17 +1,12 @@
 package com.ecaservice.base.model;
 
-import com.ecaservice.base.model.databind.ClassifierDeserializer;
-import com.ecaservice.base.model.databind.ClassifierSerializer;
-import com.ecaservice.base.model.databind.InstancesDeserializer;
-import com.ecaservice.base.model.databind.InstancesSerializer;
 import com.ecaservice.base.model.visitor.EcaRequestVisitor;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.ecaservice.classifier.options.model.ClassifierOptions;
 import eca.core.evaluation.EvaluationMethod;
 import lombok.Data;
-import weka.classifiers.AbstractClassifier;
-import weka.core.Instances;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -23,20 +18,17 @@ import javax.validation.constraints.NotNull;
 public class EvaluationRequest implements EcaRequest {
 
     /**
-     * Classifier model
+     * Train data uuid
      */
-    @NotNull
-    @JsonSerialize(using = ClassifierSerializer.class)
-    @JsonDeserialize(using = ClassifierDeserializer.class)
-    private AbstractClassifier classifier;
+    @NotBlank
+    private String dataUuid;
 
     /**
-     * Training data
+     * Classifier options
      */
+    @Valid
     @NotNull
-    @JsonSerialize(using = InstancesSerializer.class)
-    @JsonDeserialize(using = InstancesDeserializer.class)
-    private Instances data;
+    private ClassifierOptions classifierOptions;
 
     /**
      * Evaluation method

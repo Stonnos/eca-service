@@ -168,6 +168,7 @@ public class StorageServiceImpl implements StorageService {
         }
         var instancesEntity = attribute.getInstancesEntity();
         instancesEntity.setClassAttribute(attribute);
+        instancesEntity.increaseUpdatesCounter();
         instancesRepository.save(instancesEntity);
         log.info("Class attribute [{}] has been set for instances [{}]", classAttributeId,
                 attribute.getInstancesEntity().getRelationName());
@@ -181,6 +182,8 @@ public class StorageServiceImpl implements StorageService {
         log.info("Starting to select all attributes for instances [{}]", id);
         var instancesEntity = getById(id);
         attributeRepository.selectAll(instancesEntity);
+        instancesEntity.increaseUpdatesCounter();
+        instancesRepository.save(instancesEntity);
         log.info("All attributes has been selected for instances [{}] with relation name [{}]", id,
                 instancesEntity.getId());
         return instancesEntity;
@@ -198,6 +201,7 @@ public class StorageServiceImpl implements StorageService {
                 throw new InstancesExistsException(newName);
             }
             instancesEntity.setRelationName(newName);
+            instancesEntity.increaseUpdatesCounter();
             instancesRepository.save(instancesEntity);
             log.info("Instances [{}] has been renamed to [{}]", id, newName);
         }

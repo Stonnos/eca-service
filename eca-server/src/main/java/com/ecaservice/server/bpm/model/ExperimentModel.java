@@ -1,8 +1,5 @@
 package com.ecaservice.server.bpm.model;
 
-import com.ecaservice.base.model.ExperimentType;
-import com.ecaservice.server.model.entity.Channel;
-import com.ecaservice.server.model.entity.RequestStatus;
 import lombok.Data;
 
 import java.io.Serializable;

@@ -1,6 +1,5 @@
 package com.ecaservice.external.api.test.entity;
 
-import com.ecaservice.external.api.dto.ResponseCode;
 import com.ecaservice.test.common.model.MatchResult;
 import com.ecaservice.test.common.model.TestResult;
 import lombok.Data;

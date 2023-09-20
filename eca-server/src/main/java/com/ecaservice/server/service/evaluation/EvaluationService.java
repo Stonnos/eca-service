@@ -2,7 +2,7 @@ package com.ecaservice.server.service.evaluation;
 
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.model.evaluation.ClassificationResult;
-import com.ecaservice.server.model.evaluation.EvaluationRequestDataModel;
+import com.ecaservice.server.model.evaluation.EvaluationInputDataModel;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationMethodVisitor;
 import eca.core.evaluation.EvaluationResults;
@@ -33,21 +33,21 @@ public class EvaluationService {
      * If options for cross - validation method is not specified then the options
      * from configs will be used for evaluation.
      *
-     * @param evaluationRequest - evaluation request
+     * @param evaluationInputDataModel - evaluation input options data model
      * @return classification results {@link ClassificationResult}
      */
-    public ClassificationResult evaluateModel(EvaluationRequestDataModel evaluationRequest) {
+    public ClassificationResult evaluateModel(EvaluationInputDataModel evaluationInputDataModel) {
         ClassificationResult classificationResult = new ClassificationResult();
         try {
-            final Classifier classifier = AbstractClassifier.makeCopy(evaluationRequest.getClassifier());
-            final Instances data = evaluationRequest.getData();
+            final Classifier classifier = AbstractClassifier.makeCopy(evaluationInputDataModel.getClassifier());
+            final Instances data = evaluationInputDataModel.getData();
             final String classifierName = classifier.getClass().getSimpleName();
             log.info("Model evaluation starting for classifier = {}, data = {}, evaluationMethod = {}",
-                    classifierName, data.relationName(), evaluationRequest.getEvaluationMethod());
+                    classifierName, data.relationName(), evaluationInputDataModel.getEvaluationMethod());
             final Evaluation evaluation = new Evaluation(data);
             final StopWatch stopWatch = new StopWatch(String.format("Stop watching for %s", classifierName));
 
-            evaluationRequest.getEvaluationMethod().accept(new EvaluationMethodVisitor() {
+            evaluationInputDataModel.getEvaluationMethod().accept(new EvaluationMethodVisitor() {
                 @Override
                 public void evaluateModel() throws Exception {
                     stopWatch.start(String.format("%s model training", classifierName));
@@ -60,9 +60,9 @@ public class EvaluationService {
 
                 @Override
                 public void crossValidateModel() throws Exception {
-                    int folds = Optional.ofNullable(evaluationRequest.getNumFolds()).orElse(config.getNumFolds());
-                    int tests = Optional.ofNullable(evaluationRequest.getNumTests()).orElse(config.getNumTests());
-                    int seed = Optional.ofNullable(evaluationRequest.getSeed()).orElse(config.getSeed());
+                    int folds = Optional.ofNullable(evaluationInputDataModel.getNumFolds()).orElse(config.getNumFolds());
+                    int tests = Optional.ofNullable(evaluationInputDataModel.getNumTests()).orElse(config.getNumTests());
+                    int seed = Optional.ofNullable(evaluationInputDataModel.getSeed()).orElse(config.getSeed());
                     log.trace("evaluateModel: numFolds = {}, numTests = {}, seed {}", folds, tests, seed);
                     stopWatch.start(String.format("%s model evaluation", classifierName));
                     evaluation.kCrossValidateModel(AbstractClassifier.makeCopy(classifier), data, folds, tests, seed);

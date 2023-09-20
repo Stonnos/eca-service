@@ -2,7 +2,6 @@ package com.ecaservice.server.model.evaluation;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import weka.core.Instances;
 
 /**
  * Instances request data model.
@@ -19,12 +18,7 @@ public class InstancesRequestDataModel {
     private String requestId;
 
     /**
-     * Training data md5 hash
+     * Train data uuid
      */
-    private String dataMd5Hash;
-
-    /**
-     * Training data
-     */
-    private Instances data;
+    private String dataUuid;
 }

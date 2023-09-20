@@ -30,8 +30,13 @@ public class ChangePasswordRequestNotificationEventHandler
      * @param appProperties - app properties
      */
     public ChangePasswordRequestNotificationEventHandler(AppProperties appProperties) {
-        super(ChangePasswordRequestNotificationEvent.class, Templates.CHANGE_PASSWORD);
+        super(ChangePasswordRequestNotificationEvent.class);
         this.appProperties = appProperties;
+    }
+
+    @Override
+    public String getTemplateCode(ChangePasswordRequestNotificationEvent emailEvent) {
+        return Templates.CHANGE_PASSWORD;
     }
 
     @Override

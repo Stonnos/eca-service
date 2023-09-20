@@ -91,8 +91,8 @@ public class ChangePasswordController {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
                                             @ExampleObject(
-                                                    name = "InvalidPasswordErrorResponse",
-                                                    ref = "#/components/examples/InvalidPasswordErrorResponse"
+                                                    name = "NotSafePasswordErrorResponse",
+                                                    ref = "#/components/examples/NotSafePasswordErrorResponse"
                                             ),
                                     }
                             )

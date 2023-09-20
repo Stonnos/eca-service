@@ -86,25 +86,6 @@ public class ExperimentDataService {
     }
 
     /**
-     * Removes experiment training data file from disk.
-     *
-     * @param experiment - experiment entity
-     */
-    public void removeExperimentTrainingData(Experiment experiment) {
-        try {
-            log.info("Starting to remove experiment [{}] training data file", experiment.getRequestId());
-            String trainingDataPath = experiment.getTrainingDataPath();
-            objectStorageService.removeObject(trainingDataPath);
-            experiment.setTrainingDataPath(null);
-            experimentRepository.save(experiment);
-            log.info("Experiment [{}] training data file has been deleted", experiment.getRequestId());
-        } catch (Exception ex) {
-            log.error("There was an error while remove experiment [{}] training data file: {}",
-                    experiment.getRequestId(), ex.getMessage());
-        }
-    }
-
-    /**
      * Gets experiments page.
      *
      * @param pageRequestDto - page request dto

@@ -65,5 +65,15 @@ auto-tests:
   requestTimeoutInSeconds: 1200
   ecaErsBaseUrl: http://localhost:8080/eca-ers
 
+data-loader:
+  url: http://localhost:8080/eca-data-loader
+
+service:
+  feign:
+    oauth:
+      tokenUrl: http://localhost:8080/eca-oauth
+      clientId: external-api
+      clientSecret: external_api_secret
+
 server:
   port: 8093

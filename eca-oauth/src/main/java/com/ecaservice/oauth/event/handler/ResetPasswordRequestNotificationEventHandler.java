@@ -30,8 +30,13 @@ public class ResetPasswordRequestNotificationEventHandler
      * @param appProperties - app properties
      */
     public ResetPasswordRequestNotificationEventHandler(AppProperties appProperties) {
-        super(ResetPasswordRequestNotificationEvent.class, Templates.RESET_PASSWORD);
+        super(ResetPasswordRequestNotificationEvent.class);
         this.appProperties = appProperties;
+    }
+
+    @Override
+    public String getTemplateCode(ResetPasswordRequestNotificationEvent emailEvent) {
+        return Templates.RESET_PASSWORD;
     }
 
     @Override

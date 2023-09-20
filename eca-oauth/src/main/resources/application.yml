@@ -58,9 +58,6 @@ mail:
 ## Password generator configs
 password:
   length: 12
-  useDigits: true
-  useLowerCaseSymbols: true
-  useUpperCaseSymbols: true
 
 tfa:
   codeValiditySeconds: 120

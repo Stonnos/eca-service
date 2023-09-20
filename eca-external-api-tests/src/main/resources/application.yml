@@ -26,10 +26,16 @@ external-api-tests:
   pageSize: 25
   delaySeconds: 2
   expectedExperimentNumModels: 5
-  auth:
-    clientId: external-api
-    clientSecret: external_api_secret
-    tokenUrl: http://localhost:8080/eca-oauth/oauth/token
+
+data-loader:
+  url: http://localhost:8080/eca-data-loader
+
+service:
+  feign:
+    oauth:
+      tokenUrl: http://localhost:8080/eca-oauth
+      clientId: external-api
+      clientSecret: external_api_secret
 
 process:
   ids:

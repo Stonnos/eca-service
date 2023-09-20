@@ -19,6 +19,11 @@ public class UserUnLockedNotificationEventHandler
      * Creates user unlocked notification event handler.
      */
     public UserUnLockedNotificationEventHandler() {
-        super(UserUnLockedNotificationEvent.class, Templates.USER_UNLOCKED);
+        super(UserUnLockedNotificationEvent.class);
+    }
+
+    @Override
+    public String getTemplateCode(UserUnLockedNotificationEvent emailEvent) {
+        return Templates.USER_UNLOCKED;
     }
 }

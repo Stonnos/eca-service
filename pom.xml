@@ -20,10 +20,12 @@
         <module>eca-ers-transport</module>
         <module>eca-ds-transport</module>
         <module>eca-web-push-transport</module>
+        <module>eca-data-loader-transport</module>
         <module>eca-external-api-transport</module>
         <module>eca-audit-transport</module>
         <module>eca-web-transport</module>
         <module>eca-report-model</module>
+        <module>feign-oauth</module>
         <module>core-redelivery</module>
         <module>core-audit</module>
         <module>core-filter</module>
@@ -42,6 +44,7 @@
         <module>eca-mail</module>
         <module>eca-ers</module>
         <module>eca-data-storage</module>
+        <module>eca-data-loader</module>
         <module>eca-web-push</module>
         <module>eca-audit-log</module>
         <module>eca-external-api</module>

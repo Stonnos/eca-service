@@ -44,9 +44,10 @@ public class GetExperimentStatusHandler extends ExternalApiTaskHandler {
         Long autoTestId = getVariable(execution, AUTO_TEST_ID, Long.class);
         var autoTestEntity = autoTestService.getById(autoTestId);
         log.debug("Starting to get experiment response status for test [{}]", autoTestId);
-        var response = externalApiClient.getExperimentResults(autoTestEntity.getRequestId());
-        log.debug("Received experiment response status for test [{}]: {}", autoTestId, response);
-        setVariableSafe(execution, API_RESPONSE, response);
+        var experimentResultsResponseDto
+                = externalApiClient.getExperimentResults(autoTestEntity.getRequestId());
+        log.debug("Received experiment response status for test [{}]: {}", autoTestId, experimentResultsResponseDto);
+        setVariableSafe(execution, API_RESPONSE, experimentResultsResponseDto);
         log.debug("Get experiment response status for execution [{}], process key [{}] has been finished",
                 execution.getId(), execution.getProcessBusinessKey());
     }

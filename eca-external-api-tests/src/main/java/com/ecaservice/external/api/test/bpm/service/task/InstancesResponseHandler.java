@@ -1,8 +1,6 @@
 package com.ecaservice.external.api.test.bpm.service.task;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
-import com.ecaservice.external.api.dto.InstancesDto;
-import com.ecaservice.external.api.dto.ResponseDto;
 import com.ecaservice.external.api.test.bpm.model.TaskType;
 import com.ecaservice.external.api.test.entity.AutoTestEntity;
 import com.ecaservice.external.api.test.model.AbstractTestDataModel;
@@ -11,13 +9,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
 
-import static com.ecaservice.external.api.test.bpm.CamundaVariables.API_RESPONSE;
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.AUTO_TEST_ID;
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.TEST_DATA_MODEL;
+import static com.ecaservice.external.api.test.bpm.CamundaVariables.TRAIN_DATA_UUID;
 import static com.ecaservice.external.api.test.util.CamundaUtils.getVariable;
 import static com.ecaservice.external.api.test.util.CamundaUtils.setVariableSafe;
 
@@ -29,10 +25,6 @@ import static com.ecaservice.external.api.test.util.CamundaUtils.setVariableSafe
 @Slf4j
 @Component
 public class InstancesResponseHandler extends AbstractTaskHandler {
-
-    private static final ParameterizedTypeReference<ResponseDto<InstancesDto>> API_RESPONSE_TYPE_REFERENCE =
-            new ParameterizedTypeReference<ResponseDto<InstancesDto>>() {
-            };
 
     private final ObjectMapper objectMapper;
     private final AutoTestRepository autoTestRepository;
@@ -56,14 +48,12 @@ public class InstancesResponseHandler extends AbstractTaskHandler {
                 execution.getProcessBusinessKey());
         Long autoTestId = getVariable(execution, AUTO_TEST_ID, Long.class);
         var testDataModel = getVariable(execution, TEST_DATA_MODEL, AbstractTestDataModel.class);
-        var responseDto = getVariable(execution, API_RESPONSE, API_RESPONSE_TYPE_REFERENCE);
-        Assert.notNull(responseDto.getPayload(),
-                String.format("Expected not null instances response for auto test [%d]", autoTestId));
+        var trainDataUuid = getVariable(execution, TRAIN_DATA_UUID, String.class);
         AutoTestEntity autoTestEntity = autoTestRepository.findById(autoTestId)
                 .orElseThrow(() -> new EntityNotFoundException(AutoTestEntity.class, autoTestId));
-        log.debug("Update train data url [{}] for execution [{}], process key [{}]",
-                responseDto.getPayload().getDataUrl(), execution.getId(), execution.getProcessBusinessKey());
-        testDataModel.getRequest().setTrainDataUrl(responseDto.getPayload().getDataUrl());
+        log.debug("Update train data uuid [{}] for execution [{}], process key [{}]", trainDataUuid, execution.getId(),
+                execution.getProcessBusinessKey());
+        testDataModel.getRequest().setTrainDataUuid(trainDataUuid);
         autoTestEntity.setRequest(objectMapper.writeValueAsString(testDataModel.getRequest()));
         autoTestRepository.save(autoTestEntity);
         setVariableSafe(execution, TEST_DATA_MODEL, testDataModel);

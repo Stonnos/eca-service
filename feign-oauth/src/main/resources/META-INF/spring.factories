@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.ecaservice.feign.oauth.config.FeignOauth2AutoConfiguration

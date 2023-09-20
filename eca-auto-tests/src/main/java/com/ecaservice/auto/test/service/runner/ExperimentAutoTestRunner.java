@@ -18,12 +18,10 @@ import com.ecaservice.auto.test.service.AutoTestWorkerService;
 import com.ecaservice.auto.test.service.ExperimentTestDataProvider;
 import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.test.common.model.ExecutionStatus;
-import com.ecaservice.test.common.service.InstancesLoader;
+import com.ecaservice.test.common.service.DataLoaderService;
+import com.ecaservice.test.common.service.InstancesResourceLoader;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Service;
-import weka.core.Instances;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -40,25 +38,24 @@ import static com.google.common.collect.Lists.newArrayList;
  */
 @Slf4j
 @Service
-public class ExperimentAutoTestRunner extends AbstractAutoTestRunner<ExperimentRequestEntity, ExperimentRequest> {
+public class ExperimentAutoTestRunner
+        extends AbstractAutoTestRunner<ExperimentRequestEntity, ExperimentTestDataModel, ExperimentRequest> {
 
     private static final List<EmailType> WHITELIST_EMAILS =
             List.of(EmailType.NEW, EmailType.IN_PROGRESS, EmailType.FINISHED);
 
     private final MailProperties mailProperties;
-    private final InstancesLoader instancesLoader;
     private final ExperimentTestDataProvider experimentTestDataProvider;
 
-    private final PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-
     /**
-     * Constructor with spring dependencies injection.
+     * Constructor with parameters.
      *
      * @param autoTestJobService              - auto test job service
      * @param autoTestWorkerService           - auto test worker service
      * @param baseEvaluationRequestRepository - base evaluation request repository
      * @param mailProperties                  - mail properties
-     * @param instancesLoader                 - instances loader
+     * @param instancesResourceLoader         - instances loader
+     * @param dataLoaderService               - data loader  service
      * @param experimentTestDataProvider      - experiment test data provider
      */
     public ExperimentAutoTestRunner(AutoTestJobService autoTestJobService,
@@ -66,29 +63,37 @@ public class ExperimentAutoTestRunner extends AbstractAutoTestRunner<ExperimentR
                                     BaseEvaluationRequestRepository baseEvaluationRequestRepository,
                                     BaseTestStepRepository baseTestStepRepository,
                                     MailProperties mailProperties,
-                                    InstancesLoader instancesLoader,
+                                    InstancesResourceLoader instancesResourceLoader,
+                                    DataLoaderService dataLoaderService,
                                     ExperimentTestDataProvider experimentTestDataProvider) {
         super(AutoTestType.EXPERIMENT_REQUEST_PROCESS, autoTestJobService, autoTestWorkerService,
-                baseEvaluationRequestRepository, baseTestStepRepository);
+                instancesResourceLoader, dataLoaderService, baseEvaluationRequestRepository, baseTestStepRepository);
         this.mailProperties = mailProperties;
-        this.instancesLoader = instancesLoader;
         this.experimentTestDataProvider = experimentTestDataProvider;
     }
 
     @Override
-    protected ExperimentRequestEntity createSpecificRequestEntity(ExperimentRequest experimentRequest) {
+    protected ExperimentRequestEntity createSpecificRequestEntity(ExperimentTestDataModel testDataModel,
+                                                                  ExperimentRequest ecaRequest) {
         ExperimentRequestEntity experimentRequestEntity = new ExperimentRequestEntity();
-        experimentRequestEntity.setExperimentType(experimentRequest.getExperimentType());
-        experimentRequestEntity.setEvaluationMethod(experimentRequest.getEvaluationMethod());
+        experimentRequestEntity.setExperimentType(testDataModel.getExperimentType());
+        experimentRequestEntity.setEvaluationMethod(testDataModel.getEvaluationMethod());
         return experimentRequestEntity;
     }
 
     @Override
-    protected List<ExperimentRequest> prepareAndBuildRequests() {
-        return experimentTestDataProvider.getTestDataModels()
-                .stream()
-                .map(this::createExperimentRequest)
-                .collect(Collectors.toList());
+    protected ExperimentRequest createEcaRequest(ExperimentTestDataModel experimentTestDataModel, String dataUuid) {
+        ExperimentRequest experimentRequest = new ExperimentRequest();
+        experimentRequest.setDataUuid(dataUuid);
+        experimentRequest.setEmail(mailProperties.getUserName());
+        experimentRequest.setEvaluationMethod(experimentTestDataModel.getEvaluationMethod());
+        experimentRequest.setExperimentType(experimentTestDataModel.getExperimentType());
+        return experimentRequest;
+    }
+
+    @Override
+    protected List<ExperimentTestDataModel> getTestDataModels() {
+        return experimentTestDataProvider.getTestDataModels();
     }
 
     @Override
@@ -131,16 +136,5 @@ public class ExperimentAutoTestRunner extends AbstractAutoTestRunner<ExperimentR
                 return Collections.singletonList(experimentResultsTestStepEntity);
             }
         });
-    }
-
-    private ExperimentRequest createExperimentRequest(ExperimentTestDataModel experimentTestDataModel) {
-        Resource instancesResource = resolver.getResource(experimentTestDataModel.getTrainDataPath());
-        Instances instances = instancesLoader.loadInstances(instancesResource);
-        ExperimentRequest experimentRequest = new ExperimentRequest();
-        experimentRequest.setData(instances);
-        experimentRequest.setEmail(mailProperties.getUserName());
-        experimentRequest.setEvaluationMethod(experimentTestDataModel.getEvaluationMethod());
-        experimentRequest.setExperimentType(experimentTestDataModel.getExperimentType());
-        return experimentRequest;
     }
 }

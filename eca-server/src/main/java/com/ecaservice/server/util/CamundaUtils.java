@@ -2,10 +2,12 @@ package com.ecaservice.server.util;
 
 import com.ecaservice.server.exception.ProcessVariableNotFound;
 import lombok.experimental.UtilityClass;
+import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.springframework.util.Assert;
 
 import java.text.MessageFormat;
+import java.util.List;
 
 /**
  * Camunda utility class.
@@ -14,6 +16,8 @@ import java.text.MessageFormat;
  */
 @UtilityClass
 public class CamundaUtils {
+
+    private static final String COMMA_SEPARATOR = ",";
 
     /**
      * Gets variable from execution.
@@ -51,5 +55,18 @@ public class CamundaUtils {
             throw new ProcessVariableNotFound(variableName, execution.getProcessInstanceId());
         }
         return Enum.valueOf(enumType, String.valueOf(enumValue));
+    }
+
+    /**
+     * Gets values as array.
+     *
+     * @param execution    - delegate execution
+     * @param variableName - variable name
+     * @return values array
+     */
+    public static List<String> getValuesAsArray(DelegateExecution execution, String variableName) {
+        String messagePropertiesValue = getVariable(execution, variableName, String.class);
+        String[] messageProperties = StringUtils.split(messagePropertiesValue, COMMA_SEPARATOR);
+        return List.of(messageProperties);
     }
 }

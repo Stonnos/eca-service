@@ -3,7 +3,6 @@ package com.ecaservice.server.model.evaluation;
 import eca.core.evaluation.EvaluationMethod;
 import lombok.Data;
 import weka.classifiers.AbstractClassifier;
-import weka.core.Instances;
 
 /**
  * Evaluation request data model.
@@ -14,19 +13,19 @@ import weka.core.Instances;
 public class EvaluationRequestDataModel {
 
     /**
+     * Request id
+     */
+    private String requestId;
+
+    /**
+     * Train data uuid
+     */
+    private String dataUuid;
+
+    /**
      * Classifier model
      */
     private AbstractClassifier classifier;
-
-    /**
-     * Training data md5 hash
-     */
-    private String dataMd5Hash;
-
-    /**
-     * Training data
-     */
-    private Instances data;
 
     /**
      * Evaluation method

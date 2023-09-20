@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v73-drop-experiment-class-index-column.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="drop_experiment_class_index_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment"/>
+            <columnExists tableName="experiment" columnName="class_index"/>
+        </preConditions>
+       <dropColumn tableName="experiment" columnName="class_index"/>
+    </changeSet>
+
+    <changeSet id="renamed_experiment_training_data_path_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment"/>
+            <columnExists tableName="experiment" columnName="training_data_path"/>
+        </preConditions>
+        <renameColumn tableName="experiment" oldColumnName="training_data_path" newColumnName="training_data_uuid"/>
+    </changeSet>
+
+</databaseChangeLog>

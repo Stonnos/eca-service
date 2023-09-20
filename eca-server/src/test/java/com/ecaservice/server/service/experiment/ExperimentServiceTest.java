@@ -1,17 +1,15 @@
 package com.ecaservice.server.service.experiment;
 
 import com.ecaservice.core.filter.service.FilterTemplateService;
-import com.ecaservice.s3.client.minio.exception.ObjectStorageException;
-import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.AssertionUtils;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.config.ExperimentConfig;
-import com.ecaservice.server.exception.experiment.ExperimentException;
 import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.mapping.ExperimentMapperImpl;
 import com.ecaservice.server.mapping.InstancesInfoMapperImpl;
+import com.ecaservice.server.model.data.InstancesMetaDataModel;
 import com.ecaservice.server.model.entity.Channel;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentStep;
@@ -24,24 +22,24 @@ import com.ecaservice.server.repository.ExperimentStepRepository;
 import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.InstancesInfoService;
+import com.ecaservice.server.service.data.InstancesLoaderService;
+import com.ecaservice.server.service.data.InstancesMetaDataService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import weka.core.Instances;
 
 import javax.inject.Inject;
-import java.io.IOException;
-import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.ecaservice.server.TestHelperUtils.loadInstances;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 
 
 /**
@@ -54,6 +52,8 @@ import static org.mockito.Mockito.doThrow;
         ExperimentProgressService.class, InstancesInfoService.class})
 class ExperimentServiceTest extends AbstractJpaTest {
 
+    private static final String DATA_MD_5_HASH = "3032e188204cb537f69fc7364f638641";
+
     @Inject
     private ExperimentRepository experimentRepository;
     @Inject
@@ -63,7 +63,9 @@ class ExperimentServiceTest extends AbstractJpaTest {
     @Inject
     private ExperimentProgressRepository experimentProgressRepository;
     @MockBean
-    private ObjectStorageService objectStorageService;
+    private InstancesMetaDataService instancesMetaDataService;
+    @MockBean
+    private InstancesLoaderService instancesLoaderService;
     @MockBean
     private FilterTemplateService filterTemplateService;
     @MockBean
@@ -71,6 +73,11 @@ class ExperimentServiceTest extends AbstractJpaTest {
 
     @Inject
     private ExperimentService experimentService;
+
+    @Override
+    public void init() {
+        mockLoadInstances();
+    }
 
     @Override
     public void deleteAll() {
@@ -93,16 +100,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
         assertThat(experiment.getChannel()).isEqualTo(Channel.QUEUE);
         assertThat(experiment.getReplyTo()).isEqualTo(experimentMessageRequest.getReplyTo());
         assertThat(experiment.getCorrelationId()).isEqualTo(experimentMessageRequest.getCorrelationId());
-        assertThat(experiment.getTrainingDataPath()).isNotNull();
-    }
-
-    @Test
-    void testExperimentRequestCreationWithError() throws IOException {
-        var experimentMessageRequest = TestHelperUtils.createExperimentMessageRequest();
-        doThrow(ObjectStorageException.class)
-                .when(objectStorageService)
-                .uploadObject(any(Serializable.class), anyString());
-        assertThrows(ExperimentException.class, () -> experimentService.createExperiment(experimentMessageRequest));
+        assertThat(experiment.getTrainingDataUuid()).isNotNull();
     }
 
     @Test
@@ -121,54 +119,19 @@ class ExperimentServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    void testFinishExperimentWith() {
+    void testFinishExperiment() {
         var experiment = createAndSaveExperiment(RequestStatus.IN_PROGRESS);
-        createAndSaveExperimentStep(experiment, ExperimentStep.EXPERIMENT_PROCESSING, ExperimentStepStatus.COMPLETED);
-        createAndSaveExperimentStep(experiment, ExperimentStep.UPLOAD_EXPERIMENT_MODEL, ExperimentStepStatus.COMPLETED);
-        createAndSaveExperimentStep(experiment, ExperimentStep.GET_EXPERIMENT_DOWNLOAD_URL,
-                ExperimentStepStatus.COMPLETED);
-        internalTestFinishExperiment(experiment, RequestStatus.FINISHED);
-    }
-
-    @Test
-    void testFinishExperimentWithError() {
-        var experiment = createAndSaveExperiment(RequestStatus.IN_PROGRESS);
-        createAndSaveExperimentStep(experiment, ExperimentStep.EXPERIMENT_PROCESSING, ExperimentStepStatus.COMPLETED);
-        createAndSaveExperimentStep(experiment, ExperimentStep.UPLOAD_EXPERIMENT_MODEL, ExperimentStepStatus.ERROR);
-        createAndSaveExperimentStep(experiment, ExperimentStep.GET_EXPERIMENT_DOWNLOAD_URL,
-                ExperimentStepStatus.CANCELED);
-        internalTestFinishExperiment(experiment, RequestStatus.ERROR);
-    }
-
-    @Test
-    void testFinishExperimentWithTimeout() {
-        var experiment = createAndSaveExperiment(RequestStatus.IN_PROGRESS);
-        createAndSaveExperimentStep(experiment, ExperimentStep.EXPERIMENT_PROCESSING, ExperimentStepStatus.COMPLETED);
-        createAndSaveExperimentStep(experiment, ExperimentStep.UPLOAD_EXPERIMENT_MODEL, ExperimentStepStatus.TIMEOUT);
-        createAndSaveExperimentStep(experiment, ExperimentStep.GET_EXPERIMENT_DOWNLOAD_URL,
-                ExperimentStepStatus.CANCELED);
-        internalTestFinishExperiment(experiment, RequestStatus.TIMEOUT);
-    }
-
-    @Test
-    void testFinishExperimentWithInvalidStepStatuses() {
-        var experiment = createAndSaveExperiment(RequestStatus.IN_PROGRESS);
-        createAndSaveExperimentStep(experiment, ExperimentStep.EXPERIMENT_PROCESSING, ExperimentStepStatus.READY);
-        createAndSaveExperimentStep(experiment, ExperimentStep.UPLOAD_EXPERIMENT_MODEL, ExperimentStepStatus.FAILED);
-        assertThrows(ExperimentException.class, () -> experimentService.finishExperiment(experiment));
+        experimentService.finishExperiment(experiment, RequestStatus.FINISHED);
+        var actual = experimentRepository.findById(experiment.getId()).orElse(null);
+        assertThat(actual).isNotNull();
+        assertThat(actual.getRequestStatus()).isEqualTo(RequestStatus.FINISHED);
+        assertThat(actual.getEndDate()).isNotNull();
     }
 
     private Experiment createAndSaveExperiment(RequestStatus requestStatus) {
         var experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), requestStatus);
         instancesInfoRepository.save(experiment.getInstancesInfo());
         return experimentRepository.save(experiment);
-    }
-
-    private void createAndSaveExperimentStep(Experiment experiment,
-                                             ExperimentStep experimentStep,
-                                             ExperimentStepStatus stepStatus) {
-        var experimentStepEntity = TestHelperUtils.createExperimentStepEntity(experiment, experimentStep, stepStatus);
-        experimentStepRepository.save(experimentStepEntity);
     }
 
     private void verifySavedSteps(Experiment experiment) {
@@ -187,11 +150,11 @@ class ExperimentServiceTest extends AbstractJpaTest {
         });
     }
 
-    private void internalTestFinishExperiment(Experiment experiment, RequestStatus expectedStatus) {
-        experimentService.finishExperiment(experiment);
-        var actual = experimentRepository.findById(experiment.getId()).orElse(null);
-        assertThat(actual).isNotNull();
-        assertThat(actual.getRequestStatus()).isEqualTo(expectedStatus);
-        assertThat(actual.getEndDate()).isNotNull();
+    private void mockLoadInstances() {
+        Instances data = loadInstances();
+        var instancesDataModel = new InstancesMetaDataModel(data.relationName(), data.numInstances(),
+                data.numAttributes(), data.numClasses(), data.classAttribute().name(), DATA_MD_5_HASH, "instances");
+        when(instancesMetaDataService.getInstancesMetaData(anyString())).thenReturn(instancesDataModel);
+        when(instancesLoaderService.loadInstances(anyString())).thenReturn(data);
     }
 }

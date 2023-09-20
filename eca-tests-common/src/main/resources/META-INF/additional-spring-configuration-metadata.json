@@ -1,0 +1,9 @@
+{
+  "properties": [
+    {
+      "name": "data-loader.url",
+      "type": "java.lang.String",
+      "description": "Data loader base url"
+    }
+  ]
+}

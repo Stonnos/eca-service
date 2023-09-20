@@ -38,7 +38,7 @@ class ClassifierDataCleanerTest extends AbstractJpaTest {
     private InstancesInfoRepository instancesInfoRepository;
 
     @MockBean
-    private EvaluationLogService evaluationLogService;
+    private EvaluationLogDataService evaluationLogDataService;
 
     @Inject
     private AppProperties appProperties;
@@ -78,7 +78,7 @@ class ClassifierDataCleanerTest extends AbstractJpaTest {
         evaluationLogs.add(timeoutEvaluationLog);
         evaluationLogRepository.saveAll(evaluationLogs);
         classifiersDataCleaner.removeModels();
-        verify(evaluationLogService, atLeastOnce()).removeModel(argumentCaptor.capture());
+        verify(evaluationLogDataService, atLeastOnce()).removeModel(argumentCaptor.capture());
         assertThat(argumentCaptor.getValue().getId()).isEqualTo(evaluationLogToRemove.getId());
     }
 }

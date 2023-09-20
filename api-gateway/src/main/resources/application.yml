@@ -56,6 +56,12 @@ spring:
             - Path=/eca-audit-log/**
           filters:
             - StripPrefix=1
+        - id: eca-data-loader
+          uri: lb://eca-data-loader
+          predicates:
+            - Path=/eca-data-loader/**
+          filters:
+            - StripPrefix=1
         - id: eca-web
           uri: lb://eca-web
           predicates:

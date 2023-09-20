@@ -4,7 +4,7 @@ import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.repository.EvaluationLogRepository;
-import com.ecaservice.server.service.evaluation.EvaluationLogService;
+import com.ecaservice.server.service.evaluation.EvaluationLogDataService;
 import com.ecaservice.web.dto.model.ChartDto;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import com.ecaservice.web.dto.model.EvaluationLogDto;
@@ -58,7 +58,7 @@ import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 @RequiredArgsConstructor
 public class EvaluationController {
 
-    private final EvaluationLogService evaluationLogService;
+    private final EvaluationLogDataService evaluationLogDataService;
     private final EvaluationLogRepository evaluationLogRepository;
 
     /**
@@ -121,7 +121,7 @@ public class EvaluationController {
     @PostMapping(value = "/list")
     public PageDto<EvaluationLogDto> getEvaluationLogs(@Valid @RequestBody PageRequestDto pageRequestDto) {
         log.info("Received evaluation logs page request: {}", pageRequestDto);
-        return evaluationLogService.getEvaluationLogsPage(pageRequestDto);
+        return evaluationLogDataService.getEvaluationLogsPage(pageRequestDto);
     }
 
     /**
@@ -180,7 +180,7 @@ public class EvaluationController {
         log.info("Received request for evaluation log details for id [{}]", id);
         EvaluationLog evaluationLog = evaluationLogRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(EvaluationLog.class, id));
-        return evaluationLogService.getEvaluationLogDetails(evaluationLog);
+        return evaluationLogDataService.getEvaluationLogDetails(evaluationLog);
     }
 
     /**
@@ -221,7 +221,7 @@ public class EvaluationController {
     )
     @GetMapping(value = "/request-statuses-statistics")
     public RequestStatusStatisticsDto getEvaluationRequestStatusesStatistics() {
-        return evaluationLogService.getRequestStatusesStatistics();
+        return evaluationLogDataService.getRequestStatusesStatistics();
     }
 
     /**
@@ -272,7 +272,7 @@ public class EvaluationController {
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate createdDateTo) {
         log.info("Received request to get classifiers statistics histogram data with created date from [{}] to [{}]",
                 createdDateFrom, createdDateTo);
-        return evaluationLogService.getClassifiersStatisticsData(createdDateFrom, createdDateTo);
+        return evaluationLogDataService.getClassifiersStatisticsData(createdDateFrom, createdDateTo);
     }
 
     /**
@@ -329,6 +329,6 @@ public class EvaluationController {
             @Parameter(description = "Evaluation id", required = true)
             @Min(VALUE_1) @Max(Long.MAX_VALUE) @PathVariable Long id) {
         log.info("Received request to get classifier model [{}] result content url", id);
-        return evaluationLogService.getModelContentUrl(id);
+        return evaluationLogDataService.getModelContentUrl(id);
     }
 }

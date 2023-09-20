@@ -42,7 +42,6 @@ public class ExperimentScheduler {
     @Scheduled(cron = "${app.removeModelCron}")
     public void processRequestsToRemove() {
         log.info("Starting job to removes experiments data files from disk");
-        experimentDataCleaner.removeExperimentsTrainingData();
         experimentDataCleaner.removeExperimentsModels();
         log.info("Removing experiments data files job has been finished");
     }

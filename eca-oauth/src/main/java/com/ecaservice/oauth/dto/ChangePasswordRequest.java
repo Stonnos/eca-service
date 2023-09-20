@@ -9,7 +9,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import static com.ecaservice.oauth.util.FieldConstraints.MIN_PASSWORD_LENGTH;
 import static com.ecaservice.oauth.util.FieldConstraints.PASSWORD_REGEX;
 import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
@@ -38,7 +37,7 @@ public class ChangePasswordRequest {
      */
     @NotBlank
     @Pattern(regexp = PASSWORD_REGEX)
-    @Size(min = MIN_PASSWORD_LENGTH, max = MAX_LENGTH_255)
+    @Size(max = MAX_LENGTH_255)
     @Schema(description = "New password", example = "newPassw0rd!", requiredMode = Schema.RequiredMode.REQUIRED)
     private String newPassword;
 }

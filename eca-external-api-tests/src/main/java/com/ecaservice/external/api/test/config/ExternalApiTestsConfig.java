@@ -71,28 +71,4 @@ public class ExternalApiTestsConfig {
      */
     @NotNull
     private Integer expectedExperimentNumModels;
-
-    /**
-     * Auth properties
-     */
-    private AuthProperties auth = new AuthProperties();
-
-    @Data
-    public static class AuthProperties {
-
-        /**
-         * Access token url
-         */
-        private String tokenUrl;
-
-        /**
-         * Client id value
-         */
-        private String clientId;
-
-        /**
-         * Client secret value
-         */
-        private String clientSecret;
-    }
 }
