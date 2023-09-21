@@ -18,6 +18,15 @@
             <column name="template_type" value="USERS"/>
             <column name="created" valueDate="now()"/>
         </insert>
+
+        <insert tableName="filter_field">
+            <column name="field_name" value="login"/>
+            <column name="description" value="Логин"/>
+            <column name="field_order" valueNumeric="0"/>
+            <column name="filter_field_type" value="TEXT"/>
+            <column name="match_mode" value="LIKE"/>
+            <column name="filter_template_id" valueNumeric="1"/>
+        </insert>
     </changeSet>
 
     <changeSet author="roman.batygin@mail.ru" id="insert_sort_templates_1" context="data">
