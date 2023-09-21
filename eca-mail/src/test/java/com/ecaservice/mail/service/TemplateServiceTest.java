@@ -1,21 +1,27 @@
 package com.ecaservice.mail.service;
 
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.mail.AbstractJpaTest;
 import com.ecaservice.mail.config.MailConfig;
 import com.ecaservice.mail.model.TemplateEntity;
+import com.ecaservice.mail.model.TemplateEntity_;
 import com.ecaservice.mail.repository.TemplateRepository;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 
 import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static com.ecaservice.mail.TestHelperUtils.createTemplateEntity;
+import static com.ecaservice.mail.dictionary.FilterDictionaries.EMAIL_TEMPLATES;
 import static com.ecaservice.mail.model.BaseEntity_.CREATED;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for {@link TemplateService} class.
@@ -30,11 +36,24 @@ class TemplateServiceTest extends AbstractJpaTest {
     private static final int PAGE = 0;
     private static final int SIZE = 10;
 
+    @MockBean
+    private FilterTemplateService filterTemplateService;
+
     @Inject
     private TemplateRepository templateRepository;
 
     @Inject
     private TemplateService templateService;
+
+    @Override
+    public void init() {
+        when(filterTemplateService.getGlobalFilterFields(EMAIL_TEMPLATES)).thenReturn(
+                List.of(
+                        TemplateEntity_.CODE,
+                        TemplateEntity_.DESCRIPTION,
+                        TemplateEntity_.SUBJECT
+                ));
+    }
 
     @Override
     public void deleteAll() {

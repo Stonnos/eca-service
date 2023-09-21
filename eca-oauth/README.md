@@ -38,9 +38,6 @@
    * open-api.apiAuth.scopes - список scopes
 4) password - настройки для генератора паролей
    * password.length - длина пароля
-   * password.useDigits - использовать цифры?
-   * password.useLowerCaseSymbols - использовать латинские буквы нижнего регистра?
-   * password.useUpperCaseSymbols - использовать латинские буквы верхнего регистра?
 5) audit.enabled - вкл./выкл. отправки событий аудита
 6) tfa - настройки двухфакторной аутентификации
    * tfa.enabled - глобальное вкл./выкл. исполользование двухфакторной аутентификации

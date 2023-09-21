@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v30-assign-data-loader-api-scope.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="assign_data_loader_api_scope_to_eca_service_tech_account" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="oauth_client_details"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from oauth_client_details where client_id = 'eca_service_tech'
+            </sqlCheck>
+        </preConditions>
+        <update tableName="oauth_client_details">
+            <column name="scope" value="internal-api,data-loader-api"/>
+            <where>client_id = 'eca_service_tech'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="assign_data_loader_api_scope_to_external_api_account" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="oauth_client_details"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from oauth_client_details where client_id = 'external-api'
+            </sqlCheck>
+        </preConditions>
+        <update tableName="oauth_client_details">
+            <column name="scope" value="external-api,data-loader-api"/>
+            <where>client_id = 'external-api'</where>
+        </update>
+    </changeSet>
+</databaseChangeLog>

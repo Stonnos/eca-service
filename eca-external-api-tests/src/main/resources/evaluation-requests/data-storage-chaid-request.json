@@ -1,6 +1,5 @@
 {
-  "displayName": "CHAID request using data storage API",
-  "trainDataSource": "API_DATA_STORAGE",
+  "displayName": "CHAID request",
   "trainDataPath": "classpath:/data/credit.json",
   "request": {
     "classifierOptions": {
@@ -18,7 +17,5 @@
     "numTests": 1,
     "seed": 1
   },
-  "expectedResponse": {
-    "responseCode": "SUCCESS"
-  }
+  "expectedResponseCode": "SUCCESS"
 }

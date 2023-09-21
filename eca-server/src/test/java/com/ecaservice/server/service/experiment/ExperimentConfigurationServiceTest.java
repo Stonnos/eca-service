@@ -1,6 +1,6 @@
 package com.ecaservice.server.service.experiment;
 
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.exception.ClassifierOptionsException;
@@ -44,7 +44,7 @@ class ExperimentConfigurationServiceTest extends AbstractJpaTest {
     @MockBean
     private UserService userService;
     @MockBean
-    private FilterService filterService;
+    private FilterTemplateService filterTemplateService;
     @MockBean
     private ClassifierOptionsProcessor classifierOptionsProcessor;
     @MockBean

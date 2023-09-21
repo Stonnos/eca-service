@@ -68,7 +68,7 @@ public abstract class AbstractChangeClassifiersConfigurationPushEventHandler<E e
     }
 
     @Override
-    protected String getMessageType() {
+    protected String getMessageType(AbstractChangeClassifiersConfigurationPushEvent event) {
         return CLASSIFIER_CONFIGURATION_CHANGE_MESSAGE_TYPE;
     }
 

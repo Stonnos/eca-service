@@ -10,6 +10,7 @@ import { BaseListComponent } from "../../../common/lists/base-list.component";
 import { FieldService } from "../../../common/services/field.service";
 import { EmailTemplateFields } from "../../../common/util/field-names";
 import { EmailTemplatesService } from "../../services/email-templates.service";
+import { EmailTemplateFilterFields } from "../../../common/util/filter-field-names";
 
 @Component({
   selector: 'app-templates-list',
@@ -51,10 +52,10 @@ export class TemplatesListComponent extends BaseListComponent<EmailTemplateDto> 
 
   private initColumns() {
     this.columns = [
-      { name: EmailTemplateFields.CODE, label: "Код шаблона" },
-      { name: EmailTemplateFields.DESCRIPTION, label: "Описание шаблона" },
-      { name: EmailTemplateFields.SUBJECT, label: "Тема письма" },
-      { name: EmailTemplateFields.CREATED, label: "Дата создания" }
+      { name: EmailTemplateFields.CODE, label: "Код шаблона", sortBy: EmailTemplateFilterFields.CODE },
+      { name: EmailTemplateFields.DESCRIPTION, label: "Описание шаблона", sortBy: EmailTemplateFilterFields.DESCRIPTION },
+      { name: EmailTemplateFields.SUBJECT, label: "Тема письма", sortBy: EmailTemplateFilterFields.SUBJECT },
+      { name: EmailTemplateFields.CREATED, label: "Дата создания", sortBy: EmailTemplateFilterFields.CREATED }
     ];
   }
 }

@@ -1,6 +1,7 @@
 package com.ecaservice.server.service.evaluation;
 
 import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.AssertionUtils;
@@ -14,6 +15,7 @@ import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.mapping.EvaluationLogMapper;
 import com.ecaservice.server.mapping.EvaluationLogMapperImpl;
 import com.ecaservice.server.mapping.InstancesInfoMapperImpl;
+import com.ecaservice.server.model.data.InstancesMetaDataModel;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.evaluation.EvaluationRequestDataModel;
@@ -21,11 +23,15 @@ import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.InstancesInfoService;
+import com.ecaservice.server.service.data.InstancesLoaderService;
+import com.ecaservice.server.service.data.InstancesMetaDataService;
 import com.ecaservice.server.service.evaluation.initializers.ClassifierInitializerService;
 import eca.core.evaluation.EvaluationMethod;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import weka.core.Instances;
 
 import javax.inject.Inject;
 import java.math.BigDecimal;
@@ -34,10 +40,12 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import static com.ecaservice.server.TestHelperUtils.loadInstances;
 import static com.ecaservice.server.util.FieldConstraints.SCALE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -47,13 +55,17 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({ExecutorConfiguration.class, CrossValidationConfig.class,
+@Import({ExecutorConfiguration.class, CrossValidationConfig.class, EvaluationLogService.class,
         ClassifiersProperties.class, AppProperties.class, InstancesInfoService.class,
         EvaluationLogMapperImpl.class, EvaluationService.class, DateTimeConverter.class,
         InstancesInfoMapperImpl.class, ClassifierInfoMapperImpl.class})
 class EvaluationRequestServiceTest extends AbstractJpaTest {
 
+    private static final String DATA_MD_5_HASH = "3032e188204cb537f69fc7364f638641";
     private static final String MODEL_DOWNLOAD_URL = "http//:localhost/model";
+
+    @MockBean
+    private FilterTemplateService filterTemplateService;
 
     @Inject
     private CrossValidationConfig crossValidationConfig;
@@ -71,22 +83,29 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
     private AppProperties appProperties;
     @Inject
     private InstancesInfoService instancesInfoService;
+    @Inject
+    private EvaluationLogService evaluationLogService;
 
     @Mock
     private ClassifierInitializerService classifierInitializerService;
-    @Mock
+    @MockBean
     private ClassifierOptionsAdapter classifierOptionsAdapter;
     @Mock
     private ObjectStorageService objectStorageService;
+    @MockBean
+    private InstancesMetaDataService instancesMetaDataService;
+    @Mock
+    private InstancesLoaderService instancesLoaderService;
 
     private EvaluationRequestService evaluationRequestService;
 
     @Override
     public void init() {
         evaluationRequestService =
-                new EvaluationRequestService(appProperties, classifiersProperties, crossValidationConfig,
-                        calculationExecutorService, evaluationService, evaluationLogRepository, evaluationLogMapper,
-                        classifierInitializerService, classifierOptionsAdapter, objectStorageService, instancesInfoService);
+                new EvaluationRequestService(appProperties, classifiersProperties, calculationExecutorService,
+                        evaluationService, classifierInitializerService, objectStorageService, instancesLoaderService,
+                        evaluationLogService);
+        mockLoadInstances();
     }
 
     @Override
@@ -120,9 +139,9 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
         EvaluationRequestDataModel request = TestHelperUtils.createEvaluationRequestData();
         CalculationExecutorServiceImpl executorService = mock(CalculationExecutorServiceImpl.class);
         EvaluationRequestService service =
-                new EvaluationRequestService(appProperties, classifiersProperties, crossValidationConfig,
-                        executorService, evaluationService, evaluationLogRepository, evaluationLogMapper,
-                        classifierInitializerService, classifierOptionsAdapter, objectStorageService, instancesInfoService);
+                new EvaluationRequestService(appProperties, classifiersProperties, executorService,
+                        evaluationService, classifierInitializerService, objectStorageService, instancesLoaderService,
+                        evaluationLogService);
         doThrow(new RuntimeException("Error")).when(executorService)
                 .execute(any(), anyLong(), any(TimeUnit.class));
         EvaluationResultsDataModel evaluationResultsDataModel = service.processRequest(request);
@@ -153,9 +172,9 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
         EvaluationRequestDataModel request = TestHelperUtils.createEvaluationRequestData();
         CalculationExecutorServiceImpl executorService = mock(CalculationExecutorServiceImpl.class);
         EvaluationRequestService service =
-                new EvaluationRequestService(appProperties, classifiersProperties, crossValidationConfig,
-                        executorService, evaluationService, evaluationLogRepository, evaluationLogMapper,
-                        classifierInitializerService, classifierOptionsAdapter, objectStorageService, instancesInfoService);
+                new EvaluationRequestService(appProperties, classifiersProperties, executorService,
+                        evaluationService, classifierInitializerService, objectStorageService, instancesLoaderService,
+                        evaluationLogService);
         doThrow(TimeoutException.class).when(executorService).execute(any(), anyLong(), any(TimeUnit.class));
         EvaluationResultsDataModel evaluationResultsDataModel = service.processRequest(request);
         assertThat(evaluationResultsDataModel.getStatus()).isEqualTo(RequestStatus.TIMEOUT);
@@ -164,5 +183,13 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
         assertThat(evaluationLogList.iterator().next().getRequestStatus()).isEqualTo(RequestStatus.TIMEOUT);
         assertThat(evaluationResultsDataModel.getStatus()).isEqualTo(RequestStatus.TIMEOUT);
         assertThat(evaluationResultsDataModel.getEvaluationResults()).isNull();
+    }
+
+    private void mockLoadInstances() {
+        Instances data = loadInstances();
+        var instancesDataModel = new InstancesMetaDataModel(data.relationName(), data.numInstances(),
+                data.numAttributes(), data.numClasses(), data.classAttribute().name(), DATA_MD_5_HASH, "instances");
+        when(instancesMetaDataService.getInstancesMetaData(anyString())).thenReturn(instancesDataModel);
+        when(instancesLoaderService.loadInstances(anyString())).thenReturn(data);
     }
 }

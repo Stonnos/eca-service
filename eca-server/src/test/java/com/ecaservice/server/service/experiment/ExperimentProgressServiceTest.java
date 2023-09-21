@@ -61,6 +61,7 @@ class ExperimentProgressServiceTest extends AbstractJpaTest {
     @Test
     void testFinishedProgress() {
         Experiment experiment = createAndSaveExperiment();
+        experimentProgressService.start(experiment);
         experimentProgressService.finish(experiment);
         ExperimentProgressEntity experimentProgressEntity =
                 experimentProgressRepository.findByExperiment(experiment).orElse(null);
@@ -72,6 +73,7 @@ class ExperimentProgressServiceTest extends AbstractJpaTest {
     @Test
     void testOnProgress() {
         Experiment experiment = createAndSaveExperiment();
+        experimentProgressService.start(experiment);
         experimentProgressService.onProgress(experiment, PROGRESS_VALUE);
         ExperimentProgressEntity experimentProgressEntity =
                 experimentProgressRepository.findByExperiment(experiment).orElse(null);

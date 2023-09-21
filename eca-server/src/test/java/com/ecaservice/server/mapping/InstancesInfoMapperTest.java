@@ -36,4 +36,17 @@ class InstancesInfoMapperTest {
         assertThat(instancesInfoDto.getId()).isEqualTo(instancesInfo.getId());
         assertThat(instancesInfoDto.getCreatedDate()).isEqualTo(instancesInfo.getCreatedDate());
     }
+
+    @Test
+    void testMapInstancesMetaInfoInfo() {
+        var instancesMetaInfoInfo = TestHelperUtils.createInstancesMetaInfoInfo();
+        var instancesMetaDataModel = instancesInfoMapper.map(instancesMetaInfoInfo);
+        assertThat(instancesMetaDataModel.getRelationName()).isEqualTo(instancesMetaInfoInfo.getRelationName());
+        assertThat(instancesMetaDataModel.getClassName()).isEqualTo(instancesMetaInfoInfo.getClassName());
+        assertThat(instancesMetaDataModel.getNumInstances()).isEqualTo(instancesMetaInfoInfo.getNumInstances());
+        assertThat(instancesMetaDataModel.getNumAttributes()).isEqualTo(instancesMetaInfoInfo.getNumAttributes());
+        assertThat(instancesMetaDataModel.getNumClasses()).isEqualTo(instancesMetaInfoInfo.getNumClasses());
+        assertThat(instancesMetaDataModel.getMd5Hash()).isEqualTo(instancesMetaInfoInfo.getMd5Hash());
+        assertThat(instancesMetaDataModel.getObjectPath()).isEqualTo(instancesMetaInfoInfo.getObjectPath());
+    }
 }

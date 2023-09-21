@@ -1,6 +1,5 @@
 {
-  "displayName": "Logistic request using data storage API",
-  "trainDataSource": "API_DATA_STORAGE",
+  "displayName": "Logistic request",
   "trainDataPath": "classpath:/data/glass.json",
   "request": {
     "classifierOptions": {
@@ -13,7 +12,5 @@
     "numTests": 1,
     "seed": 1
   },
-  "expectedResponse": {
-    "responseCode": "SUCCESS"
-  }
+  "expectedResponseCode": "SUCCESS"
 }

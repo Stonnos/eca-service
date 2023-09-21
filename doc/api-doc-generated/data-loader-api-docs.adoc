@@ -1,0 +1,590 @@
+= Microservice for loading training data sets
+Автор: Roman Batygin
+(roman.batygin@mail.ru)
+:toc:
+:toc-title: Table of contents
+
+== Overview
+
+API provides operations for loading training data sets
+
+== Security schemas
+
+
+=== EcaAuth
+
+[width=100%]
+|===
+|*Type*|*Description*|*Flows*
+|*oauth2*
+|Oauth2 authentication
+
+
+a|
+
+*Flow*
+
+__Grant type:__ client_credentials
+
+__Token url:__ http://localhost:8080/eca-oauth/oauth/token
+
+
+
+__Scopes__:
+
+
+* data-loader-api
+
+|===
+
+== Uploads train data file to storage
+
+__POST__ */api/external/upload-train-data* - Uploads train data file to storage
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* data-loader-api
+
+|===
+
+*Request body*
+
+[width=100%]
+|===
+|*Content type*|*Required*|*Schema*|*Example*
+|*multipart/form-data*
+|false
+|
+__object__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+-
+|===
+
+*Multipart form data fields*
+
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*instancesFile**
+|Training data file
+a|
+__string__
+__(binary)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+<<UploadInstancesResponseDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "uuid" : "1d2de514-3a87-4620-9b97-c260e24340de",
+  "md5Hash" : "3032e188204cb537f69fc7364f638641",
+  "expireAt" : "2021-07-01 14:00:00"
+}
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|
+__array__
+<<<ValidationErrorDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+[ {
+  "code" : "InvalidTrainDataFormat",
+  "errorMessage" : "Got empty data list"
+} ]
+----
+|===
+
+== Gets instances meta info
+
+__GET__ */api/internal/instances/meta-info/{uuid}* - Gets instances meta info
+
+
+
+*Request parameters*
+[width=100%]
+|===
+|*Name*|*Description*|*Location*|*Schema*
+|*uuid**
+|Instances uuid
+|path
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+<<InstancesMetaInfoDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "uuid" : "1d2de514-3a87-4620-9b97-c260e24340de",
+  "relationName" : "iris",
+  "numInstances" : 150,
+  "numAttributes" : 5,
+  "numClasses" : 4,
+  "className" : "class",
+  "md5Hash" : "3032e188204cb537f69fc7364f638641",
+  "objectPath" : "instances-1d2de514-3a87-4620-9b97-c260e24340de.json"
+}
+----
+|400
+|Bad request
+|*application/json*
+|
+__array__
+<<<ValidationErrorDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "ExpiredData",
+  "errorMessage" : "Instances [f8cecbf7-405b-403b-9a94-f51e8fb73ed8] object has been expired"
+} ]
+----
+|===
+
+
+== Components
+=== UploadInstancesResponseDto
+:table-caption: Table
+.Upload instances response dto
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*uuid*
+|Instances uuid
+a|
+__string__
+
+
+
+
+*Max. length*: 36
+
+
+
+
+
+
+
+
+
+
+|*md5Hash*
+|Instances file MD5 hash sum
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*expireAt*
+|Object expiration date
+a|
+__string__
+
+
+
+
+*Max. length*: 19
+
+
+
+
+
+
+
+
+
+
+|===
+=== ValidationErrorDto
+:table-caption: Table
+.Validation error model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*fieldName*
+|Field name
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*code*
+|Error code
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*errorMessage*
+|Error message
+a|
+__string__
+
+
+
+
+*Max. length*: 1 000
+
+
+
+
+
+
+
+
+
+
+|===
+=== InstancesMetaInfoDto
+:table-caption: Table
+.Instances meta info dto
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*uuid*
+|Instances uuid
+a|
+__string__
+
+
+
+
+*Max. length*: 36
+
+
+
+
+
+
+
+
+
+
+|*relationName*
+|Instances name
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*numInstances*
+|Instances number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|*numAttributes*
+|Attributes number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|*numClasses*
+|Classes number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|*className*
+|Class name
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*md5Hash*
+|Instances file MD5 hash sum
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*objectPath*
+|Instances object path in storage
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|===

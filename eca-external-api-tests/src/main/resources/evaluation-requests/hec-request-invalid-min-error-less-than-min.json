@@ -1,8 +1,7 @@
 {
   "displayName": "Heterogeneous classifier request with invalid 'minError' less than minimum",
-  "trainDataSource": "EXTERNAL_DATA_URL",
+  "trainDataPath": "classpath:/data/credit.json",
   "request": {
-    "trainDataUrl": "http://kt.ijs.si/Branax/Repository/WEKA/Iris.xls",
     "classifierOptions": {
       "type": "heterogeneous_classifier",
       "numIterations": 10,
@@ -36,7 +35,5 @@
     },
     "evaluationMethod": "TRAINING_DATA"
   },
-  "expectedResponse": {
-    "responseCode": "VALIDATION_ERROR"
-  }
+  "expectedResponseCode": "VALIDATION_ERROR"
 }

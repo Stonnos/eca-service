@@ -19,6 +19,11 @@ public class PasswordResetNotificationEventHandler
      * Creates password reset notification event handler.
      */
     public PasswordResetNotificationEventHandler() {
-        super(PasswordResetNotificationEvent.class, Templates.PASSWORD_RESET);
+        super(PasswordResetNotificationEvent.class);
+    }
+
+    @Override
+    public String getTemplateCode(PasswordResetNotificationEvent emailEvent) {
+        return Templates.PASSWORD_RESET;
     }
 }

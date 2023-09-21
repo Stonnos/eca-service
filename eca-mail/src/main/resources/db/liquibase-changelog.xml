@@ -24,4 +24,6 @@
     <include file="db/changelog/v17-insert-new-email-template-parameter.xml"/>
     <include file="db/changelog/v18-remove-first-name-template-parameter.xml"/>
     <include file="db/changelog/v19-update-experiment-templates.xml"/>
+    <include file="../filter-template-changelog.xml" relativeToChangelogFile="true"/>
+    <include file="db/changelog/v20-update-filter-templates.xml"/>
 </databaseChangeLog>

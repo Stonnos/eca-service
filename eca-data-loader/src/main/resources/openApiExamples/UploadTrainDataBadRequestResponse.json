@@ -1,0 +1,6 @@
+[
+  {
+    "code": "InvalidTrainDataFormat",
+    "errorMessage": "Got empty data list"
+  }
+]

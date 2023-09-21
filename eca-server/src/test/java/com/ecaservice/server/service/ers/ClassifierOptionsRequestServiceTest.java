@@ -1,6 +1,6 @@
 package com.ecaservice.server.service.ers;
 
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.server.mapping.ClassifierOptionsRequestModelMapper;
 import com.ecaservice.server.mapping.ClassifierOptionsRequestModelMapperImpl;
 import com.ecaservice.server.mapping.DateTimeConverter;
@@ -57,7 +57,7 @@ class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
     @Inject
     private ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper;
     @Mock
-    private FilterService filterService;
+    private FilterTemplateService filterTemplateService;
     @Mock
     private ClassifierOptionsProcessor classifierOptionsProcessor;
 
@@ -67,7 +67,7 @@ class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
 
     @Override
     public void init() {
-        classifierOptionsRequestService = new ClassifierOptionsRequestService(filterService,
+        classifierOptionsRequestService = new ClassifierOptionsRequestService(filterTemplateService,
                 classifierOptionsProcessor, classifierOptionsRequestModelMapper,
                 classifierOptionsRequestModelRepository);
         instancesInfo = createInstancesInfo();
@@ -102,7 +102,7 @@ class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
                         newArrayList());
         pageRequestDto.getFilters().add(new FilterRequestDto(ClassifierOptionsRequestModel_.RESPONSE_STATUS,
                 Collections.singletonList(ErsResponseStatus.SUCCESS.name()), MatchMode.EQUALS));
-        when(filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST.name())).thenReturn(
+        when(filterTemplateService.getGlobalFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST)).thenReturn(
                 Arrays.asList(INSTANCES_INFO_RELATION_NAME, ClassifierOptionsRequestModel_.REQUEST_ID));
         var classifierOptionsRequestDtoPage =
                 classifierOptionsRequestService.getClassifierOptionsRequestsPage(pageRequestDto);
@@ -190,7 +190,7 @@ class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
 
     @Test
     void testGlobalFilterForNotStringField() {
-        when(filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST.name())).thenReturn(
+        when(filterTemplateService.getGlobalFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST)).thenReturn(
                 Collections.singletonList(ClassifierOptionsRequestModel_.REQUEST_DATE));
         ClassifierOptionsRequestModel requestModel =
                 createClassifierOptionsRequestModel(instancesInfo, LocalDateTime.now(),

@@ -19,7 +19,7 @@ ECA server
 * Openjdk 11
 * maven => 3.9.2
 * Rabbit MQ => 3.8.14
-* eca-core 6.9.4
+* eca-core 6.9.5
 * Postgres Database для хранения информации => 13.9
 
 Описание ключевой конфигурации модуля
@@ -48,14 +48,13 @@ ECA server
    * experiment.ensemble.multiThreadModeEnabled - многопоточный режим для ансамблевых алгоритмов (вкл./выкл.)
    * experiment.ensemble.numThreads - число используемых потоков
    * experiment.ensemble.numFoldsForStacking - число блоков V - блочной кросс - проверки для алгоритма Stacking
-   * experiment.lock.registryKey - ключ реестра для блокировок
-   * experiment.lock.expireAfter - время жизни блокировки
 5) ers - настройки интеграции с сервисом eca-ers
    * ers.useClassifierOptionsCache - вкл./выкл. кеширование оптимальных настроек классификатора
    * ers.classifierOptionsCacheDurationInDays - период хранения оптимальных настроек классификатора, полученных от сервиса ERS
 6) app - общие настройки приложения
    * app.threadPoolSize - число потоков для асинхронных задач
-   * app.notifications.webPushesEnabled - вкл./выкл. отправки web пушей
+   * app.push.enabled - вкл./выкл. отправки web пушей
+   * app.push.async - вкл./выкл. асинхронной отправки web пушей
    * app.removeModelCron - крон выражение для удаления моделей экспериментов/классификаторов
    * app.numberOfDaysForStorage - кол-во дней для хранения моделей экспериментов/классификаторов
    * app.pageSize - размер страницы для постраничной обработки заявок

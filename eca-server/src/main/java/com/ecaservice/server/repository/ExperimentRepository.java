@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Implements repository that manages with {@link Experiment} entities.
@@ -17,6 +18,14 @@ import java.util.List;
  * @author Roman Batygin
  */
 public interface ExperimentRepository extends JpaRepository<Experiment, Long>, JpaSpecificationExecutor<Experiment> {
+
+    /**
+     * Finds experiment by request id.
+     *
+     * @param requestId - request id
+     * @return experiment entity
+     */
+    Optional<Experiment> findByRequestId(String requestId);
 
     /**
      * Finds new experiments.
@@ -65,16 +74,6 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
     @Query("select exp.id from Experiment exp where exp.requestStatus = 'FINISHED' and " +
             "exp.deletedDate is null and exp.endDate < :dateTime order by exp.endDate")
     List<Long> findExperimentsModelsToDelete(@Param("dateTime") LocalDateTime dateTime);
-
-    /**
-     * Finds experiments training data to delete.
-     *
-     * @param dateTime date time threshold value
-     * @return experiments ids list
-     */
-    @Query("select exp.id from Experiment exp where " +
-            "exp.trainingDataPath is not null and exp.creationDate < :dateTime order by exp.creationDate")
-    List<Long> findExperimentsTrainingDataToDelete(@Param("dateTime") LocalDateTime dateTime);
 
     /**
      * Calculates requests status counting statistics.

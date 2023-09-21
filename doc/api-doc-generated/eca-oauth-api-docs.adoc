@@ -19,9 +19,7 @@ API provides operations with users for ECA web application
 |*oauth2*
 |Oauth2 authentication
 
-*Client credentials location:* __header__
 
-*Bearer format:* __Authorization: Bearer <access token>__
 a|
 
 *Flow*
@@ -437,6 +435,7 @@ a|
 [source,json]
 ----
 [ {
+  "fieldName" : null,
   "code" : "InvalidOperation",
   "errorMessage" : "Tfa is already enabled for user"
 } ]
@@ -517,6 +516,7 @@ a|
 [source,json]
 ----
 [ {
+  "fieldName" : null,
   "code" : "InvalidOperation",
   "errorMessage" : "Push notifications is already enabled for user"
 } ]
@@ -974,7 +974,8 @@ a|
 ----
 [ {
   "fieldName" : "login",
-  "code" : "UniqueLogin"
+  "code" : "UniqueLogin",
+  "errorMessage" : null
 } ]
 ----
 |===
@@ -1103,6 +1104,7 @@ a|
 [source,json]
 ----
 [ {
+  "fieldName" : null,
   "code" : "InvalidToken",
   "errorMessage" : "Invalid token"
 } ]
@@ -1186,7 +1188,8 @@ a|
 ----
 [ {
   "fieldName" : "email",
-  "code" : "UserEmail"
+  "code" : "UserEmail",
+  "errorMessage" : null
 } ]
 ----
 |===
@@ -1274,8 +1277,34 @@ a|
 [source,json]
 ----
 [ {
-  "code" : "InvalidPassword",
-  "errorMessage" : "Invalid password"
+  "fieldName" : null,
+  "code" : "NotSafePassword",
+  "errorMessage" : "Password not safe",
+  "details" : [ {
+    "rule" : "MIN_LENGTH",
+    "valid" : false,
+    "message" : "12 и более символов"
+  }, {
+    "rule" : "DIGIT",
+    "valid" : true,
+    "message" : "Цифры"
+  }, {
+    "rule" : "UPPER_CASE_CHARACTER",
+    "valid" : false,
+    "message" : "Латинские буквы в верхнем регистре"
+  }, {
+    "rule" : "LOWER_CASE_CHARACTER",
+    "valid" : true,
+    "message" : "Латинские буквы в нижнем регистре"
+  }, {
+    "rule" : "SPECIAL_CHARACTER",
+    "valid" : false,
+    "message" : "Специальные символы (!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~)"
+  }, {
+    "rule" : "REPEAT_CHARACTERS",
+    "valid" : true,
+    "message" : "Нет одинаковых подряд идущих символов"
+  } ]
 } ]
 ----
 |===
@@ -1360,6 +1389,7 @@ a|
 [source,json]
 ----
 [ {
+  "fieldName" : null,
   "code" : "InvalidToken",
   "errorMessage" : "Invalid token"
 } ]
@@ -1545,6 +1575,7 @@ a|
 [source,json]
 ----
 [ {
+  "fieldName" : null,
   "code" : "InvalidToken",
   "errorMessage" : "Invalid token"
 } ]
@@ -1743,6 +1774,7 @@ a|
 [source,json]
 ----
 [ {
+  "fieldName" : null,
   "code" : "DataNotFound",
   "errorMessage" : "Entity with search key [1] not found!"
 } ]
@@ -2040,6 +2072,7 @@ a|
 [source,json]
 ----
 [ {
+  "fieldName" : null,
   "code" : "DataNotFound",
   "errorMessage" : "Entity with search key [1] not found!"
 } ]
@@ -2928,7 +2961,7 @@ a|
 __string__
 
 
-*Min. length*: 8
+*Min. length*: 0
 
 *Max. length*: 255
 
@@ -2999,7 +3032,7 @@ a|
 __string__
 
 
-*Min. length*: 8
+*Min. length*: 0
 
 *Max. length*: 255
 

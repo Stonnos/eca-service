@@ -1,6 +1,6 @@
 package com.ecaservice.server.service.evaluation;
 
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.filter.specification.FilterFieldCustomizer;
 import com.ecaservice.web.dto.model.FilterDictionaryValueDto;
 
@@ -22,21 +22,21 @@ public class ClassifierNameFilterFieldCustomizer extends FilterFieldCustomizer {
 
     private static final String CLASSIFIER_NAME_FIELD = "classifierInfo.classifierName";
 
-    private final FilterService filterService;
+    private final FilterTemplateService filterTemplateService;
 
     /**
      * Constructor with spring dependency injection.
      *
-     * @param filterService - filter service
+     * @param filterTemplateService - filter service
      */
-    public ClassifierNameFilterFieldCustomizer(FilterService filterService) {
+    public ClassifierNameFilterFieldCustomizer(FilterTemplateService filterTemplateService) {
         super(CLASSIFIER_NAME_FIELD);
-        this.filterService = filterService;
+        this.filterTemplateService = filterTemplateService;
     }
 
     @Override
     public Predicate toPredicate(Root<?> root, CriteriaBuilder criteriaBuilder, String value) {
-        var classifiersDictionary = filterService.getFilterDictionary(CLASSIFIER_NAME);
+        var classifiersDictionary = filterTemplateService.getFilterDictionary(CLASSIFIER_NAME);
         var classifierNames = classifiersDictionary.getValues()
                 .stream()
                 .filter(filterDictionaryValueDto -> filterDictionaryValueDto.getLabel().toLowerCase().contains(

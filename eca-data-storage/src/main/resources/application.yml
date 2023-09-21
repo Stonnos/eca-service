@@ -24,7 +24,7 @@ spring:
       correlation-fields: tx.id
       remote-fields: tx.id
   cache:
-    cache-names: attributes
+    cache-names: attributes, global-filters, filter-templates, filter-dictionaries, sort-fields
     caffeine:
       spec: maximumSize=100, expireAfterWrite=18000s
   servlet:
@@ -68,6 +68,13 @@ auth-server:
   baseUrl: http://localhost:8085/eca-oauth
   clientId: eca_service_tech
   clientSecret: 02#eca_service_tech6
+
+service:
+  feign:
+    oauth:
+      tokenUrl: http://localhost:8085/eca-oauth
+      clientId: eca_service_tech
+      clientSecret: 02#eca_service_tech6
 
 management:
   metrics:

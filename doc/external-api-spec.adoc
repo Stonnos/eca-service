@@ -7,7 +7,6 @@
 В данном документе приведено описание внешнего REST API для построения одиночных и ансамблевых моделей классификаторов.
 API предоставляет следующие методы:
 
-* Загрузка обучающей выборки на сервер
 * Построение модели классификатора с заданными настройками для конкретной обучающей выборки
 * Построение модели классификатора с использованием оптимальных параметров
 * Построение эксперимента для автоматического подбора оптимальных параметров для классификаторов
@@ -17,9 +16,9 @@ API предоставляет следующие методы:
 
 |===
 |Endpoint|Тип запроса|Описание|Формат запроса|Формат ответа
-|http://eca-service:8080/external-api/uploads-train-data
+|http://eca-service:8080/api/external/upload-train-data
 |POST
-|Загрузка файла с обучающей выборкой на сервер
+|Загрузка файла с обучающей выборкой в единое хранилище данных
 |multipart/form-data
 |application/json
 |http://eca-service:8080/external-api/optimal-evaluation-request
@@ -84,24 +83,20 @@ curl external-api:external_api_secret@eca-service:8080/eca-oauth/oauth/token -d 
 
 [source,bash]
 ----
-curl -X POST "http://localhost:8080/external-api/uploads-train-data" -H "accept: */*" -H "authorization: Bearer cf4cd583-b9f1-4dce-8dcc-afefd1510974" -H "Content-Type: multipart/form-data" -F "trainingData=@iris.xls;type=application/vnd.ms-excel"
+curl -X POST "http://localhost:8080/api/external/upload-train-data" -H "accept: */*" -H "authorization: Bearer cf4cd583-b9f1-4dce-8dcc-afefd1510974" -H "Content-Type: multipart/form-data" -F "instancesFile=@credit.json"
 ----
 
 * Примечание: размер файла не должен превышать 10мб.
-* Примечание: допускаются только файлы форматов csv, xls, xlsx, arff, json, docx, data, txt
-* Примечание: данные на сервере хранятся 14 дней
+* Примечание: допускаются только файлы формата json
 
 ==== 3.2. Пример ответа на запрос о загрузке обучающей выборки на сервер
 
 [source,json]
 ----
 {
-  "payload": {
-    "dataId": "2a35bffe-27ad-4a50-a7e0-8c871cfd7cc5",
-    "dataUrl": "data://2a35bffe-27ad-4a50-a7e0-8c871cfd7cc5"
-  },
-  "responseCode": "SUCCESS",
-  "errorDescription": null
+  "uuid": "1d2de514-3a87-4620-9b97-c260e24340de",
+  "md5Hash": "3032e188204cb537f69fc7364f638641",
+  "expireAt": "2021-07-01 14:00:00"
 }
 ----
 
@@ -109,21 +104,21 @@ curl -X POST "http://localhost:8080/external-api/uploads-train-data" -H "accept:
 
 |===
 |Название поля/атрибута|Тип|Обязательное|Описание|Комментарий
-|dataId
+|uuid
 |string
 |+
-|Уникальный идентификатор данных
+|UUID обучающей выборки
 |
-|dataUrl
+|md5Hash
 |string
 |+
-|Внутренняя ссылка на данные в формате data://dataId
-|Ссылка может быть передана в поле trainDataUrl для запроса на построение модели классификатора
-|responseCode
+|MD5 hash обучающей выборки
+|
+|expireAt
 |string
 |+
-|Статус ответа
-|Заполняется по справочнику <<Справочник кодов ответа>>
+|Дата истечения срока жизни обучающей выборки
+|
 |===
 
 ==== 3.4. Пример запроса на построение модели классификатора
@@ -131,7 +126,7 @@ curl -X POST "http://localhost:8080/external-api/uploads-train-data" -H "accept:
 [source,json]
 ----
 {
-  "trainDataUrl": "http://kt.ijs.si/Branax/Repository/WEKA/Iris.xls",
+  "trainDataUuid": "1d2de514-3a87-4620-9b97-c260e24340de",
   "classifierOptions": {
     "type": "logistic",
     "maxIts": 200,
@@ -148,11 +143,11 @@ curl -X POST "http://localhost:8080/external-api/uploads-train-data" -H "accept:
 
 |===
 |Название поля/атрибута|Тип|Обязательное|Описание|Комментарий
-|trainDataUrl
+|trainDataUuid
 |string
 |+
-|Ссылка на обучающую выборку
-|Может быть передана ссылка на внешний источник, например http или ftp, так и ссылка на файл с данными на сервере в формате data://DATA_ID
+|UUID обучающей выборки из data storage
+|
 |classifierOptions
 |ClassifierOptions
 |+
@@ -185,13 +180,9 @@ curl -X POST "http://localhost:8080/external-api/uploads-train-data" -H "accept:
 [source,json]
 ----
 {
-  "payload": {
-    "requestId": "1cbe6c49-8432-4c81-9afa-90f04a803fed",
-    "evaluationStatus": "IN_PROGRESS",
-    "errorCode": null
-  },
-  "responseCode": "SUCCESS",
-  "errorDescription": null
+  "requestId": "1cbe6c49-8432-4c81-9afa-90f04a803fed",
+  "evaluationStatus": "IN_PROGRESS",
+  "errorCode": null
 }
 ----
 
@@ -209,11 +200,6 @@ curl -X POST "http://localhost:8080/external-api/uploads-train-data" -H "accept:
 |+
 |Статус построения модели
 |Заполняется по справочнику <<Справочник кодов EvaluationStatus>>
-|responseCode
-|string
-|+
-|Статус ответа
-|Заполняется по справочнику <<Справочник кодов ответа>>
 |errorCode
 |string
 |-
@@ -226,7 +212,7 @@ curl -X POST "http://localhost:8080/external-api/uploads-train-data" -H "accept:
 [source,json]
 ----
 {
-  "trainDataUrl": "http://kt.ijs.si/Branax/Repository/WEKA/Iris.xls"
+  "trainDataUuid": "1d2de514-3a87-4620-9b97-c260e24340de"
 }
 ----
 
@@ -234,11 +220,11 @@ curl -X POST "http://localhost:8080/external-api/uploads-train-data" -H "accept:
 
 |===
 |Название поля/атрибута|Тип|Обязательное|Описание|Комментарий
-|trainDataUrl
+|trainDataUuid
 |string
 |+
-|Ссылка на обучающую выборку
-|Может быть передана ссылка на внешний источник, например http или ftp, так и ссылка на файл с данными на сервере в формате data://DATA_ID
+|UUID обучающей выборки из data storage
+|
 |===
 
 ==== 3.10. Пример ответа на запрос построения модели классификатора с использованием оптимальных параметров
@@ -246,13 +232,9 @@ curl -X POST "http://localhost:8080/external-api/uploads-train-data" -H "accept:
 [source,json]
 ----
 {
-  "payload": {
-    "requestId": "1cbe6c49-8432-4c81-9afa-90f04a803fed",
-    "evaluationStatus": "IN_PROGRESS",
-    "errorCode": null
-  },
-  "responseCode": "SUCCESS",
-  "errorDescription": null
+  "requestId": "1cbe6c49-8432-4c81-9afa-90f04a803fed",
+  "evaluationStatus": "IN_PROGRESS",
+  "errorCode": null
 }
 ----
 
@@ -270,20 +252,16 @@ curl -X GET "http://localhost:8080/external-api/evaluation-results/1cbe6c49-8432
 [source,json]
 ----
 {
-  "payload": {
-    "requestId": "1cbe6c49-8432-4c81-9afa-90f04a803fed",
-    "evaluationStatus": "FINISHED",
-    "errorCode": null,
-    "modelUrl": "http://localhost:8098/object-storage/eca-service/classifier-0f45c641-48e1-4f8f-a461-38c27a4befc3.model?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minio%2F20220727%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220727T061714Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=2ebb2d403962381a141efaf28767fe3ef622ce1477d9bd2f914560561579325c",
-    "numTestInstances": 150,
-    "numCorrect": 144,
-    "numIncorrect": 6,
-    "pctCorrect": 96,
-    "pctIncorrect": 4,
-    "meanAbsoluteError": 0.02869334024628254
-  },
-  "responseCode": "SUCCESS",
-  "errorDescription": null
+  "requestId": "1cbe6c49-8432-4c81-9afa-90f04a803fed",
+  "evaluationStatus": "FINISHED",
+  "errorCode": null,
+  "modelUrl": "http://localhost:8098/object-storage/eca-service/classifier-0f45c641-48e1-4f8f-a461-38c27a4befc3.model?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minio%2F20220727%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220727T061714Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=2ebb2d403962381a141efaf28767fe3ef622ce1477d9bd2f914560561579325c",
+  "numTestInstances": 150,
+  "numCorrect": 144,
+  "numIncorrect": 6,
+  "pctCorrect": 96,
+  "pctIncorrect": 4,
+  "meanAbsoluteError": 0.02869334024628254
 }
 ----
 
@@ -301,11 +279,6 @@ curl -X GET "http://localhost:8080/external-api/evaluation-results/1cbe6c49-8432
 |+
 |Статус построения модели
 |Заполняется по справочнику <<Справочник кодов EvaluationStatus>>
-|responseCode
-|string
-|+
-|Статус ответа
-|Заполняется по справочнику <<Справочник кодов ответа>>
 |errorCode
 |string
 |-
@@ -353,7 +326,7 @@ curl -X GET "http://localhost:8080/external-api/evaluation-results/1cbe6c49-8432
 [source,json]
 ----
 {
-  "trainDataUrl": "http://kt.ijs.si/Branax/Repository/WEKA/Iris.xls",
+  "trainDataUuid": "1d2de514-3a87-4620-9b97-c260e24340de",
   "evaluationMethod": "CROSS_VALIDATION",
   "experimentType": "RANDOM_FORESTS"
 }
@@ -363,11 +336,11 @@ curl -X GET "http://localhost:8080/external-api/evaluation-results/1cbe6c49-8432
 
 |===
 |Название поля/атрибута|Тип|Обязательное|Описание|Комментарий
-|trainDataUrl
+|trainDataUuid
 |string
 |+
-|Ссылка на обучающую выборку
-|Может быть передана ссылка на внешний источник, например http или ftp, так и ссылка на файл с данными на сервере в формате data://DATA_ID
+|UUID обучающей выборки из data storage
+|
 |evaluationMethod
 |string
 |+
@@ -385,42 +358,34 @@ curl -X GET "http://localhost:8080/external-api/evaluation-results/1cbe6c49-8432
 [source,json]
 ----
 {
-  "payload": {
-    "requestId": "1cbe6c49-8432-4c81-9afa-90f04a803fed",
-    "evaluationStatus": "IN_PROGRESS",
-    "errorCode": null
-  },
-  "responseCode": "SUCCESS",
-  "errorDescription": null
+  "requestId": "1cbe6c49-8432-4c81-9afa-90f04a803fed",
+  "evaluationStatus": "IN_PROGRESS",
+  "errorCode": null
 }
 ----
 
 Описание полей ответа приведено в п. 3.7.
 
-==== 3.17. Пример запроса на получение результатов эксперимента
+==== 3.14. Пример запроса на получение результатов эксперимента
 
 [source,bash]
 ----
 curl -X GET "http://localhost:8080/external-api/experiment-results/1cbe6c49-8432-4c81-9afa-90f04a803fed" -H "accept: */*" -H "authorization: Bearer cf4cd583-b9f1-4dce-8dcc-afefd1510974"
 ----
 
-==== 3.18. Пример ответа на запрос получения результатов эксперимента
+==== 3.17. Пример ответа на запрос получения результатов эксперимента
 
 [source,json]
 ----
 {
-  "payload": {
-    "requestId": "1cbe6c49-8432-4c81-9afa-90f04a803fed",
-    "evaluationStatus": "FINISHED",
-    "errorCode": null,
-    "experimentModelUrl": "http://localhost:8098/object-storage/eca-service/experiment-0f45c641-48e1-4f8f-a461-38c27a4befc3.model?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minio%2F20220727%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220727T061714Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=2ebb2d403962381a141efaf28767fe3ef622ce1477d9bd2f914560561579325c"
-  },
-  "responseCode": "SUCCESS",
-  "errorDescription": null
+  "requestId": "1cbe6c49-8432-4c81-9afa-90f04a803fed",
+  "evaluationStatus": "FINISHED",
+  "errorCode": null,
+  "experimentModelUrl": "http://localhost:8098/object-storage/eca-service/experiment-0f45c641-48e1-4f8f-a461-38c27a4befc3.model?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minio%2F20220727%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220727T061714Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=2ebb2d403962381a141efaf28767fe3ef622ce1477d9bd2f914560561579325c"
 }
 ----
 
-==== 3.19. Описание параметров ответа на запрос получения результатов эксперимента
+==== 3.18. Описание параметров ответа на запрос получения результатов эксперимента
 
 |===
 |Название поля/атрибута|Тип|Обязательное|Описание|Комментарий
@@ -434,11 +399,6 @@ curl -X GET "http://localhost:8080/external-api/experiment-results/1cbe6c49-8432
 |+
 |Статус построения модели
 |Заполняется по справочнику <<Справочник кодов EvaluationStatus>>
-|responseCode
-|string
-|+
-|Статус ответа
-|Заполняется по справочнику <<Справочник кодов ответа>>
 |errorCode
 |string
 |-
@@ -462,31 +422,6 @@ curl -X GET "http://localhost:8080/external-api/experiment-results/1cbe6c49-8432
 |2
 |CROSS_VALIDATION
 |Метод k * V - блочной кросс проверки на тестовой выборке
-|===
-
-== Справочник кодов ответа
-
-[options="header"]
-|===
-|№|Код|Описание
-|1
-|SUCCESS
-|Успешный запрос
-|2
-|VALIDATION_ERROR
-|Ошибка валидации
-|3
-|DATA_NOT_FOUND
-|Данные не найдены для заданного url
-|4
-|ERROR
-|Неизвестная ошибка
-|5
-|TIMEOUT
-|Превышено макс. допустимое время выполнения запроса
-|6
-|SERVICE_UNAVAILABLE
-|Сервис недоступен
 |===
 
 == Справочник кодов EvaluationStatus

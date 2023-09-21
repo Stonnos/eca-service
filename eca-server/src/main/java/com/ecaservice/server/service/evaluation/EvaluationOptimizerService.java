@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import weka.classifiers.AbstractClassifier;
-import weka.core.Instances;
 
 import java.util.UUID;
 
@@ -42,38 +41,36 @@ public class EvaluationOptimizerService {
      */
     public EvaluationResultsDataModel evaluateWithOptimalClassifierOptions(
             InstancesRequestDataModel instancesRequestDataModel) {
-        Instances data = instancesRequestDataModel.getData();
         log.info(
-                "Starting evaluation request with optimal classifier options for data hash [{}], options request id [{}]",
-                instancesRequestDataModel.getDataMd5Hash(), instancesRequestDataModel.getRequestId());
+                "Starting evaluation request with optimal classifier options for data uuid [{}], options request id [{}]",
+                instancesRequestDataModel.getDataUuid(), instancesRequestDataModel.getRequestId());
         ClassifierOptionsResult classifierOptionsResult =
                 optimalClassifierOptionsFetcher.getOptimalClassifierOptions(instancesRequestDataModel);
         if (!classifierOptionsResult.isFound()) {
             EvaluationResultsDataModel evaluationResultsDataModel =
                     buildErrorEvaluationResultsModel(UUID.randomUUID().toString(),
                             classifierOptionsResult.getErrorCode());
-            log.info("Response [{}] with error code [{}] has been build for data hash [{}], options request id [{}]",
+            log.info("Response [{}] with error code [{}] has been build for data uuid [{}], options request id [{}]",
                     evaluationResultsDataModel.getRequestId(), evaluationResultsDataModel.getErrorCode(),
-                    instancesRequestDataModel.getDataMd5Hash(), instancesRequestDataModel.getRequestId());
+                    instancesRequestDataModel.getDataUuid(), instancesRequestDataModel.getRequestId());
             return evaluationResultsDataModel;
         } else {
-            return evaluateModel(instancesRequestDataModel, classifierOptionsResult.getOptionsJson(), data);
+            return evaluateModel(instancesRequestDataModel, classifierOptionsResult.getOptionsJson());
         }
     }
 
     private EvaluationResultsDataModel evaluateModel(InstancesRequestDataModel instancesRequestDataModel,
-                                                     String options,
-                                                     Instances data) {
-        log.info("Starting to evaluate model for data hash [{}] with options [{}], options request id [{}]",
-                instancesRequestDataModel.getDataMd5Hash(), options, instancesRequestDataModel.getRequestId());
+                                                     String options) {
+        log.info("Starting to evaluate model for data uuid [{}] with options [{}], options request id [{}]",
+                instancesRequestDataModel.getDataUuid(), options, instancesRequestDataModel.getRequestId());
         AbstractClassifier classifier = classifierOptionsAdapter.convert(parseOptions(options));
         EvaluationRequestDataModel evaluationRequest =
                 evaluationRequestMapper.map(instancesRequestDataModel, crossValidationConfig);
-        evaluationRequest.setData(data);
         evaluationRequest.setClassifier(classifier);
+        evaluationRequest.setRequestId(UUID.randomUUID().toString());
         var evaluationResultsDataModel = evaluationRequestService.processRequest(evaluationRequest);
-        log.info("Model has been evaluated for data hash [{}] with options [{}], options request id [{}]",
-                instancesRequestDataModel.getDataMd5Hash(), options, instancesRequestDataModel.getRequestId());
+        log.info("Model has been evaluated for data uuid [{}] with options [{}], options request id [{}]",
+                instancesRequestDataModel.getDataUuid(), options, instancesRequestDataModel.getRequestId());
         return evaluationResultsDataModel;
     }
 }

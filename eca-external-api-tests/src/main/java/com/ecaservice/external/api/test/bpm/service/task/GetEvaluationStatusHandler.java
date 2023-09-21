@@ -44,9 +44,10 @@ public class GetEvaluationStatusHandler extends ExternalApiTaskHandler {
         Long autoTestId = getVariable(execution, AUTO_TEST_ID, Long.class);
         var autoTestEntity = autoTestService.getById(autoTestId);
         log.debug("Starting to get evaluation response status for test [{}]", autoTestId);
-        var response = externalApiClient.getEvaluationResults(autoTestEntity.getRequestId());
-        log.debug("Received evaluation response status for test [{}]: {}", autoTestId, response);
-        setVariableSafe(execution, API_RESPONSE, response);
+        var evaluationResultsResponseDto
+                = externalApiClient.getEvaluationResults(autoTestEntity.getRequestId());
+        log.debug("Received evaluation response status for test [{}]: {}", autoTestId, evaluationResultsResponseDto);
+        setVariableSafe(execution, API_RESPONSE, evaluationResultsResponseDto);
         log.debug("Get evaluation response status for execution [{}], process key [{}] has been finished",
                 execution.getId(), execution.getProcessBusinessKey());
     }

@@ -10,10 +10,12 @@ import com.ecaservice.data.storage.entity.AttributeValueEntity;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.model.AttributeInfo;
 import com.ecaservice.data.storage.repository.AttributeRepository;
+import com.ecaservice.data.storage.repository.InstancesRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import weka.core.Attribute;
 import weka.core.Instances;
 
@@ -36,9 +38,8 @@ import static com.ecaservice.data.storage.util.Utils.getAttributeValues;
 @RequiredArgsConstructor
 public class AttributeService {
 
-    private static final String COLUMN_NAME_FORMAT = "column_%d";
-
     private final AttributeRepository attributeRepository;
+    private final InstancesRepository instancesRepository;
 
     /**
      * Saves instances attributes info into database.
@@ -144,6 +145,7 @@ public class AttributeService {
      * @param id - attribute id
      */
     @Audit(value = SELECT_ATTRIBUTE, correlationIdKey = "#result.instancesEntity.id")
+    @Transactional
     public AttributeEntity selectAttribute(long id) {
         log.info("Starting to select attribute [{}]", id);
         var attribute = getById(id);
@@ -152,6 +154,7 @@ public class AttributeService {
         }
         attribute.setSelected(true);
         attributeRepository.save(attribute);
+        updateAttributeInstancesCounter(attribute);
         log.info("Attribute [{}] has been selected", attribute.getId());
         return attribute;
     }
@@ -162,6 +165,7 @@ public class AttributeService {
      * @param id - attribute id
      */
     @Audit(value = UNSELECT_ATTRIBUTE, correlationIdKey = "#result.instancesEntity.id")
+    @Transactional
     public AttributeEntity unselectAttribute(long id) {
         log.info("Starting to unselect attribute [{}]", id);
         var attribute = getById(id);
@@ -170,8 +174,15 @@ public class AttributeService {
         }
         attribute.setSelected(false);
         attributeRepository.save(attribute);
+        updateAttributeInstancesCounter(attribute);
         log.info("Attribute [{}] has been unselected", attribute.getId());
         return attribute;
+    }
+
+    private void updateAttributeInstancesCounter(AttributeEntity attributeEntity) {
+        var instancesEntity = attributeEntity.getInstancesEntity();
+        instancesEntity.increaseUpdatesCounter();
+        instancesRepository.save(instancesEntity);
     }
 
     private AttributeEntity createAttributeEntity(String attributeName,

@@ -39,6 +39,16 @@ eca-load-tests:
   pageSize: 25
   delaySeconds: 2
 
+data-loader:
+  url: http://localhost:8080/eca-data-loader
+
+service:
+  feign:
+    oauth:
+      tokenUrl: http://localhost:8080/eca-oauth
+      clientId: external-api
+      clientSecret: external_api_secret
+
 queue:
   evaluationRequestQueue: evaluation-request-queue
   replyToQueue: load-tests-response-queue

@@ -49,7 +49,7 @@ public abstract class AbstractPushEventHandler<E extends AbstractPushEvent, R ex
     public R handleEvent(E event) {
         var pushRequest = internalCreatePushRequest(event);
         pushRequest.setRequestId(UUID.randomUUID().toString());
-        pushRequest.setMessageType(getMessageType());
+        pushRequest.setMessageType(getMessageType(event));
         pushRequest.setMessageText(getMessageText(event));
         pushRequest.setAdditionalProperties(createAdditionalProperties(event));
         return pushRequest;
@@ -60,7 +60,7 @@ public abstract class AbstractPushEventHandler<E extends AbstractPushEvent, R ex
      *
      * @return message type
      */
-    protected abstract String getMessageType();
+    protected abstract String getMessageType(E event);
 
     /**
      * Gets message text.

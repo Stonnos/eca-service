@@ -1,5 +1,5 @@
 {
-  "trainDataUrl": "http://kt.ijs.si/Branax/Repository/WEKA/Iris.xls",
+  "trainDataUuid": "1d2de514-3a87-4620-9b97-c260e24340de",
   "experimentType": "RANDOM_FORESTS",
   "evaluationMethod": "CROSS_VALIDATION"
 }

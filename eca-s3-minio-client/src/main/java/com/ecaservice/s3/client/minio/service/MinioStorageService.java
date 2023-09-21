@@ -5,6 +5,7 @@ import com.ecaservice.s3.client.minio.exception.ObjectStorageException;
 import com.ecaservice.s3.client.minio.metrics.MinioStorageMetricsService;
 import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.model.UploadObject;
+import io.micrometer.core.annotation.Timed;
 import io.minio.GetObjectArgs;
 import io.minio.GetPresignedObjectUrlArgs;
 import io.minio.MinioClient;
@@ -19,6 +20,8 @@ import org.springframework.util.StopWatch;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.InputStream;
+
+import static com.ecaservice.s3.client.minio.metrics.MetricConstants.OBJECT_REQUEST_METRIC;
 
 /**
  * Minio S3 storage service.
@@ -44,6 +47,7 @@ public class MinioStorageService {
      *
      * @param uploadObject - upload object
      */
+    @Timed(value = OBJECT_REQUEST_METRIC)
     public void uploadObject(UploadObject uploadObject) {
         String bucket = minioClientProperties.getBucketName();
         log.info("Starting to upload object [{}] to s3 minio storage bucket [{}]", uploadObject.getObjectPath(),
@@ -105,6 +109,7 @@ public class MinioStorageService {
      *
      * @param objectPath - object path
      */
+    @Timed(value = OBJECT_REQUEST_METRIC)
     public void removeObject(String objectPath) {
         String bucket = minioClientProperties.getBucketName();
         log.info("Starting to remove object [{}] from s3 minio storage bucket [{}]", objectPath, bucket);
@@ -135,6 +140,7 @@ public class MinioStorageService {
      * @param presignedUrlObject - presigned url object
      * @return presigned url
      */
+    @Timed(value = OBJECT_REQUEST_METRIC)
     public String getObjectPresignedUrl(GetPresignedUrlObject presignedUrlObject) {
         log.info("Gets presigned url for object path [{}]", presignedUrlObject.getObjectPath());
         try {
@@ -167,6 +173,7 @@ public class MinioStorageService {
      * @param presignedUrlObject - presigned url object
      * @return presigned proxy url
      */
+    @Timed(value = OBJECT_REQUEST_METRIC)
     public String getObjectPresignedProxyUrl(GetPresignedUrlObject presignedUrlObject) {
         log.info("Gets presigned proxy url for object path [{}]", presignedUrlObject.getObjectPath());
         var objectPresignedUrl = getObjectPresignedUrl(presignedUrlObject);

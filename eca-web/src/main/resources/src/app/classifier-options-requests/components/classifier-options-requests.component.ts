@@ -10,15 +10,20 @@ import { FilterService } from "../../filter/services/filter.service";
 import { ClassifierOptionsRequestsFields } from "../../common/util/field-names";
 import { ReportType } from "../../common/model/report-type.enum";
 import { ReportsService } from "../../common/services/report.service";
-import { BaseEvaluationListComponent } from "../../common/lists/base-evaluation-list.component";
 import { InstancesInfoService } from "../../common/instances-info/services/instances-info.service";
+import { BaseListComponent } from "../../common/lists/base-list.component";
+import { MessageService } from "primeng/api";
+import { FieldService } from "../../common/services/field.service";
+import { InstancesInfoFilterValueTransformer } from "../../filter/autocomplete/transformer/instances-info-filter-value-transformer";
+import { InstancesInfoAutocompleteHandler } from "../../filter/autocomplete/handler/instances-info-autocomplete-handler";
+import { ClassifierOptionsRequestsFilterFields } from "../../common/util/filter-field-names";
 
 @Component({
   selector: 'app-classifier-options-requests',
   templateUrl: './classifier-options-requests.component.html',
   styleUrls: ['./classifier-options-requests.component.scss']
 })
-export class ClassifierOptionsRequestsComponent extends BaseEvaluationListComponent<ClassifierOptionsRequestDto> implements OnInit {
+export class ClassifierOptionsRequestsComponent extends BaseListComponent<ClassifierOptionsRequestDto> implements OnInit {
 
   private static readonly CLASSIFIER_OPTIONS_REQUESTS_REPORT_FILE_NAME = 'classifier-options-requests-report.xlsx';
 
@@ -28,8 +33,9 @@ export class ClassifierOptionsRequestsComponent extends BaseEvaluationListCompon
   public constructor(injector: Injector,
                      private classifierOptionsService: ClassifierOptionsRequestService,
                      private filterService: FilterService,
-                     private reportsService: ReportsService) {
-    super(injector, injector.get(InstancesInfoService));
+                     private reportsService: ReportsService,
+                     private instancesInfoService: InstancesInfoService,) {
+    super(injector.get(MessageService), injector.get(FieldService));
     this.defaultSortField = ClassifierOptionsRequestsFields.REQUEST_DATE;
     this.linkColumns = [ClassifierOptionsRequestsFields.RELATION_NAME,
       ClassifierOptionsRequestsFields.CLASSIFIER_NAME, ClassifierOptionsRequestsFields.EVALUATION_METHOD_DESCRIPTION];
@@ -38,6 +44,8 @@ export class ClassifierOptionsRequestsComponent extends BaseEvaluationListCompon
   }
 
   public ngOnInit() {
+    this.addLazyReferenceTransformers(new InstancesInfoFilterValueTransformer());
+    this.addAutoCompleteHandler(new InstancesInfoAutocompleteHandler(this.instancesInfoService, this.messageService));
     this.getFilterFields();
   }
 
@@ -78,12 +86,12 @@ export class ClassifierOptionsRequestsComponent extends BaseEvaluationListCompon
 
   private initColumns() {
     this.columns = [
-      { name: ClassifierOptionsRequestsFields.REQUEST_ID, label: "UUID заявки" },
-      { name: ClassifierOptionsRequestsFields.RELATION_NAME, label: "Обучающая выборка" },
+      { name: ClassifierOptionsRequestsFields.REQUEST_ID, label: "UUID заявки", sortBy: ClassifierOptionsRequestsFilterFields.REQUEST_ID },
+      { name: ClassifierOptionsRequestsFields.RELATION_NAME, label: "Обучающая выборка", sortBy: ClassifierOptionsRequestsFilterFields.RELATION_NAME },
       { name: ClassifierOptionsRequestsFields.CLASSIFIER_NAME, label: "Классификатор" },
-      { name: ClassifierOptionsRequestsFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности", sortBy: ClassifierOptionsRequestsFields.EVALUATION_METHOD },
-      { name: ClassifierOptionsRequestsFields.REQUEST_DATE, label: "Дата отправки запроса в ERS" },
-      { name: ClassifierOptionsRequestsFields.RESPONSE_STATUS_DESCRIPTION, label: "Статус ответа от ERS", sortBy: ClassifierOptionsRequestsFields.RESPONSE_STATUS }
+      { name: ClassifierOptionsRequestsFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности", sortBy: ClassifierOptionsRequestsFilterFields.EVALUATION_METHOD },
+      { name: ClassifierOptionsRequestsFields.REQUEST_DATE, label: "Дата отправки запроса в ERS", sortBy: ClassifierOptionsRequestsFilterFields.REQUEST_DATE },
+      { name: ClassifierOptionsRequestsFields.RESPONSE_STATUS_DESCRIPTION, label: "Статус ответа от ERS", sortBy: ClassifierOptionsRequestsFilterFields.RESPONSE_STATUS }
     ];
   }
 }

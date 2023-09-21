@@ -6,7 +6,7 @@
 
     <groupId>eca.service</groupId>
     <artifactId>eca-service</artifactId>
-    <version>6.4.5</version>
+    <version>6.4.6</version>
     <modules>
         <module>core-test</module>
         <module>oauth2-test</module>
@@ -20,10 +20,12 @@
         <module>eca-ers-transport</module>
         <module>eca-ds-transport</module>
         <module>eca-web-push-transport</module>
+        <module>eca-data-loader-transport</module>
         <module>eca-external-api-transport</module>
         <module>eca-audit-transport</module>
         <module>eca-web-transport</module>
         <module>eca-report-model</module>
+        <module>feign-oauth</module>
         <module>core-redelivery</module>
         <module>core-audit</module>
         <module>core-filter</module>
@@ -42,6 +44,7 @@
         <module>eca-mail</module>
         <module>eca-ers</module>
         <module>eca-data-storage</module>
+        <module>eca-data-loader</module>
         <module>eca-web-push</module>
         <module>eca-audit-log</module>
         <module>eca-external-api</module>
@@ -79,7 +82,7 @@
         <inject.version>1</inject.version>
         <logback.version>1.2.12</logback.version>
         <slf4j.version>1.7.36</slf4j.version>
-        <eca.version>6.9.4</eca.version>
+        <eca.version>6.9.5</eca.version>
         <h2.version>1.4.199</h2.version>
         <postresql.version>42.6.0</postresql.version>
         <liquibase.version>3.7.0</liquibase.version>

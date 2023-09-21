@@ -1,9 +1,10 @@
 package com.ecaservice.server.controller.web;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.oauth2.test.controller.AbstractControllerTest;
 import com.ecaservice.server.TestHelperUtils;
+import com.ecaservice.server.configuation.annotation.EnableCamundaMock;
 import com.ecaservice.server.model.entity.FilterTemplateType;
 import com.ecaservice.server.service.filter.dictionary.FilterDictionaries;
 import com.ecaservice.web.dto.model.FilterDictionaryDto;
@@ -28,6 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @author Roman Batygin
  */
+@EnableCamundaMock
 @WebMvcTest(controllers = FilterTemplateController.class)
 class FilterTemplateControllerTest extends AbstractControllerTest {
 
@@ -42,7 +44,7 @@ class FilterTemplateControllerTest extends AbstractControllerTest {
     private static final String EVALUATION_METHODS_URL = BASE_URL + "/evaluation-methods";
 
     @MockBean
-    private FilterService filterService;
+    private FilterTemplateService filterTemplateService;
 
     @Test
     void testGetExperimentFilterTemplateUnauthorized() throws Exception {
@@ -139,17 +141,17 @@ class FilterTemplateControllerTest extends AbstractControllerTest {
                 FilterTemplateType.CLASSIFIERS_CONFIGURATION_HISTORY);
     }
 
-    private void testGetFilterTemplateNotFound(String templateUrl, FilterTemplateType filterTemplateType)
+    private void testGetFilterTemplateNotFound(String templateUrl, String filterTemplateType)
             throws Exception {
-        when(filterService.getFilterFields(filterTemplateType.name())).thenThrow(EntityNotFoundException.class);
+        when(filterTemplateService.getFilterFields(filterTemplateType)).thenThrow(EntityNotFoundException.class);
         mockMvc.perform(get(templateUrl)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isBadRequest());
     }
 
-    private void testGetFilterTemplateOk(String templateUrl, FilterTemplateType filterTemplateType) throws Exception {
+    private void testGetFilterTemplateOk(String templateUrl, String filterTemplateType) throws Exception {
         List<FilterFieldDto> filterFieldDtoList = Collections.singletonList(TestHelperUtils.createFilterFieldDto());
-        when(filterService.getFilterFields(filterTemplateType.name())).thenReturn(filterFieldDtoList);
+        when(filterTemplateService.getFilterFields(filterTemplateType)).thenReturn(filterFieldDtoList);
         mockMvc.perform(get(templateUrl)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk())
@@ -158,7 +160,7 @@ class FilterTemplateControllerTest extends AbstractControllerTest {
     }
 
     private void testGetFilterDictionaryNotFound(String templateUrl, String filterDictionaryName) throws Exception {
-        when(filterService.getFilterDictionary(filterDictionaryName)).thenThrow(EntityNotFoundException.class);
+        when(filterTemplateService.getFilterDictionary(filterDictionaryName)).thenThrow(EntityNotFoundException.class);
         mockMvc.perform(get(templateUrl)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isBadRequest());
@@ -166,7 +168,7 @@ class FilterTemplateControllerTest extends AbstractControllerTest {
 
     private void testGetFilterDictionaryOk(String templateUrl, String filterDictionaryName) throws Exception {
         FilterDictionaryDto filterDictionaryDto = TestHelperUtils.createFilterDictionaryDto();
-        when(filterService.getFilterDictionary(filterDictionaryName)).thenReturn(filterDictionaryDto);
+        when(filterTemplateService.getFilterDictionary(filterDictionaryName)).thenReturn(filterDictionaryDto);
         mockMvc.perform(get(templateUrl)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk())

@@ -10,7 +10,7 @@ import com.ecaservice.server.mapping.InstancesInfoMapperImpl;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.repository.EvaluationLogRepository;
-import com.ecaservice.server.service.evaluation.EvaluationLogService;
+import com.ecaservice.server.service.evaluation.EvaluationLogDataService;
 import com.ecaservice.web.dto.model.ChartDataDto;
 import com.ecaservice.web.dto.model.ChartDto;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
@@ -62,7 +62,7 @@ class EvaluationControllerTest extends PageRequestControllerTest {
     private static final long ID = 1L;
 
     @MockBean
-    private EvaluationLogService evaluationLogService;
+    private EvaluationLogDataService evaluationLogDataService;
     @MockBean
     private EvaluationLogRepository evaluationLogRepository;
 
@@ -88,7 +88,7 @@ class EvaluationControllerTest extends PageRequestControllerTest {
         EvaluationLog evaluationLog = TestHelperUtils.createEvaluationLog(TEST_UUID, RequestStatus.FINISHED);
         when(evaluationLogRepository.findById(ID)).thenReturn(Optional.of(evaluationLog));
         EvaluationLogDetailsDto evaluationLogDetailsDto = evaluationLogMapper.mapDetails(evaluationLog);
-        when(evaluationLogService.getEvaluationLogDetails(evaluationLog)).thenReturn(evaluationLogDetailsDto);
+        when(evaluationLogDataService.getEvaluationLogDetails(evaluationLog)).thenReturn(evaluationLogDetailsDto);
         mockMvc.perform(get(DETAILS_URL, ID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk())
@@ -139,7 +139,7 @@ class EvaluationControllerTest extends PageRequestControllerTest {
                 .map(evaluationLogMapper::map)
                 .collect(Collectors.toList());
         var pageDto = PageDto.of(evaluationLogsDtoList, PAGE_NUMBER, TOTAL_ELEMENTS);
-        when(evaluationLogService.getEvaluationLogsPage(any(PageRequestDto.class))).thenReturn(pageDto);
+        when(evaluationLogDataService.getEvaluationLogsPage(any(PageRequestDto.class))).thenReturn(pageDto);
         mockMvc.perform(post(LIST_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .content(objectMapper.writeValueAsString(createPageRequestDto()))
@@ -158,7 +158,7 @@ class EvaluationControllerTest extends PageRequestControllerTest {
     @Test
     void testEvaluationRequestStatusesStatisticsOk() throws Exception {
         RequestStatusStatisticsDto requestStatusStatisticsDto = new RequestStatusStatisticsDto();
-        when(evaluationLogService.getRequestStatusesStatistics()).thenReturn(requestStatusStatisticsDto);
+        when(evaluationLogDataService.getRequestStatusesStatistics()).thenReturn(requestStatusStatisticsDto);
         mockMvc.perform(get(REQUEST_STATUS_STATISTICS_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk())
@@ -177,7 +177,7 @@ class EvaluationControllerTest extends PageRequestControllerTest {
                 .total(1L)
                 .dataItems(Collections.singletonList(new ChartDataDto("Item", "Item", 1L)))
                 .build();
-        when(evaluationLogService.getClassifiersStatisticsData(null, null))
+        when(evaluationLogDataService.getClassifiersStatisticsData(null, null))
                 .thenReturn(chartDto);
         mockMvc.perform(get(CLASSIFIERS_STATISTICS_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
@@ -194,7 +194,7 @@ class EvaluationControllerTest extends PageRequestControllerTest {
 
     @Test
     void testGetModelContentUrlForNotExistingEvaluationLog() throws Exception {
-        when(evaluationLogService.getModelContentUrl(ID)).thenThrow(EntityNotFoundException.class);
+        when(evaluationLogDataService.getModelContentUrl(ID)).thenThrow(EntityNotFoundException.class);
         mockMvc.perform(get(MODEL_CONTENT_URL, ID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isBadRequest());
@@ -205,7 +205,7 @@ class EvaluationControllerTest extends PageRequestControllerTest {
         var s3ContentResponseDto = S3ContentResponseDto.builder()
                 .contentUrl(CONTENT_URL)
                 .build();
-        when(evaluationLogService.getModelContentUrl(ID)).thenReturn(s3ContentResponseDto);
+        when(evaluationLogDataService.getModelContentUrl(ID)).thenReturn(s3ContentResponseDto);
         mockMvc.perform(get(MODEL_CONTENT_URL, ID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk())

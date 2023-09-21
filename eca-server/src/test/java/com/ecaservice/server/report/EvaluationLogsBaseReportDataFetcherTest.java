@@ -1,9 +1,8 @@
 package com.ecaservice.server.report;
 
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.report.model.BaseReportBean;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
-import com.ecaservice.server.report.model.EvaluationLogBean;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.mapping.ClassifierInfoMapperImpl;
@@ -14,13 +13,14 @@ import com.ecaservice.server.mapping.InstancesInfoMapperImpl;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.EvaluationLog_;
 import com.ecaservice.server.model.entity.RequestStatus;
+import com.ecaservice.server.report.model.EvaluationLogBean;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.repository.EvaluationResultsRequestEntityRepository;
 import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.classifiers.ClassifierOptionsProcessor;
 import com.ecaservice.server.service.ers.ErsService;
-import com.ecaservice.server.service.evaluation.EvaluationLogService;
+import com.ecaservice.server.service.evaluation.EvaluationLogDataService;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -56,7 +56,7 @@ class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
     private static final LocalDateTime CREATION_DATE = LocalDateTime.of(2018, 1, 5, 0, 0, 0);
 
     @Mock
-    private FilterService filterService;
+    private FilterTemplateService filterTemplateService;
     @Mock
     private ErsService ersService;
     @Mock
@@ -81,14 +81,15 @@ class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
 
     @Override
     public void init() {
-        EvaluationLogService evaluationLogService =
-                new EvaluationLogService(appProperties, filterService, evaluationLogMapper, classifierOptionsProcessor,
+        EvaluationLogDataService evaluationLogDataService =
+                new EvaluationLogDataService(appProperties, filterTemplateService, evaluationLogMapper, classifierOptionsProcessor,
                         ersService, entityManager, objectStorageService, evaluationLogRepository,
                         evaluationResultsRequestEntityRepository);
         evaluationLogsBaseReportDataFetcher =
-                new EvaluationLogsBaseReportDataFetcher(filterService, instancesInfoRepository, evaluationLogService,
+                new EvaluationLogsBaseReportDataFetcher(filterTemplateService, instancesInfoRepository,
+                        evaluationLogDataService,
                         evaluationLogMapper);
-        when(filterService.getFilterDictionary(CLASSIFIER_NAME)).thenReturn(createFilterDictionaryDto());
+        when(filterTemplateService.getFilterDictionary(CLASSIFIER_NAME)).thenReturn(createFilterDictionaryDto());
     }
 
     @Override

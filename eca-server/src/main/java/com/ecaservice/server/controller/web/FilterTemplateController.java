@@ -1,6 +1,6 @@
 package com.ecaservice.server.controller.web;
 
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.server.model.entity.FilterTemplateType;
 import com.ecaservice.server.service.filter.dictionary.FilterDictionaries;
 import com.ecaservice.web.dto.model.FilterDictionaryDto;
@@ -38,7 +38,7 @@ import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
 @RequiredArgsConstructor
 public class FilterTemplateController {
 
-    private final FilterService filterService;
+    private final FilterTemplateService filterTemplateService;
 
     /**
      * Gets experiment filter fields.
@@ -78,7 +78,7 @@ public class FilterTemplateController {
     )
     @GetMapping(value = "/experiment")
     public List<FilterFieldDto> getExperimentFilter() {
-        return filterService.getFilterFields(FilterTemplateType.EXPERIMENT.name());
+        return filterTemplateService.getFilterFields(FilterTemplateType.EXPERIMENT);
     }
 
     /**
@@ -119,7 +119,7 @@ public class FilterTemplateController {
     )
     @GetMapping(value = "/evaluation")
     public List<FilterFieldDto> getEvaluationLogFilter() {
-        return filterService.getFilterFields(FilterTemplateType.EVALUATION_LOG.name());
+        return filterTemplateService.getFilterFields(FilterTemplateType.EVALUATION_LOG);
     }
 
     /**
@@ -160,7 +160,7 @@ public class FilterTemplateController {
     )
     @GetMapping(value = "/classifier-options-request")
     public List<FilterFieldDto> getClassifierOptionsRequestFilter() {
-        return filterService.getFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST.name());
+        return filterTemplateService.getFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST);
     }
 
     /**
@@ -201,7 +201,7 @@ public class FilterTemplateController {
     )
     @GetMapping(value = "/experiment-types")
     public FilterDictionaryDto getExperimentTypeDictionary() {
-        return filterService.getFilterDictionary(FilterDictionaries.EXPERIMENT_TYPE);
+        return filterTemplateService.getFilterDictionary(FilterDictionaries.EXPERIMENT_TYPE);
     }
 
     /**
@@ -242,7 +242,7 @@ public class FilterTemplateController {
     )
     @GetMapping(value = "/evaluation-methods")
     public FilterDictionaryDto getEvaluationMethodDictionary() {
-        return filterService.getFilterDictionary(FilterDictionaries.EVALUATION_METHOD);
+        return filterTemplateService.getFilterDictionary(FilterDictionaries.EVALUATION_METHOD);
     }
 
     /**
@@ -283,6 +283,6 @@ public class FilterTemplateController {
     )
     @GetMapping(value = "/classifiers-configuration-history")
     public List<FilterFieldDto> getClassifiersConfigurationHistoryFilter() {
-        return filterService.getFilterFields(FilterTemplateType.CLASSIFIERS_CONFIGURATION_HISTORY.name());
+        return filterTemplateService.getFilterFields(FilterTemplateType.CLASSIFIERS_CONFIGURATION_HISTORY);
     }
 }

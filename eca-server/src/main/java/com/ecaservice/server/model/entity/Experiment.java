@@ -10,7 +10,6 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Index;
 import javax.persistence.Table;
-
 import java.math.BigDecimal;
 
 import static com.ecaservice.server.util.FieldConstraints.EXPERIMENT_DOWNLOAD_URL_MAX_LENGTH;
@@ -45,16 +44,10 @@ public class Experiment extends AbstractEvaluationEntity {
     private String email;
 
     /**
-     * Training data file path
+     * Training data uuid in data storage (generated while upload data to data loader module)
      */
-    @Column(name = "training_data_path")
-    private String trainingDataPath;
-
-    /**
-     * Class attribute index
-     */
-    @Column(name = "class_index")
-    private Integer classIndex;
+    @Column(name = "training_data_uuid")
+    private String trainingDataUuid;
 
     /**
      * Experiment type

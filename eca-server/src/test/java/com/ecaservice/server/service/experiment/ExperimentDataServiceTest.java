@@ -2,7 +2,7 @@ package com.ecaservice.server.service.experiment;
 
 import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.TestHelperUtils;
@@ -77,7 +77,7 @@ class ExperimentDataServiceTest extends AbstractJpaTest {
     @MockBean
     private ObjectStorageService objectStorageService;
     @MockBean
-    private FilterService filterService;
+    private FilterTemplateService filterTemplateService;
     @MockBean
     private ExperimentStepProcessor experimentStepProcessor;
 
@@ -112,18 +112,6 @@ class ExperimentDataServiceTest extends AbstractJpaTest {
         assertThat(experiment.getModelPath()).isNull();
         assertThat(experiment.getExperimentDownloadUrl()).isNull();
         assertThat(experiment.getDeletedDate()).isNotNull();
-    }
-
-    @Test
-    void testSuccessRemoveExperimentTrainingData() {
-        Experiment experiment =
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW, instancesInfo);
-        experimentRepository.save(experiment);
-        experimentDataService.removeExperimentTrainingData(experiment);
-        experiment = experimentRepository.findById(experiment.getId()).orElse(null);
-        assertThat(experiment).isNotNull();
-        assertThat(experiment.getTrainingDataPath()).isNull();
-        assertThat(experiment.getDeletedDate()).isNull();
     }
 
     @Test
@@ -176,7 +164,7 @@ class ExperimentDataServiceTest extends AbstractJpaTest {
                         newArrayList());
         pageRequestDto.getFilters().add(new FilterRequestDto(Experiment_.REQUEST_STATUS,
                 Collections.singletonList(RequestStatus.FINISHED.name()), MatchMode.EQUALS));
-        when(filterService.getGlobalFilterFields(FilterTemplateType.EXPERIMENT.name())).thenReturn(
+        when(filterTemplateService.getGlobalFilterFields(FilterTemplateType.EXPERIMENT)).thenReturn(
                 Arrays.asList(Experiment_.EMAIL, Experiment_.REQUEST_ID));
         Page<Experiment> evaluationLogPage = experimentDataService.getNextPage(pageRequestDto);
         assertThat(evaluationLogPage).isNotNull();
@@ -199,7 +187,7 @@ class ExperimentDataServiceTest extends AbstractJpaTest {
         experimentRepository.saveAll(Arrays.asList(experiment, experiment1, experiment2, experiment3));
         PageRequestDto pageRequestDto = new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, Experiment_.CREATION_DATE, false,
                 RequestStatus.FINISHED.getDescription().substring(0, 2), newArrayList());
-        when(filterService.getGlobalFilterFields(FilterTemplateType.EXPERIMENT.name())).thenReturn(
+        when(filterTemplateService.getGlobalFilterFields(FilterTemplateType.EXPERIMENT)).thenReturn(
                 Collections.singletonList(Experiment_.REQUEST_STATUS));
         Page<Experiment> evaluationLogPage = experimentDataService.getNextPage(pageRequestDto);
         assertThat(evaluationLogPage).isNotNull();
@@ -220,7 +208,7 @@ class ExperimentDataServiceTest extends AbstractJpaTest {
         experimentRepository.saveAll(Arrays.asList(experiment, experiment1, experiment2));
         PageRequestDto pageRequestDto = new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, Experiment_.CREATION_DATE, false,
                 "query", newArrayList());
-        when(filterService.getGlobalFilterFields(FilterTemplateType.EXPERIMENT.name())).thenReturn(
+        when(filterTemplateService.getGlobalFilterFields(FilterTemplateType.EXPERIMENT)).thenReturn(
                 Collections.singletonList(Experiment_.REQUEST_STATUS));
         Page<Experiment> evaluationLogPage = experimentDataService.getNextPage(pageRequestDto);
         assertThat(evaluationLogPage).isEmpty();
@@ -421,7 +409,7 @@ class ExperimentDataServiceTest extends AbstractJpaTest {
         Stream.of(ExperimentType.values()).forEach(experimentType ->
                 experimentsDictionary.getValues().add(new FilterDictionaryValueDto(experimentType.getDescription(),
                         experimentType.name())));
-        when(filterService.getFilterDictionary(EXPERIMENT_TYPE)).thenReturn(experimentsDictionary);
+        when(filterTemplateService.getFilterDictionary(EXPERIMENT_TYPE)).thenReturn(experimentsDictionary);
     }
 
     private void verifyChartItem(List<ChartDataDto> items, String classifierName, long expectedCount) {

@@ -10,6 +10,7 @@ import com.ecaservice.server.model.entity.ErsResponseStatus;
 import com.ecaservice.server.model.evaluation.ClassifierOptionsRequestSource;
 import com.ecaservice.server.model.evaluation.InstancesRequestDataModel;
 import com.ecaservice.server.repository.ClassifierOptionsRequestRepository;
+import com.ecaservice.server.service.data.InstancesMetaDataService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -38,6 +39,7 @@ public class OptimalClassifierOptionsCacheService implements OptimalClassifierOp
 
     private final ErsConfig ersConfig;
     private final OptimalClassifierOptionsFetcher optimalClassifierOptionsFetcher;
+    private final InstancesMetaDataService instancesMetaDataService;
     private final ClassifierOptionsRequestRepository classifierOptionsRequestRepository;
 
     /**
@@ -45,14 +47,17 @@ public class OptimalClassifierOptionsCacheService implements OptimalClassifierOp
      *
      * @param ersConfig                          - ers config bean
      * @param optimalClassifierOptionsFetcher    - optimal classifier options fetcher
+     * @param instancesMetaDataService                  - data loader service
      * @param classifierOptionsRequestRepository - classifier options request repository
      */
     public OptimalClassifierOptionsCacheService(ErsConfig ersConfig,
                                                 @Qualifier("optimalClassifierOptionsFetcherImpl")
                                                 OptimalClassifierOptionsFetcher optimalClassifierOptionsFetcher,
+                                                InstancesMetaDataService instancesMetaDataService,
                                                 ClassifierOptionsRequestRepository classifierOptionsRequestRepository) {
         this.ersConfig = ersConfig;
         this.optimalClassifierOptionsFetcher = optimalClassifierOptionsFetcher;
+        this.instancesMetaDataService = instancesMetaDataService;
         this.classifierOptionsRequestRepository = classifierOptionsRequestRepository;
     }
 
@@ -73,15 +78,21 @@ public class OptimalClassifierOptionsCacheService implements OptimalClassifierOp
     @Override
     @Locked(lockName = "getOptimalClassifierOptions", key = "#instancesRequestDataModel.dataMd5Hash")
     public ClassifierOptionsResult getOptimalClassifierOptions(InstancesRequestDataModel instancesRequestDataModel) {
-        String dataMd5Hash = instancesRequestDataModel.getDataMd5Hash();
-        log.info("Starting to get optimal classifiers options from cache for data md5 hash: {}, options req id [{}]",
-                dataMd5Hash, instancesRequestDataModel.getRequestId());
+        log.info("Starting to get optimal classifiers options from cache for data uuid: {}, options req id [{}]",
+                instancesRequestDataModel.getDataUuid(), instancesRequestDataModel.getRequestId());
+        var instancesMetaDataModel =
+                instancesMetaDataService.getInstancesMetaData(instancesRequestDataModel.getDataUuid());
+        String dataMd5Hash = instancesMetaDataModel.getMd5Hash();
+        log.info(
+                "Starting to get optimal classifiers options from cache for data uuid [{}], md5 hash {}, options req id [{}]",
+                instancesRequestDataModel.getDataUuid(), dataMd5Hash, instancesRequestDataModel.getRequestId());
         ClassifierOptionsRequestModel requestModel = getLastClassifierOptionsRequestModel(dataMd5Hash);
         ClassifierOptionsResponseModel responseModel = getFirstResponseModel(requestModel);
         if (responseModel != null) {
             log.info(
-                    "Optimal options [{}] has been taken from last response for data md5 hash '{}', options req id [{}]",
-                    responseModel.getOptions(), dataMd5Hash, instancesRequestDataModel.getRequestId());
+                    "Optimal options [{}] has been taken from last response for data uuid [{}] md5 hash {}, options req id [{}]",
+                    responseModel.getOptions(), instancesRequestDataModel.getDataUuid(), dataMd5Hash,
+                    instancesRequestDataModel.getRequestId());
             ClassifierOptionsRequestEntity requestEntity =
                     createClassifierOptionsRequestEntity(ClassifierOptionsRequestSource.CACHE);
             requestEntity.setRequestId(instancesRequestDataModel.getRequestId());

@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2023-07-07T17:12:49.277Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" etag="1KyPZ8VZL2XIu_AkJBCe" version="21.5.0" type="device">
+<mxfile host="app.diagrams.net" modified="2023-09-05T18:49:57.580Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36" etag="lvdP0w0EGZm-V6_maiTx" version="21.7.2" type="device">
   <diagram id="42DBSTjnTLt2gEK7JXko" name="Page-1">
-    <mxGraphModel dx="2412" dy="869" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="2688" dy="1014" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -37,7 +37,7 @@
           <mxGeometry x="10" y="190" width="110" height="30" as="geometry" />
         </mxCell>
         <mxCell id="bdxNikY4OvodIH9ehBmx-9" value="&lt;b&gt;eca-oauth&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
-          <mxGeometry x="-120" y="190" width="110" height="30" as="geometry" />
+          <mxGeometry x="-120" y="140" width="110" height="30" as="geometry" />
         </mxCell>
         <mxCell id="bdxNikY4OvodIH9ehBmx-25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;fontColor=#FFFFFF;strokeColor=#FF9933;endArrow=none;endFill=0;strokeWidth=2;" parent="1" source="bdxNikY4OvodIH9ehBmx-10" target="bdxNikY4OvodIH9ehBmx-23" edge="1">
           <mxGeometry relative="1" as="geometry" />
@@ -227,6 +227,19 @@
         </mxCell>
         <mxCell id="bdxNikY4OvodIH9ehBmx-77" value="&lt;b&gt;POSTGRES&lt;br&gt;EXPORTER&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=14;strokeWidth=2;gradientDirection=radial;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
           <mxGeometry x="170" y="390" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="I17gXc3xaZR4B3wOylEC-1" value="&lt;b&gt;eca-data-loader&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="-120" y="190" width="110" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="I17gXc3xaZR4B3wOylEC-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontColor=#FFFFFF;endArrow=none;endFill=0;strokeColor=#FF9933;strokeWidth=2;" edge="1" parent="1" source="I17gXc3xaZR4B3wOylEC-1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-158" y="230" as="sourcePoint" />
+            <mxPoint x="110" y="290" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="-65" y="260" />
+              <mxPoint x="110" y="260" />
+            </Array>
+          </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>

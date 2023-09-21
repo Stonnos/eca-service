@@ -3,18 +3,24 @@ package com.ecaservice.data.storage;
 import com.ecaservice.data.storage.entity.AttributeEntity;
 import com.ecaservice.data.storage.entity.AttributeType;
 import com.ecaservice.data.storage.entity.AttributeValueEntity;
+import com.ecaservice.data.storage.entity.ExportInstancesObjectEntity;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.model.report.ReportProperties;
 import com.ecaservice.data.storage.model.report.ReportType;
 import com.ecaservice.web.dto.model.AttributeDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import eca.data.file.model.InstancesModel;
 import eca.data.file.resource.FileResource;
 import eca.data.file.xls.XLSLoader;
+import lombok.Cleanup;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import weka.core.Instances;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.UUID;
@@ -41,6 +47,24 @@ public class TestHelperUtils {
     private static final int PAGE_NUMBER = 0;
     private static final int NUM_ATTR_VALUES = 3;
     private static final String ID_COLUMN_NAME = "ID";
+
+    private static final String MD_5_HASH = "3032e188204cb537f69fc7364f638641";
+
+    private static final String CREDIT_JSON = "credit.json";
+
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+    /**
+     * Loads instances model from resource.
+     *
+     * @return instances model
+     * @throws IOException in case of I/O error
+     */
+    public static InstancesModel loadInstancesModel() throws IOException {
+        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+        @Cleanup InputStream inputStream = classLoader.getResourceAsStream(CREDIT_JSON);
+        return OBJECT_MAPPER.readValue(inputStream, InstancesModel.class);
+    }
 
     /**
      * Creates page request dto.
@@ -167,5 +191,23 @@ public class TestHelperUtils {
         attributeDto.setName(name);
         attributeDto.setSelected(true);
         return attributeDto;
+    }
+
+    /**
+     * Creates export instances entity object.
+     *
+     * @param instancesUuid - instances uuid
+     * @param expireAt      - expiration date
+     * @return export instances entity
+     */
+    public static ExportInstancesObjectEntity createExportInstancesObjectEntity(String instancesUuid,
+                                                                                LocalDateTime expireAt) {
+        ExportInstancesObjectEntity exportInstancesObjectEntity = new ExportInstancesObjectEntity();
+        exportInstancesObjectEntity.setInstancesUuid(instancesUuid);
+        exportInstancesObjectEntity.setExternalDataUuid(UUID.randomUUID().toString());
+        exportInstancesObjectEntity.setExpireAt(expireAt);
+        exportInstancesObjectEntity.setMd5Hash(MD_5_HASH);
+        exportInstancesObjectEntity.setCreated(LocalDateTime.now());
+        return exportInstancesObjectEntity;
     }
 }

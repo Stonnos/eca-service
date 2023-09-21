@@ -3,7 +3,6 @@ package com.ecaservice.server.config;
 import com.ecaservice.common.web.annotation.EnableGlobalExceptionHandler;
 import com.ecaservice.config.swagger.annotation.EnableOpenApi;
 import com.ecaservice.core.filter.annotation.EnableFilters;
-import com.ecaservice.core.filter.error.FilterExceptionHandler;
 import com.ecaservice.core.form.template.annotation.EnableFormTemplates;
 import com.ecaservice.oauth2.annotation.Oauth2ResourceServer;
 import com.ecaservice.server.config.ers.ErsConfig;
@@ -15,7 +14,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -44,12 +42,10 @@ import java.util.concurrent.Executors;
 @EnableJpaRepositories(basePackageClasses = EvaluationLogRepository.class)
 @EnableConfigurationProperties(
         {AppProperties.class, CrossValidationConfig.class, ExperimentConfig.class,
-                ErsConfig.class, ClassifiersProperties.class})
-@Import(FilterExceptionHandler.class)
+                ErsConfig.class, ClassifiersProperties.class, ProcessConfig.class})
 public class EcaServiceConfiguration {
 
     public static final String ECA_THREAD_POOL_TASK_EXECUTOR = "ecaThreadPoolTaskExecutor";
-    public static final String EXPERIMENT_REDIS_LOCK_REGISTRY_BEAN = "experimentRedisLockRegistry";
 
     /**
      * Creates executor service bean.

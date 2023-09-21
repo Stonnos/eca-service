@@ -1,6 +1,5 @@
 {
-  "displayName": "Extra trees request using data storage API",
-  "trainDataSource": "API_DATA_STORAGE",
+  "displayName": "Extra trees request",
   "trainDataPath": "classpath:/data/credit.json",
   "request": {
     "classifierOptions": {
@@ -15,7 +14,5 @@
     },
     "evaluationMethod": "TRAINING_DATA"
   },
-  "expectedResponse": {
-    "responseCode": "SUCCESS"
-  }
+  "expectedResponseCode": "SUCCESS"
 }

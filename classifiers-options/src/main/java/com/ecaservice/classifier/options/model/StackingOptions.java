@@ -26,7 +26,7 @@ import static com.ecaservice.classifier.options.model.Constraints.VALUE_2;
 @Data
 @Schema(description = "Stacking classifier options")
 @EqualsAndHashCode(callSuper = true)
-public class StackingOptions extends ClassifierOptions {
+public class StackingOptions extends ClassifierOptions implements RandomizeOptions {
 
     /**
      * Is use cross - validation method for meta data building?

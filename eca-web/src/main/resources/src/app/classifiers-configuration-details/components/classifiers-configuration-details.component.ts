@@ -25,6 +25,7 @@ import { Logger} from "../../common/util/logging";
 import { PushMessageType } from "../../common/util/push-message.type";
 import { PushVariables } from "../../common/util/push-variables";
 import { PushService } from "../../common/push/push.service";
+import { ClassifierOptionsFilterFields } from "../../common/util/filter-field-names";
 
 @Component({
   selector: 'app-classifiers-configuration-details',
@@ -346,10 +347,10 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
 
   private initColumns() {
     this.columns = [
-      { name: ClassifierOptionsFields.ID, label: "#" },
-      { name: ClassifierOptionsFields.OPTIONS_DESCRIPTION, label: "Настройки классификатора", sortBy: ClassifierOptionsFields.OPTIONS_NAME },
-      { name: ClassifierOptionsFields.CREATION_DATE, label: "Дата создания настроек" },
-      { name: ClassifierOptionsFields.CREATED_BY, label: "Пользователь" }
+      { name: ClassifierOptionsFields.ID, label: "#", sortBy: ClassifierOptionsFilterFields.ID },
+      { name: ClassifierOptionsFields.OPTIONS_DESCRIPTION, label: "Настройки классификатора", sortBy: ClassifierOptionsFilterFields.OPTIONS_NAME },
+      { name: ClassifierOptionsFields.CREATION_DATE, label: "Дата создания настроек", sortBy: ClassifierOptionsFilterFields.CREATION_DATE },
+      { name: ClassifierOptionsFields.CREATED_BY, label: "Пользователь", sortBy: ClassifierOptionsFilterFields.CREATED_BY }
     ];
   }
 }

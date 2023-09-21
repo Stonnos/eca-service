@@ -15,14 +15,19 @@ import { EvaluationLogFields } from "../../common/util/field-names";
 import { ReportsService } from "../../common/services/report.service";
 import { ReportType } from "../../common/model/report-type.enum";
 import { InstancesInfoService } from "../../common/instances-info/services/instances-info.service";
-import { BaseEvaluationListComponent } from "../../common/lists/base-evaluation-list.component";
+import { BaseListComponent } from "../../common/lists/base-list.component";
+import { MessageService } from "primeng/api";
+import { FieldService } from "../../common/services/field.service";
+import { InstancesInfoFilterValueTransformer } from "../../filter/autocomplete/transformer/instances-info-filter-value-transformer";
+import { InstancesInfoAutocompleteHandler } from "../../filter/autocomplete/handler/instances-info-autocomplete-handler";
+import { EvaluationLogFilterFields } from "../../common/util/filter-field-names";
 
 @Component({
   selector: 'app-classifier-list',
   templateUrl: './classifier-list.component.html',
   styleUrls: ['./classifier-list.component.scss']
 })
-export class ClassifierListComponent extends BaseEvaluationListComponent<EvaluationLogDto> {
+export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto> {
 
   private static readonly EVALUATION_LOGS_REPORT_FILE_NAME = 'evaluation-logs-report.xlsx';
 
@@ -31,12 +36,13 @@ export class ClassifierListComponent extends BaseEvaluationListComponent<Evaluat
   public selectedEvaluationLog: EvaluationLogDto;
   public selectedColumn: string;
 
-  public constructor(injector: Injector,
+  public constructor(private injector: Injector,
                      private classifiersService: ClassifiersService,
                      private filterService: FilterService,
                      private reportsService: ReportsService,
+                     private instancesInfoService: InstancesInfoService,
                      private router: Router) {
-    super(injector, injector.get(InstancesInfoService));
+    super(injector.get(MessageService), injector.get(FieldService));
     this.defaultSortField = EvaluationLogFields.CREATION_DATE;
     this.linkColumns = [EvaluationLogFields.CLASSIFIER_DESCRIPTION, EvaluationLogFields.EVALUATION_METHOD_DESCRIPTION,
       EvaluationLogFields.RELATION_NAME, EvaluationLogFields.REQUEST_ID, EvaluationLogFields.MODEL_PATH];
@@ -45,6 +51,8 @@ export class ClassifierListComponent extends BaseEvaluationListComponent<Evaluat
   }
 
   public ngOnInit() {
+    this.addLazyReferenceTransformers(new InstancesInfoFilterValueTransformer());
+    this.addAutoCompleteHandler(new InstancesInfoAutocompleteHandler(this.instancesInfoService, this.messageService));
     this.getFilterFields();
     this.getRequestStatusesStatistics();
   }
@@ -116,18 +124,18 @@ export class ClassifierListComponent extends BaseEvaluationListComponent<Evaluat
 
   private initColumns() {
     this.columns = [
-      { name: EvaluationLogFields.REQUEST_ID, label: "UUID заявки" },
-      { name: EvaluationLogFields.CLASSIFIER_DESCRIPTION, label: "Классификатор", sortBy: EvaluationLogFields.CLASSIFIER_NAME },
-      { name: EvaluationLogFields.REQUEST_STATUS_DESCRIPTION, label: "Статус заявки", sortBy: EvaluationLogFields.REQUEST_STATUS },
-      { name: EvaluationLogFields.PCT_CORRECT, label: "Точность классификатора, %" },
-      { name: EvaluationLogFields.RELATION_NAME, label: "Обучающая выборка" },
-      { name: EvaluationLogFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности", sortBy: EvaluationLogFields.EVALUATION_METHOD },
-      { name: EvaluationLogFields.MODEL_PATH, label: "Модель классификатора" },
+      { name: EvaluationLogFields.REQUEST_ID, label: "UUID заявки", sortBy: EvaluationLogFilterFields.REQUEST_ID },
+      { name: EvaluationLogFields.CLASSIFIER_DESCRIPTION, label: "Классификатор", sortBy: EvaluationLogFilterFields.CLASSIFIER_NAME },
+      { name: EvaluationLogFields.REQUEST_STATUS_DESCRIPTION, label: "Статус заявки", sortBy: EvaluationLogFilterFields.REQUEST_STATUS },
+      { name: EvaluationLogFields.PCT_CORRECT, label: "Точность классификатора, %", sortBy: EvaluationLogFilterFields.PCT_CORRECT },
+      { name: EvaluationLogFields.RELATION_NAME, label: "Обучающая выборка", sortBy: EvaluationLogFilterFields.RELATION_NAME },
+      { name: EvaluationLogFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности", sortBy: EvaluationLogFilterFields.EVALUATION_METHOD },
+      { name: EvaluationLogFields.MODEL_PATH, label: "Модель классификатора", sortBy: EvaluationLogFilterFields.MODEL_PATH },
       { name: EvaluationLogFields.EVALUATION_TOTAL_TIME, label: "Время построения модели" },
-      { name: EvaluationLogFields.CREATION_DATE, label: "Дата создания заявки" },
-      { name: EvaluationLogFields.START_DATE, label: "Дата начала построения модели" },
-      { name: EvaluationLogFields.END_DATE, label: "Дата окончания построения модели" },
-      { name: EvaluationLogFields.DELETED_DATE, label: "Дата удаления модели" }
+      { name: EvaluationLogFields.CREATION_DATE, label: "Дата создания заявки", sortBy: EvaluationLogFilterFields.CREATION_DATE },
+      { name: EvaluationLogFields.START_DATE, label: "Дата начала построения модели", sortBy: EvaluationLogFilterFields.START_DATE },
+      { name: EvaluationLogFields.END_DATE, label: "Дата окончания построения модели", sortBy: EvaluationLogFilterFields.END_DATE },
+      { name: EvaluationLogFields.DELETED_DATE, label: "Дата удаления модели", sortBy: EvaluationLogFilterFields.DELETED_DATE }
     ];
   }
 }

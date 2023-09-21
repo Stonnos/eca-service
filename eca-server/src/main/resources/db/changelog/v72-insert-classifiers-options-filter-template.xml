@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v72-insert-classifiers-options-filter-template.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="insert_instances_info_filter_template" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from filter_template where id = 7
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="filter_template">
+            <column name="id" valueNumeric="7"/>
+            <column name="template_name" value="Фильтр по настройкам классификаторов"/>
+            <column name="template_type" value="CLASSIFIER_OPTIONS"/>
+            <column name="created" valueDate="now()"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

@@ -38,7 +38,7 @@ public class FilterTemplate {
     /**
      * Template type
      */
-    @Column(name = "template_type", nullable = false)
+    @Column(name = "template_type", nullable = false, unique = true)
     private String templateType;
 
     /**

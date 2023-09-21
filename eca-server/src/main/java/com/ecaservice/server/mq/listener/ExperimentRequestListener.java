@@ -1,19 +1,14 @@
 package com.ecaservice.server.mq.listener;
 
 import com.ecaservice.base.model.ExperimentRequest;
-import com.ecaservice.server.event.model.ExperimentEmailEvent;
-import com.ecaservice.server.event.model.ExperimentResponseEvent;
-import com.ecaservice.server.event.model.push.ExperimentSystemPushEvent;
 import com.ecaservice.server.mapping.ExperimentMapper;
-import com.ecaservice.server.model.entity.Experiment;
-import com.ecaservice.server.service.experiment.ExperimentService;
+import com.ecaservice.server.service.experiment.ExperimentProcessManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
@@ -35,9 +30,8 @@ import static com.ecaservice.common.web.util.LogHelper.putMdc;
 @RequiredArgsConstructor
 public class ExperimentRequestListener {
 
-    private final ExperimentService experimentService;
     private final ExperimentMapper experimentMapper;
-    private final ApplicationEventPublisher eventPublisher;
+    private final ExperimentProcessManager experimentProcessManager;
 
     /**
      * Handles experiment request message.
@@ -54,10 +48,7 @@ public class ExperimentRequestListener {
         putMdc(EV_REQUEST_ID, requestId);
         var experimentRequestData = experimentMapper.map(experimentRequest, inboundMessage);
         experimentRequestData.setRequestId(requestId);
-        Experiment experiment = experimentService.createExperiment(experimentRequestData);
-        eventPublisher.publishEvent(new ExperimentResponseEvent(this, experiment));
-        eventPublisher.publishEvent(new ExperimentSystemPushEvent(this, experiment));
-        eventPublisher.publishEvent(new ExperimentEmailEvent(this, experiment));
+        experimentProcessManager.createExperimentRequest(experimentRequestData);
         log.info("Experiment [{}] request with correlation id [{}] has been processed",
                 experimentRequest.getExperimentType(), inboundMessageProperties.getCorrelationId());
     }

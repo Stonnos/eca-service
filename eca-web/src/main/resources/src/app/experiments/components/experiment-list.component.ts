@@ -25,15 +25,20 @@ import { PushMessageType } from "../../common/util/push-message.type";
 import { Logger } from "../../common/util/logging";
 import { CreateExperimentRequestDto } from "../../create-experiment/model/create-experiment-request.model";
 import { ErrorHandler } from "../../common/services/error-handler";
-import { BaseEvaluationListComponent } from "../../common/lists/base-evaluation-list.component";
 import { InstancesInfoService } from "../../common/instances-info/services/instances-info.service";
+import { BaseListComponent } from "../../common/lists/base-list.component";
+import { InstancesInfoFilterValueTransformer } from "../../filter/autocomplete/transformer/instances-info-filter-value-transformer";
+import { InstancesInfoAutocompleteHandler } from "../../filter/autocomplete/handler/instances-info-autocomplete-handler";
+import { MessageService } from "primeng/api";
+import { FieldService } from "../../common/services/field.service";
+import { ExperimentFilterFields } from "../../common/util/filter-field-names";
 
 @Component({
   selector: 'app-experiment-list',
   templateUrl: './experiment-list.component.html',
   styleUrls: ['./experiment-list.component.scss']
 })
-export class ExperimentListComponent extends BaseEvaluationListComponent<ExperimentDto> implements OnInit, OnDestroy {
+export class ExperimentListComponent extends BaseListComponent<ExperimentDto> implements OnInit, OnDestroy {
 
   private static readonly EXPERIMENTS_REPORT_FILE_NAME = 'experiments-report.xlsx';
 
@@ -64,15 +69,16 @@ export class ExperimentListComponent extends BaseEvaluationListComponent<Experim
 
   public experimentRequest: ExperimentRequest = new ExperimentRequest();
 
-  public constructor(injector: Injector,
+  public constructor(private injector: Injector,
                      private experimentsService: ExperimentsService,
                      private filterService: FilterService,
                      private reportsService: ReportsService,
                      private validationService: ValidationService,
                      private errorHandler: ErrorHandler,
                      private pushService: PushService,
+                     private instancesInfoService: InstancesInfoService,
                      private router: Router) {
-    super(injector, injector.get(InstancesInfoService));
+    super(injector.get(MessageService), injector.get(FieldService));
     this.defaultSortField = ExperimentFields.CREATION_DATE;
     this.linkColumns = [ExperimentFields.RELATION_NAME, ExperimentFields.MODEL_PATH,
       ExperimentFields.REQUEST_ID, ExperimentFields.EVALUATION_METHOD_DESCRIPTION];
@@ -81,6 +87,8 @@ export class ExperimentListComponent extends BaseEvaluationListComponent<Experim
   }
 
   public ngOnInit(): void {
+    this.addLazyReferenceTransformers(new InstancesInfoFilterValueTransformer());
+    this.addAutoCompleteHandler(new InstancesInfoAutocompleteHandler(this.instancesInfoService, this.messageService));
     this.getFilterFields();
     this.getRequestStatusesStatistics();
     this.getEvaluationMethods();
@@ -255,19 +263,19 @@ export class ExperimentListComponent extends BaseEvaluationListComponent<Experim
 
   private initColumns() {
     this.columns = [
-      { name: ExperimentFields.REQUEST_ID, label: "UUID заявки" },
-      { name: ExperimentFields.EXPERIMENT_TYPE_DESCRIPTION, label: "Тип эксперимента", sortBy: ExperimentFields.EXPERIMENT_TYPE },
-      { name: ExperimentFields.REQUEST_STATUS_DESCRIPTION, label: "Статус заявки", sortBy: ExperimentFields.REQUEST_STATUS },
-      { name: ExperimentFields.MAX_PCT_CORRECT, label: "Точность наличшего классификатора, %" },
-      { name: ExperimentFields.RELATION_NAME, label: "Обучающая выборка" },
-      { name: ExperimentFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности", sortBy: ExperimentFields.EVALUATION_METHOD },
-      { name: ExperimentFields.CREATED_BY, label: "Пользователь" },
-      { name: ExperimentFields.MODEL_PATH, label: "Модель эксперимента" },
+      { name: ExperimentFields.REQUEST_ID, label: "UUID заявки", sortBy: ExperimentFilterFields.REQUEST_ID },
+      { name: ExperimentFields.EXPERIMENT_TYPE_DESCRIPTION, label: "Тип эксперимента", sortBy: ExperimentFilterFields.EXPERIMENT_TYPE },
+      { name: ExperimentFields.REQUEST_STATUS_DESCRIPTION, label: "Статус заявки", sortBy: ExperimentFilterFields.REQUEST_STATUS },
+      { name: ExperimentFields.MAX_PCT_CORRECT, label: "Точность наличшего классификатора, %", sortBy: ExperimentFilterFields.MAX_PCT_CORRECT },
+      { name: ExperimentFields.RELATION_NAME, label: "Обучающая выборка", sortBy: ExperimentFilterFields.RELATION_NAME },
+      { name: ExperimentFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности", sortBy: ExperimentFilterFields.EVALUATION_METHOD },
+      { name: ExperimentFields.CREATED_BY, label: "Пользователь", sortBy: ExperimentFilterFields.CREATED_BY },
+      { name: ExperimentFields.MODEL_PATH, label: "Модель эксперимента", sortBy: ExperimentFilterFields.MODEL_PATH },
       { name: ExperimentFields.EVALUATION_TOTAL_TIME, label: "Время построения эксперимента" },
-      { name: ExperimentFields.CREATION_DATE, label: "Дата создания заявки" },
-      { name: ExperimentFields.START_DATE, label: "Дата начала эксперимента" },
-      { name: ExperimentFields.END_DATE, label: "Дата окончания эксперимента" },
-      { name: ExperimentFields.DELETED_DATE, label: "Дата удаления модели" }
+      { name: ExperimentFields.CREATION_DATE, label: "Дата создания заявки", sortBy: ExperimentFilterFields.CREATION_DATE },
+      { name: ExperimentFields.START_DATE, label: "Дата начала эксперимента", sortBy: ExperimentFilterFields.START_DATE },
+      { name: ExperimentFields.END_DATE, label: "Дата окончания эксперимента", sortBy: ExperimentFilterFields.END_DATE },
+      { name: ExperimentFields.DELETED_DATE, label: "Дата удаления модели", sortBy: ExperimentFilterFields.DELETED_DATE }
     ];
   }
 }

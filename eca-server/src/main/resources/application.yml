@@ -4,7 +4,12 @@ spring:
   ## Eca datasource properties
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/eca
+    jdbc-url: jdbc:postgresql://localhost:5432/eca
+    username: postgres
+    password: postgres
+  camunda:
+    driver-class-name: org.postgresql.Driver
+    jdbc-url: jdbc:postgresql://localhost:5432/eca_camunda
     username: postgres
     password: postgres
   jpa:
@@ -56,8 +61,8 @@ app:
   pageSize: 10
   modelDownloadUrlExpirationDays: 7
   shortLifeUrlExpirationMinutes: 5
-  notifications:
-    webPushesEnabled: false
+  push:
+    enabled: false
 
 ## Queues properties
 queue:
@@ -115,13 +120,15 @@ experiment:
     multiThreadModeEnabled: true
     numThreads:
     numFoldsForStacking: 10
-  lock:
-    registryKey: experiments-registry
-    expireAfter: 18060000
 
 ers:
   useClassifierOptionsCache: false
   classifierOptionsCacheDurationInDays: 2
+
+camunda:
+  bpm:
+    job-execution:
+      lock-time-in-millis: 18060000
 
 minio:
   url: http://localhost:9000
@@ -138,6 +145,9 @@ cache:
     global-filters:
       expireAfterWriteSeconds: 18000
       maxSize: 100
+    sort-fields:
+      expireAfterWriteSeconds: 18000
+      maxSize: 100
     filter-templates:
       expireAfterWriteSeconds: 18000
       maxSize: 100
@@ -147,11 +157,26 @@ cache:
     message-templates:
       expireAfterWriteSeconds: 18000
       maxSize: 100
+    instances-meta-data:
+      expireAfterWriteSeconds: 18000
+      maxSize: 100
 
 auth-server:
   baseUrl: http://localhost:8085/eca-oauth
   clientId: eca_service_tech
   clientSecret: 02#eca_service_tech6
+
+service:
+  feign:
+    oauth:
+      tokenUrl: http://localhost:8085/eca-oauth
+      clientId: eca_service_tech
+      clientSecret: 02#eca_service_tech6
+
+processes:
+  processExperimentId: ExperimentProcess
+  createExperimentRequestProcessId: CreateExperimentRequestProcess
+  createExperimentWebRequestProcessId: CreateExperimentWebRequestProcess
 
 management:
   metrics:

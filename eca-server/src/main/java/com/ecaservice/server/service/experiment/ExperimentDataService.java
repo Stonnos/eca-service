@@ -2,16 +2,17 @@ package com.ecaservice.server.service.experiment;
 
 import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
-import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.core.filter.service.FilterTemplateService;
+import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
 import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
+import com.ecaservice.server.bpm.model.ExperimentModel;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.filter.ExperimentFilter;
+import com.ecaservice.server.mapping.ExperimentMapper;
 import com.ecaservice.server.model.entity.Experiment;
-import com.ecaservice.server.model.entity.FilterTemplateType;
 import com.ecaservice.server.model.projections.RequestStatusStatistics;
 import com.ecaservice.server.repository.ExperimentRepository;
-import com.ecaservice.server.service.PageRequestService;
 import com.ecaservice.server.service.filter.dictionary.FilterDictionaries;
 import com.ecaservice.web.dto.model.ChartDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -23,6 +24,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Tuple;
@@ -39,6 +41,7 @@ import java.util.stream.Collectors;
 import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.server.model.entity.AbstractEvaluationEntity_.CREATION_DATE;
 import static com.ecaservice.server.model.entity.Experiment_.EXPERIMENT_TYPE;
+import static com.ecaservice.server.model.entity.FilterTemplateType.EXPERIMENT;
 import static com.ecaservice.server.util.QueryHelper.buildGroupByStatisticsQuery;
 import static com.ecaservice.server.util.StatisticsHelper.calculateChartData;
 import static com.ecaservice.server.util.StatisticsHelper.calculateRequestStatusesStatistics;
@@ -49,15 +52,17 @@ import static com.ecaservice.server.util.StatisticsHelper.calculateRequestStatus
  * @author Roman Batygin
  */
 @Slf4j
+@Validated
 @Service
 @RequiredArgsConstructor
-public class ExperimentDataService implements PageRequestService<Experiment> {
+public class ExperimentDataService {
 
     private final ExperimentRepository experimentRepository;
     private final ObjectStorageService objectStorageService;
     private final EntityManager entityManager;
     private final AppProperties appProperties;
-    private final FilterService filterService;
+    private final FilterTemplateService filterTemplateService;
+    private final ExperimentMapper experimentMapper;
 
     /**
      * Removes experiment model file from object storage.
@@ -81,29 +86,16 @@ public class ExperimentDataService implements PageRequestService<Experiment> {
     }
 
     /**
-     * Removes experiment training data file from disk.
+     * Gets experiments page.
      *
-     * @param experiment - experiment entity
+     * @param pageRequestDto - page request dto
+     * @return experiments page
      */
-    public void removeExperimentTrainingData(Experiment experiment) {
-        try {
-            log.info("Starting to remove experiment [{}] training data file", experiment.getRequestId());
-            String trainingDataPath = experiment.getTrainingDataPath();
-            objectStorageService.removeObject(trainingDataPath);
-            experiment.setTrainingDataPath(null);
-            experimentRepository.save(experiment);
-            log.info("Experiment [{}] training data file has been deleted", experiment.getRequestId());
-        } catch (Exception ex) {
-            log.error("There was an error while remove experiment [{}] training data file: {}",
-                    experiment.getRequestId(), ex.getMessage());
-        }
-    }
-
-    @Override
-    public Page<Experiment> getNextPage(PageRequestDto pageRequestDto) {
+    public Page<Experiment> getNextPage(
+            @ValidPageRequest(filterTemplateName = EXPERIMENT) PageRequestDto pageRequestDto) {
         log.info("Gets experiments next page: {}", pageRequestDto);
         Sort sort = buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
-        List<String> globalFilterFields = filterService.getGlobalFilterFields(FilterTemplateType.EXPERIMENT.name());
+        List<String> globalFilterFields = filterTemplateService.getGlobalFilterFields(EXPERIMENT);
         ExperimentFilter filter =
                 new ExperimentFilter(pageRequestDto.getSearchQuery(), globalFilterFields, pageRequestDto.getFilters());
         var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort);
@@ -167,7 +159,7 @@ public class ExperimentDataService implements PageRequestService<Experiment> {
     }
 
     private ChartDto populateExperimentsChartData(Map<String, Long> statisticsMap) {
-        var experimentTypesDictionary = filterService.getFilterDictionary(FilterDictionaries.EXPERIMENT_TYPE);
+        var experimentTypesDictionary = filterTemplateService.getFilterDictionary(FilterDictionaries.EXPERIMENT_TYPE);
         return calculateChartData(experimentTypesDictionary, statisticsMap);
     }
 
@@ -191,5 +183,16 @@ public class ExperimentDataService implements PageRequestService<Experiment> {
         return S3ContentResponseDto.builder()
                 .contentUrl(contentUrl)
                 .build();
+    }
+
+    /**
+     * Gets experiment model by id.
+     *
+     * @param id - experiment id
+     * @return experiment model
+     */
+    public ExperimentModel getExperimentModel(Long id) {
+        var experiment = getById(id);
+        return experimentMapper.mapToModel(experiment);
     }
 }

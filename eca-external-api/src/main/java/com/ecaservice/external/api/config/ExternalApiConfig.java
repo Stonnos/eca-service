@@ -13,19 +13,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class ExternalApiConfig {
 
     /**
-     * Date format for date attributes
-     */
-    private String dateFormat;
-
-    /**
      * Batch size for pagination
      */
     private Integer batchSize;
-
-    /**
-     * Request timeout in seconds
-     */
-    private Long requestTimeoutSeconds;
 
     /**
      * Evaluation request timeout in minutes
@@ -36,11 +26,6 @@ public class ExternalApiConfig {
      * Experiment request timeout in minutes
      */
     private Long experimentRequestTimeoutMinutes;
-
-    /**
-     * Days number for classifiers models files storage
-     */
-    private Integer numberOfDaysForStorage;
 
     /**
      * Classifier download url expiration in days

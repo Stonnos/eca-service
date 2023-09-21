@@ -529,7 +529,7 @@ a|
   "fieldName" : "initiator",
   "description" : "Инициатор события",
   "fieldOrder" : 3,
-  "filterFieldType" : "TEXT",
+  "filterFieldType" : "LAZY_REFERENCE",
   "matchMode" : "LIKE",
   "multiple" : false
 }, {

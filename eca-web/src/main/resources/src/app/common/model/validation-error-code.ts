@@ -19,4 +19,5 @@ export class ValidationErrorCode {
   public static readonly CLASS_ATTRIBUTE_NOT_SELECTED: string = 'ClassAttributeNotSelected';
   public static readonly SELECTED_ATTRIBUTES_NUMBER_IS_TOO_LOW: string = 'SelectedAttributesNumberIsTooLow';
   public static readonly INSTANCES_NOT_FOUND: string = 'InstancesNotFound';
+  public static readonly NOT_SAFE_PASSWORD: string = 'NotSafePassword';
 }

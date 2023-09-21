@@ -1,0 +1,380 @@
+[
+  {
+    "name": "Выполнение задачи",
+    "id": "TaskExecution",
+    "isDefault": false,
+    "appliesTo": [
+      "bpmn:ServiceTask"
+    ],
+    "properties": [
+      {
+        "type": "Hidden",
+        "value": "com.ecaservice.server.bpm.listeners.TaskExecutionListener",
+        "binding": {
+          "type": "property",
+          "name": "camunda:class"
+        }
+      },
+      {
+        "label": "Тип задачи",
+        "type": "Dropdown",
+        "value": "GET_EXPERIMENT_DETAILS",
+        "choices": [
+          {
+            "name": "Получение данных о заявке на эксперимент",
+            "value": "GET_EXPERIMENT_DETAILS"
+          },
+          {
+            "name": "Перевести заявку на эксперимент в работу",
+            "value": "START_EXPERIMENT"
+          },
+          {
+            "name": "Начать или продолжить построение эксперимента",
+            "value": "PROCESS_EXPERIMENT"
+          },
+          {
+            "name": "Получить статус построения эксперимента",
+            "value": "GET_EXPERIMENT_PROCESS_STATUS"
+          },
+          {
+            "name": "Вычислить финальный статус заявки на эксперимент",
+            "value": "CALCULATE_EXPERIMENT_FINAL_STATUS"
+          },
+          {
+            "name": "Отправить ответное сообщение в очередь для заявки на эксперимент",
+            "value": "SENT_EXPERIMENT_RESPONSE"
+          },
+          {
+            "name": "Получить данные о пользователе",
+            "value": "GET_USER_INFO"
+          },
+          {
+            "name": "Сформировать обучающую выборку на основе данных из data-storage",
+            "value": "EXPORT_VALID_INSTANCES"
+          },
+          {
+            "name": "Создать заявку на эксперимент",
+            "value": "CREATE_EXPERIMENT_REQUEST"
+          },
+          {
+            "name": "Создать заявку на эксперимент через web",
+            "value": "CREATE_EXPERIMENT_WEB_REQUEST"
+          }
+        ],
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "taskType"
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "candidateUsers": false,
+      "candidateGroups": false,
+      "property": true,
+      "class": false,
+      "implementation": false,
+      "delegate": false,
+      "asyncBefore": false,
+      "asyncAfter": true
+    }
+  },
+  {
+    "name": "Задача для работы с ошибками",
+    "id": "ErrorHandler",
+    "isDefault": false,
+    "appliesTo": [
+      "bpmn:ServiceTask"
+    ],
+    "properties": [
+      {
+        "type": "Hidden",
+        "value": "com.ecaservice.server.bpm.listeners.BpmErrorHandler",
+        "binding": {
+          "type": "property",
+          "name": "camunda:class"
+        }
+      },
+      {
+        "label": "Код ошибки",
+        "type": "Dropdown",
+        "value": "UNKNOWN_ERROR",
+        "choices": [
+          {
+            "name": "Передана заявка с недопустимым статусом",
+            "value": "INVALID_EXPERIMENT_REQUEST_STATUS"
+          },
+          {
+            "name": "Неизвестная ошибка",
+            "value": "UNKNOWN_ERROR"
+          }
+        ],
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "taskType"
+        }
+      },
+      {
+        "label": "Описание ошибки",
+        "type": "String",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "errorMessage"
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "candidateUsers": false,
+      "candidateGroups": false,
+      "property": true,
+      "class": false,
+      "implementation": false,
+      "delegate": false,
+      "asyncBefore": false,
+      "asyncAfter": false
+    }
+  },
+  {
+    "name": "Отправка email для заявки на эксперимент",
+    "id": "ExperimentEmailSender",
+    "isDefault": false,
+    "appliesTo": [
+      "bpmn:ServiceTask"
+    ],
+    "properties": [
+      {
+        "type": "Hidden",
+        "value": "com.ecaservice.server.bpm.listeners.TaskExecutionListener",
+        "binding": {
+          "type": "property",
+          "name": "camunda:class"
+        }
+      },
+      {
+        "type": "Hidden",
+        "value": "SENT_EXPERIMENT_EMAIL",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "taskType"
+        }
+      },
+      {
+        "label": "Код шаблона сообщения",
+        "type": "Dropdown",
+        "value": "NEW_EXPERIMENT",
+        "choices": [
+          {
+            "name": "Сообщение о новой заявке на эксперимент",
+            "value": "NEW_EXPERIMENT"
+          },
+          {
+            "name": "Сообщение о поступлении заявки на эксперимент в работу",
+            "value": "IN_PROGRESS_EXPERIMENT"
+          },
+          {
+            "name": "Сообщение о завершении эксперимента",
+            "value": "FINISHED_EXPERIMENT"
+          },
+          {
+            "name": "Сообщение об ошибке при построении эксперимента",
+            "value": "ERROR_EXPERIMENT"
+          },
+          {
+            "name": "Сообщение о таймауте при построении эксперимента",
+            "value": "TIMEOUT_EXPERIMENT"
+          }
+        ],
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "emailTemplateCode"
+        }
+      },
+      {
+        "label": "Переменные шаблона сообщения",
+        "type": "String",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "emailTemplateVariables"
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "candidateUsers": false,
+      "candidateGroups": false,
+      "property": true,
+      "class": false,
+      "implementation": false,
+      "delegate": false,
+      "asyncBefore": false,
+      "asyncAfter": true
+    }
+  },
+  {
+    "name": "Отправка пуша для заявки на эксперимент",
+    "id": "ExperimentPushSender",
+    "isDefault": false,
+    "appliesTo": [
+      "bpmn:ServiceTask"
+    ],
+    "properties": [
+      {
+        "type": "Hidden",
+        "value": "com.ecaservice.server.bpm.listeners.TaskExecutionListener",
+        "binding": {
+          "type": "property",
+          "name": "camunda:class"
+        }
+      },
+      {
+        "label": "Тип пуша",
+        "type": "Dropdown",
+        "value": "SENT_EXPERIMENT_SYSTEM_PUSH",
+        "choices": [
+          {
+            "name": "Системное пуш уведомление",
+            "value": "SENT_EXPERIMENT_SYSTEM_PUSH"
+          },
+          {
+            "name": "Пуш уведомление пользователю",
+            "value": "SENT_EXPERIMENT_WEB_PUSH"
+          }
+        ],
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "taskType"
+        }
+      },
+      {
+        "label": "Код сообщения",
+        "type": "String",
+        "value": "EXPERIMENT_STATUS",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "pushMessageType"
+        }
+      },
+      {
+        "label": "Код шаблона сообщения",
+        "type": "Dropdown",
+        "value": "NEW_EXPERIMENT",
+        "choices": [
+          {
+            "name": "Сообщение о новой заявке на эксперимент",
+            "value": "NEW_EXPERIMENT"
+          },
+          {
+            "name": "Сообщение о поступлении заявки на эксперимент в работу",
+            "value": "IN_PROGRESS_EXPERIMENT"
+          },
+          {
+            "name": "Сообщение о завершении эксперимента",
+            "value": "FINISHED_EXPERIMENT"
+          },
+          {
+            "name": "Сообщение об ошибке при построении эксперимента",
+            "value": "ERROR_EXPERIMENT"
+          },
+          {
+            "name": "Сообщение о таймауте при построении эксперимента",
+            "value": "TIMEOUT_EXPERIMENT"
+          }
+        ],
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "pushTemplateCode"
+        }
+      },
+      {
+        "label": "Переменная шаблона сообщения",
+        "type": "String",
+        "value": "experiment",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "pushTemplateContextVariable"
+        }
+      },
+      {
+        "label": "Дополнительные параметры сообщения",
+        "type": "String",
+        "value": "ID,REQUEST_ID,REQUEST_STATUS",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "pushMessageProperties"
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "candidateUsers": false,
+      "candidateGroups": false,
+      "property": true,
+      "class": false,
+      "implementation": false,
+      "delegate": false,
+      "asyncBefore": false,
+      "asyncAfter": true
+    }
+  },
+  {
+    "name": "Завершение заявки на эксперимент",
+    "id": "FinishExperiment",
+    "isDefault": false,
+    "appliesTo": [
+      "bpmn:ServiceTask"
+    ],
+    "properties": [
+      {
+        "type": "Hidden",
+        "value": "com.ecaservice.server.bpm.listeners.TaskExecutionListener",
+        "binding": {
+          "type": "property",
+          "name": "camunda:class"
+        }
+      },
+      {
+        "type": "Hidden",
+        "value": "FINISH_EXPERIMENT",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "taskType"
+        }
+      },
+      {
+        "label": "Статус заявки",
+        "type": "Dropdown",
+        "value": "FINISHED",
+        "choices": [
+          {
+            "name": "Завершена",
+            "value": "FINISHED"
+          },
+          {
+            "name": "Таймаут",
+            "value": "TIMEOUT"
+          },
+          {
+            "name": "Ошибка",
+            "value": "ERROR"
+          }
+        ],
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "requestStatus"
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "candidateUsers": false,
+      "candidateGroups": false,
+      "property": true,
+      "class": false,
+      "implementation": false,
+      "delegate": false,
+      "asyncBefore": false,
+      "asyncAfter": true
+    }
+  }
+]

@@ -1,6 +1,5 @@
 package com.ecaservice.server.service.experiment;
 
-import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.exception.experiment.ExperimentException;
 import com.ecaservice.server.mapping.ExperimentMapper;
@@ -17,18 +16,16 @@ import com.ecaservice.server.model.experiment.ExperimentWebRequestData;
 import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.repository.ExperimentStepRepository;
 import com.ecaservice.server.service.InstancesInfoService;
+import com.ecaservice.server.service.data.InstancesMetaDataService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static com.ecaservice.server.util.InstancesUtils.md5Hash;
 
 /**
  * Experiment service.
@@ -40,18 +37,16 @@ import static com.ecaservice.server.util.InstancesUtils.md5Hash;
 @RequiredArgsConstructor
 public class ExperimentService {
 
-    private static final String EXPERIMENT_TRAIN_DATA_PATH_FORMAT = "experiment-train-data-%s.model";
-
-    private static final List<ExperimentStepStatus> EXPERIMENT_STEP_STATUSES_TO_PROCESS =
-            List.of(ExperimentStepStatus.READY, ExperimentStepStatus.FAILED);
+    private static final List<RequestStatus> FINAL_STATUSES =
+            List.of(RequestStatus.FINISHED, RequestStatus.ERROR, RequestStatus.TIMEOUT);
 
     private final ExperimentRepository experimentRepository;
     private final ExperimentStepRepository experimentStepRepository;
     private final ExperimentMapper experimentMapper;
     private final ExperimentStepProcessor experimentStepProcessor;
-    private final ObjectStorageService objectStorageService;
     private final CrossValidationConfig crossValidationConfig;
     private final ExperimentProgressService experimentProgressService;
+    private final InstancesMetaDataService instancesMetaDataService;
     private final InstancesInfoService instancesInfoService;
 
     /**
@@ -61,21 +56,19 @@ public class ExperimentService {
      * @return created experiment entity
      */
     public Experiment createExperiment(AbstractExperimentRequestData experimentRequest) {
-        log.info("Starting to create experiment [{}] request for data '{}', evaluation method [{}], email '{}'",
-                experimentRequest.getExperimentType(), experimentRequest.getData().relationName(),
+        log.info("Starting to create experiment [{}] request for data uuid [{}], evaluation method [{}], email [{}]",
+                experimentRequest.getExperimentType(), experimentRequest.getDataUuid(),
                 experimentRequest.getEvaluationMethod(), experimentRequest.getEmail());
+        var instancesMetaDataModel =
+                instancesMetaDataService.getInstancesMetaData(experimentRequest.getDataUuid());
         try {
             Experiment experiment = experimentMapper.map(experimentRequest, crossValidationConfig);
-            String dataMd5Hash = md5Hash(experimentRequest.getData());
-            var instancesInfo =
-                    instancesInfoService.getOrSaveInstancesInfo(dataMd5Hash, experimentRequest.getData());
+            var instancesInfo = instancesInfoService.getOrSaveInstancesInfo(instancesMetaDataModel);
             experiment.setInstancesInfo(instancesInfo);
             setAdditionalProperties(experiment, experimentRequest);
             experiment.setRequestStatus(RequestStatus.NEW);
             experiment.setRequestId(experimentRequest.getRequestId());
-            String objectPath = String.format(EXPERIMENT_TRAIN_DATA_PATH_FORMAT, experiment.getRequestId());
-            objectStorageService.uploadObject(experimentRequest.getData(), objectPath);
-            experiment.setTrainingDataPath(objectPath);
+            experiment.setTrainingDataUuid(experimentRequest.getDataUuid());
             experiment.setCreationDate(LocalDateTime.now());
             experimentRepository.save(experiment);
             log.info("Experiment request [{}] has been created.", experiment.getRequestId());
@@ -117,11 +110,16 @@ public class ExperimentService {
     /**
      * Finishes experiment.
      *
-     * @param experiment - experiment entity
+     * @param experiment    - experiment entity
+     * @param requestStatus - final request status (FINISHED, ERROR, TIMEOUT)
      */
-    public void finishExperiment(Experiment experiment) {
-        log.info("Starting to set experiment [{}] final status", experiment.getRequestId());
-        RequestStatus requestStatus = calculateFinalStatus(experiment);
+    public void finishExperiment(Experiment experiment, RequestStatus requestStatus) {
+        log.info("Starting to set experiment [{}] final status [{}]", experiment.getRequestId(), requestStatus);
+        if (!FINAL_STATUSES.contains(requestStatus)) {
+            throw new IllegalArgumentException(
+                    String.format("Invalid final request status [%s] for experiment [%s]", requestStatus,
+                            experiment.getRequestId()));
+        }
         experiment.setRequestStatus(requestStatus);
         experiment.setEndDate(LocalDateTime.now());
         experimentRepository.save(experiment);
@@ -143,27 +141,6 @@ public class ExperimentService {
         experimentStepRepository.saveAll(steps);
         var stepNames = steps.stream().map(ExperimentStepEntity::getStep).collect(Collectors.toList());
         log.info("{} steps has been saved for experiment [{}]", stepNames, experiment.getRequestId());
-    }
-
-    private RequestStatus calculateFinalStatus(Experiment experiment) {
-        var stepStatuses = experimentStepRepository.getStepStatuses(experiment);
-        if (CollectionUtils.isEmpty(stepStatuses)) {
-            throw new ExperimentException(
-                    String.format("Got empty steps for experiment [%s]", experiment.getRequestId()));
-        }
-        if (stepStatuses.stream().anyMatch(EXPERIMENT_STEP_STATUSES_TO_PROCESS::contains)) {
-            String error =
-                    String.format("Can't calculate experiment [%s] final status. Steps contains one of %s status",
-                            experiment.getRequestId(), EXPERIMENT_STEP_STATUSES_TO_PROCESS);
-            throw new ExperimentException(error);
-        }
-        if (stepStatuses.stream().anyMatch(ExperimentStepStatus.ERROR::equals)) {
-            return RequestStatus.ERROR;
-        }
-        if (stepStatuses.stream().anyMatch(ExperimentStepStatus.TIMEOUT::equals)) {
-            return RequestStatus.TIMEOUT;
-        }
-        return RequestStatus.FINISHED;
     }
 
     private void setAdditionalProperties(Experiment experiment, AbstractExperimentRequestData experimentRequestData) {

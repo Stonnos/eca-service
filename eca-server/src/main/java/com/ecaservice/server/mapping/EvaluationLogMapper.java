@@ -17,7 +17,6 @@ import org.mapstruct.MappingTarget;
 
 import java.util.Optional;
 
-import static com.ecaservice.server.util.InstancesUtils.md5Hash;
 import static com.ecaservice.server.util.Utils.getEvaluationMethodDescription;
 
 /**
@@ -35,6 +34,7 @@ public abstract class EvaluationLogMapper extends AbstractEvaluationMapper {
      * @param evaluationRequest - evaluation request
      * @return evaluation request internal data model
      */
+    @Mapping(target = "classifier", ignore = true)
     public abstract EvaluationRequestDataModel map(EvaluationRequest evaluationRequest);
 
     /**
@@ -137,11 +137,5 @@ public abstract class EvaluationLogMapper extends AbstractEvaluationMapper {
                                        @MappingTarget EvaluationLogDto evaluationLogDto) {
         evaluationLogDto.setRequestStatus(new EnumDto(evaluationLog.getRequestStatus().name(),
                 evaluationLog.getRequestStatus().getDescription()));
-    }
-
-    @AfterMapping
-    protected void mapDataMd5Hash(EvaluationRequest evaluationRequest,
-                             @MappingTarget EvaluationRequestDataModel evaluationRequestDataModel) {
-        evaluationRequestDataModel.setDataMd5Hash(md5Hash(evaluationRequest.getData()));
     }
 }

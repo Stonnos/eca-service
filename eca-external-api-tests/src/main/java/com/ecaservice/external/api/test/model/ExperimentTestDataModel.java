@@ -1,7 +1,6 @@
 package com.ecaservice.external.api.test.model;
 
 import com.ecaservice.external.api.dto.ExperimentRequestDto;
-import com.ecaservice.external.api.dto.ExperimentResultsResponseDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -14,5 +13,5 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class ExperimentTestDataModel extends AbstractTestDataModel<ExperimentRequestDto, ExperimentResultsResponseDto> {
+public class ExperimentTestDataModel extends AbstractTestDataModel<ExperimentRequestDto> {
 }

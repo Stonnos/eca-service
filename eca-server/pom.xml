@@ -5,7 +5,7 @@
     <parent>
         <artifactId>eca-service</artifactId>
         <groupId>eca.service</groupId>
-        <version>6.4.5</version>
+        <version>6.4.6</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -13,6 +13,8 @@
     <packaging>jar</packaging>
 
     <properties>
+        <spring-boot-camunda-bpm.version>7.19.0</spring-boot-camunda-bpm.version>
+        <awaitility.version>4.2.0</awaitility.version>
         <sonar.coverage.exclusions>
             **/model/**/*,
             **/dto/**/*,
@@ -73,6 +75,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.camunda.bpm.springboot</groupId>
+            <artifactId>camunda-bpm-spring-boot-starter</artifactId>
+            <version>${spring-boot-camunda-bpm.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>eca.service</groupId>
             <artifactId>common-web</artifactId>
             <version>${project.version}</version>
@@ -111,6 +119,12 @@
         <dependency>
             <groupId>eca.service</groupId>
             <artifactId>core-audit</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>eca.service</groupId>
+            <artifactId>feign-oauth2</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -231,6 +245,12 @@
         </dependency>
 
         <dependency>
+            <groupId>eca.service</groupId>
+            <artifactId>eca-data-loader-transport</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
         </dependency>
@@ -239,6 +259,13 @@
             <groupId>eca.service</groupId>
             <artifactId>oauth2-test</artifactId>
             <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
+            <version>${awaitility.version}</version>
             <scope>test</scope>
         </dependency>
 

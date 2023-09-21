@@ -12,4 +12,6 @@
     <include file="db/changelog/v4-add-event-id-unique-idx.xml"/>
     <include file="db/changelog/v5-insert-filter-templates.xml"/>
     <include file="db/changelog/v6-change-correlation-id-match-mode.xml"/>
+    <include file="db/changelog/v7-change-initiator-filter-field-type.xml"/>
+    <include file="db/changelog/v8-update-filter-templates.xml"/>
 </databaseChangeLog>

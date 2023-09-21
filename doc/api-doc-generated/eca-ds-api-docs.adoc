@@ -19,9 +19,7 @@ API provides operations with training data sets for ECA web application
 |*oauth2*
 |Oauth2 authentication
 
-*Client credentials location:* __header__
 
-*Bearer format:* __Authorization: Bearer <access token>__
 a|
 
 *Flow*
@@ -135,6 +133,7 @@ a|
 [source,json]
 ----
 [ {
+  "fieldName" : null,
   "code" : "DataNotFound",
   "errorMessage" : "Entity with search key [1] not found!"
 } ]
@@ -236,6 +235,7 @@ a|
 [source,json]
 ----
 [ {
+  "fieldName" : null,
   "code" : "InvalidClassAttributeType",
   "errorMessage" : "Class attribute [12] must be nominal"
 } ]
@@ -337,6 +337,7 @@ a|
 [source,json]
 ----
 [ {
+  "fieldName" : null,
   "code" : "DataNotFound",
   "errorMessage" : "Entity with search key [1] not found!"
 } ]
@@ -438,6 +439,7 @@ a|
 [source,json]
 ----
 [ {
+  "fieldName" : null,
   "code" : "DataNotFound",
   "errorMessage" : "Entity with search key [1] not found!"
 } ]
@@ -559,6 +561,7 @@ a|
 [source,json]
 ----
 [ {
+  "fieldName" : null,
   "code" : "DuplicateInstancesName",
   "errorMessage" : "Instances with name [iris] already exists!"
 } ]
@@ -735,6 +738,7 @@ a|
 [source,json]
 ----
 [ {
+  "fieldName" : null,
   "code" : "DuplicateInstancesName",
   "errorMessage" : "Instances with name [iris] already exists!"
 } ]
@@ -1048,6 +1052,114 @@ a|
 ----
 |===
 
+== Exports valid instances with selected attributes and assigned class attribute to central data storage
+
+__POST__ */api/internal/instances/export-valid-instances* - Exports valid instances with selected attributes and assigned class attribute to central data storage
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+
+*Request parameters*
+[width=100%]
+|===
+|*Name*|*Description*|*Location*|*Schema*
+|*uuid**
+|Instances uuid
+|query
+a|
+__string__
+
+
+*Min. length*: 1
+
+*Max. length*: 36
+
+
+
+
+
+
+
+*Pattern*: `^[0-9a-f]{8}-[0-9a-f]{4}-[34][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+<<ExportInstancesResponseDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "externalDataUuid" : "1d2de514-3a87-4620-9b97-c260e24340de"
+}
+----
+|400
+|Bad request
+|*application/json*
+|
+__array__
+<<<ValidationErrorDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "SelectedAttributesNumberIsTooLow",
+  "errorMessage" : "Selected attributes number must be greater than or equal to [2] for table [iris]"
+} ]
+----
+|===
+
 == Gets instances reports info
 
 __GET__ */instances/reports-info* - Gets instances reports info
@@ -1276,6 +1388,7 @@ a|
 [source,json]
 ----
 [ {
+  "fieldName" : null,
   "code" : "DataNotFound",
   "errorMessage" : "Entity with search key [1] not found!"
 } ]
@@ -1405,6 +1518,7 @@ a|
 [source,json]
 ----
 [ {
+  "fieldName" : null,
   "code" : "DataNotFound",
   "errorMessage" : "Entity with search key [1] not found!"
 } ]
@@ -1585,94 +1699,9 @@ a|
 [source,json]
 ----
 [ {
+  "fieldName" : null,
   "code" : "DataNotFound",
   "errorMessage" : "Entity with search key [1] not found!"
-} ]
-----
-|===
-
-== Downloads valid json instances report with selected attributes and assigned class attribute
-
-__GET__ */api/internal/instances/download-valid-report* - Downloads valid json instances report with selected attributes and assigned class attribute
-
-*Security requirement*
-
-[cols="^50%,^50%",options="header"]
-|===
-|*Name*|*Scopes*
-|
-<<EcaAuth>>
-a|
-
-* web
-
-|===
-
-
-*Request parameters*
-[width=100%]
-|===
-|*Name*|*Description*|*Location*|*Schema*
-|*uuid**
-|Instances uuid
-|query
-a|
-__string__
-
-
-*Min. length*: 1
-
-*Max. length*: 36
-
-
-
-
-
-
-
-*Pattern*: `^[0-9a-f]{8}-[0-9a-f]{4}-[34][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`
-
-
-|===
-
-*Api responses*
-[width=100%]
-|===
-|*Code*|*Description*|*Content type*|*Schema*|*Example*
-|200
-|OK
-|*-*
-|-
-a|
--
-|400
-|Bad request
-|*application/json*
-|
-__array__
-<<<ValidationErrorDto>>
->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-a|
-[source,json]
-----
-[ {
-  "code" : "SelectedAttributesNumberIsTooLow",
-  "errorMessage" : "Selected attributes number must be greater than or equal to [2] for table [iris]"
 } ]
 ----
 |===
@@ -1772,6 +1801,7 @@ a|
 [source,json]
 ----
 [ {
+  "fieldName" : null,
   "code" : "DataNotFound",
   "errorMessage" : "Entity with search key [1] not found!"
 } ]
@@ -2436,6 +2466,32 @@ __(int64)__
 *Minimum*: 0*
 
 *Maximum*: 9 223 372 036 854 775 807*
+
+
+
+
+
+
+
+
+|===
+=== ExportInstancesResponseDto
+:table-caption: Table
+.Export instances response dto
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*externalDataUuid*
+|External instances uuid in central data storage
+a|
+__string__
+
+
+
+
+*Max. length*: 36
+
+
 
 
 

@@ -1,7 +1,6 @@
 package com.ecaservice.server.service.experiment.step;
 
 import com.ecaservice.s3.client.minio.exception.ObjectStorageException;
-import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.exception.experiment.ExperimentException;
 import com.ecaservice.server.model.entity.Experiment;
@@ -10,16 +9,17 @@ import com.ecaservice.server.model.entity.ExperimentStepEntity;
 import com.ecaservice.server.model.experiment.ExperimentContext;
 import com.ecaservice.server.model.experiment.InitializationParams;
 import com.ecaservice.server.repository.ExperimentRepository;
+import com.ecaservice.server.service.data.InstancesLoaderService;
 import com.ecaservice.server.service.evaluation.CalculationExecutorService;
 import com.ecaservice.server.service.experiment.ExperimentProcessorService;
 import com.ecaservice.server.service.experiment.ExperimentProgressService;
 import com.ecaservice.server.service.experiment.ExperimentStepService;
 import eca.dataminer.AbstractExperiment;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
+import weka.core.Attribute;
 import weka.core.Instances;
 
 import java.math.BigDecimal;
@@ -27,6 +27,8 @@ import java.util.Comparator;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import static com.ecaservice.server.util.InstancesUtils.removeConstantAttributes;
 
 /**
  * Step handler for experiment model processing.
@@ -38,7 +40,7 @@ import java.util.concurrent.TimeoutException;
 public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepHandler {
 
     private final ExperimentConfig experimentConfig;
-    private final ObjectStorageService objectStorageService;
+    private final InstancesLoaderService instancesLoaderService;
     private final ExperimentProcessorService experimentProcessorService;
     private final CalculationExecutorService executorService;
     private final ExperimentStepService experimentStepService;
@@ -49,7 +51,7 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
      * Constructor with parameters.
      *
      * @param experimentConfig           - experiment config
-     * @param objectStorageService       - object storage service
+     * @param instancesLoaderService     - instances loader service
      * @param experimentProcessorService - experiment processor service
      * @param executorService            - executor service
      * @param experimentStepService      - experiment step service
@@ -57,7 +59,7 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
      * @param experimentRepository       - experiment repository
      */
     public ExperimentModelProcessorStepHandler(ExperimentConfig experimentConfig,
-                                               ObjectStorageService objectStorageService,
+                                               InstancesLoaderService instancesLoaderService,
                                                ExperimentProcessorService experimentProcessorService,
                                                @Qualifier("calculationExecutorServiceImpl")
                                                CalculationExecutorService executorService,
@@ -66,7 +68,7 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
                                                ExperimentRepository experimentRepository) {
         super(ExperimentStep.EXPERIMENT_PROCESSING);
         this.experimentConfig = experimentConfig;
-        this.objectStorageService = objectStorageService;
+        this.instancesLoaderService = instancesLoaderService;
         this.experimentProcessorService = experimentProcessorService;
         this.executorService = executorService;
         this.experimentStepService = experimentStepService;
@@ -79,7 +81,8 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
                        ExperimentStepEntity experimentStepEntity) {
         try {
             Instances data = getInstances(experimentContext);
-            processExperiment(data, experimentContext);
+            Instances filteredInstances = removeConstantAttributes(data);
+            processExperiment(filteredInstances, experimentContext);
             saveMaxPctCorrectValue(experimentContext);
             experimentProgressService.finish(experimentStepEntity.getExperiment());
             experimentStepService.complete(experimentStepEntity);
@@ -98,16 +101,13 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
         }
     }
 
-    private Instances getInstances(ExperimentContext experimentContext) throws Exception {
+    private Instances getInstances(ExperimentContext experimentContext) {
         StopWatch stopWatch = experimentContext.getStopWatch();
         Experiment experiment = experimentContext.getExperiment();
-        if (StringUtils.isEmpty(experiment.getTrainingDataPath())) {
-            throw new ExperimentException(String.format("Training data path is not specified for experiment [%s]!",
-                    experiment.getRequestId()));
-        }
         stopWatch.start(String.format("Loading data for experiment [%s]", experiment.getRequestId()));
-        Instances data = objectStorageService.getObject(experiment.getTrainingDataPath(), Instances.class);
-        data.setClassIndex(experiment.getClassIndex());
+        Instances data = instancesLoaderService.loadInstances(experiment.getTrainingDataUuid());
+        Attribute classAttribute = data.attribute(experiment.getInstancesInfo().getClassName());
+        data.setClass(classAttribute);
         stopWatch.stop();
         return data;
     }

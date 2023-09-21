@@ -233,6 +233,21 @@ services:
       - eca-db
       - discovery-server
 
+  eca-data-loader:
+    image: eca-data-loader
+    container_name: eca-data-loader
+    restart: always
+    environment:
+      TZ: ${TIME_ZONE}
+      SPRING_PROFILES_ACTIVE: "docker"
+      JAVA_OPTS: "-Xmx512m"
+      OPENAPI_BASEPATH: "/eca-data-loader"
+    networks:
+      - default
+    depends_on:
+      - eca-db
+      - discovery-server
+
   eca-external-api:
     image: eca-external-api
     container_name: eca-external-api

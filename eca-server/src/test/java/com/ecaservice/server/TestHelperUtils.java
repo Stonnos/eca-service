@@ -16,6 +16,7 @@ import com.ecaservice.classifier.options.model.LogisticOptions;
 import com.ecaservice.classifier.options.model.NeuralNetworkOptions;
 import com.ecaservice.classifier.options.model.RandomForestsOptions;
 import com.ecaservice.classifier.options.model.StackingOptions;
+import com.ecaservice.data.loader.dto.InstancesMetaInfoDto;
 import com.ecaservice.ers.dto.ClassificationCostsReport;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import com.ecaservice.ers.dto.ClassifierOptionsResponse;
@@ -45,6 +46,7 @@ import com.ecaservice.server.model.entity.ExperimentStepStatus;
 import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.evaluation.ClassifierOptionsRequestSource;
+import com.ecaservice.server.model.evaluation.EvaluationInputDataModel;
 import com.ecaservice.server.model.evaluation.EvaluationRequestDataModel;
 import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
 import com.ecaservice.server.model.experiment.ExperimentMessageRequestData;
@@ -98,7 +100,6 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.ecaservice.server.util.ClassifierOptionsHelper.toJsonString;
-import static com.ecaservice.server.util.InstancesUtils.md5Hash;
 import static com.google.common.collect.Lists.newArrayList;
 
 /**
@@ -121,7 +122,6 @@ public class TestHelperUtils {
     public static final int PAGE_NUMBER = 0;
 
     private static final String TEST_MAIL_RU = "test@mail.ru";
-    private static final String TRAINING_DATA_PATH = "data.model";
     private static final String EXPERIMENT_PATH = "experiment.model";
     private static final String CLASSIFIERS_TEMPLATES_JSON = "classifiers-templates.json";
     private static final String ENSEMBLE_CLASSIFIER_TEMPLATES_JSON = "ensemble-classifiers-templates.json";
@@ -142,7 +142,7 @@ public class TestHelperUtils {
     private static final double MIN_ERROR_THRESHOLD = 0.0d;
     private static final double MAX_ERROR_THRESHOLD = 0.5d;
     private static final String RELATION_NAME = "Relation";
-    private static final String CLASS_NAME = "Class";
+    private static final String CLASS_NAME = "class";
     private static final int NUM_INSTANCES = 100;
     private static final int NUM_ATTRIBUTES = 10;
     private static final int NUM_CLASSES = 2;
@@ -164,6 +164,7 @@ public class TestHelperUtils {
     public static final String MESSAGE_TEXT = "Message text";
     private static final String DATA_MD_5_HASH = "3032e188204cb537f69fc7364f638641";
     private static final String CLASSIFIER_MODEL = "classifier.model";
+    private static final String INSTANCES_OBJECT_PATH = "instances.json";
 
     /**
      * Creates page request dto.
@@ -261,9 +262,9 @@ public class TestHelperUtils {
      */
     public static EvaluationRequest createEvaluationRequest() {
         EvaluationRequest request = new EvaluationRequest();
+        request.setDataUuid(UUID.randomUUID().toString());
         request.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
-        request.setData(loadInstances());
-        request.setClassifier(new KNearestNeighbours());
+        request.setClassifierOptions(new KNearestNeighboursOptions());
         return request;
     }
 
@@ -275,11 +276,24 @@ public class TestHelperUtils {
     public static EvaluationRequestDataModel createEvaluationRequestData() {
         EvaluationRequestDataModel request = new EvaluationRequestDataModel();
         request.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
-        Instances data = loadInstances();
-        request.setDataMd5Hash(md5Hash(data));
-        request.setData(data);
+        request.setDataUuid(UUID.randomUUID().toString());
+        request.setRequestId(UUID.randomUUID().toString());
         request.setClassifier(new KNearestNeighbours());
         return request;
+    }
+
+    /**
+     * Creates evaluation input data model object.
+     *
+     * @return evaluation input data model
+     */
+    public static EvaluationInputDataModel createEvaluationInputDataModel() {
+        EvaluationInputDataModel evaluationInputDataModel = new EvaluationInputDataModel();
+        evaluationInputDataModel.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
+        Instances data = loadInstances();
+        evaluationInputDataModel.setData(data);
+        evaluationInputDataModel.setClassifier(new KNearestNeighbours());
+        return evaluationInputDataModel;
     }
 
     /**
@@ -289,9 +303,9 @@ public class TestHelperUtils {
      */
     public static ExperimentRequest createExperimentRequest() {
         ExperimentRequest experimentRequest = new ExperimentRequest();
+        experimentRequest.setDataUuid(UUID.randomUUID().toString());
         experimentRequest.setExperimentType(ExperimentType.KNN);
         experimentRequest.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
-        experimentRequest.setData(loadInstances());
         experimentRequest.setEmail(TEST_MAIL_RU);
         return experimentRequest;
     }
@@ -304,9 +318,9 @@ public class TestHelperUtils {
     public static ExperimentMessageRequestData createExperimentMessageRequest() {
         ExperimentMessageRequestData experimentRequest = new ExperimentMessageRequestData();
         experimentRequest.setRequestId(UUID.randomUUID().toString());
+        experimentRequest.setDataUuid(UUID.randomUUID().toString());
         experimentRequest.setExperimentType(ExperimentType.KNN);
         experimentRequest.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
-        experimentRequest.setData(loadInstances());
         experimentRequest.setEmail(TEST_MAIL_RU);
         experimentRequest.setReplyTo(REPLY_TO);
         experimentRequest.setCorrelationId(UUID.randomUUID().toString());
@@ -326,24 +340,23 @@ public class TestHelperUtils {
     /**
      * Creates experiment.
      *
-     * @param requestId        - request id
-     * @param experimentStatus - experiment status
+     * @param requestId     - request id
+     * @param requestStatus - request status
      * @return created experiment
      */
-    public static Experiment createExperiment(String requestId, RequestStatus experimentStatus) {
+    public static Experiment createExperiment(String requestId, RequestStatus requestStatus) {
         Experiment experiment = new Experiment();
         experiment.setEmail(TEST_MAIL_RU);
-        experiment.setRequestStatus(experimentStatus);
+        experiment.setRequestStatus(requestStatus);
         experiment.setCreationDate(LocalDateTime.now());
         experiment.setExperimentType(ExperimentType.KNN);
         experiment.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
-        experiment.setTrainingDataPath(TRAINING_DATA_PATH);
+        experiment.setTrainingDataUuid(UUID.randomUUID().toString());
         experiment.setModelPath(EXPERIMENT_PATH);
         experiment.setRequestId(requestId);
         experiment.setChannel(Channel.QUEUE);
         experiment.setReplyTo(REPLY_TO);
         experiment.setCorrelationId(UUID.randomUUID().toString());
-        experiment.setClassIndex(0);
         experiment.setInstancesInfo(createInstancesInfo());
         return experiment;
     }
@@ -852,7 +865,7 @@ public class TestHelperUtils {
     /**
      * Creates classifier options request model.
      *
-     * @param instancesInfo                     - instances info
+     * @param instancesInfo                   - instances info
      * @param requestDate                     - request date
      * @param responseStatus                  - response status
      * @param classifierOptionsResponseModels - classifier options response models list
@@ -1159,6 +1172,24 @@ public class TestHelperUtils {
         experimentStepEntity.setCreated(LocalDateTime.now());
         experimentStepEntity.setExperiment(experiment);
         return experimentStepEntity;
+    }
+
+    /**
+     * Creates instances info meta info dto.
+     *
+     * @return instances info meta info dto
+     */
+    public static InstancesMetaInfoDto createInstancesMetaInfoInfo() {
+        return InstancesMetaInfoDto.builder()
+                .relationName(RELATION_NAME)
+                .className(CLASS_NAME)
+                .numInstances(NUM_INSTANCES)
+                .numAttributes(NUM_ATTRIBUTES)
+                .numClasses(NUM_CLASSES)
+                .md5Hash(DATA_MD_5_HASH)
+                .uuid(UUID.randomUUID().toString())
+                .objectPath(INSTANCES_OBJECT_PATH)
+                .build();
     }
 
     private static <T> T loadConfig(String path, TypeReference<T> tTypeReference) {

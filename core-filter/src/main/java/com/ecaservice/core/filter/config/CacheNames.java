@@ -24,4 +24,9 @@ public class CacheNames {
      * Filter dictionaries cache name
      */
     public static final String FILTER_DICTIONARIES_CACHE_NAME = "filter-dictionaries";
+
+    /**
+     * Sort fields cache name
+     */
+    public static final String SORT_FIELDS_CACHE_NAME = "sort-fields";
 }

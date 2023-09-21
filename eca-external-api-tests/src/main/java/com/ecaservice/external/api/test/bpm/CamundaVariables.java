@@ -21,11 +21,6 @@ public class CamundaVariables {
     public static final String AUTO_TEST_ID = "autoTestId";
 
     /**
-     * Train data source
-     */
-    public static final String TRAINS_DATA_SOURCE = "trainDataSource";
-
-    /**
      * Test data model variable
      */
     public static final String TEST_DATA_MODEL = "testDataModel";
@@ -36,9 +31,19 @@ public class CamundaVariables {
     public static final String TEST_RESULTS_MATCHER = "testResultsMatcher";
 
     /**
+     * Response code variable
+     */
+    public static final String RESPONSE_CODE = "responseCode";
+
+    /**
      * API response variable
      */
     public static final String API_RESPONSE = "apiResponse";
+
+    /**
+     * Train data uuid
+     */
+    public static final String TRAIN_DATA_UUID = "trainDataUuid";
 
     /**
      * Task result variable

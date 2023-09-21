@@ -4,6 +4,7 @@ import com.ecaservice.server.service.push.WebPushSender;
 import com.ecaservice.web.push.dto.AbstractPushRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Primary;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import static com.ecaservice.server.config.EcaServiceConfiguration.ECA_THREAD_PO
  */
 @Slf4j
 @Service
+@ConditionalOnProperty(value = "app.push.async", havingValue = "true")
 @Primary
 public class AsyncWebPushSender implements WebPushSender {
 

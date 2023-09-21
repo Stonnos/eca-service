@@ -77,4 +77,9 @@
     <include file="db/changelog/v66-add-classifier-options-request-request-id-column.xml"/>
     <include file="db/changelog/v67-add-instances-info-created-date-column.xml"/>
     <include file="db/changelog/v68-add-experiment-max-pct-correct-column.xml"/>
+    <include file="db/changelog/v69-update-filter-templates.xml"/>
+    <include file="db/changelog/v70-insert-instances-info-filter-template.xml"/>
+    <include file="db/changelog/v71-insert-classifiers-configuration-filter-template.xml"/>
+    <include file="db/changelog/v72-insert-classifiers-options-filter-template.xml"/>
+    <include file="db/changelog/v73-drop-experiment-class-index-column.xml"/>
 </databaseChangeLog>

@@ -50,7 +50,7 @@ class ErsResponseStatusMapperTest {
     @Test
     void testMapDataNotFoundStatusToErrorCode() {
         Assertions.assertThat(ersResponseStatusMapper.mapErrorCode(ErsErrorCode.DATA_NOT_FOUND))
-                .isEqualTo(ErrorCode.TRAINING_DATA_NOT_FOUND);
+                .isEqualTo(ErrorCode.CLASSIFIER_OPTIONS_NOT_FOUND);
     }
 
     @Test

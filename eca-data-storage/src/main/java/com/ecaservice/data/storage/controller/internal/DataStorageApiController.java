@@ -1,8 +1,8 @@
 package com.ecaservice.data.storage.controller.internal;
 
 import com.ecaservice.common.error.model.ValidationErrorDto;
-import com.ecaservice.data.storage.report.InstancesReportService;
-import com.ecaservice.data.storage.service.StorageService;
+import com.ecaservice.data.storage.dto.ExportInstancesResponseDto;
+import com.ecaservice.data.storage.service.ExportInstancesObjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -16,12 +16,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -44,22 +43,29 @@ import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 @RequiredArgsConstructor
 public class DataStorageApiController {
 
-    private final StorageService storageService;
-    private final InstancesReportService instancesReportService;
+    private final ExportInstancesObjectService exportInstancesObjectService;
 
     /**
-     * Downloads valid json instances report with selected attributes and assigned class attribute.
+     * Exports valid instances with selected attributes and assigned class attribute to central data storage.
      *
-     * @param uuid                - instances uuid
-     * @param httpServletResponse - http servlet response
-     * @throws Exception in case of error
+     * @param uuid - instances uuid
      */
     @Operation(
-            description = "Downloads valid json instances report with selected attributes and assigned class attribute",
-            summary = "Downloads valid json instances report with selected attributes and assigned class attribute",
+            description = "Exports valid instances with selected attributes and assigned class attribute to central data storage",
+            summary = "Exports valid instances with selected attributes and assigned class attribute to central data storage",
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
-                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "ExportValidInstancesResponseDto",
+                                                    ref = "#/components/examples/ExportValidInstancesResponseDto"
+                                            ),
+                                    },
+                                    schema = @Schema(implementation = ExportInstancesResponseDto.class)
+                            )),
                     @ApiResponse(description = "Bad request", responseCode = "400",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -74,15 +80,13 @@ public class DataStorageApiController {
                     )
             }
     )
-    @GetMapping(value = "/download-valid-report")
-    public void downloadValidInstancesReport(
+    @PostMapping(value = "/export-valid-instances")
+    public ExportInstancesResponseDto exportValidInstances(
             @Parameter(description = "Instances uuid", example = "1d2de514-3a87-4620-9b97-c260e24340de",
                     required = true)
             @RequestParam @Pattern(regexp = UUID_PATTERN)
-            @Size(min = VALUE_1, max = UUID_MAX_SIZE) String uuid,
-            HttpServletResponse httpServletResponse) throws Exception {
-        log.info("Request to download valid instances report with uuid [{}]", uuid);
-        var instancesEntity = storageService.getByUuid(uuid);
-        instancesReportService.generateValidJsonInstancesReport(instancesEntity, httpServletResponse);
+            @Size(min = VALUE_1, max = UUID_MAX_SIZE) String uuid) {
+        log.info("Request to export valid instances report with uuid [{}]", uuid);
+        return exportInstancesObjectService.exportValidInstances(uuid);
     }
 }

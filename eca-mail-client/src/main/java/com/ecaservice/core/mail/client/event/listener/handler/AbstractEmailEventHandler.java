@@ -25,8 +25,6 @@ public abstract class AbstractEmailEventHandler<T extends AbstractEmailEvent> {
 
     @Getter
     private final Class<T> type;
-    @Getter
-    private final String templateCode;
 
     /**
      * Gets receiver.
@@ -35,6 +33,14 @@ public abstract class AbstractEmailEventHandler<T extends AbstractEmailEvent> {
      * @return receiver
      */
     public abstract String getReceiver(T emailEvent);
+
+    /**
+     * Gets email template code.
+     *
+     * @param emailEvent - email event
+     * @return template code
+     */
+    public abstract String getTemplateCode(T emailEvent);
 
     /**
      * Can handle notification event?
@@ -54,7 +60,7 @@ public abstract class AbstractEmailEventHandler<T extends AbstractEmailEvent> {
     public EmailRequest handle(T event) {
         EmailRequest emailRequest = new EmailRequest();
         emailRequest.setRequestId(UUID.randomUUID().toString());
-        emailRequest.setTemplateCode(getTemplateCode());
+        emailRequest.setTemplateCode(getTemplateCode(event));
         emailRequest.setReceiver(getReceiver(event));
         emailRequest.setVariables(createVariables(event));
         emailRequest.setPriority(getPriority());

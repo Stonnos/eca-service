@@ -1,15 +1,11 @@
 package com.ecaservice.base.model;
 
-import com.ecaservice.base.model.databind.InstancesDeserializer;
-import com.ecaservice.base.model.databind.InstancesSerializer;
 import com.ecaservice.base.model.visitor.EcaRequestVisitor;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import eca.core.evaluation.EvaluationMethod;
 import lombok.Data;
-import weka.core.Instances;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -25,6 +21,12 @@ import static com.ecaservice.base.model.util.FieldConstraints.EMAIL_REGEX;
 public class ExperimentRequest implements EcaRequest {
 
     /**
+     * Train data uuid
+     */
+    @NotBlank
+    private String dataUuid;
+
+    /**
      * Email
      */
     @Email(regexp = EMAIL_REGEX)
@@ -36,14 +38,6 @@ public class ExperimentRequest implements EcaRequest {
      */
     @NotNull
     private ExperimentType experimentType;
-
-    /**
-     * Training data
-     */
-    @NotNull
-    @JsonSerialize(using = InstancesSerializer.class)
-    @JsonDeserialize(using = InstancesDeserializer.class)
-    private Instances data;
 
     /**
      * Evaluation method
