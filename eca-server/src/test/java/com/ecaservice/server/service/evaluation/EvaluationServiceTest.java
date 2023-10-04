@@ -2,7 +2,6 @@ package com.ecaservice.server.service.evaluation;
 
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.CrossValidationConfig;
-import com.ecaservice.server.model.evaluation.ClassificationResult;
 import eca.core.evaluation.EvaluationMethod;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,9 +39,8 @@ class EvaluationServiceTest {
     @Test
     void testTrainingDataMethod() {
         var evaluationInputDataModel = TestHelperUtils.createEvaluationInputDataModel();
-        ClassificationResult result = evaluationService.evaluateModel(evaluationInputDataModel);
-        assertThat(result.isSuccess()).isTrue();
-        assertThat(result.getEvaluationResults().getEvaluation().isKCrossValidationMethod()).isFalse();
+        var result = evaluationService.evaluateModel(evaluationInputDataModel);
+        assertThat(result.getEvaluation().isKCrossValidationMethod()).isFalse();
     }
 
     @Test
@@ -51,8 +49,7 @@ class EvaluationServiceTest {
         evaluationInputDataModel.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
         evaluationInputDataModel.setNumFolds(TestHelperUtils.NUM_FOLDS);
         evaluationInputDataModel.setNumTests(TestHelperUtils.NUM_TESTS);
-        ClassificationResult result = evaluationService.evaluateModel(evaluationInputDataModel);
-        assertThat(result.isSuccess()).isTrue();
-        assertThat(result.getEvaluationResults().getEvaluation().isKCrossValidationMethod()).isTrue();
+        var result = evaluationService.evaluateModel(evaluationInputDataModel);
+        assertThat(result.getEvaluation().isKCrossValidationMethod()).isTrue();
     }
 }

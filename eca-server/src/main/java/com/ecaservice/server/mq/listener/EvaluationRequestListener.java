@@ -48,7 +48,7 @@ public class EvaluationRequestListener {
         log.info("Received evaluation request with correlation id [{}]", inboundMessageProperties.getCorrelationId());
         var evaluationRequestDataModel = prepareEvaluationRequestDataModel(evaluationRequest);
         EvaluationResultsDataModel evaluationResultsDataModel =
-                evaluationRequestService.processRequest(evaluationRequestDataModel);
+                evaluationRequestService.createAndProcessRequest(evaluationRequestDataModel);
         log.info("Evaluation response [{}] with status [{}] has been built.",
                 evaluationResultsDataModel.getRequestId(), evaluationResultsDataModel.getStatus());
         eventPublisher.publishEvent(new EvaluationErsReportEvent(this, evaluationResultsDataModel));

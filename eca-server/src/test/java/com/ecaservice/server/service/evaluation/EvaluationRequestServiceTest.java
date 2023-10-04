@@ -1,6 +1,7 @@
 package com.ecaservice.server.service.evaluation;
 
 import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
+import com.ecaservice.classifier.options.config.ClassifiersOptionsAutoConfiguration;
 import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
@@ -20,6 +21,7 @@ import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.evaluation.EvaluationRequestDataModel;
 import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
+import com.ecaservice.server.repository.ClassifierInfoRepository;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.InstancesInfoService;
@@ -58,7 +60,7 @@ import static org.mockito.Mockito.when;
 @Import({ExecutorConfiguration.class, CrossValidationConfig.class, EvaluationLogService.class,
         ClassifiersProperties.class, AppProperties.class, InstancesInfoService.class,
         EvaluationLogMapperImpl.class, EvaluationService.class, DateTimeConverter.class,
-        InstancesInfoMapperImpl.class, ClassifierInfoMapperImpl.class})
+        InstancesInfoMapperImpl.class, ClassifierInfoMapperImpl.class, ClassifiersOptionsAutoConfiguration.class})
 class EvaluationRequestServiceTest extends AbstractJpaTest {
 
     private static final String DATA_MD_5_HASH = "3032e188204cb537f69fc7364f638641";
@@ -85,10 +87,12 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
     private InstancesInfoService instancesInfoService;
     @Inject
     private EvaluationLogService evaluationLogService;
+    @Inject
+    private ClassifierInfoRepository classifierInfoRepository;
 
     @Mock
     private ClassifierInitializerService classifierInitializerService;
-    @MockBean
+    @Inject
     private ClassifierOptionsAdapter classifierOptionsAdapter;
     @Mock
     private ObjectStorageService objectStorageService;
@@ -104,7 +108,7 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
         evaluationRequestService =
                 new EvaluationRequestService(appProperties, classifiersProperties, calculationExecutorService,
                         evaluationService, classifierInitializerService, objectStorageService, instancesLoaderService,
-                        evaluationLogService);
+                        evaluationLogService, classifierOptionsAdapter, classifierInfoRepository);
         mockLoadInstances();
     }
 
@@ -118,7 +122,7 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
         when(objectStorageService.getObjectPresignedProxyUrl(any(GetPresignedUrlObject.class)))
                 .thenReturn(MODEL_DOWNLOAD_URL);
         EvaluationRequestDataModel request = TestHelperUtils.createEvaluationRequestData();
-        EvaluationResultsDataModel evaluationResultsDataModel = evaluationRequestService.processRequest(request);
+        EvaluationResultsDataModel evaluationResultsDataModel = evaluationRequestService.createAndProcessRequest(request);
         assertThat(evaluationResultsDataModel.getStatus()).isEqualTo(RequestStatus.FINISHED);
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
         AssertionUtils.hasOneElement(evaluationLogList);
@@ -141,10 +145,10 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
         EvaluationRequestService service =
                 new EvaluationRequestService(appProperties, classifiersProperties, executorService,
                         evaluationService, classifierInitializerService, objectStorageService, instancesLoaderService,
-                        evaluationLogService);
+                        evaluationLogService, classifierOptionsAdapter, classifierInfoRepository);
         doThrow(new RuntimeException("Error")).when(executorService)
                 .execute(any(), anyLong(), any(TimeUnit.class));
-        EvaluationResultsDataModel evaluationResultsDataModel = service.processRequest(request);
+        EvaluationResultsDataModel evaluationResultsDataModel = service.createAndProcessRequest(request);
         assertThat(evaluationResultsDataModel.getStatus()).isEqualTo(RequestStatus.ERROR);
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
         AssertionUtils.hasOneElement(evaluationLogList);
@@ -158,7 +162,7 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
         EvaluationRequestDataModel request = TestHelperUtils.createEvaluationRequestData();
         request.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
         request.setNumFolds(1);
-        EvaluationResultsDataModel evaluationResultsDataModel = evaluationRequestService.processRequest(request);
+        EvaluationResultsDataModel evaluationResultsDataModel = evaluationRequestService.createAndProcessRequest(request);
         assertThat(evaluationResultsDataModel.getStatus()).isEqualTo(RequestStatus.ERROR);
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
         AssertionUtils.hasOneElement(evaluationLogList);
@@ -174,9 +178,9 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
         EvaluationRequestService service =
                 new EvaluationRequestService(appProperties, classifiersProperties, executorService,
                         evaluationService, classifierInitializerService, objectStorageService, instancesLoaderService,
-                        evaluationLogService);
+                        evaluationLogService, classifierOptionsAdapter, classifierInfoRepository);
         doThrow(TimeoutException.class).when(executorService).execute(any(), anyLong(), any(TimeUnit.class));
-        EvaluationResultsDataModel evaluationResultsDataModel = service.processRequest(request);
+        EvaluationResultsDataModel evaluationResultsDataModel = service.createAndProcessRequest(request);
         assertThat(evaluationResultsDataModel.getStatus()).isEqualTo(RequestStatus.TIMEOUT);
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
         AssertionUtils.hasOneElement(evaluationLogList);

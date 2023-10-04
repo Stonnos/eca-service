@@ -6,7 +6,6 @@ import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.exception.experiment.ExperimentException;
 import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
-import com.ecaservice.server.model.evaluation.ClassificationResult;
 import com.ecaservice.server.model.evaluation.EvaluationInputDataModel;
 import com.ecaservice.server.service.classifiers.ClassifierOptionsService;
 import com.ecaservice.server.service.evaluation.EvaluationService;
@@ -64,11 +63,9 @@ public class ClassifiersSetSearcher {
         for (AbstractClassifier classifier : classifiersSet) {
             var evaluationInputDataModel =
                     createEvaluationInputDataModel(classifier, data, evaluationMethod);
-            ClassificationResult classificationResult = evaluationService.evaluateModel(evaluationInputDataModel);
-            if (classificationResult.isSuccess()) {
-                classificationResult.getEvaluationResults().setClassifier(classifier);
-                finished.add(classificationResult.getEvaluationResults());
-            }
+            var evaluationResults = evaluationService.evaluateModel(evaluationInputDataModel);
+            evaluationResults.setClassifier(classifier);
+            finished.add(evaluationResults);
         }
 
         if (CollectionUtils.isEmpty(finished)) {

@@ -16,9 +16,12 @@ import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
 import eca.core.evaluation.EvaluationMethod;
+import eca.core.evaluation.EvaluationResults;
+import eca.core.model.ClassificationModel;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
+import weka.classifiers.AbstractClassifier;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -230,5 +233,20 @@ public class Utils {
         requestEntity.setCreationDate(LocalDateTime.now());
         requestEntity.setSource(source);
         return requestEntity;
+    }
+
+    /**
+     * Builds classification model from evaluation results.
+     *
+     * @param evaluationResults - evaluation results
+     * @return classification model
+     */
+    public static ClassificationModel buildClassificationModel(EvaluationResults evaluationResults) {
+        var classifier = (AbstractClassifier) evaluationResults.getClassifier();
+        ClassificationModel classificationModel = new ClassificationModel();
+        classificationModel.setClassifier(classifier);
+        classificationModel.setData(evaluationResults.getEvaluation().getData());
+        classificationModel.setEvaluation(evaluationResults.getEvaluation());
+        return classificationModel;
     }
 }
