@@ -127,6 +127,7 @@ public class EvaluationRequestService {
                                                               EvaluationLog evaluationLog)
             throws IOException, ExecutionException, InterruptedException, TimeoutException {
         var evaluationResults = evaluationModel(classifier, data, evaluationLog);
+        uploadModel(evaluationResults, evaluationLog);
         processEvaluationResults(evaluationResults, evaluationLog);
         EvaluationResultsDataModel evaluationResultsDataModel =
                 buildEvaluationResultsModel(evaluationLog.getRequestId(), RequestStatus.FINISHED);
@@ -169,9 +170,7 @@ public class EvaluationRequestService {
         );
     }
 
-    private void processEvaluationResults(EvaluationResults evaluationResults,
-                                          EvaluationLog evaluationLog) throws IOException {
-        uploadModel(evaluationResults, evaluationLog);
+    private void processEvaluationResults(EvaluationResults evaluationResults, EvaluationLog evaluationLog) {
         double pctCorrect = evaluationResults.getEvaluation().pctCorrect();
         evaluationLog.setPctCorrect(BigDecimal.valueOf(pctCorrect));
     }
