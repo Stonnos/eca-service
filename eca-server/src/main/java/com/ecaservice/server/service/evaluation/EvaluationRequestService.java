@@ -67,7 +67,7 @@ public class EvaluationRequestService {
      * @param evaluationRequestDataModel - evaluation request data model
      * @return evaluation response data model
      */
-    public EvaluationResultsDataModel createAndProcessRequest(
+    public EvaluationResultsDataModel createAndProcessEvaluationRequest(
             EvaluationMessageRequestDataModel evaluationRequestDataModel) {
         putMdcIfAbsent(TX_ID, evaluationRequestDataModel.getRequestId());
         putMdc(EV_REQUEST_ID, evaluationRequestDataModel.getRequestId());
@@ -76,7 +76,7 @@ public class EvaluationRequestService {
                 evaluationRequestDataModel.getDataUuid());
         EvaluationLog evaluationLog = evaluationLogService.createAndSaveEvaluationLog(evaluationRequestDataModel);
         evaluationLogService.startEvaluation(evaluationLog);
-        return processEvaluation(evaluationLog);
+        return processEvaluationRequest(evaluationLog);
     }
 
     /**
@@ -85,7 +85,7 @@ public class EvaluationRequestService {
      * @param evaluationLog - evaluation log
      * @return evaluation results data model
      */
-    public EvaluationResultsDataModel processEvaluation(EvaluationLog evaluationLog) {
+    public EvaluationResultsDataModel processEvaluationRequest(EvaluationLog evaluationLog) {
         log.info("Starting to process request for classifier [{}] evaluation with data uuid [{}]",
                 evaluationLog.getClassifierInfo().getClassifierName(), evaluationLog.getTrainingDataUuid());
         try {

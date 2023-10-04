@@ -75,5 +75,15 @@ public enum TaskType {
     /**
      * Calculates experiment final status
      */
-    CALCULATE_EXPERIMENT_FINAL_STATUS
+    CALCULATE_EXPERIMENT_FINAL_STATUS,
+
+    /**
+     * Create classifier evaluation web request
+     */
+    CREATE_EVALUATION_WEB_REQUEST,
+
+    /**
+     * Starts classifier evaluation
+     */
+    START_EVALUATION,
 }

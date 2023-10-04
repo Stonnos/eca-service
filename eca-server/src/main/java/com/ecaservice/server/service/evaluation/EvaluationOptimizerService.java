@@ -69,7 +69,7 @@ public class EvaluationOptimizerService {
         evaluationRequest.setClassifier(classifier);
         evaluationRequest.setRequestId(UUID.randomUUID().toString());
         var evaluationResultsDataModel =
-                evaluationRequestService.createAndProcessRequest(evaluationRequest);
+                evaluationRequestService.createAndProcessEvaluationRequest(evaluationRequest);
         log.info("Model has been evaluated for data uuid [{}] with options [{}], options request id [{}]",
                 instancesRequestDataModel.getDataUuid(), options, instancesRequestDataModel.getRequestId());
         return evaluationResultsDataModel;

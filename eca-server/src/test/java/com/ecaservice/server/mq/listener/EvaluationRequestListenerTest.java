@@ -63,7 +63,7 @@ class EvaluationRequestListenerTest {
     void testHandleMessage() {
         EvaluationRequest evaluationRequest = TestHelperUtils.createEvaluationRequest();
         Message message = Mockito.mock(Message.class);
-        when(evaluationRequestService.createAndProcessRequest(any(EvaluationMessageRequestDataModel.class)))
+        when(evaluationRequestService.createAndProcessEvaluationRequest(any(EvaluationMessageRequestDataModel.class)))
                 .thenReturn(new EvaluationResultsDataModel());
         MessageProperties messageProperties = TestHelperUtils.buildMessageProperties();
         when(message.getMessageProperties()).thenReturn(messageProperties);
