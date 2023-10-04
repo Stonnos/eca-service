@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0bcpa12" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="CreateEvaluationWebRequestProcess" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_07s9fim</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="Activity_0sqdg4p" name="Сформировать обучающую выборку на основе данных из data storage" camunda:modelerTemplate="TaskExecution" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="taskType">EXPORT_VALID_INSTANCES</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_07s9fim</bpmn:incoming>
+      <bpmn:outgoing>Flow_0gg1wea</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_07s9fim" sourceRef="StartEvent_1" targetRef="Activity_0sqdg4p" />
+    <bpmn:serviceTask id="Activity_0u4bqn0" name="Создать заявку на построение модели классификатора" camunda:modelerTemplate="TaskExecution" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="taskType">CREATE_EVALUATION_WEB_REQUEST</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0gg1wea</bpmn:incoming>
+      <bpmn:outgoing>Flow_1asceao</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0gg1wea" sourceRef="Activity_0sqdg4p" targetRef="Activity_0u4bqn0" />
+    <bpmn:serviceTask id="Activity_0sk8uu1" name="Отправка push уведомления пользователю о новой заявке на построение модели" camunda:modelerTemplate="ExperimentPushSender" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="pushMessageProperties">ID,REQUEST_ID,REQUEST_STATUS</camunda:inputParameter>
+          <camunda:inputParameter name="taskType">SENT_EVALUATION_WEB_PUSH</camunda:inputParameter>
+          <camunda:inputParameter name="pushMessageType">EVALUATION_STATUS</camunda:inputParameter>
+          <camunda:inputParameter name="pushTemplateCode">NEW_EVALUATION_PUSH_MESSAGE</camunda:inputParameter>
+          <camunda:inputParameter name="pushTemplateContextVariable">evaluationLog</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1asceao</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ippukx</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1asceao" sourceRef="Activity_0u4bqn0" targetRef="Activity_0sk8uu1" />
+    <bpmn:endEvent id="Event_0lesvyf">
+      <bpmn:incoming>Flow_0ippukx</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0ippukx" sourceRef="Activity_0sk8uu1" targetRef="Event_0lesvyf" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="CreateEvaluationWebRequestProcess">
+      <bpmndi:BPMNEdge id="Flow_07s9fim_di" bpmnElement="Flow_07s9fim">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="300" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0gg1wea_di" bpmnElement="Flow_0gg1wea">
+        <di:waypoint x="400" y="117" />
+        <di:waypoint x="500" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1asceao_di" bpmnElement="Flow_1asceao">
+        <di:waypoint x="600" y="117" />
+        <di:waypoint x="700" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ippukx_di" bpmnElement="Flow_0ippukx">
+        <di:waypoint x="800" y="117" />
+        <di:waypoint x="902" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0sqdg4p_di" bpmnElement="Activity_0sqdg4p">
+        <dc:Bounds x="300" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0u4bqn0_di" bpmnElement="Activity_0u4bqn0">
+        <dc:Bounds x="500" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0sk8uu1_di" bpmnElement="Activity_0sk8uu1">
+        <dc:Bounds x="700" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0lesvyf_di" bpmnElement="Event_0lesvyf">
+        <dc:Bounds x="902" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

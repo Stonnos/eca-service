@@ -42,9 +42,9 @@
         <camunda:inputOutput>
           <camunda:inputParameter name="taskType">SENT_EXPERIMENT_SYSTEM_PUSH</camunda:inputParameter>
           <camunda:inputParameter name="pushMessageType">EXPERIMENT_STATUS</camunda:inputParameter>
-          <camunda:inputParameter name="pushTemplateCode">NEW_EXPERIMENT</camunda:inputParameter>
           <camunda:inputParameter name="pushTemplateContextVariable">experiment</camunda:inputParameter>
           <camunda:inputParameter name="pushMessageProperties">ID,REQUEST_ID,REQUEST_STATUS</camunda:inputParameter>
+          <camunda:inputParameter name="pushTemplateCode">NEW_EXPERIMENT_PUSH_MESSAGE</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0shbfd0</bpmn:incoming>
@@ -65,10 +65,10 @@
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="pushMessageType">EXPERIMENT_STATUS</camunda:inputParameter>
-          <camunda:inputParameter name="pushTemplateCode">NEW_EXPERIMENT</camunda:inputParameter>
           <camunda:inputParameter name="pushTemplateContextVariable">experiment</camunda:inputParameter>
           <camunda:inputParameter name="pushMessageProperties">ID,REQUEST_ID,REQUEST_STATUS</camunda:inputParameter>
           <camunda:inputParameter name="taskType">SENT_EXPERIMENT_WEB_PUSH</camunda:inputParameter>
+          <camunda:inputParameter name="pushTemplateCode">NEW_EXPERIMENT_PUSH_MESSAGE</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1aarqdg</bpmn:incoming>

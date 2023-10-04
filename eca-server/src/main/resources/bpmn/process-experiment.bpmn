@@ -31,7 +31,7 @@
           <camunda:inputParameter name="pushMessageType">EXPERIMENT_STATUS</camunda:inputParameter>
           <camunda:inputParameter name="pushTemplateContextVariable">experiment</camunda:inputParameter>
           <camunda:inputParameter name="pushMessageProperties">ID,REQUEST_ID,REQUEST_STATUS</camunda:inputParameter>
-          <camunda:inputParameter name="pushTemplateCode">IN_PROGRESS_EXPERIMENT</camunda:inputParameter>
+          <camunda:inputParameter name="pushTemplateCode">IN_PROGRESS_EXPERIMENT_PUSH_MESSAGE</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1jp7krt</bpmn:incoming>
@@ -63,8 +63,8 @@
           <camunda:inputParameter name="pushMessageType">EXPERIMENT_STATUS</camunda:inputParameter>
           <camunda:inputParameter name="pushTemplateContextVariable">experiment</camunda:inputParameter>
           <camunda:inputParameter name="pushMessageProperties">ID,REQUEST_ID,REQUEST_STATUS</camunda:inputParameter>
-          <camunda:inputParameter name="pushTemplateCode">IN_PROGRESS_EXPERIMENT</camunda:inputParameter>
           <camunda:inputParameter name="taskType">SENT_EXPERIMENT_WEB_PUSH</camunda:inputParameter>
+          <camunda:inputParameter name="pushTemplateCode">IN_PROGRESS_EXPERIMENT_PUSH_MESSAGE</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0huk5ak</bpmn:incoming>
@@ -180,6 +180,10 @@
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="ExperimentProcess">
+      <bpmndi:BPMNEdge id="Flow_16cn1ss_di" bpmnElement="Flow_16cn1ss">
+        <di:waypoint x="690" y="1350" />
+        <di:waypoint x="862" y="1350" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1w4s3rs_di" bpmnElement="Flow_1w4s3rs">
         <di:waypoint x="930" y="340" />
         <di:waypoint x="1022" y="340" />
@@ -293,10 +297,6 @@
         <di:waypoint x="640" y="118" />
         <di:waypoint x="640" y="180" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_16cn1ss_di" bpmnElement="Flow_16cn1ss">
-        <di:waypoint x="690" y="1350" />
-        <di:waypoint x="862" y="1350" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="622" y="82" width="36" height="36" />
       </bpmndi:BPMNShape>
@@ -327,6 +327,9 @@
       <bpmndi:BPMNShape id="Gateway_14mp0ww_di" bpmnElement="Gateway_14mp0ww" isMarkerVisible="true">
         <dc:Bounds x="615" y="1175" width="50" height="50" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0m3e557_di" bpmnElement="Event_0m3e557">
+        <dc:Bounds x="862" y="1332" width="36" height="36" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0fhuwc7_di" bpmnElement="Activity_0fhuwc7">
         <dc:Bounds x="160" y="800" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -347,9 +350,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_13ar1aa_di" bpmnElement="Activity_1adelcm">
         <dc:Bounds x="830" y="300" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0m3e557_di" bpmnElement="Event_0m3e557">
-        <dc:Bounds x="862" y="1332" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1q6jczy_di" bpmnElement="Activity_1d6gjo2">
         <dc:Bounds x="590" y="1310" width="100" height="80" />

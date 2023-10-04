@@ -65,7 +65,7 @@
           <camunda:inputParameter name="pushMessageType">EXPERIMENT_STATUS</camunda:inputParameter>
           <camunda:inputParameter name="pushTemplateContextVariable">experiment</camunda:inputParameter>
           <camunda:inputParameter name="pushMessageProperties">ID,REQUEST_ID,REQUEST_STATUS</camunda:inputParameter>
-          <camunda:inputParameter name="pushTemplateCode">FINISHED_EXPERIMENT</camunda:inputParameter>
+          <camunda:inputParameter name="pushTemplateCode">FINISHED_EXPERIMENT_PUSH_MESSAGE</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1f8f0z9</bpmn:incoming>
@@ -79,7 +79,7 @@
           <camunda:inputParameter name="pushMessageType">EXPERIMENT_STATUS</camunda:inputParameter>
           <camunda:inputParameter name="pushTemplateContextVariable">experiment</camunda:inputParameter>
           <camunda:inputParameter name="pushMessageProperties">ID,REQUEST_ID,REQUEST_STATUS</camunda:inputParameter>
-          <camunda:inputParameter name="pushTemplateCode">TIMEOUT_EXPERIMENT</camunda:inputParameter>
+          <camunda:inputParameter name="pushTemplateCode">TIMEOUT_EXPERIMENT_PUSH_MESSAGE</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1vwz56m</bpmn:incoming>
@@ -93,7 +93,7 @@
           <camunda:inputParameter name="pushMessageType">EXPERIMENT_STATUS</camunda:inputParameter>
           <camunda:inputParameter name="pushTemplateContextVariable">experiment</camunda:inputParameter>
           <camunda:inputParameter name="pushMessageProperties">ID,REQUEST_ID,REQUEST_STATUS</camunda:inputParameter>
-          <camunda:inputParameter name="pushTemplateCode">ERROR_EXPERIMENT</camunda:inputParameter>
+          <camunda:inputParameter name="pushTemplateCode">ERROR_EXPERIMENT_PUSH_MESSAGE</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_08sdme0</bpmn:incoming>
@@ -207,7 +207,7 @@
           <camunda:inputParameter name="pushTemplateContextVariable">experiment</camunda:inputParameter>
           <camunda:inputParameter name="pushMessageProperties">ID,REQUEST_ID,REQUEST_STATUS</camunda:inputParameter>
           <camunda:inputParameter name="taskType">SENT_EXPERIMENT_WEB_PUSH</camunda:inputParameter>
-          <camunda:inputParameter name="pushTemplateCode">FINISHED_EXPERIMENT</camunda:inputParameter>
+          <camunda:inputParameter name="pushTemplateCode">FINISHED_EXPERIMENT_PUSH_MESSAGE</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1po5yji</bpmn:incoming>
@@ -223,7 +223,7 @@
           <camunda:inputParameter name="pushTemplateContextVariable">experiment</camunda:inputParameter>
           <camunda:inputParameter name="pushMessageProperties">ID,REQUEST_ID,REQUEST_STATUS</camunda:inputParameter>
           <camunda:inputParameter name="taskType">SENT_EXPERIMENT_WEB_PUSH</camunda:inputParameter>
-          <camunda:inputParameter name="pushTemplateCode">TIMEOUT_EXPERIMENT</camunda:inputParameter>
+          <camunda:inputParameter name="pushTemplateCode">TIMEOUT_EXPERIMENT_PUSH_MESSAGE</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1xjtvpp</bpmn:incoming>
@@ -239,7 +239,7 @@
           <camunda:inputParameter name="pushTemplateContextVariable">experiment</camunda:inputParameter>
           <camunda:inputParameter name="pushMessageProperties">ID,REQUEST_ID,REQUEST_STATUS</camunda:inputParameter>
           <camunda:inputParameter name="taskType">SENT_EXPERIMENT_WEB_PUSH</camunda:inputParameter>
-          <camunda:inputParameter name="pushTemplateCode">ERROR_EXPERIMENT</camunda:inputParameter>
+          <camunda:inputParameter name="pushTemplateCode">ERROR_EXPERIMENT_PUSH_MESSAGE</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1m39ofl</bpmn:incoming>

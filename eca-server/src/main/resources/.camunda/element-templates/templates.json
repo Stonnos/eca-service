@@ -59,6 +59,10 @@
           {
             "name": "Создать заявку на эксперимент через web",
             "value": "CREATE_EXPERIMENT_WEB_REQUEST"
+          },
+          {
+            "name": "Создать заявку на построение модели классификатора через web",
+            "value": "CREATE_EVALUATION_WEB_REQUEST"
           }
         ],
         "binding": {
