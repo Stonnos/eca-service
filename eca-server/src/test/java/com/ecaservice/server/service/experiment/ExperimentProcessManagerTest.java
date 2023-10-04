@@ -53,6 +53,7 @@ import java.io.Serializable;
 import java.time.Duration;
 import java.util.UUID;
 
+import static com.ecaservice.server.TestHelperUtils.buildExperimentRequestDto;
 import static com.ecaservice.server.TestHelperUtils.createExperiment;
 import static com.ecaservice.server.TestHelperUtils.createExperimentMessageRequest;
 import static com.ecaservice.server.TestHelperUtils.loadInstances;
@@ -148,8 +149,7 @@ class ExperimentProcessManagerTest {
     @Test
     void testCreateExperimentWebRequest() {
         String requestId = UUID.randomUUID().toString();
-        var createExperimentRequestDto =
-                new CreateExperimentRequestDto(requestId, ExperimentType.KNN, EvaluationMethod.TRAINING_DATA);
+        var createExperimentRequestDto = buildExperimentRequestDto();
         experimentProcessManager.createExperimentWebRequest(requestId, createExperimentRequestDto);
         verify(emailClient, atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
         verify(webPushClient, atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());

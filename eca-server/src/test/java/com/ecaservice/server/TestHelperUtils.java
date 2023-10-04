@@ -26,6 +26,7 @@ import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
 import com.ecaservice.ers.dto.RocCurveReport;
 import com.ecaservice.ers.dto.StatisticsReport;
 import com.ecaservice.report.model.BaseReportBean;
+import com.ecaservice.server.dto.CreateExperimentRequestDto;
 import com.ecaservice.server.model.entity.Channel;
 import com.ecaservice.server.model.entity.ClassifierInfo;
 import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
@@ -1191,6 +1192,19 @@ public class TestHelperUtils {
                 .uuid(UUID.randomUUID().toString())
                 .objectPath(INSTANCES_OBJECT_PATH)
                 .build();
+    }
+
+    /**
+     * Creates experiment request dto.
+     *
+     * @return experiment request dto
+     */
+    public static CreateExperimentRequestDto buildExperimentRequestDto() {
+        CreateExperimentRequestDto experimentRequestDto = new CreateExperimentRequestDto();
+        experimentRequestDto.setExperimentType(ExperimentType.KNN);
+        experimentRequestDto.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
+        experimentRequestDto.setInstancesUuid(UUID.randomUUID().toString());
+        return experimentRequestDto;
     }
 
     private static <T> T loadConfig(String path, TypeReference<T> tTypeReference) {

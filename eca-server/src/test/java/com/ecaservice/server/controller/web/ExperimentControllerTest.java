@@ -1,6 +1,5 @@
 package com.ecaservice.server.controller.web;
 
-import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.dto.CreateExperimentRequestDto;
@@ -29,7 +28,6 @@ import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
 import com.ecaservice.web.dto.model.S3ContentResponseDto;
-import eca.core.evaluation.EvaluationMethod;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -49,6 +47,7 @@ import java.util.UUID;
 import static com.ecaservice.server.PageRequestUtils.PAGE_NUMBER;
 import static com.ecaservice.server.PageRequestUtils.TOTAL_ELEMENTS;
 import static com.ecaservice.server.TestHelperUtils.bearerHeader;
+import static com.ecaservice.server.TestHelperUtils.buildExperimentRequestDto;
 import static com.ecaservice.server.TestHelperUtils.createPageRequestDto;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -124,9 +123,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
 
     @Test
     void testCreateExperimentUnauthorized() throws Exception {
-        var experimentRequestDto =
-                new CreateExperimentRequestDto(UUID.randomUUID().toString(), ExperimentType.ADA_BOOST,
-                        EvaluationMethod.CROSS_VALIDATION);
+        var experimentRequestDto = buildExperimentRequestDto();
         mockMvc.perform(post(CREATE_EXPERIMENT_URL)
                 .content(objectMapper.writeValueAsString(experimentRequestDto))
                 .contentType(MediaType.APPLICATION_JSON))
@@ -135,9 +132,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
 
     @Test
     void testCreateExperimentSuccess() throws Exception {
-        var experimentRequestDto =
-                new CreateExperimentRequestDto(UUID.randomUUID().toString(), ExperimentType.ADA_BOOST,
-                        EvaluationMethod.CROSS_VALIDATION);
+        var experimentRequestDto = buildExperimentRequestDto();
         CreateExperimentResultDto expected = CreateExperimentResultDto.builder()
                 .id(ID)
                 .requestId(UUID.randomUUID().toString())
@@ -154,32 +149,29 @@ class ExperimentControllerTest extends PageRequestControllerTest {
 
     @Test
     void testCreateExperimentBadRequestWithNullExperimentType() throws Exception {
-        var experimentRequestDto =
-                new CreateExperimentRequestDto(UUID.randomUUID().toString(), null,
-                        EvaluationMethod.CROSS_VALIDATION);
+        var experimentRequestDto = buildExperimentRequestDto();
+        experimentRequestDto.setExperimentType(null);
         internalTestCreateExperimentBadRequest(experimentRequestDto);
     }
 
     @Test
     void testCreateExperimentBadRequestWithNullEvaluationMethod() throws Exception {
-        var experimentRequestDto =
-                new CreateExperimentRequestDto(UUID.randomUUID().toString(), ExperimentType.ADA_BOOST, null);
+        var experimentRequestDto = buildExperimentRequestDto();
+        experimentRequestDto.setEvaluationMethod(null);
         internalTestCreateExperimentBadRequest(experimentRequestDto);
     }
 
     @Test
     void testCreateExperimentBadRequestWithEmptyInstancesUuid() throws Exception {
-        var experimentRequestDto =
-                new CreateExperimentRequestDto(StringUtils.EMPTY, ExperimentType.ADA_BOOST,
-                        EvaluationMethod.CROSS_VALIDATION);
+        var experimentRequestDto = buildExperimentRequestDto();
+        experimentRequestDto.setInstancesUuid(StringUtils.EMPTY);
         internalTestCreateExperimentBadRequest(experimentRequestDto);
     }
 
     @Test
     void testCreateExperimentBadRequestWithInvalidInstancesUuidPattern() throws Exception {
-        var experimentRequestDto =
-                new CreateExperimentRequestDto("abc", ExperimentType.ADA_BOOST,
-                        EvaluationMethod.CROSS_VALIDATION);
+        var experimentRequestDto = buildExperimentRequestDto();
+        experimentRequestDto.setInstancesUuid("abc");
         internalTestCreateExperimentBadRequest(experimentRequestDto);
     }
 

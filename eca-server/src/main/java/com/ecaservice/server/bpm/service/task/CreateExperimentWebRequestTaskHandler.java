@@ -11,7 +11,7 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.springframework.stereotype.Component;
 
 import static com.ecaservice.server.bpm.CamundaVariables.EXPERIMENT_ID;
-import static com.ecaservice.server.bpm.CamundaVariables.EXPERIMENT_REQUEST_DATA;
+import static com.ecaservice.server.bpm.CamundaVariables.EVALUATION_REQUEST_DATA;
 import static com.ecaservice.server.bpm.CamundaVariables.TRAIN_DATA_UUID;
 import static com.ecaservice.server.bpm.CamundaVariables.USER_INFO;
 import static com.ecaservice.server.util.CamundaUtils.getVariable;
@@ -51,7 +51,7 @@ public class CreateExperimentWebRequestTaskHandler extends AbstractTaskHandler {
 
     private ExperimentWebRequestData createExperimentRequest(DelegateExecution execution) {
         var createExperimentRequestDto =
-                getVariable(execution, EXPERIMENT_REQUEST_DATA, CreateExperimentRequestDto.class);
+                getVariable(execution, EVALUATION_REQUEST_DATA, CreateExperimentRequestDto.class);
         var userInfoDto = getVariable(execution, USER_INFO, UserInfoDto.class);
         String trainDataUuid = getVariable(execution, TRAIN_DATA_UUID, String.class);
         var experimentWebRequestData = new ExperimentWebRequestData();

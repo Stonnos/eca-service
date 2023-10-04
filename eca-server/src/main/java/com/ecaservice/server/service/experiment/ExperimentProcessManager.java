@@ -20,7 +20,7 @@ import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.putMdc;
 import static com.ecaservice.server.bpm.CamundaVariables.APP_INSTANCES_UUID;
 import static com.ecaservice.server.bpm.CamundaVariables.EXPERIMENT_ID;
-import static com.ecaservice.server.bpm.CamundaVariables.EXPERIMENT_REQUEST_DATA;
+import static com.ecaservice.server.bpm.CamundaVariables.EVALUATION_REQUEST_DATA;
 
 /**
  * Experiment process manager.
@@ -76,7 +76,7 @@ public class ExperimentProcessManager {
     public void createExperimentRequest(ExperimentMessageRequestData experimentMessageRequestData) {
         log.info("Starting create experiment [{}] request business process",
                 experimentMessageRequestData.getRequestId());
-        Map<String, Object> variables = Collections.singletonMap(EXPERIMENT_REQUEST_DATA, experimentMessageRequestData);
+        Map<String, Object> variables = Collections.singletonMap(EVALUATION_REQUEST_DATA, experimentMessageRequestData);
         processManager.startProcess(processConfig.getCreateExperimentRequestProcessId(),
                 experimentMessageRequestData.getRequestId(), variables);
         log.info("Create experiment [{}] request business process has been finished",
@@ -91,7 +91,7 @@ public class ExperimentProcessManager {
      */
     public void createExperimentWebRequest(String requestId, CreateExperimentRequestDto experimentRequestDto) {
         log.info("Starting create experiment [{}] web request business process", requestId);
-        Map<String, Object> variables = Collections.singletonMap(EXPERIMENT_REQUEST_DATA, experimentRequestDto);
+        Map<String, Object> variables = Collections.singletonMap(EVALUATION_REQUEST_DATA, experimentRequestDto);
         processManager.startProcess(processConfig.getCreateExperimentWebRequestProcessId(), requestId, variables);
         log.info("Create experiment [{}] business process has been finished", requestId);
     }
