@@ -22,7 +22,7 @@ export class PushMessageComponent implements OnInit {
 
   public onLinkClick(pushRequestDto: PushRequestDto): void {
     if (pushRequestDto.messageType == PushMessageType.EXPERIMENT_STATUS_CHANGE) {
-      const id = pushRequestDto.additionalProperties[PushVariables.EXPERIMENT_ID];
+      const id = pushRequestDto.additionalProperties[PushVariables.EVALUATION_ID];
       this.router.navigate([RouterPaths.EXPERIMENT_DETAILS_URL, id]);
     } else if (pushRequestDto.messageType == PushMessageType.CLASSIFIER_CONFIGURATION_CHANGE) {
       const configurationId = pushRequestDto.additionalProperties[PushVariables.CLASSIFIERS_CONFIGURATION_ID];

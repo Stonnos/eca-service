@@ -197,7 +197,7 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
       Logger.debug(`Subscribe experiment ${this.experimentDto.requestId} status change`);
       const filterPredicate = (pushRequestDto: PushRequestDto) => {
         if (pushRequestDto.pushType == 'SYSTEM' && pushRequestDto.messageType == PushMessageType.EXPERIMENT_STATUS_CHANGE) {
-          const id = pushRequestDto.additionalProperties[PushVariables.EXPERIMENT_ID];
+          const id = pushRequestDto.additionalProperties[PushVariables.EVALUATION_ID];
           return this.experimentDto.id == Number(id);
         }
         return false;
@@ -217,7 +217,7 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
   }
 
   private handleExperimentPush(pushRequestDto: PushRequestDto): void {
-    const requestStatus = pushRequestDto.additionalProperties[PushVariables.EXPERIMENT_REQUEST_STATUS];
+    const requestStatus = pushRequestDto.additionalProperties[PushVariables.EVALUATION_REQUEST_STATUS];
     if (this.finalRequestStatuses.includes(requestStatus)) {
       this.unSubscribeExperimentUpdates();
     }
