@@ -19,7 +19,7 @@ import com.ecaservice.server.mapping.InstancesInfoMapperImpl;
 import com.ecaservice.server.model.data.InstancesMetaDataModel;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.RequestStatus;
-import com.ecaservice.server.model.evaluation.EvaluationRequestDataModel;
+import com.ecaservice.server.model.evaluation.EvaluationMessageRequestDataModel;
 import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
 import com.ecaservice.server.repository.ClassifierInfoRepository;
 import com.ecaservice.server.repository.EvaluationLogRepository;
@@ -121,7 +121,7 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
     void testSuccessClassification() {
         when(objectStorageService.getObjectPresignedProxyUrl(any(GetPresignedUrlObject.class)))
                 .thenReturn(MODEL_DOWNLOAD_URL);
-        EvaluationRequestDataModel request = TestHelperUtils.createEvaluationRequestData();
+        EvaluationMessageRequestDataModel request = TestHelperUtils.createEvaluationRequestData();
         EvaluationResultsDataModel evaluationResultsDataModel = evaluationRequestService.createAndProcessRequest(request);
         assertThat(evaluationResultsDataModel.getStatus()).isEqualTo(RequestStatus.FINISHED);
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
@@ -140,7 +140,7 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
 
     @Test
     void testClassificationWithException() throws Exception {
-        EvaluationRequestDataModel request = TestHelperUtils.createEvaluationRequestData();
+        EvaluationMessageRequestDataModel request = TestHelperUtils.createEvaluationRequestData();
         CalculationExecutorServiceImpl executorService = mock(CalculationExecutorServiceImpl.class);
         EvaluationRequestService service =
                 new EvaluationRequestService(appProperties, classifiersProperties, executorService,
@@ -159,7 +159,7 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
 
     @Test
     void testClassificationWithError() {
-        EvaluationRequestDataModel request = TestHelperUtils.createEvaluationRequestData();
+        EvaluationMessageRequestDataModel request = TestHelperUtils.createEvaluationRequestData();
         request.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
         request.setNumFolds(1);
         EvaluationResultsDataModel evaluationResultsDataModel = evaluationRequestService.createAndProcessRequest(request);
@@ -173,7 +173,7 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
 
     @Test
     void testTimeoutInClassification() throws Exception {
-        EvaluationRequestDataModel request = TestHelperUtils.createEvaluationRequestData();
+        EvaluationMessageRequestDataModel request = TestHelperUtils.createEvaluationRequestData();
         CalculationExecutorServiceImpl executorService = mock(CalculationExecutorServiceImpl.class);
         EvaluationRequestService service =
                 new EvaluationRequestService(appProperties, classifiersProperties, executorService,

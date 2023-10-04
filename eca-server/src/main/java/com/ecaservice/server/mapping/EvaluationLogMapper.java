@@ -3,7 +3,8 @@ package com.ecaservice.server.mapping;
 import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.model.entity.EvaluationLog;
-import com.ecaservice.server.model.evaluation.EvaluationRequestDataModel;
+import com.ecaservice.server.model.evaluation.AbstractEvaluationRequestDataModel;
+import com.ecaservice.server.model.evaluation.EvaluationMessageRequestDataModel;
 import com.ecaservice.server.report.model.EvaluationLogBean;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
@@ -35,7 +36,7 @@ public abstract class EvaluationLogMapper extends AbstractEvaluationMapper {
      * @return evaluation request internal data model
      */
     @Mapping(target = "classifier", ignore = true)
-    public abstract EvaluationRequestDataModel map(EvaluationRequest evaluationRequest);
+    public abstract EvaluationMessageRequestDataModel map(EvaluationRequest evaluationRequest);
 
     /**
      * Maps evaluation request to evaluation log.
@@ -49,7 +50,7 @@ public abstract class EvaluationLogMapper extends AbstractEvaluationMapper {
     @Mapping(target = "numFolds", ignore = true)
     @Mapping(target = "numTests", ignore = true)
     @Mapping(target = "seed", ignore = true)
-    public abstract EvaluationLog map(EvaluationRequestDataModel evaluationRequest,
+    public abstract EvaluationLog map(AbstractEvaluationRequestDataModel evaluationRequest,
                                       CrossValidationConfig crossValidationConfig);
 
     /**
@@ -99,7 +100,7 @@ public abstract class EvaluationLogMapper extends AbstractEvaluationMapper {
     public abstract EvaluationLogBean mapToBean(EvaluationLog evaluationLog);
 
     @AfterMapping
-    protected void mapEvaluationMethodOptions(EvaluationRequestDataModel evaluationRequest,
+    protected void mapEvaluationMethodOptions(AbstractEvaluationRequestDataModel evaluationRequest,
                                               CrossValidationConfig crossValidationConfig,
                                               @MappingTarget EvaluationLog evaluationLog) {
         if (EvaluationMethod.CROSS_VALIDATION.equals(evaluationRequest.getEvaluationMethod())) {

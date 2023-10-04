@@ -1,7 +1,7 @@
 package com.ecaservice.server.mapping;
 
 import com.ecaservice.server.config.CrossValidationConfig;
-import com.ecaservice.server.model.evaluation.EvaluationRequestDataModel;
+import com.ecaservice.server.model.evaluation.EvaluationMessageRequestDataModel;
 import com.ecaservice.server.model.evaluation.InstancesRequestDataModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -25,6 +25,6 @@ public abstract class EvaluationRequestMapper {
     @Mapping(source = "crossValidationConfig.numFolds", target = "numFolds")
     @Mapping(source = "crossValidationConfig.numTests", target = "numTests")
     @Mapping(source = "crossValidationConfig.seed", target = "seed")
-    public abstract EvaluationRequestDataModel map(InstancesRequestDataModel instancesRequestDataModel,
-                                                   CrossValidationConfig crossValidationConfig);
+    public abstract EvaluationMessageRequestDataModel map(InstancesRequestDataModel instancesRequestDataModel,
+                                                          CrossValidationConfig crossValidationConfig);
 }

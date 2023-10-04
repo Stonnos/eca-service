@@ -47,7 +47,7 @@ import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.evaluation.ClassifierOptionsRequestSource;
 import com.ecaservice.server.model.evaluation.EvaluationInputDataModel;
-import com.ecaservice.server.model.evaluation.EvaluationRequestDataModel;
+import com.ecaservice.server.model.evaluation.EvaluationMessageRequestDataModel;
 import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
 import com.ecaservice.server.model.experiment.ExperimentMessageRequestData;
 import com.ecaservice.server.model.experiment.InitializationParams;
@@ -273,8 +273,8 @@ public class TestHelperUtils {
      *
      * @return evaluation request data
      */
-    public static EvaluationRequestDataModel createEvaluationRequestData() {
-        EvaluationRequestDataModel request = new EvaluationRequestDataModel();
+    public static EvaluationMessageRequestDataModel createEvaluationRequestData() {
+        EvaluationMessageRequestDataModel request = new EvaluationMessageRequestDataModel();
         request.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         request.setDataUuid(UUID.randomUUID().toString());
         request.setRequestId(UUID.randomUUID().toString());
@@ -559,6 +559,7 @@ public class TestHelperUtils {
         evaluationLog.setRequestStatus(RequestStatus.FINISHED);
         evaluationLog.setModelPath(CLASSIFIER_MODEL);
         evaluationLog.setPctCorrect(BigDecimal.TEN);
+        evaluationLog.setChannel(Channel.QUEUE);
         return evaluationLog;
     }
 

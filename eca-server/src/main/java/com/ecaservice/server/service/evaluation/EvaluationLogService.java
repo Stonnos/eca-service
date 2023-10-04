@@ -3,9 +3,13 @@ package com.ecaservice.server.service.evaluation;
 import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.mapping.EvaluationLogMapper;
+import com.ecaservice.server.model.entity.Channel;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.RequestStatus;
-import com.ecaservice.server.model.evaluation.EvaluationRequestDataModel;
+import com.ecaservice.server.model.evaluation.AbstractEvaluationRequestDataModel;
+import com.ecaservice.server.model.evaluation.EvaluationMessageRequestDataModel;
+import com.ecaservice.server.model.evaluation.EvaluationRequestDataVisitor;
+import com.ecaservice.server.model.evaluation.EvaluationWebRequestDataModel;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.service.InstancesInfoService;
 import com.ecaservice.server.service.data.InstancesMetaDataService;
@@ -45,13 +49,14 @@ public class EvaluationLogService {
      * @param evaluationRequestDataModel - evaluation request data model
      * @return evaluation log entity
      */
-    public EvaluationLog createAndSaveEvaluationLog(EvaluationRequestDataModel evaluationRequestDataModel) {
+    public EvaluationLog createAndSaveEvaluationLog(AbstractEvaluationRequestDataModel evaluationRequestDataModel) {
         var instancesMetaDataModel =
                 instancesMetaDataService.getInstancesMetaData(evaluationRequestDataModel.getDataUuid());
         var instancesInfo = instancesInfoService.getOrSaveInstancesInfo(instancesMetaDataModel);
         EvaluationLog evaluationLog = evaluationLogMapper.map(evaluationRequestDataModel, crossValidationConfig);
         evaluationLog.setInstancesInfo(instancesInfo);
         saveClassifierOptions(evaluationRequestDataModel.getClassifier(), evaluationLog);
+        setAdditionalProperties(evaluationLog, evaluationRequestDataModel);
         evaluationLog.setRequestStatus(RequestStatus.NEW);
         evaluationLog.setRequestId(evaluationRequestDataModel.getRequestId());
         evaluationLog.setCreationDate(LocalDateTime.now());
@@ -93,5 +98,21 @@ public class EvaluationLogService {
     private void saveClassifierOptions(AbstractClassifier classifier, EvaluationLog evaluationLog) {
         var classifierOptions = classifierOptionsAdapter.convert(classifier);
         evaluationLog.getClassifierInfo().setClassifierOptions(toJsonString(classifierOptions));
+    }
+
+    private void setAdditionalProperties(EvaluationLog evaluationLog,
+                                         AbstractEvaluationRequestDataModel evaluationRequestDataModel) {
+        evaluationRequestDataModel.visit(new EvaluationRequestDataVisitor() {
+            @Override
+            public void visit(EvaluationWebRequestDataModel evaluationWebRequestDataModel) {
+                evaluationLog.setChannel(Channel.WEB);
+                evaluationLog.setCreatedBy(evaluationWebRequestDataModel.getCreatedBy());
+            }
+
+            @Override
+            public void visit(EvaluationMessageRequestDataModel evaluationMessageRequestDataModel) {
+                evaluationLog.setChannel(Channel.QUEUE);
+            }
+        });
     }
 }

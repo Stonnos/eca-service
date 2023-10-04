@@ -5,7 +5,7 @@ import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.server.event.model.EvaluationErsReportEvent;
 import com.ecaservice.server.event.model.EvaluationResponseEvent;
 import com.ecaservice.server.mapping.EvaluationLogMapper;
-import com.ecaservice.server.model.evaluation.EvaluationRequestDataModel;
+import com.ecaservice.server.model.evaluation.EvaluationMessageRequestDataModel;
 import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
 import com.ecaservice.server.service.evaluation.EvaluationRequestService;
 import lombok.RequiredArgsConstructor;
@@ -58,7 +58,7 @@ public class EvaluationRequestListener {
                 inboundMessageProperties.getCorrelationId());
     }
 
-    private EvaluationRequestDataModel prepareEvaluationRequestDataModel(EvaluationRequest evaluationRequest) {
+    private EvaluationMessageRequestDataModel prepareEvaluationRequestDataModel(EvaluationRequest evaluationRequest) {
         var evaluationRequestDataModel = evaluationLogMapper.map(evaluationRequest);
         evaluationRequestDataModel.setRequestId(UUID.randomUUID().toString());
         evaluationRequestDataModel.setClassifier(

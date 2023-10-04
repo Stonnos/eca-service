@@ -3,7 +3,7 @@ package com.ecaservice.server.mapping;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.model.entity.EvaluationLog;
-import com.ecaservice.server.model.evaluation.EvaluationRequestDataModel;
+import com.ecaservice.server.model.evaluation.EvaluationMessageRequestDataModel;
 import com.ecaservice.server.report.model.EvaluationLogBean;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import com.ecaservice.web.dto.model.EvaluationLogDto;
@@ -46,7 +46,7 @@ class EvaluationLogMapperTest {
 
     @Test
     void testMapToEvaluationLogWithTrainingDataEvaluationMethod() {
-        EvaluationRequestDataModel evaluationRequestDataModel = new EvaluationRequestDataModel();
+        EvaluationMessageRequestDataModel evaluationRequestDataModel = new EvaluationMessageRequestDataModel();
         evaluationRequestDataModel.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         evaluationRequestDataModel.setDataUuid(UUID.randomUUID().toString());
         evaluationRequestDataModel.setClassifier(new KNearestNeighbours());
@@ -62,7 +62,7 @@ class EvaluationLogMapperTest {
 
     @Test
     void testMapToEvaluationLogWithCrossValidationEvaluationMethod() {
-        EvaluationRequestDataModel evaluationRequestDataModel = new EvaluationRequestDataModel();
+        EvaluationMessageRequestDataModel evaluationRequestDataModel = new EvaluationMessageRequestDataModel();
         evaluationRequestDataModel.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
         evaluationRequestDataModel.setNumFolds(TestHelperUtils.NUM_FOLDS);
         evaluationRequestDataModel.setNumFolds(TestHelperUtils.NUM_TESTS);
@@ -76,7 +76,7 @@ class EvaluationLogMapperTest {
 
     @Test
     void testMapToEvaluationLogWithDefaultOptions() {
-        EvaluationRequestDataModel evaluationRequestDataModel = new EvaluationRequestDataModel();
+        EvaluationMessageRequestDataModel evaluationRequestDataModel = new EvaluationMessageRequestDataModel();
         evaluationRequestDataModel.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
         EvaluationLog evaluationLog = evaluationLogMapper.map(evaluationRequestDataModel, crossValidationConfig);
         assertThat(evaluationLog).isNotNull();

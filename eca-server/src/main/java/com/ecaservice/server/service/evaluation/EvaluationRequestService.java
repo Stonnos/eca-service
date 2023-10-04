@@ -8,7 +8,7 @@ import com.ecaservice.server.config.ClassifiersProperties;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.evaluation.EvaluationInputDataModel;
-import com.ecaservice.server.model.evaluation.EvaluationRequestDataModel;
+import com.ecaservice.server.model.evaluation.EvaluationMessageRequestDataModel;
 import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
 import com.ecaservice.server.repository.ClassifierInfoRepository;
 import com.ecaservice.server.service.data.InstancesLoaderService;
@@ -67,7 +67,8 @@ public class EvaluationRequestService {
      * @param evaluationRequestDataModel - evaluation request data model
      * @return evaluation response data model
      */
-    public EvaluationResultsDataModel createAndProcessRequest(EvaluationRequestDataModel evaluationRequestDataModel) {
+    public EvaluationResultsDataModel createAndProcessRequest(
+            EvaluationMessageRequestDataModel evaluationRequestDataModel) {
         putMdcIfAbsent(TX_ID, evaluationRequestDataModel.getRequestId());
         putMdc(EV_REQUEST_ID, evaluationRequestDataModel.getRequestId());
         log.info("Starting to create and process request for classifier [{}] evaluation with data uuid [{}]",

@@ -46,6 +46,19 @@ public abstract class AbstractEvaluationEntity {
     private InstancesInfo instancesInfo;
 
     /**
+     * Channel type
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "channel_type", nullable = false)
+    private Channel channel;
+
+    /**
+     * User name
+     */
+    @Column(name = "created_by")
+    private String createdBy;
+
+    /**
      * Request creation date
      */
     @Column(name = "creation_date", nullable = false)
