@@ -82,4 +82,5 @@
     <include file="db/changelog/v71-insert-classifiers-configuration-filter-template.xml"/>
     <include file="db/changelog/v72-insert-classifiers-options-filter-template.xml"/>
     <include file="db/changelog/v73-drop-experiment-class-index-column.xml"/>
+    <include file="db/changelog/v74-add-evaluation-log-train-data-uuid-column.xml"/>
 </databaseChangeLog>

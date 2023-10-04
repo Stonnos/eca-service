@@ -45,6 +45,7 @@ public abstract class EvaluationLogMapper extends AbstractEvaluationMapper {
      * @return evaluation log entity
      */
     @Mapping(source = "evaluationRequest.classifier", target = "classifierInfo")
+    @Mapping(source = "evaluationRequest.dataUuid", target = "trainingDataUuid")
     @Mapping(target = "numFolds", ignore = true)
     @Mapping(target = "numTests", ignore = true)
     @Mapping(target = "seed", ignore = true)

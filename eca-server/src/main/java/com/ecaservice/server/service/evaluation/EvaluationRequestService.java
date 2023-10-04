@@ -70,24 +70,25 @@ public class EvaluationRequestService {
     public EvaluationResultsDataModel createAndProcessRequest(EvaluationRequestDataModel evaluationRequestDataModel) {
         putMdcIfAbsent(TX_ID, evaluationRequestDataModel.getRequestId());
         putMdc(EV_REQUEST_ID, evaluationRequestDataModel.getRequestId());
-        log.info("Starting to process request for classifier [{}] evaluation with data uuid [{}]",
+        log.info("Starting to create and process request for classifier [{}] evaluation with data uuid [{}]",
                 evaluationRequestDataModel.getClassifier().getClass().getSimpleName(),
                 evaluationRequestDataModel.getDataUuid());
         EvaluationLog evaluationLog = evaluationLogService.createAndSaveEvaluationLog(evaluationRequestDataModel);
         evaluationLogService.startEvaluation(evaluationLog);
-        return processEvaluation(evaluationLog, evaluationRequestDataModel.getDataUuid());
+        return processEvaluation(evaluationLog);
     }
 
     /**
      * Processes classifier evaluation.
      *
      * @param evaluationLog - evaluation log
-     * @param dataUuid      - data uuid
      * @return evaluation results data model
      */
-    public EvaluationResultsDataModel processEvaluation(EvaluationLog evaluationLog, String dataUuid) {
+    public EvaluationResultsDataModel processEvaluation(EvaluationLog evaluationLog) {
+        log.info("Starting to process request for classifier [{}] evaluation with data uuid [{}]",
+                evaluationLog.getClassifierInfo().getClassifierName(), evaluationLog.getTrainingDataUuid());
         try {
-            Instances data = instancesLoaderService.loadInstances(dataUuid);
+            Instances data = instancesLoaderService.loadInstances(evaluationLog.getTrainingDataUuid());
             //Initialize classifier options based on training data
             AbstractClassifier classifier = initializeClassifier(data, evaluationLog);
             //Save updated classifier options

@@ -16,6 +16,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
 
+import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -46,6 +48,7 @@ class EvaluationLogMapperTest {
     void testMapToEvaluationLogWithTrainingDataEvaluationMethod() {
         EvaluationRequestDataModel evaluationRequestDataModel = new EvaluationRequestDataModel();
         evaluationRequestDataModel.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
+        evaluationRequestDataModel.setDataUuid(UUID.randomUUID().toString());
         evaluationRequestDataModel.setClassifier(new KNearestNeighbours());
         EvaluationLog evaluationLog = evaluationLogMapper.map(evaluationRequestDataModel, crossValidationConfig);
         assertThat(evaluationLog).isNotNull();
@@ -54,6 +57,7 @@ class EvaluationLogMapperTest {
         assertThat(evaluationLog.getNumFolds()).isNull();
         assertThat(evaluationLog.getNumTests()).isNull();
         assertThat(evaluationLog.getSeed()).isNull();
+        assertThat(evaluationLog.getTrainingDataUuid()).isEqualTo(evaluationRequestDataModel.getDataUuid());
     }
 
     @Test

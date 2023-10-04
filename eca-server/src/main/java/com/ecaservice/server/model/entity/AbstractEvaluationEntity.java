@@ -33,6 +33,12 @@ public abstract class AbstractEvaluationEntity {
     private String requestId;
 
     /**
+     * Training data uuid in data storage (generated while upload data to data loader module)
+     */
+    @Column(name = "training_data_uuid")
+    private String trainingDataUuid;
+
+    /**
      * Training data info
      */
     @ManyToOne
