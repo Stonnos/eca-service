@@ -7,8 +7,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static com.ecaservice.server.service.push.dictionary.PushProperties.EXPERIMENT_STATUS_MESSAGE_TYPE;
-
 /**
  * Experiment web push event handler.
  *
@@ -17,32 +15,32 @@ import static com.ecaservice.server.service.push.dictionary.PushProperties.EXPER
 @Component
 public class ExperimentWebPushEventHandler extends AbstractUserPushNotificationEventHandler<ExperimentWebPushEvent> {
 
-    private final ExperimentPushMessageHandler experimentPushMessageHandler;
+    private final EvaluationPushMessageHandler evaluationPushMessageHandler;
 
     /**
      * Constructor with parameters.
      *
-     * @param experimentPushMessageHandler - experiment push message handler
+     * @param evaluationPushMessageHandler - evaluation push message handler
      */
-    public ExperimentWebPushEventHandler(ExperimentPushMessageHandler experimentPushMessageHandler) {
+    public ExperimentWebPushEventHandler(EvaluationPushMessageHandler evaluationPushMessageHandler) {
         super(ExperimentWebPushEvent.class);
-        this.experimentPushMessageHandler = experimentPushMessageHandler;
+        this.evaluationPushMessageHandler = evaluationPushMessageHandler;
     }
 
     @Override
     protected String getMessageType(ExperimentWebPushEvent experimentWebPushEvent) {
-        return EXPERIMENT_STATUS_MESSAGE_TYPE;
+        return experimentWebPushEvent.getPushMessageParams().getMessageType();
     }
 
     @Override
     protected String getMessageText(ExperimentWebPushEvent experimentWebPushEvent) {
-        return experimentPushMessageHandler.processMessageText(experimentWebPushEvent.getPushMessageParams(),
+        return evaluationPushMessageHandler.processMessageText(experimentWebPushEvent.getPushMessageParams(),
                 experimentWebPushEvent.getExperiment());
     }
 
     @Override
     protected Map<String, String> createAdditionalProperties(ExperimentWebPushEvent experimentWebPushEvent) {
-        return experimentPushMessageHandler.processAdditionalProperties(experimentWebPushEvent.getPushMessageParams(),
+        return evaluationPushMessageHandler.processAdditionalProperties(experimentWebPushEvent.getPushMessageParams(),
                 experimentWebPushEvent.getExperiment());
     }
 

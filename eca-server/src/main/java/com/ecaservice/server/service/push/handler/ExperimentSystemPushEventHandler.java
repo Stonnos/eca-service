@@ -13,16 +13,16 @@ import java.util.Map;
 @Component
 public class ExperimentSystemPushEventHandler extends AbstractSystemPushEventHandler<ExperimentSystemPushEvent> {
 
-    private final ExperimentPushMessageHandler experimentPushMessageHandler;
+    private final EvaluationPushMessageHandler evaluationPushMessageHandler;
 
     /**
      * Constructor with parameters.
      *
-     * @param experimentPushMessageHandler - experiment push message handler
+     * @param evaluationPushMessageHandler - evaluation push message handler
      */
-    public ExperimentSystemPushEventHandler(ExperimentPushMessageHandler experimentPushMessageHandler) {
+    public ExperimentSystemPushEventHandler(EvaluationPushMessageHandler evaluationPushMessageHandler) {
         super(ExperimentSystemPushEvent.class);
-        this.experimentPushMessageHandler = experimentPushMessageHandler;
+        this.evaluationPushMessageHandler = evaluationPushMessageHandler;
     }
 
     @Override
@@ -32,13 +32,13 @@ public class ExperimentSystemPushEventHandler extends AbstractSystemPushEventHan
 
     @Override
     protected String getMessageText(ExperimentSystemPushEvent experimentSystemPushEvent) {
-        return experimentPushMessageHandler.processMessageText(experimentSystemPushEvent.getPushMessageParams(),
+        return evaluationPushMessageHandler.processMessageText(experimentSystemPushEvent.getPushMessageParams(),
                 experimentSystemPushEvent.getExperiment());
     }
 
     @Override
     protected Map<String, String> createAdditionalProperties(ExperimentSystemPushEvent experimentSystemPushEvent) {
-        return experimentPushMessageHandler.processAdditionalProperties(
+        return evaluationPushMessageHandler.processAdditionalProperties(
                 experimentSystemPushEvent.getPushMessageParams(), experimentSystemPushEvent.getExperiment());
     }
 }

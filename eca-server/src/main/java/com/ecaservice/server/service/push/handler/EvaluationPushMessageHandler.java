@@ -1,10 +1,10 @@
 package com.ecaservice.server.service.push.handler;
 
 import com.ecaservice.server.event.model.push.PushMessageParams;
-import com.ecaservice.server.model.entity.Experiment;
+import com.ecaservice.server.model.entity.AbstractEvaluationEntity;
 import com.ecaservice.server.service.message.template.MessageTemplateProcessor;
-import com.ecaservice.server.service.push.dictionary.ExperimentPushProperty;
-import com.ecaservice.server.service.push.dictionary.ExperimentPushPropertyVisitor;
+import com.ecaservice.server.service.push.dictionary.EvaluationPushProperty;
+import com.ecaservice.server.service.push.dictionary.EvaluationPushPropertyVisitor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -14,28 +14,28 @@ import java.util.Map;
 import static com.google.common.collect.Maps.newHashMap;
 
 /**
- * Experiment push message handler.
+ * Evaluation push message handler.
  *
  * @author Roman Batygin
  */
 @Component
 @RequiredArgsConstructor
-public class ExperimentPushMessageHandler {
+public class EvaluationPushMessageHandler {
 
     private final MessageTemplateProcessor messageTemplateProcessor;
-    private final ExperimentPushPropertyVisitor experimentPushPropertyVisitor;
+    private final EvaluationPushPropertyVisitor evaluationPushPropertyVisitor;
 
     /**
      * Processes push message text.
      *
      * @param pushMessageParams - push message params
-     * @param experiment        - experiment entity
+     * @param evaluationEntity  - evaluation entity
      * @return message text
      */
-    public String processMessageText(PushMessageParams pushMessageParams, Experiment experiment) {
+    public String processMessageText(PushMessageParams pushMessageParams, AbstractEvaluationEntity evaluationEntity) {
         String templateContextVariable = pushMessageParams.getTemplateContextVariable();
         Map<String, Object> variables =
-                Collections.singletonMap(templateContextVariable, experiment);
+                Collections.singletonMap(templateContextVariable, evaluationEntity);
         return messageTemplateProcessor.process(pushMessageParams.getTemplateCode(), variables);
     }
 
@@ -43,15 +43,16 @@ public class ExperimentPushMessageHandler {
      * Processes push message additional properties.
      *
      * @param pushMessageParams - push message params
-     * @param experiment        - experiment entity
+     * @param evaluationEntity  - evaluation entity
      * @return push message additional properties map
      */
-    public Map<String, String> processAdditionalProperties(PushMessageParams pushMessageParams, Experiment experiment) {
+    public Map<String, String> processAdditionalProperties(PushMessageParams pushMessageParams,
+                                                           AbstractEvaluationEntity evaluationEntity) {
         Map<String, String> variables = newHashMap();
         pushMessageParams.getMessageProperties().forEach(property -> {
-            ExperimentPushProperty experimentPushProperty = ExperimentPushProperty.valueOf(property);
-            String value = experimentPushProperty.visit(experimentPushPropertyVisitor, experiment);
-            variables.put(experimentPushProperty.getPropertyName(), value);
+            EvaluationPushProperty evaluationPushProperty = EvaluationPushProperty.valueOf(property);
+            String value = evaluationPushProperty.visit(evaluationPushPropertyVisitor, evaluationEntity);
+            variables.put(evaluationPushProperty.getPropertyName(), value);
         });
         return variables;
     }
