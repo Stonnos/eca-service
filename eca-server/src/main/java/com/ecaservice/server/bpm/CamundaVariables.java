@@ -31,6 +31,11 @@ public class CamundaVariables {
     public static final String EXPERIMENT = "experiment";
 
     /**
+     * Evaluation log model variable
+     */
+    public static final String EVALUATION_LOG = "evaluationLog";
+
+    /**
      * Error code
      */
     public static final String ERROR_CODE = "errorCode";

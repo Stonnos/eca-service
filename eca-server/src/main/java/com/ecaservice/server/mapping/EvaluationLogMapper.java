@@ -1,6 +1,7 @@
 package com.ecaservice.server.mapping;
 
 import com.ecaservice.base.model.EvaluationRequest;
+import com.ecaservice.server.bpm.model.EvaluationLogModel;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.evaluation.AbstractEvaluationRequestDataModel;
@@ -98,6 +99,15 @@ public abstract class EvaluationLogMapper extends AbstractEvaluationMapper {
     @Mapping(source = "instancesInfo.relationName", target = "relationName")
     @Mapping(target = "classifierName", ignore = true)
     public abstract EvaluationLogBean mapToBean(EvaluationLog evaluationLog);
+
+    /**
+     * Maps evaluation log entity to bpmn model.
+     *
+     * @param evaluationLog - evaluation log entity
+     * @return evaluation log bpmn model
+     */
+    @Mapping(source = "classifierInfo.classifierName", target = "classifierName")
+    public abstract EvaluationLogModel mapToModel(EvaluationLog evaluationLog);
 
     @AfterMapping
     protected void mapEvaluationMethodOptions(AbstractEvaluationRequestDataModel evaluationRequest,

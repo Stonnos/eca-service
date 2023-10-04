@@ -1,8 +1,8 @@
 package com.ecaservice.server.bpm.model;
 
 import lombok.Data;
-
-import java.io.Serializable;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * Experiment model for bpmn process.
@@ -10,22 +10,9 @@ import java.io.Serializable;
  * @author Roman Batygin
  */
 @Data
-public class ExperimentModel implements Serializable {
-
-    /**
-     * ID
-     */
-    private Long id;
-
-    /**
-     * Request id
-     */
-    private String requestId;
-
-    /**
-     * Request status
-     */
-    private String requestStatus;
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+public class ExperimentModel extends AbstractEvaluationModel {
 
     /**
      * Experiment type
@@ -36,11 +23,6 @@ public class ExperimentModel implements Serializable {
      * Email
      */
     private String email;
-
-    /**
-     * Channel.
-     */
-    private String channel;
 
     /**
      * Experiment steps number to process.

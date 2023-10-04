@@ -118,6 +118,19 @@ class EvaluationLogMapperTest {
         assertThat(evaluationLogBean.getPctCorrect()).isEqualTo(evaluationLog.getPctCorrect());
     }
 
+    @Test
+    void testMapToEvaluationLogModel() {
+        EvaluationLog evaluationLog = TestHelperUtils.createEvaluationLog();
+        var evaluationLogModel = evaluationLogMapper.mapToModel(evaluationLog);
+        assertThat(evaluationLogModel).isNotNull();
+        assertThat(evaluationLogModel.getRequestId()).isEqualTo(evaluationLog.getRequestId());
+        assertThat(evaluationLogModel.getRequestStatus())
+                .isEqualTo(evaluationLog.getRequestStatus().getDescription());
+        assertThat(evaluationLogModel.getChannel()).isEqualTo(evaluationLog.getChannel().name());
+        assertThat(evaluationLogModel.getClassifierName()).isEqualTo(
+                evaluationLog.getClassifierInfo().getClassifierName());
+    }
+
     private void assertEvaluationLogDto(EvaluationLogDto evaluationLogDto, EvaluationLog evaluationLog) {
         assertThat(evaluationLogDto).isNotNull();
         assertThat(evaluationLogDto.getClassifierInfo()).isNull();

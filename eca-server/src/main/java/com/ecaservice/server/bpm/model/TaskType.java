@@ -91,4 +91,14 @@ public enum TaskType {
      * Starts classifier evaluation
      */
     START_EVALUATION,
+
+    /**
+     * Process classifier evaluation
+     */
+    PROCESS_CLASSIFIER_EVALUATION,
+
+    /**
+     * Gets evaluation log details
+     */
+    GET_EVALUATION_DETAILS,
 }

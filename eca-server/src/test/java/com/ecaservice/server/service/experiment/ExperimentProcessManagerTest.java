@@ -1,6 +1,5 @@
 package com.ecaservice.server.service.experiment;
 
-import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.core.mail.client.service.EmailClient;
 import com.ecaservice.data.storage.dto.ExportInstancesResponseDto;
 import com.ecaservice.ers.dto.EvaluationResultsRequest;
@@ -9,7 +8,6 @@ import com.ecaservice.notification.dto.EmailRequest;
 import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.config.ExperimentConfig;
-import com.ecaservice.server.dto.CreateExperimentRequestDto;
 import com.ecaservice.server.model.data.InstancesMetaDataModel;
 import com.ecaservice.server.model.entity.Channel;
 import com.ecaservice.server.model.entity.ChannelVisitor;
@@ -30,7 +28,6 @@ import com.ecaservice.user.dto.UserInfoDto;
 import com.ecaservice.web.push.dto.AbstractPushRequest;
 import com.ecaservice.web.push.dto.PushType;
 import com.ecaservice.web.push.dto.UserPushNotificationRequest;
-import eca.core.evaluation.EvaluationMethod;
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.test.Deployment;
@@ -82,9 +79,9 @@ class ExperimentProcessManagerTest {
     private static final String EXPERIMENT_DOWNLOAD_URL = "http://localhost:8099/object-storage";
     private static final String DATA_MD_5_HASH = "3032e188204cb537f69fc7364f638641";
     private static final String PUSH_MESSAGE_TYPE = "EXPERIMENT_STATUS";
-    private static final String EXPERIMENT_ID = "experimentId";
-    private static final String EXPERIMENT_REQUEST_ID = "experimentRequestId";
-    private static final String EXPERIMENT_REQUEST_STATUS = "experimentRequestStatus";
+    private static final String EVALUATION_ID = "id";
+    private static final String EVALUATION_REQUEST_ID = "requestId";
+    private static final String EVALUATION_REQUEST_STATUS = "requestStatus";
     private static final int PROCESS_EXPERIMENT_TIMEOUT_SECONDS = 60;
     private static final String NEW_EXPERIMENT_EMAIL_TEMPLATE_CODE = "NEW_EXPERIMENT";
     private static final String IN_PROGRESS_EXPERIMENT_EMAIL_TEMPLATE_CODE = "IN_PROGRESS_EXPERIMENT";
@@ -394,12 +391,12 @@ class ExperimentProcessManagerTest {
             }
             assertThat(pushRequest.getMessageType()).isEqualTo(PUSH_MESSAGE_TYPE);
             assertThat(pushRequest.getAdditionalProperties()).isNotEmpty();
-            assertThat(pushRequest.getAdditionalProperties()).containsEntry(EXPERIMENT_ID,
+            assertThat(pushRequest.getAdditionalProperties()).containsEntry(EVALUATION_ID,
                     String.valueOf(experiment.getId()));
-            assertThat(pushRequest.getAdditionalProperties()).containsEntry(EXPERIMENT_REQUEST_ID,
+            assertThat(pushRequest.getAdditionalProperties()).containsEntry(EVALUATION_REQUEST_ID,
                     experiment.getRequestId()
             );
-            assertThat(pushRequest.getAdditionalProperties()).containsEntry(EXPERIMENT_REQUEST_STATUS,
+            assertThat(pushRequest.getAdditionalProperties()).containsEntry(EVALUATION_REQUEST_STATUS,
                     expectedRequestStatusProperty.name()
             );
         }

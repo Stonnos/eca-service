@@ -6,6 +6,7 @@ import com.ecaservice.core.filter.specification.FilterFieldCustomizer;
 import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
 import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
+import com.ecaservice.server.bpm.model.EvaluationLogModel;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.filter.EvaluationLogFilter;
 import com.ecaservice.server.mapping.EvaluationLogMapper;
@@ -200,6 +201,17 @@ public class EvaluationLogDataService {
     public EvaluationLog getById(Long id) {
         return evaluationLogRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(EvaluationLog.class, id));
+    }
+
+    /**
+     * Gets evaluation log model.
+     *
+     * @param id - evaluation log id
+     * @return evaluation log model
+     */
+    public EvaluationLogModel getEvaluationLogModel(Long id) {
+        var evaluationLog = getById(id);
+        return evaluationLogMapper.mapToModel(evaluationLog);
     }
 
     /**

@@ -63,6 +63,18 @@
           {
             "name": "Создать заявку на построение модели классификатора через web",
             "value": "CREATE_EVALUATION_WEB_REQUEST"
+          },
+          {
+            "name": "Перевести заявку на построение модели классификатора в работу",
+            "value": "START_EVALUATION"
+          },
+          {
+            "name": "Получение данных о заявке на построение модели классификатора",
+            "value": "GET_EVALUATION_DETAILS"
+          },
+          {
+            "name": "Построить модель классификатора",
+            "value": "PROCESS_CLASSIFIER_EVALUATION"
           }
         ],
         "binding": {
@@ -106,7 +118,7 @@
         "choices": [
           {
             "name": "Передана заявка с недопустимым статусом",
-            "value": "INVALID_EXPERIMENT_REQUEST_STATUS"
+            "value": "INVALID_REQUEST_STATUS"
           },
           {
             "name": "Неизвестная ошибка",
@@ -115,7 +127,7 @@
         ],
         "binding": {
           "type": "camunda:inputParameter",
-          "name": "taskType"
+          "name": "errorCode"
         }
       },
       {
