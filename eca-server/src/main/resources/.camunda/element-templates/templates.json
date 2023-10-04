@@ -266,43 +266,43 @@
         "choices": [
           {
             "name": "Сообщение о новой заявке на эксперимент",
-            "value": "NEW_EXPERIMENT"
+            "value": "NEW_EXPERIMENT_PUSH_MESSAGE"
           },
           {
             "name": "Сообщение о поступлении заявки на эксперимент в работу",
-            "value": "IN_PROGRESS_EXPERIMENT"
+            "value": "IN_PROGRESS_EXPERIMENT_PUSH_MESSAGE"
           },
           {
             "name": "Сообщение о завершении эксперимента",
-            "value": "FINISHED_EXPERIMENT"
+            "value": "FINISHED_EXPERIMENT_PUSH_MESSAGE"
           },
           {
             "name": "Сообщение об ошибке при построении эксперимента",
-            "value": "ERROR_EXPERIMENT"
+            "value": "ERROR_EXPERIMENT_PUSH_MESSAGE"
           },
           {
             "name": "Сообщение о таймауте при построении эксперимента",
-            "value": "TIMEOUT_EXPERIMENT"
+            "value": "TIMEOUT_EXPERIMENT_PUSH_MESSAGE"
           },
           {
             "name": "Сообщение о новой заявке на построение модели классификатора",
-            "value": "NEW_EVALUATION"
+            "value": "NEW_EVALUATION_PUSH_MESSAGE"
           },
           {
             "name": "Сообщение о поступлении заявки на построение модели классификатора в работу",
-            "value": "IN_PROGRESS_EVALUATION"
+            "value": "IN_PROGRESS_EVALUATION_PUSH_MESSAGE"
           },
           {
             "name": "Сообщение о завершении построения модели классификатора",
-            "value": "FINISHED_EVALUATION"
+            "value": "FINISHED_EVALUATION_PUSH_MESSAGE"
           },
           {
             "name": "Сообщение об ошибке при построении модели классификатора",
-            "value": "ERROR_EVALUATION"
+            "value": "ERROR_EVALUATION_PUSH_MESSAGE"
           },
           {
             "name": "Сообщение о таймауте при построении модели классификатора",
-            "value": "TIMEOUT_EVALUATION"
+            "value": "TIMEOUT_EVALUATION_PUSH_MESSAGE"
           }
         ],
         "binding": {

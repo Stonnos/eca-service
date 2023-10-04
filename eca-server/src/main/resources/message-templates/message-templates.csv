@@ -5,12 +5,17 @@ SET_ACTIVE;Конфигурация сделана активной
 DEACTIVATE;Конфигурация перестала быть активной
 ADD_CLASSIFIER_OPTIONS;Добавлены настройки классификатора [${classifierOptionsDescription}]. Идентификатор настроек [${classifierOptionsId}]
 REMOVE_CLASSIFIER_OPTIONS;Удалены настройки классификатора [${classifierOptionsDescription}]. Идентификатор настроек [${classifierOptionsId}]
-NEW_EXPERIMENT;Поступила новая заявка на эксперимент ${experiment.requestId}
-IN_PROGRESS_EXPERIMENT;Заявка на эксперимент ${experiment.requestId} поступила в работу
-FINISHED_EXPERIMENT;Эксперимент ${experiment.requestId} успешно завершен
-ERROR_EXPERIMENT;Эксперимент ${experiment.requestId} завершился с ошибкой
-TIMEOUT_EXPERIMENT;Таймаут при обработке заявки на эксперимент ${experiment.requestId}
+NEW_EXPERIMENT_PUSH_MESSAGE;Поступила новая заявка на эксперимент ${experiment.requestId}
+IN_PROGRESS_EXPERIMENT_PUSH_MESSAGE;Заявка на эксперимент ${experiment.requestId} поступила в работу
+FINISHED_EXPERIMENT_PUSH_MESSAGE;Эксперимент ${experiment.requestId} успешно завершен
+ERROR_EXPERIMENT_PUSH_MESSAGE;Эксперимент ${experiment.requestId} завершился с ошибкой
+TIMEOUT_EXPERIMENT_PUSH_MESSAGE;Таймаут при обработке заявки на эксперимент ${experiment.requestId}
 SET_ACTIVE_CLASSIFIERS_CONFIGURATION_PUSH_MESSAGE;Сделал конфигурацию [${classifiersConfiguration.id}] активной
 RENAME_CLASSIFIERS_CONFIGURATION_PUSH_MESSAGE;Изменил название конфигурации [${classifiersConfiguration.id}] на [${classifiersConfiguration.configurationName}]
 ADD_CLASSIFIERS_CONFIGURATION_OPTIONS_PUSH_MESSAGE;Добавил настройки классификатора [${classifierOptionsDescription}] в конфигурацию [${classifiersConfiguration.id}]. Идентификатор настроек [${classifierOptionsId}]
 DELETE_CLASSIFIERS_CONFIGURATION_OPTIONS_PUSH_MESSAGE;Удалил настройки классификатора [${classifierOptionsDescription}] из конфигурации [${classifiersConfiguration.id}]. Идентификатор настроек [${classifierOptionsId}]
+NEW_EVALUATION_PUSH_MESSAGE;Поступила новая заявка на построение модели классификатора ${evaluationLog.classifierDescription}. Идентификатор заявки ${evaluationLog.requestId}
+IN_PROGRESS_EVALUATION_PUSH_MESSAGE;Заявка на построение модели классификатора ${evaluationLog.classifierDescription} поступила в работу. Идентификатор заявки ${evaluationLog.requestId}
+FINISHED_EVALUATION_PUSH_MESSAGE;Построение модели классификатора ${evaluationLog.classifierDescription} успешно завершено. Идентификатор заявки ${evaluationLog.requestId}
+ERROR_EVALUATION_PUSH_MESSAGE;Построение модели классификатора ${evaluationLog.classifierDescription} завершилось с ошибкой. Идентификатор заявки ${evaluationLog.requestId}
+TIMEOUT_EVALUATION_PUSH_MESSAGE;Таймаут при построении модели классификатора ${evaluationLog.classifierDescription}. Идентификатор заявки ${evaluationLog.requestId}
