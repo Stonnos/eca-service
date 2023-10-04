@@ -1,6 +1,8 @@
 package com.ecaservice.server.service.push.handler;
 
 import com.ecaservice.server.event.model.push.ExperimentWebPushEvent;
+import com.ecaservice.server.service.push.EvaluationPushPropertiesHandler;
+import com.ecaservice.server.service.push.PushMessageProcessor;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -15,16 +17,20 @@ import java.util.Map;
 @Component
 public class ExperimentWebPushEventHandler extends AbstractUserPushNotificationEventHandler<ExperimentWebPushEvent> {
 
-    private final EvaluationPushMessageHandler evaluationPushMessageHandler;
+    private final EvaluationPushPropertiesHandler evaluationPushPropertiesHandler;
+    private final PushMessageProcessor pushMessageProcessor;
 
     /**
      * Constructor with parameters.
      *
-     * @param evaluationPushMessageHandler - evaluation push message handler
+     * @param evaluationPushPropertiesHandler - evaluation push properties handler
+     * @param pushMessageProcessor  - evaluation push message handler
      */
-    public ExperimentWebPushEventHandler(EvaluationPushMessageHandler evaluationPushMessageHandler) {
+    public ExperimentWebPushEventHandler(EvaluationPushPropertiesHandler evaluationPushPropertiesHandler,
+                                         PushMessageProcessor pushMessageProcessor) {
         super(ExperimentWebPushEvent.class);
-        this.evaluationPushMessageHandler = evaluationPushMessageHandler;
+        this.evaluationPushPropertiesHandler = evaluationPushPropertiesHandler;
+        this.pushMessageProcessor = pushMessageProcessor;
     }
 
     @Override
@@ -34,14 +40,14 @@ public class ExperimentWebPushEventHandler extends AbstractUserPushNotificationE
 
     @Override
     protected String getMessageText(ExperimentWebPushEvent experimentWebPushEvent) {
-        return evaluationPushMessageHandler.processMessageText(experimentWebPushEvent.getPushMessageParams(),
+        return pushMessageProcessor.processMessageText(experimentWebPushEvent.getPushMessageParams(),
                 experimentWebPushEvent.getExperiment());
     }
 
     @Override
     protected Map<String, String> createAdditionalProperties(ExperimentWebPushEvent experimentWebPushEvent) {
-        return evaluationPushMessageHandler.processAdditionalProperties(experimentWebPushEvent.getPushMessageParams(),
-                experimentWebPushEvent.getExperiment());
+        return evaluationPushPropertiesHandler.processAdditionalProperties(
+                experimentWebPushEvent.getPushMessageParams(), experimentWebPushEvent.getExperiment());
     }
 
     @Override
