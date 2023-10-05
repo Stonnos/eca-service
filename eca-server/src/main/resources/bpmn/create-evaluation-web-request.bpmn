@@ -17,7 +17,7 @@
     <bpmn:serviceTask id="Activity_0u4bqn0" name="Создать заявку на построение модели классификатора" camunda:modelerTemplate="TaskExecution" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="taskType">CREATE_EVALUATION_WEB_REQUEST</camunda:inputParameter>
+          <camunda:inputParameter name="taskType">CREATE_EVALUATION_REQUEST</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0gg1wea</bpmn:incoming>
@@ -45,21 +45,21 @@
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="CreateEvaluationWebRequestProcess">
-      <bpmndi:BPMNEdge id="Flow_07s9fim_di" bpmnElement="Flow_07s9fim">
-        <di:waypoint x="215" y="117" />
-        <di:waypoint x="300" y="117" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0gg1wea_di" bpmnElement="Flow_0gg1wea">
-        <di:waypoint x="400" y="117" />
-        <di:waypoint x="500" y="117" />
+      <bpmndi:BPMNEdge id="Flow_0ippukx_di" bpmnElement="Flow_0ippukx">
+        <di:waypoint x="800" y="117" />
+        <di:waypoint x="902" y="117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1asceao_di" bpmnElement="Flow_1asceao">
         <di:waypoint x="600" y="117" />
         <di:waypoint x="700" y="117" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0ippukx_di" bpmnElement="Flow_0ippukx">
-        <di:waypoint x="800" y="117" />
-        <di:waypoint x="902" y="117" />
+      <bpmndi:BPMNEdge id="Flow_0gg1wea_di" bpmnElement="Flow_0gg1wea">
+        <di:waypoint x="400" y="117" />
+        <di:waypoint x="500" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_07s9fim_di" bpmnElement="Flow_07s9fim">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="300" y="117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="179" y="99" width="36" height="36" />

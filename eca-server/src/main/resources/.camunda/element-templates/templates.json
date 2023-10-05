@@ -57,8 +57,8 @@
             "value": "CREATE_EXPERIMENT_REQUEST"
           },
           {
-            "name": "Создать заявку на построение модели классификатора через web",
-            "value": "CREATE_EVALUATION_WEB_REQUEST"
+            "name": "Создать заявку на построение модели классификатора",
+            "value": "CREATE_EVALUATION_REQUEST"
           },
           {
             "name": "Перевести заявку на построение модели классификатора в работу",

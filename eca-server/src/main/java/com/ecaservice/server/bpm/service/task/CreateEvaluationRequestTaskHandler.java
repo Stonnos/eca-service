@@ -28,7 +28,7 @@ public class CreateEvaluationRequestTaskHandler extends AbstractTaskHandler {
      * @param evaluationRequestService - evaluation request service
      */
     public CreateEvaluationRequestTaskHandler(EvaluationRequestService evaluationRequestService) {
-        super(TaskType.CREATE_EVALUATION_WEB_REQUEST);
+        super(TaskType.CREATE_EVALUATION_REQUEST);
         this.evaluationRequestService = evaluationRequestService;
     }
 

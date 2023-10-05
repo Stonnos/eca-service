@@ -3,9 +3,11 @@ package com.ecaservice.server.mapping;
 import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.server.bpm.model.EvaluationLogModel;
 import com.ecaservice.server.config.CrossValidationConfig;
+import com.ecaservice.server.dto.CreateEvaluationRequestDto;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.evaluation.AbstractClassifierRequestDataModel;
 import com.ecaservice.server.model.evaluation.EvaluationMessageRequestDataModel;
+import com.ecaservice.server.model.evaluation.EvaluationWebRequestDataModel;
 import com.ecaservice.server.report.model.EvaluationLogBean;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
@@ -38,6 +40,16 @@ public abstract class EvaluationLogMapper extends AbstractEvaluationMapper {
      */
     @Mapping(target = "classifier", ignore = true)
     public abstract EvaluationMessageRequestDataModel map(EvaluationRequest evaluationRequest);
+
+    /**
+     * Maps evaluation request to evaluation web request internal data model.
+     *
+     * @param createEvaluationRequestDto - evaluation request
+     * @return evaluation web request internal data model
+     */
+    @Mapping(source = "instancesUuid", target = "dataUuid")
+    @Mapping(target = "classifier", ignore = true)
+    public abstract EvaluationWebRequestDataModel map(CreateEvaluationRequestDto createEvaluationRequestDto);
 
     /**
      * Maps evaluation request to evaluation log.

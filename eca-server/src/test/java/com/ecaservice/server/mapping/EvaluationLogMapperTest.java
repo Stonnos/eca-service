@@ -130,6 +130,16 @@ class EvaluationLogMapperTest {
                 evaluationLog.getClassifierInfo().getClassifierName());
     }
 
+    @Test
+    void testMapCreateEvaluationRequestDto() {
+        var evaluationRequestDto = TestHelperUtils.buildEvaluationRequestDto();
+        var evaluationWebRequestData = evaluationLogMapper.map(evaluationRequestDto);
+        assertThat(evaluationWebRequestData.getEvaluationMethod()).isEqualTo(
+                evaluationRequestDto.getEvaluationMethod());
+        assertThat(evaluationWebRequestData.getDataUuid()).isEqualTo(
+                evaluationRequestDto.getInstancesUuid());
+    }
+
     private void assertEvaluationLogDto(EvaluationLogDto evaluationLogDto, EvaluationLog evaluationLog) {
         assertThat(evaluationLogDto).isNotNull();
         assertThat(evaluationLogDto.getClassifierInfo()).isNull();

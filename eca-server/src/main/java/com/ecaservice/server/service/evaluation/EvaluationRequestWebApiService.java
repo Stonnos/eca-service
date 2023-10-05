@@ -4,8 +4,8 @@ import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.server.dto.CreateEvaluationRequestDto;
+import com.ecaservice.server.mapping.EvaluationLogMapper;
 import com.ecaservice.server.model.entity.EvaluationLog;
-import com.ecaservice.server.model.evaluation.EvaluationWebRequestDataModel;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.service.UserService;
 import com.ecaservice.web.dto.model.CreateEvaluationResponseDto;
@@ -33,6 +33,7 @@ public class EvaluationRequestWebApiService {
     private final UserService userService;
     private final ClassifierOptionsAdapter classifierOptionsAdapter;
     private final EvaluationProcessManager evaluationProcessManager;
+    private final EvaluationLogMapper evaluationLogMapper;
     private final EvaluationLogRepository evaluationLogRepository;
 
     /**
@@ -52,14 +53,10 @@ public class EvaluationRequestWebApiService {
                 evaluationRequestDto.getClassifierOptions().getClass().getSimpleName(),
                 evaluationRequestDto.getEvaluationMethod());
         var classifier = classifierOptionsAdapter.convert(evaluationRequestDto.getClassifierOptions());
-        var evaluationWebRequestDataModel = new EvaluationWebRequestDataModel();
+        var evaluationWebRequestDataModel = evaluationLogMapper.map(evaluationRequestDto);
         evaluationWebRequestDataModel.setRequestId(requestId);
         evaluationWebRequestDataModel.setClassifier(classifier);
         evaluationWebRequestDataModel.setCreatedBy(userService.getCurrentUser());
-        evaluationWebRequestDataModel.setEvaluationMethod(evaluationRequestDto.getEvaluationMethod());
-        evaluationWebRequestDataModel.setNumFolds(evaluationRequestDto.getNumFolds());
-        evaluationWebRequestDataModel.setNumTests(evaluationRequestDto.getNumTests());
-        evaluationWebRequestDataModel.setSeed(evaluationRequestDto.getSeed());
         evaluationProcessManager.createEvaluationWebRequest(evaluationWebRequestDataModel);
         var evaluationLog = evaluationLogRepository.findByRequestId(requestId)
                 .orElseThrow(() -> new EntityNotFoundException(EvaluationLog.class, requestId));

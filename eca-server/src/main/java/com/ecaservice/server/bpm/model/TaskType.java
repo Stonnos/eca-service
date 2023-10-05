@@ -80,7 +80,7 @@ public enum TaskType {
     /**
      * Create classifier evaluation web request
      */
-    CREATE_EVALUATION_WEB_REQUEST,
+    CREATE_EVALUATION_REQUEST,
 
     /**
      * Starts classifier evaluation
