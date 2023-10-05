@@ -70,11 +70,11 @@ public class EvaluationLogService {
      *
      * @param evaluationLog - evaluation log
      */
-    public void startEvaluation(EvaluationLog evaluationLog) {
+    public void startEvaluationLog(EvaluationLog evaluationLog) {
         evaluationLog.setRequestStatus(RequestStatus.IN_PROGRESS);
         evaluationLog.setStartDate(LocalDateTime.now());
         evaluationLogRepository.save(evaluationLog);
-        log.info("Evaluation log [{}] has been started", evaluationLog.getRequestId());
+        log.info("Evaluation log [{}] in progress status has been set", evaluationLog.getRequestId());
     }
 
     /**

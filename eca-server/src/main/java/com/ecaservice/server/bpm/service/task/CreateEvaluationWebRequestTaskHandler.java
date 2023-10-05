@@ -4,7 +4,7 @@ import com.ecaservice.server.bpm.model.TaskType;
 import com.ecaservice.server.dto.CreateEvaluationRequestDto;
 import com.ecaservice.server.model.evaluation.EvaluationWebRequestDataModel;
 import com.ecaservice.server.service.UserService;
-import com.ecaservice.server.service.evaluation.EvaluationLogService;
+import com.ecaservice.server.service.evaluation.EvaluationRequestService;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.springframework.stereotype.Component;
@@ -23,19 +23,19 @@ import static com.ecaservice.server.util.CamundaUtils.getVariable;
 @Component
 public class CreateEvaluationWebRequestTaskHandler extends AbstractTaskHandler {
 
-    private final EvaluationLogService evaluationLogService;
+    private final EvaluationRequestService evaluationRequestService;
     private final UserService userService;
 
     /**
      * Constructor with parameters.
      *
-     * @param evaluationLogService  - evaluation log service
-     * @param userService           - user service
+     * @param evaluationRequestService - evaluation request service
+     * @param userService              - user service
      */
-    public CreateEvaluationWebRequestTaskHandler(EvaluationLogService evaluationLogService,
+    public CreateEvaluationWebRequestTaskHandler(EvaluationRequestService evaluationRequestService,
                                                  UserService userService) {
         super(TaskType.CREATE_EVALUATION_WEB_REQUEST);
-        this.evaluationLogService = evaluationLogService;
+        this.evaluationRequestService = evaluationRequestService;
         this.userService = userService;
     }
 
@@ -43,7 +43,7 @@ public class CreateEvaluationWebRequestTaskHandler extends AbstractTaskHandler {
     public void handle(DelegateExecution execution) {
         log.info("Starting to create evaluation request [{}] for process", execution.getProcessBusinessKey());
         var evaluationRequest = createEvaluationRequest(execution);
-        var evaluationLog = evaluationLogService.createAndSaveEvaluationLog(evaluationRequest);
+        var evaluationLog = evaluationRequestService.createAndSaveEvaluationRequest(evaluationRequest);
         execution.setVariable(EVALUATION_LOG_ID, evaluationLog.getId());
         log.info("Evaluation request [{}] has been created for process", execution.getProcessBusinessKey());
     }
