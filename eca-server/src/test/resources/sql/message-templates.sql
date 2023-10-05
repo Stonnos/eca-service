@@ -2,3 +2,8 @@ insert into message_template values('NEW_EXPERIMENT_PUSH_MESSAGE', 'Поступ
 insert into message_template values('IN_PROGRESS_EXPERIMENT_PUSH_MESSAGE', 'Заявка на эксперимент ${experiment.requestId} поступила в работу');
 insert into message_template values('FINISHED_EXPERIMENT_PUSH_MESSAGE', 'Эксперимент ${experiment.requestId} успешно завершен');
 insert into message_template values('ERROR_EXPERIMENT_PUSH_MESSAGE', 'Эксперимент ${experiment.requestId} завершился с ошибкой');
+insert into message_template values('NEW_EVALUATION_PUSH_MESSAGE','Поступила новая заявка на построение модели классификатора ${evaluationLog.classifierDescription}. Идентификатор заявки ${evaluationLog.requestId}');
+insert into message_template values('IN_PROGRESS_EVALUATION_PUSH_MESSAGE','Заявка на построение модели классификатора ${evaluationLog.classifierDescription} поступила в работу. Идентификатор заявки ${evaluationLog.requestId}');
+insert into message_template values('FINISHED_EVALUATION_PUSH_MESSAGE','Построение модели классификатора ${evaluationLog.classifierDescription} успешно завершено. Идентификатор заявки ${evaluationLog.requestId}');
+insert into message_template values('ERROR_EVALUATION_PUSH_MESSAGE','Построение модели классификатора ${evaluationLog.classifierDescription} завершилось с ошибкой. Идентификатор заявки ${evaluationLog.requestId}');
+insert into message_template values('TIMEOUT_EVALUATION_PUSH_MESSAGE','Таймаут при построении модели классификатора ${evaluationLog.classifierDescription}. Идентификатор заявки ${evaluationLog.requestId}');

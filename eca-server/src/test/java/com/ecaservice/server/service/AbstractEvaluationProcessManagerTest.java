@@ -1,4 +1,4 @@
-package com.ecaservice.server.service.experiment;
+package com.ecaservice.server.service;
 
 import com.ecaservice.core.mail.client.service.EmailClient;
 import com.ecaservice.data.storage.dto.ExportInstancesResponseDto;
@@ -7,8 +7,7 @@ import com.ecaservice.ers.dto.EvaluationResultsResponse;
 import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.model.data.InstancesMetaDataModel;
-import com.ecaservice.server.model.entity.Experiment;
-import com.ecaservice.server.service.UserService;
+import com.ecaservice.server.model.entity.AbstractEvaluationEntity;
 import com.ecaservice.server.service.auth.UsersClient;
 import com.ecaservice.server.service.data.InstancesLoaderService;
 import com.ecaservice.server.service.data.InstancesMetaDataService;
@@ -40,9 +39,9 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @TestPropertySource("classpath:application-camunda.properties")
-@Sql("/sql/message-templates.sql")
+@Sql({"/sql/message-templates.sql", "/sql/filter-templates.sql"})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-abstract class AbstractEvaluationProcessManagerTest {
+public abstract class AbstractEvaluationProcessManagerTest<T extends AbstractEvaluationEntity> {
 
     private static final String MODEL_DOWNLOAD_URL = "http://localhost:8099/object-storage";
     private static final String DATA_MD_5_HASH = "3032e188204cb537f69fc7364f638641";
@@ -90,8 +89,9 @@ abstract class AbstractEvaluationProcessManagerTest {
         mockExportValidInstances();
     }
 
-    public void verifyTestSteps(Experiment experiment, TestStepVerifier... verifiers) {
-        for (TestStepVerifier verifier : verifiers) {
+    @SafeVarargs
+    public final void verifyTestSteps(T experiment, TestStepVerifier<? super T>... verifiers) {
+        for (TestStepVerifier<? super T> verifier : verifiers) {
             verifier.verifyStep(experiment);
         }
     }

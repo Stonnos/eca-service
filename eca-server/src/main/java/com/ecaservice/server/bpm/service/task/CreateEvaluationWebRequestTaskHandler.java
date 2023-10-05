@@ -1,5 +1,6 @@
 package com.ecaservice.server.bpm.service.task;
 
+import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.server.bpm.model.TaskType;
 import com.ecaservice.server.dto.CreateEvaluationRequestDto;
 import com.ecaservice.server.model.evaluation.EvaluationWebRequestDataModel;
@@ -23,18 +24,22 @@ import static com.ecaservice.server.util.CamundaUtils.getVariable;
 @Component
 public class CreateEvaluationWebRequestTaskHandler extends AbstractTaskHandler {
 
+    private final ClassifierOptionsAdapter classifierOptionsAdapter;
     private final EvaluationRequestService evaluationRequestService;
     private final UserService userService;
 
     /**
      * Constructor with parameters.
      *
+     * @param classifierOptionsAdapter - classifier options adapter
      * @param evaluationRequestService - evaluation request service
      * @param userService              - user service
      */
-    public CreateEvaluationWebRequestTaskHandler(EvaluationRequestService evaluationRequestService,
+    public CreateEvaluationWebRequestTaskHandler(ClassifierOptionsAdapter classifierOptionsAdapter,
+                                                 EvaluationRequestService evaluationRequestService,
                                                  UserService userService) {
         super(TaskType.CREATE_EVALUATION_WEB_REQUEST);
+        this.classifierOptionsAdapter = classifierOptionsAdapter;
         this.evaluationRequestService = evaluationRequestService;
         this.userService = userService;
     }
@@ -52,9 +57,11 @@ public class CreateEvaluationWebRequestTaskHandler extends AbstractTaskHandler {
         var evaluationRequestDto =
                 getVariable(execution, EVALUATION_REQUEST_DATA, CreateEvaluationRequestDto.class);
         String trainDataUuid = getVariable(execution, TRAIN_DATA_UUID, String.class);
+        var classifier = classifierOptionsAdapter.convert(evaluationRequestDto.getClassifierOptions());
         var evaluationWebRequestDataModel = new EvaluationWebRequestDataModel();
         evaluationWebRequestDataModel.setRequestId(execution.getProcessBusinessKey());
         evaluationWebRequestDataModel.setDataUuid(trainDataUuid);
+        evaluationWebRequestDataModel.setClassifier(classifier);
         evaluationWebRequestDataModel.setCreatedBy(userService.getCurrentUser());
         evaluationWebRequestDataModel.setEvaluationMethod(evaluationRequestDto.getEvaluationMethod());
         evaluationWebRequestDataModel.setNumFolds(evaluationRequestDto.getNumFolds());

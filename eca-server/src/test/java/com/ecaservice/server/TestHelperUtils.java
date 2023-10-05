@@ -26,6 +26,7 @@ import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
 import com.ecaservice.ers.dto.RocCurveReport;
 import com.ecaservice.ers.dto.StatisticsReport;
 import com.ecaservice.report.model.BaseReportBean;
+import com.ecaservice.server.dto.CreateEvaluationRequestDto;
 import com.ecaservice.server.dto.CreateExperimentRequestDto;
 import com.ecaservice.server.model.entity.Channel;
 import com.ecaservice.server.model.entity.ClassifierInfo;
@@ -561,6 +562,7 @@ public class TestHelperUtils {
         evaluationLog.setModelPath(CLASSIFIER_MODEL);
         evaluationLog.setPctCorrect(BigDecimal.TEN);
         evaluationLog.setChannel(Channel.QUEUE);
+        evaluationLog.setTrainingDataUuid(UUID.randomUUID().toString());
         return evaluationLog;
     }
 
@@ -1205,6 +1207,19 @@ public class TestHelperUtils {
         experimentRequestDto.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         experimentRequestDto.setInstancesUuid(UUID.randomUUID().toString());
         return experimentRequestDto;
+    }
+
+    /**
+     * Creates evaluation request dto.
+     *
+     * @return evaluation request dto
+     */
+    public static CreateEvaluationRequestDto buildEvaluationRequestDto() {
+        CreateEvaluationRequestDto evaluationRequestDto = new CreateEvaluationRequestDto();
+        evaluationRequestDto.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
+        evaluationRequestDto.setInstancesUuid(UUID.randomUUID().toString());
+        evaluationRequestDto.setClassifierOptions(createLogisticOptions());
+        return evaluationRequestDto;
     }
 
     private static <T> T loadConfig(String path, TypeReference<T> tTypeReference) {

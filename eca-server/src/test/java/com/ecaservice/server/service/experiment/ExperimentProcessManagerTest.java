@@ -10,6 +10,7 @@ import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.experiment.ExperimentMessageRequestData;
 import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.repository.InstancesInfoRepository;
+import com.ecaservice.server.service.AbstractEvaluationProcessManagerTest;
 import com.ecaservice.server.service.experiment.mail.ExperimentEmailTemplateVariable;
 import com.ecaservice.server.verifier.EvaluationRequestStatusVerifier;
 import com.ecaservice.server.verifier.TestStepVerifier;
@@ -49,7 +50,7 @@ import static org.mockito.Mockito.verify;
 @SpringBootTest
 @Deployment(resources = {"bpmn/process-experiment.bpmn", "bpmn/finish-experiment.bpmn",
         "bpmn/create-experiment-request-process.bpmn", "bpmn/create-experiment-web-request-process.bpmn"})
-class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest {
+class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<Experiment> {
 
     private static final String PUSH_MESSAGE_TYPE = "EXPERIMENT_STATUS";
     private static final String EVALUATION_ID = "id";

@@ -124,8 +124,7 @@ class EvaluationLogMapperTest {
         var evaluationLogModel = evaluationLogMapper.mapToModel(evaluationLog);
         assertThat(evaluationLogModel).isNotNull();
         assertThat(evaluationLogModel.getRequestId()).isEqualTo(evaluationLog.getRequestId());
-        assertThat(evaluationLogModel.getRequestStatus())
-                .isEqualTo(evaluationLog.getRequestStatus().getDescription());
+        assertThat(evaluationLogModel.getRequestStatus()).isEqualTo(evaluationLog.getRequestStatus().name());
         assertThat(evaluationLogModel.getChannel()).isEqualTo(evaluationLog.getChannel().name());
         assertThat(evaluationLogModel.getClassifierName()).isEqualTo(
                 evaluationLog.getClassifierInfo().getClassifierName());
