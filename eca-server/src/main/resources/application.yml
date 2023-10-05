@@ -175,8 +175,10 @@ service:
 
 processes:
   processExperimentId: ExperimentProcess
+  processEvaluationId: ProcessEvaluationWebRequest
   createExperimentRequestProcessId: CreateExperimentRequestProcess
   createExperimentWebRequestProcessId: CreateExperimentWebRequestProcess
+  createEvaluationWebRequestProcessId: CreateEvaluationWebRequestProcess
 
 management:
   metrics:
