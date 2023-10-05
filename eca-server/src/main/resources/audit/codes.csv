@@ -9,3 +9,4 @@ DELETE_CLASSIFIER_OPTIONS;Удаление настроек классифика
 GENERATE_CONFIGURATION_REPORT;Выгрузка отчета для конфигурации с настройками классификаторов;true;CLASSIFIERS_CONFIGURATIONS_ACTIONS
 CREATE_EXPERIMENT_REQUEST;Создание заявки на эксперимент;true;EVALUATION_REQUESTS_ACTIONS
 GENERATE_EVALUATION_REQUESTS_REPORT;Выгрузка отчета по заявкам;true;EVALUATION_REQUESTS_ACTIONS
+CREATE_EVALUATION_REQUEST;Создание заявки на построение модели классификатора;true;EVALUATION_REQUESTS_ACTIONS
