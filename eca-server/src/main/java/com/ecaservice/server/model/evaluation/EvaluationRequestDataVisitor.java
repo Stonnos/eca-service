@@ -21,6 +21,5 @@ public interface EvaluationRequestDataVisitor {
      * @param evaluationMessageRequestDataModel - evaluation message request data model
      */
     default void visit(EvaluationMessageRequestDataModel evaluationMessageRequestDataModel) {
-
     }
 }
