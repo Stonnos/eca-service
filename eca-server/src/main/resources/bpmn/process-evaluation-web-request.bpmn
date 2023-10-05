@@ -91,7 +91,7 @@
       <bpmn:incoming>Flow_0l3lpvy</bpmn:incoming>
       <bpmn:outgoing>Flow_06nv2j3</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0l3lpvy" sourceRef="Gateway_0ms867r" targetRef="Activity_0bn3i6o">
+    <bpmn:sequenceFlow id="Flow_0l3lpvy" name="Успешно" sourceRef="Gateway_0ms867r" targetRef="Activity_0bn3i6o">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${requestStatus == 'FINISHED'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:serviceTask id="Activity_0wejsxw" name="Отправка push уведомления пользователю о таймауте при построении модели" camunda:modelerTemplate="ExperimentPushSender" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
@@ -120,10 +120,10 @@
       <bpmn:incoming>Flow_1f47ghx</bpmn:incoming>
       <bpmn:outgoing>Flow_1ibu41w</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1ftebrb" sourceRef="Gateway_0ms867r" targetRef="Activity_0wejsxw">
+    <bpmn:sequenceFlow id="Flow_1ftebrb" name="Таймаут" sourceRef="Gateway_0ms867r" targetRef="Activity_0wejsxw">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${requestStatus == 'TIMEOUT'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_1f47ghx" sourceRef="Gateway_0ms867r" targetRef="Activity_1c0ypwn" />
+    <bpmn:sequenceFlow id="Flow_1f47ghx" name="Ошибка" sourceRef="Gateway_0ms867r" targetRef="Activity_1c0ypwn" />
     <bpmn:endEvent id="Event_06q29eg">
       <bpmn:incoming>Flow_0b0dtex</bpmn:incoming>
       <bpmn:incoming>Flow_06nv2j3</bpmn:incoming>
@@ -153,15 +153,24 @@
         <di:waypoint x="405" y="920" />
         <di:waypoint x="570" y="920" />
         <di:waypoint x="570" y="1040" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="579" y="973" width="42" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1ftebrb_di" bpmnElement="Flow_1ftebrb">
         <di:waypoint x="380" y="945" />
         <di:waypoint x="380" y="1040" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="388" y="973" width="44" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0l3lpvy_di" bpmnElement="Flow_0l3lpvy">
         <di:waypoint x="355" y="920" />
         <di:waypoint x="210" y="920" />
         <di:waypoint x="210" y="1040" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="260" y="902" width="45" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_05bcr0s_di" bpmnElement="Flow_05bcr0s">
         <di:waypoint x="380" y="830" />
