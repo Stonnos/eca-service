@@ -31,9 +31,9 @@ import java.io.Serializable;
 import java.time.Duration;
 import java.util.UUID;
 
-import static com.ecaservice.server.TestHelperUtils.buildExperimentRequestDto;
 import static com.ecaservice.server.TestHelperUtils.createExperiment;
 import static com.ecaservice.server.TestHelperUtils.createExperimentMessageRequest;
+import static com.ecaservice.server.TestHelperUtils.createExperimentWebRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.mockito.ArgumentMatchers.any;
@@ -49,7 +49,8 @@ import static org.mockito.Mockito.verify;
  */
 @SpringBootTest
 @Deployment(resources = {"bpmn/process-experiment.bpmn", "bpmn/finish-experiment.bpmn",
-        "bpmn/create-experiment-request-process.bpmn", "bpmn/create-experiment-web-request-process.bpmn"})
+        "bpmn/create-experiment-request-process.bpmn", "bpmn/create-experiment-web-request-process.bpmn",
+        "bpmn/create-experiment-message-request-process.bpmn"})
 class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<Experiment> {
 
     private static final String PUSH_MESSAGE_TYPE = "EXPERIMENT_STATUS";
@@ -86,16 +87,16 @@ class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<
 
     @Test
     void testCreateExperimentWebRequest() {
-        String requestId = UUID.randomUUID().toString();
-        var createExperimentRequestDto = buildExperimentRequestDto();
-        experimentProcessManager.createExperimentWebRequest(requestId, createExperimentRequestDto);
+        var experimentWebRequest = createExperimentWebRequest();
+        experimentWebRequest.setCreatedBy(CREATED_BY);
+        experimentProcessManager.createExperimentRequest(experimentWebRequest);
         verify(getEmailClient(), atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
         verify(getWebPushClient(), atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
 
         assertThat(emailRequestArgumentCaptor.getAllValues()).hasSize(1);
         assertThat(pushRequestArgumentCaptor.getAllValues()).hasSize(2);
 
-        var experiment = getExperiment(requestId);
+        var experiment = getExperiment(experimentWebRequest.getRequestId());
 
         verifyTestSteps(experiment,
                 new EvaluationRequestStatusVerifier(RequestStatus.NEW),

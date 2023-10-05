@@ -101,4 +101,14 @@ public enum TaskType {
      * Gets evaluation log details
      */
     GET_EVALUATION_DETAILS,
+
+    /**
+     * Set experiment request email
+     */
+    SET_EXPERIMENT_REQUEST_EMAIL,
+
+    /**
+     * Set evaluation request data uuid
+     */
+    SET_EVALUATION_REQUEST_DATA_UUID
 }

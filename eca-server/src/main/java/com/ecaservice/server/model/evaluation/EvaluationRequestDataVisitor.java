@@ -12,12 +12,15 @@ public interface EvaluationRequestDataVisitor {
      *
      * @param evaluationWebRequestDataModel - evaluation web request data model
      */
-    void visit(EvaluationWebRequestDataModel evaluationWebRequestDataModel);
+    default void visit(EvaluationWebRequestDataModel evaluationWebRequestDataModel) {
+    }
 
     /**
      * Visit evaluation message request data model.
      *
      * @param evaluationMessageRequestDataModel - evaluation message request data model
      */
-    void visit(EvaluationMessageRequestDataModel evaluationMessageRequestDataModel);
+    default void visit(EvaluationMessageRequestDataModel evaluationMessageRequestDataModel) {
+
+    }
 }

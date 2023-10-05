@@ -69,6 +69,7 @@ public class ExperimentService {
             experiment.setRequestStatus(RequestStatus.NEW);
             experiment.setRequestId(experimentRequest.getRequestId());
             experiment.setTrainingDataUuid(experimentRequest.getDataUuid());
+            experiment.setChannel(experimentRequest.getChannel());
             experiment.setCreationDate(LocalDateTime.now());
             experimentRepository.save(experiment);
             log.info("Experiment request [{}] has been created.", experiment.getRequestId());
@@ -147,13 +148,11 @@ public class ExperimentService {
         experimentRequestData.visit(new ExperimentRequestDataVisitor() {
             @Override
             public void visit(ExperimentWebRequestData experimentWebRequestData) {
-                experiment.setChannel(Channel.WEB);
                 experiment.setCreatedBy(experimentWebRequestData.getCreatedBy());
             }
 
             @Override
             public void visit(ExperimentMessageRequestData experimentMessageRequestData) {
-                experiment.setChannel(Channel.QUEUE);
                 experiment.setCorrelationId(experimentMessageRequestData.getCorrelationId());
                 experiment.setReplyTo(experimentMessageRequestData.getReplyTo());
             }

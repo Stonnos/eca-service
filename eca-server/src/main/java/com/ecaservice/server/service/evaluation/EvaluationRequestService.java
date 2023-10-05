@@ -7,7 +7,7 @@ import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.config.ClassifiersProperties;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.RequestStatus;
-import com.ecaservice.server.model.evaluation.AbstractEvaluationRequestDataModel;
+import com.ecaservice.server.model.evaluation.AbstractClassifierRequestDataModel;
 import com.ecaservice.server.model.evaluation.EvaluationInputDataModel;
 import com.ecaservice.server.model.evaluation.EvaluationMessageRequestDataModel;
 import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
@@ -68,7 +68,7 @@ public class EvaluationRequestService {
      * @param evaluationRequestDataModel - evaluation request data model
      * @return evaluation log entity
      */
-    public EvaluationLog createAndSaveEvaluationRequest(AbstractEvaluationRequestDataModel evaluationRequestDataModel) {
+    public EvaluationLog createAndSaveEvaluationRequest(AbstractClassifierRequestDataModel evaluationRequestDataModel) {
         log.info("Starting to create evaluation request [{}] for classifier [{}]",
                 evaluationRequestDataModel.getRequestId(),
                 evaluationRequestDataModel.getClassifier().getClass().getSimpleName());

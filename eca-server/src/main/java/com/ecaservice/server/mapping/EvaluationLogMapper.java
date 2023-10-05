@@ -4,7 +4,7 @@ import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.server.bpm.model.EvaluationLogModel;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.model.entity.EvaluationLog;
-import com.ecaservice.server.model.evaluation.AbstractEvaluationRequestDataModel;
+import com.ecaservice.server.model.evaluation.AbstractClassifierRequestDataModel;
 import com.ecaservice.server.model.evaluation.EvaluationMessageRequestDataModel;
 import com.ecaservice.server.report.model.EvaluationLogBean;
 import com.ecaservice.web.dto.model.EnumDto;
@@ -51,7 +51,7 @@ public abstract class EvaluationLogMapper extends AbstractEvaluationMapper {
     @Mapping(target = "numFolds", ignore = true)
     @Mapping(target = "numTests", ignore = true)
     @Mapping(target = "seed", ignore = true)
-    public abstract EvaluationLog map(AbstractEvaluationRequestDataModel evaluationRequest,
+    public abstract EvaluationLog map(AbstractClassifierRequestDataModel evaluationRequest,
                                       CrossValidationConfig crossValidationConfig);
 
     /**
@@ -110,7 +110,7 @@ public abstract class EvaluationLogMapper extends AbstractEvaluationMapper {
     public abstract EvaluationLogModel mapToModel(EvaluationLog evaluationLog);
 
     @AfterMapping
-    protected void mapEvaluationMethodOptions(AbstractEvaluationRequestDataModel evaluationRequest,
+    protected void mapEvaluationMethodOptions(AbstractClassifierRequestDataModel evaluationRequest,
                                               CrossValidationConfig crossValidationConfig,
                                               @MappingTarget EvaluationLog evaluationLog) {
         if (EvaluationMethod.CROSS_VALIDATION.equals(evaluationRequest.getEvaluationMethod())) {

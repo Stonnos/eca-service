@@ -75,6 +75,14 @@
           {
             "name": "Построить модель классификатора",
             "value": "PROCESS_CLASSIFIER_EVALUATION"
+          },
+          {
+            "name": "Задать email для заявки на эксперимент на основе данных пользователя",
+            "value": "SET_EXPERIMENT_REQUEST_EMAIL"
+          },
+          {
+            "name": "Задать идентификатор обучающей выборки для заявки",
+            "value": "SET_EVALUATION_REQUEST_DATA_UUID"
           }
         ],
         "binding": {

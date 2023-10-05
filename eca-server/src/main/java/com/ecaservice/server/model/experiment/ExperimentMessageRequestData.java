@@ -1,17 +1,16 @@
 package com.ecaservice.server.model.experiment;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import com.ecaservice.server.model.entity.Channel;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Experiment message request data model (from MQ).
  *
  * @author Roman Batygin
  */
-@Data
-@EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
+@Getter
+@Setter
 public class ExperimentMessageRequestData extends AbstractExperimentRequestData {
 
     /**
@@ -23,6 +22,10 @@ public class ExperimentMessageRequestData extends AbstractExperimentRequestData 
      * MQ message correlation id
      */
     private String correlationId;
+
+    public ExperimentMessageRequestData() {
+        super(Channel.QUEUE);
+    }
 
     @Override
     public void visit(ExperimentRequestDataVisitor visitor) {

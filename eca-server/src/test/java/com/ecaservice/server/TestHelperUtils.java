@@ -52,6 +52,7 @@ import com.ecaservice.server.model.evaluation.EvaluationInputDataModel;
 import com.ecaservice.server.model.evaluation.EvaluationMessageRequestDataModel;
 import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
 import com.ecaservice.server.model.experiment.ExperimentMessageRequestData;
+import com.ecaservice.server.model.experiment.ExperimentWebRequestData;
 import com.ecaservice.server.model.experiment.InitializationParams;
 import com.ecaservice.web.dto.model.ClassifierOptionsDto;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
@@ -326,6 +327,20 @@ public class TestHelperUtils {
         experimentRequest.setEmail(TEST_MAIL_RU);
         experimentRequest.setReplyTo(REPLY_TO);
         experimentRequest.setCorrelationId(UUID.randomUUID().toString());
+        return experimentRequest;
+    }
+
+    /**
+     * Creates experiment web request.
+     *
+     * @return created experiment web request
+     */
+    public static ExperimentWebRequestData createExperimentWebRequest() {
+        ExperimentWebRequestData experimentRequest = new ExperimentWebRequestData();
+        experimentRequest.setRequestId(UUID.randomUUID().toString());
+        experimentRequest.setInstancesUuid(UUID.randomUUID().toString());
+        experimentRequest.setExperimentType(ExperimentType.KNN);
+        experimentRequest.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         return experimentRequest;
     }
 

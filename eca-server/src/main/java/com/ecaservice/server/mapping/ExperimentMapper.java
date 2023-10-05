@@ -3,9 +3,11 @@ package com.ecaservice.server.mapping;
 import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.server.bpm.model.ExperimentModel;
 import com.ecaservice.server.config.CrossValidationConfig;
+import com.ecaservice.server.dto.CreateExperimentRequestDto;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.experiment.AbstractExperimentRequestData;
 import com.ecaservice.server.model.experiment.ExperimentMessageRequestData;
+import com.ecaservice.server.model.experiment.ExperimentWebRequestData;
 import com.ecaservice.server.report.model.ExperimentBean;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.ExperimentDto;
@@ -42,6 +44,14 @@ public abstract class ExperimentMapper extends AbstractEvaluationMapper {
     @Mapping(source = "message.messageProperties.replyTo", target = "replyTo")
     @Mapping(source = "message.messageProperties.correlationId", target = "correlationId")
     public abstract ExperimentMessageRequestData map(ExperimentRequest experimentRequest, Message message);
+
+    /**
+     * Maps experiment request dto experiment web request data model.
+     *
+     * @param createExperimentRequestDto - experiment request dto
+     * @return experiment web request data model
+     */
+    public abstract ExperimentWebRequestData map(CreateExperimentRequestDto createExperimentRequestDto);
 
     /**
      * Maps experiment request to experiment persistence entity.

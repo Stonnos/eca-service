@@ -34,7 +34,7 @@ public class Experiment extends AbstractEvaluationEntity {
     /**
      * Email
      */
-    @Column(name = "email", nullable = false)
+    @Column(name = "email")
     private String email;
 
     /**

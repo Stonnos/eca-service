@@ -174,4 +174,13 @@ class ExperimentMapperTest {
         assertThat(experimentModel.getEmail()).isEqualTo(experiment.getEmail());
         assertThat(experimentModel.getChannel()).isEqualTo(experiment.getChannel().name());
     }
+
+    @Test
+    void testMapCreateExperimentRequestDto() {
+        var experimentRequestDto = TestHelperUtils.buildExperimentRequestDto();
+        var experimentWebRequest = experimentMapper.map(experimentRequestDto);
+        assertThat(experimentWebRequest.getExperimentType()).isEqualTo(experimentRequestDto.getExperimentType());
+        assertThat(experimentWebRequest.getInstancesUuid()).isEqualTo(experimentRequestDto.getInstancesUuid());
+        assertThat(experimentWebRequest.getEvaluationMethod()).isEqualTo(experimentRequestDto.getEvaluationMethod());
+    }
 }

@@ -37,12 +37,6 @@ public class ProcessConfig {
     private String createExperimentRequestProcessId;
 
     /**
-     * Create experiment web request process id
-     */
-    @NotEmpty
-    private String createExperimentWebRequestProcessId;
-
-    /**
      * Create evaluation web request process id
      */
     @NotEmpty

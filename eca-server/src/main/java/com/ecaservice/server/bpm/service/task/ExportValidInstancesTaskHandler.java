@@ -2,10 +2,10 @@ package com.ecaservice.server.bpm.service.task;
 
 import com.ecaservice.data.storage.dto.ExportInstancesResponseDto;
 import com.ecaservice.server.bpm.model.TaskType;
-import com.ecaservice.server.dto.AbstractEvaluationRequestDto;
 import com.ecaservice.server.exception.DataStorageBadRequestException;
 import com.ecaservice.server.exception.InstancesValidationException;
 import com.ecaservice.server.mapping.DataStorageErrorCodeMapper;
+import com.ecaservice.server.model.experiment.ExperimentWebRequestData;
 import com.ecaservice.server.service.ds.DataStorageService;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -43,10 +43,10 @@ public class ExportValidInstancesTaskHandler extends AbstractTaskHandler {
     @Override
     public void handle(DelegateExecution execution) {
         log.info("Starting to export valid instances for process [{}]", execution.getProcessBusinessKey());
-        var evaluationRequestDto =
-                getVariable(execution, EVALUATION_REQUEST_DATA, AbstractEvaluationRequestDto.class);
+        var evaluationRequestData =
+                getVariable(execution, EVALUATION_REQUEST_DATA, ExperimentWebRequestData.class);
         var exportInstancesResponseDto =
-                exportInstances(evaluationRequestDto.getInstancesUuid());
+                exportInstances(evaluationRequestData.getInstancesUuid());
         execution.setVariable(TRAIN_DATA_UUID, exportInstancesResponseDto.getExternalDataUuid());
         log.info("Valid instances has been exported for process [{}]", execution.getProcessBusinessKey());
     }

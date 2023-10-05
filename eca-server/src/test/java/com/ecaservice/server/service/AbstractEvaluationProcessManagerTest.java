@@ -4,6 +4,8 @@ import com.ecaservice.core.mail.client.service.EmailClient;
 import com.ecaservice.data.storage.dto.ExportInstancesResponseDto;
 import com.ecaservice.ers.dto.EvaluationResultsRequest;
 import com.ecaservice.ers.dto.EvaluationResultsResponse;
+import com.ecaservice.notification.dto.EmailRequest;
+import com.ecaservice.notification.dto.EmailResponse;
 import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.model.data.InstancesMetaDataModel;
@@ -87,6 +89,7 @@ public abstract class AbstractEvaluationProcessManagerTest<T extends AbstractEva
         mockSentEvaluationResults();
         mockGetUserInfo();
         mockExportValidInstances();
+        mockSentEmail();
     }
 
     @SafeVarargs
@@ -120,6 +123,10 @@ public abstract class AbstractEvaluationProcessManagerTest<T extends AbstractEva
         userInfoDto.setEmail(TEST_MAIL_RU);
         when(userService.getCurrentUser()).thenReturn(CREATED_BY);
         when(usersClient.getUserInfo(CREATED_BY)).thenReturn(userInfoDto);
+    }
+
+    private void mockSentEmail() {
+        when(emailClient.sendEmail(any(EmailRequest.class))).thenReturn(new EmailResponse());
     }
 
     private void mockExportValidInstances() {
