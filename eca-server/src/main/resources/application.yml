@@ -102,6 +102,9 @@ springdoc:
 ## Classifier properties
 classifiers:
   timeout: 60
+  ## Scheduler delay in seconds
+  delaySeconds: 3
+  maxRequestsPerJob: 25
 
 ## Experiment properties
 experiment:

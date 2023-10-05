@@ -2,6 +2,7 @@ package com.ecaservice.server.repository;
 
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.projections.RequestStatusStatistics;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -19,6 +20,16 @@ import java.util.Optional;
  */
 public interface EvaluationLogRepository
         extends JpaRepository<EvaluationLog, Long>, JpaSpecificationExecutor<EvaluationLog> {
+
+    /**
+     * Finds new evaluation requests.
+     *
+     * @param pageable - pageable object
+     * @return evaluation requests ids list
+     */
+    @Query("select ev.id from EvaluationLog ev where ev.requestStatus = 'NEW' and ev.channel = 'WEB' " +
+            "order by ev.creationDate")
+    List<Long> findNewWebRequests(Pageable pageable);
 
     /**
      * Finds evaluation log by request id.
