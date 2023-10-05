@@ -20,12 +20,17 @@ import org.mockito.Captor;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.inject.Inject;
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.UUID;
 
 import static com.ecaservice.server.TestHelperUtils.buildEvaluationRequestDto;
 import static com.ecaservice.server.TestHelperUtils.createEvaluationLog;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
 /**
@@ -76,6 +81,7 @@ class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<
     void testProcessEvaluationRequest() {
         EvaluationLog evaluationLog = createAndSaveEvaluationLog();
         testProcessEvaluationRequest(evaluationLog);
+        verify(getErsClient(), atLeastOnce()).save(evaluationResultsRequestArgumentCaptor.capture());
 
         var actualEvaluationLog = getEvaluationLog(evaluationLog.getRequestId());
 
@@ -89,10 +95,26 @@ class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<
         );
     }
 
+    @Test
+    void testProcessErrorEvaluationRequest() throws IOException {
+        EvaluationLog evaluationLog = createAndSaveEvaluationLog();
+        doThrow(IOException.class).when(getObjectStorageService()).uploadObject(any(Serializable.class), anyString());
+        testProcessEvaluationRequest(evaluationLog);
+
+        var actualEvaluationLog = getEvaluationLog(evaluationLog.getRequestId());
+
+        assertThat(pushRequestArgumentCaptor.getAllValues()).hasSize(2);
+
+        verifyTestSteps(actualEvaluationLog,
+                new EvaluationRequestStatusVerifier(RequestStatus.ERROR),
+                new UserPushRequestVerifier(RequestStatus.IN_PROGRESS, 0),
+                new UserPushRequestVerifier( RequestStatus.ERROR, 1)
+        );
+    }
+
     private void testProcessEvaluationRequest(EvaluationLog evaluationLog) {
         evaluationProcessManager.processEvaluationRequest(evaluationLog.getId());
         verify(getWebPushClient(), atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
-        verify(getErsClient(), atLeastOnce()).save(evaluationResultsRequestArgumentCaptor.capture());
     }
 
     private EvaluationLog getEvaluationLog(String requestId) {
