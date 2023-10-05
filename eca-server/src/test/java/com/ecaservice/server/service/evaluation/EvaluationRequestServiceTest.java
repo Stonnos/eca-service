@@ -122,7 +122,8 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
         when(objectStorageService.getObjectPresignedProxyUrl(any(GetPresignedUrlObject.class)))
                 .thenReturn(MODEL_DOWNLOAD_URL);
         EvaluationMessageRequestDataModel request = TestHelperUtils.createEvaluationRequestData();
-        EvaluationResultsDataModel evaluationResultsDataModel = evaluationRequestService.createAndProcessEvaluationRequest(request);
+        var evaluationResultsDataModel =
+                evaluationRequestService.createAndProcessEvaluationRequest(request);
         assertThat(evaluationResultsDataModel.getStatus()).isEqualTo(RequestStatus.FINISHED);
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
         AssertionUtils.hasOneElement(evaluationLogList);
