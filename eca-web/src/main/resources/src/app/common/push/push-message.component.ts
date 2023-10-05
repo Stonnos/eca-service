@@ -24,6 +24,9 @@ export class PushMessageComponent implements OnInit {
     if (pushRequestDto.messageType == PushMessageType.EXPERIMENT_STATUS_CHANGE) {
       const id = pushRequestDto.additionalProperties[PushVariables.EVALUATION_ID];
       this.router.navigate([RouterPaths.EXPERIMENT_DETAILS_URL, id]);
+    } else if (pushRequestDto.messageType == PushMessageType.EVALUATION_STATUS_CHANGE) {
+      const id = pushRequestDto.additionalProperties[PushVariables.EVALUATION_ID];
+      this.router.navigate([RouterPaths.EVALUATION_DETAILS_URL, id]);
     } else if (pushRequestDto.messageType == PushMessageType.CLASSIFIER_CONFIGURATION_CHANGE) {
       const configurationId = pushRequestDto.additionalProperties[PushVariables.CLASSIFIERS_CONFIGURATION_ID];
       this.router.navigate([RouterPaths.CLASSIFIERS_CONFIGURATION_DETAILS_URL, configurationId]);
