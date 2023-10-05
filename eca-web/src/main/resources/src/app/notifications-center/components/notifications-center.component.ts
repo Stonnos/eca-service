@@ -97,6 +97,9 @@ export class NotificationsCenterComponent {
     } else if (notification.messageType == PushMessageType.EXPERIMENT_STATUS_CHANGE) {
       const experimentId = Utils.getNotificationParam(notification, PushVariables.EVALUATION_ID);
       this.router.navigate([RouterPaths.EXPERIMENT_DETAILS_URL, experimentId]);
+    } else if (notification.messageType == PushMessageType.EVALUATION_STATUS_CHANGE) {
+      const evaluationId = Utils.getNotificationParam(notification, PushVariables.EVALUATION_ID);
+      this.router.navigate([RouterPaths.EVALUATION_DETAILS_URL, evaluationId]);
     } else {
       this.messageService.add({severity: 'error', summary: 'Ошибка', detail: `Can't handle user notification message ${notification.messageType} as link`});
     }
