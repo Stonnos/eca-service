@@ -57,10 +57,6 @@
             "value": "CREATE_EXPERIMENT_REQUEST"
           },
           {
-            "name": "Создать заявку на эксперимент через web",
-            "value": "CREATE_EXPERIMENT_WEB_REQUEST"
-          },
-          {
             "name": "Создать заявку на построение модели классификатора через web",
             "value": "CREATE_EVALUATION_WEB_REQUEST"
           },
@@ -79,10 +75,6 @@
           {
             "name": "Задать email для заявки на эксперимент на основе данных пользователя",
             "value": "SET_EXPERIMENT_REQUEST_EMAIL"
-          },
-          {
-            "name": "Задать идентификатор обучающей выборки для заявки",
-            "value": "SET_EVALUATION_REQUEST_DATA_UUID"
           }
         ],
         "binding": {

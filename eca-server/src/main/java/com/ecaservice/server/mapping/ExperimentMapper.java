@@ -51,6 +51,7 @@ public abstract class ExperimentMapper extends AbstractEvaluationMapper {
      * @param createExperimentRequestDto - experiment request dto
      * @return experiment web request data model
      */
+    @Mapping(source = "instancesUuid", target = "dataUuid")
     public abstract ExperimentWebRequestData map(CreateExperimentRequestDto createExperimentRequestDto);
 
     /**

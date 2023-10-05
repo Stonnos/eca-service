@@ -24,8 +24,8 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.UUID;
 
-import static com.ecaservice.server.TestHelperUtils.buildEvaluationRequestDto;
 import static com.ecaservice.server.TestHelperUtils.createEvaluationLog;
+import static com.ecaservice.server.TestHelperUtils.createEvaluationWebRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -62,14 +62,13 @@ class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<
 
     @Test
     void testCreateEvaluationWebRequest() {
-        String requestId = UUID.randomUUID().toString();
-        var createEvaluationRequestDto = buildEvaluationRequestDto();
-        evaluationProcessManager.createEvaluationWebRequest(requestId, createEvaluationRequestDto);
+        var evaluationWebRequest = createEvaluationWebRequest();
+        evaluationProcessManager.createEvaluationWebRequest(evaluationWebRequest);
         verify(getWebPushClient(), atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
 
         assertThat(pushRequestArgumentCaptor.getAllValues()).hasSize(1);
 
-        var evaluationLog = getEvaluationLog(requestId);
+        var evaluationLog = getEvaluationLog(evaluationWebRequest.getRequestId());
 
         verifyTestSteps(evaluationLog,
                 new EvaluationRequestStatusVerifier(RequestStatus.NEW),

@@ -180,7 +180,7 @@ class ExperimentMapperTest {
         var experimentRequestDto = TestHelperUtils.buildExperimentRequestDto();
         var experimentWebRequest = experimentMapper.map(experimentRequestDto);
         assertThat(experimentWebRequest.getExperimentType()).isEqualTo(experimentRequestDto.getExperimentType());
-        assertThat(experimentWebRequest.getInstancesUuid()).isEqualTo(experimentRequestDto.getInstancesUuid());
+        assertThat(experimentWebRequest.getDataUuid()).isEqualTo(experimentRequestDto.getInstancesUuid());
         assertThat(experimentWebRequest.getEvaluationMethod()).isEqualTo(experimentRequestDto.getEvaluationMethod());
     }
 }

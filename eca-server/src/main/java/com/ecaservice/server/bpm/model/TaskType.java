@@ -73,11 +73,6 @@ public enum TaskType {
     CREATE_EXPERIMENT_REQUEST,
 
     /**
-     * Create experiment web request
-     */
-    CREATE_EXPERIMENT_WEB_REQUEST,
-
-    /**
      * Calculates experiment final status
      */
     CALCULATE_EXPERIMENT_FINAL_STATUS,
@@ -105,10 +100,5 @@ public enum TaskType {
     /**
      * Set experiment request email
      */
-    SET_EXPERIMENT_REQUEST_EMAIL,
-
-    /**
-     * Set evaluation request data uuid
-     */
-    SET_EVALUATION_REQUEST_DATA_UUID
+    SET_EXPERIMENT_REQUEST_EMAIL
 }

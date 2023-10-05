@@ -29,7 +29,7 @@ public abstract class AbstractEvaluationRequestData implements Serializable {
     private String requestId;
 
     /**
-     * Train data uuid in central data storage
+     * Train data uuid
      */
     private String dataUuid;
 }

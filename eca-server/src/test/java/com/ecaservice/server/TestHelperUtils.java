@@ -51,6 +51,7 @@ import com.ecaservice.server.model.evaluation.ClassifierOptionsRequestSource;
 import com.ecaservice.server.model.evaluation.EvaluationInputDataModel;
 import com.ecaservice.server.model.evaluation.EvaluationMessageRequestDataModel;
 import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
+import com.ecaservice.server.model.evaluation.EvaluationWebRequestDataModel;
 import com.ecaservice.server.model.experiment.ExperimentMessageRequestData;
 import com.ecaservice.server.model.experiment.ExperimentWebRequestData;
 import com.ecaservice.server.model.experiment.InitializationParams;
@@ -83,6 +84,7 @@ import eca.ensemble.sampling.SamplingMethod;
 import eca.metrics.KNearestNeighbours;
 import eca.metrics.distances.DistanceType;
 import eca.neural.functions.ActivationFunctionType;
+import eca.regression.Logistic;
 import eca.trees.CART;
 import lombok.Cleanup;
 import lombok.SneakyThrows;
@@ -338,8 +340,22 @@ public class TestHelperUtils {
     public static ExperimentWebRequestData createExperimentWebRequest() {
         ExperimentWebRequestData experimentRequest = new ExperimentWebRequestData();
         experimentRequest.setRequestId(UUID.randomUUID().toString());
-        experimentRequest.setInstancesUuid(UUID.randomUUID().toString());
+        experimentRequest.setDataUuid(UUID.randomUUID().toString());
         experimentRequest.setExperimentType(ExperimentType.KNN);
+        experimentRequest.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
+        return experimentRequest;
+    }
+
+    /**
+     * Creates evaluation web request.
+     *
+     * @return created evaluation web request
+     */
+    public static EvaluationWebRequestDataModel createEvaluationWebRequest() {
+        EvaluationWebRequestDataModel experimentRequest = new EvaluationWebRequestDataModel();
+        experimentRequest.setRequestId(UUID.randomUUID().toString());
+        experimentRequest.setDataUuid(UUID.randomUUID().toString());
+        experimentRequest.setClassifier(new Logistic());
         experimentRequest.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         return experimentRequest;
     }

@@ -5,14 +5,13 @@ import com.ecaservice.server.bpm.model.TaskType;
 import com.ecaservice.server.exception.DataStorageBadRequestException;
 import com.ecaservice.server.exception.InstancesValidationException;
 import com.ecaservice.server.mapping.DataStorageErrorCodeMapper;
-import com.ecaservice.server.model.experiment.ExperimentWebRequestData;
+import com.ecaservice.server.model.AbstractEvaluationRequestData;
 import com.ecaservice.server.service.ds.DataStorageService;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.springframework.stereotype.Component;
 
 import static com.ecaservice.server.bpm.CamundaVariables.EVALUATION_REQUEST_DATA;
-import static com.ecaservice.server.bpm.CamundaVariables.TRAIN_DATA_UUID;
 import static com.ecaservice.server.util.CamundaUtils.getVariable;
 
 /**
@@ -44,10 +43,11 @@ public class ExportValidInstancesTaskHandler extends AbstractTaskHandler {
     public void handle(DelegateExecution execution) {
         log.info("Starting to export valid instances for process [{}]", execution.getProcessBusinessKey());
         var evaluationRequestData =
-                getVariable(execution, EVALUATION_REQUEST_DATA, ExperimentWebRequestData.class);
-        var exportInstancesResponseDto =
-                exportInstances(evaluationRequestData.getInstancesUuid());
-        execution.setVariable(TRAIN_DATA_UUID, exportInstancesResponseDto.getExternalDataUuid());
+                getVariable(execution, EVALUATION_REQUEST_DATA, AbstractEvaluationRequestData.class);
+        var exportInstancesResponseDto = exportInstances(evaluationRequestData.getDataUuid());
+        //Set external data uuid from central data storage
+        evaluationRequestData.setDataUuid(exportInstancesResponseDto.getExternalDataUuid());
+        execution.setVariable(EVALUATION_REQUEST_DATA, evaluationRequestData);
         log.info("Valid instances has been exported for process [{}]", execution.getProcessBusinessKey());
     }
 

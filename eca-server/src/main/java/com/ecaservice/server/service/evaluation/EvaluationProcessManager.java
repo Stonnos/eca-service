@@ -3,7 +3,7 @@ package com.ecaservice.server.service.evaluation;
 import com.ecaservice.core.lock.annotation.Locked;
 import com.ecaservice.server.bpm.service.ProcessManager;
 import com.ecaservice.server.config.ProcessConfig;
-import com.ecaservice.server.dto.CreateEvaluationRequestDto;
+import com.ecaservice.server.model.evaluation.EvaluationWebRequestDataModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -50,13 +50,13 @@ public class EvaluationProcessManager {
     /**
      * Creates evaluation web request.
      *
-     * @param requestId            - evaluation request id
      * @param evaluationRequestDto - evaluation request dto
      */
-    public void createEvaluationWebRequest(String requestId, CreateEvaluationRequestDto evaluationRequestDto) {
-        log.info("Starting create evaluation [{}] web request business process", requestId);
+    public void createEvaluationWebRequest(EvaluationWebRequestDataModel evaluationRequestDto) {
+        log.info("Starting create evaluation [{}] web request business process", evaluationRequestDto.getRequestId());
         Map<String, Object> variables = Collections.singletonMap(EVALUATION_REQUEST_DATA, evaluationRequestDto);
-        processManager.startProcess(processConfig.getCreateEvaluationWebRequestProcessId(), requestId, variables);
-        log.info("Create evaluation [{}] business process has been finished", requestId);
+        processManager.startProcess(processConfig.getCreateEvaluationWebRequestProcessId(),
+                evaluationRequestDto.getRequestId(), variables);
+        log.info("Create evaluation [{}] business process has been finished", evaluationRequestDto.getRequestId());
     }
 }

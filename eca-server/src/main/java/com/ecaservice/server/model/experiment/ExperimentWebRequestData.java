@@ -18,11 +18,6 @@ public class ExperimentWebRequestData extends AbstractExperimentRequestData {
      */
     private String createdBy;
 
-    /**
-     * Instances table uuid in data storage
-     */
-    private String instancesUuid;
-
     public ExperimentWebRequestData() {
         super(Channel.WEB);
     }
