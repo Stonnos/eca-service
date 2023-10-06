@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_167go3c" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="CreateEvaluationRequestProcess" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_19gqopo</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="Event_0pe23xb">
+      <bpmn:incoming>Flow_0lpl6y5</bpmn:incoming>
+      <bpmn:incoming>Flow_19t2ny1</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:exclusiveGateway id="Gateway_1dq1jb3" name="Источник заявки" default="Flow_0xs41zm">
+      <bpmn:incoming>Flow_19gqopo</bpmn:incoming>
+      <bpmn:outgoing>Flow_16x7j3u</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0xs41zm</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_19gqopo" sourceRef="StartEvent_1" targetRef="Gateway_1dq1jb3" />
+    <bpmn:sequenceFlow id="Flow_16x7j3u" name="MQ" sourceRef="Gateway_1dq1jb3" targetRef="Activity_1afp636">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${evaluationRequestData.channel == 'QUEUE'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:callActivity id="Activity_1afp636" name="Создать и построить классификатор на основе сообщения" calledElement="CrateAndProcessEvaluationMessageRequest">
+      <bpmn:extensionElements>
+        <camunda:in businessKey="#{execution.processBusinessKey}" />
+        <camunda:in variables="all" />
+        <camunda:out variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_16x7j3u</bpmn:incoming>
+      <bpmn:outgoing>Flow_0lpl6y5</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:callActivity id="Activity_1ffmgwu" name="Создать заявку на построение классификатора через WEB" calledElement="CreateEvaluationWebRequestProcess">
+      <bpmn:extensionElements>
+        <camunda:in businessKey="#{execution.processBusinessKey}" />
+        <camunda:in variables="all" />
+        <camunda:out variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0xs41zm</bpmn:incoming>
+      <bpmn:outgoing>Flow_19t2ny1</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_0xs41zm" name="WEB" sourceRef="Gateway_1dq1jb3" targetRef="Activity_1ffmgwu" />
+    <bpmn:sequenceFlow id="Flow_0lpl6y5" sourceRef="Activity_1afp636" targetRef="Event_0pe23xb" />
+    <bpmn:sequenceFlow id="Flow_19t2ny1" sourceRef="Activity_1ffmgwu" targetRef="Event_0pe23xb" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="CreateEvaluationRequestProcess">
+      <bpmndi:BPMNEdge id="Flow_19t2ny1_di" bpmnElement="Flow_19t2ny1">
+        <di:waypoint x="510" y="330" />
+        <di:waypoint x="630" y="330" />
+        <di:waypoint x="630" y="238" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0lpl6y5_di" bpmnElement="Flow_0lpl6y5">
+        <di:waypoint x="510" y="90" />
+        <di:waypoint x="630" y="90" />
+        <di:waypoint x="630" y="202" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xs41zm_di" bpmnElement="Flow_0xs41zm">
+        <di:waypoint x="300" y="245" />
+        <di:waypoint x="300" y="340" />
+        <di:waypoint x="410" y="340" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="307" y="283" width="25" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_16x7j3u_di" bpmnElement="Flow_16x7j3u">
+        <di:waypoint x="300" y="195" />
+        <di:waypoint x="300" y="90" />
+        <di:waypoint x="410" y="90" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="306" y="140" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19gqopo_di" bpmnElement="Flow_19gqopo">
+        <di:waypoint x="188" y="220" />
+        <di:waypoint x="275" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="152" y="202" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0pe23xb_di" bpmnElement="Event_0pe23xb">
+        <dc:Bounds x="612" y="202" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1dq1jb3_di" bpmnElement="Gateway_1dq1jb3" isMarkerVisible="true">
+        <dc:Bounds x="275" y="195" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="338" y="210" width="85" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0qelhm1_di" bpmnElement="Activity_1afp636">
+        <dc:Bounds x="410" y="50" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ffmgwu_di" bpmnElement="Activity_1ffmgwu">
+        <dc:Bounds x="410" y="290" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

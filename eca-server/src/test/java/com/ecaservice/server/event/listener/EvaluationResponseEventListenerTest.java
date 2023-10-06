@@ -3,7 +3,6 @@ package com.ecaservice.server.event.listener;
 import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.server.event.model.EvaluationResponseEvent;
 import com.ecaservice.server.mapping.EcaResponseMapper;
-import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -16,7 +15,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 import java.util.UUID;
 
-import static com.ecaservice.server.TestHelperUtils.createEvaluationResultsDataModel;
+import static com.ecaservice.server.TestHelperUtils.createEvaluationResultsModel;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -46,11 +45,10 @@ class EvaluationResponseEventListenerTest {
 
     @Test
     void testHandleExperimentResponse() {
-        EvaluationResultsDataModel evaluationResultsDataModel =
-                createEvaluationResultsDataModel(UUID.randomUUID().toString());
+        var evaluationResultsModel = createEvaluationResultsModel(UUID.randomUUID().toString());
         var event =
-                new EvaluationResponseEvent(this, evaluationResultsDataModel, UUID.randomUUID().toString(), REPLY_TO);
-        when(ecaResponseMapper.map(evaluationResultsDataModel)).thenReturn(new EvaluationResponse());
+                new EvaluationResponseEvent(this, evaluationResultsModel, UUID.randomUUID().toString(), REPLY_TO);
+        when(ecaResponseMapper.map(evaluationResultsModel)).thenReturn(new EvaluationResponse());
         evaluationResponseEventListener.handleEvaluationResponseEvent(event);
         verify(rabbitTemplate).convertAndSend(replyToCaptor.capture(), any(EvaluationResponse.class),
                 any(MessagePostProcessor.class));

@@ -1,25 +1,24 @@
 package com.ecaservice.server.mq.listener;
 
 import com.ecaservice.base.model.EvaluationRequest;
-import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
-import com.ecaservice.server.event.model.EvaluationErsReportEvent;
-import com.ecaservice.server.event.model.EvaluationResponseEvent;
+import com.ecaservice.server.bpm.model.EvaluationRequestModel;
 import com.ecaservice.server.mapping.EvaluationLogMapper;
-import com.ecaservice.server.model.evaluation.EvaluationRequestData;
-import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
-import com.ecaservice.server.service.evaluation.EvaluationRequestService;
+import com.ecaservice.server.service.evaluation.EvaluationProcessManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
 import java.util.UUID;
+
+import static com.ecaservice.common.web.util.LogHelper.EV_REQUEST_ID;
+import static com.ecaservice.common.web.util.LogHelper.TX_ID;
+import static com.ecaservice.common.web.util.LogHelper.putMdc;
 
 /**
  * Rabbit MQ listener for evaluation request messages.
@@ -32,10 +31,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class EvaluationRequestListener {
 
-    private final EvaluationRequestService evaluationRequestService;
-    private final ApplicationEventPublisher eventPublisher;
+    private final EvaluationProcessManager evaluationProcessManager;
     private final EvaluationLogMapper evaluationLogMapper;
-    private final ClassifierOptionsAdapter classifierOptionsAdapter;
 
     /**
      * Handles evaluation request message.
@@ -46,23 +43,22 @@ public class EvaluationRequestListener {
     public void handleMessage(@Valid @Payload EvaluationRequest evaluationRequest, Message inboundMessage) {
         MessageProperties inboundMessageProperties = inboundMessage.getMessageProperties();
         log.info("Received evaluation request with correlation id [{}]", inboundMessageProperties.getCorrelationId());
-        var evaluationRequestDataModel = prepareEvaluationRequestDataModel(evaluationRequest);
-        EvaluationResultsDataModel evaluationResultsDataModel =
-                evaluationRequestService.createAndProcessEvaluationRequest(evaluationRequestDataModel);
-        log.info("Evaluation response [{}] with status [{}] has been built.",
-                evaluationResultsDataModel.getRequestId(), evaluationResultsDataModel.getStatus());
-        eventPublisher.publishEvent(new EvaluationErsReportEvent(this, evaluationResultsDataModel));
-        eventPublisher.publishEvent(new EvaluationResponseEvent(this, evaluationResultsDataModel,
-                inboundMessageProperties.getCorrelationId(), inboundMessageProperties.getReplyTo()));
+        String requestId = UUID.randomUUID().toString();
+        putMdc(TX_ID, requestId);
+        putMdc(EV_REQUEST_ID, requestId);
+        var evaluationRequestModel =
+                prepareEvaluationRequestModel(evaluationRequest, inboundMessage);
+        evaluationRequestModel.setRequestId(requestId);
+        evaluationProcessManager.createAndProcessEvaluationRequest(evaluationRequestModel);
         log.info("Evaluation request with correlation id [{}] has been processed",
                 inboundMessageProperties.getCorrelationId());
     }
 
-    private EvaluationRequestData prepareEvaluationRequestDataModel(EvaluationRequest evaluationRequest) {
+    private EvaluationRequestModel prepareEvaluationRequestModel(EvaluationRequest evaluationRequest,
+                                                                 Message inboundMessage) {
         var evaluationRequestDataModel = evaluationLogMapper.map(evaluationRequest);
-        evaluationRequestDataModel.setRequestId(UUID.randomUUID().toString());
-        evaluationRequestDataModel.setClassifier(
-                classifierOptionsAdapter.convert(evaluationRequest.getClassifierOptions()));
+        evaluationRequestDataModel.setCorrelationId(inboundMessage.getMessageProperties().getCorrelationId());
+        evaluationRequestDataModel.setReplyTo(inboundMessage.getMessageProperties().getReplyTo());
         return evaluationRequestDataModel;
     }
 }

@@ -40,6 +40,7 @@ class EvaluationLogMapperTest {
         var evaluationRequest = TestHelperUtils.createEvaluationRequest();
         var evaluationRequestDataModel = evaluationLogMapper.map(evaluationRequest);
         assertThat(evaluationRequestDataModel).isNotNull();
+        assertThat(evaluationRequestDataModel.getClassifierOptions()).isNotNull();
         assertThat(evaluationRequestDataModel.getEvaluationMethod()).isEqualTo(evaluationRequest.getEvaluationMethod());
         assertThat(evaluationRequestDataModel.getDataUuid()).isEqualTo(evaluationRequest.getDataUuid());
     }

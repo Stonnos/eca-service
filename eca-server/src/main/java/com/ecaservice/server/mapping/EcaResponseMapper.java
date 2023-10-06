@@ -5,17 +5,15 @@ import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.base.model.ExperimentResponse;
 import com.ecaservice.base.model.MessageError;
 import com.ecaservice.base.model.TechnicalStatus;
+import com.ecaservice.server.bpm.model.EvaluationResultsModel;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.RequestStatus;
-import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
-import eca.core.evaluation.Evaluation;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.ValueMapping;
 
-import java.math.BigDecimal;
 import java.util.Collections;
 
 import static com.ecaservice.server.util.Utils.error;
@@ -40,14 +38,15 @@ public interface EcaResponseMapper {
     ExperimentResponse map(Experiment experiment);
 
     /**
-     * Maps evaluation results data model to evaluation response.
+     * Maps evaluation results bpmn model to evaluation response.
      *
-     * @param evaluationResultsDataModel - evaluation results data model
+     * @param evaluationResultsModel - evaluation results model
      * @return evaluation response
      */
+    @Mapping(source = "requestStatus", target = "status")
     @Mapping(target = "modelUrl", ignore = true)
     @Mapping(target = "errors", ignore = true)
-    EvaluationResponse map(EvaluationResultsDataModel evaluationResultsDataModel);
+    EvaluationResponse map(EvaluationResultsModel evaluationResultsModel);
 
     /**
      * Maps request status to technical status.
@@ -81,23 +80,16 @@ public interface EcaResponseMapper {
     /**
      * Post mapping data.
      *
-     * @param evaluationResultsDataModel - evaluation response data model
-     * @param evaluationResponse          - evaluation response
+     * @param evaluationResultsModel - evaluation results model
+     * @param evaluationResponse     - evaluation response
      */
     @AfterMapping
-    default void postMapping(EvaluationResultsDataModel evaluationResultsDataModel,
+    default void postMapping(EvaluationResultsModel evaluationResultsModel,
                              @MappingTarget EvaluationResponse evaluationResponse) {
-        if (RequestStatus.FINISHED.equals(evaluationResultsDataModel.getStatus())) {
-            evaluationResponse.setModelUrl(evaluationResultsDataModel.getModelUrl());
-            Evaluation evaluation = evaluationResultsDataModel.getEvaluationResults().getEvaluation();
-            evaluationResponse.setNumTestInstances((int) evaluation.numInstances());
-            evaluationResponse.setNumCorrect((int) evaluation.correct());
-            evaluationResponse.setNumIncorrect((int) evaluation.incorrect());
-            evaluationResponse.setPctCorrect(BigDecimal.valueOf(evaluation.pctCorrect()));
-            evaluationResponse.setPctIncorrect(BigDecimal.valueOf(evaluation.pctIncorrect()));
-            evaluationResponse.setMeanAbsoluteError(BigDecimal.valueOf(evaluation.meanAbsoluteError()));
-        } else if (RequestStatus.ERROR.equals(evaluationResultsDataModel.getStatus())) {
-            MessageError error = error(evaluationResultsDataModel.getErrorCode());
+        if (RequestStatus.FINISHED.equals(evaluationResultsModel.getRequestStatus())) {
+            evaluationResponse.setModelUrl(evaluationResultsModel.getModelUrl());
+        } else if (RequestStatus.ERROR.equals(evaluationResultsModel.getRequestStatus())) {
+            MessageError error = error(ErrorCode.INTERNAL_SERVER_ERROR);
             evaluationResponse.setErrors(Collections.singletonList(error));
         }
     }

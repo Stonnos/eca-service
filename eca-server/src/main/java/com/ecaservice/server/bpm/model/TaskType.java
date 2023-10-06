@@ -58,6 +58,11 @@ public enum TaskType {
     SENT_EXPERIMENT_RESPONSE,
 
     /**
+     * Sent evaluation response to MQ
+     */
+    SENT_EVALUATION_RESPONSE,
+
+    /**
      * Gets user info
      */
     GET_USER_INFO,

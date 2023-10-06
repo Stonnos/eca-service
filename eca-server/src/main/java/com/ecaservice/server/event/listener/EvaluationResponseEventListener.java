@@ -29,9 +29,8 @@ public class EvaluationResponseEventListener {
      */
     @EventListener
     public void handleEvaluationResponseEvent(EvaluationResponseEvent evaluationResponseEvent) {
-        EvaluationResultsDataModel evaluationResultsDataModel =
-                evaluationResponseEvent.getEvaluationResultsDataModel();
-        var evaluationResponse = ecaResponseMapper.map(evaluationResultsDataModel);
+        var evaluationResultsModel = evaluationResponseEvent.getEvaluationResultsModel();
+        var evaluationResponse = ecaResponseMapper.map(evaluationResultsModel);
         log.info("Starting to sent evaluation [{}] response with request status [{}] to MQ",
                 evaluationResponse.getRequestId(), evaluationResponse.getStatus());
         rabbitTemplate.convertAndSend(evaluationResponseEvent.getReplyTo(), evaluationResponse, outboundMessage -> {

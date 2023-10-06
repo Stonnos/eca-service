@@ -53,7 +53,7 @@ public class EvaluationRequestWebApiService {
         var evaluationWebRequestDataModel = evaluationLogMapper.map(evaluationRequestDto);
         evaluationWebRequestDataModel.setRequestId(requestId);
         evaluationWebRequestDataModel.setCreatedBy(userService.getCurrentUser());
-        evaluationProcessManager.createEvaluationWebRequest(evaluationWebRequestDataModel);
+        evaluationProcessManager.createAndProcessEvaluationRequest(evaluationWebRequestDataModel);
         var evaluationLog = evaluationLogRepository.findByRequestId(requestId)
                 .orElseThrow(() -> new EntityNotFoundException(EvaluationLog.class, requestId));
         log.info("Evaluation request [{}] has been created for instances uuid [{}].", requestId,

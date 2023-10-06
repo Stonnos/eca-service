@@ -180,8 +180,7 @@ processes:
   processExperimentId: ExperimentProcess
   processEvaluationId: ProcessEvaluationWebRequest
   createExperimentRequestProcessId: CreateExperimentRequestProcess
-  createExperimentWebRequestProcessId: CreateExperimentWebRequestProcess
-  createEvaluationWebRequestProcessId: CreateEvaluationWebRequestProcess
+  createEvaluationRequestProcessId: CreateEvaluationRequestProcess
 
 management:
   metrics:

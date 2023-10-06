@@ -1,5 +1,6 @@
 package com.ecaservice.server.service.evaluation;
 
+import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.ers.dto.EvaluationResultsRequest;
 import com.ecaservice.server.model.entity.Channel;
 import com.ecaservice.server.model.entity.EvaluationLog;
@@ -17,6 +18,7 @@ import org.camunda.bpm.engine.test.Deployment;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.inject.Inject;
@@ -25,6 +27,7 @@ import java.io.Serializable;
 import java.util.UUID;
 
 import static com.ecaservice.server.TestHelperUtils.createEvaluationLog;
+import static com.ecaservice.server.TestHelperUtils.createEvaluationMessageRequestModel;
 import static com.ecaservice.server.TestHelperUtils.createEvaluationWebRequestModel;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -39,7 +42,8 @@ import static org.mockito.Mockito.verify;
  * @author Roman Batygin
  */
 @SpringBootTest
-@Deployment(resources = {"bpmn/create-evaluation-web-request.bpmn", "bpmn/process-evaluation-web-request.bpmn"})
+@Deployment(resources = {"bpmn/create-evaluation-web-request.bpmn", "bpmn/process-evaluation-web-request.bpmn",
+        "bpmn/create-and-process-evaluation-message-request.bpmn", "bpmn/create-evaluation-request-process.bpmn"})
 class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<EvaluationLog> {
 
     private static final String PUSH_MESSAGE_TYPE = "EVALUATION_STATUS";
@@ -56,6 +60,12 @@ class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<
     private EvaluationProcessManager evaluationProcessManager;
 
     @Captor
+    private ArgumentCaptor<String> replyToCaptor;
+    @Captor
+    private ArgumentCaptor<MessagePostProcessor> messagePostProcessorArgumentCaptor;
+    @Captor
+    private ArgumentCaptor<EvaluationResponse> evaluationResponseArgumentCaptor;
+    @Captor
     private ArgumentCaptor<AbstractPushRequest> pushRequestArgumentCaptor;
     @Captor
     private ArgumentCaptor<EvaluationResultsRequest> evaluationResultsRequestArgumentCaptor;
@@ -63,7 +73,7 @@ class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<
     @Test
     void testCreateEvaluationWebRequest() {
         var evaluationWebRequestModel = createEvaluationWebRequestModel();
-        evaluationProcessManager.createEvaluationWebRequest(evaluationWebRequestModel);
+        evaluationProcessManager.createAndProcessEvaluationRequest(evaluationWebRequestModel);
         verify(getWebPushClient(), atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
 
         assertThat(pushRequestArgumentCaptor.getAllValues()).hasSize(1);
@@ -77,7 +87,20 @@ class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<
     }
 
     @Test
-    void testProcessEvaluationRequest() {
+    void testCreateAndProcessEvaluationMessageRequest() {
+        var evaluationMessageRequestModel = createEvaluationMessageRequestModel();
+
+        evaluationProcessManager.createAndProcessEvaluationRequest(evaluationMessageRequestModel);
+
+        var evaluationLog = getEvaluationLog(evaluationMessageRequestModel.getRequestId());
+
+        verifyTestSteps(evaluationLog,
+                new EvaluationRequestStatusVerifier(RequestStatus.FINISHED)
+        );
+    }
+
+    @Test
+    void testProcessEvaluationWebRequest() {
         EvaluationLog evaluationLog = createAndSaveEvaluationLog();
         testProcessEvaluationRequest(evaluationLog);
         verify(getErsClient(), atLeastOnce()).save(evaluationResultsRequestArgumentCaptor.capture());
@@ -89,13 +112,13 @@ class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<
         verifyTestSteps(actualEvaluationLog,
                 new EvaluationRequestStatusVerifier(RequestStatus.FINISHED),
                 new UserPushRequestVerifier(RequestStatus.IN_PROGRESS, 0),
-                new UserPushRequestVerifier( RequestStatus.FINISHED, 1),
+                new UserPushRequestVerifier(RequestStatus.FINISHED, 1),
                 new EvaluationResultsRequestsVerifier()
         );
     }
 
     @Test
-    void testProcessErrorEvaluationRequest() throws IOException {
+    void testProcessErrorEvaluationWebRequest() throws IOException {
         EvaluationLog evaluationLog = createAndSaveEvaluationLog();
         doThrow(IOException.class).when(getObjectStorageService()).uploadObject(any(Serializable.class), anyString());
         testProcessEvaluationRequest(evaluationLog);
@@ -107,7 +130,7 @@ class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<
         verifyTestSteps(actualEvaluationLog,
                 new EvaluationRequestStatusVerifier(RequestStatus.ERROR),
                 new UserPushRequestVerifier(RequestStatus.IN_PROGRESS, 0),
-                new UserPushRequestVerifier( RequestStatus.ERROR, 1)
+                new UserPushRequestVerifier(RequestStatus.ERROR, 1)
         );
     }
 
@@ -158,7 +181,7 @@ class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<
     private class EvaluationResultsRequestsVerifier implements TestStepVerifier<EvaluationLog> {
 
         @Override
-        public void verifyStep(EvaluationLog experiment) {
+        public void verifyStep(EvaluationLog evaluationLog) {
             assertThat(evaluationResultsRequestArgumentCaptor.getAllValues()).hasSize(1);
         }
     }

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0bcpa12" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="CrateAndProcessEvaluationMessageRequest" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_1pki0qj</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="Activity_0nisie8" name="Перевести заявку на построение модели в работу" camunda:modelerTemplate="TaskExecution" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="taskType">START_EVALUATION</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_19rfogn</bpmn:incoming>
+      <bpmn:outgoing>Flow_12a73pz</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_12a73pz" sourceRef="Activity_0nisie8" targetRef="Activity_08ji4xo" />
+    <bpmn:serviceTask id="Activity_08ji4xo" name="Построить модель классификатора" camunda:modelerTemplate="TaskExecution" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="taskType">PROCESS_CLASSIFIER_EVALUATION</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_12a73pz</bpmn:incoming>
+      <bpmn:outgoing>Flow_156omom</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_0u4bqn0" name="Создать заявку на построение модели классификатора" camunda:modelerTemplate="TaskExecution" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="taskType">CREATE_EVALUATION_REQUEST</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1pki0qj</bpmn:incoming>
+      <bpmn:outgoing>Flow_19rfogn</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1pki0qj" sourceRef="StartEvent_1" targetRef="Activity_0u4bqn0" />
+    <bpmn:sequenceFlow id="Flow_19rfogn" sourceRef="Activity_0u4bqn0" targetRef="Activity_0nisie8" />
+    <bpmn:serviceTask id="Activity_0p3gbrn" name="Отправка сообщения с результатами построения модели в очередь" camunda:modelerTemplate="TaskExecution" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="taskType">SENT_EVALUATION_RESPONSE</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_156omom</bpmn:incoming>
+      <bpmn:outgoing>Flow_0mkvwil</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_156omom" sourceRef="Activity_08ji4xo" targetRef="Activity_0p3gbrn" />
+    <bpmn:endEvent id="Event_1gx8465">
+      <bpmn:incoming>Flow_0mkvwil</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0mkvwil" sourceRef="Activity_0p3gbrn" targetRef="Event_1gx8465" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="CrateAndProcessEvaluationMessageRequest">
+      <bpmndi:BPMNEdge id="Flow_19rfogn_di" bpmnElement="Flow_19rfogn">
+        <di:waypoint x="330" y="150" />
+        <di:waypoint x="410" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1pki0qj_di" bpmnElement="Flow_1pki0qj">
+        <di:waypoint x="158" y="150" />
+        <di:waypoint x="230" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12a73pz_di" bpmnElement="Flow_12a73pz">
+        <di:waypoint x="510" y="150" />
+        <di:waypoint x="610" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_156omom_di" bpmnElement="Flow_156omom">
+        <di:waypoint x="710" y="150" />
+        <di:waypoint x="820" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0mkvwil_di" bpmnElement="Flow_0mkvwil">
+        <di:waypoint x="920" y="150" />
+        <di:waypoint x="1032" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="122" y="132" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0nisie8_di" bpmnElement="Activity_0nisie8">
+        <dc:Bounds x="410" y="110" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0u4bqn0_di" bpmnElement="Activity_0u4bqn0">
+        <dc:Bounds x="230" y="110" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_08ji4xo_di" bpmnElement="Activity_08ji4xo">
+        <dc:Bounds x="610" y="110" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0p3gbrn_di" bpmnElement="Activity_0p3gbrn">
+        <dc:Bounds x="820" y="110" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1gx8465_di" bpmnElement="Event_1gx8465">
+        <dc:Bounds x="1032" y="132" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

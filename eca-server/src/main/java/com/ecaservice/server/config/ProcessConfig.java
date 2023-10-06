@@ -37,10 +37,10 @@ public class ProcessConfig {
     private String createExperimentRequestProcessId;
 
     /**
-     * Create evaluation web request process id
+     * Create evaluation request process id
      */
     @NotEmpty
-    private String createEvaluationWebRequestProcessId;
+    private String createEvaluationRequestProcessId;
 
     /**
      * Max. concurrent experiment processes

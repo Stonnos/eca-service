@@ -51,6 +51,11 @@ public class CamundaVariables {
     public static final String EVALUATION_REQUEST_DATA = "evaluationRequestData";
 
     /**
+     * Evaluation results data
+     */
+    public static final String EVALUATION_RESULTS_DATA = "evaluationResultsData";
+
+    /**
      * User info
      */
     public static final String USER_INFO = "userInfo";

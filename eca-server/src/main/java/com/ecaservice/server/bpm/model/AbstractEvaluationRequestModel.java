@@ -41,4 +41,14 @@ public abstract class AbstractEvaluationRequestModel implements Serializable {
      * Username (for web requests)
      */
     private String createdBy;
+
+    /**
+     * Reply to queue (for mq requests)
+     */
+    private String replyTo;
+
+    /**
+     * MQ message correlation id (for mq requests)
+     */
+    private String correlationId;
 }

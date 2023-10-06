@@ -45,6 +45,10 @@
             "value": "SENT_EXPERIMENT_RESPONSE"
           },
           {
+            "name": "Отправить ответное сообщение в очередь для заявки на построение модели классификатора",
+            "value": "SENT_EVALUATION_RESPONSE"
+          },
+          {
             "name": "Получить данные о пользователе",
             "value": "GET_USER_INFO"
           },

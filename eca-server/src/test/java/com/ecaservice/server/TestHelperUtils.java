@@ -27,6 +27,7 @@ import com.ecaservice.ers.dto.RocCurveReport;
 import com.ecaservice.ers.dto.StatisticsReport;
 import com.ecaservice.report.model.BaseReportBean;
 import com.ecaservice.server.bpm.model.EvaluationRequestModel;
+import com.ecaservice.server.bpm.model.EvaluationResultsModel;
 import com.ecaservice.server.bpm.model.ExperimentRequestModel;
 import com.ecaservice.server.dto.CreateEvaluationRequestDto;
 import com.ecaservice.server.dto.CreateExperimentRequestDto;
@@ -385,6 +386,23 @@ public class TestHelperUtils {
         evaluationRequestModel.setChannel(Channel.WEB.name());
         evaluationRequestModel.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         evaluationRequestModel.setCreatedBy(CREATED_BY);
+        evaluationRequestModel.setClassifierOptions(createLogisticOptions());
+        return evaluationRequestModel;
+    }
+
+    /**
+     * Creates evaluation message request model.
+     *
+     * @return evaluation message request model
+     */
+    public static EvaluationRequestModel createEvaluationMessageRequestModel() {
+        EvaluationRequestModel evaluationRequestModel = new EvaluationRequestModel();
+        evaluationRequestModel.setRequestId(UUID.randomUUID().toString());
+        evaluationRequestModel.setDataUuid(UUID.randomUUID().toString());
+        evaluationRequestModel.setChannel(Channel.QUEUE.name());
+        evaluationRequestModel.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
+        evaluationRequestModel.setReplyTo(REPLY_TO);
+        evaluationRequestModel.setCorrelationId(UUID.randomUUID().toString());
         evaluationRequestModel.setClassifierOptions(createLogisticOptions());
         return evaluationRequestModel;
     }
@@ -1129,6 +1147,20 @@ public class TestHelperUtils {
         EvaluationResultsDataModel evaluationResultsDataModel = new EvaluationResultsDataModel();
         evaluationResultsDataModel.setRequestId(requestId);
         evaluationResultsDataModel.setStatus(RequestStatus.FINISHED);
+        evaluationResultsDataModel.setModelUrl(CLASSIFIER_MODEL);
+        return evaluationResultsDataModel;
+    }
+
+    /**
+     * Creates evaluation results model with specified request id.
+     *
+     * @param requestId - request id
+     * @return evaluation results data model
+     */
+    public static EvaluationResultsModel createEvaluationResultsModel(String requestId) {
+        EvaluationResultsModel evaluationResultsDataModel = new EvaluationResultsModel();
+        evaluationResultsDataModel.setRequestId(requestId);
+        evaluationResultsDataModel.setRequestStatus(RequestStatus.FINISHED);
         evaluationResultsDataModel.setModelUrl(CLASSIFIER_MODEL);
         return evaluationResultsDataModel;
     }

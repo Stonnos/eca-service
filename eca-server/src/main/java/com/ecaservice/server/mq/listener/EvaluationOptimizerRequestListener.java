@@ -54,8 +54,8 @@ public class EvaluationOptimizerRequestListener {
         log.info("Evaluation response [{}] with status [{}] has been built for evaluation optimizer request.",
                 evaluationResultsDataModel.getRequestId(), evaluationResultsDataModel.getStatus());
         eventPublisher.publishEvent(new EvaluationErsReportEvent(this, evaluationResultsDataModel));
-        eventPublisher.publishEvent(new EvaluationResponseEvent(this, evaluationResultsDataModel,
-                inboundMessageProperties.getCorrelationId(), inboundMessageProperties.getReplyTo()));
+      //  eventPublisher.publishEvent(new EvaluationResponseEvent(this, evaluationResultsDataModel,
+      //          inboundMessageProperties.getCorrelationId(), inboundMessageProperties.getReplyTo()));
         log.info("Evaluation optimizer request with correlation id [{}] has been processed",
                 inboundMessageProperties.getCorrelationId());
     }

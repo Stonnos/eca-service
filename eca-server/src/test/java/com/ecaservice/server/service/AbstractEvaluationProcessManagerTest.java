@@ -69,6 +69,7 @@ public abstract class AbstractEvaluationProcessManagerTest<T extends AbstractEva
     @Getter
     private DataStorageService dataStorageService;
     @MockBean
+    @Getter
     private RabbitTemplate rabbitTemplate;
     @MockBean
     private AmqpAdmin amqpAdmin;

@@ -48,15 +48,17 @@ public class EvaluationProcessManager {
     }
 
     /**
-     * Creates evaluation web request.
+     * Creates and processed evaluation request.
      *
      * @param evaluationRequestModel - evaluation request dto
      */
-    public void createEvaluationWebRequest(EvaluationRequestModel evaluationRequestModel) {
-        log.info("Starting create evaluation [{}] web request business process", evaluationRequestModel.getRequestId());
+    public void createAndProcessEvaluationRequest(EvaluationRequestModel evaluationRequestModel) {
+        log.info("Starting create and process evaluation [{}] request business process",
+                evaluationRequestModel.getRequestId());
         Map<String, Object> variables = Collections.singletonMap(EVALUATION_REQUEST_DATA, evaluationRequestModel);
-        processManager.startProcess(processConfig.getCreateEvaluationWebRequestProcessId(),
+        processManager.startProcess(processConfig.getCreateEvaluationRequestProcessId(),
                 evaluationRequestModel.getRequestId(), variables);
-        log.info("Create evaluation [{}] business process has been finished", evaluationRequestModel.getRequestId());
+        log.info("Create and process evaluation [{}] business process has been finished",
+                evaluationRequestModel.getRequestId());
     }
 }
