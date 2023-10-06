@@ -7,7 +7,6 @@ import com.ecaservice.server.model.entity.Channel;
 import com.ecaservice.server.model.entity.ChannelVisitor;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.RequestStatus;
-import com.ecaservice.server.model.experiment.ExperimentMessageRequestData;
 import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractEvaluationProcessManagerTest;
@@ -32,8 +31,9 @@ import java.time.Duration;
 import java.util.UUID;
 
 import static com.ecaservice.server.TestHelperUtils.createExperiment;
-import static com.ecaservice.server.TestHelperUtils.createExperimentMessageRequest;
-import static com.ecaservice.server.TestHelperUtils.createExperimentWebRequest;
+import static com.ecaservice.server.TestHelperUtils.createExperimentMessageRequestModel;
+import static com.ecaservice.server.TestHelperUtils.createExperimentRequestModel;
+import static com.ecaservice.server.TestHelperUtils.createExperimentWebRequestModel;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.mockito.ArgumentMatchers.any;
@@ -62,7 +62,7 @@ class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<
     private static final String IN_PROGRESS_EXPERIMENT_EMAIL_TEMPLATE_CODE = "IN_PROGRESS_EXPERIMENT";
     private static final String FINISHED_EXPERIMENT_EMAIL_TEMPLATE_CODE = "FINISHED_EXPERIMENT";
     private static final String ERROR_EXPERIMENT_EMAIL_TEMPLATE_CODE = "ERROR_EXPERIMENT";
-    private static final String REPLY_YO = "reply-yo";
+    private static final String REPLY_TO = "reply-yo";
     private static final String CREATED_BY = "user";
 
     @Inject
@@ -87,16 +87,15 @@ class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<
 
     @Test
     void testCreateExperimentWebRequest() {
-        var experimentWebRequest = createExperimentWebRequest();
-        experimentWebRequest.setCreatedBy(CREATED_BY);
-        experimentProcessManager.createExperimentRequest(experimentWebRequest);
+        var experimentRequestModel = createExperimentWebRequestModel();
+        experimentProcessManager.createExperimentRequest(experimentRequestModel);
         verify(getEmailClient(), atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
         verify(getWebPushClient(), atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
 
         assertThat(emailRequestArgumentCaptor.getAllValues()).hasSize(1);
         assertThat(pushRequestArgumentCaptor.getAllValues()).hasSize(2);
 
-        var experiment = getExperiment(experimentWebRequest.getRequestId());
+        var experiment = getExperiment(experimentRequestModel.getRequestId());
 
         verifyTestSteps(experiment,
                 new EvaluationRequestStatusVerifier(RequestStatus.NEW),
@@ -107,16 +106,16 @@ class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<
     }
 
     @Test
-    void testCreateExperimentRequest() {
-        ExperimentMessageRequestData experimentMessageRequestData = createExperimentMessageRequest();
-        experimentProcessManager.createExperimentRequest(experimentMessageRequestData);
+    void testCreateExperimentMessageRequest() {
+        var experimentRequestModel = createExperimentMessageRequestModel();
+        experimentProcessManager.createExperimentRequest(experimentRequestModel);
         verify(getEmailClient(), atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
         verify(getWebPushClient(), atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
 
         assertThat(emailRequestArgumentCaptor.getAllValues()).hasSize(1);
         assertThat(pushRequestArgumentCaptor.getAllValues()).hasSize(1);
 
-        var experiment = getExperiment(experimentMessageRequestData.getRequestId());
+        var experiment = getExperiment(experimentRequestModel.getRequestId());
 
         verifyTestSteps(experiment,
                 new EvaluationRequestStatusVerifier(RequestStatus.NEW),
@@ -214,7 +213,7 @@ class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<
             @Override
             public void visitQueue() {
                 experiment.setCorrelationId(UUID.randomUUID().toString());
-                experiment.setReplyTo(REPLY_YO);
+                experiment.setReplyTo(REPLY_TO);
             }
         });
         instancesInfoRepository.save(experiment.getInstancesInfo());

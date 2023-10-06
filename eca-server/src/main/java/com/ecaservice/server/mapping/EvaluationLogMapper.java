@@ -2,12 +2,11 @@ package com.ecaservice.server.mapping;
 
 import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.server.bpm.model.EvaluationLogModel;
+import com.ecaservice.server.bpm.model.EvaluationRequestModel;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.dto.CreateEvaluationRequestDto;
 import com.ecaservice.server.model.entity.EvaluationLog;
-import com.ecaservice.server.model.evaluation.AbstractClassifierRequestDataModel;
-import com.ecaservice.server.model.evaluation.EvaluationMessageRequestDataModel;
-import com.ecaservice.server.model.evaluation.EvaluationWebRequestDataModel;
+import com.ecaservice.server.model.evaluation.EvaluationRequestData;
 import com.ecaservice.server.report.model.EvaluationLogBean;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
@@ -39,7 +38,7 @@ public abstract class EvaluationLogMapper extends AbstractEvaluationMapper {
      * @return evaluation request internal data model
      */
     @Mapping(target = "classifier", ignore = true)
-    public abstract EvaluationMessageRequestDataModel map(EvaluationRequest evaluationRequest);
+    public abstract EvaluationRequestData map(EvaluationRequest evaluationRequest);
 
     /**
      * Maps evaluation request to evaluation web request internal data model.
@@ -48,13 +47,20 @@ public abstract class EvaluationLogMapper extends AbstractEvaluationMapper {
      * @return evaluation web request internal data model
      */
     @Mapping(source = "instancesUuid", target = "dataUuid")
-    @Mapping(target = "classifier", ignore = true)
-    public abstract EvaluationWebRequestDataModel map(CreateEvaluationRequestDto createEvaluationRequestDto);
+    public abstract EvaluationRequestModel map(CreateEvaluationRequestDto createEvaluationRequestDto);
+
+    /**
+     * Maps evaluation request model to evaluation request data.
+     *
+     * @param evaluationRequestModel - evaluation request model
+     * @return evaluation request data
+     */
+    public abstract EvaluationRequestData map(EvaluationRequestModel evaluationRequestModel);
 
     /**
      * Maps evaluation request to evaluation log.
      *
-     * @param evaluationRequest     - evaluation request
+     * @param evaluationRequest     - evaluation request model
      * @param crossValidationConfig - cross validation config
      * @return evaluation log entity
      */
@@ -63,7 +69,7 @@ public abstract class EvaluationLogMapper extends AbstractEvaluationMapper {
     @Mapping(target = "numFolds", ignore = true)
     @Mapping(target = "numTests", ignore = true)
     @Mapping(target = "seed", ignore = true)
-    public abstract EvaluationLog map(AbstractClassifierRequestDataModel evaluationRequest,
+    public abstract EvaluationLog map(EvaluationRequestData evaluationRequest,
                                       CrossValidationConfig crossValidationConfig);
 
     /**
@@ -122,7 +128,7 @@ public abstract class EvaluationLogMapper extends AbstractEvaluationMapper {
     public abstract EvaluationLogModel mapToModel(EvaluationLog evaluationLog);
 
     @AfterMapping
-    protected void mapEvaluationMethodOptions(AbstractClassifierRequestDataModel evaluationRequest,
+    protected void mapEvaluationMethodOptions(EvaluationRequestData evaluationRequest,
                                               CrossValidationConfig crossValidationConfig,
                                               @MappingTarget EvaluationLog evaluationLog) {
         if (EvaluationMethod.CROSS_VALIDATION.equals(evaluationRequest.getEvaluationMethod())) {

@@ -51,11 +51,6 @@ public class CamundaVariables {
     public static final String EVALUATION_REQUEST_DATA = "evaluationRequestData";
 
     /**
-     * Evaluation request channel
-     */
-    public static final String REQUEST_CHANNEL = "channel";
-
-    /**
      * User info
      */
     public static final String USER_INFO = "userInfo";

@@ -1,27 +1,24 @@
 package com.ecaservice.server.model;
 
 import com.ecaservice.server.model.entity.Channel;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
 
 /**
- * Abstract evaluation request data model.
+ * Abstract evaluation request data.
  *
  * @author Roman Batygin
  */
 @Getter
 @Setter
-@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class AbstractEvaluationRequestData implements Serializable {
 
     /**
      * Request channel
      */
-    private final Channel channel;
+    private Channel channel;
 
     /**
      * Request id
@@ -32,4 +29,9 @@ public abstract class AbstractEvaluationRequestData implements Serializable {
      * Train data uuid
      */
     private String dataUuid;
+
+    /**
+     * User name
+     */
+    private String createdBy;
 }

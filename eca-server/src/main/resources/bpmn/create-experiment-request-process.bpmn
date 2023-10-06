@@ -15,7 +15,7 @@
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_19gqopo" sourceRef="StartEvent_1" targetRef="Gateway_1dq1jb3" />
     <bpmn:sequenceFlow id="Flow_16x7j3u" name="MQ" sourceRef="Gateway_1dq1jb3" targetRef="Activity_1afp636">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${channel == 'QUEUE'}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${evaluationRequestData.channel == 'QUEUE'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:callActivity id="Activity_1afp636" name="Создать заявку на эксперимент на основе сообщения" calledElement="CreateExperimentMessageRequestProcess">
       <bpmn:extensionElements>

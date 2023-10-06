@@ -1,6 +1,5 @@
 package com.ecaservice.server.service.evaluation;
 
-import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.server.dto.CreateEvaluationRequestDto;
@@ -31,7 +30,6 @@ import static com.ecaservice.server.config.audit.AuditCodes.CREATE_EVALUATION_RE
 public class EvaluationRequestWebApiService {
 
     private final UserService userService;
-    private final ClassifierOptionsAdapter classifierOptionsAdapter;
     private final EvaluationProcessManager evaluationProcessManager;
     private final EvaluationLogMapper evaluationLogMapper;
     private final EvaluationLogRepository evaluationLogRepository;
@@ -52,10 +50,8 @@ public class EvaluationRequestWebApiService {
                 requestId, evaluationRequestDto.getInstancesUuid(),
                 evaluationRequestDto.getClassifierOptions().getClass().getSimpleName(),
                 evaluationRequestDto.getEvaluationMethod());
-        var classifier = classifierOptionsAdapter.convert(evaluationRequestDto.getClassifierOptions());
         var evaluationWebRequestDataModel = evaluationLogMapper.map(evaluationRequestDto);
         evaluationWebRequestDataModel.setRequestId(requestId);
-        evaluationWebRequestDataModel.setClassifier(classifier);
         evaluationWebRequestDataModel.setCreatedBy(userService.getCurrentUser());
         evaluationProcessManager.createEvaluationWebRequest(evaluationWebRequestDataModel);
         var evaluationLog = evaluationLogRepository.findByRequestId(requestId)

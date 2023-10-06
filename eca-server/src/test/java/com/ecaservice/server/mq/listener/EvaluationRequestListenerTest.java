@@ -10,7 +10,7 @@ import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.mapping.EvaluationLogMapper;
 import com.ecaservice.server.mapping.EvaluationLogMapperImpl;
 import com.ecaservice.server.mapping.InstancesInfoMapperImpl;
-import com.ecaservice.server.model.evaluation.EvaluationMessageRequestDataModel;
+import com.ecaservice.server.model.evaluation.EvaluationRequestData;
 import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
 import com.ecaservice.server.service.evaluation.EvaluationRequestService;
 import org.junit.jupiter.api.BeforeEach;
@@ -63,7 +63,7 @@ class EvaluationRequestListenerTest {
     void testHandleMessage() {
         EvaluationRequest evaluationRequest = TestHelperUtils.createEvaluationRequest();
         Message message = Mockito.mock(Message.class);
-        when(evaluationRequestService.createAndProcessEvaluationRequest(any(EvaluationMessageRequestDataModel.class)))
+        when(evaluationRequestService.createAndProcessEvaluationRequest(any(EvaluationRequestData.class)))
                 .thenReturn(new EvaluationResultsDataModel());
         MessageProperties messageProperties = TestHelperUtils.buildMessageProperties();
         when(message.getMessageProperties()).thenReturn(messageProperties);

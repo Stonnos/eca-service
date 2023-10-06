@@ -1,20 +1,19 @@
 package com.ecaservice.server.model.evaluation;
 
 import com.ecaservice.server.model.AbstractEvaluationRequestData;
-import com.ecaservice.server.model.entity.Channel;
 import eca.core.evaluation.EvaluationMethod;
 import lombok.Getter;
 import lombok.Setter;
 import weka.classifiers.AbstractClassifier;
 
 /**
- * Classifier request data model.
+ * Evaluation request data model.
  *
  * @author Roman Batygin
  */
 @Getter
 @Setter
-public abstract class AbstractClassifierRequestDataModel extends AbstractEvaluationRequestData {
+public class EvaluationRequestData extends AbstractEvaluationRequestData {
 
     /**
      * Classifier model
@@ -40,15 +39,4 @@ public abstract class AbstractClassifierRequestDataModel extends AbstractEvaluat
      * Seed value for k * V cross - validation method
      */
     private Integer seed;
-
-    protected AbstractClassifierRequestDataModel(Channel channel) {
-        super(channel);
-    }
-
-    /**
-     * Applies visitor.
-     *
-     * @param visitor - visitor interface
-     */
-    public abstract void visit(EvaluationRequestDataVisitor visitor);
 }

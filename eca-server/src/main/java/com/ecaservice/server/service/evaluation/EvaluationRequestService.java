@@ -7,9 +7,8 @@ import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.config.ClassifiersProperties;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.RequestStatus;
-import com.ecaservice.server.model.evaluation.AbstractClassifierRequestDataModel;
 import com.ecaservice.server.model.evaluation.EvaluationInputDataModel;
-import com.ecaservice.server.model.evaluation.EvaluationMessageRequestDataModel;
+import com.ecaservice.server.model.evaluation.EvaluationRequestData;
 import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
 import com.ecaservice.server.repository.ClassifierInfoRepository;
 import com.ecaservice.server.service.data.InstancesLoaderService;
@@ -65,17 +64,17 @@ public class EvaluationRequestService {
     /**
      * Creates evaluation request.
      *
-     * @param evaluationRequestDataModel - evaluation request data model
+     * @param evaluationRequestData - evaluation request data model
      * @return evaluation log entity
      */
-    public EvaluationLog createAndSaveEvaluationRequest(AbstractClassifierRequestDataModel evaluationRequestDataModel) {
+    public EvaluationLog createAndSaveEvaluationRequest(EvaluationRequestData evaluationRequestData) {
         log.info("Starting to create evaluation request [{}] for classifier [{}]",
-                evaluationRequestDataModel.getRequestId(),
-                evaluationRequestDataModel.getClassifier().getClass().getSimpleName());
-        var evaluationLog = evaluationLogService.createAndSaveEvaluationLog(evaluationRequestDataModel);
+                evaluationRequestData.getRequestId(),
+                evaluationRequestData.getClassifier().getClass().getSimpleName());
+        var evaluationLog = evaluationLogService.createAndSaveEvaluationLog(evaluationRequestData);
         log.info("Evaluation request [{}] has been created for classifier [{}]",
-                evaluationRequestDataModel.getRequestId(),
-                evaluationRequestDataModel.getClassifier().getClass().getSimpleName());
+                evaluationRequestData.getRequestId(),
+                evaluationRequestData.getClassifier().getClass().getSimpleName());
         return evaluationLog;
     }
 
@@ -99,7 +98,7 @@ public class EvaluationRequestService {
      * @return evaluation response data model
      */
     public EvaluationResultsDataModel createAndProcessEvaluationRequest(
-            EvaluationMessageRequestDataModel evaluationRequestDataModel) {
+            EvaluationRequestData evaluationRequestDataModel) {
         putMdcIfAbsent(TX_ID, evaluationRequestDataModel.getRequestId());
         putMdc(EV_REQUEST_ID, evaluationRequestDataModel.getRequestId());
         log.info("Starting to create and process request for classifier [{}] evaluation with data uuid [{}]",

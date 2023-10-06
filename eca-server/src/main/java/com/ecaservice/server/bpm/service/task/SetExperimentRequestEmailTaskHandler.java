@@ -1,7 +1,7 @@
 package com.ecaservice.server.bpm.service.task;
 
+import com.ecaservice.server.bpm.model.ExperimentRequestModel;
 import com.ecaservice.server.bpm.model.TaskType;
-import com.ecaservice.server.model.experiment.AbstractExperimentRequestData;
 import com.ecaservice.user.dto.UserInfoDto;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -29,10 +29,10 @@ public class SetExperimentRequestEmailTaskHandler extends AbstractTaskHandler {
 
     @Override
     public void handle(DelegateExecution execution) {
-        var experimentRequestData =
-                getVariable(execution, EVALUATION_REQUEST_DATA, AbstractExperimentRequestData.class);
+        var experimentRequestModel =
+                getVariable(execution, EVALUATION_REQUEST_DATA, ExperimentRequestModel.class);
         var userInfoDto = getVariable(execution, USER_INFO, UserInfoDto.class);
-        experimentRequestData.setEmail(userInfoDto.getEmail());
-        execution.setVariable(EVALUATION_REQUEST_DATA, experimentRequestData);
+        experimentRequestModel.setEmail(userInfoDto.getEmail());
+        execution.setVariable(EVALUATION_REQUEST_DATA, experimentRequestModel);
     }
 }

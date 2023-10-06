@@ -178,9 +178,9 @@ class ExperimentMapperTest {
     @Test
     void testMapCreateExperimentRequestDto() {
         var experimentRequestDto = TestHelperUtils.buildExperimentRequestDto();
-        var experimentWebRequest = experimentMapper.map(experimentRequestDto);
-        assertThat(experimentWebRequest.getExperimentType()).isEqualTo(experimentRequestDto.getExperimentType());
-        assertThat(experimentWebRequest.getDataUuid()).isEqualTo(experimentRequestDto.getInstancesUuid());
-        assertThat(experimentWebRequest.getEvaluationMethod()).isEqualTo(experimentRequestDto.getEvaluationMethod());
+        var experimentRequestModel = experimentMapper.map(experimentRequestDto);
+        assertThat(experimentRequestModel.getExperimentType()).isEqualTo(experimentRequestDto.getExperimentType());
+        assertThat(experimentRequestModel.getInstancesUuid()).isEqualTo(experimentRequestDto.getInstancesUuid());
+        assertThat(experimentRequestModel.getEvaluationMethod()).isEqualTo(experimentRequestDto.getEvaluationMethod());
     }
 }

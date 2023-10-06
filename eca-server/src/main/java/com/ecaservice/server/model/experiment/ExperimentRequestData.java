@@ -2,19 +2,18 @@ package com.ecaservice.server.model.experiment;
 
 import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.server.model.AbstractEvaluationRequestData;
-import com.ecaservice.server.model.entity.Channel;
 import eca.core.evaluation.EvaluationMethod;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Abstract experiment request data model.
+ * Experiment request data model.
  *
  * @author Roman Batygin
  */
 @Getter
 @Setter
-public abstract class AbstractExperimentRequestData extends AbstractEvaluationRequestData {
+public class ExperimentRequestData extends AbstractEvaluationRequestData {
 
     /**
      * Email
@@ -31,14 +30,13 @@ public abstract class AbstractExperimentRequestData extends AbstractEvaluationRe
      */
     private EvaluationMethod evaluationMethod;
 
-    protected AbstractExperimentRequestData(Channel channel) {
-        super(channel);
-    }
+    /**
+     * Reply to queue
+     */
+    private String replyTo;
 
     /**
-     * Applies visitor.
-     *
-     * @param visitor - visitor interface
+     * MQ message correlation id
      */
-    public abstract void visit(ExperimentRequestDataVisitor visitor);
+    private String correlationId;
 }

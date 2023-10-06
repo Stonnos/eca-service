@@ -26,6 +26,8 @@ import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
 import com.ecaservice.ers.dto.RocCurveReport;
 import com.ecaservice.ers.dto.StatisticsReport;
 import com.ecaservice.report.model.BaseReportBean;
+import com.ecaservice.server.bpm.model.EvaluationRequestModel;
+import com.ecaservice.server.bpm.model.ExperimentRequestModel;
 import com.ecaservice.server.dto.CreateEvaluationRequestDto;
 import com.ecaservice.server.dto.CreateExperimentRequestDto;
 import com.ecaservice.server.model.entity.Channel;
@@ -49,11 +51,9 @@ import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.evaluation.ClassifierOptionsRequestSource;
 import com.ecaservice.server.model.evaluation.EvaluationInputDataModel;
-import com.ecaservice.server.model.evaluation.EvaluationMessageRequestDataModel;
+import com.ecaservice.server.model.evaluation.EvaluationRequestData;
 import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
-import com.ecaservice.server.model.evaluation.EvaluationWebRequestDataModel;
-import com.ecaservice.server.model.experiment.ExperimentMessageRequestData;
-import com.ecaservice.server.model.experiment.ExperimentWebRequestData;
+import com.ecaservice.server.model.experiment.ExperimentRequestData;
 import com.ecaservice.server.model.experiment.InitializationParams;
 import com.ecaservice.web.dto.model.ClassifierOptionsDto;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
@@ -84,7 +84,6 @@ import eca.ensemble.sampling.SamplingMethod;
 import eca.metrics.KNearestNeighbours;
 import eca.metrics.distances.DistanceType;
 import eca.neural.functions.ActivationFunctionType;
-import eca.regression.Logistic;
 import eca.trees.CART;
 import lombok.Cleanup;
 import lombok.SneakyThrows;
@@ -278,8 +277,9 @@ public class TestHelperUtils {
      *
      * @return evaluation request data
      */
-    public static EvaluationMessageRequestDataModel createEvaluationRequestData() {
-        EvaluationMessageRequestDataModel request = new EvaluationMessageRequestDataModel();
+    public static EvaluationRequestData createEvaluationRequestData() {
+        EvaluationRequestData request = new EvaluationRequestData();
+        request.setChannel(Channel.QUEUE);
         request.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         request.setDataUuid(UUID.randomUUID().toString());
         request.setRequestId(UUID.randomUUID().toString());
@@ -320,8 +320,9 @@ public class TestHelperUtils {
      *
      * @return created experiment request
      */
-    public static ExperimentMessageRequestData createExperimentMessageRequest() {
-        ExperimentMessageRequestData experimentRequest = new ExperimentMessageRequestData();
+    public static ExperimentRequestData createExperimentMessageRequest() {
+        ExperimentRequestData experimentRequest = new ExperimentRequestData();
+        experimentRequest.setChannel(Channel.QUEUE);
         experimentRequest.setRequestId(UUID.randomUUID().toString());
         experimentRequest.setDataUuid(UUID.randomUUID().toString());
         experimentRequest.setExperimentType(ExperimentType.KNN);
@@ -333,31 +334,59 @@ public class TestHelperUtils {
     }
 
     /**
-     * Creates experiment web request.
+     * Creates experiment request.
      *
-     * @return created experiment web request
+     * @return created experiment request
      */
-    public static ExperimentWebRequestData createExperimentWebRequest() {
-        ExperimentWebRequestData experimentRequest = new ExperimentWebRequestData();
+    public static ExperimentRequestModel createExperimentRequestModel() {
+        ExperimentRequestModel experimentRequest = new ExperimentRequestModel();
         experimentRequest.setRequestId(UUID.randomUUID().toString());
-        experimentRequest.setDataUuid(UUID.randomUUID().toString());
         experimentRequest.setExperimentType(ExperimentType.KNN);
         experimentRequest.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         return experimentRequest;
     }
 
     /**
-     * Creates evaluation web request.
+     * Creates experiment web request.
      *
-     * @return created evaluation web request
+     * @return created experiment web request
      */
-    public static EvaluationWebRequestDataModel createEvaluationWebRequest() {
-        EvaluationWebRequestDataModel experimentRequest = new EvaluationWebRequestDataModel();
-        experimentRequest.setRequestId(UUID.randomUUID().toString());
-        experimentRequest.setDataUuid(UUID.randomUUID().toString());
-        experimentRequest.setClassifier(new Logistic());
-        experimentRequest.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
-        return experimentRequest;
+    public static ExperimentRequestModel createExperimentWebRequestModel() {
+        ExperimentRequestModel experimentRequestModel = createExperimentRequestModel();
+        experimentRequestModel.setChannel(Channel.WEB.name());
+        experimentRequestModel.setCreatedBy(CREATED_BY);
+        experimentRequestModel.setInstancesUuid(UUID.randomUUID().toString());
+        return experimentRequestModel;
+    }
+
+    /**
+     * Creates experiment message request.
+     *
+     * @return created experiment message request
+     */
+    public static ExperimentRequestModel createExperimentMessageRequestModel() {
+        ExperimentRequestModel experimentRequestModel = createExperimentRequestModel();
+        experimentRequestModel.setDataUuid(UUID.randomUUID().toString());
+        experimentRequestModel.setChannel(Channel.QUEUE.name());
+        experimentRequestModel.setReplyTo(REPLY_TO);
+        experimentRequestModel.setCorrelationId(UUID.randomUUID().toString());
+        return experimentRequestModel;
+    }
+
+    /**
+     * Creates evaluation web request model.
+     *
+     * @return evaluation web request model
+     */
+    public static EvaluationRequestModel createEvaluationWebRequestModel() {
+        EvaluationRequestModel evaluationRequestModel = new EvaluationRequestModel();
+        evaluationRequestModel.setRequestId(UUID.randomUUID().toString());
+        evaluationRequestModel.setInstancesUuid(UUID.randomUUID().toString());
+        evaluationRequestModel.setChannel(Channel.WEB.name());
+        evaluationRequestModel.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
+        evaluationRequestModel.setCreatedBy(CREATED_BY);
+        evaluationRequestModel.setClassifierOptions(createLogisticOptions());
+        return evaluationRequestModel;
     }
 
     /**

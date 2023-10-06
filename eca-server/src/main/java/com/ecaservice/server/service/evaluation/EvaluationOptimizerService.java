@@ -4,7 +4,7 @@ import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.mapping.EvaluationRequestMapper;
 import com.ecaservice.server.model.ClassifierOptionsResult;
-import com.ecaservice.server.model.evaluation.EvaluationMessageRequestDataModel;
+import com.ecaservice.server.model.evaluation.EvaluationRequestData;
 import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
 import com.ecaservice.server.model.evaluation.InstancesRequestDataModel;
 import lombok.RequiredArgsConstructor;
@@ -64,7 +64,7 @@ public class EvaluationOptimizerService {
         log.info("Starting to evaluate model for data uuid [{}] with options [{}], options request id [{}]",
                 instancesRequestDataModel.getDataUuid(), options, instancesRequestDataModel.getRequestId());
         AbstractClassifier classifier = classifierOptionsAdapter.convert(parseOptions(options));
-        EvaluationMessageRequestDataModel evaluationRequest =
+        EvaluationRequestData evaluationRequest =
                 evaluationRequestMapper.map(instancesRequestDataModel, crossValidationConfig);
         evaluationRequest.setClassifier(classifier);
         evaluationRequest.setRequestId(UUID.randomUUID().toString());

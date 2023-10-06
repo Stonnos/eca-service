@@ -3,11 +3,10 @@ package com.ecaservice.server.service.evaluation;
 import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.mapping.EvaluationLogMapper;
+import com.ecaservice.server.model.entity.ChannelVisitor;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.RequestStatus;
-import com.ecaservice.server.model.evaluation.AbstractClassifierRequestDataModel;
-import com.ecaservice.server.model.evaluation.EvaluationRequestDataVisitor;
-import com.ecaservice.server.model.evaluation.EvaluationWebRequestDataModel;
+import com.ecaservice.server.model.evaluation.EvaluationRequestData;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.service.InstancesInfoService;
 import com.ecaservice.server.service.data.InstancesMetaDataService;
@@ -44,20 +43,20 @@ public class EvaluationLogService {
     /**
      * Creates evaluation log.
      *
-     * @param evaluationRequestDataModel - evaluation request data model
+     * @param evaluationRequestData - evaluation request data model
      * @return evaluation log entity
      */
-    public EvaluationLog createAndSaveEvaluationLog(AbstractClassifierRequestDataModel evaluationRequestDataModel) {
+    public EvaluationLog createAndSaveEvaluationLog(EvaluationRequestData evaluationRequestData) {
         var instancesMetaDataModel =
-                instancesMetaDataService.getInstancesMetaData(evaluationRequestDataModel.getDataUuid());
+                instancesMetaDataService.getInstancesMetaData(evaluationRequestData.getDataUuid());
         var instancesInfo = instancesInfoService.getOrSaveInstancesInfo(instancesMetaDataModel);
-        EvaluationLog evaluationLog = evaluationLogMapper.map(evaluationRequestDataModel, crossValidationConfig);
+        EvaluationLog evaluationLog = evaluationLogMapper.map(evaluationRequestData, crossValidationConfig);
         evaluationLog.setInstancesInfo(instancesInfo);
-        saveClassifierOptions(evaluationRequestDataModel.getClassifier(), evaluationLog);
-        setAdditionalProperties(evaluationLog, evaluationRequestDataModel);
+        saveClassifierOptions(evaluationRequestData.getClassifier(), evaluationLog);
+        setAdditionalProperties(evaluationLog, evaluationRequestData);
         evaluationLog.setRequestStatus(RequestStatus.NEW);
-        evaluationLog.setRequestId(evaluationRequestDataModel.getRequestId());
-        evaluationLog.setChannel(evaluationRequestDataModel.getChannel());
+        evaluationLog.setRequestId(evaluationRequestData.getRequestId());
+        evaluationLog.setChannel(evaluationRequestData.getChannel());
         evaluationLog.setCreationDate(LocalDateTime.now());
         evaluationLogRepository.save(evaluationLog);
         log.info("Evaluation log [{}] has been saved", evaluationLog.getRequestId());
@@ -100,11 +99,11 @@ public class EvaluationLogService {
     }
 
     private void setAdditionalProperties(EvaluationLog evaluationLog,
-                                         AbstractClassifierRequestDataModel evaluationRequestDataModel) {
-        evaluationRequestDataModel.visit(new EvaluationRequestDataVisitor() {
+                                         EvaluationRequestData evaluationRequestData) {
+        evaluationRequestData.getChannel().visit(new ChannelVisitor() {
             @Override
-            public void visit(EvaluationWebRequestDataModel evaluationWebRequestDataModel) {
-                evaluationLog.setCreatedBy(evaluationWebRequestDataModel.getCreatedBy());
+            public void visitWeb() {
+                evaluationLog.setCreatedBy(evaluationRequestData.getCreatedBy());
             }
         });
     }

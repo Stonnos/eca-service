@@ -4,6 +4,7 @@ import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.server.dto.CreateExperimentRequestDto;
 import com.ecaservice.server.mapping.ExperimentMapper;
+import com.ecaservice.server.model.entity.Channel;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.service.UserService;
@@ -48,10 +49,11 @@ public class ExperimentRequestWebApiService {
         log.info("Starting to create experiment [{}] request for instances [{}], type [{}], evaluation method [{}]",
                 requestId, experimentRequestDto.getInstancesUuid(), experimentRequestDto.getExperimentType(),
                 experimentRequestDto.getEvaluationMethod());
-        var experimentWebRequestData = experimentMapper.map(experimentRequestDto);
-        experimentWebRequestData.setRequestId(requestId);
-        experimentWebRequestData.setCreatedBy(userService.getCurrentUser());
-        experimentProcessManager.createExperimentRequest(experimentWebRequestData);
+        var experimentRequestModel = experimentMapper.map(experimentRequestDto);
+        experimentRequestModel.setRequestId(requestId);
+        experimentRequestModel.setChannel(Channel.WEB.name());
+        experimentRequestModel.setCreatedBy(userService.getCurrentUser());
+        experimentProcessManager.createExperimentRequest(experimentRequestModel);
         var experiment = experimentRepository.findByRequestId(requestId)
                 .orElseThrow(() -> new EntityNotFoundException(Experiment.class, requestId));
         log.info("Experiment request [{}] has been created for instances uuid [{}].", requestId,
