@@ -2,9 +2,11 @@ package com.ecaservice.server.service.evaluation;
 
 import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.ers.dto.EvaluationResultsRequest;
+import com.ecaservice.server.model.ClassifierOptionsResult;
 import com.ecaservice.server.model.entity.Channel;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.RequestStatus;
+import com.ecaservice.server.model.evaluation.InstancesRequestDataModel;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractEvaluationProcessManagerTest;
@@ -20,21 +22,25 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import javax.inject.Inject;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.UUID;
 
+import static com.ecaservice.server.TestHelperUtils.createClassifierOptionsResult;
 import static com.ecaservice.server.TestHelperUtils.createEvaluationLog;
 import static com.ecaservice.server.TestHelperUtils.createEvaluationMessageRequestModel;
 import static com.ecaservice.server.TestHelperUtils.createEvaluationWebRequestModel;
+import static com.ecaservice.server.TestHelperUtils.createLogisticOptions;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit test for {@link EvaluationProcessManager} class.
@@ -50,6 +56,9 @@ class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<
     private static final String EVALUATION_ID = "id";
     private static final String EVALUATION_REQUEST_ID = "requestId";
     private static final String EVALUATION_REQUEST_STATUS = "requestStatus";
+
+    @MockBean
+    private OptimalClassifierOptionsFetcher optimalClassifierOptionsFetcher;
 
     @Inject
     private EvaluationLogRepository evaluationLogRepository;
@@ -89,6 +98,26 @@ class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<
     @Test
     void testCreateAndProcessEvaluationMessageRequest() {
         var evaluationMessageRequestModel = createEvaluationMessageRequestModel();
+
+        evaluationProcessManager.createAndProcessEvaluationRequest(evaluationMessageRequestModel);
+
+        var evaluationLog = getEvaluationLog(evaluationMessageRequestModel.getRequestId());
+
+        verifyTestSteps(evaluationLog,
+                new EvaluationRequestStatusVerifier(RequestStatus.FINISHED)
+        );
+    }
+
+    @Test
+    void testCreateAndProcessEvaluationMessageRequestWithOptimalOptions() {
+        ClassifierOptionsResult classifierOptionsResult = createClassifierOptionsResult(createLogisticOptions());
+        var evaluationMessageRequestModel = createEvaluationMessageRequestModel();
+        evaluationMessageRequestModel.setClassifierOptions(null);
+        evaluationMessageRequestModel.setUseOptimalClassifierOptions(true);
+
+
+        when(optimalClassifierOptionsFetcher.getOptimalClassifierOptions(any(InstancesRequestDataModel.class)))
+                .thenReturn(classifierOptionsResult);
 
         evaluationProcessManager.createAndProcessEvaluationRequest(evaluationMessageRequestModel);
 

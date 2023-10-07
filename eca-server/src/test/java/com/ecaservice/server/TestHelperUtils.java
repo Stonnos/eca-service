@@ -31,6 +31,7 @@ import com.ecaservice.server.bpm.model.EvaluationResultsModel;
 import com.ecaservice.server.bpm.model.ExperimentRequestModel;
 import com.ecaservice.server.dto.CreateEvaluationRequestDto;
 import com.ecaservice.server.dto.CreateExperimentRequestDto;
+import com.ecaservice.server.model.ClassifierOptionsResult;
 import com.ecaservice.server.model.entity.Channel;
 import com.ecaservice.server.model.entity.ClassifierInfo;
 import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
@@ -1312,6 +1313,20 @@ public class TestHelperUtils {
         evaluationRequestDto.setInstancesUuid(UUID.randomUUID().toString());
         evaluationRequestDto.setClassifierOptions(createLogisticOptions());
         return evaluationRequestDto;
+    }
+
+    /**
+     * Creates classifier options result.
+     *
+     * @param classifierOptions - classifier options
+     * @return classifier options result
+     */
+    @SneakyThrows
+    public static ClassifierOptionsResult createClassifierOptionsResult(ClassifierOptions classifierOptions) {
+        ClassifierOptionsResult classifierOptionsResult = new ClassifierOptionsResult();
+        classifierOptionsResult.setFound(true);
+        classifierOptionsResult.setOptionsJson(OBJECT_MAPPER.writeValueAsString(classifierOptions));
+        return classifierOptionsResult;
     }
 
     private static <T> T loadConfig(String path, TypeReference<T> tTypeReference) {
