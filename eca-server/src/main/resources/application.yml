@@ -7,6 +7,8 @@ spring:
     jdbc-url: jdbc:postgresql://localhost:5432/eca
     username: postgres
     password: postgres
+    hikari:
+      maximum-pool-size: 100
   camunda:
     driver-class-name: org.postgresql.Driver
     jdbc-url: jdbc:postgresql://localhost:5432/eca_camunda
