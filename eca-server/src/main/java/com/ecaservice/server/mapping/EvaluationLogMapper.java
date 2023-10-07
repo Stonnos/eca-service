@@ -1,6 +1,7 @@
 package com.ecaservice.server.mapping;
 
 import com.ecaservice.base.model.EvaluationRequest;
+import com.ecaservice.base.model.InstancesRequest;
 import com.ecaservice.server.bpm.model.EvaluationLogModel;
 import com.ecaservice.server.bpm.model.EvaluationRequestModel;
 import com.ecaservice.server.config.CrossValidationConfig;
@@ -17,6 +18,7 @@ import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.springframework.amqp.core.Message;
 
 import java.util.Optional;
 
@@ -39,6 +41,25 @@ public abstract class EvaluationLogMapper extends AbstractEvaluationMapper {
      */
     @Mapping(target = "channel", constant = "QUEUE")
     public abstract EvaluationRequestModel map(EvaluationRequest evaluationRequest);
+
+    /**
+     * Maps instances request to evaluation request internal data model.
+     *
+     * @param instancesRequest - instances request
+     * @return evaluation request internal data model
+     */
+    @Mapping(source = "instancesRequest.dataUuid", target = "dataUuid")
+    @Mapping(source = "message.messageProperties.replyTo", target = "replyTo")
+    @Mapping(source = "message.messageProperties.correlationId", target = "correlationId")
+    @Mapping(source = "crossValidationConfig.numFolds", target = "numFolds")
+    @Mapping(source = "crossValidationConfig.numTests", target = "numTests")
+    @Mapping(source = "crossValidationConfig.seed", target = "seed")
+    @Mapping(target = "channel", constant = "QUEUE")
+    @Mapping(target = "evaluationMethod", constant = "CROSS_VALIDATION")
+    @Mapping(target = "useOptimalClassifierOptions", constant = "true")
+    public abstract EvaluationRequestModel map(InstancesRequest instancesRequest,
+                                               Message message,
+                                               CrossValidationConfig crossValidationConfig);
 
     /**
      * Maps evaluation request to evaluation web request internal data model.

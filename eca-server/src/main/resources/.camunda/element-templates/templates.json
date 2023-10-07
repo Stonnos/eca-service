@@ -85,7 +85,7 @@
             "value": "GET_OPTIMAL_CLASSIFIER_OPTIONS"
           },
           {
-            "name": "Задать оптимальные настроеки классификатора для заявки",
+            "name": "Задать оптимальные настройки классификатора для заявки",
             "value": "SET_OPTIMAL_CLASSIFIER_OPTIONS"
           },
           {

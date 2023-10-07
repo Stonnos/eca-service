@@ -1,7 +1,9 @@
 package com.ecaservice.server.mapping;
 
+import com.ecaservice.base.model.InstancesRequest;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.CrossValidationConfig;
+import com.ecaservice.server.model.entity.Channel;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.evaluation.EvaluationRequestData;
 import com.ecaservice.server.report.model.EvaluationLogBean;
@@ -11,6 +13,9 @@ import eca.core.evaluation.EvaluationMethod;
 import eca.metrics.KNearestNeighbours;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageProperties;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -19,6 +24,7 @@ import javax.inject.Inject;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit tests that checks EvaluationLogMapper functionality {@see EvaluationLogMapper}.
@@ -43,6 +49,26 @@ class EvaluationLogMapperTest {
         assertThat(evaluationRequestDataModel.getClassifierOptions()).isNotNull();
         assertThat(evaluationRequestDataModel.getEvaluationMethod()).isEqualTo(evaluationRequest.getEvaluationMethod());
         assertThat(evaluationRequestDataModel.getDataUuid()).isEqualTo(evaluationRequest.getDataUuid());
+    }
+
+    @Test
+    void testMapInstancesRequest() {
+        var instancesRequest = new InstancesRequest(UUID.randomUUID().toString());
+        Message message = Mockito.mock(Message.class);
+        MessageProperties messageProperties = TestHelperUtils.buildMessageProperties();
+        when(message.getMessageProperties()).thenReturn(messageProperties);
+        var evaluationRequestDataModel = evaluationLogMapper.map(instancesRequest, message, crossValidationConfig);
+        assertThat(evaluationRequestDataModel).isNotNull();
+        assertThat(evaluationRequestDataModel.getClassifierOptions()).isNull();
+        assertThat(evaluationRequestDataModel.getEvaluationMethod()).isEqualTo(EvaluationMethod.CROSS_VALIDATION);
+        assertThat(evaluationRequestDataModel.getDataUuid()).isEqualTo(instancesRequest.getDataUuid());
+        assertThat(evaluationRequestDataModel.getNumFolds()).isEqualTo(crossValidationConfig.getNumFolds());
+        assertThat(evaluationRequestDataModel.getNumTests()).isEqualTo(crossValidationConfig.getNumTests());
+        assertThat(evaluationRequestDataModel.getSeed()).isEqualTo(crossValidationConfig.getSeed());
+        assertThat(evaluationRequestDataModel.getChannel()).isEqualTo(Channel.QUEUE.name());
+        assertThat(evaluationRequestDataModel.isUseOptimalClassifierOptions()).isTrue();
+        assertThat(evaluationRequestDataModel.getReplyTo()).isEqualTo(messageProperties.getReplyTo());
+        assertThat(evaluationRequestDataModel.getCorrelationId()).isEqualTo(messageProperties.getCorrelationId());
     }
 
     @Test

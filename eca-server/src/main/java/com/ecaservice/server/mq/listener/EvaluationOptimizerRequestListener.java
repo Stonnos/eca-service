@@ -1,26 +1,20 @@
 package com.ecaservice.server.mq.listener;
 
 import com.ecaservice.base.model.InstancesRequest;
-import com.ecaservice.server.event.model.EvaluationErsReportEvent;
-import com.ecaservice.server.event.model.EvaluationResponseEvent;
-import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
-import com.ecaservice.server.model.evaluation.InstancesRequestDataModel;
-import com.ecaservice.server.service.evaluation.EvaluationOptimizerService;
+import com.ecaservice.server.config.CrossValidationConfig;
+import com.ecaservice.server.mapping.EvaluationLogMapper;
+import com.ecaservice.server.service.evaluation.EvaluationProcessManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
 import java.util.UUID;
-
-import static com.ecaservice.common.web.util.LogHelper.TX_ID;
-import static com.ecaservice.common.web.util.LogHelper.putMdc;
 
 /**
  * Rabbit MQ listener for evaluation optimizer request messages.
@@ -33,8 +27,9 @@ import static com.ecaservice.common.web.util.LogHelper.putMdc;
 @RequiredArgsConstructor
 public class EvaluationOptimizerRequestListener {
 
-    private final EvaluationOptimizerService evaluationOptimizerService;
-    private final ApplicationEventPublisher eventPublisher;
+    private final CrossValidationConfig crossValidationConfig;
+    private final EvaluationProcessManager evaluationProcessManager;
+    private final EvaluationLogMapper evaluationLogMapper;
 
     /**
      * Handles evaluation optimizer request message.
@@ -46,16 +41,10 @@ public class EvaluationOptimizerRequestListener {
         MessageProperties inboundMessageProperties = inboundMessage.getMessageProperties();
         log.info("Received evaluation optimizer request with correlation id [{}]",
                 inboundMessageProperties.getCorrelationId());
-        String requestId = UUID.randomUUID().toString();
-        putMdc(TX_ID, requestId);
-        var instancesRequestDataModel = new InstancesRequestDataModel(requestId, instancesRequest.getDataUuid());
-        EvaluationResultsDataModel evaluationResultsDataModel =
-                evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequestDataModel);
-        log.info("Evaluation response [{}] with status [{}] has been built for evaluation optimizer request.",
-                evaluationResultsDataModel.getRequestId(), evaluationResultsDataModel.getStatus());
-        eventPublisher.publishEvent(new EvaluationErsReportEvent(this, evaluationResultsDataModel));
-      //  eventPublisher.publishEvent(new EvaluationResponseEvent(this, evaluationResultsDataModel,
-      //          inboundMessageProperties.getCorrelationId(), inboundMessageProperties.getReplyTo()));
+        var evaluationRequestModel =
+                evaluationLogMapper.map(instancesRequest, inboundMessage, crossValidationConfig);
+        evaluationRequestModel.setRequestId(UUID.randomUUID().toString());
+        evaluationProcessManager.createAndProcessEvaluationRequest(evaluationRequestModel);
         log.info("Evaluation optimizer request with correlation id [{}] has been processed",
                 inboundMessageProperties.getCorrelationId());
     }

@@ -73,6 +73,8 @@ public class ExperimentProcessManager {
      * @param experimentRequestModel - experiment request data model
      */
     public void createExperimentRequest(ExperimentRequestModel experimentRequestModel) {
+        putMdc(TX_ID, experimentRequestModel.getRequestId());
+        putMdc(EV_REQUEST_ID, experimentRequestModel.getRequestId());
         log.info("Starting create experiment [{}] request business process",
                 experimentRequestModel.getRequestId());
         Map<String, Object> variables = Collections.singletonMap(EVALUATION_REQUEST_DATA, experimentRequestModel);

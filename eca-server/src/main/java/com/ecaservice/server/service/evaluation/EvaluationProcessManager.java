@@ -53,6 +53,8 @@ public class EvaluationProcessManager {
      * @param evaluationRequestModel - evaluation request dto
      */
     public void createAndProcessEvaluationRequest(EvaluationRequestModel evaluationRequestModel) {
+        putMdc(TX_ID, evaluationRequestModel.getRequestId());
+        putMdc(EV_REQUEST_ID, evaluationRequestModel.getRequestId());
         log.info("Starting create and process evaluation [{}] request business process",
                 evaluationRequestModel.getRequestId());
         Map<String, Object> variables = Collections.singletonMap(EVALUATION_REQUEST_DATA, evaluationRequestModel);
