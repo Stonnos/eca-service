@@ -1,6 +1,7 @@
 package com.ecaservice.server.model;
 
 import com.ecaservice.base.model.ErrorCode;
+import com.ecaservice.classifier.options.model.ClassifierOptions;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -14,9 +15,9 @@ import java.io.Serializable;
 public class ClassifierOptionsResult implements Serializable {
 
     /**
-     * Classifier options json
+     * Classifier options
      */
-    private String optionsJson;
+    private ClassifierOptions classifierOptions;
 
     /**
      * Is classifier options found?

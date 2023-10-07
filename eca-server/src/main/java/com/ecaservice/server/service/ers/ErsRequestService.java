@@ -1,6 +1,7 @@
 package com.ecaservice.server.service.ers;
 
 import com.ecaservice.base.model.ErrorCode;
+import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import com.ecaservice.ers.dto.ClassifierOptionsResponse;
 import com.ecaservice.ers.dto.ClassifierReport;
@@ -161,9 +162,8 @@ public class ErsRequestService {
                     "Got empty classifier options string!");
             setClassifierOptionsResultError(classifierOptionsResult, ErrorCode.INTERNAL_SERVER_ERROR);
         } else {
-            //Checks classifier options deserialization
-            parseOptions(classifierReport.getOptions());
-            classifierOptionsResult.setOptionsJson(classifierReport.getOptions());
+            ClassifierOptions classifierOptions = parseOptions(classifierReport.getOptions());
+            classifierOptionsResult.setClassifierOptions(classifierOptions);
             classifierOptionsResult.setFound(true);
             log.info("Optimal classifier options [{}] has been found for data md5 hash '{}', options req id [{}].",
                     classifierReport.getOptions(), classifierOptionsRequest.getDataHash(),

@@ -3,6 +3,7 @@ package com.ecaservice.server.service.evaluation;
 import com.ecaservice.base.model.ErrorCode;
 import com.ecaservice.classifier.options.config.ClassifiersOptionsAutoConfiguration;
 import com.ecaservice.classifier.options.model.DecisionTreeOptions;
+import com.ecaservice.classifier.options.model.J48Options;
 import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import com.ecaservice.ers.dto.ClassifierOptionsResponse;
@@ -310,9 +311,7 @@ class OptimalClassifierOptionsFetcherTest extends AbstractJpaTest {
         var classifierOptions =
                 optimalClassifierOptionsFetcher.getOptimalClassifierOptions(instancesRequestDataModel);
         assertSuccessResults(classifierOptions);
-        // TODO
-       // EvaluationResults results = classifierOptions.getEvaluationResults();
-      //  assertThat(results.getClassifier()).isInstanceOf(J48.class);
+        assertThat(classifierOptions.getClassifierOptions()).isInstanceOf(J48Options.class);
         List<ClassifierOptionsRequestModel> optionsRequests = classifierOptionsRequestModelRepository.findAll();
         List<ClassifierOptionsRequestEntity> requestEntities = classifierOptionsRequestRepository.findAll();
         assertThat(optionsRequests).hasSize(2);
@@ -343,7 +342,7 @@ class OptimalClassifierOptionsFetcherTest extends AbstractJpaTest {
     private void assertSuccessResults(ClassifierOptionsResult classifierOptionsResult) {
         assertThat(classifierOptionsResult).isNotNull();
         assertThat(classifierOptionsResult.isFound()).isTrue();
-        assertThat(classifierOptionsResult.getOptionsJson()).isNotNull();
+        assertThat(classifierOptionsResult.getClassifierOptions()).isNotNull();
     }
 
     private void assertSuccessClassifierOptionsRequestModel(ClassifierOptionsRequestModel requestModel) {

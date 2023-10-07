@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import static com.ecaservice.server.bpm.CamundaVariables.CLASSIFIER_OPTIONS_RESULT;
 import static com.ecaservice.server.bpm.CamundaVariables.EVALUATION_REQUEST_DATA;
 import static com.ecaservice.server.util.CamundaUtils.getVariable;
-import static com.ecaservice.server.util.ClassifierOptionsHelper.parseOptions;
 
 /**
  * Get optimal classifier options task handler.
@@ -36,7 +35,7 @@ public class SetOptimalClassifierOptionsTaskHandler extends AbstractTaskHandler 
                 getVariable(execution, EVALUATION_REQUEST_DATA, EvaluationRequestModel.class);
         var classifierOptionsResult =
                 getVariable(execution, CLASSIFIER_OPTIONS_RESULT, ClassifierOptionsResult.class);
-        evaluationRequestModel.setClassifierOptions(parseOptions(classifierOptionsResult.getOptionsJson()));
+        evaluationRequestModel.setClassifierOptions(classifierOptionsResult.getClassifierOptions());
         execution.setVariable(EVALUATION_REQUEST_DATA, evaluationRequestModel);
         log.info("Optimal classifier options task has been set for evaluation request [{}]",
                 execution.getProcessBusinessKey());

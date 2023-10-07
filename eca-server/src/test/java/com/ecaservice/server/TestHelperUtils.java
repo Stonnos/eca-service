@@ -1321,11 +1321,10 @@ public class TestHelperUtils {
      * @param classifierOptions - classifier options
      * @return classifier options result
      */
-    @SneakyThrows
     public static ClassifierOptionsResult createClassifierOptionsResult(ClassifierOptions classifierOptions) {
         ClassifierOptionsResult classifierOptionsResult = new ClassifierOptionsResult();
         classifierOptionsResult.setFound(true);
-        classifierOptionsResult.setOptionsJson(OBJECT_MAPPER.writeValueAsString(classifierOptions));
+        classifierOptionsResult.setClassifierOptions(classifierOptions);
         return classifierOptionsResult;
     }
 
