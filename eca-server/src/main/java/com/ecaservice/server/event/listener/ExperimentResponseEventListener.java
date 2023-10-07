@@ -4,11 +4,9 @@ import com.ecaservice.base.model.ExperimentResponse;
 import com.ecaservice.server.event.model.ExperimentResponseEvent;
 import com.ecaservice.server.mapping.EcaResponseMapper;
 import com.ecaservice.server.model.entity.Experiment;
+import com.ecaservice.server.service.EcaResponseSender;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.AmqpAdmin;
-import org.springframework.amqp.core.QueueInformation;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -22,8 +20,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ExperimentResponseEventListener {
 
-    private final AmqpAdmin amqpAdmin;
-    private final RabbitTemplate rabbitTemplate;
+    private final EcaResponseSender ecaResponseSender;
     private final EcaResponseMapper ecaResponseMapper;
 
     /**
@@ -34,21 +31,11 @@ public class ExperimentResponseEventListener {
     @EventListener
     public void handleExperimentResponseEvent(ExperimentResponseEvent experimentResponseEvent) {
         Experiment experiment = experimentResponseEvent.getExperiment();
-        log.info("Starting to sent experiment [{}] response for request status [{}] to MQ", experiment.getRequestId(),
+        log.info("Starting to sent experiment [{}] response for request status [{}]", experiment.getRequestId(),
                 experiment.getRequestStatus());
-        QueueInformation queueInformation = amqpAdmin.getQueueInfo(experiment.getReplyTo());
-        if (queueInformation == null) {
-            log.warn(
-                    "Can't sent experiment [{}] response for request status [{}], because reply to queue doesn't exists",
-                    experiment.getRequestId(), experiment.getRequestStatus());
-        } else {
-            ExperimentResponse experimentResponse = ecaResponseMapper.map(experiment);
-            rabbitTemplate.convertAndSend(experiment.getReplyTo(), experimentResponse, outboundMessage -> {
-                outboundMessage.getMessageProperties().setCorrelationId(experiment.getCorrelationId());
-                return outboundMessage;
-            });
-            log.info("Experiment [{}] response for request status [{}] has been sent to MQ",
-                    experiment.getRequestId(), experiment.getRequestStatus());
-        }
+        ExperimentResponse experimentResponse = ecaResponseMapper.map(experiment);
+        ecaResponseSender.sendResponse(experimentResponse, experiment.getCorrelationId(), experiment.getReplyTo());
+        log.info("Experiment [{}] response for request status [{}] has been sent",
+                experiment.getRequestId(), experiment.getRequestStatus());
     }
 }

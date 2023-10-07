@@ -20,8 +20,6 @@ import com.ecaservice.server.verifier.TestStepVerifier;
 import com.ecaservice.user.dto.UserInfoDto;
 import lombok.Getter;
 import org.junit.jupiter.api.BeforeEach;
-import org.springframework.amqp.core.AmqpAdmin;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
@@ -70,9 +68,7 @@ public abstract class AbstractEvaluationProcessManagerTest<T extends AbstractEva
     private DataStorageService dataStorageService;
     @MockBean
     @Getter
-    private RabbitTemplate rabbitTemplate;
-    @MockBean
-    private AmqpAdmin amqpAdmin;
+    private EcaResponseSender ecaResponseSender;
     @MockBean
     @Getter
     private InstancesLoaderService instancesLoaderService;

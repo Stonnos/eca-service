@@ -1,5 +1,8 @@
 package com.ecaservice.server.service.experiment;
 
+import com.ecaservice.base.model.EcaResponse;
+import com.ecaservice.base.model.ExperimentResponse;
+import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.ers.dto.EvaluationResultsRequest;
 import com.ecaservice.notification.dto.EmailRequest;
 import com.ecaservice.server.config.ExperimentConfig;
@@ -32,7 +35,6 @@ import java.util.UUID;
 
 import static com.ecaservice.server.TestHelperUtils.createExperiment;
 import static com.ecaservice.server.TestHelperUtils.createExperimentMessageRequestModel;
-import static com.ecaservice.server.TestHelperUtils.createExperimentRequestModel;
 import static com.ecaservice.server.TestHelperUtils.createExperimentWebRequestModel;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
@@ -85,6 +87,13 @@ class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<
     @Captor
     private ArgumentCaptor<EvaluationResultsRequest> evaluationResultsRequestArgumentCaptor;
 
+    @Captor
+    private ArgumentCaptor<String> replyToCaptor;
+    @Captor
+    private ArgumentCaptor<String> correlationIdCaptor;
+    @Captor
+    private ArgumentCaptor<EcaResponse> ecaResponseArgumentCaptor;
+
     @Test
     void testCreateExperimentWebRequest() {
         var experimentRequestModel = createExperimentWebRequestModel();
@@ -111,6 +120,7 @@ class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<
         experimentProcessManager.createExperimentRequest(experimentRequestModel);
         verify(getEmailClient(), atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
         verify(getWebPushClient(), atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
+        captureEcaResponse();
 
         assertThat(emailRequestArgumentCaptor.getAllValues()).hasSize(1);
         assertThat(pushRequestArgumentCaptor.getAllValues()).hasSize(1);
@@ -120,7 +130,9 @@ class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<
         verifyTestSteps(experiment,
                 new EvaluationRequestStatusVerifier(RequestStatus.NEW),
                 new NewEmailRequestVerifier(),
-                new PushRequestVerifier(PushType.SYSTEM, RequestStatus.NEW, 0)
+                new PushRequestVerifier(PushType.SYSTEM, RequestStatus.NEW, 0),
+                new EcaResponseVerifier(experiment.getCorrelationId(), experiment.getReplyTo(),
+                        TechnicalStatus.IN_PROGRESS)
         );
     }
 
@@ -128,6 +140,8 @@ class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<
     void testProcessExperimentWithQueueChannel() {
         Experiment experiment = createAndSaveExperiment(Channel.QUEUE);
         testProcessExperiment(experiment);
+
+        captureEcaResponse();
 
         var actualExperiment = getExperiment(experiment.getRequestId());
 
@@ -140,7 +154,8 @@ class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<
                 new PushRequestVerifier(PushType.SYSTEM, RequestStatus.IN_PROGRESS, 0),
                 new FinishedEmailRequestVerifier(),
                 new PushRequestVerifier(PushType.SYSTEM, RequestStatus.FINISHED, 1),
-                new EvaluationResultsRequestsVerifier()
+                new EvaluationResultsRequestsVerifier(),
+                new EcaResponseVerifier(experiment.getCorrelationId(), experiment.getReplyTo(), TechnicalStatus.SUCCESS)
         );
     }
 
@@ -172,6 +187,8 @@ class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<
         doThrow(IOException.class).when(getObjectStorageService()).uploadObject(any(Serializable.class), anyString());
         testProcessExperiment(experiment);
 
+        captureEcaResponse();
+
         var actualExperiment = getExperiment(experiment.getRequestId());
 
         assertThat(emailRequestArgumentCaptor.getAllValues()).hasSize(2);
@@ -182,7 +199,8 @@ class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<
                 new InProgressEmailRequestVerifier(),
                 new PushRequestVerifier(PushType.SYSTEM, RequestStatus.IN_PROGRESS, 0),
                 new ErrorEmailRequestVerifier(),
-                new PushRequestVerifier(PushType.SYSTEM, RequestStatus.ERROR, 1)
+                new PushRequestVerifier(PushType.SYSTEM, RequestStatus.ERROR, 1),
+                new EcaResponseVerifier(experiment.getCorrelationId(), experiment.getReplyTo(), TechnicalStatus.ERROR)
         );
     }
 
@@ -199,6 +217,11 @@ class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<
 
     private Experiment getExperiment(String requestId) {
         return experimentRepository.findByRequestId(requestId).orElse(null);
+    }
+
+    private void captureEcaResponse() {
+        verify(getEcaResponseSender()).sendResponse(ecaResponseArgumentCaptor.capture(),
+                correlationIdCaptor.capture(), replyToCaptor.capture());
     }
 
     private Experiment createAndSaveExperiment(Channel channel) {
@@ -331,6 +354,24 @@ class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<
         @Override
         public void verifyStep(Experiment experiment) {
             assertThat(evaluationResultsRequestArgumentCaptor.getAllValues()).hasSize(experimentConfig.getResultSize());
+        }
+    }
+
+    @RequiredArgsConstructor
+    private class EcaResponseVerifier implements TestStepVerifier<Experiment> {
+
+        private final String expectedCorrelationId;
+        private final String expectedReplyTo;
+        private final TechnicalStatus expectedStatus;
+
+        @Override
+        public void verifyStep(Experiment experiment) {
+            assertThat(correlationIdCaptor.getValue()).isEqualTo(expectedCorrelationId);
+            assertThat(replyToCaptor.getValue()).isEqualTo(expectedReplyTo);
+            assertThat(ecaResponseArgumentCaptor.getValue()).isInstanceOf(ExperimentResponse.class);
+            assertThat(ecaResponseArgumentCaptor.getValue().getStatus()).isEqualTo(expectedStatus);
+            ExperimentResponse experimentResponse  = (ExperimentResponse) ecaResponseArgumentCaptor.getValue();
+            assertThat(experiment.getExperimentDownloadUrl()).isEqualTo(experimentResponse.getDownloadUrl());
         }
     }
 }

@@ -1,6 +1,8 @@
 package com.ecaservice.server.service.evaluation;
 
+import com.ecaservice.base.model.EcaResponse;
 import com.ecaservice.base.model.EvaluationResponse;
+import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.ers.dto.EvaluationResultsRequest;
 import com.ecaservice.server.model.ClassifierOptionsResult;
 import com.ecaservice.server.model.entity.Channel;
@@ -20,7 +22,6 @@ import org.camunda.bpm.engine.test.Deployment;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -71,9 +72,9 @@ class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<
     @Captor
     private ArgumentCaptor<String> replyToCaptor;
     @Captor
-    private ArgumentCaptor<MessagePostProcessor> messagePostProcessorArgumentCaptor;
+    private ArgumentCaptor<String> correlationIdCaptor;
     @Captor
-    private ArgumentCaptor<EvaluationResponse> evaluationResponseArgumentCaptor;
+    private ArgumentCaptor<EcaResponse> evaluationResponseArgumentCaptor;
     @Captor
     private ArgumentCaptor<AbstractPushRequest> pushRequestArgumentCaptor;
     @Captor
@@ -101,10 +102,33 @@ class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<
 
         evaluationProcessManager.createAndProcessEvaluationRequest(evaluationMessageRequestModel);
 
+        captureEcaResponse();
+
         var evaluationLog = getEvaluationLog(evaluationMessageRequestModel.getRequestId());
 
         verifyTestSteps(evaluationLog,
-                new EvaluationRequestStatusVerifier(RequestStatus.FINISHED)
+                new EvaluationRequestStatusVerifier(RequestStatus.FINISHED),
+                new EcaResponseVerifier(evaluationMessageRequestModel.getCorrelationId(),
+                        evaluationMessageRequestModel.getReplyTo(), TechnicalStatus.SUCCESS)
+        );
+    }
+
+    @Test
+    void testCreateAndProcessEvaluationMessageErrorRequest() throws IOException {
+        var evaluationMessageRequestModel = createEvaluationMessageRequestModel();
+
+        doThrow(IOException.class).when(getObjectStorageService()).uploadObject(any(Serializable.class), anyString());
+
+        evaluationProcessManager.createAndProcessEvaluationRequest(evaluationMessageRequestModel);
+
+        captureEcaResponse();
+
+        var evaluationLog = getEvaluationLog(evaluationMessageRequestModel.getRequestId());
+
+        verifyTestSteps(evaluationLog,
+                new EvaluationRequestStatusVerifier(RequestStatus.ERROR),
+                new EcaResponseVerifier(evaluationMessageRequestModel.getCorrelationId(),
+                        evaluationMessageRequestModel.getReplyTo(), TechnicalStatus.ERROR)
         );
     }
 
@@ -121,10 +145,39 @@ class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<
 
         evaluationProcessManager.createAndProcessEvaluationRequest(evaluationMessageRequestModel);
 
+        captureEcaResponse();
+
         var evaluationLog = getEvaluationLog(evaluationMessageRequestModel.getRequestId());
 
         verifyTestSteps(evaluationLog,
-                new EvaluationRequestStatusVerifier(RequestStatus.FINISHED)
+                new EvaluationRequestStatusVerifier(RequestStatus.FINISHED),
+                new EcaResponseVerifier(evaluationMessageRequestModel.getCorrelationId(),
+                        evaluationMessageRequestModel.getReplyTo(), TechnicalStatus.SUCCESS)
+        );
+    }
+
+    @Test
+    void testCreateAndProcessEvaluationMessageRequestWithOptimalOptionsNotFound() {
+        ClassifierOptionsResult classifierOptionsResult = new ClassifierOptionsResult();
+        classifierOptionsResult.setFound(false);
+        var evaluationMessageRequestModel = createEvaluationMessageRequestModel();
+        evaluationMessageRequestModel.setClassifierOptions(null);
+        evaluationMessageRequestModel.setUseOptimalClassifierOptions(true);
+
+
+        when(optimalClassifierOptionsFetcher.getOptimalClassifierOptions(any(InstancesRequestDataModel.class)))
+                .thenReturn(classifierOptionsResult);
+
+        evaluationProcessManager.createAndProcessEvaluationRequest(evaluationMessageRequestModel);
+
+        captureEcaResponse();
+
+        var evaluationLog = getEvaluationLog(evaluationMessageRequestModel.getRequestId());
+        assertThat(evaluationLog).isNull();
+
+        verifyTestSteps(evaluationLog,
+                new EcaResponseVerifier(evaluationMessageRequestModel.getCorrelationId(),
+                        evaluationMessageRequestModel.getReplyTo(), TechnicalStatus.ERROR)
         );
     }
 
@@ -179,6 +232,11 @@ class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<
         return evaluationLogRepository.save(evaluationLog);
     }
 
+    private void captureEcaResponse() {
+        verify(getEcaResponseSender()).sendResponse(evaluationResponseArgumentCaptor.capture(),
+                correlationIdCaptor.capture(), replyToCaptor.capture());
+    }
+
     @RequiredArgsConstructor
     private class UserPushRequestVerifier implements TestStepVerifier<EvaluationLog> {
 
@@ -212,6 +270,22 @@ class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<
         @Override
         public void verifyStep(EvaluationLog evaluationLog) {
             assertThat(evaluationResultsRequestArgumentCaptor.getAllValues()).hasSize(1);
+        }
+    }
+
+    @RequiredArgsConstructor
+    private class EcaResponseVerifier implements TestStepVerifier<EvaluationLog> {
+
+        private final String expectedCorrelationId;
+        private final String expectedReplyTo;
+        private final TechnicalStatus expectedStatus;
+
+        @Override
+        public void verifyStep(EvaluationLog evaluationLog) {
+            assertThat(correlationIdCaptor.getValue()).isEqualTo(expectedCorrelationId);
+            assertThat(replyToCaptor.getValue()).isEqualTo(expectedReplyTo);
+            assertThat(evaluationResponseArgumentCaptor.getValue()).isInstanceOf(EvaluationResponse.class);
+            assertThat(evaluationResponseArgumentCaptor.getValue().getStatus()).isEqualTo(expectedStatus);
         }
     }
 }

@@ -2,10 +2,9 @@ package com.ecaservice.server.event.listener;
 
 import com.ecaservice.server.event.model.EvaluationResponseEvent;
 import com.ecaservice.server.mapping.EcaResponseMapper;
-import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
+import com.ecaservice.server.service.EcaResponseSender;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +18,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class EvaluationResponseEventListener {
 
-    private final RabbitTemplate rabbitTemplate;
+    private final EcaResponseSender ecaResponseSender;
     private final EcaResponseMapper ecaResponseMapper;
 
     /**
@@ -31,13 +30,11 @@ public class EvaluationResponseEventListener {
     public void handleEvaluationResponseEvent(EvaluationResponseEvent evaluationResponseEvent) {
         var evaluationResultsModel = evaluationResponseEvent.getEvaluationResultsModel();
         var evaluationResponse = ecaResponseMapper.map(evaluationResultsModel);
-        log.info("Starting to sent evaluation [{}] response with request status [{}] to MQ",
+        log.info("Starting to sent evaluation [{}] response with request status [{}]",
                 evaluationResponse.getRequestId(), evaluationResponse.getStatus());
-        rabbitTemplate.convertAndSend(evaluationResponseEvent.getReplyTo(), evaluationResponse, outboundMessage -> {
-            outboundMessage.getMessageProperties().setCorrelationId(evaluationResponseEvent.getCorrelationId());
-            return outboundMessage;
-        });
-        log.info("Evaluation [{}] response with request status [{}] has been sent to MQ",
+        ecaResponseSender.sendResponse(evaluationResponse, evaluationResponseEvent.getCorrelationId(),
+                evaluationResponseEvent.getReplyTo());
+        log.info("Evaluation [{}] response with request status [{}] has been sent",
                 evaluationResponse.getRequestId(), evaluationResponse.getStatus());
     }
 }
