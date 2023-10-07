@@ -2,7 +2,9 @@ package com.ecaservice.server.bpm.model;
 
 import com.ecaservice.base.model.ErrorCode;
 import com.ecaservice.server.model.entity.RequestStatus;
+import lombok.Builder;
 import lombok.Data;
+import lombok.experimental.Tolerate;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -13,7 +15,12 @@ import java.math.BigDecimal;
  * @author Roman Batygin
  */
 @Data
+@Builder
 public class EvaluationResultsModel implements Serializable {
+
+    @Tolerate
+    public EvaluationResultsModel() {
+    }
 
     /**
      * Request unique identifier

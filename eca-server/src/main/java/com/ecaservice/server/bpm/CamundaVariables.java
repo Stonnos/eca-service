@@ -56,6 +56,11 @@ public class CamundaVariables {
     public static final String EVALUATION_RESULTS_DATA = "evaluationResultsData";
 
     /**
+     * Classifier options result
+     */
+    public static final String CLASSIFIER_OPTIONS_RESULT = "classifierOptionsResult";
+
+    /**
      * User info
      */
     public static final String USER_INFO = "userInfo";

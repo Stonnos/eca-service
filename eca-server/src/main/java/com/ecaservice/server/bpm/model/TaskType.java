@@ -105,5 +105,20 @@ public enum TaskType {
     /**
      * Set experiment request email
      */
-    SET_EXPERIMENT_REQUEST_EMAIL
+    SET_EXPERIMENT_REQUEST_EMAIL,
+
+    /**
+     * Get optimal classifier options
+     */
+    GET_OPTIMAL_CLASSIFIER_OPTIONS,
+
+    /**
+     * Set optimal classifier options
+     */
+    SET_OPTIMAL_CLASSIFIER_OPTIONS,
+
+    /**
+     * Optimal classifier option error handler
+     */
+    OPTIMAL_CLASSIFIER_OPTIONS_ERROR_HANDLER
 }
