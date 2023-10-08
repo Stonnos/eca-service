@@ -182,4 +182,16 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="add_form_template_group_title_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="form_template_group"/>
+            <not>
+                <columnExists tableName="form_template_group" columnName="group_title"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="form_template_group">
+            <column name="group_title" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

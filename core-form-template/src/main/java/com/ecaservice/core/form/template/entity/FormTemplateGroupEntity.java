@@ -34,6 +34,12 @@ public class FormTemplateGroupEntity {
     private String groupName;
 
     /**
+     * Group title
+     */
+    @Column(name = "group_title")
+    private String groupTitle;
+
+    /**
      * Form templates list
      */
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

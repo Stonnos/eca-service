@@ -18,10 +18,16 @@ import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
 public class FormTemplateGroupDto {
 
     /**
-     * Template name
+     * Group name
      */
-    @Schema(description = "Template name", example = "groupName", maxLength = MAX_LENGTH_255)
+    @Schema(description = "Group name", example = "groupName", maxLength = MAX_LENGTH_255)
     private String groupName;
+
+    /**
+     * Group title
+     */
+    @Schema(description = "Group title", example = "groupTitle", maxLength = MAX_LENGTH_255)
+    private String groupTitle;
 
     /**
      * Templates list
