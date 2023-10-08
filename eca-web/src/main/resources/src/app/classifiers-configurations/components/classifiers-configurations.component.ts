@@ -1,7 +1,10 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import {
   ClassifierOptionsDto,
-  ClassifiersConfigurationDto, FormTemplateDto, PageDto,
+  ClassifiersConfigurationDto,
+  FormTemplateDto,
+  FormTemplateGroupDto,
+  PageDto,
   PageRequestDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ConfirmationService, MessageService } from "primeng/api";
@@ -21,6 +24,7 @@ import { FormTemplatesMapper } from "../../form-templates/services/form-template
 import { FormField } from "../../form-templates/model/form-template.model";
 import { ClassifierOptionsService } from "../../classifiers-configuration-details/services/classifier-options.service";
 import { ClassifiersConfigurationFilterFields } from "../../common/util/filter-field-names";
+import { ClassifierGroupTemplatesType } from "../../form-templates/model/classifier-group-templates.type";
 
 @Component({
   selector: 'app-classifiers-configurations',
@@ -282,10 +286,10 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
   }
 
   private getClassifiersTemplates(): void {
-    this.formTemplatesService.getClassifiersFormTemplates()
+    this.formTemplatesService.getClassifiersFormTemplates(ClassifierGroupTemplatesType.INDIVIDUAL)
       .subscribe({
-        next: (templates: FormTemplateDto[]) => {
-          this.templates = templates;
+        next: (templateGroups: FormTemplateGroupDto[]) => {
+          this.templates = templateGroups.pop().templates;
         },
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });

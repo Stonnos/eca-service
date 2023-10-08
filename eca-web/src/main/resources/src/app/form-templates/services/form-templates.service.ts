@@ -1,11 +1,12 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
-  FormTemplateDto
+  FormTemplateGroupDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
 import { environment } from "../../../environments/environment";
 import { Utils } from "../../common/util/utils";
+import { ClassifierGroupTemplatesType } from "../model/classifier-group-templates.type";
 
 @Injectable()
 export class FormTemplatesService {
@@ -15,11 +16,14 @@ export class FormTemplatesService {
   public constructor(private http: HttpClient) {
   }
 
-  public getClassifiersFormTemplates(): Observable<FormTemplateDto[]> {
+  public getClassifiersFormTemplates(classifierGroupTemplatesType: ClassifierGroupTemplatesType): Observable<FormTemplateGroupDto[]> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
       'Authorization': Utils.getBearerTokenHeader()
     });
-    return this.http.get<FormTemplateDto[]>(this.ecaServerUrl + '/classifiers/templates/list', { headers: headers });
+    const params: HttpParams = new HttpParams()
+      .set('classifierGroupTemplatesType', classifierGroupTemplatesType);
+    const options = { headers: headers, params: params };
+    return this.http.get<FormTemplateGroupDto[]>(this.ecaServerUrl + '/classifiers/templates/list', options);
   }
 }
