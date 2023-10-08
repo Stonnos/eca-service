@@ -11,6 +11,7 @@ import { PushVariables } from "../../common/util/push-variables";
 import { RouterPaths } from "../../routing/router-paths";
 import { Router } from "@angular/router";
 import { Utils } from "../../common/util/utils";
+import { PushRoute } from "../../common/model/push.model";
 
 @Component({
   selector: 'app-notifications-center',
@@ -27,6 +28,8 @@ export class NotificationsCenterComponent {
 
   private lastPageRequest: SimplePageRequestDto;
 
+  private pushRoutes: PushRoute[] = [];
+
   public loading: boolean = false;
 
   @Input()
@@ -38,6 +41,7 @@ export class NotificationsCenterComponent {
   public constructor(private userNotificationsService: UserNotificationsService,
                      private messageService: MessageService,
                      private router: Router) {
+    this.initPushRoutes();
   }
 
   public ngOnInit(): void {
@@ -90,15 +94,13 @@ export class NotificationsCenterComponent {
     this.getNextPage(this.lastPageRequest);
   }
 
-  public onLinkClick(notification: UserNotificationDto): void {
-    if (notification.messageType == PushMessageType.CLASSIFIER_CONFIGURATION_CHANGE) {
-      const configurationId = Utils.getNotificationParam(notification, PushVariables.CLASSIFIERS_CONFIGURATION_ID);
-      this.router.navigate([RouterPaths.CLASSIFIERS_CONFIGURATION_DETAILS_URL, configurationId]);
-    } else if (notification.messageType == PushMessageType.EXPERIMENT_STATUS_CHANGE) {
-      const experimentId = Utils.getNotificationParam(notification, PushVariables.EXPERIMENT_ID);
-      this.router.navigate([RouterPaths.EXPERIMENT_DETAILS_URL, experimentId]);
+  public onRoute(notification: UserNotificationDto): void {
+    const pushRoute = this.pushRoutes.filter((route: PushRoute) => route.messageType == notification.messageType).pop();
+    if (pushRoute) {
+      const id = Utils.getNotificationParam(notification, pushRoute.itemIdPropertyName);
+      this.router.navigate([pushRoute.routePath, id]);
     } else {
-      this.messageService.add({severity: 'error', summary: 'Ошибка', detail: `Can't handle user notification message ${notification.messageType} as link`});
+      this.messageService.add({severity: 'error', summary: 'Ошибка', detail: `Can't handle push message ${notification.messageType} as link`});
     }
   }
 
@@ -148,5 +150,25 @@ export class NotificationsCenterComponent {
           });
       }, this.beforeReadNotificationsDelayMillis);
     }
+  }
+
+  private initPushRoutes(): void {
+    this.pushRoutes = [
+      {
+        messageType: PushMessageType.EXPERIMENT_STATUS_CHANGE,
+        itemIdPropertyName: PushVariables.EVALUATION_ID,
+        routePath: RouterPaths.EXPERIMENT_DETAILS_URL
+      },
+      {
+        messageType: PushMessageType.EVALUATION_STATUS_CHANGE,
+        itemIdPropertyName: PushVariables.EVALUATION_ID,
+        routePath: RouterPaths.EVALUATION_DETAILS_URL
+      },
+      {
+        messageType: PushMessageType.CLASSIFIER_CONFIGURATION_CHANGE,
+        itemIdPropertyName: PushVariables.CLASSIFIERS_CONFIGURATION_ID,
+        routePath: RouterPaths.CLASSIFIERS_CONFIGURATION_DETAILS_URL
+      }
+    ];
   }
 }

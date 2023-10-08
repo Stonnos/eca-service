@@ -19,10 +19,16 @@ public class ProcessConfig {
     private static final int DEFAULT_MAX_CONCURRENT_EXPERIMENT_PROCESSES = 1;
 
     /**
-     * Process experiment diagram id
+     * Process experiment process id
      */
     @NotEmpty
     private String processExperimentId;
+
+    /**
+     * Process evaluation process id
+     */
+    @NotEmpty
+    private String processEvaluationId;
 
     /**
      * Create experiment request process id
@@ -31,10 +37,10 @@ public class ProcessConfig {
     private String createExperimentRequestProcessId;
 
     /**
-     * Create experiment web request process id
+     * Create evaluation request process id
      */
     @NotEmpty
-    private String createExperimentWebRequestProcessId;
+    private String createEvaluationRequestProcessId;
 
     /**
      * Max. concurrent experiment processes

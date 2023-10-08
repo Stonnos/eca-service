@@ -32,22 +32,10 @@ import static com.ecaservice.server.util.FieldConstraints.SCALE;
 public class Experiment extends AbstractEvaluationEntity {
 
     /**
-     * User name
-     */
-    @Column(name = "created_by")
-    private String createdBy;
-
-    /**
      * Email
      */
-    @Column(name = "email", nullable = false)
+    @Column(name = "email")
     private String email;
-
-    /**
-     * Training data uuid in data storage (generated while upload data to data loader module)
-     */
-    @Column(name = "training_data_uuid")
-    private String trainingDataUuid;
 
     /**
      * Experiment type
@@ -61,13 +49,6 @@ public class Experiment extends AbstractEvaluationEntity {
      */
     @Column(name = "experiment_download_url", length = EXPERIMENT_DOWNLOAD_URL_MAX_LENGTH)
     private String experimentDownloadUrl;
-
-    /**
-     * Channel type
-     */
-    @Enumerated(EnumType.STRING)
-    @Column(name = "channel_type", nullable = false)
-    private Channel channel;
 
     /**
      * Reply to queue

@@ -6,7 +6,15 @@
           {{ message.summary }}
         </div>
         <div class="ui-g mx-auto d-flex align-items-center justify-content-center">
-          <a [routerLink]="" class="text-bold white-link" (click)="onLinkClick(message.data)">Открыть заявку</a>
+          <a [routerLink]="" class="text-bold white-link" (click)="onRoute(message.data)">Открыть заявку</a>
+        </div>
+      </ng-container>
+      <ng-container *ngSwitchCase="'EVALUATION_STATUS'">
+        <div class="ui-g text-bold text-left">
+          {{ message.summary }}
+        </div>
+        <div class="ui-g mx-auto d-flex align-items-center justify-content-center">
+          <a [routerLink]="" class="text-bold white-link" (click)="onRoute(message.data)">Открыть заявку</a>
         </div>
       </ng-container>
       <ng-container *ngSwitchCase="'CLASSIFIER_CONFIGURATION_CHANGE'">
@@ -17,7 +25,7 @@
           {{ message.summary }}
         </div>
         <div class="ui-g mx-auto d-flex align-items-center justify-content-center">
-          <a [routerLink]="" class="text-bold white-link" (click)="onLinkClick(message.data)">Открыть конфигурацию</a>
+          <a [routerLink]="" class="text-bold white-link" (click)="onRoute(message.data)">Открыть конфигурацию</a>
         </div>
       </ng-container>
       <ng-container *ngSwitchDefault>

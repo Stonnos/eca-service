@@ -1,9 +1,13 @@
 package com.ecaservice.server.mapping;
 
 import com.ecaservice.base.model.EvaluationRequest;
+import com.ecaservice.base.model.InstancesRequest;
+import com.ecaservice.server.bpm.model.EvaluationLogModel;
+import com.ecaservice.server.bpm.model.EvaluationRequestModel;
 import com.ecaservice.server.config.CrossValidationConfig;
+import com.ecaservice.server.dto.CreateEvaluationRequestDto;
 import com.ecaservice.server.model.entity.EvaluationLog;
-import com.ecaservice.server.model.evaluation.EvaluationRequestDataModel;
+import com.ecaservice.server.model.evaluation.EvaluationRequestData;
 import com.ecaservice.server.report.model.EvaluationLogBean;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
@@ -14,6 +18,7 @@ import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.springframework.amqp.core.Message;
 
 import java.util.Optional;
 
@@ -34,21 +39,58 @@ public abstract class EvaluationLogMapper extends AbstractEvaluationMapper {
      * @param evaluationRequest - evaluation request
      * @return evaluation request internal data model
      */
-    @Mapping(target = "classifier", ignore = true)
-    public abstract EvaluationRequestDataModel map(EvaluationRequest evaluationRequest);
+    @Mapping(target = "channel", constant = "QUEUE")
+    public abstract EvaluationRequestModel map(EvaluationRequest evaluationRequest);
+
+    /**
+     * Maps instances request to evaluation request internal data model.
+     *
+     * @param instancesRequest - instances request
+     * @return evaluation request internal data model
+     */
+    @Mapping(source = "instancesRequest.dataUuid", target = "dataUuid")
+    @Mapping(source = "message.messageProperties.replyTo", target = "replyTo")
+    @Mapping(source = "message.messageProperties.correlationId", target = "correlationId")
+    @Mapping(source = "crossValidationConfig.numFolds", target = "numFolds")
+    @Mapping(source = "crossValidationConfig.numTests", target = "numTests")
+    @Mapping(source = "crossValidationConfig.seed", target = "seed")
+    @Mapping(target = "channel", constant = "QUEUE")
+    @Mapping(target = "evaluationMethod", constant = "CROSS_VALIDATION")
+    @Mapping(target = "useOptimalClassifierOptions", constant = "true")
+    public abstract EvaluationRequestModel map(InstancesRequest instancesRequest,
+                                               Message message,
+                                               CrossValidationConfig crossValidationConfig);
+
+    /**
+     * Maps evaluation request to evaluation web request internal data model.
+     *
+     * @param createEvaluationRequestDto - evaluation request
+     * @return evaluation web request internal data model
+     */
+    @Mapping(source = "instancesUuid", target = "dataUuid")
+    public abstract EvaluationRequestModel map(CreateEvaluationRequestDto createEvaluationRequestDto);
+
+    /**
+     * Maps evaluation request model to evaluation request data.
+     *
+     * @param evaluationRequestModel - evaluation request model
+     * @return evaluation request data
+     */
+    public abstract EvaluationRequestData map(EvaluationRequestModel evaluationRequestModel);
 
     /**
      * Maps evaluation request to evaluation log.
      *
-     * @param evaluationRequest     - evaluation request
+     * @param evaluationRequest     - evaluation request model
      * @param crossValidationConfig - cross validation config
      * @return evaluation log entity
      */
     @Mapping(source = "evaluationRequest.classifier", target = "classifierInfo")
+    @Mapping(source = "evaluationRequest.dataUuid", target = "trainingDataUuid")
     @Mapping(target = "numFolds", ignore = true)
     @Mapping(target = "numTests", ignore = true)
     @Mapping(target = "seed", ignore = true)
-    public abstract EvaluationLog map(EvaluationRequestDataModel evaluationRequest,
+    public abstract EvaluationLog map(EvaluationRequestData evaluationRequest,
                                       CrossValidationConfig crossValidationConfig);
 
     /**
@@ -97,8 +139,17 @@ public abstract class EvaluationLogMapper extends AbstractEvaluationMapper {
     @Mapping(target = "classifierName", ignore = true)
     public abstract EvaluationLogBean mapToBean(EvaluationLog evaluationLog);
 
+    /**
+     * Maps evaluation log entity to bpmn model.
+     *
+     * @param evaluationLog - evaluation log entity
+     * @return evaluation log bpmn model
+     */
+    @Mapping(source = "classifierInfo.classifierName", target = "classifierName")
+    public abstract EvaluationLogModel mapToModel(EvaluationLog evaluationLog);
+
     @AfterMapping
-    protected void mapEvaluationMethodOptions(EvaluationRequestDataModel evaluationRequest,
+    protected void mapEvaluationMethodOptions(EvaluationRequestData evaluationRequest,
                                               CrossValidationConfig crossValidationConfig,
                                               @MappingTarget EvaluationLog evaluationLog) {
         if (EvaluationMethod.CROSS_VALIDATION.equals(evaluationRequest.getEvaluationMethod())) {

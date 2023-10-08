@@ -3,10 +3,10 @@ package com.ecaservice.server.service.evaluation;
 import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.mapping.EvaluationLogMapper;
+import com.ecaservice.server.model.entity.ChannelVisitor;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.RequestStatus;
-import com.ecaservice.server.model.evaluation.ClassificationResult;
-import com.ecaservice.server.model.evaluation.EvaluationRequestDataModel;
+import com.ecaservice.server.model.evaluation.EvaluationRequestData;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.service.InstancesInfoService;
 import com.ecaservice.server.service.data.InstancesMetaDataService;
@@ -15,8 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import weka.classifiers.AbstractClassifier;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static com.ecaservice.server.util.ClassifierOptionsHelper.toJsonString;
 
@@ -30,6 +30,9 @@ import static com.ecaservice.server.util.ClassifierOptionsHelper.toJsonString;
 @RequiredArgsConstructor
 public class EvaluationLogService {
 
+    private static final List<RequestStatus> FINAL_STATUSES =
+            List.of(RequestStatus.FINISHED, RequestStatus.ERROR, RequestStatus.TIMEOUT);
+
     private final CrossValidationConfig crossValidationConfig;
     private final EvaluationLogRepository evaluationLogRepository;
     private final EvaluationLogMapper evaluationLogMapper;
@@ -40,69 +43,68 @@ public class EvaluationLogService {
     /**
      * Creates evaluation log.
      *
-     * @param evaluationRequestDataModel - evaluation request data model
+     * @param evaluationRequestData - evaluation request data model
      * @return evaluation log entity
      */
-    public EvaluationLog createAndSaveEvaluationLog(EvaluationRequestDataModel evaluationRequestDataModel) {
+    public EvaluationLog createAndSaveEvaluationLog(EvaluationRequestData evaluationRequestData) {
         var instancesMetaDataModel =
-                instancesMetaDataService.getInstancesMetaData(evaluationRequestDataModel.getDataUuid());
+                instancesMetaDataService.getInstancesMetaData(evaluationRequestData.getDataUuid());
         var instancesInfo = instancesInfoService.getOrSaveInstancesInfo(instancesMetaDataModel);
-        EvaluationLog evaluationLog = evaluationLogMapper.map(evaluationRequestDataModel, crossValidationConfig);
+        EvaluationLog evaluationLog = evaluationLogMapper.map(evaluationRequestData, crossValidationConfig);
         evaluationLog.setInstancesInfo(instancesInfo);
-        processClassifierOptions(evaluationRequestDataModel.getClassifier(), evaluationLog);
-        evaluationLog.setRequestStatus(RequestStatus.IN_PROGRESS);
-        evaluationLog.setRequestId(evaluationRequestDataModel.getRequestId());
+        saveClassifierOptions(evaluationRequestData.getClassifier(), evaluationLog);
+        setAdditionalProperties(evaluationLog, evaluationRequestData);
+        evaluationLog.setRequestStatus(RequestStatus.NEW);
+        evaluationLog.setRequestId(evaluationRequestData.getRequestId());
+        evaluationLog.setChannel(evaluationRequestData.getChannel());
         evaluationLog.setCreationDate(LocalDateTime.now());
-        evaluationLog.setStartDate(LocalDateTime.now());
         evaluationLogRepository.save(evaluationLog);
         log.info("Evaluation log [{}] has been saved", evaluationLog.getRequestId());
         return evaluationLog;
     }
 
     /**
-     * Handles success evaluation.
+     * Starts classifier evaluation.
      *
-     * @param classificationResult - evaluation results
-     * @param evaluationLog        - evaluation log entity
+     * @param evaluationLog - evaluation log
      */
-    public void handleSuccess(ClassificationResult classificationResult,
-                              EvaluationLog evaluationLog) {
-        evaluationLog.setRequestStatus(RequestStatus.FINISHED);
-        double pctCorrect = classificationResult.getEvaluationResults().getEvaluation().pctCorrect();
-        evaluationLog.setPctCorrect(BigDecimal.valueOf(pctCorrect));
-        evaluationLog.setEndDate(LocalDateTime.now());
+    public void startEvaluationLog(EvaluationLog evaluationLog) {
+        evaluationLog.setRequestStatus(RequestStatus.IN_PROGRESS);
+        evaluationLog.setStartDate(LocalDateTime.now());
         evaluationLogRepository.save(evaluationLog);
-        log.info("Evaluation log [{}] has been updated with success status", evaluationLog.getRequestId());
+        log.info("Evaluation log [{}] in progress status has been set", evaluationLog.getRequestId());
     }
 
     /**
-     * Handles error evaluation.
+     * Finishes classifier evaluation.
      *
      * @param evaluationLog - evaluation log entity
-     * @param errorMessage  - error message
+     * @param requestStatus - final request status (FINISHED, ERROR, TIMEOUT)
      */
-    public void handleError(EvaluationLog evaluationLog, String errorMessage) {
-        evaluationLog.setRequestStatus(RequestStatus.ERROR);
-        evaluationLog.setErrorMessage(errorMessage);
+    public void finishEvaluation(EvaluationLog evaluationLog, RequestStatus requestStatus) {
+        if (!FINAL_STATUSES.contains(requestStatus)) {
+            throw new IllegalArgumentException(
+                    String.format("Invalid final request status [%s] for evaluation log [%s]", requestStatus,
+                            evaluationLog.getRequestId()));
+        }
+        evaluationLog.setRequestStatus(requestStatus);
         evaluationLog.setEndDate(LocalDateTime.now());
         evaluationLogRepository.save(evaluationLog);
-        log.info("Evaluation log [{}] has been updated with error status", evaluationLog.getRequestId());
+        log.info("Evaluation log [{}] has been finished with status [{}]", evaluationLog.getRequestId(), requestStatus);
     }
 
-    /**
-     * Handles timeout evaluation.
-     *
-     * @param evaluationLog - evaluation log entity
-     */
-    public void handleTimeout(EvaluationLog evaluationLog) {
-        evaluationLog.setRequestStatus(RequestStatus.TIMEOUT);
-        evaluationLog.setEndDate(LocalDateTime.now());
-        evaluationLogRepository.save(evaluationLog);
-        log.info("Evaluation log [{}] has been updated with timeout status", evaluationLog.getRequestId());
-    }
-
-    private void processClassifierOptions(AbstractClassifier classifier, EvaluationLog evaluationLog) {
+    private void saveClassifierOptions(AbstractClassifier classifier, EvaluationLog evaluationLog) {
         var classifierOptions = classifierOptionsAdapter.convert(classifier);
         evaluationLog.getClassifierInfo().setClassifierOptions(toJsonString(classifierOptions));
+    }
+
+    private void setAdditionalProperties(EvaluationLog evaluationLog,
+                                         EvaluationRequestData evaluationRequestData) {
+        evaluationRequestData.getChannel().visit(new ChannelVisitor() {
+            @Override
+            public void visitWeb() {
+                evaluationLog.setCreatedBy(evaluationRequestData.getCreatedBy());
+            }
+        });
     }
 }

@@ -2,10 +2,13 @@ package com.ecaservice.server.controller.web;
 
 import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.server.dto.CreateEvaluationRequestDto;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.service.evaluation.EvaluationLogDataService;
+import com.ecaservice.server.service.evaluation.EvaluationRequestWebApiService;
 import com.ecaservice.web.dto.model.ChartDto;
+import com.ecaservice.web.dto.model.CreateEvaluationResponseDto;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import com.ecaservice.web.dto.model.EvaluationLogDto;
 import com.ecaservice.web.dto.model.EvaluationLogsPageDto;
@@ -59,7 +62,71 @@ import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 public class EvaluationController {
 
     private final EvaluationLogDataService evaluationLogDataService;
+    private final EvaluationRequestWebApiService evaluationRequestWebApiService;
     private final EvaluationLogRepository evaluationLogRepository;
+
+    /**
+     * Creates classifier evaluation request with specified options.
+     *
+     * @param evaluationRequestDto - evaluation request dto
+     * @return evaluation response dto
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @Operation(
+            description = "Creates classifier evaluation request with specified options",
+            summary = "Creates classifier evaluation request with specified options",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
+                    @Content(examples = {
+                            @ExampleObject(
+                                    name = "CreateEvaluationRequest",
+                                    ref = "#/components/examples/CreateEvaluationRequest"
+                            )
+                    })
+            }),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "CreateEvaluationResponse",
+                                                    ref = "#/components/examples/CreateEvaluationResponse"
+                                            )
+                                    },
+                                    schema = @Schema(implementation = CreateEvaluationResponseDto.class)
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "CreateEvaluationBadRequestResponse",
+                                                    ref = "#/components/examples/CreateEvaluationBadRequestResponse"
+                                            )
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            )
+                                    }
+                            )
+                    )
+            }
+    )
+    @PostMapping(value = "/create")
+    public CreateEvaluationResponseDto createRequest(
+            @Valid @RequestBody CreateEvaluationRequestDto evaluationRequestDto) {
+        log.info("Received evaluation request [{}]", evaluationRequestDto);
+        return evaluationRequestWebApiService.createEvaluationRequest(evaluationRequestDto);
+    }
 
     /**
      * Finds evaluation logs with specified options such as filter, sorting and paging.

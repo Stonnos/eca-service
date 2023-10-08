@@ -7,6 +7,8 @@ spring:
     jdbc-url: jdbc:postgresql://localhost:5432/eca
     username: postgres
     password: postgres
+    hikari:
+      maximum-pool-size: 100
   camunda:
     driver-class-name: org.postgresql.Driver
     jdbc-url: jdbc:postgresql://localhost:5432/eca_camunda
@@ -102,6 +104,9 @@ springdoc:
 ## Classifier properties
 classifiers:
   timeout: 60
+  ## Scheduler delay in seconds
+  delaySeconds: 3
+  maxRequestsPerJob: 25
 
 ## Experiment properties
 experiment:
@@ -175,8 +180,9 @@ service:
 
 processes:
   processExperimentId: ExperimentProcess
+  processEvaluationId: ProcessEvaluationWebRequest
   createExperimentRequestProcessId: CreateExperimentRequestProcess
-  createExperimentWebRequestProcessId: CreateExperimentWebRequestProcess
+  createEvaluationRequestProcessId: CreateEvaluationRequestProcess
 
 management:
   metrics:

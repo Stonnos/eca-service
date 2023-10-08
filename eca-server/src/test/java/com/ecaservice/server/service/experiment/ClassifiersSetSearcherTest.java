@@ -10,7 +10,6 @@ import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.exception.experiment.ExperimentException;
 import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.server.model.entity.ClassifiersConfiguration;
-import com.ecaservice.server.model.evaluation.ClassificationResult;
 import com.ecaservice.server.model.evaluation.EvaluationInputDataModel;
 import com.ecaservice.server.service.classifiers.ClassifierOptionsService;
 import com.ecaservice.server.service.evaluation.EvaluationService;
@@ -104,21 +103,6 @@ class ClassifiersSetSearcherTest {
                 () -> classifiersSetSearcher.findBestClassifiers(testInstances, EvaluationMethod.TRAINING_DATA));
     }
 
-    @Test
-    void testEmptySet() throws Exception {
-        ClassificationResult classificationResult = new ClassificationResult();
-        ClassifiersConfiguration classifiersConfiguration = TestHelperUtils.createClassifiersConfiguration();
-        ClassifierOptionsDatabaseModel logisticModel = TestHelperUtils.createClassifierOptionsDatabaseModel(
-                objectMapper.writeValueAsString(new LogisticOptions()), classifiersConfiguration);
-        ClassifierOptionsDatabaseModel knnModel = TestHelperUtils.createClassifierOptionsDatabaseModel(
-                objectMapper.writeValueAsString(new KNearestNeighboursOptions()), classifiersConfiguration);
-        when(classifierOptionsService.getActiveClassifiersOptions()).thenReturn(
-                Arrays.asList(logisticModel, knnModel));
-        when(evaluationService.evaluateModel(any(EvaluationInputDataModel.class))).thenReturn(classificationResult);
-        assertThrows(ExperimentException.class,
-                () -> classifiersSetSearcher.findBestClassifiers(testInstances, EvaluationMethod.TRAINING_DATA));
-    }
-
     /**
      * Unit test that checking success building cases:
      * Case 1: the classifiers size is greater than best classifiers number specified in configs.
@@ -126,9 +110,6 @@ class ClassifiersSetSearcherTest {
      */
     @Test
     void testSuccessBuilt() throws Exception {
-        ClassificationResult classificationResult = new ClassificationResult();
-        classificationResult.setSuccess(true);
-        classificationResult.setEvaluationResults(evaluationResults);
         ClassifiersConfiguration classifiersConfiguration = TestHelperUtils.createClassifiersConfiguration();
         //checks case 1
         List<ClassifierOptionsDatabaseModel> optionsList = newArrayList();
@@ -141,7 +122,7 @@ class ClassifiersSetSearcherTest {
         optionsList.add(TestHelperUtils.createClassifierOptionsDatabaseModel(
                 objectMapper.writeValueAsString(new LogisticOptions()), classifiersConfiguration));
         when(classifierOptionsService.getActiveClassifiersOptions()).thenReturn(optionsList);
-        when(evaluationService.evaluateModel(any(EvaluationInputDataModel.class))).thenReturn(classificationResult);
+        when(evaluationService.evaluateModel(any(EvaluationInputDataModel.class))).thenReturn(evaluationResults);
         ClassifiersSet classifiers =
                 classifiersSetSearcher.findBestClassifiers(testInstances, EvaluationMethod.TRAINING_DATA);
         assertThat(classifiers.size()).isEqualTo(experimentConfig.getEnsemble().getNumBestClassifiers().intValue());

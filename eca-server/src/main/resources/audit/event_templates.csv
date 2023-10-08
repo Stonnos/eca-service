@@ -9,3 +9,4 @@ id;event_type;message_template;audit_code_id
 8;SUCCESS;Выгружен отчет для конфигурации с настройками классификаторов [${id}];GENERATE_CONFIGURATION_REPORT
 9;SUCCESS;Создана заявка на эксперимент [${experimentRequestDto.experimentType.description}], идентификатор заявки [${returnValue.requestId}];CREATE_EXPERIMENT_REQUEST
 10;SUCCESS;Выгружен отчет [${reportType.description}];GENERATE_EVALUATION_REQUESTS_REPORT
+11;SUCCESS;Создана заявка на построение модели классификатора. Идентификатор заявки [${returnValue.requestId}];CREATE_EVALUATION_REQUEST

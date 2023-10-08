@@ -1,7 +1,7 @@
 package com.ecaservice.server.service.evaluation;
 
 import com.ecaservice.server.config.CrossValidationConfig;
-import com.ecaservice.server.model.evaluation.ClassificationResult;
+import com.ecaservice.server.exception.EvaluationException;
 import com.ecaservice.server.model.evaluation.EvaluationInputDataModel;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationMethodVisitor;
@@ -34,10 +34,9 @@ public class EvaluationService {
      * from configs will be used for evaluation.
      *
      * @param evaluationInputDataModel - evaluation input options data model
-     * @return classification results {@link ClassificationResult}
+     * @return evaluation results
      */
-    public ClassificationResult evaluateModel(EvaluationInputDataModel evaluationInputDataModel) {
-        ClassificationResult classificationResult = new ClassificationResult();
+    public EvaluationResults evaluateModel(EvaluationInputDataModel evaluationInputDataModel) {
         try {
             final Classifier classifier = AbstractClassifier.makeCopy(evaluationInputDataModel.getClassifier());
             final Instances data = evaluationInputDataModel.getData();
@@ -75,15 +74,11 @@ public class EvaluationService {
             });
             evaluation.setTotalTimeMillis(stopWatch.getTotalTimeMillis());
             EvaluationResults evaluationResults = new EvaluationResults(classifier, evaluation);
-            classificationResult.setEvaluationResults(evaluationResults);
-            classificationResult.setSuccess(true);
             log.info("Evaluation for model '{}' has been successfully finished!", classifierName);
             log.info(stopWatch.prettyPrint());
-
+            return evaluationResults;
         } catch (Exception ex) {
-            log.error("There was an error occurred in evaluation : {}", ex.getMessage());
-            classificationResult.setErrorMessage(ex.getMessage());
+            throw new EvaluationException(ex.getMessage());
         }
-        return classificationResult;
     }
 }

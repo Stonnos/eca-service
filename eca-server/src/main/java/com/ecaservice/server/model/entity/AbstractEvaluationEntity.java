@@ -33,11 +33,30 @@ public abstract class AbstractEvaluationEntity {
     private String requestId;
 
     /**
+     * Training data uuid in data storage (generated while upload data to data loader module)
+     */
+    @Column(name = "training_data_uuid")
+    private String trainingDataUuid;
+
+    /**
      * Training data info
      */
     @ManyToOne
     @JoinColumn(name = "instances_info_id", nullable = false)
     private InstancesInfo instancesInfo;
+
+    /**
+     * Channel type
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "channel_type", nullable = false)
+    private Channel channel;
+
+    /**
+     * User name
+     */
+    @Column(name = "created_by")
+    private String createdBy;
 
     /**
      * Request creation date

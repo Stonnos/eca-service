@@ -1,51 +1,31 @@
 package com.ecaservice.server.service.experiment;
 
-import com.ecaservice.base.model.ExperimentType;
-import com.ecaservice.core.mail.client.service.EmailClient;
-import com.ecaservice.data.storage.dto.ExportInstancesResponseDto;
+import com.ecaservice.base.model.EcaResponse;
+import com.ecaservice.base.model.ExperimentResponse;
+import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.ers.dto.EvaluationResultsRequest;
-import com.ecaservice.ers.dto.EvaluationResultsResponse;
 import com.ecaservice.notification.dto.EmailRequest;
-import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
-import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.config.ExperimentConfig;
-import com.ecaservice.server.dto.CreateExperimentRequestDto;
-import com.ecaservice.server.model.data.InstancesMetaDataModel;
 import com.ecaservice.server.model.entity.Channel;
 import com.ecaservice.server.model.entity.ChannelVisitor;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.RequestStatus;
-import com.ecaservice.server.model.experiment.ExperimentMessageRequestData;
 import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.repository.InstancesInfoRepository;
-import com.ecaservice.server.service.UserService;
-import com.ecaservice.server.service.auth.UsersClient;
-import com.ecaservice.server.service.data.InstancesLoaderService;
-import com.ecaservice.server.service.data.InstancesMetaDataService;
-import com.ecaservice.server.service.ds.DataStorageService;
-import com.ecaservice.server.service.ers.ErsClient;
+import com.ecaservice.server.service.AbstractEvaluationProcessManagerTest;
 import com.ecaservice.server.service.experiment.mail.ExperimentEmailTemplateVariable;
-import com.ecaservice.server.service.push.WebPushClient;
-import com.ecaservice.user.dto.UserInfoDto;
+import com.ecaservice.server.verifier.EvaluationRequestStatusVerifier;
+import com.ecaservice.server.verifier.TestStepVerifier;
 import com.ecaservice.web.push.dto.AbstractPushRequest;
 import com.ecaservice.web.push.dto.PushType;
 import com.ecaservice.web.push.dto.UserPushNotificationRequest;
-import eca.core.evaluation.EvaluationMethod;
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.test.Deployment;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.springframework.amqp.core.AmqpAdmin;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.jdbc.Sql;
-import weka.core.Instances;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -54,8 +34,8 @@ import java.time.Duration;
 import java.util.UUID;
 
 import static com.ecaservice.server.TestHelperUtils.createExperiment;
-import static com.ecaservice.server.TestHelperUtils.createExperimentMessageRequest;
-import static com.ecaservice.server.TestHelperUtils.loadInstances;
+import static com.ecaservice.server.TestHelperUtils.createExperimentMessageRequestModel;
+import static com.ecaservice.server.TestHelperUtils.createExperimentWebRequestModel;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.mockito.ArgumentMatchers.any;
@@ -63,7 +43,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * Unit test for {@link ExperimentProcessManager} class.
@@ -72,49 +51,21 @@ import static org.mockito.Mockito.when;
  */
 @SpringBootTest
 @Deployment(resources = {"bpmn/process-experiment.bpmn", "bpmn/finish-experiment.bpmn",
-        "bpmn/create-experiment-request-process.bpmn", "bpmn/create-experiment-web-request-process.bpmn"})
-@TestPropertySource("classpath:application-camunda.properties")
-@Sql("/sql/message-templates.sql")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-class ExperimentProcessManagerTest {
+        "bpmn/create-experiment-request-process.bpmn", "bpmn/create-experiment-web-request-process.bpmn",
+        "bpmn/create-experiment-message-request-process.bpmn"})
+class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<Experiment> {
 
-    private static final String EXPERIMENT_DOWNLOAD_URL = "http://localhost:8099/object-storage";
-    private static final String DATA_MD_5_HASH = "3032e188204cb537f69fc7364f638641";
     private static final String PUSH_MESSAGE_TYPE = "EXPERIMENT_STATUS";
-    private static final String EXPERIMENT_ID = "experimentId";
-    private static final String EXPERIMENT_REQUEST_ID = "experimentRequestId";
-    private static final String EXPERIMENT_REQUEST_STATUS = "experimentRequestStatus";
+    private static final String EVALUATION_ID = "id";
+    private static final String EVALUATION_REQUEST_ID = "requestId";
+    private static final String EVALUATION_REQUEST_STATUS = "requestStatus";
     private static final int PROCESS_EXPERIMENT_TIMEOUT_SECONDS = 60;
     private static final String NEW_EXPERIMENT_EMAIL_TEMPLATE_CODE = "NEW_EXPERIMENT";
     private static final String IN_PROGRESS_EXPERIMENT_EMAIL_TEMPLATE_CODE = "IN_PROGRESS_EXPERIMENT";
     private static final String FINISHED_EXPERIMENT_EMAIL_TEMPLATE_CODE = "FINISHED_EXPERIMENT";
     private static final String ERROR_EXPERIMENT_EMAIL_TEMPLATE_CODE = "ERROR_EXPERIMENT";
-    private static final String REPLY_YO = "reply-yo";
+    private static final String REPLY_TO = "reply-yo";
     private static final String CREATED_BY = "user";
-    private static final String TEST_MAIL_RU = "test@mail.ru";
-
-    @MockBean
-    private EmailClient emailClient;
-    @MockBean
-    private WebPushClient webPushClient;
-    @MockBean
-    private ObjectStorageService objectStorageService;
-    @MockBean
-    private ErsClient ersClient;
-    @MockBean
-    private UsersClient usersClient;
-    @MockBean
-    private DataStorageService dataStorageService;
-    @MockBean
-    private RabbitTemplate rabbitTemplate;
-    @MockBean
-    private AmqpAdmin amqpAdmin;
-    @MockBean
-    private InstancesLoaderService instancesLoaderService;
-    @MockBean
-    private InstancesMetaDataService instancesMetaDataService;
-    @MockBean
-    private UserService userService;
 
     @Inject
     private ExperimentRepository experimentRepository;
@@ -136,31 +87,27 @@ class ExperimentProcessManagerTest {
     @Captor
     private ArgumentCaptor<EvaluationResultsRequest> evaluationResultsRequestArgumentCaptor;
 
-    @BeforeEach
-    void init() {
-        mockLoadInstances();
-        mockGetExperimentDownloadUrl();
-        mockSentEvaluationResults();
-        mockGetUserInfo();
-        mockExportValidInstances();
-    }
+    @Captor
+    private ArgumentCaptor<String> replyToCaptor;
+    @Captor
+    private ArgumentCaptor<String> correlationIdCaptor;
+    @Captor
+    private ArgumentCaptor<EcaResponse> ecaResponseArgumentCaptor;
 
     @Test
     void testCreateExperimentWebRequest() {
-        String requestId = UUID.randomUUID().toString();
-        var createExperimentRequestDto =
-                new CreateExperimentRequestDto(requestId, ExperimentType.KNN, EvaluationMethod.TRAINING_DATA);
-        experimentProcessManager.createExperimentWebRequest(requestId, createExperimentRequestDto);
-        verify(emailClient, atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
-        verify(webPushClient, atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
+        var experimentRequestModel = createExperimentWebRequestModel();
+        experimentProcessManager.createExperimentRequest(experimentRequestModel);
+        verify(getEmailClient(), atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
+        verify(getWebPushClient(), atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
 
         assertThat(emailRequestArgumentCaptor.getAllValues()).hasSize(1);
         assertThat(pushRequestArgumentCaptor.getAllValues()).hasSize(2);
 
-        var experiment = getExperiment(requestId);
+        var experiment = getExperiment(experimentRequestModel.getRequestId());
 
         verifyTestSteps(experiment,
-                new RequestStatusVerifier(RequestStatus.NEW),
+                new EvaluationRequestStatusVerifier(RequestStatus.NEW),
                 new NewEmailRequestVerifier(),
                 new PushRequestVerifier(PushType.SYSTEM, RequestStatus.NEW, 0),
                 new PushRequestVerifier(PushType.USER_NOTIFICATION, RequestStatus.NEW, 1)
@@ -168,21 +115,24 @@ class ExperimentProcessManagerTest {
     }
 
     @Test
-    void testCreateExperimentRequest() {
-        ExperimentMessageRequestData experimentMessageRequestData = createExperimentMessageRequest();
-        experimentProcessManager.createExperimentRequest(experimentMessageRequestData);
-        verify(emailClient, atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
-        verify(webPushClient, atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
+    void testCreateExperimentMessageRequest() {
+        var experimentRequestModel = createExperimentMessageRequestModel();
+        experimentProcessManager.createExperimentRequest(experimentRequestModel);
+        verify(getEmailClient(), atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
+        verify(getWebPushClient(), atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
+        captureEcaResponse();
 
         assertThat(emailRequestArgumentCaptor.getAllValues()).hasSize(1);
         assertThat(pushRequestArgumentCaptor.getAllValues()).hasSize(1);
 
-        var experiment = getExperiment(experimentMessageRequestData.getRequestId());
+        var experiment = getExperiment(experimentRequestModel.getRequestId());
 
         verifyTestSteps(experiment,
-                new RequestStatusVerifier(RequestStatus.NEW),
+                new EvaluationRequestStatusVerifier(RequestStatus.NEW),
                 new NewEmailRequestVerifier(),
-                new PushRequestVerifier(PushType.SYSTEM, RequestStatus.NEW, 0)
+                new PushRequestVerifier(PushType.SYSTEM, RequestStatus.NEW, 0),
+                new EcaResponseVerifier(experiment.getCorrelationId(), experiment.getReplyTo(),
+                        TechnicalStatus.IN_PROGRESS)
         );
     }
 
@@ -191,18 +141,21 @@ class ExperimentProcessManagerTest {
         Experiment experiment = createAndSaveExperiment(Channel.QUEUE);
         testProcessExperiment(experiment);
 
+        captureEcaResponse();
+
         var actualExperiment = getExperiment(experiment.getRequestId());
 
         assertThat(emailRequestArgumentCaptor.getAllValues()).hasSize(2);
         assertThat(pushRequestArgumentCaptor.getAllValues()).hasSize(2);
 
         verifyTestSteps(actualExperiment,
-                new RequestStatusVerifier(RequestStatus.FINISHED),
+                new EvaluationRequestStatusVerifier(RequestStatus.FINISHED),
                 new InProgressEmailRequestVerifier(),
                 new PushRequestVerifier(PushType.SYSTEM, RequestStatus.IN_PROGRESS, 0),
                 new FinishedEmailRequestVerifier(),
                 new PushRequestVerifier(PushType.SYSTEM, RequestStatus.FINISHED, 1),
-                new EvaluationResultsRequestsVerifier()
+                new EvaluationResultsRequestsVerifier(),
+                new EcaResponseVerifier(experiment.getCorrelationId(), experiment.getReplyTo(), TechnicalStatus.SUCCESS)
         );
     }
 
@@ -217,7 +170,7 @@ class ExperimentProcessManagerTest {
         assertThat(pushRequestArgumentCaptor.getAllValues()).hasSize(4);
 
         verifyTestSteps(actualExperiment,
-                new RequestStatusVerifier(RequestStatus.FINISHED),
+                new EvaluationRequestStatusVerifier(RequestStatus.FINISHED),
                 new InProgressEmailRequestVerifier(),
                 new PushRequestVerifier(PushType.SYSTEM, RequestStatus.IN_PROGRESS, 0),
                 new PushRequestVerifier(PushType.USER_NOTIFICATION, RequestStatus.IN_PROGRESS, 1),
@@ -231,8 +184,10 @@ class ExperimentProcessManagerTest {
     @Test
     void testProcessErrorExperimentWithQueueChannel() throws IOException {
         Experiment experiment = createAndSaveExperiment(Channel.QUEUE);
-        doThrow(IOException.class).when(objectStorageService).uploadObject(any(Serializable.class), anyString());
+        doThrow(IOException.class).when(getObjectStorageService()).uploadObject(any(Serializable.class), anyString());
         testProcessExperiment(experiment);
+
+        captureEcaResponse();
 
         var actualExperiment = getExperiment(experiment.getRequestId());
 
@@ -240,11 +195,12 @@ class ExperimentProcessManagerTest {
         assertThat(pushRequestArgumentCaptor.getAllValues()).hasSize(2);
 
         verifyTestSteps(actualExperiment,
-                new RequestStatusVerifier(RequestStatus.ERROR),
+                new EvaluationRequestStatusVerifier(RequestStatus.ERROR),
                 new InProgressEmailRequestVerifier(),
                 new PushRequestVerifier(PushType.SYSTEM, RequestStatus.IN_PROGRESS, 0),
                 new ErrorEmailRequestVerifier(),
-                new PushRequestVerifier(PushType.SYSTEM, RequestStatus.ERROR, 1)
+                new PushRequestVerifier(PushType.SYSTEM, RequestStatus.ERROR, 1),
+                new EcaResponseVerifier(experiment.getCorrelationId(), experiment.getReplyTo(), TechnicalStatus.ERROR)
         );
     }
 
@@ -254,13 +210,18 @@ class ExperimentProcessManagerTest {
         await().timeout(Duration.ofSeconds(PROCESS_EXPERIMENT_TIMEOUT_SECONDS))
                 .until(() -> hasNoActiveProcess(experiment));
 
-        verify(emailClient, atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
-        verify(webPushClient, atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
-        verify(ersClient, atLeastOnce()).save(evaluationResultsRequestArgumentCaptor.capture());
+        verify(getEmailClient(), atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
+        verify(getWebPushClient(), atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
+        verify(getErsClient(), atLeastOnce()).save(evaluationResultsRequestArgumentCaptor.capture());
     }
 
     private Experiment getExperiment(String requestId) {
         return experimentRepository.findByRequestId(requestId).orElse(null);
+    }
+
+    private void captureEcaResponse() {
+        verify(getEcaResponseSender()).sendResponse(ecaResponseArgumentCaptor.capture(),
+                correlationIdCaptor.capture(), replyToCaptor.capture());
     }
 
     private Experiment createAndSaveExperiment(Channel channel) {
@@ -275,17 +236,11 @@ class ExperimentProcessManagerTest {
             @Override
             public void visitQueue() {
                 experiment.setCorrelationId(UUID.randomUUID().toString());
-                experiment.setReplyTo(REPLY_YO);
+                experiment.setReplyTo(REPLY_TO);
             }
         });
         instancesInfoRepository.save(experiment.getInstancesInfo());
         return experimentRepository.save(experiment);
-    }
-
-    private void verifyTestSteps(Experiment experiment, TestStepVerifier... verifiers) {
-        for (TestStepVerifier verifier : verifiers) {
-            verifier.verifyStep(experiment);
-        }
     }
 
     private boolean hasNoActiveProcess(Experiment experiment) {
@@ -296,25 +251,8 @@ class ExperimentProcessManagerTest {
         return activeProcessInstancesCount == 0L;
     }
 
-    private interface TestStepVerifier {
-
-        void verifyStep(Experiment experiment);
-    }
-
     @RequiredArgsConstructor
-    private static class RequestStatusVerifier implements TestStepVerifier {
-
-        private final RequestStatus expectedRequestStatus;
-
-        @Override
-        public void verifyStep(Experiment experiment) {
-            assertThat(experiment).isNotNull();
-            assertThat(experiment.getRequestStatus()).isEqualTo(expectedRequestStatus);
-        }
-    }
-
-    @RequiredArgsConstructor
-    private abstract class AbstractEmailRequestVerifier implements TestStepVerifier {
+    private abstract class AbstractEmailRequestVerifier implements TestStepVerifier<Experiment> {
 
         private final String expectedTemplateCode;
         private final int order;
@@ -378,7 +316,7 @@ class ExperimentProcessManagerTest {
     }
 
     @RequiredArgsConstructor
-    private class PushRequestVerifier implements TestStepVerifier {
+    private class PushRequestVerifier implements TestStepVerifier<Experiment> {
 
         private final PushType expectedPushType;
         private final RequestStatus expectedRequestStatusProperty;
@@ -394,12 +332,12 @@ class ExperimentProcessManagerTest {
             }
             assertThat(pushRequest.getMessageType()).isEqualTo(PUSH_MESSAGE_TYPE);
             assertThat(pushRequest.getAdditionalProperties()).isNotEmpty();
-            assertThat(pushRequest.getAdditionalProperties()).containsEntry(EXPERIMENT_ID,
+            assertThat(pushRequest.getAdditionalProperties()).containsEntry(EVALUATION_ID,
                     String.valueOf(experiment.getId()));
-            assertThat(pushRequest.getAdditionalProperties()).containsEntry(EXPERIMENT_REQUEST_ID,
+            assertThat(pushRequest.getAdditionalProperties()).containsEntry(EVALUATION_REQUEST_ID,
                     experiment.getRequestId()
             );
-            assertThat(pushRequest.getAdditionalProperties()).containsEntry(EXPERIMENT_REQUEST_STATUS,
+            assertThat(pushRequest.getAdditionalProperties()).containsEntry(EVALUATION_REQUEST_STATUS,
                     expectedRequestStatusProperty.name()
             );
         }
@@ -411,7 +349,7 @@ class ExperimentProcessManagerTest {
         }
     }
 
-    private class EvaluationResultsRequestsVerifier implements TestStepVerifier {
+    private class EvaluationResultsRequestsVerifier implements TestStepVerifier<Experiment> {
 
         @Override
         public void verifyStep(Experiment experiment) {
@@ -419,35 +357,21 @@ class ExperimentProcessManagerTest {
         }
     }
 
-    private void mockLoadInstances() {
-        Instances data = loadInstances();
-        var instancesDataModel = new InstancesMetaDataModel(data.relationName(), data.numInstances(),
-                data.numAttributes(), data.numClasses(), data.classAttribute().name(), DATA_MD_5_HASH,
-                "instances.json");
-        when(instancesMetaDataService.getInstancesMetaData(anyString())).thenReturn(instancesDataModel);
-        when(instancesLoaderService.loadInstances(anyString())).thenReturn(data);
-    }
+    @RequiredArgsConstructor
+    private class EcaResponseVerifier implements TestStepVerifier<Experiment> {
 
-    private void mockGetExperimentDownloadUrl() {
-        when(objectStorageService.getObjectPresignedProxyUrl(any(GetPresignedUrlObject.class)))
-                .thenReturn(EXPERIMENT_DOWNLOAD_URL);
-    }
+        private final String expectedCorrelationId;
+        private final String expectedReplyTo;
+        private final TechnicalStatus expectedStatus;
 
-    private void mockSentEvaluationResults() {
-        when(ersClient.save(any(EvaluationResultsRequest.class))).thenReturn(new EvaluationResultsResponse());
-    }
-
-    private void mockGetUserInfo() {
-        UserInfoDto userInfoDto = new UserInfoDto();
-        userInfoDto.setLogin(CREATED_BY);
-        userInfoDto.setEmail(TEST_MAIL_RU);
-        when(userService.getCurrentUser()).thenReturn(CREATED_BY);
-        when(usersClient.getUserInfo(CREATED_BY)).thenReturn(userInfoDto);
-    }
-
-    private void mockExportValidInstances() {
-        ExportInstancesResponseDto exportInstancesResponseDto = new ExportInstancesResponseDto();
-        exportInstancesResponseDto.setExternalDataUuid(UUID.randomUUID().toString());
-        when(dataStorageService.exportValidInstances(anyString())).thenReturn(exportInstancesResponseDto);
+        @Override
+        public void verifyStep(Experiment experiment) {
+            assertThat(correlationIdCaptor.getValue()).isEqualTo(expectedCorrelationId);
+            assertThat(replyToCaptor.getValue()).isEqualTo(expectedReplyTo);
+            assertThat(ecaResponseArgumentCaptor.getValue()).isInstanceOf(ExperimentResponse.class);
+            assertThat(ecaResponseArgumentCaptor.getValue().getStatus()).isEqualTo(expectedStatus);
+            ExperimentResponse experimentResponse  = (ExperimentResponse) ecaResponseArgumentCaptor.getValue();
+            assertThat(experiment.getExperimentDownloadUrl()).isEqualTo(experimentResponse.getDownloadUrl());
+        }
     }
 }

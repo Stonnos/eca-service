@@ -21,9 +21,19 @@ public class CamundaVariables {
     public static final String EXPERIMENT_ID = "experimentId";
 
     /**
+     * Evaluation log id variable
+     */
+    public static final String EVALUATION_LOG_ID = "evaluationLogId";
+
+    /**
      * Experiment model variable
      */
     public static final String EXPERIMENT = "experiment";
+
+    /**
+     * Evaluation log model variable
+     */
+    public static final String EVALUATION_LOG = "evaluationLog";
 
     /**
      * Error code
@@ -36,19 +46,24 @@ public class CamundaVariables {
     public static final String ERROR_MESSAGE = "errorMessage";
 
     /**
-     * Experiment request data
+     * Evaluation request data
      */
-    public static final String EXPERIMENT_REQUEST_DATA = "experimentRequestData";
+    public static final String EVALUATION_REQUEST_DATA = "evaluationRequestData";
+
+    /**
+     * Evaluation results data
+     */
+    public static final String EVALUATION_RESULTS_DATA = "evaluationResultsData";
+
+    /**
+     * Classifier options result
+     */
+    public static final String CLASSIFIER_OPTIONS_RESULT = "classifierOptionsResult";
 
     /**
      * User info
      */
     public static final String USER_INFO = "userInfo";
-
-    /**
-     * Train data uuid
-     */
-    public static final String TRAIN_DATA_UUID = "trainDataUuid";
 
     /**
      * Application instance uuid

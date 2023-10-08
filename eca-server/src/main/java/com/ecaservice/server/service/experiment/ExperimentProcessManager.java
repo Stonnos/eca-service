@@ -1,11 +1,10 @@
 package com.ecaservice.server.service.experiment;
 
 import com.ecaservice.core.lock.annotation.Locked;
+import com.ecaservice.server.bpm.model.ExperimentRequestModel;
 import com.ecaservice.server.bpm.service.ProcessManager;
 import com.ecaservice.server.config.ProcessConfig;
-import com.ecaservice.server.dto.CreateExperimentRequestDto;
 import com.ecaservice.server.model.entity.Experiment;
-import com.ecaservice.server.model.experiment.ExperimentMessageRequestData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.RuntimeService;
@@ -19,8 +18,8 @@ import static com.ecaservice.common.web.util.LogHelper.EV_REQUEST_ID;
 import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.putMdc;
 import static com.ecaservice.server.bpm.CamundaVariables.APP_INSTANCES_UUID;
+import static com.ecaservice.server.bpm.CamundaVariables.EVALUATION_REQUEST_DATA;
 import static com.ecaservice.server.bpm.CamundaVariables.EXPERIMENT_ID;
-import static com.ecaservice.server.bpm.CamundaVariables.EXPERIMENT_REQUEST_DATA;
 
 /**
  * Experiment process manager.
@@ -71,29 +70,18 @@ public class ExperimentProcessManager {
     /**
      * Creates experiment request.
      *
-     * @param experimentMessageRequestData - experiment message request data
+     * @param experimentRequestModel - experiment request data model
      */
-    public void createExperimentRequest(ExperimentMessageRequestData experimentMessageRequestData) {
+    public void createExperimentRequest(ExperimentRequestModel experimentRequestModel) {
+        putMdc(TX_ID, experimentRequestModel.getRequestId());
+        putMdc(EV_REQUEST_ID, experimentRequestModel.getRequestId());
         log.info("Starting create experiment [{}] request business process",
-                experimentMessageRequestData.getRequestId());
-        Map<String, Object> variables = Collections.singletonMap(EXPERIMENT_REQUEST_DATA, experimentMessageRequestData);
+                experimentRequestModel.getRequestId());
+        Map<String, Object> variables = Collections.singletonMap(EVALUATION_REQUEST_DATA, experimentRequestModel);
         processManager.startProcess(processConfig.getCreateExperimentRequestProcessId(),
-                experimentMessageRequestData.getRequestId(), variables);
+                experimentRequestModel.getRequestId(), variables);
         log.info("Create experiment [{}] request business process has been finished",
-                experimentMessageRequestData.getRequestId());
-    }
-
-    /**
-     * Creates experiment web request.
-     *
-     * @param requestId            - experiment request id
-     * @param experimentRequestDto - experiment request dto
-     */
-    public void createExperimentWebRequest(String requestId, CreateExperimentRequestDto experimentRequestDto) {
-        log.info("Starting create experiment [{}] web request business process", requestId);
-        Map<String, Object> variables = Collections.singletonMap(EXPERIMENT_REQUEST_DATA, experimentRequestDto);
-        processManager.startProcess(processConfig.getCreateExperimentWebRequestProcessId(), requestId, variables);
-        log.info("Create experiment [{}] business process has been finished", requestId);
+                experimentRequestModel.getRequestId());
     }
 
     private boolean hasActiveProcess(Experiment experiment) {

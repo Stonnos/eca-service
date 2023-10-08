@@ -262,6 +262,9 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                         |bigint           |+|+|+                                    |Идентификатор записи (первичный ключ)
 |request_id                 |varchar(255)     |+|+|evaluation_log_request_id_unique_idx |Уникальный UUID запроса
+|training_data_uuid         |varchar(255)     |-|-|-                                    |UUID обучающей выборки из единого хранилища обучающих выборок
+|channel_type               |varchar(255)     |-|+|-                                    |Канал поступления заявки (QUEUE или WEB)
+|created_by                 |varchar(255)     |-|-|-                                    |Пользователь, создавший заявку через WEB
 |creation_date              |timestamp        |-|+|-                                    |Дата создания запроса
 |start_date                 |timestamp        |-|-|-                                    |Дата начала построения модели
 |end_date                   |timestamp        |-|-|-                                    |Дата завершения построения модели

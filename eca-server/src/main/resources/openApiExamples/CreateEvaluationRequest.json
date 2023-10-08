@@ -1,0 +1,12 @@
+{
+  "instancesUuid": "c1c82d78-b90f-4ef2-88c8-eca3657363bf",
+  "classifierOptions": {
+    "type": "logistic",
+    "maxIts": 200,
+    "useConjugateGradientDescent": false
+  },
+  "evaluationMethod": "CROSS_VALIDATION",
+  "numFolds": 10,
+  "numTests": 1,
+  "seed": 1
+}

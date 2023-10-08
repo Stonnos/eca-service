@@ -1,6 +1,8 @@
 package com.ecaservice.server.service.push.handler;
 
 import com.ecaservice.server.event.model.push.ExperimentSystemPushEvent;
+import com.ecaservice.server.service.push.EvaluationPushPropertiesHandler;
+import com.ecaservice.server.service.push.PushMessageProcessor;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -13,16 +15,20 @@ import java.util.Map;
 @Component
 public class ExperimentSystemPushEventHandler extends AbstractSystemPushEventHandler<ExperimentSystemPushEvent> {
 
-    private final ExperimentPushMessageHandler experimentPushMessageHandler;
+    private final EvaluationPushPropertiesHandler evaluationPushPropertiesHandler;
+    private final PushMessageProcessor pushMessageProcessor;
 
     /**
      * Constructor with parameters.
      *
-     * @param experimentPushMessageHandler - experiment push message handler
+     * @param evaluationPushPropertiesHandler - evaluation push properties handler
+     * @param pushMessageProcessor  - evaluation push message handler
      */
-    public ExperimentSystemPushEventHandler(ExperimentPushMessageHandler experimentPushMessageHandler) {
+    public ExperimentSystemPushEventHandler(EvaluationPushPropertiesHandler evaluationPushPropertiesHandler,
+                                            PushMessageProcessor pushMessageProcessor) {
         super(ExperimentSystemPushEvent.class);
-        this.experimentPushMessageHandler = experimentPushMessageHandler;
+        this.evaluationPushPropertiesHandler = evaluationPushPropertiesHandler;
+        this.pushMessageProcessor = pushMessageProcessor;
     }
 
     @Override
@@ -32,13 +38,13 @@ public class ExperimentSystemPushEventHandler extends AbstractSystemPushEventHan
 
     @Override
     protected String getMessageText(ExperimentSystemPushEvent experimentSystemPushEvent) {
-        return experimentPushMessageHandler.processMessageText(experimentSystemPushEvent.getPushMessageParams(),
+        return pushMessageProcessor.processMessageText(experimentSystemPushEvent.getPushMessageParams(),
                 experimentSystemPushEvent.getExperiment());
     }
 
     @Override
     protected Map<String, String> createAdditionalProperties(ExperimentSystemPushEvent experimentSystemPushEvent) {
-        return experimentPushMessageHandler.processAdditionalProperties(
+        return evaluationPushPropertiesHandler.processAdditionalProperties(
                 experimentSystemPushEvent.getPushMessageParams(), experimentSystemPushEvent.getExperiment());
     }
 }

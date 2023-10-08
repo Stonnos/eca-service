@@ -2,121 +2,92 @@
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_167go3c" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
   <bpmn:process id="CreateExperimentRequestProcess" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1">
-      <bpmn:outgoing>Flow_0fliwzc</bpmn:outgoing>
+      <bpmn:outgoing>Flow_19gqopo</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="Flow_0fliwzc" sourceRef="StartEvent_1" targetRef="Activity_0u4bqn0" />
     <bpmn:endEvent id="Event_0pe23xb">
-      <bpmn:incoming>Flow_0jtf2dv</bpmn:incoming>
-      <bpmn:incoming>Flow_0j5an03</bpmn:incoming>
+      <bpmn:incoming>Flow_0lpl6y5</bpmn:incoming>
+      <bpmn:incoming>Flow_19t2ny1</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:serviceTask id="Activity_0u4bqn0" name="Создать заявку на эксперимент" camunda:modelerTemplate="TaskExecution" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="taskType">CREATE_EXPERIMENT_REQUEST</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0fliwzc</bpmn:incoming>
-      <bpmn:outgoing>Flow_014puqy</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_1yc7la5" name="Отправка системного push о новой заявке" camunda:modelerTemplate="ExperimentPushSender" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="taskType">SENT_EXPERIMENT_SYSTEM_PUSH</camunda:inputParameter>
-          <camunda:inputParameter name="pushMessageType">EXPERIMENT_STATUS</camunda:inputParameter>
-          <camunda:inputParameter name="pushTemplateCode">NEW_EXPERIMENT</camunda:inputParameter>
-          <camunda:inputParameter name="pushTemplateContextVariable">experiment</camunda:inputParameter>
-          <camunda:inputParameter name="pushMessageProperties">ID,REQUEST_ID,REQUEST_STATUS</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0o317r1</bpmn:incoming>
-      <bpmn:outgoing>Flow_09z09j8</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_0os54gm" name="Отправка email о новой заявке" camunda:modelerTemplate="ExperimentEmailSender" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="taskType">SENT_EXPERIMENT_EMAIL</camunda:inputParameter>
-          <camunda:inputParameter name="emailTemplateCode">NEW_EXPERIMENT</camunda:inputParameter>
-          <camunda:inputParameter name="emailTemplateVariables">EXPERIMENT_TYPE,REQUEST_ID</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1smffwn</bpmn:incoming>
-      <bpmn:outgoing>Flow_0jtf2dv</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0jtf2dv" sourceRef="Activity_0os54gm" targetRef="Event_0pe23xb" />
-    <bpmn:serviceTask id="Activity_1vneurn" name="Отправка сообщения о создании эксперимента в очередь" camunda:modelerTemplate="TaskExecution" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="taskType">SENT_EXPERIMENT_RESPONSE</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_014puqy</bpmn:incoming>
-      <bpmn:outgoing>Flow_0o317r1</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_014puqy" sourceRef="Activity_0u4bqn0" targetRef="Activity_1vneurn" />
-    <bpmn:sequenceFlow id="Flow_0o317r1" sourceRef="Activity_1vneurn" targetRef="Activity_1yc7la5" />
-    <bpmn:exclusiveGateway id="Gateway_16viqd2" default="Flow_0j5an03">
-      <bpmn:incoming>Flow_09z09j8</bpmn:incoming>
-      <bpmn:outgoing>Flow_1smffwn</bpmn:outgoing>
-      <bpmn:outgoing>Flow_0j5an03</bpmn:outgoing>
+    <bpmn:exclusiveGateway id="Gateway_1dq1jb3" name="Источник заявки" default="Flow_0xs41zm">
+      <bpmn:incoming>Flow_19gqopo</bpmn:incoming>
+      <bpmn:outgoing>Flow_16x7j3u</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0xs41zm</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_09z09j8" sourceRef="Activity_1yc7la5" targetRef="Gateway_16viqd2" />
-    <bpmn:sequenceFlow id="Flow_1smffwn" sourceRef="Gateway_16viqd2" targetRef="Activity_0os54gm">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${experimentRequestData.email != null || experimentRequestData.email != ''}</bpmn:conditionExpression>
+    <bpmn:sequenceFlow id="Flow_19gqopo" sourceRef="StartEvent_1" targetRef="Gateway_1dq1jb3" />
+    <bpmn:sequenceFlow id="Flow_16x7j3u" name="MQ" sourceRef="Gateway_1dq1jb3" targetRef="Activity_1afp636">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${evaluationRequestData.channel == 'QUEUE'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0j5an03" sourceRef="Gateway_16viqd2" targetRef="Event_0pe23xb" />
+    <bpmn:callActivity id="Activity_1afp636" name="Создать заявку на эксперимент на основе сообщения" calledElement="CreateExperimentMessageRequestProcess">
+      <bpmn:extensionElements>
+        <camunda:in businessKey="#{execution.processBusinessKey}" />
+        <camunda:in variables="all" />
+        <camunda:out variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_16x7j3u</bpmn:incoming>
+      <bpmn:outgoing>Flow_0lpl6y5</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:callActivity id="Activity_1ffmgwu" name="Создать заявку на эксперимент через WEB" calledElement="CreateExperimentWebRequestProcess">
+      <bpmn:extensionElements>
+        <camunda:in businessKey="#{execution.processBusinessKey}" />
+        <camunda:in variables="all" />
+        <camunda:out variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0xs41zm</bpmn:incoming>
+      <bpmn:outgoing>Flow_19t2ny1</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_0xs41zm" name="WEB" sourceRef="Gateway_1dq1jb3" targetRef="Activity_1ffmgwu" />
+    <bpmn:sequenceFlow id="Flow_0lpl6y5" sourceRef="Activity_1afp636" targetRef="Event_0pe23xb" />
+    <bpmn:sequenceFlow id="Flow_19t2ny1" sourceRef="Activity_1ffmgwu" targetRef="Event_0pe23xb" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="CreateExperimentRequestProcess">
-      <bpmndi:BPMNEdge id="Flow_0j5an03_di" bpmnElement="Flow_0j5an03">
-        <di:waypoint x="940" y="195" />
-        <di:waypoint x="940" y="80" />
-        <di:waypoint x="1290" y="80" />
-        <di:waypoint x="1290" y="202" />
+      <bpmndi:BPMNEdge id="Flow_19t2ny1_di" bpmnElement="Flow_19t2ny1">
+        <di:waypoint x="510" y="330" />
+        <di:waypoint x="630" y="330" />
+        <di:waypoint x="630" y="238" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1smffwn_di" bpmnElement="Flow_1smffwn">
-        <di:waypoint x="965" y="220" />
-        <di:waypoint x="1060" y="220" />
+      <bpmndi:BPMNEdge id="Flow_0lpl6y5_di" bpmnElement="Flow_0lpl6y5">
+        <di:waypoint x="510" y="90" />
+        <di:waypoint x="630" y="90" />
+        <di:waypoint x="630" y="202" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_09z09j8_di" bpmnElement="Flow_09z09j8">
-        <di:waypoint x="790" y="220" />
-        <di:waypoint x="915" y="220" />
+      <bpmndi:BPMNEdge id="Flow_0xs41zm_di" bpmnElement="Flow_0xs41zm">
+        <di:waypoint x="300" y="245" />
+        <di:waypoint x="300" y="340" />
+        <di:waypoint x="410" y="340" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="307" y="283" width="25" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0o317r1_di" bpmnElement="Flow_0o317r1">
-        <di:waypoint x="570" y="220" />
-        <di:waypoint x="690" y="220" />
+      <bpmndi:BPMNEdge id="Flow_16x7j3u_di" bpmnElement="Flow_16x7j3u">
+        <di:waypoint x="300" y="195" />
+        <di:waypoint x="300" y="90" />
+        <di:waypoint x="410" y="90" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="306" y="140" width="18" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_014puqy_di" bpmnElement="Flow_014puqy">
-        <di:waypoint x="370" y="220" />
-        <di:waypoint x="470" y="220" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0jtf2dv_di" bpmnElement="Flow_0jtf2dv">
-        <di:waypoint x="1160" y="220" />
-        <di:waypoint x="1272" y="220" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0fliwzc_di" bpmnElement="Flow_0fliwzc">
+      <bpmndi:BPMNEdge id="Flow_19gqopo_di" bpmnElement="Flow_19gqopo">
         <di:waypoint x="188" y="220" />
-        <di:waypoint x="270" y="220" />
+        <di:waypoint x="275" y="220" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="152" y="202" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0pe23xb_di" bpmnElement="Event_0pe23xb">
-        <dc:Bounds x="1272" y="202" width="36" height="36" />
+        <dc:Bounds x="612" y="202" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0u4bqn0_di" bpmnElement="Activity_0u4bqn0">
-        <dc:Bounds x="270" y="180" width="100" height="80" />
+      <bpmndi:BPMNShape id="Gateway_1dq1jb3_di" bpmnElement="Gateway_1dq1jb3" isMarkerVisible="true">
+        <dc:Bounds x="275" y="195" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="338" y="210" width="85" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1yc7la5_di" bpmnElement="Activity_1yc7la5">
-        <dc:Bounds x="690" y="180" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_0qelhm1_di" bpmnElement="Activity_1afp636">
+        <dc:Bounds x="410" y="50" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0os54gm_di" bpmnElement="Activity_0os54gm">
-        <dc:Bounds x="1060" y="180" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1vneurn_di" bpmnElement="Activity_1vneurn">
-        <dc:Bounds x="470" y="180" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_16viqd2_di" bpmnElement="Gateway_16viqd2" isMarkerVisible="true">
-        <dc:Bounds x="915" y="195" width="50" height="50" />
+      <bpmndi:BPMNShape id="Activity_1ffmgwu_di" bpmnElement="Activity_1ffmgwu">
+        <dc:Bounds x="410" y="290" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
