@@ -1,9 +1,11 @@
 package com.ecaservice.server.mapping;
 
+import com.ecaservice.base.model.InstancesRequest;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.CrossValidationConfig;
+import com.ecaservice.server.model.entity.Channel;
 import com.ecaservice.server.model.entity.EvaluationLog;
-import com.ecaservice.server.model.evaluation.EvaluationRequestDataModel;
+import com.ecaservice.server.model.evaluation.EvaluationRequestData;
 import com.ecaservice.server.report.model.EvaluationLogBean;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import com.ecaservice.web.dto.model.EvaluationLogDto;
@@ -11,12 +13,18 @@ import eca.core.evaluation.EvaluationMethod;
 import eca.metrics.KNearestNeighbours;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageProperties;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
 
+import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit tests that checks EvaluationLogMapper functionality {@see EvaluationLogMapper}.
@@ -38,14 +46,36 @@ class EvaluationLogMapperTest {
         var evaluationRequest = TestHelperUtils.createEvaluationRequest();
         var evaluationRequestDataModel = evaluationLogMapper.map(evaluationRequest);
         assertThat(evaluationRequestDataModel).isNotNull();
+        assertThat(evaluationRequestDataModel.getClassifierOptions()).isNotNull();
         assertThat(evaluationRequestDataModel.getEvaluationMethod()).isEqualTo(evaluationRequest.getEvaluationMethod());
         assertThat(evaluationRequestDataModel.getDataUuid()).isEqualTo(evaluationRequest.getDataUuid());
     }
 
     @Test
+    void testMapInstancesRequest() {
+        var instancesRequest = new InstancesRequest(UUID.randomUUID().toString());
+        Message message = Mockito.mock(Message.class);
+        MessageProperties messageProperties = TestHelperUtils.buildMessageProperties();
+        when(message.getMessageProperties()).thenReturn(messageProperties);
+        var evaluationRequestDataModel = evaluationLogMapper.map(instancesRequest, message, crossValidationConfig);
+        assertThat(evaluationRequestDataModel).isNotNull();
+        assertThat(evaluationRequestDataModel.getClassifierOptions()).isNull();
+        assertThat(evaluationRequestDataModel.getEvaluationMethod()).isEqualTo(EvaluationMethod.CROSS_VALIDATION);
+        assertThat(evaluationRequestDataModel.getDataUuid()).isEqualTo(instancesRequest.getDataUuid());
+        assertThat(evaluationRequestDataModel.getNumFolds()).isEqualTo(crossValidationConfig.getNumFolds());
+        assertThat(evaluationRequestDataModel.getNumTests()).isEqualTo(crossValidationConfig.getNumTests());
+        assertThat(evaluationRequestDataModel.getSeed()).isEqualTo(crossValidationConfig.getSeed());
+        assertThat(evaluationRequestDataModel.getChannel()).isEqualTo(Channel.QUEUE.name());
+        assertThat(evaluationRequestDataModel.isUseOptimalClassifierOptions()).isTrue();
+        assertThat(evaluationRequestDataModel.getReplyTo()).isEqualTo(messageProperties.getReplyTo());
+        assertThat(evaluationRequestDataModel.getCorrelationId()).isEqualTo(messageProperties.getCorrelationId());
+    }
+
+    @Test
     void testMapToEvaluationLogWithTrainingDataEvaluationMethod() {
-        EvaluationRequestDataModel evaluationRequestDataModel = new EvaluationRequestDataModel();
+        EvaluationRequestData evaluationRequestDataModel = new EvaluationRequestData();
         evaluationRequestDataModel.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
+        evaluationRequestDataModel.setDataUuid(UUID.randomUUID().toString());
         evaluationRequestDataModel.setClassifier(new KNearestNeighbours());
         EvaluationLog evaluationLog = evaluationLogMapper.map(evaluationRequestDataModel, crossValidationConfig);
         assertThat(evaluationLog).isNotNull();
@@ -54,11 +84,12 @@ class EvaluationLogMapperTest {
         assertThat(evaluationLog.getNumFolds()).isNull();
         assertThat(evaluationLog.getNumTests()).isNull();
         assertThat(evaluationLog.getSeed()).isNull();
+        assertThat(evaluationLog.getTrainingDataUuid()).isEqualTo(evaluationRequestDataModel.getDataUuid());
     }
 
     @Test
     void testMapToEvaluationLogWithCrossValidationEvaluationMethod() {
-        EvaluationRequestDataModel evaluationRequestDataModel = new EvaluationRequestDataModel();
+        EvaluationRequestData evaluationRequestDataModel = new EvaluationRequestData();
         evaluationRequestDataModel.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
         evaluationRequestDataModel.setNumFolds(TestHelperUtils.NUM_FOLDS);
         evaluationRequestDataModel.setNumFolds(TestHelperUtils.NUM_TESTS);
@@ -72,7 +103,7 @@ class EvaluationLogMapperTest {
 
     @Test
     void testMapToEvaluationLogWithDefaultOptions() {
-        EvaluationRequestDataModel evaluationRequestDataModel = new EvaluationRequestDataModel();
+        EvaluationRequestData evaluationRequestDataModel = new EvaluationRequestData();
         evaluationRequestDataModel.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
         EvaluationLog evaluationLog = evaluationLogMapper.map(evaluationRequestDataModel, crossValidationConfig);
         assertThat(evaluationLog).isNotNull();
@@ -112,6 +143,28 @@ class EvaluationLogMapperTest {
         assertThat(evaluationLogBean.getEvaluationTotalTime()).isNotNull();
         assertThat(evaluationLogBean.getModelPath()).isEqualTo(evaluationLog.getModelPath());
         assertThat(evaluationLogBean.getPctCorrect()).isEqualTo(evaluationLog.getPctCorrect());
+    }
+
+    @Test
+    void testMapToEvaluationLogModel() {
+        EvaluationLog evaluationLog = TestHelperUtils.createEvaluationLog();
+        var evaluationLogModel = evaluationLogMapper.mapToModel(evaluationLog);
+        assertThat(evaluationLogModel).isNotNull();
+        assertThat(evaluationLogModel.getRequestId()).isEqualTo(evaluationLog.getRequestId());
+        assertThat(evaluationLogModel.getRequestStatus()).isEqualTo(evaluationLog.getRequestStatus().name());
+        assertThat(evaluationLogModel.getChannel()).isEqualTo(evaluationLog.getChannel().name());
+        assertThat(evaluationLogModel.getClassifierName()).isEqualTo(
+                evaluationLog.getClassifierInfo().getClassifierName());
+    }
+
+    @Test
+    void testMapCreateEvaluationRequestDto() {
+        var evaluationRequestDto = TestHelperUtils.buildEvaluationRequestDto();
+        var evaluationWebRequestData = evaluationLogMapper.map(evaluationRequestDto);
+        assertThat(evaluationWebRequestData.getEvaluationMethod()).isEqualTo(
+                evaluationRequestDto.getEvaluationMethod());
+        assertThat(evaluationWebRequestData.getDataUuid()).isEqualTo(
+                evaluationRequestDto.getInstancesUuid());
     }
 
     private void assertEvaluationLogDto(EvaluationLogDto evaluationLogDto, EvaluationLog evaluationLog) {

@@ -1,7 +1,7 @@
 package com.ecaservice.server.mapping;
 
 import com.ecaservice.server.config.CrossValidationConfig;
-import com.ecaservice.server.model.evaluation.EvaluationRequestDataModel;
+import com.ecaservice.server.model.evaluation.EvaluationRequestData;
 import com.ecaservice.server.model.evaluation.InstancesRequestDataModel;
 import eca.core.evaluation.EvaluationMethod;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,7 +42,7 @@ class EvaluationRequestMapperTest {
 
     @Test
     void testMapClassifierOptionsRequest() {
-        EvaluationRequestDataModel evaluationRequestDataModel =
+        EvaluationRequestData evaluationRequestDataModel =
                 evaluationRequestMapper.map(instancesRequestDataModel, crossValidationConfig);
         assertThat(evaluationRequestDataModel.getEvaluationMethod()).isEqualTo(
                 EvaluationMethod.CROSS_VALIDATION);

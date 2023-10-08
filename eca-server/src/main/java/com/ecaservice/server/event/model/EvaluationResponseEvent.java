@@ -1,6 +1,6 @@
 package com.ecaservice.server.event.model;
 
-import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
+import com.ecaservice.server.bpm.model.EvaluationResultsModel;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 
@@ -15,7 +15,7 @@ public class EvaluationResponseEvent extends ApplicationEvent {
      * Experiment entity
      */
     @Getter
-    private final EvaluationResultsDataModel evaluationResultsDataModel;
+    private final EvaluationResultsModel evaluationResultsModel;
 
     /**
      * Correlation id
@@ -32,17 +32,17 @@ public class EvaluationResponseEvent extends ApplicationEvent {
     /**
      * Create a new event.
      *
-     * @param source                      - the object on which the event initially occurred (never {@code null})
-     * @param evaluationResultsDataModel - evaluation response data model
-     * @param correlationId               - correlation id
-     * @param replyTo                     - reply to queue
+     * @param source                 - the object on which the event initially occurred (never {@code null})
+     * @param evaluationResultsModel - evaluation results model
+     * @param correlationId          - correlation id
+     * @param replyTo                - reply to queue
      */
     public EvaluationResponseEvent(Object source,
-                                   EvaluationResultsDataModel evaluationResultsDataModel,
+                                   EvaluationResultsModel evaluationResultsModel,
                                    String correlationId,
                                    String replyTo) {
         super(source);
-        this.evaluationResultsDataModel = evaluationResultsDataModel;
+        this.evaluationResultsModel = evaluationResultsModel;
         this.correlationId = correlationId;
         this.replyTo = replyTo;
     }

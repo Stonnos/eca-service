@@ -45,6 +45,10 @@
             "value": "SENT_EXPERIMENT_RESPONSE"
           },
           {
+            "name": "Отправить ответное сообщение в очередь для заявки на построение модели классификатора",
+            "value": "SENT_EVALUATION_RESPONSE"
+          },
+          {
             "name": "Получить данные о пользователе",
             "value": "GET_USER_INFO"
           },
@@ -57,8 +61,36 @@
             "value": "CREATE_EXPERIMENT_REQUEST"
           },
           {
-            "name": "Создать заявку на эксперимент через web",
-            "value": "CREATE_EXPERIMENT_WEB_REQUEST"
+            "name": "Создать заявку на построение модели классификатора",
+            "value": "CREATE_EVALUATION_REQUEST"
+          },
+          {
+            "name": "Перевести заявку на построение модели классификатора в работу",
+            "value": "START_EVALUATION"
+          },
+          {
+            "name": "Получение данных о заявке на построение модели классификатора",
+            "value": "GET_EVALUATION_DETAILS"
+          },
+          {
+            "name": "Построить модель классификатора",
+            "value": "PROCESS_CLASSIFIER_EVALUATION"
+          },
+          {
+            "name": "Задать email для заявки на эксперимент на основе данных пользователя",
+            "value": "SET_EXPERIMENT_REQUEST_EMAIL"
+          },
+          {
+            "name": "Получение оптимальных настроек классификатора для конкретной обучающей выборки на основе накопленной истории результатов классификации",
+            "value": "GET_OPTIMAL_CLASSIFIER_OPTIONS"
+          },
+          {
+            "name": "Задать оптимальные настройки классификатора для заявки",
+            "value": "SET_OPTIMAL_CLASSIFIER_OPTIONS"
+          },
+          {
+            "name": "Обработка ошибки при получении оптимальных настроек классификатора",
+            "value": "OPTIMAL_CLASSIFIER_OPTIONS_ERROR_HANDLER"
           }
         ],
         "binding": {
@@ -102,7 +134,7 @@
         "choices": [
           {
             "name": "Передана заявка с недопустимым статусом",
-            "value": "INVALID_EXPERIMENT_REQUEST_STATUS"
+            "value": "INVALID_REQUEST_STATUS"
           },
           {
             "name": "Неизвестная ошибка",
@@ -111,7 +143,7 @@
         ],
         "binding": {
           "type": "camunda:inputParameter",
-          "name": "taskType"
+          "name": "errorCode"
         }
       },
       {
@@ -212,7 +244,7 @@
     }
   },
   {
-    "name": "Отправка пуша для заявки на эксперимент",
+    "name": "Отправка пуша",
     "id": "ExperimentPushSender",
     "isDefault": false,
     "appliesTo": [
@@ -233,12 +265,16 @@
         "value": "SENT_EXPERIMENT_SYSTEM_PUSH",
         "choices": [
           {
-            "name": "Системное пуш уведомление",
+            "name": "Системное пуш уведомление для заявки на эксперимент",
             "value": "SENT_EXPERIMENT_SYSTEM_PUSH"
           },
           {
-            "name": "Пуш уведомление пользователю",
+            "name": "Пуш уведомление пользователю для заявки на эксперимент",
             "value": "SENT_EXPERIMENT_WEB_PUSH"
+          },
+          {
+            "name": "Пуш уведомление пользователю для заявки на построение модели классификатора",
+            "value": "SENT_EVALUATION_WEB_PUSH"
           }
         ],
         "binding": {
@@ -262,23 +298,43 @@
         "choices": [
           {
             "name": "Сообщение о новой заявке на эксперимент",
-            "value": "NEW_EXPERIMENT"
+            "value": "NEW_EXPERIMENT_PUSH_MESSAGE"
           },
           {
             "name": "Сообщение о поступлении заявки на эксперимент в работу",
-            "value": "IN_PROGRESS_EXPERIMENT"
+            "value": "IN_PROGRESS_EXPERIMENT_PUSH_MESSAGE"
           },
           {
             "name": "Сообщение о завершении эксперимента",
-            "value": "FINISHED_EXPERIMENT"
+            "value": "FINISHED_EXPERIMENT_PUSH_MESSAGE"
           },
           {
             "name": "Сообщение об ошибке при построении эксперимента",
-            "value": "ERROR_EXPERIMENT"
+            "value": "ERROR_EXPERIMENT_PUSH_MESSAGE"
           },
           {
             "name": "Сообщение о таймауте при построении эксперимента",
-            "value": "TIMEOUT_EXPERIMENT"
+            "value": "TIMEOUT_EXPERIMENT_PUSH_MESSAGE"
+          },
+          {
+            "name": "Сообщение о новой заявке на построение модели классификатора",
+            "value": "NEW_EVALUATION_PUSH_MESSAGE"
+          },
+          {
+            "name": "Сообщение о поступлении заявки на построение модели классификатора в работу",
+            "value": "IN_PROGRESS_EVALUATION_PUSH_MESSAGE"
+          },
+          {
+            "name": "Сообщение о завершении построения модели классификатора",
+            "value": "FINISHED_EVALUATION_PUSH_MESSAGE"
+          },
+          {
+            "name": "Сообщение об ошибке при построении модели классификатора",
+            "value": "ERROR_EVALUATION_PUSH_MESSAGE"
+          },
+          {
+            "name": "Сообщение о таймауте при построении модели классификатора",
+            "value": "TIMEOUT_EVALUATION_PUSH_MESSAGE"
           }
         ],
         "binding": {

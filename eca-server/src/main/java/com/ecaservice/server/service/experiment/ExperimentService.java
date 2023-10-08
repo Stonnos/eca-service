@@ -3,16 +3,13 @@ package com.ecaservice.server.service.experiment;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.exception.experiment.ExperimentException;
 import com.ecaservice.server.mapping.ExperimentMapper;
-import com.ecaservice.server.model.entity.Channel;
+import com.ecaservice.server.model.entity.ChannelVisitor;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentStep;
 import com.ecaservice.server.model.entity.ExperimentStepEntity;
 import com.ecaservice.server.model.entity.ExperimentStepStatus;
 import com.ecaservice.server.model.entity.RequestStatus;
-import com.ecaservice.server.model.experiment.AbstractExperimentRequestData;
-import com.ecaservice.server.model.experiment.ExperimentMessageRequestData;
-import com.ecaservice.server.model.experiment.ExperimentRequestDataVisitor;
-import com.ecaservice.server.model.experiment.ExperimentWebRequestData;
+import com.ecaservice.server.model.experiment.ExperimentRequestData;
 import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.repository.ExperimentStepRepository;
 import com.ecaservice.server.service.InstancesInfoService;
@@ -52,29 +49,30 @@ public class ExperimentService {
     /**
      * Creates experiment request.
      *
-     * @param experimentRequest - experiment request data
+     * @param experimentRequestData - experiment request data
      * @return created experiment entity
      */
-    public Experiment createExperiment(AbstractExperimentRequestData experimentRequest) {
+    public Experiment createExperiment(ExperimentRequestData experimentRequestData) {
         log.info("Starting to create experiment [{}] request for data uuid [{}], evaluation method [{}], email [{}]",
-                experimentRequest.getExperimentType(), experimentRequest.getDataUuid(),
-                experimentRequest.getEvaluationMethod(), experimentRequest.getEmail());
+                experimentRequestData.getExperimentType(), experimentRequestData.getDataUuid(),
+                experimentRequestData.getEvaluationMethod(), experimentRequestData.getEmail());
         var instancesMetaDataModel =
-                instancesMetaDataService.getInstancesMetaData(experimentRequest.getDataUuid());
+                instancesMetaDataService.getInstancesMetaData(experimentRequestData.getDataUuid());
         try {
-            Experiment experiment = experimentMapper.map(experimentRequest, crossValidationConfig);
+            Experiment experiment = experimentMapper.map(experimentRequestData, crossValidationConfig);
             var instancesInfo = instancesInfoService.getOrSaveInstancesInfo(instancesMetaDataModel);
             experiment.setInstancesInfo(instancesInfo);
-            setAdditionalProperties(experiment, experimentRequest);
+            setAdditionalProperties(experiment, experimentRequestData);
             experiment.setRequestStatus(RequestStatus.NEW);
-            experiment.setRequestId(experimentRequest.getRequestId());
-            experiment.setTrainingDataUuid(experimentRequest.getDataUuid());
+            experiment.setRequestId(experimentRequestData.getRequestId());
+            experiment.setTrainingDataUuid(experimentRequestData.getDataUuid());
+            experiment.setChannel(experimentRequestData.getChannel());
             experiment.setCreationDate(LocalDateTime.now());
             experimentRepository.save(experiment);
             log.info("Experiment request [{}] has been created.", experiment.getRequestId());
             return experiment;
         } catch (Exception ex) {
-            log.error("There was an error while create experiment request [{}]: {}", experimentRequest.getRequestId(),
+            log.error("There was an error while create experiment request [{}]: {}", experimentRequestData.getRequestId(),
                     ex.getMessage());
             throw new ExperimentException(ex.getMessage());
         }
@@ -143,19 +141,17 @@ public class ExperimentService {
         log.info("{} steps has been saved for experiment [{}]", stepNames, experiment.getRequestId());
     }
 
-    private void setAdditionalProperties(Experiment experiment, AbstractExperimentRequestData experimentRequestData) {
-        experimentRequestData.visit(new ExperimentRequestDataVisitor() {
+    private void setAdditionalProperties(Experiment experiment, ExperimentRequestData experimentRequestData) {
+        experimentRequestData.getChannel().visit(new ChannelVisitor() {
             @Override
-            public void visit(ExperimentWebRequestData experimentWebRequestData) {
-                experiment.setChannel(Channel.WEB);
-                experiment.setCreatedBy(experimentWebRequestData.getCreatedBy());
+            public void visitWeb() {
+               experiment.setCreatedBy(experimentRequestData.getCreatedBy());
             }
 
             @Override
-            public void visit(ExperimentMessageRequestData experimentMessageRequestData) {
-                experiment.setChannel(Channel.QUEUE);
-                experiment.setCorrelationId(experimentMessageRequestData.getCorrelationId());
-                experiment.setReplyTo(experimentMessageRequestData.getReplyTo());
+            public void visitQueue() {
+                experiment.setCorrelationId(experimentRequestData.getCorrelationId());
+                experiment.setReplyTo(experimentRequestData.getReplyTo());
             }
         });
     }

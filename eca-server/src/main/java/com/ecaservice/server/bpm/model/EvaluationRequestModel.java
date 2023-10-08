@@ -1,31 +1,28 @@
-package com.ecaservice.server.model.evaluation;
+package com.ecaservice.server.bpm.model;
 
+import com.ecaservice.classifier.options.model.ClassifierOptions;
 import eca.core.evaluation.EvaluationMethod;
-import lombok.Data;
-import weka.classifiers.AbstractClassifier;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
- * Evaluation request data model.
+ * Evaluation request data model for bpmn process.
  *
  * @author Roman Batygin
  */
-@Data
-public class EvaluationRequestDataModel {
+@Getter
+@Setter
+public class EvaluationRequestModel extends AbstractEvaluationRequestModel {
 
     /**
-     * Request id
+     * Classifier options
      */
-    private String requestId;
+    private ClassifierOptions classifierOptions;
 
     /**
-     * Train data uuid
+     * Use optimal classifier options?
      */
-    private String dataUuid;
-
-    /**
-     * Classifier model
-     */
-    private AbstractClassifier classifier;
+    private boolean useOptimalClassifierOptions;
 
     /**
      * Evaluation method

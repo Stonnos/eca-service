@@ -10,10 +10,10 @@ public interface ChannelVisitor {
     /**
      * Visit web channel.
      */
-    void visitWeb();
+    default void visitWeb() {}
 
     /**
      * Visit queue channel.
      */
-    void visitQueue();
+    default void visitQueue() {}
 }

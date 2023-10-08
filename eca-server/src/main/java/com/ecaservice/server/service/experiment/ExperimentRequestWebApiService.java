@@ -3,8 +3,11 @@ package com.ecaservice.server.service.experiment;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.server.dto.CreateExperimentRequestDto;
+import com.ecaservice.server.mapping.ExperimentMapper;
+import com.ecaservice.server.model.entity.Channel;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.repository.ExperimentRepository;
+import com.ecaservice.server.service.UserService;
 import com.ecaservice.web.dto.model.CreateExperimentResultDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +30,9 @@ import static com.ecaservice.server.config.audit.AuditCodes.CREATE_EXPERIMENT_RE
 @RequiredArgsConstructor
 public class ExperimentRequestWebApiService {
 
+    private final UserService userService;
     private final ExperimentProcessManager experimentProcessManager;
+    private final ExperimentMapper experimentMapper;
     private final ExperimentRepository experimentRepository;
 
     /**
@@ -44,9 +49,13 @@ public class ExperimentRequestWebApiService {
         log.info("Starting to create experiment [{}] request for instances [{}], type [{}], evaluation method [{}]",
                 requestId, experimentRequestDto.getInstancesUuid(), experimentRequestDto.getExperimentType(),
                 experimentRequestDto.getEvaluationMethod());
-        experimentProcessManager.createExperimentWebRequest(requestId, experimentRequestDto);
+        var experimentRequestModel = experimentMapper.map(experimentRequestDto);
+        experimentRequestModel.setRequestId(requestId);
+        experimentRequestModel.setChannel(Channel.WEB.name());
+        experimentRequestModel.setCreatedBy(userService.getCurrentUser());
+        experimentProcessManager.createExperimentRequest(experimentRequestModel);
         var experiment = experimentRepository.findByRequestId(requestId)
-                        .orElseThrow(() -> new EntityNotFoundException(Experiment.class, requestId));
+                .orElseThrow(() -> new EntityNotFoundException(Experiment.class, requestId));
         log.info("Experiment request [{}] has been created for instances uuid [{}].", requestId,
                 experimentRequestDto.getInstancesUuid());
         return CreateExperimentResultDto.builder()

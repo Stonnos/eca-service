@@ -233,7 +233,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
       .subscribe({
         next: (pushRequestDto: PushRequestDto) => {
           if (!this.lastCreatedId) {
-            this.lastCreatedId = pushRequestDto.additionalProperties[PushVariables.EXPERIMENT_ID];
+            this.lastCreatedId = pushRequestDto.additionalProperties[PushVariables.EVALUATION_ID];
             this.reloadPage(false);
             this.getRequestStatusesStatistics();
           }

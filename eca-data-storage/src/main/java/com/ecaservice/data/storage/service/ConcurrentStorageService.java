@@ -54,11 +54,6 @@ public class ConcurrentStorageService implements StorageService {
     }
 
     @Override
-    public InstancesEntity getByUuid(String uuid) {
-        return storageService.getByUuid(uuid);
-    }
-
-    @Override
     @Locked(lockName = "saveOrUpdateDataSet", key = "#newTableName")
     public String renameData(long id, String newTableName) {
         return storageService.renameData(id, newTableName);

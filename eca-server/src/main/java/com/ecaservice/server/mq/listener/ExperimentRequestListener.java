@@ -43,12 +43,9 @@ public class ExperimentRequestListener {
         MessageProperties inboundMessageProperties = inboundMessage.getMessageProperties();
         log.info("Received experiment [{}] request with correlation id [{}]",
                 experimentRequest.getExperimentType(), inboundMessageProperties.getCorrelationId());
-        String requestId = UUID.randomUUID().toString();
-        putMdc(TX_ID, requestId);
-        putMdc(EV_REQUEST_ID, requestId);
-        var experimentRequestData = experimentMapper.map(experimentRequest, inboundMessage);
-        experimentRequestData.setRequestId(requestId);
-        experimentProcessManager.createExperimentRequest(experimentRequestData);
+        var experimentRequestModel = experimentMapper.map(experimentRequest, inboundMessage);
+        experimentRequestModel.setRequestId(UUID.randomUUID().toString());
+        experimentProcessManager.createExperimentRequest(experimentRequestModel);
         log.info("Experiment [{}] request with correlation id [{}] has been processed",
                 experimentRequest.getExperimentType(), inboundMessageProperties.getCorrelationId());
     }

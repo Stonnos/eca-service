@@ -48,9 +48,19 @@ public enum TaskType {
     SENT_EXPERIMENT_WEB_PUSH,
 
     /**
+     * Sent evaluation web push notification
+     */
+    SENT_EVALUATION_WEB_PUSH,
+
+    /**
      * Sent experiment response to MQ
      */
     SENT_EXPERIMENT_RESPONSE,
+
+    /**
+     * Sent evaluation response to MQ
+     */
+    SENT_EVALUATION_RESPONSE,
 
     /**
      * Gets user info
@@ -68,12 +78,47 @@ public enum TaskType {
     CREATE_EXPERIMENT_REQUEST,
 
     /**
-     * Create experiment web request
-     */
-    CREATE_EXPERIMENT_WEB_REQUEST,
-
-    /**
      * Calculates experiment final status
      */
-    CALCULATE_EXPERIMENT_FINAL_STATUS
+    CALCULATE_EXPERIMENT_FINAL_STATUS,
+
+    /**
+     * Create classifier evaluation web request
+     */
+    CREATE_EVALUATION_REQUEST,
+
+    /**
+     * Starts classifier evaluation
+     */
+    START_EVALUATION,
+
+    /**
+     * Process classifier evaluation
+     */
+    PROCESS_CLASSIFIER_EVALUATION,
+
+    /**
+     * Gets evaluation log details
+     */
+    GET_EVALUATION_DETAILS,
+
+    /**
+     * Set experiment request email
+     */
+    SET_EXPERIMENT_REQUEST_EMAIL,
+
+    /**
+     * Get optimal classifier options
+     */
+    GET_OPTIMAL_CLASSIFIER_OPTIONS,
+
+    /**
+     * Set optimal classifier options
+     */
+    SET_OPTIMAL_CLASSIFIER_OPTIONS,
+
+    /**
+     * Optimal classifier option error handler
+     */
+    OPTIMAL_CLASSIFIER_OPTIONS_ERROR_HANDLER
 }

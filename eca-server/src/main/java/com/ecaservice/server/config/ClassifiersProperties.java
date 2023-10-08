@@ -16,4 +16,14 @@ public class ClassifiersProperties {
      * Timeout value in minutes
      */
     private Integer timeout;
+
+    /**
+     * Delay value for scheduler in seconds
+     */
+    private Integer delaySeconds;
+
+    /**
+     * Max. requests per job
+     */
+    private Integer maxRequestsPerJob;
 }

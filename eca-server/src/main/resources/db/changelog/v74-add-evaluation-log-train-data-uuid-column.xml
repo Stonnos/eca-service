@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v74-add-evaluation-log-train-data-uuid-column.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    
+    <changeSet id="add_evaluation_log_train_data_uuid_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_log"/>
+            <not>
+                <columnExists tableName="evaluation_log" columnName="training_data_uuid"/>
+            </not>
+        </preConditions>
+       <addColumn tableName="evaluation_log">
+           <column name="training_data_uuid" type="varchar(255)"/>
+       </addColumn>
+    </changeSet>
+
+    <changeSet id="add_evaluation_log_created_by_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_log"/>
+            <not>
+                <columnExists tableName="evaluation_log" columnName="created_by"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="evaluation_log">
+            <column name="created_by" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <!-- Add channel_type column to evaluation_log table -->
+    <changeSet id="1" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_log"/>
+            <not>
+                <columnExists tableName="evaluation_log" columnName="channel_type"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="evaluation_log">
+            <column name="channel_type" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    
+</databaseChangeLog>

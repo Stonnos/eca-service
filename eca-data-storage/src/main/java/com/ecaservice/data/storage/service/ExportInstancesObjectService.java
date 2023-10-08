@@ -1,10 +1,10 @@
 package com.ecaservice.data.storage.service;
 
-import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.data.loader.dto.UploadInstancesResponseDto;
 import com.ecaservice.data.storage.dto.ExportInstancesResponseDto;
 import com.ecaservice.data.storage.entity.ExportInstancesObjectEntity;
 import com.ecaservice.data.storage.entity.InstancesEntity;
+import com.ecaservice.data.storage.exception.InstancesNotFoundException;
 import com.ecaservice.data.storage.repository.ExportInstancesObjectRepository;
 import com.ecaservice.data.storage.repository.InstancesRepository;
 import com.ecaservice.data.storage.service.data.UploadInstancesObjectService;
@@ -37,7 +37,7 @@ public class ExportInstancesObjectService {
     public ExportInstancesResponseDto exportValidInstances(String uuid) {
         log.info("Starting to export instances [{}] to central data storage", uuid);
         var instancesEntity = instancesRepository.findByUuid(uuid)
-                .orElseThrow(() -> new EntityNotFoundException(InstancesEntity.class, uuid));
+                .orElseThrow(() -> new InstancesNotFoundException(String.format("Instances [%s] not found", uuid)));
         var lastExportInstancesObject =
                 exportInstancesObjectRepository.findFirstByInstancesUuidOrderByCreatedDesc(uuid);
         if (lastExportInstancesObject == null) {

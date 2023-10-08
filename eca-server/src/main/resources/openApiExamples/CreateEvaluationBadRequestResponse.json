@@ -1,0 +1,7 @@
+[
+  {
+    "fieldName": null,
+    "code": "CLASS_ATTRIBUTE_NOT_SELECTED",
+    "errorMessage": "Bad request error while get valid instances with uuid [c1c82d78-b90f-4ef2-88c8-eca3657363bf] from data storage!"
+  }
+]

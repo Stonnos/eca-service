@@ -9,7 +9,6 @@ import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.exception.ClassAttributeValuesIsTooLowException;
 import com.ecaservice.data.storage.exception.EmptyDataException;
 import com.ecaservice.data.storage.exception.InstancesExistsException;
-import com.ecaservice.data.storage.exception.InstancesNotFoundException;
 import com.ecaservice.data.storage.exception.InvalidClassAttributeTypeException;
 import com.ecaservice.data.storage.filter.InstancesFilter;
 import com.ecaservice.data.storage.mapping.AttributeMapper;
@@ -214,13 +213,6 @@ public class StorageServiceImpl implements StorageService {
         log.debug("Gets instances by id [{}]", id);
         return instancesRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(InstancesEntity.class, id));
-    }
-
-    @Override
-    public InstancesEntity getByUuid(String uuid) {
-        log.debug("Gets instances by uuid [{}]", uuid);
-        return instancesRepository.findByUuid(uuid)
-                .orElseThrow(() -> new InstancesNotFoundException(String.format("Instances [%s] not found!", uuid)));
     }
 
     private InstancesEntity saveInstancesEntity(String relationName, Instances instances) {

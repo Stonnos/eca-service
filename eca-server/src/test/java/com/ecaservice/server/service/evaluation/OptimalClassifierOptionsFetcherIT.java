@@ -69,7 +69,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests for checking {@link EvaluationOptimizerService} functionality.
+ * Unit tests for checking {@link OptimalClassifierOptionsFetcher} functionality.
  *
  * @author Roman Batygin
  */
@@ -81,10 +81,10 @@ import static org.mockito.Mockito.when;
         ErsConfig.class, EvaluationLogMapperImpl.class, LockExecutionAspect.class, ErsErrorHandler.class,
         EvaluationService.class, ErsResponseStatusMapperImpl.class, OptimalClassifierOptionsFetcherImpl.class,
         InstancesInfoMapperImpl.class, ErsRequestService.class, InstancesInfoService.class, EvaluationLogService.class,
-        EvaluationOptimizerService.class, ClassifierInfoMapperImpl.class, RedisAutoConfiguration.class,
+        ClassifierInfoMapperImpl.class, RedisAutoConfiguration.class,
         OptimalClassifierOptionsCacheService.class, DateTimeConverter.class, CoreLockAutoConfiguration.class})
 @TestPropertySource("classpath:application-it.properties")
-class EvaluationOptimizerServiceIT extends AbstractJpaTest {
+class OptimalClassifierOptionsFetcherIT extends AbstractJpaTest {
 
     private static final String DATA_MD_5_HASH = "3032e188204cb537f69fc7364f638641";
     private static final ObjectMapper objectMapper = new ObjectMapper();
@@ -119,7 +119,7 @@ class EvaluationOptimizerServiceIT extends AbstractJpaTest {
     @Inject
     private ClassifierOptionsRequestRepository classifierOptionsRequestRepository;
     @Inject
-    private EvaluationOptimizerService evaluationOptimizerService;
+    private OptimalClassifierOptionsFetcher optimalClassifierOptionsFetcher;
 
     private Instances data;
     private String dataUuid;
@@ -176,7 +176,7 @@ class EvaluationOptimizerServiceIT extends AbstractJpaTest {
                 try {
                     var instancesRequestDataModel =
                             new InstancesRequestDataModel(UUID.randomUUID().toString(), dataUuid);
-                    evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequestDataModel);
+                    optimalClassifierOptionsFetcher.getOptimalClassifierOptions(instancesRequestDataModel);
                 } finally {
                     finishedLatch.countDown();
                 }

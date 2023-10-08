@@ -23,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
+import static com.ecaservice.server.util.ClassifierOptionsHelper.parseOptions;
 import static com.ecaservice.server.util.Utils.createClassifierOptionsRequestEntity;
 import static com.ecaservice.server.util.Utils.getFirstResponseModel;
 
@@ -99,7 +100,7 @@ public class OptimalClassifierOptionsCacheService implements OptimalClassifierOp
             requestEntity.setClassifierOptionsRequestModel(requestModel);
             classifierOptionsRequestRepository.save(requestEntity);
             ClassifierOptionsResult classifierOptionsResult = new ClassifierOptionsResult();
-            classifierOptionsResult.setOptionsJson(responseModel.getOptions());
+            classifierOptionsResult.setClassifierOptions(parseOptions(responseModel.getOptions()));
             classifierOptionsResult.setFound(true);
             return classifierOptionsResult;
         } else {

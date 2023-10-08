@@ -1,20 +1,14 @@
 package com.ecaservice.server.mq.listener;
 
 import com.ecaservice.base.model.EvaluationRequest;
-import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
-import com.ecaservice.server.event.model.EvaluationErsReportEvent;
-import com.ecaservice.server.event.model.EvaluationResponseEvent;
 import com.ecaservice.server.mapping.EvaluationLogMapper;
-import com.ecaservice.server.model.evaluation.EvaluationRequestDataModel;
-import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
-import com.ecaservice.server.service.evaluation.EvaluationRequestService;
+import com.ecaservice.server.service.evaluation.EvaluationProcessManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
@@ -32,10 +26,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class EvaluationRequestListener {
 
-    private final EvaluationRequestService evaluationRequestService;
-    private final ApplicationEventPublisher eventPublisher;
+    private final EvaluationProcessManager evaluationProcessManager;
     private final EvaluationLogMapper evaluationLogMapper;
-    private final ClassifierOptionsAdapter classifierOptionsAdapter;
 
     /**
      * Handles evaluation request message.
@@ -46,23 +38,12 @@ public class EvaluationRequestListener {
     public void handleMessage(@Valid @Payload EvaluationRequest evaluationRequest, Message inboundMessage) {
         MessageProperties inboundMessageProperties = inboundMessage.getMessageProperties();
         log.info("Received evaluation request with correlation id [{}]", inboundMessageProperties.getCorrelationId());
-        var evaluationRequestDataModel = prepareEvaluationRequestDataModel(evaluationRequest);
-        EvaluationResultsDataModel evaluationResultsDataModel =
-                evaluationRequestService.processRequest(evaluationRequestDataModel);
-        log.info("Evaluation response [{}] with status [{}] has been built.",
-                evaluationResultsDataModel.getRequestId(), evaluationResultsDataModel.getStatus());
-        eventPublisher.publishEvent(new EvaluationErsReportEvent(this, evaluationResultsDataModel));
-        eventPublisher.publishEvent(new EvaluationResponseEvent(this, evaluationResultsDataModel,
-                inboundMessageProperties.getCorrelationId(), inboundMessageProperties.getReplyTo()));
+        var evaluationRequestModel = evaluationLogMapper.map(evaluationRequest);
+        evaluationRequestModel.setCorrelationId(inboundMessage.getMessageProperties().getCorrelationId());
+        evaluationRequestModel.setReplyTo(inboundMessage.getMessageProperties().getReplyTo());
+        evaluationRequestModel.setRequestId(UUID.randomUUID().toString());
+        evaluationProcessManager.createAndProcessEvaluationRequest(evaluationRequestModel);
         log.info("Evaluation request with correlation id [{}] has been processed",
                 inboundMessageProperties.getCorrelationId());
-    }
-
-    private EvaluationRequestDataModel prepareEvaluationRequestDataModel(EvaluationRequest evaluationRequest) {
-        var evaluationRequestDataModel = evaluationLogMapper.map(evaluationRequest);
-        evaluationRequestDataModel.setRequestId(UUID.randomUUID().toString());
-        evaluationRequestDataModel.setClassifier(
-                classifierOptionsAdapter.convert(evaluationRequest.getClassifierOptions()));
-        return evaluationRequestDataModel;
     }
 }
