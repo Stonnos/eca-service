@@ -6,6 +6,7 @@ import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.form.template.service.FormTemplateProvider;
 import com.ecaservice.web.dto.model.ClassifierInfoDto;
 import com.ecaservice.web.dto.model.FormTemplateDto;
+import com.ecaservice.web.dto.model.FormTemplateGroupDto;
 import com.ecaservice.web.dto.model.InputOptionDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -130,10 +131,10 @@ class ClassifierOptionsProcessorTest {
 
     @BeforeEach
     void init() {
-        List<FormTemplateDto> templates = loadClassifiersTemplates();
-        List<FormTemplateDto> ensembleTemplates = loadEnsembleClassifiersTemplates();
-        when(formTemplateProvider.getTemplates(CLASSIFIERS)).thenReturn(templates);
-        when(formTemplateProvider.getTemplates(ENSEMBLE_CLASSIFIERS)).thenReturn(ensembleTemplates);
+        FormTemplateGroupDto templates = loadClassifiersTemplates();
+        FormTemplateGroupDto ensembleTemplates = loadEnsembleClassifiersTemplates();
+        when(formTemplateProvider.getFormGroup(CLASSIFIERS)).thenReturn(templates);
+        when(formTemplateProvider.getFormGroup(ENSEMBLE_CLASSIFIERS)).thenReturn(ensembleTemplates);
         when(filterTemplateService.getFilterDictionary(CLASSIFIER_NAME)).thenReturn(createFilterDictionaryDto());
         classifierOptionsProcessor.initialize();
     }

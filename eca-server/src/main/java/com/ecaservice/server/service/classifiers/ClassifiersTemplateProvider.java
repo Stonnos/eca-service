@@ -2,13 +2,18 @@ package com.ecaservice.server.service.classifiers;
 
 import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.core.form.template.service.FormTemplateProvider;
+import com.ecaservice.server.dto.ClassifierGroupTemplatesType;
 import com.ecaservice.web.dto.model.FormTemplateDto;
+import com.ecaservice.web.dto.model.FormTemplateGroupDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static com.ecaservice.server.service.classifiers.ClassifierFormGroupTemplates.CLASSIFIERS_GROUP;
+import static com.ecaservice.server.service.classifiers.ClassifierFormGroupTemplates.ENSEMBLE_CLASSIFIERS_GROUP;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.isEnsembleClassifierOptions;
 
 /**
@@ -21,21 +26,24 @@ import static com.ecaservice.server.util.ClassifierOptionsHelper.isEnsembleClass
 @RequiredArgsConstructor
 public class ClassifiersTemplateProvider {
 
-    private static final String CLASSIFIERS_GROUP = "classifiers";
-    private static final String ENSEMBLE_CLASSIFIERS_GROUP = "ensembleClassifiers";
-
     private final FormTemplateProvider formTemplateProvider;
 
     /**
-     * Gets classifiers form templates.
+     * Gets classifiers form groups templates.
      *
-     * @return form templates list
+     * @param classifierGroupTemplatesType - classifier group templates type
+     * @return form groups templates list
      */
-    public List<FormTemplateDto> getClassifiersTemplates() {
-        log.info("Request classifiers templates");
-        var classifierTemplates = formTemplateProvider.getTemplates(CLASSIFIERS_GROUP);
-        log.info("[{}] classifiers form templates has been fetched", classifierTemplates.size());
-        return classifierTemplates;
+    public List<FormTemplateGroupDto> getClassifiersTemplates(
+            ClassifierGroupTemplatesType classifierGroupTemplatesType) {
+        log.info("Request classifiers group templates with type [{}]", classifierGroupTemplatesType);
+        var groupTemplates = classifierGroupTemplatesType.getTemplateNames()
+                .stream()
+                .map(formTemplateProvider::getFormGroup)
+                .collect(Collectors.toList());
+        log.info("[{}] classifiers group form templates has been fetched for type [{}]", groupTemplates.size(),
+                classifierGroupTemplatesType);
+        return groupTemplates;
     }
 
     /**
@@ -74,7 +82,8 @@ public class ClassifiersTemplateProvider {
 
     private FormTemplateDto getTemplate(String groupName, String objectClass) {
         log.debug("Gets classifier template by group [{}] and class [{}]", groupName, objectClass);
-        return formTemplateProvider.getTemplates(groupName)
+        return formTemplateProvider.getFormGroup(groupName)
+                .getTemplates()
                 .stream()
                 .filter(formTemplateDto -> formTemplateDto.getObjectClass().equals(objectClass))
                 .findFirst()

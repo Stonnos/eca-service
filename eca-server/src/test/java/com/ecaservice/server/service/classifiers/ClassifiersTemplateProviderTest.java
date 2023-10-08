@@ -1,7 +1,8 @@
 package com.ecaservice.server.service.classifiers;
 
 import com.ecaservice.core.form.template.service.FormTemplateProvider;
-import com.ecaservice.web.dto.model.FormTemplateDto;
+import com.ecaservice.server.dto.ClassifierGroupTemplatesType;
+import com.ecaservice.web.dto.model.FormTemplateGroupDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,7 +11,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
-import java.util.List;
 
 import static com.ecaservice.server.TestHelperUtils.loadClassifiersTemplates;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,17 +33,15 @@ class ClassifiersTemplateProviderTest {
     @Inject
     private ClassifiersTemplateProvider classifiersTemplateProvider;
 
-    private List<FormTemplateDto> templates;
-
     @BeforeEach
     void init() {
-        templates = loadClassifiersTemplates();
-        when(formTemplateProvider.getTemplates(CLASSIFIERS)).thenReturn(templates);
+        FormTemplateGroupDto formTemplateGroupDto = loadClassifiersTemplates();
+        when(formTemplateProvider.getFormGroup(CLASSIFIERS)).thenReturn(formTemplateGroupDto);
     }
 
     @Test
     void testGetTemplates() {
-        var result = classifiersTemplateProvider.getClassifiersTemplates();
-        assertThat(result).hasSameSizeAs(templates);
+        var result = classifiersTemplateProvider.getClassifiersTemplates(ClassifierGroupTemplatesType.INDIVIDUAL);
+        assertThat(result).hasSize(1);
     }
 }

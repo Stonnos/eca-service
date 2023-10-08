@@ -1,8 +1,10 @@
 package com.ecaservice.server.controller.web;
 
+import com.ecaservice.server.dto.ClassifierGroupTemplatesType;
 import com.ecaservice.server.service.classifiers.ClassifiersTemplateProvider;
-import com.ecaservice.web.dto.model.FormTemplateDto;
+import com.ecaservice.web.dto.model.FormTemplateGroupDto;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -17,6 +19,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -42,6 +45,7 @@ public class ClassifiersTemplatesController {
     /**
      * Gets classifiers form templates.
      *
+     * @param classifierGroupTemplatesType - classifier group templates type
      * @return form templates list
      */
     @PreAuthorize("#oauth2.hasScope('web')")
@@ -59,7 +63,7 @@ public class ClassifiersTemplatesController {
                                                     ref = "#/components/examples/ClassifiersTemplatesResponse"
                                             )
                                     },
-                                    array = @ArraySchema(schema = @Schema(implementation = FormTemplateDto.class))
+                                    array = @ArraySchema(schema = @Schema(implementation = FormTemplateGroupDto.class))
                             )
                     ),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
@@ -76,8 +80,10 @@ public class ClassifiersTemplatesController {
             }
     )
     @GetMapping(value = "/list")
-    public List<FormTemplateDto> getClassifiersTemplates() {
-        log.info("Request classifiers templates");
-        return classifiersTemplateProvider.getClassifiersTemplates();
+    public List<FormTemplateGroupDto> getClassifiersTemplates(
+            @Parameter(description = "Classifiers group templates type", required = true)
+            @RequestParam ClassifierGroupTemplatesType classifierGroupTemplatesType) {
+        log.info("Request classifiers group templates [{}]", classifierGroupTemplatesType);
+        return classifiersTemplateProvider.getClassifiersTemplates(classifierGroupTemplatesType);
     }
 }
