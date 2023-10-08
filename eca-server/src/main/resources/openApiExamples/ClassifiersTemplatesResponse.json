@@ -1,6 +1,7 @@
 [
   {
     "groupName": "classifiers",
+    "groupTitle": "Индивидуальные алгоритмы",
     "templates": [
       {
         "templateName": "KNN",
