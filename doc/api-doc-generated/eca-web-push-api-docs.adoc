@@ -403,9 +403,9 @@ a|
   "messageText" : "Поступила новая заявка на эксперимент 1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
   "showMessage" : true,
   "additionalProperties" : {
-    "experimentId" : "1",
-    "experimentRequestId" : "1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
-    "experimentRequestStatus" : "NEW"
+    "id" : "1",
+    "requestId" : "1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
+    "requestStatus" : "NEW"
   }
 }
 ----
