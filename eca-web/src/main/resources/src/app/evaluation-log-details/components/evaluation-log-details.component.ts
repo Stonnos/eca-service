@@ -99,6 +99,7 @@ export class EvaluationLogDetailsComponent implements OnInit, FieldLink {
     this.evaluationLogFields = [
       { name: EvaluationLogFields.REQUEST_ID, label: "UUID заявки:" },
       { name: EvaluationLogFields.REQUEST_STATUS_DESCRIPTION, label: "Статус заявки:" },
+      { name: EvaluationLogFields.CREATED_BY, label: "Пользователь" },
       { name: EvaluationLogFields.RELATION_NAME, label: "Обучающая выборка:" },
       { name: EvaluationLogFields.NUM_INSTANCES, label: "Число объектов:" },
       { name: EvaluationLogFields.NUM_ATTRIBUTES, label: "Число атрибутов:" },
