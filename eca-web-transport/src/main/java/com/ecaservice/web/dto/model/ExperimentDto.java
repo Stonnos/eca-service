@@ -6,7 +6,6 @@ import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
 
-import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_100_STRING;
 import static com.ecaservice.web.dto.util.FieldConstraints.ZERO_VALUE_STRING;
 
@@ -19,12 +18,6 @@ import static com.ecaservice.web.dto.util.FieldConstraints.ZERO_VALUE_STRING;
 @EqualsAndHashCode(callSuper = true)
 @Schema(description = "Experiment model")
 public class ExperimentDto extends AbstractEvaluationDto {
-
-    /**
-     * User name
-     */
-    @Schema(description = "User name", example = "admin", maxLength = MAX_LENGTH_255)
-    private String createdBy;
 
     /**
      * Experiment type
