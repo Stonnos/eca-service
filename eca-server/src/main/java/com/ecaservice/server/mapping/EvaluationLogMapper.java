@@ -68,6 +68,7 @@ public abstract class EvaluationLogMapper extends AbstractEvaluationMapper {
      * @return evaluation web request internal data model
      */
     @Mapping(source = "instancesUuid", target = "dataUuid")
+    @Mapping(target = "channel", constant = "WEB")
     public abstract EvaluationRequestModel map(CreateEvaluationRequestDto createEvaluationRequestDto);
 
     /**
