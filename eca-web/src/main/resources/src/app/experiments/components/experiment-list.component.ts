@@ -249,6 +249,8 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
     if (errorCode) {
       const errorMessage = this.errorCodesMap.get(errorCode);
       this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: errorMessage });
+    } else {
+      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error });
     }
   }
 
