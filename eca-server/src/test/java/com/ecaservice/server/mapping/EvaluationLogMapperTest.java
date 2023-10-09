@@ -17,6 +17,7 @@ import org.mockito.Mockito;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
@@ -32,6 +33,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @ExtendWith(SpringExtension.class)
+@TestPropertySource("classpath:application.properties")
 @Import({EvaluationLogMapperImpl.class, InstancesInfoMapperImpl.class, DateTimeConverter.class,
         ClassifierInfoMapperImpl.class, CrossValidationConfig.class})
 class EvaluationLogMapperTest {
@@ -158,13 +160,29 @@ class EvaluationLogMapperTest {
     }
 
     @Test
-    void testMapCreateEvaluationRequestDto() {
+    void testMapCreateEvaluationRequestDtoWithTrainingDataMethod() {
         var evaluationRequestDto = TestHelperUtils.buildEvaluationRequestDto();
-        var evaluationWebRequestData = evaluationLogMapper.map(evaluationRequestDto);
+        var evaluationWebRequestData =
+                evaluationLogMapper.map(evaluationRequestDto, crossValidationConfig);
         assertThat(evaluationWebRequestData.getEvaluationMethod()).isEqualTo(
                 evaluationRequestDto.getEvaluationMethod());
-        assertThat(evaluationWebRequestData.getDataUuid()).isEqualTo(
+        assertThat(evaluationWebRequestData.getInstancesUuid()).isEqualTo(
                 evaluationRequestDto.getInstancesUuid());
+    }
+
+    @Test
+    void testMapCreateEvaluationRequestDtoWithCrossValidationMethod() {
+        var evaluationRequestDto = TestHelperUtils.buildEvaluationRequestDto();
+        evaluationRequestDto.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
+        var evaluationRequestModel =
+                evaluationLogMapper.map(evaluationRequestDto, crossValidationConfig);
+        assertThat(evaluationRequestModel.getEvaluationMethod()).isEqualTo(
+                evaluationRequestDto.getEvaluationMethod());
+        assertThat(evaluationRequestModel.getInstancesUuid()).isEqualTo(
+                evaluationRequestDto.getInstancesUuid());
+        assertThat(evaluationRequestModel.getNumFolds()).isEqualTo(crossValidationConfig.getNumFolds());
+        assertThat(evaluationRequestModel.getNumTests()).isEqualTo(crossValidationConfig.getNumTests());
+        assertThat(evaluationRequestModel.getSeed()).isEqualTo(crossValidationConfig.getSeed());
     }
 
     private void assertEvaluationLogDto(EvaluationLogDto evaluationLogDto, EvaluationLog evaluationLog) {

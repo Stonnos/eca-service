@@ -13,6 +13,7 @@ import org.mockito.Mockito;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
@@ -32,6 +33,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @ExtendWith(SpringExtension.class)
+@TestPropertySource("classpath:application.properties")
 @Import({ExperimentMapperImpl.class, CrossValidationConfig.class, DateTimeConverter.class,
         InstancesInfoMapperImpl.class})
 class ExperimentMapperTest {
