@@ -1,12 +1,13 @@
-import { Component, Injector } from '@angular/core';
+import {Component, Injector, OnDestroy} from '@angular/core';
 import {
+  CreateEvaluationResponseDto,
   EvaluationLogDto,
   FilterDictionaryDto,
   FilterDictionaryValueDto,
   FilterFieldDto, FormTemplateDto,
   FormTemplateGroupDto,
   PageDto,
-  PageRequestDto,
+  PageRequestDto, PushRequestDto,
   RequestStatusStatisticsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ClassifiersService } from "../services/classifiers.service";
@@ -32,15 +33,36 @@ import { ClassifierGroupTemplatesType } from "../../form-templates/model/classif
 import { FormField } from "../../form-templates/model/form-template.model";
 import { EvaluationRequest } from "../../create-classifier/model/evaluation-request.model";
 import { CreateEvaluationRequestDto } from "../../create-classifier/model/create-evaluation-request.model";
+import { Logger } from "../../common/util/logging";
+import { finalize } from "rxjs/internal/operators";
+import { ErrorHandler } from "../../common/services/error-handler";
+import { ValidationErrorCode } from "../../common/model/validation-error-code";
+import { Subscription } from "rxjs";
+import { PushMessageType } from "../../common/util/push-message.type";
+import { PushVariables } from "../../common/util/push-variables";
+import { PushService } from "../../common/push/push.service";
 
 @Component({
   selector: 'app-classifier-list',
   templateUrl: './classifier-list.component.html',
   styleUrls: ['./classifier-list.component.scss']
 })
-export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto> {
+export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto> implements OnDestroy {
 
   private static readonly EVALUATION_LOGS_REPORT_FILE_NAME = 'evaluation-logs-report.xlsx';
+
+  private readonly errorCodes: string[] = [
+    ValidationErrorCode.CLASS_ATTRIBUTE_NOT_SELECTED,
+    ValidationErrorCode.INSTANCES_NOT_FOUND,
+    ValidationErrorCode.SELECTED_ATTRIBUTES_NUMBER_IS_TOO_LOW,
+    ValidationErrorCode.CLASS_VALUES_IS_TOO_LOW
+  ];
+
+  private readonly errorCodesMap = new Map<string, string>()
+    .set(ValidationErrorCode.CLASS_ATTRIBUTE_NOT_SELECTED, 'Не выбран атрибут класса для заданной обучающей выборки')
+    .set(ValidationErrorCode.INSTANCES_NOT_FOUND, 'Обучающая выборка не найдена')
+    .set(ValidationErrorCode.SELECTED_ATTRIBUTES_NUMBER_IS_TOO_LOW, 'Выберите не менее двух атрибутов классификации')
+    .set(ValidationErrorCode.CLASS_VALUES_IS_TOO_LOW, 'Число классов должно быть не менее двух');
 
   public requestStatusStatisticsDto: RequestStatusStatisticsDto;
 
@@ -59,6 +81,8 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
 
   public createClassifierDialogVisibility: boolean = false;
 
+  private evaluationUpdatesSubscriptions: Subscription;
+
   public constructor(private injector: Injector,
                      private classifiersService: ClassifiersService,
                      private filterService: FilterService,
@@ -66,6 +90,8 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
                      private instancesInfoService: InstancesInfoService,
                      private formTemplatesService: FormTemplatesService,
                      private formTemplatesMapper: FormTemplatesMapper,
+                     private errorHandler: ErrorHandler,
+                     private pushService: PushService,
                      private router: Router) {
     super(injector.get(MessageService), injector.get(FieldService));
     this.defaultSortField = EvaluationLogFields.CREATION_DATE;
@@ -82,6 +108,13 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
     this.getRequestStatusesStatistics();
     this.getEvaluationMethods();
     this.getClassifierTemplateGroups();
+    this.subscribeForCurrentUserEvaluationUpdates();
+  }
+
+  public ngOnDestroy(): void {
+    if (this.evaluationUpdatesSubscriptions) {
+      this.evaluationUpdatesSubscriptions.unsubscribe();
+    }
   }
 
   public getFilterFields() {
@@ -170,7 +203,59 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
       this.selectedClassifierTemplate);
     const createEvaluationRequest =
       new CreateEvaluationRequestDto(evaluationRequest.instancesUuid, classifierOptions, evaluationRequest.evaluationMethod.value);
-    console.log(createEvaluationRequest);
+    this.classifiersService.createEvaluationRequest(createEvaluationRequest)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe({
+        next: (createEvaluationResponseDto: CreateEvaluationResponseDto) => {
+          this.handleEvaluationRequestCreated(createEvaluationResponseDto);
+        },
+        error: (error) => {
+          this.handleCreateEvaluationRequestError(error);
+        }
+      });
+  }
+
+  private handleCreateEvaluationRequestError(error): void {
+    const errorCode = this.errorHandler.getFirstErrorCode(error, this.errorCodes);
+    if (errorCode) {
+      const errorMessage = this.errorCodesMap.get(errorCode);
+      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: errorMessage });
+    }
+  }
+
+  private handleEvaluationRequestCreated(createEvaluationResponseDto: CreateEvaluationResponseDto): void {
+    Logger.debug(`Evaluation request ${createEvaluationResponseDto.requestId} has been created`);
+    if (!this.lastCreatedId) {
+      this.lastCreatedId = createEvaluationResponseDto.id;
+      this.getRequestStatusesStatistics();
+      this.reloadPageWithLoader();
+    }
+  }
+
+  private subscribeForCurrentUserEvaluationUpdates(): void {
+    const filterPredicate = (pushRequestDto: PushRequestDto) =>
+      pushRequestDto.pushType == 'USER_NOTIFICATION' && pushRequestDto.messageType == PushMessageType.EVALUATION_STATUS_CHANGE;
+    this.evaluationUpdatesSubscriptions = this.pushService.pushMessageSubscribe(filterPredicate)
+      .subscribe({
+        next: (pushRequestDto: PushRequestDto) => {
+          if (!this.lastCreatedId) {
+            this.lastCreatedId = pushRequestDto.additionalProperties[PushVariables.EVALUATION_ID];
+            this.reloadDataQuietly();
+          }
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
+  }
+
+  private reloadDataQuietly(): void {
+    this.reloadPage(false);
+    this.getRequestStatusesStatistics();
   }
 
   private getClassifierTemplateGroups(): void {

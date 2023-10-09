@@ -1,24 +1,25 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {
   EvaluationLogDetailsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ClassifiersService } from "../../classifiers/services/classifiers.service";
 import { MessageService } from "primeng/api";
-import { ActivatedRoute } from "@angular/router";
-import { finalize } from "rxjs/internal/operators";
+import { ActivatedRoute, NavigationEnd, Router, RouterEvent } from "@angular/router";
+import { filter, finalize} from "rxjs/internal/operators";
 import { EvaluationLogFields } from "../../common/util/field-names";
 import { FieldService } from "../../common/services/field.service";
 import { Utils } from "../../common/util/utils";
 import { FieldLink } from "../../common/model/field-link";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: 'app-evaluation-log-details',
   templateUrl: './evaluation-log-details.component.html',
   styleUrls: ['./evaluation-log-details.component.scss']
 })
-export class EvaluationLogDetailsComponent implements OnInit, FieldLink {
+export class EvaluationLogDetailsComponent implements OnInit, OnDestroy, FieldLink {
 
-  private readonly id: number;
+  private id: number;
 
   public evaluationLogFields: any[] = [];
   public loading: boolean = false;
@@ -29,9 +30,12 @@ export class EvaluationLogDetailsComponent implements OnInit, FieldLink {
 
   public evaluationLogDetails: EvaluationLogDetailsDto;
 
+  private routeUpdateSubscription: Subscription;
+
   public constructor(private classifiersService: ClassifiersService,
                      private messageService: MessageService,
                      private route: ActivatedRoute,
+                     private router: Router,
                      private fieldService: FieldService) {
     this.id = this.route.snapshot.params.id;
     this.initEvaluationLogFields();
@@ -39,6 +43,11 @@ export class EvaluationLogDetailsComponent implements OnInit, FieldLink {
 
   public ngOnInit(): void {
     this.getEvaluationLogDetails();
+    this.subscribeForRouteChanges();
+  }
+
+  public ngOnDestroy(): void {
+    this.routeUpdateSubscription.unsubscribe();
   }
 
   public getEvaluationLogDetails(): void {
@@ -93,6 +102,17 @@ export class EvaluationLogDetailsComponent implements OnInit, FieldLink {
 
   public showProgressBar(field: string): boolean {
     return field == EvaluationLogFields.MODEL_PATH && this.modelLoading;
+  }
+
+  private subscribeForRouteChanges(): void {
+    //Subscribe for route changes in current details component
+    //Used for route from experiment details to another experiment details via push
+    this.routeUpdateSubscription = this.router.events.pipe(
+      filter((event: RouterEvent) => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      this.id = this.route.snapshot.params.id;
+      this.getEvaluationLogDetails();
+    });
   }
 
   private initEvaluationLogFields(): void {
