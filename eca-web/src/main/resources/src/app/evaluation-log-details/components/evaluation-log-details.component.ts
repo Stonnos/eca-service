@@ -53,7 +53,7 @@ export class EvaluationLogDetailsComponent implements OnInit, OnDestroy, FieldLi
   }
 
   public ngOnInit(): void {
-    this.getEvaluationLogDetails();
+    this.getEvaluationLogDetails(true);
     this.subscribeForRouteChanges();
   }
 
@@ -62,8 +62,8 @@ export class EvaluationLogDetailsComponent implements OnInit, OnDestroy, FieldLi
     this.evaluationUpdatesSubscription.unsubscribe();
   }
 
-  public getEvaluationLogDetails(): void {
-    this.loading = true;
+  public getEvaluationLogDetails(loading: boolean): void {
+    this.loading = loading;
     this.classifiersService.getEvaluationLogDetails(this.id)
       .pipe(
         finalize(() => {
@@ -133,7 +133,7 @@ export class EvaluationLogDetailsComponent implements OnInit, OnDestroy, FieldLi
 
   private subscribeForEvaluationUpdate(): void {
     if (!this.evaluationUpdatesSubscription) {
-      Logger.debug(`Subscribe experiment ${this.evaluationLogDetails.requestId} status change`);
+      Logger.debug(`Subscribe evaluation ${this.evaluationLogDetails.requestId} status change`);
       const filterPredicate = (pushRequestDto: PushRequestDto) => {
         if (pushRequestDto.pushType == 'USER_NOTIFICATION' && pushRequestDto.messageType == PushMessageType.EVALUATION_STATUS_CHANGE) {
           const id = pushRequestDto.additionalProperties[PushVariables.EVALUATION_ID];
@@ -146,7 +146,7 @@ export class EvaluationLogDetailsComponent implements OnInit, OnDestroy, FieldLi
           next: (pushRequestDto: PushRequestDto) => {
             this.handleEvaluationStatusPush(pushRequestDto);
             this.blink = true;
-            this.getEvaluationLogDetails();
+            this.getEvaluationLogDetails(false);
           },
           error: (error) => {
             this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
@@ -157,13 +157,13 @@ export class EvaluationLogDetailsComponent implements OnInit, OnDestroy, FieldLi
 
   private subscribeForRouteChanges(): void {
     //Subscribe for route changes in current details component
-    //Used for route from experiment details to another experiment details via push
+    //Used for route from evaluation log details to another evaluation log details via push
     this.routeUpdateSubscription = this.router.events.pipe(
       filter((event: RouterEvent) => event instanceof NavigationEnd)
     ).subscribe(() => {
       this.id = this.route.snapshot.params.id;
       this.blink = false;
-      this.getEvaluationLogDetails();
+      this.getEvaluationLogDetails(true);
     });
   }
 
@@ -171,7 +171,7 @@ export class EvaluationLogDetailsComponent implements OnInit, OnDestroy, FieldLi
     if (this.evaluationUpdatesSubscription) {
       this.evaluationUpdatesSubscription.unsubscribe();
       this.evaluationUpdatesSubscription = null;
-      Logger.debug(`Unsubscribe experiment ${this.evaluationLogDetails.requestId} status change`);
+      Logger.debug(`Unsubscribe evaluation ${this.evaluationLogDetails.requestId} status change`);
     }
   }
 
