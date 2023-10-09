@@ -59,7 +59,7 @@ export class EvaluationLogDetailsComponent implements OnInit, OnDestroy, FieldLi
 
   public ngOnDestroy(): void {
     this.routeUpdateSubscription.unsubscribe();
-    this.evaluationUpdatesSubscription.unsubscribe();
+    this.unSubscribeEvaluationUpdates();
   }
 
   public getEvaluationLogDetails(loading: boolean): void {
