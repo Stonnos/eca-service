@@ -28,10 +28,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import static com.ecaservice.common.web.util.LogHelper.EV_REQUEST_ID;
-import static com.ecaservice.common.web.util.LogHelper.TX_ID;
-import static com.ecaservice.common.web.util.LogHelper.putMdc;
-import static com.ecaservice.common.web.util.LogHelper.putMdcIfAbsent;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.parseOptions;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.toJsonString;
 import static com.ecaservice.server.util.Utils.buildClassificationModel;
@@ -92,24 +88,6 @@ public class EvaluationRequestService {
     }
 
     /**
-     * Processes input request and returns classification results.
-     *
-     * @param evaluationRequestDataModel - evaluation request data model
-     * @return evaluation response data model
-     */
-    public EvaluationResultsDataModel createAndProcessEvaluationRequest(
-            EvaluationRequestData evaluationRequestDataModel) {
-        putMdcIfAbsent(TX_ID, evaluationRequestDataModel.getRequestId());
-        putMdc(EV_REQUEST_ID, evaluationRequestDataModel.getRequestId());
-        log.info("Starting to create and process request for classifier [{}] evaluation with data uuid [{}]",
-                evaluationRequestDataModel.getClassifier().getClass().getSimpleName(),
-                evaluationRequestDataModel.getDataUuid());
-        EvaluationLog evaluationLog = createAndSaveEvaluationRequest(evaluationRequestDataModel);
-        startEvaluationRequest(evaluationLog);
-        return processEvaluationRequest(evaluationLog);
-    }
-
-    /**
      * Processes classifier evaluation.
      *
      * @param evaluationLog - evaluation log
@@ -160,11 +138,11 @@ public class EvaluationRequestService {
             throws IOException, ExecutionException, InterruptedException, TimeoutException {
         var evaluationResults = evaluationModel(classifier, data, evaluationLog);
         uploadModel(evaluationResults, evaluationLog);
+        String modelUrl = getModelPresignedUrl(evaluationLog.getModelPath());
         processEvaluationResults(evaluationResults, evaluationLog);
         EvaluationResultsDataModel evaluationResultsDataModel =
                 buildEvaluationResultsModel(evaluationLog.getRequestId(), RequestStatus.FINISHED);
         evaluationResultsDataModel.setEvaluationResults(evaluationResults);
-        String modelUrl = getModelPresignedUrl(evaluationLog.getModelPath());
         evaluationResultsDataModel.setModelUrl(modelUrl);
         log.info("Evaluation request [{}] has been successfully finished.", evaluationLog.getRequestId());
         return evaluationResultsDataModel;
