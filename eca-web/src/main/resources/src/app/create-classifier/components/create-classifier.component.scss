@@ -1,0 +1,20 @@
+.classifier-options-fieldset::ng-deep {
+
+  .ui-fieldset {
+    margin: 8px 3px 3px 3px;
+    border: 0.5px solid darkgrey;
+  }
+
+  .ui-fieldset-legend {
+    font-weight: bold;
+    font-size: 14px;
+    border: 1px solid;
+  }
+}
+
+.form-template-panel {
+  width: 100%;
+  max-height: 500px;
+  overflow-y: scroll;
+}
+

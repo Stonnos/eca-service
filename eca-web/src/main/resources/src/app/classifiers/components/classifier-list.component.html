@@ -1,6 +1,9 @@
 <div class="container-fluid mb-5">
   <div class="row search-content mt-2">
-    <div class="col-6 justify-content-start">
+    <div class="col-3 justify-content-start">
+      <p-menubar class="classifier-options-menu ml-2 mt-2 mb-2" [model]="classifierOptionsMenu"></p-menubar>
+    </div>
+    <div class="col-3 justify-content-start">
       <button
         pButton
         label="Сформировать отчет"
@@ -103,3 +106,13 @@
     </ng-container>
   </p-overlayPanel>
 </div>
+
+<app-create-classifier
+  [item]="evaluationRequest"
+  [evaluationMethods]="evaluationMethods"
+  [visible]="createClassifierDialogVisibility"
+  [classifierTemplate]="selectedClassifierTemplate"
+  [classifierOptionsFields]="selectedClassifierFormFields"
+  (visibilityChange)="onCreateClassifierDialogVisibility($event)"
+  (itemEvent)="onCreateClassifier($event)">
+</app-create-classifier>

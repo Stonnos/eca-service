@@ -38,3 +38,29 @@
     overflow-y: scroll;
   }
 }
+
+.classifier-options-menu::ng-deep {
+
+  .ui-menubar {
+    border: none;
+    background: inherit;
+  }
+
+  .main-menu-item {
+    background: #e0e0e0;
+  }
+
+  .menu-item {
+    text-align: start;
+    align-content: center;
+    justify-content: start;
+    width: 300px;
+  }
+
+  .classifier-menu-item {
+    text-align: start;
+    align-content: center;
+    justify-content: start;
+    width: 375px;
+  }
+}

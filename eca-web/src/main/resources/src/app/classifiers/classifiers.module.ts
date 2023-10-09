@@ -7,6 +7,7 @@ import { ClassifiersService } from "./services/classifiers.service";
 import { FilterModule } from "../filter/filter.module";
 import { RequestStatusesStatisticsModule } from "../request-statuses-statistics/request-statuses-statistics.module";
 import { SharedModule } from "../common/shared.module";
+import { CreateClassifierModule } from "../create-classifier/create-classifier.module";
 
 @NgModule({
     imports: [
@@ -15,7 +16,8 @@ import { SharedModule } from "../common/shared.module";
         FormsModule,
         UiComponentsModule,
         FilterModule,
-        RequestStatusesStatisticsModule
+        RequestStatusesStatisticsModule,
+        CreateClassifierModule
     ],
     declarations: [
         ClassifierListComponent

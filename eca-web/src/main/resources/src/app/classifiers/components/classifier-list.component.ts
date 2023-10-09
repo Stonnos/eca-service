@@ -1,8 +1,13 @@
 import { Component, Injector } from '@angular/core';
 import {
-  EvaluationLogDto, FilterFieldDto,
+  EvaluationLogDto,
+  FilterDictionaryDto,
+  FilterDictionaryValueDto,
+  FilterFieldDto, FormTemplateDto,
+  FormTemplateGroupDto,
   PageDto,
-  PageRequestDto, RequestStatusStatisticsDto
+  PageRequestDto,
+  RequestStatusStatisticsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ClassifiersService } from "../services/classifiers.service";
 import { OverlayPanel } from "primeng/primeng";
@@ -16,11 +21,17 @@ import { ReportsService } from "../../common/services/report.service";
 import { ReportType } from "../../common/model/report-type.enum";
 import { InstancesInfoService } from "../../common/instances-info/services/instances-info.service";
 import { BaseListComponent } from "../../common/lists/base-list.component";
-import { MessageService } from "primeng/api";
+import { MenuItem, MessageService } from "primeng/api";
 import { FieldService } from "../../common/services/field.service";
 import { InstancesInfoFilterValueTransformer } from "../../filter/autocomplete/transformer/instances-info-filter-value-transformer";
 import { InstancesInfoAutocompleteHandler } from "../../filter/autocomplete/handler/instances-info-autocomplete-handler";
 import { EvaluationLogFilterFields } from "../../common/util/filter-field-names";
+import { FormTemplatesService } from "../../form-templates/services/form-templates.service";
+import { FormTemplatesMapper } from "../../form-templates/services/form-templates.mapper";
+import { ClassifierGroupTemplatesType } from "../../form-templates/model/classifier-group-templates.type";
+import { FormField } from "../../form-templates/model/form-template.model";
+import { EvaluationRequest } from "../../create-classifier/model/evaluation-request.model";
+import { CreateEvaluationRequestDto } from "../../create-classifier/model/create-evaluation-request.model";
 
 @Component({
   selector: 'app-classifier-list',
@@ -36,11 +47,25 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
   public selectedEvaluationLog: EvaluationLogDto;
   public selectedColumn: string;
 
+  public evaluationMethods: FilterDictionaryValueDto[] = [];
+
+  public classifierTemplateGroups: FormTemplateGroupDto[] = [];
+
+  public classifierOptionsMenu: MenuItem[] = [];
+
+  public selectedClassifierTemplate: FormTemplateDto;
+  public selectedClassifierFormFields: FormField[] = [];
+  public evaluationRequest: EvaluationRequest = new EvaluationRequest();
+
+  public createClassifierDialogVisibility: boolean = false;
+
   public constructor(private injector: Injector,
                      private classifiersService: ClassifiersService,
                      private filterService: FilterService,
                      private reportsService: ReportsService,
                      private instancesInfoService: InstancesInfoService,
+                     private formTemplatesService: FormTemplatesService,
+                     private formTemplatesMapper: FormTemplatesMapper,
                      private router: Router) {
     super(injector.get(MessageService), injector.get(FieldService));
     this.defaultSortField = EvaluationLogFields.CREATION_DATE;
@@ -55,6 +80,8 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
     this.addAutoCompleteHandler(new InstancesInfoAutocompleteHandler(this.instancesInfoService, this.messageService));
     this.getFilterFields();
     this.getRequestStatusesStatistics();
+    this.getEvaluationMethods();
+    this.getClassifierTemplateGroups();
   }
 
   public getFilterFields() {
@@ -120,6 +147,84 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
     this.selectedEvaluationLog = evaluationLog;
     this.selectedColumn = column;
     overlayPanel.toggle(event);
+  }
+
+  public getEvaluationMethods(): void {
+    this.filterService.getEvaluationMethodDictionary()
+      .subscribe({
+        next: (filterDictionary: FilterDictionaryDto) => {
+          this.evaluationMethods = filterDictionary.values;
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
+  }
+
+  public onCreateClassifierDialogVisibility(visible): void {
+    this.createClassifierDialogVisibility = visible;
+  }
+
+  public onCreateClassifier(evaluationRequest: EvaluationRequest): void {
+    const classifierOptions = this.formTemplatesMapper.mapToClassifierOptionsObject(evaluationRequest.classifierOptions,
+      this.selectedClassifierTemplate);
+    const createEvaluationRequest =
+      new CreateEvaluationRequestDto(evaluationRequest.instancesUuid, classifierOptions, evaluationRequest.evaluationMethod.value);
+    console.log(createEvaluationRequest);
+  }
+
+  private getClassifierTemplateGroups(): void {
+    this.formTemplatesService.getClassifiersFormTemplates(ClassifierGroupTemplatesType.ALL)
+      .subscribe({
+        next: (templateGroups: FormTemplateGroupDto[]) => {
+          this.classifierTemplateGroups = templateGroups;
+          this.initClassifiersMenu();
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
+  }
+
+  private initClassifiersMenu(): void {
+    if (this.classifierTemplateGroups) {
+      const items: MenuItem[] = [];
+      this.classifierTemplateGroups.forEach((templatesGroup: FormTemplateGroupDto) => {
+        const groupItems: MenuItem[] = this.initClassifierGroupTemplates(templatesGroup);
+        const groupItem = {
+          label: templatesGroup.groupTitle,
+          styleClass: 'menu-item',
+          items: groupItems
+        };
+        items.push(groupItem);
+      });
+      this.classifierOptionsMenu = [
+        {
+          label: 'Новый классификатор',
+          icon: 'pi pi-plus',
+          styleClass: 'main-menu-item',
+          items: items
+        }
+      ];
+      console.log('init menu');
+      console.log(items.length);
+    }
+  }
+
+  private initClassifierGroupTemplates(templatesGroup: FormTemplateGroupDto): MenuItem[] {
+    return templatesGroup.templates.map((template: FormTemplateDto) => {
+      return {
+        label: template.templateTitle,
+        styleClass: 'menu-item',
+        command: () => {
+          this.selectedClassifierTemplate = template;
+          this.selectedClassifierFormFields = this.formTemplatesMapper.mapToFormFields(template.fields);
+          this.evaluationRequest = new EvaluationRequest();
+          this.evaluationRequest.classifierOptions = this.selectedClassifierFormFields;
+          this.createClassifierDialogVisibility = true;
+        }
+      };
+    });
   }
 
   private initColumns() {
