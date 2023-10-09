@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {
-  EvaluationLogDetailsDto
+  EvaluationLogDetailsDto, PushRequestDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ClassifiersService } from "../../classifiers/services/classifiers.service";
 import { MessageService } from "primeng/api";
@@ -11,6 +11,10 @@ import { FieldService } from "../../common/services/field.service";
 import { Utils } from "../../common/util/utils";
 import { FieldLink } from "../../common/model/field-link";
 import { Subscription } from "rxjs";
+import { Logger} from "../../common/util/logging";
+import { PushMessageType } from "../../common/util/push-message.type";
+import { PushVariables } from "../../common/util/push-variables";
+import { PushService } from "../../common/push/push.service";
 
 @Component({
   selector: 'app-evaluation-log-details',
@@ -18,6 +22,8 @@ import { Subscription } from "rxjs";
   styleUrls: ['./evaluation-log-details.component.scss']
 })
 export class EvaluationLogDetailsComponent implements OnInit, OnDestroy, FieldLink {
+
+  private readonly finalRequestStatuses = ['FINISHED', 'ERROR', 'TIMEOUT'];
 
   private id: number;
 
@@ -32,10 +38,15 @@ export class EvaluationLogDetailsComponent implements OnInit, OnDestroy, FieldLi
 
   private routeUpdateSubscription: Subscription;
 
+  public blink = false;
+
+  private evaluationUpdatesSubscription: Subscription;
+
   public constructor(private classifiersService: ClassifiersService,
                      private messageService: MessageService,
                      private route: ActivatedRoute,
                      private router: Router,
+                     private pushService: PushService,
                      private fieldService: FieldService) {
     this.id = this.route.snapshot.params.id;
     this.initEvaluationLogFields();
@@ -48,6 +59,7 @@ export class EvaluationLogDetailsComponent implements OnInit, OnDestroy, FieldLi
 
   public ngOnDestroy(): void {
     this.routeUpdateSubscription.unsubscribe();
+    this.evaluationUpdatesSubscription.unsubscribe();
   }
 
   public getEvaluationLogDetails(): void {
@@ -61,6 +73,9 @@ export class EvaluationLogDetailsComponent implements OnInit, OnDestroy, FieldLi
       .subscribe({
         next: (evaluationLogDetails: EvaluationLogDetailsDto) => {
           this.evaluationLogDetails = evaluationLogDetails;
+          if (!this.finalRequestStatuses.includes(this.evaluationLogDetails.requestStatus.value)) {
+            this.subscribeForEvaluationUpdate();
+          }
         },
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
@@ -84,6 +99,11 @@ export class EvaluationLogDetailsComponent implements OnInit, OnDestroy, FieldLi
     return this.linkColumns.includes(field);
   }
 
+  public isRequestStatusBlink(field: string, requestStatus: string): boolean {
+    return this.blink && field == 'requestStatus.description' && this.evaluationLogDetails
+      && this.evaluationLogDetails.requestStatus.value == requestStatus;
+  }
+
   public onLink(field: string) {
     if (field === EvaluationLogFields.MODEL_PATH) {
       this.downloadModel();
@@ -104,6 +124,37 @@ export class EvaluationLogDetailsComponent implements OnInit, OnDestroy, FieldLi
     return field == EvaluationLogFields.MODEL_PATH && this.modelLoading;
   }
 
+  private handleEvaluationStatusPush(pushRequestDto: PushRequestDto): void {
+    const requestStatus = pushRequestDto.additionalProperties[PushVariables.EVALUATION_REQUEST_STATUS];
+    if (this.finalRequestStatuses.includes(requestStatus)) {
+      this.unSubscribeEvaluationUpdates();
+    }
+  }
+
+  private subscribeForEvaluationUpdate(): void {
+    if (!this.evaluationUpdatesSubscription) {
+      Logger.debug(`Subscribe experiment ${this.evaluationLogDetails.requestId} status change`);
+      const filterPredicate = (pushRequestDto: PushRequestDto) => {
+        if (pushRequestDto.pushType == 'USER_NOTIFICATION' && pushRequestDto.messageType == PushMessageType.EVALUATION_STATUS_CHANGE) {
+          const id = pushRequestDto.additionalProperties[PushVariables.EVALUATION_ID];
+          return this.evaluationLogDetails.id == Number(id);
+        }
+        return false;
+      };
+      this.evaluationUpdatesSubscription = this.pushService.pushMessageSubscribe(filterPredicate)
+        .subscribe({
+          next: (pushRequestDto: PushRequestDto) => {
+            this.handleEvaluationStatusPush(pushRequestDto);
+            this.blink = true;
+            this.getEvaluationLogDetails();
+          },
+          error: (error) => {
+            this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+          }
+        });
+    }
+  }
+
   private subscribeForRouteChanges(): void {
     //Subscribe for route changes in current details component
     //Used for route from experiment details to another experiment details via push
@@ -111,8 +162,17 @@ export class EvaluationLogDetailsComponent implements OnInit, OnDestroy, FieldLi
       filter((event: RouterEvent) => event instanceof NavigationEnd)
     ).subscribe(() => {
       this.id = this.route.snapshot.params.id;
+      this.blink = false;
       this.getEvaluationLogDetails();
     });
+  }
+
+  private unSubscribeEvaluationUpdates(): void {
+    if (this.evaluationUpdatesSubscription) {
+      this.evaluationUpdatesSubscription.unsubscribe();
+      this.evaluationUpdatesSubscription = null;
+      Logger.debug(`Unsubscribe experiment ${this.evaluationLogDetails.requestId} status change`);
+    }
   }
 
   private initEvaluationLogFields(): void {
