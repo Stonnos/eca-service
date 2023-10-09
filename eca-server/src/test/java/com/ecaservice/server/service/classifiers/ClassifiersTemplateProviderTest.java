@@ -1,6 +1,7 @@
 package com.ecaservice.server.service.classifiers;
 
 import com.ecaservice.core.form.template.service.FormTemplateProvider;
+import com.ecaservice.server.config.ClassifiersProperties;
 import com.ecaservice.server.dto.ClassifierGroupTemplatesType;
 import com.ecaservice.web.dto.model.FormTemplateGroupDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +23,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @ExtendWith(SpringExtension.class)
-@Import(ClassifiersTemplateProvider.class)
+@Import({ClassifiersTemplateProvider.class, ClassifiersProperties.class})
 class ClassifiersTemplateProviderTest {
 
     private static final String CLASSIFIERS = "classifiers";
@@ -36,7 +37,7 @@ class ClassifiersTemplateProviderTest {
     @BeforeEach
     void init() {
         FormTemplateGroupDto formTemplateGroupDto = loadClassifiersTemplates();
-        when(formTemplateProvider.getFormGroup(CLASSIFIERS)).thenReturn(formTemplateGroupDto);
+        when(formTemplateProvider.getFormGroupDto(CLASSIFIERS)).thenReturn(formTemplateGroupDto);
     }
 
     @Test

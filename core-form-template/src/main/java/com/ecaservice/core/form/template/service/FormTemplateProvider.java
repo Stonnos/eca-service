@@ -27,7 +27,7 @@ public class FormTemplateProvider {
     private final FormTemplateMapper formTemplateMapper;
     private final FormTemplateGroupRepository formTemplateGroupRepository;
 
-    private LoadingCache<String, FormTemplateGroupDto> templatesCache;
+    private LoadingCache<String, FormTemplateGroupEntity> templatesCache;
 
     /**
      * Initialize cache.
@@ -41,29 +41,40 @@ public class FormTemplateProvider {
     }
 
     /**
-     * Gets form templates for specified group.
+     * Gets form templates dto for specified group.
      *
      * @param groupName - group name
      * @return form templates
      */
-    public FormTemplateGroupDto getFormGroup(String groupName) {
-        log.debug("Gets form templates for group [{}]", groupName);
-        var formTemplateGroupDto = templatesCache.getUnchecked(groupName);
-        log.debug("[{}] form group [{}] templates has been fetched", groupName,
-                formTemplateGroupDto.getTemplates().size());
-        return formTemplateGroupDto;
+    public FormTemplateGroupDto getFormGroupDto(String groupName) {
+        var formTemplateGroupEntity = getFormGroup(groupName);
+        return formTemplateMapper.map(formTemplateGroupEntity);
     }
 
-    private CacheLoader<String, FormTemplateGroupDto> createCacheLoader() {
+    /**
+     * Gets form templates entity for specified group.
+     *
+     * @param groupName - group name
+     * @return form templates
+     */
+    public FormTemplateGroupEntity getFormGroup(String groupName) {
+        log.debug("Gets form templates for group [{}]", groupName);
+        var formTemplateGroupEntity = templatesCache.getUnchecked(groupName);
+        log.debug("[{}] form group [{}] templates has been fetched", groupName,
+                formTemplateGroupEntity.getTemplates().size());
+        return formTemplateGroupEntity;
+    }
+
+    private CacheLoader<String, FormTemplateGroupEntity> createCacheLoader() {
         return new CacheLoader<>() {
             @Override
-            public FormTemplateGroupDto load(String groupName) {
+            public FormTemplateGroupEntity load(String groupName) {
                 log.info("Gets form templates group [{}] from db", groupName);
                 var formTemplateGroupEntity = formTemplateGroupRepository.findByGroupName(groupName)
                         .orElseThrow(() -> new EntityNotFoundException(FormTemplateGroupEntity.class, groupName));
                 log.info("[{}] group [{}] form templates has been fetched from db", groupName,
                         formTemplateGroupEntity.getTemplates().size());
-                return formTemplateMapper.map(formTemplateGroupEntity);
+                return formTemplateGroupEntity;
             }
         };
     }

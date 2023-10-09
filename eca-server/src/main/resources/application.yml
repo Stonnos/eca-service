@@ -107,6 +107,7 @@ classifiers:
   ## Scheduler delay in seconds
   delaySeconds: 3
   maxRequestsPerJob: 25
+  notSupportedClassifierTemplates: ADA_BOOST, HETEROGENEOUS_CLASSIFIER, STACKING
 
 ## Experiment properties
 experiment:
