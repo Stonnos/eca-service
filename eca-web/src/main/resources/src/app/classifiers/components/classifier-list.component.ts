@@ -204,10 +204,16 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
           icon: 'pi pi-plus',
           styleClass: 'main-menu-item',
           items: items
+        },
+        {
+          label: 'Сформировать отчет',
+          icon: 'pi pi-file',
+          styleClass: 'main-menu-item',
+          command: () => {
+            this.generateReport();
+          }
         }
       ];
-      console.log('init menu');
-      console.log(items.length);
     }
   }
 
@@ -215,7 +221,7 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
     return templatesGroup.templates.map((template: FormTemplateDto) => {
       return {
         label: template.templateTitle,
-        styleClass: 'menu-item',
+        styleClass: 'classifier-menu-item',
         command: () => {
           this.selectedClassifierTemplate = template;
           this.selectedClassifierFormFields = this.formTemplatesMapper.mapToFormFields(template.fields);

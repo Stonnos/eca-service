@@ -1,17 +1,7 @@
 <div class="container-fluid mb-5">
   <div class="row search-content mt-2">
-    <div class="col-3 justify-content-start">
-      <p-menubar class="classifier-options-menu ml-2 mt-2 mb-2" [model]="classifierOptionsMenu"></p-menubar>
-    </div>
-    <div class="col-3 justify-content-start">
-      <button
-        pButton
-        label="Сформировать отчет"
-        icon="pi pi-file"
-        type="button"
-        (click)="generateReport()"
-        class="ml-2 mt-2 mb-2">
-      </button>
+    <div class="col-6">
+      <p-menubar class="classifier-options-menu" [model]="classifierOptionsMenu"></p-menubar>
     </div>
     <div class="col-6">
       <app-search-query (search)="onSearch($event)">
