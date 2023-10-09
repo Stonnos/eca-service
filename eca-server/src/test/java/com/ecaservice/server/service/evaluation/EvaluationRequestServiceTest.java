@@ -122,8 +122,7 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
         when(objectStorageService.getObjectPresignedProxyUrl(any(GetPresignedUrlObject.class)))
                 .thenReturn(MODEL_DOWNLOAD_URL);
         EvaluationRequestData request = TestHelperUtils.createEvaluationRequestData();
-        var evaluationResultsDataModel =
-                evaluationRequestService.createAndProcessEvaluationRequest(request);
+        var evaluationResultsDataModel = createAndProcessEvaluationRequest(request);
         assertThat(evaluationResultsDataModel.getStatus()).isEqualTo(RequestStatus.FINISHED);
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
         AssertionUtils.hasOneElement(evaluationLogList);
@@ -149,7 +148,11 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
                         evaluationLogService, classifierOptionsAdapter, classifierInfoRepository);
         doThrow(new RuntimeException("Error")).when(executorService)
                 .execute(any(), anyLong(), any(TimeUnit.class));
-        EvaluationResultsDataModel evaluationResultsDataModel = service.createAndProcessEvaluationRequest(request);
+        var createdEvaluationLog =
+                service.createAndSaveEvaluationRequest(request);
+        service.startEvaluationRequest(createdEvaluationLog);
+        var evaluationResultsDataModel =
+                service.processEvaluationRequest(createdEvaluationLog);
         assertThat(evaluationResultsDataModel.getStatus()).isEqualTo(RequestStatus.ERROR);
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
         AssertionUtils.hasOneElement(evaluationLogList);
@@ -163,7 +166,7 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
         EvaluationRequestData request = TestHelperUtils.createEvaluationRequestData();
         request.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
         request.setNumFolds(1);
-        EvaluationResultsDataModel evaluationResultsDataModel = evaluationRequestService.createAndProcessEvaluationRequest(request);
+        var evaluationResultsDataModel = createAndProcessEvaluationRequest(request);
         assertThat(evaluationResultsDataModel.getStatus()).isEqualTo(RequestStatus.ERROR);
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
         AssertionUtils.hasOneElement(evaluationLogList);
@@ -181,13 +184,24 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
                         evaluationService, classifierInitializerService, objectStorageService, instancesLoaderService,
                         evaluationLogService, classifierOptionsAdapter, classifierInfoRepository);
         doThrow(TimeoutException.class).when(executorService).execute(any(), anyLong(), any(TimeUnit.class));
-        EvaluationResultsDataModel evaluationResultsDataModel = service.createAndProcessEvaluationRequest(request);
+        var createdEvaluationLog =
+                service.createAndSaveEvaluationRequest(request);
+        service.startEvaluationRequest(createdEvaluationLog);
+        var evaluationResultsDataModel =
+                service.processEvaluationRequest(createdEvaluationLog);
         assertThat(evaluationResultsDataModel.getStatus()).isEqualTo(RequestStatus.TIMEOUT);
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
         AssertionUtils.hasOneElement(evaluationLogList);
         assertThat(evaluationLogList.iterator().next().getRequestStatus()).isEqualTo(RequestStatus.TIMEOUT);
         assertThat(evaluationResultsDataModel.getStatus()).isEqualTo(RequestStatus.TIMEOUT);
         assertThat(evaluationResultsDataModel.getEvaluationResults()).isNull();
+    }
+
+    private EvaluationResultsDataModel createAndProcessEvaluationRequest(EvaluationRequestData request) {
+        var createdEvaluationLog =
+                evaluationRequestService.createAndSaveEvaluationRequest(request);
+        evaluationRequestService.startEvaluationRequest(createdEvaluationLog);
+        return evaluationRequestService.processEvaluationRequest(createdEvaluationLog);
     }
 
     private void mockLoadInstances() {
