@@ -4,8 +4,9 @@ import com.ecaservice.classifier.options.config.ClassifiersOptionsConfig;
 import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.form.template.service.FormTemplateProvider;
+import com.ecaservice.server.config.ClassifiersProperties;
 import com.ecaservice.web.dto.model.ClassifierInfoDto;
-import com.ecaservice.web.dto.model.FormTemplateDto;
+import com.ecaservice.web.dto.model.FormTemplateGroupDto;
 import com.ecaservice.web.dto.model.InputOptionDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -52,7 +53,8 @@ import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
-@Import({ClassifiersTemplateProvider.class, ClassifierOptionsProcessor.class, ClassifiersOptionsConfig.class})
+@Import({ClassifiersTemplateProvider.class, ClassifierOptionsProcessor.class, ClassifiersOptionsConfig.class,
+        ClassifiersProperties.class})
 class ClassifierOptionsProcessorTest {
 
     private static final String CLASSIFIERS = "classifiers";
@@ -130,10 +132,10 @@ class ClassifierOptionsProcessorTest {
 
     @BeforeEach
     void init() {
-        List<FormTemplateDto> templates = loadClassifiersTemplates();
-        List<FormTemplateDto> ensembleTemplates = loadEnsembleClassifiersTemplates();
-        when(formTemplateProvider.getTemplates(CLASSIFIERS)).thenReturn(templates);
-        when(formTemplateProvider.getTemplates(ENSEMBLE_CLASSIFIERS)).thenReturn(ensembleTemplates);
+        FormTemplateGroupDto templates = loadClassifiersTemplates();
+        FormTemplateGroupDto ensembleTemplates = loadEnsembleClassifiersTemplates();
+        when(formTemplateProvider.getFormGroupDto(CLASSIFIERS)).thenReturn(templates);
+        when(formTemplateProvider.getFormGroupDto(ENSEMBLE_CLASSIFIERS)).thenReturn(ensembleTemplates);
         when(filterTemplateService.getFilterDictionary(CLASSIFIER_NAME)).thenReturn(createFilterDictionaryDto());
         classifierOptionsProcessor.initialize();
     }

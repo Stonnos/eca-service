@@ -55,6 +55,7 @@ public class AppConfiguration {
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                      |bigint           |+|+|+                                     |Идентификатор записи (первичный ключ)
 |group_name              |varchar(255)     |+|+|form_template_group_name_unique_idx   |Уникальный код группы
+|group_title             |varchar(255)     |-|-|-                                     |Описание группы
 |===
 
 Таблица 2.2 - 'form_template' - содержит данные шаблонов crud форм

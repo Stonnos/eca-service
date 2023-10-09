@@ -41,6 +41,7 @@ export class EvaluationLogFields {
   public static readonly NUM_CLASSES: string = "instancesInfo.numClasses";
   public static readonly CLASS_NAME: string = "instancesInfo.className";
   public static readonly EVALUATION_METHOD_DESCRIPTION: string = "evaluationMethod.description";
+  public static readonly CREATED_BY: string = "createdBy";
   public static readonly CREATION_DATE: string = "creationDate";
   public static readonly START_DATE: string = "startDate";
   public static readonly END_DATE: string = "endDate";

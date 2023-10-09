@@ -44,6 +44,12 @@ public abstract class AbstractEvaluationDto {
     private String requestId;
 
     /**
+     * User name
+     */
+    @Schema(description = "User name", example = "admin", maxLength = MAX_LENGTH_255)
+    private String createdBy;
+
+    /**
      * Training data info
      */
     @Schema(description = "Training data info")

@@ -89,9 +89,10 @@
   (uploaded)="onUploadedClassifiersOptions($event)">
 </app-upload-classifier-options-dialog>
 
-<app-form-template [template]="selectedTemplate"
-                   [item]="selectedFormFields"
-                   [visible]="addClassifiersOptionsDialogVisibility"
-                   (visibilityChange)="onAddClassifierOptionsDialogVisibility($event)"
-                   (itemEvent)="onAddClassifierOptions($event)">
-</app-form-template>
+<app-form-template-dialog
+  [template]="selectedTemplate"
+  [item]="selectedFormFields"
+  [visible]="addClassifiersOptionsDialogVisibility"
+  (visibilityChange)="onAddClassifierOptionsDialogVisibility($event)"
+  (itemEvent)="onAddClassifierOptions($event)">
+</app-form-template-dialog>

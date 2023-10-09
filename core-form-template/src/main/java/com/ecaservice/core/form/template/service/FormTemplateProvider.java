@@ -4,7 +4,7 @@ import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.form.template.entity.FormTemplateGroupEntity;
 import com.ecaservice.core.form.template.mapping.FormTemplateMapper;
 import com.ecaservice.core.form.template.repository.FormTemplateGroupRepository;
-import com.ecaservice.web.dto.model.FormTemplateDto;
+import com.ecaservice.web.dto.model.FormTemplateGroupDto;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.util.List;
 
 /**
  * Form templates provider service.
@@ -28,7 +27,7 @@ public class FormTemplateProvider {
     private final FormTemplateMapper formTemplateMapper;
     private final FormTemplateGroupRepository formTemplateGroupRepository;
 
-    private LoadingCache<String, List<FormTemplateDto>> templatesCache;
+    private LoadingCache<String, FormTemplateGroupEntity> templatesCache;
 
     /**
      * Initialize cache.
@@ -42,28 +41,40 @@ public class FormTemplateProvider {
     }
 
     /**
-     * Gets form templates for specified group.
+     * Gets form templates dto for specified group.
      *
      * @param groupName - group name
      * @return form templates
      */
-    public List<FormTemplateDto> getTemplates(String groupName) {
-        log.debug("Gets form templates for group [{}]", groupName);
-        var templates = templatesCache.getUnchecked(groupName);
-        log.debug("[{}] form templates has been fetched", templates.size());
-        return templates;
+    public FormTemplateGroupDto getFormGroupDto(String groupName) {
+        var formTemplateGroupEntity = getFormGroup(groupName);
+        return formTemplateMapper.map(formTemplateGroupEntity);
     }
 
-    private CacheLoader<String, List<FormTemplateDto>> createCacheLoader() {
+    /**
+     * Gets form templates entity for specified group.
+     *
+     * @param groupName - group name
+     * @return form templates
+     */
+    public FormTemplateGroupEntity getFormGroup(String groupName) {
+        log.debug("Gets form templates for group [{}]", groupName);
+        var formTemplateGroupEntity = templatesCache.getUnchecked(groupName);
+        log.debug("[{}] form group [{}] templates has been fetched", groupName,
+                formTemplateGroupEntity.getTemplates().size());
+        return formTemplateGroupEntity;
+    }
+
+    private CacheLoader<String, FormTemplateGroupEntity> createCacheLoader() {
         return new CacheLoader<>() {
             @Override
-            public List<FormTemplateDto> load(String groupName) {
+            public FormTemplateGroupEntity load(String groupName) {
                 log.info("Gets form templates group [{}] from db", groupName);
-                var templates = formTemplateGroupRepository.findByGroupName(groupName)
-                        .map(FormTemplateGroupEntity::getTemplates)
+                var formTemplateGroupEntity = formTemplateGroupRepository.findByGroupName(groupName)
                         .orElseThrow(() -> new EntityNotFoundException(FormTemplateGroupEntity.class, groupName));
-                log.info("[{}] form templates has been fetched from db", templates.size());
-                return formTemplateMapper.mapTemplates(templates);
+                log.info("[{}] group [{}] form templates has been fetched from db", groupName,
+                        formTemplateGroupEntity.getTemplates().size());
+                return formTemplateGroupEntity;
             }
         };
     }

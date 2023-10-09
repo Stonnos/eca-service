@@ -67,6 +67,7 @@ import com.ecaservice.web.dto.model.FilterDictionaryDto;
 import com.ecaservice.web.dto.model.FilterFieldDto;
 import com.ecaservice.web.dto.model.FilterFieldType;
 import com.ecaservice.web.dto.model.FormTemplateDto;
+import com.ecaservice.web.dto.model.FormTemplateGroupDto;
 import com.ecaservice.web.dto.model.InstancesInfoDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -228,7 +229,7 @@ public class TestHelperUtils {
      *
      * @return classifiers templates
      */
-    public static List<FormTemplateDto> loadClassifiersTemplates() {
+    public static FormTemplateGroupDto loadClassifiersTemplates() {
         return loadConfig(CLASSIFIERS_TEMPLATES_JSON, new TypeReference<>() {
         });
     }
@@ -238,7 +239,7 @@ public class TestHelperUtils {
      *
      * @return classifiers templates
      */
-    public static List<FormTemplateDto> loadEnsembleClassifiersTemplates() {
+    public static FormTemplateGroupDto loadEnsembleClassifiersTemplates() {
         return loadConfig(ENSEMBLE_CLASSIFIER_TEMPLATES_JSON, new TypeReference<>() {
         });
     }

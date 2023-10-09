@@ -5,8 +5,5 @@
     "maxIts": 200,
     "useConjugateGradientDescent": false
   },
-  "evaluationMethod": "CROSS_VALIDATION",
-  "numFolds": 10,
-  "numTests": 1,
-  "seed": 1
+  "evaluationMethod": "CROSS_VALIDATION"
 }

@@ -49,6 +49,7 @@ import { NotificationsCenterModule } from "./notifications-center/notifications-
 import { ClassifiersStatisticsModule } from "./classifiers-statistics/classifiers-statistics.module";
 import { ClassifiersTabsModule } from "./classifiers-tabs/classifiers-tabs.module";
 import { AttributesModule } from "./attributes/attributes.module";
+import { CreateClassifierModule } from "./create-classifier/create-classifier.module";
 
 export function eventSubscribe(eventHandler: EventHandler) {
   return () => eventHandler.eventSubscribe();
@@ -86,6 +87,7 @@ export function eventSubscribe(eventHandler: EventHandler) {
     AuthModule,
     ExperimentStatisticsModule,
     CreateExperimentModule,
+    CreateClassifierModule,
     ExperimentDetailsModule,
     UploadClassifierOptionsDialogModule,
     InstancesModule,

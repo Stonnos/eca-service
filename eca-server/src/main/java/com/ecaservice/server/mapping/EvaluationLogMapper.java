@@ -65,10 +65,18 @@ public abstract class EvaluationLogMapper extends AbstractEvaluationMapper {
      * Maps evaluation request to evaluation web request internal data model.
      *
      * @param createEvaluationRequestDto - evaluation request
+     * @param crossValidationConfig      - cross validation config
      * @return evaluation web request internal data model
      */
-    @Mapping(source = "instancesUuid", target = "dataUuid")
-    public abstract EvaluationRequestModel map(CreateEvaluationRequestDto createEvaluationRequestDto);
+    @Mapping(source = "createEvaluationRequestDto.instancesUuid", target = "instancesUuid")
+    @Mapping(source = "createEvaluationRequestDto.classifierOptions", target = "classifierOptions")
+    @Mapping(source = "createEvaluationRequestDto.evaluationMethod", target = "evaluationMethod")
+    @Mapping(source = "crossValidationConfig.numFolds", target = "numFolds")
+    @Mapping(source = "crossValidationConfig.numTests", target = "numTests")
+    @Mapping(source = "crossValidationConfig.seed", target = "seed")
+    @Mapping(target = "channel", constant = "WEB")
+    public abstract EvaluationRequestModel map(CreateEvaluationRequestDto createEvaluationRequestDto,
+                                               CrossValidationConfig crossValidationConfig);
 
     /**
      * Maps evaluation request model to evaluation request data.

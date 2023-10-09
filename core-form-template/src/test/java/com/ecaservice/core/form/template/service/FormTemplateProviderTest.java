@@ -47,8 +47,9 @@ class FormTemplateProviderTest extends AbstractJpaTest {
 
     @Test
     void testGetTemplates() {
-        var templates = formTemplateProvider.getTemplates(formTemplateGroupEntity.getGroupName());
-        assertThat(templates).hasSize(1);
+        var formTemplateGroupDto =
+                formTemplateProvider.getFormGroupDto(formTemplateGroupEntity.getGroupName());
+        assertThat(formTemplateGroupDto.getTemplates()).hasSize(1);
     }
     
     private FormTemplateGroupEntity createAndSaveFormTemplatesGroup() {

@@ -2,6 +2,7 @@ package com.ecaservice.server.service.evaluation;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.audit.annotation.Audit;
+import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.dto.CreateEvaluationRequestDto;
 import com.ecaservice.server.mapping.EvaluationLogMapper;
 import com.ecaservice.server.model.entity.EvaluationLog;
@@ -29,6 +30,7 @@ import static com.ecaservice.server.config.audit.AuditCodes.CREATE_EVALUATION_RE
 @RequiredArgsConstructor
 public class EvaluationRequestWebApiService {
 
+    private final CrossValidationConfig crossValidationConfig;
     private final UserService userService;
     private final EvaluationProcessManager evaluationProcessManager;
     private final EvaluationLogMapper evaluationLogMapper;
@@ -50,7 +52,8 @@ public class EvaluationRequestWebApiService {
                 requestId, evaluationRequestDto.getInstancesUuid(),
                 evaluationRequestDto.getClassifierOptions().getClass().getSimpleName(),
                 evaluationRequestDto.getEvaluationMethod());
-        var evaluationWebRequestDataModel = evaluationLogMapper.map(evaluationRequestDto);
+        var evaluationWebRequestDataModel =
+                evaluationLogMapper.map(evaluationRequestDto, crossValidationConfig);
         evaluationWebRequestDataModel.setRequestId(requestId);
         evaluationWebRequestDataModel.setCreatedBy(userService.getCurrentUser());
         evaluationProcessManager.createAndProcessEvaluationRequest(evaluationWebRequestDataModel);
