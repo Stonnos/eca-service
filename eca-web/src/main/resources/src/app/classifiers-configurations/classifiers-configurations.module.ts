@@ -8,7 +8,7 @@ import { CreateClassifiersConfigurationModule } from "../create-classifiers-conf
 import { UploadClassifierOptionsDialogModule } from "../upload-classifier-options-dialog/upload-classifier-options-dialog.module";
 import { ClassifiersConfigurationMenuModule } from "../classifiers-configuration-menu/classifiers-configuration-menu.module";
 import { SharedModule } from "../common/shared.module";
-import { FormTemplatesModule } from "../form-templates/form-templates.module";
+import { FormTemplatesDialogModule } from "../form-templates-dialog/form-templates-dialog.module";
 
 @NgModule({
   imports: [
@@ -19,7 +19,7 @@ import { FormTemplatesModule } from "../form-templates/form-templates.module";
     CreateClassifiersConfigurationModule,
     ClassifiersConfigurationMenuModule,
     UploadClassifierOptionsDialogModule,
-    FormTemplatesModule
+    FormTemplatesDialogModule
   ],
   declarations: [
     ClassifiersConfigurationsComponent

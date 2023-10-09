@@ -1,0 +1,61 @@
+<p-dialog
+  #dialog
+  [(visible)]="visible"
+  header="Новый классификатор - {{ classifierTemplate?.templateTitle }}"
+  [style]="{ width: '650px' }"
+  appendTo="body"
+  [modal]="true"
+  [blockScroll]="false"
+  [draggable]="false"
+  [resizable]="false"
+  (onHide)="hide()">
+  <p-scrollPanel [style]="{ width: '100%', height: '500px' }">
+    <form novalidate class="form d-flex flex-column justify-content-center m-auto" (keydown.enter)="submit()">
+      <div class="ui-g ui-fluid">
+        <div class="ui-g-10 mx-auto mb-5">
+          <label class="text-bold control-label">Обучающая выборка</label>
+          <app-instances-autocomplete
+            (onInstancesSelected)="selectInstances($event)"
+            (onInstancesUnselected)="unselectInstances()"
+            [submitted]="submitted">
+          </app-instances-autocomplete>
+        </div>
+        <div class="ui-g-10 mx-auto mb-3">
+          <label class="text-bold control-label">Метод оценки точности</label>
+          <p-dropdown
+            required
+            id="evaluationMethod"
+            name="evaluationMethod"
+            placeholder="Выбрать"
+            [appendTo]="dialog"
+            [options]="evaluationMethods"
+            optionLabel="label"
+            [(ngModel)]="item.evaluationMethod"
+            #evaluationMethod="ngModel"
+            [style]="{'width':'100%'}">
+          </p-dropdown>
+          <div class="text-danger error-message" *ngIf="submitted && evaluationMethod.invalid">
+            <div *ngIf="evaluationMethod?.errors?.required">
+              Выберите метод оценки точности
+            </div>
+          </div>
+        </div>
+        <p-fieldset legend="Настройки классификатора" class="classifier-options-fieldset">
+          <app-form-template [template]="classifierTemplate"
+                             [formFields]="classifierOptionsFields"
+                             [submitted]="submitted">
+          </app-form-template>
+        </p-fieldset>
+      </div>
+    </form>
+  </p-scrollPanel>
+  <p-footer>
+    <button
+      pButton
+      label="Создать заявку"
+      type="button"
+      (click)="submit()"
+      class="ml-auto">
+    </button>
+  </p-footer>
+</p-dialog>

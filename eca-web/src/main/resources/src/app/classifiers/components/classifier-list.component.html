@@ -1,14 +1,7 @@
 <div class="container-fluid mb-5">
   <div class="row search-content mt-2">
-    <div class="col-6 justify-content-start">
-      <button
-        pButton
-        label="Сформировать отчет"
-        icon="pi pi-file"
-        type="button"
-        (click)="generateReport()"
-        class="ml-2 mt-2 mb-2">
-      </button>
+    <div class="col-6">
+      <p-menubar class="classifier-options-menu" [model]="classifierOptionsMenu"></p-menubar>
     </div>
     <div class="col-6">
       <app-search-query (search)="onSearch($event)">
@@ -54,7 +47,11 @@
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-item>
-          <tr>
+          <tr [class.new-status-blink]="isBlink(item) && item?.requestStatus?.value == 'NEW'"
+              [class.in-progress-status-blink]="isBlink(item) && item?.requestStatus?.value == 'IN_PROGRESS'"
+              [class.finished-status-blink]="isBlink(item) && item?.requestStatus?.value == 'FINISHED'"
+              [class.error-status-blink]="isBlink(item) && item?.requestStatus?.value == 'ERROR'"
+              [class.timeout-status-blink]="isBlink(item) && item?.requestStatus?.value == 'TIMEOUT'">
             <td *ngFor="let column of columns">
               <a [routerLink]="" *ngIf="isLink(column.name)"
                  (click)="onSelect($event, item, column.name, infoPanel)">
@@ -103,3 +100,13 @@
     </ng-container>
   </p-overlayPanel>
 </div>
+
+<app-create-classifier
+  [item]="evaluationRequest"
+  [evaluationMethods]="evaluationMethods"
+  [visible]="createClassifierDialogVisibility"
+  [classifierTemplate]="selectedClassifierTemplate"
+  [classifierOptionsFields]="selectedClassifierFormFields"
+  (visibilityChange)="onCreateClassifierDialogVisibility($event)"
+  (itemEvent)="onCreateClassifier($event)">
+</app-create-classifier>

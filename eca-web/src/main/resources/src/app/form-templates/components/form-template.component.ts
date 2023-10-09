@@ -1,19 +1,25 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormField } from "../model/form-template.model";
-import { BaseCreateDialogComponent } from "../../common/dialog/base-create-dialog.component";
 import { FormTemplateDto } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
+import { ControlContainer, NgForm } from "@angular/forms";
 
 @Component({
   selector: 'app-form-template',
   templateUrl: './form-template.component.html',
-  styleUrls: ['./form-template.component.scss']
+  styleUrls: ['./form-template.component.scss'],
+  // Allow template fields validation from parent component
+  viewProviders: [{ provide: ControlContainer, useExisting: NgForm }]
 })
-export class FormTemplateComponent extends BaseCreateDialogComponent<FormField[]> implements OnInit {
+export class FormTemplateComponent implements OnInit {
 
   private static readonly DEFAULT_PLACEHOLDER = 'Введите значение';
 
   @Input()
   public template: FormTemplateDto;
+  @Input()
+  public formFields: FormField[] = [];
+  @Input()
+  public submitted: boolean = false;
 
   public ngOnInit(): void {
   }

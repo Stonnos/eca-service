@@ -72,12 +72,12 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
   }
 
   public getExperimentFullData(): void {
-    this.getExperiment(false);
+    this.blink = false;
+    this.getExperiment();
     this.getExperimentErsReport();
   }
 
-  public getExperiment(blink: boolean): void {
-    this.blink = blink;
+  public getExperiment(): void {
     this.experimentsService.getExperiment(this.id)
       .subscribe({
         next: (experimentDto: ExperimentDto) => {
@@ -206,7 +206,8 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
         .subscribe({
           next: (pushRequestDto: PushRequestDto) => {
             this.handleExperimentPush(pushRequestDto);
-            this.getExperiment(true);
+            this.blink = true;
+            this.getExperiment();
             this.getExperimentErsReport();
           },
           error: (error) => {

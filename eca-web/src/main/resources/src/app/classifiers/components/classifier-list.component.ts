@@ -1,8 +1,14 @@
-import { Component, Injector } from '@angular/core';
+import {Component, Injector, OnDestroy} from '@angular/core';
 import {
-  EvaluationLogDto, FilterFieldDto,
+  CreateEvaluationResponseDto,
+  EvaluationLogDto,
+  FilterDictionaryDto,
+  FilterDictionaryValueDto,
+  FilterFieldDto, FormTemplateDto,
+  FormTemplateGroupDto,
   PageDto,
-  PageRequestDto, RequestStatusStatisticsDto
+  PageRequestDto, PushRequestDto,
+  RequestStatusStatisticsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ClassifiersService } from "../services/classifiers.service";
 import { OverlayPanel } from "primeng/primeng";
@@ -16,31 +22,76 @@ import { ReportsService } from "../../common/services/report.service";
 import { ReportType } from "../../common/model/report-type.enum";
 import { InstancesInfoService } from "../../common/instances-info/services/instances-info.service";
 import { BaseListComponent } from "../../common/lists/base-list.component";
-import { MessageService } from "primeng/api";
+import { MenuItem, MessageService } from "primeng/api";
 import { FieldService } from "../../common/services/field.service";
 import { InstancesInfoFilterValueTransformer } from "../../filter/autocomplete/transformer/instances-info-filter-value-transformer";
 import { InstancesInfoAutocompleteHandler } from "../../filter/autocomplete/handler/instances-info-autocomplete-handler";
 import { EvaluationLogFilterFields } from "../../common/util/filter-field-names";
+import { FormTemplatesService } from "../../form-templates/services/form-templates.service";
+import { FormTemplatesMapper } from "../../form-templates/services/form-templates.mapper";
+import { ClassifierGroupTemplatesType } from "../../form-templates/model/classifier-group-templates.type";
+import { FormField } from "../../form-templates/model/form-template.model";
+import { EvaluationRequest } from "../../create-classifier/model/evaluation-request.model";
+import { CreateEvaluationRequestDto } from "../../create-classifier/model/create-evaluation-request.model";
+import { Logger } from "../../common/util/logging";
+import { finalize } from "rxjs/internal/operators";
+import { ErrorHandler } from "../../common/services/error-handler";
+import { ValidationErrorCode } from "../../common/model/validation-error-code";
+import { Subscription } from "rxjs";
+import { PushMessageType } from "../../common/util/push-message.type";
+import { PushVariables } from "../../common/util/push-variables";
+import { PushService } from "../../common/push/push.service";
 
 @Component({
   selector: 'app-classifier-list',
   templateUrl: './classifier-list.component.html',
   styleUrls: ['./classifier-list.component.scss']
 })
-export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto> {
+export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto> implements OnDestroy {
 
   private static readonly EVALUATION_LOGS_REPORT_FILE_NAME = 'evaluation-logs-report.xlsx';
+
+  private readonly errorCodes: string[] = [
+    ValidationErrorCode.CLASS_ATTRIBUTE_NOT_SELECTED,
+    ValidationErrorCode.INSTANCES_NOT_FOUND,
+    ValidationErrorCode.SELECTED_ATTRIBUTES_NUMBER_IS_TOO_LOW,
+    ValidationErrorCode.CLASS_VALUES_IS_TOO_LOW
+  ];
+
+  private readonly errorCodesMap = new Map<string, string>()
+    .set(ValidationErrorCode.CLASS_ATTRIBUTE_NOT_SELECTED, 'Не выбран атрибут класса для заданной обучающей выборки')
+    .set(ValidationErrorCode.INSTANCES_NOT_FOUND, 'Обучающая выборка не найдена')
+    .set(ValidationErrorCode.SELECTED_ATTRIBUTES_NUMBER_IS_TOO_LOW, 'Выберите не менее двух атрибутов классификации')
+    .set(ValidationErrorCode.CLASS_VALUES_IS_TOO_LOW, 'Число классов должно быть не менее двух');
 
   public requestStatusStatisticsDto: RequestStatusStatisticsDto;
 
   public selectedEvaluationLog: EvaluationLogDto;
   public selectedColumn: string;
 
+  public evaluationMethods: FilterDictionaryValueDto[] = [];
+
+  public classifierTemplateGroups: FormTemplateGroupDto[] = [];
+
+  public classifierOptionsMenu: MenuItem[] = [];
+
+  public selectedClassifierTemplate: FormTemplateDto;
+  public selectedClassifierFormFields: FormField[] = [];
+  public evaluationRequest: EvaluationRequest = new EvaluationRequest();
+
+  public createClassifierDialogVisibility: boolean = false;
+
+  private evaluationUpdatesSubscriptions: Subscription;
+
   public constructor(private injector: Injector,
                      private classifiersService: ClassifiersService,
                      private filterService: FilterService,
                      private reportsService: ReportsService,
                      private instancesInfoService: InstancesInfoService,
+                     private formTemplatesService: FormTemplatesService,
+                     private formTemplatesMapper: FormTemplatesMapper,
+                     private errorHandler: ErrorHandler,
+                     private pushService: PushService,
                      private router: Router) {
     super(injector.get(MessageService), injector.get(FieldService));
     this.defaultSortField = EvaluationLogFields.CREATION_DATE;
@@ -55,6 +106,15 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
     this.addAutoCompleteHandler(new InstancesInfoAutocompleteHandler(this.instancesInfoService, this.messageService));
     this.getFilterFields();
     this.getRequestStatusesStatistics();
+    this.getEvaluationMethods();
+    this.getClassifierTemplateGroups();
+    this.subscribeForCurrentUserEvaluationUpdates();
+  }
+
+  public ngOnDestroy(): void {
+    if (this.evaluationUpdatesSubscriptions) {
+      this.evaluationUpdatesSubscriptions.unsubscribe();
+    }
   }
 
   public getFilterFields() {
@@ -122,6 +182,144 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
     overlayPanel.toggle(event);
   }
 
+  public getEvaluationMethods(): void {
+    this.filterService.getEvaluationMethodDictionary()
+      .subscribe({
+        next: (filterDictionary: FilterDictionaryDto) => {
+          this.evaluationMethods = filterDictionary.values;
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
+  }
+
+  public onCreateClassifierDialogVisibility(visible): void {
+    this.createClassifierDialogVisibility = visible;
+  }
+
+  public onCreateClassifier(evaluationRequest: EvaluationRequest): void {
+    const classifierOptions = this.formTemplatesMapper.mapToClassifierOptionsObject(evaluationRequest.classifierOptions,
+      this.selectedClassifierTemplate);
+    const createEvaluationRequest =
+      new CreateEvaluationRequestDto(evaluationRequest.instancesUuid, classifierOptions, evaluationRequest.evaluationMethod.value);
+    this.classifiersService.createEvaluationRequest(createEvaluationRequest)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe({
+        next: (createEvaluationResponseDto: CreateEvaluationResponseDto) => {
+          this.handleEvaluationRequestCreated(createEvaluationResponseDto);
+        },
+        error: (error) => {
+          this.handleCreateEvaluationRequestError(error);
+        }
+      });
+  }
+
+  private handleCreateEvaluationRequestError(error): void {
+    const errorCode = this.errorHandler.getFirstErrorCode(error, this.errorCodes);
+    if (errorCode) {
+      const errorMessage = this.errorCodesMap.get(errorCode);
+      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: errorMessage });
+    } else {
+      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error });
+    }
+  }
+
+  private handleEvaluationRequestCreated(createEvaluationResponseDto: CreateEvaluationResponseDto): void {
+    Logger.debug(`Evaluation request ${createEvaluationResponseDto.requestId} has been created`);
+    if (!this.lastCreatedId) {
+      this.lastCreatedId = createEvaluationResponseDto.id;
+      this.getRequestStatusesStatistics();
+      this.reloadPageWithLoader();
+    }
+  }
+
+  private subscribeForCurrentUserEvaluationUpdates(): void {
+    const filterPredicate = (pushRequestDto: PushRequestDto) =>
+      pushRequestDto.pushType == 'USER_NOTIFICATION' && pushRequestDto.messageType == PushMessageType.EVALUATION_STATUS_CHANGE;
+    this.evaluationUpdatesSubscriptions = this.pushService.pushMessageSubscribe(filterPredicate)
+      .subscribe({
+        next: (pushRequestDto: PushRequestDto) => {
+          if (!this.lastCreatedId) {
+            this.lastCreatedId = pushRequestDto.additionalProperties[PushVariables.EVALUATION_ID];
+            this.reloadDataQuietly();
+          }
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
+  }
+
+  private reloadDataQuietly(): void {
+    this.reloadPage(false);
+    this.getRequestStatusesStatistics();
+  }
+
+  private getClassifierTemplateGroups(): void {
+    this.formTemplatesService.getClassifiersFormTemplates(ClassifierGroupTemplatesType.ALL)
+      .subscribe({
+        next: (templateGroups: FormTemplateGroupDto[]) => {
+          this.classifierTemplateGroups = templateGroups;
+          this.initClassifiersMenu();
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
+  }
+
+  private initClassifiersMenu(): void {
+    if (this.classifierTemplateGroups) {
+      const items: MenuItem[] = [];
+      this.classifierTemplateGroups.forEach((templatesGroup: FormTemplateGroupDto) => {
+        const groupItems: MenuItem[] = this.initClassifierGroupTemplates(templatesGroup);
+        const groupItem = {
+          label: templatesGroup.groupTitle,
+          styleClass: 'menu-item',
+          items: groupItems
+        };
+        items.push(groupItem);
+      });
+      this.classifierOptionsMenu = [
+        {
+          label: 'Новый классификатор',
+          icon: 'pi pi-plus',
+          styleClass: 'main-menu-item',
+          items: items
+        },
+        {
+          label: 'Сформировать отчет',
+          icon: 'pi pi-file',
+          styleClass: 'main-menu-item',
+          command: () => {
+            this.generateReport();
+          }
+        }
+      ];
+    }
+  }
+
+  private initClassifierGroupTemplates(templatesGroup: FormTemplateGroupDto): MenuItem[] {
+    return templatesGroup.templates.map((template: FormTemplateDto) => {
+      return {
+        label: template.templateTitle,
+        styleClass: 'classifier-menu-item',
+        command: () => {
+          this.selectedClassifierTemplate = template;
+          this.selectedClassifierFormFields = this.formTemplatesMapper.mapToFormFields(template.fields);
+          this.evaluationRequest = new EvaluationRequest();
+          this.evaluationRequest.classifierOptions = this.selectedClassifierFormFields;
+          this.createClassifierDialogVisibility = true;
+        }
+      };
+    });
+  }
+
   private initColumns() {
     this.columns = [
       { name: EvaluationLogFields.REQUEST_ID, label: "UUID заявки", sortBy: EvaluationLogFilterFields.REQUEST_ID },
@@ -130,6 +328,7 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
       { name: EvaluationLogFields.PCT_CORRECT, label: "Точность классификатора, %", sortBy: EvaluationLogFilterFields.PCT_CORRECT },
       { name: EvaluationLogFields.RELATION_NAME, label: "Обучающая выборка", sortBy: EvaluationLogFilterFields.RELATION_NAME },
       { name: EvaluationLogFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности", sortBy: EvaluationLogFilterFields.EVALUATION_METHOD },
+      { name: EvaluationLogFields.CREATED_BY, label: "Пользователь", sortBy: EvaluationLogFilterFields.CREATED_BY },
       { name: EvaluationLogFields.MODEL_PATH, label: "Модель классификатора", sortBy: EvaluationLogFilterFields.MODEL_PATH },
       { name: EvaluationLogFields.EVALUATION_TOTAL_TIME, label: "Время построения модели" },
       { name: EvaluationLogFields.CREATION_DATE, label: "Дата создания заявки", sortBy: EvaluationLogFilterFields.CREATION_DATE },

@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
-  ChartDto,
+  ChartDto, CreateEvaluationResponseDto,
   EvaluationLogDetailsDto,
   EvaluationLogDto,
   PageDto,
@@ -13,6 +13,7 @@ import { Utils } from "../../common/util/utils";
 import { catchError, finalize, switchMap } from "rxjs/internal/operators";
 import { EMPTY } from "rxjs/internal/observable/empty";
 import { saveAs } from 'file-saver/dist/FileSaver';
+import { CreateEvaluationRequestDto } from "../../create-classifier/model/create-evaluation-request.model";
 
 @Injectable()
 export class ClassifiersService {
@@ -20,6 +21,14 @@ export class ClassifiersService {
   private serviceUrl = environment.serverUrl + '/evaluation';
 
   public constructor(private http: HttpClient) {
+  }
+
+  public createEvaluationRequest(evaluationRequestDto: CreateEvaluationRequestDto): Observable<CreateEvaluationResponseDto> {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/json; charset=utf-8',
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    return this.http.post<CreateEvaluationResponseDto>(this.serviceUrl + '/create', evaluationRequestDto, { headers: headers });
   }
 
   public getEvaluations(pageRequest: PageRequestDto): Observable<PageDto<EvaluationLogDto>> {

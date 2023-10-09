@@ -20,11 +20,6 @@ public class ExperimentBean extends EvaluationBean {
     private String experimentType;
 
     /**
-     * User name
-     */
-    private String createdBy;
-
-    /**
      * The best classifier correctly classified percentage
      */
     private BigDecimal maxPctCorrect;

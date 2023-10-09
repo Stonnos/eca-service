@@ -4,10 +4,12 @@ import com.ecaservice.core.form.template.entity.FieldDictionary;
 import com.ecaservice.core.form.template.entity.FieldDictionaryValue;
 import com.ecaservice.core.form.template.entity.FormFieldEntity;
 import com.ecaservice.core.form.template.entity.FormTemplateEntity;
+import com.ecaservice.core.form.template.entity.FormTemplateGroupEntity;
 import com.ecaservice.web.dto.model.FieldDictionaryDto;
 import com.ecaservice.web.dto.model.FieldDictionaryValueDto;
 import com.ecaservice.web.dto.model.FormFieldDto;
 import com.ecaservice.web.dto.model.FormTemplateDto;
+import com.ecaservice.web.dto.model.FormTemplateGroupDto;
 import org.mapstruct.Mapper;
 
 import java.util.List;
@@ -27,6 +29,14 @@ public interface FormTemplateMapper {
      * @return form template dto
      */
     FormTemplateDto map(FormTemplateEntity templateEntity);
+
+    /**
+     * Maps form templates group entity to dto model.
+     *
+     * @param formTemplateGroupEntity - form templates group entity
+     * @return form templates group dto
+     */
+    FormTemplateGroupDto map(FormTemplateGroupEntity formTemplateGroupEntity);
 
     /**
      * Maps form templates entities to dto models list

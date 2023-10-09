@@ -19,6 +19,7 @@ export class EvaluationLogFilterFields {
   public static readonly REQUEST_STATUS: string = "requestStatus";
   public static readonly RELATION_NAME: string = "instancesInfo.relationName";
   public static readonly EVALUATION_METHOD: string = "evaluationMethod";
+  public static readonly CREATED_BY: string = "createdBy";
   public static readonly CREATION_DATE: string = "creationDate";
   public static readonly START_DATE: string = "startDate";
   public static readonly END_DATE: string = "endDate";
