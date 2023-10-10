@@ -50,6 +50,7 @@ import { ClassifiersStatisticsModule } from "./classifiers-statistics/classifier
 import { ClassifiersTabsModule } from "./classifiers-tabs/classifiers-tabs.module";
 import { AttributesModule } from "./attributes/attributes.module";
 import { CreateClassifierModule } from "./create-classifier/create-classifier.module";
+import { CreateOptimalClassifierModule } from "./create-optimal-classifier/create-optimal-classifier.module";
 
 export function eventSubscribe(eventHandler: EventHandler) {
   return () => eventHandler.eventSubscribe();
@@ -88,6 +89,7 @@ export function eventSubscribe(eventHandler: EventHandler) {
     ExperimentStatisticsModule,
     CreateExperimentModule,
     CreateClassifierModule,
+    CreateOptimalClassifierModule,
     ExperimentDetailsModule,
     UploadClassifierOptionsDialogModule,
     InstancesModule,
