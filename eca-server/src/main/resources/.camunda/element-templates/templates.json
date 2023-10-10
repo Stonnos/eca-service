@@ -134,11 +134,15 @@
         "choices": [
           {
             "name": "Передана заявка с недопустимым статусом",
-            "value": "INVALID_REQUEST_STATUS"
+            "value": "InvalidRequestStatus"
+          },
+          {
+            "name": "Оптимальные настройки классификатора не найдены",
+            "value": "ClassifierOptionsNotFound"
           },
           {
             "name": "Неизвестная ошибка",
-            "value": "UNKNOWN_ERROR"
+            "value": "UnknownError"
           }
         ],
         "binding": {

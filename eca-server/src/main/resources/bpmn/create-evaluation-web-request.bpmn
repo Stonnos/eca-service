@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0bcpa12" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0bcpa12" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
   <bpmn:process id="CreateEvaluationWebRequestProcess" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1">
-      <bpmn:outgoing>Flow_07s9fim</bpmn:outgoing>
+      <bpmn:outgoing>Flow_099if9s</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:serviceTask id="Activity_0sqdg4p" name="Сформировать обучающую выборку на основе данных из data storage" camunda:modelerTemplate="TaskExecution" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
@@ -10,20 +10,19 @@
           <camunda:inputParameter name="taskType">EXPORT_VALID_INSTANCES</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_07s9fim</bpmn:incoming>
-      <bpmn:outgoing>Flow_0gg1wea</bpmn:outgoing>
+      <bpmn:incoming>Flow_099if9s</bpmn:incoming>
+      <bpmn:outgoing>Flow_0nsdt8c</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_07s9fim" sourceRef="StartEvent_1" targetRef="Activity_0sqdg4p" />
     <bpmn:serviceTask id="Activity_0u4bqn0" name="Создать заявку на построение модели классификатора" camunda:modelerTemplate="TaskExecution" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="taskType">CREATE_EVALUATION_REQUEST</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0gg1wea</bpmn:incoming>
+      <bpmn:incoming>Flow_06yzfv4</bpmn:incoming>
+      <bpmn:incoming>Flow_0ruibu8</bpmn:incoming>
       <bpmn:outgoing>Flow_1asceao</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0gg1wea" sourceRef="Activity_0sqdg4p" targetRef="Activity_0u4bqn0" />
     <bpmn:serviceTask id="Activity_0sk8uu1" name="Отправка push уведомления пользователю о новой заявке на построение модели" camunda:modelerTemplate="ExperimentPushSender" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -40,41 +39,144 @@
     <bpmn:sequenceFlow id="Flow_1asceao" sourceRef="Activity_0u4bqn0" targetRef="Activity_0sk8uu1" />
     <bpmn:endEvent id="Event_0lesvyf">
       <bpmn:incoming>Flow_0ippukx</bpmn:incoming>
+      <bpmn:incoming>Flow_1ndputk</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_0ippukx" sourceRef="Activity_0sk8uu1" targetRef="Event_0lesvyf" />
+    <bpmn:serviceTask id="Activity_1oqpaqq" name="Получить оптимальные настройки классификатора" camunda:modelerTemplate="TaskExecution" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="taskType">GET_OPTIMAL_CLASSIFIER_OPTIONS</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0ehpdo9</bpmn:incoming>
+      <bpmn:outgoing>Flow_0kulhuw</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_109reil" name="Задать оптимальные настройки классификатора для заявки" camunda:modelerTemplate="TaskExecution" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="taskType">SET_OPTIMAL_CLASSIFIER_OPTIONS</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_092g7hd</bpmn:incoming>
+      <bpmn:outgoing>Flow_06yzfv4</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_0pf24ac" default="Flow_0art71i">
+      <bpmn:incoming>Flow_0kulhuw</bpmn:incoming>
+      <bpmn:outgoing>Flow_092g7hd</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0art71i</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0kulhuw" sourceRef="Activity_1oqpaqq" targetRef="Gateway_0pf24ac" />
+    <bpmn:sequenceFlow id="Flow_099if9s" sourceRef="StartEvent_1" targetRef="Activity_0sqdg4p" />
+    <bpmn:exclusiveGateway id="Gateway_0xy5hx8" default="Flow_0ruibu8">
+      <bpmn:incoming>Flow_0nsdt8c</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ehpdo9</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0ruibu8</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0nsdt8c" sourceRef="Activity_0sqdg4p" targetRef="Gateway_0xy5hx8" />
+    <bpmn:sequenceFlow id="Flow_092g7hd" name="Оптимальные настройки найдены?" sourceRef="Gateway_0pf24ac" targetRef="Activity_109reil">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${classifierOptionsResult.found}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_06yzfv4" sourceRef="Activity_109reil" targetRef="Activity_0u4bqn0" />
+    <bpmn:sequenceFlow id="Flow_0ehpdo9" name="Использовать оптимальные настройки модели?" sourceRef="Gateway_0xy5hx8" targetRef="Activity_1oqpaqq">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${evaluationRequestData.useOptimalClassifierOptions}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0ruibu8" sourceRef="Gateway_0xy5hx8" targetRef="Activity_0u4bqn0" />
+    <bpmn:serviceTask id="Activity_1adelcm" name="Ошибка: оптимальные настройки не найдены" camunda:modelerTemplate="ErrorHandler" camunda:class="com.ecaservice.server.bpm.listeners.BpmErrorHandler">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="errorMessage">Оптимальные настройки классификатора не найдены для заданной обучающей выборки и метода оценки точности</camunda:inputParameter>
+          <camunda:inputParameter name="errorCode">ClassifierOptionsNotFound</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0art71i</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ndputk</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0art71i" sourceRef="Gateway_0pf24ac" targetRef="Activity_1adelcm" />
+    <bpmn:sequenceFlow id="Flow_1ndputk" sourceRef="Activity_1adelcm" targetRef="Event_0lesvyf" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="CreateEvaluationWebRequestProcess">
       <bpmndi:BPMNEdge id="Flow_0ippukx_di" bpmnElement="Flow_0ippukx">
-        <di:waypoint x="800" y="117" />
-        <di:waypoint x="902" y="117" />
+        <di:waypoint x="1020" y="607" />
+        <di:waypoint x="1122" y="607" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1asceao_di" bpmnElement="Flow_1asceao">
-        <di:waypoint x="600" y="117" />
-        <di:waypoint x="700" y="117" />
+        <di:waypoint x="820" y="607" />
+        <di:waypoint x="920" y="607" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0gg1wea_di" bpmnElement="Flow_0gg1wea">
-        <di:waypoint x="400" y="117" />
-        <di:waypoint x="500" y="117" />
+      <bpmndi:BPMNEdge id="Flow_0kulhuw_di" bpmnElement="Flow_0kulhuw">
+        <di:waypoint x="500" y="370" />
+        <di:waypoint x="500" y="305" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_07s9fim_di" bpmnElement="Flow_07s9fim">
-        <di:waypoint x="215" y="117" />
-        <di:waypoint x="300" y="117" />
+      <bpmndi:BPMNEdge id="Flow_099if9s_di" bpmnElement="Flow_099if9s">
+        <di:waypoint x="188" y="607" />
+        <di:waypoint x="280" y="607" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
-        <dc:Bounds x="179" y="99" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0sqdg4p_di" bpmnElement="Activity_0sqdg4p">
-        <dc:Bounds x="300" y="77" width="100" height="80" />
-      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0nsdt8c_di" bpmnElement="Flow_0nsdt8c">
+        <di:waypoint x="380" y="607" />
+        <di:waypoint x="475" y="607" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_092g7hd_di" bpmnElement="Flow_092g7hd">
+        <di:waypoint x="525" y="280" />
+        <di:waypoint x="720" y="280" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="587" y="230" width="72" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_06yzfv4_di" bpmnElement="Flow_06yzfv4">
+        <di:waypoint x="770" y="320" />
+        <di:waypoint x="770" y="567" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ehpdo9_di" bpmnElement="Flow_0ehpdo9">
+        <di:waypoint x="500" y="582" />
+        <di:waypoint x="500" y="450" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="404" y="503" width="72" height="53" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ruibu8_di" bpmnElement="Flow_0ruibu8">
+        <di:waypoint x="525" y="607" />
+        <di:waypoint x="720" y="607" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0art71i_di" bpmnElement="Flow_0art71i">
+        <di:waypoint x="500" y="255" />
+        <di:waypoint x="500" y="120" />
+        <di:waypoint x="720" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ndputk_di" bpmnElement="Flow_1ndputk">
+        <di:waypoint x="820" y="120" />
+        <di:waypoint x="1140" y="120" />
+        <di:waypoint x="1140" y="589" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Activity_0u4bqn0_di" bpmnElement="Activity_0u4bqn0">
-        <dc:Bounds x="500" y="77" width="100" height="80" />
+        <dc:Bounds x="720" y="567" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0sk8uu1_di" bpmnElement="Activity_0sk8uu1">
-        <dc:Bounds x="700" y="77" width="100" height="80" />
+        <dc:Bounds x="920" y="567" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0lesvyf_di" bpmnElement="Event_0lesvyf">
-        <dc:Bounds x="902" y="99" width="36" height="36" />
+        <dc:Bounds x="1122" y="589" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="152" y="589" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0sqdg4p_di" bpmnElement="Activity_0sqdg4p">
+        <dc:Bounds x="280" y="567" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0xy5hx8_di" bpmnElement="Gateway_0xy5hx8" isMarkerVisible="true">
+        <dc:Bounds x="475" y="582" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_109reil_di" bpmnElement="Activity_109reil">
+        <dc:Bounds x="720" y="240" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0pf24ac_di" bpmnElement="Gateway_0pf24ac" isMarkerVisible="true">
+        <dc:Bounds x="475" y="255" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1oqpaqq_di" bpmnElement="Activity_1oqpaqq">
+        <dc:Bounds x="450" y="370" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1adelcm_di" bpmnElement="Activity_1adelcm">
+        <dc:Bounds x="720" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

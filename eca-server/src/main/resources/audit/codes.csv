@@ -10,3 +10,4 @@ GENERATE_CONFIGURATION_REPORT;Выгрузка отчета для конфиг�
 CREATE_EXPERIMENT_REQUEST;Создание заявки на эксперимент;true;EVALUATION_REQUESTS_ACTIONS
 GENERATE_EVALUATION_REQUESTS_REPORT;Выгрузка отчета по заявкам;true;EVALUATION_REQUESTS_ACTIONS
 CREATE_EVALUATION_REQUEST;Создание заявки на построение модели классификатора;true;EVALUATION_REQUESTS_ACTIONS
+CREATE_OPTIMAL_EVALUATION_REQUEST;Создание заявки на построение модели с оптимальными настройками классификатора;true;EVALUATION_REQUESTS_ACTIONS

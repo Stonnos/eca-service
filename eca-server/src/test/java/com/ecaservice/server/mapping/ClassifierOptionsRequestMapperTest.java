@@ -38,21 +38,23 @@ class ClassifierOptionsRequestMapperTest {
     @BeforeEach
     void init() {
         instancesRequestDataModel =
-                new InstancesRequestDataModel(UUID.randomUUID().toString(), UUID.randomUUID().toString());
+                new InstancesRequestDataModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(),
+                        eca.core.evaluation.EvaluationMethod.CROSS_VALIDATION, crossValidationConfig.getNumFolds(),
+                        crossValidationConfig.getNumTests(), crossValidationConfig.getSeed());
     }
 
     @Test
     void testMappingInstancesRequest() {
         ClassifierOptionsRequest request =
-                classifierOptionsRequestMapper.map(instancesRequestDataModel, crossValidationConfig);
+                classifierOptionsRequestMapper.map(instancesRequestDataModel);
         assertThat(request.getEvaluationMethodReport()).isNotNull();
         assertThat(request.getEvaluationMethodReport().getEvaluationMethod()).isEqualTo(
                 EvaluationMethod.CROSS_VALIDATION);
         assertThat(request.getEvaluationMethodReport().getNumFolds().intValue()).isEqualTo(
-                crossValidationConfig.getNumFolds());
+                instancesRequestDataModel.getNumFolds());
         assertThat(request.getEvaluationMethodReport().getNumTests().intValue()).isEqualTo(
-                crossValidationConfig.getNumTests());
+                instancesRequestDataModel.getNumTests());
         assertThat(request.getEvaluationMethodReport().getSeed().intValue()).isEqualTo(
-                crossValidationConfig.getSeed());
+                instancesRequestDataModel.getSeed());
     }
 }

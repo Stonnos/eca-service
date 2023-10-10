@@ -12,7 +12,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 /**
- * Experiment request dto.
+ * Evaluation request dto.
  *
  * @author Roman Batygin
  */

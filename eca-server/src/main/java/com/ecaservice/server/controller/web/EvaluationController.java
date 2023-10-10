@@ -3,6 +3,7 @@ package com.ecaservice.server.controller.web;
 import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.server.dto.CreateEvaluationRequestDto;
+import com.ecaservice.server.dto.CreateOptimalEvaluationRequestDto;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.service.evaluation.EvaluationLogDataService;
@@ -126,6 +127,69 @@ public class EvaluationController {
             @Valid @RequestBody CreateEvaluationRequestDto evaluationRequestDto) {
         log.info("Received evaluation request [{}]", evaluationRequestDto);
         return evaluationRequestWebApiService.createEvaluationRequest(evaluationRequestDto);
+    }
+
+    /**
+     * Creates classifier evaluation request with optimal classifiers options.
+     *
+     * @param evaluationRequestDto - optimal evaluation request dto
+     * @return evaluation response dto
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @Operation(
+            description = "Creates classifier evaluation request with optimal classifiers options",
+            summary = "Creates classifier evaluation request with optimal classifiers options",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
+                    @Content(examples = {
+                            @ExampleObject(
+                                    name = "CreateOptimalEvaluationRequest",
+                                    ref = "#/components/examples/CreateOptimalEvaluationRequest"
+                            )
+                    })
+            }),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "CreateEvaluationResponse",
+                                                    ref = "#/components/examples/CreateEvaluationResponse"
+                                            )
+                                    },
+                                    schema = @Schema(implementation = CreateEvaluationResponseDto.class)
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "CreateEvaluationBadRequestResponse",
+                                                    ref = "#/components/examples/CreateEvaluationBadRequestResponse"
+                                            )
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            )
+                                    }
+                            )
+                    )
+            }
+    )
+    @PostMapping(value = "/create-optimal")
+    public CreateEvaluationResponseDto createRequest(
+            @Valid @RequestBody CreateOptimalEvaluationRequestDto evaluationRequestDto) {
+        log.info("Received optimal evaluation request [{}]", evaluationRequestDto);
+        return evaluationRequestWebApiService.createOptimalEvaluationRequest(evaluationRequestDto);
     }
 
     /**

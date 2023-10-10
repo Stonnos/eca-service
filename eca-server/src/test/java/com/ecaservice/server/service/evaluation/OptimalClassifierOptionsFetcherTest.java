@@ -48,6 +48,7 @@ import com.ecaservice.server.service.ers.ErsRequestSender;
 import com.ecaservice.server.service.ers.ErsRequestService;
 import com.ecaservice.server.service.evaluation.initializers.ClassifierInitializerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import eca.core.evaluation.EvaluationMethod;
 import eca.ensemble.forests.DecisionTreeType;
 import feign.FeignException;
 import org.apache.commons.lang3.StringUtils;
@@ -62,6 +63,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import static com.ecaservice.server.TestHelperUtils.NUM_FOLDS;
+import static com.ecaservice.server.TestHelperUtils.NUM_TESTS;
+import static com.ecaservice.server.TestHelperUtils.SEED;
 import static com.ecaservice.server.TestHelperUtils.createInstancesInfo;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -370,7 +374,8 @@ class OptimalClassifierOptionsFetcherTest extends AbstractJpaTest {
         instancesInfo.setDataMd5Hash(DATA_MD_5_HASH);
         instancesInfoRepository.save(instancesInfo);
         instancesRequestDataModel =
-                new InstancesRequestDataModel(UUID.randomUUID().toString(), dataUuid);
+                new InstancesRequestDataModel(UUID.randomUUID().toString(), dataUuid, EvaluationMethod.CROSS_VALIDATION,
+                        NUM_FOLDS, NUM_TESTS, SEED);
     }
 
     private void mockLoadInstances() {

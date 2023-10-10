@@ -1,13 +1,10 @@
 package com.ecaservice.oauth.controller;
 
-import com.ecaservice.common.error.model.ValidationErrorDto;
-import com.ecaservice.common.web.GlobalExceptionHandler;
 import com.ecaservice.oauth.exception.NotSafePasswordException;
 import com.ecaservice.oauth.exception.UserLockNotAllowedException;
 import com.ecaservice.web.dto.model.PasswordRuleResultDto;
 import com.ecaservice.web.dto.model.PasswordValidationErrorDto;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.MethodParameter;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -17,7 +14,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
