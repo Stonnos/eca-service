@@ -2341,6 +2341,118 @@ a|
 ----
 |===
 
+== Creates classifier evaluation request with optimal classifiers options
+
+__POST__ */evaluation/create-optimal* - Creates classifier evaluation request with optimal classifiers options
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+*Request body*
+
+[width=100%]
+|===
+|*Content type*|*Required*|*Schema*|*Example*
+|*application/json*
+|true
+|
+<<CreateOptimalEvaluationRequestDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "instancesUuid" : "c1c82d78-b90f-4ef2-88c8-eca3657363bf",
+  "evaluationMethod" : "CROSS_VALIDATION"
+}
+----
+|===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+<<CreateEvaluationResponseDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "id" : 1,
+  "requestId" : "1d2de514-3a87-4620-9b97-c260e24340de"
+}
+----
+|400
+|Bad request
+|*application/json*
+|-
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "CLASS_ATTRIBUTE_NOT_SELECTED",
+  "errorMessage" : "Bad request error while get valid instances with uuid [c1c82d78-b90f-4ef2-88c8-eca3657363bf] from data storage!"
+} ]
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|===
+
 == Finds classifiers options requests models with specified options
 
 __POST__ */classifiers-options-requests* - Finds classifiers options requests models with specified options
@@ -10458,6 +10570,56 @@ a|
 
 
 
+|===
+=== CreateOptimalEvaluationRequestDto
+:table-caption: Table
+.Optimal evaluation request
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*instancesUuid**
+|Instances uuid
+a|
+__string__
+
+
+*Min. length*: 1
+
+*Max. length*: 36
+
+
+
+
+
+
+
+*Pattern*: `^[0-9a-f]{8}-[0-9a-f]{4}-[34][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`
+
+
+|*evaluationMethod**
+|Evaluation method
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* TRAINING_DATA
+
+* CROSS_VALIDATION
 |===
 === ClassifierOptionsRequestDto
 :table-caption: Table
