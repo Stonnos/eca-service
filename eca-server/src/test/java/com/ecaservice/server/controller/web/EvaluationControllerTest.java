@@ -3,6 +3,7 @@ package com.ecaservice.server.controller.web;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.dto.CreateEvaluationRequestDto;
+import com.ecaservice.server.dto.CreateOptimalEvaluationRequestDto;
 import com.ecaservice.server.mapping.ClassifierInfoMapperImpl;
 import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.mapping.EvaluationLogMapper;
@@ -40,6 +41,7 @@ import static com.ecaservice.server.PageRequestUtils.TOTAL_ELEMENTS;
 import static com.ecaservice.server.TestHelperUtils.TEST_UUID;
 import static com.ecaservice.server.TestHelperUtils.bearerHeader;
 import static com.ecaservice.server.TestHelperUtils.buildEvaluationRequestDto;
+import static com.ecaservice.server.TestHelperUtils.buildOptimalEvaluationRequestDto;
 import static com.ecaservice.server.TestHelperUtils.createPageRequestDto;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -62,6 +64,8 @@ class EvaluationControllerTest extends PageRequestControllerTest {
     private static final String DETAILS_URL = BASE_URL + "/details/{id}";
     private static final String LIST_URL = BASE_URL + "/list";
     private static final String CREATE_EVALUATION_URL = BASE_URL + "/create";
+
+    private static final String CREATE_OPTIMAL_EVALUATION_URL = BASE_URL + "/create-optimal";
     private static final String REQUEST_STATUS_STATISTICS_URL = BASE_URL + "/request-statuses-statistics";
     private static final String CLASSIFIERS_STATISTICS_URL = BASE_URL + "/classifiers-statistics";
     private static final String MODEL_CONTENT_URL = BASE_URL + "/model/{id}";
@@ -97,6 +101,33 @@ class EvaluationControllerTest extends PageRequestControllerTest {
         when(evaluationRequestWebApiService.createEvaluationRequest(any(CreateEvaluationRequestDto.class)))
                 .thenReturn(expected);
         mockMvc.perform(post(CREATE_EVALUATION_URL)
+                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                        .content(objectMapper.writeValueAsString(createEvaluationRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(objectMapper.writeValueAsString(expected)));
+    }
+
+    @Test
+    void testCreateOptimalEvaluationUnauthorized() throws Exception {
+        var createEvaluationRequestDto = buildOptimalEvaluationRequestDto();
+        mockMvc.perform(post(CREATE_OPTIMAL_EVALUATION_URL)
+                        .content(objectMapper.writeValueAsString(createEvaluationRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testCreateOptimalEvaluationSuccess() throws Exception {
+        var createEvaluationRequestDto = buildOptimalEvaluationRequestDto();
+        CreateEvaluationResponseDto expected = CreateEvaluationResponseDto.builder()
+                .id(ID)
+                .requestId(UUID.randomUUID().toString())
+                .build();
+        when(evaluationRequestWebApiService.createOptimalEvaluationRequest(any(CreateOptimalEvaluationRequestDto.class)))
+                .thenReturn(expected);
+        mockMvc.perform(post(CREATE_OPTIMAL_EVALUATION_URL)
                         .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                         .content(objectMapper.writeValueAsString(createEvaluationRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
