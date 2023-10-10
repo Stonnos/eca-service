@@ -43,6 +43,7 @@ import com.ecaservice.server.service.ers.ErsRequestSender;
 import com.ecaservice.server.service.ers.ErsRequestService;
 import com.ecaservice.server.service.evaluation.initializers.ClassifierInitializerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import eca.core.evaluation.EvaluationMethod;
 import eca.ensemble.forests.DecisionTreeType;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -64,6 +65,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static com.ecaservice.server.TestHelperUtils.NUM_FOLDS;
+import static com.ecaservice.server.TestHelperUtils.NUM_TESTS;
+import static com.ecaservice.server.TestHelperUtils.SEED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -175,7 +179,8 @@ class OptimalClassifierOptionsFetcherIT extends AbstractJpaTest {
             executorService.submit(() -> {
                 try {
                     var instancesRequestDataModel =
-                            new InstancesRequestDataModel(UUID.randomUUID().toString(), dataUuid);
+                            new InstancesRequestDataModel(UUID.randomUUID().toString(), dataUuid,
+                                    EvaluationMethod.CROSS_VALIDATION, NUM_FOLDS, NUM_TESTS, SEED);
                     optimalClassifierOptionsFetcher.getOptimalClassifierOptions(instancesRequestDataModel);
                 } finally {
                     finishedLatch.countDown();

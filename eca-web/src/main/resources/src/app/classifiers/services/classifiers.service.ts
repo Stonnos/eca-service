@@ -14,6 +14,9 @@ import { catchError, finalize, switchMap } from "rxjs/internal/operators";
 import { EMPTY } from "rxjs/internal/observable/empty";
 import { saveAs } from 'file-saver/dist/FileSaver';
 import { CreateEvaluationRequestDto } from "../../create-classifier/model/create-evaluation-request.model";
+import {
+  CreateOptimalEvaluationRequestDto
+} from "../../create-optimal-classifier/model/create-optimal-evaluation-request.model";
 
 @Injectable()
 export class ClassifiersService {
@@ -29,6 +32,14 @@ export class ClassifiersService {
       'Authorization': Utils.getBearerTokenHeader()
     });
     return this.http.post<CreateEvaluationResponseDto>(this.serviceUrl + '/create', evaluationRequestDto, { headers: headers });
+  }
+
+  public createOptimalEvaluationRequest(evaluationRequestDto: CreateOptimalEvaluationRequestDto): Observable<CreateEvaluationResponseDto> {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/json; charset=utf-8',
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    return this.http.post<CreateEvaluationResponseDto>(this.serviceUrl + '/create-optimal', evaluationRequestDto, { headers: headers });
   }
 
   public getEvaluations(pageRequest: PageRequestDto): Observable<PageDto<EvaluationLogDto>> {

@@ -1,7 +1,6 @@
 package com.ecaservice.server.mapping;
 
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
-import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.model.evaluation.InstancesRequestDataModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -17,15 +16,12 @@ public interface ClassifierOptionsRequestMapper {
     /**
      * Maps specified params to classifier options request.
      *
-     * @param instancesRequest      - instances request
-     * @param crossValidationConfig - cross validation config
+     * @param instancesRequest - instances request
      * @return classifier options request
      */
-    @Mapping(source = "instancesRequest.requestId", target = "requestId")
-    @Mapping(target = "evaluationMethodReport.evaluationMethod", constant = "CROSS_VALIDATION")
-    @Mapping(source = "crossValidationConfig.numFolds", target = "evaluationMethodReport.numFolds")
-    @Mapping(source = "crossValidationConfig.numTests", target = "evaluationMethodReport.numTests")
-    @Mapping(source = "crossValidationConfig.seed", target = "evaluationMethodReport.seed")
-    ClassifierOptionsRequest map(InstancesRequestDataModel instancesRequest,
-                                 CrossValidationConfig crossValidationConfig);
+    @Mapping(source = "evaluationMethod", target = "evaluationMethodReport.evaluationMethod")
+    @Mapping(source = "numFolds", target = "evaluationMethodReport.numFolds")
+    @Mapping(source = "numTests", target = "evaluationMethodReport.numTests")
+    @Mapping(source = "seed", target = "evaluationMethodReport.seed")
+    ClassifierOptionsRequest map(InstancesRequestDataModel instancesRequest);
 }

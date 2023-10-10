@@ -56,6 +56,11 @@ public class AuditCodes {
     public static final String CREATE_EVALUATION_REQUEST = "CREATE_EVALUATION_REQUEST";
 
     /**
+     * Creates optimal evaluation request
+     */
+    public static final String CREATE_OPTIMAL_EVALUATION_REQUEST = "CREATE_OPTIMAL_EVALUATION_REQUEST";
+
+    /**
      * Generates evaluation requests report
      */
     public static final String GENERATE_EVALUATION_REQUESTS_REPORT = "GENERATE_EVALUATION_REQUESTS_REPORT";

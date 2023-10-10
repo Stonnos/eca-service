@@ -2,7 +2,7 @@ package com.ecaservice.server.bpm.service.task;
 
 import com.ecaservice.server.bpm.model.EvaluationRequestModel;
 import com.ecaservice.server.bpm.model.TaskType;
-import com.ecaservice.server.model.evaluation.InstancesRequestDataModel;
+import com.ecaservice.server.mapping.EvaluationLogMapper;
 import com.ecaservice.server.service.evaluation.OptimalClassifierOptionsFetcher;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -22,15 +22,19 @@ import static com.ecaservice.server.util.CamundaUtils.getVariable;
 public class GetOptimalClassifierOptionsTaskHandler extends AbstractTaskHandler {
 
     private final OptimalClassifierOptionsFetcher optimalClassifierOptionsFetcher;
+    private final EvaluationLogMapper evaluationLogMapper;
 
     /**
      * Constructor with parameters.
      *
      * @param optimalClassifierOptionsFetcher - optimal classifier options fetcher
+     * @param evaluationLogMapper             - evaluation log mapper
      */
-    public GetOptimalClassifierOptionsTaskHandler(OptimalClassifierOptionsFetcher optimalClassifierOptionsFetcher) {
+    public GetOptimalClassifierOptionsTaskHandler(OptimalClassifierOptionsFetcher optimalClassifierOptionsFetcher,
+                                                  EvaluationLogMapper evaluationLogMapper) {
         super(TaskType.GET_OPTIMAL_CLASSIFIER_OPTIONS);
         this.optimalClassifierOptionsFetcher = optimalClassifierOptionsFetcher;
+        this.evaluationLogMapper = evaluationLogMapper;
     }
 
     @Override
@@ -40,8 +44,7 @@ public class GetOptimalClassifierOptionsTaskHandler extends AbstractTaskHandler 
         var evaluationRequestModel =
                 getVariable(execution, EVALUATION_REQUEST_DATA, EvaluationRequestModel.class);
         var instancesRequestDataModel =
-                new InstancesRequestDataModel(evaluationRequestModel.getRequestId(),
-                        evaluationRequestModel.getDataUuid());
+                evaluationLogMapper.mapToInstancesRequest(evaluationRequestModel);
         var classifierOptionsResult =
                 optimalClassifierOptionsFetcher.getOptimalClassifierOptions(instancesRequestDataModel);
         execution.setVariable(CLASSIFIER_OPTIONS_RESULT, classifierOptionsResult);

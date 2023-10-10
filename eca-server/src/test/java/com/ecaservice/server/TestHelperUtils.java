@@ -31,6 +31,7 @@ import com.ecaservice.server.bpm.model.EvaluationResultsModel;
 import com.ecaservice.server.bpm.model.ExperimentRequestModel;
 import com.ecaservice.server.dto.CreateEvaluationRequestDto;
 import com.ecaservice.server.dto.CreateExperimentRequestDto;
+import com.ecaservice.server.dto.CreateOptimalEvaluationRequestDto;
 import com.ecaservice.server.model.ClassifierOptionsResult;
 import com.ecaservice.server.model.entity.Channel;
 import com.ecaservice.server.model.entity.ClassifierInfo;
@@ -1313,6 +1314,18 @@ public class TestHelperUtils {
         evaluationRequestDto.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         evaluationRequestDto.setInstancesUuid(UUID.randomUUID().toString());
         evaluationRequestDto.setClassifierOptions(createLogisticOptions());
+        return evaluationRequestDto;
+    }
+
+    /**
+     * Creates optimal evaluation request dto.
+     *
+     * @return optimal evaluation request dto
+     */
+    public static CreateOptimalEvaluationRequestDto buildOptimalEvaluationRequestDto() {
+        CreateOptimalEvaluationRequestDto evaluationRequestDto = new CreateOptimalEvaluationRequestDto();
+        evaluationRequestDto.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
+        evaluationRequestDto.setInstancesUuid(UUID.randomUUID().toString());
         return evaluationRequestDto;
     }
 

@@ -159,7 +159,7 @@
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="errorMessage">Can't handle experiment ${experiment.requestId} with status ${experiment.requestStatus}</camunda:inputParameter>
-          <camunda:inputParameter name="errorCode">INVALID_REQUEST_STATUS</camunda:inputParameter>
+          <camunda:inputParameter name="errorCode">InvalidRequestStatus</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0ahwoue</bpmn:incoming>
