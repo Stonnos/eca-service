@@ -139,9 +139,7 @@ class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<
         evaluationMessageRequestModel.setClassifierOptions(null);
         evaluationMessageRequestModel.setUseOptimalClassifierOptions(true);
 
-
-        when(optimalClassifierOptionsFetcher.getOptimalClassifierOptions(any(InstancesRequestDataModel.class)))
-                .thenReturn(classifierOptionsResult);
+        mockGetOptimalOptions(classifierOptionsResult);
 
         evaluationProcessManager.createAndProcessEvaluationRequest(evaluationMessageRequestModel);
 
@@ -164,9 +162,7 @@ class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<
         evaluationMessageRequestModel.setClassifierOptions(null);
         evaluationMessageRequestModel.setUseOptimalClassifierOptions(true);
 
-
-        when(optimalClassifierOptionsFetcher.getOptimalClassifierOptions(any(InstancesRequestDataModel.class)))
-                .thenReturn(classifierOptionsResult);
+        mockGetOptimalOptions(classifierOptionsResult);
 
         evaluationProcessManager.createAndProcessEvaluationRequest(evaluationMessageRequestModel);
 
@@ -178,6 +174,26 @@ class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<
         verifyTestSteps(evaluationLog,
                 new EcaResponseVerifier(evaluationMessageRequestModel.getCorrelationId(),
                         evaluationMessageRequestModel.getReplyTo(), TechnicalStatus.ERROR)
+        );
+    }
+
+    @Test
+    void testCreateAndProcessEvaluationWebRequestWithOptimalOptions() {
+        ClassifierOptionsResult classifierOptionsResult = createClassifierOptionsResult(createLogisticOptions());
+        var evaluationMessageRequestModel = createEvaluationWebRequestModel();
+        evaluationMessageRequestModel.setClassifierOptions(null);
+        evaluationMessageRequestModel.setUseOptimalClassifierOptions(true);
+
+        mockGetOptimalOptions(classifierOptionsResult);
+        evaluationProcessManager.createAndProcessEvaluationRequest(evaluationMessageRequestModel);
+
+        verify(getWebPushClient(), atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
+
+        var evaluationLog = getEvaluationLog(evaluationMessageRequestModel.getRequestId());
+
+        verifyTestSteps(evaluationLog,
+                new EvaluationRequestStatusVerifier(RequestStatus.NEW),
+                new UserPushRequestVerifier(RequestStatus.NEW, 0)
         );
     }
 
@@ -235,6 +251,11 @@ class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<
     private void captureEcaResponse() {
         verify(getEcaResponseSender()).sendResponse(evaluationResponseArgumentCaptor.capture(),
                 correlationIdCaptor.capture(), replyToCaptor.capture());
+    }
+
+    private void mockGetOptimalOptions(ClassifierOptionsResult classifierOptionsResult) {
+        when(optimalClassifierOptionsFetcher.getOptimalClassifierOptions(any(InstancesRequestDataModel.class)))
+                .thenReturn(classifierOptionsResult);
     }
 
     @RequiredArgsConstructor

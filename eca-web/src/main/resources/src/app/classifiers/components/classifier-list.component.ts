@@ -41,6 +41,10 @@ import { Subscription } from "rxjs";
 import { PushMessageType } from "../../common/util/push-message.type";
 import { PushVariables } from "../../common/util/push-variables";
 import { PushService } from "../../common/push/push.service";
+import { OptimalEvaluationRequest } from "../../create-optimal-classifier/model/optimal-evaluation-request.model";
+import {
+  CreateOptimalEvaluationRequestDto
+} from "../../create-optimal-classifier/model/create-optimal-evaluation-request.model";
 
 @Component({
   selector: 'app-classifier-list',
@@ -55,14 +59,16 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
     ValidationErrorCode.CLASS_ATTRIBUTE_NOT_SELECTED,
     ValidationErrorCode.INSTANCES_NOT_FOUND,
     ValidationErrorCode.SELECTED_ATTRIBUTES_NUMBER_IS_TOO_LOW,
-    ValidationErrorCode.CLASS_VALUES_IS_TOO_LOW
+    ValidationErrorCode.CLASS_VALUES_IS_TOO_LOW,
+    ValidationErrorCode.CLASSIFIER_OPTIONS_NOT_FOUND
   ];
 
   private readonly errorCodesMap = new Map<string, string>()
     .set(ValidationErrorCode.CLASS_ATTRIBUTE_NOT_SELECTED, 'Не выбран атрибут класса для заданной обучающей выборки')
     .set(ValidationErrorCode.INSTANCES_NOT_FOUND, 'Обучающая выборка не найдена')
     .set(ValidationErrorCode.SELECTED_ATTRIBUTES_NUMBER_IS_TOO_LOW, 'Выберите не менее двух атрибутов классификации')
-    .set(ValidationErrorCode.CLASS_VALUES_IS_TOO_LOW, 'Число классов должно быть не менее двух');
+    .set(ValidationErrorCode.CLASS_VALUES_IS_TOO_LOW, 'Число классов должно быть не менее двух')
+    .set(ValidationErrorCode.CLASSIFIER_OPTIONS_NOT_FOUND, 'Оптимальные настройки классификатора не найдены для заданной обучающей выборки и метода оценки точности')
 
   public requestStatusStatisticsDto: RequestStatusStatisticsDto;
 
@@ -78,8 +84,11 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
   public selectedClassifierTemplate: FormTemplateDto;
   public selectedClassifierFormFields: FormField[] = [];
   public evaluationRequest: EvaluationRequest = new EvaluationRequest();
+  public optimalEvaluationRequest: OptimalEvaluationRequest = new OptimalEvaluationRequest();
 
   public createClassifierDialogVisibility: boolean = false;
+
+  public createOptimalClassifierDialogVisibility: boolean = false;
 
   private evaluationUpdatesSubscriptions: Subscription;
 
@@ -198,12 +207,35 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
     this.createClassifierDialogVisibility = visible;
   }
 
+  public onCreateOptimalClassifierDialogVisibility(visible): void {
+    this.createOptimalClassifierDialogVisibility = visible;
+  }
+
   public onCreateClassifier(evaluationRequest: EvaluationRequest): void {
     const classifierOptions = this.formTemplatesMapper.mapToClassifierOptionsObject(evaluationRequest.classifierOptions,
       this.selectedClassifierTemplate);
     const createEvaluationRequest =
       new CreateEvaluationRequestDto(evaluationRequest.instancesUuid, classifierOptions, evaluationRequest.evaluationMethod.value);
     this.classifiersService.createEvaluationRequest(createEvaluationRequest)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe({
+        next: (createEvaluationResponseDto: CreateEvaluationResponseDto) => {
+          this.handleEvaluationRequestCreated(createEvaluationResponseDto);
+        },
+        error: (error) => {
+          this.handleCreateEvaluationRequestError(error);
+        }
+      });
+  }
+
+  public onCreateOptimalClassifier(evaluationRequest: OptimalEvaluationRequest): void {
+    const createEvaluationRequest =
+      new CreateOptimalEvaluationRequestDto(evaluationRequest.instancesUuid, evaluationRequest.evaluationMethod.value);
+    this.classifiersService.createOptimalEvaluationRequest(createEvaluationRequest)
       .pipe(
         finalize(() => {
           this.loading = false;
@@ -291,6 +323,15 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
           icon: 'pi pi-plus',
           styleClass: 'main-menu-item',
           items: items
+        },
+        {
+          label: 'Оптимальный классификатор',
+          icon: 'pi pi-plus',
+          styleClass: 'main-menu-item',
+          command: () => {
+            this.optimalEvaluationRequest = new OptimalEvaluationRequest();
+            this.createOptimalClassifierDialogVisibility = true;
+          }
         },
         {
           label: 'Сформировать отчет',

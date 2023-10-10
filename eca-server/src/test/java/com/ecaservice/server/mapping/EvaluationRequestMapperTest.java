@@ -37,7 +37,10 @@ class EvaluationRequestMapperTest {
 
     @BeforeEach
     void init() {
-        instancesRequestDataModel = new InstancesRequestDataModel(UUID.randomUUID().toString(), UUID.randomUUID().toString());
+        instancesRequestDataModel =
+                new InstancesRequestDataModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(),
+                        EvaluationMethod.CROSS_VALIDATION, crossValidationConfig.getNumFolds(),
+                        crossValidationConfig.getNumTests(), crossValidationConfig.getSeed());
     }
 
     @Test
@@ -46,8 +49,8 @@ class EvaluationRequestMapperTest {
                 evaluationRequestMapper.map(instancesRequestDataModel, crossValidationConfig);
         assertThat(evaluationRequestDataModel.getEvaluationMethod()).isEqualTo(
                 EvaluationMethod.CROSS_VALIDATION);
-        assertThat(evaluationRequestDataModel.getNumFolds()).isEqualTo(crossValidationConfig.getNumFolds().intValue());
-        assertThat(evaluationRequestDataModel.getNumTests()).isEqualTo(crossValidationConfig.getNumTests().intValue());
-        assertThat(evaluationRequestDataModel.getSeed()).isEqualTo(crossValidationConfig.getSeed().intValue());
+        assertThat(evaluationRequestDataModel.getNumFolds()).isEqualTo(instancesRequestDataModel.getNumFolds());
+        assertThat(evaluationRequestDataModel.getNumTests()).isEqualTo(instancesRequestDataModel.getNumTests());
+        assertThat(evaluationRequestDataModel.getSeed()).isEqualTo(instancesRequestDataModel.getSeed());
     }
 }

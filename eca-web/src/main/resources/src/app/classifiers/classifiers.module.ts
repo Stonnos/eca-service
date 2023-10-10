@@ -8,6 +8,7 @@ import { FilterModule } from "../filter/filter.module";
 import { RequestStatusesStatisticsModule } from "../request-statuses-statistics/request-statuses-statistics.module";
 import { SharedModule } from "../common/shared.module";
 import { CreateClassifierModule } from "../create-classifier/create-classifier.module";
+import { CreateOptimalClassifierModule } from "../create-optimal-classifier/create-optimal-classifier.module";
 
 @NgModule({
     imports: [
@@ -17,7 +18,8 @@ import { CreateClassifierModule } from "../create-classifier/create-classifier.m
         UiComponentsModule,
         FilterModule,
         RequestStatusesStatisticsModule,
-        CreateClassifierModule
+        CreateClassifierModule,
+        CreateOptimalClassifierModule
     ],
     declarations: [
         ClassifierListComponent

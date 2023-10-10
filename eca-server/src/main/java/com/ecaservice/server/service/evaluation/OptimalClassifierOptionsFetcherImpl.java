@@ -1,6 +1,5 @@
 package com.ecaservice.server.service.evaluation;
 
-import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.mapping.ClassifierOptionsRequestMapper;
 import com.ecaservice.server.mapping.ClassifierOptionsRequestModelMapper;
 import com.ecaservice.server.model.ClassifierOptionsResult;
@@ -23,7 +22,6 @@ import static com.ecaservice.server.util.Utils.createClassifierOptionsRequestEnt
 @RequiredArgsConstructor
 public class OptimalClassifierOptionsFetcherImpl implements OptimalClassifierOptionsFetcher {
 
-    private final CrossValidationConfig crossValidationConfig;
     private final ErsRequestService ersRequestService;
     private final InstancesMetaDataService instancesMetaDataService;
     private final InstancesInfoService instancesInfoService;
@@ -43,8 +41,7 @@ public class OptimalClassifierOptionsFetcherImpl implements OptimalClassifierOpt
                 instancesRequestDataModel.getDataUuid(), instancesRequestDataModel.getRequestId());
         var instancesMetaDataModel =
                 instancesMetaDataService.getInstancesMetaData(instancesRequestDataModel.getDataUuid());
-        var classifierOptionsRequest =
-                classifierOptionsRequestMapper.map(instancesRequestDataModel, crossValidationConfig);
+        var classifierOptionsRequest = classifierOptionsRequestMapper.map(instancesRequestDataModel);
         classifierOptionsRequest.setDataHash(instancesMetaDataModel.getMd5Hash());
         ClassifierOptionsRequestEntity requestEntity =
                 createClassifierOptionsRequestEntity(ClassifierOptionsRequestSource.ERS);

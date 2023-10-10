@@ -110,3 +110,11 @@
   (visibilityChange)="onCreateClassifierDialogVisibility($event)"
   (itemEvent)="onCreateClassifier($event)">
 </app-create-classifier>
+
+<app-create-optimal-classifier
+  [item]="optimalEvaluationRequest"
+  [evaluationMethods]="evaluationMethods"
+  [visible]="createOptimalClassifierDialogVisibility"
+  (visibilityChange)="onCreateOptimalClassifierDialogVisibility($event)"
+  (itemEvent)="onCreateOptimalClassifier($event)">
+</app-create-optimal-classifier>

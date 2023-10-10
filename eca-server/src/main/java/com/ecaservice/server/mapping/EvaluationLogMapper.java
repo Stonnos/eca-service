@@ -6,8 +6,10 @@ import com.ecaservice.server.bpm.model.EvaluationLogModel;
 import com.ecaservice.server.bpm.model.EvaluationRequestModel;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.dto.CreateEvaluationRequestDto;
+import com.ecaservice.server.dto.CreateOptimalEvaluationRequestDto;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.evaluation.EvaluationRequestData;
+import com.ecaservice.server.model.evaluation.InstancesRequestDataModel;
 import com.ecaservice.server.report.model.EvaluationLogBean;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
@@ -77,6 +79,31 @@ public abstract class EvaluationLogMapper extends AbstractEvaluationMapper {
     @Mapping(target = "channel", constant = "WEB")
     public abstract EvaluationRequestModel map(CreateEvaluationRequestDto createEvaluationRequestDto,
                                                CrossValidationConfig crossValidationConfig);
+
+    /**
+     * Maps optimal evaluation request to evaluation web request internal data model.
+     *
+     * @param createEvaluationRequestDto - optimal evaluation request
+     * @param crossValidationConfig      - cross validation config
+     * @return evaluation web request internal data model
+     */
+    @Mapping(source = "createEvaluationRequestDto.instancesUuid", target = "instancesUuid")
+    @Mapping(source = "createEvaluationRequestDto.evaluationMethod", target = "evaluationMethod")
+    @Mapping(source = "crossValidationConfig.numFolds", target = "numFolds")
+    @Mapping(source = "crossValidationConfig.numTests", target = "numTests")
+    @Mapping(source = "crossValidationConfig.seed", target = "seed")
+    @Mapping(target = "useOptimalClassifierOptions", constant = "true")
+    @Mapping(target = "channel", constant = "WEB")
+    public abstract EvaluationRequestModel map(CreateOptimalEvaluationRequestDto createEvaluationRequestDto,
+                                               CrossValidationConfig crossValidationConfig);
+
+    /**
+     * Maps evaluation request model to instances request data model.
+     *
+     * @param evaluationRequestModel - evaluation request model
+     * @return instances request data model
+     */
+    public abstract InstancesRequestDataModel mapToInstancesRequest(EvaluationRequestModel evaluationRequestModel);
 
     /**
      * Maps evaluation request model to evaluation request data.
