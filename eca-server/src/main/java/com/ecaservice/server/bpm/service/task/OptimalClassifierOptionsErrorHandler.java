@@ -34,11 +34,10 @@ public class OptimalClassifierOptionsErrorHandler extends AbstractTaskHandler {
                 execution.getProcessBusinessKey());
         var classifierOptionsResult =
                 getVariable(execution, CLASSIFIER_OPTIONS_RESULT, ClassifierOptionsResult.class);
-        var evaluationResultsModel = EvaluationResultsModel.builder()
-                .requestId(execution.getProcessBusinessKey())
-                .requestStatus(RequestStatus.ERROR)
-                .errorCode(classifierOptionsResult.getErrorCode())
-                .build();
+        var evaluationResultsModel = new EvaluationResultsModel();
+        evaluationResultsModel.setRequestId(execution.getProcessBusinessKey());
+        evaluationResultsModel.setRequestStatus(RequestStatus.ERROR);
+        evaluationResultsModel.setErrorCode(classifierOptionsResult.getErrorCode());
         execution.setVariable(EVALUATION_RESULTS_DATA, evaluationResultsModel);
         log.info("Optimal classifier options error request has been processed for evaluation [{}]",
                 execution.getProcessBusinessKey());
