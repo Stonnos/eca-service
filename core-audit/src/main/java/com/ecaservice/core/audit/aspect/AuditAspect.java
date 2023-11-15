@@ -77,11 +77,19 @@ public class AuditAspect {
     private void publishAuditEvent(Audit audit, ProceedingJoinPoint joinPoint, Object result) {
         Map<String, Object> methodParams = getMethodParams(joinPoint);
         AuditContextParams auditContextParams = new AuditContextParams(methodParams, result);
-        String eventInitiator = auditEventInitiator.getInitiator();
+        String eventInitiator = getInitiator(audit, joinPoint, result);
         String correlationId = getCorrelationId(audit, joinPoint, result);
         AuditEvent auditEvent = new AuditEvent(this, audit.value(), EventType.SUCCESS, correlationId,
                 eventInitiator, auditContextParams);
         applicationEventPublisher.publishEvent(auditEvent);
+    }
+
+    private String getInitiator(Audit audit, ProceedingJoinPoint joinPoint, Object methodResult) {
+        if (StringUtils.isNotBlank(audit.initiatorKey())) {
+            return parseExpression(audit.initiatorKey(), joinPoint, methodResult);
+        } else {
+            return auditEventInitiator.getInitiator();
+        }
     }
 
     private String getCorrelationId(Audit audit, ProceedingJoinPoint joinPoint, Object methodResult) {

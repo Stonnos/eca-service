@@ -57,9 +57,6 @@ service:
 lock:
   enabled: true
   registry-type: REDIS
-  redis:
-    expireAfter: 60000
-    registryKey: eca-server-lock
 
 rabbit:
   enabled: true

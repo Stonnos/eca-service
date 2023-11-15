@@ -25,9 +25,9 @@ public class CoreLockAutoConfiguration {
     public static final String DEFAULT_FALLBACK_HANDLER = "defaultFallbackHandler";
 
     /**
-     * Lock registry bean
+     * Default lock registry key
      */
-    public static final String LOCK_REGISTRY = "lockRegistry";
+    public static final String DEFAULT_LOCK_REGISTRY_KEY = "defaultLockRegistryKey";
 
     /**
      * Creates default fallback handler bean.

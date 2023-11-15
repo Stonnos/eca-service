@@ -1,13 +1,13 @@
 package com.ecaservice.core.lock.config;
 
+import com.ecaservice.core.lock.service.LockRegistryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.support.locks.DefaultLockRegistry;
-
-import static com.ecaservice.core.lock.config.CoreLockAutoConfiguration.LOCK_REGISTRY;
+import org.springframework.integration.support.locks.LockRegistry;
 
 /**
  * In memory lock configuration.
@@ -18,17 +18,26 @@ import static com.ecaservice.core.lock.config.CoreLockAutoConfiguration.LOCK_REG
 @Configuration
 @ConditionalOnProperty(value = "lock.registry-type", havingValue = "IN_MEMORY", matchIfMissing = true)
 @RequiredArgsConstructor
-public class ImMemoryLockConfiguration {
+public class ImMemoryLockConfiguration extends AbstractLockConfiguration {
 
     /**
-     * Creates default lock registry bean.
+     * Creates lock registry repository bean.
      *
-     * @return default lock registry bean
+     * @param lockProperties - lock properties
+     * @return lock registry repository
      */
-    @Bean(LOCK_REGISTRY)
-    public DefaultLockRegistry lockRegistry() {
+    @Bean
+    public LockRegistryRepository lockRegistryRepository(LockProperties lockProperties) {
+        var lockRegistryRepository = super.lockRegistryRepository(lockProperties);
+        log.info("In memory lock registry repository has been initialized");
+        return lockRegistryRepository;
+    }
+
+    @Override
+    public LockRegistry createLockRegistry(String registryKey,
+                                           LockProperties.LockRegistryProperties lockRegistryProperties) {
         var lockRegistry = new DefaultLockRegistry();
-        log.info("Default in memory lock registry has been initialized");
+        log.info("In memory lock [{}] registry has been initialized", registryKey);
         return lockRegistry;
     }
 }

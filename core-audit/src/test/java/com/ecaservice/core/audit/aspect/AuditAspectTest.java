@@ -100,6 +100,32 @@ class AuditAspectTest {
     }
 
     @Test
+    void testAroundAuditMethodWithInitiatorFromInputParameters() throws Throwable {
+        var audit = mock(Audit.class);
+        when(audit.value()).thenReturn(AUDIT_CODE);
+        when(audit.initiatorKey()).thenReturn(String.format("#%s", PARAM_1));
+        var joinPoint = mockProceedingJoinPoint(OUTPUT_VALUE);
+        auditAspect.around(joinPoint, audit);
+        verify(applicationEventPublisher, atLeastOnce()).publishEvent(auditEventArgumentCaptor.capture());
+        var auditEvent = auditEventArgumentCaptor.getValue();
+        assertThat(auditEvent).isNotNull();
+        assertThat(auditEvent.getInitiator()).isEqualTo(INPUT_VALUE_1);
+    }
+
+    @Test
+    void testAroundAuditMethodWithInitiatorInReturnedValue() throws Throwable {
+        var audit = mock(Audit.class);
+        when(audit.value()).thenReturn(AUDIT_CODE);
+        when(audit.initiatorKey()).thenReturn(RESULT_EXPRESSION);
+        var joinPoint = mockProceedingJoinPoint(OUTPUT_VALUE);
+        auditAspect.around(joinPoint, audit);
+        verify(applicationEventPublisher, atLeastOnce()).publishEvent(auditEventArgumentCaptor.capture());
+        var auditEvent = auditEventArgumentCaptor.getValue();
+        assertThat(auditEvent).isNotNull();
+        assertThat(auditEvent.getInitiator()).isEqualTo(OUTPUT_VALUE);
+    }
+
+    @Test
     void testAroundAuditMethodWithCorrelationIdInInputParameters() throws Throwable {
         var audit = mock(Audit.class);
         when(audit.value()).thenReturn(AUDIT_CODE);

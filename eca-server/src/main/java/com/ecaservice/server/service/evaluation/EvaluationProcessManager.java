@@ -16,6 +16,7 @@ import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.putMdc;
 import static com.ecaservice.server.bpm.CamundaVariables.EVALUATION_LOG_ID;
 import static com.ecaservice.server.bpm.CamundaVariables.EVALUATION_REQUEST_DATA;
+import static com.ecaservice.server.config.LockRegistryKeys.EVALUATION_LOCK_REGISTRY_KEY;
 
 /**
  * Evaluation process manager.
@@ -36,15 +37,20 @@ public class EvaluationProcessManager {
      *
      * @param id - evaluation log id
      */
-    @Locked(lockName = "evaluation", key = "#id")
+    @Locked(lockRegistryKey = EVALUATION_LOCK_REGISTRY_KEY, lockName = "evaluation", key = "#id", waitForLock = false)
     public void processEvaluationRequest(Long id) {
         var evaluationLog = evaluationLogDataService.getById(id);
-        putMdc(TX_ID, evaluationLog.getRequestId());
-        putMdc(EV_REQUEST_ID, evaluationLog.getRequestId());
-        log.info("Starting to process evaluation request [{}] business process", evaluationLog.getRequestId());
-        Map<String, Object> variables = Collections.singletonMap(EVALUATION_LOG_ID, id);
-        processManager.startProcess(processConfig.getProcessEvaluationId(), evaluationLog.getRequestId(), variables);
-        log.info("Evaluation request [{}] business process has been finished", evaluationLog.getRequestId());
+        if (processManager.hasActiveProcess(evaluationLog.getRequestId())) {
+            log.warn("Evaluation [{}] has active process. Skipped evaluation processing...",
+                    evaluationLog.getRequestId());
+        } else {
+            putMdc(TX_ID, evaluationLog.getRequestId());
+            putMdc(EV_REQUEST_ID, evaluationLog.getRequestId());
+            log.info("Starting to process evaluation request [{}] business process", evaluationLog.getRequestId());
+            Map<String, Object> variables = Collections.singletonMap(EVALUATION_LOG_ID, id);
+            processManager.startProcess(processConfig.getProcessEvaluationId(), evaluationLog.getRequestId(), variables);
+            log.info("Evaluation request [{}] business process has been finished", evaluationLog.getRequestId());
+        }
     }
 
     /**

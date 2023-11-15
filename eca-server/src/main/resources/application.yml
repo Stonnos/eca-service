@@ -131,11 +131,6 @@ ers:
   useClassifierOptionsCache: false
   classifierOptionsCacheDurationInDays: 2
 
-camunda:
-  bpm:
-    job-execution:
-      lock-time-in-millis: 18060000
-
 minio:
   url: http://localhost:9000
   proxyUrl: http://localhost:9000
@@ -184,6 +179,15 @@ processes:
   processEvaluationId: ProcessEvaluationWebRequest
   createExperimentRequestProcessId: CreateExperimentRequestProcess
   createEvaluationRequestProcessId: CreateEvaluationRequestProcess
+
+lock:
+  registries:
+    evaluations-registry:
+      ## Evaluation lock expiration in millis
+      expireAfter: 3660000
+    experiments-registry:
+      ## Experiment lock expiration in millis
+      expireAfter: 18060000
 
 management:
   metrics:

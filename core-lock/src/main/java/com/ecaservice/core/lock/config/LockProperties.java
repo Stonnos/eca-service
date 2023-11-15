@@ -3,6 +3,10 @@ package com.ecaservice.core.lock.config;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.util.Map;
+
+import static com.google.common.collect.Maps.newHashMap;
+
 /**
  * Lock properties.
  *
@@ -23,23 +27,17 @@ public class LockProperties {
     private LockRegistryType registryType = LockRegistryType.IN_MEMORY;
 
     /**
-     * Redis lock properties
+     * Lock registries properties
      */
-    private RedisLockProperties redis = new RedisLockProperties();
+    private Map<String, LockRegistryProperties> registries = newHashMap();
 
     /**
-     * Redis lock properties.
+     * Lock registry properties.
      */
     @Data
-    public static class RedisLockProperties {
+    public static class LockRegistryProperties {
 
         private static final long DEFAULT_EXPIRE_AFTER = 60000L;
-        private static final String DEFAULT_REGISTRY_KEY = "lock";
-
-        /**
-         * Registry key.
-         */
-        private String registryKey = DEFAULT_REGISTRY_KEY;
 
         /**
          * Lock duration in millis.
