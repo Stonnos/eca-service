@@ -181,12 +181,13 @@ processes:
   createEvaluationRequestProcessId: CreateEvaluationRequestProcess
 
 lock:
-  evaluations-registry:
-    ## Evaluation lock expiration in millis
-    expireAfter: 3660000
-  experiments-registry:
-    ## Experiment lock expiration in millis
-    expireAfter: 18060000
+  registries:
+    evaluations-registry:
+      ## Evaluation lock expiration in millis
+      expireAfter: 3660000
+    experiments-registry:
+      ## Experiment lock expiration in millis
+      expireAfter: 18060000
 
 management:
   metrics:
