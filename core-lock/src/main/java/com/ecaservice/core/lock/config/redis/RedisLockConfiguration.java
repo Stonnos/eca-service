@@ -3,7 +3,6 @@ package com.ecaservice.core.lock.config.redis;
 import com.ecaservice.core.lock.config.LockProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,7 +30,6 @@ public class RedisLockConfiguration {
      * @return redis lock registry
      */
     @Bean(LOCK_REGISTRY)
-    @ConditionalOnMissingBean
     public RedisLockRegistry redisLockRegistry(final RedisConnectionFactory redisConnectionFactory,
                                                final LockProperties lockProperties) {
         var redisLockProperties = lockProperties.getRedis();

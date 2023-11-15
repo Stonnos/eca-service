@@ -1,5 +1,6 @@
 package com.ecaservice.server.config;
 
+import com.ecaservice.server.config.lock.LockProperties;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -35,4 +36,9 @@ public class ClassifiersProperties {
      * Not supported classifier templates for web app
      */
     private List<String> notSupportedClassifierTemplates = newArrayList();
+
+    /**
+     * Lock properties
+     */
+    private LockProperties lock;
 }

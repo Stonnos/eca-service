@@ -1,9 +1,5 @@
 package com.ecaservice.server.bpm.service;
 
-import org.springframework.validation.annotation.Validated;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import java.util.Map;
 
 /**
@@ -11,7 +7,6 @@ import java.util.Map;
  *
  * @author Roman Batygin
  */
-@Validated
 public interface ProcessManager {
 
     /**
@@ -21,6 +16,13 @@ public interface ProcessManager {
      * @param processBusinessKey - process business key
      * @param variables          - input variables
      */
-    void startProcess(@NotBlank String processId, @NotBlank String processBusinessKey,
-                      @NotEmpty Map<String, Object> variables);
+    void startProcess(String processId, String processBusinessKey, Map<String, Object> variables);
+
+    /**
+     * Checks active process existing with specified process business key.
+     *
+     * @param processBusinessKey - process business key
+     * @return {@code true} if active process exists, otherwise {@code false}
+     */
+    boolean hasActiveProcess(String processBusinessKey);
 }

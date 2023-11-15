@@ -1,5 +1,6 @@
 package com.ecaservice.server.config;
 
+import com.ecaservice.server.config.lock.LockProperties;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -31,6 +32,11 @@ public class ExperimentConfig {
      * Ensemble config
      */
     private EnsembleConfig ensemble;
+
+    /**
+     * Lock properties
+     */
+    private LockProperties lock;
 
     /**
      * Maximum fraction digits

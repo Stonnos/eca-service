@@ -16,8 +16,6 @@ import javax.validation.constraints.NotEmpty;
 @ConfigurationProperties("processes")
 public class ProcessConfig {
 
-    private static final int DEFAULT_MAX_CONCURRENT_EXPERIMENT_PROCESSES = 1;
-
     /**
      * Process experiment process id
      */
@@ -41,9 +39,4 @@ public class ProcessConfig {
      */
     @NotEmpty
     private String createEvaluationRequestProcessId;
-
-    /**
-     * Max. concurrent experiment processes
-     */
-    private int maxConcurrentExperimentProcesses = DEFAULT_MAX_CONCURRENT_EXPERIMENT_PROCESSES;
 }

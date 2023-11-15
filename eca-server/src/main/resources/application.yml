@@ -108,6 +108,10 @@ classifiers:
   delaySeconds: 3
   maxRequestsPerJob: 25
   notSupportedClassifierTemplates: ADA_BOOST, HETEROGENEOUS_CLASSIFIER, STACKING
+  lock:
+    registryKey: evaluations-registry
+    ## Evaluation lock expiration in millis
+    expireAfter: 3660000
 
 ## Experiment properties
 experiment:
@@ -126,15 +130,14 @@ experiment:
     multiThreadModeEnabled: true
     numThreads:
     numFoldsForStacking: 10
+  lock:
+    registryKey: experiments-registry
+    ## Experiment lock expiration in millis
+    expireAfter: 18060000
 
 ers:
   useClassifierOptionsCache: false
   classifierOptionsCacheDurationInDays: 2
-
-camunda:
-  bpm:
-    job-execution:
-      lock-time-in-millis: 18060000
 
 minio:
   url: http://localhost:9000
