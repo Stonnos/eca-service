@@ -59,9 +59,12 @@ lock:
   ## Вкл./выкл. распределенных блокировок.
   enabled: true
   registry-type: REDIS
-  redis:
-    registryKey: your-registry-key
-    ## Время действия блокировки в милисекундах.
-    expireAfter: 60000
+  registries:
+    registry1:
+      ## Время действия блокировки в милисекундах.
+      expireAfter: 60000
+    registry2:
+      expireAfter: 30000
 ----
 
+По умолчанию используются блокировки с registryKey = defaultLockRegistryKey и expireAfter = 60000.

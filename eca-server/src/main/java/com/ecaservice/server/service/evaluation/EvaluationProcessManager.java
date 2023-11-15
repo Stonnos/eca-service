@@ -16,7 +16,7 @@ import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.putMdc;
 import static com.ecaservice.server.bpm.CamundaVariables.EVALUATION_LOG_ID;
 import static com.ecaservice.server.bpm.CamundaVariables.EVALUATION_REQUEST_DATA;
-import static com.ecaservice.server.config.lock.EvaluationLockConfiguration.EVALUATION_LOCK_REGISTRY;
+import static com.ecaservice.server.config.LockRegistryKeys.EVALUATION_LOCK_REGISTRY_KEY;
 
 /**
  * Evaluation process manager.
@@ -37,7 +37,7 @@ public class EvaluationProcessManager {
      *
      * @param id - evaluation log id
      */
-    @Locked(lockRegistry = EVALUATION_LOCK_REGISTRY, lockName = "evaluation", key = "#id", waitForLock = false)
+    @Locked(lockRegistryKey = EVALUATION_LOCK_REGISTRY_KEY, lockName = "evaluation", key = "#id", waitForLock = false)
     public void processEvaluationRequest(Long id) {
         var evaluationLog = evaluationLogDataService.getById(id);
         if (processManager.hasActiveProcess(evaluationLog.getRequestId())) {

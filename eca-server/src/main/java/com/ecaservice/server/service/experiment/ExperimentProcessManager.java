@@ -6,7 +6,6 @@ import com.ecaservice.server.bpm.service.ProcessManager;
 import com.ecaservice.server.config.ProcessConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.camunda.bpm.engine.RuntimeService;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -17,7 +16,7 @@ import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.putMdc;
 import static com.ecaservice.server.bpm.CamundaVariables.EVALUATION_REQUEST_DATA;
 import static com.ecaservice.server.bpm.CamundaVariables.EXPERIMENT_ID;
-import static com.ecaservice.server.config.lock.ExperimentLockConfiguration.EXPERIMENT_LOCK_REGISTRY;
+import static com.ecaservice.server.config.LockRegistryKeys.EXPERIMENT_LOCK_REGISTRY_KEY;
 
 /**
  * Experiment process manager.
@@ -32,14 +31,13 @@ public class ExperimentProcessManager {
     private final ExperimentDataService experimentDataService;
     private final ProcessManager processManager;
     private final ProcessConfig processConfig;
-    private final RuntimeService runtimeService;
 
     /**
      * Processes experiment.
      *
      * @param id - experiment id
      */
-    @Locked(lockRegistry = EXPERIMENT_LOCK_REGISTRY, lockName = "experiment", key = "#id", waitForLock = false)
+    @Locked(lockRegistryKey = EXPERIMENT_LOCK_REGISTRY_KEY, lockName = "experiment", key = "#id", waitForLock = false)
     public void processExperiment(Long id) {
         var experiment = experimentDataService.getById(id);
         if (processManager.hasActiveProcess(experiment.getRequestId())) {

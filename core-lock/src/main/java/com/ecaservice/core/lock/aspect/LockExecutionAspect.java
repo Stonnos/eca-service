@@ -5,6 +5,7 @@ import com.ecaservice.core.lock.annotation.Locked;
 import com.ecaservice.core.lock.exception.CannotUnlockException;
 import com.ecaservice.core.lock.fallback.FallbackHandler;
 import com.ecaservice.core.lock.metrics.LockMeterService;
+import com.ecaservice.core.lock.service.LockRegistryRepository;
 import com.ecaservice.core.lock.service.LockService;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -31,17 +32,21 @@ public class LockExecutionAspect {
     private final SpelExpressionHelper spelExpressionHelper = new SpelExpressionHelper();
 
     private final ApplicationContext applicationContext;
+    private final LockRegistryRepository lockRegistryRepository;
     private final LockMeterService lockMeterService;
 
     /**
      * Constructor with spring dependency injection.
      *
-     * @param applicationContext - spring application context bean
-     * @param lockMeterService   - lock meter service bean
+     * @param applicationContext     - spring application context bean
+     * @param lockRegistryRepository - lock registry repository
+     * @param lockMeterService       - lock meter service bean
      */
     public LockExecutionAspect(ApplicationContext applicationContext,
+                               LockRegistryRepository lockRegistryRepository,
                                LockMeterService lockMeterService) {
         this.applicationContext = applicationContext;
+        this.lockRegistryRepository = lockRegistryRepository;
         this.lockMeterService = lockMeterService;
     }
 
@@ -55,7 +60,7 @@ public class LockExecutionAspect {
     @Around("execution(@com.ecaservice.core.lock.annotation.Locked * * (..)) && @annotation(locked)")
     public Object around(ProceedingJoinPoint joinPoint, Locked locked) throws Throwable {
         String lockKey = getLockKey(joinPoint, locked.lockName(), locked.key());
-        LockRegistry lockRegistry = applicationContext.getBean(locked.lockRegistry(), LockRegistry.class);
+        LockRegistry lockRegistry = lockRegistryRepository.getRegistry(locked.lockRegistryKey());
         LockService lockService = new LockService(lockRegistry);
         try {
             if (!locked.waitForLock()) {
