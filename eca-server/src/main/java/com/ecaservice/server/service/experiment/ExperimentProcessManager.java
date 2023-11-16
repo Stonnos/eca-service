@@ -40,18 +40,13 @@ public class ExperimentProcessManager {
     @Locked(lockRegistryKey = EXPERIMENT_LOCK_REGISTRY_KEY, lockName = "experiment", key = "#id", waitForLock = false)
     public void processExperiment(Long id) {
         var experiment = experimentDataService.getById(id);
-        if (processManager.hasActiveProcess(experiment.getRequestId())) {
-            log.warn("Experiment [{}] has active process. Skipped experiment processing...",
-                    experiment.getRequestId());
-        } else {
-            putMdc(TX_ID, experiment.getRequestId());
-            putMdc(EV_REQUEST_ID, experiment.getRequestId());
-            log.info("Starting experiment [{}] business process. Experiment request status [{}], channel [{}]",
-                    experiment.getRequestId(), experiment.getRequestStatus(), experiment.getChannel());
-            Map<String, Object> variables = Collections.singletonMap(EXPERIMENT_ID, experiment.getId());
-            processManager.startProcess(processConfig.getProcessExperimentId(), experiment.getRequestId(),
-                    variables);
-        }
+        putMdc(TX_ID, experiment.getRequestId());
+        putMdc(EV_REQUEST_ID, experiment.getRequestId());
+        log.info("Starting experiment [{}] business process. Experiment request status [{}], channel [{}]",
+                experiment.getRequestId(), experiment.getRequestStatus(), experiment.getChannel());
+        Map<String, Object> variables = Collections.singletonMap(EXPERIMENT_ID, experiment.getId());
+        processManager.startProcess(processConfig.getProcessExperimentId(), experiment.getRequestId(),
+                variables);
     }
 
     /**

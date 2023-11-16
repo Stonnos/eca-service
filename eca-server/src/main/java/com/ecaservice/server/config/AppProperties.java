@@ -2,16 +2,12 @@ package com.ecaservice.server.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.validation.annotation.Validated;
-
-import javax.validation.constraints.NotNull;
 
 /**
  * Application properties.
  *
  * @author Roman Batygin
  */
-@Validated
 @Data
 @ConfigurationProperties("app")
 public class AppProperties {
@@ -19,8 +15,12 @@ public class AppProperties {
     /**
      * Thread pool size for async tasks
      */
-    @NotNull
     private Integer threadPoolSize;
+
+    /**
+     * Scheduler pool size
+     */
+    private Integer schedulerPoolSize;
 
     /**
      * Web push properties

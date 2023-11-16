@@ -40,17 +40,12 @@ public class EvaluationProcessManager {
     @Locked(lockRegistryKey = EVALUATION_LOCK_REGISTRY_KEY, lockName = "evaluation", key = "#id", waitForLock = false)
     public void processEvaluationRequest(Long id) {
         var evaluationLog = evaluationLogDataService.getById(id);
-        if (processManager.hasActiveProcess(evaluationLog.getRequestId())) {
-            log.warn("Evaluation [{}] has active process. Skipped evaluation processing...",
-                    evaluationLog.getRequestId());
-        } else {
-            putMdc(TX_ID, evaluationLog.getRequestId());
-            putMdc(EV_REQUEST_ID, evaluationLog.getRequestId());
-            log.info("Starting to process evaluation request [{}] business process", evaluationLog.getRequestId());
-            Map<String, Object> variables = Collections.singletonMap(EVALUATION_LOG_ID, id);
-            processManager.startProcess(processConfig.getProcessEvaluationId(), evaluationLog.getRequestId(), variables);
-            log.info("Evaluation request [{}] business process has been finished", evaluationLog.getRequestId());
-        }
+        putMdc(TX_ID, evaluationLog.getRequestId());
+        putMdc(EV_REQUEST_ID, evaluationLog.getRequestId());
+        log.info("Starting to process evaluation request [{}] business process", evaluationLog.getRequestId());
+        Map<String, Object> variables = Collections.singletonMap(EVALUATION_LOG_ID, id);
+        processManager.startProcess(processConfig.getProcessEvaluationId(), evaluationLog.getRequestId(), variables);
+        log.info("Evaluation request [{}] business process has been finished", evaluationLog.getRequestId());
     }
 
     /**
