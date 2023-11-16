@@ -23,13 +23,4 @@ public class ProcessManagerImpl implements ProcessManager {
         log.info("Process with id [{}], process key [{}] has been finished", processInstance.getId(),
                 processInstance.getBusinessKey());
     }
-
-    @Override
-    public boolean hasActiveProcess(String processBusinessKey) {
-        var activeProcessInstancesCount = runtimeService.createProcessInstanceQuery()
-                .processInstanceBusinessKey(processBusinessKey)
-                .active()
-                .count();
-        return activeProcessInstancesCount > 0L;
-    }
 }
