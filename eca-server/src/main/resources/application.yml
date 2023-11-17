@@ -185,10 +185,10 @@ lock:
   registries:
     evaluations-registry:
       ## Evaluation lock expiration in millis
-      expireAfter: 3660000
+      expireAfter: 1200000
     experiments-registry:
       ## Experiment lock expiration in millis
-      expireAfter: 18060000
+      expireAfter: 7500000
 
 management:
   metrics:
