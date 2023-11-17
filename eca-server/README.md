@@ -32,7 +32,7 @@ ECA server
    * cross-validation.numTests - число тестов
    * cross-validation.seed - начальное значение для генератора псевдослучайных чисел
 3) classifiers - настройка параметров для постороения моделей классификаторов
-   * classifiers.timeout - таймаут в сек. для оценки точности классификатора
+   * classifiers.evaluationTimeoutMinutes - таймаут в сек. для оценки точности классификатора
    * classifiers.delaySeconds - интервал между запусками scheduler для построения моделей
    * classifiers.maxRequestsPerJob - максимальное число моделей обрабатываемое в рамках одного вызова scheduler
 4) experiment - настройки параметров модуля Data Miner. Ниже приведено описание
@@ -42,7 +42,7 @@ ECA server
    * experiment.individualClassifiersStoragePath - путь к папке в ресурсах для хранения json - конфигураций классификаторов,
    которые впоследствии будут использоваться при построении эксперимента
    * experiment.maximumFractionDigits - число десятичных знаков после запятой
-   * experiment.timeout - время таймаута эксперимента в часах.
+   * experiment.evaluationTimeoutMinutes - время таймаута для построения эксперимента в минутах.
    * experiment.delaySeconds - интервал между запусками scheduler для обработки экспериметов
    * experiment.ensemble.numIterations - число итераций для ансамблевых алгоритмов
    * experiment.ensemble.numBestClassifiers - число наилучших по точности базовых классификаторов, которые впоследствии

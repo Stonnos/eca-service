@@ -104,7 +104,7 @@ springdoc:
 
 ## Classifier properties
 classifiers:
-  timeout: 60
+  evaluationTimeoutMinutes: 60
   ## Scheduler delay in seconds
   delaySeconds: 3
   maxRequestsPerJob: 25
@@ -116,8 +116,8 @@ experiment:
   numIterations: 100
   individualClassifiersStoragePath: classpath*:classifiers/**/*.json
   maximumFractionDigits: ${classifiers-options.maximumFractionDigits}
-  ## Experiment timeout in hours
-  timeout: 5
+  ## Experiment evaluation timeout in minutes
+  evaluationTimeoutMinutes: 300
   ## Scheduler delay in seconds
   delaySeconds: 30
   experimentLocalStoragePath: /home/experiment

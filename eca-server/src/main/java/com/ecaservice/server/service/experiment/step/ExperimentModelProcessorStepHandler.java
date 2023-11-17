@@ -121,7 +121,7 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
         Callable<AbstractExperiment<?>> callable = () ->
                 experimentProcessorService.processExperimentHistory(experiment, initializationParams);
         AbstractExperiment<?> abstractExperiment =
-                executorService.execute(callable, experimentConfig.getTimeout(), TimeUnit.HOURS);
+                executorService.execute(callable, experimentConfig.getEvaluationTimeoutMinutes(), TimeUnit.MINUTES);
         stopWatch.stop();
         experimentContext.setExperimentHistory(abstractExperiment);
     }

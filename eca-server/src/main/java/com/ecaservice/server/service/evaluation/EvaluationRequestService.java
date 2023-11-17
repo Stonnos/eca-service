@@ -160,7 +160,7 @@ public class EvaluationRequestService {
         evaluationInputDataModel.setNumTests(evaluationLog.getNumTests());
         evaluationInputDataModel.setSeed(evaluationLog.getSeed());
         Callable<EvaluationResults> callable = () -> evaluationService.evaluateModel(evaluationInputDataModel);
-        return executorService.execute(callable, classifiersProperties.getTimeout(), TimeUnit.MINUTES);
+        return executorService.execute(callable, classifiersProperties.getEvaluationTimeoutMinutes(), TimeUnit.MINUTES);
     }
 
     private void uploadModel(EvaluationResults evaluationResults, EvaluationLog evaluationLog) throws IOException {

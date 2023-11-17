@@ -38,9 +38,9 @@ public class ExperimentConfig {
     private Integer maximumFractionDigits;
 
     /**
-     * Experiment timeout value in hours
+     * Experiment evaluation timeout value in minutes
      */
-    private Integer timeout;
+    private Integer evaluationTimeoutMinutes;
 
     /**
      * Delay value for scheduler in seconds
@@ -69,7 +69,7 @@ public class ExperimentConfig {
         private Integer numIterations;
 
         /**
-         * Number of best individual classifiers
+         * Number of the best individual classifiers
          */
         private Integer numBestClassifiers;
 
