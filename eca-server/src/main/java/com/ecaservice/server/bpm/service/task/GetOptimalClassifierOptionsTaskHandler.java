@@ -3,6 +3,7 @@ package com.ecaservice.server.bpm.service.task;
 import com.ecaservice.server.bpm.model.EvaluationRequestModel;
 import com.ecaservice.server.bpm.model.TaskType;
 import com.ecaservice.server.mapping.EvaluationLogMapper;
+import com.ecaservice.server.service.data.InstancesMetaDataService;
 import com.ecaservice.server.service.evaluation.OptimalClassifierOptionsFetcher;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -22,18 +23,22 @@ import static com.ecaservice.server.util.CamundaUtils.getVariable;
 public class GetOptimalClassifierOptionsTaskHandler extends AbstractTaskHandler {
 
     private final OptimalClassifierOptionsFetcher optimalClassifierOptionsFetcher;
+    private final InstancesMetaDataService instancesMetaDataService;
     private final EvaluationLogMapper evaluationLogMapper;
 
     /**
      * Constructor with parameters.
      *
      * @param optimalClassifierOptionsFetcher - optimal classifier options fetcher
+     * @param instancesMetaDataService        - instances meta data service
      * @param evaluationLogMapper             - evaluation log mapper
      */
     public GetOptimalClassifierOptionsTaskHandler(OptimalClassifierOptionsFetcher optimalClassifierOptionsFetcher,
+                                                  InstancesMetaDataService instancesMetaDataService,
                                                   EvaluationLogMapper evaluationLogMapper) {
         super(TaskType.GET_OPTIMAL_CLASSIFIER_OPTIONS);
         this.optimalClassifierOptionsFetcher = optimalClassifierOptionsFetcher;
+        this.instancesMetaDataService = instancesMetaDataService;
         this.evaluationLogMapper = evaluationLogMapper;
     }
 
@@ -43,8 +48,11 @@ public class GetOptimalClassifierOptionsTaskHandler extends AbstractTaskHandler 
                 execution.getProcessBusinessKey());
         var evaluationRequestModel =
                 getVariable(execution, EVALUATION_REQUEST_DATA, EvaluationRequestModel.class);
+        var instancesMetaDataModel =
+                instancesMetaDataService.getInstancesMetaData(evaluationRequestModel.getDataUuid());
         var instancesRequestDataModel =
                 evaluationLogMapper.mapToInstancesRequest(evaluationRequestModel);
+        instancesRequestDataModel.setDataMd5Hash(instancesMetaDataModel.getMd5Hash());
         var classifierOptionsResult =
                 optimalClassifierOptionsFetcher.getOptimalClassifierOptions(instancesRequestDataModel);
         execution.setVariable(CLASSIFIER_OPTIONS_RESULT, classifierOptionsResult);

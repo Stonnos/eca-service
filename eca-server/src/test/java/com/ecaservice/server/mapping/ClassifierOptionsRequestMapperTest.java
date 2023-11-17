@@ -38,7 +38,7 @@ class ClassifierOptionsRequestMapperTest {
     @BeforeEach
     void init() {
         instancesRequestDataModel =
-                new InstancesRequestDataModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(),
+                new InstancesRequestDataModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), "md5Hash",
                         eca.core.evaluation.EvaluationMethod.CROSS_VALIDATION, crossValidationConfig.getNumFolds(),
                         crossValidationConfig.getNumTests(), crossValidationConfig.getSeed());
     }
