@@ -28,7 +28,6 @@ import com.ecaservice.server.service.InstancesInfoService;
 import com.ecaservice.server.service.data.InstancesLoaderService;
 import com.ecaservice.server.service.data.InstancesMetaDataService;
 import com.ecaservice.server.service.evaluation.initializers.ClassifierInitializerService;
-import eca.core.evaluation.EvaluationMethod;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -39,17 +38,13 @@ import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.ExecutorService;
 
 import static com.ecaservice.server.TestHelperUtils.loadInstances;
 import static com.ecaservice.server.util.FieldConstraints.SCALE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
@@ -78,7 +73,7 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
     @Inject
     private EvaluationService evaluationService;
     @Inject
-    private CalculationExecutorService calculationExecutorService;
+    private ExecutorService executorService;
     @Inject
     private ClassifiersProperties classifiersProperties;
     @Inject
@@ -106,7 +101,7 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
     @Override
     public void init() {
         evaluationRequestService =
-                new EvaluationRequestService(appProperties, classifiersProperties, calculationExecutorService,
+                new EvaluationRequestService(appProperties, classifiersProperties, executorService,
                         evaluationService, classifierInitializerService, objectStorageService, instancesLoaderService,
                         evaluationLogService, classifierOptionsAdapter, classifierInfoRepository);
         mockLoadInstances();
@@ -139,61 +134,16 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    void testClassificationWithException() throws Exception {
-        EvaluationRequestData request = TestHelperUtils.createEvaluationRequestData();
-        CalculationExecutorServiceImpl executorService = mock(CalculationExecutorServiceImpl.class);
-        EvaluationRequestService service =
-                new EvaluationRequestService(appProperties, classifiersProperties, executorService,
-                        evaluationService, classifierInitializerService, objectStorageService, instancesLoaderService,
-                        evaluationLogService, classifierOptionsAdapter, classifierInfoRepository);
-        doThrow(new RuntimeException("Error")).when(executorService)
-                .execute(any(), anyLong(), any(TimeUnit.class));
-        var createdEvaluationLog =
-                service.createAndSaveEvaluationRequest(request);
-        service.startEvaluationRequest(createdEvaluationLog);
-        var evaluationResultsDataModel =
-                service.processEvaluationRequest(createdEvaluationLog);
-        assertThat(evaluationResultsDataModel.getStatus()).isEqualTo(RequestStatus.ERROR);
-        List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
-        AssertionUtils.hasOneElement(evaluationLogList);
-        assertThat(evaluationLogList.iterator().next().getRequestStatus()).isEqualTo(RequestStatus.ERROR);
-        assertThat(evaluationResultsDataModel.getStatus()).isEqualTo(RequestStatus.ERROR);
-        assertThat(evaluationResultsDataModel.getEvaluationResults()).isNull();
-    }
-
-    @Test
     void testClassificationWithError() {
         EvaluationRequestData request = TestHelperUtils.createEvaluationRequestData();
-        request.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
-        request.setNumFolds(1);
+        when(objectStorageService.getObjectPresignedProxyUrl(any(GetPresignedUrlObject.class)))
+                .thenThrow(new RuntimeException());
         var evaluationResultsDataModel = createAndProcessEvaluationRequest(request);
         assertThat(evaluationResultsDataModel.getStatus()).isEqualTo(RequestStatus.ERROR);
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
         AssertionUtils.hasOneElement(evaluationLogList);
         assertThat(evaluationLogList.iterator().next().getRequestStatus()).isEqualTo(RequestStatus.ERROR);
         assertThat(evaluationResultsDataModel.getStatus()).isEqualTo(RequestStatus.ERROR);
-        assertThat(evaluationResultsDataModel.getEvaluationResults()).isNull();
-    }
-
-    @Test
-    void testTimeoutInClassification() throws Exception {
-        EvaluationRequestData request = TestHelperUtils.createEvaluationRequestData();
-        CalculationExecutorServiceImpl executorService = mock(CalculationExecutorServiceImpl.class);
-        EvaluationRequestService service =
-                new EvaluationRequestService(appProperties, classifiersProperties, executorService,
-                        evaluationService, classifierInitializerService, objectStorageService, instancesLoaderService,
-                        evaluationLogService, classifierOptionsAdapter, classifierInfoRepository);
-        doThrow(TimeoutException.class).when(executorService).execute(any(), anyLong(), any(TimeUnit.class));
-        var createdEvaluationLog =
-                service.createAndSaveEvaluationRequest(request);
-        service.startEvaluationRequest(createdEvaluationLog);
-        var evaluationResultsDataModel =
-                service.processEvaluationRequest(createdEvaluationLog);
-        assertThat(evaluationResultsDataModel.getStatus()).isEqualTo(RequestStatus.TIMEOUT);
-        List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
-        AssertionUtils.hasOneElement(evaluationLogList);
-        assertThat(evaluationLogList.iterator().next().getRequestStatus()).isEqualTo(RequestStatus.TIMEOUT);
-        assertThat(evaluationResultsDataModel.getStatus()).isEqualTo(RequestStatus.TIMEOUT);
         assertThat(evaluationResultsDataModel.getEvaluationResults()).isNull();
     }
 

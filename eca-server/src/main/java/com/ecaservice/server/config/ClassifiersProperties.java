@@ -17,9 +17,9 @@ import static com.google.common.collect.Lists.newArrayList;
 public class ClassifiersProperties {
 
     /**
-     * Timeout value in minutes
+     * Evaluation timeout value in minutes
      */
-    private Integer timeout;
+    private Integer evaluationTimeoutMinutes;
 
     /**
      * Delay value for scheduler in seconds

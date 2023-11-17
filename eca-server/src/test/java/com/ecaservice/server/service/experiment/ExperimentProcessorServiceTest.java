@@ -56,7 +56,7 @@ class ExperimentProcessorServiceTest {
     void testNullInitializationParams() {
         Experiment experiment = new Experiment();
         assertThrows(IllegalArgumentException.class,
-                () -> experimentProcessorService.processExperimentHistory(experiment, null));
+                () -> experimentProcessorService.processExperimentHistory(experiment, () -> false, null));
     }
 
     @Test
@@ -69,7 +69,7 @@ class ExperimentProcessorServiceTest {
         when(experimentInitializationVisitor.caseKNearestNeighbours(initializationParams))
                 .thenReturn(automatedKNearestNeighbours);
         AbstractExperiment<?> experiment = experimentProcessorService.processExperimentHistory(
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString()), initializationParams);
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString()), () -> false, initializationParams);
         assertThat(experiment).isNotNull();
         assertThat(experiment.getHistory()).hasSize(experimentConfig.getResultSize());
     }

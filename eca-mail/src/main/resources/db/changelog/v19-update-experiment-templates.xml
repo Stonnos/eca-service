@@ -19,7 +19,7 @@
         </update>
     </changeSet>
 
-    <changeSet id="update_timeout_experiment_template_body" author="roman.batygin@mail.ru" context="data">
+    <changeSet id="update_timeout_experiment_template_body_2" author="roman.batygin@mail.ru" context="data">
         <update tableName="template">
             <column name="template_body" valueClobFile="templates/timeout-experiment-template.html"/>
             <where>template_code = 'TIMEOUT_EXPERIMENT'</where>

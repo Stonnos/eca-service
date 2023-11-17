@@ -28,7 +28,7 @@ public class ExperimentEmailTemplateVariableVisitorImpl implements ExperimentEma
 
     @Override
     public String visitTimeout(Experiment experiment) {
-        return String.valueOf(experimentConfig.getTimeout());
+        return String.valueOf(experimentConfig.getEvaluationTimeoutMinutes());
     }
 
     @Override
