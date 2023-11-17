@@ -5,6 +5,7 @@ import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.config.ClassifiersProperties;
+import com.ecaservice.server.exception.EvaluationTimeoutException;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.evaluation.EvaluationInputDataModel;
@@ -25,6 +26,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -48,7 +51,7 @@ public class EvaluationRequestService {
 
     private final AppProperties appProperties;
     private final ClassifiersProperties classifiersProperties;
-    private final CalculationExecutorService executorService;
+    private final ExecutorService executorService;
     private final EvaluationService evaluationService;
     private final ClassifierInitializerService classifierInitializerService;
     private final ObjectStorageService objectStorageService;
@@ -106,7 +109,7 @@ public class EvaluationRequestService {
                     internalProcessRequest(classifier, data, evaluationLog);
             evaluationLogService.finishEvaluation(evaluationLog, RequestStatus.FINISHED);
             return evaluationResultsDataModel;
-        } catch (TimeoutException ex) {
+        } catch (EvaluationTimeoutException ex) {
             log.error("There was a timeout for evaluation [{}].", evaluationLog.getRequestId());
             evaluationLogService.finishEvaluation(evaluationLog, RequestStatus.TIMEOUT);
             return buildEvaluationResultsModel(evaluationLog.getRequestId(), RequestStatus.TIMEOUT);
@@ -135,7 +138,7 @@ public class EvaluationRequestService {
     private EvaluationResultsDataModel internalProcessRequest(AbstractClassifier classifier,
                                                               Instances data,
                                                               EvaluationLog evaluationLog)
-            throws IOException, ExecutionException, InterruptedException, TimeoutException {
+            throws IOException, ExecutionException, InterruptedException {
         var evaluationResults = evaluationModel(classifier, data, evaluationLog);
         uploadModel(evaluationResults, evaluationLog);
         String modelUrl = getModelPresignedUrl(evaluationLog.getModelPath());
@@ -151,7 +154,7 @@ public class EvaluationRequestService {
     private EvaluationResults evaluationModel(AbstractClassifier classifier,
                                               Instances data,
                                               EvaluationLog evaluationLog)
-            throws ExecutionException, InterruptedException, TimeoutException {
+            throws ExecutionException, InterruptedException {
         var evaluationInputDataModel = new EvaluationInputDataModel();
         evaluationInputDataModel.setClassifier(classifier);
         evaluationInputDataModel.setData(data);
@@ -159,8 +162,15 @@ public class EvaluationRequestService {
         evaluationInputDataModel.setNumFolds(evaluationLog.getNumFolds());
         evaluationInputDataModel.setNumTests(evaluationLog.getNumTests());
         evaluationInputDataModel.setSeed(evaluationLog.getSeed());
-        Callable<EvaluationResults> callable = () -> evaluationService.evaluateModel(evaluationInputDataModel);
-        return executorService.execute(callable, classifiersProperties.getEvaluationTimeoutMinutes(), TimeUnit.MINUTES);
+        Callable<EvaluationResults> task = () -> evaluationService.evaluateModel(evaluationInputDataModel);
+        Future<EvaluationResults> future = executorService.submit(task);
+        try {
+            return future.get(classifiersProperties.getEvaluationTimeoutMinutes(), TimeUnit.MINUTES);
+        } catch (TimeoutException ex) {
+            future.cancel(true);
+            log.warn("Evaluation [{}] has been cancelled", evaluationLog.getRequestId());
+            throw new EvaluationTimeoutException(ex.getMessage());
+        }
     }
 
     private void uploadModel(EvaluationResults evaluationResults, EvaluationLog evaluationLog) throws IOException {

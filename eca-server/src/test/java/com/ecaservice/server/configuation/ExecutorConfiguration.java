@@ -1,7 +1,5 @@
 package com.ecaservice.server.configuation;
 
-import com.ecaservice.server.service.evaluation.CalculationExecutorService;
-import com.ecaservice.server.service.evaluation.CalculationExecutorServiceImpl;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 
@@ -24,16 +22,5 @@ public class ExecutorConfiguration {
     @Bean
     public ExecutorService executorService() {
         return Executors.newCachedThreadPool();
-    }
-
-    /**
-     * Creates calculation executor service bean.
-     *
-     * @param executorService - executor service bean
-     * @return calculation executor service bean
-     */
-    @Bean
-    public CalculationExecutorService calculationExecutorService(ExecutorService executorService) {
-        return new CalculationExecutorServiceImpl(executorService);
     }
 }
