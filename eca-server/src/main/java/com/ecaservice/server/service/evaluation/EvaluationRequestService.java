@@ -12,6 +12,7 @@ import com.ecaservice.server.model.evaluation.EvaluationInputDataModel;
 import com.ecaservice.server.model.evaluation.EvaluationRequestData;
 import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
 import com.ecaservice.server.repository.ClassifierInfoRepository;
+import com.ecaservice.server.service.TaskWorker;
 import com.ecaservice.server.service.data.InstancesLoaderService;
 import com.ecaservice.server.service.evaluation.initializers.ClassifierInitializerService;
 import eca.core.evaluation.EvaluationResults;
@@ -162,13 +163,14 @@ public class EvaluationRequestService {
         evaluationInputDataModel.setNumFolds(evaluationLog.getNumFolds());
         evaluationInputDataModel.setNumTests(evaluationLog.getNumTests());
         evaluationInputDataModel.setSeed(evaluationLog.getSeed());
+        TaskWorker<EvaluationResults> taskWorker = new TaskWorker<>(executorService);
         Callable<EvaluationResults> task = () -> evaluationService.evaluateModel(evaluationInputDataModel);
-        Future<EvaluationResults> future = executorService.submit(task);
+        Future<EvaluationResults> future = taskWorker.getOrCreateFuture(task);
         try {
             return future.get(classifiersProperties.getEvaluationTimeoutMinutes(), TimeUnit.MINUTES);
         } catch (TimeoutException ex) {
-            future.cancel(true);
-            log.warn("Evaluation [{}] has been cancelled", evaluationLog.getRequestId());
+            taskWorker.cancel();
+            log.warn("Evaluation [{}] has been cancelled by timeout", evaluationLog.getRequestId());
             throw new EvaluationTimeoutException(ex.getMessage());
         }
     }

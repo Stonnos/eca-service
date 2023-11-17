@@ -4,6 +4,7 @@ import com.ecaservice.s3.client.minio.exception.ObjectStorageException;
 import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.exception.EvaluationTimeoutException;
 import com.ecaservice.server.exception.experiment.ExperimentException;
+import com.ecaservice.server.service.TaskWorker;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentStep;
 import com.ecaservice.server.model.entity.ExperimentStepEntity;
@@ -117,16 +118,18 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
         final InitializationParams initializationParams =
                 new InitializationParams(data, experiment.getEvaluationMethod());
         stopWatch.start(String.format("Experiment [%s] processing", experiment.getRequestId()));
+        TaskWorker<AbstractExperiment<?>> taskWorker = new TaskWorker<>(executorService);
         Callable<AbstractExperiment<?>> callable = () ->
-                experimentProcessorService.processExperimentHistory(experiment, initializationParams);
-        var future = executorService.submit(callable);
+                experimentProcessorService.processExperimentHistory(experiment, taskWorker, initializationParams);
+        var future = taskWorker.getOrCreateFuture(callable);
         try {
             var abstractExperiment =
                     future.get(experimentConfig.getEvaluationTimeoutMinutes(), TimeUnit.MINUTES);
             experimentContext.setExperimentHistory(abstractExperiment);
         } catch (TimeoutException ex) {
-            future.cancel(true);
-            log.warn("Experiment evaluation [{}] has been cancelled", experimentContext.getExperiment().getRequestId());
+            taskWorker.cancel();
+            log.warn("Experiment evaluation [{}] has been cancelled by timeout",
+                    experimentContext.getExperiment().getRequestId());
             throw new EvaluationTimeoutException(ex.getMessage());
         } finally {
             stopWatch.stop();

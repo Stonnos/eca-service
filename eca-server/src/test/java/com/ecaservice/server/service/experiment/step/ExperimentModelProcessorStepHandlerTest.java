@@ -3,6 +3,7 @@ package com.ecaservice.server.service.experiment.step;
 import com.ecaservice.s3.client.minio.exception.ObjectStorageException;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.ExperimentConfig;
+import com.ecaservice.server.model.Cancelable;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentStepStatus;
 import com.ecaservice.server.model.experiment.InitializationParams;
@@ -68,7 +69,7 @@ class ExperimentModelProcessorStepHandlerTest extends AbstractStepHandlerTest {
         when(instancesLoaderService.loadInstances(anyString())).thenReturn(data);
         var experimentHistory = createExperimentHistory(data);
         when(experimentProcessorService.processExperimentHistory(any(Experiment.class),
-                any(InitializationParams.class))).thenReturn(experimentHistory);
+                any(Cancelable.class), any(InitializationParams.class))).thenReturn(experimentHistory);
         experimentProgressService.start(getExperimentStepEntity().getExperiment());
         testStep(experimentModelProcessorStepHandler::handle, ExperimentStepStatus.COMPLETED);
         verifyProgressFinished();

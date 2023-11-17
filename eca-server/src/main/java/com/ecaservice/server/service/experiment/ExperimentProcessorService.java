@@ -2,6 +2,7 @@ package com.ecaservice.server.service.experiment;
 
 import com.ecaservice.server.event.model.ExperimentProgressEvent;
 import com.ecaservice.server.exception.experiment.ExperimentException;
+import com.ecaservice.server.model.Cancelable;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.experiment.InitializationParams;
 import com.ecaservice.server.service.experiment.visitor.ExperimentInitializationVisitor;
@@ -32,11 +33,13 @@ public class ExperimentProcessorService {
     /**
      * Processes experiment and returns its history.
      *
-     * @param experiment           experiment {@link Experiment}
-     * @param initializationParams experiment initialization params {@link InitializationParams}
+     * @param experiment           - experiment {@link Experiment}
+     * @param cancelable           - cancelable interface
+     * @param initializationParams - experiment initialization params {@link InitializationParams}
      * @return experiment history
      */
     public AbstractExperiment<?> processExperimentHistory(Experiment experiment,
+                                                          Cancelable cancelable,
                                                           InitializationParams initializationParams) {
         Assert.notNull(initializationParams, "Initialization params is not specified!");
         log.info("Starting to initialize experiment [{}]", experiment.getRequestId());
@@ -47,7 +50,7 @@ public class ExperimentProcessorService {
         int currentPercent = 0;
 
         log.info("Starting to process experiment [{}].", experiment.getRequestId());
-        while (iterativeExperiment.hasNext()) {
+        while (!cancelable.isCancelled() && iterativeExperiment.hasNext()) {
             try {
                 iterativeExperiment.next();
                 int percent = iterativeExperiment.getPercent();
@@ -60,11 +63,15 @@ public class ExperimentProcessorService {
                 log.warn("Warning for experiment [{}]: {}", experiment.getRequestId(), ex.getMessage());
             }
         }
+        if (cancelable.isCancelled()) {
+            log.warn("Experiment [{}] processing has been cancelled", experiment.getRequestId());
+        } else {
+            log.info("Experiment [{}] processing has been finished with {} best models!",
+                    experiment.getRequestId(), abstractExperiment.getHistory().size());
+        }
         if (CollectionUtils.isEmpty(abstractExperiment.getHistory())) {
             throw new ExperimentException("No models has been built!");
         }
-        log.info("Experiment [{}] processing has been finished with {} best models!",
-                experiment.getRequestId(), abstractExperiment.getHistory().size());
         return abstractExperiment;
     }
 }
