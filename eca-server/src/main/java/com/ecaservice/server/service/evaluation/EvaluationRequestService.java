@@ -28,7 +28,6 @@ import java.math.BigDecimal;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -166,7 +165,7 @@ public class EvaluationRequestService {
         TaskWorker<EvaluationResults> taskWorker = new TaskWorker<>(executorService);
         try {
             Callable<EvaluationResults> task = () -> evaluationService.evaluateModel(evaluationInputDataModel);
-            return taskWorker.get(task, classifiersProperties.getEvaluationTimeoutMinutes(), TimeUnit.MINUTES);
+            return taskWorker.performTask(task, classifiersProperties.getEvaluationTimeoutMinutes(), TimeUnit.MINUTES);
         } catch (TimeoutException ex) {
             taskWorker.cancel();
             log.warn("Evaluation [{}] has been cancelled by timeout", evaluationLog.getRequestId());

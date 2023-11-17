@@ -34,7 +34,7 @@ public class TaskWorker<T> implements Cancelable {
      * @throws InterruptedException in case if thread is interrupted
      * @throws TimeoutException     in case of task timeout
      */
-    public T get(Callable<T> callable, long timeout, TimeUnit timeUnit)
+    public T performTask(Callable<T> callable, long timeout, TimeUnit timeUnit)
             throws ExecutionException, InterruptedException, TimeoutException {
         future = executorService.submit(callable);
         return future.get(timeout, timeUnit);

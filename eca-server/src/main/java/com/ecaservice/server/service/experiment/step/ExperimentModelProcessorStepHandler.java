@@ -123,7 +123,7 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
             Callable<AbstractExperiment<?>> callable = () ->
                     experimentProcessorService.processExperimentHistory(experiment, taskWorker, initializationParams);
             var abstractExperiment =
-                    taskWorker.get(callable, experimentConfig.getEvaluationTimeoutMinutes(), TimeUnit.MINUTES);
+                    taskWorker.performTask(callable, experimentConfig.getEvaluationTimeoutMinutes(), TimeUnit.MINUTES);
             experimentContext.setExperimentHistory(abstractExperiment);
         } catch (TimeoutException ex) {
             taskWorker.cancel();
