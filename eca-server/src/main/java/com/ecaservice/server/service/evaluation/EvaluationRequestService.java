@@ -164,10 +164,9 @@ public class EvaluationRequestService {
         evaluationInputDataModel.setNumTests(evaluationLog.getNumTests());
         evaluationInputDataModel.setSeed(evaluationLog.getSeed());
         TaskWorker<EvaluationResults> taskWorker = new TaskWorker<>(executorService);
-        Callable<EvaluationResults> task = () -> evaluationService.evaluateModel(evaluationInputDataModel);
-        Future<EvaluationResults> future = taskWorker.getOrCreateFuture(task);
         try {
-            return future.get(classifiersProperties.getEvaluationTimeoutMinutes(), TimeUnit.MINUTES);
+            Callable<EvaluationResults> task = () -> evaluationService.evaluateModel(evaluationInputDataModel);
+            return taskWorker.get(task, classifiersProperties.getEvaluationTimeoutMinutes(), TimeUnit.MINUTES);
         } catch (TimeoutException ex) {
             taskWorker.cancel();
             log.warn("Evaluation [{}] has been cancelled by timeout", evaluationLog.getRequestId());

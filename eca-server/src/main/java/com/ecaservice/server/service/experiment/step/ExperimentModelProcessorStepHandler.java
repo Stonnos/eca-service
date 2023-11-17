@@ -119,12 +119,11 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
                 new InitializationParams(data, experiment.getEvaluationMethod());
         stopWatch.start(String.format("Experiment [%s] processing", experiment.getRequestId()));
         TaskWorker<AbstractExperiment<?>> taskWorker = new TaskWorker<>(executorService);
-        Callable<AbstractExperiment<?>> callable = () ->
-                experimentProcessorService.processExperimentHistory(experiment, taskWorker, initializationParams);
-        var future = taskWorker.getOrCreateFuture(callable);
         try {
+            Callable<AbstractExperiment<?>> callable = () ->
+                    experimentProcessorService.processExperimentHistory(experiment, taskWorker, initializationParams);
             var abstractExperiment =
-                    future.get(experimentConfig.getEvaluationTimeoutMinutes(), TimeUnit.MINUTES);
+                    taskWorker.get(callable, experimentConfig.getEvaluationTimeoutMinutes(), TimeUnit.MINUTES);
             experimentContext.setExperimentHistory(abstractExperiment);
         } catch (TimeoutException ex) {
             taskWorker.cancel();

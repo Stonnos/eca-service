@@ -4,9 +4,11 @@ import com.ecaservice.server.model.Cancelable;
 import lombok.RequiredArgsConstructor;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Async task worker.
@@ -22,27 +24,31 @@ public class TaskWorker<T> implements Cancelable {
     private Future<T> future;
 
     /**
-     * Gets or create future object.
+     * Perform task in new thread and wit for task result.
      *
-     * @param callable - callable interface
-     * @return future object
+     * @param callable - callable interface (task)
+     * @param timeout  - task timeout
+     * @param timeUnit - task unit
+     * @return task result
+     * @throws ExecutionException   in case of execution error
+     * @throws InterruptedException in case if thread is interrupted
+     * @throws TimeoutException     in case of task timeout
      */
-    public synchronized Future<T> getOrCreateFuture(Callable<T> callable) {
-        if (future == null) {
-            future = executorService.submit(callable);
-        }
-        return future;
+    public T get(Callable<T> callable, long timeout, TimeUnit timeUnit)
+            throws ExecutionException, InterruptedException, TimeoutException {
+        future = executorService.submit(callable);
+        return future.get(timeout, timeUnit);
     }
 
     @Override
-    public synchronized boolean isCancelled() {
+    public boolean isCancelled() {
         return future != null && future.isCancelled();
     }
 
     /**
      * Cancels task.
      */
-    public synchronized void cancel() {
+    public void cancel() {
         if (future == null) {
             throw new IllegalStateException("Future is not initialized");
         } else {
