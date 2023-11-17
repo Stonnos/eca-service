@@ -2,6 +2,7 @@ package com.ecaservice.server.service.experiment;
 
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.ExperimentConfig;
+import com.ecaservice.server.model.MockCancelable;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.experiment.InitializationParams;
 import com.ecaservice.server.service.experiment.visitor.ExperimentInitializationVisitor;
@@ -56,7 +57,7 @@ class ExperimentProcessorServiceTest {
     void testNullInitializationParams() {
         Experiment experiment = new Experiment();
         assertThrows(IllegalArgumentException.class,
-                () -> experimentProcessorService.processExperimentHistory(experiment, () -> false, null));
+                () -> experimentProcessorService.processExperimentHistory(experiment, new MockCancelable(), null));
     }
 
     @Test
@@ -69,7 +70,8 @@ class ExperimentProcessorServiceTest {
         when(experimentInitializationVisitor.caseKNearestNeighbours(initializationParams))
                 .thenReturn(automatedKNearestNeighbours);
         AbstractExperiment<?> experiment = experimentProcessorService.processExperimentHistory(
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString()), () -> false, initializationParams);
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString()), new MockCancelable(),
+                initializationParams);
         assertThat(experiment).isNotNull();
         assertThat(experiment.getHistory()).hasSize(experimentConfig.getResultSize());
     }

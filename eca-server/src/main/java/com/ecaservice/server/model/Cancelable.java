@@ -5,7 +5,6 @@ package com.ecaservice.server.model;
  *
  * @author Roman Batygin
  */
-@FunctionalInterface
 public interface Cancelable {
 
     /**
@@ -14,4 +13,9 @@ public interface Cancelable {
      * @return {@code true} if operation has been cancelled, otherwise {@code false}
      */
     boolean isCancelled();
+
+    /**
+     * Cancels task.
+     */
+    void cancel();
 }

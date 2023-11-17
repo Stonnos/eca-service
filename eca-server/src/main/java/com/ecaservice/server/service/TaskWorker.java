@@ -45,9 +45,7 @@ public class TaskWorker<T> implements Cancelable {
         return future != null && future.isCancelled();
     }
 
-    /**
-     * Cancels task.
-     */
+    @Override
     public void cancel() {
         if (future == null) {
             throw new IllegalStateException("Future is not initialized");
