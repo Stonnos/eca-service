@@ -45,6 +45,7 @@ import com.ecaservice.server.service.evaluation.initializers.ClassifierInitializ
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.core.evaluation.EvaluationMethod;
 import eca.ensemble.forests.DecisionTreeType;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -77,6 +78,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
+@Slf4j
 @EnableAspectJAutoProxy
 @Import({ExecutorConfiguration.class, ClassifiersOptionsAutoConfiguration.class, AppProperties.class,
         CrossValidationConfig.class, EvaluationRequestService.class, InstancesInfoMapperImpl.class,
@@ -179,9 +181,11 @@ class OptimalClassifierOptionsFetcherIT extends AbstractJpaTest {
             executorService.submit(() -> {
                 try {
                     var instancesRequestDataModel =
-                            new InstancesRequestDataModel(UUID.randomUUID().toString(), dataUuid,
+                            new InstancesRequestDataModel(UUID.randomUUID().toString(), dataUuid, DATA_MD_5_HASH,
                                     EvaluationMethod.CROSS_VALIDATION, NUM_FOLDS, NUM_TESTS, SEED);
                     optimalClassifierOptionsFetcher.getOptimalClassifierOptions(instancesRequestDataModel);
+                } catch (Exception ex) {
+                    log.error("Error while get optimal classifier options: {}", ex.getMessage());
                 } finally {
                     finishedLatch.countDown();
                 }

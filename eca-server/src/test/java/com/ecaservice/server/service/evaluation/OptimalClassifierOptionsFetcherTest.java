@@ -374,8 +374,8 @@ class OptimalClassifierOptionsFetcherTest extends AbstractJpaTest {
         instancesInfo.setDataMd5Hash(DATA_MD_5_HASH);
         instancesInfoRepository.save(instancesInfo);
         instancesRequestDataModel =
-                new InstancesRequestDataModel(UUID.randomUUID().toString(), dataUuid, EvaluationMethod.CROSS_VALIDATION,
-                        NUM_FOLDS, NUM_TESTS, SEED);
+                new InstancesRequestDataModel(UUID.randomUUID().toString(), dataUuid, DATA_MD_5_HASH,
+                        EvaluationMethod.CROSS_VALIDATION, NUM_FOLDS, NUM_TESTS, SEED);
     }
 
     private void mockLoadInstances() {
