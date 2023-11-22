@@ -82,9 +82,7 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
 
     @Test
     void testProcessExperiments() {
-        var experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.IN_PROGRESS);
-        instancesInfoRepository.save(experiment.getInstancesInfo());
-        experimentRepository.save(experiment);
+        var experiment = createAndSaveInProgressExperiment();
         createAndSaveExperimentStep(experiment, ExperimentStep.EXPERIMENT_PROCESSING, ExperimentStepStatus.FAILED);
         createAndSaveExperimentStep(experiment, ExperimentStep.UPLOAD_EXPERIMENT_MODEL, ExperimentStepStatus.READY);
         createAndSaveExperimentStep(experiment, ExperimentStep.GET_EXPERIMENT_DOWNLOAD_URL, ExperimentStepStatus.READY);
@@ -94,9 +92,7 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
 
     @Test
     void testProcessFinishedExperimentsWithErrorStep() {
-        var experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.IN_PROGRESS);
-        instancesInfoRepository.save(experiment.getInstancesInfo());
-        experimentRepository.save(experiment);
+        var experiment = createAndSaveInProgressExperiment();
         createAndSaveExperimentStep(experiment, ExperimentStep.EXPERIMENT_PROCESSING, ExperimentStepStatus.ERROR);
         createAndSaveExperimentStep(experiment, ExperimentStep.UPLOAD_EXPERIMENT_MODEL, ExperimentStepStatus.CANCELED);
         createAndSaveExperimentStep(experiment, ExperimentStep.GET_EXPERIMENT_DOWNLOAD_URL,
@@ -107,9 +103,7 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
 
     @Test
     void testProcessFinishedExperimentsWithAllCompletedSteps() {
-        var experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.IN_PROGRESS);
-        instancesInfoRepository.save(experiment.getInstancesInfo());
-        experimentRepository.save(experiment);
+        var experiment = createAndSaveInProgressExperiment();
         createAndSaveExperimentStep(experiment, ExperimentStep.EXPERIMENT_PROCESSING, ExperimentStepStatus.COMPLETED);
         createAndSaveExperimentStep(experiment, ExperimentStep.UPLOAD_EXPERIMENT_MODEL, ExperimentStepStatus.COMPLETED);
         createAndSaveExperimentStep(experiment, ExperimentStep.GET_EXPERIMENT_DOWNLOAD_URL,
@@ -120,9 +114,7 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
 
     @Test
     void testProcessFinishedExperimentsWithNotAllCompleted() {
-        var experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.IN_PROGRESS);
-        instancesInfoRepository.save(experiment.getInstancesInfo());
-        experimentRepository.save(experiment);
+        var experiment = createAndSaveInProgressExperiment();
         createAndSaveExperimentStep(experiment, ExperimentStep.EXPERIMENT_PROCESSING, ExperimentStepStatus.COMPLETED);
         createAndSaveExperimentStep(experiment, ExperimentStep.UPLOAD_EXPERIMENT_MODEL, ExperimentStepStatus.COMPLETED);
         createAndSaveExperimentStep(experiment, ExperimentStep.GET_EXPERIMENT_DOWNLOAD_URL, ExperimentStepStatus.READY);
@@ -142,6 +134,14 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
                 ExperimentStepStatus.IN_PROGRESS);
         experimentScheduler.processExperiments();
         verify(experimentProcessManager, atLeastOnce()).processExperiment(experiment.getId());
+    }
+
+    private Experiment createAndSaveInProgressExperiment() {
+        var experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.IN_PROGRESS);
+        instancesInfoRepository.save(experiment.getInstancesInfo());
+        experiment.setStartDate(LocalDateTime.now());
+        experimentRepository.save(experiment);
+        return experiment;
     }
 
     private void createAndSaveExperimentStep(Experiment experiment,

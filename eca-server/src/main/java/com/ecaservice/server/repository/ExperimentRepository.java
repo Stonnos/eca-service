@@ -38,20 +38,22 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
     /**
      * Finds experiments to process.
      *
+     * @param dateTime - timeout date time threshold value
      * @return experiments ids list
      */
     @Query("select exp.id from Experiment exp where exp.requestStatus = 'IN_PROGRESS' " +
+            "and exp.startDate > :dateTime " +
             "and not exists (select es.id from ExperimentStepEntity es where es.experiment = exp " +
             "and (es.status = 'ERROR' or es.status = 'TIMEOUT' or es.status = 'CANCELED' " +
             "or es.status = 'IN_PROGRESS')) " +
             "and exists (select es.id from ExperimentStepEntity es where es.experiment = exp " +
             "and (es.status = 'READY' or es.status = 'FAILED')) order by exp.creationDate")
-    List<Long> findExperimentsToProcess();
+    List<Long> findExperimentsToProcess(@Param("dateTime") LocalDateTime dateTime);
 
     /**
      * Finds timeout experiments to process.
      *
-     * @param dateTime - date time threshold value
+     * @param dateTime - timeout date time threshold value
      * @return experiments ids list
      */
     @Query("select exp.id from Experiment exp where exp.requestStatus = 'IN_PROGRESS' " +

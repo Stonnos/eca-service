@@ -63,10 +63,11 @@ public class ExperimentScheduler {
      * Processing in progress experiment requests.
      */
     private void processInProgressRequests() {
-        log.trace("Starting to process new experiments.");
-        processExperiments(experimentRepository::findExperimentsToProcess,
+        log.trace("Starting to process in progress experiments.");
+        LocalDateTime dateTime = LocalDateTime.now().minusMinutes(experimentConfig.getRequestTimeoutMinutes());
+        processExperiments(() -> experimentRepository.findExperimentsToProcess(dateTime),
                 "Fetched [{}] in progress experiments to process");
-        log.trace("New experiments processing has been successfully finished.");
+        log.trace("In progress experiments processing has been successfully finished.");
     }
 
     /**
