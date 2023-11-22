@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.Map;
 
-import static com.ecaservice.common.web.util.LogHelper.EV_REQUEST_ID;
 import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.putMdc;
 import static com.ecaservice.server.bpm.CamundaVariables.EVALUATION_REQUEST_DATA;
@@ -41,7 +40,6 @@ public class ExperimentProcessManager {
     public void processExperiment(Long id) {
         var experiment = experimentDataService.getById(id);
         putMdc(TX_ID, experiment.getRequestId());
-        putMdc(EV_REQUEST_ID, experiment.getRequestId());
         log.info("Starting experiment [{}] business process. Experiment request status [{}], channel [{}]",
                 experiment.getRequestId(), experiment.getRequestStatus(), experiment.getChannel());
         Map<String, Object> variables = Collections.singletonMap(EXPERIMENT_ID, experiment.getId());
@@ -56,7 +54,6 @@ public class ExperimentProcessManager {
      */
     public void createExperimentRequest(ExperimentRequestModel experimentRequestModel) {
         putMdc(TX_ID, experimentRequestModel.getRequestId());
-        putMdc(EV_REQUEST_ID, experimentRequestModel.getRequestId());
         log.info("Starting create experiment [{}] request business process",
                 experimentRequestModel.getRequestId());
         Map<String, Object> variables = Collections.singletonMap(EVALUATION_REQUEST_DATA, experimentRequestModel);

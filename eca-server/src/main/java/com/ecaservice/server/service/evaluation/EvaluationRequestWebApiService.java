@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-import static com.ecaservice.common.web.util.LogHelper.EV_REQUEST_ID;
 import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.putMdc;
 import static com.ecaservice.server.config.audit.AuditCodes.CREATE_EVALUATION_REQUEST;
@@ -50,7 +49,6 @@ public class EvaluationRequestWebApiService {
     public CreateEvaluationResponseDto createEvaluationRequest(CreateEvaluationRequestDto evaluationRequestDto) {
         String requestId = UUID.randomUUID().toString();
         putMdc(TX_ID, requestId);
-        putMdc(EV_REQUEST_ID, requestId);
         log.info(
                 "Starting to create evaluation [{}] request for instances [{}], classifier options [{}], evaluation method [{}]",
                 requestId,
@@ -75,7 +73,6 @@ public class EvaluationRequestWebApiService {
             CreateOptimalEvaluationRequestDto evaluationRequestDto) {
         String requestId = UUID.randomUUID().toString();
         putMdc(TX_ID, requestId);
-        putMdc(EV_REQUEST_ID, requestId);
         log.info(
                 "Starting to create optimal evaluation [{}] request for instances [{}], evaluation method [{}]",
                 requestId, evaluationRequestDto.getInstancesUuid(), evaluationRequestDto.getEvaluationMethod());

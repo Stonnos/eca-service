@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
-import static com.ecaservice.common.web.util.LogHelper.EV_REQUEST_ID;
 import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.putMdc;
 import static com.ecaservice.common.web.util.PageHelper.processWithPagination;
@@ -49,7 +48,6 @@ public class ClassifiersDataCleaner {
 
     private void removeModel(EvaluationLog evaluationLog) {
         putMdc(TX_ID, evaluationLog.getRequestId());
-        putMdc(EV_REQUEST_ID, evaluationLog.getRequestId());
         evaluationLogDataService.removeModel(evaluationLog);
     }
 }

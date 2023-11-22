@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
-import static com.ecaservice.common.web.util.LogHelper.EV_REQUEST_ID;
 import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.putMdc;
 import static com.ecaservice.server.config.audit.AuditCodes.CREATE_EXPERIMENT_REQUEST;
@@ -45,7 +44,6 @@ public class ExperimentRequestWebApiService {
     public CreateExperimentResultDto createExperiment(CreateExperimentRequestDto experimentRequestDto) {
         String requestId = UUID.randomUUID().toString();
         putMdc(TX_ID, requestId);
-        putMdc(EV_REQUEST_ID, requestId);
         log.info("Starting to create experiment [{}] request for instances [{}], type [{}], evaluation method [{}]",
                 requestId, experimentRequestDto.getInstancesUuid(), experimentRequestDto.getExperimentType(),
                 experimentRequestDto.getEvaluationMethod());

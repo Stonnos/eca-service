@@ -15,10 +15,6 @@ import org.springframework.stereotype.Component;
 import javax.validation.Valid;
 import java.util.UUID;
 
-import static com.ecaservice.common.web.util.LogHelper.EV_REQUEST_ID;
-import static com.ecaservice.common.web.util.LogHelper.TX_ID;
-import static com.ecaservice.common.web.util.LogHelper.putMdc;
-
 /**
  * Rabbit MQ listener for experiment request messages.
  *

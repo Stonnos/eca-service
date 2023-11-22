@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.Map;
 
-import static com.ecaservice.common.web.util.LogHelper.EV_REQUEST_ID;
 import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.putMdc;
 import static com.ecaservice.server.bpm.CamundaVariables.EVALUATION_LOG_ID;
@@ -41,7 +40,6 @@ public class EvaluationProcessManager {
     public void processEvaluationRequest(Long id) {
         var evaluationLog = evaluationLogDataService.getById(id);
         putMdc(TX_ID, evaluationLog.getRequestId());
-        putMdc(EV_REQUEST_ID, evaluationLog.getRequestId());
         log.info("Starting to process evaluation request [{}] business process", evaluationLog.getRequestId());
         Map<String, Object> variables = Collections.singletonMap(EVALUATION_LOG_ID, id);
         processManager.startProcess(processConfig.getProcessEvaluationId(), evaluationLog.getRequestId(), variables);
@@ -55,7 +53,6 @@ public class EvaluationProcessManager {
      */
     public void createAndProcessEvaluationRequest(EvaluationRequestModel evaluationRequestModel) {
         putMdc(TX_ID, evaluationRequestModel.getRequestId());
-        putMdc(EV_REQUEST_ID, evaluationRequestModel.getRequestId());
         log.info("Starting create and process evaluation [{}] request business process",
                 evaluationRequestModel.getRequestId());
         Map<String, Object> variables = Collections.singletonMap(EVALUATION_REQUEST_DATA, evaluationRequestModel);

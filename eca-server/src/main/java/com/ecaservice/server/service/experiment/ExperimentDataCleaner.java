@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static com.ecaservice.common.web.util.LogHelper.EV_REQUEST_ID;
 import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.putMdc;
 import static com.ecaservice.common.web.util.PageHelper.processWithPagination;
@@ -52,7 +51,6 @@ public class ExperimentDataCleaner {
     private void removeData(List<Experiment> experiments, Consumer<Experiment> removeDataConsumer) {
         experiments.forEach(experiment -> {
             putMdc(TX_ID, experiment.getRequestId());
-            putMdc(EV_REQUEST_ID, experiment.getRequestId());
             removeDataConsumer.accept(experiment);
         });
     }

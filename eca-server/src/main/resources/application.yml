@@ -46,8 +46,8 @@ spring:
         enabled: false
   sleuth:
     baggage:
-      correlation-fields: tx.id, ev.requestId
-      remote-fields: tx.id, ev.requestId
+      correlation-fields: tx.id
+      remote-fields: tx.id
 
 eureka:
   client:
