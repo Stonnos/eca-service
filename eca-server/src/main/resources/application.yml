@@ -118,6 +118,8 @@ experiment:
   maximumFractionDigits: ${classifiers-options.maximumFractionDigits}
   ## Experiment evaluation timeout in minutes
   evaluationTimeoutMinutes: 120
+  ## Experiment request timeout in minutes
+  requestTimeoutMinutes: 125
   ## Scheduler delay in seconds
   delaySeconds: 30
   experimentLocalStoragePath: /home/experiment

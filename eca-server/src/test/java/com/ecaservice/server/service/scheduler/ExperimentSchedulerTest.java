@@ -21,6 +21,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Import;
 
 import javax.inject.Inject;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static org.mockito.Mockito.atLeastOnce;
@@ -34,6 +35,8 @@ import static org.mockito.Mockito.verify;
 @Import({ExperimentConfig.class, AppProperties.class})
 class ExperimentSchedulerTest extends AbstractJpaTest {
 
+    @Inject
+    private ExperimentConfig experimentConfig;
     @Inject
     private ExperimentRepository experimentRepository;
     @Inject
@@ -57,8 +60,8 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
 
     @Override
     public void init() {
-        experimentScheduler =
-                new ExperimentScheduler(experimentProcessManager, experimentDataCleaner, experimentRepository);
+        experimentScheduler = new ExperimentScheduler(experimentConfig, experimentProcessManager, experimentDataCleaner,
+                experimentRepository);
     }
 
     @Override
@@ -123,6 +126,20 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
         createAndSaveExperimentStep(experiment, ExperimentStep.EXPERIMENT_PROCESSING, ExperimentStepStatus.COMPLETED);
         createAndSaveExperimentStep(experiment, ExperimentStep.UPLOAD_EXPERIMENT_MODEL, ExperimentStepStatus.COMPLETED);
         createAndSaveExperimentStep(experiment, ExperimentStep.GET_EXPERIMENT_DOWNLOAD_URL, ExperimentStepStatus.READY);
+        experimentScheduler.processExperiments();
+        verify(experimentProcessManager, atLeastOnce()).processExperiment(experiment.getId());
+    }
+
+    @Test
+    void testProcessTimeoutExperiment() {
+        var experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.IN_PROGRESS);
+        instancesInfoRepository.save(experiment.getInstancesInfo());
+        experiment.setStartDate(LocalDateTime.now().minusMinutes(experimentConfig.getRequestTimeoutMinutes() + 1));
+        experimentRepository.save(experiment);
+        createAndSaveExperimentStep(experiment, ExperimentStep.EXPERIMENT_PROCESSING, ExperimentStepStatus.COMPLETED);
+        createAndSaveExperimentStep(experiment, ExperimentStep.UPLOAD_EXPERIMENT_MODEL, ExperimentStepStatus.COMPLETED);
+        createAndSaveExperimentStep(experiment, ExperimentStep.GET_EXPERIMENT_DOWNLOAD_URL,
+                ExperimentStepStatus.IN_PROGRESS);
         experimentScheduler.processExperiments();
         verify(experimentProcessManager, atLeastOnce()).processExperiment(experiment.getId());
     }

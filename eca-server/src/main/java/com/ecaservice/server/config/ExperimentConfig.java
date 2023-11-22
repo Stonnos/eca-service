@@ -43,6 +43,11 @@ public class ExperimentConfig {
     private Integer evaluationTimeoutMinutes;
 
     /**
+     * Experiment request processing timeout value in minutes
+     */
+    private Integer requestTimeoutMinutes;
+
+    /**
      * Delay value for scheduler in seconds
      */
     private Integer delaySeconds;

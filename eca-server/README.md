@@ -43,6 +43,7 @@ ECA server
    которые впоследствии будут использоваться при построении эксперимента
    * experiment.maximumFractionDigits - число десятичных знаков после запятой
    * experiment.evaluationTimeoutMinutes - время таймаута для построения эксперимента в минутах.
+   * experiment.requestTimeoutMinutes - время таймаута для обработки заявки на эксперимент в минутах.
    * experiment.delaySeconds - интервал между запусками scheduler для обработки экспериметов
    * experiment.ensemble.numIterations - число итераций для ансамблевых алгоритмов
    * experiment.ensemble.numBestClassifiers - число наилучших по точности базовых классификаторов, которые впоследствии

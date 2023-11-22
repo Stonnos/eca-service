@@ -1,5 +1,6 @@
 package com.ecaservice.server.service.scheduler;
 
+import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.service.experiment.ExperimentDataCleaner;
 import com.ecaservice.server.service.experiment.ExperimentProcessManager;
@@ -9,6 +10,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -22,6 +24,7 @@ import java.util.function.Supplier;
 @RequiredArgsConstructor
 public class ExperimentScheduler {
 
+    private final ExperimentConfig experimentConfig;
     private final ExperimentProcessManager experimentProcessManager;
     private final ExperimentDataCleaner experimentDataCleaner;
     private final ExperimentRepository experimentRepository;
@@ -34,6 +37,7 @@ public class ExperimentScheduler {
         processNewRequests();
         processInProgressRequests();
         processRequestsToFinish();
+        processTimeoutRequest();
     }
 
     /**
@@ -72,6 +76,17 @@ public class ExperimentScheduler {
         log.trace("Starting to process experiments to finish.");
         processExperiments(experimentRepository::findExperimentsToFinish, "Fetched [{}] experiments to finish");
         log.trace("Finished experiments processing has been successfully finished.");
+    }
+
+    /**
+     * Processing experiment timeout request to process again.
+     */
+    private void processTimeoutRequest() {
+        log.trace("Starting to handle timeout experiments to process again.");
+        LocalDateTime dateTime = LocalDateTime.now().minusMinutes(experimentConfig.getRequestTimeoutMinutes());
+        processExperiments(() -> experimentRepository.findTimeoutExperimentsToProcess(dateTime),
+                "Fetched [{}] timeout experiments to process again");
+        log.trace("Timeout experiments processing has been successfully finished.");
     }
 
     private void processExperiments(Supplier<List<Long>> getExperimentsIdsSupplier, String infoLogMessage) {
