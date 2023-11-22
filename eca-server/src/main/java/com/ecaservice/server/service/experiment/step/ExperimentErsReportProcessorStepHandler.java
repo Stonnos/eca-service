@@ -1,6 +1,5 @@
 package com.ecaservice.server.service.experiment.step;
 
-import com.ecaservice.s3.client.minio.exception.ObjectStorageException;
 import com.ecaservice.server.event.model.ExperimentErsReportEvent;
 import com.ecaservice.server.model.entity.ExperimentStep;
 import com.ecaservice.server.model.entity.ExperimentStepEntity;
@@ -47,10 +46,6 @@ public class ExperimentErsReportProcessorStepHandler extends AbstractExperimentS
                     experimentContext.getExperiment(), experimentContext.getExperimentHistory()));
             stopWatch.stop();
             experimentStepService.complete(experimentStepEntity);
-        } catch (ObjectStorageException ex) {
-            log.error("Object storage error while sent ers report for experiment [{}]: {}",
-                    experimentContext.getExperiment().getRequestId(), ex.getMessage());
-            experimentStepService.failed(experimentStepEntity, ex.getMessage());
         } catch (Exception ex) {
             log.error("Error while sent ers report for experiment [{}]: {}",
                     experimentContext.getExperiment().getRequestId(), ex.getMessage());
