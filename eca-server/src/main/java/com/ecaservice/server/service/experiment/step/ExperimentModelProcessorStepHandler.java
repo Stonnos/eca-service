@@ -80,6 +80,7 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
     public void handle(ExperimentContext experimentContext,
                        ExperimentStepEntity experimentStepEntity) {
         try {
+            experimentStepService.start(experimentStepEntity);
             Instances data = getInstances(experimentContext);
             Instances filteredInstances = removeConstantAttributes(data);
             processExperiment(filteredInstances, experimentContext);

@@ -55,6 +55,7 @@ public class UploadExperimentModelStepHandler extends AbstractExperimentStepHand
     public void handle(ExperimentContext experimentContext,
                        ExperimentStepEntity experimentStepEntity) {
         try {
+            experimentStepService.start(experimentStepEntity);
             Experiment experiment = experimentContext.getExperiment();
             StopWatch stopWatch = experimentContext.getStopWatch();
             log.info("Starting to get experiment history [{}] to upload", experiment.getRequestId());

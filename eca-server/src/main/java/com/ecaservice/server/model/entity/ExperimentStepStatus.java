@@ -13,6 +13,11 @@ public enum ExperimentStepStatus {
     READY,
 
     /**
+     * In progress
+     */
+    IN_PROGRESS,
+
+    /**
      * Completed
      */
     COMPLETED,

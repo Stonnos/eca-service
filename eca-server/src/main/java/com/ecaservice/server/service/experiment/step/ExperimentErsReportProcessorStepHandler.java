@@ -39,6 +39,7 @@ public class ExperimentErsReportProcessorStepHandler extends AbstractExperimentS
     public void handle(ExperimentContext experimentContext,
                        ExperimentStepEntity experimentStepEntity) {
         try {
+            experimentStepService.start(experimentStepEntity);
             var stopWatch = experimentContext.getStopWatch();
             stopWatch.start(
                     String.format("Sent experiment [%s] ERS report", experimentContext.getExperiment().getRequestId()));

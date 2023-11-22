@@ -59,6 +59,6 @@ public interface ExperimentStepRepository extends JpaRepository<ExperimentStepEn
      * @return experiment steps count to process
      */
     @Query("select count(es.id) from ExperimentStepEntity es where es.experiment.id = :experimentId " +
-            "and (es.status = 'READY' or es.status = 'FAILED')")
+            "and (es.status = 'READY' or es.status = 'IN_PROGRESS' or es.status = 'FAILED')")
     long getExperimentStepsCountToProcess(@Param("experimentId") Long experimentId);
 }

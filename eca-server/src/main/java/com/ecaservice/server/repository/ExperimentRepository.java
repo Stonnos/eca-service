@@ -42,7 +42,8 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
      */
     @Query("select exp.id from Experiment exp where exp.requestStatus = 'IN_PROGRESS' " +
             "and not exists (select es.id from ExperimentStepEntity es where es.experiment = exp " +
-            "and (es.status = 'ERROR' or es.status = 'TIMEOUT' or es.status = 'CANCELED')) " +
+            "and (es.status = 'ERROR' or es.status = 'TIMEOUT' or es.status = 'CANCELED' " +
+            "or es.status = 'IN_PROGRESS')) " +
             "and exists (select es.id from ExperimentStepEntity es where es.experiment = exp " +
             "and (es.status = 'READY' or es.status = 'FAILED')) order by exp.creationDate")
     List<Long> findExperimentsToProcess();
@@ -54,7 +55,7 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
      */
     @Query("select exp.id from Experiment exp where exp.requestStatus = 'IN_PROGRESS' " +
             "and not exists (select es.id from ExperimentStepEntity es where es.experiment = exp " +
-            "and (es.status = 'READY' or es.status = 'FAILED')) order by exp.creationDate")
+            "and (es.status = 'READY' or es.status = 'FAILED' or es.status = 'IN_PROGRESS')) order by exp.creationDate")
     List<Long> findExperimentsToFinish();
 
     /**

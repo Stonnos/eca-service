@@ -53,6 +53,7 @@ public class GetExperimentDownloadUrlStepHandler extends AbstractExperimentStepH
     public void handle(ExperimentContext experimentContext,
                        ExperimentStepEntity experimentStepEntity) {
         try {
+            experimentStepService.start(experimentStepEntity);
             Experiment experiment = experimentContext.getExperiment();
             StopWatch stopWatch = experimentContext.getStopWatch();
             stopWatch.start(String.format("Gets experiment [%s] download url", experiment.getRequestId()));

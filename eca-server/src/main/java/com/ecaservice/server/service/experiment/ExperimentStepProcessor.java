@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 public class ExperimentStepProcessor {
 
     private static final List<ExperimentStepStatus> EXPERIMENT_STEP_STATUSES_TO_PROCESS =
-            List.of(ExperimentStepStatus.READY, ExperimentStepStatus.FAILED);
+            List.of(ExperimentStepStatus.READY, ExperimentStepStatus.IN_PROGRESS, ExperimentStepStatus.FAILED);
     private static final List<ExperimentStepStatus> EXPERIMENT_STEP_ERROR_STATUSES =
             List.of(ExperimentStepStatus.ERROR, ExperimentStepStatus.TIMEOUT);
 
@@ -70,14 +70,8 @@ public class ExperimentStepProcessor {
         }
     }
 
-    private void startStep(ExperimentStepEntity experimentStepEntity) {
-        experimentStepEntity.setStarted(LocalDateTime.now());
-        experimentStepRepository.save(experimentStepEntity);
-    }
-
     private void processStep(ExperimentContext experimentContext,
                              ExperimentStepEntity experimentStepEntity) {
-        startStep(experimentStepEntity);
         var stepHandler = experimentStepHandlers.stream()
                 .filter(handler -> handler.getStep().equals(experimentStepEntity.getStep()))
                 .findFirst()
