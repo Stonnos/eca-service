@@ -117,7 +117,7 @@ ECA server
       (Отключение rabbit MQ)
     * mail.client.enabled=false
       (Отключение отправки email сообщений)
-     * app.notifications.webPushesEnabled=false
+     * app.push.enabled=false
       (Отключение отправки web пушей )
     * spring.cache.type=caffeine
       (Использование in-memory кеша caffeine)
