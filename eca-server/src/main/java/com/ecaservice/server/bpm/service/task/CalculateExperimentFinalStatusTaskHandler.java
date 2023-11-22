@@ -28,7 +28,7 @@ import static com.ecaservice.server.util.CamundaUtils.getVariable;
 public class CalculateExperimentFinalStatusTaskHandler extends AbstractTaskHandler {
 
     private static final List<ExperimentStepStatus> EXPERIMENT_STEP_STATUSES_TO_PROCESS =
-            List.of(ExperimentStepStatus.READY, ExperimentStepStatus.FAILED);
+            List.of(ExperimentStepStatus.READY, ExperimentStepStatus.IN_PROGRESS, ExperimentStepStatus.FAILED);
 
     private final ExperimentDataService experimentDataService;
     private final ExperimentStepRepository experimentStepRepository;
