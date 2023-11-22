@@ -86,8 +86,7 @@ ECA server
 11) lock.enabled - настройки блокировок
    * lock.enabled - вкл./выкл. использование блокировок
    * lock.registry-type - тип блокировок REDIS, IN_MEMORY
-   * lock.redis.registryKey - ключ реестра для Redis
-   * lock.redis.expireAfter - время жизни блокировки для Redis
+   * lock.registries - настройки lock registry
 12) audit.enabled - вкл./выкл. отправки событий аудита
 13) rabbit.enabled - вкл./выкл. подключения к очередям rabbit MQ
 14) mail.client - настройки библиотеки отправки email сообщений
