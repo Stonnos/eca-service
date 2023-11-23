@@ -189,7 +189,7 @@ lock:
       ## Evaluation lock expiration in millis
       expireAfter: 1200000
     experiments-registry:
-      ## Experiment lock expiration in millis
+      ## Experiment lock expiration in millis. Must be equals to experiment.requestTimeoutMinutes value
       expireAfter: 7500000
 
 management:
