@@ -18,7 +18,7 @@ import org.springframework.integration.support.locks.LockRegistry;
 @Configuration
 @ConditionalOnProperty(value = "lock.registry-type", havingValue = "IN_MEMORY", matchIfMissing = true)
 @RequiredArgsConstructor
-public class ImMemoryLockConfiguration extends AbstractLockConfiguration {
+public class InMemoryLockConfiguration extends AbstractLockConfiguration {
 
     /**
      * Creates lock registry repository bean.
@@ -27,6 +27,7 @@ public class ImMemoryLockConfiguration extends AbstractLockConfiguration {
      * @return lock registry repository
      */
     @Bean
+    @Override
     public LockRegistryRepository lockRegistryRepository(LockProperties lockProperties) {
         var lockRegistryRepository = super.lockRegistryRepository(lockProperties);
         log.info("In memory lock registry repository has been initialized");

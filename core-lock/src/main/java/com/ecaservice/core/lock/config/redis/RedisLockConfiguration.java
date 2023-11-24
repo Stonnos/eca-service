@@ -34,6 +34,7 @@ public class RedisLockConfiguration extends AbstractLockConfiguration {
      * @return redis lock registry repository
      */
     @Bean
+    @Override
     public LockRegistryRepository lockRegistryRepository(LockProperties lockProperties) {
         var lockRegistryRepository = super.lockRegistryRepository(lockProperties);
         log.info("Redis lock registry repository has been initialized");
