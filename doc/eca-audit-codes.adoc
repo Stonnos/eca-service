@@ -128,4 +128,10 @@
 |GENERATE_EVALUATION_REQUESTS_REPORT
 |Выгрузка отчета по заявкам
 |EVALUATION_REQUESTS_ACTIONS
+|CREATE_EVALUATION_REQUEST
+|Создание заявки на построение модели классификатора
+|EVALUATION_REQUESTS_ACTIONS
+|CREATE_OPTIMAL_EVALUATION_REQUEST
+|Создание заявки на построение модели с оптимальными настройками классификатора
+|EVALUATION_REQUESTS_ACTIONS
 |===
