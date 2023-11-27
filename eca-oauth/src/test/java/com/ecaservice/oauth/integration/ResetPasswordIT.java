@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 class ResetPasswordIT extends AbstractUserIT {
 
-    private static final String NEW_PASSWORD = "newPa66word!";
+    private static final String NEW_PASSWORD = "545NewPa6word!#890";
     private static final String TOKEN_PARAM = "token";
 
     private static final String API_PREFIX = "/password";
