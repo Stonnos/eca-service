@@ -11,7 +11,7 @@ Evaluation results service
 
 Необходимый софт
 ----------------------------------------
-* Openjdk 11
+* Openjdk 17
 * maven => 3.9.2
 * База данных PostgreSQL 13.9 для хранения информации.
 
