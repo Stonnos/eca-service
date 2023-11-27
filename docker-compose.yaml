@@ -93,7 +93,7 @@ services:
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
-      JAVA_OPTS: "-Xmx1g"
+      JAVA_OPTS: ${ECA_SERVER_JAVA_OPTS}
       QUEUE_EVALUATIONREQUESTQUEUE: ${QUEUE_EVALUATION_REQUEST_QUEUE}
       QUEUE_EVALUATIONOPTIMIZERREQUESTQUEUE: ${QUEUE_EVALUATION_OPTIMIZER_REQUEST_QUEUE}
       QUEUE_EXPERIMENTREQUESTQUEUE: ${QUEUE_EXPERIMENT_REQUEST_QUEUE}
@@ -246,22 +246,6 @@ services:
       - default
     depends_on:
       - eca-db
-      - discovery-server
-
-  eca-external-api:
-    image: eca-external-api
-    container_name: eca-external-api
-    restart: always
-    environment:
-      TZ: ${TIME_ZONE}
-      SPRING_PROFILES_ACTIVE: "docker"
-      JAVA_OPTS: "-Xmx1g"
-      OPENAPI_BASEPATH: "/external-api"
-    networks:
-      - default
-    depends_on:
-      - eca-db
-      - rabbitmq
       - discovery-server
 
 networks:
