@@ -20,7 +20,7 @@ import java.util.stream.IntStream;
 import static com.google.common.collect.Sets.newHashSet;
 
 /**
- * Utility class.
+ * Instances validation utility class.
  *
  * @author Roman Batygin
  */
