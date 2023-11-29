@@ -25,7 +25,7 @@ import static com.google.common.collect.Sets.newHashSet;
  * @author Roman Batygin
  */
 @UtilityClass
-public class Utils {
+public class InstancesValidationUtils {
 
     private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);

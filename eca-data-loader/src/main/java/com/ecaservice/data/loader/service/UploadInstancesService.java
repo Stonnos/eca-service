@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static com.ecaservice.data.loader.util.Utils.validateInstances;
+import static com.ecaservice.data.loader.util.InstancesValidationUtils.validateInstances;
 
 /**
  * Instances loader service.
