@@ -140,7 +140,7 @@ link:data/credit.json[credit.json]
 |string
 |-
 |Формат даты для атрибутов типа даты
-|
+|Допустимые форматы даты: yyyy-MM-dd HH:mm:ss
 |values
 |array<string>
 |-
