@@ -34,6 +34,7 @@ public class InstancesValidationUtils {
      * Validates instances model.
      *
      * @param instancesModel - instances model
+     * @throws InvalidTrainDataFormatException in case if train data has invalid format
      */
     public static void validateInstances(InstancesModel instancesModel) {
         if (StringUtils.isEmpty(instancesModel.getRelationName())) {
