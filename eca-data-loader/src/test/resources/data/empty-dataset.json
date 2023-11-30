@@ -1,0 +1,32 @@
+{
+  "relationName": "iris",
+  "className": "class",
+  "attributes": [
+    {
+      "name": "x1",
+      "type": "NUMERIC"
+    },
+    {
+      "name": "x2",
+      "type": "NUMERIC"
+    },
+    {
+      "name": "x3",
+      "type": "NUMERIC"
+    },
+    {
+      "name": "x4",
+      "type": "NUMERIC"
+    },
+    {
+      "name": "class",
+      "type": "NOMINAL",
+      "dateFormat": null,
+      "values": [
+        "Iris-setosa",
+        "Iris-virginica"
+      ]
+    }
+  ],
+  "instances": null
+}

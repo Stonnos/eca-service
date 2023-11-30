@@ -1,0 +1,59 @@
+{
+  "relationName": "iris",
+  "className": "class",
+  "attributes": [
+    {
+      "name": "x1",
+      "type": "NUMERIC"
+    },
+    {
+      "name": "x2",
+      "type": "NUMERIC"
+    },
+    {
+      "name": "x3",
+      "type": "NUMERIC"
+    },
+    {
+      "name": "x4",
+      "type": "NUMERIC"
+    },
+    {
+      "name": "class",
+      "type": "NOMINAL",
+      "dateFormat": null,
+      "values": [
+        "Iris-setosa",
+        "Iris-virginica"
+      ]
+    }
+  ],
+  "instances": [
+    {
+      "values": [
+        "5.1",
+        "3.5",
+        "1.4",
+        "0.2"
+      ]
+    },
+    {
+      "values": [
+        "4.9",
+        "3.0",
+        "1.4",
+        "0.2",
+        "Iris-setosa"
+      ]
+    },
+    {
+      "values": [
+        "4.7",
+        "3.2",
+        "1.3",
+        "0.2",
+        "Iris-setosa"
+      ]
+    }
+  ]
+}

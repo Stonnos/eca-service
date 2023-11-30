@@ -63,8 +63,19 @@ public class TestHelperUtils {
      * @throws IOException in case of I/O error
      */
     public static InstancesModel loadInstances() throws IOException {
+        return loadInstances(CREDIT_JSON);
+    }
+
+    /**
+     * Loads instances model from resource.
+     *
+     * @param location - location
+     * @return instances model
+     * @throws IOException in case of I/O error
+     */
+    public static InstancesModel loadInstances(String location) throws IOException {
         ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-        @Cleanup InputStream inputStream = classLoader.getResourceAsStream(CREDIT_JSON);
+        @Cleanup InputStream inputStream = classLoader.getResourceAsStream(location);
         return OBJECT_MAPPER.readValue(inputStream, InstancesModel.class);
     }
 
