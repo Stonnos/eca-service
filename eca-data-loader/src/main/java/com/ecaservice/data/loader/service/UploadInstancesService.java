@@ -7,6 +7,7 @@ import com.ecaservice.data.loader.config.AppProperties;
 import com.ecaservice.data.loader.dto.UploadInstancesResponseDto;
 import com.ecaservice.data.loader.entity.InstancesEntity;
 import com.ecaservice.data.loader.repository.InstancesRepository;
+import com.ecaservice.data.loader.validation.InstancesValidationService;
 import com.ecaservice.s3.client.minio.exception.ObjectStorageException;
 import com.ecaservice.s3.client.minio.model.UploadObject;
 import com.ecaservice.s3.client.minio.service.MinioStorageService;
@@ -27,8 +28,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static com.ecaservice.data.loader.util.InstancesValidationUtils.validateInstances;
-
 /**
  * Instances loader service.
  *
@@ -45,6 +44,7 @@ public class UploadInstancesService {
     private final AppProperties appProperties;
     private final MinioStorageService minioStorageService;
     private final ObjectMapper objectMapper;
+    private final InstancesValidationService instancesValidationService;
     private final InstancesRepository instancesRepository;
 
     /**
@@ -62,7 +62,7 @@ public class UploadInstancesService {
         try {
             byte[] jsonData = loadData(instancesFile);
             InstancesModel instancesModel = objectMapper.readValue(jsonData, InstancesModel.class);
-            validateInstances(instancesModel);
+            instancesValidationService.validate(instancesModel);
             String uuid = UUID.randomUUID().toString();
             String objectPath = String.format(INSTANCES_OBJECT_PATH_FORMAT, uuid);
             String md5Hash = DigestUtils.md5DigestAsHex(jsonData);
