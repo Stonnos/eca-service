@@ -4142,8 +4142,6 @@ a|
 ----
 {
   "experimentRequestId" : "1d2de514-3a87-4620-9b97-c260e24340de",
-  "classifiersCount" : 1,
-  "sentClassifiersCount" : 1,
   "experimentResults" : [ {
     "id" : 1,
     "classifierInfo" : {
@@ -4176,12 +4174,11 @@ a|
       "individualClassifiers" : null
     },
     "resultsIndex" : 0,
-    "pctCorrect" : 99,
-    "sent" : true
+    "pctCorrect" : 99
   } ],
   "ersReportStatus" : {
-    "value" : "SUCCESS_SENT",
-    "description" : "Результаты эксперимента были успешно отправлены в ERS сервис"
+    "value" : "FETCHED",
+    "description" : "Результаты эксперимента успешно получены"
   }
 }
 ----
@@ -11773,25 +11770,6 @@ __number__
 
 
 
-|*sent*
-|Is experiment results sent to ERS?
-a|
-__boolean__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 |*experimentDto*
 |-
 a|
@@ -12088,50 +12066,6 @@ __string__
 
 
 
-|*classifiersCount*
-|Total classifiers count
-a|
-__integer__
-__(int64)__
-
-
-
-
-
-
-*Minimum*: 0*
-
-*Maximum*: 9 223 372 036 854 775 807*
-
-
-
-
-
-
-
-
-|*sentClassifiersCount*
-|Successfully sent classifiers count
-a|
-__integer__
-__(int64)__
-
-
-
-
-
-
-*Minimum*: 0*
-
-*Maximum*: 9 223 372 036 854 775 807*
-
-
-
-
-
-
-
-
 |*experimentResults*
 |-
 a|
@@ -12255,25 +12189,6 @@ __number__
 *Minimum*: 0*
 
 *Maximum*: 100*
-
-
-
-
-
-
-
-
-|*sent*
-|Is experiment results sent to ERS?
-a|
-__boolean__
-
-
-
-
-
-
-
 
 
 
