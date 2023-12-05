@@ -7,9 +7,7 @@ import lombok.Data;
 import java.util.List;
 
 import static com.ecaservice.web.dto.util.FieldConstraints.EXPERIMENT_RESULTS_MAX_ITEMS;
-import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LONG_VALUE_STRING;
 import static com.ecaservice.web.dto.util.FieldConstraints.UUID_MAX_LENGTH;
-import static com.ecaservice.web.dto.util.FieldConstraints.ZERO_VALUE_STRING;
 
 /**
  * Experiment ERS report dto model.
@@ -26,20 +24,6 @@ public class ExperimentErsReportDto {
     @Schema(description = "Experiment request id", example = "1d2de514-3a87-4620-9b97-c260e24340de",
             maxLength = UUID_MAX_LENGTH)
     private String experimentRequestId;
-
-    /**
-     * Total classifiers count that should be sent to ERS service
-     */
-    @Schema(description = "Total classifiers count", example = "10", minimum = ZERO_VALUE_STRING,
-            maximum = MAX_LONG_VALUE_STRING)
-    private long classifiersCount;
-
-    /**
-     * Successfully sent classifiers count
-     */
-    @Schema(description = "Successfully sent classifiers count", example = "10", minimum = ZERO_VALUE_STRING,
-            maximum = MAX_LONG_VALUE_STRING)
-    private long sentClassifiersCount;
 
     /**
      * Experiment results list
