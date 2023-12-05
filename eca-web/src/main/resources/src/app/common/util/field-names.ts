@@ -101,7 +101,6 @@ export class ExperimentResultsFields {
   public static readonly RESULTS_INDEX: string = "resultsIndex";
   public static readonly CLASSIFIER_DESCRIPTION: string = "classifierInfo.classifierDescription";
   public static readonly PCT_CORRECT: string = "pctCorrect";
-  public static readonly SENT: string = "sent";
 }
 
 export class UserFields {
