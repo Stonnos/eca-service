@@ -15,11 +15,10 @@ public class EvaluationResultsStatusDictionary {
     public static final String EVALUATION_ERROR_DESCRIPTION =
             "Невозможно получить результаты классификации, т.к. произошла ошибка при построении модели классификатора";
     public static final String RESULTS_NOT_SENT_DESCRIPTION =
-            "Не удалось получить результаты классификации, т.к. они не были отправлены в ERS сервис";
-    public static final String EVALUATION_RESULTS_NOT_FOUND_DESCRIPTION =
-            "Результаты классификации не были найдены в ERS";
+            "Не удалось получить результаты классификации, т.к. они не были сохранены";
+    public static final String EVALUATION_RESULTS_NOT_FOUND_DESCRIPTION = "Результаты классификации не найдены";
     public static final String ERROR_DESCRIPTION =
             "Не удалось получить результаты классификации, т.к. произошла неизвестная ошибка";
     public static final String ERS_SERVICE_UNAVAILABLE_DESCRIPTION =
-            "Не удалось получить результаты классификации, т.к. ERS сервис не доступен";
+            "Не удалось получить результаты классификации, т.к. сервис не доступен";
 }
