@@ -1,19 +1,19 @@
 package com.ecaservice.server.service.push.handler;
 
-import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.server.event.model.push.EvaluationWebPushEvent;
 import com.ecaservice.server.model.entity.EvaluationLog;
+import com.ecaservice.server.service.classifiers.ClassifierOptionsProcessor;
+import com.ecaservice.server.service.classifiers.ClassifiersTemplateProvider;
 import com.ecaservice.server.service.push.EvaluationPushPropertiesHandler;
 import com.ecaservice.server.service.push.PushMessageProcessor;
 import com.ecaservice.server.service.push.context.EvaluationPushMessageContext;
-import com.ecaservice.web.dto.model.FilterDictionaryValueDto;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static com.ecaservice.server.service.filter.dictionary.FilterDictionaries.CLASSIFIER_NAME;
+import static com.ecaservice.server.util.ClassifierOptionsHelper.parseOptions;
 
 /**
  * Classifier evaluation web push event handler.
@@ -23,22 +23,26 @@ import static com.ecaservice.server.service.filter.dictionary.FilterDictionaries
 @Component
 public class EvaluationWebPushEventHandler extends AbstractUserPushNotificationEventHandler<EvaluationWebPushEvent> {
 
-    private final FilterTemplateService filterTemplateService;
+    private final ClassifiersTemplateProvider classifiersTemplateProvider;
+    private final ClassifierOptionsProcessor classifierOptionsProcessor;
     private final EvaluationPushPropertiesHandler evaluationPushPropertiesHandler;
     private final PushMessageProcessor pushMessageProcessor;
 
     /**
      * Constructor with parameters.
      *
-     * @param filterTemplateService           - filter template service
+     * @param classifiersTemplateProvider     - classifier template provider
+     * @param classifierOptionsProcessor      - classifier options processor
      * @param evaluationPushPropertiesHandler - evaluation push properties handler
      * @param pushMessageProcessor            - evaluation push message handler
      */
-    public EvaluationWebPushEventHandler(FilterTemplateService filterTemplateService,
+    public EvaluationWebPushEventHandler(ClassifiersTemplateProvider classifiersTemplateProvider,
+                                         ClassifierOptionsProcessor classifierOptionsProcessor,
                                          EvaluationPushPropertiesHandler evaluationPushPropertiesHandler,
                                          PushMessageProcessor pushMessageProcessor) {
         super(EvaluationWebPushEvent.class);
-        this.filterTemplateService = filterTemplateService;
+        this.classifiersTemplateProvider = classifiersTemplateProvider;
+        this.classifierOptionsProcessor = classifierOptionsProcessor;
         this.evaluationPushPropertiesHandler = evaluationPushPropertiesHandler;
         this.pushMessageProcessor = pushMessageProcessor;
     }
@@ -70,13 +74,9 @@ public class EvaluationWebPushEventHandler extends AbstractUserPushNotificationE
     }
 
     private String getClassifierDescription(EvaluationLog evaluationLog) {
-        var classifiersDictionary = filterTemplateService.getFilterDictionary(CLASSIFIER_NAME);
-        return classifiersDictionary.getValues()
-                .stream()
-                .filter(fieldDictionaryValue -> fieldDictionaryValue.getValue().equals(
-                        evaluationLog.getClassifierInfo().getClassifierName()))
-                .map(FilterDictionaryValueDto::getLabel)
-                .findFirst()
-                .orElse(null);
+        var classifierInfo = evaluationLog.getClassifierInfo();
+        var classifierOptions = parseOptions(classifierInfo.getClassifierOptions());
+        var classifierTemplate = classifiersTemplateProvider.getTemplate(classifierOptions);
+        return classifierOptionsProcessor.processTemplateTitle(classifierTemplate, classifierOptions);
     }
 }

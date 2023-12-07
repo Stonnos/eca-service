@@ -39,7 +39,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @TestPropertySource("classpath:application-camunda.properties")
-@Sql({"/sql/message-templates.sql", "/sql/filter-templates.sql"})
+@Sql("/sql/message-templates.sql")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public abstract class AbstractEvaluationProcessManagerTest<T extends AbstractEvaluationEntity> {
 
@@ -87,6 +87,10 @@ public abstract class AbstractEvaluationProcessManagerTest<T extends AbstractEva
         mockGetUserInfo();
         mockExportValidInstances();
         mockSentEmail();
+        before();
+    }
+
+    public void before() {
     }
 
     @SafeVarargs

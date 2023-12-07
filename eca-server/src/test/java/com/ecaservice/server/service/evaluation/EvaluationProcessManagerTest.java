@@ -3,6 +3,7 @@ package com.ecaservice.server.service.evaluation;
 import com.ecaservice.base.model.EcaResponse;
 import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.base.model.TechnicalStatus;
+import com.ecaservice.core.form.template.service.FormTemplateProvider;
 import com.ecaservice.ers.dto.EvaluationResultsRequest;
 import com.ecaservice.server.model.ClassifierOptionsResult;
 import com.ecaservice.server.model.entity.Channel;
@@ -35,6 +36,10 @@ import static com.ecaservice.server.TestHelperUtils.createEvaluationLog;
 import static com.ecaservice.server.TestHelperUtils.createEvaluationMessageRequestModel;
 import static com.ecaservice.server.TestHelperUtils.createEvaluationWebRequestModel;
 import static com.ecaservice.server.TestHelperUtils.createLogisticOptions;
+import static com.ecaservice.server.TestHelperUtils.loadClassifiersTemplates;
+import static com.ecaservice.server.TestHelperUtils.loadEnsembleClassifiersTemplates;
+import static com.ecaservice.server.service.classifiers.ClassifierFormGroupTemplates.CLASSIFIERS_GROUP;
+import static com.ecaservice.server.service.classifiers.ClassifierFormGroupTemplates.ENSEMBLE_CLASSIFIERS_GROUP;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -61,6 +66,9 @@ class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<
     @MockBean
     private OptimalClassifierOptionsFetcher optimalClassifierOptionsFetcher;
 
+    @MockBean
+    private FormTemplateProvider formTemplateProvider;
+
     @Inject
     private EvaluationLogRepository evaluationLogRepository;
     @Inject
@@ -79,6 +87,11 @@ class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<
     private ArgumentCaptor<AbstractPushRequest> pushRequestArgumentCaptor;
     @Captor
     private ArgumentCaptor<EvaluationResultsRequest> evaluationResultsRequestArgumentCaptor;
+
+    @Override
+    public void before() {
+        mockGetFormTemplates();
+    }
 
     @Test
     void testCreateEvaluationWebRequest() {
@@ -256,6 +269,13 @@ class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<
     private void mockGetOptimalOptions(ClassifierOptionsResult classifierOptionsResult) {
         when(optimalClassifierOptionsFetcher.getOptimalClassifierOptions(any(InstancesRequestDataModel.class)))
                 .thenReturn(classifierOptionsResult);
+    }
+
+    private void mockGetFormTemplates() {
+        when(formTemplateProvider.getFormGroupDto(CLASSIFIERS_GROUP))
+                .thenReturn(loadClassifiersTemplates());
+        when(formTemplateProvider.getFormGroupDto(ENSEMBLE_CLASSIFIERS_GROUP))
+                .thenReturn(loadEnsembleClassifiersTemplates());
     }
 
     @RequiredArgsConstructor
