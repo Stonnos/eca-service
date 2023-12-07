@@ -5,13 +5,11 @@ import com.ecaservice.classifier.options.model.AbstractHeterogeneousClassifierOp
 import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.classifier.options.model.StackingOptions;
 import com.ecaservice.common.web.expression.SpelExpressionHelper;
-import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.server.model.entity.ClassifierInfo;
 import com.ecaservice.web.dto.model.ClassifierInfoDto;
 import com.ecaservice.web.dto.model.FieldDictionaryDto;
 import com.ecaservice.web.dto.model.FieldDictionaryValueDto;
 import com.ecaservice.web.dto.model.FieldType;
-import com.ecaservice.web.dto.model.FilterDictionaryValueDto;
 import com.ecaservice.web.dto.model.FormFieldDto;
 import com.ecaservice.web.dto.model.FormTemplateDto;
 import com.ecaservice.web.dto.model.InputOptionDto;
@@ -28,7 +26,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static com.ecaservice.server.service.filter.dictionary.FilterDictionaries.CLASSIFIER_NAME;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.isEnsembleClassifierOptions;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.parseOptions;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.toJsonString;
@@ -48,7 +45,6 @@ public class ClassifierOptionsProcessor {
     private static final DecimalFormat DEFAULT_DECIMAL_FORMAT = NumericFormatFactory.getInstance(Integer.MAX_VALUE);
 
     private final ClassifiersTemplateProvider classifiersTemplateProvider;
-    private final FilterTemplateService filterTemplateService;
     private final ClassifiersOptionsConfig classifiersOptionsConfig;
     private final SpelExpressionHelper spelExpressionHelper = new SpelExpressionHelper();
 
@@ -65,12 +61,11 @@ public class ClassifierOptionsProcessor {
     /**
      * Processes classifier input options json string to human readable format.
      *
-     * @param classifierOptionsJson - classifier options json
+     * @param classifierOptions - classifier options
      * @return classifier options list
      */
-    public List<InputOptionDto> processInputOptions(String classifierOptionsJson) {
-        log.debug("Starting to process classifier options json [{}]", classifierOptionsJson);
-        var classifierOptions = parseOptions(classifierOptionsJson);
+    public List<InputOptionDto> processInputOptions(ClassifierOptions classifierOptions) {
+        log.debug("Starting to process classifier options json [{}]", classifierOptions);
         var template = getTemplate(classifierOptions);
         var inputOptions = processInputOptions(template, classifierOptions);
         log.debug("Classifier options json has been processed with result: {}", inputOptions);
@@ -86,11 +81,7 @@ public class ClassifierOptionsProcessor {
     public ClassifierInfoDto processClassifierInfo(ClassifierInfo classifierInfo) {
         log.debug("Starting to process classifier info [{}]", classifierInfo.getClassifierName());
         var classifierOptions = parseOptions(classifierInfo.getClassifierOptions());
-        ClassifierInfoDto classifierInfoDto = processClassifierOptions(classifierOptions);
-        classifierInfoDto.setClassifierName(classifierInfo.getClassifierName());
-        var classifierName = getClassifierNameLabel(classifierInfo.getClassifierName());
-        classifierInfoDto.setClassifierDescription(classifierName);
-        return classifierInfoDto;
+        return processClassifierOptions(classifierOptions);
     }
 
     /**
@@ -102,8 +93,9 @@ public class ClassifierOptionsProcessor {
     public ClassifierInfoDto processClassifierOptions(ClassifierOptions classifierOptions) {
         ClassifierInfoDto classifierInfoDto = new ClassifierInfoDto();
         var template = getTemplate(classifierOptions);
+        String templateTitle = processTemplateTitle(template, classifierOptions);
         classifierInfoDto.setClassifierName(template.getObjectClass());
-        classifierInfoDto.setClassifierDescription(template.getTemplateTitle());
+        classifierInfoDto.setClassifierDescription(templateTitle);
         classifierInfoDto.setClassifierOptionsJson(toJsonString(classifierOptions));
         var inputOptions = processInputOptions(template, classifierOptions);
         classifierInfoDto.setInputOptions(inputOptions);
@@ -111,6 +103,28 @@ public class ClassifierOptionsProcessor {
         log.debug("Classifier options class [{}] has been processed with result: {}",
                 classifierOptions.getClass().getSimpleName(), classifierInfoDto);
         return classifierInfoDto;
+    }
+
+    /**
+     * Processes template title.
+     *
+     * @param formTemplateDto   - form template dto
+     * @param classifierOptions - classifier options
+     * @return template title
+     */
+    public String processTemplateTitle(FormTemplateDto formTemplateDto, ClassifierOptions classifierOptions) {
+        if (StringUtils.isNotEmpty(formTemplateDto.getTemplateTitleFieldRef())) {
+            FormFieldDto formFieldDto = formTemplateDto.getFields()
+                    .stream()
+                    .filter(field -> field.getFieldName().equals(formTemplateDto.getTemplateTitleFieldRef()))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalStateException(
+                            String.format("Can't find form template [%s] title field ref [%s]",
+                                    formTemplateDto.getTemplateName(), formTemplateDto.getTemplateTitleFieldRef())));
+            return getValue(classifierOptions, formFieldDto);
+        } else {
+            return formTemplateDto.getTemplateTitle();
+        }
     }
 
     private void customizeClassifierInfo(ClassifierInfoDto classifierInfoDto, ClassifierOptions classifierOptions) {
@@ -192,16 +206,6 @@ public class ClassifierOptionsProcessor {
             return decimalFormat.format(numberValue);
         }
         return String.valueOf(value);
-    }
-
-    private String getClassifierNameLabel(String classifierName) {
-        var classifiersDictionary = filterTemplateService.getFilterDictionary(CLASSIFIER_NAME);
-        return classifiersDictionary.getValues()
-                .stream()
-                .filter(fieldDictionaryValue -> fieldDictionaryValue.getValue().equals(classifierName))
-                .map(FilterDictionaryValueDto::getLabel)
-                .findFirst()
-                .orElse(null);
     }
 
     private String getLabelFromDictionary(FieldDictionaryDto fieldDictionary, String code) {

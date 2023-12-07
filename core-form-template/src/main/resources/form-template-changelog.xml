@@ -194,4 +194,16 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="add_form_template_title_field_ref_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="form_template"/>
+            <not>
+                <columnExists tableName="form_template" columnName="template_title_field_ref"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="form_template">
+            <column name="template_title_field_ref" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

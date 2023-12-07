@@ -5449,6 +5449,7 @@ a|
   }, {
     "templateName" : "DECISION_TREE",
     "templateTitle" : "Дерево решений",
+    "templateTitleFieldRef" : "decisionTreeType",
     "objectClass" : "DecisionTreeOptions",
     "objectType" : "decision_tree",
     "fields" : [ {
@@ -12993,6 +12994,25 @@ __string__
 
 |*templateTitle*
 |Template title
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*templateTitleFieldRef*
+|Template title field ref (used to get title from specified field value)
 a|
 __string__
 

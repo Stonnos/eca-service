@@ -2,7 +2,6 @@ package com.ecaservice.server.service.classifiers;
 
 import com.ecaservice.classifier.options.config.ClassifiersOptionsConfig;
 import com.ecaservice.classifier.options.model.ClassifierOptions;
-import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.form.template.service.FormTemplateProvider;
 import com.ecaservice.server.config.ClassifiersProperties;
 import com.ecaservice.web.dto.model.ClassifierInfoDto;
@@ -30,7 +29,6 @@ import static com.ecaservice.server.TestHelperUtils.createAdaBoostOptions;
 import static com.ecaservice.server.TestHelperUtils.createClassifierInfo;
 import static com.ecaservice.server.TestHelperUtils.createDecisionTreeOptions;
 import static com.ecaservice.server.TestHelperUtils.createExtraTreesOptions;
-import static com.ecaservice.server.TestHelperUtils.createFilterDictionaryDto;
 import static com.ecaservice.server.TestHelperUtils.createHeterogeneousClassifierOptions;
 import static com.ecaservice.server.TestHelperUtils.createJ48Options;
 import static com.ecaservice.server.TestHelperUtils.createKNearestNeighboursOptions;
@@ -40,7 +38,6 @@ import static com.ecaservice.server.TestHelperUtils.createRandomForestsOptions;
 import static com.ecaservice.server.TestHelperUtils.createStackingOptions;
 import static com.ecaservice.server.TestHelperUtils.loadClassifiersTemplates;
 import static com.ecaservice.server.TestHelperUtils.loadEnsembleClassifiersTemplates;
-import static com.ecaservice.server.service.filter.dictionary.FilterDictionaries.CLASSIFIER_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.when;
@@ -122,8 +119,6 @@ class ClassifierOptionsProcessorTest {
 
     @MockBean
     private FormTemplateProvider formTemplateProvider;
-    @MockBean
-    private FilterTemplateService filterTemplateService;
 
     @Inject
     private ClassifierOptionsProcessor classifierOptionsProcessor;
@@ -136,7 +131,6 @@ class ClassifierOptionsProcessorTest {
         FormTemplateGroupDto ensembleTemplates = loadEnsembleClassifiersTemplates();
         when(formTemplateProvider.getFormGroupDto(CLASSIFIERS)).thenReturn(templates);
         when(formTemplateProvider.getFormGroupDto(ENSEMBLE_CLASSIFIERS)).thenReturn(ensembleTemplates);
-        when(filterTemplateService.getFilterDictionary(CLASSIFIER_NAME)).thenReturn(createFilterDictionaryDto());
         classifierOptionsProcessor.initialize();
     }
 
@@ -532,9 +526,8 @@ class ClassifierOptionsProcessorTest {
         });
     }
 
-    private List<InputOptionDto> parseInputOptions(ClassifierOptions classifierOptions) throws JsonProcessingException {
-        var json = objectMapper.writeValueAsString(classifierOptions);
-        return classifierOptionsProcessor.processInputOptions(json);
+    private List<InputOptionDto> parseInputOptions(ClassifierOptions classifierOptions) {
+        return classifierOptionsProcessor.processInputOptions(classifierOptions);
     }
 
     private ClassifierInfoDto processClassifierOptions(ClassifierOptions classifierOptions) {

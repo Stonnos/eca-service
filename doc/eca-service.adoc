@@ -926,12 +926,13 @@ image::./images/data-loader-db-schema.png[alt=Схема базы данных e
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
-|id                      |bigint           |+|+|+                             |Идентификатор записи (первичный ключ)
-|template_name           |varchar(255)     |+|+|form_template_name_unique_idx |Уникальный код шаблона
-|object_class            |varchar(255)     |-|-|-                             |Название класса ассоциированного с шаблоном
-|object_type             |varchar(255)     |-|-|-                             |Тип объекта ассоциированного с шаблоном. Можно использовать как дискриминатор для опредения класса наследника.
-|template_title          |varchar(255)     |-|+|-                             |Описание шаблона
-|group_id                |bigint           |-|+|fk_form_template_group_id     |Внешний ключ, ID группы
+|id                       |bigint           |+|+|+                             |Идентификатор записи (первичный ключ)
+|template_name            |varchar(255)     |+|+|form_template_name_unique_idx |Уникальный код шаблона
+|object_class             |varchar(255)     |-|-|-                             |Название класса ассоциированного с шаблоном
+|object_type              |varchar(255)     |-|-|-                             |Тип объекта ассоциированного с шаблоном. Можно использовать как дискриминатор для опредения класса наследника.
+|template_title           |varchar(255)     |-|+|-                             |Описание шаблона
+|template_title_field_ref |varchar(255)     |-|-|-                             |Описание шаблона на основе значения из заданного поля шаблона
+|group_id                 |bigint           |-|+|fk_form_template_group_id     |Внешний ключ, ID группы
 |===
 
 ==== Таблица 3.{counter:db-table-id} - 'form_field_dictionary' - содержит данные словарей

@@ -35,6 +35,7 @@ import static com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel_
 import static com.ecaservice.server.model.entity.FilterTemplateType.CLASSIFIER_OPTIONS;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.createClassifierOptionsDatabaseModel;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.isEnsembleClassifierOptions;
+import static com.ecaservice.server.util.ClassifierOptionsHelper.parseOptions;
 
 /**
  * Classifier options service.
@@ -116,7 +117,7 @@ public class ClassifierOptionsService {
      */
     public PageDto<ClassifierOptionsDto> getNextPage(long configurationId,
                                                      @ValidPageRequest(filterTemplateName = CLASSIFIER_OPTIONS)
-                                                     PageRequestDto pageRequestDto) {
+                                                             PageRequestDto pageRequestDto) {
         log.info("Gets classifiers configuration [{}] options next page: {}", configurationId, pageRequestDto);
         var classifiersConfiguration = getConfigurationById(configurationId);
         var sort = buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
@@ -199,10 +200,13 @@ public class ClassifierOptionsService {
     private ClassifierOptionsDto internalPopulateClassifierOptions(
             ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel) {
         var classifierOptionsDto = classifierOptionsDatabaseModelMapper.map(classifierOptionsDatabaseModel);
-        var inputOptions = classifierOptionsProcessor.processInputOptions(classifierOptionsDto.getConfig());
+        var classifierOptions = parseOptions(classifierOptionsDto.getConfig());
+        var inputOptions = classifierOptionsProcessor.processInputOptions(classifierOptions);
         var classifierFormTemplate =
                 classifiersTemplateProvider.getClassifierTemplateByClass(classifierOptionsDto.getOptionsName());
-        classifierOptionsDto.setOptionsDescription(classifierFormTemplate.getTemplateTitle());
+        String optionsDescription =
+                classifierOptionsProcessor.processTemplateTitle(classifierFormTemplate, classifierOptions);
+        classifierOptionsDto.setOptionsDescription(optionsDescription);
         classifierOptionsDto.setInputOptions(inputOptions);
         return classifierOptionsDto;
     }
