@@ -51,14 +51,14 @@ public class ExperimentResultsService {
     private final ExperimentResultsRequestRepository experimentResultsRequestRepository;
 
     /**
-     * Saves experiments results that should be sent to ERS.
+     * Saves experiments results.
      *
      * @param experiment        - experiment entity
      * @param experimentHistory - experiment history
      * @return experiment results entities list
      */
-    public List<ExperimentResultsEntity> saveExperimentResultsToErsSent(Experiment experiment,
-                                                                        AbstractExperiment<?> experimentHistory) {
+    public List<ExperimentResultsEntity> saveExperimentResults(Experiment experiment,
+                                                               AbstractExperiment<?> experimentHistory) {
         log.info("Starting to save experiment [{}] results to ERS sent", experiment.getRequestId());
         List<EvaluationResults> evaluationResultsList = experimentHistory.getHistory();
         List<ExperimentResultsEntity> experimentResultsEntities =

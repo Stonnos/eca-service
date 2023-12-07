@@ -43,7 +43,7 @@ class ExperimentErsReportEventListenerTest {
         ExperimentErsReportEvent experimentErsReportEvent =
                 new ExperimentErsReportEvent(this, experiment, experimentHistory);
         ExperimentResultsEntity experimentResultsEntity = TestHelperUtils.createExperimentResultsEntity(experiment);
-        when(experimentResultsService.saveExperimentResultsToErsSent(experiment, experimentHistory)).thenReturn(
+        when(experimentResultsService.saveExperimentResults(experiment, experimentHistory)).thenReturn(
                 Collections.singletonList(experimentResultsEntity));
         experimentErsReportEventListener.handleEvent(experimentErsReportEvent);
         verify(ersService, atLeastOnce()).sentExperimentResults(experimentResultsEntity, experimentHistory);
