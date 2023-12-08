@@ -17,9 +17,9 @@ spring:
           lob:
             non_contextual_creation: true
   cache:
-    cache-names: evaluation-results-sort-fields
+    cache-names: evaluation-results-sort-fields, global-filters, filter-templates, filter-dictionaries, sort-fields
     caffeine:
-      spec: maximumSize=10, expireAfterWrite=36000s
+      spec: maximumSize=100, expireAfterWrite=36000s
   liquibase:
     contexts: schema,data
     change-log: classpath:db/liquibase-changelog.xml
