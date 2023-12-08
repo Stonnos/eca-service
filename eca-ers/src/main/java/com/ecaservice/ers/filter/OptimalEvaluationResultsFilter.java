@@ -31,7 +31,7 @@ import static com.google.common.collect.Lists.newArrayList;
  * @author Roman Batygin
  */
 @RequiredArgsConstructor
-public class EvaluationResultsFilter implements Specification<EvaluationResultsInfo> {
+public class OptimalEvaluationResultsFilter implements Specification<EvaluationResultsInfo> {
 
     /**
      * Instances info id

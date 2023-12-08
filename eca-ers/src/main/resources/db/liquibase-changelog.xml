@@ -15,4 +15,6 @@
     <include file="db/changelog/v8-drop-classifier-options-data.xml"/>
     <include file="db/changelog/v9-drop-instances-structure-column.xml"/>
     <include file="db/changelog/v10-add-instances-info-created-date-column.xml"/>
+    <include file="../filter-template-changelog.xml" relativeToChangelogFile="true"/>
+    <include file="db/changelog/v11-insert-evaluation-results-history-filter-templates.xml"/>
 </databaseChangeLog>

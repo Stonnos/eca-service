@@ -2,6 +2,7 @@ package com.ecaservice.ers.mapping;
 
 import com.ecaservice.ers.dto.InstancesReport;
 import com.ecaservice.ers.model.InstancesInfo;
+import com.ecaservice.web.dto.model.InstancesInfoDto;
 import org.mapstruct.Mapper;
 
 /**
@@ -21,10 +22,18 @@ public interface InstancesMapper {
     InstancesInfo map(InstancesReport instancesReport);
 
     /**
-     * Maps instances info entity to dto model.
+     * Maps instances info entity to instances report model.
      *
      * @param instancesInfo - instances info entity
      * @return instances report
      */
     InstancesReport map(InstancesInfo instancesInfo);
+
+    /**
+     * Maps instances info entity to instances info dto model.
+     *
+     * @param instancesInfo - instances info entity
+     * @return instances report
+     */
+    InstancesInfoDto mapToInstancesInfoDto(InstancesInfo instancesInfo);
 }
