@@ -51,6 +51,7 @@ import { ClassifiersTabsModule } from "./classifiers-tabs/classifiers-tabs.modul
 import { AttributesModule } from "./attributes/attributes.module";
 import { CreateClassifierModule } from "./create-classifier/create-classifier.module";
 import { CreateOptimalClassifierModule } from "./create-optimal-classifier/create-optimal-classifier.module";
+import {EvaluationResultsHistoryModule} from "./evaluation-results-history/evaluation-results-history.module";
 
 export function eventSubscribe(eventHandler: EventHandler) {
   return () => eventHandler.eventSubscribe();
@@ -108,7 +109,8 @@ export function eventSubscribe(eventHandler: EventHandler) {
     ClassifiersConfigurationFullDetailsModule,
     NotificationsCenterModule,
     ClassifiersStatisticsModule,
-    AttributesModule
+    AttributesModule,
+    EvaluationResultsHistoryModule
   ],
   providers: [
     CookieService,

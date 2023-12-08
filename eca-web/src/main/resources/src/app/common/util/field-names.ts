@@ -159,3 +159,15 @@ export class AttributeFields {
   public static readonly NAME: string = "name";
   public static readonly TYPE: string = "type.description";
 }
+
+export class EvaluationResultsHistoryFields {
+  public static readonly EVALUATION_METHOD_DESCRIPTION: string = "evaluationMethod.description";
+  public static readonly CLASSIFIER_DESCRIPTION: string = "classifierInfo.classifierDescription";
+  public static readonly RELATION_NAME: string = "instancesInfo.relationName";
+  public static readonly PCT_CORRECT: string = "pctCorrect";
+  public static readonly MEAN_ABSOLUTE_ERROR: string = "meanAbsoluteError";
+  public static readonly ROOT_MEAN_SQUARED_ERROR: string = "rootMeanSquaredError";
+  public static readonly VARIANCE_ERROR: string = "varianceError";
+  public static readonly MAX_AUC: string = "maxAucValue";
+  public static readonly SAVE_DATE: string = "saveDate";
+}

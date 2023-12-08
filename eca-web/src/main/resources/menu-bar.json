@@ -12,6 +12,10 @@
     "routerLink": "/dashboard/classifiers-options-requests"
   },
   {
+    "label": "История результатов классификации",
+    "routerLink": "/dashboard/evaluation-results-history"
+  },
+  {
     "label": "Датасеты",
     "routerLink": "/dashboard/instances"
   },

@@ -20,6 +20,7 @@ import { InstancesDetailsComponent } from "../instances-details/components/insta
 import { CreateResetPasswordRequestComponent } from "../change-password/components/create-reset-password-request/create-reset-password-request.component";
 import { ClassifiersConfigurationFullDetailsComponent } from "../classifiers-configuration-full-details/components/classifiers-configuration-full-details.component";
 import { ClassifiersTabsComponent } from "../classifiers-tabs/components/classifiers-tabs.component";
+import { EvaluationResultsHistoryComponent } from "../evaluation-results-history/components/evaluation-results-history.component";
 
 const routes: Routes = [
   {
@@ -33,6 +34,10 @@ const routes: Routes = [
       {
         path: 'experiments',
         component: ExperimentTabsComponent
+      },
+      {
+        path: 'evaluation-results-history',
+        component: EvaluationResultsHistoryComponent
       },
       {
         path: 'classifiers-options-requests',

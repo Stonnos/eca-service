@@ -1,0 +1,28 @@
+.evaluation-results-history-table::ng-deep {
+
+  .ui-table-tbody > tr > td {
+    width: 225px;
+
+    &:first-child {
+      width: 250px;
+      font-weight: bold;
+    }
+  }
+
+  .ui-table-thead > tr > th {
+    width: 225px;
+
+    &:first-child {
+      width: 250px;
+    }
+  }
+}
+
+.info-panel::ng-deep {
+
+  .ui-overlaypanel-content {
+    width: 500px;
+    max-height: 500px;
+    overflow-y: scroll;
+  }
+}
