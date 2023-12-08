@@ -19,4 +19,9 @@ public class FilterDictionaries {
      * Instances info filter template type
      */
     public static final String INSTANCES_INFO = "INSTANCES_INFO";
+
+    /**
+     * Classifiers dictionary name
+     */
+    public static final String CLASSIFIER_NAME = "classifier";
 }

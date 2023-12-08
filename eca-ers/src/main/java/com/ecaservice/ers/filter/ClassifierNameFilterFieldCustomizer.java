@@ -10,7 +10,7 @@ import javax.persistence.criteria.Root;
 
 import static com.ecaservice.core.filter.util.FilterTemplateUtils.findValuesByLabel;
 import static com.ecaservice.core.filter.util.FilterUtils.buildExpression;
-import static com.ecaservice.ers.model.ClassifierOptionsInfo_.CLASSIFIER_NAME;
+import static com.ecaservice.ers.dictionary.FilterDictionaries.CLASSIFIER_NAME;
 
 /**
  * Classifier name filter field customizer.
