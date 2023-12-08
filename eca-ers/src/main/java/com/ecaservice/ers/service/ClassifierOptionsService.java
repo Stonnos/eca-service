@@ -65,7 +65,7 @@ public class ClassifierOptionsService {
             var evaluationResultsInfoPage = evaluationResultsInfoRepository.findAll(filter, pageRequest);
             return evaluationResultsInfoPage.getContent()
                     .stream()
-                    .map(EvaluationResultsInfo::getClassifierOptionsInfo)
+                    .map(EvaluationResultsInfo::getClassifierInfo)
                     .collect(Collectors.toList());
         }
     }

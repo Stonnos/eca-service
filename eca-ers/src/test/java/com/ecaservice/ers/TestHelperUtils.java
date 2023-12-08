@@ -346,8 +346,8 @@ public class TestHelperUtils {
         EvaluationResultsInfo evaluationResultsInfo = new EvaluationResultsInfo();
         evaluationResultsInfo.setRequestId(UUID.randomUUID().toString());
         evaluationResultsInfo.setSaveDate(LocalDateTime.now());
-        evaluationResultsInfo.setInstances(instancesInfo);
-        evaluationResultsInfo.setClassifierOptionsInfo(classifierOptionsInfo);
+        evaluationResultsInfo.setInstancesInfo(instancesInfo);
+        evaluationResultsInfo.setClassifierInfo(classifierOptionsInfo);
         evaluationResultsInfo.setNumFolds(NUM_FOLDS);
         evaluationResultsInfo.setNumTests(NUM_TESTS);
         evaluationResultsInfo.setSeed(SEED);

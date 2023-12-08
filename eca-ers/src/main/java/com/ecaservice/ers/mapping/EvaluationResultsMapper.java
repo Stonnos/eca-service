@@ -33,8 +33,8 @@ public interface EvaluationResultsMapper {
     @Mapping(source = "evaluationMethodReport.numFolds", target = "numFolds")
     @Mapping(source = "evaluationMethodReport.numTests", target = "numTests")
     @Mapping(source = "evaluationMethodReport.seed", target = "seed")
-    @Mapping(source = "classifierReport", target = "classifierOptionsInfo")
-    @Mapping(target = "instances", ignore = true)
+    @Mapping(source = "classifierReport", target = "classifierInfo")
+    @Mapping(target = "instancesInfo", ignore = true)
     EvaluationResultsInfo map(EvaluationResultsRequest evaluationResultsRequest);
 
     /**
@@ -47,7 +47,8 @@ public interface EvaluationResultsMapper {
     @Mapping(source = "numFolds", target = "evaluationMethodReport.numFolds")
     @Mapping(source = "numTests", target = "evaluationMethodReport.numTests")
     @Mapping(source = "seed", target = "evaluationMethodReport.seed")
-    @Mapping(source = "classifierOptionsInfo", target = "classifierReport")
+    @Mapping(source = "classifierInfo", target = "classifierReport")
+    @Mapping(source = "instancesInfo", target = "instances")
     GetEvaluationResultsResponse map(EvaluationResultsInfo evaluationResultsInfo);
 
     /**
@@ -61,7 +62,6 @@ public interface EvaluationResultsMapper {
     @Mapping(target = "numTests", ignore = true)
     @Mapping(target = "seed", ignore = true)
     @Mapping(target = "classifierInfo", ignore = true)
-    @Mapping(source = "instances", target = "instancesInfo")
     @Mapping(source = "statistics.numTestInstances", target = "numTestInstances")
     @Mapping(source = "statistics.numCorrect", target = "numCorrect")
     @Mapping(source = "statistics.numIncorrect", target = "numIncorrect")

@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.ecaservice.ers.model.EvaluationResultsInfo_.EVALUATION_METHOD;
-import static com.ecaservice.ers.model.EvaluationResultsInfo_.INSTANCES;
+import static com.ecaservice.ers.model.EvaluationResultsInfo_.INSTANCES_INFO;
 import static com.ecaservice.ers.model.EvaluationResultsInfo_.NUM_FOLDS;
 import static com.ecaservice.ers.model.EvaluationResultsInfo_.NUM_TESTS;
 import static com.ecaservice.ers.model.EvaluationResultsInfo_.SEED;
@@ -49,7 +49,7 @@ public class OptimalEvaluationResultsFilter implements Specification<EvaluationR
     public Predicate toPredicate(Root<EvaluationResultsInfo> root, CriteriaQuery<?> criteriaQuery,
                                  CriteriaBuilder criteriaBuilder) {
         List<Predicate> predicates = newArrayList();
-        Join<EvaluationResultsInfo, InstancesInfo> join = root.join(INSTANCES);
+        Join<EvaluationResultsInfo, InstancesInfo> join = root.join(INSTANCES_INFO);
         predicates.add(criteriaBuilder.equal(join.get(ID), instancesInfo.getId()));
         predicates.add(criteriaBuilder.equal(root.get(EVALUATION_METHOD),
                 evaluationMethodReport.getEvaluationMethod()));

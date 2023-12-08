@@ -42,7 +42,7 @@ class EvaluationResultsMapperTest {
         assertThat(evaluationResultsInfo.getConfusionMatrix()).isNotNull();
         assertThat(evaluationResultsInfo.getConfusionMatrix()).hasSameSizeAs(
                 resultsRequest.getConfusionMatrix());
-        assertThat(evaluationResultsInfo.getClassifierOptionsInfo()).isNotNull();
+        assertThat(evaluationResultsInfo.getClassifierInfo()).isNotNull();
         assertThat(evaluationResultsInfo.getNumFolds().intValue()).isEqualTo(
                 resultsRequest.getEvaluationMethodReport().getNumFolds().intValue());
         assertThat(evaluationResultsInfo.getNumTests().intValue()).isEqualTo(

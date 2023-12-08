@@ -36,8 +36,8 @@ import java.util.Set;
 @Table(name = "evaluation_results_info", indexes = @Index(columnList = "request_id", name = "request_id_index"))
 @NamedEntityGraph(name = "evaluationResults",
         attributeNodes = {
-                @NamedAttributeNode(value = "instances"),
-                @NamedAttributeNode(value = "classifierOptionsInfo"),
+                @NamedAttributeNode(value = "instancesInfo"),
+                @NamedAttributeNode(value = "classifierInfo"),
                 @NamedAttributeNode(value = "classificationCosts"),
                 @NamedAttributeNode(value = "confusionMatrix")
         }
@@ -65,14 +65,14 @@ public class EvaluationResultsInfo {
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "instances_info_id", nullable = false)
-    private InstancesInfo instances;
+    private InstancesInfo instancesInfo;
 
     /**
      * Classifier options info
      */
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "classifier_options_info_id", nullable = false)
-    private ClassifierOptionsInfo classifierOptionsInfo;
+    private ClassifierOptionsInfo classifierInfo;
 
     /**
      * Evaluation method

@@ -99,8 +99,8 @@ class EvaluationResultsServiceTest extends AbstractJpaTest {
         assertThat(evaluationResultsInfo.getClassificationCosts()).isNotNull();
         assertThat(evaluationResultsInfo.getClassificationCosts()).hasSameSizeAs(
                 request.getClassificationCosts());
-        assertThat(evaluationResultsInfo.getClassifierOptionsInfo()).isNotNull();
-        assertThat(evaluationResultsInfo.getInstances()).isNotNull();
+        assertThat(evaluationResultsInfo.getClassifierInfo()).isNotNull();
+        assertThat(evaluationResultsInfo.getInstancesInfo()).isNotNull();
     }
 
     @Test
