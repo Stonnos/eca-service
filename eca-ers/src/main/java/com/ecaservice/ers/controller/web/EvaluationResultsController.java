@@ -58,7 +58,7 @@ public class EvaluationResultsController {
      * @param pageRequestDto - page request dto
      * @return audit logs page
      */
-    //@PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
             description = "Finds evaluation results history page with specified options such as filter, sorting and paging",
             summary = "Finds evaluation results history page with specified options such as filter, sorting and paging",
@@ -121,7 +121,7 @@ public class EvaluationResultsController {
      *
      * @return filter fields list
      */
-    //@PreAuthorize("#oauth2.hasScope('web') and hasRole('ROLE_SUPER_ADMIN')")
+    @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
             description = "Gets evaluation results history filter fields",
             summary = "Gets evaluation results history filter fields",
@@ -174,7 +174,7 @@ public class EvaluationResultsController {
      * @param pageRequestDto - page request dto
      * @return instances info page
      */
-    //@PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
             description = "Finds instances info page with specified options such as filter, sorting and paging",
             summary = "Finds instances info page with specified options such as filter, sorting and paging",

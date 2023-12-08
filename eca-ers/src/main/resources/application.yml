@@ -44,13 +44,25 @@ open-api:
   author: Roman Batygin
   email: roman.batygin@mail.ru
   projectVersion: @project.version@
+  tokenBaseUrl: http://localhost:8080
+  apiAuth:
+    PASSWORD:
+      scopes: web
 
 springdoc:
   swagger-ui:
+    oauth:
+      client-id: swagger
+      client-secret: swagger_secret
     disable-swagger-default-url: true
 
 ers:
   resultSize: 5
+
+auth-server:
+  baseUrl: http://localhost:8085/eca-oauth
+  clientId: eca_service_tech
+  clientSecret: 02#eca_service_tech6
 
 management:
   metrics:
