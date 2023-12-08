@@ -3,7 +3,7 @@ package com.ecaservice.ers.controller.web;
 import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.ers.service.EvaluationResultsHistoryService;
-import com.ecaservice.ers.service.InstancesService;
+import com.ecaservice.ers.service.InstancesHistoryService;
 import com.ecaservice.web.dto.model.EvaluationResultsHistoryDto;
 import com.ecaservice.web.dto.model.EvaluationResultsHistoryPageDto;
 import com.ecaservice.web.dto.model.FilterFieldDto;
@@ -42,15 +42,15 @@ import static com.ecaservice.ers.dictionary.FilterDictionaries.EVALUATION_RESULT
  * @author Roman Batygin
  */
 @Slf4j
-@Tag(name = "Evaluation results API for web application")
+@Tag(name = "Evaluation results history API for web application")
 @RestController
 @RequestMapping("/evaluation-results")
 @RequiredArgsConstructor
-public class EvaluationResultsController {
+public class EvaluationResultsHistoryController {
 
     private final FilterTemplateService filterTemplateService;
     private final EvaluationResultsHistoryService evaluationResultsHistoryService;
-    private final InstancesService instancesService;
+    private final InstancesHistoryService instancesHistoryService;
 
     /**
      * Finds evaluation results history page with specified options such as filter, sorting and paging.
@@ -109,7 +109,7 @@ public class EvaluationResultsController {
                     )
             }
     )
-    @PostMapping(value = "/list")
+    @PostMapping(value = "/history")
     public PageDto<EvaluationResultsHistoryDto> getEvaluationResultsHistoryPage(
             @Valid @RequestBody PageRequestDto pageRequestDto) {
         log.info("Received evaluation results history page request: {}", pageRequestDto);
@@ -169,15 +169,15 @@ public class EvaluationResultsController {
     }
 
     /**
-     * Finds instances info page with specified options such as filter, sorting and paging.
+     * Finds instances info history page with specified options such as filter, sorting and paging.
      *
      * @param pageRequestDto - page request dto
      * @return instances info page
      */
     @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
-            description = "Finds instances info page with specified options such as filter, sorting and paging",
-            summary = "Finds instances info page with specified options such as filter, sorting and paging",
+            description = "Finds instances info history page with specified options such as filter, sorting and paging",
+            summary = "Finds instances info history page with specified options such as filter, sorting and paging",
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
@@ -225,9 +225,9 @@ public class EvaluationResultsController {
                     )
             }
     )
-    @PostMapping(value = "/instances/list")
-    public PageDto<InstancesInfoDto> getInstancesInfoPage(@Valid @RequestBody PageRequestDto pageRequestDto) {
-        log.info("Received instances info page request: {}", pageRequestDto);
-        return instancesService.getNextPage(pageRequestDto);
+    @PostMapping(value = "/instances/history")
+    public PageDto<InstancesInfoDto> getInstancesInfoHistoryPage(@Valid @RequestBody PageRequestDto pageRequestDto) {
+        log.info("Received instances info history page request: {}", pageRequestDto);
+        return instancesHistoryService.getNextPage(pageRequestDto);
     }
 }

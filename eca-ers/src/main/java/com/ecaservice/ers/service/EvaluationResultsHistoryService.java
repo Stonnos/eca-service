@@ -1,7 +1,9 @@
 package com.ecaservice.ers.service;
 
 import com.ecaservice.core.filter.service.FilterTemplateService;
+import com.ecaservice.core.filter.specification.FilterFieldCustomizer;
 import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
+import com.ecaservice.ers.filter.ClassifierNameFilterFieldCustomizer;
 import com.ecaservice.ers.filter.EvaluationResultsHistoryFilter;
 import com.ecaservice.ers.mapping.EvaluationResultsMapper;
 import com.ecaservice.ers.repository.EvaluationResultsInfoRepository;
@@ -15,12 +17,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.ers.dictionary.FilterDictionaries.EVALUATION_RESULTS_HISTORY_TEMPLATE;
 import static com.ecaservice.ers.model.EvaluationResultsInfo_.SAVE_DATE;
+import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * Implements evaluation results history service.
@@ -37,6 +41,15 @@ public class EvaluationResultsHistoryService {
     private final EvaluationResultsMapper evaluationResultsMapper;
     private final EvaluationResultsInfoRepository evaluationResultsInfoRepository;
 
+    private final List<FilterFieldCustomizer> globalFilterFieldCustomizers = newArrayList();
+
+    /**
+     * Initialization method.
+     */
+    @PostConstruct
+    public void initialize() {
+        globalFilterFieldCustomizers.add(new ClassifierNameFilterFieldCustomizer(filterTemplateService));
+    }
 
     /**
      * Gets evaluation results history page.
@@ -51,6 +64,7 @@ public class EvaluationResultsHistoryService {
                 filterTemplateService.getGlobalFilterFields(EVALUATION_RESULTS_HISTORY_TEMPLATE);
         var filter = new EvaluationResultsHistoryFilter(pageRequestDto.getSearchQuery(), globalFilterFields,
                 pageRequestDto.getFilters());
+        filter.setGlobalFilterFieldsCustomizers(globalFilterFieldCustomizers);
         var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort);
         var evaluationResultsInfoPage =
                 evaluationResultsInfoRepository.findAll(filter, pageRequest);
