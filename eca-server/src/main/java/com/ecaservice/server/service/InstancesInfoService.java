@@ -61,6 +61,12 @@ public class InstancesInfoService {
         return instancesInfo;
     }
 
+    /**
+     * Gets instances info page.
+     *
+     * @param pageRequestDto - page request dto
+     * @return instances info page
+     */
     public PageDto<InstancesInfoDto> getNextPage(
             @ValidPageRequest(filterTemplateName = INSTANCES_INFO) PageRequestDto pageRequestDto) {
         log.info("Gets instances info next page: {}", pageRequestDto);

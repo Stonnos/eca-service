@@ -3,9 +3,12 @@ package com.ecaservice.ers.controller.web;
 import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.ers.service.EvaluationResultsHistoryService;
+import com.ecaservice.ers.service.InstancesService;
 import com.ecaservice.web.dto.model.EvaluationResultsHistoryDto;
 import com.ecaservice.web.dto.model.EvaluationResultsHistoryPageDto;
 import com.ecaservice.web.dto.model.FilterFieldDto;
+import com.ecaservice.web.dto.model.InstancesInfoDto;
+import com.ecaservice.web.dto.model.InstancesInfoPageDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,6 +22,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,7 +42,7 @@ import static com.ecaservice.ers.dictionary.FilterDictionaries.EVALUATION_RESULT
  * @author Roman Batygin
  */
 @Slf4j
-@Tag(name = "Evaluation results API web application")
+@Tag(name = "Evaluation results API for web application")
 @RestController
 @RequestMapping("/evaluation-results")
 @RequiredArgsConstructor
@@ -46,6 +50,7 @@ public class EvaluationResultsController {
 
     private final FilterTemplateService filterTemplateService;
     private final EvaluationResultsHistoryService evaluationResultsHistoryService;
+    private final InstancesService instancesService;
 
     /**
      * Finds evaluation results history page with specified options such as filter, sorting and paging.
@@ -161,5 +166,68 @@ public class EvaluationResultsController {
     @GetMapping(value = "/filter-templates/fields")
     public List<FilterFieldDto> getEvaluationResultsHistoryFilter() {
         return filterTemplateService.getFilterFields(EVALUATION_RESULTS_HISTORY_TEMPLATE);
+    }
+
+    /**
+     * Finds instances info page with specified options such as filter, sorting and paging.
+     *
+     * @param pageRequestDto - page request dto
+     * @return instances info page
+     */
+    //@PreAuthorize("#oauth2.hasScope('web')")
+    @Operation(
+            description = "Finds instances info page with specified options such as filter, sorting and paging",
+            summary = "Finds instances info page with specified options such as filter, sorting and paging",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
+                    @Content(examples = {
+                            @ExampleObject(
+                                    name = "InstancesInfoPageRequest",
+                                    ref = "#/components/examples/InstancesInfoPageRequest"
+                            )
+                    })
+            }),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "InstancesInfoPageResponse",
+                                                    ref = "#/components/examples/InstancesInfoPageResponse"
+                                            )
+                                    },
+                                    schema = @Schema(implementation = InstancesInfoPageDto.class)
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            )
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "BadPageRequestResponse",
+                                                    ref = "#/components/examples/BadPageRequestResponse"
+                                            )
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
+                            )
+                    )
+            }
+    )
+    @PostMapping(value = "/instances/list")
+    public PageDto<InstancesInfoDto> getInstancesInfoPage(@Valid @RequestBody PageRequestDto pageRequestDto) {
+        log.info("Received instances info page request: {}", pageRequestDto);
+        return instancesService.getNextPage(pageRequestDto);
     }
 }

@@ -8,3 +8,5 @@ id;field_name;sort_template_id
 7;statistics.rootMeanSquaredError;1
 8;statistics.maxAucValue;1
 9;statistics.varianceError;1
+10;relationName;2
+11;createdDate;2

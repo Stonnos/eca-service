@@ -5,7 +5,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet author="roman.batygin@mail.ru" id="insert_sort_templates_1" context="data">
+    <changeSet author="roman.batygin@mail.ru" id="insert_sort_templates_2" context="data">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="sort_template"/>
         </preConditions>
@@ -16,7 +16,7 @@
                 file="filter-templates/sort-templates.csv"/>
     </changeSet>
 
-    <changeSet author="roman.batygin@mail.ru" id="insert_sort_templates_fields_1" context="data">
+    <changeSet author="roman.batygin@mail.ru" id="insert_sort_templates_fields_2" context="data">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="sort_template"/>
             <tableExists tableName="sort_field"/>
@@ -28,7 +28,7 @@
                 file="filter-templates/sort-fields.csv"/>
     </changeSet>
 
-    <changeSet author="roman.batygin@mail.ru" id="insert_global_filter_templates_1" context="data">
+    <changeSet author="roman.batygin@mail.ru" id="insert_global_filter_templates_2" context="data">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="global_filter_template"/>
         </preConditions>
@@ -39,7 +39,7 @@
                 file="filter-templates/global-filter-templates.csv"/>
     </changeSet>
 
-    <changeSet author="roman.batygin@mail.ru" id="insert_global_filter_templates_fields_1" context="data">
+    <changeSet author="roman.batygin@mail.ru" id="insert_global_filter_templates_fields_2" context="data">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="global_filter_template"/>
             <tableExists tableName="global_filter_field"/>
@@ -51,7 +51,7 @@
                 file="filter-templates/global-filter-fields.csv"/>
     </changeSet>
 
-    <changeSet author="roman.batygin@mail.ru" id="insert_filter_dictionaries_1" context="data">
+    <changeSet author="roman.batygin@mail.ru" id="insert_filter_dictionaries_2" context="data">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="filter_dictionary"/>
         </preConditions>
@@ -62,7 +62,7 @@
                 file="filter-templates/filter-dictionaries.csv"/>
     </changeSet>
 
-    <changeSet author="roman.batygin@mail.ru" id="insert_filter_dictionaries_values_1" context="data">
+    <changeSet author="roman.batygin@mail.ru" id="insert_filter_dictionaries_values_2" context="data">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="filter_dictionary"/>
             <tableExists tableName="filter_dictionary_value"/>
@@ -74,7 +74,7 @@
                 file="filter-templates/filter-dictionary-values.csv"/>
     </changeSet>
 
-    <changeSet author="roman.batygin@mail.ru" id="insert_filter_template_1" context="data">
+    <changeSet author="roman.batygin@mail.ru" id="insert_filter_template_2" context="data">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="filter_template"/>
         </preConditions>
@@ -85,7 +85,7 @@
                 file="filter-templates/filter-templates.csv"/>
     </changeSet>
 
-    <changeSet author="roman.batygin@mail.ru" id="insert_filter_template_fields_1" context="data">
+    <changeSet author="roman.batygin@mail.ru" id="insert_filter_template_fields_2" context="data">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="filter_template"/>
             <tableExists tableName="filter_field"/>
