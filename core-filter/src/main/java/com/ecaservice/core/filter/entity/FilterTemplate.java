@@ -44,7 +44,6 @@ public class FilterTemplate {
     /**
      * Created date
      */
-    @Column(nullable = false)
     private LocalDateTime created;
 
     /**
