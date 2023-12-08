@@ -84,8 +84,8 @@ public interface EvaluationResultsMapper {
     @AfterMapping
     default void mapEvaluationMethod(EvaluationResultsInfo evaluationResultsInfo,
                                      @MappingTarget EvaluationResultsHistoryDto evaluationResultsHistoryDto) {
-        evaluationResultsHistoryDto.setEvaluationMethod(
-                new EnumDto(evaluationResultsInfo.getEvaluationMethod().name(), ""));
+        evaluationResultsHistoryDto.setEvaluationMethod(new EnumDto(evaluationResultsInfo.getEvaluationMethod().name(),
+                evaluationResultsInfo.getEvaluationMethod().getDescription()));
         if (EvaluationMethod.CROSS_VALIDATION.equals(evaluationResultsInfo.getEvaluationMethod())) {
             evaluationResultsHistoryDto.setNumFolds(evaluationResultsInfo.getNumFolds());
             evaluationResultsHistoryDto.setNumTests(evaluationResultsInfo.getNumTests());

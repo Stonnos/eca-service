@@ -1,4 +1,4 @@
-package com.ecaservice.ers.controller;
+package com.ecaservice.ers.controller.internal;
 
 import com.ecaservice.common.web.annotation.EnableGlobalExceptionHandler;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
@@ -31,13 +31,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * Unit tests for checking {@link EvaluationResultsController} functionality.
+ * Unit tests for checking {@link EvaluationResultsApiController} functionality.
  *
  * @author Roman Batygin
  */
 @EnableGlobalExceptionHandler
-@WebMvcTest(controllers = EvaluationResultsController.class)
-class EvaluationResultsControllerTest {
+@WebMvcTest(controllers = EvaluationResultsApiController.class)
+class EvaluationResultsApiControllerTest {
 
     private static final String BASE_URL = "/api";
     private static final String SAVE_EVALUATION_RESULTS_REQUEST_URL = BASE_URL + "/save";

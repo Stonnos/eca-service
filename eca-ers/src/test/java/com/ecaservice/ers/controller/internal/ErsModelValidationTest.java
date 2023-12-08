@@ -1,4 +1,4 @@
-package com.ecaservice.ers.controller;
+package com.ecaservice.ers.controller.internal;
 
 import com.ecaservice.ers.dto.EvaluationResultsRequest;
 import com.google.common.collect.ImmutableList;

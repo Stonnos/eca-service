@@ -1,4 +1,4 @@
-package com.ecaservice.ers.controller;
+package com.ecaservice.ers.controller.internal;
 
 import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
@@ -32,11 +32,11 @@ import javax.validation.Valid;
  * @author Roman Batygin
  */
 @Slf4j
-@Tag(name = "Evaluation results storage API")
+@Tag(name = "Evaluation results storage internal API")
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
-public class EvaluationResultsController {
+public class EvaluationResultsApiController {
 
     private final EvaluationResultsService evaluationResultsService;
     private final ClassifierOptionsRequestService classifierOptionsRequestService;
