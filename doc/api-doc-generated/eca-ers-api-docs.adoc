@@ -8,6 +8,382 @@
 
 API provides operations with evaluation results
 
+== Security schemas
+
+
+=== EcaAuth
+
+[width=100%]
+|===
+|*Type*|*Description*|*Flows*
+|*oauth2*
+|Oauth2 authentication
+
+
+a|
+
+*Flow*
+
+__Grant type:__ password
+
+__Token url:__ http://localhost:8080/eca-oauth/oauth/token
+
+__Refresh token url:__ http://localhost:8080/eca-oauth/oauth/token
+
+
+__Scopes__:
+
+
+* web
+
+|===
+
+== Finds instances info page with specified options such as filter, sorting and paging
+
+__POST__ */evaluation-results/instances/list* - Finds instances info page with specified options such as filter, sorting and paging
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+*Request body*
+
+[width=100%]
+|===
+|*Content type*|*Required*|*Schema*|*Example*
+|*application/json*
+|true
+|
+<<PageRequestDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "page" : 0,
+  "size" : 25,
+  "sortField" : "createdDate",
+  "ascending" : false,
+  "searchQuery" : "glass",
+  "filters" : [ ]
+}
+----
+|===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+<<InstancesInfoPageDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "content" : [ {
+    "id" : 1,
+    "relation" : "glass",
+    "numInstances" : 214,
+    "numAttributes" : 10,
+    "numClasses" : 6,
+    "className" : "class",
+    "createdDate" : "2021-07-01 14:00:00"
+  } ],
+  "page" : 0,
+  "totalCount" : 1
+}
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|
+__array__
+<<<ValidationErrorDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+[ {
+  "fieldName" : "page",
+  "code" : "Min",
+  "errorMessage" : "must be greater than or equal to 0"
+}, {
+  "fieldName" : "size",
+  "code" : "Min",
+  "errorMessage" : "must be greater than or equal to 1"
+} ]
+----
+|===
+
+== Finds evaluation results history page with specified options such as filter, sorting and paging
+
+__POST__ */evaluation-results/history* - Finds evaluation results history page with specified options such as filter, sorting and paging
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+*Request body*
+
+[width=100%]
+|===
+|*Content type*|*Required*|*Schema*|*Example*
+|*application/json*
+|true
+|
+<<PageRequestDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "page" : 0,
+  "size" : 25
+}
+----
+|===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+<<EvaluationResultsHistoryPageDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "content" : [ {
+    "id" : 2643,
+    "classifierInfo" : {
+      "classifierName" : "DecisionTreeOptions",
+      "classifierDescription" : "Алгоритм CART",
+      "classifierOptionsJson" : "{\"type\":\"decision_tree\",\"decisionTreeType\":\"CART\",\"minObj\":2,\"maxDepth\":0,\"randomTree\":false,\"numRandomAttr\":0,\"useBinarySplits\":true,\"useRandomSplits\":false,\"numRandomSplits\":1,\"seed\":1,\"alpha\":null}",
+      "metaClassifier" : false,
+      "inputOptions" : [ {
+        "optionName" : "Алгоритм построения дерева",
+        "optionValue" : "Алгоритм CART"
+      }, {
+        "optionName" : "Минимальное число объектов в листе",
+        "optionValue" : "2"
+      }, {
+        "optionName" : "Максимальная глубина дерева",
+        "optionValue" : "0"
+      }, {
+        "optionName" : "Бинарное дерево",
+        "optionValue" : "true"
+      }, {
+        "optionName" : "Случайное дерево",
+        "optionValue" : "false"
+      }, {
+        "optionName" : "Число случайных атрибутов",
+        "optionValue" : "0"
+      }, {
+        "optionName" : "Случайные расщепления атрибута",
+        "optionValue" : "false"
+      }, {
+        "optionName" : "Число случайных расщеплений атрибута",
+        "optionValue" : "1"
+      }, {
+        "optionName" : "Начальное значение (seed)",
+        "optionValue" : "1"
+      } ],
+      "individualClassifiers" : null
+    },
+    "instancesInfo" : {
+      "id" : 1,
+      "relationName" : "glass",
+      "numInstances" : 214,
+      "numAttributes" : 10,
+      "numClasses" : 6,
+      "className" : "type",
+      "createdDate" : "2023-11-16 18:57:14"
+    },
+    "evaluationMethod" : {
+      "value" : "CROSS_VALIDATION",
+      "description" : "V-блочная кросс-проверка"
+    },
+    "numFolds" : 10,
+    "numTests" : 1,
+    "seed" : 1,
+    "saveDate" : "2023-12-07 14:49:26",
+    "numTestInstances" : 214,
+    "numCorrect" : 154,
+    "numIncorrect" : 60,
+    "pctCorrect" : 71.9626,
+    "pctIncorrect" : 28.0374,
+    "meanAbsoluteError" : 0.109,
+    "rootMeanSquaredError" : 0.2884,
+    "maxAucValue" : 0.8824,
+    "varianceError" : 0.0066,
+    "confidenceIntervalLowerBound" : 0.2224,
+    "confidenceIntervalUpperBound" : 0.3384
+  } ],
+  "page" : 0,
+  "totalCount" : 79
+}
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|
+__array__
+<<<ValidationErrorDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+[ {
+  "fieldName" : "page",
+  "code" : "Min",
+  "errorMessage" : "must be greater than or equal to 0"
+}, {
+  "fieldName" : "size",
+  "code" : "Min",
+  "errorMessage" : "must be greater than or equal to 1"
+} ]
+----
+|===
 
 == Saves evaluation results report
 
@@ -53,6 +429,7 @@ a|
   },
   "classifierReport" : {
     "classifierName" : "ExtraTreesClassifier",
+    "classifierDescription" : null,
     "options" : "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}"
   },
   "evaluationMethodReport" : {
@@ -457,6 +834,7 @@ a|
   },
   "classifierReport" : {
     "classifierName" : "ExtraTreesClassifier",
+    "classifierDescription" : null,
     "options" : "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}"
   },
   "evaluationMethodReport" : {
@@ -771,7 +1149,8 @@ a|
     "numFolds" : 10,
     "numTests" : 1,
     "seed" : 1
-  }
+  },
+  "sortFields" : null
 }
 ----
 |===
@@ -809,9 +1188,11 @@ a|
   "requestId" : "f8cecbf7-405b-403b-9a94-f51e8fb73ed8",
   "classifierReports" : [ {
     "classifierName" : "ExtraTreesClassifier",
+    "classifierDescription" : null,
     "options" : "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}"
   }, {
     "classifierName" : "ExtraTreesClassifier",
+    "classifierDescription" : null,
     "options" : "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}"
   } ]
 }
@@ -857,25 +1238,389 @@ a|
 ----
 |===
 
+== Gets evaluation results history filter fields
+
+__GET__ */evaluation-results/filter-templates/fields* - Gets evaluation results history filter fields
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|-
+a|
+[source,json]
+----
+[ {
+  "fieldName" : "classifierInfo.classifierName",
+  "description" : "Классификатор",
+  "fieldOrder" : 0,
+  "filterFieldType" : "REFERENCE",
+  "matchMode" : "EQUALS",
+  "multiple" : true,
+  "dictionary" : {
+    "name" : "classifier",
+    "values" : [ {
+      "label" : "Алгоритм CART",
+      "value" : "CART"
+    }, {
+      "label" : "Алгоритм C4.5",
+      "value" : "C45"
+    }, {
+      "label" : "Алгоритм ID3",
+      "value" : "ID3"
+    }, {
+      "label" : "Алгоритм CHAID",
+      "value" : "CHAID"
+    }, {
+      "label" : "Алгоритм J48",
+      "value" : "J48"
+    }, {
+      "label" : "Нейронная сеть (Многослойный персептрон)",
+      "value" : "NeuralNetwork"
+    }, {
+      "label" : "Алгоритм k - взвешенных ближайших соседей",
+      "value" : "KNearestNeighbours"
+    }, {
+      "label" : "Логистическая регрессия",
+      "value" : "Logistic"
+    }, {
+      "label" : "Алгоритм AdaBoost",
+      "value" : "AdaBoostClassifier"
+    }, {
+      "label" : "Неоднородный ансамблевый алгоритм",
+      "value" : "HeterogeneousClassifier"
+    }, {
+      "label" : "Модифицированный неоднородный ансамблевый алгоритм",
+      "value" : "ModifiedHeterogeneousClassifier"
+    }, {
+      "label" : "Алгоритм Stacking",
+      "value" : "StackingClassifier"
+    }, {
+      "label" : "Алгоритм Случайные леса",
+      "value" : "RandomForests"
+    }, {
+      "label" : "Алгоритм Extra trees",
+      "value" : "ExtraTreesClassifier"
+    }, {
+      "label" : "Алгоритм Случайные сети",
+      "value" : "RandomNetworks"
+    } ]
+  }
+}, {
+  "fieldName" : "instancesInfo.id",
+  "description" : "Обучающая выборка",
+  "fieldOrder" : 1,
+  "filterFieldType" : "LAZY_REFERENCE",
+  "matchMode" : "EQUALS",
+  "multiple" : false,
+  "dictionary" : null
+}, {
+  "fieldName" : "evaluationMethod",
+  "description" : "Метод оценки точности",
+  "fieldOrder" : 2,
+  "filterFieldType" : "REFERENCE",
+  "matchMode" : "EQUALS",
+  "multiple" : false,
+  "dictionary" : {
+    "name" : "evaluationMethod",
+    "values" : [ {
+      "label" : "Использование обучающего множества",
+      "value" : "TRAINING_DATA"
+    }, {
+      "label" : "V-блочная кросс-проверка",
+      "value" : "CROSS_VALIDATION"
+    } ]
+  }
+}, {
+  "fieldName" : "saveDate",
+  "description" : "Дата сохранения результатов",
+  "fieldOrder" : 3,
+  "filterFieldType" : "DATE",
+  "matchMode" : "RANGE",
+  "multiple" : true,
+  "dictionary" : null
+} ]
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|
+__array__
+<<<ValidationErrorDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "DataNotFound",
+  "errorMessage" : "Entity with search key [1] not found!"
+} ]
+----
+|===
+
 
 == Components
-=== EvaluationResultsResponse
+=== InstancesInfoDto
 :table-caption: Table
-.Evaluation results response model
+.Classifier training data model
 [width=100%]
 |===
 |*Name*|*Description*|*Schema*
-|*requestId*
-|Request id
+|*id*
+|ID
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 9 223 372 036 854 775 807*
+
+
+
+
+
+
+
+
+|*relationName*
+|Instances name
 a|
 __string__
 
 
 
 
-*Max. length*: 36
+*Max. length*: 255
 
 
+
+
+
+
+
+
+
+
+|*numInstances*
+|Instances number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 2*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|*numAttributes*
+|Attributes number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 2*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|*numClasses*
+|Classes number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 2*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|*className*
+|Class name
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*createdDate*
+|Created date
+a|
+__string__
+
+
+
+
+*Max. length*: 19
+
+
+
+
+
+
+
+
+
+
+|===
+=== InstancesInfoPageDto
+:table-caption: Table
+.Instances info page dto
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*content*
+|-
+a|
+__array__
+<<<InstancesInfoDto>>
+>
+
+
+
+
+
+
+
+
+
+
+*Max. items*: 100
+
+
+
+
+|*page*
+|Page number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|*totalCount*
+|Total elements count in all pages
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -938,6 +1683,923 @@ __string__
 
 
 *Max. length*: 1 000
+
+
+
+
+
+
+
+
+
+
+|===
+=== FilterRequestDto
+:table-caption: Table
+.Filter request model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*name**
+|Filter column name
+a|
+__string__
+
+
+*Min. length*: 1
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*values*
+|-
+a|
+__array__
+<string
+>
+
+
+
+
+
+
+
+
+*Min. items*: 0
+
+*Max. items*: 50
+
+
+
+
+|*matchMode**
+|Match mode type
+a|
+__string__
+
+
+*Min. length*: 1
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* EQUALS
+
+* LIKE
+
+* RANGE
+|===
+=== PageRequestDto
+:table-caption: Table
+.Page request model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*page**
+|Page number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|*size**
+|Page size
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 100*
+
+
+
+
+
+
+
+
+|*sortField*
+|Sort field
+a|
+__string__
+
+
+*Min. length*: 0
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*ascending*
+|Is ascending sort?
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*searchQuery*
+|Search query string
+a|
+__string__
+
+
+*Min. length*: 0
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*filters*
+|Filters list
+a|
+__array__
+<<<FilterRequestDto>>
+>
+
+
+
+
+
+
+
+
+*Min. items*: 0
+
+*Max. items*: 50
+
+
+
+
+|===
+=== ClassifierInfoDto
+:table-caption: Table
+.Classifier info model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*classifierName*
+|Classifier name
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*classifierDescription*
+|Classifier description
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*classifierOptionsJson**
+|Classifier options json config
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*metaClassifier*
+|Is meta classifier (used for stacking algorithms)
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*inputOptions*
+|-
+a|
+__array__
+<<<InputOptionDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*individualClassifiers*
+|-
+a|
+__array__
+<<<ClassifierInfoDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== EnumDto
+:table-caption: Table
+.Enum dto model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*value**
+|Enum value
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*description**
+|Enum value description
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|===
+=== EvaluationResultsHistoryDto
+:table-caption: Table
+.Classifier evaluation results history model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*id*
+|ID
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 9 223 372 036 854 775 807*
+
+
+
+
+
+
+
+
+|*classifierInfo*
+|-
+a|
+<<ClassifierInfoDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*instancesInfo*
+|-
+a|
+<<InstancesInfoDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*evaluationMethod*
+|-
+a|
+<<EnumDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*numFolds*
+|Folds number for k * V cross - validation method
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 2*
+
+*Maximum*: 10*
+
+
+
+
+
+
+
+
+|*numTests*
+|Tests number for k * V cross - validation method
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 10*
+
+
+
+
+
+
+
+
+|*seed*
+|Seed value for k * V cross - validation method
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: -2 147 483 648*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|*saveDate*
+|Save date
+a|
+__string__
+
+
+
+
+*Max. length*: 19
+
+
+
+
+
+
+
+
+
+
+|*numTestInstances*
+|Test instances number
+a|
+__integer__
+
+
+
+
+
+
+*Minimum*: 2*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|*numCorrect*
+|Correctly classified instances number
+a|
+__integer__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|*numIncorrect*
+|Incorrectly classified instances number
+a|
+__integer__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|*pctCorrect*
+|Correctly classified percentage
+a|
+__number__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 100*
+
+
+
+
+
+
+
+
+|*pctIncorrect*
+|Incorrectly classified percentage
+a|
+__number__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 100*
+
+
+
+
+
+
+
+
+|*meanAbsoluteError*
+|Mean absolute error
+a|
+__number__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 1*
+
+
+
+
+
+
+
+
+|*rootMeanSquaredError*
+|Root mean squared error
+a|
+__number__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 1*
+
+
+
+
+
+
+
+
+|*maxAucValue*
+|Max AUC value
+a|
+__number__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 1*
+
+
+
+
+
+
+
+
+|*varianceError*
+|Variance error
+a|
+__number__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 1*
+
+
+
+
+
+
+
+
+|*confidenceIntervalLowerBound*
+|95% confidence interval lower bound value
+a|
+__number__
+
+
+
+
+
+
+*Minimum*: -2 147 483 648*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|*confidenceIntervalUpperBound*
+|95% confidence interval upper bound value
+a|
+__number__
+
+
+
+
+
+
+*Minimum*: -2 147 483 648*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|===
+=== EvaluationResultsHistoryPageDto
+:table-caption: Table
+.Classifier evaluation results history page dto
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*content*
+|-
+a|
+__array__
+<<<EvaluationResultsHistoryDto>>
+>
+
+
+
+
+
+
+
+
+
+
+*Max. items*: 100
+
+
+
+
+|*page*
+|Page number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|*totalCount*
+|Total elements count in all pages
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 9 223 372 036 854 775 807*
+
+
+
+
+
+
+
+
+|===
+=== InputOptionDto
+:table-caption: Table
+.Classifier input option model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*optionName*
+|Input option name
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*optionValue*
+|Input option value
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|===
+=== EvaluationResultsResponse
+:table-caption: Table
+.Evaluation results response model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*requestId*
+|Request id
+a|
+__string__
+
+
+
+
+*Max. length*: 36
 
 
 
