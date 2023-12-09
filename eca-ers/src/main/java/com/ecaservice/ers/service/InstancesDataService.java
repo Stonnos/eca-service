@@ -26,7 +26,7 @@ import static com.ecaservice.ers.model.InstancesInfo_.CREATED_DATE;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class InstancesHistoryService {
+public class InstancesDataService {
 
     private final InstancesMapper instancesMapper;
     private final FilterTemplateService filterTemplateService;

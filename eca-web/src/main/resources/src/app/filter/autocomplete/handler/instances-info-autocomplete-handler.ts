@@ -1,5 +1,4 @@
 import { AutocompleteHandler } from "./autocomplete-handler";
-import { InstancesInfoService } from "../../../common/instances-info/services/instances-info.service";
 import { Filter } from "../../model/filter.model";
 import {
   InstancesInfoDto,
@@ -9,12 +8,13 @@ import {
 import { AutocompleteItemModel}  from "../../model/autocomplete-item.model";
 import { MessageService } from "primeng/api";
 import { InstancesInfoFilterFields } from "../../../common/util/filter-field-names";
+import { InstancesInfoPageService } from "../../../common/services/instances-info-page.service";
 
 export class InstancesInfoAutocompleteHandler extends AutocompleteHandler {
 
   private pageSize: number = 100;
 
-  public constructor(private instancesInfoService: InstancesInfoService,
+  public constructor(private instancesInfoPageService: InstancesInfoPageService,
                      private messageService: MessageService) {
     super('instancesInfo.id');
   }
@@ -38,7 +38,7 @@ export class InstancesInfoAutocompleteHandler extends AutocompleteHandler {
   }
 
   private getInstancesInfoFilterValues(filters: Filter[], filterField: string, pageRequest: PageRequestDto): void {
-    this.instancesInfoService.getInstancesInfoPage(pageRequest)
+    this.instancesInfoPageService.getInstancesInfoPage(pageRequest)
       .subscribe({
         next: (instancesInfoPage: PageDto<InstancesInfoDto>) => {
           const filter = filters.filter((item: Filter) => item.name == filterField).pop();

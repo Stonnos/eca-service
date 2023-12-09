@@ -13,10 +13,10 @@ import { EvaluationResultsHistoryFields } from "../../common/util/field-names";
 import { FieldService } from "../../common/services/field.service";
 import { EvaluationResultsHistoryService } from "../services/evaluation-results-history.service";
 import { EvaluationResultsHistoryFilterFields } from "../../common/util/filter-field-names";
-import { InstancesHistoryAutocompleteHandler } from "../../filter/autocomplete/handler/instances-history-autocomplete-handler";
-import { InstancesHistoryFilterValueTransformer } from "../../filter/autocomplete/transformer/instances-history-filter-value-transformer";
 import { OverlayPanel } from "primeng/primeng";
 import { EvaluationMethod } from "../../common/model/evaluation-method.enum";
+import { InstancesInfoFilterValueTransformer } from "../../filter/autocomplete/transformer/instances-info-filter-value-transformer";
+import { InstancesInfoAutocompleteHandler } from "../../filter/autocomplete/handler/instances-info-autocomplete-handler";
 
 @Component({
   selector: 'app-evaluation-results-history',
@@ -39,8 +39,8 @@ export class EvaluationResultsHistoryComponent extends BaseListComponent<Evaluat
   }
 
   public ngOnInit() {
-    this.addLazyReferenceTransformers(new InstancesHistoryFilterValueTransformer());
-    this.addAutoCompleteHandler(new InstancesHistoryAutocompleteHandler(this.evaluationResultsHistoryService, this.messageService));
+    this.addLazyReferenceTransformers(new InstancesInfoFilterValueTransformer());
+    this.addAutoCompleteHandler(new InstancesInfoAutocompleteHandler(this.evaluationResultsHistoryService, this.messageService));
     this.getFilterFields();
   }
 

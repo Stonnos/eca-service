@@ -8,9 +8,10 @@ import {
 import { Observable } from "rxjs/internal/Observable";
 import { environment } from "../../../environments/environment";
 import { Utils } from "../../common/util/utils";
+import { InstancesInfoPageService } from "../../common/services/instances-info-page.service";
 
 @Injectable()
-export class EvaluationResultsHistoryService {
+export class EvaluationResultsHistoryService implements InstancesInfoPageService {
 
   private serviceUrl = environment.ersUrl + '/evaluation-results';
 
@@ -25,7 +26,7 @@ export class EvaluationResultsHistoryService {
     return this.http.post<PageDto<EvaluationResultsHistoryDto>>(this.serviceUrl + '/history', pageRequest, { headers: headers });
   }
 
-  public getInstancesInfoHistoryPage(pageRequest: PageRequestDto): Observable<PageDto<InstancesInfoDto>> {
+  public getInstancesInfoPage(pageRequest: PageRequestDto): Observable<PageDto<InstancesInfoDto>> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
       'Authorization': Utils.getBearerTokenHeader()
