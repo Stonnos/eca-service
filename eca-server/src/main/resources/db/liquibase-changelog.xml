@@ -58,7 +58,6 @@
     <include file="db/changelog/v48-drop-ers-retry-request-table.xml"/>
     <include file="db/changelog/v49-add-request-id-unique-idx.xml"/>
     <include file="../form-template-changelog.xml" relativeToChangelogFile="true"/>
-    <include file="db/changelog/v50-insert-classifier-form-templates.xml"/>
     <include file="db/changelog/v51-add-classifier-options-column.xml"/>
     <include file="db/changelog/v52-insert-classifiers-filter-dictionary.xml"/>
     <include file="db/changelog/v53-create-classifiers-configuration-history-table.xml"/>
@@ -84,4 +83,5 @@
     <include file="db/changelog/v73-drop-experiment-class-index-column.xml"/>
     <include file="db/changelog/v74-add-evaluation-log-train-data-uuid-column.xml"/>
     <include file="db/changelog/v75-insert-evaluation-log-created-by-in-filter-templates.xml"/>
+    <include file="../insert-classifier-form-templates.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

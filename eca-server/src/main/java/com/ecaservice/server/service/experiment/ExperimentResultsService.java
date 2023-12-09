@@ -9,7 +9,7 @@ import com.ecaservice.server.model.entity.ExperimentResultsRequest;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.server.repository.ExperimentResultsRequestRepository;
-import com.ecaservice.server.service.classifiers.ClassifierOptionsProcessor;
+import com.ecaservice.server.service.classifiers.ClassifierOptionsInfoProcessor;
 import com.ecaservice.server.service.ers.ErsService;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.ErsReportStatus;
@@ -44,7 +44,7 @@ import static com.ecaservice.server.util.Utils.buildEvaluationResultsDto;
 public class ExperimentResultsService {
 
     private final ErsService ersService;
-    private final ClassifierOptionsProcessor classifierOptionsProcessor;
+    private final ClassifierOptionsInfoProcessor classifierOptionsInfoProcessor;
     private final ExperimentResultsMapper experimentResultsMapper;
     private final ClassifierOptionsAdapter classifierOptionsAdapter;
     private final ExperimentResultsEntityRepository experimentResultsEntityRepository;
@@ -90,7 +90,7 @@ public class ExperimentResultsService {
         ExperimentResultsDetailsDto experimentResultsDetailsDto =
                 experimentResultsMapper.mapDetails(experimentResultsEntity);
         experimentResultsDetailsDto.setClassifierInfo(
-                classifierOptionsProcessor.processClassifierInfo(experimentResultsEntity.getClassifierInfo()));
+                classifierOptionsInfoProcessor.processClassifierInfo(experimentResultsEntity.getClassifierInfo()));
         experimentResultsDetailsDto.setEvaluationResultsDto(getEvaluationResults(experimentResultsEntity));
         log.info("Experiment [{}] result details [{}] has been fetched",
                 experimentResultsEntity.getExperiment().getRequestId(), experimentResultsEntity.getId());
@@ -134,7 +134,7 @@ public class ExperimentResultsService {
                 .stream()
                 .map(experimentResultsEntity -> {
                     var experimentResultsDto = experimentResultsMapper.map(experimentResultsEntity);
-                    var classifierInfoDto = classifierOptionsProcessor.processClassifierInfo(
+                    var classifierInfoDto = classifierOptionsInfoProcessor.processClassifierInfo(
                             experimentResultsEntity.getClassifierInfo());
                     experimentResultsDto.setClassifierInfo(classifierInfoDto);
                     return experimentResultsDto;

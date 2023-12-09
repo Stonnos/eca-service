@@ -75,9 +75,9 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
     @MockBean
     private FilterTemplateService filterTemplateService;
     @MockBean
-    private ClassifierOptionsProcessor classifierOptionsProcessor;
+    private ClassifierOptionsInfoProcessor classifierOptionsInfoProcessor;
     @MockBean
-    private ClassifiersTemplateProvider classifiersTemplateProvider;
+    private ClassifiersFormTemplateProvider classifiersFormTemplateProvider;
     @MockBean
     private MessageTemplateProcessor messageTemplateProcessor;
     @Inject
@@ -93,7 +93,7 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
         when(userService.getCurrentUser()).thenReturn(USER_NAME);
         var formTemplate = new FormTemplateDto();
         formTemplate.setTemplateTitle(TEMPLATE_TITLE);
-        when(classifiersTemplateProvider.getClassifierTemplateByClass(anyString())).thenReturn(formTemplate);
+        when(classifiersFormTemplateProvider.getClassifierTemplateByClass(anyString())).thenReturn(formTemplate);
         when(messageTemplateProcessor.process(anyString(), anyMap())).thenReturn(MESSAGE);
     }
 
@@ -106,7 +106,7 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
 
     @Test
     void testGetClassifiersOptionsPage() {
-        when(classifierOptionsProcessor.processInputOptions(any(ClassifierOptions.class)))
+        when(classifierOptionsInfoProcessor.processInputOptions(any(ClassifierOptions.class)))
                 .thenReturn(Collections.singletonList(new InputOptionDto()));
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = saveClassifierOptions(true);
         PageRequestDto pageRequestDto =

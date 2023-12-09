@@ -2,7 +2,7 @@ package com.ecaservice.server.service.push.handler;
 
 import com.ecaservice.server.event.model.push.DeleteClassifierOptionsPushEvent;
 import com.ecaservice.server.repository.ClassifiersConfigurationHistoryRepository;
-import com.ecaservice.server.service.classifiers.ClassifiersTemplateProvider;
+import com.ecaservice.server.service.classifiers.ClassifiersFormTemplateProvider;
 import com.ecaservice.server.service.message.template.MessageTemplateProcessor;
 import org.springframework.stereotype.Component;
 
@@ -22,14 +22,14 @@ public class DeleteClassifierOptionsPushEventHandler
      *
      * @param classifiersConfigurationHistoryRepository - classifiers configuration history repository
      * @param messageTemplateProcessor                  - message template processor
-     * @param classifiersTemplateProvider               - classifiers template provider
+     * @param classifiersFormTemplateProvider           - classifiers template provider
      */
     public DeleteClassifierOptionsPushEventHandler(
             ClassifiersConfigurationHistoryRepository classifiersConfigurationHistoryRepository,
             MessageTemplateProcessor messageTemplateProcessor,
-            ClassifiersTemplateProvider classifiersTemplateProvider) {
+            ClassifiersFormTemplateProvider classifiersFormTemplateProvider) {
         super(DeleteClassifierOptionsPushEvent.class, classifiersConfigurationHistoryRepository,
-                messageTemplateProcessor, classifiersTemplateProvider);
+                messageTemplateProcessor, classifiersFormTemplateProvider);
     }
 
     @Override

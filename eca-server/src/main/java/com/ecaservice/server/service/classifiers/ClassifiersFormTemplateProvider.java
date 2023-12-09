@@ -1,6 +1,7 @@
 package com.ecaservice.server.service.classifiers;
 
 import com.ecaservice.classifier.options.model.ClassifierOptions;
+import com.ecaservice.classifier.template.processor.service.ClassifiersTemplateProvider;
 import com.ecaservice.core.form.template.service.FormTemplateProvider;
 import com.ecaservice.server.config.ClassifiersProperties;
 import com.ecaservice.server.dto.ClassifierGroupTemplatesType;
@@ -13,10 +14,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.ecaservice.server.service.classifiers.ClassifierFormGroupTemplates.CLASSIFIERS_GROUP;
-import static com.ecaservice.server.service.classifiers.ClassifierFormGroupTemplates.ENSEMBLE_CLASSIFIERS_GROUP;
-import static com.ecaservice.server.util.ClassifierOptionsHelper.isEnsembleClassifierOptions;
-
 /**
  * Classifiers templates provider.
  *
@@ -25,9 +22,10 @@ import static com.ecaservice.server.util.ClassifierOptionsHelper.isEnsembleClass
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ClassifiersTemplateProvider {
+public class ClassifiersFormTemplateProvider {
 
     private final ClassifiersProperties classifiersProperties;
+    private final ClassifiersTemplateProvider classifiersTemplateProvider;
     private final FormTemplateProvider formTemplateProvider;
 
     /**
@@ -59,17 +57,7 @@ public class ClassifiersTemplateProvider {
      * @return form template dto
      */
     public FormTemplateDto getClassifierTemplateByClass(String objectClass) {
-        return getTemplate(CLASSIFIERS_GROUP, objectClass);
-    }
-
-    /**
-     * Gets ensemble classifier template by class.
-     *
-     * @param objectClass - classifier class
-     * @return form template dto
-     */
-    public FormTemplateDto getEnsembleClassifierTemplateByClass(String objectClass) {
-        return getTemplate(ENSEMBLE_CLASSIFIERS_GROUP, objectClass);
+        return classifiersTemplateProvider.getClassifierTemplateByClass(objectClass);
     }
 
     /**
@@ -79,11 +67,7 @@ public class ClassifiersTemplateProvider {
      * @return form template dto
      */
     public FormTemplateDto getTemplate(ClassifierOptions classifierOptions) {
-        if (isEnsembleClassifierOptions(classifierOptions)) {
-            return getEnsembleClassifierTemplateByClass(classifierOptions.getClass().getSimpleName());
-        } else {
-            return getClassifierTemplateByClass(classifierOptions.getClass().getSimpleName());
-        }
+        return classifiersTemplateProvider.getTemplate(classifierOptions);
     }
 
     private void removeNotSupportedClassifierTemplates(FormTemplateGroupDto formTemplateGroupDto) {
@@ -94,17 +78,5 @@ public class ClassifiersTemplateProvider {
                         formTemplateDto.getTemplateName()))
                 .collect(Collectors.toList());
         formTemplateGroupDto.setTemplates(supportedTemplates);
-    }
-
-    private FormTemplateDto getTemplate(String groupName, String objectClass) {
-        log.debug("Gets classifier template by group [{}] and class [{}]", groupName, objectClass);
-        return formTemplateProvider.getFormGroupDto(groupName)
-                .getTemplates()
-                .stream()
-                .filter(formTemplateDto -> formTemplateDto.getObjectClass().equals(objectClass))
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException(
-                        String.format("Can't find form template with group [%s] and class [%s]", groupName,
-                                objectClass)));
     }
 }

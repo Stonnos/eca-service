@@ -12,8 +12,8 @@ import com.ecaservice.server.model.entity.ErsResponseStatus;
 import com.ecaservice.server.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
-import com.ecaservice.server.service.classifiers.ClassifierOptionsProcessor;
-import com.ecaservice.server.service.classifiers.ClassifiersTemplateProvider;
+import com.ecaservice.server.service.classifiers.ClassifierOptionsInfoProcessor;
+import com.ecaservice.server.service.classifiers.ClassifiersFormTemplateProvider;
 import com.ecaservice.server.service.ers.ClassifierOptionsRequestService;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
@@ -45,9 +45,9 @@ class ClassifierOptionsRequestsBaseReportDataFetcherTest extends AbstractJpaTest
     @MockBean
     private FilterTemplateService filterTemplateService;
     @MockBean
-    private ClassifierOptionsProcessor classifierOptionsProcessor;
+    private ClassifierOptionsInfoProcessor classifierOptionsInfoProcessor;
     @MockBean
-    private ClassifiersTemplateProvider classifiersTemplateProvider;
+    private ClassifiersFormTemplateProvider classifiersFormTemplateProvider;
 
     @Inject
     private ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository;

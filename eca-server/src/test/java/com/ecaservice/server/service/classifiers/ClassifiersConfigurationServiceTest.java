@@ -91,7 +91,7 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
     @MockBean
     private LockMeterService lockMeterService;
     @MockBean
-    private ClassifiersTemplateProvider classifiersTemplateProvider;
+    private ClassifiersFormTemplateProvider classifiersFormTemplateProvider;
     @MockBean
     private MessageTemplateProcessor messageTemplateProcessor;
 
@@ -100,7 +100,7 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
         when(userService.getCurrentUser()).thenReturn(USER_NAME);
         var formTemplate = new FormTemplateDto();
         formTemplate.setTemplateTitle(TEMPLATE_TITLE);
-        when(classifiersTemplateProvider.getClassifierTemplateByClass(anyString())).thenReturn(formTemplate);
+        when(classifiersFormTemplateProvider.getClassifierTemplateByClass(anyString())).thenReturn(formTemplate);
         when(messageTemplateProcessor.process(anyString(), anyMap())).thenReturn(MESSAGE);
     }
 

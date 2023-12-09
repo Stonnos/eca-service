@@ -9,7 +9,7 @@ import com.ecaservice.server.report.customize.InstancesInfoFilterReportCustomize
 import com.ecaservice.server.report.model.BaseReportType;
 import com.ecaservice.server.report.model.ClassifierOptionsRequestBean;
 import com.ecaservice.server.repository.InstancesInfoRepository;
-import com.ecaservice.server.service.classifiers.ClassifiersTemplateProvider;
+import com.ecaservice.server.service.classifiers.ClassifiersFormTemplateProvider;
 import com.ecaservice.server.service.ers.ClassifierOptionsRequestService;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import org.springframework.data.domain.Page;
@@ -34,7 +34,7 @@ public class ClassifierOptionsRequestsBaseReportDataFetcher
 
     private final ClassifierOptionsRequestService classifierOptionsRequestService;
     private final ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper;
-    private final ClassifiersTemplateProvider classifiersTemplateProvider;
+    private final ClassifiersFormTemplateProvider classifiersFormTemplateProvider;
     private final InstancesInfoRepository instancesInfoRepository;
 
     /**
@@ -44,19 +44,19 @@ public class ClassifierOptionsRequestsBaseReportDataFetcher
      * @param instancesInfoRepository             - instances info repository
      * @param classifierOptionsRequestService     - classifier options request service bean
      * @param classifierOptionsRequestModelMapper - classifier options request model mapper bean
-     * @param classifiersTemplateProvider         - classifiers template provider
+     * @param classifiersFormTemplateProvider         - classifiers template provider
      */
     @Inject
     public ClassifierOptionsRequestsBaseReportDataFetcher(FilterTemplateService filterTemplateService,
                                                           InstancesInfoRepository instancesInfoRepository,
                                                           ClassifierOptionsRequestService classifierOptionsRequestService,
                                                           ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper,
-                                                          ClassifiersTemplateProvider classifiersTemplateProvider) {
+                                                          ClassifiersFormTemplateProvider classifiersFormTemplateProvider) {
         super(BaseReportType.CLASSIFIERS_OPTIONS_REQUESTS.name(),
                 FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST, filterTemplateService);
         this.classifierOptionsRequestService = classifierOptionsRequestService;
         this.classifierOptionsRequestModelMapper = classifierOptionsRequestModelMapper;
-        this.classifiersTemplateProvider = classifiersTemplateProvider;
+        this.classifiersFormTemplateProvider = classifiersFormTemplateProvider;
         this.instancesInfoRepository = instancesInfoRepository;
     }
 
@@ -81,7 +81,7 @@ public class ClassifierOptionsRequestsBaseReportDataFetcher
                         var classifierOptionsResponseModel =
                                 classifierOptionsRequestModel.getClassifierOptionsResponseModels().iterator().next();
                         var classifierOptions = parseOptions(classifierOptionsResponseModel.getOptions());
-                        var template = classifiersTemplateProvider.getTemplate(classifierOptions);
+                        var template = classifiersFormTemplateProvider.getTemplate(classifierOptions);
                         classifierOptionsRequestBean.setClassifierName(template.getTemplateTitle());
                         classifierOptionsRequestBean.setClassifierOptions(classifierOptionsResponseModel.getOptions());
                     }

@@ -44,6 +44,7 @@
 * eca-mail-client - общая библиотека для отправки email сообщений
 * eca-s3-minio-client - общая библиотека для работы с S3 minio storage
 * classifiers-options-adapter - модуль для конвертации настроек классификаторов
+* classifiers-template-processor - модуль для работы с шаблонами классификаторов
 * eca-report - модуль генерации отчетов
 * eca-report-data - общая библиотека формирования данных для отчетов
 * eca-tests-common - общая библиотека для модулей авто тестов

@@ -7,7 +7,7 @@ import com.ecaservice.server.mapping.ClassifierOptionsRequestModelMapper;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.server.model.entity.ErsResponseStatus;
 import com.ecaservice.server.repository.ClassifierOptionsRequestModelRepository;
-import com.ecaservice.server.service.classifiers.ClassifierOptionsProcessor;
+import com.ecaservice.server.service.classifiers.ClassifierOptionsInfoProcessor;
 import com.ecaservice.web.dto.model.ClassifierOptionsRequestDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -39,7 +39,7 @@ import static com.ecaservice.server.util.ClassifierOptionsHelper.parseOptions;
 public class ClassifierOptionsRequestService {
 
     private final FilterTemplateService filterTemplateService;
-    private final ClassifierOptionsProcessor classifierOptionsProcessor;
+    private final ClassifierOptionsInfoProcessor classifierOptionsInfoProcessor;
     private final ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper;
     private final ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository;
 
@@ -92,7 +92,7 @@ public class ClassifierOptionsRequestService {
             var classifierOptionsResponseModel =
                     classifierOptionsRequestModel.getClassifierOptionsResponseModels().iterator().next();
             var classifierOptions = parseOptions(classifierOptionsResponseModel.getOptions());
-            var classifierInfoDto = classifierOptionsProcessor.processClassifierOptions(classifierOptions);
+            var classifierInfoDto = classifierOptionsInfoProcessor.processClassifierOptions(classifierOptions);
             classifierOptionsRequestDto.setClassifierInfo(classifierInfoDto);
         }
         return classifierOptionsRequestDto;

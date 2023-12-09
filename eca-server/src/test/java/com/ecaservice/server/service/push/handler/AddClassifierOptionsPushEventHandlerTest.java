@@ -6,7 +6,7 @@ import com.ecaservice.server.model.entity.ClassifiersConfigurationActionType;
 import com.ecaservice.server.repository.ClassifiersConfigurationHistoryRepository;
 import com.ecaservice.server.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
-import com.ecaservice.server.service.classifiers.ClassifiersTemplateProvider;
+import com.ecaservice.server.service.classifiers.ClassifiersFormTemplateProvider;
 import com.ecaservice.server.service.message.template.MessageTemplateProcessor;
 import com.ecaservice.web.dto.model.FormTemplateDto;
 import org.junit.jupiter.api.Test;
@@ -42,7 +42,7 @@ class AddClassifierOptionsPushEventHandlerTest extends AbstractJpaTest {
     @MockBean
     private MessageTemplateProcessor messageTemplateProcessor;
     @MockBean
-    private ClassifiersTemplateProvider classifiersTemplateProvider;
+    private ClassifiersFormTemplateProvider classifiersFormTemplateProvider;
 
     @Inject
     private ClassifiersConfigurationRepository classifiersConfigurationRepository;
@@ -65,7 +65,7 @@ class AddClassifierOptionsPushEventHandlerTest extends AbstractJpaTest {
         saveData();
         var formTemplateDto = new FormTemplateDto();
         formTemplateDto.setTemplateTitle(TEMPLATE_TITLE);
-        when(classifiersTemplateProvider.getClassifierTemplateByClass(anyString())).thenReturn(formTemplateDto);
+        when(classifiersFormTemplateProvider.getClassifierTemplateByClass(anyString())).thenReturn(formTemplateDto);
     }
 
     @Test

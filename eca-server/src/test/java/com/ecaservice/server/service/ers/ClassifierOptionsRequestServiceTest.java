@@ -13,7 +13,7 @@ import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.server.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
-import com.ecaservice.server.service.classifiers.ClassifierOptionsProcessor;
+import com.ecaservice.server.service.classifiers.ClassifierOptionsInfoProcessor;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -59,7 +59,7 @@ class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
     @Mock
     private FilterTemplateService filterTemplateService;
     @Mock
-    private ClassifierOptionsProcessor classifierOptionsProcessor;
+    private ClassifierOptionsInfoProcessor classifierOptionsInfoProcessor;
 
     private ClassifierOptionsRequestService classifierOptionsRequestService;
 
@@ -68,7 +68,7 @@ class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
     @Override
     public void init() {
         classifierOptionsRequestService = new ClassifierOptionsRequestService(filterTemplateService,
-                classifierOptionsProcessor, classifierOptionsRequestModelMapper,
+                classifierOptionsInfoProcessor, classifierOptionsRequestModelMapper,
                 classifierOptionsRequestModelRepository);
         instancesInfo = createInstancesInfo();
         instancesInfoRepository.save(instancesInfo);

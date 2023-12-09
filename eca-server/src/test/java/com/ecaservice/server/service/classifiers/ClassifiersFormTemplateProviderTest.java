@@ -1,5 +1,6 @@
 package com.ecaservice.server.service.classifiers;
 
+import com.ecaservice.classifier.template.processor.service.ClassifiersTemplateProvider;
 import com.ecaservice.core.form.template.service.FormTemplateProvider;
 import com.ecaservice.server.config.ClassifiersProperties;
 import com.ecaservice.server.dto.ClassifierGroupTemplatesType;
@@ -18,13 +19,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests for {@link ClassifiersTemplateProvider} class.
+ * Unit tests for {@link ClassifiersFormTemplateProvider} class.
  *
  * @author Roman Batygin
  */
 @ExtendWith(SpringExtension.class)
-@Import({ClassifiersTemplateProvider.class, ClassifiersProperties.class})
-class ClassifiersTemplateProviderTest {
+@Import({ClassifiersFormTemplateProvider.class, ClassifiersProperties.class, ClassifiersTemplateProvider.class})
+class ClassifiersFormTemplateProviderTest {
 
     private static final String CLASSIFIERS = "classifiers";
 
@@ -32,7 +33,7 @@ class ClassifiersTemplateProviderTest {
     private FormTemplateProvider formTemplateProvider;
 
     @Inject
-    private ClassifiersTemplateProvider classifiersTemplateProvider;
+    private ClassifiersFormTemplateProvider classifiersFormTemplateProvider;
 
     @BeforeEach
     void init() {
@@ -42,7 +43,7 @@ class ClassifiersTemplateProviderTest {
 
     @Test
     void testGetTemplates() {
-        var result = classifiersTemplateProvider.getClassifiersTemplates(ClassifierGroupTemplatesType.INDIVIDUAL);
+        var result = classifiersFormTemplateProvider.getClassifiersTemplates(ClassifierGroupTemplatesType.INDIVIDUAL);
         assertThat(result).hasSize(1);
     }
 }

@@ -2,13 +2,14 @@ package com.ecaservice.server.service.classifiers;
 
 import com.ecaservice.classifier.options.config.ClassifiersOptionsConfig;
 import com.ecaservice.classifier.options.model.ClassifierOptions;
+import com.ecaservice.classifier.template.processor.config.ClassifiersTemplateProperties;
+import com.ecaservice.classifier.template.processor.service.ClassifierOptionsProcessor;
+import com.ecaservice.classifier.template.processor.service.ClassifiersTemplateProvider;
 import com.ecaservice.core.form.template.service.FormTemplateProvider;
 import com.ecaservice.server.config.ClassifiersProperties;
 import com.ecaservice.web.dto.model.ClassifierInfoDto;
 import com.ecaservice.web.dto.model.FormTemplateGroupDto;
 import com.ecaservice.web.dto.model.InputOptionDto;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.ensemble.forests.DecisionTreeType;
 import eca.text.NumericFormatFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,16 +44,17 @@ import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests for {@link ClassifiersTemplateProvider} class.
+ * Unit tests for {@link ClassifiersFormTemplateProvider} class.
  *
  * @author Roman Batygin
  */
 @ExtendWith(SpringExtension.class)
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
-@Import({ClassifiersTemplateProvider.class, ClassifierOptionsProcessor.class, ClassifiersOptionsConfig.class,
-        ClassifiersProperties.class})
-class ClassifierOptionsProcessorTest {
+@Import({ClassifiersFormTemplateProvider.class, ClassifierOptionsInfoProcessor.class, ClassifiersOptionsConfig.class,
+        ClassifiersProperties.class, ClassifierOptionsProcessor.class, ClassifiersTemplateProperties.class,
+        ClassifiersTemplateProvider.class})
+class ClassifierOptionsInfoProcessorTest {
 
     private static final String CLASSIFIERS = "classifiers";
     private static final String ENSEMBLE_CLASSIFIERS = "ensembleClassifiers";
@@ -121,9 +123,7 @@ class ClassifierOptionsProcessorTest {
     private FormTemplateProvider formTemplateProvider;
 
     @Inject
-    private ClassifierOptionsProcessor classifierOptionsProcessor;
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private ClassifierOptionsInfoProcessor classifierOptionsInfoProcessor;
 
     @BeforeEach
     void init() {
@@ -131,11 +131,10 @@ class ClassifierOptionsProcessorTest {
         FormTemplateGroupDto ensembleTemplates = loadEnsembleClassifiersTemplates();
         when(formTemplateProvider.getFormGroupDto(CLASSIFIERS)).thenReturn(templates);
         when(formTemplateProvider.getFormGroupDto(ENSEMBLE_CLASSIFIERS)).thenReturn(ensembleTemplates);
-        classifierOptionsProcessor.initialize();
     }
 
     @Test
-    void testParseLogisticOptions() throws JsonProcessingException {
+    void testParseLogisticOptions() {
         var logisticOptions = createLogisticOptions();
         var inputOptions = parseInputOptions(logisticOptions);
         assertThat(inputOptions).isNotEmpty();
@@ -157,7 +156,7 @@ class ClassifierOptionsProcessorTest {
     }
 
     @Test
-    void testParseKnnOptions() throws JsonProcessingException {
+    void testParseKnnOptions() {
         var kNearestNeighboursOptions = createKNearestNeighboursOptions();
         var inputOptions = parseInputOptions(kNearestNeighboursOptions);
         assertThat(inputOptions).isNotEmpty();
@@ -183,7 +182,7 @@ class ClassifierOptionsProcessorTest {
     }
 
     @Test
-    void testParseJ48Options() throws JsonProcessingException {
+    void testParseJ48Options() {
         var j48Options = createJ48Options();
         var inputOptions = parseInputOptions(j48Options);
         assertThat(inputOptions).isNotEmpty();
@@ -213,7 +212,7 @@ class ClassifierOptionsProcessorTest {
     }
 
     @Test
-    void testParseDecisionTreeOptions() throws JsonProcessingException {
+    void testParseDecisionTreeOptions() {
         var decisionTreeOptions = createDecisionTreeOptions();
         var inputOptions = parseInputOptions(decisionTreeOptions);
         assertThat(inputOptions).isNotEmpty();
@@ -263,7 +262,7 @@ class ClassifierOptionsProcessorTest {
     }
 
     @Test
-    void testParseNeuralNetworkOptions() throws JsonProcessingException {
+    void testParseNeuralNetworkOptions() {
         var neuralNetworkOptions = createNeuralNetworkOptions();
         var inputOptions = parseInputOptions(neuralNetworkOptions);
         assertThat(inputOptions).isNotEmpty();
@@ -527,11 +526,11 @@ class ClassifierOptionsProcessorTest {
     }
 
     private List<InputOptionDto> parseInputOptions(ClassifierOptions classifierOptions) {
-        return classifierOptionsProcessor.processInputOptions(classifierOptions);
+        return classifierOptionsInfoProcessor.processInputOptions(classifierOptions);
     }
 
     private ClassifierInfoDto processClassifierOptions(ClassifierOptions classifierOptions) {
         var classifierInfo = createClassifierInfo(classifierOptions);
-        return classifierOptionsProcessor.processClassifierInfo(classifierInfo);
+        return classifierOptionsInfoProcessor.processClassifierInfo(classifierInfo);
     }
 }

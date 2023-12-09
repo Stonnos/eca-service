@@ -12,10 +12,10 @@ import com.ecaservice.server.repository.ClassifierOptionsDatabaseModelRepository
 import com.ecaservice.server.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.UserService;
-import com.ecaservice.server.service.classifiers.ClassifierOptionsProcessor;
+import com.ecaservice.server.service.classifiers.ClassifierOptionsInfoProcessor;
 import com.ecaservice.server.service.classifiers.ClassifierOptionsService;
 import com.ecaservice.server.service.classifiers.ClassifiersConfigurationHistoryService;
-import com.ecaservice.server.service.classifiers.ClassifiersTemplateProvider;
+import com.ecaservice.server.service.classifiers.ClassifiersFormTemplateProvider;
 import com.ecaservice.server.service.message.template.MessageTemplateProcessor;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -46,11 +46,11 @@ class ExperimentConfigurationServiceTest extends AbstractJpaTest {
     @MockBean
     private FilterTemplateService filterTemplateService;
     @MockBean
-    private ClassifierOptionsProcessor classifierOptionsProcessor;
+    private ClassifierOptionsInfoProcessor classifierOptionsInfoProcessor;
     @MockBean
     private MessageTemplateProcessor messageTemplateProcessor;
     @MockBean
-    private ClassifiersTemplateProvider classifiersTemplateProvider;
+    private ClassifiersFormTemplateProvider classifiersFormTemplateProvider;
     @Inject
     private ClassifierOptionsService classifierOptionsService;
     @Inject
