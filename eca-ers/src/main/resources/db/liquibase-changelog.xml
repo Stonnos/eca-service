@@ -17,4 +17,6 @@
     <include file="db/changelog/v10-add-instances-info-created-date-column.xml"/>
     <include file="../filter-template-changelog.xml" relativeToChangelogFile="true"/>
     <include file="db/changelog/v11-insert-evaluation-results-history-filter-templates.xml"/>
+    <include file="../form-template-changelog.xml" relativeToChangelogFile="true"/>
+    <include file="../insert-classifier-form-templates.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

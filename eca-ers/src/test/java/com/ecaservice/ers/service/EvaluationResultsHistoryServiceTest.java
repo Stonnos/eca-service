@@ -1,5 +1,7 @@
 package com.ecaservice.ers.service;
 
+import com.ecaservice.classifier.options.model.LogisticOptions;
+import com.ecaservice.classifier.template.processor.service.ClassifierOptionsProcessor;
 import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.ers.AbstractJpaTest;
 import com.ecaservice.ers.mapping.ClassificationCostsReportMapperImpl;
@@ -25,6 +27,7 @@ import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.Collections;
 
+import static com.ecaservice.classifier.template.processor.util.Utils.toJsonString;
 import static com.ecaservice.ers.TestHelperUtils.createEvaluationResultsInfo;
 import static com.ecaservice.ers.dictionary.FilterDictionaries.EVALUATION_RESULTS_HISTORY_TEMPLATE;
 import static com.ecaservice.ers.model.EvaluationResultsInfo_.EVALUATION_METHOD;
@@ -52,6 +55,8 @@ public class EvaluationResultsHistoryServiceTest extends AbstractJpaTest {
 
     @MockBean
     private FilterTemplateService filterTemplateService;
+    @MockBean
+    private ClassifierOptionsProcessor classifierOptionsProcessor;
 
     @Inject
     private EvaluationResultsInfoRepository evaluationResultsInfoRepository;
@@ -120,9 +125,11 @@ public class EvaluationResultsHistoryServiceTest extends AbstractJpaTest {
     private void saveEvaluationResultsData() {
         var evaluationResultsInfo1 = createEvaluationResultsInfo();
         evaluationResultsInfo1.getClassifierInfo().setClassifierName("CART");
+        evaluationResultsInfo1.getClassifierInfo().setOptions(toJsonString(new LogisticOptions()));
         evaluationResultsInfo1.getInstancesInfo().setDataMd5Hash(DigestUtils.md5Hex("val1"));
         var evaluationResultsInfo2 = createEvaluationResultsInfo();
         evaluationResultsInfo2.getClassifierInfo().setClassifierName("C45");
+        evaluationResultsInfo2.getClassifierInfo().setOptions(toJsonString(new LogisticOptions()));
         evaluationResultsInfo2.getInstancesInfo().setDataMd5Hash(DigestUtils.md5Hex("val2"));
         instancesInfoRepository.save(evaluationResultsInfo1.getInstancesInfo());
         instancesInfoRepository.save(evaluationResultsInfo2.getInstancesInfo());

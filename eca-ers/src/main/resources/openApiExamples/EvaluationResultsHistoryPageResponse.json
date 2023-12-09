@@ -2,7 +2,51 @@
   "content": [
     {
       "id": 2643,
-      "classifierInfo": null,
+      "classifierInfo": {
+        "classifierName": "DecisionTreeOptions",
+        "classifierDescription": "Алгоритм CART",
+        "classifierOptionsJson": "{\"type\":\"decision_tree\",\"decisionTreeType\":\"CART\",\"minObj\":2,\"maxDepth\":0,\"randomTree\":false,\"numRandomAttr\":0,\"useBinarySplits\":true,\"useRandomSplits\":false,\"numRandomSplits\":1,\"seed\":1,\"alpha\":null}",
+        "metaClassifier": false,
+        "inputOptions": [
+          {
+            "optionName": "Алгоритм построения дерева",
+            "optionValue": "Алгоритм CART"
+          },
+          {
+            "optionName": "Минимальное число объектов в листе",
+            "optionValue": "2"
+          },
+          {
+            "optionName": "Максимальная глубина дерева",
+            "optionValue": "0"
+          },
+          {
+            "optionName": "Бинарное дерево",
+            "optionValue": "true"
+          },
+          {
+            "optionName": "Случайное дерево",
+            "optionValue": "false"
+          },
+          {
+            "optionName": "Число случайных атрибутов",
+            "optionValue": "0"
+          },
+          {
+            "optionName": "Случайные расщепления атрибута",
+            "optionValue": "false"
+          },
+          {
+            "optionName": "Число случайных расщеплений атрибута",
+            "optionValue": "1"
+          },
+          {
+            "optionName": "Начальное значение (seed)",
+            "optionValue": "1"
+          }
+        ],
+        "individualClassifiers": null
+      },
       "instancesInfo": {
         "id": 1,
         "relationName": "glass",

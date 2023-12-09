@@ -1,11 +1,13 @@
 package com.ecaservice.ers.service;
 
+import com.ecaservice.classifier.template.processor.service.ClassifierOptionsProcessor;
 import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.filter.specification.FilterFieldCustomizer;
 import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
 import com.ecaservice.ers.filter.ClassifierNameFilterFieldCustomizer;
 import com.ecaservice.ers.filter.EvaluationResultsHistoryFilter;
 import com.ecaservice.ers.mapping.EvaluationResultsMapper;
+import com.ecaservice.ers.model.EvaluationResultsInfo;
 import com.ecaservice.ers.repository.EvaluationResultsInfoRepository;
 import com.ecaservice.web.dto.model.EvaluationResultsHistoryDto;
 import com.ecaservice.web.dto.model.PageDto;
@@ -21,6 +23,7 @@ import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.ecaservice.classifier.template.processor.util.Utils.parseOptions;
 import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.ers.dictionary.FilterDictionaries.EVALUATION_RESULTS_HISTORY_TEMPLATE;
 import static com.ecaservice.ers.model.EvaluationResultsInfo_.SAVE_DATE;
@@ -39,6 +42,7 @@ public class EvaluationResultsHistoryService {
 
     private final FilterTemplateService filterTemplateService;
     private final EvaluationResultsMapper evaluationResultsMapper;
+    private final ClassifierOptionsProcessor classifierOptionsProcessor;
     private final EvaluationResultsInfoRepository evaluationResultsInfoRepository;
 
     private final List<FilterFieldCustomizer> globalFilterFieldCustomizers = newArrayList();
@@ -68,14 +72,28 @@ public class EvaluationResultsHistoryService {
         var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort);
         var evaluationResultsInfoPage =
                 evaluationResultsInfoRepository.findAll(filter, pageRequest);
-        var evaluationResultsDtoList = evaluationResultsInfoPage.getContent()
-                .stream()
-                .map(evaluationResultsMapper::mapToEvaluationResultsHistory)
-                .collect(Collectors.toList());
+        var evaluationResultsDtoList =
+                mapToEvaluationResultsHistoryList(evaluationResultsInfoPage.getContent());
         log.info("Evaluation results page [{} of {}] with size [{}] has been fetched for page request [{}]",
                 evaluationResultsInfoPage.getNumber(), evaluationResultsInfoPage.getTotalPages(),
                 evaluationResultsInfoPage.getNumberOfElements(), pageRequestDto);
         return PageDto.of(evaluationResultsDtoList, pageRequestDto.getPage(),
                 evaluationResultsInfoPage.getTotalElements());
+    }
+
+    private List<EvaluationResultsHistoryDto> mapToEvaluationResultsHistoryList(
+            List<EvaluationResultsInfo> evaluationResultsInfoList) {
+        return evaluationResultsInfoList.stream()
+                .map(evaluationResultsInfo -> {
+                    var evaluationResultsHistoryDto =
+                            evaluationResultsMapper.mapToEvaluationResultsHistory(evaluationResultsInfo);
+                    var classifierOptions =
+                            parseOptions(evaluationResultsInfo.getClassifierInfo().getOptions());
+                    var classifierInfoDto =
+                            classifierOptionsProcessor.processClassifierOptions(classifierOptions);
+                    evaluationResultsHistoryDto.setClassifierInfo(classifierInfoDto);
+                    return evaluationResultsHistoryDto;
+                })
+                .collect(Collectors.toList());
     }
 }
