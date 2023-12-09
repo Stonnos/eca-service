@@ -38,8 +38,6 @@ class FilterTemplateControllerTest extends AbstractControllerTest {
     private static final String CLASSIFIERS_CONFIGURATION_HISTORY_FILTER_TEMPLATE_URL
             = BASE_URL + "/classifiers-configuration-history";
     private static final String EVALUATION_LOG_FILTER_TEMPLATE_URL = BASE_URL + "/evaluation";
-    private static final String CLASSIFIER_OPTIONS_REQUEST_FILTER_TEMPLATE_URL
-            = BASE_URL + "/classifier-options-request";
     private static final String EXPERIMENT_TYPES_URL = BASE_URL + "/experiment-types";
     private static final String EVALUATION_METHODS_URL = BASE_URL + "/evaluation-methods";
 
@@ -74,23 +72,6 @@ class FilterTemplateControllerTest extends AbstractControllerTest {
     @Test
     void testGetEvaluationLogFilterTemplateOk() throws Exception {
         testGetFilterTemplateOk(EVALUATION_LOG_FILTER_TEMPLATE_URL, FilterTemplateType.EVALUATION_LOG);
-    }
-
-    @Test
-    void testGetClassifierOptionsRequestFilterTemplateUnauthorized() throws Exception {
-        mockMvc.perform(get(CLASSIFIER_OPTIONS_REQUEST_FILTER_TEMPLATE_URL)).andExpect(status().isUnauthorized());
-    }
-
-    @Test
-    void testGetClassifierOptionsRequestFilterTemplateNotFound() throws Exception {
-        testGetFilterTemplateNotFound(CLASSIFIER_OPTIONS_REQUEST_FILTER_TEMPLATE_URL,
-                FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST);
-    }
-
-    @Test
-    void testGetClassifierOptionsRequestFilterTemplateOk() throws Exception {
-        testGetFilterTemplateOk(CLASSIFIER_OPTIONS_REQUEST_FILTER_TEMPLATE_URL,
-                FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST);
     }
 
     @Test

@@ -51,15 +51,6 @@ export class EvaluationLogFields {
   public static readonly PCT_CORRECT: string = "pctCorrect";
 }
 
-export class ClassifierOptionsRequestsFields {
-  public static readonly REQUEST_ID: string = "requestId";
-  public static readonly RELATION_NAME: string = "instancesInfo.relationName";
-  public static readonly CLASSIFIER_NAME: string = "classifierName";
-  public static readonly EVALUATION_METHOD_DESCRIPTION: string = "evaluationMethod.description";
-  public static readonly REQUEST_DATE: string = "requestDate";
-  public static readonly RESPONSE_STATUS_DESCRIPTION: string = "responseStatus.description";
-}
-
 export class ClassifierOptionsFields {
   public static readonly ID: string = "id";
   public static readonly OPTIONS_DESCRIPTION: string = "optionsDescription";

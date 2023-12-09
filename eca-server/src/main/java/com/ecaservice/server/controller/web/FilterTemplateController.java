@@ -123,47 +123,6 @@ public class FilterTemplateController {
     }
 
     /**
-     * Gets classifier options request filter fields
-     *
-     * @return filter fields list
-     */
-    @PreAuthorize("#oauth2.hasScope('web')")
-    @Operation(
-            description = "Gets classifier options request filter fields",
-            summary = "Gets classifier options request filter fields",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
-            responses = {
-                    @ApiResponse(description = "OK", responseCode = "200",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    examples = {
-                                            @ExampleObject(
-                                                    name = "OptimalClassifierOptionsFilterFieldsResponse",
-                                                    ref = "#/components/examples/OptimalClassifierOptionsFilterFieldsResponse"
-                                            )
-                                    },
-                                    array = @ArraySchema(schema = @Schema(implementation = FilterFieldDto.class))
-                            )
-                    ),
-                    @ApiResponse(description = "Not authorized", responseCode = "401",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    examples = {
-                                            @ExampleObject(
-                                                    name = "NotAuthorizedResponse",
-                                                    ref = "#/components/examples/NotAuthorizedResponse"
-                                            )
-                                    }
-                            )
-                    )
-            }
-    )
-    @GetMapping(value = "/classifier-options-request")
-    public List<FilterFieldDto> getClassifierOptionsRequestFilter() {
-        return filterTemplateService.getFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST);
-    }
-
-    /**
      * Gets experiment types filter dictionary.
      *
      * @return filter fields list

@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from "../dashboard/dashboard.component";
-import { ClassifierOptionsRequestsComponent } from "../classifier-options-requests/components/classifier-options-requests.component";
 import { LoginComponent } from "../auth/components/login.component";
 import { ExperimentTabsComponent } from "../experiments-tabs/components/experiment-tabs.component";
 import { EvaluationLogDetailsComponent } from "../evaluation-log-details/components/evaluation-log-details.component";
@@ -38,10 +37,6 @@ const routes: Routes = [
       {
         path: 'evaluation-results-history',
         component: EvaluationResultsHistoryComponent
-      },
-      {
-        path: 'classifiers-options-requests',
-        component: ClassifierOptionsRequestsComponent
       },
       {
         path: 'instances',

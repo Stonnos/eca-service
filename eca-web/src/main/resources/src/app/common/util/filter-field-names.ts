@@ -28,14 +28,6 @@ export class EvaluationLogFilterFields {
   public static readonly PCT_CORRECT: string = "pctCorrect";
 }
 
-export class ClassifierOptionsRequestsFilterFields {
-  public static readonly REQUEST_ID: string = "requestId";
-  public static readonly RELATION_NAME: string = "instancesInfo.relationName";
-  public static readonly EVALUATION_METHOD: string = "evaluationMethod";
-  public static readonly REQUEST_DATE: string = "requestDate";
-  public static readonly RESPONSE_STATUS: string = "responseStatus";
-}
-
 export class ClassifiersConfigurationFilterFields {
   public static readonly CONFIGURATION_NAME: string = "configurationName";
   public static readonly CREATION_DATE: string = "creationDate";

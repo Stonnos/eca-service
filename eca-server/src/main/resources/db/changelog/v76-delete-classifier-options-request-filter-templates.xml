@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v76-delete-classifier-options-request-filter-templates.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="delete_classifier_options_request_global_filter_fields" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_filter_field"/>
+        </preConditions>
+        <delete tableName="global_filter_field">
+            <where>global_filter_template_id = 3</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="delete_classifier_options_request_global_filter_template" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_filter_template"/>
+        </preConditions>
+        <delete tableName="global_filter_template">
+            <where>id = 3</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="delete_classifier_options_request_filter_fields" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_field"/>
+        </preConditions>
+        <delete tableName="filter_field">
+            <where>filter_template_id = 3</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="delete_classifier_options_request_filter_template" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_template"/>
+        </preConditions>
+        <delete tableName="filter_template">
+            <where>id = 3</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="delete_classifier_options_request_filter_ers_status_dictionary_values" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_dictionary_value"/>
+        </preConditions>
+        <delete tableName="filter_dictionary_value">
+            <where>filter_dictionary_id = 4</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="delete_classifier_options_request_filter_ers_status_dictionary" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_dictionary"/>
+        </preConditions>
+        <delete tableName="filter_dictionary">
+            <where>id = 4</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="delete_classifier_options_request_sort_fields" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="sort_field"/>
+        </preConditions>
+        <delete tableName="sort_field">
+            <where>sort_template_id = 3</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="delete_classifier_options_request_sort_filter_template" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="sort_template"/>
+        </preConditions>
+        <delete tableName="sort_template">
+            <where>id = 3</where>
+        </delete>
+    </changeSet>
+
+</databaseChangeLog>

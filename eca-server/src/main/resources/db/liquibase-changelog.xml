@@ -84,4 +84,5 @@
     <include file="db/changelog/v74-add-evaluation-log-train-data-uuid-column.xml"/>
     <include file="db/changelog/v75-insert-evaluation-log-created-by-in-filter-templates.xml"/>
     <include file="../insert-classifier-form-templates.xml" relativeToChangelogFile="true"/>
+    <include file="db/changelog/v76-delete-classifier-options-request-filter-templates.xml"/>
 </databaseChangeLog>
