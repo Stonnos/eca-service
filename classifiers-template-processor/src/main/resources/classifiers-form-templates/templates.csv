@@ -1,0 +1,12 @@
+id;template_name;template_title;template_title_field_ref;object_class;object_type;group_id
+1;KNN;Алгоритм k - взвешенных ближайших соседей;NULL;KNearestNeighboursOptions;knn;1
+2;LOGISTIC;Логистическая регрессия;NULL;LogisticOptions;logistic;1
+3;J48;Алгоритм J48;NULL;J48Options;j48;1
+4;DECISION_TREE;Дерево решений;decisionTreeType;DecisionTreeOptions;decision_tree;1
+5;NEURAL_NETWORK;Нейронная сеть (Многослойный персептрон);NULL;NeuralNetworkOptions;neural_network;1
+6;ADA_BOOST;Алгоритм AdaBoost;NULL;AdaBoostOptions;ada_boost;2
+7;HETEROGENEOUS_CLASSIFIER;Неоднородный ансамблевый алгоритм;NULL;HeterogeneousClassifierOptions;heterogeneous_classifier;2
+8;RANDOM_FORESTS;Случайные леса;NULL;RandomForestsOptions;random_forests;2
+9;EXTRA_TREES;Алгоритм Extra trees;NULL;ExtraTreesOptions;extra_trees;2
+10;STACKING;Алгоритм Stacking;NULL;StackingOptions;stacking;2
+11;RANDOM_NETWORKS;Алгоритм Случайные сети;NULL;RandomNetworkOptions;random_networks;2

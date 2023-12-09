@@ -1,0 +1,48 @@
+= Библиотека для работы с шаблонами классификаторов
+:toc:
+:toc-title: Оглавление
+
+== Введение
+
+В данном документе приведена инструкция для подключения библиотеки к spring boot приложению.
+
+== 1. Подключение библиотеки
+
+Для начала, необходимо добавить зависимость в pom.xml
+
+[source,xml]
+----
+<dependency>
+    <groupId>eca.service</groupId>
+    <artifactId>classifier-template-processor</artifactId>
+    <version>${project.version}</version>
+</dependency>
+----
+
+Добавить конфигурацию
+
+[source,java]
+----
+// Если в вашем модуле есть JPA сущности, то указать путь для сканирования
+@EntityScan(basePackageClasses = MyEntity.class)
+// Если в вашем модуле есть JPA репозитории, то указать путь для сканирования
+@EnableJpaRepositories(basePackageClasses = MyEntityRepository.class)
+@Configuration
+public class AppConfiguration {
+}
+----
+
+В конфигурационный файл liquibase, добавить путь к файлу form-template-changelog.xml со скриптами для создания служебных таблиц.
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!-- your change sets -->
+    <include file="../form-template-changelog.xml" relativeToChangelogFile="true"/>
+    <include file="../insert-classifier-form-templates.xml" relativeToChangelogFile="true"/>
+</databaseChangeLog>
+----
