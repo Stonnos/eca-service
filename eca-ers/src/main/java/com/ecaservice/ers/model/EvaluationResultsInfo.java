@@ -11,7 +11,6 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Index;
@@ -63,7 +62,7 @@ public class EvaluationResultsInfo {
     /**
      * Training data info
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "instances_info_id", nullable = false)
     private InstancesInfo instancesInfo;
 
