@@ -25,7 +25,7 @@ export class InstancesInfoDtoFields {
   public static readonly CLASS_NAME: string = "className";
 }
 
-export class AbstractEvaluationDtoFields {
+export class EvaluationMethodFields {
   public static readonly NUM_FOLDS: string = "numFolds";
   public static readonly NUM_TESTS: string = "numTests";
   public static readonly SEED: string = "seed";

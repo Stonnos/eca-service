@@ -67,6 +67,8 @@
           </app-classifier-options-info>-->
         </ng-container>
         <ng-container *ngSwitchCase="'evaluationMethod.description'">
+          <app-evaluation-method-info [item]="selectedEvaluationResults">
+          </app-evaluation-method-info>
         </ng-container>
         <ng-container *ngSwitchCase="'instancesInfo.relationName'">
           <app-instances-info [item]="selectedEvaluationResults?.instancesInfo">
