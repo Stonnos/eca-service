@@ -1,19 +1,27 @@
 .evaluation-results-history-table::ng-deep {
 
   .ui-table-tbody > tr > td {
-    width: 225px;
+    width: 175px;
 
     &:first-child {
       width: 250px;
       font-weight: bold;
     }
+
+    &:nth-child(1), &:nth-child(2) {
+      width: 225px;
+    }
   }
 
   .ui-table-thead > tr > th {
-    width: 225px;
+    width: 175px;
 
     &:first-child {
       width: 250px;
+    }
+
+    &:nth-child(1), &:nth-child(2) {
+      width: 225px;
     }
   }
 }

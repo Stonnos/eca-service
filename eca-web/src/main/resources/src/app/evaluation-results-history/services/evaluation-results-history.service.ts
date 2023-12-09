@@ -31,6 +31,6 @@ export class EvaluationResultsHistoryService implements InstancesInfoPageService
       'Content-type': 'application/json; charset=utf-8',
       'Authorization': Utils.getBearerTokenHeader()
     });
-    return this.http.post<PageDto<InstancesInfoDto>>(this.serviceUrl + '/instances/history', pageRequest, { headers: headers });
+    return this.http.post<PageDto<InstancesInfoDto>>(this.serviceUrl + '/instances/list', pageRequest, { headers: headers });
   }
 }

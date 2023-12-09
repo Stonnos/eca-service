@@ -63,8 +63,8 @@
     <p-overlayPanel #infoPanel [showCloseIcon]="true" class="info-panel">
       <ng-container *ngIf="selectedEvaluationResults && selectedColumn" [ngSwitch]="selectedColumn">
         <ng-container *ngSwitchCase="'classifierInfo.classifierDescription'">
-          <!--<app-classifier-options-info [classifierInfo]="selectedEvaluationResults?.classifierInfo">
-          </app-classifier-options-info>-->
+          <app-classifier-options-info [classifierInfo]="selectedEvaluationResults?.classifierInfo">
+          </app-classifier-options-info>
         </ng-container>
         <ng-container *ngSwitchCase="'evaluationMethod.description'">
           <app-evaluation-method-info [item]="selectedEvaluationResults">
