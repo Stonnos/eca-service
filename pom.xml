@@ -36,6 +36,7 @@
         <module>eca-mail-client</module>
         <module>eca-s3-minio-client</module>
         <module>classifiers-options-adapter</module>
+        <module>classifiers-template-processor</module>
         <module>eca-report</module>
         <module>eca-report-data</module>
         <module>eca-tests-common</module>

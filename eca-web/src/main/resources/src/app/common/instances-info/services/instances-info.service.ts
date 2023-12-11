@@ -7,9 +7,10 @@ import {
 import { environment } from "../../../../environments/environment";
 import { Observable } from "rxjs/internal/Observable";
 import { Utils } from "../../util/utils";
+import { InstancesInfoPageService } from "../../services/instances-info-page.service";
 
 @Injectable()
-export class InstancesInfoService {
+export class InstancesInfoService implements InstancesInfoPageService {
 
   private serviceUrl = environment.serverUrl + '/instances-info';
 

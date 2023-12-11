@@ -204,7 +204,7 @@
 
         <dependency>
             <groupId>eca.service</groupId>
-            <artifactId>core-form-template</artifactId>
+            <artifactId>classifiers-template-processor</artifactId>
             <version>${project.version}</version>
         </dependency>
 

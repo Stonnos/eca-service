@@ -57,7 +57,7 @@ public class ClassifiersConfigurationServiceImpl implements ClassifiersConfigura
     private final ClassifiersConfigurationMapper classifiersConfigurationMapper;
     private final ClassifierOptionsDatabaseModelMapper classifierOptionsDatabaseModelMapper;
     private final ClassifiersConfigurationHistoryService classifiersConfigurationHistoryService;
-    private final ClassifiersTemplateProvider classifiersTemplateProvider;
+    private final ClassifiersFormTemplateProvider classifiersFormTemplateProvider;
     private final ClassifiersConfigurationRepository classifiersConfigurationRepository;
     private final ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;
 
@@ -253,7 +253,7 @@ public class ClassifiersConfigurationServiceImpl implements ClassifiersConfigura
     private ClassifierOptionsBean internalPopulateClassifierOptionsBean(
             ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel) {
         var classifierOptionsBean = classifierOptionsDatabaseModelMapper.mapToBean(classifierOptionsDatabaseModel);
-        var classifierFormTemplate = classifiersTemplateProvider.getClassifierTemplateByClass(
+        var classifierFormTemplate = classifiersFormTemplateProvider.getClassifierTemplateByClass(
                 classifierOptionsDatabaseModel.getOptionsName());
         classifierOptionsBean.setOptionsName(classifierFormTemplate.getTemplateTitle());
         return classifierOptionsBean;

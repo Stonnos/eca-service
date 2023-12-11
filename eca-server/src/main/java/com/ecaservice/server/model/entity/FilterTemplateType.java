@@ -21,11 +21,6 @@ public class FilterTemplateType {
     public static final String EVALUATION_LOG = "EVALUATION_LOG";
 
     /**
-     * Classifier options request filter template type
-     */
-    public static final String CLASSIFIER_OPTIONS_REQUEST = "CLASSIFIER_OPTIONS_REQUEST";
-
-    /**
      * Classifiers configuration filter template type
      */
     public static final String CLASSIFIERS_CONFIGURATION = "CLASSIFIERS_CONFIGURATION";

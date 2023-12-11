@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from "../dashboard/dashboard.component";
-import { ClassifierOptionsRequestsComponent } from "../classifier-options-requests/components/classifier-options-requests.component";
 import { LoginComponent } from "../auth/components/login.component";
 import { ExperimentTabsComponent } from "../experiments-tabs/components/experiment-tabs.component";
 import { EvaluationLogDetailsComponent } from "../evaluation-log-details/components/evaluation-log-details.component";
@@ -20,6 +19,7 @@ import { InstancesDetailsComponent } from "../instances-details/components/insta
 import { CreateResetPasswordRequestComponent } from "../change-password/components/create-reset-password-request/create-reset-password-request.component";
 import { ClassifiersConfigurationFullDetailsComponent } from "../classifiers-configuration-full-details/components/classifiers-configuration-full-details.component";
 import { ClassifiersTabsComponent } from "../classifiers-tabs/components/classifiers-tabs.component";
+import { EvaluationResultsHistoryComponent } from "../evaluation-results-history/components/evaluation-results-history.component";
 
 const routes: Routes = [
   {
@@ -35,8 +35,8 @@ const routes: Routes = [
         component: ExperimentTabsComponent
       },
       {
-        path: 'classifiers-options-requests',
-        component: ClassifierOptionsRequestsComponent
+        path: 'evaluation-results-history',
+        component: EvaluationResultsHistoryComponent
       },
       {
         path: 'instances',

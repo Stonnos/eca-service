@@ -12,7 +12,6 @@ import { FormsModule } from "@angular/forms";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { FilterModule } from "./filter/filter.module";
 import { RequestStatusesStatisticsModule } from "./request-statuses-statistics/request-statuses-statistics.module";
-import { ClassifierOptionsRequestsModule } from "./classifier-options-requests/classifier-options-requests.module";
 import { CookieService } from "ngx-cookie-service";
 import { AuthModule } from "./auth/auth.module";
 import { ExperimentStatisticsModule } from "./experiment-statistics/experiment-statistics.module";
@@ -51,6 +50,7 @@ import { ClassifiersTabsModule } from "./classifiers-tabs/classifiers-tabs.modul
 import { AttributesModule } from "./attributes/attributes.module";
 import { CreateClassifierModule } from "./create-classifier/create-classifier.module";
 import { CreateOptimalClassifierModule } from "./create-optimal-classifier/create-optimal-classifier.module";
+import { EvaluationResultsHistoryModule } from "./evaluation-results-history/evaluation-results-history.module";
 
 export function eventSubscribe(eventHandler: EventHandler) {
   return () => eventHandler.eventSubscribe();
@@ -77,7 +77,6 @@ export function eventSubscribe(eventHandler: EventHandler) {
     ClassifiersConfigurationDetailsModule,
     ClassifiersConfigurationMenuModule,
     CreateClassifiersConfigurationModule,
-    ClassifierOptionsRequestsModule,
     RequestStatusesStatisticsModule,
     FilterModule,
     ExperimentErsReportModule,
@@ -108,7 +107,8 @@ export function eventSubscribe(eventHandler: EventHandler) {
     ClassifiersConfigurationFullDetailsModule,
     NotificationsCenterModule,
     ClassifiersStatisticsModule,
-    AttributesModule
+    AttributesModule,
+    EvaluationResultsHistoryModule
   ],
   providers: [
     CookieService,

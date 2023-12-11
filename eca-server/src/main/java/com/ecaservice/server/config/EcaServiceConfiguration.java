@@ -3,7 +3,6 @@ package com.ecaservice.server.config;
 import com.ecaservice.common.web.annotation.EnableGlobalExceptionHandler;
 import com.ecaservice.config.swagger.annotation.EnableOpenApi;
 import com.ecaservice.core.filter.annotation.EnableFilters;
-import com.ecaservice.core.form.template.annotation.EnableFormTemplates;
 import com.ecaservice.oauth2.annotation.Oauth2ResourceServer;
 import com.ecaservice.server.config.ers.ErsConfig;
 import com.ecaservice.server.model.entity.AbstractEvaluationEntity;
@@ -40,7 +39,6 @@ import java.util.concurrent.Executors;
 @EnableAsync
 @EnableGlobalExceptionHandler
 @EnableFilters
-@EnableFormTemplates
 @Oauth2ResourceServer
 @EntityScan(basePackageClasses = AbstractEvaluationEntity.class)
 @EnableJpaRepositories(basePackageClasses = EvaluationLogRepository.class)

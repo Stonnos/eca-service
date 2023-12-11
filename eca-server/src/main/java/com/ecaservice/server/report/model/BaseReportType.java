@@ -18,12 +18,7 @@ public enum BaseReportType {
     /**
      * Evaluation logs list report
      */
-    EVALUATION_LOGS("Отчет по классификаторам"),
-
-    /**
-     * Classifier options requests report
-     */
-    CLASSIFIERS_OPTIONS_REQUESTS("Отчет по оптимальным настройкам классификаторов");
+    EVALUATION_LOGS("Отчет по классификаторам");
 
     private final String description;
 

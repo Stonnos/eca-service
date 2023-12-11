@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import java.util.UUID;
 
 import static com.ecaservice.ers.TestHelperUtils.buildEvaluationResultsReport;
+import static com.ecaservice.ers.TestHelperUtils.createEvaluationResultsInfo;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -42,12 +43,52 @@ class EvaluationResultsMapperTest {
         assertThat(evaluationResultsInfo.getConfusionMatrix()).isNotNull();
         assertThat(evaluationResultsInfo.getConfusionMatrix()).hasSameSizeAs(
                 resultsRequest.getConfusionMatrix());
-        assertThat(evaluationResultsInfo.getClassifierOptionsInfo()).isNotNull();
+        assertThat(evaluationResultsInfo.getClassifierInfo()).isNotNull();
         assertThat(evaluationResultsInfo.getNumFolds().intValue()).isEqualTo(
                 resultsRequest.getEvaluationMethodReport().getNumFolds().intValue());
         assertThat(evaluationResultsInfo.getNumTests().intValue()).isEqualTo(
                 resultsRequest.getEvaluationMethodReport().getNumTests().intValue());
         assertThat(evaluationResultsInfo.getSeed().intValue()).isEqualTo(
                 resultsRequest.getEvaluationMethodReport().getSeed().intValue());
+    }
+
+    @Test
+    void testMapToEvaluationResultsHistory() {
+        var evaluationResultsInfo = createEvaluationResultsInfo();
+        var evaluationResultsHistoryDto =
+                evaluationResultsMapper.mapToEvaluationResultsHistory(evaluationResultsInfo);
+        assertThat(evaluationResultsHistoryDto).isNotNull();
+        assertThat(evaluationResultsHistoryDto.getEvaluationMethod().getValue()).isEqualTo(
+                evaluationResultsInfo.getEvaluationMethod().name());
+        assertThat(evaluationResultsHistoryDto.getEvaluationMethod().getDescription()).isEqualTo(
+                evaluationResultsInfo.getEvaluationMethod().getDescription());
+        assertThat(evaluationResultsHistoryDto.getNumFolds()).isEqualTo(evaluationResultsInfo.getNumFolds());
+        assertThat(evaluationResultsHistoryDto.getNumTests()).isEqualTo(evaluationResultsInfo.getNumTests());
+        assertThat(evaluationResultsHistoryDto.getSeed()).isEqualTo(evaluationResultsInfo.getSeed());
+        assertThat(evaluationResultsHistoryDto.getPctCorrect()).isEqualTo(
+                evaluationResultsInfo.getStatistics().getPctCorrect());
+        assertThat(evaluationResultsHistoryDto.getMaxAucValue()).isEqualTo(
+                evaluationResultsInfo.getStatistics().getMaxAucValue());
+        assertThat(evaluationResultsHistoryDto.getMeanAbsoluteError()).isEqualTo(
+                evaluationResultsInfo.getStatistics().getMeanAbsoluteError());
+        assertThat(evaluationResultsHistoryDto.getVarianceError()).isEqualTo(
+                evaluationResultsInfo.getStatistics().getVarianceError());
+        assertThat(evaluationResultsHistoryDto.getRootMeanSquaredError()).isEqualTo(
+                evaluationResultsInfo.getStatistics().getRootMeanSquaredError());
+        assertThat(evaluationResultsHistoryDto.getInstancesInfo()).isNotNull();
+        assertThat(evaluationResultsHistoryDto.getInstancesInfo().getRelationName()).isEqualTo(
+                evaluationResultsInfo.getInstancesInfo().getRelationName());
+        assertThat(evaluationResultsHistoryDto.getInstancesInfo().getNumInstances()).isEqualTo(
+                evaluationResultsInfo.getInstancesInfo().getNumInstances());
+        assertThat(evaluationResultsHistoryDto.getInstancesInfo().getClassName()).isEqualTo(
+                evaluationResultsInfo.getInstancesInfo().getClassName());
+        assertThat(evaluationResultsHistoryDto.getInstancesInfo().getNumAttributes()).isEqualTo(
+                evaluationResultsInfo.getInstancesInfo().getNumAttributes());
+        assertThat(evaluationResultsHistoryDto.getInstancesInfo().getNumInstances()).isEqualTo(
+                evaluationResultsInfo.getInstancesInfo().getNumInstances());
+        assertThat(evaluationResultsHistoryDto.getInstancesInfo().getNumClasses()).isEqualTo(
+                evaluationResultsInfo.getInstancesInfo().getNumClasses());
+        assertThat(evaluationResultsHistoryDto.getInstancesInfo().getCreatedDate()).isEqualTo(
+                evaluationResultsInfo.getInstancesInfo().getCreatedDate());
     }
 }

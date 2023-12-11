@@ -54,9 +54,6 @@ public class TestHelperUtils {
     private static final String CLASSIFIER_NAME = "Classifier";
     private static final String CLASSIFIER_DESCRIPTION = "description";
     private static final String OPTIONS = "options";
-    private static final String STATISTICS_PCT_CORRECT = "statistics.pctCorrect";
-    private static final String STATISTICS_MAX_AUC_VALUE = "statistics.maxAucValue";
-    private static final String STATISTICS_VARIANCE_ERROR = "statistics.varianceError";
     private static final String DATA_HASH = "3032e188204cb537f69fc7364f638641";
 
     /**
@@ -273,25 +270,14 @@ public class TestHelperUtils {
     /**
      * Creates classifier options info list.
      *
-     * @param classifierOptionsInfoList - classifiers options info list
      * @return classifier options info list
      */
-    public static ClassifierOptionsInfo buildClassifierOptionsInfo(Map<String, String> inputOptionsMap,
-                                                                   List<ClassifierOptionsInfo> classifierOptionsInfoList) {
+    public static ClassifierOptionsInfo buildClassifierOptionsInfo() {
         ClassifierOptionsInfo classifierOptionsInfo = new ClassifierOptionsInfo();
         classifierOptionsInfo.setClassifierName(CLASSIFIER_NAME);
         classifierOptionsInfo.setClassifierDescription(CLASSIFIER_DESCRIPTION);
         classifierOptionsInfo.setOptions(OPTIONS);
         return classifierOptionsInfo;
-    }
-
-    /**
-     * Creates classifier options info list.
-     *
-     * @return classifier options info list
-     */
-    public static ClassifierOptionsInfo buildClassifierOptionsInfo() {
-        return buildClassifierOptionsInfo(Collections.emptyMap(), Collections.emptyList());
     }
 
     /**
@@ -346,8 +332,8 @@ public class TestHelperUtils {
         EvaluationResultsInfo evaluationResultsInfo = new EvaluationResultsInfo();
         evaluationResultsInfo.setRequestId(UUID.randomUUID().toString());
         evaluationResultsInfo.setSaveDate(LocalDateTime.now());
-        evaluationResultsInfo.setInstances(instancesInfo);
-        evaluationResultsInfo.setClassifierOptionsInfo(classifierOptionsInfo);
+        evaluationResultsInfo.setInstancesInfo(instancesInfo);
+        evaluationResultsInfo.setClassifierInfo(classifierOptionsInfo);
         evaluationResultsInfo.setNumFolds(NUM_FOLDS);
         evaluationResultsInfo.setNumTests(NUM_TESTS);
         evaluationResultsInfo.setSeed(SEED);
@@ -356,6 +342,30 @@ public class TestHelperUtils {
         evaluationResultsInfo.getStatistics().setPctCorrect(pctCorrect);
         evaluationResultsInfo.getStatistics().setMaxAucValue(maxAucValue);
         evaluationResultsInfo.getStatistics().setVarianceError(varianceError);
+        return evaluationResultsInfo;
+    }
+
+    /**
+     * Creates evaluation results info.
+     *
+     * @return evaluation results info
+     */
+    public static EvaluationResultsInfo createEvaluationResultsInfo() {
+        EvaluationResultsInfo evaluationResultsInfo = new EvaluationResultsInfo();
+        evaluationResultsInfo.setInstancesInfo(buildInstancesInfo());
+        evaluationResultsInfo.setClassifierInfo(buildClassifierOptionsInfo());
+        evaluationResultsInfo.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
+        evaluationResultsInfo.setNumFolds(NUM_FOLDS);
+        evaluationResultsInfo.setNumTests(NUM_TESTS);
+        evaluationResultsInfo.setSeed(SEED);
+        evaluationResultsInfo.setStatistics(new StatisticsInfo());
+        evaluationResultsInfo.getStatistics().setPctCorrect(BigDecimal.TEN);
+        evaluationResultsInfo.getStatistics().setMaxAucValue(BigDecimal.ONE);
+        evaluationResultsInfo.getStatistics().setVarianceError(BigDecimal.ZERO);
+        evaluationResultsInfo.getStatistics().setMeanAbsoluteError(BigDecimal.ZERO);
+        evaluationResultsInfo.getStatistics().setRootMeanSquaredError(BigDecimal.ONE);
+        evaluationResultsInfo.setRequestId(UUID.randomUUID().toString());
+        evaluationResultsInfo.setSaveDate(LocalDateTime.now());
         return evaluationResultsInfo;
     }
 

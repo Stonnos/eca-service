@@ -28,14 +28,6 @@ export class EvaluationLogFilterFields {
   public static readonly PCT_CORRECT: string = "pctCorrect";
 }
 
-export class ClassifierOptionsRequestsFilterFields {
-  public static readonly REQUEST_ID: string = "requestId";
-  public static readonly RELATION_NAME: string = "instancesInfo.relationName";
-  public static readonly EVALUATION_METHOD: string = "evaluationMethod";
-  public static readonly REQUEST_DATE: string = "requestDate";
-  public static readonly RESPONSE_STATUS: string = "responseStatus";
-}
-
 export class ClassifiersConfigurationFilterFields {
   public static readonly CONFIGURATION_NAME: string = "configurationName";
   public static readonly CREATION_DATE: string = "creationDate";
@@ -94,4 +86,16 @@ export class InstancesFilterFields {
   public static readonly NUM_ATTRIBUTES: string = "numAttributes";
   public static readonly CREATED: string = "created";
   public static readonly CREATED_BY: string = "createdBy";
+}
+
+export class EvaluationResultsHistoryFilterFields {
+  public static readonly EVALUATION_METHOD: string = "evaluationMethod";
+  public static readonly CLASSIFIER_NAME: string = "classifierInfo.classifierName";
+  public static readonly RELATION_NAME: string = "instancesInfo.relationName";
+  public static readonly PCT_CORRECT: string = "statistics.pctCorrect";
+  public static readonly MEAN_ABSOLUTE_ERROR: string = "statistics.meanAbsoluteError";
+  public static readonly ROOT_MEAN_SQUARED_ERROR: string = "statistics.rootMeanSquaredError";
+  public static readonly VARIANCE_ERROR: string = "statistics.varianceError";
+  public static readonly MAX_AUC: string = "statistics.maxAucValue";
+  public static readonly SAVE_DATE: string = "saveDate";
 }

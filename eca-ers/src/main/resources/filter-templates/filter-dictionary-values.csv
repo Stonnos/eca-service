@@ -1,0 +1,18 @@
+id;label;value;filter_dictionary_id
+1;Алгоритм CART;CART;1
+2;Алгоритм C4.5;C45;1
+3;Алгоритм ID3;ID3;1
+4;Алгоритм CHAID;CHAID;1
+5;Алгоритм J48;J48;1
+6;Нейронная сеть (Многослойный персептрон);NeuralNetwork;1
+7;Алгоритм k - взвешенных ближайших соседей;KNearestNeighbours;1
+8;Логистическая регрессия;Logistic;1
+9;Алгоритм AdaBoost;AdaBoostClassifier;1
+10;Неоднородный ансамблевый алгоритм;HeterogeneousClassifier;1
+11;Модифицированный неоднородный ансамблевый алгоритм;ModifiedHeterogeneousClassifier;1
+12;Алгоритм Stacking;StackingClassifier;1
+13;Алгоритм Случайные леса;RandomForests;1
+14;Алгоритм Extra trees;ExtraTreesClassifier;1
+15;Алгоритм Случайные сети;RandomNetworks;1
+16;Использование обучающего множества;TRAINING_DATA;2
+17;V-блочная кросс-проверка;CROSS_VALIDATION;2

@@ -8,8 +8,8 @@
     "routerLink": "/dashboard/classifiers"
   },
   {
-    "label": "Оптимальные настройки классификаторов",
-    "routerLink": "/dashboard/classifiers-options-requests"
+    "label": "История результатов классификации",
+    "routerLink": "/dashboard/evaluation-results-history"
   },
   {
     "label": "Датасеты",

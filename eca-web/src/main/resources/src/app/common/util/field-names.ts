@@ -25,7 +25,7 @@ export class InstancesInfoDtoFields {
   public static readonly CLASS_NAME: string = "className";
 }
 
-export class AbstractEvaluationDtoFields {
+export class EvaluationMethodFields {
   public static readonly NUM_FOLDS: string = "numFolds";
   public static readonly NUM_TESTS: string = "numTests";
   public static readonly SEED: string = "seed";
@@ -49,15 +49,6 @@ export class EvaluationLogFields {
   public static readonly MODEL_PATH: string = "modelPath";
   public static readonly DELETED_DATE: string = "deletedDate";
   public static readonly PCT_CORRECT: string = "pctCorrect";
-}
-
-export class ClassifierOptionsRequestsFields {
-  public static readonly REQUEST_ID: string = "requestId";
-  public static readonly RELATION_NAME: string = "instancesInfo.relationName";
-  public static readonly CLASSIFIER_NAME: string = "classifierName";
-  public static readonly EVALUATION_METHOD_DESCRIPTION: string = "evaluationMethod.description";
-  public static readonly REQUEST_DATE: string = "requestDate";
-  public static readonly RESPONSE_STATUS_DESCRIPTION: string = "responseStatus.description";
 }
 
 export class ClassifierOptionsFields {
@@ -158,4 +149,16 @@ export class ClassifiersConfigurationHistoryFields {
 export class AttributeFields {
   public static readonly NAME: string = "name";
   public static readonly TYPE: string = "type.description";
+}
+
+export class EvaluationResultsHistoryFields {
+  public static readonly EVALUATION_METHOD_DESCRIPTION: string = "evaluationMethod.description";
+  public static readonly CLASSIFIER_DESCRIPTION: string = "classifierInfo.classifierDescription";
+  public static readonly RELATION_NAME: string = "instancesInfo.relationName";
+  public static readonly PCT_CORRECT: string = "pctCorrect";
+  public static readonly MEAN_ABSOLUTE_ERROR: string = "meanAbsoluteError";
+  public static readonly ROOT_MEAN_SQUARED_ERROR: string = "rootMeanSquaredError";
+  public static readonly VARIANCE_ERROR: string = "varianceError";
+  public static readonly MAX_AUC: string = "maxAucValue";
+  public static readonly SAVE_DATE: string = "saveDate";
 }

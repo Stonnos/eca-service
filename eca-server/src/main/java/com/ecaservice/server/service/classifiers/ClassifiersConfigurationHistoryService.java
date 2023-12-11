@@ -51,7 +51,7 @@ public class ClassifiersConfigurationHistoryService {
     private final FilterTemplateService filterTemplateService;
     private final ClassifiersConfigurationHistoryMapper classifiersConfigurationHistoryMapper;
     private final MessageTemplateProcessor messageTemplateProcessor;
-    private final ClassifiersTemplateProvider classifiersTemplateProvider;
+    private final ClassifiersFormTemplateProvider classifiersFormTemplateProvider;
     private final ClassifiersConfigurationRepository classifiersConfigurationRepository;
     private final ClassifiersConfigurationHistoryRepository classifiersConfigurationHistoryRepository;
 
@@ -178,7 +178,7 @@ public class ClassifiersConfigurationHistoryService {
 
     private Map<String, Object> buildClassifierOptionsParams(
             ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel) {
-        var classifierFormTemplate = classifiersTemplateProvider.getClassifierTemplateByClass(
+        var classifierFormTemplate = classifiersFormTemplateProvider.getClassifierTemplateByClass(
                 classifierOptionsDatabaseModel.getOptionsName());
         return Map.of(
                 CLASSIFIER_OPTIONS_ID, classifierOptionsDatabaseModel.getId(),

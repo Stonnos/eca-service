@@ -17,6 +17,7 @@ export class FilterService {
 
   private ecaServerUrl = environment.serverUrl + '/filter-templates';
   private auditLogsUrl = environment.auditLogUrl + '/audit-log/filter-templates';
+  private ersUrl = environment.ersUrl + '/evaluation-results/filter-templates';
 
   public constructor(private http: HttpClient) {
   }
@@ -67,6 +68,14 @@ export class FilterService {
       'Authorization': Utils.getBearerTokenHeader()
     });
     return this.http.get<FilterFieldDto[]>(this.auditLogsUrl + '/fields', { headers: headers });
+  }
+
+  public getEvaluationResultsHistoryFilterFields(): Observable<FilterFieldDto[]> {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/json; charset=utf-8',
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    return this.http.get<FilterFieldDto[]>(this.ersUrl + '/fields', { headers: headers });
   }
 
   public getClassifiersConfigurationHistoryFilterFields(): Observable<FilterFieldDto[]> {

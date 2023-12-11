@@ -1,0 +1,82 @@
+{
+  "content": [
+    {
+      "id": 2643,
+      "classifierInfo": {
+        "classifierName": "DecisionTreeOptions",
+        "classifierDescription": "Алгоритм CART",
+        "classifierOptionsJson": "{\"type\":\"decision_tree\",\"decisionTreeType\":\"CART\",\"minObj\":2,\"maxDepth\":0,\"randomTree\":false,\"numRandomAttr\":0,\"useBinarySplits\":true,\"useRandomSplits\":false,\"numRandomSplits\":1,\"seed\":1,\"alpha\":null}",
+        "metaClassifier": false,
+        "inputOptions": [
+          {
+            "optionName": "Алгоритм построения дерева",
+            "optionValue": "Алгоритм CART"
+          },
+          {
+            "optionName": "Минимальное число объектов в листе",
+            "optionValue": "2"
+          },
+          {
+            "optionName": "Максимальная глубина дерева",
+            "optionValue": "0"
+          },
+          {
+            "optionName": "Бинарное дерево",
+            "optionValue": "true"
+          },
+          {
+            "optionName": "Случайное дерево",
+            "optionValue": "false"
+          },
+          {
+            "optionName": "Число случайных атрибутов",
+            "optionValue": "0"
+          },
+          {
+            "optionName": "Случайные расщепления атрибута",
+            "optionValue": "false"
+          },
+          {
+            "optionName": "Число случайных расщеплений атрибута",
+            "optionValue": "1"
+          },
+          {
+            "optionName": "Начальное значение (seed)",
+            "optionValue": "1"
+          }
+        ],
+        "individualClassifiers": null
+      },
+      "instancesInfo": {
+        "id": 1,
+        "relationName": "glass",
+        "numInstances": 214,
+        "numAttributes": 10,
+        "numClasses": 6,
+        "className": "type",
+        "createdDate": "2023-11-16 18:57:14"
+      },
+      "evaluationMethod": {
+        "value": "CROSS_VALIDATION",
+        "description": "V-блочная кросс-проверка"
+      },
+      "numFolds": 10,
+      "numTests": 1,
+      "seed": 1,
+      "saveDate": "2023-12-07 14:49:26",
+      "numTestInstances": 214,
+      "numCorrect": 154,
+      "numIncorrect": 60,
+      "pctCorrect": 71.9626,
+      "pctIncorrect": 28.0374,
+      "meanAbsoluteError": 0.109,
+      "rootMeanSquaredError": 0.2884,
+      "maxAucValue": 0.8824,
+      "varianceError": 0.0066,
+      "confidenceIntervalLowerBound": 0.2224,
+      "confidenceIntervalUpperBound": 0.3384
+    }
+  ],
+  "page": 0,
+  "totalCount": 79
+}

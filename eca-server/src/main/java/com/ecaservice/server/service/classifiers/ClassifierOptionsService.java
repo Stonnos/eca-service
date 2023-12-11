@@ -49,8 +49,8 @@ import static com.ecaservice.server.util.ClassifierOptionsHelper.parseOptions;
 public class ClassifierOptionsService {
 
     private final UserService userService;
-    private final ClassifierOptionsProcessor classifierOptionsProcessor;
-    private final ClassifiersTemplateProvider classifiersTemplateProvider;
+    private final ClassifierOptionsInfoProcessor classifierOptionsInfoProcessor;
+    private final ClassifiersFormTemplateProvider classifiersFormTemplateProvider;
     private final ClassifierOptionsDatabaseModelMapper classifierOptionsDatabaseModelMapper;
     private final ClassifiersConfigurationHistoryService classifiersConfigurationHistoryService;
     private final ClassifiersConfigurationRepository classifiersConfigurationRepository;
@@ -201,11 +201,11 @@ public class ClassifierOptionsService {
             ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel) {
         var classifierOptionsDto = classifierOptionsDatabaseModelMapper.map(classifierOptionsDatabaseModel);
         var classifierOptions = parseOptions(classifierOptionsDto.getConfig());
-        var inputOptions = classifierOptionsProcessor.processInputOptions(classifierOptions);
+        var inputOptions = classifierOptionsInfoProcessor.processInputOptions(classifierOptions);
         var classifierFormTemplate =
-                classifiersTemplateProvider.getClassifierTemplateByClass(classifierOptionsDto.getOptionsName());
+                classifiersFormTemplateProvider.getClassifierTemplateByClass(classifierOptionsDto.getOptionsName());
         String optionsDescription =
-                classifierOptionsProcessor.processTemplateTitle(classifierFormTemplate, classifierOptions);
+                classifierOptionsInfoProcessor.processTemplateTitle(classifierFormTemplate, classifierOptions);
         classifierOptionsDto.setOptionsDescription(optionsDescription);
         classifierOptionsDto.setInputOptions(inputOptions);
         return classifierOptionsDto;

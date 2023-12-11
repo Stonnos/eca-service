@@ -22,11 +22,6 @@ id;field_name;sort_template_id
 21;startDate;2
 22;endDate;2
 23;deletedDate;2
-24;requestId;3
-25;instancesInfo.relationName;3
-26;evaluationMethod;3
-27;requestDate;3
-28;responseStatus;3
 29;configurationName;4
 30;creationDate;4
 31;createdBy;4

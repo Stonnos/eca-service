@@ -227,8 +227,6 @@ __string__
 * EXPERIMENTS
 
 * EVALUATION_LOGS
-
-* CLASSIFIERS_OPTIONS_REQUESTS
 |===
 
 *Api responses*
@@ -2453,209 +2451,6 @@ a|
 ----
 |===
 
-== Finds classifiers options requests models with specified options
-
-__POST__ */classifiers-options-requests* - Finds classifiers options requests models with specified options
-
-*Security requirement*
-
-[cols="^50%,^50%",options="header"]
-|===
-|*Name*|*Scopes*
-|
-<<EcaAuth>>
-a|
-
-* web
-
-|===
-
-*Request body*
-
-[width=100%]
-|===
-|*Content type*|*Required*|*Schema*|*Example*
-|*application/json*
-|true
-|
-<<PageRequestDto>>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-a|
-[source,json]
-----
-{
-  "page" : 0,
-  "size" : 25,
-  "sortField" : "requestDate",
-  "ascending" : false,
-  "searchQuery" : "",
-  "filters" : [ {
-    "name" : "evaluationMethod",
-    "values" : [ "CROSS_VALIDATION" ],
-    "matchMode" : "EQUALS"
-  }, {
-    "name" : "responseStatus",
-    "values" : [ "SUCCESS" ],
-    "matchMode" : "EQUALS"
-  }, {
-    "name" : "requestDate",
-    "values" : [ "2021-07-16" ],
-    "matchMode" : "RANGE"
-  } ]
-}
-----
-|===
-
-
-
-*Api responses*
-[width=100%]
-|===
-|*Code*|*Description*|*Content type*|*Schema*|*Example*
-|200
-|OK
-|*application/json*
-|
-<<ClassifierOptionsRequestsPageDto>>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-a|
-[source,json]
-----
-{
-  "content" : [ {
-    "requestDate" : "2021-07-01 14:00:00",
-    "requestId" : "1d2de514-3a87-4620-9b97-c260e24340de",
-    "instancesInfo" : {
-      "id" : 1,
-      "relation" : "glass",
-      "numInstances" : 214,
-      "numAttributes" : 10,
-      "numClasses" : 6,
-      "className" : "class",
-      "createdDate" : "2021-07-01 14:00:00"
-    },
-    "evaluationMethod" : {
-      "value" : "CROSS_VALIDATION",
-      "description" : "V-блочная кросс-проверка"
-    },
-    "numFolds" : 10,
-    "numTests" : 1,
-    "seed" : 1,
-    "responseStatus" : {
-      "value" : "SUCCESS",
-      "description" : "Успешно"
-    },
-    "classifierInfo" : {
-      "classifierName" : "RandomForests",
-      "classifierDescription" : "Алгоритм Случайные леса",
-      "classifierOptionsJson" : "<<json config>>",
-      "metaClassifier" : false,
-      "inputOptions" : [ {
-        "optionName" : "Алгоритм построения дерева",
-        "optionValue" : "Алгоритм CART"
-      }, {
-        "optionName" : "Число деревьев",
-        "optionValue" : "10"
-      }, {
-        "optionName" : "Минимальное число объектов в листе",
-        "optionValue" : "2"
-      }, {
-        "optionName" : "Максимальная глубина дерева",
-        "optionValue" : "0"
-      }, {
-        "optionName" : "Число случайных атрибутов",
-        "optionValue" : "3"
-      }, {
-        "optionName" : "Число потоков",
-        "optionValue" : "1"
-      }, {
-        "optionName" : "Начальное значение (seed)",
-        "optionValue" : "1"
-      } ],
-      "individualClassifiers" : null
-    }
-  } ],
-  "page" : 0,
-  "totalCount" : 1
-}
-----
-|401
-|Not authorized
-|*application/json*
-|-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|400
-|Bad request
-|*application/json*
-|
-__array__
-<<<ValidationErrorDto>>
->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-a|
-[source,json]
-----
-[ {
-  "fieldName" : "page",
-  "code" : "Min",
-  "errorMessage" : "must be greater than or equal to 0"
-}, {
-  "fieldName" : "size",
-  "code" : "Min",
-  "errorMessage" : "must be greater than or equal to 1"
-} ]
-----
-|===
-
 == Gets experiment filter fields
 
 __GET__ */filter-templates/experiment* - Gets experiment filter fields
@@ -2992,15 +2787,63 @@ a|
 }, {
   "fieldName" : "classifierInfo.classifierName",
   "description" : "Классификатор",
-  "fieldOrder" : 2,
-  "filterFieldType" : "TEXT",
-  "matchMode" : "LIKE",
-  "multiple" : false,
-  "dictionary" : null
+  "fieldOrder" : 1,
+  "filterFieldType" : "REFERENCE",
+  "matchMode" : "EQUALS",
+  "multiple" : true,
+  "dictionary" : {
+    "name" : "classifier",
+    "values" : [ {
+      "label" : "Алгоритм CART",
+      "value" : "CART"
+    }, {
+      "label" : "Алгоритм C4.5",
+      "value" : "C45"
+    }, {
+      "label" : "Алгоритм ID3",
+      "value" : "ID3"
+    }, {
+      "label" : "Алгоритм CHAID",
+      "value" : "CHAID"
+    }, {
+      "label" : "Алгоритм J48",
+      "value" : "J48"
+    }, {
+      "label" : "Нейронная сеть (Многослойный персептрон)",
+      "value" : "NeuralNetwork"
+    }, {
+      "label" : "Алгоритм k - взвешенных ближайших соседей",
+      "value" : "KNearestNeighbours"
+    }, {
+      "label" : "Логистическая регрессия",
+      "value" : "Logistic"
+    }, {
+      "label" : "Алгоритм AdaBoost",
+      "value" : "AdaBoostClassifier"
+    }, {
+      "label" : "Неоднородный ансамблевый алгоритм",
+      "value" : "HeterogeneousClassifier"
+    }, {
+      "label" : "Модифицированный неоднородный ансамблевый алгоритм",
+      "value" : "ModifiedHeterogeneousClassifier"
+    }, {
+      "label" : "Алгоритм Stacking",
+      "value" : "StackingClassifier"
+    }, {
+      "label" : "Алгоритм Случайные леса",
+      "value" : "RandomForests"
+    }, {
+      "label" : "Алгоритм Extra trees",
+      "value" : "ExtraTreesClassifier"
+    }, {
+      "label" : "Алгоритм Случайные сети",
+      "value" : "RandomNetworks"
+    } ]
+  }
 }, {
   "fieldName" : "instancesInfo.id",
   "description" : "Обучающая выборка",
-  "fieldOrder" : 3,
+  "fieldOrder" : 2,
   "filterFieldType" : "LAZY_REFERENCE",
   "matchMode" : "EQUALS",
   "multiple" : false,
@@ -3008,7 +2851,7 @@ a|
 }, {
   "fieldName" : "evaluationMethod",
   "description" : "Метод оценки точности",
-  "fieldOrder" : 4,
+  "fieldOrder" : 3,
   "filterFieldType" : "REFERENCE",
   "matchMode" : "EQUALS",
   "multiple" : false,
@@ -3025,7 +2868,7 @@ a|
 }, {
   "fieldName" : "requestStatus",
   "description" : "Статус заявки",
-  "fieldOrder" : 5,
+  "fieldOrder" : 4,
   "filterFieldType" : "REFERENCE",
   "matchMode" : "EQUALS",
   "multiple" : false,
@@ -3051,7 +2894,7 @@ a|
 }, {
   "fieldName" : "creationDate",
   "description" : "Дата создания заявки",
-  "fieldOrder" : 6,
+  "fieldOrder" : 5,
   "filterFieldType" : "DATE",
   "matchMode" : "RANGE",
   "multiple" : true,
@@ -3232,137 +3075,6 @@ a|
   "fieldName" : "createdAt",
   "description" : "Дата события",
   "fieldOrder" : 2,
-  "filterFieldType" : "DATE",
-  "matchMode" : "RANGE",
-  "multiple" : true,
-  "dictionary" : null
-} ]
-----
-|401
-|Not authorized
-|*application/json*
-|-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|===
-
-== Gets classifier options request filter fields
-
-__GET__ */filter-templates/classifier-options-request* - Gets classifier options request filter fields
-
-*Security requirement*
-
-[cols="^50%,^50%",options="header"]
-|===
-|*Name*|*Scopes*
-|
-<<EcaAuth>>
-a|
-
-* web
-
-|===
-
-
-
-*Api responses*
-[width=100%]
-|===
-|*Code*|*Description*|*Content type*|*Schema*|*Example*
-|200
-|OK
-|*application/json*
-|
-__array__
-<<<FilterFieldDto>>
->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-a|
-[source,json]
-----
-[ {
-  "fieldName" : "requestId",
-  "description" : "UUID заявки",
-  "fieldOrder" : 0,
-  "filterFieldType" : "TEXT",
-  "matchMode" : "LIKE",
-  "multiple" : false,
-  "dictionary" : null
-}, {
-  "fieldName" : "instancesInfo.id",
-  "description" : "Обучающая выборка",
-  "fieldOrder" : 1,
-  "filterFieldType" : "LAZY_REFERENCE",
-  "matchMode" : "EQUALS",
-  "multiple" : false,
-  "dictionary" : null
-}, {
-  "fieldName" : "evaluationMethod",
-  "description" : "Метод оценки точности",
-  "fieldOrder" : 2,
-  "filterFieldType" : "REFERENCE",
-  "matchMode" : "EQUALS",
-  "multiple" : false,
-  "dictionary" : {
-    "name" : "evaluationMethod",
-    "values" : [ {
-      "label" : "Использование обучающего множества",
-      "value" : "TRAINING_DATA"
-    }, {
-      "label" : "V-блочная кросс-проверка",
-      "value" : "CROSS_VALIDATION"
-    } ]
-  }
-}, {
-  "fieldName" : "responseStatus",
-  "description" : "Статус ответа от ERS",
-  "fieldOrder" : 3,
-  "filterFieldType" : "REFERENCE",
-  "matchMode" : "EQUALS",
-  "multiple" : false,
-  "dictionary" : {
-    "name" : "ersResponseStatus",
-    "values" : [ {
-      "label" : "Успешно",
-      "value" : "SUCCESS"
-    }, {
-      "label" : "Заявка с таким UUID уже существует",
-      "value" : "DUPLICATE_REQUEST_ID"
-    }, {
-      "label" : "Ошибка",
-      "value" : "ERROR"
-    }, {
-      "label" : "Не найдена обучающая выборка",
-      "value" : "DATA_NOT_FOUND"
-    }, {
-      "label" : "Не найдены оптимальные конфигурации моделей",
-      "value" : "RESULTS_NOT_FOUND"
-    } ]
-  }
-}, {
-  "fieldName" : "requestDate",
-  "description" : "Дата отправки запроса в ERS",
-  "fieldOrder" : 4,
   "filterFieldType" : "DATE",
   "matchMode" : "RANGE",
   "multiple" : true,
@@ -10618,265 +10330,6 @@ __string__
 * TRAINING_DATA
 
 * CROSS_VALIDATION
-|===
-=== ClassifierOptionsRequestDto
-:table-caption: Table
-.ERS classifier options request model
-[width=100%]
-|===
-|*Name*|*Description*|*Schema*
-|*requestDate*
-|ERS request date
-a|
-__string__
-
-
-
-
-*Max. length*: 19
-
-
-
-
-
-
-
-
-
-
-|*requestId*
-|Request id
-a|
-__string__
-
-
-
-
-*Max. length*: 36
-
-
-
-
-
-
-
-
-
-
-|*instancesInfo*
-|-
-a|
-<<InstancesInfoDto>>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*evaluationMethod*
-|-
-a|
-<<EnumDto>>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*numFolds*
-|Folds number for k * V cross - validation method
-a|
-__integer__
-__(int32)__
-
-
-
-
-
-
-*Minimum*: 2*
-
-*Maximum*: 10*
-
-
-
-
-
-
-
-
-|*numTests*
-|Tests number for k * V cross - validation method
-a|
-__integer__
-__(int32)__
-
-
-
-
-
-
-*Minimum*: 1*
-
-*Maximum*: 10*
-
-
-
-
-
-
-
-
-|*seed*
-|Seed value for k * V cross - validation method
-a|
-__integer__
-__(int32)__
-
-
-
-
-
-
-*Minimum*: -2 147 483 648*
-
-*Maximum*: 2 147 483 647*
-
-
-
-
-
-
-
-
-|*responseStatus*
-|-
-a|
-<<EnumDto>>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*classifierInfo*
-|-
-a|
-<<ClassifierInfoDto>>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|===
-=== ClassifierOptionsRequestsPageDto
-:table-caption: Table
-.Classifier options requests page dto
-[width=100%]
-|===
-|*Name*|*Description*|*Schema*
-|*content*
-|-
-a|
-__array__
-<<<ClassifierOptionsRequestDto>>
->
-
-
-
-
-
-
-
-
-
-
-*Max. items*: 100
-
-
-
-
-|*page*
-|Page number
-a|
-__integer__
-__(int32)__
-
-
-
-
-
-
-*Minimum*: 0*
-
-*Maximum*: 2 147 483 647*
-
-
-
-
-
-
-
-
-|*totalCount*
-|Total elements count in all pages
-a|
-__integer__
-__(int64)__
-
-
-
-
-
-
-*Minimum*: 0*
-
-*Maximum*: 9 223 372 036 854 775 807*
-
-
-
-
-
-
-
-
 |===
 === FilterDictionaryDto
 :table-caption: Table

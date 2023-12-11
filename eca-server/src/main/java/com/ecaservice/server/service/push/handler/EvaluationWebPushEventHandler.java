@@ -2,8 +2,8 @@ package com.ecaservice.server.service.push.handler;
 
 import com.ecaservice.server.event.model.push.EvaluationWebPushEvent;
 import com.ecaservice.server.model.entity.EvaluationLog;
-import com.ecaservice.server.service.classifiers.ClassifierOptionsProcessor;
-import com.ecaservice.server.service.classifiers.ClassifiersTemplateProvider;
+import com.ecaservice.server.service.classifiers.ClassifierOptionsInfoProcessor;
+import com.ecaservice.server.service.classifiers.ClassifiersFormTemplateProvider;
 import com.ecaservice.server.service.push.EvaluationPushPropertiesHandler;
 import com.ecaservice.server.service.push.PushMessageProcessor;
 import com.ecaservice.server.service.push.context.EvaluationPushMessageContext;
@@ -23,26 +23,26 @@ import static com.ecaservice.server.util.ClassifierOptionsHelper.parseOptions;
 @Component
 public class EvaluationWebPushEventHandler extends AbstractUserPushNotificationEventHandler<EvaluationWebPushEvent> {
 
-    private final ClassifiersTemplateProvider classifiersTemplateProvider;
-    private final ClassifierOptionsProcessor classifierOptionsProcessor;
+    private final ClassifiersFormTemplateProvider classifiersFormTemplateProvider;
+    private final ClassifierOptionsInfoProcessor classifierOptionsInfoProcessor;
     private final EvaluationPushPropertiesHandler evaluationPushPropertiesHandler;
     private final PushMessageProcessor pushMessageProcessor;
 
     /**
      * Constructor with parameters.
      *
-     * @param classifiersTemplateProvider     - classifier template provider
-     * @param classifierOptionsProcessor      - classifier options processor
+     * @param classifiersFormTemplateProvider - classifier template provider
+     * @param classifierOptionsInfoProcessor  - classifier options processor
      * @param evaluationPushPropertiesHandler - evaluation push properties handler
      * @param pushMessageProcessor            - evaluation push message handler
      */
-    public EvaluationWebPushEventHandler(ClassifiersTemplateProvider classifiersTemplateProvider,
-                                         ClassifierOptionsProcessor classifierOptionsProcessor,
+    public EvaluationWebPushEventHandler(ClassifiersFormTemplateProvider classifiersFormTemplateProvider,
+                                         ClassifierOptionsInfoProcessor classifierOptionsInfoProcessor,
                                          EvaluationPushPropertiesHandler evaluationPushPropertiesHandler,
                                          PushMessageProcessor pushMessageProcessor) {
         super(EvaluationWebPushEvent.class);
-        this.classifiersTemplateProvider = classifiersTemplateProvider;
-        this.classifierOptionsProcessor = classifierOptionsProcessor;
+        this.classifiersFormTemplateProvider = classifiersFormTemplateProvider;
+        this.classifierOptionsInfoProcessor = classifierOptionsInfoProcessor;
         this.evaluationPushPropertiesHandler = evaluationPushPropertiesHandler;
         this.pushMessageProcessor = pushMessageProcessor;
     }
@@ -76,7 +76,7 @@ public class EvaluationWebPushEventHandler extends AbstractUserPushNotificationE
     private String getClassifierDescription(EvaluationLog evaluationLog) {
         var classifierInfo = evaluationLog.getClassifierInfo();
         var classifierOptions = parseOptions(classifierInfo.getClassifierOptions());
-        var classifierTemplate = classifiersTemplateProvider.getTemplate(classifierOptions);
-        return classifierOptionsProcessor.processTemplateTitle(classifierTemplate, classifierOptions);
+        var classifierTemplate = classifiersFormTemplateProvider.getTemplate(classifierOptions);
+        return classifierOptionsInfoProcessor.processTemplateTitle(classifierTemplate, classifierOptions);
     }
 }

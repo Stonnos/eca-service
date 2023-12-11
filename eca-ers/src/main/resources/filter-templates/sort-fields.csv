@@ -1,0 +1,12 @@
+id;field_name;sort_template_id
+1;saveDate;1
+2;instancesInfo.relationName;1
+3;evaluationMethod;1
+4;classifierInfo.classifierName;1
+5;statistics.pctCorrect;1
+6;statistics.meanAbsoluteError;1
+7;statistics.rootMeanSquaredError;1
+8;statistics.maxAucValue;1
+9;statistics.varianceError;1
+10;relationName;2
+11;createdDate;2
