@@ -127,7 +127,7 @@ experiment:
     numIterations: 25
     numBestClassifiers: 4
     multiThreadModeEnabled: true
-    numThreads:
+    numThreads: 10
     numFoldsForStacking: 10
 
 ers:
