@@ -87,7 +87,7 @@ public class ClassifierOptionsHelper {
     public static ClassifierOptions parseOptions(InputStream inputStream) {
         try {
             return objectMapper.readValue(inputStream, ClassifierOptions.class);
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             throw new ClassifierOptionsException(ex.getMessage());
         }
     }

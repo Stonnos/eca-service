@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.google.common.collect.Iterables;
 import lombok.experimental.UtilityClass;
 import org.springframework.core.MethodParameter;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
@@ -43,26 +42,24 @@ public class ExceptionResponseHandler {
      * Handles validation error.
      *
      * @param ex -  method argument not valid exception
-     * @return response entity
+     * @return validation errors list
      */
-    public static ResponseEntity<List<ValidationErrorDto>> handleMethodArgumentNotValid(
-            MethodArgumentNotValidException ex) {
-        var errors = ex.getBindingResult().getAllErrors()
+    public static List<ValidationErrorDto> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
+        return ex.getBindingResult().getAllErrors()
                 .stream()
                 .map(FieldError.class::cast)
                 .map(fieldError -> new ValidationErrorDto(fieldError.getField(), fieldError.getCode(),
                         fieldError.getDefaultMessage())).collect(Collectors.toList());
-        return ResponseEntity.badRequest().body(errors);
     }
 
     /**
      * Handles constraint violation error.
      *
      * @param ex - constraint violation exception
-     * @return response entity
+     * @return validation errors list
      */
-    public static ResponseEntity<List<ValidationErrorDto>> handleConstraintViolation(ConstraintViolationException ex) {
-        var validationErrors = ex.getConstraintViolations().stream()
+    public static List<ValidationErrorDto> handleConstraintViolation(ConstraintViolationException ex) {
+        return ex.getConstraintViolations().stream()
                 .map(constraintViolation -> {
                     var node = Iterables.getLast(constraintViolation.getPropertyPath());
                     var validationErrorDto = new ValidationErrorDto();
@@ -75,7 +72,6 @@ public class ExceptionResponseHandler {
                     validationErrorDto.setErrorMessage(constraintViolation.getMessage());
                     return validationErrorDto;
                 }).collect(Collectors.toList());
-        return ResponseEntity.badRequest().body(validationErrors);
     }
 
     /**
@@ -84,8 +80,7 @@ public class ExceptionResponseHandler {
      * @param ex - http message not readable exception
      * @return validation errors
      */
-    public static ResponseEntity<List<ValidationErrorDto>> handleHttpMessageNotReadable(
-            HttpMessageNotReadableException ex) {
+    public static List<ValidationErrorDto> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
         List<ValidationErrorDto> validationErrors = new ArrayList<>();
         if (ex.getCause() instanceof InvalidFormatException) {
             var invalidFormatException = (InvalidFormatException) ex.getCause();
@@ -100,32 +95,30 @@ public class ExceptionResponseHandler {
             validationErrorDto.setErrorMessage(ex.getMessage());
             validationErrors.add(validationErrorDto);
         }
-        return ResponseEntity.badRequest().body(validationErrors);
+        return validationErrors;
     }
 
     /**
      * Handles bind error.
      *
      * @param ex -  bind exception
-     * @return response entity
+     * @return validation errors list
      */
-    public static ResponseEntity<List<ValidationErrorDto>> handleBindException(BindException ex) {
-        var errors = ex.getAllErrors()
+    public static List<ValidationErrorDto> handleBindException(BindException ex) {
+        return ex.getAllErrors()
                 .stream()
                 .map(FieldError.class::cast)
                 .map(fieldError -> new ValidationErrorDto(fieldError.getField(), fieldError.getCode(),
                         fieldError.getDefaultMessage())).collect(Collectors.toList());
-        return ResponseEntity.badRequest().body(errors);
     }
 
     /**
      * Handles method argument type mismatch exception.
      *
      * @param ex - exception object
-     * @return response entity
+     * @return validation errors list
      */
-    public static ResponseEntity<List<ValidationErrorDto>> handleMethodArgumentTypeMismatchException(
-            MethodArgumentTypeMismatchException ex) {
+    public static List<ValidationErrorDto> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex) {
         var validationErrorDto = new ValidationErrorDto();
         validationErrorDto.setCode(ex.getErrorCode());
         String fieldName = Optional.of(ex.getParameter())
@@ -133,36 +126,35 @@ public class ExceptionResponseHandler {
                 .orElse(null);
         validationErrorDto.setFieldName(fieldName);
         validationErrorDto.setErrorMessage(ex.getMessage());
-        return ResponseEntity.badRequest().body(Collections.singletonList(validationErrorDto));
+        return Collections.singletonList(validationErrorDto);
     }
 
     /**
      * Handles validation error exception.
      *
      * @param ex - exception object
-     * @return response entity
+     * @return validation errors list
      */
-    public static ResponseEntity<List<ValidationErrorDto>> handleValidationErrorException(ValidationErrorException ex) {
+    public static List<ValidationErrorDto> handleValidationErrorException(ValidationErrorException ex) {
         var validationErrorDto = new ValidationErrorDto();
         String code = Optional.ofNullable(ex.getErrorDetails()).map(ErrorDetails::getCode).orElse(null);
         validationErrorDto.setCode(code);
         validationErrorDto.setFieldName(ex.getFieldName());
         validationErrorDto.setErrorMessage(ex.getMessage());
-        return ResponseEntity.badRequest().body(Collections.singletonList(validationErrorDto));
+        return Collections.singletonList(validationErrorDto);
     }
 
     /**
      * Handles max upload size exceeded error.
      *
      * @param ex - exception object
-     * @return response entity
+     * @return validation errors list
      */
-    public static ResponseEntity<List<ValidationErrorDto>> handleMaxUploadSizeExceededException(
-            MaxUploadSizeExceededException ex) {
+    public static List<ValidationErrorDto> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex) {
         var validationError = new ValidationErrorDto();
         validationError.setCode(CommonErrorCode.MAX_UPLOAD_SIZE_EXCEEDED_CODE.getCode());
         validationError.setErrorMessage(ex.getMessage());
-        return ResponseEntity.badRequest().body(Collections.singletonList(validationError));
+        return Collections.singletonList(validationError);
     }
 
     private static String getPropertyPath(List<JsonMappingException.Reference> references) {

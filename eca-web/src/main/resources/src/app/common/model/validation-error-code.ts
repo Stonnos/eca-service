@@ -21,4 +21,6 @@ export class ValidationErrorCode {
   public static readonly INSTANCES_NOT_FOUND: string = 'InstancesNotFound';
   public static readonly NOT_SAFE_PASSWORD: string = 'NotSafePassword';
   public static readonly CLASSIFIER_OPTIONS_NOT_FOUND: string = 'ClassifierOptionsNotFound';
+  public static readonly INVALID_FORMAT: string = 'InvalidFormat';
+  public static readonly INTERNAL_ERROR: string = 'InternalError';
 }
