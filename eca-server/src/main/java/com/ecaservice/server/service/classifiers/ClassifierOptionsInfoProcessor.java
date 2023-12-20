@@ -49,16 +49,6 @@ public class ClassifierOptionsInfoProcessor {
     }
 
     /**
-     * Processes classifier options.
-     *
-     * @param classifierOptions - classifier options
-     * @return classifier info dto
-     */
-    public ClassifierInfoDto processClassifierOptions(ClassifierOptions classifierOptions) {
-        return classifierOptionsProcessor.processClassifierOptions(classifierOptions);
-    }
-
-    /**
      * Processes template title.
      *
      * @param formTemplateDto   - form template dto
