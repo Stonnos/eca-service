@@ -3,6 +3,7 @@ package com.ecaservice.server.controller.web;
 import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.common.web.error.CommonErrorCode;
+import com.ecaservice.common.web.exception.ValidationErrorException;
 import com.ecaservice.server.event.model.push.AddClassifierOptionsPushEvent;
 import com.ecaservice.server.event.model.push.DeleteClassifierOptionsPushEvent;
 import com.ecaservice.server.exception.ClassifierOptionsException;
@@ -206,20 +207,20 @@ public class ClassifierOptionsController {
             pushAddOptionsEvent(configurationId, classifierOptionsDto);
             classifierOptionsResultDto.setId(classifierOptionsDto.getId());
             classifierOptionsResultDto.setSuccess(true);
-        } catch (ClassifierOptionsException ex) {
-            log.error("Invalid classifier options file [{}] format for configuration id [{}]: {}",
-                    configurationId, classifiersOptionsFile.getOriginalFilename(), ex.getMessage());
-            var validationErrorDto =
-                    buildValidationError(CommonErrorCode.INVALID_FORMAT_CODE, "Invalid file format");
+        } catch (ValidationErrorException ex) {
+            log.error("Validation error [{}] for classifier options file [{}], configuration id [{}]: {}",
+                    ex.getErrorDetails().getCode(), classifiersOptionsFile.getOriginalFilename(), configurationId,
+                    ex.getMessage());
+            var validationErrorDto = buildValidationError(ex.getErrorDetails(), ex.getMessage());
             classifierOptionsResultDto.setValidationErrors(Collections.singletonList(validationErrorDto));
         } catch (ConstraintViolationException ex) {
             log.error("Constraint violation error while save options file [{}] for configuration id [{}]: {}",
-                    configurationId, classifiersOptionsFile.getOriginalFilename(), ex.getMessage());
+                    classifiersOptionsFile.getOriginalFilename(), configurationId, ex.getMessage());
             var validationErrors = handleConstraintViolation(ex);
             classifierOptionsResultDto.setValidationErrors(validationErrors);
         } catch (Exception ex) {
             log.error("There was an error while save classifier options file [{}] for configuration id [{}]: {}",
-                    configurationId, classifiersOptionsFile.getOriginalFilename(), ex.getMessage());
+                    classifiersOptionsFile.getOriginalFilename(), configurationId, ex.getMessage());
             var validationErrorDto =
                     buildValidationError(CommonErrorCode.INTERNAL_ERROR, "Unknown error");
             classifierOptionsResultDto.setValidationErrors(Collections.singletonList(validationErrorDto));

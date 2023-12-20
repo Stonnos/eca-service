@@ -4,6 +4,7 @@ import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
+import com.ecaservice.server.exception.EnsembleClassifierOptionsNotAllowedException;
 import com.ecaservice.server.mapping.ClassifierOptionsDatabaseModelMapper;
 import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.server.model.entity.ClassifiersConfiguration;
@@ -69,7 +70,9 @@ public class ClassifierOptionsService {
         var classifiersConfiguration = getConfigurationById(configurationId);
         Assert.state(!classifiersConfiguration.isBuildIn(),
                 "Can't add classifier options to build in configuration!");
-        Assert.state(!isEnsembleClassifierOptions(classifierOptions), "Can't save ensemble classifier options!");
+        if (isEnsembleClassifierOptions(classifierOptions)) {
+            throw new EnsembleClassifierOptionsNotAllowedException();
+        }
         var classifierOptionsDatabaseModel =
                 createClassifierOptionsDatabaseModel(classifierOptions, classifiersConfiguration);
         classifierOptionsDatabaseModel.setCreatedBy(userService.getCurrentUser());

@@ -31,7 +31,17 @@ public enum EsErrorCode implements ErrorDetails {
     /**
      * Instances not found
      */
-    INSTANCES_NOT_FOUND("InstancesNotFound");
+    INSTANCES_NOT_FOUND("InstancesNotFound"),
+
+    /**
+     * Invalid classifier options format
+     */
+    INVALID_CLASSIFIER_OPTIONS_FORMAT("InvalidClassifierOptionsFormat"),
+
+    /**
+     * Ensemble classifier options not allowed
+     */
+    ENSEMBLE_CLASSIFIER_OPTIONS_NOT_ALLOWED("EnsembleClassifierOptionsNotAllowed");
 
     /**
      * Error code

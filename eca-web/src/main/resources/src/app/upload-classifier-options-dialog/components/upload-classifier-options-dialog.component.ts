@@ -28,7 +28,8 @@ export class UploadClassifierOptionsDialogComponent implements OnInit {
   public invalidFileTypeMessageDetail: string = 'допускаются только файлы форматов: {0}.';
 
   private readonly errorCodesMap = new Map<string, string>()
-    .set(ValidationErrorCode.INVALID_FORMAT, 'Неправильный формат настроек')
+    .set(ValidationErrorCode.INVALID_CLASSIFIER_OPTIONS_FORMAT, 'Неправильный формат настроек')
+    .set(ValidationErrorCode.ENSEMBLE_CLASSIFIER_OPTIONS_NOT_ALLOWED, 'Допускаются только индивидуальные классификаторы')
     .set(ValidationErrorCode.INTERNAL_ERROR, 'Неизвестная ошибка');
 
   @Input()

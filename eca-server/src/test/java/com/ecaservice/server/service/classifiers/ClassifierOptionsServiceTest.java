@@ -7,6 +7,7 @@ import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
+import com.ecaservice.server.exception.EnsembleClassifierOptionsNotAllowedException;
 import com.ecaservice.server.mapping.ClassifierOptionsDatabaseModelMapperImpl;
 import com.ecaservice.server.mapping.ClassifiersConfigurationHistoryMapperImpl;
 import com.ecaservice.server.mapping.DateTimeConverter;
@@ -247,7 +248,7 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
         classifiersConfiguration.setBuildIn(false);
         classifiersConfigurationRepository.save(classifiersConfiguration);
         AdaBoostOptions adaBoostOptions = TestHelperUtils.createAdaBoostOptions();
-        assertThrows(IllegalStateException.class,
+        assertThrows(EnsembleClassifierOptionsNotAllowedException.class,
                 () -> classifierOptionsService.saveClassifierOptions(classifiersConfiguration.getId(),
                         adaBoostOptions));
     }

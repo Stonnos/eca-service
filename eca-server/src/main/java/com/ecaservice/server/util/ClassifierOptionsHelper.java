@@ -4,6 +4,7 @@ import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.classifier.options.model.IterativeEnsembleOptions;
 import com.ecaservice.classifier.options.model.StackingOptions;
 import com.ecaservice.server.exception.ClassifierOptionsException;
+import com.ecaservice.server.exception.InvalidClassifierOptionsFormatException;
 import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.server.model.entity.ClassifiersConfiguration;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -88,7 +89,8 @@ public class ClassifierOptionsHelper {
         try {
             return objectMapper.readValue(inputStream, ClassifierOptions.class);
         } catch (IOException ex) {
-            throw new ClassifierOptionsException(ex.getMessage());
+            log.error("Error while parse classifier options from input stream: {}", ex.getMessage());
+            throw new InvalidClassifierOptionsFormatException();
         }
     }
 
