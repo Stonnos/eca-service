@@ -27,6 +27,20 @@ public class ValidationErrorHelper {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     /**
+     * Creates validation error.
+     *
+     * @param errorDetails - error details
+     * @param errorMessage - error message
+     * @return validation error dto
+     */
+    public static ValidationErrorDto buildValidationError(ErrorDetails errorDetails, String errorMessage) {
+        var validationErrorDto = new ValidationErrorDto();
+        validationErrorDto.setCode(errorDetails.getCode());
+        validationErrorDto.setErrorMessage(errorMessage);
+        return validationErrorDto;
+    }
+
+    /**
      * Gets first validation error with specified error codes.
      *
      * @param errorCodes       - error codes list

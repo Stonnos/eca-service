@@ -46,7 +46,12 @@ public enum CommonErrorCode implements ErrorDetails {
     /**
      * Invalid file code
      */
-    INVALID_FILE("InvalidFile");
+    INVALID_FILE("InvalidFile"),
+
+    /**
+     * Internal error (unknown error)
+     */
+    INTERNAL_ERROR("InternalError");
 
     /**
      * Error code

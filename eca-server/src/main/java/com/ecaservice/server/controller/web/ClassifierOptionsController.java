@@ -2,8 +2,11 @@ package com.ecaservice.server.controller.web;
 
 import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.common.error.model.ValidationErrorDto;
+import com.ecaservice.common.web.error.CommonErrorCode;
+import com.ecaservice.common.web.exception.ValidationErrorException;
 import com.ecaservice.server.event.model.push.AddClassifierOptionsPushEvent;
 import com.ecaservice.server.event.model.push.DeleteClassifierOptionsPushEvent;
+import com.ecaservice.server.exception.ClassifierOptionsException;
 import com.ecaservice.server.service.UserService;
 import com.ecaservice.server.service.classifiers.ClassifierOptionsService;
 import com.ecaservice.server.service.classifiers.ClassifiersConfigurationService;
@@ -36,11 +39,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.io.InputStream;
+import java.util.Collections;
 
+import static com.ecaservice.common.web.ExceptionResponseHandler.handleConstraintViolation;
+import static com.ecaservice.common.web.util.ValidationErrorHelper.buildValidationError;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.parseOptions;
@@ -200,10 +207,23 @@ public class ClassifierOptionsController {
             pushAddOptionsEvent(configurationId, classifierOptionsDto);
             classifierOptionsResultDto.setId(classifierOptionsDto.getId());
             classifierOptionsResultDto.setSuccess(true);
+        } catch (ValidationErrorException ex) {
+            log.error("Validation error [{}] for classifier options file [{}], configuration id [{}]: {}",
+                    ex.getErrorDetails().getCode(), classifiersOptionsFile.getOriginalFilename(), configurationId,
+                    ex.getMessage());
+            var validationErrorDto = buildValidationError(ex.getErrorDetails(), ex.getMessage());
+            classifierOptionsResultDto.setValidationErrors(Collections.singletonList(validationErrorDto));
+        } catch (ConstraintViolationException ex) {
+            log.error("Constraint violation error while save options file [{}] for configuration id [{}]: {}",
+                    classifiersOptionsFile.getOriginalFilename(), configurationId, ex.getMessage());
+            var validationErrors = handleConstraintViolation(ex);
+            classifierOptionsResultDto.setValidationErrors(validationErrors);
         } catch (Exception ex) {
-            log.error("There was an error while classifier options saving for configuration id [{}], options file [{}]",
-                    configurationId, classifiersOptionsFile.getOriginalFilename());
-            classifierOptionsResultDto.setErrorMessage(ex.getMessage());
+            log.error("There was an error while save classifier options file [{}] for configuration id [{}]: {}",
+                    classifiersOptionsFile.getOriginalFilename(), configurationId, ex.getMessage());
+            var validationErrorDto =
+                    buildValidationError(CommonErrorCode.INTERNAL_ERROR, "Unknown error");
+            classifierOptionsResultDto.setValidationErrors(Collections.singletonList(validationErrorDto));
         }
         return classifierOptionsResultDto;
     }

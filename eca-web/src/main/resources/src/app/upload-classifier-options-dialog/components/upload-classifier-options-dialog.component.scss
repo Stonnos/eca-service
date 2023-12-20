@@ -39,6 +39,15 @@
   height: 210px;
 }
 
+.error-details-panel::ng-deep {
+
+  .ui-overlaypanel-content {
+    width: 150px;
+    word-break: break-word;
+    font-size: 10px;
+  }
+}
+
 .upload-progress-spinner::ng-deep {
   .ui-progress-spinner {
     width: 50px;
