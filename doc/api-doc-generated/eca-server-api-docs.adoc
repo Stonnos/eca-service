@@ -869,8 +869,7 @@ a|
 {
   "id" : 1,
   "sourceFileName" : "cart.json",
-  "success" : true,
-  "errorMessage" : ""
+  "success" : true
 }
 ----
 |400
@@ -6935,15 +6934,17 @@ __boolean__
 
 
 
-|*errorMessage*
-|Error message
+|*validationErrors*
+|Validation errors
 a|
-__string__
+__array__
+<<<ValidationErrorDto>>
+>
 
 
 
 
-*Max. length*: 255
+
 
 
 
