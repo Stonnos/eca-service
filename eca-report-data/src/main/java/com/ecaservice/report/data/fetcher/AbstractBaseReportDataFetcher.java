@@ -106,6 +106,8 @@ public abstract class AbstractBaseReportDataFetcher<E, B> {
                         if (filterFieldDto != null) {
                             FilterBean filterBean = new FilterBean();
                             filterBean.setDescription(filterFieldDto.getDescription());
+                            filterBean.setMatchMode(filterRequestDto.getMatchMode().name());
+                            filterBean.setFilterFieldType(filterFieldDto.getFilterFieldType().name());
                             setFilterValues(filterBean, filterRequestDto, values, filterFieldDto);
                             filterBeans.add(filterBean);
                         }

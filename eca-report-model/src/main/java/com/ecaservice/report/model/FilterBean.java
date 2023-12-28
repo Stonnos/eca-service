@@ -16,6 +16,16 @@ public class FilterBean {
     private String description;
 
     /**
+     * Match mode
+     */
+    private String matchMode;
+
+    /**
+     * Filter field type
+     */
+    private String filterFieldType;
+
+    /**
      * Filter field value1 as string
      */
     private String value1;
