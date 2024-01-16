@@ -38,6 +38,118 @@ __Scopes__:
 
 |===
 
+== Downloads evaluation results history report in xlsx format
+
+__POST__ */evaluation-results/report/download* - Downloads evaluation results history report in xlsx format
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+*Request body*
+
+[width=100%]
+|===
+|*Content type*|*Required*|*Schema*|*Example*
+|*application/json*
+|true
+|
+<<PageRequestDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "page" : 0,
+  "size" : 25
+}
+----
+|===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*-*
+|-
+a|
+-
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|
+__array__
+<<<ValidationErrorDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+[ {
+  "fieldName" : "page",
+  "code" : "Min",
+  "errorMessage" : "must be greater than or equal to 0"
+}, {
+  "fieldName" : "size",
+  "code" : "Min",
+  "errorMessage" : "must be greater than or equal to 1"
+} ]
+----
+|===
+
 == Finds instances info page with specified options such as filter, sorting and paging
 
 __POST__ */evaluation-results/instances/list* - Finds instances info page with specified options such as filter, sorting and paging
@@ -1406,230 +1518,6 @@ a|
 
 
 == Components
-=== InstancesInfoDto
-:table-caption: Table
-.Classifier training data model
-[width=100%]
-|===
-|*Name*|*Description*|*Schema*
-|*id*
-|ID
-a|
-__integer__
-__(int64)__
-
-
-
-
-
-
-*Minimum*: 1*
-
-*Maximum*: 9 223 372 036 854 775 807*
-
-
-
-
-
-
-
-
-|*relationName*
-|Instances name
-a|
-__string__
-
-
-
-
-*Max. length*: 255
-
-
-
-
-
-
-
-
-
-
-|*numInstances*
-|Instances number
-a|
-__integer__
-__(int32)__
-
-
-
-
-
-
-*Minimum*: 2*
-
-*Maximum*: 2 147 483 647*
-
-
-
-
-
-
-
-
-|*numAttributes*
-|Attributes number
-a|
-__integer__
-__(int32)__
-
-
-
-
-
-
-*Minimum*: 2*
-
-*Maximum*: 2 147 483 647*
-
-
-
-
-
-
-
-
-|*numClasses*
-|Classes number
-a|
-__integer__
-__(int32)__
-
-
-
-
-
-
-*Minimum*: 2*
-
-*Maximum*: 2 147 483 647*
-
-
-
-
-
-
-
-
-|*className*
-|Class name
-a|
-__string__
-
-
-
-
-*Max. length*: 255
-
-
-
-
-
-
-
-
-
-
-|*createdDate*
-|Created date
-a|
-__string__
-
-
-
-
-*Max. length*: 19
-
-
-
-
-
-
-
-
-
-
-|===
-=== InstancesInfoPageDto
-:table-caption: Table
-.Instances info page dto
-[width=100%]
-|===
-|*Name*|*Description*|*Schema*
-|*content*
-|-
-a|
-__array__
-<<<InstancesInfoDto>>
->
-
-
-
-
-
-
-
-
-
-
-*Max. items*: 100
-
-
-
-
-|*page*
-|Page number
-a|
-__integer__
-__(int32)__
-
-
-
-
-
-
-*Minimum*: 0*
-
-*Maximum*: 2 147 483 647*
-
-
-
-
-
-
-
-
-|*totalCount*
-|Total elements count in all pages
-a|
-__integer__
-__(int64)__
-
-
-
-
-
-
-*Minimum*: 0*
-
-*Maximum*: 9 223 372 036 854 775 807*
-
-
-
-
-
-
-
-
-|===
 === ValidationErrorDto
 :table-caption: Table
 .Validation error model
@@ -1891,6 +1779,230 @@ __array__
 *Min. items*: 0
 
 *Max. items*: 50
+
+
+
+
+|===
+=== InstancesInfoDto
+:table-caption: Table
+.Classifier training data model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*id*
+|ID
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 9 223 372 036 854 775 807*
+
+
+
+
+
+
+
+
+|*relationName*
+|Instances name
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*numInstances*
+|Instances number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 2*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|*numAttributes*
+|Attributes number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 2*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|*numClasses*
+|Classes number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 2*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|*className*
+|Class name
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*createdDate*
+|Created date
+a|
+__string__
+
+
+
+
+*Max. length*: 19
+
+
+
+
+
+
+
+
+
+
+|===
+=== InstancesInfoPageDto
+:table-caption: Table
+.Instances info page dto
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*content*
+|-
+a|
+__array__
+<<<InstancesInfoDto>>
+>
+
+
+
+
+
+
+
+
+
+
+*Max. items*: 100
+
+
+
+
+|*page*
+|Page number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|*totalCount*
+|Total elements count in all pages
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 9 223 372 036 854 775 807*
+
+
+
+
 
 
 
