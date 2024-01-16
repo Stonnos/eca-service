@@ -1,0 +1,2 @@
+id;title;enabled;audit_group_id
+DOWNLOAD_EVALUATION_RESULTS_HISTORY_REPORT;Выгрузка отчета с историей результатов классификации;true;EVALUATION_RESULTS_HISTORY_ACTIONS

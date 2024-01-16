@@ -1,6 +1,7 @@
 package com.ecaservice.ers.controller.web;
 
 import com.ecaservice.common.error.model.ValidationErrorDto;
+import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.ers.report.EvaluationResultsHistoryReportDataFetcher;
 import com.ecaservice.ers.service.EvaluationResultsHistoryService;
@@ -40,6 +41,7 @@ import java.util.List;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
+import static com.ecaservice.ers.config.audit.AuditCodes.DOWNLOAD_EVALUATION_RESULTS_HISTORY_REPORT;
 import static com.ecaservice.ers.dictionary.FilterDictionaries.EVALUATION_RESULTS_HISTORY_TEMPLATE;
 import static com.ecaservice.report.ReportGenerator.generateReport;
 
@@ -249,6 +251,7 @@ public class EvaluationResultsHistoryController {
      * @param httpServletResponse - http servlet response
      * @throws IOException in case of I/O error
      */
+    @Audit(value = DOWNLOAD_EVALUATION_RESULTS_HISTORY_REPORT)
     @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
             description = "Downloads evaluation results history report in xlsx format",

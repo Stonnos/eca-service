@@ -172,6 +172,10 @@ services:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
       JAVA_OPTS: "-Xmx1g"
+      AUDIT_ENABLED: "true"
+      AUDIT_ASYNCEVENTS: ${AUDIT_ASYNC_EVENTS}
+      AUDIT_THREADPOOLSIZE: ${AUDIT_THREAD_POOL_SIZE}
+      REDELIVERY_ENABLED: "true"
       OPENAPI_BASEPATH: "/eca-ers"
     networks:
       - default
