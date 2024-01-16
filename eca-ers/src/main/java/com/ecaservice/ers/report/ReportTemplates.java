@@ -13,7 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 public class ReportTemplates {
 
     /**
-     * Audit logs template
+     * Evaluation results history report template
      */
-    public static final String EVALUATION_RESULTS_HISTORY_TEMPLATE_CODE = "evaluation-results-history-template.xlsx";
+    public static final String EVALUATION_RESULTS_HISTORY_TEMPLATE_CODE =
+            "evaluation-results-history-report-template.xlsx";
 }

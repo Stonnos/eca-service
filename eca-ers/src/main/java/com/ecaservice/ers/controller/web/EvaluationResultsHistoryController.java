@@ -279,17 +279,6 @@ public class EvaluationResultsHistoryController {
                                     }
                             )
                     ),
-                    @ApiResponse(description = "Permission denied", responseCode = "403",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    examples = {
-                                            @ExampleObject(
-                                                    name = "AccessDeniedResponse",
-                                                    ref = "#/components/examples/AccessDeniedResponse"
-                                            ),
-                                    }
-                            )
-                    ),
                     @ApiResponse(description = "Bad request", responseCode = "400",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
