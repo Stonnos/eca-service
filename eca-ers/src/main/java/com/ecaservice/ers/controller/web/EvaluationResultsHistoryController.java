@@ -43,6 +43,7 @@ import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTIC
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
 import static com.ecaservice.ers.config.audit.AuditCodes.DOWNLOAD_EVALUATION_RESULTS_HISTORY_REPORT;
 import static com.ecaservice.ers.dictionary.FilterDictionaries.EVALUATION_RESULTS_HISTORY_TEMPLATE;
+import static com.ecaservice.ers.report.ReportTemplates.EVALUATION_RESULTS_HISTORY_TEMPLATE_CODE;
 import static com.ecaservice.report.ReportGenerator.generateReport;
 
 /**
@@ -309,11 +310,11 @@ public class EvaluationResultsHistoryController {
             throws IOException {
         log.info("Request to download evaluation results history base report with params: {}", pageRequestDto);
         var baseReportBean = evaluationResultsHistoryReportDataFetcher.fetchReportData(pageRequestDto);
-        String targetFile = String.format(FILE_NAME_FORMAT, EVALUATION_RESULTS_HISTORY_TEMPLATE);
+        String targetFile = String.format(FILE_NAME_FORMAT, EVALUATION_RESULTS_HISTORY_TEMPLATE_CODE);
         @Cleanup OutputStream outputStream = httpServletResponse.getOutputStream();
         httpServletResponse.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
         httpServletResponse.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format(ATTACHMENT_FORMAT, targetFile));
-        generateReport(EVALUATION_RESULTS_HISTORY_TEMPLATE, baseReportBean, outputStream);
+        generateReport(EVALUATION_RESULTS_HISTORY_TEMPLATE_CODE, baseReportBean, outputStream);
         outputStream.flush();
     }
 }

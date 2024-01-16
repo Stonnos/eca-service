@@ -15,5 +15,5 @@ public class ReportTemplates {
     /**
      * Audit logs template
      */
-    public static final String EVALUATION_RESULTS_HISTORY_TEMPLATE = "evaluation-results-history-template.xlsx";
+    public static final String EVALUATION_RESULTS_HISTORY_TEMPLATE_CODE = "evaluation-results-history-template.xlsx";
 }
