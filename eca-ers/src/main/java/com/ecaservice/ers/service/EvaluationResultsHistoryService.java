@@ -14,6 +14,7 @@ import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -61,7 +62,7 @@ public class EvaluationResultsHistoryService {
      * @param pageRequestDto - page request dto
      * @return evaluation results history page
      */
-    public PageDto<EvaluationResultsHistoryDto> getNextPage(
+    public Page<EvaluationResultsInfo> getEvaluationResultsInfoPage(
             @ValidPageRequest(filterTemplateName = EVALUATION_RESULTS_HISTORY_TEMPLATE) PageRequestDto pageRequestDto) {
         Sort sort = buildSort(pageRequestDto.getSortField(), SAVE_DATE, pageRequestDto.isAscending());
         List<String> globalFilterFields =
@@ -72,6 +73,21 @@ public class EvaluationResultsHistoryService {
         var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort);
         var evaluationResultsInfoPage =
                 evaluationResultsInfoRepository.findAll(filter, pageRequest);
+        log.info("Evaluation results page [{} of {}] with size [{}] has been fetched for page request [{}]",
+                evaluationResultsInfoPage.getNumber(), evaluationResultsInfoPage.getTotalPages(),
+                evaluationResultsInfoPage.getNumberOfElements(), pageRequestDto);
+        return evaluationResultsInfoPage;
+    }
+
+    /**
+     * Gets evaluation results history page.
+     *
+     * @param pageRequestDto - page request dto
+     * @return evaluation results history page
+     */
+    public PageDto<EvaluationResultsHistoryDto> getNextPage(
+            @ValidPageRequest(filterTemplateName = EVALUATION_RESULTS_HISTORY_TEMPLATE) PageRequestDto pageRequestDto) {
+        var evaluationResultsInfoPage = getEvaluationResultsInfoPage(pageRequestDto);
         var evaluationResultsDtoList =
                 mapToEvaluationResultsHistoryList(evaluationResultsInfoPage.getContent());
         log.info("Evaluation results page [{} of {}] with size [{}] has been fetched for page request [{}]",

@@ -122,7 +122,7 @@ public class EvaluationLogDataService {
     /**
      * Gets evaluation logs page.
      *
-     * @param pageRequestDto - pafe request dto
+     * @param pageRequestDto - page request dto
      * @return evaluation logs page
      */
     public PageDto<EvaluationLogDto> getEvaluationLogsPage(
