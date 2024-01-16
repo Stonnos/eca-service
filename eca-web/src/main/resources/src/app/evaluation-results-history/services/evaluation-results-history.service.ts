@@ -33,4 +33,12 @@ export class EvaluationResultsHistoryService implements InstancesInfoPageService
     });
     return this.http.post<PageDto<InstancesInfoDto>>(this.serviceUrl + '/instances/list', pageRequest, { headers: headers });
   }
+
+  public getEvaluationResultsHistoryBaseReport(pageRequest: PageRequestDto): Observable<Blob> {
+    const headers = new HttpHeaders({
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    const options = { headers: headers, responseType: 'blob' as 'json' };
+    return this.http.post<Blob>(this.serviceUrl + '/report/download', pageRequest, options);
+  }
 }

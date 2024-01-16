@@ -25,6 +25,8 @@ import { InstancesInfoAutocompleteHandler } from "../../filter/autocomplete/hand
 })
 export class EvaluationResultsHistoryComponent extends BaseListComponent<EvaluationResultsHistoryDto> {
 
+  private static readonly EVALUATION_RESULTS_HISTORY_REPORT_FILE_NAME = 'evaluation-results-history-report-template.xlsx';
+
   public selectedColumn: string;
   public selectedEvaluationResults: EvaluationResultsHistoryDto;
 
@@ -58,6 +60,11 @@ export class EvaluationResultsHistoryComponent extends BaseListComponent<Evaluat
 
   public getNextPageAsObservable(pageRequest: PageRequestDto): Observable<PageDto<EvaluationResultsHistoryDto>> {
     return this.evaluationResultsHistoryService.getEvaluationResultsHistory(pageRequest);
+  }
+
+  public generateReport() {
+    const observable = this.evaluationResultsHistoryService.getEvaluationResultsHistoryBaseReport(this.pageRequestDto);
+    this.downloadReport(observable, EvaluationResultsHistoryComponent.EVALUATION_RESULTS_HISTORY_REPORT_FILE_NAME);
   }
 
   public onSelect(event, evaluationResultsHistoryDto: EvaluationResultsHistoryDto, column: string, overlayPanel: OverlayPanel): void {
