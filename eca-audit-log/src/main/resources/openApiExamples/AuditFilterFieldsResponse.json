@@ -38,6 +38,14 @@
         {
           "label": "Действия с обучающими выборками",
           "value": "DATA_STORAGE_ACTIONS"
+        },
+        {
+          "label": "Действия с заявками на построение моделей",
+          "value": "EVALUATION_REQUESTS_ACTIONS"
+        },
+        {
+          "label": "Действия с историей результатов классификации",
+          "value": "EVALUATION_RESULTS_HISTORY_ACTIONS"
         }
       ]
     }
