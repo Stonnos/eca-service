@@ -1,0 +1,2 @@
+id;event_type;message_template;audit_code_id
+1;SUCCESS;Выгружен отчет с историей результатов классификации;DOWNLOAD_EVALUATION_RESULTS_HISTORY_REPORT

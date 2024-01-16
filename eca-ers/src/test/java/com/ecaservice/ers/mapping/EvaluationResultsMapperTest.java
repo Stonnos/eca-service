@@ -53,7 +53,7 @@ class EvaluationResultsMapperTest {
     }
 
     @Test
-    void testMapToEvaluationResultsHistory() {
+    void testMapToEvaluationResultsHistoryToDto() {
         var evaluationResultsInfo = createEvaluationResultsInfo();
         var evaluationResultsHistoryDto =
                 evaluationResultsMapper.mapToEvaluationResultsHistory(evaluationResultsInfo);
@@ -90,5 +90,27 @@ class EvaluationResultsMapperTest {
                 evaluationResultsInfo.getInstancesInfo().getNumClasses());
         assertThat(evaluationResultsHistoryDto.getInstancesInfo().getCreatedDate()).isEqualTo(
                 evaluationResultsInfo.getInstancesInfo().getCreatedDate());
+    }
+
+    @Test
+    void testMapToEvaluationResultsHistoryToReportBean() {
+        var evaluationResultsInfo = createEvaluationResultsInfo();
+        var evaluationResultsHistoryBean =
+                evaluationResultsMapper.mapToEvaluationResultsHistoryBean(evaluationResultsInfo);
+        assertThat(evaluationResultsHistoryBean).isNotNull();
+        assertThat(evaluationResultsHistoryBean.getEvaluationMethod()).isNotNull();
+        assertThat(evaluationResultsHistoryBean.getSaveDate()).isNotNull();
+        assertThat(evaluationResultsHistoryBean.getPctCorrect()).isEqualTo(
+                evaluationResultsInfo.getStatistics().getPctCorrect());
+        assertThat(evaluationResultsHistoryBean.getMaxAucValue()).isEqualTo(
+                evaluationResultsInfo.getStatistics().getMaxAucValue());
+        assertThat(evaluationResultsHistoryBean.getMeanAbsoluteError()).isEqualTo(
+                evaluationResultsInfo.getStatistics().getMeanAbsoluteError());
+        assertThat(evaluationResultsHistoryBean.getVarianceError()).isEqualTo(
+                evaluationResultsInfo.getStatistics().getVarianceError());
+        assertThat(evaluationResultsHistoryBean.getRootMeanSquaredError()).isEqualTo(
+                evaluationResultsInfo.getStatistics().getRootMeanSquaredError());
+        assertThat(evaluationResultsHistoryBean.getRelationName()).isEqualTo(
+                evaluationResultsInfo.getInstancesInfo().getRelationName());
     }
 }

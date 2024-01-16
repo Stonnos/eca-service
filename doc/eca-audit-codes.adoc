@@ -19,6 +19,8 @@
 |Действия с конфигурациями классификаторов
 |EVALUATION_REQUESTS_ACTIONS
 |Действия с заявками на построение моделей
+|EVALUATION_RESULTS_HISTORY_ACTIONS
+|Действия с историей результатов классификации
 |===
 
 == 2. Описание кодов событий аудита
@@ -134,4 +136,7 @@
 |CREATE_OPTIMAL_EVALUATION_REQUEST
 |Создание заявки на построение модели с оптимальными настройками классификатора
 |EVALUATION_REQUESTS_ACTIONS
+|DOWNLOAD_EVALUATION_RESULTS_HISTORY_REPORT
+|Выгрузка отчета с историей результатов классификации
+|EVALUATION_RESULTS_HISTORY_ACTIONS
 |===

@@ -33,7 +33,7 @@ public class ExperimentsBaseReportDataFetcher extends AbstractBaseReportDataFetc
     /**
      * Constructor with spring dependency injection.
      *
-     * @param filterTemplateService           - filter service bean
+     * @param filterTemplateService   - filter service bean
      * @param instancesInfoRepository - instances info repository
      * @param experimentDataService   - experiments data service bean
      * @param experimentMapper        - experiment mapper bean

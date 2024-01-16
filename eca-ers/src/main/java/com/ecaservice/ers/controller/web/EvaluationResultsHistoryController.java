@@ -1,7 +1,9 @@
 package com.ecaservice.ers.controller.web;
 
 import com.ecaservice.common.error.model.ValidationErrorDto;
+import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.core.filter.service.FilterTemplateService;
+import com.ecaservice.ers.report.EvaluationResultsHistoryReportDataFetcher;
 import com.ecaservice.ers.service.EvaluationResultsHistoryService;
 import com.ecaservice.ers.service.InstancesDataService;
 import com.ecaservice.web.dto.model.EvaluationResultsHistoryDto;
@@ -19,8 +21,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,12 +33,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
+import static com.ecaservice.ers.config.audit.AuditCodes.DOWNLOAD_EVALUATION_RESULTS_HISTORY_REPORT;
 import static com.ecaservice.ers.dictionary.FilterDictionaries.EVALUATION_RESULTS_HISTORY_TEMPLATE;
+import static com.ecaservice.ers.report.ReportTemplates.EVALUATION_RESULTS_HISTORY_TEMPLATE_CODE;
+import static com.ecaservice.report.ReportGenerator.generateReport;
 
 /**
  * Evaluation results API web application.
@@ -48,9 +58,13 @@ import static com.ecaservice.ers.dictionary.FilterDictionaries.EVALUATION_RESULT
 @RequiredArgsConstructor
 public class EvaluationResultsHistoryController {
 
+    private static final String FILE_NAME_FORMAT = "%s.xlsx";
+    private static final String ATTACHMENT_FORMAT = "attachment; filename=%s";
+
     private final FilterTemplateService filterTemplateService;
     private final EvaluationResultsHistoryService evaluationResultsHistoryService;
     private final InstancesDataService instancesDataService;
+    private final EvaluationResultsHistoryReportDataFetcher evaluationResultsHistoryReportDataFetcher;
 
     /**
      * Finds evaluation results history page with specified options such as filter, sorting and paging.
@@ -229,5 +243,67 @@ public class EvaluationResultsHistoryController {
     public PageDto<InstancesInfoDto> getInstancesInfoPage(@Valid @RequestBody PageRequestDto pageRequestDto) {
         log.info("Received instances info history page request: {}", pageRequestDto);
         return instancesDataService.getNextPage(pageRequestDto);
+    }
+
+    /**
+     * Downloads evaluation results history base report in xlsx format.
+     *
+     * @param pageRequestDto      - page request dto
+     * @param httpServletResponse - http servlet response
+     * @throws IOException in case of I/O error
+     */
+    @Audit(value = DOWNLOAD_EVALUATION_RESULTS_HISTORY_REPORT)
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @Operation(
+            description = "Downloads evaluation results history report in xlsx format",
+            summary = "Downloads evaluation results history report in xlsx format",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
+                    @Content(examples = {
+                            @ExampleObject(
+                                    name = "SimplePageRequest",
+                                    ref = "#/components/examples/SimplePageRequest"
+                            )
+                    })
+            }),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "BadPageRequestResponse",
+                                                    ref = "#/components/examples/BadPageRequestResponse"
+                                            ),
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
+                            )
+                    )
+            }
+    )
+    @PostMapping(value = "/report/download")
+    public void downloadEvaluationResultsHistoryReport(@Valid @RequestBody PageRequestDto pageRequestDto,
+                                                       HttpServletResponse httpServletResponse)
+            throws IOException {
+        log.info("Request to download evaluation results history base report with params: {}", pageRequestDto);
+        var baseReportBean = evaluationResultsHistoryReportDataFetcher.fetchReportData(pageRequestDto);
+        String targetFile = String.format(FILE_NAME_FORMAT, EVALUATION_RESULTS_HISTORY_TEMPLATE_CODE);
+        @Cleanup OutputStream outputStream = httpServletResponse.getOutputStream();
+        httpServletResponse.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+        httpServletResponse.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format(ATTACHMENT_FORMAT, targetFile));
+        generateReport(EVALUATION_RESULTS_HISTORY_TEMPLATE_CODE, baseReportBean, outputStream);
+        outputStream.flush();
     }
 }
