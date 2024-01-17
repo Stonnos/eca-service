@@ -29,6 +29,11 @@ public class EvaluationResultsHistoryBean {
     private String evaluationMethod;
 
     /**
+     * Classifier options
+     */
+    private String classifierOptions;
+
+    /**
      * Save date
      */
     private String saveDate;

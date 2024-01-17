@@ -94,6 +94,7 @@ public interface EvaluationResultsMapper {
     @Mapping(target = "evaluationMethod", ignore = true)
     @Mapping(target = "classifierName", ignore = true)
     @Mapping(source = "saveDate", target = "saveDate", qualifiedByName = "formatLocalDateTime")
+    @Mapping(source = "classifierInfo.options", target = "classifierOptions")
     @Mapping(source = "instancesInfo.relationName", target = "relationName")
     @Mapping(source = "statistics.numTestInstances", target = "numTestInstances")
     @Mapping(source = "statistics.numCorrect", target = "numCorrect")

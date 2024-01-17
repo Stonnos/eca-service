@@ -112,5 +112,7 @@ class EvaluationResultsMapperTest {
                 evaluationResultsInfo.getStatistics().getRootMeanSquaredError());
         assertThat(evaluationResultsHistoryBean.getRelationName()).isEqualTo(
                 evaluationResultsInfo.getInstancesInfo().getRelationName());
+        assertThat(evaluationResultsHistoryBean.getClassifierOptions())
+                .isEqualTo(evaluationResultsInfo.getClassifierInfo().getOptions());
     }
 }
