@@ -38,4 +38,5 @@
     <include file="../filter-template-changelog.xml" relativeToChangelogFile="true"/>
     <include file="db/changelog/v29-update-filter-templates.xml"/>
     <include file="db/changelog/v30-assign-data-loader-api-scope.xml"/>
+    <include file="db/changelog/v31-create-user-profile-options-table.xml"/>
 </databaseChangeLog>

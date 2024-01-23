@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v31-create-user-profile-options-table.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="create_user_profile_options_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="user_entity"/>
+            <not>
+                <tableExists tableName="user_profile_options"/>
+            </not>
+        </preConditions>
+        <createTable tableName="user_profile_options">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="email_enabled" type="boolean" defaultValueBoolean="true"/>
+            <column name="web_push_enabled" type="boolean" defaultValueBoolean="true"/>
+            <column name="user_id" type="bigint">
+                <constraints unique="true"
+                             uniqueConstraintName="user_profile_options_user_id_unique_idx"
+                             foreignKeyName="fk_user_profile_options_user_id"
+                             referencedTableName="user_entity"
+                             referencedColumnNames="id" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_user_notification_options" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="user_profile_options"/>
+            <not>
+                <tableExists tableName="user_notification_options"/>
+            </not>
+        </preConditions>
+        <createTable tableName="user_notification_options">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="event_code" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="event_title" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email_enabled" type="boolean" defaultValueBoolean="false"/>
+            <column name="web_push_enabled" type="boolean" defaultValueBoolean="false"/>
+            <column name="email_supported" type="boolean" defaultValueBoolean="false"/>
+            <column name="web_push_supported" type="boolean" defaultValueBoolean="false"/>
+            <column name="user_profile_options_id" type="bigint">
+                <constraints foreignKeyName="fk_user_notification_options_user_profile_options_id"
+                             referencedTableName="user_notification_options"
+                             referencedColumnNames="id" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="add_user_profile_options_id_event_code_unique_idx" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="user_notification_options"/>
+            <columnExists tableName="user_notification_options" columnName="user_profile_options_id"/>
+            <columnExists tableName="user_notification_options" columnName="event_code"/>
+        </preConditions>
+        <addUniqueConstraint tableName="user_notification_options"
+                             columnNames="user_profile_options_id, event_code"
+                             constraintName="user_profile_options_id_event_code_unique_idx"/>
+    </changeSet>
+</databaseChangeLog>
