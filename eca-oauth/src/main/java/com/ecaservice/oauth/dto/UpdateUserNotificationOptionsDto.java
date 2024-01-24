@@ -3,6 +3,7 @@ package com.ecaservice.oauth.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Size;
 import java.util.List;
 
@@ -32,6 +33,7 @@ public class UpdateUserNotificationOptionsDto {
     /**
      * Notification event options list
      */
+    @Valid
     @Size(max = NOTIFICATION_EVENT_OPTIONS_MAX_SIZE)
     @Schema(description = "Notification event options list")
     private List<UpdateUserNotificationEventOptionsDto> notificationEventOptions;
