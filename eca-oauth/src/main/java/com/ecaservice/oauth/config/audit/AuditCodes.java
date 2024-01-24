@@ -89,4 +89,10 @@ public class AuditCodes {
      * Disables push notifications
      */
     public static final String DISABLE_PUSH_NOTIFICATIONS  = "DISABLE_PUSH_NOTIFICATIONS";
+
+
+    /**
+     * Updates user profile notification options
+     */
+    public static final String UPDATE_USER_PROFILE_NOTIFICATION_OPTIONS = "UPDATE_USER_PROFILE_NOTIFICATION_OPTIONS";
 }

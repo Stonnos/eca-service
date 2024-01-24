@@ -15,3 +15,4 @@ id;event_type;message_template;audit_code_id
 14;SUCCESS;Email адрес был изменен на [${returnValue.userEntity.email}];CONFIRM_CHANGE_EMAIL_REQUEST
 15;SUCCESS;Включены пуш уведомления;ENABLE_PUSH_NOTIFICATIONS
 16;SUCCESS;Выключены пуш уведомления;DISABLE_PUSH_NOTIFICATIONS
+17;SUCCESS;Изменены настроки уведомлений в личном кабинете;UPDATE_USER_PROFILE_NOTIFICATION_OPTIONS

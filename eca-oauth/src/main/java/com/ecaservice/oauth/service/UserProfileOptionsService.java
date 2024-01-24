@@ -1,5 +1,6 @@
 package com.ecaservice.oauth.service;
 
+import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.oauth.dto.UpdateUserNotificationOptionsDto;
 import com.ecaservice.oauth.mapping.UserProfileOptionsMapper;
 import com.ecaservice.user.profile.options.dto.UserProfileOptionsDto;
@@ -7,6 +8,8 @@ import com.ecaservice.web.dto.model.UserProfileNotificationOptionsDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import static com.ecaservice.oauth.config.audit.AuditCodes.UPDATE_USER_PROFILE_NOTIFICATION_OPTIONS;
 
 /**
  * UserProfile options service.
@@ -57,6 +60,7 @@ public class UserProfileOptionsService {
      * @param user                             - user login
      * @param updateUserNotificationOptionsDto - notification options dto for update
      */
+    @Audit(value = UPDATE_USER_PROFILE_NOTIFICATION_OPTIONS)
     public void updateUserNotificationOptions(String user,
                                               UpdateUserNotificationOptionsDto updateUserNotificationOptionsDto) {
         userProfileOptionsDataService.updateUserNotificationOptions(user, updateUserNotificationOptionsDto);
