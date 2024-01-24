@@ -6,10 +6,13 @@ import com.ecaservice.oauth.AbstractJpaTest;
 import com.ecaservice.oauth.config.AppProperties;
 import com.ecaservice.oauth.config.UserProfileProperties;
 import com.ecaservice.oauth.entity.UserEntity;
+import com.ecaservice.oauth.exception.DuplicateNotificationEventToUpdateException;
+import com.ecaservice.oauth.exception.NotificationEventNotFoundException;
 import com.ecaservice.oauth.mapping.UserProfileOptionsMapperImpl;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import com.ecaservice.oauth.repository.UserNotificationEventOptionsRepository;
 import com.ecaservice.oauth.repository.UserProfileOptionsRepository;
+import com.ecaservice.user.profile.options.dto.UserNotificationEventType;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -22,13 +25,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static com.ecaservice.oauth.TestHelperUtils.createUserDto;
+import static com.ecaservice.oauth.TestHelperUtils.createUpdateUserNotificationEventOptionsDto;
+import static com.ecaservice.oauth.TestHelperUtils.createUpdateUserNotificationOptionsDto;
 import static com.ecaservice.oauth.TestHelperUtils.createUserEntity;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.junit.Assert.assertThrows;
 
 /**
  * Unit tests for checking {@link UserProfileOptionsService} functionality.
@@ -37,7 +38,8 @@ import static org.mockito.Mockito.verify;
  */
 @EnableAspectJAutoProxy
 @Import({AppProperties.class, UserProfileOptionsDataService.class, UserProfileOptionsService.class,
-        UserProfileOptionsMapperImpl.class, UserProfileProperties.class, CoreLockAutoConfiguration.class})
+        UserProfileOptionsMapperImpl.class, UserProfileProperties.class, CoreLockAutoConfiguration.class,
+        UserProfileOptionsConfigurationService.class})
 class UserProfileOptionsServiceTest extends AbstractJpaTest {
 
     private static final int NUM_THREADS = 2;
@@ -136,6 +138,50 @@ class UserProfileOptionsServiceTest extends AbstractJpaTest {
         executorService.shutdownNow();
         assertThat(hasError.get()).isFalse();
         assertThat(userProfileOptionsRepository.count()).isOne();
+    }
+
+    @Test
+    void testUpdateNotificationOptions() {
+        var userProfileOptionsDto = userProfileOptionsService.getUserProfileOptions(userEntity.getLogin());
+        assertThat(userProfileOptionsDto.isEmailEnabled()).isTrue();
+        assertThat(userProfileOptionsDto.isWebPushEnabled()).isTrue();
+        //Creates update data
+        var updateUserNotificationOptionsDto = createUpdateUserNotificationOptionsDto();
+        //Update options
+        userProfileOptionsService.updateUserNotificationOptions(userEntity.getLogin(),
+                updateUserNotificationOptionsDto);
+        //Verify data updated
+        var actualProfileOptions = userProfileOptionsRepository.findByUserEntity(userEntity);
+        assertThat(actualProfileOptions).isNotNull();
+        assertThat(actualProfileOptions.isWebPushEnabled()).isFalse();
+        assertThat(actualProfileOptions.isEmailEnabled()).isFalse();
+        actualProfileOptions.getNotificationEventOptions().forEach(userNotificationEventOptionsEntity -> {
+            assertThat(userNotificationEventOptionsEntity.isEmailEnabled()).isFalse();
+            assertThat(userNotificationEventOptionsEntity.isWebPushEnabled()).isFalse();
+        });
+    }
+
+    @Test
+    void testUpdateNotificationOptionsWithDuplicateEventCodes() {
+        userProfileOptionsService.getUserProfileOptions(userEntity.getLogin());
+        //Creates update data
+        var updateUserNotificationOptionsDto = createUpdateUserNotificationOptionsDto();
+        updateUserNotificationOptionsDto.getNotificationEventOptions().add(
+                createUpdateUserNotificationEventOptionsDto(UserNotificationEventType.CLASSIFIER_STATUS_CHANGE));
+        assertThrows(DuplicateNotificationEventToUpdateException.class,
+                () -> userProfileOptionsService.updateUserNotificationOptions(userEntity.getLogin(),
+                        updateUserNotificationOptionsDto));
+    }
+
+    @Test
+    void testUpdateNotificationOptionsWithNotFoundEvent() {
+        userProfileOptionsService.getUserProfileOptions(userEntity.getLogin());
+        userNotificationEventOptionsRepository.deleteAll();
+        //Creates update data
+        var updateUserNotificationOptionsDto = createUpdateUserNotificationOptionsDto();
+        assertThrows(NotificationEventNotFoundException.class,
+                () -> userProfileOptionsService.updateUserNotificationOptions(userEntity.getLogin(),
+                        updateUserNotificationOptionsDto));
     }
 
     @Override

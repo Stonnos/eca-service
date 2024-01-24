@@ -26,6 +26,7 @@ public interface UserProfileOptionsMapper {
      * @param userProfileProperties - user profile properties
      * @return user profile entity
      */
+    @Mapping(target = "notificationEventOptions", ignore = true)
     UserProfileOptionsEntity map(UserProfileProperties userProfileProperties);
 
     /**

@@ -2,6 +2,8 @@ package com.ecaservice.oauth;
 
 import com.ecaservice.oauth.dto.CreateUserDto;
 import com.ecaservice.oauth.dto.UpdateUserInfoDto;
+import com.ecaservice.oauth.dto.UpdateUserNotificationEventOptionsDto;
+import com.ecaservice.oauth.dto.UpdateUserNotificationOptionsDto;
 import com.ecaservice.oauth.entity.ChangeEmailRequestEntity;
 import com.ecaservice.oauth.entity.ChangePasswordRequestEntity;
 import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
@@ -18,6 +20,7 @@ import lombok.experimental.UtilityClass;
 import java.time.LocalDateTime;
 import java.util.Collections;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 
 /**
@@ -207,5 +210,38 @@ public class TestHelperUtils {
         userNotificationEventOptionsEntity.setEmailEnabled(true);
         userNotificationEventOptionsEntity.setEmailSupported(true);
         return userNotificationEventOptionsEntity;
+    }
+
+    /**
+     * Creates update user notification options.
+     *
+     * @return update user notification options
+     */
+    public static UpdateUserNotificationOptionsDto createUpdateUserNotificationOptionsDto() {
+        var userNotificationOptionsDto =
+                new UpdateUserNotificationOptionsDto();
+        userNotificationOptionsDto.setWebPushEnabled(false);
+        userNotificationOptionsDto.setEmailEnabled(false);
+        userNotificationOptionsDto.setNotificationEventOptions(newArrayList());
+        userNotificationOptionsDto.getNotificationEventOptions().add(
+                createUpdateUserNotificationEventOptionsDto(UserNotificationEventType.EXPERIMENT_STATUS_CHANGE));
+        userNotificationOptionsDto.getNotificationEventOptions().add(
+                createUpdateUserNotificationEventOptionsDto(UserNotificationEventType.CLASSIFIER_STATUS_CHANGE));
+        return userNotificationOptionsDto;
+    }
+
+    /**
+     * Creates update user notification event options dto.
+     *
+     * @param eventType - event type
+     * @return update user notification event options dto
+     */
+    public static UpdateUserNotificationEventOptionsDto createUpdateUserNotificationEventOptionsDto(
+            UserNotificationEventType eventType) {
+        var updateUserNotificationEventOptionsDto = new UpdateUserNotificationEventOptionsDto();
+        updateUserNotificationEventOptionsDto.setEventType(eventType);
+        updateUserNotificationEventOptionsDto.setEmailEnabled(false);
+        updateUserNotificationEventOptionsDto.setWebPushEnabled(false);
+        return updateUserNotificationEventOptionsDto;
     }
 }

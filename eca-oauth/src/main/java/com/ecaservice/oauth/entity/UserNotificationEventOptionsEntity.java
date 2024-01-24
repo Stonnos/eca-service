@@ -2,6 +2,7 @@ package com.ecaservice.oauth.entity;
 
 import com.ecaservice.user.profile.options.dto.UserNotificationEventType;
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +10,8 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -59,4 +62,12 @@ public class UserNotificationEventOptionsEntity {
      */
     @Column(name = "web_push_supported")
     private boolean webPushSupported;
+
+    /**
+     * User profile options
+     */
+    @ToString.Exclude
+    @ManyToOne
+    @JoinColumn(name = "user_profile_options_id", nullable = false)
+    private UserProfileOptionsEntity userProfileOptions;
 }

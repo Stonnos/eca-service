@@ -2,7 +2,6 @@ package com.ecaservice.oauth.entity;
 
 import lombok.Data;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -50,8 +49,7 @@ public class UserProfileOptionsEntity {
     /**
      * Notification options list
      */
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_profile_options_id", nullable = false)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "userProfileOptions")
     private List<UserNotificationEventOptionsEntity> notificationEventOptions;
 
     /**
