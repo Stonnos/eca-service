@@ -7,7 +7,10 @@ import com.ecaservice.oauth.entity.ChangePasswordRequestEntity;
 import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
 import com.ecaservice.oauth.entity.RoleEntity;
 import com.ecaservice.oauth.entity.UserEntity;
+import com.ecaservice.oauth.entity.UserNotificationEventOptionsEntity;
+import com.ecaservice.oauth.entity.UserProfileOptionsEntity;
 import com.ecaservice.user.model.Role;
+import com.ecaservice.user.profile.options.dto.UserNotificationEventType;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.google.common.collect.Sets;
 import lombok.experimental.UtilityClass;
@@ -172,5 +175,37 @@ public class TestHelperUtils {
         changePasswordRequestEntity.setToken(md5Hex(token));
         changePasswordRequestEntity.setUserEntity(createUserEntity());
         return changePasswordRequestEntity;
+    }
+
+    /**
+     * Create user profile options entity.
+     *
+     * @param userEntity - user entity
+     * @return user profile options entity
+     */
+    public static UserProfileOptionsEntity createUserProfileOptionsEntity(UserEntity userEntity) {
+        UserProfileOptionsEntity userProfileOptionsEntity = new UserProfileOptionsEntity();
+        userProfileOptionsEntity.setEmailEnabled(true);
+        userProfileOptionsEntity.setWebPushEnabled(true);
+        userProfileOptionsEntity.setUserEntity(userEntity);
+        userProfileOptionsEntity.setNotificationEventOptions(
+                Collections.singletonList(createUserNotificationEventOptionsEntity()));
+        userProfileOptionsEntity.setCreated(LocalDateTime.now());
+        return userProfileOptionsEntity;
+    }
+
+    /**
+     * Creates user notification event options entity.
+     *
+     * @return user notification event options entity
+     */
+    public static UserNotificationEventOptionsEntity createUserNotificationEventOptionsEntity() {
+        var userNotificationEventOptionsEntity = new UserNotificationEventOptionsEntity();
+        userNotificationEventOptionsEntity.setEventType(UserNotificationEventType.EXPERIMENT_STATUS_CHANGE);
+        userNotificationEventOptionsEntity.setEmailSupported(true);
+        userNotificationEventOptionsEntity.setWebPushSupported(true);
+        userNotificationEventOptionsEntity.setEmailEnabled(true);
+        userNotificationEventOptionsEntity.setEmailSupported(true);
+        return userNotificationEventOptionsEntity;
     }
 }

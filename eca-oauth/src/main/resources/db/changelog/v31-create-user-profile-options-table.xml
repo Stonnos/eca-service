@@ -18,6 +18,9 @@
             </column>
             <column name="email_enabled" type="boolean" defaultValueBoolean="true"/>
             <column name="web_push_enabled" type="boolean" defaultValueBoolean="true"/>
+            <column name="created" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
             <column name="user_id" type="bigint">
                 <constraints unique="true"
                              uniqueConstraintName="user_profile_options_user_id_unique_idx"
@@ -28,21 +31,18 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="create_user_notification_options" author="roman.batygin@mail.ru" context="schema">
+    <changeSet id="create_user_notification_event_options" author="roman.batygin@mail.ru" context="schema">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="user_profile_options"/>
             <not>
-                <tableExists tableName="user_notification_options"/>
+                <tableExists tableName="user_notification_event_options"/>
             </not>
         </preConditions>
-        <createTable tableName="user_notification_options">
+        <createTable tableName="user_notification_event_options">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="event_code" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="event_title" type="varchar(255)">
+            <column name="event_type" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="email_enabled" type="boolean" defaultValueBoolean="false"/>
@@ -50,21 +50,21 @@
             <column name="email_supported" type="boolean" defaultValueBoolean="false"/>
             <column name="web_push_supported" type="boolean" defaultValueBoolean="false"/>
             <column name="user_profile_options_id" type="bigint">
-                <constraints foreignKeyName="fk_user_notification_options_user_profile_options_id"
-                             referencedTableName="user_notification_options"
+                <constraints foreignKeyName="fk_user_notification_event_options_user_profile_options_id"
+                             referencedTableName="user_notification_event_options"
                              referencedColumnNames="id" nullable="false"/>
             </column>
         </createTable>
     </changeSet>
 
-    <changeSet id="add_user_profile_options_id_event_code_unique_idx" author="roman.batygin@mail.ru" context="schema">
+    <changeSet id="add_user_profile_options_id_event_type_unique_idx" author="roman.batygin@mail.ru" context="schema">
         <preConditions onFail="MARK_RAN">
-            <tableExists tableName="user_notification_options"/>
-            <columnExists tableName="user_notification_options" columnName="user_profile_options_id"/>
-            <columnExists tableName="user_notification_options" columnName="event_code"/>
+            <tableExists tableName="user_notification_event_options"/>
+            <columnExists tableName="user_notification_event_options" columnName="user_profile_options_id"/>
+            <columnExists tableName="user_notification_event_options" columnName="event_type"/>
         </preConditions>
-        <addUniqueConstraint tableName="user_notification_options"
-                             columnNames="user_profile_options_id, event_code"
-                             constraintName="user_profile_options_id_event_code_unique_idx"/>
+        <addUniqueConstraint tableName="user_notification_event_options"
+                             columnNames="user_profile_options_id, event_type"
+                             constraintName="user_profile_options_id_event_type_unique_idx"/>
     </changeSet>
 </databaseChangeLog>

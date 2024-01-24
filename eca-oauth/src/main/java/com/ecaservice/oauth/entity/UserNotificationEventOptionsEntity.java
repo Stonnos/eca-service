@@ -1,42 +1,40 @@
 package com.ecaservice.oauth.entity;
 
+import com.ecaservice.user.profile.options.dto.UserNotificationEventType;
 import lombok.Data;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 /**
- * User profile notification options persistence entity.
+ * User profile notification event options persistence entity.
  *
  * @author Roman Batygin
  */
 @Data
 @Entity
-@Table(name = "user_notification_options", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"user_profile_options_id", "event_code"}, name =
-                "user_profile_options_id_event_code_unique_idx")}
+@Table(name = "user_notification_event_options", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"user_profile_options_id", "event_type"}, name =
+                "user_profile_options_id_event_type_unique_idx")}
 )
-public class UserNotificationOptionsEntity {
+public class UserNotificationEventOptionsEntity {
 
     @Id
     @GeneratedValue
     private Long id;
 
     /**
-     * Notification event code
+     * Notification event type
      */
-    @Column(name = "event_code", nullable = false)
-    private String eventCode;
-
-    /**
-     * Notification event title
-     */
-    @Column(name = "event_title", nullable = false)
-    private String eventTitle;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "event_type", nullable = false)
+    private UserNotificationEventType eventType;
 
     /**
      * Email notifications enabled?
