@@ -44,6 +44,7 @@ public interface UserProfileOptionsMapper {
      * @param userProfileOptionsEntity - user profile options entity
      * @return user profile options dto
      */
+    @Mapping(source = "userEntity.login", target = "user")
     UserProfileOptionsDto mapToDto(UserProfileOptionsEntity userProfileOptionsEntity);
 
     /**

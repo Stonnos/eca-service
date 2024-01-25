@@ -15,6 +15,12 @@ import java.util.List;
 public class UserProfileOptionsDto {
 
     /**
+     * User login
+     */
+    @Schema(description = "User login")
+    private String user;
+
+    /**
      * Email notifications enabled? (global flag)
      */
     @Schema(description = "Email notifications enabled? (global flag)")

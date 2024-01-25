@@ -31,6 +31,7 @@ class UserProfileMapperTest {
         UserProfileOptionsEntity userProfileOptionsEntity = createUserProfileOptionsEntity(userEntity);
         var userProfileOptionsDto = userProfileOptionsMapper.mapToDto(userProfileOptionsEntity);
         assertThat(userProfileOptionsDto).isNotNull();
+        assertThat(userProfileOptionsDto.getUser()).isEqualTo(userProfileOptionsEntity.getUserEntity().getLogin());
         assertThat(userProfileOptionsDto.isWebPushEnabled()).isEqualTo(userProfileOptionsEntity.isWebPushEnabled());
         assertThat(userProfileOptionsDto.isEmailEnabled()).isEqualTo(userProfileOptionsEntity.isEmailEnabled());
         assertThat(userProfileOptionsDto.getNotificationEventOptions()).hasSameSizeAs(
