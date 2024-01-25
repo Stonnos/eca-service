@@ -51,7 +51,7 @@
             <column name="web_push_supported" type="boolean" defaultValueBoolean="false"/>
             <column name="user_profile_options_id" type="bigint">
                 <constraints foreignKeyName="fk_user_notification_event_options_user_profile_options_id"
-                             referencedTableName="user_notification_event_options"
+                             referencedTableName="user_profile_options"
                              referencedColumnNames="id" nullable="false"/>
             </column>
         </createTable>
