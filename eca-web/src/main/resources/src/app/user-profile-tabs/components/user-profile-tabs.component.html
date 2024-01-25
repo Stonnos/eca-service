@@ -1,0 +1,14 @@
+<div class="container-fluid mb-5">
+  <p-tabView class="user-profile-tab">
+    <p-tabPanel header="Личные данные" leftIcon="pi pi-user user-icon" [cache]="false">
+      <ng-template pTemplate="content">
+        <app-user-profile></app-user-profile>
+      </ng-template>
+    </p-tabPanel>
+
+    <p-tabPanel header="Настройки уведомлений" leftIcon="pi pi-bell notification-icon" [cache]="false">
+      <ng-template pTemplate="content">
+      </ng-template>
+    </p-tabPanel>
+  </p-tabView>
+</div>
