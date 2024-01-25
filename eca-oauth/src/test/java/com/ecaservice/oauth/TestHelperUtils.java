@@ -95,7 +95,6 @@ public class TestHelperUtils {
         userEntity.setPassword(PASSWORD);
         userEntity.setCreationDate(LocalDateTime.now());
         userEntity.setTfaEnabled(true);
-        userEntity.setPushEnabled(true);
         return userEntity;
     }
 

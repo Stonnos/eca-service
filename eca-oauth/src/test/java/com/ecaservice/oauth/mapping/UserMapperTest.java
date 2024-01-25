@@ -47,7 +47,6 @@ class UserMapperTest {
         assertThat(userDto.isTfaEnabled()).isEqualTo(userEntity.isTfaEnabled());
         assertThat(userDto.isLocked()).isEqualTo(userEntity.isLocked());
         assertThat(userDto.isLockAllowed()).isTrue();
-        assertThat(userDto.isPushEnabled()).isEqualTo(userEntity.isPushEnabled());
     }
 
     @Test

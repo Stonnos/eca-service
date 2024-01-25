@@ -17,8 +17,6 @@ import { ChangePasswordRequest } from "../../change-password/model/change-passwo
 import { UpdateUserInfoModel } from "../../users/model/update-user-info.model";
 import { ChangeEmailService } from "../../update-user-email/services/change-email.service";
 import { ChangePasswordService } from "../../change-password/services/change-password.service";
-import { EventService } from "../../common/event/event.service";
-import { EventType } from "../../common/event/event.type";
 
 @Component({
   selector: 'app-user-profile',
@@ -30,8 +28,6 @@ export class UserProfileComponent implements OnInit {
   public user: UserDto;
 
   public tfaEnabled: boolean = false;
-
-  public pushEnabled: boolean = false;
 
   public commonFields: any[] = [];
 
@@ -86,8 +82,7 @@ export class UserProfileComponent implements OnInit {
                      private sanitizer: DomSanitizer,
                      private messageService: MessageService,
                      private changeEmailService: ChangeEmailService,
-                     private changePasswordService: ChangePasswordService,
-                     private eventService: EventService) {
+                     private changePasswordService: ChangePasswordService) {
     this.initCommonFields();
   }
 
@@ -140,28 +135,6 @@ export class UserProfileComponent implements OnInit {
       ).subscribe({
         next: () => {
           this.getUser(false);
-        },
-        error: (error) => {
-          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-        }
-    });
-  }
-
-  public changedPushEnabledSwitch(event): void {
-    this.loading = true;
-    this.usersService.setPushEnabled(event.checked)
-      .pipe(
-        finalize(() => {
-          this.loading = false;
-        })
-      ).subscribe({
-        next: () => {
-          this.getUser(false);
-          if (event.checked) {
-            this.eventService.publishEvent(EventType.INIT_PUSH);
-          } else {
-            this.eventService.publishEvent(EventType.CLOSE_PUSH);
-          }
         },
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
@@ -243,7 +216,6 @@ export class UserProfileComponent implements OnInit {
       next: (user: UserDto) => {
         this.user = user;
         this.tfaEnabled = user.tfaEnabled;
-        this.pushEnabled = user.pushEnabled;
         if (downloadPhoto) {
           this.updatePhoto();
         }
