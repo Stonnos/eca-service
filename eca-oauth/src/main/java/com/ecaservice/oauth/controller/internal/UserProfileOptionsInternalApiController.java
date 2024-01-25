@@ -3,7 +3,6 @@ package com.ecaservice.oauth.controller.internal;
 import com.ecaservice.oauth.service.UserProfileOptionsService;
 import com.ecaservice.user.model.UserDetailsImpl;
 import com.ecaservice.user.profile.options.dto.UserProfileOptionsDto;
-import com.ecaservice.web.dto.model.UserDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -57,7 +56,7 @@ public class UserProfileOptionsInternalApiController {
                                                     ref = "#/components/examples/UserProfileOptionsResponse"
                                             ),
                                     },
-                                    schema = @Schema(implementation = UserDto.class)
+                                    schema = @Schema(implementation = UserProfileOptionsDto.class)
                             )
                     ),
                     @ApiResponse(description = "Not authorized", responseCode = "401",

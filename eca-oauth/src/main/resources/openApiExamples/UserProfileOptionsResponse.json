@@ -1,4 +1,5 @@
 {
+  "user": "admin",
   "emailEnabled": true,
   "webPushEnabled": true,
   "notificationEventOptions": [

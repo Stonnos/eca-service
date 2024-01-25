@@ -4,7 +4,6 @@ import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.oauth.dto.UpdateUserNotificationOptionsDto;
 import com.ecaservice.oauth.service.UserProfileOptionsService;
 import com.ecaservice.user.model.UserDetailsImpl;
-import com.ecaservice.web.dto.model.UserDto;
 import com.ecaservice.web.dto.model.UserProfileNotificationOptionsDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -66,7 +65,7 @@ public class UserProfileOptionsController {
                                                     ref = "#/components/examples/UserProfileNotificationOptionsResponse"
                                             ),
                                     },
-                                    schema = @Schema(implementation = UserDto.class)
+                                    schema = @Schema(implementation = UserProfileNotificationOptionsDto.class)
                             )
                     ),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
