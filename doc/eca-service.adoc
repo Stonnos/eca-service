@@ -434,7 +434,6 @@ image::./images/eca-oauth-db-schema.png[alt=Схема базы данных eca
 |last_name               |varchar(255)     |-|+|-                              |Фамилия пользователя
 |middle_name             |varchar(255)     |-|+|-                              |Отчество пользователя
 |tfa_enabled             |boolean          |-|-|-                              |Вкл./выкл. двухфакторную аутентификацию
-|push_enabled            |boolean          |-|-|-                              |Вкл./выкл. пуш уведомлений
 |locked                  |boolean          |-|-|-                              |Вкл./выкл. блокировку пользователя
 |password_change_date    |timestamp        |-|-|-                              |Дата последнего изменения пароля
 |force_change_password   |boolean          |-|-|-                              |Флаг принудительной смены временного пароля
@@ -469,6 +468,34 @@ image::./images/eca-oauth-db-schema.png[alt=Схема базы данных eca
 |photo                   |bytea            |-|-|-                              |Фотография в двоичном виде
 |user_id                 |bigint           |-|+|fk_user_photo_user_id          |Внешний ключ пользователя
 |===
+
+==== Таблица 3.{counter:db-table-id} - 'user_profile_options' - содержит данные о настройказ профилей пользователей
+[cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
+|===
+|Название колонки|Тип|Unique|Not NULL|Индекс|Описание
+|id                      |bigint           |+|+|+                                |Идентификатор записи (первичный ключ)
+|email_enabled           |boolean          |-|-|-                                |Вкл./выкл. уведомлений по email
+|web_push_enabled        |boolean          |-|-|-                                |Вкл./выкл. пуш уведомлений
+|created                 |timestamp        |-|+|-                                |Дата создания
+|user_id                 |bigint           |-|+|fk_user_profile_options_user_id  |Внешний ключ пользователя
+|===
+
+Таблица также содержит уникальный индекс *user_profile_options_user_id_unique_idx* на поле user_id
+
+==== Таблица 3.{counter:db-table-id} - 'user_notification_event_options' - содержит данные о настройказ профилей пользователей
+[cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
+|===
+|Название колонки|Тип|Unique|Not NULL|Индекс|Описание
+|id                      |bigint           |+|+|+                                                           |Идентификатор записи (первичный ключ)
+|event_type              |varchar(255)     |-|+|-                                                           |Тип события
+|email_enabled           |boolean          |-|-|-                                                           |Вкл./выкл. уведомлений по email
+|web_push_enabled        |boolean          |-|-|-                                                           |Вкл./выкл. пуш уведомлений
+|email_supported         |boolean          |-|-|-                                                           |Вкл./выкл. поддержка уведомлений по email
+|web_push_supported      |boolean          |-|-|-                                                           |Вкл./выкл. поддержка пуш уведомлений
+|user_profile_options_id |bigint           |-|+|fk_user_notification_event_options_user_profile_options_id  |Внешний ключ user_profile_options
+|===
+
+Таблица также содержит уникальный индекс *user_profile_options_id_event_type_unique_idx* на поля user_profile_options_id, event_type
 
 ==== Таблица 3.{counter:db-table-id} - 'reset_password_request' - содержит данные о запросах на восстановление пароля
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
