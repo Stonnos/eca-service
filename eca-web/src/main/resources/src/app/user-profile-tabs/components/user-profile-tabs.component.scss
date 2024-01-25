@@ -1,6 +1,11 @@
 .user-profile-tab::ng-deep {
 
+  .ui-tabview-panels {
+    background-color: #f4f4f4;
+  }
+
   .ui-tabview-panel {
     height: 100vh;
+    background-color: #f4f4f4;
   }
 }
