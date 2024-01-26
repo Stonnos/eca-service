@@ -31,6 +31,7 @@
 * eca-ds-transport - модуль содержит dto классы для сервиса Data storage
 * eca-external-api-transport - модуль содержит dto классы для внешнего API
 * eca-audit-transport - модуль содержит dto классы для сервиса журнала аудита
+* user-profile-options-transport - модуль содержит dto классы для настроек профиля пользователя
 * eca-report-model - модуль содержит модельные классы для отчетов
 * feign-oauth - обзщая библиотека для поддержки аутентификации feign client с помощью протокола oauth2
 * eca-web-transport - модуль содержит dto классы для REST API WEB
@@ -42,6 +43,7 @@
 * oauth2-core - модуль содержит конфигурационные классы для oauth2 resource server 
 * rabbit-core - модуль содержит конфигурационные классы для rabbit
 * eca-mail-client - общая библиотека для отправки email сообщений
+* user-profile-options-client - общая библиотека для получения настроек профиля пользователя
 * eca-s3-minio-client - общая библиотека для работы с S3 minio storage
 * classifiers-options-adapter - модуль для конвертации настроек классификаторов
 * classifiers-template-processor - модуль для работы с шаблонами классификаторов

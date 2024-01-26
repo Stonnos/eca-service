@@ -35,6 +35,7 @@
         <module>oauth2-core</module>
         <module>rabbit-core</module>
         <module>eca-mail-client</module>
+        <module>user-profile-options-client</module>
         <module>eca-s3-minio-client</module>
         <module>classifiers-options-adapter</module>
         <module>classifiers-template-processor</module>
