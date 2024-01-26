@@ -228,6 +228,12 @@
 
         <dependency>
             <groupId>eca.service</groupId>
+            <artifactId>user-profile-options-client</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>eca.service</groupId>
             <artifactId>eca-s3-minio-client</artifactId>
             <version>${project.version}</version>
         </dependency>

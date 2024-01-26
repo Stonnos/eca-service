@@ -22,8 +22,8 @@ public abstract class AbstractChangeClassifiersConfigurationPushEvent extends Ab
      * @param classifiersConfiguration - classifiers configuration
      */
     protected AbstractChangeClassifiersConfigurationPushEvent(Object source,
-                                                           String initiator,
-                                                           ClassifiersConfiguration classifiersConfiguration) {
+                                                              String initiator,
+                                                              ClassifiersConfiguration classifiersConfiguration) {
         super(source, initiator);
         this.classifiersConfiguration = classifiersConfiguration;
     }

@@ -18,6 +18,11 @@ import com.ecaservice.server.service.ers.ErsClient;
 import com.ecaservice.server.service.push.WebPushClient;
 import com.ecaservice.server.verifier.TestStepVerifier;
 import com.ecaservice.user.dto.UserInfoDto;
+import com.ecaservice.user.profile.options.client.service.UserProfileOptionsFeignClient;
+import com.ecaservice.user.profile.options.client.service.UserProfileOptionsProvider;
+import com.ecaservice.user.profile.options.dto.UserNotificationEventOptionsDto;
+import com.ecaservice.user.profile.options.dto.UserNotificationEventType;
+import com.ecaservice.user.profile.options.dto.UserProfileOptionsDto;
 import lombok.Getter;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -27,6 +32,8 @@ import org.springframework.test.context.jdbc.Sql;
 import weka.core.Instances;
 
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.ecaservice.server.TestHelperUtils.loadInstances;
 import static org.mockito.ArgumentMatchers.any;
@@ -48,6 +55,9 @@ public abstract class AbstractEvaluationProcessManagerTest<T extends AbstractEva
     private static final String CREATED_BY = "user";
     private static final String TEST_MAIL_RU = "test@mail.ru";
 
+    @MockBean
+    @Getter
+    private UserProfileOptionsFeignClient userProfileOptionsFeignClient;
     @MockBean
     @Getter
     private EmailClient emailClient;
@@ -78,6 +88,9 @@ public abstract class AbstractEvaluationProcessManagerTest<T extends AbstractEva
     @MockBean
     @Getter
     private UserService userService;
+    @MockBean
+    @Getter
+    private UserProfileOptionsProvider userProfileOptionsProvider;
 
     @BeforeEach
     void init() {
@@ -87,6 +100,7 @@ public abstract class AbstractEvaluationProcessManagerTest<T extends AbstractEva
         mockGetUserInfo();
         mockExportValidInstances();
         mockSentEmail();
+        mockGetUserProfileOptions();
         before();
     }
 
@@ -134,5 +148,22 @@ public abstract class AbstractEvaluationProcessManagerTest<T extends AbstractEva
         ExportInstancesResponseDto exportInstancesResponseDto = new ExportInstancesResponseDto();
         exportInstancesResponseDto.setExternalDataUuid(UUID.randomUUID().toString());
         when(dataStorageService.exportValidInstances(anyString())).thenReturn(exportInstancesResponseDto);
+    }
+
+    private void mockGetUserProfileOptions() {
+        UserProfileOptionsDto userProfileOptionsDto = new UserProfileOptionsDto();
+        userProfileOptionsDto.setEmailEnabled(true);
+        userProfileOptionsDto.setWebPushEnabled(true);
+        var notificationEvents = Stream.of(UserNotificationEventType.values())
+                .map(eventType -> {
+                    var userNotificationEventOptionsDto = new UserNotificationEventOptionsDto();
+                    userNotificationEventOptionsDto.setEventType(eventType);
+                    userNotificationEventOptionsDto.setEmailEnabled(true);
+                    userNotificationEventOptionsDto.setWebPushEnabled(true);
+                    return userNotificationEventOptionsDto;
+                })
+                .collect(Collectors.toList());
+        userProfileOptionsDto.setNotificationEventOptions(notificationEvents);
+        when(userProfileOptionsProvider.getUserProfileOptions(anyString())).thenReturn(userProfileOptionsDto);
     }
 }

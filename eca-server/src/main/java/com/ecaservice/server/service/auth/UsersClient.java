@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.RequestParam;
  *
  * @author Roman Batygin
  */
-@FeignClient(value = "eca-oauth", path = "/api/internal/users", configuration = FeignClientOauth2Configuration.class)
+@FeignClient(value = "eca-oauth", contextId = "userInfo", path = "/api/internal/users",
+        configuration = FeignClientOauth2Configuration.class)
 public interface UsersClient {
 
     /**

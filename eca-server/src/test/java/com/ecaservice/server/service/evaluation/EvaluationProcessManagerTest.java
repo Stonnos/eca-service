@@ -62,6 +62,7 @@ class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<
     private static final String EVALUATION_ID = "id";
     private static final String EVALUATION_REQUEST_ID = "requestId";
     private static final String EVALUATION_REQUEST_STATUS = "requestStatus";
+    private static final String CREATED_BY = "user";
 
     @MockBean
     private OptimalClassifierOptionsFetcher optimalClassifierOptionsFetcher;
@@ -257,6 +258,7 @@ class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<
     private EvaluationLog createAndSaveEvaluationLog() {
         var evaluationLog = createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.NEW);
         evaluationLog.setChannel(Channel.WEB);
+        evaluationLog.setCreatedBy(CREATED_BY);
         instancesInfoRepository.save(evaluationLog.getInstancesInfo());
         return evaluationLogRepository.save(evaluationLog);
     }
