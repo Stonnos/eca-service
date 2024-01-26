@@ -6,7 +6,7 @@ import com.ecaservice.oauth.dto.CreateUserDto;
 import com.ecaservice.oauth.dto.UpdateUserInfoDto;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.entity.UserPhoto;
-import com.ecaservice.oauth.event.model.UserCreatedEvent;
+import com.ecaservice.oauth.event.model.UserCreatedNotificationEvent;
 import com.ecaservice.oauth.event.model.UserLockedNotificationEvent;
 import com.ecaservice.oauth.event.model.UserUnLockedNotificationEvent;
 import com.ecaservice.oauth.exception.UserLockNotAllowedException;
@@ -347,8 +347,7 @@ public class UserController {
         log.info("Received request for user creation [{}]", createUserDto.getLogin());
         String password = passwordService.generatePassword();
         UserEntity userEntity = userService.createUser(createUserDto, password);
-        log.info("User {} has been created", userEntity.getId());
-        applicationEventPublisher.publishEvent(new UserCreatedEvent(this, userEntity, password));
+        applicationEventPublisher.publishEvent(new UserCreatedNotificationEvent(this, userEntity, password));
         return userMapper.map(userEntity);
     }
 

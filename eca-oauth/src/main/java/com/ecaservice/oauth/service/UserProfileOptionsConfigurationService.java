@@ -39,12 +39,14 @@ public class UserProfileOptionsConfigurationService {
      */
     @Transactional
     public UserProfileOptionsEntity createAndSaveDefaultProfileOptions(UserEntity userEntity) {
+        log.info("Starting to create and save user [{}] profile default options", userEntity.getLogin());
         var userProfileOptions = userProfileOptionsMapper.map(userProfileProperties);
         userProfileOptions.setUserEntity(userEntity);
         userProfileOptions.setCreated(LocalDateTime.now());
         var userProfileOptionsEntity = userProfileOptionsRepository.save(userProfileOptions);
         var notificationEventOptions = saveUserNotificationEvents(userProfileOptionsEntity);
         userProfileOptionsEntity.setNotificationEventOptions(notificationEventOptions);
+        log.info("User [{}] profile default options has been created", userEntity.getLogin());
         return userProfileOptionsEntity;
     }
 

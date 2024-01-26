@@ -84,6 +84,8 @@ class UserServiceTest extends AbstractJpaTest {
     @MockBean
     private Oauth2TokenService oauth2TokenService;
     @MockBean
+    private UserProfileOptionsConfigurationService userProfileOptionsConfigurationService;
+    @MockBean
     private FilterTemplateService filterTemplateService;
 
     private UserService userService;
@@ -93,8 +95,8 @@ class UserServiceTest extends AbstractJpaTest {
         roleRepository.save(createRoleEntity());
         PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         userService = new UserService(appProperties, passwordEncoder, userMapper, oauth2TokenService,
-                filterTemplateService,
-                userEntityRepository, roleRepository, userPhotoRepository);
+                userProfileOptionsConfigurationService, filterTemplateService, userEntityRepository, roleRepository,
+                userPhotoRepository);
         when(filterTemplateService.getGlobalFilterFields(USERS_TEMPLATE)).thenReturn(
                 List.of(UserEntity_.LOGIN,
                         UserEntity_.EMAIL,

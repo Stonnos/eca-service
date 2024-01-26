@@ -73,6 +73,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
     private final Oauth2TokenService oauth2TokenService;
+    private final UserProfileOptionsConfigurationService userProfileOptionsConfigurationService;
     private final FilterTemplateService filterTemplateService;
     private final UserEntityRepository userEntityRepository;
     private final RoleRepository roleRepository;
@@ -119,13 +120,19 @@ public class UserService {
      * @return user entity
      */
     @Audit(CREATE_USER)
+    @Transactional
     public UserEntity createUser(CreateUserDto createUserDto, String password) {
+        log.info("Starting to create user [{}] has been created", createUserDto.getLogin());
         UserEntity userEntity = userMapper.map(createUserDto);
         userEntity.setPassword(passwordEncoder.encode(password));
         populateUserRole(userEntity);
         userEntity.setForceChangePassword(true);
         userEntity.setCreationDate(LocalDateTime.now());
-        return userEntityRepository.save(userEntity);
+        userEntityRepository.save(userEntity);
+        //Also creates user profile options with default settings
+        userProfileOptionsConfigurationService.createAndSaveDefaultProfileOptions(userEntity);
+        log.info("User {} has been created", userEntity.getId());
+        return userEntity;
     }
 
     /**

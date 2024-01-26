@@ -1,7 +1,7 @@
 package com.ecaservice.oauth.event.handler;
 
 import com.ecaservice.oauth.entity.UserEntity;
-import com.ecaservice.oauth.event.model.UserCreatedEvent;
+import com.ecaservice.oauth.event.model.UserCreatedNotificationEvent;
 import com.ecaservice.oauth.service.mail.dictionary.Templates;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -13,28 +13,28 @@ import static com.ecaservice.oauth.service.mail.dictionary.TemplateVariablesDict
 import static com.google.common.collect.Maps.newHashMap;
 
 /**
- * Implements user created event handler.
+ * Implements user created notification event handler.
  *
  * @author Roman Batygin
  */
 @Slf4j
 @Component
-public class UserCreatedEventHandler extends AbstractUserNotificationEventHandler<UserCreatedEvent> {
+public class UserCreatedNotificationEventHandler extends AbstractUserNotificationEventHandler<UserCreatedNotificationEvent> {
 
     /**
      * Creates user created event handler.
      */
-    public UserCreatedEventHandler() {
-        super(UserCreatedEvent.class);
+    public UserCreatedNotificationEventHandler() {
+        super(UserCreatedNotificationEvent.class);
     }
 
     @Override
-    public String getTemplateCode(UserCreatedEvent emailEvent) {
+    public String getTemplateCode(UserCreatedNotificationEvent emailEvent) {
         return Templates.NEW_USER;
     }
 
     @Override
-    public Map<String, String> createVariables(UserCreatedEvent event) {
+    public Map<String, String> createVariables(UserCreatedNotificationEvent event) {
         UserEntity userEntity = event.getUserEntity();
         Map<String, String> templateVariables = newHashMap();
         templateVariables.put(USERNAME_KEY, userEntity.getLogin());

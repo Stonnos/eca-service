@@ -53,7 +53,6 @@ public class UserProfileOptionsDataService {
             log.info("User [{}] profile options not found. Starting to create and save user profile default options",
                     user);
             userProfileOptions = userProfileOptionsConfigurationService.createAndSaveDefaultProfileOptions(userEntity);
-            log.info("User [{}] profile default options has been created", user);
         }
         log.info("User [{}] profile options has been fetched", user);
         return userProfileOptions;

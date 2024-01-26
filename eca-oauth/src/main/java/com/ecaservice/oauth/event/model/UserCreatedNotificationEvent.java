@@ -8,7 +8,7 @@ import lombok.Getter;
  *
  * @author Roman Batygin
  */
-public class UserCreatedEvent extends AbstractUserNotificationEvent {
+public class UserCreatedNotificationEvent extends AbstractUserNotificationEvent {
 
     /**
      * User password
@@ -24,7 +24,7 @@ public class UserCreatedEvent extends AbstractUserNotificationEvent {
      * @param userEntity - user entity
      * @param password   - user password
      */
-    public UserCreatedEvent(Object source, UserEntity userEntity, String password) {
+    public UserCreatedNotificationEvent(Object source, UserEntity userEntity, String password) {
         super(source, userEntity);
         this.password = password;
     }
