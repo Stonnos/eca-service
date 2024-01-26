@@ -52,7 +52,8 @@ import static org.mockito.Mockito.verify;
 @SpringBootTest
 @Deployment(resources = {"bpmn/process-experiment.bpmn", "bpmn/finish-experiment.bpmn",
         "bpmn/create-experiment-request-process.bpmn", "bpmn/create-experiment-web-request-process.bpmn",
-        "bpmn/create-experiment-message-request-process.bpmn"})
+        "bpmn/create-experiment-message-request-process.bpmn", "bpmn/send-final-experiment-email.bpmn",
+        "bpmn/send-final-experiment-push.bpmn"})
 class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<Experiment> {
 
     private static final String PUSH_MESSAGE_TYPE = "EXPERIMENT_STATUS";
