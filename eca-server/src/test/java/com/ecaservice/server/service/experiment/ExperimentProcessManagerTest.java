@@ -40,6 +40,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 /**
@@ -119,7 +120,7 @@ class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<
         experimentProcessManager.createExperimentRequest(experimentRequestModel);
         verify(getWebPushClient(), atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
 
-        assertThat(emailRequestArgumentCaptor.getAllValues()).hasSize(0);
+        verify(getEmailClient(), never()).sendEmail(any(EmailRequest.class));
         assertThat(pushRequestArgumentCaptor.getAllValues()).hasSize(1);
 
         var experiment = getExperiment(experimentRequestModel.getRequestId());
@@ -207,7 +208,7 @@ class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<
 
         var actualExperiment = getExperiment(experiment.getRequestId());
 
-        assertThat(emailRequestArgumentCaptor.getAllValues()).hasSize(0);
+        verify(getEmailClient(), never()).sendEmail(any(EmailRequest.class));
         assertThat(pushRequestArgumentCaptor.getAllValues()).hasSize(2);
 
         verifyTestSteps(actualExperiment,

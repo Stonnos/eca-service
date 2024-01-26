@@ -45,6 +45,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -107,6 +108,21 @@ class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<
         verifyTestSteps(evaluationLog,
                 new EvaluationRequestStatusVerifier(RequestStatus.NEW),
                 new UserPushRequestVerifier(RequestStatus.NEW, 0)
+        );
+    }
+
+    @Test
+    void testCreateEvaluationWebRequestWithDisabledNotifications() {
+        var evaluationWebRequestModel = createEvaluationWebRequestModel();
+        mockGetUserProfileOptions(false);
+        evaluationProcessManager.createAndProcessEvaluationRequest(evaluationWebRequestModel);
+
+        verify(getWebPushClient(), never()).sendPush(any(AbstractPushRequest.class));
+
+        var evaluationLog = getEvaluationLog(evaluationWebRequestModel.getRequestId());
+
+        verifyTestSteps(evaluationLog,
+                new EvaluationRequestStatusVerifier(RequestStatus.NEW)
         );
     }
 
@@ -225,6 +241,23 @@ class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<
                 new EvaluationRequestStatusVerifier(RequestStatus.FINISHED),
                 new UserPushRequestVerifier(RequestStatus.IN_PROGRESS, 0),
                 new UserPushRequestVerifier(RequestStatus.FINISHED, 1),
+                new EvaluationResultsRequestsVerifier()
+        );
+    }
+
+    @Test
+    void testProcessEvaluationWebRequestWithDisabledNotifications() {
+        EvaluationLog evaluationLog = createAndSaveEvaluationLog();
+        mockGetUserProfileOptions(false);
+        evaluationProcessManager.processEvaluationRequest(evaluationLog.getId());
+        verify(getErsClient(), atLeastOnce()).save(evaluationResultsRequestArgumentCaptor.capture());
+
+        var actualEvaluationLog = getEvaluationLog(evaluationLog.getRequestId());
+
+        verify(getWebPushClient(), never()).sendPush(any(AbstractPushRequest.class));
+
+        verifyTestSteps(actualEvaluationLog,
+                new EvaluationRequestStatusVerifier(RequestStatus.FINISHED),
                 new EvaluationResultsRequestsVerifier()
         );
     }
