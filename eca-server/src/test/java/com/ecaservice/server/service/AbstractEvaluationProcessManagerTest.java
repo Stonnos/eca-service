@@ -100,7 +100,7 @@ public abstract class AbstractEvaluationProcessManagerTest<T extends AbstractEva
         mockGetUserInfo();
         mockExportValidInstances();
         mockSentEmail();
-        mockGetUserProfileOptions();
+        mockGetUserProfileOptions(true);
         before();
     }
 
@@ -150,7 +150,7 @@ public abstract class AbstractEvaluationProcessManagerTest<T extends AbstractEva
         when(dataStorageService.exportValidInstances(anyString())).thenReturn(exportInstancesResponseDto);
     }
 
-    private void mockGetUserProfileOptions() {
+    protected void mockGetUserProfileOptions(boolean enabled) {
         UserProfileOptionsDto userProfileOptionsDto = new UserProfileOptionsDto();
         userProfileOptionsDto.setEmailEnabled(true);
         userProfileOptionsDto.setWebPushEnabled(true);
@@ -158,8 +158,8 @@ public abstract class AbstractEvaluationProcessManagerTest<T extends AbstractEva
                 .map(eventType -> {
                     var userNotificationEventOptionsDto = new UserNotificationEventOptionsDto();
                     userNotificationEventOptionsDto.setEventType(eventType);
-                    userNotificationEventOptionsDto.setEmailEnabled(true);
-                    userNotificationEventOptionsDto.setWebPushEnabled(true);
+                    userNotificationEventOptionsDto.setEmailEnabled(enabled);
+                    userNotificationEventOptionsDto.setWebPushEnabled(enabled);
                     return userNotificationEventOptionsDto;
                 })
                 .collect(Collectors.toList());
