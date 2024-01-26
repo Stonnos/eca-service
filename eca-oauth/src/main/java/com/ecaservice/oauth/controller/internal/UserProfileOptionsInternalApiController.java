@@ -1,9 +1,9 @@
 package com.ecaservice.oauth.controller.internal;
 
 import com.ecaservice.oauth.service.UserProfileOptionsService;
-import com.ecaservice.user.model.UserDetailsImpl;
 import com.ecaservice.user.profile.options.dto.UserProfileOptionsDto;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -13,14 +13,18 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.constraints.Size;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
+import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
+import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
 /**
  * Implements user profile options internal REST API.
@@ -40,6 +44,7 @@ public class UserProfileOptionsInternalApiController {
     /**
      * Gets user profile options.
      *
+     * @param login - user login
      * @return user profile options
      */
     @Operation(
@@ -73,8 +78,10 @@ public class UserProfileOptionsInternalApiController {
             }
     )
     @GetMapping(value = "/details")
-    public UserProfileOptionsDto getUserProfileOptions(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        log.info("Get user [{}] profile options", userDetails.getId());
-        return userProfileOptionsService.getUserProfileOptions(userDetails.getUsername());
+    public UserProfileOptionsDto getUserProfileOptions(@Parameter(description = "User login", required = true)
+                                                       @Size(min = VALUE_1, max = MAX_LENGTH_255)
+                                                       @RequestParam String login) {
+        log.info("Get user [{}] profile options", login);
+        return userProfileOptionsService.getUserProfileOptions(login);
     }
 }
