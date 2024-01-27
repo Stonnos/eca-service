@@ -11,6 +11,8 @@ import com.ecaservice.server.service.message.template.MessageTemplateProcessor;
 import com.ecaservice.server.service.push.WebPushSender;
 import com.ecaservice.server.service.push.handler.AddClassifierOptionsPushEventHandler;
 import com.ecaservice.server.service.push.handler.SetActiveClassifiersConfigurationPushEventHandler;
+import com.ecaservice.server.service.push.validator.UserNotificationPushRequestValidator;
+import com.ecaservice.user.profile.options.client.service.UserProfileOptionsProvider;
 import com.ecaservice.web.push.dto.AbstractPushRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -42,6 +44,8 @@ class WebPushListenerTest extends AbstractJpaTest {
     private MessageTemplateProcessor messageTemplateProcessor;
     @MockBean
     private WebPushSender webPushSender;
+    @MockBean
+    private UserProfileOptionsProvider userProfileOptionsProvider;
 
     @Inject
     private ClassifiersConfigurationRepository classifiersConfigurationRepository;
@@ -67,7 +71,8 @@ class WebPushListenerTest extends AbstractJpaTest {
     public void init() {
         saveConfiguration();
         webPushEventListener = new WebPushEventListener(appProperties,
-                Collections.singletonList(setActiveClassifiersConfigurationPushEventHandler), webPushSender);
+                Collections.singletonList(setActiveClassifiersConfigurationPushEventHandler),
+                Collections.singletonList(new UserNotificationPushRequestValidator()), webPushSender);
     }
 
     @Test

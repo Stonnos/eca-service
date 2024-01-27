@@ -4,6 +4,7 @@ import com.ecaservice.server.event.model.push.AddClassifierOptionsPushEvent;
 import com.ecaservice.server.repository.ClassifiersConfigurationHistoryRepository;
 import com.ecaservice.server.service.classifiers.ClassifiersFormTemplateProvider;
 import com.ecaservice.server.service.message.template.MessageTemplateProcessor;
+import com.ecaservice.user.profile.options.client.service.UserProfileOptionsProvider;
 import org.springframework.stereotype.Component;
 
 import static com.ecaservice.server.service.message.template.dictionary.MessageTemplateCodes.ADD_CLASSIFIERS_CONFIGURATION_OPTIONS_PUSH_MESSAGE;
@@ -23,13 +24,15 @@ public class AddClassifierOptionsPushEventHandler
      * @param classifiersConfigurationHistoryRepository - classifiers configuration history repository
      * @param messageTemplateProcessor                  - message template processor
      * @param classifiersFormTemplateProvider           - classifiers template provider
+     * @param userProfileOptionsProvider                - user profile options provider
      */
     public AddClassifierOptionsPushEventHandler(
             ClassifiersConfigurationHistoryRepository classifiersConfigurationHistoryRepository,
             MessageTemplateProcessor messageTemplateProcessor,
-            ClassifiersFormTemplateProvider classifiersFormTemplateProvider) {
+            ClassifiersFormTemplateProvider classifiersFormTemplateProvider,
+            UserProfileOptionsProvider userProfileOptionsProvider) {
         super(AddClassifierOptionsPushEvent.class, classifiersConfigurationHistoryRepository, messageTemplateProcessor,
-                classifiersFormTemplateProvider);
+                classifiersFormTemplateProvider, userProfileOptionsProvider);
     }
 
     @Override

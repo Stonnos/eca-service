@@ -8,6 +8,7 @@ import com.ecaservice.server.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.classifiers.ClassifiersFormTemplateProvider;
 import com.ecaservice.server.service.message.template.MessageTemplateProcessor;
+import com.ecaservice.user.profile.options.client.service.UserProfileOptionsProvider;
 import com.ecaservice.web.dto.model.FormTemplateDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -43,6 +44,8 @@ class AddClassifierOptionsPushEventHandlerTest extends AbstractJpaTest {
     private MessageTemplateProcessor messageTemplateProcessor;
     @MockBean
     private ClassifiersFormTemplateProvider classifiersFormTemplateProvider;
+    @MockBean
+    private UserProfileOptionsProvider userProfileOptionsProvider;
 
     @Inject
     private ClassifiersConfigurationRepository classifiersConfigurationRepository;
