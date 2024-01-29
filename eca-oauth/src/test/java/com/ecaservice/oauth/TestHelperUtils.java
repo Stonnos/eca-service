@@ -191,7 +191,7 @@ public class TestHelperUtils {
         userProfileOptionsEntity.setWebPushEnabled(true);
         userProfileOptionsEntity.setUserEntity(userEntity);
         userProfileOptionsEntity.setNotificationEventOptions(
-                Collections.singletonList(createUserNotificationEventOptionsEntity()));
+                Collections.singletonList(createUserNotificationEventOptionsEntity(userProfileOptionsEntity)));
         userProfileOptionsEntity.setVersion(0);
         userProfileOptionsEntity.setCreated(LocalDateTime.now());
         return userProfileOptionsEntity;
@@ -200,15 +200,18 @@ public class TestHelperUtils {
     /**
      * Creates user notification event options entity.
      *
+     * @param userProfileOptionsEntity - user profile options entity
      * @return user notification event options entity
      */
-    public static UserNotificationEventOptionsEntity createUserNotificationEventOptionsEntity() {
+    public static UserNotificationEventOptionsEntity createUserNotificationEventOptionsEntity(
+            UserProfileOptionsEntity userProfileOptionsEntity) {
         var userNotificationEventOptionsEntity = new UserNotificationEventOptionsEntity();
         userNotificationEventOptionsEntity.setEventType(UserNotificationEventType.EXPERIMENT_STATUS_CHANGE);
         userNotificationEventOptionsEntity.setEmailSupported(true);
         userNotificationEventOptionsEntity.setWebPushSupported(true);
         userNotificationEventOptionsEntity.setEmailEnabled(true);
         userNotificationEventOptionsEntity.setEmailSupported(true);
+        userNotificationEventOptionsEntity.setUserProfileOptions(userProfileOptionsEntity);
         return userNotificationEventOptionsEntity;
     }
 

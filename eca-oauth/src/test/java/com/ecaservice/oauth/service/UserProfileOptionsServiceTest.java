@@ -67,6 +67,13 @@ class UserProfileOptionsServiceTest extends AbstractJpaTest {
         userEntity = createAndSaveUser();
     }
 
+    @Override
+    public void deleteAll() {
+        userNotificationEventOptionsRepository.deleteAll();
+        userProfileOptionsRepository.deleteAll();
+        userEntityRepository.deleteAll();
+    }
+
     @Test
     void testCreateNewUserProfileOptions() {
         var userProfileOptionsDto = userProfileOptionsService.getUserProfileOptions(userEntity.getLogin());
@@ -183,13 +190,6 @@ class UserProfileOptionsServiceTest extends AbstractJpaTest {
         assertThrows(NotificationEventNotFoundException.class,
                 () -> userProfileOptionsService.updateUserNotificationOptions(userEntity.getLogin(),
                         updateUserNotificationOptionsDto));
-    }
-
-    @Override
-    public void deleteAll() {
-        userNotificationEventOptionsRepository.deleteAll();
-        userProfileOptionsRepository.deleteAll();
-        userEntityRepository.deleteAll();
     }
 
     private UserEntity createAndSaveUser() {
