@@ -478,6 +478,7 @@ image::./images/eca-oauth-db-schema.png[alt=Схема базы данных eca
 |web_push_enabled        |boolean          |-|-|-                                |Вкл./выкл. пуш уведомлений
 |created                 |timestamp        |-|+|-                                |Дата создания
 |user_id                 |bigint           |-|+|fk_user_profile_options_user_id  |Внешний ключ пользователя
+|version                 |integer          |-|+|-                                |Версия настроек
 |===
 
 Таблица также содержит уникальный индекс *user_profile_options_user_id_unique_idx* на поле user_id

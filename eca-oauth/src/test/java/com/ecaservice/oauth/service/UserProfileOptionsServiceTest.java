@@ -155,6 +155,7 @@ class UserProfileOptionsServiceTest extends AbstractJpaTest {
         assertThat(actualProfileOptions).isNotNull();
         assertThat(actualProfileOptions.isWebPushEnabled()).isFalse();
         assertThat(actualProfileOptions.isEmailEnabled()).isFalse();
+        assertThat(actualProfileOptions.getVersion()).isEqualTo(userProfileOptionsDto.getVersion() + 1);
         actualProfileOptions.getNotificationEventOptions().forEach(userNotificationEventOptionsEntity -> {
             assertThat(userNotificationEventOptionsEntity.isEmailEnabled()).isFalse();
             assertThat(userNotificationEventOptionsEntity.isWebPushEnabled()).isFalse();

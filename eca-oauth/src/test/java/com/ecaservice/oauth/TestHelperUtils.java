@@ -192,6 +192,7 @@ public class TestHelperUtils {
         userProfileOptionsEntity.setUserEntity(userEntity);
         userProfileOptionsEntity.setNotificationEventOptions(
                 Collections.singletonList(createUserNotificationEventOptionsEntity()));
+        userProfileOptionsEntity.setVersion(0);
         userProfileOptionsEntity.setCreated(LocalDateTime.now());
         return userProfileOptionsEntity;
     }

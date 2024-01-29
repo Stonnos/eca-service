@@ -47,6 +47,12 @@ public class UserProfileOptionsEntity {
     private LocalDateTime created;
 
     /**
+     * User profile options version
+     */
+    @Column(nullable = false)
+    private Integer version;
+
+    /**
      * Notification options list
      */
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "userProfileOptions")

@@ -42,6 +42,7 @@ public class UserProfileOptionsConfigurationService {
         log.info("Starting to create and save user [{}] profile default options", userEntity.getLogin());
         var userProfileOptions = userProfileOptionsMapper.map(userProfileProperties);
         userProfileOptions.setUserEntity(userEntity);
+        userProfileOptions.setVersion(0);
         userProfileOptions.setCreated(LocalDateTime.now());
         var userProfileOptionsEntity = userProfileOptionsRepository.save(userProfileOptions);
         var notificationEventOptions = saveUserNotificationEvents(userProfileOptionsEntity);
@@ -52,10 +53,12 @@ public class UserProfileOptionsConfigurationService {
 
     private List<UserNotificationEventOptionsEntity> saveUserNotificationEvents(
             UserProfileOptionsEntity userProfileOptionsEntity) {
-        var userNotificationEventsList = userProfileProperties.getNotificationEventOptions()
+        List<UserNotificationEventOptionsEntity> userNotificationEventsList = userProfileProperties
+                .getNotificationEventOptions()
                 .stream()
                 .map(userNotificationEventProperties -> {
-                    var notificationEventOptionsEntity = userProfileOptionsMapper.map(userNotificationEventProperties);
+                    var notificationEventOptionsEntity =
+                            userProfileOptionsMapper.map(userNotificationEventProperties);
                     notificationEventOptionsEntity.setUserProfileOptions(userProfileOptionsEntity);
                     return notificationEventOptionsEntity;
                 })

@@ -20,7 +20,8 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 @Table(name = "instances")
-public class InstancesEntity {
+public class
+InstancesEntity {
 
     @Id
     @GeneratedValue

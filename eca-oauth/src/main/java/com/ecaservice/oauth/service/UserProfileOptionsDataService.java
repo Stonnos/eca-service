@@ -74,6 +74,8 @@ public class UserProfileOptionsDataService {
         if (userProfileOptions == null) {
             throw new EntityNotFoundException(UserProfileOptionsEntity.class, user);
         }
+        int version = userProfileOptions.getVersion();
+        userProfileOptions.setVersion(++version);
         userProfileOptions.setEmailEnabled(updateUserNotificationOptionsDto.isEmailEnabled());
         userProfileOptions.setWebPushEnabled(updateUserNotificationOptionsDto.isWebPushEnabled());
         updateNotificationEvents(userProfileOptions, updateUserNotificationOptionsDto);

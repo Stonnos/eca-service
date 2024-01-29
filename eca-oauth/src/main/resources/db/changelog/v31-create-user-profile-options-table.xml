@@ -67,4 +67,18 @@
                              columnNames="user_profile_options_id, event_type"
                              constraintName="user_profile_options_id_event_type_unique_idx"/>
     </changeSet>
+
+    <changeSet id="add_version_column_to_user_profile_options_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="user_profile_options"/>
+            <not>
+                <columnExists tableName="user_profile_options" columnName="version"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="user_profile_options">
+            <column name="version" type="integer">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

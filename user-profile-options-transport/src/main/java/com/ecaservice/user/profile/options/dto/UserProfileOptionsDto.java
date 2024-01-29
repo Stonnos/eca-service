@@ -21,6 +21,12 @@ public class UserProfileOptionsDto {
     private String user;
 
     /**
+     * User profile options version
+     */
+    @Schema(description = "User profile options version")
+    private Integer version;
+
+    /**
      * Email notifications enabled? (global flag)
      */
     @Schema(description = "Email notifications enabled? (global flag)")
