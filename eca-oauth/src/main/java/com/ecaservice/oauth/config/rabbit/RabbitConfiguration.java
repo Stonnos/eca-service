@@ -33,7 +33,7 @@ public class RabbitConfiguration {
     public Exchange userProfileExchange() {
         log.info("User profile fanout exchange [{}] has been configured",
                 userProfileProperties.getRabbit().getExchangeName());
-        return new FanoutExchange(userProfileProperties.getRabbit().getExchangeName());
+        return new FanoutExchange(userProfileProperties.getRabbit().getExchangeName(), true, false);
     }
 
     /**
