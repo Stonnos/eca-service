@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, TemplateRef } from '@angular/core';
 import { Filter } from "../model/filter.model";
 import { AutocompleteItemModel } from "../model/autocomplete-item.model";
 
@@ -15,6 +15,9 @@ export class FilterComponent {
 
   @Input()
   public filters: Filter[];
+
+  @Input()
+  public autoCompleteItemTemplate: TemplateRef<HTMLElement>;
 
   @Output()
   public apply: EventEmitter<void> = new EventEmitter();

@@ -62,14 +62,12 @@
                             [dropdown]="true">
               <!--Customize item template  -->
               <ng-template let-item pTemplate="item">
-                <div [ngSwitch]="selectedAutocompleteField">
-                  <ng-container *ngSwitchCase="'instancesInfo.id'">
-                    <app-instances-info [item]="item.value">
-                    </app-instances-info>
+                <div *ngIf="autoCompleteItemTemplate">
+                  <ng-container *ngTemplateOutlet="autoCompleteItemTemplate; context: { context: { filterName: selectedAutocompleteField, itemValue: item }}">
                   </ng-container>
-                  <ng-container *ngSwitchDefault>
-                    {{ item.label }}
-                  </ng-container>
+                </div>
+                <div *ngIf="!autoCompleteItemTemplate">
+                  {{ item.label }}
                 </div>
               </ng-template>
             </p-autoComplete>
