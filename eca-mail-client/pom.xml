@@ -14,7 +14,6 @@
 
     <properties>
         <sonar.coverage.exclusions>
-            **/entity/**/*,
             **/config/**/*,
             **/model/**/*,
             **/exception/**/*
@@ -28,20 +27,11 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eca.service</groupId>
-            <artifactId>core-lock</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>eca.service</groupId>
@@ -57,11 +47,6 @@
             <groupId>eca.service</groupId>
             <artifactId>core-test</artifactId>
             <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

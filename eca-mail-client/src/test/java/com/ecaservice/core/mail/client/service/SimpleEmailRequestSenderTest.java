@@ -13,24 +13,24 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests for {@link EmailRequestSender} class.
+ * Unit tests for {@link SimpleEmailRequestSender} class.
  *
  * @author Roman Batygin
  */
 @ExtendWith(MockitoExtension.class)
-class EmailRequestSenderTest {
+class SimpleEmailRequestSenderTest {
 
     @Mock
     private EmailClient emailClient;
 
     @InjectMocks
-    private EmailRequestSender emailRequestSender;
+    private SimpleEmailRequestSender simpleEmailRequestSender;
 
     @Test
     void testHandleEmailEvent() {
         var emailRequest = createEmailRequest();
         when(emailClient.sendEmail(emailRequest)).thenReturn(new EmailResponse());
-        emailRequestSender.sendEmail(emailRequest);
+        simpleEmailRequestSender.sendEmail(emailRequest);
         verify(emailClient, atLeastOnce()).sendEmail(emailRequest);
     }
 }

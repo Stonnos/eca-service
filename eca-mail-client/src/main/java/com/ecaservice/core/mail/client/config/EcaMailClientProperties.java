@@ -13,7 +13,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class EcaMailClientProperties {
 
     private static final int DEFAULT_THREAD_POOL_SIZE = 1;
-    private static final int DEFAULT_PAGE_SIZE = 25;
     private static final long DEFAULT_REDELIVERY_INTERVAL_MILLIS = 60000L;
     private static final String DEFAULT_SALT = "s@lt#";
     private static final String DEFAULT_PASSWORD = "passw0rd@!";

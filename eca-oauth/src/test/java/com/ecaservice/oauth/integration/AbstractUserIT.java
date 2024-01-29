@@ -1,6 +1,6 @@
 package com.ecaservice.oauth.integration;
 
-import com.ecaservice.core.mail.client.service.EmailRequestSender;
+import com.ecaservice.core.mail.client.service.SimpleEmailRequestSender;
 import com.ecaservice.notification.dto.EmailRequest;
 import com.ecaservice.oauth.TestHelperUtils;
 import com.ecaservice.oauth.dto.CreateUserDto;
@@ -70,7 +70,7 @@ abstract class AbstractUserIT {
     private String clientSecret;
 
     @MockBean
-    private EmailRequestSender emailRequestSender;
+    private SimpleEmailRequestSender simpleEmailRequestSender;
     @Captor
     private ArgumentCaptor<EmailRequest> emailRequestArgumentCaptor;
 
@@ -164,7 +164,7 @@ abstract class AbstractUserIT {
     }
 
     String getHttpRequestParamFromEmailUrlVariable(String template, String variable, String tokenRequestParam) {
-        verify(emailRequestSender, atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
+        verify(simpleEmailRequestSender, atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
         EmailRequest emailRequest = emailRequestArgumentCaptor.getValue();
         assertThat(emailRequest).isNotNull();
         assertThat(emailRequest.getTemplateCode()).isEqualTo(template);
@@ -178,7 +178,7 @@ abstract class AbstractUserIT {
     }
 
     String getVariableFromEmail(String template, String variable) {
-        verify(emailRequestSender, atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
+        verify(simpleEmailRequestSender, atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
         EmailRequest emailRequest = emailRequestArgumentCaptor.getValue();
         assertThat(emailRequest).isNotNull();
         assertThat(emailRequest.getTemplateCode()).isEqualTo(template);
