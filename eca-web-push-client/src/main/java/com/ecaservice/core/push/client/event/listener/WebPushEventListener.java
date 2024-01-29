@@ -42,7 +42,7 @@ public class WebPushEventListener {
         if (!isValid(pushRequest)) {
             log.warn("Skip sent invalid push event [{}]", pushEvent.getClass().getSimpleName());
         } else {
-            webPushSender.send(pushRequest);
+            sendWebPush(pushRequest);
         }
         log.info("Push event [{}] from source [{}] has been handled", pushEvent.getClass().getSimpleName(),
                 pushEvent.getSource().getClass().getSimpleName());
@@ -67,5 +67,15 @@ public class WebPushEventListener {
             return true;
         }
         return validator.isValid(pushRequest);
+    }
+
+    private void sendWebPush(AbstractPushRequest pushRequest) {
+        try {
+            webPushSender.send(pushRequest);
+        } catch (Exception ex) {
+            log.error("Error while sent push request [{}], type [{}], message type [{}]: {}",
+                    pushRequest.getRequestId(), pushRequest.getPushType(), pushRequest.getMessageType(),
+                    ex.getMessage());
+        }
     }
 }

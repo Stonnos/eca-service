@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
+
 import static com.ecaservice.core.push.client.config.EcaWebPushClientAutoConfiguration.WEB_PUSH_CLIENT_THREAD_POOL_TASK_EXECUTOR;
 
 /**
@@ -32,15 +34,17 @@ public class AsyncWebPushSender implements WebPushSender {
         this.webPushSender = webPushSender;
     }
 
+    /**
+     * Init method.
+     */
+    @PostConstruct
+    public void init() {
+        log.info("Web push client async sender has been configured");
+    }
+
     @Override
     @Async(WEB_PUSH_CLIENT_THREAD_POOL_TASK_EXECUTOR)
     public void send(AbstractPushRequest pushRequest) {
-        try {
-            webPushSender.send(pushRequest);
-        } catch (Exception ex) {
-            log.error("Error while sent push request [{}], type [{}], message type [{}]: {}",
-                    pushRequest.getRequestId(), pushRequest.getPushType(), pushRequest.getMessageType(),
-                    ex.getMessage());
-        }
+        webPushSender.send(pushRequest);
     }
 }
