@@ -33,8 +33,8 @@ public class UserProfileOptionsDataEventListener {
      */
     @EventListener
     public void handleEvent(UserProfileOptionsDataEvent userProfileOptionsDataEvent) {
-        log.info("Starting to handle user [{}] profile options data event",
-                userProfileOptionsDataEvent.getUserEntity().getLogin());
+        log.info("Starting to handle user [{}] profile options data event from [{}]",
+                userProfileOptionsDataEvent.getUserEntity().getLogin(), userProfileOptionsDataEvent.getSource());
         var userProfileOptionsEntity =
                 userProfileOptionsRepository.findByUserEntity(userProfileOptionsDataEvent.getUserEntity());
         if (userProfileOptionsEntity == null) {
@@ -43,8 +43,8 @@ public class UserProfileOptionsDataEventListener {
         }
         UserProfileOptionsDto userProfileOptionsDto = userProfileOptionsMapper.mapToDto(userProfileOptionsEntity);
         sendDataEvent(userProfileOptionsDto);
-        log.info("User [{}] profile options data event has been processed",
-                userProfileOptionsDataEvent.getUserEntity().getLogin());
+        log.info("User [{}] profile options data event from [{}] has been processed",
+                userProfileOptionsDataEvent.getUserEntity().getLogin(), userProfileOptionsDataEvent.getSource());
     }
 
     private void sendDataEvent(UserProfileOptionsDto userProfileOptionsDto) {

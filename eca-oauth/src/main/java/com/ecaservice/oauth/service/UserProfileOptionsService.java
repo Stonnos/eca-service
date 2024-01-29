@@ -2,6 +2,7 @@ package com.ecaservice.oauth.service;
 
 import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.oauth.dto.UpdateUserNotificationOptionsDto;
+import com.ecaservice.oauth.entity.UserProfileOptionsEntity;
 import com.ecaservice.oauth.mapping.UserProfileOptionsMapper;
 import com.ecaservice.user.profile.options.dto.UserProfileOptionsDto;
 import com.ecaservice.web.dto.model.UserProfileNotificationOptionsDto;
@@ -59,10 +60,11 @@ public class UserProfileOptionsService {
      *
      * @param user                             - user login
      * @param updateUserNotificationOptionsDto - notification options dto for update
+     * @return user profile options entity
      */
     @Audit(value = UPDATE_USER_PROFILE_NOTIFICATION_OPTIONS)
-    public void updateUserNotificationOptions(String user,
-                                              UpdateUserNotificationOptionsDto updateUserNotificationOptionsDto) {
-        userProfileOptionsDataService.updateUserNotificationOptions(user, updateUserNotificationOptionsDto);
+    public UserProfileOptionsEntity updateUserNotificationOptions(String user,
+                                                                  UpdateUserNotificationOptionsDto updateUserNotificationOptionsDto) {
+        return userProfileOptionsDataService.updateUserNotificationOptions(user, updateUserNotificationOptionsDto);
     }
 }

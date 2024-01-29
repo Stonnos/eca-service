@@ -63,10 +63,11 @@ public class UserProfileOptionsDataService {
      *
      * @param user                             - user login
      * @param updateUserNotificationOptionsDto - notification options dto for update
+     * @return user profile options entity
      */
     @Transactional
-    public void updateUserNotificationOptions(String user,
-                                              UpdateUserNotificationOptionsDto updateUserNotificationOptionsDto) {
+    public UserProfileOptionsEntity updateUserNotificationOptions(String user,
+                                                                  UpdateUserNotificationOptionsDto updateUserNotificationOptionsDto) {
         log.info("Starting to update user [{}] profile notification options: {}", user,
                 updateUserNotificationOptionsDto);
         var userEntity = getUser(user);
@@ -82,6 +83,7 @@ public class UserProfileOptionsDataService {
         userProfileOptionsRepository.save(userProfileOptions);
         log.info("User [{}] profile notification options has been updated: {}", user,
                 updateUserNotificationOptionsDto);
+        return userProfileOptions;
     }
 
     private void updateNotificationEvents(UserProfileOptionsEntity userProfileOptionsEntity,

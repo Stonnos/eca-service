@@ -88,6 +88,8 @@ userProfile:
       webPushEnabled: true
       emailSupported: false
       webPushSupported: true
+  rabbit:
+    exchangeName: user-profile-options-exchange
 
 ## Swagger properties
 open-api:

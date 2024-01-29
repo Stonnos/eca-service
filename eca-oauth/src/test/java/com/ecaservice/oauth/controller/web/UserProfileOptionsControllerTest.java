@@ -1,5 +1,7 @@
 package com.ecaservice.oauth.controller.web;
 
+import com.ecaservice.oauth.dto.UpdateUserNotificationOptionsDto;
+import com.ecaservice.oauth.entity.UserProfileOptionsEntity;
 import com.ecaservice.oauth.mapping.RoleMapperImpl;
 import com.ecaservice.oauth.mapping.UserMapperImpl;
 import com.ecaservice.oauth.service.UserProfileOptionsService;
@@ -8,11 +10,13 @@ import com.ecaservice.web.dto.model.UserProfileNotificationOptionsDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
 import static com.ecaservice.oauth.TestHelperUtils.createUpdateUserNotificationOptionsDto;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -35,6 +39,8 @@ class UserProfileOptionsControllerTest extends AbstractControllerTest {
 
     @MockBean
     private UserProfileOptionsService userProfileOptionsService;
+    @MockBean
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @Test
     void testGetUserProfileNotificationOptionsUnauthorized() throws Exception {
@@ -65,6 +71,9 @@ class UserProfileOptionsControllerTest extends AbstractControllerTest {
     @Test
     void testUpdateUserProfileNotificationOptionsOk() throws Exception {
         var updateUserNotificationOptionsDto = createUpdateUserNotificationOptionsDto();
+        when(userProfileOptionsService.updateUserNotificationOptions(anyString(),
+                any(UpdateUserNotificationOptionsDto.class)))
+                .thenReturn(new UserProfileOptionsEntity());
         mockMvc.perform(put(UPDATE_USER_PROFILE_NOTIFICATIONS_URL)
                         .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                         .contentType(MediaType.APPLICATION_JSON)
