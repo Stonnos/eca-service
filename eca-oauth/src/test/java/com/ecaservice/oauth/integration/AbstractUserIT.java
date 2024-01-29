@@ -1,6 +1,6 @@
 package com.ecaservice.oauth.integration;
 
-import com.ecaservice.core.mail.client.service.SimpleEmailRequestSender;
+import com.ecaservice.core.mail.client.service.EmailRequestSender;
 import com.ecaservice.notification.dto.EmailRequest;
 import com.ecaservice.oauth.TestHelperUtils;
 import com.ecaservice.oauth.dto.CreateUserDto;
@@ -9,6 +9,8 @@ import com.ecaservice.oauth.repository.ChangePasswordRequestRepository;
 import com.ecaservice.oauth.repository.ResetPasswordRequestRepository;
 import com.ecaservice.oauth.repository.RoleRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
+import com.ecaservice.oauth.repository.UserNotificationEventOptionsRepository;
+import com.ecaservice.oauth.repository.UserProfileOptionsRepository;
 import com.ecaservice.oauth.service.UserService;
 import com.ecaservice.oauth2.test.token.TokenResponse;
 import lombok.Getter;
@@ -70,13 +72,17 @@ abstract class AbstractUserIT {
     private String clientSecret;
 
     @MockBean
-    private SimpleEmailRequestSender simpleEmailRequestSender;
+    private EmailRequestSender emailRequestSender;
     @Captor
     private ArgumentCaptor<EmailRequest> emailRequestArgumentCaptor;
 
     @Inject
     @Getter
     private UserEntityRepository userEntityRepository;
+    @Inject
+    private UserNotificationEventOptionsRepository userNotificationEventOptionsRepository;
+    @Inject
+    private UserProfileOptionsRepository userProfileOptionsRepository;
     @Inject
     private RoleRepository roleRepository;
     @Inject
@@ -125,6 +131,8 @@ abstract class AbstractUserIT {
     void clear() {
         changePasswordRequestRepository.deleteAll();
         resetPasswordRequestRepository.deleteAll();
+        userNotificationEventOptionsRepository.deleteAll();
+        userProfileOptionsRepository.deleteAll();
         userEntityRepository.deleteAll();
         roleRepository.deleteAll();
     }
@@ -164,7 +172,7 @@ abstract class AbstractUserIT {
     }
 
     String getHttpRequestParamFromEmailUrlVariable(String template, String variable, String tokenRequestParam) {
-        verify(simpleEmailRequestSender, atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
+        verify(emailRequestSender, atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
         EmailRequest emailRequest = emailRequestArgumentCaptor.getValue();
         assertThat(emailRequest).isNotNull();
         assertThat(emailRequest.getTemplateCode()).isEqualTo(template);
@@ -178,7 +186,7 @@ abstract class AbstractUserIT {
     }
 
     String getVariableFromEmail(String template, String variable) {
-        verify(simpleEmailRequestSender, atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
+        verify(emailRequestSender, atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
         EmailRequest emailRequest = emailRequestArgumentCaptor.getValue();
         assertThat(emailRequest).isNotNull();
         assertThat(emailRequest.getTemplateCode()).isEqualTo(template);
