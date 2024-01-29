@@ -63,7 +63,7 @@
               <!--Customize item template  -->
               <ng-template let-item pTemplate="item">
                 <div *ngIf="autoCompleteItemTemplate">
-                  <ng-container *ngTemplateOutlet="autoCompleteItemTemplate; context: { context: { filterName: selectedAutocompleteField, itemValue: item }}">
+                  <ng-container *ngTemplateOutlet="autoCompleteItemTemplate; context: { context: { filterName: filter.name, itemValue: item }}">
                   </ng-container>
                 </div>
                 <div *ngIf="!autoCompleteItemTemplate">
