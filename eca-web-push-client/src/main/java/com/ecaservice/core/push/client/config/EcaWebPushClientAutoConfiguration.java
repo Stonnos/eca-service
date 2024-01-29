@@ -44,6 +44,8 @@ public class EcaWebPushClientAutoConfiguration {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(ecaWebPushClientProperties.getThreadPoolSize());
         executor.setMaxPoolSize(ecaWebPushClientProperties.getThreadPoolSize());
+        log.info("[{}] web push client thread pool with size [{}] has been configured",
+                WEB_PUSH_CLIENT_THREAD_POOL_TASK_EXECUTOR, ecaWebPushClientProperties.getThreadPoolSize());
         return executor;
     }
 }
