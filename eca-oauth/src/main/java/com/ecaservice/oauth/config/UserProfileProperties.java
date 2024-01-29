@@ -31,6 +31,11 @@ public class UserProfileProperties {
     private List<UserNotificationEventProperties> notificationEventOptions;
 
     /**
+     * Rabbit properties
+     */
+    private RabbitProperties rabbit = new RabbitProperties();
+
+    /**
      * User profile notification properties
      */
     @Data
@@ -60,5 +65,17 @@ public class UserProfileProperties {
          * Web push notifications supported?
          */
         private boolean webPushSupported;
+    }
+
+    /**
+     * Rabbit properties.
+     */
+    @Data
+    public static class RabbitProperties {
+
+        /**
+         * Exchange name
+         */
+        private String exchangeName;
     }
 }
