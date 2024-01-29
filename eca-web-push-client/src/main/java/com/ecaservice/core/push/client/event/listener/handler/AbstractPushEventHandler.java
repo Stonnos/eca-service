@@ -1,6 +1,6 @@
-package com.ecaservice.server.service.push.handler;
+package com.ecaservice.core.push.client.event.listener.handler;
 
-import com.ecaservice.server.event.model.push.AbstractPushEvent;
+import com.ecaservice.core.push.client.event.model.AbstractPushEvent;
 import com.ecaservice.web.push.dto.AbstractPushRequest;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

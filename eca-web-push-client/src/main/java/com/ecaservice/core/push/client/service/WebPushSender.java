@@ -1,4 +1,4 @@
-package com.ecaservice.server.service.push;
+package com.ecaservice.core.push.client.service;
 
 import com.ecaservice.web.push.dto.AbstractPushRequest;
 

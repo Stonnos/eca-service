@@ -16,6 +16,7 @@
         <module>eca-model</module>
         <module>eca-user-model</module>
         <module>eca-mail-transport</module>
+        <module>eca-web-push-client</module>
         <module>classifiers-options</module>
         <module>eca-ers-transport</module>
         <module>eca-ds-transport</module>

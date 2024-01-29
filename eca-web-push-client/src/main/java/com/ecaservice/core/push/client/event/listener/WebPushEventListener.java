@@ -1,10 +1,9 @@
-package com.ecaservice.server.event.listener;
+package com.ecaservice.core.push.client.event.listener;
 
-import com.ecaservice.server.config.AppProperties;
-import com.ecaservice.server.event.model.push.AbstractPushEvent;
-import com.ecaservice.server.service.push.WebPushSender;
-import com.ecaservice.server.service.push.handler.AbstractPushEventHandler;
-import com.ecaservice.server.service.push.validator.PushRequestValidator;
+import com.ecaservice.core.push.client.event.listener.handler.AbstractPushEventHandler;
+import com.ecaservice.core.push.client.event.model.AbstractPushEvent;
+import com.ecaservice.core.push.client.service.WebPushSender;
+import com.ecaservice.core.push.client.validator.PushRequestValidator;
 import com.ecaservice.web.push.dto.AbstractPushRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +22,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WebPushEventListener {
 
-    private final AppProperties appProperties;
     private final List<AbstractPushEventHandler> pushEventHandlers;
     private final List<PushRequestValidator> pushRequestValidators;
     private final WebPushSender webPushSender;
@@ -38,17 +36,13 @@ public class WebPushEventListener {
     public void handlePushEvent(AbstractPushEvent pushEvent) {
         log.info("Starting to handle push event [{}] from source [{}]", pushEvent.getClass().getSimpleName(),
                 pushEvent.getSource().getClass().getSimpleName());
-        if (!Boolean.TRUE.equals(appProperties.getPush().getEnabled())) {
-            log.warn("Web pushes are disabled. You may set [app.push.enabled] property");
+        var pushEventHandler = getHandler(pushEvent);
+        var pushRequest = pushEventHandler.handleEvent(pushEvent);
+        //Validate push request before sent
+        if (!isValid(pushRequest)) {
+            log.warn("Skip sent invalid push event [{}]", pushEvent.getClass().getSimpleName());
         } else {
-            var pushEventHandler = getHandler(pushEvent);
-            var pushRequest = pushEventHandler.handleEvent(pushEvent);
-            //Validate push request before sent
-            if (!isValid(pushRequest)) {
-                log.warn("Skip sent invalid push event [{}]", pushEvent.getClass().getSimpleName());
-            } else {
-                webPushSender.send(pushRequest);
-            }
+            webPushSender.send(pushRequest);
         }
         log.info("Push event [{}] from source [{}] has been handled", pushEvent.getClass().getSimpleName(),
                 pushEvent.getSource().getClass().getSimpleName());

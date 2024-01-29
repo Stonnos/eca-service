@@ -1,4 +1,4 @@
-package com.ecaservice.server.event.model.push;
+package com.ecaservice.core.push.client.event.model;
 
 import lombok.Getter;
 

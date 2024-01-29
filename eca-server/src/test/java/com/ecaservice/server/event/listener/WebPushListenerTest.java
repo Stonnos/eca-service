@@ -1,6 +1,8 @@
 package com.ecaservice.server.event.listener;
 
-import com.ecaservice.server.config.AppProperties;
+import com.ecaservice.core.push.client.event.listener.WebPushEventListener;
+import com.ecaservice.core.push.client.service.WebPushSender;
+import com.ecaservice.core.push.client.validator.UserNotificationPushRequestValidator;
 import com.ecaservice.server.event.model.push.SetActiveClassifiersConfigurationPushEvent;
 import com.ecaservice.server.model.entity.ClassifiersConfiguration;
 import com.ecaservice.server.model.entity.ClassifiersConfigurationActionType;
@@ -8,10 +10,8 @@ import com.ecaservice.server.repository.ClassifiersConfigurationHistoryRepositor
 import com.ecaservice.server.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.message.template.MessageTemplateProcessor;
-import com.ecaservice.server.service.push.WebPushSender;
 import com.ecaservice.server.service.push.handler.AddClassifierOptionsPushEventHandler;
 import com.ecaservice.server.service.push.handler.SetActiveClassifiersConfigurationPushEventHandler;
-import com.ecaservice.server.service.push.validator.UserNotificationPushRequestValidator;
 import com.ecaservice.user.profile.options.client.service.UserProfileOptionsProvider;
 import com.ecaservice.web.push.dto.AbstractPushRequest;
 import org.junit.jupiter.api.Test;
@@ -34,7 +34,7 @@ import static org.mockito.Mockito.verify;
  *
  * @author Roman Batygin
  */
-@Import({SetActiveClassifiersConfigurationPushEventHandler.class, AppProperties.class})
+@Import(SetActiveClassifiersConfigurationPushEventHandler.class)
 class WebPushListenerTest extends AbstractJpaTest {
 
     private static final String CURRENT_USER = "currentUser";
@@ -53,8 +53,6 @@ class WebPushListenerTest extends AbstractJpaTest {
     private ClassifiersConfigurationHistoryRepository classifiersConfigurationHistoryRepository;
 
     @Inject
-    private AppProperties appProperties;
-    @Inject
     private SetActiveClassifiersConfigurationPushEventHandler setActiveClassifiersConfigurationPushEventHandler;
 
     private ClassifiersConfiguration classifiersConfiguration;
@@ -70,7 +68,7 @@ class WebPushListenerTest extends AbstractJpaTest {
     @Override
     public void init() {
         saveConfiguration();
-        webPushEventListener = new WebPushEventListener(appProperties,
+        webPushEventListener = new WebPushEventListener(
                 Collections.singletonList(setActiveClassifiersConfigurationPushEventHandler),
                 Collections.singletonList(new UserNotificationPushRequestValidator()), webPushSender);
     }

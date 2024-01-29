@@ -1,6 +1,5 @@
-package com.ecaservice.server.service.push.impl;
+package com.ecaservice.core.push.client.service;
 
-import com.ecaservice.server.service.push.WebPushSender;
 import com.ecaservice.web.push.dto.AbstractPushRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -9,7 +8,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import static com.ecaservice.server.config.EcaServiceConfiguration.ECA_THREAD_POOL_TASK_EXECUTOR;
+import static com.ecaservice.core.push.client.config.EcaWebPushClientAutoConfiguration.WEB_PUSH_CLIENT_THREAD_POOL_TASK_EXECUTOR;
 
 /**
  * Async web push sender.
@@ -18,7 +17,7 @@ import static com.ecaservice.server.config.EcaServiceConfiguration.ECA_THREAD_PO
  */
 @Slf4j
 @Service
-@ConditionalOnProperty(value = "app.push.async", havingValue = "true")
+@ConditionalOnProperty(value = "web-push.client.async", havingValue = "true")
 @Primary
 public class AsyncWebPushSender implements WebPushSender {
 
@@ -34,7 +33,7 @@ public class AsyncWebPushSender implements WebPushSender {
     }
 
     @Override
-    @Async(ECA_THREAD_POOL_TASK_EXECUTOR)
+    @Async(WEB_PUSH_CLIENT_THREAD_POOL_TASK_EXECUTOR)
     public void send(AbstractPushRequest pushRequest) {
         try {
             webPushSender.send(pushRequest);

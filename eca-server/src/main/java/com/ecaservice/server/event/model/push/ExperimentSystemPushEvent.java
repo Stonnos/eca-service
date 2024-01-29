@@ -1,5 +1,6 @@
 package com.ecaservice.server.event.model.push;
 
+import com.ecaservice.core.push.client.event.model.AbstractSystemPushEvent;
 import com.ecaservice.server.model.entity.Experiment;
 import lombok.Getter;
 

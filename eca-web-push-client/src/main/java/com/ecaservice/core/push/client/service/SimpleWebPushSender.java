@@ -1,9 +1,7 @@
-package com.ecaservice.server.service.push.impl;
+package com.ecaservice.core.push.client.service;
 
 import com.ecaservice.core.redelivery.annotation.Retry;
 import com.ecaservice.core.redelivery.annotation.Retryable;
-import com.ecaservice.server.service.push.WebPushClient;
-import com.ecaservice.server.service.push.WebPushSender;
 import com.ecaservice.web.push.dto.AbstractPushRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -100,7 +100,7 @@
 
         <dependency>
             <groupId>eca.service</groupId>
-            <artifactId>eca-web-push-transport</artifactId>
+            <artifactId>eca-web-push-client</artifactId>
             <version>${project.version}</version>
         </dependency>
 

@@ -1,4 +1,4 @@
-package com.ecaservice.server.service.push.validator;
+package com.ecaservice.core.push.client.validator;
 
 import com.ecaservice.web.push.dto.UserPushNotificationRequest;
 import org.springframework.stereotype.Component;

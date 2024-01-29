@@ -1,5 +1,6 @@
 package com.ecaservice.server.event.model.push;
 
+import com.ecaservice.core.push.client.event.model.AbstractUserPushNotificationEvent;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import lombok.Getter;
 

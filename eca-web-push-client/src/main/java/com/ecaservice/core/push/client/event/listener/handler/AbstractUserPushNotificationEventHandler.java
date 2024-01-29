@@ -1,6 +1,6 @@
-package com.ecaservice.server.service.push.handler;
+package com.ecaservice.core.push.client.event.listener.handler;
 
-import com.ecaservice.server.event.model.push.AbstractUserPushNotificationEvent;
+import com.ecaservice.core.push.client.event.model.AbstractUserPushNotificationEvent;
 import com.ecaservice.web.push.dto.UserPushNotificationRequest;
 
 import java.time.LocalDateTime;

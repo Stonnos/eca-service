@@ -1,6 +1,7 @@
 package com.ecaservice.server.service;
 
 import com.ecaservice.core.mail.client.service.EmailClient;
+import com.ecaservice.core.push.client.service.WebPushClient;
 import com.ecaservice.data.storage.dto.ExportInstancesResponseDto;
 import com.ecaservice.ers.dto.EvaluationResultsRequest;
 import com.ecaservice.ers.dto.EvaluationResultsResponse;
@@ -15,7 +16,6 @@ import com.ecaservice.server.service.data.InstancesLoaderService;
 import com.ecaservice.server.service.data.InstancesMetaDataService;
 import com.ecaservice.server.service.ds.DataStorageService;
 import com.ecaservice.server.service.ers.ErsClient;
-import com.ecaservice.server.service.push.WebPushClient;
 import com.ecaservice.server.verifier.TestStepVerifier;
 import com.ecaservice.user.dto.UserInfoDto;
 import com.ecaservice.user.profile.options.client.service.UserProfileOptionsFeignClient;
