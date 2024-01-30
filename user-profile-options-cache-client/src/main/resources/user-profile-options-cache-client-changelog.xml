@@ -14,7 +14,7 @@
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="user" type="varchar(255)">
+            <column name="_user" type="varchar(255)">
                 <constraints nullable="false" unique="true" uniqueConstraintName="user_profile_options_data_user_unique_idx"/>
             </column>
             <column name="created" type="timestamp">

@@ -228,7 +228,7 @@
 
         <dependency>
             <groupId>eca.service</groupId>
-            <artifactId>user-profile-options-client</artifactId>
+            <artifactId>user-profile-options-cache-client</artifactId>
             <version>${project.version}</version>
         </dependency>
 

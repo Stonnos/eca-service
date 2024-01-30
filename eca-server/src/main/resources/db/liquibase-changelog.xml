@@ -85,4 +85,5 @@
     <include file="db/changelog/v75-insert-evaluation-log-created-by-in-filter-templates.xml"/>
     <include file="../insert-classifier-form-templates.xml" relativeToChangelogFile="true"/>
     <include file="db/changelog/v76-delete-classifier-options-request-filter-templates.xml"/>
+    <include file="../user-profile-options-cache-client-changelog.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

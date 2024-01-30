@@ -33,7 +33,7 @@ public class UserProfileOptionsDataEntity {
     /**
      * User login
      */
-    @Column(nullable = false)
+    @Column(name = "_user", nullable = false)
     private String user;
 
     /**

@@ -15,6 +15,8 @@ import org.springframework.stereotype.Component;
 import javax.validation.Valid;
 import java.util.UUID;
 
+import static com.ecaservice.server.config.rabbit.RabbitConfiguration.ECA_RABBIT_LISTENER_CONTAINER_FACTORY;
+
 /**
  * Rabbit MQ listener for evaluation request messages.
  *
@@ -34,7 +36,8 @@ public class EvaluationRequestListener {
      *
      * @param evaluationRequest - evaluation request
      */
-    @RabbitListener(queues = "${queue.evaluationRequestQueue}")
+    @RabbitListener(containerFactory = ECA_RABBIT_LISTENER_CONTAINER_FACTORY,
+            queues = "${queue.evaluationRequestQueue}")
     public void handleMessage(@Valid @Payload EvaluationRequest evaluationRequest, Message inboundMessage) {
         MessageProperties inboundMessageProperties = inboundMessage.getMessageProperties();
         log.info("Received evaluation request with correlation id [{}]", inboundMessageProperties.getCorrelationId());
