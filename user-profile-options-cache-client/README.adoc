@@ -36,6 +36,10 @@ user-profile:
     cache:
       ## Вкл./выкл. использования библиотеки кеширования настроек профиля пользователя
       enabled: true
+      ## настройки rabbitmq для получения обновлений настроек профиля пользователя
+      rabbit:
+        dataEventExchangeName: user-profile-options-exchange
+        dataEventQueue: your-queue-name
 ----
 
 Добавить класс конфигурации
