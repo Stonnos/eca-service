@@ -9,4 +9,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @author Roman Batygin
  */
 public interface UserProfileOptionsDataRepository extends JpaRepository<UserProfileOptionsDataEntity, Long> {
+
+    /**
+     * Finds user profile options data by specified user.
+     *
+     * @param user - user login
+     * @return user profile options data entity
+     */
+    UserProfileOptionsDataEntity findByUser(String user);
 }
