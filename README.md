@@ -45,6 +45,7 @@
 * eca-mail-client - общая библиотека для отправки email сообщений
 * eca-web-push-client - общая библиотека для отправки push уведомлений в приложении
 * user-profile-options-client - общая библиотека для получения настроек профиля пользователя
+* user-profile-options-cache-client - общая библиотека для получения настроек профиля пользователя из кеша
 * eca-s3-minio-client - общая библиотека для работы с S3 minio storage
 * classifiers-options-adapter - модуль для конвертации настроек классификаторов
 * classifiers-template-processor - модуль для работы с шаблонами классификаторов
