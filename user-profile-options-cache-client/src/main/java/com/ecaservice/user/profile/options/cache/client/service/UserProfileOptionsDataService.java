@@ -57,8 +57,8 @@ public class UserProfileOptionsDataService {
 
     private void createUserProfileOptionsData(UserProfileOptionsDto userProfileOptionsDto) {
         var userProfileOptionsData = new UserProfileOptionsDataEntity();
-        userProfileOptionsData.setUser(userProfileOptionsData.getUser());
-        userProfileOptionsData.setVersion(userProfileOptionsData.getVersion());
+        userProfileOptionsData.setUser(userProfileOptionsDto.getUser());
+        userProfileOptionsData.setVersion(userProfileOptionsDto.getVersion());
         userProfileOptionsData.setOptionsJson(toJson(userProfileOptionsDto));
         userProfileOptionsData.setCreated(LocalDateTime.now());
         userProfileOptionsData.setUpdated(LocalDateTime.now());

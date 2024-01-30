@@ -16,7 +16,7 @@
         <sonar.coverage.exclusions>
             **/entity/**/*,
             **/config/**/*,
-            **/model/**/*,
+            **/util/**/*,
             **/exception/**/*
         </sonar.coverage.exclusions>
     </properties>
