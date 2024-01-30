@@ -70,7 +70,7 @@ public abstract class AbstractChangeClassifiersConfigurationPushEventHandler<E e
                 .collect(Collectors.toList());
         log.info("Classifiers configuration [{}] event [{}] result receivers: {}", classifiersConfiguration.getId(),
                 event.getClass().getSimpleName(), resultReceivers);
-        return allModifiers;
+        return resultReceivers;
     }
 
     @Override
