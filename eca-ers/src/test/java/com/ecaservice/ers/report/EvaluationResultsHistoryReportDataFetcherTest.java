@@ -18,7 +18,8 @@ import com.ecaservice.ers.service.EvaluationResultsHistoryService;
 import com.ecaservice.report.model.FilterBean;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
-import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.MultiSortPageRequestDto;
+import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
@@ -71,8 +72,8 @@ class EvaluationResultsHistoryReportDataFetcherTest extends AbstractJpaTest {
 
     @Override
     public void init() {
-       saveEvaluationResultsData();
-       when(filterTemplateService.getFilterFields(anyString())).thenReturn(loadEvaluationResultsHistoryFilterFields());
+        saveEvaluationResultsData();
+        when(filterTemplateService.getFilterFields(anyString())).thenReturn(loadEvaluationResultsHistoryFilterFields());
         when(filterTemplateService.getFilterDictionary(CLASSIFIER_NAME)).thenReturn(createFilterDictionaryDto());
     }
 
@@ -85,10 +86,13 @@ class EvaluationResultsHistoryReportDataFetcherTest extends AbstractJpaTest {
     @Test
     void testFetchEvaluationResultsHistoryReportData() {
         var instancesInfo = instancesInfoRepository.findAll().iterator().next();
-        PageRequestDto pageRequestDto =
-                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, SAVE_DATE, false, StringUtils.EMPTY, newArrayList());
+        SortFieldRequestDto sortFieldRequestDto = new SortFieldRequestDto(SAVE_DATE, false);
+        MultiSortPageRequestDto pageRequestDto =
+                new MultiSortPageRequestDto(PAGE_NUMBER, PAGE_SIZE, Collections.singletonList(sortFieldRequestDto),
+                        StringUtils.EMPTY, newArrayList());
         pageRequestDto.getFilters().add(
-                new FilterRequestDto(INSTANCES_INFO_ID, Collections.singletonList(String.valueOf(instancesInfo.getId())),
+                new FilterRequestDto(INSTANCES_INFO_ID,
+                        Collections.singletonList(String.valueOf(instancesInfo.getId())),
                         MatchMode.EQUALS));
         var reportData = evaluationResultsHistoryReportDataFetcher.fetchReportData(pageRequestDto);
         assertThat(reportData).isNotNull();

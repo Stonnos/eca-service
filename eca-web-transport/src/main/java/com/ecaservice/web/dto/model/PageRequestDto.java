@@ -6,11 +6,9 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import javax.validation.Valid;
 import javax.validation.constraints.Size;
 import java.util.List;
 
-import static com.ecaservice.web.dto.util.FieldConstraints.FILTERS_LIST_MAX_LENGTH;
 import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
 
 /**
@@ -23,7 +21,7 @@ import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
 @ToString(callSuper = true)
 @NoArgsConstructor
 @Schema(description = "Page request model")
-public class PageRequestDto extends SimplePageRequestDto {
+public class PageRequestDto extends FilterPageRequestDto {
 
     /**
      * Sort field
@@ -39,25 +37,10 @@ public class PageRequestDto extends SimplePageRequestDto {
     private boolean ascending;
 
     /**
-     * Search query string
-     */
-    @Schema(description = "Search query string")
-    @Size(max = MAX_LENGTH_255)
-    private String searchQuery;
-
-    /**
-     * Filters list
-     */
-    @Valid
-    @Size(max = FILTERS_LIST_MAX_LENGTH)
-    @Schema(description = "Filters list")
-    private List<FilterRequestDto> filters;
-
-    /**
      * Creates page request dto,
      *
      * @param page        - page number
-     * @param size        - pzge size
+     * @param size        - page size
      * @param sortField   - sort field
      * @param ascending   - is ascending sort?
      * @param searchQuery - search query string
@@ -69,10 +52,8 @@ public class PageRequestDto extends SimplePageRequestDto {
                           boolean ascending,
                           String searchQuery,
                           List<FilterRequestDto> filters) {
-        super(page, size);
+        super(page, size, searchQuery, filters);
         this.sortField = sortField;
         this.ascending = ascending;
-        this.searchQuery = searchQuery;
-        this.filters = filters;
     }
 }

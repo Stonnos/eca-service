@@ -1,9 +1,8 @@
 import { Component, Injector } from '@angular/core';
 import {
   EvaluationResultsHistoryDto,
-  FilterFieldDto,
-  PageDto,
-  PageRequestDto,
+  FilterFieldDto, MultiSortPageRequestDto,
+  PageDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { BaseListComponent } from "../../common/lists/base-list.component";
 import { MessageService } from "primeng/api";
@@ -58,7 +57,7 @@ export class EvaluationResultsHistoryComponent extends BaseListComponent<Evaluat
       });
   }
 
-  public getNextPageAsObservable(pageRequest: PageRequestDto): Observable<PageDto<EvaluationResultsHistoryDto>> {
+  public getNextPageAsObservable(pageRequest: MultiSortPageRequestDto): Observable<PageDto<EvaluationResultsHistoryDto>> {
     return this.evaluationResultsHistoryService.getEvaluationResultsHistory(pageRequest);
   }
 

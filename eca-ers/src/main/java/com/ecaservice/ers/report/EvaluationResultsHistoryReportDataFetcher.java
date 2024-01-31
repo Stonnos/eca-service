@@ -8,7 +8,7 @@ import com.ecaservice.ers.report.model.EvaluationResultsHistoryBean;
 import com.ecaservice.ers.repository.InstancesInfoRepository;
 import com.ecaservice.ers.service.EvaluationResultsHistoryService;
 import com.ecaservice.report.data.fetcher.AbstractBaseReportDataFetcher;
-import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.MultiSortPageRequestDto;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +27,7 @@ import static com.ecaservice.ers.dictionary.FilterDictionaries.EVALUATION_RESULT
  */
 @Component
 public class EvaluationResultsHistoryReportDataFetcher
-        extends AbstractBaseReportDataFetcher<EvaluationResultsInfo, EvaluationResultsHistoryBean> {
+        extends AbstractBaseReportDataFetcher<EvaluationResultsInfo, EvaluationResultsHistoryBean, MultiSortPageRequestDto> {
 
     private final EvaluationResultsHistoryService evaluationResultsHistoryService;
     private final EvaluationResultsMapper evaluationResultsMapper;
@@ -58,7 +58,7 @@ public class EvaluationResultsHistoryReportDataFetcher
     }
 
     @Override
-    protected Page<EvaluationResultsInfo> getItemsPage(PageRequestDto pageRequestDto) {
+    protected Page<EvaluationResultsInfo> getItemsPage(MultiSortPageRequestDto pageRequestDto) {
         return evaluationResultsHistoryService.getEvaluationResultsInfoPage(pageRequestDto);
     }
 

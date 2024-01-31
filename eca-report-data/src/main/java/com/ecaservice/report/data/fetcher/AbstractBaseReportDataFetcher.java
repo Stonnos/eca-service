@@ -8,9 +8,9 @@ import com.ecaservice.web.dto.model.FilterDictionaryDto;
 import com.ecaservice.web.dto.model.FilterDictionaryValueDto;
 import com.ecaservice.web.dto.model.FilterFieldDto;
 import com.ecaservice.web.dto.model.FilterFieldType;
+import com.ecaservice.web.dto.model.FilterPageRequestDto;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
-import com.ecaservice.web.dto.model.PageRequestDto;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -30,10 +30,13 @@ import static com.google.common.collect.Lists.newArrayList;
 /**
  * Abstract data fetcher for base report.
  *
+ * @param <E> - entity generic type
+ * @param <B> - report bean generic type
+ * @param <R> - filter request generic type
  * @author Roman Batygin
  */
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-public abstract class AbstractBaseReportDataFetcher<E, B> {
+public abstract class AbstractBaseReportDataFetcher<E, B, R extends FilterPageRequestDto> {
 
     private static final String VALUES_SEPARATOR = ", ";
 
@@ -50,7 +53,7 @@ public abstract class AbstractBaseReportDataFetcher<E, B> {
      * @param pageRequestDto - page report dto
      * @return entities page
      */
-    protected abstract Page<E> getItemsPage(PageRequestDto pageRequestDto);
+    protected abstract Page<E> getItemsPage(R pageRequestDto);
 
     /**
      * Converts entities page to report beans list
@@ -66,7 +69,7 @@ public abstract class AbstractBaseReportDataFetcher<E, B> {
      * @param pageRequestDto - page request dto
      * @return base report bean
      */
-    public BaseReportBean<B> fetchReportData(PageRequestDto pageRequestDto) {
+    public BaseReportBean<B> fetchReportData(R pageRequestDto) {
         Page<E> page = getItemsPage(pageRequestDto);
         List<B> beans = convertToBeans(page);
         List<FilterBean> filterBeans = getFilterBeans(pageRequestDto);
@@ -88,7 +91,7 @@ public abstract class AbstractBaseReportDataFetcher<E, B> {
         this.filterValueReportCustomizers.add(filterValueReportCustomizer);
     }
 
-    private List<FilterBean> getFilterBeans(PageRequestDto pageRequestDto) {
+    private List<FilterBean> getFilterBeans(R pageRequestDto) {
         Map<String, FilterFieldDto> filterFieldsMap = filterTemplateService.getFilterFields(filterTemplateType)
                 .stream()
                 .collect(Collectors.toMap(FilterFieldDto::getFieldName, Function.identity()));
@@ -147,7 +150,8 @@ public abstract class AbstractBaseReportDataFetcher<E, B> {
 
     private FilterValueReportCustomizer getFilterValueReportCustomizer(FilterRequestDto filterRequestDto) {
         return filterValueReportCustomizers.stream()
-                .filter(filterValueReportCustomizer -> filterValueReportCustomizer.getFilterField().equals(filterRequestDto.getName()))
+                .filter(filterValueReportCustomizer -> filterValueReportCustomizer.getFilterField().equals(
+                        filterRequestDto.getName()))
                 .findFirst()
                 .orElse(null);
     }

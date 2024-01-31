@@ -2,14 +2,14 @@ package com.ecaservice.core.filter.validation;
 
 import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
-import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.FilterPageRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.util.List;
 
 /**
  * Validates page request according to specified filter template.
@@ -18,18 +18,16 @@ import javax.validation.ConstraintValidatorContext;
  */
 @Slf4j
 @RequiredArgsConstructor
-public class PageRequestValidator implements ConstraintValidator<ValidPageRequest, PageRequestDto> {
+public class PageRequestValidator implements ConstraintValidator<ValidPageRequest, FilterPageRequestDto> {
 
     private static final String FILTERS_NODE_FORMAT = "filters[%d].name";
 
     private static final String INVALID_FILTER_REQUEST_FIELD_NAME_TEMPLATE = "{invalid.filter.request.field.name}";
 
-    private static final String INVALID_SORT_FIELD_TEMPLATE = "{invalid.sort.field.name}";
-    private static final String SORT_FIELD = "sortField";
-
     private String filterTemplateName;
 
     private final FilterTemplateService filterTemplateService;
+    private final List<PageRequestCustomValidator> pageRequestCustomValidators;
 
     @Override
     public void initialize(ValidPageRequest constraintAnnotation) {
@@ -37,13 +35,13 @@ public class PageRequestValidator implements ConstraintValidator<ValidPageReques
     }
 
     @Override
-    public boolean isValid(PageRequestDto pageRequestDto, ConstraintValidatorContext context) {
+    public boolean isValid(FilterPageRequestDto pageRequestDto, ConstraintValidatorContext context) {
         boolean validFilters = validateFilterFields(pageRequestDto, context);
-        boolean validSortField = validateSortField(pageRequestDto, context);
+        boolean validSortField = validateCustomFields(pageRequestDto, context);
         return validFilters && validSortField;
     }
 
-    private boolean validateFilterFields(PageRequestDto pageRequestDto, ConstraintValidatorContext context) {
+    private boolean validateFilterFields(FilterPageRequestDto pageRequestDto, ConstraintValidatorContext context) {
         boolean valid = true;
         if (!CollectionUtils.isEmpty(pageRequestDto.getFilters())) {
             var filterFields = filterTemplateService.getFilterFields(filterTemplateName);
@@ -52,31 +50,26 @@ public class PageRequestValidator implements ConstraintValidator<ValidPageReques
                 if (filterFields.stream().noneMatch(
                         filterFieldDto -> filterFieldDto.getFieldName().equals(filterRequestDto.getName()))) {
                     valid = false;
-                    buildConstraintViolationWithTemplate(context, INVALID_FILTER_REQUEST_FIELD_NAME_TEMPLATE,
-                            String.format(FILTERS_NODE_FORMAT, i));
+                    context.disableDefaultConstraintViolation();
+                    context.buildConstraintViolationWithTemplate(INVALID_FILTER_REQUEST_FIELD_NAME_TEMPLATE)
+                            .addPropertyNode(String.format(FILTERS_NODE_FORMAT, i))
+                            .addConstraintViolation();
                 }
             }
         }
         return valid;
     }
 
-    private boolean validateSortField(PageRequestDto pageRequestDto, ConstraintValidatorContext context) {
-        if (StringUtils.isNotBlank(pageRequestDto.getSortField())) {
-            var sortFields = filterTemplateService.getSortFields(filterTemplateName);
-            if (!sortFields.contains(pageRequestDto.getSortField())) {
-                buildConstraintViolationWithTemplate(context, INVALID_SORT_FIELD_TEMPLATE, SORT_FIELD);
-                return false;
-            }
+    @SuppressWarnings("unchecked")
+    private boolean validateCustomFields(FilterPageRequestDto pageRequestDto, ConstraintValidatorContext context) {
+        var customValidator = pageRequestCustomValidators.stream()
+                .filter(validator -> validator.canHandle(pageRequestDto))
+                .findFirst()
+                .orElse(null);
+        if (customValidator == null) {
+            return true;
+        } else {
+            return customValidator.validate(pageRequestDto, context, filterTemplateName);
         }
-        return true;
-    }
-
-    private void buildConstraintViolationWithTemplate(ConstraintValidatorContext context,
-                                                      String template,
-                                                      String node) {
-        context.disableDefaultConstraintViolation();
-        context.buildConstraintViolationWithTemplate(template)
-                .addPropertyNode(node)
-                .addConstraintViolation();
     }
 }

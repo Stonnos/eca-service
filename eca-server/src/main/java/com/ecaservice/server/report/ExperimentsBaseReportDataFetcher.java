@@ -24,7 +24,8 @@ import java.util.List;
  * @author Roman Batygin
  */
 @Component
-public class ExperimentsBaseReportDataFetcher extends AbstractBaseReportDataFetcher<Experiment, ExperimentBean> {
+public class ExperimentsBaseReportDataFetcher
+        extends AbstractBaseReportDataFetcher<Experiment, ExperimentBean, PageRequestDto> {
 
     private final ExperimentDataService experimentDataService;
     private final ExperimentMapper experimentMapper;
