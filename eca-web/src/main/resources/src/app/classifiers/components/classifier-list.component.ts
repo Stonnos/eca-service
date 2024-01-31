@@ -1,4 +1,4 @@
-import {Component, Injector, OnDestroy} from '@angular/core';
+import { Component, Injector, OnDestroy } from '@angular/core';
 import {
   CreateEvaluationResponseDto,
   EvaluationLogDto,
@@ -45,6 +45,10 @@ import { OptimalEvaluationRequest } from "../../create-optimal-classifier/model/
 import {
   CreateOptimalEvaluationRequestDto
 } from "../../create-optimal-classifier/model/create-optimal-evaluation-request.model";
+import { CurrentUserFilterService } from "../../filter/services/current-user-filter-service";
+import { UserInfoAutocompleteHandler } from "../../filter/autocomplete/handler/user-info-autocomplete-handler";
+import { UserInfoFilterValueTransformer } from "../../filter/autocomplete/transformer/user-info-filter-value-transformer";
+import { UsersService } from "../../users/services/users.service";
 
 @Component({
   selector: 'app-classifier-list',
@@ -69,6 +73,8 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
     .set(ValidationErrorCode.SELECTED_ATTRIBUTES_NUMBER_IS_TOO_LOW, 'Выберите не менее двух атрибутов классификации')
     .set(ValidationErrorCode.CLASS_VALUES_IS_TOO_LOW, 'Число классов должно быть не менее двух')
     .set(ValidationErrorCode.CLASSIFIER_OPTIONS_NOT_FOUND, 'Оптимальные настройки классификатора не найдены для заданной обучающей выборки и метода оценки точности')
+
+  private currentUserFilterService: CurrentUserFilterService;
 
   public requestStatusStatisticsDto: RequestStatusStatisticsDto;
 
@@ -101,6 +107,7 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
                      private formTemplatesMapper: FormTemplatesMapper,
                      private errorHandler: ErrorHandler,
                      private pushService: PushService,
+                     private usersService: UsersService,
                      private router: Router) {
     super(injector.get(MessageService), injector.get(FieldService));
     this.defaultSortField = EvaluationLogFields.CREATION_DATE;
@@ -112,7 +119,11 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
 
   public ngOnInit() {
     this.addLazyReferenceTransformers(new InstancesInfoFilterValueTransformer());
+    this.addLazyReferenceTransformers(new UserInfoFilterValueTransformer(EvaluationLogFilterFields.CREATED_BY));
     this.addAutoCompleteHandler(new InstancesInfoAutocompleteHandler(this.instancesInfoService, this.messageService));
+    this.addAutoCompleteHandler(new InstancesInfoAutocompleteHandler(this.instancesInfoService, this.messageService));
+    this.addAutoCompleteHandler(new UserInfoAutocompleteHandler(EvaluationLogFilterFields.CREATED_BY, this.usersService, this.messageService));
+    this.currentUserFilterService = new CurrentUserFilterService(EvaluationLogFilterFields.CREATED_BY, this.usersService, this.messageService);
     this.getFilterFields();
     this.getRequestStatusesStatistics();
     this.getEvaluationMethods();
@@ -183,6 +194,10 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
       () => this.loading = false,
       (error) => this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message })
     );
+  }
+
+  public loadCurrentUserToFilter(): void {
+    this.currentUserFilterService.getCurrentUser(this.filters);
   }
 
   private toggleOverlayPanel(event, evaluationLog: EvaluationLogDto, column: string, overlayPanel: OverlayPanel): void {

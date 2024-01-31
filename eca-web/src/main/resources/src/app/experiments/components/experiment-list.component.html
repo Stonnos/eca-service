@@ -26,8 +26,10 @@
   <div class="filter-sidebar">
     <app-filter [filters]="filters"
                 [autoCompleteItemTemplate]="autoCompleteItemTemplate"
+                [autoCompleteAfterElementTemplate]="autoCompleteAfterElementTemplate"
                 (apply)="onApplyFilter()"
                 (autocompleteField)="onFilterFieldAutocomplete($event)">
+      <!-- Customize autocomplete element-->
       <ng-template #autoCompleteItemTemplate let-context="context">
         <div [ngSwitch]="context.filterName">
           <ng-container *ngSwitchCase="'instancesInfo.id'">
@@ -36,6 +38,16 @@
           </ng-container>
           <ng-container *ngSwitchDefault>
             {{ context.itemValue.label }}
+          </ng-container>
+        </div>
+      </ng-template>
+      <!-- Current user link after autocomplete element-->
+      <ng-template #autoCompleteAfterElementTemplate let-context="context">
+        <div [ngSwitch]="context.filterName">
+          <ng-container *ngSwitchCase="'createdBy'">
+            <a class="link mt-1 ml-1" [routerLink]="" (click)="loadCurrentUserToFilter()">Текущий пользователь</a>
+          </ng-container>
+          <ng-container *ngSwitchDefault>
           </ng-container>
         </div>
       </ng-template>

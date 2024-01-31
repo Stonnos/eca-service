@@ -71,6 +71,11 @@
                 </div>
               </ng-template>
             </p-autoComplete>
+            <!-- Customize after p-autoComplete element  -->
+            <div *ngIf="autoCompleteAfterElementTemplate">
+              <ng-container *ngTemplateOutlet="autoCompleteAfterElementTemplate; context: { context: { filterName: filter.name }}">
+              </ng-container>
+            </div>
           </div>
         </ng-container>
         <ng-container *ngSwitchDefault>

@@ -17,6 +17,9 @@ export class FilterComponent {
   @Input()
   public autoCompleteItemTemplate: TemplateRef<HTMLElement>;
 
+  @Input()
+  public autoCompleteAfterElementTemplate: TemplateRef<HTMLElement>;
+
   @Output()
   public apply: EventEmitter<void> = new EventEmitter();
 
