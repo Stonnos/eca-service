@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -56,6 +57,7 @@ public class UserProfileOptionsEntity {
      * Notification options list
      */
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "userProfileOptions")
+    @OrderBy("id")
     private List<UserNotificationEventOptionsEntity> notificationEventOptions;
 
     /**
