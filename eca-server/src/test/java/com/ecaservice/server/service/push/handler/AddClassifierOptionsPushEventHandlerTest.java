@@ -9,12 +9,16 @@ import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.classifiers.ClassifiersFormTemplateProvider;
 import com.ecaservice.server.service.message.template.MessageTemplateProcessor;
 import com.ecaservice.user.profile.options.client.service.UserProfileOptionsProvider;
+import com.ecaservice.user.profile.options.dto.UserNotificationEventOptionsDto;
+import com.ecaservice.user.profile.options.dto.UserNotificationEventType;
+import com.ecaservice.user.profile.options.dto.UserProfileOptionsDto;
 import com.ecaservice.web.dto.model.FormTemplateDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
 import javax.inject.Inject;
+import java.util.Collections;
 import java.util.List;
 
 import static com.ecaservice.server.TestHelperUtils.createClassifiersConfiguration;
@@ -73,6 +77,7 @@ class AddClassifierOptionsPushEventHandlerTest extends AbstractJpaTest {
 
     @Test
     void testHandleAddOptionsEvent() {
+        mockGetUserProfileOptions();
         var event =
                 new AddClassifierOptionsPushEvent(this, CURRENT_USER, classifiersConfiguration, CLASSIFIER_OPTIONS_ID,
                         OPTIONS_NAME);
@@ -103,5 +108,15 @@ class AddClassifierOptionsPushEventHandlerTest extends AbstractJpaTest {
                         ClassifiersConfigurationActionType.ADD_CLASSIFIER_OPTIONS, CURRENT_USER)
         );
         classifiersConfigurationHistoryRepository.saveAll(history);
+    }
+
+    private void mockGetUserProfileOptions() {
+        UserProfileOptionsDto userProfileOptionsDto = new UserProfileOptionsDto();
+        userProfileOptionsDto.setWebPushEnabled(true);
+        UserNotificationEventOptionsDto userNotificationEventOptionsDto = new UserNotificationEventOptionsDto();
+        userNotificationEventOptionsDto.setEventType(UserNotificationEventType.CLASSIFIER_CONFIGURATION_CHANGE);
+        userNotificationEventOptionsDto.setWebPushEnabled(true);
+        userProfileOptionsDto.setNotificationEventOptions(Collections.singletonList(userNotificationEventOptionsDto));
+        when(userProfileOptionsProvider.getUserProfileOptions(anyString())).thenReturn(userProfileOptionsDto);
     }
 }
