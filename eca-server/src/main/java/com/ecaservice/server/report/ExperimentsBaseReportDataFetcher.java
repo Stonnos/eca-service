@@ -25,7 +25,7 @@ import java.util.List;
  */
 @Component
 public class ExperimentsBaseReportDataFetcher
-        extends AbstractBaseReportDataFetcher<Experiment, ExperimentBean, PageRequestDto> {
+        extends AbstractBaseReportDataFetcher<Experiment, ExperimentBean> {
 
     private final ExperimentDataService experimentDataService;
     private final ExperimentMapper experimentMapper;

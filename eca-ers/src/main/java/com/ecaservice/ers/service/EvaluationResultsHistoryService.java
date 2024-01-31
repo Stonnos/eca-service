@@ -10,8 +10,8 @@ import com.ecaservice.ers.mapping.EvaluationResultsMapper;
 import com.ecaservice.ers.model.EvaluationResultsInfo;
 import com.ecaservice.ers.repository.EvaluationResultsInfoRepository;
 import com.ecaservice.web.dto.model.EvaluationResultsHistoryDto;
-import com.ecaservice.web.dto.model.MultiSortPageRequestDto;
 import com.ecaservice.web.dto.model.PageDto;
+import com.ecaservice.web.dto.model.PageRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -63,7 +63,7 @@ public class EvaluationResultsHistoryService {
      * @return evaluation results history page
      */
     public Page<EvaluationResultsInfo> getEvaluationResultsInfoPage(
-            @ValidPageRequest(filterTemplateName = EVALUATION_RESULTS_HISTORY_TEMPLATE) MultiSortPageRequestDto pageRequestDto) {
+            @ValidPageRequest(filterTemplateName = EVALUATION_RESULTS_HISTORY_TEMPLATE) PageRequestDto pageRequestDto) {
         Sort sort = buildSort(pageRequestDto.getSortFields(), SAVE_DATE, true);
         List<String> globalFilterFields =
                 filterTemplateService.getGlobalFilterFields(EVALUATION_RESULTS_HISTORY_TEMPLATE);
@@ -87,7 +87,7 @@ public class EvaluationResultsHistoryService {
      */
     public PageDto<EvaluationResultsHistoryDto> getNextPage(
             @ValidPageRequest(filterTemplateName = EVALUATION_RESULTS_HISTORY_TEMPLATE)
-            MultiSortPageRequestDto pageRequestDto) {
+            PageRequestDto pageRequestDto) {
         var evaluationResultsInfoPage = getEvaluationResultsInfoPage(pageRequestDto);
         var evaluationResultsDtoList =
                 mapToEvaluationResultsHistoryList(evaluationResultsInfoPage.getContent());

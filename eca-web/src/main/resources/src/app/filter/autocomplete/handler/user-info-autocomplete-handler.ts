@@ -23,8 +23,12 @@ export class UserInfoAutocompleteHandler extends AutocompleteHandler {
     const pageRequest: PageRequestDto = {
       page: 0,
       size: this.pageSize,
-      sortField: UserFields.LOGIN,
-      ascending: false,
+      sortFields: [
+        {
+          sortField: UserFields.LOGIN,
+          ascending: false,
+        }
+      ],
       searchQuery: null,
       filters: [
         {

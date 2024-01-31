@@ -87,7 +87,7 @@ public class UserService {
      */
     public Page<UserEntity> getNextPage(PageRequestDto pageRequestDto) {
         log.info("Gets users next page: {}", pageRequestDto);
-        Sort sort = buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
+        Sort sort = buildSort(pageRequestDto.getSortFields(), CREATION_DATE, true);
         var globalFilterFields = filterTemplateService.getGlobalFilterFields(USERS_TEMPLATE);
         UserFilter filter =
                 new UserFilter(pageRequestDto.getSearchQuery(), globalFilterFields, pageRequestDto.getFilters());

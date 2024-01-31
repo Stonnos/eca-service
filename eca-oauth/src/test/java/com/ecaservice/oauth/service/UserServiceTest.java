@@ -23,6 +23,7 @@ import com.ecaservice.oauth.repository.UserEntityRepository;
 import com.ecaservice.oauth.repository.UserPhotoRepository;
 import com.ecaservice.user.model.Role;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import com.ecaservice.web.dto.model.UserDto;
 import com.google.common.collect.Sets;
 import org.apache.commons.io.FilenameUtils;
@@ -171,7 +172,8 @@ class UserServiceTest extends AbstractJpaTest {
     void testGetUsersPage() {
         UserEntity userEntity = createAndSaveUser();
         PageRequestDto pageRequestDto =
-                new PageRequestDto(PAGE, SIZE, CREATION_DATE, true, userEntity.getLogin(), Collections.emptyList());
+                new PageRequestDto(PAGE, SIZE, Collections.singletonList(new SortFieldRequestDto(CREATION_DATE, true)),
+                        userEntity.getLogin(), Collections.emptyList());
         Page<UserEntity> usersPage = userService.getNextPage(pageRequestDto);
         assertThat(usersPage).isNotNull();
         assertThat(usersPage.getContent()).hasSize(1);
@@ -189,7 +191,8 @@ class UserServiceTest extends AbstractJpaTest {
                 userService.createUser(createUserDto("user3", "test3@mail.ru", "Ivan", "Alaev", "Fedorovich"),
                         PASSWORD);
         PageRequestDto pageRequestDto =
-                new PageRequestDto(PAGE, SIZE, FULL_NAME, true, null, Collections.emptyList());
+                new PageRequestDto(PAGE, SIZE, Collections.singletonList(new SortFieldRequestDto(FULL_NAME, true)),
+                        null, Collections.emptyList());
         var usersPage = userService.getUsersPage(pageRequestDto);
         assertThat(usersPage).isNotNull();
         assertThat(usersPage.getContent()).hasSize(3);
@@ -207,7 +210,8 @@ class UserServiceTest extends AbstractJpaTest {
                         PASSWORD);
         userService.createUser(createUserDto("user3", "test3@mail.ru", "Ivan", "Alaev", "Petrovich"), PASSWORD);
         PageRequestDto pageRequestDto =
-                new PageRequestDto(PAGE, SIZE, CREATION_DATE, true, "ev Petr Petr", Collections.emptyList());
+                new PageRequestDto(PAGE, SIZE, Collections.singletonList(new SortFieldRequestDto(CREATION_DATE, true)),
+                        "ev Petr Petr", Collections.emptyList());
         var usersPage = userService.getUsersPage(pageRequestDto);
         assertThat(usersPage).isNotNull();
         assertThat(usersPage.getContent()).hasSize(1);

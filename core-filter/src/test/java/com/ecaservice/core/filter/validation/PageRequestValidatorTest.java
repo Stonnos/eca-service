@@ -5,7 +5,6 @@ import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
 import com.ecaservice.web.dto.model.FilterFieldDto;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
-import com.ecaservice.web.dto.model.MultiSortPageRequestDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import org.apache.commons.lang3.StringUtils;
@@ -17,7 +16,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.validation.ConstraintValidatorContext;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -56,9 +54,7 @@ class PageRequestValidatorTest {
 
     @BeforeEach
     void init() {
-        pageRequestValidator = new PageRequestValidator(filterTemplateService,
-                Arrays.asList(new SimpleSortPageRequestValidator(filterTemplateService),
-                        new MultiSortPageRequestValidator(filterTemplateService)));
+        pageRequestValidator = new PageRequestValidator(filterTemplateService);
         var validPageRequest = mock(ValidPageRequest.class);
         when(validPageRequest.filterTemplateName()).thenReturn(FILTER_TEMPLATE_NAME);
         pageRequestValidator.initialize(validPageRequest);
@@ -68,8 +64,10 @@ class PageRequestValidatorTest {
     }
 
     @Test
-    void testValidFilterFieldsForSimpleSortPageRequest() {
-        var pageRequestDto = new PageRequestDto(PAGE, PAGE_SIZE, FIELD_1, false, StringUtils.EMPTY, newArrayList());
+    void testValidFilterFields() {
+        var pageRequestDto =
+                new PageRequestDto(PAGE, PAGE_SIZE, Collections.singletonList(new SortFieldRequestDto(FIELD_1, false)),
+                        StringUtils.EMPTY, newArrayList());
         pageRequestDto.getFilters().add(
                 new FilterRequestDto(FIELD_1, Collections.singletonList(VALUE), MatchMode.LIKE));
         boolean valid = pageRequestValidator.isValid(pageRequestDto, context);
@@ -77,8 +75,10 @@ class PageRequestValidatorTest {
     }
 
     @Test
-    void testInvalidFilterFieldsForSimpleSortPageRequest() {
-        var pageRequestDto = new PageRequestDto(PAGE, PAGE_SIZE, FIELD_1, false, StringUtils.EMPTY, newArrayList());
+    void testInvalidFilterFields() {
+        var pageRequestDto =
+                new PageRequestDto(PAGE, PAGE_SIZE, Collections.singletonList(new SortFieldRequestDto(FIELD_1, false)),
+                        StringUtils.EMPTY, newArrayList());
         pageRequestDto.getFilters().add(
                 new FilterRequestDto("field3", Collections.singletonList(VALUE), MatchMode.LIKE));
         boolean valid = pageRequestValidator.isValid(pageRequestDto, context);
@@ -86,30 +86,10 @@ class PageRequestValidatorTest {
     }
 
     @Test
-    void testInvalidSortFieldsForSimpleSortPageRequest() {
-        var pageRequestDto = new PageRequestDto(PAGE, PAGE_SIZE, "field3", false, StringUtils.EMPTY, newArrayList());
-        pageRequestDto.getFilters().add(
-                new FilterRequestDto(FIELD_1, Collections.singletonList(VALUE), MatchMode.LIKE));
-        when(context.buildConstraintViolationWithTemplate(anyString())).thenReturn(constraintViolationBuilder);
-        when(constraintViolationBuilder.addPropertyNode(anyString())).thenReturn(customizableContext);
-        boolean valid = pageRequestValidator.isValid(pageRequestDto, context);
-        assertThat(valid).isFalse();
-    }
-
-    @Test
-    void testValidFilterFieldsForMultiSortPageRequest() {
-        var pageRequestDto = new MultiSortPageRequestDto(PAGE, PAGE_SIZE,
-                Collections.singletonList(new SortFieldRequestDto(FIELD_1, false)), StringUtils.EMPTY, newArrayList());
-        pageRequestDto.getFilters().add(
-                new FilterRequestDto(FIELD_1, Collections.singletonList(VALUE), MatchMode.LIKE));
-        boolean valid = pageRequestValidator.isValid(pageRequestDto, context);
-        assertThat(valid).isTrue();
-    }
-
-    @Test
-    void testInvalidSortFieldsForMultiSortPageRequest() {
-        var pageRequestDto = new MultiSortPageRequestDto(PAGE, PAGE_SIZE,
-                Collections.singletonList(new SortFieldRequestDto("field3", false)), StringUtils.EMPTY, newArrayList());
+    void testInvalidSortFields() {
+        var pageRequestDto =
+                new PageRequestDto(PAGE, PAGE_SIZE, Collections.singletonList(new SortFieldRequestDto("field3", false)),
+                        StringUtils.EMPTY, newArrayList());
         pageRequestDto.getFilters().add(
                 new FilterRequestDto(FIELD_1, Collections.singletonList(VALUE), MatchMode.LIKE));
         when(context.buildConstraintViolationWithTemplate(anyString())).thenReturn(constraintViolationBuilder);

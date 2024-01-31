@@ -18,7 +18,7 @@ import com.ecaservice.ers.service.EvaluationResultsHistoryService;
 import com.ecaservice.report.model.FilterBean;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
-import com.ecaservice.web.dto.model.MultiSortPageRequestDto;
+import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -87,8 +87,8 @@ class EvaluationResultsHistoryReportDataFetcherTest extends AbstractJpaTest {
     void testFetchEvaluationResultsHistoryReportData() {
         var instancesInfo = instancesInfoRepository.findAll().iterator().next();
         SortFieldRequestDto sortFieldRequestDto = new SortFieldRequestDto(SAVE_DATE, false);
-        MultiSortPageRequestDto pageRequestDto =
-                new MultiSortPageRequestDto(PAGE_NUMBER, PAGE_SIZE, Collections.singletonList(sortFieldRequestDto),
+        PageRequestDto pageRequestDto =
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, Collections.singletonList(sortFieldRequestDto),
                         StringUtils.EMPTY, newArrayList());
         pageRequestDto.getFilters().add(
                 new FilterRequestDto(INSTANCES_INFO_ID,

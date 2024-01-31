@@ -24,6 +24,7 @@ import com.ecaservice.server.service.evaluation.EvaluationLogDataService;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -107,9 +108,9 @@ class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
         instancesInfoRepository.save(evaluationLog.getInstancesInfo());
         evaluationLogRepository.save(evaluationLog);
         String searchQuery = evaluationLog.getRequestId().substring(0, 10);
-        PageRequestDto pageRequestDto =
-                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, EvaluationLog_.CREATION_DATE, false, searchQuery,
-                        newArrayList());
+        PageRequestDto pageRequestDto = new PageRequestDto(PAGE_NUMBER, PAGE_SIZE,
+                Collections.singletonList(new SortFieldRequestDto(EvaluationLog_.CREATION_DATE, false)), searchQuery,
+                newArrayList());
         pageRequestDto.getFilters().add(
                 new FilterRequestDto(EvaluationLog_.CREATION_DATE, DATE_RANGE_VALUES, MatchMode.RANGE));
         pageRequestDto.getFilters().add(

@@ -21,6 +21,7 @@ import com.ecaservice.data.storage.service.InstancesTransformer;
 import com.ecaservice.data.storage.service.SearchQueryCreator;
 import com.ecaservice.data.storage.service.UserService;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import eca.data.db.InstancesExtractor;
 import eca.data.db.InstancesResultSetConverter;
 import org.apache.commons.lang3.StringUtils;
@@ -186,7 +187,8 @@ class StorageServiceImplTest extends AbstractJpaTest {
     @Test
     void testGetInstancesPage() {
         PageRequestDto pageRequestDto =
-                new PageRequestDto(0, 10, CREATED, true, StringUtils.EMPTY, Collections.emptyList());
+                new PageRequestDto(0, 10, Collections.singletonList(new SortFieldRequestDto(CREATED, true)),
+                        StringUtils.EMPTY, Collections.emptyList());
         Page<InstancesEntity> instancesEntityPage = storageService.getNextPage(pageRequestDto);
         assertThat(instancesEntityPage).isNotNull();
         assertThat(instancesEntityPage.getContent()).hasSize(1);

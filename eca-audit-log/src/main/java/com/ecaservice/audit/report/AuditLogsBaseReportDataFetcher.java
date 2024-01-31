@@ -22,7 +22,7 @@ import static com.ecaservice.audit.dictionary.FilterDictionaries.AUDIT_LOG_TEMPL
  */
 @Component
 public class AuditLogsBaseReportDataFetcher
-        extends AbstractBaseReportDataFetcher<AuditLogEntity, AuditLogBean, PageRequestDto> {
+        extends AbstractBaseReportDataFetcher<AuditLogEntity, AuditLogBean> {
 
     private final AuditLogService auditLogService;
     private final AuditLogMapper auditLogMapper;

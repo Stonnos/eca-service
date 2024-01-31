@@ -2,14 +2,13 @@ package com.ecaservice.core.filter.validation;
 
 import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
-import com.ecaservice.web.dto.model.FilterPageRequestDto;
+import com.ecaservice.web.dto.model.PageRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import java.util.List;
 
 /**
  * Validates page request according to specified filter template.
@@ -18,16 +17,18 @@ import java.util.List;
  */
 @Slf4j
 @RequiredArgsConstructor
-public class PageRequestValidator implements ConstraintValidator<ValidPageRequest, FilterPageRequestDto> {
+public class PageRequestValidator implements ConstraintValidator<ValidPageRequest, PageRequestDto> {
 
     private static final String FILTERS_NODE_FORMAT = "filters[%d].name";
 
     private static final String INVALID_FILTER_REQUEST_FIELD_NAME_TEMPLATE = "{invalid.filter.request.field.name}";
 
+    private static final String INVALID_SORT_FIELD_TEMPLATE = "{invalid.sort.field.name}";
+    private static final String SORT_FIELD = "sortField[%d].sortField";
+
     private String filterTemplateName;
 
     private final FilterTemplateService filterTemplateService;
-    private final List<PageRequestCustomValidator> pageRequestCustomValidators;
 
     @Override
     public void initialize(ValidPageRequest constraintAnnotation) {
@@ -35,13 +36,13 @@ public class PageRequestValidator implements ConstraintValidator<ValidPageReques
     }
 
     @Override
-    public boolean isValid(FilterPageRequestDto pageRequestDto, ConstraintValidatorContext context) {
+    public boolean isValid(PageRequestDto pageRequestDto, ConstraintValidatorContext context) {
         boolean validFilters = validateFilterFields(pageRequestDto, context);
-        boolean validSortField = validateCustomFields(pageRequestDto, context);
+        boolean validSortField = validateSortFields(pageRequestDto, context);
         return validFilters && validSortField;
     }
 
-    private boolean validateFilterFields(FilterPageRequestDto pageRequestDto, ConstraintValidatorContext context) {
+    private boolean validateFilterFields(PageRequestDto pageRequestDto, ConstraintValidatorContext context) {
         boolean valid = true;
         if (!CollectionUtils.isEmpty(pageRequestDto.getFilters())) {
             var filterFields = filterTemplateService.getFilterFields(filterTemplateName);
@@ -60,16 +61,23 @@ public class PageRequestValidator implements ConstraintValidator<ValidPageReques
         return valid;
     }
 
-    @SuppressWarnings("unchecked")
-    private boolean validateCustomFields(FilterPageRequestDto pageRequestDto, ConstraintValidatorContext context) {
-        var customValidator = pageRequestCustomValidators.stream()
-                .filter(validator -> validator.canHandle(pageRequestDto))
-                .findFirst()
-                .orElse(null);
-        if (customValidator == null) {
+    private boolean validateSortFields(PageRequestDto pageRequestDto, ConstraintValidatorContext context) {
+        if (CollectionUtils.isEmpty(pageRequestDto.getSortFields())) {
             return true;
         } else {
-            return customValidator.validate(pageRequestDto, context, filterTemplateName);
+            boolean valid = true;
+            var sortFields = filterTemplateService.getSortFields(filterTemplateName);
+            for (int i = 0; i < pageRequestDto.getSortFields().size(); i++) {
+                var sortField = pageRequestDto.getSortFields().get(i);
+                if (sortFields.stream().noneMatch(field -> field.equals(sortField.getSortField()))) {
+                    valid = false;
+                    context.disableDefaultConstraintViolation();
+                    context.buildConstraintViolationWithTemplate(INVALID_SORT_FIELD_TEMPLATE)
+                            .addPropertyNode(String.format(SORT_FIELD, i))
+                            .addConstraintViolation();
+                }
+            }
+            return valid;
         }
     }
 }

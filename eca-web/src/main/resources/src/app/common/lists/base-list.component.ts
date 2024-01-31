@@ -7,7 +7,7 @@ import { finalize } from "rxjs/internal/operators";
 import { Filter } from "../../filter/model/filter.model";
 import {
   FilterRequestDto,
-  PageDto,
+  PageDto, PageRequestDto,
   SimplePageRequestDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { FieldService } from "../services/field.service";
@@ -32,7 +32,7 @@ export abstract class BaseListComponent<T> implements FieldLink {
   public items: T[] = [];
   public loading: boolean = true;
 
-  public pageRequestDto: any;
+  public pageRequestDto: PageRequestDto;
 
   public lastCreatedId: any;
   public blinkId: any;
@@ -101,22 +101,18 @@ export abstract class BaseListComponent<T> implements FieldLink {
 
   public onLazyLoad(event: LazyLoadEvent) {
     const page: number = Math.round(event.first / event.rows);
-    if (this.table.sortMode == 'multiple') {
-      console.log(event.multiSortMeta);
-      console.log(event.sortField);
-      if (event.multiSortMeta && event.multiSortMeta.length > 0) {
-        this.performMultiSortPageRequest(page, event.rows, event.multiSortMeta, true);
-      } else {
-        const sortMeta = [
-          {
-            field: event.sortField,
-            order: event.sortOrder
-          }
-        ];
-        this.performMultiSortPageRequest(page, event.rows, sortMeta, true);
-      }
+    console.log(event.multiSortMeta);
+    console.log(event.sortField);
+    if (this.table.sortMode == 'multiple' && event.multiSortMeta && event.multiSortMeta.length > 0) {
+      this.performPageRequest(page, event.rows, event.multiSortMeta, true);
     } else {
-      this.performPageRequest(page, event.rows, event.sortField, event.sortOrder == 1, true);
+      const sortMeta = [
+        {
+          field: event.sortField,
+          order: event.sortOrder
+        }
+      ];
+      this.performPageRequest(page, event.rows, sortMeta, true);
     }
   }
 
@@ -157,36 +153,20 @@ export abstract class BaseListComponent<T> implements FieldLink {
   }
 
   public reloadPage(showLoader: boolean) {
-    if (this.table.sortMode == 'multiple') {
-      if (this.table.multiSortMeta && this.table.multiSortMeta.length > 0) {
-        this.performMultiSortPageRequest(0, this.pageSize, this.table.multiSortMeta, showLoader);
-      } else {
-        const sortMeta = [
-          {
-            field: this.table.sortField,
-            order: this.table.sortOrder
-          }
-        ];
-        this.performMultiSortPageRequest(0, this.pageSize, sortMeta, showLoader);
-      }
+    if (this.table.sortMode == 'multiple' && this.table.multiSortMeta && this.table.multiSortMeta.length > 0) {
+      this.performPageRequest(0, this.pageSize, this.table.multiSortMeta, showLoader);
     } else {
-      this.performPageRequest(0, this.pageSize, this.table.sortField, this.table.sortOrder == 1, showLoader);
+      const sortMeta = [
+        {
+          field: this.table.sortField,
+          order: this.table.sortOrder
+        }
+      ];
+      this.performPageRequest(0, this.pageSize, sortMeta, showLoader);
     }
   }
 
-  public performPageRequest(page: number, size: number, sortField: string, ascending: boolean, showLoader: boolean) {
-    this.pageRequestDto = {
-      page: page,
-      size: size,
-      sortField: this.getSortField(sortField),
-      ascending: ascending,
-      searchQuery: this.searchQuery,
-      filters: this.filterRequests
-    };
-    this.getNextPage(this.pageRequestDto, showLoader);
-  }
-
-  public performMultiSortPageRequest(page: number, size: number, sortMeta: SortMeta[], showLoader: boolean) {
+  public performPageRequest(page: number, size: number, sortMeta: SortMeta[], showLoader: boolean) {
     this.pageRequestDto = {
       page: page,
       size: size,

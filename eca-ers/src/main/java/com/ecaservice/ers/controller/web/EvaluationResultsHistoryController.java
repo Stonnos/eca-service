@@ -11,7 +11,6 @@ import com.ecaservice.web.dto.model.EvaluationResultsHistoryPageDto;
 import com.ecaservice.web.dto.model.FilterFieldDto;
 import com.ecaservice.web.dto.model.InstancesInfoDto;
 import com.ecaservice.web.dto.model.InstancesInfoPageDto;
-import com.ecaservice.web.dto.model.MultiSortPageRequestDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -126,7 +125,7 @@ public class EvaluationResultsHistoryController {
     )
     @PostMapping(value = "/history")
     public PageDto<EvaluationResultsHistoryDto> getEvaluationResultsHistoryPage(
-            @Valid @RequestBody MultiSortPageRequestDto pageRequestDto) {
+            @Valid @RequestBody PageRequestDto pageRequestDto) {
         log.info("Received evaluation results history page request: {}", pageRequestDto);
         return evaluationResultsHistoryService.getNextPage(pageRequestDto);
     }
@@ -295,7 +294,7 @@ public class EvaluationResultsHistoryController {
             }
     )
     @PostMapping(value = "/report/download")
-    public void downloadEvaluationResultsHistoryReport(@Valid @RequestBody MultiSortPageRequestDto pageRequestDto,
+    public void downloadEvaluationResultsHistoryReport(@Valid @RequestBody PageRequestDto pageRequestDto,
                                                        HttpServletResponse httpServletResponse)
             throws IOException {
         log.info("Request to download evaluation results history base report with params: {}", pageRequestDto);

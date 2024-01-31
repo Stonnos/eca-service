@@ -28,7 +28,7 @@ import static com.ecaservice.server.service.filter.dictionary.FilterDictionaries
  */
 @Component
 public class EvaluationLogsBaseReportDataFetcher extends
-        AbstractBaseReportDataFetcher<EvaluationLog, EvaluationLogBean, PageRequestDto> {
+        AbstractBaseReportDataFetcher<EvaluationLog, EvaluationLogBean> {
 
     private final EvaluationLogDataService evaluationLogDataService;
     private final EvaluationLogMapper evaluationLogMapper;

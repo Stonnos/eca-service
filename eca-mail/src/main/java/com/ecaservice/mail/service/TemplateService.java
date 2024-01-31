@@ -41,7 +41,7 @@ public class TemplateService {
     public Page<TemplateEntity> getNextPage(
             @ValidPageRequest(filterTemplateName = EMAIL_TEMPLATES) PageRequestDto pageRequestDto) {
         log.info("Gets email templates next page: {}", pageRequestDto);
-        Sort sort = buildSort(pageRequestDto.getSortField(), CREATED, pageRequestDto.isAscending());
+        Sort sort = buildSort(pageRequestDto.getSortFields(), CREATED, true);
         var globalFilterFields = filterTemplateService.getGlobalFilterFields(EMAIL_TEMPLATES);
         TemplateFilter filter =
                 new TemplateFilter(pageRequestDto.getSearchQuery(), globalFilterFields, pageRequestDto.getFilters());

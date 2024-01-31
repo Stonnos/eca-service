@@ -22,6 +22,7 @@ import com.ecaservice.server.service.experiment.ExperimentStepProcessor;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -81,9 +82,9 @@ class ExperimentsBaseReportDataFetcherTest extends AbstractJpaTest {
         instancesInfoRepository.save(experiment.getInstancesInfo());
         experimentRepository.save(experiment);
         String searchQuery = experiment.getRequestId().substring(0, 10);
-        PageRequestDto pageRequestDto =
-                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, Experiment_.CREATION_DATE, false, searchQuery,
-                        newArrayList());
+        PageRequestDto pageRequestDto = new PageRequestDto(PAGE_NUMBER, PAGE_SIZE,
+                Collections.singletonList(new SortFieldRequestDto(Experiment_.CREATION_DATE, false)), searchQuery,
+                newArrayList());
         pageRequestDto.getFilters().add(
                 new FilterRequestDto(Experiment_.CREATION_DATE, DATE_RANGE_VALUES, MatchMode.RANGE));
         pageRequestDto.getFilters().add(

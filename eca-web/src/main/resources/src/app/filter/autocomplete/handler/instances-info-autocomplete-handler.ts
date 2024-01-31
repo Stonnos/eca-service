@@ -23,8 +23,12 @@ export class InstancesInfoAutocompleteHandler extends AutocompleteHandler {
     const pageRequest: PageRequestDto = {
       page: 0,
       size: this.pageSize,
-      sortField: InstancesInfoFilterFields.CREATED_DATE,
-      ascending: false,
+      sortFields: [
+        {
+          sortField: InstancesInfoFilterFields.CREATED_DATE,
+          ascending: false,
+        }
+      ],
       searchQuery: null,
       filters: [
         {

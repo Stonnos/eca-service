@@ -6,10 +6,12 @@ import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.model.AttributeInfo;
 import com.ecaservice.data.storage.model.SqlPreparedQuery;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.text.MessageFormat;
@@ -49,10 +51,7 @@ public class SearchQueryCreator {
      * @return sql prepared query
      */
     public SqlPreparedQuery buildSqlQuery(InstancesEntity instancesEntity, PageRequestDto pageRequestDto) {
-        if (!isValidSortField(instancesEntity, pageRequestDto)) {
-            throw new FieldNotFoundException(
-                    String.format("Sort field [%s] doesn't exists", pageRequestDto.getSortField()));
-        }
+        validateSortFields(instancesEntity, pageRequestDto);
         return internalBuildSqlQuery(instancesEntity, pageRequestDto);
     }
 
@@ -64,7 +63,7 @@ public class SearchQueryCreator {
                     queryString);
         }
         String sqlCountQuery = String.format(COUNT_QUERY_PART, instancesEntity.getTableName(), queryString);
-        if (StringUtils.isNotBlank(pageRequestDto.getSortField())) {
+        if (!CollectionUtils.isEmpty(pageRequestDto.getSortFields())) {
             appendOrderBy(instancesEntity, queryString, pageRequestDto);
         } else {
             //Sort by id column default behavior
@@ -87,14 +86,26 @@ public class SearchQueryCreator {
                                StringBuilder queryString,
                                PageRequestDto pageRequestDto) {
         var attributes = attributeService.getsAttributesInfo(instancesEntity);
-        String sortColumn = attributes.stream()
-                .filter(attributeInfo -> attributeInfo.getAttributeName().equals(pageRequestDto.getSortField()))
+        var iterator = pageRequestDto.getSortFields().iterator();
+        SortFieldRequestDto sortFieldRequestDto = iterator.next();
+        String sortColumn = getSortColumn(sortFieldRequestDto.getSortField(), attributes);
+        String sortMode = sortFieldRequestDto.isAscending() ? ASC : DESC;
+        queryString.append(String.format(ORDER_BY_PART, sortColumn, sortMode));
+        while (iterator.hasNext()) {
+            sortFieldRequestDto = iterator.next();
+            sortMode = sortFieldRequestDto.isAscending() ? ASC : DESC;
+            sortColumn = getSortColumn(sortFieldRequestDto.getSortField(), attributes);
+            queryString.append(String.format(", %s %s", sortColumn, sortMode));
+        }
+    }
+
+    private String getSortColumn(String sortField, List<AttributeInfo> attributes) {
+        return attributes.stream()
+                .filter(attributeInfo -> attributeInfo.getAttributeName().equals(sortField))
                 .map(AttributeInfo::getColumnName)
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException(
-                        String.format("Can't find sort column for attribute [%s]", pageRequestDto.getSortField())));
-        String sortMode = pageRequestDto.isAscending() ? ASC : DESC;
-        queryString.append(String.format(ORDER_BY_PART, sortColumn, sortMode));
+                        String.format("Can't find sort column for attribute [%s]", sortField)));
     }
 
     private void appendSearchQuery(InstancesEntity instancesEntity,
@@ -147,12 +158,16 @@ public class SearchQueryCreator {
         return AttributeType.NUMERIC.equals(attributeInfo.getType()) && NumberUtils.isParsable(searchQuery);
     }
 
-    private boolean isValidSortField(InstancesEntity instancesEntity, PageRequestDto pageRequestDto) {
-        if (StringUtils.isBlank(pageRequestDto.getSortField())) {
-            return true;
+    private void validateSortFields(InstancesEntity instancesEntity, PageRequestDto pageRequestDto) {
+        if (!CollectionUtils.isEmpty(pageRequestDto.getSortFields())) {
+            var attributes = attributeService.getsAttributesInfo(instancesEntity);
+            for (SortFieldRequestDto sortFieldRequestDto : pageRequestDto.getSortFields()) {
+                if (attributes.stream().noneMatch(
+                        attributeEntity -> attributeEntity.getAttributeName().equals(sortFieldRequestDto.getSortField()))) {
+                    throw new FieldNotFoundException(
+                            String.format("Sort field [%s] doesn't exists", sortFieldRequestDto.getSortField()));
+                }
+            }
         }
-        var attributes = attributeService.getsAttributesInfo(instancesEntity);
-        return attributes.stream()
-                .anyMatch(attributeEntity -> attributeEntity.getAttributeName().equals(pageRequestDto.getSortField()));
     }
 }

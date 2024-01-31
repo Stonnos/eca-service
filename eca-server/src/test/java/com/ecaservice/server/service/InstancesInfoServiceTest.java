@@ -7,6 +7,7 @@ import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.server.model.entity.InstancesInfo_;
 import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -80,9 +81,9 @@ class InstancesInfoServiceTest extends AbstractJpaTest {
     @Test
     void testGlobalSearch() {
         saveInstancesInfo(data);
-        var pageRequestDto = new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, InstancesInfo_.CREATED_DATE, false,
-                data.relationName(),
-                Collections.emptyList());
+        var pageRequestDto = new PageRequestDto(PAGE_NUMBER, PAGE_SIZE,
+                Collections.singletonList(new SortFieldRequestDto(InstancesInfo_.CREATED_DATE, false)),
+                data.relationName(), Collections.emptyList());
         var instancesInfoPage = instancesInfoService.getNextPage(pageRequestDto);
         assertThat(instancesInfoPage).isNotNull();
         assertThat(instancesInfoPage.getPage()).isZero();
