@@ -86,4 +86,5 @@
     <include file="../insert-classifier-form-templates.xml" relativeToChangelogFile="true"/>
     <include file="db/changelog/v76-delete-classifier-options-request-filter-templates.xml"/>
     <include file="../user-profile-options-cache-client-changelog.xml" relativeToChangelogFile="true"/>
+    <include file="db/changelog/v77-change-experiment-created-by-filter-field-type.xml"/>
 </databaseChangeLog>
