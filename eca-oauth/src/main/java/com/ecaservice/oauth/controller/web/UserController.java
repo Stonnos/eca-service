@@ -209,7 +209,7 @@ public class UserController {
      * @param pageRequestDto - page request dto
      * @return users page
      */
-    @PreAuthorize("#oauth2.hasScope('web') and hasRole('ROLE_SUPER_ADMIN')")
+    @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
             description = "Finds users with specified options",
             summary = "Finds users with specified options",
@@ -242,17 +242,6 @@ public class UserController {
                                             @ExampleObject(
                                                     name = "NotAuthorizedResponse",
                                                     ref = "#/components/examples/NotAuthorizedResponse"
-                                            ),
-                                    }
-                            )
-                    ),
-                    @ApiResponse(description = "Permission denied", responseCode = "403",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    examples = {
-                                            @ExampleObject(
-                                                    name = "AccessDeniedResponse",
-                                                    ref = "#/components/examples/AccessDeniedResponse"
                                             ),
                                     }
                             )
