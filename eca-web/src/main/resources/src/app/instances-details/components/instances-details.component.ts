@@ -131,7 +131,7 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
         next: (attributes: AttributeDto[]) => {
           this.attributes = attributes;
           this.setClassIfAbsent();
-          this.columns = attributes.map((attr: AttributeDto) => { return { name: attr.name, label: attr.name} });
+          this.columns = attributes.map((attr: AttributeDto) => { return { name: attr.name, label: attr.name, sortBy: attr.name} });
         },
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });

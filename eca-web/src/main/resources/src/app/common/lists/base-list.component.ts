@@ -101,11 +101,9 @@ export abstract class BaseListComponent<T> implements FieldLink {
 
   public onLazyLoad(event: LazyLoadEvent) {
     const page: number = Math.round(event.first / event.rows);
-    console.log(event.multiSortMeta);
-    console.log(event.sortField);
     if (this.table.sortMode == 'multiple' && event.multiSortMeta && event.multiSortMeta.length > 0) {
       this.performPageRequest(page, event.rows, event.multiSortMeta, true);
-    } else {
+    } else if (event.sortField) {
       const sortMeta = [
         {
           field: event.sortField,
@@ -113,6 +111,8 @@ export abstract class BaseListComponent<T> implements FieldLink {
         }
       ];
       this.performPageRequest(page, event.rows, sortMeta, true);
+    } else {
+      this.performPageRequest(page, event.rows, [], true);
     }
   }
 
@@ -155,7 +155,7 @@ export abstract class BaseListComponent<T> implements FieldLink {
   public reloadPage(showLoader: boolean) {
     if (this.table.sortMode == 'multiple' && this.table.multiSortMeta && this.table.multiSortMeta.length > 0) {
       this.performPageRequest(0, this.pageSize, this.table.multiSortMeta, showLoader);
-    } else {
+    } else if (this.table.sortField) {
       const sortMeta = [
         {
           field: this.table.sortField,
@@ -163,6 +163,8 @@ export abstract class BaseListComponent<T> implements FieldLink {
         }
       ];
       this.performPageRequest(0, this.pageSize, sortMeta, showLoader);
+    } else {
+      this.performPageRequest(0, this.pageSize, [], showLoader);
     }
   }
 
