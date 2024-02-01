@@ -3,7 +3,17 @@ package com.ecaservice.user.profile.options.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
+
+import static com.ecaservice.user.profile.options.dto.Constraints.MAX_LENGTH_255;
+import static com.ecaservice.user.profile.options.dto.Constraints.MIN_1;
+import static com.ecaservice.user.profile.options.dto.Constraints.MIN_ZERO;
 
 /**
  * User profile options dto.
@@ -17,12 +27,17 @@ public class UserProfileOptionsDto {
     /**
      * User login
      */
+    @NotBlank
+    @Size(min = MIN_1, max = MAX_LENGTH_255)
     @Schema(description = "User login")
     private String user;
 
     /**
      * User profile options version
      */
+    @NotNull
+    @Min(MIN_ZERO)
+    @Max(Integer.MAX_VALUE)
     @Schema(description = "User profile options version")
     private Integer version;
 
@@ -41,6 +56,7 @@ public class UserProfileOptionsDto {
     /**
      * Notification event options list
      */
+    @Valid
     @Schema(description = "Notification event options list")
     private List<UserNotificationEventOptionsDto> notificationEventOptions;
 }

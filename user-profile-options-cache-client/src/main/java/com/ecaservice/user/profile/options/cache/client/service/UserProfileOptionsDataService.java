@@ -7,7 +7,9 @@ import com.ecaservice.user.profile.options.dto.UserProfileOptionsDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import java.time.LocalDateTime;
 
 import static com.ecaservice.user.profile.options.cache.client.util.JsonUtils.toJson;
@@ -19,6 +21,7 @@ import static com.ecaservice.user.profile.options.cache.client.util.JsonUtils.to
  */
 @Slf4j
 @Service
+@Validated
 @RequiredArgsConstructor
 public class UserProfileOptionsDataService {
 
@@ -30,7 +33,7 @@ public class UserProfileOptionsDataService {
      * @param userProfileOptionsDto - user profile options dto
      */
     @Locked(lockName = "createOrUpdateUserProfileOptions", key = "#userProfileOptionsDto.user")
-    public void createOrUpdateUserProfileOptions(UserProfileOptionsDto userProfileOptionsDto) {
+    public void createOrUpdateUserProfileOptions(@Valid UserProfileOptionsDto userProfileOptionsDto) {
         log.info("Starting to create or update user [{}] profile options: {}", userProfileOptionsDto.getUser(),
                 userProfileOptionsDto);
         var userProfileOptionsData = userProfileOptionsDataRepository.findByUser(userProfileOptionsDto.getUser());
