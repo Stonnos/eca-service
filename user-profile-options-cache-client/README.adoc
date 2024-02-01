@@ -114,3 +114,22 @@ lock:
 |version                          |integer          |-|+|-                                           |Версия настроек
 |options_json                     |varchar(4096)    |-|+|-                                           |Настройки профиля в формате json
 |===
+
+== 4. Примеры использования
+
+Ниже приведен пример использования основного класса UserProfileOptionsProvider для получения настроек профиля пользователя:
+
+[source,java]
+----
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class AppService {
+
+    private final UserProfileOptionsProvider userProfileOptionsProvider;
+
+    public UserProfileOptionsDto getUserProfileOptions(String user) {
+        return userProfileOptionsProvider.getUserProfileOptions(user);
+    }
+}
+----
