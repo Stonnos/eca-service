@@ -29,6 +29,7 @@ export class EvaluationLogFilterFields {
 }
 
 export class ClassifiersConfigurationFilterFields {
+  public static readonly ID: string = "id";
   public static readonly CONFIGURATION_NAME: string = "configurationName";
   public static readonly CREATION_DATE: string = "creationDate";
   public static readonly CREATED_BY: string = "createdBy";

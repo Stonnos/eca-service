@@ -6,7 +6,21 @@
 </div>
 <div class="row">
   <div class="filter-sidebar">
-    <app-filter [filters]="filters" (apply)="onApplyFilter()"></app-filter>
+    <app-filter [filters]="filters"
+                [autoCompleteAfterElementTemplate]="autoCompleteAfterElementTemplate"
+                (autocompleteField)="onFilterFieldAutocomplete($event)"
+                (apply)="onApplyFilter()">
+      <!-- Current user link after autocomplete element-->
+      <ng-template #autoCompleteAfterElementTemplate let-context="context">
+        <div [ngSwitch]="context.filterName">
+          <ng-container *ngSwitchCase="'createdBy'">
+            <a class="link mt-1 ml-1" [routerLink]="" (click)="loadCurrentUserToFilter()">Текущий пользователь</a>
+          </ng-container>
+          <ng-container *ngSwitchDefault>
+          </ng-container>
+        </div>
+      </ng-template>
+    </app-filter>
   </div>
   <div class="data-table">
     <p-table

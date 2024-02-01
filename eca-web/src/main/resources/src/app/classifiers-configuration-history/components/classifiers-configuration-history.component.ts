@@ -14,6 +14,10 @@ import { ActivatedRoute } from "@angular/router";
 import { ClassifiersConfigurationsService } from "../../classifiers-configurations/services/classifiers-configurations.service";
 import { FilterService } from "../../filter/services/filter.service";
 import { ClassifiersConfigurationHistoryFilterFields } from "../../common/util/filter-field-names";
+import { CurrentUserFilterService } from "../../filter/services/current-user-filter-service";
+import { UserInfoFilterValueTransformer } from "../../filter/autocomplete/transformer/user-info-filter-value-transformer";
+import { UserInfoAutocompleteHandler } from "../../filter/autocomplete/handler/user-info-autocomplete-handler";
+import { UsersService } from "../../users/services/users.service";
 
 @Component({
   selector: 'app-classifiers-configuration-history',
@@ -24,13 +28,19 @@ export class ClassifiersConfigurationHistoryComponent extends BaseListComponent<
 
   private readonly configurationId: number;
 
+  private currentUserFilterService: CurrentUserFilterService;
+
   public constructor(private injector: Injector,
                      private classifiersConfigurationService: ClassifiersConfigurationsService,
                      private filterService: FilterService,
+                     private usersService: UsersService,
                      private route: ActivatedRoute) {
     super(injector.get(MessageService), injector.get(FieldService));
     this.configurationId = this.route.snapshot.params.id;
     this.defaultSortField = ClassifiersConfigurationHistoryFields.CREATED_AT;
+    this.addLazyReferenceTransformers(new UserInfoFilterValueTransformer(ClassifiersConfigurationHistoryFields.CREATED_BY));
+    this.addAutoCompleteHandler(new UserInfoAutocompleteHandler(ClassifiersConfigurationHistoryFields.CREATED_BY, this.usersService, this.messageService));
+    this.currentUserFilterService = new CurrentUserFilterService(ClassifiersConfigurationHistoryFields.CREATED_BY, this.usersService, this.messageService);
     this.initColumns();
   }
 
@@ -52,6 +62,10 @@ export class ClassifiersConfigurationHistoryComponent extends BaseListComponent<
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
         }
       });
+  }
+
+  public loadCurrentUserToFilter(): void {
+    this.currentUserFilterService.getCurrentUser(this.filters);
   }
 
   private initColumns() {

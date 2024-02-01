@@ -37,4 +37,20 @@
         </update>
     </changeSet>
 
+    <changeSet id="change_classifiers_configuration_history_created_by_filter_field_type" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from filter_template where id = 4
+            </sqlCheck>
+            <sqlCheck expectedResult="1">
+                select count(*) from filter_field where filter_template_id = 4 and field_name = 'createdBy'
+            </sqlCheck>
+        </preConditions>
+        <update tableName="filter_field">
+            <column name="filter_field_type" value="LAZY_REFERENCE"/>
+            <column name="match_mode" value="EQUALS"/>
+            <where>filter_template_id = 4 and field_name = 'createdBy'</where>
+        </update>
+    </changeSet>
+
 </databaseChangeLog>
