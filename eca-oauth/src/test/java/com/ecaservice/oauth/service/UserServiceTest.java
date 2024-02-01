@@ -23,6 +23,7 @@ import com.ecaservice.oauth.repository.UserEntityRepository;
 import com.ecaservice.oauth.repository.UserPhotoRepository;
 import com.ecaservice.user.model.Role;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import com.ecaservice.web.dto.model.UserDto;
 import com.google.common.collect.Sets;
 import org.apache.commons.io.FilenameUtils;
@@ -84,6 +85,8 @@ class UserServiceTest extends AbstractJpaTest {
     @MockBean
     private Oauth2TokenService oauth2TokenService;
     @MockBean
+    private UserProfileOptionsConfigurationService userProfileOptionsConfigurationService;
+    @MockBean
     private FilterTemplateService filterTemplateService;
 
     private UserService userService;
@@ -93,8 +96,8 @@ class UserServiceTest extends AbstractJpaTest {
         roleRepository.save(createRoleEntity());
         PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         userService = new UserService(appProperties, passwordEncoder, userMapper, oauth2TokenService,
-                filterTemplateService,
-                userEntityRepository, roleRepository, userPhotoRepository);
+                userProfileOptionsConfigurationService, filterTemplateService, userEntityRepository, roleRepository,
+                userPhotoRepository);
         when(filterTemplateService.getGlobalFilterFields(USERS_TEMPLATE)).thenReturn(
                 List.of(UserEntity_.LOGIN,
                         UserEntity_.EMAIL,
@@ -169,7 +172,8 @@ class UserServiceTest extends AbstractJpaTest {
     void testGetUsersPage() {
         UserEntity userEntity = createAndSaveUser();
         PageRequestDto pageRequestDto =
-                new PageRequestDto(PAGE, SIZE, CREATION_DATE, true, userEntity.getLogin(), Collections.emptyList());
+                new PageRequestDto(PAGE, SIZE, Collections.singletonList(new SortFieldRequestDto(CREATION_DATE, true)),
+                        userEntity.getLogin(), Collections.emptyList());
         Page<UserEntity> usersPage = userService.getNextPage(pageRequestDto);
         assertThat(usersPage).isNotNull();
         assertThat(usersPage.getContent()).hasSize(1);
@@ -187,7 +191,8 @@ class UserServiceTest extends AbstractJpaTest {
                 userService.createUser(createUserDto("user3", "test3@mail.ru", "Ivan", "Alaev", "Fedorovich"),
                         PASSWORD);
         PageRequestDto pageRequestDto =
-                new PageRequestDto(PAGE, SIZE, FULL_NAME, true, null, Collections.emptyList());
+                new PageRequestDto(PAGE, SIZE, Collections.singletonList(new SortFieldRequestDto(FULL_NAME, true)),
+                        null, Collections.emptyList());
         var usersPage = userService.getUsersPage(pageRequestDto);
         assertThat(usersPage).isNotNull();
         assertThat(usersPage.getContent()).hasSize(3);
@@ -205,7 +210,8 @@ class UserServiceTest extends AbstractJpaTest {
                         PASSWORD);
         userService.createUser(createUserDto("user3", "test3@mail.ru", "Ivan", "Alaev", "Petrovich"), PASSWORD);
         PageRequestDto pageRequestDto =
-                new PageRequestDto(PAGE, SIZE, CREATION_DATE, true, "ev Petr Petr", Collections.emptyList());
+                new PageRequestDto(PAGE, SIZE, Collections.singletonList(new SortFieldRequestDto(CREATION_DATE, true)),
+                        "ev Petr Petr", Collections.emptyList());
         var usersPage = userService.getUsersPage(pageRequestDto);
         assertThat(usersPage).isNotNull();
         assertThat(usersPage.getContent()).hasSize(1);
@@ -357,54 +363,6 @@ class UserServiceTest extends AbstractJpaTest {
         UserEntity userEntity = createAndSaveUser();
         Long userId = userEntity.getId();
         assertThrows(InvalidOperationException.class, () -> userService.unlock(userId));
-    }
-
-    @Test
-    void testEnablePushNotifications() {
-        UserEntity userEntity = createAndSaveUser();
-        userEntity.setPushEnabled(false);
-        userEntityRepository.save(userEntity);
-        userService.enablePushNotifications(userEntity.getId());
-        UserEntity actual = userEntityRepository.findById(userEntity.getId()).orElse(null);
-        assertThat(actual).isNotNull();
-        assertThat(actual.isPushEnabled()).isTrue();
-    }
-
-    @Test
-    void testEnablePushNotificationsShouldThrowIllegalStateException() {
-        UserEntity userEntity = createAndSaveUser();
-        userEntity.setPushEnabled(true);
-        userEntityRepository.save(userEntity);
-        assertThrows(InvalidOperationException.class, () -> userService.enablePushNotifications(userEntity.getId()));
-    }
-
-    @Test
-    void testEnablePushNotificationsForNotExistingUser() {
-        assertThrows(EntityNotFoundException.class, () -> userService.enablePushNotifications(USER_ID));
-    }
-
-    @Test
-    void testDisablePushNotifications() {
-        UserEntity userEntity = createAndSaveUser();
-        userEntity.setPushEnabled(true);
-        userEntityRepository.save(userEntity);
-        userService.disablePushNotifications(userEntity.getId());
-        UserEntity actual = userEntityRepository.findById(userEntity.getId()).orElse(null);
-        assertThat(actual).isNotNull();
-        assertThat(actual.isPushEnabled()).isFalse();
-    }
-
-    @Test
-    void testDisablePushNotificationsShouldThrowIllegalStateException() {
-        UserEntity userEntity = createAndSaveUser();
-        userEntity.setPushEnabled(false);
-        userEntityRepository.save(userEntity);
-        assertThrows(InvalidOperationException.class, () -> userService.disablePushNotifications(userEntity.getId()));
-    }
-
-    @Test
-    void testDisablePushNotificationsForNotExistingUser() {
-        assertThrows(EntityNotFoundException.class, () -> userService.disablePushNotifications(USER_ID));
     }
 
     private UserEntity createAndSaveUser() {

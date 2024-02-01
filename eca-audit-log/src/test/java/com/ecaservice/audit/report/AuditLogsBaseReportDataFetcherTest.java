@@ -9,6 +9,7 @@ import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -69,8 +70,9 @@ class AuditLogsBaseReportDataFetcherTest extends AbstractJpaTest {
         var auditLog2 = createAuditLog(GROUP_2, CODE_3);
         auditLog2.setEventDate(THIRD_DATE);
         auditLogRepository.saveAll(Arrays.asList(auditLog, auditLog1, auditLog2));
-        var pageRequestDto = new PageRequestDto(PAGE, PAGE_SIZE, AuditLogEntity_.EVENT_DATE,
-                false, null, newArrayList());
+        var pageRequestDto = new PageRequestDto(PAGE, PAGE_SIZE,
+                Collections.singletonList(new SortFieldRequestDto(AuditLogEntity_.EVENT_DATE, false)), null,
+                newArrayList());
         pageRequestDto.getFilters().add(
                 new FilterRequestDto(AuditLogEntity_.EVENT_DATE, DATE_RANGE_VALUES, MatchMode.RANGE));
         pageRequestDto.getFilters().add(

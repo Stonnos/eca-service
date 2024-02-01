@@ -55,4 +55,6 @@ public class FieldConstraints {
      * Person name (e.g. first name, last name) min size
      */
     public static final int PERSON_NAME_MIN_SIZE = 2;
+
+    public static final int NOTIFICATION_EVENT_OPTIONS_MAX_SIZE = 50;
 }

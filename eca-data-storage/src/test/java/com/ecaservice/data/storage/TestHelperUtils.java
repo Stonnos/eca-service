@@ -72,7 +72,7 @@ public class TestHelperUtils {
      * @return page request dto
      */
     public static PageRequestDto createPageRequestDto() {
-        return new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, null, true, null, Collections.emptyList());
+        return new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, Collections.emptyList(), null, Collections.emptyList());
     }
 
     /**

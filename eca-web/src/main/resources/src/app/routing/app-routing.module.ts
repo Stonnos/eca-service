@@ -9,7 +9,6 @@ import { ExperimentResultsDetailsComponent } from "../experiment-results-details
 import { UsersListComponent } from "../users/components/users-list.component";
 import { ResetPasswordComponent } from "../change-password/components/reset-password/reset-password.component";
 import { InstancesListComponent } from "../instances/components/instances-list.component";
-import { UserProfileComponent } from "../user-profile/components/user-profile.component";
 import { ConfirmChangePasswordComponent } from "../change-password/components/confirm-change-password/confirm-change-password.component";
 import { AccessDeniedComponent } from "../access-denied/components/access-denied.component";
 import { AuditLogsComponent } from "../audit-logs/components/audit-logs.component";
@@ -20,6 +19,7 @@ import { CreateResetPasswordRequestComponent } from "../change-password/componen
 import { ClassifiersConfigurationFullDetailsComponent } from "../classifiers-configuration-full-details/components/classifiers-configuration-full-details.component";
 import { ClassifiersTabsComponent } from "../classifiers-tabs/components/classifiers-tabs.component";
 import { EvaluationResultsHistoryComponent } from "../evaluation-results-history/components/evaluation-results-history.component";
+import { UserProfileTabsComponent } from "../user-profile-tabs/components/user-profile-tabs.component";
 
 const routes: Routes = [
   {
@@ -76,7 +76,7 @@ const routes: Routes = [
       },
       {
         path: 'profile',
-        component: UserProfileComponent
+        component: UserProfileTabsComponent
       },
     ]
   },

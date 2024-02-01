@@ -160,7 +160,7 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
 
   private initColumns() {
     this.columns = [
-      { name: ClassifiersConfigurationFields.ID, label: "#" },
+      { name: ClassifiersConfigurationFields.ID, label: "#", sortBy: ClassifiersConfigurationFilterFields.ID },
       { name: ClassifiersConfigurationFields.CONFIGURATION_NAME, label: "Конфигурация", sortBy: ClassifiersConfigurationFilterFields.CONFIGURATION_NAME },
       { name: ClassifiersConfigurationFields.CREATION_DATE, label: "Дата создания", sortBy: ClassifiersConfigurationFilterFields.CREATION_DATE },
       { name: ClassifiersConfigurationFields.UPDATED, label: "Дата обновления", sortBy: ClassifiersConfigurationFilterFields.UPDATED },

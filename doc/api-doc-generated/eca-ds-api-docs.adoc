@@ -2323,15 +2323,12 @@ __(int32)__
 
 
 
-|*sortField*
-|Sort field
+|*sortFields*
+|Sort fields
 a|
-__string__
-
-
-*Min. length*: 0
-
-*Max. length*: 255
+__array__
+<<<SortFieldRequestDto>>
+>
 
 
 
@@ -2340,23 +2337,9 @@ __string__
 
 
 
+*Min. items*: 0
 
-
-|*ascending*
-|Is ascending sort?
-a|
-__boolean__
-
-
-
-
-
-
-
-
-
-
-
+*Max. items*: 50
 
 
 
@@ -2397,6 +2380,51 @@ __array__
 *Min. items*: 0
 
 *Max. items*: 50
+
+
+
+
+|===
+=== SortFieldRequestDto
+:table-caption: Table
+.Sort field request model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*sortField**
+|Sort field
+a|
+__string__
+
+
+*Min. length*: 1
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*ascending*
+|Is ascending sort?
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
 
 
 

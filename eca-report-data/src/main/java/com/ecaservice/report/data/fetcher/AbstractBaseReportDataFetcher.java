@@ -30,6 +30,8 @@ import static com.google.common.collect.Lists.newArrayList;
 /**
  * Abstract data fetcher for base report.
  *
+ * @param <E> - entity generic type
+ * @param <B> - report bean generic type
  * @author Roman Batygin
  */
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
@@ -147,7 +149,8 @@ public abstract class AbstractBaseReportDataFetcher<E, B> {
 
     private FilterValueReportCustomizer getFilterValueReportCustomizer(FilterRequestDto filterRequestDto) {
         return filterValueReportCustomizers.stream()
-                .filter(filterValueReportCustomizer -> filterValueReportCustomizer.getFilterField().equals(filterRequestDto.getName()))
+                .filter(filterValueReportCustomizer -> filterValueReportCustomizer.getFilterField().equals(
+                        filterRequestDto.getName()))
                 .findFirst()
                 .orElse(null);
     }

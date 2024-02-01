@@ -6,6 +6,7 @@ import com.ecaservice.web.dto.model.FilterFieldDto;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -64,7 +65,9 @@ class PageRequestValidatorTest {
 
     @Test
     void testValidFilterFields() {
-        var pageRequestDto = new PageRequestDto(PAGE, PAGE_SIZE, FIELD_1, false, StringUtils.EMPTY, newArrayList());
+        var pageRequestDto =
+                new PageRequestDto(PAGE, PAGE_SIZE, Collections.singletonList(new SortFieldRequestDto(FIELD_1, false)),
+                        StringUtils.EMPTY, newArrayList());
         pageRequestDto.getFilters().add(
                 new FilterRequestDto(FIELD_1, Collections.singletonList(VALUE), MatchMode.LIKE));
         boolean valid = pageRequestValidator.isValid(pageRequestDto, context);
@@ -73,18 +76,22 @@ class PageRequestValidatorTest {
 
     @Test
     void testInvalidFilterFields() {
-        var pageRequestDto = new PageRequestDto(PAGE, PAGE_SIZE, "field3", false, StringUtils.EMPTY, newArrayList());
+        var pageRequestDto =
+                new PageRequestDto(PAGE, PAGE_SIZE, Collections.singletonList(new SortFieldRequestDto(FIELD_1, false)),
+                        StringUtils.EMPTY, newArrayList());
         pageRequestDto.getFilters().add(
-                new FilterRequestDto(FIELD_1, Collections.singletonList(VALUE), MatchMode.LIKE));
+                new FilterRequestDto("field3", Collections.singletonList(VALUE), MatchMode.LIKE));
         boolean valid = pageRequestValidator.isValid(pageRequestDto, context);
         assertThat(valid).isFalse();
     }
 
     @Test
     void testInvalidSortFields() {
-        var pageRequestDto = new PageRequestDto(PAGE, PAGE_SIZE, FIELD_1, false, StringUtils.EMPTY, newArrayList());
+        var pageRequestDto =
+                new PageRequestDto(PAGE, PAGE_SIZE, Collections.singletonList(new SortFieldRequestDto("field3", false)),
+                        StringUtils.EMPTY, newArrayList());
         pageRequestDto.getFilters().add(
-                new FilterRequestDto("field3", Collections.singletonList(VALUE), MatchMode.LIKE));
+                new FilterRequestDto(FIELD_1, Collections.singletonList(VALUE), MatchMode.LIKE));
         when(context.buildConstraintViolationWithTemplate(anyString())).thenReturn(constraintViolationBuilder);
         when(constraintViolationBuilder.addPropertyNode(anyString())).thenReturn(customizableContext);
         boolean valid = pageRequestValidator.isValid(pageRequestDto, context);

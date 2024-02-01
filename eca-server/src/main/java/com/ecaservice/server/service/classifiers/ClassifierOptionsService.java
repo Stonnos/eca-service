@@ -123,7 +123,7 @@ public class ClassifierOptionsService {
                                                              PageRequestDto pageRequestDto) {
         log.info("Gets classifiers configuration [{}] options next page: {}", configurationId, pageRequestDto);
         var classifiersConfiguration = getConfigurationById(configurationId);
-        var sort = buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
+        var sort = buildSort(pageRequestDto.getSortFields(), CREATION_DATE, true);
         var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort);
         var classifierOptionsPage =
                 classifierOptionsDatabaseModelRepository.findAllByConfiguration(classifiersConfiguration, pageRequest);

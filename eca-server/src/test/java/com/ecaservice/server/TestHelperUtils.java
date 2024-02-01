@@ -190,7 +190,7 @@ public class TestHelperUtils {
      * @return page request dto
      */
     public static PageRequestDto createPageRequestDto(Integer page, Integer size) {
-        return new PageRequestDto(page, size, null, true, null, newArrayList());
+        return new PageRequestDto(page, size, Collections.emptyList(), null, newArrayList());
     }
 
     /**

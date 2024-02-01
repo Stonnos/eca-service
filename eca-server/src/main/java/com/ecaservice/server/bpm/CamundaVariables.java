@@ -99,4 +99,14 @@ public class CamundaVariables {
      * Evaluation request status
      */
     public static final String EVALUATION_REQUEST_STATUS = "requestStatus";
+
+    /**
+     * User profile options
+     */
+    public static final String USER_PROFILE_OPTIONS = "userProfileOptions";
+
+    /**
+     * User login
+     */
+    public static final String USER_LOGIN = "userLogin";
 }

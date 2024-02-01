@@ -163,7 +163,7 @@ public class ClassifiersConfigurationHistoryService {
                 .orElseThrow(() -> new EntityNotFoundException(ClassifiersConfiguration.class, configurationId));
         var globalFilterFields =
                 filterTemplateService.getGlobalFilterFields(CLASSIFIERS_CONFIGURATION_HISTORY);
-        var sort = buildSort(pageRequestDto.getSortField(), CREATED_AT, pageRequestDto.isAscending());
+        var sort = buildSort(pageRequestDto.getSortFields(), CREATED_AT, true);
         var filter = new ClassifiersConfigurationHistoryFilter(classifiersConfiguration,
                 pageRequestDto.getSearchQuery(), globalFilterFields, pageRequestDto.getFilters());
         var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort);

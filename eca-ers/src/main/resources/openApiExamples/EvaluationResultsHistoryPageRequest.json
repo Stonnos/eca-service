@@ -1,0 +1,14 @@
+{
+  "page": 0,
+  "size": 25,
+  "sortFields": [
+    {
+      "sortField": "statistics.pctCorrect",
+      "ascending": false
+    },
+    {
+      "sortField": "statistics.maxAucValue",
+      "ascending": false
+    }
+  ]
+}

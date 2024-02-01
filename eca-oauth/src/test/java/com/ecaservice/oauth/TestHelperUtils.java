@@ -2,12 +2,17 @@ package com.ecaservice.oauth;
 
 import com.ecaservice.oauth.dto.CreateUserDto;
 import com.ecaservice.oauth.dto.UpdateUserInfoDto;
+import com.ecaservice.oauth.dto.UpdateUserNotificationEventOptionsDto;
+import com.ecaservice.oauth.dto.UpdateUserNotificationOptionsDto;
 import com.ecaservice.oauth.entity.ChangeEmailRequestEntity;
 import com.ecaservice.oauth.entity.ChangePasswordRequestEntity;
 import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
 import com.ecaservice.oauth.entity.RoleEntity;
 import com.ecaservice.oauth.entity.UserEntity;
+import com.ecaservice.oauth.entity.UserNotificationEventOptionsEntity;
+import com.ecaservice.oauth.entity.UserProfileOptionsEntity;
 import com.ecaservice.user.model.Role;
+import com.ecaservice.user.profile.options.dto.UserNotificationEventType;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.google.common.collect.Sets;
 import lombok.experimental.UtilityClass;
@@ -15,6 +20,7 @@ import lombok.experimental.UtilityClass;
 import java.time.LocalDateTime;
 import java.util.Collections;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 
 /**
@@ -46,7 +52,7 @@ public class TestHelperUtils {
      * @return page request dto
      */
     public static PageRequestDto createPageRequestDto() {
-        return new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, null, true, null, Collections.emptyList());
+        return new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, Collections.emptyList(), null, Collections.emptyList());
     }
 
     /**
@@ -89,7 +95,6 @@ public class TestHelperUtils {
         userEntity.setPassword(PASSWORD);
         userEntity.setCreationDate(LocalDateTime.now());
         userEntity.setTfaEnabled(true);
-        userEntity.setPushEnabled(true);
         return userEntity;
     }
 
@@ -172,5 +177,74 @@ public class TestHelperUtils {
         changePasswordRequestEntity.setToken(md5Hex(token));
         changePasswordRequestEntity.setUserEntity(createUserEntity());
         return changePasswordRequestEntity;
+    }
+
+    /**
+     * Create user profile options entity.
+     *
+     * @param userEntity - user entity
+     * @return user profile options entity
+     */
+    public static UserProfileOptionsEntity createUserProfileOptionsEntity(UserEntity userEntity) {
+        UserProfileOptionsEntity userProfileOptionsEntity = new UserProfileOptionsEntity();
+        userProfileOptionsEntity.setEmailEnabled(true);
+        userProfileOptionsEntity.setWebPushEnabled(true);
+        userProfileOptionsEntity.setUserEntity(userEntity);
+        userProfileOptionsEntity.setNotificationEventOptions(
+                Collections.singletonList(createUserNotificationEventOptionsEntity(userProfileOptionsEntity)));
+        userProfileOptionsEntity.setVersion(0);
+        userProfileOptionsEntity.setCreated(LocalDateTime.now());
+        return userProfileOptionsEntity;
+    }
+
+    /**
+     * Creates user notification event options entity.
+     *
+     * @param userProfileOptionsEntity - user profile options entity
+     * @return user notification event options entity
+     */
+    public static UserNotificationEventOptionsEntity createUserNotificationEventOptionsEntity(
+            UserProfileOptionsEntity userProfileOptionsEntity) {
+        var userNotificationEventOptionsEntity = new UserNotificationEventOptionsEntity();
+        userNotificationEventOptionsEntity.setEventType(UserNotificationEventType.EXPERIMENT_STATUS_CHANGE);
+        userNotificationEventOptionsEntity.setEmailSupported(true);
+        userNotificationEventOptionsEntity.setWebPushSupported(true);
+        userNotificationEventOptionsEntity.setEmailEnabled(true);
+        userNotificationEventOptionsEntity.setEmailSupported(true);
+        userNotificationEventOptionsEntity.setUserProfileOptions(userProfileOptionsEntity);
+        return userNotificationEventOptionsEntity;
+    }
+
+    /**
+     * Creates update user notification options.
+     *
+     * @return update user notification options
+     */
+    public static UpdateUserNotificationOptionsDto createUpdateUserNotificationOptionsDto() {
+        var userNotificationOptionsDto =
+                new UpdateUserNotificationOptionsDto();
+        userNotificationOptionsDto.setWebPushEnabled(false);
+        userNotificationOptionsDto.setEmailEnabled(false);
+        userNotificationOptionsDto.setNotificationEventOptions(newArrayList());
+        userNotificationOptionsDto.getNotificationEventOptions().add(
+                createUpdateUserNotificationEventOptionsDto(UserNotificationEventType.EXPERIMENT_STATUS_CHANGE));
+        userNotificationOptionsDto.getNotificationEventOptions().add(
+                createUpdateUserNotificationEventOptionsDto(UserNotificationEventType.CLASSIFIER_STATUS_CHANGE));
+        return userNotificationOptionsDto;
+    }
+
+    /**
+     * Creates update user notification event options dto.
+     *
+     * @param eventType - event type
+     * @return update user notification event options dto
+     */
+    public static UpdateUserNotificationEventOptionsDto createUpdateUserNotificationEventOptionsDto(
+            UserNotificationEventType eventType) {
+        var updateUserNotificationEventOptionsDto = new UpdateUserNotificationEventOptionsDto();
+        updateUserNotificationEventOptionsDto.setEventType(eventType);
+        updateUserNotificationEventOptionsDto.setEmailEnabled(false);
+        updateUserNotificationEventOptionsDto.setWebPushEnabled(false);
+        return updateUserNotificationEventOptionsDto;
     }
 }

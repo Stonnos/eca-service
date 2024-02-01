@@ -154,7 +154,7 @@ public class ClassifiersConfigurationServiceImpl implements ClassifiersConfigura
     @Override
     public Page<ClassifiersConfiguration> getNextPage(PageRequestDto pageRequestDto) {
         log.info("Gets classifiers configurations next page: {}", pageRequestDto);
-        var sort = buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
+        var sort = buildSort(pageRequestDto.getSortFields(), CREATION_DATE, true);
         var globalFilterFields =
                 filterTemplateService.getGlobalFilterFields(CLASSIFIERS_CONFIGURATION);
         var filter = new ClassifiersConfigurationFilter(pageRequestDto.getSearchQuery(),

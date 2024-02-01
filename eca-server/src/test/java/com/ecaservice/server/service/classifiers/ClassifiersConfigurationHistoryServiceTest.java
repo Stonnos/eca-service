@@ -12,6 +12,7 @@ import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.UserService;
 import com.ecaservice.server.service.message.template.MessageTemplateProcessor;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -83,8 +84,9 @@ class ClassifiersConfigurationHistoryServiceTest extends AbstractJpaTest {
                 ClassifiersConfigurationActionType.REMOVE_CLASSIFIER_OPTIONS);
         saveClassifiersConfigurationHistory(classifiersConfiguration,
                 ClassifiersConfigurationActionType.SET_ACTIVE);
-        var pageRequestDto =
-                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, CREATED_AT, false, SEARCH_QUERY, Collections.emptyList());
+        var pageRequestDto = new PageRequestDto(PAGE_NUMBER, PAGE_SIZE,
+                Collections.singletonList(new SortFieldRequestDto(CREATED_AT, false)), SEARCH_QUERY,
+                Collections.emptyList());
         var nextPage =
                 classifiersConfigurationHistoryService.getNextPage(classifiersConfiguration.getId(), pageRequestDto);
         assertThat(nextPage).isNotNull();

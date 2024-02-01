@@ -34,6 +34,7 @@ import org.springframework.validation.beanvalidation.OptionalValidatorFactoryBea
 @RequiredArgsConstructor
 public class RabbitConfiguration implements RabbitListenerConfigurer {
 
+    public static final String ECA_RABBIT_LISTENER_CONTAINER_FACTORY = "ecaRabbitListenerContainerFactory";
     private final QueueConfig queueConfig;
 
     /**
@@ -110,7 +111,7 @@ public class RabbitConfiguration implements RabbitListenerConfigurer {
      * @param customErrorHandler           - custom error handler
      * @return rabbit listener container factory bean
      */
-    @Bean
+    @Bean(ECA_RABBIT_LISTENER_CONTAINER_FACTORY)
     public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(
             SimpleRabbitListenerContainerFactoryConfigurer configurer,
             ConnectionFactory connectionFactory,

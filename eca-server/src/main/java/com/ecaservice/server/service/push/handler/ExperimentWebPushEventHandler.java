@@ -1,5 +1,6 @@
 package com.ecaservice.server.service.push.handler;
 
+import com.ecaservice.core.push.client.event.listener.handler.AbstractUserPushNotificationEventHandler;
 import com.ecaservice.server.event.model.push.ExperimentWebPushEvent;
 import com.ecaservice.server.service.push.EvaluationPushPropertiesHandler;
 import com.ecaservice.server.service.push.PushMessageProcessor;

@@ -1,7 +1,0 @@
-[
-  {
-    "fieldName": null,
-    "code": "InvalidOperation",
-    "errorMessage": "Push notifications is already enabled for user"
-  }
-]

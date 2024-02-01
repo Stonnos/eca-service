@@ -1,4 +1,4 @@
-import { LazyLoadEvent, MessageService } from "primeng/api";
+import {LazyLoadEvent, MessageService, SortMeta} from "primeng/api";
 import { DatePipe } from "@angular/common";
 import { Table } from "primeng/table";
 import { ViewChild } from "@angular/core";
@@ -7,8 +7,8 @@ import { finalize } from "rxjs/internal/operators";
 import { Filter } from "../../filter/model/filter.model";
 import {
   FilterRequestDto,
-  PageDto,
-  PageRequestDto
+  PageDto, PageRequestDto,
+  SimplePageRequestDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { FieldService } from "../services/field.service";
 import { FieldLink } from "../model/field-link";
@@ -61,7 +61,7 @@ export abstract class BaseListComponent<T> implements FieldLink {
     this.autoCompleteHandlers.push(autocompleteHandler);
   }
 
-  public getNextPage(pageRequest: PageRequestDto, showLoader: boolean) {
+  public getNextPage(pageRequest: SimplePageRequestDto, showLoader: boolean) {
     this.loading = showLoader;
     this.getNextPageAsObservable(pageRequest)
       .pipe(
@@ -79,7 +79,7 @@ export abstract class BaseListComponent<T> implements FieldLink {
       });
   }
 
-  public abstract getNextPageAsObservable(pageRequest: PageRequestDto): Observable<PageDto<T>>;
+  public abstract getNextPageAsObservable(pageRequest: SimplePageRequestDto): Observable<PageDto<T>>;
 
   public downloadReport(observable: Observable<Blob>, fileName: string): void {
     this.loading = true;
@@ -101,7 +101,19 @@ export abstract class BaseListComponent<T> implements FieldLink {
 
   public onLazyLoad(event: LazyLoadEvent) {
     const page: number = Math.round(event.first / event.rows);
-    this.performPageRequest(page, event.rows, event.sortField, event.sortOrder == 1, true);
+    if (this.table.sortMode == 'multiple' && event.multiSortMeta && event.multiSortMeta.length > 0) {
+      this.performPageRequest(page, event.rows, event.multiSortMeta, true);
+    } else if (event.sortField) {
+      const sortMeta = [
+        {
+          field: event.sortField,
+          order: event.sortOrder
+        }
+      ];
+      this.performPageRequest(page, event.rows, sortMeta, true);
+    } else {
+      this.performPageRequest(page, event.rows, [], true);
+    }
   }
 
   public onSearch(searchQuery: string) {
@@ -141,15 +153,26 @@ export abstract class BaseListComponent<T> implements FieldLink {
   }
 
   public reloadPage(showLoader: boolean) {
-    this.performPageRequest(0, this.pageSize, this.table.sortField, this.table.sortOrder == 1, showLoader);
+    if (this.table.sortMode == 'multiple' && this.table.multiSortMeta && this.table.multiSortMeta.length > 0) {
+      this.performPageRequest(0, this.pageSize, this.table.multiSortMeta, showLoader);
+    } else if (this.table.sortField) {
+      const sortMeta = [
+        {
+          field: this.table.sortField,
+          order: this.table.sortOrder
+        }
+      ];
+      this.performPageRequest(0, this.pageSize, sortMeta, showLoader);
+    } else {
+      this.performPageRequest(0, this.pageSize, [], showLoader);
+    }
   }
 
-  public performPageRequest(page: number, size: number, sortField: string, ascending: boolean, showLoader: boolean) {
+  public performPageRequest(page: number, size: number, sortMeta: SortMeta[], showLoader: boolean) {
     this.pageRequestDto = {
       page: page,
       size: size,
-      sortField: this.getSortField(sortField),
-      ascending: ascending,
+      sortFields: sortMeta.map((sort: SortMeta) => { return { sortField: this.getSortField(sort.field), ascending: sort.order == 1}; }),
       searchQuery: this.searchQuery,
       filters: this.filterRequests
     };

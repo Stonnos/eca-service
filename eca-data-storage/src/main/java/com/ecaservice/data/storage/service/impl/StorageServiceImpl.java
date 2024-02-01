@@ -77,7 +77,7 @@ public class StorageServiceImpl implements StorageService {
     @Override
     public Page<InstancesEntity> getNextPage(PageRequestDto pageRequestDto) {
         log.info("Gets instances next page: {}", pageRequestDto);
-        Sort sort = buildSort(pageRequestDto.getSortField(), CREATED, pageRequestDto.isAscending());
+        Sort sort = buildSort(pageRequestDto.getSortFields(), CREATED, true);
         var globalFilterFields = filterTemplateService.getGlobalFilterFields(INSTANCES_TEMPLATE);
         var filter =
                 new InstancesFilter(pageRequestDto.getSearchQuery(), globalFilterFields, pageRequestDto.getFilters());

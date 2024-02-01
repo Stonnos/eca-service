@@ -78,12 +78,6 @@ public class UserEntity {
     private boolean tfaEnabled;
 
     /**
-     * Web pushes enabled?
-     */
-    @Column(name = "push_enabled")
-    private boolean pushEnabled;
-
-    /**
      * Account locked?
      */
     private boolean locked;

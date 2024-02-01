@@ -12,7 +12,7 @@
     "fieldName": "createdBy",
     "description": "Пользователь",
     "fieldOrder": 1,
-    "filterFieldType": "TEXT",
+    "filterFieldType": "LAZY_REFERENCE",
     "matchMode": "EQUALS",
     "multiple": false,
     "dictionary": null

@@ -1,6 +1,8 @@
 package com.ecaservice.server.event.listener;
 
-import com.ecaservice.server.config.AppProperties;
+import com.ecaservice.core.push.client.event.listener.WebPushEventListener;
+import com.ecaservice.core.push.client.service.WebPushSender;
+import com.ecaservice.core.push.client.validator.UserNotificationPushRequestValidator;
 import com.ecaservice.server.event.model.push.SetActiveClassifiersConfigurationPushEvent;
 import com.ecaservice.server.model.entity.ClassifiersConfiguration;
 import com.ecaservice.server.model.entity.ClassifiersConfigurationActionType;
@@ -8,9 +10,12 @@ import com.ecaservice.server.repository.ClassifiersConfigurationHistoryRepositor
 import com.ecaservice.server.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.message.template.MessageTemplateProcessor;
-import com.ecaservice.server.service.push.WebPushSender;
 import com.ecaservice.server.service.push.handler.AddClassifierOptionsPushEventHandler;
 import com.ecaservice.server.service.push.handler.SetActiveClassifiersConfigurationPushEventHandler;
+import com.ecaservice.user.profile.options.client.service.UserProfileOptionsProvider;
+import com.ecaservice.user.profile.options.dto.UserNotificationEventOptionsDto;
+import com.ecaservice.user.profile.options.dto.UserNotificationEventType;
+import com.ecaservice.user.profile.options.dto.UserProfileOptionsDto;
 import com.ecaservice.web.push.dto.AbstractPushRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -23,16 +28,18 @@ import java.util.List;
 import static com.ecaservice.server.TestHelperUtils.createClassifiersConfiguration;
 import static com.ecaservice.server.TestHelperUtils.createClassifiersConfigurationHistory;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for {@link AddClassifierOptionsPushEventHandler} class.
  *
  * @author Roman Batygin
  */
-@Import({SetActiveClassifiersConfigurationPushEventHandler.class, AppProperties.class})
+@Import(SetActiveClassifiersConfigurationPushEventHandler.class)
 class WebPushListenerTest extends AbstractJpaTest {
 
     private static final String CURRENT_USER = "currentUser";
@@ -42,14 +49,14 @@ class WebPushListenerTest extends AbstractJpaTest {
     private MessageTemplateProcessor messageTemplateProcessor;
     @MockBean
     private WebPushSender webPushSender;
+    @MockBean
+    private UserProfileOptionsProvider userProfileOptionsProvider;
 
     @Inject
     private ClassifiersConfigurationRepository classifiersConfigurationRepository;
     @Inject
     private ClassifiersConfigurationHistoryRepository classifiersConfigurationHistoryRepository;
 
-    @Inject
-    private AppProperties appProperties;
     @Inject
     private SetActiveClassifiersConfigurationPushEventHandler setActiveClassifiersConfigurationPushEventHandler;
 
@@ -66,8 +73,9 @@ class WebPushListenerTest extends AbstractJpaTest {
     @Override
     public void init() {
         saveConfiguration();
-        webPushEventListener = new WebPushEventListener(appProperties,
-                Collections.singletonList(setActiveClassifiersConfigurationPushEventHandler), webPushSender);
+        webPushEventListener = new WebPushEventListener(
+                Collections.singletonList(setActiveClassifiersConfigurationPushEventHandler),
+                Collections.singletonList(new UserNotificationPushRequestValidator()), webPushSender);
     }
 
     @Test
@@ -78,17 +86,37 @@ class WebPushListenerTest extends AbstractJpaTest {
     }
 
     @Test
-    void testHandlePushEventWithNotEmptyClassifiersConfigurationHistory() {
+    void testHandlePushEventWithNotEmptyClassifiersConfigurationHistoryAndEnabledPushNotifications() {
         saveHistory();
+        mockGetUserProfileOptions(true);
         var event = new SetActiveClassifiersConfigurationPushEvent(this, CURRENT_USER, classifiersConfiguration);
         webPushEventListener.handlePushEvent(event);
         verify(webPushSender, atLeastOnce()).send(any(AbstractPushRequest.class));
+    }
+
+    @Test
+    void testHandlePushEventWithNotEmptyClassifiersConfigurationHistoryAndDisabledPushNotifications() {
+        saveHistory();
+        mockGetUserProfileOptions(false);
+        var event = new SetActiveClassifiersConfigurationPushEvent(this, CURRENT_USER, classifiersConfiguration);
+        webPushEventListener.handlePushEvent(event);
+        verify(webPushSender, never()).send(any(AbstractPushRequest.class));
     }
 
     private void saveConfiguration() {
         ClassifiersConfiguration configuration = createClassifiersConfiguration();
         configuration.setCreatedBy(CURRENT_USER);
         classifiersConfiguration = classifiersConfigurationRepository.save(configuration);
+    }
+
+    private void mockGetUserProfileOptions(boolean webPushEnabled) {
+        UserProfileOptionsDto userProfileOptionsDto = new UserProfileOptionsDto();
+        userProfileOptionsDto.setWebPushEnabled(webPushEnabled);
+        UserNotificationEventOptionsDto userNotificationEventOptionsDto = new UserNotificationEventOptionsDto();
+        userNotificationEventOptionsDto.setEventType(UserNotificationEventType.CLASSIFIER_CONFIGURATION_CHANGE);
+        userNotificationEventOptionsDto.setWebPushEnabled(webPushEnabled);
+        userProfileOptionsDto.setNotificationEventOptions(Collections.singletonList(userNotificationEventOptionsDto));
+        when(userProfileOptionsProvider.getUserProfileOptions(anyString())).thenReturn(userProfileOptionsDto);
     }
 
     private void saveHistory() {

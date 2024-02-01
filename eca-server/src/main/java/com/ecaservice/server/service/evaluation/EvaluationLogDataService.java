@@ -106,7 +106,7 @@ public class EvaluationLogDataService {
     public Page<EvaluationLog> getNextPage(
             @ValidPageRequest(filterTemplateName = EVALUATION_LOG) PageRequestDto pageRequestDto) {
         log.info("Gets evaluation logs next page: {}", pageRequestDto);
-        Sort sort = buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
+        Sort sort = buildSort(pageRequestDto.getSortFields(), CREATION_DATE, true);
         List<String> globalFilterFields = filterTemplateService.getGlobalFilterFields(EVALUATION_LOG);
         var filter = new EvaluationLogFilter(pageRequestDto.getSearchQuery(), globalFilterFields,
                 pageRequestDto.getFilters());

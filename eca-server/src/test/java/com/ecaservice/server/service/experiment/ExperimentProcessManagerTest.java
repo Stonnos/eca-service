@@ -30,18 +30,17 @@ import org.springframework.boot.test.context.SpringBootTest;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.io.Serializable;
-import java.time.Duration;
 import java.util.UUID;
 
 import static com.ecaservice.server.TestHelperUtils.createExperiment;
 import static com.ecaservice.server.TestHelperUtils.createExperimentMessageRequestModel;
 import static com.ecaservice.server.TestHelperUtils.createExperimentWebRequestModel;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.awaitility.Awaitility.await;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 /**
@@ -52,14 +51,14 @@ import static org.mockito.Mockito.verify;
 @SpringBootTest
 @Deployment(resources = {"bpmn/process-experiment.bpmn", "bpmn/finish-experiment.bpmn",
         "bpmn/create-experiment-request-process.bpmn", "bpmn/create-experiment-web-request-process.bpmn",
-        "bpmn/create-experiment-message-request-process.bpmn"})
+        "bpmn/create-experiment-message-request-process.bpmn", "bpmn/send-final-experiment-email.bpmn",
+        "bpmn/send-final-experiment-push.bpmn"})
 class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<Experiment> {
 
     private static final String PUSH_MESSAGE_TYPE = "EXPERIMENT_STATUS";
     private static final String EVALUATION_ID = "id";
     private static final String EVALUATION_REQUEST_ID = "requestId";
     private static final String EVALUATION_REQUEST_STATUS = "requestStatus";
-    private static final int PROCESS_EXPERIMENT_TIMEOUT_SECONDS = 60;
     private static final String NEW_EXPERIMENT_EMAIL_TEMPLATE_CODE = "NEW_EXPERIMENT";
     private static final String IN_PROGRESS_EXPERIMENT_EMAIL_TEMPLATE_CODE = "IN_PROGRESS_EXPERIMENT";
     private static final String FINISHED_EXPERIMENT_EMAIL_TEMPLATE_CODE = "FINISHED_EXPERIMENT";
@@ -111,6 +110,24 @@ class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<
                 new NewEmailRequestVerifier(),
                 new PushRequestVerifier(PushType.SYSTEM, RequestStatus.NEW, 0),
                 new PushRequestVerifier(PushType.USER_NOTIFICATION, RequestStatus.NEW, 1)
+        );
+    }
+
+    @Test
+    void testCreateExperimentWebRequestWithDisabledNotifications() {
+        var experimentRequestModel = createExperimentWebRequestModel();
+        mockGetUserProfileOptions(false);
+        experimentProcessManager.createExperimentRequest(experimentRequestModel);
+        verify(getWebPushClient(), atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
+
+        verify(getEmailClient(), never()).sendEmail(any(EmailRequest.class));
+        assertThat(pushRequestArgumentCaptor.getAllValues()).hasSize(1);
+
+        var experiment = getExperiment(experimentRequestModel.getRequestId());
+
+        verifyTestSteps(experiment,
+                new EvaluationRequestStatusVerifier(RequestStatus.NEW),
+                new PushRequestVerifier(PushType.SYSTEM, RequestStatus.NEW, 0)
         );
     }
 
@@ -182,6 +199,27 @@ class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<
     }
 
     @Test
+    void testProcessExperimentWithWebChannelWithDisabledNotifications() {
+        Experiment experiment = createAndSaveExperiment(Channel.WEB);
+        mockGetUserProfileOptions(false);
+        experimentProcessManager.processExperiment(experiment.getId());
+        verify(getWebPushClient(), atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
+        verify(getErsClient(), atLeastOnce()).save(evaluationResultsRequestArgumentCaptor.capture());
+
+        var actualExperiment = getExperiment(experiment.getRequestId());
+
+        verify(getEmailClient(), never()).sendEmail(any(EmailRequest.class));
+        assertThat(pushRequestArgumentCaptor.getAllValues()).hasSize(2);
+
+        verifyTestSteps(actualExperiment,
+                new EvaluationRequestStatusVerifier(RequestStatus.FINISHED),
+                new PushRequestVerifier(PushType.SYSTEM, RequestStatus.IN_PROGRESS, 0),
+                new PushRequestVerifier(PushType.SYSTEM, RequestStatus.FINISHED, 1),
+                new EvaluationResultsRequestsVerifier()
+        );
+    }
+
+    @Test
     void testProcessErrorExperimentWithQueueChannel() throws IOException {
         Experiment experiment = createAndSaveExperiment(Channel.QUEUE);
         doThrow(IOException.class).when(getObjectStorageService()).uploadObject(any(Serializable.class), anyString());
@@ -204,12 +242,30 @@ class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<
         );
     }
 
+    @Test
+    void testProcessErrorExperimentWithWebChannel() throws IOException {
+        Experiment experiment = createAndSaveExperiment(Channel.WEB);
+        doThrow(IOException.class).when(getObjectStorageService()).uploadObject(any(Serializable.class), anyString());
+        testProcessExperiment(experiment);
+
+        var actualExperiment = getExperiment(experiment.getRequestId());
+
+        assertThat(emailRequestArgumentCaptor.getAllValues()).hasSize(2);
+        assertThat(pushRequestArgumentCaptor.getAllValues()).hasSize(4);
+
+        verifyTestSteps(actualExperiment,
+                new EvaluationRequestStatusVerifier(RequestStatus.ERROR),
+                new InProgressEmailRequestVerifier(),
+                new PushRequestVerifier(PushType.SYSTEM, RequestStatus.IN_PROGRESS, 0),
+                new PushRequestVerifier(PushType.USER_NOTIFICATION, RequestStatus.IN_PROGRESS, 1),
+                new ErrorEmailRequestVerifier(),
+                new PushRequestVerifier(PushType.SYSTEM, RequestStatus.ERROR, 2),
+                new PushRequestVerifier(PushType.USER_NOTIFICATION, RequestStatus.ERROR, 3)
+        );
+    }
+
     private void testProcessExperiment(Experiment experiment) {
         experimentProcessManager.processExperiment(experiment.getId());
-
-        await().timeout(Duration.ofSeconds(PROCESS_EXPERIMENT_TIMEOUT_SECONDS))
-                .until(() -> hasNoActiveProcess(experiment));
-
         verify(getEmailClient(), atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
         verify(getWebPushClient(), atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
         verify(getErsClient(), atLeastOnce()).save(evaluationResultsRequestArgumentCaptor.capture());

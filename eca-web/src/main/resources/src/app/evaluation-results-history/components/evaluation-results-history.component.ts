@@ -2,8 +2,7 @@ import { Component, Injector } from '@angular/core';
 import {
   EvaluationResultsHistoryDto,
   FilterFieldDto,
-  PageDto,
-  PageRequestDto,
+  PageDto, PageRequestDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { BaseListComponent } from "../../common/lists/base-list.component";
 import { MessageService } from "primeng/api";

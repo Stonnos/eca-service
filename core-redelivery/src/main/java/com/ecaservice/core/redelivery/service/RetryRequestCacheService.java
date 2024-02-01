@@ -43,7 +43,7 @@ public class RetryRequestCacheService {
         retryRequest.setRetryAt(retryAt);
         retryRequest.setCreatedAt(LocalDateTime.now());
         retryRequestRepository.save(retryRequest);
-        log.info("Retry request [{}] with request ID [{}]has been saved into db cache",
+        log.info("Retry request [{}] with request ID [{}] has been saved into db cache",
                 retryRequestModel.getRequestType(), retryRequestModel.getRequestId());
     }
 

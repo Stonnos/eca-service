@@ -80,8 +80,8 @@ public class EvaluationResultsHistoryController {
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
                             @ExampleObject(
-                                    name = "SimplePageRequest",
-                                    ref = "#/components/examples/SimplePageRequest"
+                                    name = "EvaluationResultsHistoryPageRequest",
+                                    ref = "#/components/examples/EvaluationResultsHistoryPageRequest"
                             )
                     })
             }),
@@ -261,8 +261,8 @@ public class EvaluationResultsHistoryController {
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
                             @ExampleObject(
-                                    name = "SimplePageRequest",
-                                    ref = "#/components/examples/SimplePageRequest"
+                                    name = "EvaluationResultsHistoryPageRequest",
+                                    ref = "#/components/examples/EvaluationResultsHistoryPageRequest"
                             )
                     })
             }),

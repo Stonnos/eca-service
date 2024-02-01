@@ -48,6 +48,8 @@ public class EcaMailClientAutoConfiguration {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(ecaMailClientProperties.getThreadPoolSize());
         executor.setMaxPoolSize(ecaMailClientProperties.getThreadPoolSize());
+        log.info("[{}] email client thread pool with size [{}] has been configured",
+                MAIL_CLIENT_THREAD_POOL_TASK_EXECUTOR, ecaMailClientProperties.getThreadPoolSize());
         return executor;
     }
 

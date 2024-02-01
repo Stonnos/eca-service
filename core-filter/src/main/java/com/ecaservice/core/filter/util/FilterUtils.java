@@ -1,13 +1,17 @@
 package com.ecaservice.core.filter.util;
 
+import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Sort;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Root;
+
+import java.util.List;
 
 import static com.ecaservice.core.filter.util.Utils.splitByPointSeparator;
 
@@ -22,15 +26,24 @@ public class FilterUtils {
     /**
      * Builds sort object.
      *
-     * @param field        - field name to sort
-     * @param defaultField - default field name to sort
-     * @param ascending    - sort direction
+     * @param sortFields       - sort fields
+     * @param defaultField     - default field name to sort
+     * @param defaultAscending - default sort direction
      * @return sort object
      */
-    public static Sort buildSort(String field, String defaultField, boolean ascending) {
-        String sortField = !StringUtils.isBlank(field) ? field : defaultField;
-        Sort sort = Sort.by(sortField);
-        return ascending ? sort.ascending() : sort.descending();
+    public static Sort buildSort(List<SortFieldRequestDto> sortFields, String defaultField, boolean defaultAscending) {
+        if (CollectionUtils.isEmpty(sortFields)) {
+            Sort sort = Sort.by(defaultField);
+            return defaultAscending ? sort.ascending() : sort.descending();
+        } else {
+            Sort.Order[] orders = sortFields
+                    .stream()
+                    .map(sortFieldRequestDto -> sortFieldRequestDto.isAscending() ?
+                            Sort.Order.asc(sortFieldRequestDto.getSortField()) :
+                            Sort.Order.desc(sortFieldRequestDto.getSortField()))
+                    .toArray(Sort.Order[]::new);
+            return Sort.by(orders);
+        }
     }
 
     /**

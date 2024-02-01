@@ -6,10 +6,12 @@ import com.ecaservice.ers.mapping.InstancesMapperImpl;
 import com.ecaservice.ers.model.InstancesInfo_;
 import com.ecaservice.ers.repository.InstancesInfoRepository;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+
 import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.Collections;
@@ -56,8 +58,8 @@ class InstancesInfoDataServiceTest extends AbstractJpaTest {
 
     @Test
     void testGlobalSearch() {
-        var pageRequestDto = new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, InstancesInfo_.CREATED_DATE, false,
-                RELATION_1,
+        var pageRequestDto = new PageRequestDto(PAGE_NUMBER, PAGE_SIZE,
+                Collections.singletonList(new SortFieldRequestDto(InstancesInfo_.CREATED_DATE, false)), RELATION_1,
                 Collections.emptyList());
         var instancesInfoPage = instancesDataService.getNextPage(pageRequestDto);
         assertThat(instancesInfoPage).isNotNull();
@@ -66,10 +68,10 @@ class InstancesInfoDataServiceTest extends AbstractJpaTest {
     }
 
     public void saveInstancesInfoData() {
-        var instancesInfo1= buildInstancesInfo();
+        var instancesInfo1 = buildInstancesInfo();
         instancesInfo1.setRelationName(RELATION_1);
         instancesInfo1.setDataMd5Hash(DigestUtils.md5Hex(RELATION_1));
-        var instancesInfo2= buildInstancesInfo();
+        var instancesInfo2 = buildInstancesInfo();
         instancesInfo2.setRelationName(RELATION_2);
         instancesInfo2.setDataMd5Hash(DigestUtils.md5Hex(RELATION_2));
         instancesInfoRepository.saveAll(Arrays.asList(instancesInfo1, instancesInfo2));

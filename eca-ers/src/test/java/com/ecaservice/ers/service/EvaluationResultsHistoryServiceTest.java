@@ -17,6 +17,7 @@ import com.ecaservice.ers.repository.InstancesInfoRepository;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
@@ -84,8 +85,10 @@ public class EvaluationResultsHistoryServiceTest extends AbstractJpaTest {
      */
     @Test
     void testGlobalFilter() {
+        SortFieldRequestDto sortFieldRequestDto = new SortFieldRequestDto(SAVE_DATE, false);
         PageRequestDto pageRequestDto =
-                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, SAVE_DATE, false, StringUtils.EMPTY, newArrayList());
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, Collections.singletonList(sortFieldRequestDto),
+                        StringUtils.EMPTY, newArrayList());
         var pageDto = evaluationResultsHistoryService.getNextPage(pageRequestDto);
         assertThat(pageDto).isNotNull();
         assertThat(pageDto.getTotalCount()).isEqualTo(2L);
@@ -96,8 +99,10 @@ public class EvaluationResultsHistoryServiceTest extends AbstractJpaTest {
      */
     @Test
     void testFilterByClassifierName() {
+        SortFieldRequestDto sortFieldRequestDto = new SortFieldRequestDto(SAVE_DATE, false);
         PageRequestDto pageRequestDto =
-                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, SAVE_DATE, false, StringUtils.EMPTY, newArrayList());
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, Collections.singletonList(sortFieldRequestDto),
+                        StringUtils.EMPTY, newArrayList());
         pageRequestDto.getFilters().add(
                 new FilterRequestDto(CLASSIFIER_INFO_CLASSIFIER_NAME, Collections.singletonList("CART"),
                         MatchMode.EQUALS));
@@ -112,10 +117,13 @@ public class EvaluationResultsHistoryServiceTest extends AbstractJpaTest {
     @Test
     void testFilterByInstancesId() {
         var instancesInfo = instancesInfoRepository.findAll().iterator().next();
+        SortFieldRequestDto sortFieldRequestDto = new SortFieldRequestDto(SAVE_DATE, false);
         PageRequestDto pageRequestDto =
-                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, SAVE_DATE, false, StringUtils.EMPTY, newArrayList());
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, Collections.singletonList(sortFieldRequestDto),
+                        StringUtils.EMPTY, newArrayList());
         pageRequestDto.getFilters().add(
-                new FilterRequestDto(INSTANCES_INFO_ID, Collections.singletonList(String.valueOf(instancesInfo.getId())),
+                new FilterRequestDto(INSTANCES_INFO_ID,
+                        Collections.singletonList(String.valueOf(instancesInfo.getId())),
                         MatchMode.EQUALS));
         var pageDto = evaluationResultsHistoryService.getNextPage(pageRequestDto);
         assertThat(pageDto).isNotNull();

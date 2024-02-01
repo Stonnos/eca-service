@@ -120,5 +120,10 @@ public enum TaskType {
     /**
      * Optimal classifier option error handler
      */
-    OPTIMAL_CLASSIFIER_OPTIONS_ERROR_HANDLER
+    OPTIMAL_CLASSIFIER_OPTIONS_ERROR_HANDLER,
+
+    /**
+     * Gets user profile options
+     */
+    GET_USER_PROFILE_OPTIONS
 }

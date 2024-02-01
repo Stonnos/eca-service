@@ -18,8 +18,20 @@
   <div class="row">
     <div class="filter-sidebar">
       <app-filter [filters]="filters"
+                  [autoCompleteItemTemplate]="autoCompleteItemTemplate"
                   (apply)="onApplyFilter()"
                   (autocompleteField)="onFilterFieldAutocomplete($event)">
+        <ng-template #autoCompleteItemTemplate let-context="context">
+          <div [ngSwitch]="context.filterName">
+            <ng-container *ngSwitchCase="'instancesInfo.id'">
+              <app-instances-info [item]="context.itemValue.value">
+              </app-instances-info>
+            </ng-container>
+            <ng-container *ngSwitchDefault>
+              {{ context.itemValue.label }}
+            </ng-container>
+          </div>
+        </ng-template>
       </app-filter>
     </div>
     <div class="data-table">
@@ -30,6 +42,7 @@
         [rows]="pageSize"
         [paginator]="true"
         [scrollable]="true"
+        sortMode="multiple"
         [sortField]="defaultSortField"
         [sortOrder]="defaultSortOrder"
         [lazy]="true"

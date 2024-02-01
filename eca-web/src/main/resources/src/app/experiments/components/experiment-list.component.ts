@@ -32,6 +32,10 @@ import { InstancesInfoAutocompleteHandler } from "../../filter/autocomplete/hand
 import { MessageService } from "primeng/api";
 import { FieldService } from "../../common/services/field.service";
 import { ExperimentFilterFields } from "../../common/util/filter-field-names";
+import { UserInfoFilterValueTransformer } from "../../filter/autocomplete/transformer/user-info-filter-value-transformer";
+import { UserInfoAutocompleteHandler } from "../../filter/autocomplete/handler/user-info-autocomplete-handler";
+import { UsersService } from "../../users/services/users.service";
+import { CurrentUserFilterService } from "../../filter/services/current-user-filter-service";
 
 @Component({
   selector: 'app-experiment-list',
@@ -57,6 +61,8 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
 
   private experimentsUpdatesSubscriptions: Subscription;
 
+  private currentUserFilterService: CurrentUserFilterService;
+
   public requestStatusStatisticsDto: RequestStatusStatisticsDto;
 
   public createExperimentDialogVisibility: boolean = false;
@@ -77,6 +83,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
                      private errorHandler: ErrorHandler,
                      private pushService: PushService,
                      private instancesInfoService: InstancesInfoService,
+                     private usersService: UsersService,
                      private router: Router) {
     super(injector.get(MessageService), injector.get(FieldService));
     this.defaultSortField = ExperimentFields.CREATION_DATE;
@@ -88,7 +95,10 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
 
   public ngOnInit(): void {
     this.addLazyReferenceTransformers(new InstancesInfoFilterValueTransformer());
+    this.addLazyReferenceTransformers(new UserInfoFilterValueTransformer(ExperimentFilterFields.CREATED_BY));
     this.addAutoCompleteHandler(new InstancesInfoAutocompleteHandler(this.instancesInfoService, this.messageService));
+    this.addAutoCompleteHandler(new UserInfoAutocompleteHandler(ExperimentFilterFields.CREATED_BY, this.usersService, this.messageService));
+    this.currentUserFilterService = new CurrentUserFilterService(ExperimentFilterFields.CREATED_BY, this.usersService, this.messageService);
     this.getFilterFields();
     this.getRequestStatusesStatistics();
     this.getEvaluationMethods();
@@ -155,6 +165,10 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
 
   public onCreateExperimentDialogVisibility(visible): void {
     this.createExperimentDialogVisibility = visible;
+  }
+
+  public loadCurrentUserToFilter(): void {
+    this.currentUserFilterService.getCurrentUser(this.filters);
   }
 
   public onCreateExperiment(experimentRequest: ExperimentRequest): void {

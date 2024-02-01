@@ -7,11 +7,15 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
 
 import static com.ecaservice.web.dto.util.FieldConstraints.FILTERS_LIST_MAX_LENGTH;
 import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
+import static com.ecaservice.web.dto.util.FieldConstraints.SORT_FIELDS_LIST_MAX_LENGTH;
 
 /**
  * Page request model.
@@ -26,17 +30,12 @@ import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
 public class PageRequestDto extends SimplePageRequestDto {
 
     /**
-     * Sort field
+     * Sort fields
      */
-    @Schema(description = "Sort field")
-    @Size(max = MAX_LENGTH_255)
-    private String sortField;
-
-    /**
-     * Is ascending sort?
-     */
-    @Schema(description = "Is ascending sort?")
-    private boolean ascending;
+    @Valid
+    @Size(max = SORT_FIELDS_LIST_MAX_LENGTH)
+    @Schema(description = "Sort fields")
+    private List<SortFieldRequestDto> sortFields;
 
     /**
      * Search query string
@@ -54,24 +53,21 @@ public class PageRequestDto extends SimplePageRequestDto {
     private List<FilterRequestDto> filters;
 
     /**
-     * Creates page request dto,
+     * Constructor with parameters.
      *
      * @param page        - page number
-     * @param size        - pzge size
-     * @param sortField   - sort field
-     * @param ascending   - is ascending sort?
-     * @param searchQuery - search query string
-     * @param filters     - filter fields
+     * @param size        - page size
+     * @param sortFields  - sort fields
+     * @param searchQuery - search query
+     * @param filters     - filters list
      */
     public PageRequestDto(Integer page,
                           Integer size,
-                          String sortField,
-                          boolean ascending,
+                          List<SortFieldRequestDto> sortFields,
                           String searchQuery,
                           List<FilterRequestDto> filters) {
         super(page, size);
-        this.sortField = sortField;
-        this.ascending = ascending;
+        this.sortFields = sortFields;
         this.searchQuery = searchQuery;
         this.filters = filters;
     }

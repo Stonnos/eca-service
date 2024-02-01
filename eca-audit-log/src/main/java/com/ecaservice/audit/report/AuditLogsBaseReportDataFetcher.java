@@ -21,7 +21,8 @@ import static com.ecaservice.audit.dictionary.FilterDictionaries.AUDIT_LOG_TEMPL
  * @author Roman Batygin
  */
 @Component
-public class AuditLogsBaseReportDataFetcher extends AbstractBaseReportDataFetcher<AuditLogEntity, AuditLogBean> {
+public class AuditLogsBaseReportDataFetcher
+        extends AbstractBaseReportDataFetcher<AuditLogEntity, AuditLogBean> {
 
     private final AuditLogService auditLogService;
     private final AuditLogMapper auditLogMapper;
@@ -29,9 +30,9 @@ public class AuditLogsBaseReportDataFetcher extends AbstractBaseReportDataFetche
     /**
      * Constructor with spring dependency injection.
      *
-     * @param filterTemplateService   - filter service bean
-     * @param auditLogService - audit log service bean
-     * @param auditLogMapper  - audit log mapper bean
+     * @param filterTemplateService - filter service bean
+     * @param auditLogService       - audit log service bean
+     * @param auditLogMapper        - audit log mapper bean
      */
     @Inject
     public AuditLogsBaseReportDataFetcher(FilterTemplateService filterTemplateService,

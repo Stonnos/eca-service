@@ -26,6 +26,7 @@ import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.FormTemplateDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import com.ecaservice.web.dto.model.UpdateClassifiersConfigurationDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -282,8 +283,9 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
         ClassifiersConfiguration secondConfiguration = saveConfiguration(false, false);
         classifierOptionsDatabaseModelRepository.save(
                 TestHelperUtils.createClassifierOptionsDatabaseModel(TEST_CONFIG, secondConfiguration));
-        PageRequestDto pageRequestDto =
-                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, CREATION_DATE, false, null, Collections.emptyList());
+        PageRequestDto pageRequestDto = new PageRequestDto(PAGE_NUMBER, PAGE_SIZE,
+                Collections.singletonList(new SortFieldRequestDto(CREATION_DATE, false)), null,
+                Collections.emptyList());
         PageDto<ClassifiersConfigurationDto> configurationsPage =
                 classifiersConfigurationService.getClassifiersConfigurations(pageRequestDto);
         assertThat(configurationsPage).isNotNull();

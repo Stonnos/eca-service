@@ -4,6 +4,7 @@ import com.ecaservice.server.event.model.push.AbstractClassifierOptionsPushEvent
 import com.ecaservice.server.repository.ClassifiersConfigurationHistoryRepository;
 import com.ecaservice.server.service.classifiers.ClassifiersFormTemplateProvider;
 import com.ecaservice.server.service.message.template.MessageTemplateProcessor;
+import com.ecaservice.user.profile.options.client.service.UserProfileOptionsProvider;
 
 import java.util.Map;
 
@@ -28,13 +29,15 @@ public abstract class AbstractClassifierOptionsPushEventHandler<E extends Abstra
      * @param classifiersConfigurationHistoryRepository - classifiers configuration history repository
      * @param messageTemplateProcessor                  - message template processor
      * @param classifiersFormTemplateProvider           - classifiers template provider
+     * @param userProfileOptionsProvider                - user profile options provider
      */
     protected AbstractClassifierOptionsPushEventHandler(
             Class<E> clazz,
             ClassifiersConfigurationHistoryRepository classifiersConfigurationHistoryRepository,
             MessageTemplateProcessor messageTemplateProcessor,
-            ClassifiersFormTemplateProvider classifiersFormTemplateProvider) {
-        super(clazz, classifiersConfigurationHistoryRepository, messageTemplateProcessor);
+            ClassifiersFormTemplateProvider classifiersFormTemplateProvider,
+            UserProfileOptionsProvider userProfileOptionsProvider) {
+        super(clazz, classifiersConfigurationHistoryRepository, messageTemplateProcessor, userProfileOptionsProvider);
         this.classifiersFormTemplateProvider = classifiersFormTemplateProvider;
     }
 

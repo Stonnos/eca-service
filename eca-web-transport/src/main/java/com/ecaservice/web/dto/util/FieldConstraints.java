@@ -41,6 +41,11 @@ public class FieldConstraints {
     public static final int FILTERS_LIST_MAX_LENGTH = 50;
 
     /**
+     * Sort fields list max length
+     */
+    public static final int SORT_FIELDS_LIST_MAX_LENGTH = 50;
+
+    /**
      * Values list max length
      */
     public static final int VALUES_LIST_MAX_LENGTH = 50;

@@ -32,6 +32,9 @@ eureka:
     registerWithEureka: false
     fetchRegistry: false
 
+lock:
+  enabled: true
+
 ## Application properties
 app:
   webExternalBaseUrl: http://localhost:8085
@@ -65,6 +68,28 @@ tfa:
   enabled: true
   pageSize: 25
   delaySeconds: 300
+
+userProfile:
+  emailEnabled: true
+  webPushEnabled: true
+  notificationEventOptions:
+    - eventType: EXPERIMENT_STATUS_CHANGE
+      emailEnabled: true
+      webPushEnabled: true
+      emailSupported: true
+      webPushSupported: true
+    - eventType: CLASSIFIER_STATUS_CHANGE
+      emailEnabled: false
+      webPushEnabled: true
+      emailSupported: false
+      webPushSupported: true
+    - eventType: CLASSIFIER_CONFIGURATION_CHANGE
+      emailEnabled: false
+      webPushEnabled: true
+      emailSupported: false
+      webPushSupported: true
+  rabbit:
+    exchangeName: user-profile-options-exchange
 
 ## Swagger properties
 open-api:

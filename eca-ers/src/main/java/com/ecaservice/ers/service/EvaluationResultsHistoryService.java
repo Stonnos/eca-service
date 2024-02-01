@@ -64,7 +64,7 @@ public class EvaluationResultsHistoryService {
      */
     public Page<EvaluationResultsInfo> getEvaluationResultsInfoPage(
             @ValidPageRequest(filterTemplateName = EVALUATION_RESULTS_HISTORY_TEMPLATE) PageRequestDto pageRequestDto) {
-        Sort sort = buildSort(pageRequestDto.getSortField(), SAVE_DATE, pageRequestDto.isAscending());
+        Sort sort = buildSort(pageRequestDto.getSortFields(), SAVE_DATE, true);
         List<String> globalFilterFields =
                 filterTemplateService.getGlobalFilterFields(EVALUATION_RESULTS_HISTORY_TEMPLATE);
         var filter = new EvaluationResultsHistoryFilter(pageRequestDto.getSearchQuery(), globalFilterFields,
@@ -86,7 +86,8 @@ public class EvaluationResultsHistoryService {
      * @return evaluation results history page
      */
     public PageDto<EvaluationResultsHistoryDto> getNextPage(
-            @ValidPageRequest(filterTemplateName = EVALUATION_RESULTS_HISTORY_TEMPLATE) PageRequestDto pageRequestDto) {
+            @ValidPageRequest(filterTemplateName = EVALUATION_RESULTS_HISTORY_TEMPLATE)
+            PageRequestDto pageRequestDto) {
         var evaluationResultsInfoPage = getEvaluationResultsInfoPage(pageRequestDto);
         var evaluationResultsDtoList =
                 mapToEvaluationResultsHistoryList(evaluationResultsInfoPage.getContent());
