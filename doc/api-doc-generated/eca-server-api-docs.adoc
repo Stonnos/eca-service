@@ -335,8 +335,10 @@ a|
 {
   "page" : 0,
   "size" : 25,
-  "sortField" : "createdDate",
-  "ascending" : false,
+  "sortField" : [ {
+    "sortField" : "createdDate",
+    "ascending" : false
+  } ],
   "searchQuery" : "glass",
   "filters" : [ ]
 }
@@ -482,8 +484,10 @@ a|
 {
   "page" : 0,
   "size" : 25,
-  "sortField" : "creationDate",
-  "ascending" : false,
+  "sortField" : [ {
+    "sortField" : "creationDate",
+    "ascending" : false
+  } ],
   "searchQuery" : "",
   "filters" : [ {
     "name" : "evaluationMethod",
@@ -2058,8 +2062,10 @@ a|
 {
   "page" : 0,
   "size" : 25,
-  "sortField" : "creationDate",
-  "ascending" : false,
+  "sortFields" : [ {
+    "sortField" : "creationDate",
+    "ascending" : false
+  } ],
   "searchQuery" : "",
   "filters" : [ {
     "name" : "evaluationMethod",
@@ -2510,7 +2516,7 @@ a|
   "fieldName" : "createdBy",
   "description" : "Пользователь",
   "fieldOrder" : 1,
-  "filterFieldType" : "TEXT",
+  "filterFieldType" : "LAZY_REFERENCE",
   "matchMode" : "EQUALS",
   "multiple" : false,
   "dictionary" : null
@@ -2779,7 +2785,7 @@ a|
   "fieldName" : "createdBy",
   "description" : "Пользователь",
   "fieldOrder" : 1,
-  "filterFieldType" : "TEXT",
+  "filterFieldType" : "LAZY_REFERENCE",
   "matchMode" : "EQUALS",
   "multiple" : false,
   "dictionary" : null
@@ -3037,8 +3043,8 @@ a|
   "fieldName" : "createdBy",
   "description" : "Пользователь",
   "fieldOrder" : 0,
-  "filterFieldType" : "TEXT",
-  "matchMode" : "LIKE",
+  "filterFieldType" : "LAZY_REFERENCE",
+  "matchMode" : "EQUALS",
   "multiple" : false,
   "dictionary" : null
 }, {
@@ -5968,15 +5974,12 @@ __(int32)__
 
 
 
-|*sortField*
-|Sort field
+|*sortFields*
+|Sort fields
 a|
-__string__
-
-
-*Min. length*: 0
-
-*Max. length*: 255
+__array__
+<<<SortFieldRequestDto>>
+>
 
 
 
@@ -5985,23 +5988,9 @@ __string__
 
 
 
+*Min. items*: 0
 
-
-|*ascending*
-|Is ascending sort?
-a|
-__boolean__
-
-
-
-
-
-
-
-
-
-
-
+*Max. items*: 50
 
 
 
@@ -6042,6 +6031,51 @@ __array__
 *Min. items*: 0
 
 *Max. items*: 50
+
+
+
+
+|===
+=== SortFieldRequestDto
+:table-caption: Table
+.Sort field request model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*sortField**
+|Sort field
+a|
+__string__
+
+
+*Min. length*: 1
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*ascending*
+|Is ascending sort?
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
 
 
 
