@@ -117,11 +117,13 @@
 |
 |4
 |emailSupported
+|boolean
 |+
 |Флаг поддержки отправки email для события
 |
 |5
 |webPushSupported
+|boolean
 |+
 |Флаг поддержки отправки push уведомлений в приложении для события
 |
