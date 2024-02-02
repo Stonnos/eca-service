@@ -1,0 +1,128 @@
+= Получение изменений настроек профиля пользователя
+:toc:
+:toc-title: Оглавление
+
+== 1. Описание
+
+В данном документе приведено описание api для получения изменений настроек профиля пользователя.
+
+== 2. Описание очередей
+
+Ниже приведено описание очередей:
+
+[options="header"]
+|===
+|Название очереди|Название fanout exchange|Описание
+|eca-server-user-profile-options-data-event-queue
+|user-profile-options-exchange
+|Название очереди в модуле eca-server для получения изменений настроек профиля пользователя
+|===
+
+== 3. Описание формата сообщений
+
+=== 3.1. Пример сообщения с изменениями настроек профиля пользователя UserProfileOptionsDto
+
+[source,json]
+----
+{
+  "user": "admin",
+  "version": 0,
+  "emailEnabled": true,
+  "webPushEnabled": true,
+  "notificationEventOptions": [
+    {
+      "eventType": "EXPERIMENT_STATUS_CHANGE",
+      "emailEnabled": true,
+      "webPushEnabled": true,
+      "emailSupported": true,
+      "webPushSupported": true
+    },
+    {
+      "eventType": "CLASSIFIER_STATUS_CHANGE",
+      "emailEnabled": false,
+      "webPushEnabled": true,
+      "emailSupported": false,
+      "webPushSupported": true
+    },
+    {
+      "eventType": "CLASSIFIER_CONFIGURATION_CHANGE",
+      "emailEnabled": false,
+      "webPushEnabled": true,
+      "emailSupported": false,
+      "webPushSupported": true
+    }
+  ]
+}
+----
+
+=== 3.2. Описание полей сообщения с изменениями настроек профиля пользователя UserProfileOptionsDto
+
+[options="header"]
+|===
+|№|Название поля|Тип|Обязательное|Описание|Комментарий
+|1
+|user
+|string
+|+
+|Логин пользователя
+|
+|2
+|version
+|integer
+|+
+|Версия настроек
+|
+|3
+|emailEnabled
+|boolean
+|+
+|Глобальный флаг вкл./выкл. email уведомлений
+|
+|4
+|webPushEnabled
+|boolean
+|+
+|Глобальный флаг вкл./выкл. push уведомлений в приложении
+|
+|5
+|notificationEventOptions
+|array<UserNotificationEventOptionsDto>
+|-
+|Настройки событий уведомлений
+|
+|===
+
+=== 3.3. Описание полей события уведомления UserNotificationEventOptionsDto
+
+[options="header"]
+|===
+|№|Название поля|Тип|Обязательное|Описание|Комментарий
+|1
+|eventType
+|string
+|+
+|Тип уведомления
+|
+|2
+|emailEnabled
+|boolean
+|+
+|Вкл./выкл. email уведомлений для события
+|
+|3
+|webPushEnabled
+|boolean
+|+
+|Вкл./выкл. push уведомлений в приложении для события
+|
+|4
+|emailSupported
+|+
+|Флаг поддержки отправки email для события
+|
+|5
+|webPushSupported
+|+
+|Флаг поддержки отправки push уведомлений в приложении для события
+|
+|===
