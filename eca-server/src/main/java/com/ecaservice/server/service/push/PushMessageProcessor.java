@@ -1,7 +1,7 @@
 package com.ecaservice.server.service.push;
 
+import com.ecaservice.core.message.template.service.MessageTemplateProcessor;
 import com.ecaservice.server.event.model.push.PushMessageParams;
-import com.ecaservice.server.service.message.template.MessageTemplateProcessor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

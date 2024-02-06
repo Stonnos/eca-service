@@ -1,5 +1,6 @@
 package com.ecaservice.server.event.listener;
 
+import com.ecaservice.core.message.template.service.MessageTemplateProcessor;
 import com.ecaservice.core.push.client.event.listener.WebPushEventListener;
 import com.ecaservice.core.push.client.service.WebPushSender;
 import com.ecaservice.core.push.client.validator.UserNotificationPushRequestValidator;
@@ -9,7 +10,6 @@ import com.ecaservice.server.model.entity.ClassifiersConfigurationActionType;
 import com.ecaservice.server.repository.ClassifiersConfigurationHistoryRepository;
 import com.ecaservice.server.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
-import com.ecaservice.server.service.message.template.MessageTemplateProcessor;
 import com.ecaservice.server.service.push.handler.AddClassifierOptionsPushEventHandler;
 import com.ecaservice.server.service.push.handler.SetActiveClassifiersConfigurationPushEventHandler;
 import com.ecaservice.user.profile.options.client.service.UserProfileOptionsProvider;
