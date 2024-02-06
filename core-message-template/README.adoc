@@ -1,0 +1,101 @@
+= Библиотека для работы с шаблонами текстовых сообщений
+:toc:
+:toc-title: Оглавление
+
+== Введение
+
+В данном документе приведена инструкция для подключения библиотеки к spring boot приложению.
+
+== 1. Подключение библиотеки
+
+Для начала, необходимо добавить зависимость в pom.xml
+
+[source,xml]
+----
+<dependency>
+    <groupId>eca.service</groupId>
+    <artifactId>core-message-template</artifactId>
+    <version>${project.version}</version>
+</dependency>
+----
+
+Добавить класс конфигурации
+
+[source,java]
+----
+// Подключить библиотеку spring кэша
+@EnableCaching
+// Если в вашем модуле есть JPA сущности, то указать путь для сканирования
+@EntityScan(basePackageClasses = MyEntity.class)
+// Если в вашем модуле есть JPA репозитории, то указать путь для сканирования
+@EnableJpaRepositories(basePackageClasses = MyEntityRepository.class)
+@Configuration
+public class AppConfiguration {
+}
+----
+
+В конфигурационный файл liquibase, добавить путь к файлу message-template-changelog.xml со скриптами для создания служебных таблиц.
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!-- your change sets -->
+    <include file="../message-template-changelog.xml" relativeToChangelogFile="true"/>
+</databaseChangeLog>
+----
+
+Также можно настроить параметры кэша. Ниже приведен пример файла application.yml с настройками кэша от caffeine:
+
+[source,yml]
+----
+spring:
+  cache:
+    cache-names: message-templates
+    caffeine:
+      spec: maximumSize=100, expireAfterWrite=18000s
+----
+
+== 2. Описание таблиц библиотеки шаблонов
+
+==== Таблица 2.1 - 'message_template' - содержит шаблоны для различных сообщений
+[cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
+|===
+|Название колонки|Тип|Unique|Not NULL|Индекс|Описание
+|id                      |varchar(255)     |+|+|+                              |Код шаблона (первичный ключ)
+|template_text           |text             |-|+|-                              |Текст шаблона
+|===
+
+== 3. Пример шаблонов сообщений
+
+Пример csv файла с щаблонами сообщений для импорта в базу данных:
+
+[source,csv]
+----
+CREATE_CONFIGURATION;Создана конфигурация с именем ${classifiersConfiguration.configurationName}
+UPDATE_CONFIGURATION;Изменено название конфигурации. Новое название - ${classifiersConfiguration.configurationName}
+----
+
+Для обработки шаблонов сообщений используется бибилиотека freemarker.
+
+== 4. Примеры использования
+
+Ниже приведен пример кода с использованием класса MessageTemplateProcessor для формирования сообщения по заданному шаблону:
+
+[source,java]
+----
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class AppService {
+
+    private final MessageTemplateProcessor messageTemplateProcessor;
+
+    public String processMessage() {
+        return messageTemplateProcessor.process("templateCode", Collections.singletonMap("templateVariable", "value");
+    }
+}
+----
