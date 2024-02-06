@@ -1,6 +1,6 @@
-package com.ecaservice.server.repository;
+package com.ecaservice.core.message.template.repository;
 
-import com.ecaservice.server.model.entity.MessageTemplateEntity;
+import com.ecaservice.core.message.template.entity.MessageTemplateEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

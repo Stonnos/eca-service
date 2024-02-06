@@ -1,4 +1,4 @@
-package com.ecaservice.server.exception;
+package com.ecaservice.core.message.template.exception;
 
 /**
  * Message template processing exception.

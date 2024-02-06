@@ -5,6 +5,7 @@ import com.ecaservice.common.web.exception.InvalidOperationException;
 import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.lock.config.CoreLockAutoConfiguration;
 import com.ecaservice.core.lock.metrics.LockMeterService;
+import com.ecaservice.core.message.template.service.MessageTemplateProcessor;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.mapping.ClassifierOptionsDatabaseModelMapperImpl;
@@ -20,7 +21,6 @@ import com.ecaservice.server.repository.ClassifiersConfigurationHistoryRepositor
 import com.ecaservice.server.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.UserService;
-import com.ecaservice.server.service.message.template.MessageTemplateProcessor;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.FormTemplateDto;

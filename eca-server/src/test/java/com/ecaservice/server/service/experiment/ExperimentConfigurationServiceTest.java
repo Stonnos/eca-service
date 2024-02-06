@@ -1,6 +1,7 @@
 package com.ecaservice.server.service.experiment;
 
 import com.ecaservice.core.filter.service.FilterTemplateService;
+import com.ecaservice.core.message.template.service.MessageTemplateProcessor;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.exception.ClassifierOptionsException;
@@ -16,7 +17,6 @@ import com.ecaservice.server.service.classifiers.ClassifierOptionsInfoProcessor;
 import com.ecaservice.server.service.classifiers.ClassifierOptionsService;
 import com.ecaservice.server.service.classifiers.ClassifiersConfigurationHistoryService;
 import com.ecaservice.server.service.classifiers.ClassifiersFormTemplateProvider;
-import com.ecaservice.server.service.message.template.MessageTemplateProcessor;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;

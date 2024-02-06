@@ -1,7 +1,7 @@
-package com.ecaservice.server.service.message.template.impl;
+package com.ecaservice.core.message.template.service.impl;
 
-import com.ecaservice.server.exception.MessageTemplateProcessingException;
-import com.ecaservice.server.service.message.template.MessageTemplateProcessor;
+import com.ecaservice.core.message.template.exception.MessageTemplateProcessingException;
+import com.ecaservice.core.message.template.service.MessageTemplateProcessor;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;

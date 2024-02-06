@@ -1,4 +1,4 @@
-package com.ecaservice.server.model.entity;
+package com.ecaservice.core.message.template.entity;
 
 import lombok.Data;
 

@@ -1,6 +1,6 @@
-package com.ecaservice.server.config.freemarker;
+package com.ecaservice.core.message.template.config;
 
-import com.ecaservice.server.service.message.template.MessageTemplateService;
+import com.ecaservice.core.message.template.service.MessageTemplateService;
 import freemarker.cache.TemplateLoader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -106,6 +106,12 @@
 
         <dependency>
             <groupId>eca.service</groupId>
+            <artifactId>core-message-template</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>eca.service</groupId>
             <artifactId>classifiers-options-adapter</artifactId>
             <version>${project.version}</version>
         </dependency>

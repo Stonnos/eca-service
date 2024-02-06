@@ -1,4 +1,4 @@
-package com.ecaservice.server.service.message.template;
+package com.ecaservice.core.message.template.service;
 
 import java.util.Map;
 

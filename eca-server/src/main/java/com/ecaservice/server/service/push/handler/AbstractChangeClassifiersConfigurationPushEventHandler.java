@@ -1,9 +1,9 @@
 package com.ecaservice.server.service.push.handler;
 
+import com.ecaservice.core.message.template.service.MessageTemplateProcessor;
 import com.ecaservice.core.push.client.event.listener.handler.AbstractUserPushNotificationEventHandler;
 import com.ecaservice.server.event.model.push.AbstractChangeClassifiersConfigurationPushEvent;
 import com.ecaservice.server.repository.ClassifiersConfigurationHistoryRepository;
-import com.ecaservice.server.service.message.template.MessageTemplateProcessor;
 import com.ecaservice.user.profile.options.client.service.UserProfileOptionsProvider;
 import com.ecaservice.user.profile.options.dto.UserNotificationEventOptionsDto;
 import com.ecaservice.user.profile.options.dto.UserNotificationEventType;
