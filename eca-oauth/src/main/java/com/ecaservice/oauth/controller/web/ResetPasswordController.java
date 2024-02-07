@@ -31,6 +31,7 @@ import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 import static com.ecaservice.common.web.util.MaskUtils.mask;
+import static com.ecaservice.common.web.util.MaskUtils.maskEmail;
 import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
@@ -86,7 +87,7 @@ public class ResetPasswordController {
     )
     @PostMapping(value = "/create-reset-request")
     public void createResetPasswordRequest(@Valid @RequestBody CreateResetPasswordRequest createResetPasswordRequest) {
-        log.info("Received reset password request creation [{}]", createResetPasswordRequest);
+        log.info("Received reset password request creation [{}]", maskEmail(createResetPasswordRequest.getEmail()));
         var tokenModel = resetPasswordService.createResetPasswordRequest(createResetPasswordRequest);
         applicationEventPublisher.publishEvent(new ResetPasswordRequestNotificationEvent(this, tokenModel));
         log.info("Reset password request [{}] has been processed for user [{}]", tokenModel.getTokenId(),

@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 
 import static com.ecaservice.common.web.util.MaskUtils.mask;
+import static com.ecaservice.common.web.util.MaskUtils.maskEmail;
 import static com.ecaservice.common.web.util.RandomUtils.generateToken;
 import static com.ecaservice.oauth.config.audit.AuditCodes.CREATE_RESET_PASSWORD_REQUEST;
 import static com.ecaservice.oauth.config.audit.AuditCodes.RESET_PASSWORD;
@@ -52,7 +53,7 @@ public class ResetPasswordService {
      */
     @Audit(value = CREATE_RESET_PASSWORD_REQUEST, initiatorKey = "#result.login")
     public TokenModel createResetPasswordRequest(CreateResetPasswordRequest createResetPasswordRequest) {
-        log.info("Starting to create reset password request [{}]", createResetPasswordRequest);
+        log.info("Starting to create reset password request [{}]", maskEmail(createResetPasswordRequest.getEmail()));
         UserEntity userEntity = userEntityRepository.findByEmail(createResetPasswordRequest.getEmail())
                 .orElseThrow(() -> new IllegalStateException(
                         String.format("Can't create reset password request, because user with email %s doesn't exists!",
@@ -74,7 +75,7 @@ public class ResetPasswordService {
         resetPasswordRequestEntity.setUserEntity(userEntity);
         resetPasswordRequestRepository.save(resetPasswordRequestEntity);
         log.info("Reset password request [{}] has been created for user with email [{}]",
-                resetPasswordRequestEntity.getId(), createResetPasswordRequest);
+                resetPasswordRequestEntity.getId(), maskEmail(createResetPasswordRequest.getEmail()));
         return TokenModel.builder()
                 .token(token)
                 .tokenId(resetPasswordRequestEntity.getId())

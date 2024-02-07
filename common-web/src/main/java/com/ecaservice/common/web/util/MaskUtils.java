@@ -27,6 +27,21 @@ public class MaskUtils {
         }
     }
 
+    /**
+     * Masks email characters before @ symbol from 2nd position.
+     *
+     * @param email - email value
+     */
+    public static String maskEmail(String email) {
+        if (StringUtils.isNotEmpty(email)) {
+            int aIndex = email.indexOf("@");
+            if (aIndex > 0) {
+                return email.charAt(0) + MASK_SYMBOL.repeat(aIndex - 1) + email.substring(aIndex);
+            }
+        }
+        return email;
+    }
+
     private static String internalMask(String value) {
         return value.substring(0, NOT_MASKED_SYMBOLS_NUM) + MASK_SYMBOL.repeat(value.length() - NOT_MASKED_SYMBOLS_NUM);
     }
