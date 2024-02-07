@@ -52,6 +52,7 @@ public class ResetPasswordService {
      */
     @Audit(value = CREATE_RESET_PASSWORD_REQUEST, initiatorKey = "#result.login")
     public TokenModel createResetPasswordRequest(CreateResetPasswordRequest createResetPasswordRequest) {
+        log.info("Starting to create reset password request [{}]", createResetPasswordRequest);
         UserEntity userEntity = userEntityRepository.findByEmail(createResetPasswordRequest.getEmail())
                 .orElseThrow(() -> new IllegalStateException(
                         String.format("Can't create reset password request, because user with email %s doesn't exists!",
@@ -72,6 +73,8 @@ public class ResetPasswordService {
                 now.plusMinutes(appProperties.getResetPassword().getValidityMinutes()));
         resetPasswordRequestEntity.setUserEntity(userEntity);
         resetPasswordRequestRepository.save(resetPasswordRequestEntity);
+        log.info("Reset password request [{}] has been created for user with email [{}]",
+                resetPasswordRequestEntity.getId(), createResetPasswordRequest);
         return TokenModel.builder()
                 .token(token)
                 .tokenId(resetPasswordRequestEntity.getId())

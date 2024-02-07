@@ -117,9 +117,9 @@ public class ChangePasswordController {
             @Valid @RequestBody ChangePasswordRequest changePasswordRequest) {
         log.info("Received change password request for user [{}]", userDetails.getId());
         var tokenModel = changePasswordService.createChangePasswordRequest(userDetails.getId(), changePasswordRequest);
-        log.info("Change password request [{}] has been created for user [{}]", tokenModel.getTokenId(),
-                userDetails.getId());
         applicationEventPublisher.publishEvent(new ChangePasswordRequestNotificationEvent(this, tokenModel));
+        log.info("Change password request [{}] has been processed for user [{}]", tokenModel.getToken(),
+                userDetails.getId());
         return ChangePasswordRequestStatusDto.builder()
                 .token(tokenModel.getToken())
                 .active(true)
@@ -169,10 +169,11 @@ public class ChangePasswordController {
             @Parameter(description = "Token value", required = true) @RequestParam String token,
             @Size(min = VALUE_1, max = MAX_LENGTH_255)
             @Parameter(description = "Confirmation code", required = true) @RequestParam String confirmationCode) {
-        log.info("Received change password request confirmation");
+        log.info("Received change password request [{}] confirmation", token);
         var changePasswordRequest = changePasswordService.confirmChangePassword(token, confirmationCode);
         applicationEventPublisher.publishEvent(
                 new PasswordChangedNotificationEvent(this, changePasswordRequest.getUserEntity()));
+        log.info("Change password request confirmation [{}] has been processed", token);
     }
 
     /**

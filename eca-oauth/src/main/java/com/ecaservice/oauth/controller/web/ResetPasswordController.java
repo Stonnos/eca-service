@@ -30,6 +30,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
+import static com.ecaservice.common.web.util.MaskUtils.mask;
 import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
@@ -87,9 +88,9 @@ public class ResetPasswordController {
     public void createResetPasswordRequest(@Valid @RequestBody CreateResetPasswordRequest createResetPasswordRequest) {
         log.info("Received reset password request creation [{}]", createResetPasswordRequest);
         var tokenModel = resetPasswordService.createResetPasswordRequest(createResetPasswordRequest);
-        log.info("Reset password request [{}] has been created for user [{}]", tokenModel.getTokenId(),
-                tokenModel.getLogin());
         applicationEventPublisher.publishEvent(new ResetPasswordRequestNotificationEvent(this, tokenModel));
+        log.info("Reset password request [{}] has been processed for user [{}]", tokenModel.getTokenId(),
+                tokenModel.getLogin());
     }
 
     /**
@@ -116,10 +117,12 @@ public class ResetPasswordController {
     public boolean verifyToken(
             @Size(min = VALUE_1, max = MAX_LENGTH_255)
             @Parameter(description = "Reset password token", required = true) @RequestParam String token) {
-        log.info("Received request for reset password token verification");
+        log.info("Received request for reset password token [{}] verification", mask(token));
         String md5Hash = md5Hex(token);
-        return resetPasswordRequestRepository.existsByTokenAndExpireDateAfterAndResetDateIsNull(md5Hash,
+        boolean verified = resetPasswordRequestRepository.existsByTokenAndExpireDateAfterAndResetDateIsNull(md5Hash,
                 LocalDateTime.now());
+        log.info("Reset password request token [{}] verification result: {}", mask(token), verified);
+        return verified;
     }
 
     /**
@@ -156,9 +159,10 @@ public class ResetPasswordController {
     )
     @PostMapping(value = "/reset")
     public void resetPassword(@Valid @RequestBody ResetPasswordRequest resetPasswordRequest) {
-        log.info("Received reset password request");
+        log.info("Received reset password request for token [{}]", mask(resetPasswordRequest.getToken()));
         var resetPasswordRequestEntity = resetPasswordService.resetPassword(resetPasswordRequest);
         applicationEventPublisher.publishEvent(
                 new PasswordResetNotificationEvent(this, resetPasswordRequestEntity.getUserEntity()));
+        log.info("Reset password request has been processed for token [{}]", mask(resetPasswordRequest.getToken()));
     }
 }

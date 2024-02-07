@@ -67,6 +67,7 @@ public class ChangePasswordService {
      */
     @Audit(CREATE_CHANGE_PASSWORD_REQUEST)
     public TokenModel createChangePasswordRequest(Long userId, ChangePasswordRequest changePasswordRequest) {
+        log.info("Starting to create change password request for user [{}]", userId);
         UserEntity userEntity = userEntityRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(UserEntity.class, userId));
         if (!isValidOldPassword(userEntity, changePasswordRequest)) {
@@ -91,6 +92,8 @@ public class ChangePasswordService {
         LocalDateTime expireDate = now.plusMinutes(appProperties.getChangePassword().getValidityMinutes());
         changePasswordRequestEntity =
                 saveChangePasswordRequest(changePasswordRequest, userEntity, confirmationCode, expireDate);
+        log.info("Change password request [{}] has been created for user [{}]", changePasswordRequestEntity.getToken(),
+                userId);
         return TokenModel.builder()
                 .token(changePasswordRequestEntity.getToken())
                 .tokenId(changePasswordRequestEntity.getId())
@@ -124,8 +127,8 @@ public class ChangePasswordService {
         userEntityRepository.save(userEntity);
         changePasswordRequestRepository.save(changePasswordRequestEntity);
         oauth2TokenService.revokeTokens(userEntity);
-        log.info("New password has been set for user [{}], change password request id [{}]", userEntity.getId(),
-                changePasswordRequestEntity.getId());
+        log.info("New password has been set for user [{}], change password request [{}]", userEntity.getId(),
+                changePasswordRequestEntity.getToken());
         return changePasswordRequestEntity;
     }
 
@@ -149,7 +152,7 @@ public class ChangePasswordService {
                     .build();
         } else {
             log.info("Active change password request [{}] has been found for user [{}]",
-                    changePasswordRequestEntity.getId(), userId);
+                    changePasswordRequestEntity.getToken(), userId);
             return ChangePasswordRequestStatusDto.builder()
                     .token(changePasswordRequestEntity.getToken())
                     .active(true)
