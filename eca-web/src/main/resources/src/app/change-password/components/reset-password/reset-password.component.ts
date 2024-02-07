@@ -47,13 +47,11 @@ export class ResetPasswordComponent implements BaseForm, OnInit {
   public passwordValidationRuleDetails: PasswordRuleResultDto[] = [];
 
   private readonly errorCodes: string[] = [
-    ValidationErrorCode.USER_LOCKED,
-    ValidationErrorCode.PASSWORDS_MATCHED
+    ValidationErrorCode.USER_LOCKED
   ];
 
   private readonly errorCodesMap = new Map<string, string>()
-    .set(ValidationErrorCode.USER_LOCKED, 'Не удалось изменить пароль, т.к. ваш аккаунт заблокирован.')
-    .set(ValidationErrorCode.PASSWORDS_MATCHED, 'Придумайте новый пароль отличный от старого.');
+    .set(ValidationErrorCode.USER_LOCKED, 'Не удалось изменить пароль, т.к. ваш аккаунт заблокирован.');
 
 
   public constructor(private messageService: MessageService,

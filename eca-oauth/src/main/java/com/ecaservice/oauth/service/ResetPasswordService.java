@@ -8,7 +8,6 @@ import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.exception.InvalidTokenException;
 import com.ecaservice.oauth.exception.NotSafePasswordException;
-import com.ecaservice.oauth.exception.PasswordsMatchedException;
 import com.ecaservice.oauth.exception.ResetPasswordRequestAlreadyExistsException;
 import com.ecaservice.oauth.exception.UserLockedException;
 import com.ecaservice.oauth.model.TokenModel;
@@ -99,9 +98,6 @@ public class ResetPasswordService {
         if (userEntity.isLocked()) {
             throw new UserLockedException(userEntity.getId());
         }
-        if (isPasswordsMatched(userEntity, resetPasswordRequest)) {
-            throw new PasswordsMatchedException(userEntity.getId());
-        }
         var validationResult
                 = passwordValidationService.validate(resetPasswordRequest.getPassword());
         if (!validationResult.isValid()) {
@@ -117,9 +113,5 @@ public class ResetPasswordService {
         log.info("New password has been set for user [{}], reset password request id [{}]", userEntity.getId(),
                 resetPasswordRequestEntity.getId());
         return resetPasswordRequestEntity;
-    }
-
-    private boolean isPasswordsMatched(UserEntity userEntity, ResetPasswordRequest resetPasswordRequest) {
-        return passwordEncoder.matches(resetPasswordRequest.getPassword().trim(), userEntity.getPassword());
     }
 }
