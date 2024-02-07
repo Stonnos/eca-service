@@ -9,7 +9,6 @@ import { ExperimentResultsDetailsComponent } from "../experiment-results-details
 import { UsersListComponent } from "../users/components/users-list.component";
 import { ResetPasswordComponent } from "../change-password/components/reset-password/reset-password.component";
 import { InstancesListComponent } from "../instances/components/instances-list.component";
-import { ConfirmChangePasswordComponent } from "../change-password/components/confirm-change-password/confirm-change-password.component";
 import { AccessDeniedComponent } from "../access-denied/components/access-denied.component";
 import { AuditLogsComponent } from "../audit-logs/components/audit-logs.component";
 import { ConfirmChangeEmailComponent } from "../update-user-email/components/confirm-change-email/confirm-change-email.component";
@@ -91,10 +90,6 @@ const routes: Routes = [
   {
     path: 'reset-password',
     component: ResetPasswordComponent
-  },
-  {
-    path: 'change-password',
-    component: ConfirmChangePasswordComponent
   },
   {
     path: 'change-email',

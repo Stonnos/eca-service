@@ -515,6 +515,7 @@ image::./images/eca-oauth-db-schema.png[alt=Схема базы данных eca
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                      |bigint           |+|+|+                                          |Идентификатор записи (первичный ключ)
 |token                   |varchar(255)     |+|+|change_password_request_token_unique_index |Короткоживущий токен для смены пароля
+|confirmation_code       |varchar(255)     |+|-|-                                          |Код подтверждения из письма для смены пароля
 |expire_date             |timestamp        |-|+|-                                          |Дата истечения срока действия токена
 |confirmation_date       |timestamp        |-|-|-                                          |Дата подтверждения смены пароля
 |new_password            |varchar(255)     |-|+|-                                          |Хеш пароля для изменения

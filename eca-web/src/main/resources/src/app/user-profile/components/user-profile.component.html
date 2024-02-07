@@ -103,11 +103,13 @@
               </ng-container>
             </div>
             <div *ngIf="field.name == 'passwordChangeDate' && changePasswordRequestStatusDto?.active"
-                 class="ui-g ml-1 mr-1 text-bold text-center">
-              <p-messages [enableService]="false"
-                          [closable]="false"
-                          [(value)]="activeChangePasswordStatusMessage">
-              </p-messages>
+                 class="ui-g ml-1 mr-1 alert alert-info">
+              <div class="ui-g-12 text-bold justify-content-start mx-auto">
+                Вы запросили смену пароля. На ваш текущий email было отправлено письмо с кодом подтверждения.
+              </div>
+              <div class="ui-g-12 mx-auto d-flex align-items-start justify-content-start">
+                <a class="link" [routerLink]="" (click)="confirmChangePassword()">Подтвердить смену пароля</a>
+              </div>
             </div>
           </div>
         </p-fieldset>
@@ -177,9 +179,10 @@
 </app-confirm-dialog>
 
 <app-change-password-dialog [visible]="changePasswordDialogVisibility"
+                            [step]="changePasswordStep"
+                            [token]="changePasswordRequestStatusDto?.token"
                             [item]="changePasswordRequest"
-                            (visibilityChange)="onChangePasswordDialogVisibility($event)"
-                            (itemEvent)="onCreateChangePasswordRequest()">
+                            (visibilityChange)="onChangePasswordDialogVisibility($event)">
 </app-change-password-dialog>
 
 <app-update-user-email [visible]="changeEmailDialogVisibility"

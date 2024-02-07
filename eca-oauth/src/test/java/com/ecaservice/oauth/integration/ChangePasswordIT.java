@@ -5,6 +5,7 @@ import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.service.mail.dictionary.TemplateVariablesDictionary;
 import com.ecaservice.oauth.service.mail.dictionary.Templates;
 import com.ecaservice.oauth2.test.token.TokenResponse;
+import com.ecaservice.web.dto.model.ChangePasswordRequestStatusDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -26,6 +27,7 @@ class ChangePasswordIT extends AbstractUserIT {
 
     private static final String NEW_PASSWORD = "545NewPa6word!#890";
     private static final String TOKEN_PARAM = "token";
+    private static final String CONFIRMATION_CODE_PARAM = "confirmationCode";
 
     private static final String API_PREFIX = "/password/change";
     private static final String CHANGE_PASSWORD_REQUEST_URL = "/request";
@@ -44,29 +46,30 @@ class ChangePasswordIT extends AbstractUserIT {
     @Test
     void testChangePassword() {
         TokenResponse tokenResponse = obtainOauth2Token();
-        createChangePasswordRequest(tokenResponse);
-        String token = getHttpRequestParamFromEmailUrlVariable(Templates.CHANGE_PASSWORD,
-                TemplateVariablesDictionary.CHANGE_PASSWORD_URL_KEY, TOKEN_PARAM);
-        confirmChangePassword(tokenResponse, token);
+        var changePasswordRequestStatusDto = createChangePasswordRequest(tokenResponse);
+        String confirmationCode =
+                getVariableFromEmail(Templates.CHANGE_PASSWORD, TemplateVariablesDictionary.CONFIRMATION_CODE_KEY);
+        confirmChangePassword(tokenResponse, changePasswordRequestStatusDto.getToken(), confirmationCode);
         verifyChangePassword();
     }
 
-    private void createChangePasswordRequest(TokenResponse tokenResponse) {
+    private ChangePasswordRequestStatusDto createChangePasswordRequest(TokenResponse tokenResponse) {
         ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest(PASSWORD, NEW_PASSWORD);
-        getWebClient().post()
+        return getWebClient().post()
                 .uri(CHANGE_PASSWORD_REQUEST_URL)
                 .header(HttpHeaders.AUTHORIZATION, getBearerAuthorizationHeader(tokenResponse))
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(changePasswordRequest)
                 .retrieve()
-                .bodyToMono(Void.class)
+                .bodyToMono(ChangePasswordRequestStatusDto.class)
                 .block();
     }
 
-    private void confirmChangePassword(TokenResponse tokenResponse, String token) {
+    private void confirmChangePassword(TokenResponse tokenResponse, String token, String confirmationCode) {
         getWebClient().post()
                 .uri(uriBuilder -> uriBuilder.path(CONFIRM_CHANGE_PASSWORD_REQUEST_URL)
                         .queryParam(TOKEN_PARAM, token)
+                        .queryParam(CONFIRMATION_CODE_PARAM, confirmationCode)
                         .build())
                 .header(HttpHeaders.AUTHORIZATION, getBearerAuthorizationHeader(tokenResponse))
                 .retrieve()

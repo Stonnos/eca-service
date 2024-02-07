@@ -59,6 +59,7 @@ public class ChangePasswordController {
      *
      * @param userDetails           - user details
      * @param changePasswordRequest - change password request
+     * @return change password request status dto
      */
     @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
@@ -74,7 +75,18 @@ public class ChangePasswordController {
                     })
             }),
             responses = {
-                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "ChangePasswordStatusResponse",
+                                                    ref = "#/components/examples/ChangePasswordStatusResponse"
+                                            ),
+                                    },
+                                    schema = @Schema(implementation = ChangePasswordRequestStatusDto.class)
+                            )
+                    ),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -100,19 +112,25 @@ public class ChangePasswordController {
             }
     )
     @PostMapping(value = "/request")
-    public void createChangePasswordRequest(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                            @Valid @RequestBody ChangePasswordRequest changePasswordRequest) {
+    public ChangePasswordRequestStatusDto createChangePasswordRequest(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @Valid @RequestBody ChangePasswordRequest changePasswordRequest) {
         log.info("Received change password request for user [{}]", userDetails.getId());
         var tokenModel = changePasswordService.createChangePasswordRequest(userDetails.getId(), changePasswordRequest);
         log.info("Change password request [{}] has been created for user [{}]", tokenModel.getTokenId(),
                 userDetails.getId());
         applicationEventPublisher.publishEvent(new ChangePasswordRequestNotificationEvent(this, tokenModel));
+        return ChangePasswordRequestStatusDto.builder()
+                .token(tokenModel.getToken())
+                .active(true)
+                .build();
     }
 
     /**
      * Confirms change password request.
      *
-     * @param token - token value
+     * @param token            - token value
+     * @param confirmationCode - confirmation code
      */
     @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
@@ -148,9 +166,11 @@ public class ChangePasswordController {
     @PostMapping(value = "/confirm")
     public void confirmChangePasswordRequest(
             @Size(min = VALUE_1, max = MAX_LENGTH_255)
-            @Parameter(description = "Token value", required = true) @RequestParam String token) {
+            @Parameter(description = "Token value", required = true) @RequestParam String token,
+            @Size(min = VALUE_1, max = MAX_LENGTH_255)
+            @Parameter(description = "Confirmation code", required = true) @RequestParam String confirmationCode) {
         log.info("Received change password request confirmation");
-        var changePasswordRequest = changePasswordService.changePassword(token);
+        var changePasswordRequest = changePasswordService.confirmChangePassword(token, confirmationCode);
         applicationEventPublisher.publishEvent(
                 new PasswordChangedNotificationEvent(this, changePasswordRequest.getUserEntity()));
     }
@@ -159,6 +179,7 @@ public class ChangePasswordController {
      * Gets change password request status.
      *
      * @param userDetails - user details
+     * @return change password request status dto
      */
     @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(

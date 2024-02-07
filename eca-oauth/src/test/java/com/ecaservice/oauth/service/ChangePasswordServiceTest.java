@@ -45,7 +45,7 @@ class ChangePasswordServiceTest extends AbstractJpaTest {
     private static final String NEW_PASSWORD = "#123dCgrh56$f";
     private static final long INVALID_USER_ID = 1000L;
     private static final String PASSWORD = "pa66word!";
-    private static final String TOKEN = "token";
+    private static final String CONFIRMATION_CODE = "code";
 
     @Inject
     private AppProperties appProperties;
@@ -143,33 +143,36 @@ class ChangePasswordServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    void testChangePasswordForNotExistingToken() {
+    void testConfirmChangePasswordForNotExistingToken() {
         String token = UUID.randomUUID().toString();
-        assertThrows(InvalidTokenException.class, () -> changePasswordService.changePassword(token));
+        assertThrows(InvalidTokenException.class,
+                () -> changePasswordService.confirmChangePassword(token, CONFIRMATION_CODE));
     }
 
     @Test
-    void testChangePasswordForAlreadyConfirmedRequest() {
+    void testConfirmChangePasswordForAlreadyConfirmedRequest() {
         ChangePasswordRequestEntity changePasswordRequestEntity = createAndSaveChangePasswordRequestEntity(
                 LocalDateTime.now().plusMinutes(appProperties.getChangePassword().getValidityMinutes()),
                 LocalDateTime.now().minusMinutes(1L));
-        String token = changePasswordRequestEntity.getToken();
-        assertThrows(InvalidTokenException.class, () -> changePasswordService.changePassword(token));
+        assertThrows(InvalidTokenException.class,
+                () -> changePasswordService.confirmChangePassword(changePasswordRequestEntity.getToken(),
+                        CONFIRMATION_CODE));
     }
 
     @Test
-    void testChangePasswordForExpiredToken() {
+    void testConfirmChangePasswordForExpiredToken() {
         ChangePasswordRequestEntity changePasswordRequestEntity =
                 createAndSaveChangePasswordRequestEntity(LocalDateTime.now().minusDays(1L), null);
-        String token = changePasswordRequestEntity.getToken();
-        assertThrows(InvalidTokenException.class, () -> changePasswordService.changePassword(token));
+        assertThrows(InvalidTokenException.class,
+                () -> changePasswordService.confirmChangePassword(changePasswordRequestEntity.getToken(),
+                        CONFIRMATION_CODE));
     }
 
     @Test
-    void testChangePassword() {
+    void testConfirmChangePassword() {
         ChangePasswordRequestEntity changePasswordRequestEntity = createAndSaveChangePasswordRequestEntity(
                 LocalDateTime.now().plusMinutes(appProperties.getChangePassword().getValidityMinutes()), null);
-        changePasswordService.changePassword(TOKEN);
+        changePasswordService.confirmChangePassword(changePasswordRequestEntity.getToken(), CONFIRMATION_CODE);
         ChangePasswordRequestEntity actual =
                 changePasswordRequestRepository.findById(changePasswordRequestEntity.getId()).orElse(null);
         assertThat(actual).isNotNull();
@@ -177,15 +180,6 @@ class ChangePasswordServiceTest extends AbstractJpaTest {
         assertThat(actual.getUserEntity().getPasswordChangeDate()).isNotNull();
         assertThat(actual.getUserEntity().getPassword()).isEqualTo(changePasswordRequestEntity.getNewPassword());
         verify(oauth2TokenService, atLeastOnce()).revokeTokens(any(UserEntity.class));
-    }
-
-    @Test
-    void testChangePasswordForLockedUser() {
-        userEntity.setLocked(true);
-        userEntityRepository.save(userEntity);
-        createAndSaveChangePasswordRequestEntity(
-                LocalDateTime.now().plusMinutes(appProperties.getChangePassword().getValidityMinutes()), null);
-        assertThrows(UserLockedException.class, () -> changePasswordService.changePassword(TOKEN));
     }
 
     @Test
@@ -233,7 +227,8 @@ class ChangePasswordServiceTest extends AbstractJpaTest {
     private ChangePasswordRequestEntity createAndSaveChangePasswordRequestEntity(LocalDateTime expireDate,
                                                                                  LocalDateTime confirmationDate) {
         ChangePasswordRequestEntity changePasswordRequestEntity = new ChangePasswordRequestEntity();
-        changePasswordRequestEntity.setToken(md5Hex(TOKEN));
+        changePasswordRequestEntity.setConfirmationCode(md5Hex(CONFIRMATION_CODE));
+        changePasswordRequestEntity.setToken(UUID.randomUUID().toString());
         changePasswordRequestEntity.setExpireDate(expireDate);
         changePasswordRequestEntity.setConfirmationDate(confirmationDate);
         changePasswordRequestEntity.setUserEntity(userEntity);

@@ -129,10 +129,10 @@
 |string
 |[0-9]+
 |Время действия ссылки в часах
-|changePasswordUrl
+|confirmationCode
 |string
 |-
-|Ссылка на подтверждение изменения пароля
+|Код подтвежднения
 |changeEmailUrl
 |string
 |-
@@ -169,7 +169,7 @@
 |userName, password
 |CHANGE_PASSWORD
 |Сообщение с подтверждением изменения пароля в личном кабинете Eca - service
-|changePasswordUrl, validityMinutes
+|confirmationCode, validityMinutes
 |CHANGE_EMAIL
 |Сообщение с подтверждением изменения Email в личном кабинете Eca - service
 |newEmail, changeEmailUrl, validityHours

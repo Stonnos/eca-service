@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
-import static com.ecaservice.oauth.service.mail.dictionary.TemplateVariablesDictionary.CHANGE_PASSWORD_URL_KEY;
+import static com.ecaservice.oauth.service.mail.dictionary.TemplateVariablesDictionary.CONFIRMATION_CODE_KEY;
 import static com.ecaservice.oauth.service.mail.dictionary.TemplateVariablesDictionary.VALIDITY_MINUTES_KEY;
 import static com.google.common.collect.Maps.newHashMap;
 
@@ -41,11 +41,8 @@ public class ChangePasswordRequestNotificationEventHandler
 
     @Override
     public Map<String, String> createVariables(ChangePasswordRequestNotificationEvent event) {
-        String tokenEndpoint =
-                String.format(appProperties.getChangePassword().getUrl(), event.getTokenModel().getToken());
-        String changePasswordUrl = String.format("%s%s", appProperties.getWebExternalBaseUrl(), tokenEndpoint);
         Map<String, String> templateVariables = newHashMap();
-        templateVariables.put(CHANGE_PASSWORD_URL_KEY, changePasswordUrl);
+        templateVariables.put(CONFIRMATION_CODE_KEY, event.getTokenModel().getConfirmationCode());
         templateVariables.put(VALIDITY_MINUTES_KEY,
                 String.valueOf(appProperties.getChangePassword().getValidityMinutes()));
         return templateVariables;

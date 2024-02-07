@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import({AppProperties.class, ChangePasswordRequestNotificationEventHandler.class})
 class ChangePasswordRequestNotificationEventHandlerTest {
 
-    private static final String TOKEN = "token";
+    private static final String CONFIRMATION_CODE = "token";
     private static final long USER_ID = 1L;
 
     @Inject
@@ -40,10 +40,11 @@ class ChangePasswordRequestNotificationEventHandlerTest {
 
     @Test
     void testEvent() {
-        var changePasswordRequestEntity = createChangePasswordRequestEntity(TOKEN);
+        var changePasswordRequestEntity = createChangePasswordRequestEntity(CONFIRMATION_CODE);
         changePasswordRequestEntity.getUserEntity().setId(USER_ID);
         var tokenModel = TokenModel.builder()
-                .token(TOKEN)
+                .confirmationCode(CONFIRMATION_CODE)
+                .token(changePasswordRequestEntity.getToken())
                 .tokenId(changePasswordRequestEntity.getId())
                 .login(changePasswordRequestEntity.getUserEntity().getLogin())
                 .email(changePasswordRequestEntity.getUserEntity().getEmail())
@@ -56,10 +57,8 @@ class ChangePasswordRequestNotificationEventHandlerTest {
         assertThat(actual.getVariables()).isNotEmpty();
         assertThat(actual.getVariables()).containsEntry(TemplateVariablesDictionary.VALIDITY_MINUTES_KEY,
                 String.valueOf(appProperties.getChangePassword().getValidityMinutes()));
-        String tokenEndpoint = String.format(appProperties.getChangePassword().getUrl(), TOKEN);
-        String expectedUrl = String.format("%s%s", appProperties.getWebExternalBaseUrl(), tokenEndpoint);
-        assertThat(actual.getVariables()).containsEntry(TemplateVariablesDictionary.CHANGE_PASSWORD_URL_KEY,
-                expectedUrl);
+        assertThat(actual.getVariables()).containsEntry(TemplateVariablesDictionary.CONFIRMATION_CODE_KEY,
+                tokenModel.getConfirmationCode());
         assertThat(actual.getPriority()).isEqualTo(MEDIUM);
     }
 }

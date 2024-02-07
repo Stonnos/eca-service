@@ -46,9 +46,6 @@ export class UserProfileComponent implements OnInit {
   public changeEmailRequestStatusDto: ChangeEmailRequestStatusDto;
   public changePasswordRequestStatusDto: ChangePasswordRequestStatusDto;
 
-  private readonly changePasswordRequestCreatedMessage: string =
-    'На ваш email отправлено письмо с подтверждением смены пароля';
-
   public uploadPhotoErrorHeader: string = 'Не удалось загрузить фото';
 
   public invalidPersonNameErrorMessages: string[] = [
@@ -70,7 +67,8 @@ export class UserProfileComponent implements OnInit {
   public invalidFileTypeMessageDetail: string = 'допускаются только файлы графических форматов.';
 
   public activeChangeEmailStatusMessage: Message[] = [];
-  public activeChangePasswordStatusMessage: Message[] = [];
+
+  public changePasswordStep = 'change-password';
 
   private photo: Blob;
 
@@ -152,11 +150,6 @@ export class UserProfileComponent implements OnInit {
 
   public onChangePasswordDialogVisibility(visible): void {
     this.changePasswordDialogVisibility = visible;
-  }
-
-  public onCreateChangePasswordRequest(): void {
-    this.confirmDialogMessage = this.changePasswordRequestCreatedMessage;
-    this.confirmDialogVisibility = true;
     this.getChangePasswordRequestStatus();
   }
 
@@ -191,6 +184,11 @@ export class UserProfileComponent implements OnInit {
   public updateMiddleName(value: string): void {
     const updateUserInfoModel: UpdateUserInfoModel = new UpdateUserInfoModel(this.user.firstName, this.user.lastName, value);
     this.updateUserInfo(updateUserInfoModel);
+  }
+
+  public confirmChangePassword(): void {
+    this.changePasswordStep = 'confirm-change-password';
+    this.changePasswordDialogVisibility = true;
   }
 
   private updateUserInfo(updateUserInfo: UpdateUserInfoModel): void {
@@ -315,16 +313,6 @@ export class UserProfileComponent implements OnInit {
       .subscribe({
         next: (statusDto: ChangePasswordRequestStatusDto) => {
           this.changePasswordRequestStatusDto = statusDto;
-          if (this.changePasswordRequestStatusDto.active) {
-            this.activeChangePasswordStatusMessage = [
-              {
-                severity: 'info',
-                detail: `Вы запросили смену пароля. На ваш текущий email было отправлено письмо со ссылкой для подтверждения`
-              }
-            ];
-          } else {
-            this.activeChangePasswordStatusMessage = [];
-          }
         },
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
