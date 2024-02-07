@@ -7,6 +7,7 @@ import com.ecaservice.oauth.dto.ChangePasswordRequest;
 import com.ecaservice.oauth.entity.ChangePasswordRequestEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.exception.ChangePasswordRequestAlreadyExistsException;
+import com.ecaservice.oauth.exception.InvalidConfirmationCodeException;
 import com.ecaservice.oauth.exception.InvalidPasswordException;
 import com.ecaservice.oauth.exception.InvalidTokenException;
 import com.ecaservice.oauth.exception.PasswordsMatchedException;
@@ -180,6 +181,14 @@ class ChangePasswordServiceTest extends AbstractJpaTest {
         assertThat(actual.getUserEntity().getPasswordChangeDate()).isNotNull();
         assertThat(actual.getUserEntity().getPassword()).isEqualTo(changePasswordRequestEntity.getNewPassword());
         verify(oauth2TokenService, atLeastOnce()).revokeTokens(any(UserEntity.class));
+    }
+
+    @Test
+    void testConfirmChangePasswordWithInvalidConfirmationCode() {
+        ChangePasswordRequestEntity changePasswordRequestEntity = createAndSaveChangePasswordRequestEntity(
+                LocalDateTime.now().plusMinutes(appProperties.getChangePassword().getValidityMinutes()), null);
+        assertThrows(InvalidConfirmationCodeException.class,
+                () -> changePasswordService.confirmChangePassword(changePasswordRequestEntity.getToken(), "code1"));
     }
 
     @Test
