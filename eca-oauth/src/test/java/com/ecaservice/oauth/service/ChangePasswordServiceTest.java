@@ -11,7 +11,6 @@ import com.ecaservice.oauth.exception.InvalidConfirmationCodeException;
 import com.ecaservice.oauth.exception.InvalidPasswordException;
 import com.ecaservice.oauth.exception.InvalidTokenException;
 import com.ecaservice.oauth.exception.PasswordsMatchedException;
-import com.ecaservice.oauth.exception.UserLockedException;
 import com.ecaservice.oauth.model.TokenModel;
 import com.ecaservice.oauth.repository.ChangePasswordRequestRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
@@ -91,13 +90,6 @@ class ChangePasswordServiceTest extends AbstractJpaTest {
         ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest(PASSWORD, PASSWORD);
         assertThrows(PasswordsMatchedException.class,
                 () -> changePasswordService.createChangePasswordRequest(userEntity.getId(), changePasswordRequest));
-    }
-
-    @Test
-    void testCreateChangePasswordRequestForLockedUser() {
-        userEntity.setLocked(true);
-        userEntityRepository.save(userEntity);
-        assertThrows(UserLockedException.class, this::internalTestCreateChangePasswordRequest);
     }
 
     @Test

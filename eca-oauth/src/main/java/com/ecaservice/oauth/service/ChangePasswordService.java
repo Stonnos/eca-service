@@ -69,9 +69,6 @@ public class ChangePasswordService {
     public TokenModel createChangePasswordRequest(Long userId, ChangePasswordRequest changePasswordRequest) {
         UserEntity userEntity = userEntityRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(UserEntity.class, userId));
-        if (userEntity.isLocked()) {
-            throw new UserLockedException(userEntity.getId());
-        }
         if (!isValidOldPassword(userEntity, changePasswordRequest)) {
             throw new InvalidPasswordException();
         }
