@@ -11,7 +11,7 @@
   (onHide)="hide()">
 
   <form novalidate class="form d-flex flex-column justify-content-center m-auto" (keydown.enter)="submit()">
-    <div class="ui-g ui-fluid">
+    <div *ngIf="step == 'change-email'" class="ui-g ui-fluid">
       <div class="ui-g-10 mx-auto mb-4">
         <label class="text-bold control-label">Email</label>
         <input
@@ -40,23 +40,62 @@
           {{ getErrorMessage() }}
         </div>
       </div>
+      <div class="ui-g-10 mx-auto mt-3">
+        <button
+          pButton
+          type="button"
+          (click)="submit()"
+          [disabled]="!isValid() || loading"
+          class="update-email-button ml-auto">
+          <span class="update-email-text" *ngIf="!loading">Изменить</span>
+          <p-progressSpinner
+            *ngIf="loading"
+            class="update-email-progress-spinner"
+            strokeWidth="4"
+            animationDuration=".5s">
+          </p-progressSpinner>
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="step == 'confirm-change-email'" class="ui-g ui-fluid">
+      <div class="ui-g-10 text-center text-bold justify-content-center mx-auto">
+        {{ changeEmailRequestCreatedMessage }}
+      </div>
+      <div class="ui-g-10 mx-auto">
+        <label class="text-bold">Код подтверждения</label>
+        <input
+          required
+          pInputText
+          id="confirmationCode"
+          name="confirmationCode"
+          type="text"
+          placeholder="Введите код подтверждения"
+          [(ngModel)]="confirmationCode"
+          [disabled]="loading"
+          maxlength="255"
+          class="form-control d-block w-100">
+        <div *ngIf="errorCode && submitted" class="text-danger error-message">
+          {{ getErrorMessage() }}
+        </div>
+      </div>
+      <div class="ui-g-10 mx-auto">
+        <button
+          pButton
+          type="submit"
+          (click)="submit()"
+          [disabled]="!confirmationCode || loading"
+          class="update-email-button ml-auto mt-3">
+          <span class="update-email-text" *ngIf="!loading">Подтвердить</span>
+          <p-progressSpinner
+            *ngIf="loading"
+            class="update-email-progress-spinner"
+            strokeWidth="4"
+            animationDuration=".5s">
+          </p-progressSpinner>
+        </button>
+      </div>
+
     </div>
   </form>
-
-  <p-footer>
-    <button
-      pButton
-      type="button"
-      (click)="submit()"
-      [disabled]="!isValid() || loading"
-      class="update-email-button ml-auto">
-      <span class="update-email-text" *ngIf="!loading">Изменить</span>
-      <p-progressSpinner
-        *ngIf="loading"
-        class="update-email-progress-spinner"
-        strokeWidth="4"
-        animationDuration=".5s">
-      </p-progressSpinner>
-    </button>
-  </p-footer>
 </p-dialog>

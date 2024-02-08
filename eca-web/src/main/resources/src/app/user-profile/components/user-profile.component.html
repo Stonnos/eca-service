@@ -108,7 +108,7 @@
                 Вы запросили смену пароля. На ваш текущий email было отправлено письмо с кодом подтверждения.
               </div>
               <div class="ui-g-12 mx-auto d-flex align-items-start justify-content-start">
-                <a class="link" [routerLink]="" (click)="confirmChangePassword()">Подтвердить смену пароля</a>
+                <a class="link" [routerLink]="" (click)="confirmChangePassword()">Подтвердить</a>
               </div>
             </div>
           </div>
@@ -131,11 +131,14 @@
               </a>
             </div>
           </div>
-          <div *ngIf="changeEmailRequestStatusDto?.active" class="ui-g ml-1 mr-1 text-bold text-center">
-            <p-messages [enableService]="false"
-                        [closable]="false"
-                        [(value)]="activeChangeEmailStatusMessage">
-            </p-messages>
+          <div *ngIf="changeEmailRequestStatusDto?.active"
+               class="ui-g ml-1 mr-1 alert alert-info">
+            <div class="ui-g-12 text-bold justify-content-start mx-auto">
+              Вы запросили изменение email на {{ changeEmailRequestStatusDto?.newEmail }}. На ваш текущий email было отправлено письмо с кодом подтверждения.
+            </div>
+            <div class="ui-g-12 mx-auto d-flex align-items-start justify-content-start">
+              <a class="link" [routerLink]="" (click)="confirmChangeEmail()">Подтвердить</a>
+            </div>
           </div>
         </p-fieldset>
         <p-fieldset legend="Безопасность" class="details-fieldset">
@@ -169,15 +172,6 @@
   </div>
 </app-confirm-dialog>
 
-<app-confirm-dialog [visible]="confirmDialogVisibility"
-                    (closedEvent)="hideConfirmDialog()">
-  <div content>
-    <div class="text-center justify-content-center align-items-center d-flex">
-      {{ confirmDialogMessage }}
-    </div>
-  </div>
-</app-confirm-dialog>
-
 <app-change-password-dialog [visible]="changePasswordDialogVisibility"
                             [step]="changePasswordStep"
                             [token]="changePasswordRequestStatusDto?.token"
@@ -186,6 +180,8 @@
 </app-change-password-dialog>
 
 <app-update-user-email [visible]="changeEmailDialogVisibility"
+                       [step]="changeEmailStep"
+                       [token]="changeEmailRequestStatusDto?.token"
                        (visibilityChange)="onChangeEmailDialogVisibility($event)"
                        (itemEvent)="onChangeEmail($event)">
 </app-update-user-email>

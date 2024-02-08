@@ -11,7 +11,6 @@ import { ResetPasswordComponent } from "../change-password/components/reset-pass
 import { InstancesListComponent } from "../instances/components/instances-list.component";
 import { AccessDeniedComponent } from "../access-denied/components/access-denied.component";
 import { AuditLogsComponent } from "../audit-logs/components/audit-logs.component";
-import { ConfirmChangeEmailComponent } from "../update-user-email/components/confirm-change-email/confirm-change-email.component";
 import { TemplatesListComponent } from "../email-templates/components/templates-list/templates-list.component";
 import { InstancesDetailsComponent } from "../instances-details/components/instances-details.component";
 import { CreateResetPasswordRequestComponent } from "../change-password/components/create-reset-password-request/create-reset-password-request.component";
@@ -90,10 +89,6 @@ const routes: Routes = [
   {
     path: 'reset-password',
     component: ResetPasswordComponent
-  },
-  {
-    path: 'change-email',
-    component: ConfirmChangeEmailComponent
   },
   {
     path: 'access-denied',

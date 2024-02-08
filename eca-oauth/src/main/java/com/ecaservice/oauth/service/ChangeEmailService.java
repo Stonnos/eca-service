@@ -115,6 +115,7 @@ public class ChangeEmailService {
                     userId);
             return ChangeEmailRequestStatusDto.builder()
                     .active(true)
+                    .token(changeEmailRequest.getToken())
                     .newEmail(changeEmailRequest.getNewEmail())
                     .build();
         }

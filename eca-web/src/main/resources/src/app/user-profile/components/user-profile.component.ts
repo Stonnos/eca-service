@@ -6,7 +6,7 @@ import {
   UserDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { UsersService } from "../../users/services/users.service";
-import { MenuItem, Message, MessageService } from "primeng/api";
+import { MenuItem, MessageService } from "primeng/api";
 import { UserFields } from "../../common/util/field-names";
 import { Utils } from "../../common/util/utils";
 import { FieldService } from "../../common/services/field.service";
@@ -56,9 +56,6 @@ export class UserProfileComponent implements OnInit {
   public personNameRegex: string = Utils.PERSON_NAME_REGEX;
   public personNameMaxLength: number = Utils.PERSON_NAME_MAX_LENGTH;
 
-  public confirmDialogVisibility: boolean = false;
-  public confirmDialogMessage: string;
-
   //Max file size: 10MB
   public maxFileSize: number = 10000000;
   public invalidFileSizeMessageSummary: string = 'Недопустимый размер файла,';
@@ -66,9 +63,9 @@ export class UserProfileComponent implements OnInit {
   public invalidFileTypeMessageSummary: string = 'Некорректный тип файла,';
   public invalidFileTypeMessageDetail: string = 'допускаются только файлы графических форматов.';
 
-  public activeChangeEmailStatusMessage: Message[] = [];
-
   public changePasswordStep = 'change-password';
+
+  public changeEmailStep = 'change-email';
 
   private photo: Blob;
 
@@ -153,22 +150,17 @@ export class UserProfileComponent implements OnInit {
     this.getChangePasswordRequestStatus();
   }
 
-  public hideConfirmDialog(): void {
-    this.confirmDialogVisibility = false;
-  }
-
   public showChangeEmailDialog(): void {
     this.changeEmailDialogVisibility = true;
   }
 
   public onChangeEmailDialogVisibility(visible): void {
     this.changeEmailDialogVisibility = visible;
+    this.getChangeEmailRequestStatus();
   }
 
   public onChangeEmail(newEmail: string): void {
-    this.confirmDialogMessage = `На текущий email адрес отправлено письмо со ссылкой для подтверждения изменения email адреса на ${newEmail}`;
-    this.confirmDialogVisibility = true;
-    this.getChangeEmailRequestStatus();
+    this.getUser(false);
   }
 
   public updateFirstName(value: string): void {
@@ -189,6 +181,11 @@ export class UserProfileComponent implements OnInit {
   public confirmChangePassword(): void {
     this.changePasswordStep = 'confirm-change-password';
     this.changePasswordDialogVisibility = true;
+  }
+
+  public confirmChangeEmail(): void {
+    this.changeEmailStep = 'confirm-change-email';
+    this.changeEmailDialogVisibility = true;
   }
 
   private updateUserInfo(updateUserInfo: UpdateUserInfoModel): void {
@@ -291,16 +288,6 @@ export class UserProfileComponent implements OnInit {
       .subscribe({
         next: (statusDto: ChangeEmailRequestStatusDto) => {
           this.changeEmailRequestStatusDto = statusDto;
-          if (this.changeEmailRequestStatusDto.active) {
-            this.activeChangeEmailStatusMessage = [
-              {
-                severity: 'info',
-                detail: `Вы запросили смену текущего email адреса на адрес ${this.changeEmailRequestStatusDto.newEmail}. На ваш текущий email было отправлено письмо со ссылкой для подтверждения`
-              }
-            ];
-          } else {
-            this.activeChangeEmailStatusMessage = [];
-          }
         },
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });

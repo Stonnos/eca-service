@@ -13,21 +13,22 @@ export class ChangeEmailService {
   public constructor(private http: HttpClient) {
   }
 
-  public changeEmail(newEmail: string) {
+  public changeEmail(newEmail: string): Observable<ChangeEmailRequestStatusDto> {
     const headers = new HttpHeaders({
       'Authorization': Utils.getBearerTokenHeader()
     });
     const formData = new FormData();
     formData.append('newEmail', newEmail);
-    return this.http.post(this.serviceUrl + '/request', formData, { headers: headers })
+    return this.http.post<ChangeEmailRequestStatusDto>(this.serviceUrl + '/request', formData, { headers: headers })
   }
 
-  public confirmChangeEmailRequest(token: string) {
+  public confirmChangeEmailRequest(token: string, confirmationCode: string) {
     const headers = new HttpHeaders({
       'Authorization': Utils.getBearerTokenHeader()
     });
     const formData = new FormData();
     formData.append('token', token);
+    formData.append('confirmationCode', confirmationCode);
     return this.http.post(this.serviceUrl + '/confirm', formData, { headers: headers });
   }
 
