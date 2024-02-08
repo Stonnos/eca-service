@@ -1,7 +1,7 @@
 package com.ecaservice.oauth.config.granter;
 
 import com.ecaservice.oauth.config.TfaConfig;
-import com.ecaservice.oauth.event.model.TfaCodeNotificationEvent;
+import com.ecaservice.oauth.event.model.TfaCodeEmailEvent;
 import com.ecaservice.oauth.exception.ChangePasswordRequiredException;
 import com.ecaservice.oauth.exception.TfaRequiredException;
 import com.ecaservice.oauth.repository.UserEntityRepository;
@@ -65,7 +65,7 @@ public class TfaResourceOwnerPasswordTokenGranter extends ResourceOwnerPasswordT
             log.info("Tfa required for user [{}]. Starting to sent authorization code", userEntity.getLogin());
             var tfaCodeModel = tfaCodeService.createAuthorizationCode(oAuth2Authentication);
             applicationEventPublisher.publishEvent(
-                    new TfaCodeNotificationEvent(this, userEntity, tfaCodeModel.getCode()));
+                    new TfaCodeEmailEvent(this, userEntity, tfaCodeModel.getCode()));
             throw new TfaRequiredException(tfaCodeModel.getToken(), tfaConfig.getCodeValiditySeconds());
         }
         return getTokenServices().createAccessToken(oAuth2Authentication);

@@ -6,10 +6,10 @@ import com.ecaservice.oauth.dto.CreateUserDto;
 import com.ecaservice.oauth.dto.UpdateUserInfoDto;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.entity.UserPhoto;
-import com.ecaservice.oauth.event.model.UserCreatedNotificationEvent;
-import com.ecaservice.oauth.event.model.UserLockedNotificationEvent;
+import com.ecaservice.oauth.event.model.UserCreatedEmailEvent;
+import com.ecaservice.oauth.event.model.UserLockedEmailEvent;
 import com.ecaservice.oauth.event.model.UserProfileOptionsDataEvent;
-import com.ecaservice.oauth.event.model.UserUnLockedNotificationEvent;
+import com.ecaservice.oauth.event.model.UserUnLockedEmailEvent;
 import com.ecaservice.oauth.exception.UserLockNotAllowedException;
 import com.ecaservice.oauth.mapping.UserMapper;
 import com.ecaservice.oauth.repository.UserPhotoRepository;
@@ -337,7 +337,7 @@ public class UserController {
         log.info("Received request for user creation [{}]", createUserDto.getLogin());
         String password = passwordService.generatePassword();
         UserEntity userEntity = userService.createUser(createUserDto, password);
-        applicationEventPublisher.publishEvent(new UserCreatedNotificationEvent(this, userEntity, password));
+        applicationEventPublisher.publishEvent(new UserCreatedEmailEvent(this, userEntity, password));
         applicationEventPublisher.publishEvent(new UserProfileOptionsDataEvent(this, userEntity));
         return userMapper.map(userEntity);
     }
@@ -567,7 +567,7 @@ public class UserController {
             throw new UserLockNotAllowedException();
         }
         var userEntity = userService.lock(userId);
-        applicationEventPublisher.publishEvent(new UserLockedNotificationEvent(this, userEntity));
+        applicationEventPublisher.publishEvent(new UserLockedEmailEvent(this, userEntity));
     }
 
     /**
@@ -612,6 +612,6 @@ public class UserController {
                        @Min(VALUE_1) @Max(Long.MAX_VALUE) @RequestParam Long userId) {
         log.info("Received request for user [{}] unlocking", userId);
         var userEntity = userService.unlock(userId);
-        applicationEventPublisher.publishEvent(new UserUnLockedNotificationEvent(this, userEntity));
+        applicationEventPublisher.publishEvent(new UserUnLockedEmailEvent(this, userEntity));
     }
 }

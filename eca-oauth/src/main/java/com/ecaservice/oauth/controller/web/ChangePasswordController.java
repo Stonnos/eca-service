@@ -2,8 +2,8 @@ package com.ecaservice.oauth.controller.web;
 
 import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.oauth.dto.ChangePasswordRequest;
-import com.ecaservice.oauth.event.model.ChangePasswordRequestNotificationEvent;
-import com.ecaservice.oauth.event.model.PasswordChangedNotificationEvent;
+import com.ecaservice.oauth.event.model.ChangePasswordRequestEmailEvent;
+import com.ecaservice.oauth.event.model.PasswordChangedEmailEvent;
 import com.ecaservice.oauth.service.ChangePasswordService;
 import com.ecaservice.user.model.UserDetailsImpl;
 import com.ecaservice.web.dto.model.ChangePasswordRequestStatusDto;
@@ -117,7 +117,7 @@ public class ChangePasswordController {
             @Valid @RequestBody ChangePasswordRequest changePasswordRequest) {
         log.info("Received change password request for user [{}]", userDetails.getId());
         var tokenModel = changePasswordService.createChangePasswordRequest(userDetails.getId(), changePasswordRequest);
-        applicationEventPublisher.publishEvent(new ChangePasswordRequestNotificationEvent(this, tokenModel));
+        applicationEventPublisher.publishEvent(new ChangePasswordRequestEmailEvent(this, tokenModel));
         log.info("Change password request [{}] has been processed for user [{}]", tokenModel.getToken(),
                 userDetails.getId());
         return ChangePasswordRequestStatusDto.builder()
@@ -172,7 +172,7 @@ public class ChangePasswordController {
         log.info("Received change password request [{}] confirmation", token);
         var changePasswordRequest = changePasswordService.confirmChangePassword(token, confirmationCode);
         applicationEventPublisher.publishEvent(
-                new PasswordChangedNotificationEvent(this, changePasswordRequest.getUserEntity()));
+                new PasswordChangedEmailEvent(this, changePasswordRequest.getUserEntity()));
         log.info("Change password request confirmation [{}] has been processed", token);
     }
 

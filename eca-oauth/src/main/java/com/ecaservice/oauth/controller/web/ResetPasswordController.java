@@ -3,8 +3,8 @@ package com.ecaservice.oauth.controller.web;
 import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.oauth.dto.CreateResetPasswordRequest;
 import com.ecaservice.oauth.dto.ResetPasswordRequest;
-import com.ecaservice.oauth.event.model.PasswordResetNotificationEvent;
-import com.ecaservice.oauth.event.model.ResetPasswordRequestNotificationEvent;
+import com.ecaservice.oauth.event.model.PasswordResetEmailEvent;
+import com.ecaservice.oauth.event.model.ResetPasswordRequestEmailEvent;
 import com.ecaservice.oauth.repository.ResetPasswordRequestRepository;
 import com.ecaservice.oauth.service.ResetPasswordService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -89,7 +89,7 @@ public class ResetPasswordController {
     public void createResetPasswordRequest(@Valid @RequestBody CreateResetPasswordRequest createResetPasswordRequest) {
         log.info("Received reset password request creation [{}]", maskEmail(createResetPasswordRequest.getEmail()));
         var tokenModel = resetPasswordService.createResetPasswordRequest(createResetPasswordRequest);
-        applicationEventPublisher.publishEvent(new ResetPasswordRequestNotificationEvent(this, tokenModel));
+        applicationEventPublisher.publishEvent(new ResetPasswordRequestEmailEvent(this, tokenModel));
         log.info("Reset password request [{}] has been processed for user [{}]", tokenModel.getTokenId(),
                 tokenModel.getLogin());
     }
@@ -163,7 +163,7 @@ public class ResetPasswordController {
         log.info("Received reset password request for token [{}]", mask(resetPasswordRequest.getToken()));
         var resetPasswordRequestEntity = resetPasswordService.resetPassword(resetPasswordRequest);
         applicationEventPublisher.publishEvent(
-                new PasswordResetNotificationEvent(this, resetPasswordRequestEntity.getUserEntity()));
+                new PasswordResetEmailEvent(this, resetPasswordRequestEntity.getUserEntity()));
         log.info("Reset password request has been processed for token [{}]", mask(resetPasswordRequest.getToken()));
     }
 }

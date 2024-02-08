@@ -1,8 +1,8 @@
 package com.ecaservice.oauth.controller.web;
 
 import com.ecaservice.common.error.model.ValidationErrorDto;
-import com.ecaservice.oauth.event.model.ChangeEmailRequestNotificationEvent;
-import com.ecaservice.oauth.event.model.EmailChangedNotificationEvent;
+import com.ecaservice.oauth.event.model.ChangeEmailRequestEmailEvent;
+import com.ecaservice.oauth.event.model.EmailChangedEmailEvent;
 import com.ecaservice.oauth.service.ChangeEmailService;
 import com.ecaservice.user.model.UserDetailsImpl;
 import com.ecaservice.web.dto.model.ChangeEmailRequestStatusDto;
@@ -112,7 +112,7 @@ public class ChangeEmailController {
                                                                 String newEmail) {
         log.info("Received change email request for user [{}]", userDetails.getId());
         var tokenModel = changeEmailService.createChangeEmailRequest(userDetails.getId(), newEmail);
-        applicationEventPublisher.publishEvent(new ChangeEmailRequestNotificationEvent(this, tokenModel, newEmail));
+        applicationEventPublisher.publishEvent(new ChangeEmailRequestEmailEvent(this, tokenModel, newEmail));
         log.info("Change email request [{}] has been processed for user [{}]", tokenModel.getToken(),
                 userDetails.getId());
         return ChangeEmailRequestStatusDto.builder()
@@ -168,7 +168,7 @@ public class ChangeEmailController {
         log.info("Received change email request [{}] confirmation", token);
         var changeEmailRequest = changeEmailService.confirmChangeEmail(token, confirmationCode);
         applicationEventPublisher.publishEvent(
-                new EmailChangedNotificationEvent(this, changeEmailRequest.getUserEntity()));
+                new EmailChangedEmailEvent(this, changeEmailRequest.getUserEntity()));
         log.info("Change email request [{}] confirmation has been processed", token);
     }
 
