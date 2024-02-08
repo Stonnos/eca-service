@@ -22,6 +22,12 @@ import java.time.LocalDateTime;
 public class ChangeEmailRequestEntity extends TokenEntity {
 
     /**
+     * Confirmation code value
+     */
+    @Column(name = "confirmation_code", nullable = false)
+    private String confirmationCode;
+
+    /**
      * Confirmation date
      */
     @Column(name = "confirmation_date")

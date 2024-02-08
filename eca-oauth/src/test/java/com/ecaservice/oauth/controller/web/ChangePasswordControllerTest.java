@@ -44,6 +44,8 @@ class ChangePasswordControllerTest extends AbstractControllerTest {
     private static final String CONFIRMATION_CODE_PARAM = "confirmationCode";
     private static final String CONFIRMATION_CODE = "code";
 
+    private static final String TOKEN_VALUE = "token";
+
     private static final String BASE_URL = "/password/change";
     private static final String REQUEST_STATUS_URL = BASE_URL + "/request-status";
     private static final String CONFIRM_URL = BASE_URL + "/confirm";
@@ -137,6 +139,15 @@ class ChangePasswordControllerTest extends AbstractControllerTest {
     @Test
     void testConfirmChangePasswordRequestWithNullToken() throws Exception {
         mockMvc.perform(post(CONFIRM_URL)
+                        .param(CONFIRMATION_CODE_PARAM, CONFIRMATION_CODE)
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testConfirmChangePasswordRequestWithNullConfirmationCode() throws Exception {
+        mockMvc.perform(post(CONFIRM_URL)
+                        .param(TOKEN_PARAM, TOKEN_VALUE)
                         .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isBadRequest());
     }

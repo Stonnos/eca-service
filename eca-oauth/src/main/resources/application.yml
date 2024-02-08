@@ -46,7 +46,6 @@ app:
     validityMinutes: 15
   changeEmail:
     validityMinutes: 2880
-    url: /change-email/?token=%s
 
 mail:
   client:

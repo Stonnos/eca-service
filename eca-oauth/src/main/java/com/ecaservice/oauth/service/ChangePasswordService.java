@@ -51,7 +51,7 @@ public class ChangePasswordService {
     private final UserEntityRepository userEntityRepository;
 
     /**
-     * Initialization method
+     * Initialization method.
      */
     @PostConstruct
     public void initialize() {

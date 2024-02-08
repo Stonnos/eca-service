@@ -15,6 +15,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
 
+import java.util.UUID;
+
 import static com.ecaservice.notification.util.Priority.MEDIUM;
 import static com.ecaservice.oauth.TestHelperUtils.createChangeEmailRequestEntity;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,7 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ChangeEmailRequestNotificationEventHandlerTest {
 
     private static final long MINUTES_IN_HOUR = 60L;
-    private static final String TOKEN = "token";
+    private static final String CONFIRMATION_CODE = "token";
     private static final long USER_ID = 1L;
 
     private static final String NEW_EMAIL = "newemail@mail.ru";
@@ -43,10 +45,11 @@ class ChangeEmailRequestNotificationEventHandlerTest {
 
     @Test
     void testEvent() {
-        var changeEmailRequestEntity = createChangeEmailRequestEntity(TOKEN);
+        var changeEmailRequestEntity = createChangeEmailRequestEntity(CONFIRMATION_CODE);
         changeEmailRequestEntity.getUserEntity().setId(USER_ID);
         var tokenModel = TokenModel.builder()
-                .token(TOKEN)
+                .token(UUID.randomUUID().toString())
+                .confirmationCode(CONFIRMATION_CODE)
                 .tokenId(changeEmailRequestEntity.getId())
                 .login(changeEmailRequestEntity.getUserEntity().getLogin())
                 .email(changeEmailRequestEntity.getUserEntity().getEmail())
@@ -60,10 +63,8 @@ class ChangeEmailRequestNotificationEventHandlerTest {
         Long validityHours = appProperties.getChangeEmail().getValidityMinutes() / MINUTES_IN_HOUR;
         assertThat(actual.getVariables()).containsEntry(TemplateVariablesDictionary.VALIDITY_HOURS_KEY,
                 String.valueOf(validityHours));
-        String tokenEndpoint = String.format(appProperties.getChangeEmail().getUrl(), TOKEN);
-        String expectedUrl = String.format("%s%s", appProperties.getWebExternalBaseUrl(), tokenEndpoint);
-        assertThat(actual.getVariables()).containsEntry(TemplateVariablesDictionary.CHANGE_EMAIL_URL_KEY,
-                expectedUrl);
+        assertThat(actual.getVariables()).containsEntry(TemplateVariablesDictionary.CONFIRMATION_CODE_KEY,
+                tokenModel.getConfirmationCode());
         assertThat(actual.getPriority()).isEqualTo(MEDIUM);
     }
 }

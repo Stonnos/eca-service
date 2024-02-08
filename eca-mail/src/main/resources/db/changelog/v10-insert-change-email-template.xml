@@ -17,7 +17,7 @@
         </insert>
     </changeSet>
 
-    <changeSet id="2" author="roman.batygin@mail.ru" context="data">
+    <changeSet id="insert_change_email_template_3" author="roman.batygin@mail.ru" context="data">
         <update tableName="template">
             <column name="template_body" valueClobFile="templates/change-email-template.html"/>
             <where>template_code = 'CHANGE_EMAIL'</where>

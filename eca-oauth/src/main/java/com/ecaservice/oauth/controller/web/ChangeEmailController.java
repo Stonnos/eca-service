@@ -59,6 +59,7 @@ public class ChangeEmailController {
      *
      * @param userDetails - user details
      * @param newEmail    - new email
+     * @return change email requests status dto
      */
     @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
@@ -66,7 +67,18 @@ public class ChangeEmailController {
             summary = "Creates change email request",
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
-                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "ChangeEmailStatusResponse",
+                                                    ref = "#/components/examples/ChangeEmailStatusResponse"
+                                            ),
+                                    },
+                                    schema = @Schema(implementation = ChangeEmailRequestStatusDto.class)
+                            )
+                    ),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -93,21 +105,28 @@ public class ChangeEmailController {
             }
     )
     @PostMapping(value = "/request")
-    public void createChangeEmailRequest(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                         @Parameter(description = "User email", required = true)
-                                         @Email(regexp = EMAIL_REGEX)
-                                         @Size(min = VALUE_1, max = EMAIL_MAX_SIZE) @RequestParam String newEmail) {
+    public ChangeEmailRequestStatusDto createChangeEmailRequest(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                                @Parameter(description = "User email", required = true)
+                                                                @Email(regexp = EMAIL_REGEX)
+                                                                @Size(min = VALUE_1, max = EMAIL_MAX_SIZE) @RequestParam
+                                                                String newEmail) {
         log.info("Received change email request for user [{}]", userDetails.getId());
         var tokenModel = changeEmailService.createChangeEmailRequest(userDetails.getId(), newEmail);
-        log.info("Change email request [{}] has been created for user [{}]", tokenModel.getTokenId(),
-                userDetails.getId());
         applicationEventPublisher.publishEvent(new ChangeEmailRequestNotificationEvent(this, tokenModel, newEmail));
+        log.info("Change email request [{}] has been processed for user [{}]", tokenModel.getToken(),
+                userDetails.getId());
+        return ChangeEmailRequestStatusDto.builder()
+                .token(tokenModel.getToken())
+                .active(true)
+                .newEmail(newEmail)
+                .build();
     }
 
     /**
      * Confirms change email request.
      *
-     * @param token - token value
+     * @param token            - token value
+     * @param confirmationCode - confirmation code
      */
     @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
@@ -143,11 +162,14 @@ public class ChangeEmailController {
     @PostMapping(value = "/confirm")
     public void confirmChangeEmailRequest(
             @Size(min = VALUE_1, max = MAX_LENGTH_255)
-            @Parameter(description = "Token value", required = true) @RequestParam String token) {
-        log.info("Received change email request confirmation");
-        var changeEmailRequest = changeEmailService.changeEmail(token);
+            @Parameter(description = "Token value", required = true) @RequestParam String token,
+            @Size(min = VALUE_1, max = MAX_LENGTH_255)
+            @Parameter(description = "Confirmation code", required = true) @RequestParam String confirmationCode) {
+        log.info("Received change email request [{}] confirmation", token);
+        var changeEmailRequest = changeEmailService.confirmChangeEmail(token, confirmationCode);
         applicationEventPublisher.publishEvent(
                 new EmailChangedNotificationEvent(this, changeEmailRequest.getUserEntity()));
+        log.info("Change email request [{}] confirmation has been processed", token);
     }
 
     /**

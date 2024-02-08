@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
-import static com.ecaservice.oauth.service.mail.dictionary.TemplateVariablesDictionary.CHANGE_EMAIL_URL_KEY;
+import static com.ecaservice.oauth.service.mail.dictionary.TemplateVariablesDictionary.CONFIRMATION_CODE_KEY;
 import static com.ecaservice.oauth.service.mail.dictionary.TemplateVariablesDictionary.NEW_EMAIL;
 import static com.ecaservice.oauth.service.mail.dictionary.TemplateVariablesDictionary.VALIDITY_HOURS_KEY;
 import static com.google.common.collect.Maps.newHashMap;
@@ -44,11 +44,9 @@ public class ChangeEmailRequestNotificationEventHandler
 
     @Override
     public Map<String, String> createVariables(ChangeEmailRequestNotificationEvent event) {
-        String tokenEndpoint = String.format(appProperties.getChangeEmail().getUrl(), event.getTokenModel().getToken());
-        String changeEmailUrl = String.format("%s%s", appProperties.getWebExternalBaseUrl(), tokenEndpoint);
         Long validityHours = appProperties.getChangeEmail().getValidityMinutes() / MINUTES_IN_HOUR;
         Map<String, String> templateVariables = newHashMap();
-        templateVariables.put(CHANGE_EMAIL_URL_KEY, changeEmailUrl);
+        templateVariables.put(CONFIRMATION_CODE_KEY, event.getTokenModel().getConfirmationCode());
         templateVariables.put(NEW_EMAIL, event.getNewEmail());
         templateVariables.put(VALIDITY_HOURS_KEY, String.valueOf(validityHours));
         return templateVariables;

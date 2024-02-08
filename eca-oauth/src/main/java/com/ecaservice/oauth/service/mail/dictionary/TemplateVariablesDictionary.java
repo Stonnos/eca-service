@@ -46,11 +46,6 @@ public class TemplateVariablesDictionary {
     public static final String CONFIRMATION_CODE_KEY = "confirmationCode";
 
     /**
-     * Change email url variable
-     */
-    public static final String CHANGE_EMAIL_URL_KEY = "changeEmailUrl";
-
-    /**
      * New email
      */
     public static final String NEW_EMAIL = "newEmail";

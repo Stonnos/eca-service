@@ -133,10 +133,6 @@
 |string
 |-
 |Код подтвежднения
-|changeEmailUrl
-|string
-|-
-|Ссылка на подтверждение изменения Email
 |===
 
 == 4. Описание шаблонов email сообщений
@@ -172,7 +168,7 @@
 |confirmationCode, validityMinutes
 |CHANGE_EMAIL
 |Сообщение с подтверждением изменения Email в личном кабинете Eca - service
-|newEmail, changeEmailUrl, validityHours
+|newEmail, confirmationCode, validityHours
 |EMAIL_CHANGED
 |Сообщение с успешным изменением Email в личном кабинете Eca - service
 |-
