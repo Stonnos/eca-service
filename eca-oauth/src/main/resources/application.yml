@@ -43,11 +43,9 @@ app:
     validityMinutes: 15
     url: /reset-password/?token=%s
   changePassword:
-    validityMinutes: 30
-    url: /change-password/?token=%s
+    validityMinutes: 15
   changeEmail:
     validityMinutes: 2880
-    url: /change-email/?token=%s
 
 mail:
   client:

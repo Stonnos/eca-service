@@ -1,0 +1,67 @@
+<?xml version="1.1" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v21-insert-confirmation-code-template-parameter.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="insert_confirmation_code_template_parameter" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="template_parameter">
+            <column name="id" valueComputed="nextval('hibernate_sequence')"/>
+            <column name="created" valueDate="now()"/>
+            <column name="parameter_name" value="confirmationCode"/>
+            <column name="description" value="Код подтверждения"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert_confirmation_code_to_change_password_template" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="templates_parameters">
+            <column name="template_id" valueComputed="(select id from template where template_code = 'CHANGE_PASSWORD')"/>
+            <column name="param_id" valueComputed="(select id from template_parameter where parameter_name = 'confirmationCode')"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="delete_change_password_url_from_templates_parameters" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">select count(*) from templates_parameters where param_id = (select id from template_parameter where parameter_name = 'changePasswordUrl')</sqlCheck>
+        </preConditions>
+        <delete tableName="templates_parameters">
+            <where>param_id = (select id from template_parameter where parameter_name = 'changePasswordUrl')</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="delete_change_password_url_template_parameter" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">select count(*) from template_parameter where parameter_name = 'changePasswordUrl'</sqlCheck>
+        </preConditions>
+        <delete tableName="template_parameter">
+            <where>parameter_name = 'changePasswordUrl'</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="insert_confirmation_code_to_change_email_template" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="templates_parameters">
+            <column name="template_id" valueComputed="(select id from template where template_code = 'CHANGE_EMAIL')"/>
+            <column name="param_id" valueComputed="(select id from template_parameter where parameter_name = 'confirmationCode')"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="delete_change_email_url_from_templates_parameters" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">select count(*) from templates_parameters where param_id = (select id from template_parameter where parameter_name = 'changeEmailUrl')</sqlCheck>
+        </preConditions>
+        <delete tableName="templates_parameters">
+            <where>param_id = (select id from template_parameter where parameter_name = 'changeEmailUrl')</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="delete_change_email_url_template_parameter" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">select count(*) from template_parameter where parameter_name = 'changeEmailUrl'</sqlCheck>
+        </preConditions>
+        <delete tableName="template_parameter">
+            <where>parameter_name = 'changeEmailUrl'</where>
+        </delete>
+    </changeSet>
+
+</databaseChangeLog>

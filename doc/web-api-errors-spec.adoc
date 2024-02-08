@@ -105,4 +105,7 @@
 |400
 |NotificationEventNotFound
 |Уведомление с заданным типом не найдено
+|400
+|InvalidConfirmationCode
+|Неправильный код подтверждения
 |===

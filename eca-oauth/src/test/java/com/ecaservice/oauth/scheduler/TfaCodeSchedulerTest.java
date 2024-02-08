@@ -6,6 +6,8 @@ import com.ecaservice.oauth.entity.TfaCodeEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.repository.TfaCodeRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
+import com.ecaservice.oauth.service.SerializationHelper;
+import com.ecaservice.oauth.service.tfa.TfaCodeService;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Import;
 
@@ -24,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Roman Batygin
  */
-@Import({TfaCodeScheduler.class, TfaConfig.class})
+@Import({TfaCodeScheduler.class, TfaConfig.class, TfaCodeService.class, SerializationHelper.class})
 class TfaCodeSchedulerTest extends AbstractJpaTest {
 
     private static final int EXPIRED_CODES_NUM = 5;

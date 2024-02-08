@@ -3,6 +3,7 @@ package com.ecaservice.oauth.repository;
 import com.ecaservice.oauth.entity.TfaCodeEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -43,6 +44,16 @@ public interface TfaCodeRepository extends JpaRepository<TfaCodeEntity, Long> {
      */
     @Query("select tc.id from TfaCodeEntity tc where tc.expireDate < :date")
     List<Long> getExpiredCodeIds(@Param("date") LocalDateTime date);
+
+    /**
+     * Deletes expired codes ids.
+     *
+     * @param date - date bound
+     * @return deleted codes count
+     */
+    @Modifying
+    @Query("delete from TfaCodeEntity tc where tc.expireDate < :date")
+    int deleteExpiredCodes(@Param("date") LocalDateTime date);
 
     /**
      * Gets tfa codes by ids.

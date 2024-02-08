@@ -53,6 +53,13 @@ public class AppProperties {
     @Data
     public static class TokenValidityProperties {
 
+        public static final int DEFAULT_CODE_LENGTH = 6;
+
+        /**
+         * Confirmation code length
+         */
+        private Integer confirmationCodeLength = DEFAULT_CODE_LENGTH;
+
         /**
          * Token validity in minutes
          */
@@ -62,7 +69,6 @@ public class AppProperties {
         /**
          * Token url
          */
-        @NotEmpty
         private String url;
     }
 }

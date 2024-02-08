@@ -1281,10 +1281,32 @@ a|
 |*Code*|*Description*|*Content type*|*Schema*|*Example*
 |200
 |OK
-|*-*
-|-
+|*application/json*
+|
+<<ChangePasswordRequestStatusDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 a|
--
+[source,json]
+----
+{
+  "token" : "1d2de514-3a87-4620-9b97-c260e24340de",
+  "active" : true
+}
+----
 |401
 |Not authorized
 |*application/json*
@@ -1349,6 +1371,26 @@ __POST__ */password/change/confirm* - Confirms change password request
 |*Name*|*Description*|*Location*|*Schema*
 |*token**
 |Token value
+|query
+a|
+__string__
+
+
+*Min. length*: 1
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*confirmationCode**
+|Confirmation code
 |query
 a|
 __string__
@@ -1474,10 +1516,33 @@ __string__
 |*Code*|*Description*|*Content type*|*Schema*|*Example*
 |200
 |OK
-|*-*
-|-
+|*application/json*
+|
+<<ChangeEmailRequestStatusDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 a|
--
+[source,json]
+----
+{
+  "token" : "1d2de514-3a87-4620-9b97-c260e24340de",
+  "newEmail" : "test@mail.ru",
+  "active" : true
+}
+----
 |401
 |Not authorized
 |*application/json*
@@ -1535,6 +1600,26 @@ __POST__ */email/change/confirm* - Confirms change email request
 |*Name*|*Description*|*Location*|*Schema*
 |*token**
 |Token value
+|query
+a|
+__string__
+
+
+*Min. length*: 1
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*confirmationCode**
+|Confirmation code
 |query
 a|
 __string__
@@ -1943,6 +2028,7 @@ a|
 [source,json]
 ----
 {
+  "token" : "1d2de514-3a87-4620-9b97-c260e24340de",
   "active" : true
 }
 ----
@@ -2007,6 +2093,7 @@ a|
 [source,json]
 ----
 {
+  "token" : "1d2de514-3a87-4620-9b97-c260e24340de",
   "newEmail" : "test@mail.ru",
   "active" : true
 }
@@ -3373,6 +3460,51 @@ __string__
 
 
 |===
+=== ChangePasswordRequestStatusDto
+:table-caption: Table
+.Change password request status
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*token*
+|Change password request token value
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*active*
+|Is request active (created and not expired and not confirmed)?
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
 === ChangePasswordRequest
 :table-caption: Table
 .Change password request model
@@ -3415,6 +3547,70 @@ __string__
 
 
 *Pattern*: `^[^а-яА-Я\s]*$`
+
+
+|===
+=== ChangeEmailRequestStatusDto
+:table-caption: Table
+.Change email request status
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*token*
+|Change email request token value
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*newEmail*
+|New email
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*active*
+|Is request active (created and not expired and not confirmed)?
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 |===
@@ -3605,77 +3801,6 @@ __array__
 
 
 |===
-=== ChangePasswordRequestStatusDto
-:table-caption: Table
-.Change password request status
-[width=100%]
-|===
-|*Name*|*Description*|*Schema*
-|*active*
-|Is request active (created and not expired and not confirmed)?
-a|
-__boolean__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|===
-=== ChangeEmailRequestStatusDto
-:table-caption: Table
-.Change email request status
-[width=100%]
-|===
-|*Name*|*Description*|*Schema*
-|*newEmail*
-|New email
-a|
-__string__
-
-
-
-
-*Max. length*: 255
-
-
-
-
-
-
-
-
-
-
-|*active*
-|Is request active (created and not expired and not confirmed)?
-a|
-__boolean__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|===
 === UserInfoDto
 :table-caption: Table
 .User model
@@ -3822,7 +3947,7 @@ __boolean__
 [width=100%]
 |===
 |*Name*|*Description*|*Schema*
-|*eventType*
+|*eventType**
 |Notification event type
 a|
 __string__
@@ -3931,12 +4056,15 @@ __boolean__
 [width=100%]
 |===
 |*Name*|*Description*|*Schema*
-|*user*
+|*user**
 |User login
 a|
 __string__
 
 
+*Min. length*: 1
+
+*Max. length*: 255
 
 
 
@@ -3947,10 +4075,7 @@ __string__
 
 
 
-
-
-
-|*version*
+|*version**
 |User profile options version
 a|
 __integer__
@@ -3961,7 +4086,9 @@ __(int32)__
 
 
 
+*Minimum*: 0*
 
+*Maximum*: 2 147 483 647*
 
 
 

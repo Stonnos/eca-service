@@ -48,6 +48,12 @@ public class TfaCodeService {
         this.generator.setLength(tfaConfig.getCodeLength());
     }
 
+    /**
+     * Creates 2fa authorization code.
+     *
+     * @param authentication - authentication object
+     * @return 2fa code model
+     */
     @Transactional
     public TfaCodeModel createAuthorizationCode(OAuth2Authentication authentication) {
         String user = authentication.getName();
@@ -66,6 +72,12 @@ public class TfaCodeService {
                 .build();
     }
 
+    /**
+     * Consumes 2fa authorization code.
+     * @param token - token value
+     * @param code - authorization code
+     * @return authentication object
+     */
     public OAuth2Authentication consumeAuthorizationCode(String token, String code) {
         var tfaCodeEntity = tfaCodeRepository.findByToken(md5Hex(token));
         if (tfaCodeEntity == null) {
@@ -81,6 +93,17 @@ public class TfaCodeService {
         OAuth2Authentication authentication = serializationHelper.deserialize(tfaCodeEntity.getAuthentication());
         tfaCodeRepository.delete(tfaCodeEntity);
         return authentication;
+    }
+
+    /**
+     * Deletes expired 2fa codes.
+     */
+    @Transactional
+    public void deleteExpiredCodes() {
+        var deletedCount = tfaCodeRepository.deleteExpiredCodes(LocalDateTime.now());
+        if (deletedCount > 0) {
+            log.info("[{}] expired tfa codes has been removed", deletedCount);
+        }
     }
 
     private void invalidatePreviousCodes(UserEntity userEntity) {

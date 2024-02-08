@@ -8,7 +8,6 @@ import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.exception.InvalidTokenException;
 import com.ecaservice.oauth.exception.NotSafePasswordException;
-import com.ecaservice.oauth.exception.PasswordsMatchedException;
 import com.ecaservice.oauth.exception.ResetPasswordRequestAlreadyExistsException;
 import com.ecaservice.oauth.exception.UserLockedException;
 import com.ecaservice.oauth.model.TokenModel;
@@ -23,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 
 import static com.ecaservice.common.web.util.MaskUtils.mask;
+import static com.ecaservice.common.web.util.MaskUtils.maskEmail;
 import static com.ecaservice.common.web.util.RandomUtils.generateToken;
 import static com.ecaservice.oauth.config.audit.AuditCodes.CREATE_RESET_PASSWORD_REQUEST;
 import static com.ecaservice.oauth.config.audit.AuditCodes.RESET_PASSWORD;
@@ -53,6 +53,7 @@ public class ResetPasswordService {
      */
     @Audit(value = CREATE_RESET_PASSWORD_REQUEST, initiatorKey = "#result.login")
     public TokenModel createResetPasswordRequest(CreateResetPasswordRequest createResetPasswordRequest) {
+        log.info("Starting to create reset password request [{}]", maskEmail(createResetPasswordRequest.getEmail()));
         UserEntity userEntity = userEntityRepository.findByEmail(createResetPasswordRequest.getEmail())
                 .orElseThrow(() -> new IllegalStateException(
                         String.format("Can't create reset password request, because user with email %s doesn't exists!",
@@ -73,6 +74,8 @@ public class ResetPasswordService {
                 now.plusMinutes(appProperties.getResetPassword().getValidityMinutes()));
         resetPasswordRequestEntity.setUserEntity(userEntity);
         resetPasswordRequestRepository.save(resetPasswordRequestEntity);
+        log.info("Reset password request [{}] has been created for user with email [{}]",
+                resetPasswordRequestEntity.getId(), maskEmail(createResetPasswordRequest.getEmail()));
         return TokenModel.builder()
                 .token(token)
                 .tokenId(resetPasswordRequestEntity.getId())
@@ -99,9 +102,6 @@ public class ResetPasswordService {
         if (userEntity.isLocked()) {
             throw new UserLockedException(userEntity.getId());
         }
-        if (isPasswordsMatched(userEntity, resetPasswordRequest)) {
-            throw new PasswordsMatchedException(userEntity.getId());
-        }
         var validationResult
                 = passwordValidationService.validate(resetPasswordRequest.getPassword());
         if (!validationResult.isValid()) {
@@ -117,9 +117,5 @@ public class ResetPasswordService {
         log.info("New password has been set for user [{}], reset password request id [{}]", userEntity.getId(),
                 resetPasswordRequestEntity.getId());
         return resetPasswordRequestEntity;
-    }
-
-    private boolean isPasswordsMatched(UserEntity userEntity, ResetPasswordRequest resetPasswordRequest) {
-        return passwordEncoder.matches(resetPasswordRequest.getPassword().trim(), userEntity.getPassword());
     }
 }

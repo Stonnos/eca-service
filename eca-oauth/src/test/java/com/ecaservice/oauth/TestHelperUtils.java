@@ -19,6 +19,7 @@ import lombok.experimental.UtilityClass;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.UUID;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
@@ -156,12 +157,13 @@ public class TestHelperUtils {
     /**
      * Creates change password request entity.
      *
-     * @param token - token value
+     * @param confirmationCode - token value
      * @return change password request entity
      */
-    public static ChangePasswordRequestEntity createChangePasswordRequestEntity(String token) {
+    public static ChangePasswordRequestEntity createChangePasswordRequestEntity(String confirmationCode) {
         ChangePasswordRequestEntity changePasswordRequestEntity = new ChangePasswordRequestEntity();
-        changePasswordRequestEntity.setToken(md5Hex(token));
+        changePasswordRequestEntity.setConfirmationCode(md5Hex(confirmationCode));
+        changePasswordRequestEntity.setToken(UUID.randomUUID().toString());
         changePasswordRequestEntity.setUserEntity(createUserEntity());
         return changePasswordRequestEntity;
     }
