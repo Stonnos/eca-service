@@ -83,7 +83,6 @@ export class ChangePasswordDialogComponent extends BaseCreateDialogComponent<Cha
   public hide(): void {
     this.errorCode = null;
     this.message = null;
-    this.step = ChangePasswordDialogComponent.CHANGE_PASSWORD_STEP;
     super.hide();
   }
 

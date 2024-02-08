@@ -60,7 +60,6 @@ export class UpdateUserEmailComponent extends BaseCreateDialogComponent<string> 
 
   public hide(): void {
     this.errorCode = null;
-    this.step = UpdateUserEmailComponent.CHANGE_EMAIL_STEP;
     super.hide();
   }
 

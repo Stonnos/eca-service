@@ -142,6 +142,7 @@ export class UserProfileComponent implements OnInit {
   }
 
   public showChangePasswordRequestDialog(): void {
+    this.changePasswordStep = 'change-password';
     this.changePasswordDialogVisibility = true;
   }
 
@@ -151,6 +152,7 @@ export class UserProfileComponent implements OnInit {
   }
 
   public showChangeEmailDialog(): void {
+    this.changeEmailStep = 'change-email';
     this.changeEmailDialogVisibility = true;
   }
 
