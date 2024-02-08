@@ -24,7 +24,6 @@
    * app.resetPassword.url - url для формирования ссылки для восстановления пароля
    * app.changePassword.validityMinutes - время действия токена для изменения пароля в мин.
    * app.changeEmail.validityMinutes - время действия токена для изменения email в мин.
-   * app.changeEmail.url - url для формирования ссылки для изменения Email
 3) open-api - настройки Swagger
    * open-api.tokenBaseUrl - базовый url - сервера авторизации
    * open-api.projectVersion - версия API
