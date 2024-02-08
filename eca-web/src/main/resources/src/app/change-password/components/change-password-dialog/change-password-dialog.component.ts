@@ -54,7 +54,6 @@ export class ChangePasswordDialogComponent extends BaseCreateDialogComponent<Cha
   public passwordValidationRuleDetails: PasswordRuleResultDto[] = [];
 
   private readonly errorCodes: string[] = [
-    ValidationErrorCode.USER_LOCKED,
     ValidationErrorCode.ACTIVE_CHANGE_PASSWORD_REQUEST,
     ValidationErrorCode.PASSWORDS_MATCHED,
     ValidationErrorCode.NOT_SAFE_PASSWORD,
@@ -63,7 +62,6 @@ export class ChangePasswordDialogComponent extends BaseCreateDialogComponent<Cha
   ];
 
   private readonly errorCodesMap = new Map<string, string>()
-    .set(ValidationErrorCode.USER_LOCKED, 'Не удалось изменить пароль, т.к. ваш аккаунт заблокирован.')
     .set(ValidationErrorCode.PASSWORDS_MATCHED, 'Придумайте новый пароль отличный от старого.')
     .set(ValidationErrorCode.ACTIVE_CHANGE_PASSWORD_REQUEST, 'Вы уже отправили запрос на изменение пароля')
     .set(ValidationErrorCode.INVALID_TOKEN, 'Запрос с заданным токеном не существует')
