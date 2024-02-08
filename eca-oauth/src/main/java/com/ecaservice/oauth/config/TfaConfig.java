@@ -28,11 +28,6 @@ public class TfaConfig {
     private Boolean enabled;
 
     /**
-     * Page size (used for pagination)
-     */
-    private Integer pageSize;
-
-    /**
      * Scheduler delay in seconds
      */
     private Integer delaySeconds;
