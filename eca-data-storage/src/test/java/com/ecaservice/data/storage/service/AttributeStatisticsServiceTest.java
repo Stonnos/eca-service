@@ -81,17 +81,6 @@ class AttributeStatisticsServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    void test() {
-        internalSaveData(CREDIT_DATA_PATH);
-        var attribute = attributeRepository.findAll()
-                .stream()
-                .filter(attributeEntity -> attributeEntity.getAttributeName().equals("duration"))
-                .findFirst()
-                .orElse(null);
-        var s = attributeStatisticsService.getAttributeStatistics(attribute.getId());
-    }
-
-    @Test
     void testCalculateAttributeStatisticsForCreditDataSet() {
         internalSaveData(CREDIT_DATA_PATH);
         verifyAttributeStatistics();
@@ -125,6 +114,7 @@ class AttributeStatisticsServiceTest extends AbstractJpaTest {
                     assertThat(frequencyDiagramDataDto.getCode()).isEqualTo(expectedAttribute.value(i));
                     assertThat(frequencyDiagramDataDto.getFrequency()).isEqualTo(nominalCounts[i]);
                 });
+                verifyFrequencySumValues(attributeStatistics);
             } else {
                 BigDecimal expectedMin = toDecimal(expectedAttributeStats.numericStats.min, SCALE);
                 BigDecimal expectedMax = toDecimal(expectedAttributeStats.numericStats.max, SCALE);
@@ -162,6 +152,15 @@ class AttributeStatisticsServiceTest extends AbstractJpaTest {
             assertThat(actual.getUpperBound()).isEqualTo(toDecimal(expected.getUpperBound(), SCALE));
             assertThat(actual.getFrequency()).isEqualTo(expected.getFrequency());
         });
+        verifyFrequencySumValues(attributeStatisticsDto);
+    }
+
+    private void verifyFrequencySumValues(AttributeStatisticsDto attributeStatisticsDto) {
+        int actualNumValues = attributeStatisticsDto.getFrequencyDiagramValues()
+                .stream()
+                .mapToInt(FrequencyDiagramDataDto::getFrequency)
+                .sum();
+        assertThat(actualNumValues).isEqualTo(instances.numInstances());
     }
 
     private void internalSaveData(String path) {
