@@ -1,6 +1,7 @@
 package com.ecaservice.data.storage.service;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.data.storage.config.CacheNames;
 import com.ecaservice.data.storage.entity.AttributeEntity;
 import com.ecaservice.data.storage.entity.AttributeType;
 import com.ecaservice.data.storage.entity.AttributeTypeVisitor;
@@ -16,6 +17,7 @@ import com.ecaservice.web.dto.model.InstancesStatisticsDto;
 import eca.util.FrequencyUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -90,6 +92,7 @@ public class InstancesStatisticsService {
      * @param id - attribute id
      * @return attribute statistics
      */
+    @Cacheable(CacheNames.ATTRIBUTES_STATISTICS_CACHE)
     public AttributeStatisticsDto getAttributeStatistics(long id) {
         log.info("Gets attribute [{}] statistics", id);
         var attributeEntity = attributeService.getById(id);
