@@ -10,7 +10,7 @@ import com.ecaservice.data.storage.report.InstancesReportService;
 import com.ecaservice.data.storage.report.ReportsConfigurationService;
 import com.ecaservice.data.storage.repository.InstancesRepository;
 import com.ecaservice.data.storage.service.AttributeService;
-import com.ecaservice.data.storage.service.AttributeStatisticsService;
+import com.ecaservice.data.storage.service.InstancesStatisticsService;
 import com.ecaservice.data.storage.service.InstancesLoader;
 import com.ecaservice.data.storage.service.impl.StorageServiceImpl;
 import com.ecaservice.oauth2.test.controller.AbstractControllerTest;
@@ -18,6 +18,7 @@ import com.ecaservice.web.dto.model.AttributeDto;
 import com.ecaservice.web.dto.model.AttributeStatisticsDto;
 import com.ecaservice.web.dto.model.CreateInstancesResultDto;
 import com.ecaservice.web.dto.model.InstancesDto;
+import com.ecaservice.web.dto.model.InstancesStatisticsDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import org.junit.jupiter.api.Test;
@@ -86,6 +87,7 @@ class DataStorageControllerTest extends AbstractControllerTest {
     private static final String DOWNLOAD_REPORT_URL = BASE_URL + "/download";
     private static final String REPORTS_INFO_URL = BASE_URL + "/reports-info";
     private static final String GET_ATTRIBUTE_STATISTICS_URL = BASE_URL + "/attribute-stats/{id}";
+    private static final String GET_INSTANCES_STATISTICS_URL = BASE_URL + "/instances-stats/{id}";
 
     private static final String TRAINING_DATA_PARAM = "trainingData";
     private static final String TABLE_NAME = "table";
@@ -111,7 +113,7 @@ class DataStorageControllerTest extends AbstractControllerTest {
     @MockBean
     private ReportsConfigurationService reportsConfigurationService;
     @MockBean
-    private AttributeStatisticsService attributeStatisticsService;
+    private InstancesStatisticsService instancesStatisticsService;
 
     @Inject
     private InstancesMapper instancesMapper;
@@ -421,8 +423,27 @@ class DataStorageControllerTest extends AbstractControllerTest {
     @Test
     void testGetAttributeStats() throws Exception {
         AttributeStatisticsDto attributeStatisticsDto = new AttributeStatisticsDto();
-        when(attributeStatisticsService.getAttributeStatistics(ID)).thenReturn(attributeStatisticsDto);
+        when(instancesStatisticsService.getAttributeStatistics(ID)).thenReturn(attributeStatisticsDto);
         mockMvc.perform(get(GET_ATTRIBUTE_STATISTICS_URL, ID)
+                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(objectMapper.writeValueAsString(attributeStatisticsDto)));
+    }
+
+    @Test
+    void testGetInstancesStatsUnauthorized() throws Exception {
+        mockMvc.perform(get(GET_INSTANCES_STATISTICS_URL, ID)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testInstancesAttributeStats() throws Exception {
+        InstancesStatisticsDto attributeStatisticsDto = new InstancesStatisticsDto();
+        when(instancesStatisticsService.getInstancesStatistics(ID)).thenReturn(attributeStatisticsDto);
+        mockMvc.perform(get(GET_INSTANCES_STATISTICS_URL, ID)
                         .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())

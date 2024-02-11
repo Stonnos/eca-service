@@ -3,13 +3,16 @@ package com.ecaservice.data.storage.service;
 import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.data.storage.AbstractJpaTest;
 import com.ecaservice.data.storage.config.StorageTestConfiguration;
+import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.mapping.AttributeMapperImpl;
+import com.ecaservice.data.storage.mapping.InstancesMapperImpl;
 import com.ecaservice.data.storage.repository.AttributeRepository;
 import com.ecaservice.data.storage.repository.AttributeValueRepository;
 import com.ecaservice.data.storage.repository.InstancesRepository;
 import com.ecaservice.data.storage.service.impl.StorageServiceImpl;
 import com.ecaservice.web.dto.model.AttributeStatisticsDto;
 import com.ecaservice.web.dto.model.FrequencyDiagramDataDto;
+import com.ecaservice.web.dto.model.InstancesStatisticsDto;
 import eca.data.db.InstancesExtractor;
 import eca.data.db.InstancesResultSetConverter;
 import eca.statistics.AttributeStatistics;
@@ -34,20 +37,21 @@ import static com.ecaservice.data.storage.TestHelperUtils.CREDIT_DATA_PATH;
 import static com.ecaservice.data.storage.TestHelperUtils.GLASS_DATA_PATH;
 import static com.ecaservice.data.storage.TestHelperUtils.IONOSPHERE_DATA_PATH;
 import static com.ecaservice.data.storage.TestHelperUtils.loadInstances;
+import static com.ecaservice.data.storage.TestHelperUtils.numAttributes;
 import static com.ecaservice.data.storage.util.Utils.toDecimal;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests for checking {@link AttributeStatisticsService} functionality.
+ * Unit tests for checking {@link InstancesStatisticsService} functionality.
  *
  * @author Roman Batygin
  */
 @Import({StorageServiceImpl.class, InstancesService.class, InstancesBatchService.class,
         RandomValueStringGenerator.class, StorageTestConfiguration.class, AttributeService.class,
-        AttributeMapperImpl.class, SearchQueryCreator.class, InstancesTransformer.class,
-        InstancesResultSetConverter.class, InstancesExtractor.class, AttributeStatisticsService.class})
-class AttributeStatisticsServiceTest extends AbstractJpaTest {
+        AttributeMapperImpl.class, SearchQueryCreator.class, InstancesTransformer.class, InstancesMapperImpl.class,
+        InstancesResultSetConverter.class, InstancesExtractor.class, InstancesStatisticsService.class})
+class InstancesStatisticsServiceTest extends AbstractJpaTest {
 
     private static final String USER_NAME = "admin";
     private static final int SCALE = 4;
@@ -68,9 +72,11 @@ class AttributeStatisticsServiceTest extends AbstractJpaTest {
     private StorageServiceImpl storageService;
 
     @Inject
-    private AttributeStatisticsService attributeStatisticsService;
+    private InstancesStatisticsService instancesStatisticsService;
 
     private Instances instances;
+
+    private InstancesEntity instancesEntity;
 
     @Override
     public void deleteAll() {
@@ -78,6 +84,24 @@ class AttributeStatisticsServiceTest extends AbstractJpaTest {
         attributeValueRepository.deleteAll();
         attributeRepository.deleteAll();
         instancesRepository.deleteAll();
+    }
+
+    @Test
+    void testGetInstancesStatisticsForCreditDataSet() {
+        internalSaveData(CREDIT_DATA_PATH);
+        InstancesStatisticsDto instancesStatisticsDto =
+                instancesStatisticsService.getInstancesStatistics(instancesEntity.getId());
+        assertThat(instancesStatisticsDto).isNotNull();
+        assertThat(instancesStatisticsDto.getId()).isEqualTo(instancesEntity.getId());
+        assertThat(instancesStatisticsDto.getNumInstances()).isEqualTo(instances.numInstances());
+        assertThat(instancesStatisticsDto.getNumAttributes()).isEqualTo(instances.numAttributes());
+        assertThat(instancesStatisticsDto.getNumClasses()).isEqualTo(instances.numClasses());
+        assertThat(instancesStatisticsDto.getClassName()).isEqualTo(instances.classAttribute().name());
+        int expectedNumNumericAttributes = numAttributes(instances, Attribute.NUMERIC);
+        int expectedNumNominalAttributes = numAttributes(instances, Attribute.NOMINAL);
+        assertThat(instancesStatisticsDto.getNumDateAttributes()).isZero();
+        assertThat(instancesStatisticsDto.getNumNumericAttributes()).isEqualTo(expectedNumNumericAttributes);
+        assertThat(instancesStatisticsDto.getNumNominalAttributes()).isEqualTo(expectedNumNominalAttributes);
     }
 
     @Test
@@ -101,8 +125,9 @@ class AttributeStatisticsServiceTest extends AbstractJpaTest {
     private void verifyAttributeStatistics() {
         var attributes = attributeRepository.findAll();
         attributes.forEach(attributeEntity -> {
-            var attributeStatistics = attributeStatisticsService.getAttributeStatistics(attributeEntity.getId());
+            var attributeStatistics = instancesStatisticsService.getAttributeStatistics(attributeEntity.getId());
             Attribute expectedAttribute = instances.attribute(attributeEntity.getAttributeName());
+            assertThat(attributeStatistics).isNotNull();
             assertThat(attributeStatistics.getName()).isEqualTo(expectedAttribute.name());
 
             AttributeStats expectedAttributeStats = instances.attributeStats(expectedAttribute.index());
@@ -166,7 +191,7 @@ class AttributeStatisticsServiceTest extends AbstractJpaTest {
     private void internalSaveData(String path) {
         when(userService.getCurrentUser()).thenReturn(USER_NAME);
         instances = loadInstances(path);
-        storageService.saveData(instances, UUID.randomUUID().toString());
+        instancesEntity = storageService.saveData(instances, UUID.randomUUID().toString());
     }
 
     private void unsetInstancesClass() {

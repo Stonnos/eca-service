@@ -4,6 +4,7 @@ import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.model.report.ReportProperties;
 import com.ecaservice.web.dto.model.InstancesDto;
 import com.ecaservice.web.dto.model.InstancesReportInfoDto;
+import com.ecaservice.web.dto.model.InstancesStatisticsDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -50,4 +51,12 @@ public interface InstancesMapper {
      * @return report info dto list
      */
     List<InstancesReportInfoDto> mapReportPropertiesList(List<ReportProperties> reportPropertiesList);
+
+    /**
+     * Maps instances entity to statistics dto model.
+     *
+     * @param instancesEntity - instances entity
+     * @return instances statistics dto
+     */
+    InstancesStatisticsDto mapToStatistics(InstancesEntity instancesEntity);
 }

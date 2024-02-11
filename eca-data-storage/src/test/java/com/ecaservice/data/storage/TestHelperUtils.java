@@ -226,4 +226,17 @@ public class TestHelperUtils {
         exportInstancesObjectEntity.setCreated(LocalDateTime.now());
         return exportInstancesObjectEntity;
     }
+
+    /**
+     * Calculate num attributes with specified type.
+     *
+     * @param instances - instances
+     * @param type      - attribute type
+     * @return num attributes
+     */
+    public static int numAttributes(Instances instances, int type) {
+        return (int) IntStream.range(0, instances.numAttributes())
+                .filter(i -> instances.attribute(i).type() == type)
+                .count();
+    }
 }

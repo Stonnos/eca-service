@@ -2,12 +2,17 @@ package com.ecaservice.data.storage.service;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.data.storage.entity.AttributeEntity;
+import com.ecaservice.data.storage.entity.AttributeType;
 import com.ecaservice.data.storage.entity.AttributeTypeVisitor;
+import com.ecaservice.data.storage.entity.InstancesEntity;
+import com.ecaservice.data.storage.mapping.InstancesMapper;
+import com.ecaservice.data.storage.model.AttributeInfo;
 import com.ecaservice.data.storage.model.FrequencyDiagramModel;
-import com.ecaservice.data.storage.repository.AttributeRepository;
+import com.ecaservice.data.storage.repository.InstancesRepository;
 import com.ecaservice.web.dto.model.AttributeStatisticsDto;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.FrequencyDiagramDataDto;
+import com.ecaservice.web.dto.model.InstancesStatisticsDto;
 import eca.util.FrequencyUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,14 +33,14 @@ import static com.ecaservice.data.storage.util.Utils.getAttributeValueByCode;
 import static com.ecaservice.data.storage.util.Utils.toDecimal;
 
 /**
- * Attribute statistics service.
+ * Instances statistics service.
  *
  * @author Roman Batygin
  */
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class AttributeStatisticsService {
+public class InstancesStatisticsService {
 
     private static final String GET_ATTRIBUTE_VALUES_SQL_QUERY_FORMAT = "select {0} from {1} where {0} is not null";
 
@@ -45,9 +50,39 @@ public class AttributeStatisticsService {
     private static final int CODE_INDEX = 1;
     private static final int FREQUENCY_INDEX = 2;
     private static final int FIRST_COLUMN_VALUE_INDEX = 1;
+    private static final long ZERO = 0L;
 
     private final JdbcTemplate jdbcTemplate;
-    private final AttributeRepository attributeRepository;
+    private final InstancesMapper instancesMapper;
+    private final AttributeService attributeService;
+    private final InstancesRepository instancesRepository;
+
+    /**
+     * Gets instances statistics.
+     *
+     * @param id - instances id
+     * @return instances statistics
+     */
+    public InstancesStatisticsDto getInstancesStatistics(long id) {
+        log.info("Gets instances [{}] statistics", id);
+        var instancesEntity = instancesRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(InstancesEntity.class, id));
+        InstancesStatisticsDto instancesStatisticsDto = instancesMapper.mapToStatistics(instancesEntity);
+        var attributesInfoList = attributeService.getsAttributesInfo(instancesEntity);
+        setClassStatistics(instancesStatisticsDto, instancesEntity, attributesInfoList);
+        var attributesCountingStats = attributesInfoList.stream()
+                .collect(Collectors.groupingBy(AttributeInfo::getType, Collectors.counting()));
+        instancesStatisticsDto.setNumNumericAttributes(
+                attributesCountingStats.getOrDefault(AttributeType.NUMERIC, ZERO).intValue());
+        instancesStatisticsDto.setNumNominalAttributes(
+                attributesCountingStats.getOrDefault(AttributeType.NOMINAL, ZERO).intValue());
+        instancesStatisticsDto.setNumDateAttributes(
+                attributesCountingStats.getOrDefault(AttributeType.DATE, ZERO).intValue());
+        log.debug("Instances [{}] statistics has been calculated: {}", instancesStatisticsDto.getId(),
+                instancesStatisticsDto);
+        log.info("Instances [{}] statistics has been fetched", id);
+        return instancesStatisticsDto;
+    }
 
     /**
      * Gets attribute statistics.
@@ -57,22 +92,21 @@ public class AttributeStatisticsService {
      */
     public AttributeStatisticsDto getAttributeStatistics(long id) {
         log.info("Gets attribute [{}] statistics", id);
-        var attributeEntity = attributeRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(AttributeEntity.class, id));
+        var attributeEntity = attributeService.getById(id);
         AttributeStatisticsDto attributeStatisticsDto = new AttributeStatisticsDto();
         attributeStatisticsDto.setId(attributeEntity.getId());
         attributeStatisticsDto.setName(attributeEntity.getAttributeName());
         attributeStatisticsDto.setIndex(attributeEntity.getIndex());
         attributeStatisticsDto.setType(
                 new EnumDto(attributeEntity.getType().name(), attributeEntity.getType().getDescription()));
-        calculateStatistics(attributeEntity, attributeStatisticsDto);
+        calculateAttributeStatistics(attributeEntity, attributeStatisticsDto);
         log.debug("Attribute [{}] statistics has been calculated: {}", attributeEntity.getId(), attributeStatisticsDto);
         log.info("Attribute [{}] statistics has been fetched", id);
         return attributeStatisticsDto;
     }
 
-    private void calculateStatistics(AttributeEntity attributeEntity,
-                                     AttributeStatisticsDto attributeStatisticsDto) {
+    private void calculateAttributeStatistics(AttributeEntity attributeEntity,
+                                              AttributeStatisticsDto attributeStatisticsDto) {
         attributeEntity.getType().handle(new AttributeTypeVisitor<Void>() {
             @Override
             public Void caseNumeric() {
@@ -195,5 +229,21 @@ public class AttributeStatisticsService {
             frequencyDiagramValues.add(frequencyDiagramDataDto);
         }
         return frequencyDiagramValues;
+    }
+
+    private void setClassStatistics(InstancesStatisticsDto instancesStatisticsDto,
+                                    InstancesEntity instancesEntity,
+                                    List<AttributeInfo> attributesInfoList) {
+        if (instancesEntity.getClassAttribute() != null) {
+            AttributeEntity classAttribute = instancesEntity.getClassAttribute();
+            AttributeInfo classAttributeInfo = attributesInfoList.stream()
+                    .filter(attributeInfo -> attributeInfo.getAttributeName().equals(classAttribute.getAttributeName()))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalStateException(
+                            String.format("Can't find class [%s] attribute info for instances [%s]",
+                                    classAttribute.getAttributeName(), instancesEntity.getRelationName())));
+            instancesStatisticsDto.setClassName(classAttribute.getAttributeName());
+            instancesStatisticsDto.setNumClasses(classAttributeInfo.getValues().size());
+        }
     }
 }
