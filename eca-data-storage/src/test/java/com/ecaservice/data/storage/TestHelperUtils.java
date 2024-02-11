@@ -35,8 +35,13 @@ import java.util.stream.IntStream;
 @UtilityClass
 public class TestHelperUtils {
 
+    public static final String CREDIT_DATA_PATH = "german_credit.xls";
+
+    public static final String IONOSPHERE_DATA_PATH = "ionosphere.xlsx";
+
+    public static final String GLASS_DATA_PATH = "glass.xlsx";
+
     private static final String TITLE = "title";
-    private static final String DATA_PATH = "german_credit.xls";
     private static final String TABLE_NAME = "table";
     private static final String CREATED_BY = "user";
     private static final int NUM_INSTANCES = 100;
@@ -82,9 +87,20 @@ public class TestHelperUtils {
      */
     @SneakyThrows
     public static Instances loadInstances() {
+        return loadInstances(CREDIT_DATA_PATH);
+    }
+
+    /**
+     * Loads test data set.
+     *
+     * @param path - file path
+     * @return created training data
+     */
+    @SneakyThrows
+    public static Instances loadInstances(String path) {
         ClassLoader classLoader = ClassLoader.getSystemClassLoader();
         XLSLoader dataLoader = new XLSLoader();
-        dataLoader.setSource(new FileResource(new File(classLoader.getResource(DATA_PATH).getFile())));
+        dataLoader.setSource(new FileResource(new File(classLoader.getResource(path).getFile())));
         return dataLoader.loadInstances();
     }
 

@@ -165,4 +165,14 @@ public class FieldConstraints {
      * Read notifications list max length
      */
     public static final int READ_NOTIFICATIONS_LIST_MAX_LENGTH = 50;
+
+    /**
+     * Decimal min zero value.
+     */
+    public static final String DECIMAL_MIN_ZERO = "0.0";
+
+    /**
+     * Decimal max one value.
+     */
+    public static final String DECIMAL_MAX_ONE = "1.0";
 }

@@ -1,5 +1,6 @@
 package com.ecaservice.data.storage.util;
 
+import com.ecaservice.data.storage.entity.AttributeEntity;
 import com.ecaservice.data.storage.entity.AttributeType;
 import com.ecaservice.data.storage.entity.AttributeValueEntity;
 import com.ecaservice.data.storage.entity.InstancesEntity;
@@ -7,6 +8,8 @@ import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
 import weka.core.Attribute;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -72,15 +75,33 @@ public class Utils {
     }
 
     /**
+     * Gets attribute value with specified code.
+     *
+     * @param attributeEntity - attribute entity
+     * @param code            - attribute value code
+     * @return attribute value entity
+     */
+    public static AttributeValueEntity getAttributeValueByCode(AttributeEntity attributeEntity, String code) {
+        return attributeEntity.getValues()
+                .stream()
+                .filter(attributeValueEntity -> attributeValueEntity.getValue().equals(code))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(
+                        String.format("Can't find attribute [%s] value [%s]", attributeEntity.getAttributeName(),
+                                code)));
+    }
+
+    /**
      * Builds sql select query with specified columns sorted by id column.
      *
      * @param instancesEntity - instances entity
-     * @param columns   - columns list
+     * @param columns         - columns list
      * @return sql select query
      */
     public static String buildSqlSelectQuery(InstancesEntity instancesEntity, List<String> columns) {
         String attributes = StringUtils.join(columns, COMMA_SEPARATOR);
-        return String.format(SELECT_QUERY, attributes, instancesEntity.getTableName(), instancesEntity.getIdColumnName());
+        return String.format(SELECT_QUERY, attributes, instancesEntity.getTableName(),
+                instancesEntity.getIdColumnName());
     }
 
     /**
@@ -92,5 +113,16 @@ public class Utils {
      */
     public static String buildSqlCountUniqueValuesQuery(String tableName, String columnName) {
         return String.format(SELECT_COUNT_DISTINCT_QUERY, columnName, tableName);
+    }
+
+    /**
+     * Converts to decimal value using half up rounding mode.
+     *
+     * @param value - double value
+     * @param scale - scale value
+     * @return decimal value
+     */
+    public static BigDecimal toDecimal(double value, int scale) {
+        return BigDecimal.valueOf(value).setScale(scale, RoundingMode.HALF_UP);
     }
 }
