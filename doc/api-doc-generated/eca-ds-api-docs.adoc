@@ -1256,6 +1256,138 @@ a|
 ----
 |===
 
+== Gets instances statistics
+
+__GET__ */instances/instances-stats/{id}* - Gets instances statistics
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+
+*Request parameters*
+[width=100%]
+|===
+|*Name*|*Description*|*Location*|*Schema*
+|*id**
+|Instances id
+|path
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 9 223 372 036 854 775 807*
+
+
+
+
+
+
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+<<InstancesStatisticsDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "id" : 1,
+  "uuid" : "1d2de514-3a87-4620-9b97-c260e24340de",
+  "relationName" : "iris",
+  "numInstances" : 150,
+  "numAttributes" : 5,
+  "className" : "class",
+  "numClasses" : 4,
+  "numNumericAttributes" : 4,
+  "numNominalAttributes" : 1,
+  "numDateAttributes" : 0
+}
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|
+__array__
+<<<ValidationErrorDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "DataNotFound",
+  "errorMessage" : "Entity with search key [1] not found!"
+} ]
+----
+|===
+
 == Download instances report with specified type
 
 __GET__ */instances/download* - Download instances report with specified type
@@ -1660,6 +1792,191 @@ a|
     "value" : "Iris-verginica"
   } ]
 } ]
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|
+__array__
+<<<ValidationErrorDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "DataNotFound",
+  "errorMessage" : "Entity with search key [1] not found!"
+} ]
+----
+|===
+
+== Gets attribute statistics
+
+__GET__ */instances/attribute-stats/{id}* - Gets attribute statistics
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+
+*Request parameters*
+[width=100%]
+|===
+|*Name*|*Description*|*Location*|*Schema*
+|*id**
+|Attribute id
+|path
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 9 223 372 036 854 775 807*
+
+
+
+
+
+
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+<<AttributeStatisticsDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "id" : 7,
+  "name" : "duration",
+  "index" : 1,
+  "type" : {
+    "value" : "NUMERIC",
+    "description" : "Числовой"
+  },
+  "minValue" : 4.0,
+  "maxValue" : 72.0,
+  "meanValue" : 20.903,
+  "varianceValue" : 145.415,
+  "stdDevValue" : 12.0588,
+  "frequencyDiagramValues" : [ {
+    "code" : null,
+    "frequency" : 171,
+    "lowerBound" : 4.0,
+    "upperBound" : 10.8
+  }, {
+    "code" : null,
+    "frequency" : 262,
+    "lowerBound" : 10.8,
+    "upperBound" : 17.6
+  }, {
+    "code" : null,
+    "frequency" : 337,
+    "lowerBound" : 17.6,
+    "upperBound" : 24.4
+  }, {
+    "code" : null,
+    "frequency" : 57,
+    "lowerBound" : 24.4,
+    "upperBound" : 31.2
+  }, {
+    "code" : null,
+    "frequency" : 86,
+    "lowerBound" : 31.2,
+    "upperBound" : 38.0
+  }, {
+    "code" : null,
+    "frequency" : 17,
+    "lowerBound" : 38.0,
+    "upperBound" : 44.8
+  }, {
+    "code" : null,
+    "frequency" : 54,
+    "lowerBound" : 44.8,
+    "upperBound" : 51.6
+  }, {
+    "code" : null,
+    "frequency" : 2,
+    "lowerBound" : 51.6,
+    "upperBound" : 58.4
+  }, {
+    "code" : null,
+    "frequency" : 13,
+    "lowerBound" : 58.4,
+    "upperBound" : 65.2
+  }, {
+    "code" : null,
+    "frequency" : 1,
+    "lowerBound" : 65.2,
+    "upperBound" : 72.0
+  } ]
+}
 ----
 |401
 |Not authorized
@@ -2593,6 +2910,224 @@ __string__
 
 
 |===
+=== InstancesStatisticsDto
+:table-caption: Table
+.Instances statistics model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*id*
+|Instances id
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 9 223 372 036 854 775 807*
+
+
+
+
+
+
+
+
+|*uuid*
+|Instances uuid
+a|
+__string__
+
+
+
+
+*Max. length*: 36
+
+
+
+
+
+
+
+
+
+
+|*relationName*
+|Instances name
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*numInstances*
+|Instances number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|*numAttributes*
+|Attributes number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|*className*
+|Class name
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*numClasses*
+|Classes number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|*numNumericAttributes*
+|Numeric attributes number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|*numNominalAttributes*
+|Nominal attributes number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|*numDateAttributes*
+|Date attributes number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|===
 === AttributeDto
 :table-caption: Table
 .Attribute model
@@ -2828,6 +3363,311 @@ __string__
 *Max. length*: 255
 
 
+
+
+
+
+
+
+
+
+|===
+=== AttributeStatisticsDto
+:table-caption: Table
+.Attribute statistics model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*id*
+|Attribute id
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 9 223 372 036 854 775 807*
+
+
+
+
+
+
+
+
+|*name*
+|Attribute name
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*index*
+|Attribute index
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|*type*
+|-
+a|
+<<EnumDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*minValue*
+|Minimum value
+a|
+__number__
+
+
+
+
+
+
+*Minimum*: -2 147 483 648*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|*maxValue*
+|Maximum value
+a|
+__number__
+
+
+
+
+
+
+*Minimum*: -2 147 483 648*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|*meanValue*
+|Mean value
+a|
+__number__
+
+
+
+
+
+
+*Minimum*: -2 147 483 648*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|*varianceValue*
+|Variance value
+a|
+__number__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 1*
+
+
+
+
+
+
+
+
+|*stdDevValue*
+|Standard deviation value
+a|
+__number__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 1*
+
+
+
+
+
+
+
+
+|*frequencyDiagramValues*
+|Frequency diagram values
+a|
+__array__
+<<<FrequencyDiagramDataDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== FrequencyDiagramDataDto
+:table-caption: Table
+.Frequency diagram data dto
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*code*
+|Attribute value code
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*frequency*
+|Frequency value
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|*lowerBound*
+|Interval lower bound
+a|
+__number__
+
+
+
+
+
+
+*Minimum*: -2 147 483 648*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|*upperBound*
+|Interval upper bound
+a|
+__number__
+
+
+
+
+
+
+*Minimum*: -2 147 483 648*
+
+*Maximum*: 2 147 483 647*
 
 
 
