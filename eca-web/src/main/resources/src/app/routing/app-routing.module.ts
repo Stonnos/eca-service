@@ -12,12 +12,12 @@ import { InstancesListComponent } from "../instances/components/instances-list.c
 import { AccessDeniedComponent } from "../access-denied/components/access-denied.component";
 import { AuditLogsComponent } from "../audit-logs/components/audit-logs.component";
 import { TemplatesListComponent } from "../email-templates/components/templates-list/templates-list.component";
-import { InstancesDetailsComponent } from "../instances-details/components/instances-details.component";
 import { CreateResetPasswordRequestComponent } from "../change-password/components/create-reset-password-request/create-reset-password-request.component";
 import { ClassifiersConfigurationFullDetailsComponent } from "../classifiers-configuration-full-details/components/classifiers-configuration-full-details.component";
 import { ClassifiersTabsComponent } from "../classifiers-tabs/components/classifiers-tabs.component";
 import { EvaluationResultsHistoryComponent } from "../evaluation-results-history/components/evaluation-results-history.component";
 import { UserProfileTabsComponent } from "../user-profile-tabs/components/user-profile-tabs.component";
+import { InstancesDetailsTabsComponent } from "../instances-details-tabs/components/instances-details-tabs.component";
 
 const routes: Routes = [
   {
@@ -42,7 +42,7 @@ const routes: Routes = [
       },
       {
         path: 'instances/details/:id',
-        component: InstancesDetailsComponent
+        component: InstancesDetailsTabsComponent
       },
       {
         path: 'users',

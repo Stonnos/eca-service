@@ -1,9 +1,9 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
-  AttributeDto,
+  AttributeDto, AttributeStatisticsDto,
   CreateInstancesResultDto,
-  InstancesDto, InstancesReportInfoDto,
+  InstancesDto, InstancesReportInfoDto, InstancesStatisticsDto,
   PageDto,
   PageRequestDto,
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
@@ -133,5 +133,19 @@ export class InstancesService {
     const formData = new FormData();
     formData.append('classAttributeId', classAttributeId.toString());
     return this.http.put(this.serviceUrl + '/set-class-attribute', formData, { headers: headers });
+  }
+
+  public getInstancesStatistics(id: number): Observable<InstancesStatisticsDto> {
+    const headers = new HttpHeaders({
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    return this.http.get<InstancesStatisticsDto>(this.serviceUrl + '/instances-stats/' + id, { headers: headers });
+  }
+
+  public getAttributeStatistics(id: number): Observable<AttributeStatisticsDto> {
+    const headers = new HttpHeaders({
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    return this.http.get<AttributeStatisticsDto>(this.serviceUrl + '/attribute-stats/' + id, { headers: headers });
   }
 }

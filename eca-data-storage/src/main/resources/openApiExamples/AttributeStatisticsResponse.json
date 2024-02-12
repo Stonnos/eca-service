@@ -1,0 +1,76 @@
+{
+  "id": 7,
+  "name": "duration",
+  "index": 1,
+  "type": {
+    "value": "NUMERIC",
+    "description": "Числовой"
+  },
+  "minValue": 4.0000,
+  "maxValue": 72.0000,
+  "meanValue": 20.9030,
+  "varianceValue": 145.4150,
+  "stdDevValue": 12.0588,
+  "frequencyDiagramValues": [
+    {
+      "code": null,
+      "frequency": 171,
+      "lowerBound": 4.0000,
+      "upperBound": 10.8000
+    },
+    {
+      "code": null,
+      "frequency": 262,
+      "lowerBound": 10.8000,
+      "upperBound": 17.6000
+    },
+    {
+      "code": null,
+      "frequency": 337,
+      "lowerBound": 17.6000,
+      "upperBound": 24.4000
+    },
+    {
+      "code": null,
+      "frequency": 57,
+      "lowerBound": 24.4000,
+      "upperBound": 31.2000
+    },
+    {
+      "code": null,
+      "frequency": 86,
+      "lowerBound": 31.2000,
+      "upperBound": 38.0000
+    },
+    {
+      "code": null,
+      "frequency": 17,
+      "lowerBound": 38.0000,
+      "upperBound": 44.8000
+    },
+    {
+      "code": null,
+      "frequency": 54,
+      "lowerBound": 44.8000,
+      "upperBound": 51.6000
+    },
+    {
+      "code": null,
+      "frequency": 2,
+      "lowerBound": 51.6000,
+      "upperBound": 58.4000
+    },
+    {
+      "code": null,
+      "frequency": 13,
+      "lowerBound": 58.4000,
+      "upperBound": 65.2000
+    },
+    {
+      "code": null,
+      "frequency": 1,
+      "lowerBound": 65.2000,
+      "upperBound": 72.0000
+    }
+  ]
+}

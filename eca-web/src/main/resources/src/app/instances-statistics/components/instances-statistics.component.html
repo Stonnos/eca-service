@@ -1,0 +1,88 @@
+<p-progressSpinner
+  class="app-progress-spinner"
+  strokeWidth="4"
+  animationDuration=".5s"
+  *ngIf="loading">
+</p-progressSpinner>
+<div class="container-fluid mb-5">
+  <div class="ui-g text-center justify-content-center align-items-center instances-title text-wrap">
+    Данные: {{ instancesStatisticsDto?.relationName }}
+  </div>
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-12 ui-md-4 pl-2">
+      <p-panel class="statistics-panel text-center" [showHeader]="false">
+        <p class="attr">Число объектов</p>
+        <p class="value">{{ instancesStatisticsDto?.numInstances }}</p>
+      </p-panel>
+    </div>
+    <div class="ui-g-12 ui-md-4">
+      <p-panel class="statistics-panel text-center" [showHeader]="false">
+        <p class="attr">Атрибут класса</p>
+        <p class="value">{{ instancesStatisticsDto?.className || '-' }}</p>
+      </p-panel>
+    </div>
+    <div class="ui-g-12 ui-md-4 pr-2">
+      <p-panel class="statistics-panel text-center" [showHeader]="false">
+        <p class="attr">Число классов</p>
+        <p class="value">{{ instancesStatisticsDto?.numClasses || '-' }}</p>
+      </p-panel>
+    </div>
+  </div>
+
+</div>
+
+<div class="row">
+  <div class="attributes-stats-sidebar">
+    <div class="ui-g ui-fluid attr-counting-stats">
+      <div class="ui-g-12">
+        <p-chart type="doughnut"
+                 height="250px"
+                 [data]="attributeCountingStatsDataSet"
+                 [options]="attributeCountingStatsBarOptions">
+        </p-chart>
+      </div>
+    </div>
+
+    <div class="ui-g ui-fluid attr-stats mt-3">
+      <div class="ui-g-12 text-center justify-content-center align-items-center">
+        <div class="form-group mt-1">
+          <label class="choose-attr-label text-bold">Выберите атрибут</label>
+          <p-dropdown
+            [options]="attributes"
+            placeholder="Выбрать"
+            optionLabel="name"
+            [(ngModel)]="selectedAttribute"
+            (onChange)="onSelectAttribute($event)"
+            [style]="{'width':'100%'}">
+          </p-dropdown>
+        </div>
+      </div>
+
+      <div class="ui-g ml-2 mr-2 mb-2">
+        <ng-container [ngSwitch]="attributeStatistics?.type.value">
+          <ng-container *ngSwitchCase="'NOMINAL'">
+            <app-nominal-attribute-statistics-table [attributeStatisticsDto]="attributeStatistics">
+            </app-nominal-attribute-statistics-table>
+          </ng-container>
+          <ng-container *ngSwitchDefault>
+            <app-numeric-attribute-statistics-table [attributeStatisticsDto]="attributeStatistics">
+            </app-numeric-attribute-statistics-table>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+
+  </div>
+  <div class="frequency-diagram-details mb-2">
+    <div class="ui-g">
+      <div class="ui-g-12">
+        <p-chart type="bar"
+                 height="650px"
+                 [data]="frequencyDiagramDataSet"
+                 [options]="frequencyDiagramBarOptions">
+        </p-chart>
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,12 @@
+{
+  "id": 1,
+  "uuid": "1d2de514-3a87-4620-9b97-c260e24340de",
+  "relationName": "iris",
+  "numInstances": 150,
+  "numAttributes": 5,
+  "className": "class",
+  "numClasses": 4,
+  "numNumericAttributes": 4,
+  "numNominalAttributes": 1,
+  "numDateAttributes": 0
+}

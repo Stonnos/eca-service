@@ -24,9 +24,9 @@ spring:
       correlation-fields: tx.id
       remote-fields: tx.id
   cache:
-    cache-names: attributes, global-filters, filter-templates, filter-dictionaries, sort-fields
+    cache-names: attributes, attributes-statistics, global-filters, filter-templates, filter-dictionaries, sort-fields
     caffeine:
-      spec: maximumSize=100, expireAfterWrite=18000s
+      spec: maximumSize=100, expireAfterWrite=1800s
   servlet:
     multipart:
       max-file-size: 10MB

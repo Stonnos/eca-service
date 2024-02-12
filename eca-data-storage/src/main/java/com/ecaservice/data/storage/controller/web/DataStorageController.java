@@ -9,13 +9,16 @@ import com.ecaservice.data.storage.report.InstancesReportService;
 import com.ecaservice.data.storage.report.ReportsConfigurationService;
 import com.ecaservice.data.storage.service.AttributeService;
 import com.ecaservice.data.storage.service.InstancesLoader;
+import com.ecaservice.data.storage.service.InstancesStatisticsService;
 import com.ecaservice.data.storage.service.StorageService;
 import com.ecaservice.web.dto.model.AttributeDto;
+import com.ecaservice.web.dto.model.AttributeStatisticsDto;
 import com.ecaservice.web.dto.model.CreateInstancesResultDto;
 import com.ecaservice.web.dto.model.DataListPageDto;
 import com.ecaservice.web.dto.model.InstancesDto;
 import com.ecaservice.web.dto.model.InstancesPageDto;
 import com.ecaservice.web.dto.model.InstancesReportInfoDto;
+import com.ecaservice.web.dto.model.InstancesStatisticsDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -73,6 +76,7 @@ public class DataStorageController {
     private final StorageService storageService;
     private final InstancesReportService instancesReportService;
     private final AttributeService attributeService;
+    private final InstancesStatisticsService instancesStatisticsService;
     private final ReportsConfigurationService reportsConfigurationService;
     private final InstancesLoader instancesLoader;
     private final InstancesMapper instancesMapper;
@@ -748,5 +752,121 @@ public class DataStorageController {
         log.info("Request to download instances [{}] report [{}]", id, reportType);
         var instancesEntity = storageService.getById(id);
         instancesReportService.generateInstancesReport(instancesEntity, reportType, httpServletResponse);
+    }
+
+    /**
+     * Gets instances statistics.
+     *
+     * @param id - attribute id
+     * @return attribute statistics
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @Operation(
+            description = "Gets instances statistics",
+            summary = "Gets instances statistics",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "InstancesStatisticsResponse",
+                                                    ref = "#/components/examples/InstancesStatisticsResponse"
+                                            ),
+                                    },
+                                    schema = @Schema(implementation = InstancesStatisticsDto.class)
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "DataNotFoundResponse",
+                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                            ),
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
+                            )
+                    )
+            }
+    )
+    @GetMapping(value = "/instances-stats/{id}")
+    public InstancesStatisticsDto getInstancesStatistics(
+            @Parameter(description = "Instances id", example = "1", required = true)
+            @Min(VALUE_1) @Max(Long.MAX_VALUE)
+            @PathVariable Long id) {
+        log.info("Request get instances [{}] statistics", id);
+        return instancesStatisticsService.getInstancesStatistics(id);
+    }
+
+    /**
+     * Gets attribute statistics.
+     *
+     * @param id - attribute id
+     * @return attribute statistics
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @Operation(
+            description = "Gets attribute statistics",
+            summary = "Gets attribute statistics",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "AttributeStatisticsResponse",
+                                                    ref = "#/components/examples/AttributeStatisticsResponse"
+                                            ),
+                                    },
+                                    schema = @Schema(implementation = AttributeStatisticsDto.class)
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "DataNotFoundResponse",
+                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                            ),
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
+                            )
+                    )
+            }
+    )
+    @GetMapping(value = "/attribute-stats/{id}")
+    public AttributeStatisticsDto getAttributeStatistics(
+            @Parameter(description = "Attribute id", example = "1", required = true)
+            @Min(VALUE_1) @Max(Long.MAX_VALUE)
+            @PathVariable Long id) {
+        log.info("Request get attribute [{}] statistics", id);
+        return instancesStatisticsService.getAttributeStatistics(id);
     }
 }

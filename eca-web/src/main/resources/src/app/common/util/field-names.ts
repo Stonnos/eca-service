@@ -162,3 +162,18 @@ export class EvaluationResultsHistoryFields {
   public static readonly MAX_AUC: string = "maxAucValue";
   public static readonly SAVE_DATE: string = "saveDate";
 }
+
+export class FrequencyDiagramDataFields {
+  public static readonly CODE: string = "code";
+  public static readonly FREQUENCY: string = "frequency";
+
+}
+
+export class AttributeStatisticsFields {
+  public static readonly MIN_VALUE: string = "minValue";
+  public static readonly MAX_VALUE: string = "maxValue";
+  public static readonly MEAN_VALUE: string = "meanValue";
+  public static readonly VARIANCE_VALUE: string = "varianceValue";
+  public static readonly STD_DEV_VALUE: string = "stdDevValue";
+
+}

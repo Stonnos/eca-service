@@ -1,0 +1,16 @@
+<div class="container-fluid mb-5">
+  <p-tabView class="instances-details-tab">
+    <p-tabPanel header="Данные" leftIcon="pi pi-table" [cache]="false">
+      <ng-template pTemplate="content">
+        <app-instances-details></app-instances-details>
+      </ng-template>
+    </p-tabPanel>
+
+    <p-tabPanel header="Статистика" leftIcon="pi pi-chart-bar" [cache]="false">
+      <ng-template pTemplate="content">
+        <app-instances-statistics></app-instances-statistics>
+      </ng-template>
+    </p-tabPanel>
+
+  </p-tabView>
+</div>
