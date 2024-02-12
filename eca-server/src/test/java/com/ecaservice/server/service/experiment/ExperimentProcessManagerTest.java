@@ -5,6 +5,8 @@ import com.ecaservice.base.model.ExperimentResponse;
 import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.ers.dto.EvaluationResultsRequest;
 import com.ecaservice.notification.dto.EmailRequest;
+import com.ecaservice.s3.client.minio.model.UploadObject;
+import com.ecaservice.s3.client.minio.service.MinioStorageService;
 import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.model.entity.Channel;
 import com.ecaservice.server.model.entity.ChannelVisitor;
@@ -26,10 +28,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import javax.inject.Inject;
-import java.io.IOException;
-import java.io.Serializable;
 import java.util.UUID;
 
 import static com.ecaservice.server.TestHelperUtils.createExperiment;
@@ -37,7 +38,6 @@ import static com.ecaservice.server.TestHelperUtils.createExperimentMessageReque
 import static com.ecaservice.server.TestHelperUtils.createExperimentWebRequestModel;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
@@ -65,6 +65,11 @@ class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<
     private static final String ERROR_EXPERIMENT_EMAIL_TEMPLATE_CODE = "ERROR_EXPERIMENT";
     private static final String REPLY_TO = "reply-yo";
     private static final String CREATED_BY = "user";
+
+    @MockBean
+    private ExperimentModelLocalStorage experimentModelLocalStorage;
+    @MockBean
+    private MinioStorageService minioStorageService;
 
     @Inject
     private ExperimentRepository experimentRepository;
@@ -220,9 +225,9 @@ class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<
     }
 
     @Test
-    void testProcessErrorExperimentWithQueueChannel() throws IOException {
+    void testProcessErrorExperimentWithQueueChannel() {
         Experiment experiment = createAndSaveExperiment(Channel.QUEUE);
-        doThrow(IOException.class).when(getObjectStorageService()).uploadObject(any(Serializable.class), anyString());
+        doThrow(RuntimeException.class).when(minioStorageService).uploadObject(any(UploadObject.class));
         testProcessExperiment(experiment);
 
         captureEcaResponse();
@@ -243,9 +248,9 @@ class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<
     }
 
     @Test
-    void testProcessErrorExperimentWithWebChannel() throws IOException {
+    void testProcessErrorExperimentWithWebChannel() {
         Experiment experiment = createAndSaveExperiment(Channel.WEB);
-        doThrow(IOException.class).when(getObjectStorageService()).uploadObject(any(Serializable.class), anyString());
+        doThrow(RuntimeException.class).when(minioStorageService).uploadObject(any(UploadObject.class));
         testProcessExperiment(experiment);
 
         var actualExperiment = getExperiment(experiment.getRequestId());

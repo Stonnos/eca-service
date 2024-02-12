@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Import;
 
 import javax.inject.Inject;
 
-import static com.ecaservice.server.TestHelperUtils.createExperimentHistory;
 import static com.ecaservice.server.TestHelperUtils.loadInstances;
 
 /**
@@ -30,7 +29,6 @@ class ExperimentErsReportProcessorStepHandlerTest extends AbstractStepHandlerTes
     @Test
     void testSentErsReportSuccess() throws Exception {
         var data = loadInstances();
-        var experimentHistory = createExperimentHistory(data);
         testStep(experimentErsReportProcessorStepHandler::handle, ExperimentStepStatus.COMPLETED);
     }
 }
