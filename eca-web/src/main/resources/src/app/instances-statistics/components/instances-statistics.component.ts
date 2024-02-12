@@ -43,7 +43,6 @@ export class InstancesStatisticsComponent implements OnInit {
   }
 
   public ngOnInit() {
-    this.initFrequencyDiagramBarOptions();
     this.getInstancesStatistics();
     this.getAttributes();
   }
@@ -93,6 +92,7 @@ export class InstancesStatisticsComponent implements OnInit {
       .subscribe({
         next: (statisticsDto: AttributeStatisticsDto) => {
           this.attributeStatistics = statisticsDto;
+          this.updateFrequencyDiagramBarOptions();
           this.updateFrequencyDiagramDataSet();
         },
         error: (error) => {
@@ -136,11 +136,11 @@ export class InstancesStatisticsComponent implements OnInit {
     };
   }
 
-  private initFrequencyDiagramBarOptions(): void {
+  private updateFrequencyDiagramBarOptions(): void {
     this.frequencyDiagramBarOptions = {
       title: {
         display: true,
-        text: 'Гистограмма частот',
+        text: `Гистограмма частот атрибута: ${this.attributeStatistics.name}`,
         fontSize: 20
       },
       legend: {
