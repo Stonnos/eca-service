@@ -3,10 +3,16 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { UiComponentsModule } from "../ui-components.module";
 import { SharedModule } from "../common/shared.module";
-import { InstancesDetailsComponent } from "./components/instances-details.component";
+import { InstancesStatisticsComponent } from "./components/instances-statistics.component";
 import { CreateEditInstancesModule } from "../create-edit-instances/create-edit-instances.module";
 import { ExportInstancesModule } from "../export-instances/export-instances.module";
 import { AttributesModule } from "../attributes/attributes.module";
+import {
+  NominalAttributeStatisticsTableComponent
+} from "./components/nominal-attribute-statistics-table/nominal-attribute-statistics-table.component";
+import {
+  NumericAttributeStatisticsTableComponent
+} from "./components/numeric-attribute-statistics-table/numeric-attribute-statistics-table.component";
 
 @NgModule({
   imports: [
@@ -18,12 +24,14 @@ import { AttributesModule } from "../attributes/attributes.module";
     ExportInstancesModule,
     AttributesModule
   ],
-  declarations: [
-    InstancesDetailsComponent
-  ],
   exports: [
-    InstancesDetailsComponent
+    InstancesStatisticsComponent
+  ],
+  declarations: [
+    InstancesStatisticsComponent,
+    NominalAttributeStatisticsTableComponent,
+    NumericAttributeStatisticsTableComponent
   ]
 })
-export class InstancesDetailsModule {
+export class InstancesStatisticsModule {
 }

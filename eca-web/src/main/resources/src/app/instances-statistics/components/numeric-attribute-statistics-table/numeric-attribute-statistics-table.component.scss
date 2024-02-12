@@ -1,0 +1,8 @@
+.numeric-attribute-statistics-table::ng-deep {
+
+  .ui-table-tbody > tr > td {
+    &:first-child {
+      font-weight: bold;
+    }
+  }
+}

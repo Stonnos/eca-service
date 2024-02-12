@@ -1,0 +1,110 @@
+.statistics-panel::ng-deep {
+
+  .ui-panel {
+    background: rgba(226, 226, 226, 0.64);
+    border: 1px solid #d5d5d5;
+    border-radius: 10px;
+    height: 75px;
+
+    .ui-panel-content {
+      background: inherit;
+      padding: 2px;
+      border: none;
+    }
+  }
+}
+
+.instances-title {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.attr {
+  margin-top: 5px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.value {
+  margin-top: 10px;
+  font-size: 18px;
+}
+
+.attributes-stats-sidebar {
+  margin-left: 10px;
+  width: 450px;
+  min-width: 450px;
+  max-width: 450px;
+  display: inline-block;
+}
+
+.choose-attr-label {
+  margin-top: 5px;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.attributes-stats-panel::ng-deep {
+
+  .ui-panel {
+    background: rgba(226, 226, 226, 0.64);
+    border: 1px solid #d5d5d5;
+    margin-left: 5px;
+
+    .ui-panel-content {
+      background: inherit;
+      padding: 2px;
+      border: none;
+    }
+  }
+}
+
+.frequency-diagram-details {
+  margin-left: 15px;
+  width: calc(100% - 475px);
+  border: 0.5px solid darkgrey;
+  display: inline-block;
+}
+
+.attr-counting-stats {
+  border: 1px solid #d5d5d5;
+  margin-left: 5px;
+  background: rgba(226, 226, 226, 0.64);
+}
+
+.attr-stats {
+  border: 1px solid #d5d5d5;
+  margin-left: 5px;
+  background: rgba(226, 226, 226, 0.64);
+}
+
+.app-progress-spinner::ng-deep {
+  .ui-progress-spinner {
+    position: fixed;
+    margin: auto;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 150px;
+    height: 150px;
+    z-index: 100000;
+  }
+
+  @keyframes ui-progress-spinner-color {
+    100%,
+    0% {
+      stroke: #416ee7;
+    }
+    40% {
+      stroke: #416ee7;
+    }
+    66% {
+      stroke: #416ee7;
+    }
+    80%,
+    90% {
+      stroke: #416ee7;
+    }
+  }
+}
