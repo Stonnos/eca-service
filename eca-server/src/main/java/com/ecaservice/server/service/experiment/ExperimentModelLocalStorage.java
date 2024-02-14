@@ -51,7 +51,7 @@ public class ExperimentModelLocalStorage {
                 stopWatch.getLastTaskInfo().getTimeMillis());
 
         String modelZipFilePath =
-                String.format("%s/%s.zip", experimentConfig.getExperimentLocalStoragePath(), requestId);
+                String.format("%s/experiment-%s.zip", experimentConfig.getExperimentLocalStoragePath(), requestId);
         log.info("Starting to save experiment [{}] model to zip file [{}]", requestId, modelZipFilePath);
         stopWatch.start("saveZipModel");
         createZipArchive(modelFilePath, modelZipFilePath);
@@ -91,7 +91,8 @@ public class ExperimentModelLocalStorage {
     }
 
     private File getModelZipFile(String requestId) {
-        return new File(String.format("%s/%s.zip", experimentConfig.getExperimentLocalStoragePath(), requestId));
+        return new File(
+                String.format("%s/experiment-%s.zip", experimentConfig.getExperimentLocalStoragePath(), requestId));
     }
 
     private void deleteFile(File file) {
