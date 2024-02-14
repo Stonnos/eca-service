@@ -1,6 +1,7 @@
 package com.ecaservice.test.common.reader;
 
 import eca.data.file.resource.AbstractResource;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.core.io.Resource;
 
 import java.io.IOException;
@@ -30,5 +31,10 @@ public class ResourceReader extends AbstractResource<Resource> {
     @Override
     public String getFile() {
         return getResource().getFilename();
+    }
+
+    @Override
+    public String getExtension() {
+        return FilenameUtils.getExtension(getFile());
     }
 }

@@ -1,4 +1,4 @@
-= Модуль ECA - SERVER (v6.1)
+= Модуль ECA - SERVER
 :toc:
 :toc-title: Оглавление
 
@@ -11,7 +11,7 @@
 3. Интеграция с сервисом ERS (Evaluation results service). API предоставляет возможность отправки результатов классификации в сервис для последующего анализа, а также нахождение
 оптимальных конфигураций классификаторов для конкретной обучающей выборки на основе истории результатов классификации.
 
-Для интеграции с eca - service, на клиенте должна быть установлена самая последняя версия eca-core (6.9.6)
+Для интеграции с eca - service, на клиенте должна быть установлена самая последняя версия eca-core (6.9.7)
 
 == 2. Описание очередей
 
@@ -102,7 +102,7 @@
 {
   "requestId": "1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
   "status": "SUCCESS",
-  "modelUrl": "http://localhost:8098/object-storage/eca-service/classifier-0f45c641-48e1-4f8f-a461-38c27a4befc3.model?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minio%2F20220727%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220727T061714Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=2ebb2d403962381a141efaf28767fe3ef622ce1477d9bd2f914560561579325c",
+  "modelUrl": "http://localhost:8098/object-storage/eca-service/classifier-1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c.model?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minio%2F20220727%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220727T061714Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=2ebb2d403962381a141efaf28767fe3ef622ce1477d9bd2f914560561579325c",
   "numTestInstances": 150,
   "numCorrect": 144,
   "numIncorrect": 6,
@@ -168,13 +168,13 @@
 |numCorrect
 |integer
 |-
-|Число верно лкассифицированных объектов
+|Число верно классифицированных объектов
 |Заполняется только в случае, если значение статуса SUCCESS
 |7
 |numIncorrect
 |integer
 |-
-|Число неверно лкассифицированных объектов
+|Число неверно классифицированных объектов
 |Заполняется только в случае, если значение статуса SUCCESS
 |8
 |pctCorrect
@@ -227,6 +227,7 @@
 |dataUuid
 |string
 |+
+|255
 |UUID обучающей выборки из единого хранилища данных
 |
 |4
@@ -245,7 +246,7 @@
 {
   "requestId": "1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
   "status": "SUCCESS"
-  "downloadUrl": "http://localhost:8080/eca-server/eca-api/experiment/download/YTcxNGUxNDcwYTM2NmUwNjRjZjA3ZmZkZDYyNTQzZWY6NTA0MjMzNDkwMDc0MzY3OTky",
+  "downloadUrl": "http://localhost:8098/object-storage/eca-service/experiment-1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c.zip?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minio%2F20220727%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220727T061714Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=2ebb2d403962381a141efaf28767fe3ef622ce1477d9bd2f914560561579325c",
   "errors": null
 }
 ----
@@ -312,41 +313,17 @@
 {
   "requestId": "1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
   "status": "SUCCESS",
-  "evaluationResults": "<Base64 evaluation results>",
-  "errors": null
+  "modelUrl": "http://localhost:8098/object-storage/eca-service/classifier-1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c.model?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minio%2F20220727%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220727T061714Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=2ebb2d403962381a141efaf28767fe3ef622ce1477d9bd2f914560561579325c",
+  "numTestInstances": 150,
+  "numCorrect": 144,
+  "numIncorrect": 6,
+  "pctCorrect": 96,
+  "pctIncorrect": 4,
+  "meanAbsoluteError": 0.02869334024628254
 }
 ----
 
-=== 5.4. Описание полей ответа на запрос для нахождение оптимального классификатора
-
-[options="header"]
-|===
-|№|Название поля|Тип|Обязательное|Описание|Комментарий
-|1
-|requestId
-|string
-|+
-|Идентификатор запроса
-|
-|2
-|status
-|string
-|+
-|Статус построения модели
-|Заполнятся по <<Справочник значений TechnicalStatus>>
-|2
-|errors
-|array<MessageError>
-|-
-|Список ошибок
-|Заполняется в случае, если произошла какая либо ошибка
-|3
-|evaluationResults
-|Base64 of EvaluationResults
-|-
-|Результаты классификации, включая построенную модель классификатора
-|Заполняется только в случае, если значение статуса SUCCESS
-|===
+Описание полей ответа приведено в <<3.5. Описание полей ответа на запрос для обучения модели классификатора>>
 
 == 6. Описание полей MessageError
 

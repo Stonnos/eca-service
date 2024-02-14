@@ -9,6 +9,7 @@ import com.ecaservice.server.model.entity.ExperimentStepStatus;
 import com.ecaservice.server.model.experiment.InitializationParams;
 import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.service.data.InstancesLoaderService;
+import com.ecaservice.server.service.experiment.ExperimentModelLocalStorage;
 import com.ecaservice.server.service.experiment.ExperimentProcessorService;
 import com.ecaservice.server.service.experiment.ExperimentProgressService;
 import com.ecaservice.server.service.experiment.ExperimentStepService;
@@ -40,6 +41,8 @@ class ExperimentModelProcessorStepHandlerTest extends AbstractStepHandlerTest {
     private InstancesLoaderService instancesLoaderService;
     @Mock
     private ExperimentProcessorService experimentProcessorService;
+    @Mock
+    private ExperimentModelLocalStorage experimentModelLocalStorage;
 
     @Inject
     private ExperimentConfig experimentConfig;
@@ -60,8 +63,9 @@ class ExperimentModelProcessorStepHandlerTest extends AbstractStepHandlerTest {
         data = TestHelperUtils.loadInstances();
         var executorService = Executors.newCachedThreadPool();
         experimentModelProcessorStepHandler =
-                new ExperimentModelProcessorStepHandler(experimentConfig, instancesLoaderService, experimentProcessorService,
-                        executorService, experimentStepService, experimentProgressService, experimentRepository);
+                new ExperimentModelProcessorStepHandler(experimentConfig, instancesLoaderService,
+                        experimentProcessorService, executorService, experimentStepService, experimentModelLocalStorage,
+                        experimentProgressService, experimentRepository);
     }
 
     @Test

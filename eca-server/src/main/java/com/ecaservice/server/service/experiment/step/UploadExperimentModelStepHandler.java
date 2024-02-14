@@ -1,7 +1,8 @@
 package com.ecaservice.server.service.experiment.step;
 
 import com.ecaservice.s3.client.minio.exception.ObjectStorageException;
-import com.ecaservice.s3.client.minio.service.ObjectStorageService;
+import com.ecaservice.s3.client.minio.model.UploadObject;
+import com.ecaservice.s3.client.minio.service.MinioStorageService;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentStep;
 import com.ecaservice.server.model.entity.ExperimentStepEntity;
@@ -9,12 +10,10 @@ import com.ecaservice.server.model.experiment.ExperimentContext;
 import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.service.experiment.ExperimentModelLocalStorage;
 import com.ecaservice.server.service.experiment.ExperimentStepService;
-import eca.dataminer.AbstractExperiment;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
-
-import java.io.IOException;
 
 /**
  * Step handler to upload experiment model to S3.
@@ -25,9 +24,9 @@ import java.io.IOException;
 @Component
 public class UploadExperimentModelStepHandler extends AbstractExperimentStepHandler {
 
-    private static final String EXPERIMENT_PATH_FORMAT = "experiment-%s.model";
+    private static final String EXPERIMENT_PATH_FORMAT = "experiment-%s.zip";
 
-    private final ObjectStorageService objectStorageService;
+    private final MinioStorageService minioStorageService;
     private final ExperimentStepService experimentStepService;
     private final ExperimentModelLocalStorage experimentModelLocalStorage;
     private final ExperimentRepository experimentRepository;
@@ -35,17 +34,17 @@ public class UploadExperimentModelStepHandler extends AbstractExperimentStepHand
     /**
      * Constructor with parameters.
      *
-     * @param objectStorageService        - object storage service
+     * @param minioStorageService         - minio storage service
      * @param experimentStepService       - experiment step service
      * @param experimentModelLocalStorage - experiment model local storage
      * @param experimentRepository        - experiment repository
      */
-    public UploadExperimentModelStepHandler(ObjectStorageService objectStorageService,
+    public UploadExperimentModelStepHandler(MinioStorageService minioStorageService,
                                             ExperimentStepService experimentStepService,
                                             ExperimentModelLocalStorage experimentModelLocalStorage,
                                             ExperimentRepository experimentRepository) {
         super(ExperimentStep.UPLOAD_EXPERIMENT_MODEL);
-        this.objectStorageService = objectStorageService;
+        this.minioStorageService = minioStorageService;
         this.experimentStepService = experimentStepService;
         this.experimentModelLocalStorage = experimentModelLocalStorage;
         this.experimentRepository = experimentRepository;
@@ -58,25 +57,13 @@ public class UploadExperimentModelStepHandler extends AbstractExperimentStepHand
             experimentStepService.start(experimentStepEntity);
             Experiment experiment = experimentContext.getExperiment();
             StopWatch stopWatch = experimentContext.getStopWatch();
-            log.info("Starting to get experiment history [{}] to upload", experiment.getRequestId());
-            if (experimentContext.getExperimentHistory() == null) {
-                log.info("Starting to get experiment history [{}] from local storage", experiment.getRequestId());
-                stopWatch.start(String.format("Load experiment history [%s] from local storage", experiment.getRequestId()));
-                var experimentHistory = experimentModelLocalStorage.get(experiment.getRequestId());
-                stopWatch.stop();
-                experimentContext.setExperimentHistory(experimentHistory);
-                log.info("Experiment history [{}] has been fetched from local storage", experiment.getRequestId());
-                uploadObject(experiment, stopWatch, experimentHistory);
-                experimentModelLocalStorage.delete(experiment.getRequestId());
-            } else {
-                log.info("Experiment history [{}] has been fetched from context", experiment.getRequestId());
-                uploadObject(experiment, stopWatch, experimentContext.getExperimentHistory());
-            }
+            uploadObject(experiment, stopWatch);
+            experimentModelLocalStorage.deleteModel(experiment.getRequestId());
             experimentStepService.complete(experimentStepEntity);
         } catch (ObjectStorageException ex) {
             log.error("Object storage error while upload experiment [{}] model: {}",
                     experimentContext.getExperiment().getRequestId(), ex.getMessage());
-            handleFailedUpload(experimentContext.getExperimentHistory(), experimentStepEntity, ex.getMessage());
+            experimentStepService.failed(experimentStepEntity, ex.getMessage());
         } catch (Exception ex) {
             log.error("Error while upload experiment [{}] model: {}",
                     experimentContext.getExperiment().getRequestId(), ex.getMessage());
@@ -84,28 +71,18 @@ public class UploadExperimentModelStepHandler extends AbstractExperimentStepHand
         }
     }
 
-    private void uploadObject(Experiment experiment,
-                              StopWatch stopWatch,
-                              AbstractExperiment<?> abstractExperiment) throws IOException {
+    private void uploadObject(Experiment experiment, StopWatch stopWatch) {
         String experimentPath = String.format(EXPERIMENT_PATH_FORMAT, experiment.getRequestId());
         stopWatch.start(String.format("Uploads experiment history [%s] to S3", experiment.getRequestId()));
-        objectStorageService.uploadObject(abstractExperiment, experimentPath);
+        minioStorageService.uploadObject(
+                UploadObject.builder()
+                        .objectPath(experimentPath)
+                        .inputStream(() -> experimentModelLocalStorage.getModelInputStream(experiment.getRequestId()))
+                        .contentType(MediaType.APPLICATION_OCTET_STREAM_VALUE)
+                        .build()
+        );
         stopWatch.stop();
         experiment.setModelPath(experimentPath);
         experimentRepository.save(experiment);
-    }
-
-    private void handleFailedUpload(AbstractExperiment<?> experimentHistory,
-                                    ExperimentStepEntity experimentStepEntity,
-                                    String errorMessage) {
-        try {
-            experimentModelLocalStorage.saveIfAbsent(experimentStepEntity.getExperiment().getRequestId(),
-                    experimentHistory);
-            experimentStepService.failed(experimentStepEntity, errorMessage);
-        } catch (Exception ex) {
-            log.error("Error while save experiment [{}] model to local storage: {}",
-                    experimentStepEntity.getExperiment().getRequestId(), ex.getMessage());
-            experimentStepService.completeWithError(experimentStepEntity, ex.getMessage());
-        }
     }
 }

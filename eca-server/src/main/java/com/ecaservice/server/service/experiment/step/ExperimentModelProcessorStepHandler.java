@@ -12,6 +12,7 @@ import com.ecaservice.server.model.experiment.ExperimentContext;
 import com.ecaservice.server.model.experiment.InitializationParams;
 import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.service.data.InstancesLoaderService;
+import com.ecaservice.server.service.experiment.ExperimentModelLocalStorage;
 import com.ecaservice.server.service.experiment.ExperimentProcessorService;
 import com.ecaservice.server.service.experiment.ExperimentProgressService;
 import com.ecaservice.server.service.experiment.ExperimentStepService;
@@ -22,6 +23,7 @@ import org.springframework.util.StopWatch;
 import weka.core.Attribute;
 import weka.core.Instances;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.concurrent.Callable;
@@ -45,25 +47,28 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
     private final ExperimentProcessorService experimentProcessorService;
     private final ExecutorService executorService;
     private final ExperimentStepService experimentStepService;
+    private final ExperimentModelLocalStorage experimentModelLocalStorage;
     private final ExperimentProgressService experimentProgressService;
     private final ExperimentRepository experimentRepository;
 
     /**
      * Constructor with parameters.
      *
-     * @param experimentConfig           - experiment config
-     * @param instancesLoaderService     - instances loader service
-     * @param experimentProcessorService - experiment processor service
-     * @param executorService            - executor service
-     * @param experimentStepService      - experiment step service
-     * @param experimentProgressService  - experiment progress service
-     * @param experimentRepository       - experiment repository
+     * @param experimentConfig            - experiment config
+     * @param instancesLoaderService      - instances loader service
+     * @param experimentProcessorService  - experiment processor service
+     * @param executorService             - executor service
+     * @param experimentStepService       - experiment step service
+     * @param experimentModelLocalStorage - experiment model local storage
+     * @param experimentProgressService   - experiment progress service
+     * @param experimentRepository        - experiment repository
      */
     public ExperimentModelProcessorStepHandler(ExperimentConfig experimentConfig,
                                                InstancesLoaderService instancesLoaderService,
                                                ExperimentProcessorService experimentProcessorService,
                                                ExecutorService executorService,
                                                ExperimentStepService experimentStepService,
+                                               ExperimentModelLocalStorage experimentModelLocalStorage,
                                                ExperimentProgressService experimentProgressService,
                                                ExperimentRepository experimentRepository) {
         super(ExperimentStep.EXPERIMENT_PROCESSING);
@@ -72,6 +77,7 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
         this.experimentProcessorService = experimentProcessorService;
         this.executorService = executorService;
         this.experimentStepService = experimentStepService;
+        this.experimentModelLocalStorage = experimentModelLocalStorage;
         this.experimentProgressService = experimentProgressService;
         this.experimentRepository = experimentRepository;
     }
@@ -84,6 +90,7 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
             Instances data = getInstances(experimentContext);
             Instances filteredInstances = removeConstantAttributes(data);
             processExperiment(filteredInstances, experimentContext);
+            saveModelToLocalStorage(experimentStepEntity, experimentContext.getExperimentHistory());
             saveMaxPctCorrectValue(experimentContext);
             experimentProgressService.finish(experimentStepEntity.getExperiment());
             experimentStepService.complete(experimentStepEntity);
@@ -147,5 +154,11 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
                                 experiment.getRequestId())));
         experiment.setMaxPctCorrect(BigDecimal.valueOf(bestEvaluationResults.getEvaluation().pctCorrect()));
         experimentRepository.save(experiment);
+    }
+
+    private void saveModelToLocalStorage(ExperimentStepEntity experimentStepEntity,
+                                         AbstractExperiment<?> experimentHistory) throws IOException {
+        experimentModelLocalStorage.saveModelAsZip(experimentStepEntity.getExperiment().getRequestId(),
+                experimentHistory);
     }
 }
