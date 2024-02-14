@@ -2,6 +2,7 @@ package com.ecaservice.data.storage.model;
 
 import eca.data.file.resource.DataResource;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.io.ByteArrayInputStream;
@@ -31,5 +32,10 @@ public class MockHttpServletResponseResource implements DataResource<MockHttpSer
     @Override
     public String getFile() {
         return fileName;
+    }
+
+    @Override
+    public String getExtension() {
+        return FilenameUtils.getExtension(getFile());
     }
 }
