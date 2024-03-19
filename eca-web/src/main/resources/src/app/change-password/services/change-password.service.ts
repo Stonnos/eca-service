@@ -16,20 +16,21 @@ export class ChangePasswordService {
   public constructor(private http: HttpClient) {
   }
 
-  public changePassword(changePasswordRequest: ChangePasswordRequest) {
+  public changePassword(changePasswordRequest: ChangePasswordRequest): Observable<ChangePasswordRequestStatusDto> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
       'Authorization': Utils.getBearerTokenHeader()
     });
-    return this.http.post(this.serviceUrl + '/request', changePasswordRequest, { headers: headers })
+    return this.http.post<ChangePasswordRequestStatusDto>(this.serviceUrl + '/request', changePasswordRequest, { headers: headers })
   }
 
-  public confirmChangePasswordRequest(token: string) {
+  public confirmChangePasswordRequest(token: string, confirmationCode: string) {
     const headers = new HttpHeaders({
       'Authorization': Utils.getBearerTokenHeader()
     });
     const formData = new FormData();
     formData.append('token', token);
+    formData.append('confirmationCode', confirmationCode);
     return this.http.post(this.serviceUrl + '/confirm', formData, { headers: headers });
   }
 

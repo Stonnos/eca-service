@@ -53,6 +53,12 @@ public class FormTemplateEntity {
     private String templateTitle;
 
     /**
+     * Template title field reference (used to get title from specified field value)
+     */
+    @Column(name = "template_title_field_ref")
+    private String templateTitleFieldRef;
+
+    /**
      * Fields list
      */
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

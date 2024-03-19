@@ -32,7 +32,7 @@ public class ExperimentErsReportEventListener {
     @EventListener
     public void handleEvent(ExperimentErsReportEvent experimentErsReportEvent) {
         List<ExperimentResultsEntity> experimentResultsEntityList =
-                experimentResultsService.saveExperimentResultsToErsSent(experimentErsReportEvent.getExperiment(),
+                experimentResultsService.saveExperimentResults(experimentErsReportEvent.getExperiment(),
                         experimentErsReportEvent.getExperimentHistory());
         experimentResultsEntityList.forEach(experimentResultsEntity -> {
             log.info("Starting to sent experiment [{}] results index [{}] to ERS",

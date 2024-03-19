@@ -49,7 +49,7 @@ public class EvaluationResultsService {
             InstancesInfo instancesInfo = instancesService.getOrSaveInstancesInfo(evaluationResultsRequest);
             EvaluationResultsInfo evaluationResultsInfo =
                     evaluationResultsMapper.map(evaluationResultsRequest);
-            evaluationResultsInfo.setInstances(instancesInfo);
+            evaluationResultsInfo.setInstancesInfo(instancesInfo);
             evaluationResultsInfo.setSaveDate(LocalDateTime.now());
             evaluationResultsInfoRepository.save(evaluationResultsInfo);
             log.info("Evaluation results report with request id = {} has been successfully saved.",

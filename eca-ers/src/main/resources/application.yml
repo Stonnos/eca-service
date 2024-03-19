@@ -17,9 +17,9 @@ spring:
           lob:
             non_contextual_creation: true
   cache:
-    cache-names: evaluation-results-sort-fields
+    cache-names: evaluation-results-sort-fields, global-filters, filter-templates, filter-dictionaries, sort-fields
     caffeine:
-      spec: maximumSize=10, expireAfterWrite=36000s
+      spec: maximumSize=100, expireAfterWrite=36000s
   liquibase:
     contexts: schema,data
     change-log: classpath:db/liquibase-changelog.xml
@@ -44,13 +44,25 @@ open-api:
   author: Roman Batygin
   email: roman.batygin@mail.ru
   projectVersion: @project.version@
+  tokenBaseUrl: http://localhost:8080
+  apiAuth:
+    PASSWORD:
+      scopes: web
 
 springdoc:
   swagger-ui:
+    oauth:
+      client-id: swagger
+      client-secret: swagger_secret
     disable-swagger-default-url: true
 
 ers:
   resultSize: 5
+
+auth-server:
+  baseUrl: http://localhost:8085/eca-oauth
+  clientId: eca_service_tech
+  clientSecret: 02#eca_service_tech6
 
 management:
   metrics:

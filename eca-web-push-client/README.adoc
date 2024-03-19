@@ -1,0 +1,109 @@
+= Библиотека для отправки push уведомлений в приложении
+:toc:
+:toc-title: Оглавление
+
+== Введение
+
+В данном документе приведена инструкция для подключения библиотеки eca-web-push-client к spring boot приложению.
+
+== 1. Базовые настройки библиотеки
+
+Для начала, необходимо добавить зависимость в pom.xml
+
+[source,xml]
+----
+<dependency>
+    <groupId>eca.service</groupId>
+    <artifactId> eca-web-push-client</artifactId>
+    <version>${project.version}</version>
+</dependency>
+----
+
+В файле application.yml добавить настройки библиотеки
+
+[source,yml]
+----
+web-push:
+  client:
+    ## Вкл./выкл. отправки push уведомлений
+    enabled: true
+    ## Флаг асинхронной отправки push уведомлений
+    async: true
+    ## Размер пула потоков для асинхронной отправки push уведомлений
+    threadPoolSize: 3
+----
+
+Добавить класс конфигурации
+
+[source,java]
+----
+// Если в вашем модуле есть JPA сущности, то указать путь для сканирования
+@EntityScan(basePackageClasses = MyEntity.class)
+// Если в вашем модуле есть JPA репозитории, то указать путь для сканирования
+@EnableJpaRepositories(basePackageClasses = MyEntityRepository.class)
+@Configuration
+public class AppConfiguration {
+}
+----
+
+== 2. Настройка использования механизма redelivery
+
+Для поддержки redelivery (повторной отправки запросов в случае сбоев) в файле application.yml необходимо добавить следующие настройки
+
+[source,yml]
+----
+redelivery:
+  ## Вкл./выкл. механизма redelivery.
+  enabled: true
+  ## Интервал между запусками заданий на повторную отправку запросов
+  redeliveryIntervalMillis: 60000
+  ## Размер страницы для повторной отправки запросов
+  pageSize: 25
+----
+
+В конфигурационный файл liquibase, добавить путь к файлу redelivery-changelog.xml со скриптами для создания служебных таблиц.
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!-- your change sets -->
+    <include file="../redelivery-changelog.xml" relativeToChangelogFile="true"/>
+</databaseChangeLog>
+----
+
+== 3. Настройка использования блокировок для кластерной среды на примере redis
+
+В pom.xml необходимо добавить зависимости для интеграции с redis
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.springframework.integration</groupId>
+    <artifactId>spring-integration-redis</artifactId>
+</dependency>
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-redis</artifactId>
+</dependency>
+----
+
+В файле application.yml добавить следующие настройки
+
+[source,yml]
+----
+lock:
+  ## Вкл./выкл. распределенных блокировок.
+  ## Используется для scheduler повторной отправки push уведомлений.
+  ## Необходимо использовать в случае, если запущено несколько инстансов приложения, во избежании data race
+  enabled: true
+  registry-type: REDIS
+  redis:
+    registryKey: your-registry-key
+    ## Время действия блокировки в милисекундах.
+    expireAfter: 60000
+----

@@ -1,5 +1,6 @@
 package com.ecaservice.server.event.model.push;
 
+import com.ecaservice.core.push.client.event.model.AbstractUserPushNotificationEvent;
 import com.ecaservice.server.model.entity.ClassifiersConfiguration;
 import lombok.Getter;
 
@@ -22,8 +23,8 @@ public abstract class AbstractChangeClassifiersConfigurationPushEvent extends Ab
      * @param classifiersConfiguration - classifiers configuration
      */
     protected AbstractChangeClassifiersConfigurationPushEvent(Object source,
-                                                           String initiator,
-                                                           ClassifiersConfiguration classifiersConfiguration) {
+                                                              String initiator,
+                                                              ClassifiersConfiguration classifiersConfiguration) {
         super(source, initiator);
         this.classifiersConfiguration = classifiersConfiguration;
     }

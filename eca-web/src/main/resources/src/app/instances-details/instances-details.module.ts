@@ -20,6 +20,9 @@ import { AttributesModule } from "../attributes/attributes.module";
   ],
   declarations: [
     InstancesDetailsComponent
+  ],
+  exports: [
+    InstancesDetailsComponent
   ]
 })
 export class InstancesDetailsModule {

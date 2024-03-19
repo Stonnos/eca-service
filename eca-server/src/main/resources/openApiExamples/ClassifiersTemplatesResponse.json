@@ -203,6 +203,7 @@
       {
         "templateName": "DECISION_TREE",
         "templateTitle": "Дерево решений",
+        "templateTitleFieldRef": "decisionTreeType",
         "objectClass": "DecisionTreeOptions",
         "objectType": "decision_tree",
         "fields": [

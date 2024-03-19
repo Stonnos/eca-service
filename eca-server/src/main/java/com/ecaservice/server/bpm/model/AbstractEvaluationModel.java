@@ -28,12 +28,12 @@ public class AbstractEvaluationModel implements Serializable {
     private String requestStatus;
 
     /**
-     * Email
-     */
-    private String email;
-
-    /**
      * Channel.
      */
     private String channel;
+
+    /**
+     * User login
+     */
+    private String createdBy;
 }

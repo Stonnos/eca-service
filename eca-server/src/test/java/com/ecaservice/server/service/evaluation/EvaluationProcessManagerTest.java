@@ -3,6 +3,7 @@ package com.ecaservice.server.service.evaluation;
 import com.ecaservice.base.model.EcaResponse;
 import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.base.model.TechnicalStatus;
+import com.ecaservice.core.form.template.service.FormTemplateProvider;
 import com.ecaservice.ers.dto.EvaluationResultsRequest;
 import com.ecaservice.server.model.ClassifierOptionsResult;
 import com.ecaservice.server.model.entity.Channel;
@@ -35,11 +36,16 @@ import static com.ecaservice.server.TestHelperUtils.createEvaluationLog;
 import static com.ecaservice.server.TestHelperUtils.createEvaluationMessageRequestModel;
 import static com.ecaservice.server.TestHelperUtils.createEvaluationWebRequestModel;
 import static com.ecaservice.server.TestHelperUtils.createLogisticOptions;
+import static com.ecaservice.server.TestHelperUtils.loadClassifiersTemplates;
+import static com.ecaservice.server.TestHelperUtils.loadEnsembleClassifiersTemplates;
+import static com.ecaservice.server.service.classifiers.ClassifierFormGroupTemplates.CLASSIFIERS_GROUP;
+import static com.ecaservice.server.service.classifiers.ClassifierFormGroupTemplates.ENSEMBLE_CLASSIFIERS_GROUP;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -57,9 +63,13 @@ class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<
     private static final String EVALUATION_ID = "id";
     private static final String EVALUATION_REQUEST_ID = "requestId";
     private static final String EVALUATION_REQUEST_STATUS = "requestStatus";
+    private static final String CREATED_BY = "user";
 
     @MockBean
     private OptimalClassifierOptionsFetcher optimalClassifierOptionsFetcher;
+
+    @MockBean
+    private FormTemplateProvider formTemplateProvider;
 
     @Inject
     private EvaluationLogRepository evaluationLogRepository;
@@ -80,6 +90,11 @@ class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<
     @Captor
     private ArgumentCaptor<EvaluationResultsRequest> evaluationResultsRequestArgumentCaptor;
 
+    @Override
+    public void before() {
+        mockGetFormTemplates();
+    }
+
     @Test
     void testCreateEvaluationWebRequest() {
         var evaluationWebRequestModel = createEvaluationWebRequestModel();
@@ -93,6 +108,21 @@ class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<
         verifyTestSteps(evaluationLog,
                 new EvaluationRequestStatusVerifier(RequestStatus.NEW),
                 new UserPushRequestVerifier(RequestStatus.NEW, 0)
+        );
+    }
+
+    @Test
+    void testCreateEvaluationWebRequestWithDisabledNotifications() {
+        var evaluationWebRequestModel = createEvaluationWebRequestModel();
+        mockGetUserProfileOptions(false);
+        evaluationProcessManager.createAndProcessEvaluationRequest(evaluationWebRequestModel);
+
+        verify(getWebPushClient(), never()).sendPush(any(AbstractPushRequest.class));
+
+        var evaluationLog = getEvaluationLog(evaluationWebRequestModel.getRequestId());
+
+        verifyTestSteps(evaluationLog,
+                new EvaluationRequestStatusVerifier(RequestStatus.NEW)
         );
     }
 
@@ -216,6 +246,23 @@ class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<
     }
 
     @Test
+    void testProcessEvaluationWebRequestWithDisabledNotifications() {
+        EvaluationLog evaluationLog = createAndSaveEvaluationLog();
+        mockGetUserProfileOptions(false);
+        evaluationProcessManager.processEvaluationRequest(evaluationLog.getId());
+        verify(getErsClient(), atLeastOnce()).save(evaluationResultsRequestArgumentCaptor.capture());
+
+        var actualEvaluationLog = getEvaluationLog(evaluationLog.getRequestId());
+
+        verify(getWebPushClient(), never()).sendPush(any(AbstractPushRequest.class));
+
+        verifyTestSteps(actualEvaluationLog,
+                new EvaluationRequestStatusVerifier(RequestStatus.FINISHED),
+                new EvaluationResultsRequestsVerifier()
+        );
+    }
+
+    @Test
     void testProcessErrorEvaluationWebRequest() throws IOException {
         EvaluationLog evaluationLog = createAndSaveEvaluationLog();
         doThrow(IOException.class).when(getObjectStorageService()).uploadObject(any(Serializable.class), anyString());
@@ -244,6 +291,7 @@ class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<
     private EvaluationLog createAndSaveEvaluationLog() {
         var evaluationLog = createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.NEW);
         evaluationLog.setChannel(Channel.WEB);
+        evaluationLog.setCreatedBy(CREATED_BY);
         instancesInfoRepository.save(evaluationLog.getInstancesInfo());
         return evaluationLogRepository.save(evaluationLog);
     }
@@ -256,6 +304,13 @@ class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<
     private void mockGetOptimalOptions(ClassifierOptionsResult classifierOptionsResult) {
         when(optimalClassifierOptionsFetcher.getOptimalClassifierOptions(any(InstancesRequestDataModel.class)))
                 .thenReturn(classifierOptionsResult);
+    }
+
+    private void mockGetFormTemplates() {
+        when(formTemplateProvider.getFormGroupDto(CLASSIFIERS_GROUP))
+                .thenReturn(loadClassifiersTemplates());
+        when(formTemplateProvider.getFormGroupDto(ENSEMBLE_CLASSIFIERS_GROUP))
+                .thenReturn(loadEnsembleClassifiersTemplates());
     }
 
     @RequiredArgsConstructor

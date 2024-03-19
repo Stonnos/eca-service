@@ -18,7 +18,7 @@ import com.ecaservice.server.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.server.repository.ExperimentResultsRequestRepository;
 import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
-import com.ecaservice.server.service.classifiers.ClassifierOptionsProcessor;
+import com.ecaservice.server.service.classifiers.ClassifierOptionsInfoProcessor;
 import com.ecaservice.server.service.ers.ErsService;
 import com.ecaservice.web.dto.model.ErsReportStatus;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
@@ -52,7 +52,7 @@ class ExperimentResultsServiceTest extends AbstractJpaTest {
     @Mock
     private ErsService ersService;
     @Mock
-    private ClassifierOptionsProcessor classifierOptionsProcessor;
+    private ClassifierOptionsInfoProcessor classifierOptionsInfoProcessor;
     @Mock
     private ClassifierOptionsAdapter classifierOptionsAdapter;
     @Inject
@@ -71,7 +71,7 @@ class ExperimentResultsServiceTest extends AbstractJpaTest {
     @Override
     public void init() {
         experimentResultsService =
-                new ExperimentResultsService(ersService, classifierOptionsProcessor, experimentResultsMapper,
+                new ExperimentResultsService(ersService, classifierOptionsInfoProcessor, experimentResultsMapper,
                         classifierOptionsAdapter, experimentResultsEntityRepository,
                         experimentResultsRequestRepository);
     }
@@ -90,7 +90,7 @@ class ExperimentResultsServiceTest extends AbstractJpaTest {
         instancesInfoRepository.save(experiment.getInstancesInfo());
         experimentRepository.save(experiment);
         AbstractExperiment experimentHistory = TestHelperUtils.createExperimentHistory();
-        experimentResultsService.saveExperimentResultsToErsSent(experiment, experimentHistory);
+        experimentResultsService.saveExperimentResults(experiment, experimentHistory);
         List<ExperimentResultsEntity> experimentResultsEntityList = experimentResultsEntityRepository.findAll();
         Assertions.assertThat(experimentResultsEntityList).hasSameSizeAs(experimentHistory.getHistory());
     }
@@ -121,40 +121,6 @@ class ExperimentResultsServiceTest extends AbstractJpaTest {
         testGetErsReport(experiment, ErsReportStatus.EXPERIMENT_ERROR);
     }
 
-    /**
-     * There is no one success requests to ERS service and experiment is deleted. Expected: EXPERIMENT_DELETED
-     */
-    @Test
-    void testErsReportForNotSentAndDeletedExperiment() {
-        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        experiment.setDeletedDate(LocalDateTime.now());
-        instancesInfoRepository.save(experiment.getInstancesInfo());
-        experimentRepository.save(experiment);
-        ExperimentResultsEntity experimentResultsEntity1 = TestHelperUtils.createExperimentResultsEntity(experiment);
-        ExperimentResultsEntity experimentResultsEntity2 = TestHelperUtils.createExperimentResultsEntity(experiment);
-        experimentResultsEntityRepository.saveAll(Arrays.asList(experimentResultsEntity1, experimentResultsEntity2));
-        testGetErsReport(experiment, ErsReportStatus.EXPERIMENT_DELETED);
-    }
-
-    /**
-     * There are success requests to ERS service and experiment is deleted. Expected: SUCCESS_SENT
-     */
-    @Test
-    void testErsReportForSentAndDeletedExperiment() {
-        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        experiment.setDeletedDate(LocalDateTime.now());
-        instancesInfoRepository.save(experiment.getInstancesInfo());
-        experimentRepository.save(experiment);
-        ExperimentResultsEntity experimentResultsEntity1 = TestHelperUtils.createExperimentResultsEntity(experiment);
-        ExperimentResultsEntity experimentResultsEntity2 = TestHelperUtils.createExperimentResultsEntity(experiment);
-        experimentResultsEntityRepository.saveAll(Arrays.asList(experimentResultsEntity1, experimentResultsEntity2));
-        experimentResultsRequestRepository.save(
-                TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity1, ErsResponseStatus.SUCCESS));
-        experimentResultsRequestRepository.save(
-                TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity2, ErsResponseStatus.SUCCESS));
-        testGetErsReport(experiment, ErsReportStatus.SUCCESS_SENT);
-    }
-
     @Test
     void testErsReportWithExperimentResultsNotFoundStatus() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
@@ -164,22 +130,7 @@ class ExperimentResultsServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    void testErsReportWithNeedSentStatus() {
-        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        instancesInfoRepository.save(experiment.getInstancesInfo());
-        experimentRepository.save(experiment);
-        ExperimentResultsEntity experimentResultsEntity1 = TestHelperUtils.createExperimentResultsEntity(experiment);
-        ExperimentResultsEntity experimentResultsEntity2 = TestHelperUtils.createExperimentResultsEntity(experiment);
-        experimentResultsEntityRepository.saveAll(Arrays.asList(experimentResultsEntity1, experimentResultsEntity2));
-        experimentResultsRequestRepository.save(
-                TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity1, ErsResponseStatus.SUCCESS));
-        experimentResultsRequestRepository.save(TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity2,
-                ErsResponseStatus.SERVICE_UNAVAILABLE));
-        testGetErsReport(experiment, ErsReportStatus.NOT_SENT);
-    }
-
-    @Test
-    void testErsReportWithSuccessSentStatus() {
+    void testErsReportWithFetchedStatus() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         instancesInfoRepository.save(experiment.getInstancesInfo());
         experimentRepository.save(experiment);
@@ -195,11 +146,7 @@ class ExperimentResultsServiceTest extends AbstractJpaTest {
         ExperimentErsReportDto experimentErsReportDto = experimentResultsService.getErsReport(experiment);
         Assertions.assertThat(experimentErsReportDto).isNotNull();
         Assertions.assertThat(experimentErsReportDto.getErsReportStatus().getValue()).isEqualTo(
-                ErsReportStatus.SUCCESS_SENT.name());
-        Assertions.assertThat(experimentErsReportDto.getClassifiersCount()).isEqualTo(
-                experimentResultsEntityList.size());
-        Assertions.assertThat(experimentErsReportDto.getSentClassifiersCount()).isEqualTo(
-                experimentResultsEntityList.size());
+                ErsReportStatus.FETCHED.name());
         Assertions.assertThat(experimentErsReportDto.getExperimentResults()).hasSameSizeAs(experimentResultsEntityList);
     }
 

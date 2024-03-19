@@ -38,4 +38,7 @@
     <include file="../filter-template-changelog.xml" relativeToChangelogFile="true"/>
     <include file="db/changelog/v29-update-filter-templates.xml"/>
     <include file="db/changelog/v30-assign-data-loader-api-scope.xml"/>
+    <include file="db/changelog/v31-create-user-profile-options-table.xml"/>
+    <include file="db/changelog/v32-drop-user-push-enabled-column.xml"/>
+    <include file="db/changelog/v33-add-confirmation-code-to-change-password-request-table.xml"/>
 </databaseChangeLog>

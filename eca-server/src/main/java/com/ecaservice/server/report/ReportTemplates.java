@@ -25,7 +25,6 @@ public class ReportTemplates {
      */
     public static final Map<BaseReportType, String> BASE_REPORT_TEMPLATES = Map.of(
             BaseReportType.EXPERIMENTS, "experiments-report-template.xlsx",
-            BaseReportType.EVALUATION_LOGS, "evaluation-logs-report-template.xlsx",
-            BaseReportType.CLASSIFIERS_OPTIONS_REQUESTS, "classifier-options-requests-report-template.xlsx"
+            BaseReportType.EVALUATION_LOGS, "evaluation-logs-report-template.xlsx"
     );
 }

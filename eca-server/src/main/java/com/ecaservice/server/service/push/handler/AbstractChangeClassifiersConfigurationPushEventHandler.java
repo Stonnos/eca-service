@@ -1,13 +1,20 @@
 package com.ecaservice.server.service.push.handler;
 
+import com.ecaservice.core.message.template.service.MessageTemplateProcessor;
+import com.ecaservice.core.push.client.event.listener.handler.AbstractUserPushNotificationEventHandler;
 import com.ecaservice.server.event.model.push.AbstractChangeClassifiersConfigurationPushEvent;
 import com.ecaservice.server.repository.ClassifiersConfigurationHistoryRepository;
-import com.ecaservice.server.service.message.template.MessageTemplateProcessor;
+import com.ecaservice.user.profile.options.client.service.UserProfileOptionsProvider;
+import com.ecaservice.user.profile.options.dto.UserNotificationEventOptionsDto;
+import com.ecaservice.user.profile.options.dto.UserNotificationEventType;
+import com.ecaservice.user.profile.options.dto.UserProfileOptionsDto;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.ecaservice.server.service.push.dictionary.PushProperties.CLASSIFIERS_CONFIGURATION_ID_PROPERTY;
 import static com.ecaservice.server.service.push.dictionary.PushProperties.CLASSIFIER_CONFIGURATION_CHANGE_MESSAGE_TYPE;
@@ -24,6 +31,7 @@ public abstract class AbstractChangeClassifiersConfigurationPushEventHandler<E e
 
     private final ClassifiersConfigurationHistoryRepository classifiersConfigurationHistoryRepository;
     private final MessageTemplateProcessor messageTemplateProcessor;
+    private final UserProfileOptionsProvider userProfileOptionsProvider;
 
     /**
      * Constructor with parameters.
@@ -31,26 +39,16 @@ public abstract class AbstractChangeClassifiersConfigurationPushEventHandler<E e
      * @param clazz                                     - push event class
      * @param classifiersConfigurationHistoryRepository - classifiers configuration history repository
      * @param messageTemplateProcessor                  - message template processor
+     * @param userProfileOptionsProvider                - user profile options provider
      */
     protected AbstractChangeClassifiersConfigurationPushEventHandler(
             Class<E> clazz,
             ClassifiersConfigurationHistoryRepository classifiersConfigurationHistoryRepository,
-            MessageTemplateProcessor messageTemplateProcessor) {
+            MessageTemplateProcessor messageTemplateProcessor, UserProfileOptionsProvider userProfileOptionsProvider) {
         super(clazz);
         this.classifiersConfigurationHistoryRepository = classifiersConfigurationHistoryRepository;
         this.messageTemplateProcessor = messageTemplateProcessor;
-    }
-
-    @Override
-    public boolean isValid(AbstractChangeClassifiersConfigurationPushEvent event) {
-        long modificationsCount = classifiersConfigurationHistoryRepository.getAnotherUsersModificationsCount(
-                event.getClassifiersConfiguration(), event.getInitiator());
-        if (modificationsCount == 0L) {
-            log.warn("No one another modifier found for classifier configuration [{}]",
-                    event.getClassifiersConfiguration().getId());
-            return false;
-        }
-        return true;
+        this.userProfileOptionsProvider = userProfileOptionsProvider;
     }
 
     @Override
@@ -60,11 +58,19 @@ public abstract class AbstractChangeClassifiersConfigurationPushEventHandler<E e
                 classifiersConfiguration.getId(), event.getClass().getSimpleName());
         var allModifiers = classifiersConfigurationHistoryRepository.getAnotherModifiers(classifiersConfiguration,
                 event.getInitiator());
+        if (CollectionUtils.isEmpty(allModifiers)) {
+            log.warn("No one another modifier found for classifier configuration [{}] event [{}]",
+                    event.getClassifiersConfiguration().getId(), event.getClass().getSimpleName());
+            return Collections.emptyList();
+        }
         log.info("[{}] receivers has been fetched for classifiers configuration [{}] event [{}]", allModifiers.size(),
                 classifiersConfiguration.getId(), event.getClass().getSimpleName());
-        log.info("Classifiers configuration [{}] event [{}] receivers: {}", classifiersConfiguration.getId(),
-                event.getClass().getSimpleName(), allModifiers);
-        return allModifiers;
+        List<String> resultReceivers = allModifiers.stream()
+                .filter(this::isWebPushEnabled)
+                .collect(Collectors.toList());
+        log.info("Classifiers configuration [{}] event [{}] result receivers: {}", classifiersConfiguration.getId(),
+                event.getClass().getSimpleName(), resultReceivers);
+        return resultReceivers;
     }
 
     @Override
@@ -98,4 +104,24 @@ public abstract class AbstractChangeClassifiersConfigurationPushEventHandler<E e
      * @return message template params
      */
     protected abstract Map<String, Object> createMessageTemplateParams(E event);
+
+    private boolean isWebPushEnabled(String user) {
+        try {
+            UserProfileOptionsDto userProfileOptionsDto = userProfileOptionsProvider.getUserProfileOptions(user);
+            log.info("User profile [{}] options has been fetched: {}", user, userProfileOptionsDto);
+            boolean classifiersConfigurationChangeNotificationEventEnabled =
+                    userProfileOptionsDto.getNotificationEventOptions()
+                            .stream()
+                            .filter(eventOptionsDto -> UserNotificationEventType.CLASSIFIER_CONFIGURATION_CHANGE.equals(
+                                    eventOptionsDto.getEventType()))
+                            .findFirst()
+                            .map(UserNotificationEventOptionsDto::isWebPushEnabled)
+                            .orElse(false);
+            return userProfileOptionsDto.isWebPushEnabled() && classifiersConfigurationChangeNotificationEventEnabled;
+        } catch (Exception ex) {
+            log.error("Error while get user [{}] profile options. Disabled web push by default. Error details: {}",
+                    user, ex.getMessage());
+            return false;
+        }
+    }
 }

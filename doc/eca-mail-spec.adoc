@@ -129,14 +129,10 @@
 |string
 |[0-9]+
 |Время действия ссылки в часах
-|changePasswordUrl
+|confirmationCode
 |string
 |-
-|Ссылка на подтверждение изменения пароля
-|changeEmailUrl
-|string
-|-
-|Ссылка на подтверждение изменения Email
+|Код подтвежднения
 |===
 
 == 4. Описание шаблонов email сообщений
@@ -169,10 +165,10 @@
 |userName, password
 |CHANGE_PASSWORD
 |Сообщение с подтверждением изменения пароля в личном кабинете Eca - service
-|changePasswordUrl, validityMinutes
+|confirmationCode, validityMinutes
 |CHANGE_EMAIL
 |Сообщение с подтверждением изменения Email в личном кабинете Eca - service
-|newEmail, changeEmailUrl, validityHours
+|newEmail, confirmationCode, validityHours
 |EMAIL_CHANGED
 |Сообщение с успешным изменением Email в личном кабинете Eca - service
 |-

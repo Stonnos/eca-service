@@ -46,10 +46,4 @@ public class ExperimentResultsDto {
     @Schema(description = "Correctly classified percentage", example = "99", minimum = ZERO_VALUE_STRING,
             maximum = VALUE_100_STRING)
     private BigDecimal pctCorrect;
-
-    /**
-     * Is experiment results sent to ERS?
-     */
-    @Schema(description = "Is experiment results sent to ERS?")
-    private boolean sent;
 }

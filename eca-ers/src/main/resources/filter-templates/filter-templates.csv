@@ -1,0 +1,3 @@
+id;template_name;template_type
+1;Фильтр для истории результатов классификации;EVALUATION_RESULTS_HISTORY_TEMPLATE
+2;Фильтр для обучающих выборок;INSTANCES_INFO

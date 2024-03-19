@@ -6,7 +6,7 @@ import com.ecaservice.ers.dto.EvaluationMethodReport;
 import com.ecaservice.ers.dto.SortDirection;
 import com.ecaservice.ers.dto.EvaluationResultsStatisticsField;
 import com.ecaservice.ers.exception.DataNotFoundException;
-import com.ecaservice.ers.filter.EvaluationResultsFilter;
+import com.ecaservice.ers.filter.OptimalEvaluationResultsFilter;
 import com.ecaservice.ers.model.ClassifierOptionsInfo;
 import com.ecaservice.ers.model.EvaluationResultsInfo;
 import com.ecaservice.ers.repository.EvaluationResultsInfoRepository;
@@ -59,13 +59,13 @@ public class ClassifierOptionsService {
             log.info("[{}] instances info has been found with data md5 hash [{}]", instancesInfo.getRelationName(),
                     instancesInfo.getDataMd5Hash());
             EvaluationMethodReport evaluationMethodReport = classifierOptionsRequest.getEvaluationMethodReport();
-            EvaluationResultsFilter filter = new EvaluationResultsFilter(instancesInfo, evaluationMethodReport);
+            var filter = new OptimalEvaluationResultsFilter(instancesInfo, evaluationMethodReport);
             Sort sort = buildSort(classifierOptionsRequest);
             PageRequest pageRequest = PageRequest.of(0, ersConfig.getResultSize(), sort);
             var evaluationResultsInfoPage = evaluationResultsInfoRepository.findAll(filter, pageRequest);
             return evaluationResultsInfoPage.getContent()
                     .stream()
-                    .map(EvaluationResultsInfo::getClassifierOptionsInfo)
+                    .map(EvaluationResultsInfo::getClassifierInfo)
                     .collect(Collectors.toList());
         }
     }

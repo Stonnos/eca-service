@@ -6,6 +6,7 @@ import com.ecaservice.data.loader.AbstractJpaTest;
 import com.ecaservice.data.loader.config.AppProperties;
 import com.ecaservice.data.loader.entity.InstancesEntity;
 import com.ecaservice.data.loader.repository.InstancesRepository;
+import com.ecaservice.data.loader.validation.InstancesValidator;
 import com.ecaservice.s3.client.minio.exception.ObjectStorageException;
 import com.ecaservice.s3.client.minio.model.UploadObject;
 import com.ecaservice.s3.client.minio.service.MinioStorageService;
@@ -13,6 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.data.file.model.InstancesModel;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockMultipartFile;
 
@@ -31,6 +33,7 @@ import static org.mockito.Mockito.doThrow;
  *
  * @author Roman Batygin
  */
+@ComponentScan(basePackageClasses = InstancesValidator.class)
 @Import({UploadInstancesService.class, ObjectMapper.class, AppProperties.class})
 class UploadInstancesServiceTest extends AbstractJpaTest {
 

@@ -8,6 +8,7 @@ export class ValidationErrorCode {
   public static readonly ACTIVE_RESET_PASSWORD_REQUEST: string = 'ActiveResetPasswordRequest';
   public static readonly USER_LOCKED:  string = 'UserLocked';
   public static readonly INVALID_TOKEN: string = 'InvalidToken';
+  public static readonly INVALID_CONFIRMATION_CODE: string = 'InvalidConfirmationCode';
   public static readonly INVALID_TRAIN_DATA_FILE: string = 'InvalidFile';
   public static readonly PROCESS_FILE_ERROR: string = 'ProcessFileError';
   public static readonly ACTIVE_CHANGE_EMAIL_REQUEST: string = 'ActiveChangeEmailRequest';
@@ -21,4 +22,7 @@ export class ValidationErrorCode {
   public static readonly INSTANCES_NOT_FOUND: string = 'InstancesNotFound';
   public static readonly NOT_SAFE_PASSWORD: string = 'NotSafePassword';
   public static readonly CLASSIFIER_OPTIONS_NOT_FOUND: string = 'ClassifierOptionsNotFound';
+  public static readonly INVALID_CLASSIFIER_OPTIONS_FORMAT: string = 'InvalidClassifierOptionsFormat';
+  public static readonly ENSEMBLE_CLASSIFIER_OPTIONS_NOT_ALLOWED: string = 'EnsembleClassifierOptionsNotAllowed';
+  public static readonly INTERNAL_ERROR: string = 'InternalError';
 }

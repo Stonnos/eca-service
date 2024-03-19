@@ -3,6 +3,7 @@ package com.ecaservice.server.service.classifiers;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
+import com.ecaservice.core.message.template.service.MessageTemplateProcessor;
 import com.ecaservice.server.filter.ClassifiersConfigurationHistoryFilter;
 import com.ecaservice.server.mapping.ClassifiersConfigurationHistoryMapper;
 import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
@@ -12,7 +13,6 @@ import com.ecaservice.server.model.entity.ClassifiersConfigurationHistoryEntity;
 import com.ecaservice.server.repository.ClassifiersConfigurationHistoryRepository;
 import com.ecaservice.server.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.server.service.UserService;
-import com.ecaservice.server.service.message.template.MessageTemplateProcessor;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationHistoryDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -51,7 +51,7 @@ public class ClassifiersConfigurationHistoryService {
     private final FilterTemplateService filterTemplateService;
     private final ClassifiersConfigurationHistoryMapper classifiersConfigurationHistoryMapper;
     private final MessageTemplateProcessor messageTemplateProcessor;
-    private final ClassifiersTemplateProvider classifiersTemplateProvider;
+    private final ClassifiersFormTemplateProvider classifiersFormTemplateProvider;
     private final ClassifiersConfigurationRepository classifiersConfigurationRepository;
     private final ClassifiersConfigurationHistoryRepository classifiersConfigurationHistoryRepository;
 
@@ -163,7 +163,7 @@ public class ClassifiersConfigurationHistoryService {
                 .orElseThrow(() -> new EntityNotFoundException(ClassifiersConfiguration.class, configurationId));
         var globalFilterFields =
                 filterTemplateService.getGlobalFilterFields(CLASSIFIERS_CONFIGURATION_HISTORY);
-        var sort = buildSort(pageRequestDto.getSortField(), CREATED_AT, pageRequestDto.isAscending());
+        var sort = buildSort(pageRequestDto.getSortFields(), CREATED_AT, true);
         var filter = new ClassifiersConfigurationHistoryFilter(classifiersConfiguration,
                 pageRequestDto.getSearchQuery(), globalFilterFields, pageRequestDto.getFilters());
         var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort);
@@ -178,7 +178,7 @@ public class ClassifiersConfigurationHistoryService {
 
     private Map<String, Object> buildClassifierOptionsParams(
             ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel) {
-        var classifierFormTemplate = classifiersTemplateProvider.getClassifierTemplateByClass(
+        var classifierFormTemplate = classifiersFormTemplateProvider.getClassifierTemplateByClass(
                 classifierOptionsDatabaseModel.getOptionsName());
         return Map.of(
                 CLASSIFIER_OPTIONS_ID, classifierOptionsDatabaseModel.getId(),

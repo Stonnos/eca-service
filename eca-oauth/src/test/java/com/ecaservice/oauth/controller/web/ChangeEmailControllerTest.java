@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.inject.Inject;
+import java.util.UUID;
 
 import static com.ecaservice.oauth.TestHelperUtils.createChangeEmailRequestEntity;
 import static org.mockito.ArgumentMatchers.any;
@@ -36,7 +37,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ChangeEmailControllerTest extends AbstractControllerTest {
 
     private static final String TOKEN_PARAM = "token";
+    private static final String CONFIRMATION_CODE_PARAM = "confirmationCode";
     private static final String TOKEN_VALUE = "tokenValue";
+    private static final String CONFIRMATION_CODE = "code";
 
     private static final String BASE_URL = "/email/change";
     private static final String CONFIRM_URL = BASE_URL + "/confirm";
@@ -78,39 +81,60 @@ class ChangeEmailControllerTest extends AbstractControllerTest {
 
     @Test
     void testCreateChangeEmailRequestOk() throws Exception {
+        String token = UUID.randomUUID().toString();
+        var changeEmailRequestStatusDto = ChangeEmailRequestStatusDto.builder()
+                .token(token)
+                .newEmail(EMAIL)
+                .active(true)
+                .build();
         when(changeEmailService.createChangeEmailRequest(anyLong(), any(String.class)))
                 .thenReturn(TokenModel.builder()
-                        .token(TOKEN_VALUE)
+                        .token(token)
+                        .email(EMAIL)
                         .build()
                 );
         mockMvc.perform(post(REQUEST_URL)
                 .param(NEW_EMAIL_PARAM, EMAIL)
                 .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(objectMapper.writeValueAsString(changeEmailRequestStatusDto)));
     }
 
     @Test
     void testConfirmChangeEmailUnauthorized() throws Exception {
         mockMvc.perform(post(CONFIRM_URL)
-                .param(TOKEN_PARAM, TOKEN_VALUE))
+                .param(TOKEN_PARAM, TOKEN_VALUE)
+                .param(CONFIRMATION_CODE_PARAM, CONFIRMATION_CODE))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     void testConfirmChangeEmailRequest() throws Exception {
         var changeEmailRequestEntity = createChangeEmailRequestEntity(TOKEN_VALUE);
-        when(changeEmailService.changeEmail(TOKEN_VALUE)).thenReturn(changeEmailRequestEntity);
+        when(changeEmailService.confirmChangeEmail(TOKEN_VALUE, CONFIRMATION_CODE)).thenReturn(
+                changeEmailRequestEntity);
         mockMvc.perform(post(CONFIRM_URL)
                 .param(TOKEN_PARAM, TOKEN_VALUE)
+                .param(CONFIRMATION_CODE_PARAM, CONFIRMATION_CODE)
                 .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk());
-        verify(changeEmailService, atLeastOnce()).changeEmail(TOKEN_VALUE);
+        verify(changeEmailService, atLeastOnce()).confirmChangeEmail(TOKEN_VALUE, CONFIRMATION_CODE);
     }
 
     @Test
     void testConfirmChangeEmailRequestWithNullToken() throws Exception {
         mockMvc.perform(post(CONFIRM_URL)
+                .param(CONFIRMATION_CODE_PARAM, CONFIRMATION_CODE)
                 .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testConfirmChangeEmailRequestWithNullConfirmationCode() throws Exception {
+        mockMvc.perform(post(CONFIRM_URL)
+                        .param(TOKEN_PARAM, TOKEN_VALUE)
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isBadRequest());
     }
 

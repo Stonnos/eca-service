@@ -10,7 +10,6 @@ import { RouterPaths } from "../../routing/router-paths";
 import { FieldLink } from "../../common/model/field-link";
 import { FieldService } from "../../common/services/field.service";
 import { ExperimentResultsFields } from "../../common/util/field-names";
-import { ErsSentStatusEnum } from "../../common/model/ers-sent-status.enum";
 import { OverlayPanel } from "primeng/overlaypanel";
 
 @Component({
@@ -61,19 +60,14 @@ export class ExperimentErsReportComponent implements OnInit, FieldLink {
   }
 
   public getColumnValue(column: string, item: ExperimentResultsDto) {
-    if (column == ExperimentResultsFields.SENT) {
-      return item.sent ? ErsSentStatusEnum.SENT : ErsSentStatusEnum.NOT_SENT;
-    } else {
-      return this.fieldService.getFieldValue(column, item);
-    }
+    return this.fieldService.getFieldValue(column, item);
   }
 
   private initExperimentResultsColumns() {
     this.experimentResultsColumns = [
       { name: ExperimentResultsFields.RESULTS_INDEX, label: "№" },
       { name: ExperimentResultsFields.CLASSIFIER_DESCRIPTION, label: "Классификатор" },
-      { name: ExperimentResultsFields.PCT_CORRECT, label: "Точность, %" },
-      { name: ExperimentResultsFields.SENT, label: "Статус отправки результатов в ERS" }
+      { name: ExperimentResultsFields.PCT_CORRECT, label: "Точность, %" }
     ];
   }
 }

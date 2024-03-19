@@ -6,7 +6,7 @@
 
     <groupId>eca.service</groupId>
     <artifactId>eca-service</artifactId>
-    <version>6.4.8</version>
+    <version>6.4.9</version>
     <modules>
         <module>core-test</module>
         <module>oauth2-test</module>
@@ -16,6 +16,7 @@
         <module>eca-model</module>
         <module>eca-user-model</module>
         <module>eca-mail-transport</module>
+        <module>eca-web-push-client</module>
         <module>classifiers-options</module>
         <module>eca-ers-transport</module>
         <module>eca-ds-transport</module>
@@ -23,6 +24,7 @@
         <module>eca-data-loader-transport</module>
         <module>eca-external-api-transport</module>
         <module>eca-audit-transport</module>
+        <module>user-profile-options-transport</module>
         <module>eca-web-transport</module>
         <module>eca-report-model</module>
         <module>feign-oauth</module>
@@ -30,12 +32,16 @@
         <module>core-audit</module>
         <module>core-filter</module>
         <module>core-form-template</module>
+        <module>core-message-template</module>
         <module>swagger-core</module>
         <module>oauth2-core</module>
         <module>rabbit-core</module>
         <module>eca-mail-client</module>
+        <module>user-profile-options-client</module>
+        <module>user-profile-options-cache-client</module>
         <module>eca-s3-minio-client</module>
         <module>classifiers-options-adapter</module>
+        <module>classifiers-template-processor</module>
         <module>eca-report</module>
         <module>eca-report-data</module>
         <module>eca-tests-common</module>
@@ -82,7 +88,7 @@
         <inject.version>1</inject.version>
         <logback.version>1.2.12</logback.version>
         <slf4j.version>1.7.36</slf4j.version>
-        <eca.version>6.9.5</eca.version>
+        <eca.version>6.9.7</eca.version>
         <h2.version>1.4.199</h2.version>
         <postresql.version>42.6.0</postresql.version>
         <liquibase.version>3.7.0</liquibase.version>

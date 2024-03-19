@@ -84,9 +84,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.usersService.getCurrentUser().subscribe({
       next: (user: UserDto) => {
         this.user = user;
-        if (user.pushEnabled) {
-          this.eventService.publishEvent(EventType.INIT_PUSH);
-        }
+        this.eventService.publishEvent(EventType.INIT_PUSH);
       },
       error: (error) => {
         this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });

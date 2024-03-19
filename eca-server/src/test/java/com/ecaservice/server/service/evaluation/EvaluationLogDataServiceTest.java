@@ -21,7 +21,7 @@ import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.repository.EvaluationResultsRequestEntityRepository;
 import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
-import com.ecaservice.server.service.classifiers.ClassifierOptionsProcessor;
+import com.ecaservice.server.service.classifiers.ClassifierOptionsInfoProcessor;
 import com.ecaservice.server.service.ers.ErsService;
 import com.ecaservice.web.dto.model.ChartDataDto;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
@@ -32,6 +32,7 @@ import com.ecaservice.web.dto.model.FilterDictionaryValueDto;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import eca.metrics.KNearestNeighbours;
 import eca.neural.NeuralNetwork;
 import eca.trees.C45;
@@ -96,7 +97,7 @@ class EvaluationLogDataServiceTest extends AbstractJpaTest {
     @Mock
     private ErsService ersService;
     @Mock
-    private ClassifierOptionsProcessor classifierOptionsProcessor;
+    private ClassifierOptionsInfoProcessor classifierOptionsInfoProcessor;
     @Mock
     private ObjectStorageService objectStorageService;
     private EvaluationLogDataService evaluationLogDataService;
@@ -108,7 +109,8 @@ class EvaluationLogDataServiceTest extends AbstractJpaTest {
         instancesInfo = TestHelperUtils.createInstancesInfo();
         instancesInfoRepository.save(instancesInfo);
         evaluationLogDataService =
-                new EvaluationLogDataService(appProperties, filterTemplateService, evaluationLogMapper, classifierOptionsProcessor,
+                new EvaluationLogDataService(appProperties, filterTemplateService, evaluationLogMapper,
+                        classifierOptionsInfoProcessor,
                         ersService, entityManager, objectStorageService, evaluationLogRepository,
                         evaluationResultsRequestEntityRepository);
         evaluationLogDataService.initialize();
@@ -180,9 +182,9 @@ class EvaluationLogDataServiceTest extends AbstractJpaTest {
                 TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.ERROR, instancesInfo);
         evaluationLog4.getClassifierInfo().setClassifierName(NeuralNetwork.class.getSimpleName());
         evaluationLogRepository.save(evaluationLog4);
-        PageRequestDto pageRequestDto =
-                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, CLASSIFIER_INFO_CLASSIFIER_NAME, false, null,
-                        newArrayList());
+        PageRequestDto pageRequestDto = new PageRequestDto(PAGE_NUMBER, PAGE_SIZE,
+                Collections.singletonList(new SortFieldRequestDto(CLASSIFIER_INFO_CLASSIFIER_NAME, false)), null,
+                newArrayList());
         pageRequestDto.getFilters().add(new FilterRequestDto(EvaluationLog_.REQUEST_STATUS,
                 Collections.singletonList(RequestStatus.FINISHED.name()), MatchMode.EQUALS));
         pageRequestDto.getFilters().add(
@@ -208,9 +210,9 @@ class EvaluationLogDataServiceTest extends AbstractJpaTest {
         evaluationLog1.getInstancesInfo().setDataMd5Hash("md5Hash");
         instancesInfoRepository.save(evaluationLog1.getInstancesInfo());
         evaluationLogRepository.save(evaluationLog1);
-        PageRequestDto pageRequestDto =
-                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, CLASSIFIER_INFO_CLASSIFIER_NAME, false, null,
-                        newArrayList());
+        PageRequestDto pageRequestDto = new PageRequestDto(PAGE_NUMBER, PAGE_SIZE,
+                Collections.singletonList(new SortFieldRequestDto(CLASSIFIER_INFO_CLASSIFIER_NAME, false)), null,
+                newArrayList());
         pageRequestDto.getFilters().add(new FilterRequestDto(INSTANCES_INFO_ID,
                 Collections.singletonList(String.valueOf(evaluationLog.getInstancesInfo().getId())), MatchMode.EQUALS));
         Page<EvaluationLog> evaluationLogPage = evaluationLogDataService.getNextPage(pageRequestDto);
@@ -235,8 +237,9 @@ class EvaluationLogDataServiceTest extends AbstractJpaTest {
                         instancesInfo);
         evaluationLog2.getClassifierInfo().setClassifierName(ID3.class.getSimpleName());
         evaluationLogRepository.saveAll(Arrays.asList(evaluationLog, evaluationLog1, evaluationLog2));
-        PageRequestDto pageRequestDto =
-                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, EvaluationLog_.CREATION_DATE, false, "car", newArrayList());
+        PageRequestDto pageRequestDto = new PageRequestDto(PAGE_NUMBER, PAGE_SIZE,
+                Collections.singletonList(new SortFieldRequestDto(EvaluationLog_.CREATION_DATE, false)), "car",
+                newArrayList());
         pageRequestDto.getFilters().add(new FilterRequestDto(EvaluationLog_.REQUEST_STATUS,
                 Collections.singletonList(RequestStatus.FINISHED.name()), MatchMode.EQUALS));
         when(filterTemplateService.getGlobalFilterFields(FilterTemplateType.EVALUATION_LOG)).thenReturn(
@@ -374,7 +377,8 @@ class EvaluationLogDataServiceTest extends AbstractJpaTest {
     }
 
     private void testGetEvaluationLogDetails(EvaluationLog evaluationLog, EvaluationResultsStatus expectedStatus) {
-        EvaluationLogDetailsDto evaluationLogDetailsDto = evaluationLogDataService.getEvaluationLogDetails(evaluationLog);
+        EvaluationLogDetailsDto evaluationLogDetailsDto =
+                evaluationLogDataService.getEvaluationLogDetails(evaluationLog);
         Assertions.assertThat(evaluationLogDetailsDto).isNotNull();
         Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsDto()).isNotNull();
         Assertions.assertThat(

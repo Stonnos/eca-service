@@ -18,12 +18,13 @@ import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.repository.EvaluationResultsRequestEntityRepository;
 import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
-import com.ecaservice.server.service.classifiers.ClassifierOptionsProcessor;
+import com.ecaservice.server.service.classifiers.ClassifierOptionsInfoProcessor;
 import com.ecaservice.server.service.ers.ErsService;
 import com.ecaservice.server.service.evaluation.EvaluationLogDataService;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -60,7 +61,7 @@ class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
     @Mock
     private ErsService ersService;
     @Mock
-    private ClassifierOptionsProcessor classifierOptionsProcessor;
+    private ClassifierOptionsInfoProcessor classifierOptionsInfoProcessor;
     @Mock
     private ObjectStorageService objectStorageService;
 
@@ -82,7 +83,8 @@ class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
     @Override
     public void init() {
         EvaluationLogDataService evaluationLogDataService =
-                new EvaluationLogDataService(appProperties, filterTemplateService, evaluationLogMapper, classifierOptionsProcessor,
+                new EvaluationLogDataService(appProperties, filterTemplateService, evaluationLogMapper,
+                        classifierOptionsInfoProcessor,
                         ersService, entityManager, objectStorageService, evaluationLogRepository,
                         evaluationResultsRequestEntityRepository);
         evaluationLogsBaseReportDataFetcher =
@@ -106,9 +108,9 @@ class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
         instancesInfoRepository.save(evaluationLog.getInstancesInfo());
         evaluationLogRepository.save(evaluationLog);
         String searchQuery = evaluationLog.getRequestId().substring(0, 10);
-        PageRequestDto pageRequestDto =
-                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, EvaluationLog_.CREATION_DATE, false, searchQuery,
-                        newArrayList());
+        PageRequestDto pageRequestDto = new PageRequestDto(PAGE_NUMBER, PAGE_SIZE,
+                Collections.singletonList(new SortFieldRequestDto(EvaluationLog_.CREATION_DATE, false)), searchQuery,
+                newArrayList());
         pageRequestDto.getFilters().add(
                 new FilterRequestDto(EvaluationLog_.CREATION_DATE, DATE_RANGE_VALUES, MatchMode.RANGE));
         pageRequestDto.getFilters().add(

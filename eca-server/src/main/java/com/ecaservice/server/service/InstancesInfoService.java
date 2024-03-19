@@ -61,10 +61,16 @@ public class InstancesInfoService {
         return instancesInfo;
     }
 
+    /**
+     * Gets instances info page.
+     *
+     * @param pageRequestDto - page request dto
+     * @return instances info page
+     */
     public PageDto<InstancesInfoDto> getNextPage(
             @ValidPageRequest(filterTemplateName = INSTANCES_INFO) PageRequestDto pageRequestDto) {
         log.info("Gets instances info next page: {}", pageRequestDto);
-        Sort sort = buildSort(pageRequestDto.getSortField(), CREATED_DATE, pageRequestDto.isAscending());
+        Sort sort = buildSort(pageRequestDto.getSortFields(), CREATED_DATE, true);
         var globalFilterFields = filterTemplateService.getGlobalFilterFields(INSTANCES_INFO);
         var filter = new InstancesInfoFilter(pageRequestDto.getSearchQuery(), globalFilterFields,
                 pageRequestDto.getFilters());

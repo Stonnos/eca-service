@@ -9,6 +9,8 @@ import com.ecaservice.oauth.repository.ChangePasswordRequestRepository;
 import com.ecaservice.oauth.repository.ResetPasswordRequestRepository;
 import com.ecaservice.oauth.repository.RoleRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
+import com.ecaservice.oauth.repository.UserNotificationEventOptionsRepository;
+import com.ecaservice.oauth.repository.UserProfileOptionsRepository;
 import com.ecaservice.oauth.service.UserService;
 import com.ecaservice.oauth2.test.token.TokenResponse;
 import lombok.Getter;
@@ -78,6 +80,10 @@ abstract class AbstractUserIT {
     @Getter
     private UserEntityRepository userEntityRepository;
     @Inject
+    private UserNotificationEventOptionsRepository userNotificationEventOptionsRepository;
+    @Inject
+    private UserProfileOptionsRepository userProfileOptionsRepository;
+    @Inject
     private RoleRepository roleRepository;
     @Inject
     private ResetPasswordRequestRepository resetPasswordRequestRepository;
@@ -125,6 +131,8 @@ abstract class AbstractUserIT {
     void clear() {
         changePasswordRequestRepository.deleteAll();
         resetPasswordRequestRepository.deleteAll();
+        userNotificationEventOptionsRepository.deleteAll();
+        userProfileOptionsRepository.deleteAll();
         userEntityRepository.deleteAll();
         roleRepository.deleteAll();
     }

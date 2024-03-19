@@ -1,8 +1,12 @@
 {
   "page": 0,
   "size": 25,
-  "sortField": "createdDate",
-  "ascending": false,
+  "sortField": [
+    {
+      "sortField": "createdDate",
+      "ascending": false
+    }
+  ],
   "searchQuery": "glass",
   "filters": []
 }

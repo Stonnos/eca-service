@@ -30,6 +30,13 @@ public class FormTemplateDto {
     private String templateTitle;
 
     /**
+     * Template title field ref (used to get title from specified field value)
+     */
+    @Schema(description = "Template title field ref (used to get title from specified field value)",
+            example = "field.type", maxLength = MAX_LENGTH_255)
+    private String templateTitleFieldRef;
+
+    /**
      * Object class
      */
     @Schema(description = "Object class", example = "Object", maxLength = MAX_LENGTH_255)

@@ -1,8 +1,12 @@
 {
   "page": 0,
   "size": 25,
-  "sortField": "creationDate",
-  "ascending": false,
+  "sortFields": [
+    {
+      "sortField": "creationDate",
+      "ascending": false
+    }
+  ],
   "searchQuery": "",
   "filters": [
     {

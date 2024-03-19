@@ -1,8 +1,12 @@
 {
   "page": 0,
   "size": 25,
-  "sortField": "eventDate",
-  "ascending": false,
+  "sortFields": [
+    {
+      "sortField": "eventDate",
+      "ascending": false
+    }
+  ],
   "searchQuery": "",
   "filters": [
     {

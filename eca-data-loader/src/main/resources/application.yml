@@ -30,6 +30,7 @@ eureka:
 
 app:
   batchSize: 50
+  dateFormat: yyyy-MM-dd HH:mm:ss
   instancesExpireDays: 30
   removeDataCron: 0 0 0 * * *
 

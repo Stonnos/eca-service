@@ -6,9 +6,10 @@ import com.ecaservice.oauth.dto.CreateUserDto;
 import com.ecaservice.oauth.dto.UpdateUserInfoDto;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.entity.UserPhoto;
-import com.ecaservice.oauth.event.model.UserCreatedEvent;
-import com.ecaservice.oauth.event.model.UserLockedNotificationEvent;
-import com.ecaservice.oauth.event.model.UserUnLockedNotificationEvent;
+import com.ecaservice.oauth.event.model.UserCreatedEmailEvent;
+import com.ecaservice.oauth.event.model.UserLockedEmailEvent;
+import com.ecaservice.oauth.event.model.UserProfileOptionsDataEvent;
+import com.ecaservice.oauth.event.model.UserUnLockedEmailEvent;
 import com.ecaservice.oauth.exception.UserLockNotAllowedException;
 import com.ecaservice.oauth.mapping.UserMapper;
 import com.ecaservice.oauth.repository.UserPhotoRepository;
@@ -203,58 +204,12 @@ public class UserController {
     }
 
     /**
-     * Enable/disable push notifications for current authenticated user.
-     *
-     * @param enabled - push enabled?
-     */
-    @PreAuthorize("#oauth2.hasScope('web')")
-    @Operation(
-            description = "Enable/disable push notifications for current authenticated user",
-            summary = "Enable/disable push notifications for current authenticated user",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
-            responses = {
-                    @ApiResponse(description = "OK", responseCode = "200"),
-                    @ApiResponse(description = "Not authorized", responseCode = "401",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    examples = {
-                                            @ExampleObject(
-                                                    name = "NotAuthorizedResponse",
-                                                    ref = "#/components/examples/NotAuthorizedResponse"
-                                            ),
-                                    }
-                            )
-                    ),
-                    @ApiResponse(description = "Bad request", responseCode = "400",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    examples = {
-                                            @ExampleObject(
-                                                    name = "InvalidPushOperationResponse",
-                                                    ref = "#/components/examples/InvalidPushOperationResponse"
-                                            ),
-                                    }
-                            ))
-            }
-    )
-    @PostMapping(value = "/push-notifications/enabled")
-    public void enablePushNotifications(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                        @Parameter(description = "Push enabled flag", required = true)
-                                        @RequestParam boolean enabled) {
-        if (enabled) {
-            userService.enablePushNotifications(userDetails.getId());
-        } else {
-            userService.disablePushNotifications(userDetails.getId());
-        }
-    }
-
-    /**
      * Finds all users with specified options such as filter, sorting and paging.
      *
      * @param pageRequestDto - page request dto
      * @return users page
      */
-    @PreAuthorize("#oauth2.hasScope('web') and hasRole('ROLE_SUPER_ADMIN')")
+    @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
             description = "Finds users with specified options",
             summary = "Finds users with specified options",
@@ -287,17 +242,6 @@ public class UserController {
                                             @ExampleObject(
                                                     name = "NotAuthorizedResponse",
                                                     ref = "#/components/examples/NotAuthorizedResponse"
-                                            ),
-                                    }
-                            )
-                    ),
-                    @ApiResponse(description = "Permission denied", responseCode = "403",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    examples = {
-                                            @ExampleObject(
-                                                    name = "AccessDeniedResponse",
-                                                    ref = "#/components/examples/AccessDeniedResponse"
                                             ),
                                     }
                             )
@@ -393,8 +337,8 @@ public class UserController {
         log.info("Received request for user creation [{}]", createUserDto.getLogin());
         String password = passwordService.generatePassword();
         UserEntity userEntity = userService.createUser(createUserDto, password);
-        log.info("User {} has been created", userEntity.getId());
-        applicationEventPublisher.publishEvent(new UserCreatedEvent(this, userEntity, password));
+        applicationEventPublisher.publishEvent(new UserCreatedEmailEvent(this, userEntity, password));
+        applicationEventPublisher.publishEvent(new UserProfileOptionsDataEvent(this, userEntity));
         return userMapper.map(userEntity);
     }
 
@@ -623,7 +567,7 @@ public class UserController {
             throw new UserLockNotAllowedException();
         }
         var userEntity = userService.lock(userId);
-        applicationEventPublisher.publishEvent(new UserLockedNotificationEvent(this, userEntity));
+        applicationEventPublisher.publishEvent(new UserLockedEmailEvent(this, userEntity));
     }
 
     /**
@@ -668,6 +612,6 @@ public class UserController {
                        @Min(VALUE_1) @Max(Long.MAX_VALUE) @RequestParam Long userId) {
         log.info("Received request for user [{}] unlocking", userId);
         var userEntity = userService.unlock(userId);
-        applicationEventPublisher.publishEvent(new UserUnLockedNotificationEvent(this, userEntity));
+        applicationEventPublisher.publishEvent(new UserUnLockedEmailEvent(this, userEntity));
     }
 }

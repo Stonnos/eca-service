@@ -12,9 +12,9 @@ import lombok.RequiredArgsConstructor;
 public enum ErsReportStatus {
 
     /**
-     * All experiment results has been sent to ERS service
+     * ERS report has been successfully fetched
      */
-    SUCCESS_SENT(ErsReportStatusDictionary.SUCCESS_SENT_DESCRIPTION),
+    FETCHED(ErsReportStatusDictionary.FETCHED_DESCRIPTION),
 
     /**
      * New experiment (ready to process)
@@ -32,19 +32,9 @@ public enum ErsReportStatus {
     EXPERIMENT_ERROR(ErsReportStatusDictionary.EXPERIMENT_ERROR_DESCRIPTION),
 
     /**
-     * Experiment results for sending to ERS not found
+     * Experiment results not found
      */
-    EXPERIMENT_RESULTS_NOT_FOUND(ErsReportStatusDictionary.EXPERIMENT_RESULTS_NOT_FOUND_DESCRIPTION),
-
-    /**
-     * No experiment results were sent to ERS service and experiment files were deleted
-     */
-    EXPERIMENT_DELETED(ErsReportStatusDictionary.EXPERIMENT_DELETED_DESCRIPTION),
-
-    /**
-     * Some experiment results must be sent to ERS service
-     */
-    NOT_SENT(ErsReportStatusDictionary.NOT_SENT_DESCRIPTION);
+    EXPERIMENT_RESULTS_NOT_FOUND(ErsReportStatusDictionary.EXPERIMENT_RESULTS_NOT_FOUND_DESCRIPTION);
 
     private final String description;
 

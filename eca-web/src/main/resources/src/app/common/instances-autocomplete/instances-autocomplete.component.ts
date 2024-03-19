@@ -61,8 +61,12 @@ export class InstancesAutocompleteComponent implements OnInit {
     const pageRequest: PageRequestDto = {
       page: 0,
       size: this.pageSize,
-      sortField: InstancesFilterFields.CREATED,
-      ascending: false,
+      sortFields: [
+        {
+          sortField: InstancesFilterFields.CREATED,
+          ascending: false,
+        }
+      ],
       searchQuery: null,
       filters: [
         {

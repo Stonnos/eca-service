@@ -32,19 +32,20 @@ eureka:
     registerWithEureka: false
     fetchRegistry: false
 
+lock:
+  enabled: true
+
 ## Application properties
 app:
   webExternalBaseUrl: http://localhost:8085
   validUserPhotoFileExtensions: png, jpg, jpeg, gif
   resetPassword:
-    validityMinutes: 30
+    validityMinutes: 15
     url: /reset-password/?token=%s
   changePassword:
-    validityMinutes: 30
-    url: /change-password/?token=%s
+    validityMinutes: 15
   changeEmail:
     validityMinutes: 2880
-    url: /change-email/?token=%s
 
 mail:
   client:
@@ -65,6 +66,28 @@ tfa:
   enabled: true
   pageSize: 25
   delaySeconds: 300
+
+userProfile:
+  emailEnabled: true
+  webPushEnabled: true
+  notificationEventOptions:
+    - eventType: EXPERIMENT_STATUS_CHANGE
+      emailEnabled: true
+      webPushEnabled: true
+      emailSupported: true
+      webPushSupported: true
+    - eventType: CLASSIFIER_STATUS_CHANGE
+      emailEnabled: false
+      webPushEnabled: true
+      emailSupported: false
+      webPushSupported: true
+    - eventType: CLASSIFIER_CONFIGURATION_CHANGE
+      emailEnabled: false
+      webPushEnabled: true
+      emailSupported: false
+      webPushSupported: true
+  rabbit:
+    exchangeName: user-profile-options-exchange
 
 ## Swagger properties
 open-api:

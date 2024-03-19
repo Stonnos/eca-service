@@ -11,7 +11,7 @@
 * Openjdk 17
 * maven => 3.9.2
 * Rabbit MQ => 3.8.14
-* eca-core 6.9.5
+* eca-core 6.9.7
 * Postgres Database для хранения информации 13.9
 * Docker, Docker-compose
 
@@ -31,6 +31,7 @@
 * eca-ds-transport - модуль содержит dto классы для сервиса Data storage
 * eca-external-api-transport - модуль содержит dto классы для внешнего API
 * eca-audit-transport - модуль содержит dto классы для сервиса журнала аудита
+* user-profile-options-transport - модуль содержит dto классы для настроек профиля пользователя
 * eca-report-model - модуль содержит модельные классы для отчетов
 * feign-oauth - обзщая библиотека для поддержки аутентификации feign client с помощью протокола oauth2
 * eca-web-transport - модуль содержит dto классы для REST API WEB
@@ -38,12 +39,17 @@
 * core-audit - библиотека для отправки событий аудита
 * core-filter - общая библиотека для фильтрации и сортировки
 * core-form-template - общая библиотека для работы с шаблонами CRUD - форм
+* core-message-template - общая библиотека для работы с шаблонами текстовых сообщений
 * swagger-core - модуль содержит конфигурационные классы для swagger
 * oauth2-core - модуль содержит конфигурационные классы для oauth2 resource server 
 * rabbit-core - модуль содержит конфигурационные классы для rabbit
 * eca-mail-client - общая библиотека для отправки email сообщений
+* eca-web-push-client - общая библиотека для отправки push уведомлений в приложении
+* user-profile-options-client - общая библиотека для получения настроек профиля пользователя
+* user-profile-options-cache-client - общая библиотека для получения настроек профиля пользователя из кеша
 * eca-s3-minio-client - общая библиотека для работы с S3 minio storage
 * classifiers-options-adapter - модуль для конвертации настроек классификаторов
+* classifiers-template-processor - модуль для работы с шаблонами классификаторов
 * eca-report - модуль генерации отчетов
 * eca-report-data - общая библиотека формирования данных для отчетов
 * eca-tests-common - общая библиотека для модулей авто тестов

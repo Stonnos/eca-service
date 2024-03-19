@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.ecaservice.user.profile.options.client.config.UserProfileOptionsClientAutoConfiguration

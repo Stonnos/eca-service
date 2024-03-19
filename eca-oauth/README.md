@@ -23,9 +23,7 @@
    * app.resetPassword.validityMinutes - время действия токена для восстановления пароля в мин.
    * app.resetPassword.url - url для формирования ссылки для восстановления пароля
    * app.changePassword.validityMinutes - время действия токена для изменения пароля в мин.
-   * app.changePassword.url - url для формирования ссылки для изменения пароля
    * app.changeEmail.validityMinutes - время действия токена для изменения email в мин.
-   * app.changeEmail.url - url для формирования ссылки для изменения Email
 3) open-api - настройки Swagger
    * open-api.tokenBaseUrl - базовый url - сервера авторизации
    * open-api.projectVersion - версия API
@@ -43,13 +41,16 @@
    * tfa.enabled - глобальное вкл./выкл. исполользование двухфакторной аутентификации
    * tfa.codeValiditySeconds - время действия одноразового пароля в сек.
    * tfa.codeLength - длина пароля
-   * tfa.pageSize - размер страницы для постраничной обработки данных
    * tfa.delaySeconds - интервал в сек. между запусками шедулера для очистки просроченных кодов подтверждения
 7) mail.client - настройки библиотеки отправки email сообщений
 8) redelivery.enabled - вкл./выкл. библиотеки redelivery
 9) logging.mode - режим логирования
    * text - текстовый формат
    * json - логи в формате json
+10) user-profile - дефолтные настройки для профиля пользователя
+   * user-profile.emailEnabled - глобальный флаг вкл./выкл. отправки email сообщений
+   * user-profile.webPushEnabled - глобальный флаг вкл./выкл. отправки пуш уведомлений в приложении
+   * user-profile.notificationEventOptions - настройки событий уведомлений
 
 Инструкция по развертыванию
 ----------------------------------------

@@ -1,0 +1,7 @@
+[
+  {
+    "fieldName": null,
+    "code": "DuplicateNotificationEventToUpdate",
+    "errorMessage": "Duplicate notification event [EXPERIMENT_STATUS_CHANGE] to update has been found in request body"
+  }
+]

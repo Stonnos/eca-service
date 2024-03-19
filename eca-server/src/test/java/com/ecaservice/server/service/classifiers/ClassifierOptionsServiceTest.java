@@ -1,11 +1,14 @@
 package com.ecaservice.server.service.classifiers;
 
 import com.ecaservice.classifier.options.model.AdaBoostOptions;
+import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.classifier.options.model.LogisticOptions;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.filter.service.FilterTemplateService;
+import com.ecaservice.core.message.template.service.MessageTemplateProcessor;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
+import com.ecaservice.server.exception.EnsembleClassifierOptionsNotAllowedException;
 import com.ecaservice.server.mapping.ClassifierOptionsDatabaseModelMapperImpl;
 import com.ecaservice.server.mapping.ClassifiersConfigurationHistoryMapperImpl;
 import com.ecaservice.server.mapping.DateTimeConverter;
@@ -17,15 +20,17 @@ import com.ecaservice.server.repository.ClassifiersConfigurationHistoryRepositor
 import com.ecaservice.server.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.UserService;
-import com.ecaservice.server.service.message.template.MessageTemplateProcessor;
 import com.ecaservice.web.dto.model.ClassifierOptionsDto;
 import com.ecaservice.web.dto.model.FormTemplateDto;
 import com.ecaservice.web.dto.model.InputOptionDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import com.google.common.collect.Sets;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.inject.Inject;
 import java.util.Arrays;
@@ -35,9 +40,11 @@ import java.util.Set;
 
 import static com.ecaservice.server.TestHelperUtils.createClassifierOptionsDatabaseModel;
 import static com.ecaservice.server.TestHelperUtils.createClassifiersConfiguration;
+import static com.ecaservice.server.TestHelperUtils.createLogisticOptions;
 import static com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel_.CREATION_DATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -54,7 +61,6 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
 
     private static final int PAGE_NUMBER = 0;
     private static final int PAGE_SIZE = 10;
-    private static final String OPTIONS = "options";
     private static final long ID = 1L;
     private static final String USER_NAME = "user";
     private static final String MESSAGE = "message";
@@ -71,20 +77,25 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
     @MockBean
     private FilterTemplateService filterTemplateService;
     @MockBean
-    private ClassifierOptionsProcessor classifierOptionsProcessor;
+    private ClassifierOptionsInfoProcessor classifierOptionsInfoProcessor;
     @MockBean
-    private ClassifiersTemplateProvider classifiersTemplateProvider;
+    private ClassifiersFormTemplateProvider classifiersFormTemplateProvider;
     @MockBean
     private MessageTemplateProcessor messageTemplateProcessor;
     @Inject
     private ClassifierOptionsService classifierOptionsService;
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    private String optionsJson;
+
     @Override
-    public void init() {
+    public void init() throws JsonProcessingException {
+        optionsJson = objectMapper.writeValueAsString(createLogisticOptions());
         when(userService.getCurrentUser()).thenReturn(USER_NAME);
         var formTemplate = new FormTemplateDto();
         formTemplate.setTemplateTitle(TEMPLATE_TITLE);
-        when(classifiersTemplateProvider.getClassifierTemplateByClass(anyString())).thenReturn(formTemplate);
+        when(classifiersFormTemplateProvider.getClassifierTemplateByClass(anyString())).thenReturn(formTemplate);
         when(messageTemplateProcessor.process(anyString(), anyMap())).thenReturn(MESSAGE);
     }
 
@@ -97,12 +108,12 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
 
     @Test
     void testGetClassifiersOptionsPage() {
-        when(classifierOptionsProcessor.processInputOptions(anyString()))
+        when(classifierOptionsInfoProcessor.processInputOptions(any(ClassifierOptions.class)))
                 .thenReturn(Collections.singletonList(new InputOptionDto()));
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = saveClassifierOptions(true);
-        PageRequestDto pageRequestDto =
-                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, CREATION_DATE, false, null,
-                        Collections.emptyList());
+        PageRequestDto pageRequestDto = new PageRequestDto(PAGE_NUMBER, PAGE_SIZE,
+                Collections.singletonList(new SortFieldRequestDto(CREATION_DATE, false)), null,
+                Collections.emptyList());
         var classifierOptionsDatabaseModelPage =
                 classifierOptionsService.getNextPage(classifierOptionsDatabaseModel.getConfiguration().getId(),
                         pageRequestDto);
@@ -115,9 +126,9 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
 
     @Test
     void testGetClassifiersOptionsPageForNotExistingConfiguration() {
-        PageRequestDto pageRequestDto =
-                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, CREATION_DATE, false, null,
-                        Collections.emptyList());
+        PageRequestDto pageRequestDto = new PageRequestDto(PAGE_NUMBER, PAGE_SIZE,
+                Collections.singletonList(new SortFieldRequestDto(CREATION_DATE, false)), null,
+                Collections.emptyList());
         assertThrows(EntityNotFoundException.class, () -> classifierOptionsService.getNextPage(ID, pageRequestDto));
     }
 
@@ -143,7 +154,7 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
     void testDeleteOptionsForActiveConfiguration() {
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = saveClassifierOptions(false);
         classifierOptionsDatabaseModelRepository.save(
-                createClassifierOptionsDatabaseModel(OPTIONS, classifierOptionsDatabaseModel.getConfiguration()));
+                createClassifierOptionsDatabaseModel(optionsJson, classifierOptionsDatabaseModel.getConfiguration()));
         classifierOptionsService.deleteOptions(classifierOptionsDatabaseModel.getId());
         ClassifierOptionsDatabaseModel actualOptions =
                 classifierOptionsDatabaseModelRepository.findById(classifierOptionsDatabaseModel.getId()).orElse(null);
@@ -161,7 +172,7 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
         classifiersConfiguration.setBuildIn(false);
         classifiersConfigurationRepository.save(classifiersConfiguration);
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = classifierOptionsDatabaseModelRepository.save(
-                createClassifierOptionsDatabaseModel(OPTIONS, classifiersConfiguration));
+                createClassifierOptionsDatabaseModel(optionsJson, classifiersConfiguration));
         classifierOptionsService.deleteOptions(classifierOptionsDatabaseModel.getId());
         ClassifierOptionsDatabaseModel actualOptions =
                 classifierOptionsDatabaseModelRepository.findById(classifierOptionsDatabaseModel.getId()).orElse(null);
@@ -181,7 +192,7 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
         classifiersConfiguration.setBuildIn(false);
         classifiersConfigurationRepository.save(classifiersConfiguration);
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel =
-                createClassifierOptionsDatabaseModel(OPTIONS, classifiersConfiguration);
+                createClassifierOptionsDatabaseModel(optionsJson, classifiersConfiguration);
         classifierOptionsDatabaseModelRepository.save(classifierOptionsDatabaseModel);
         assertThrows(IllegalStateException.class,
                 () -> classifierOptionsService.deleteOptions(classifierOptionsDatabaseModel.getId()));
@@ -238,7 +249,7 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
         classifiersConfiguration.setBuildIn(false);
         classifiersConfigurationRepository.save(classifiersConfiguration);
         AdaBoostOptions adaBoostOptions = TestHelperUtils.createAdaBoostOptions();
-        assertThrows(IllegalStateException.class,
+        assertThrows(EnsembleClassifierOptionsNotAllowedException.class,
                 () -> classifierOptionsService.saveClassifierOptions(classifiersConfiguration.getId(),
                         adaBoostOptions));
     }
@@ -247,7 +258,7 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
     void testUpdateNotBuildInClassifiersConfigurationOptions() {
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = saveClassifierOptions(false);
         Set<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels = Sets.newHashSet(Collections.singletonList(
-                createClassifierOptionsDatabaseModel(OPTIONS, classifierOptionsDatabaseModel.getConfiguration())));
+                createClassifierOptionsDatabaseModel(optionsJson, classifierOptionsDatabaseModel.getConfiguration())));
         assertThrows(IllegalStateException.class, () -> classifierOptionsService.updateBuildInClassifiersConfiguration(
                 classifierOptionsDatabaseModel.getConfiguration(), classifierOptionsDatabaseModels));
     }
@@ -266,7 +277,8 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
         classifiersConfiguration.setBuildIn(true);
         classifiersConfigurationRepository.save(classifiersConfiguration);
         classifierOptionsService.updateBuildInClassifiersConfiguration(classifiersConfiguration, Sets.newHashSet(
-                Collections.singletonList(createClassifierOptionsDatabaseModel(OPTIONS, classifiersConfiguration))));
+                Collections.singletonList(
+                        createClassifierOptionsDatabaseModel(optionsJson, classifiersConfiguration))));
         assertThat(classifierOptionsDatabaseModelRepository.count()).isOne();
         ClassifiersConfiguration actualConfiguration =
                 classifiersConfigurationRepository.findById(classifiersConfiguration.getId()).orElse(null);
@@ -345,7 +357,7 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
         classifiersConfiguration.setBuildIn(buildIn);
         classifiersConfigurationRepository.save(classifiersConfiguration);
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel =
-                createClassifierOptionsDatabaseModel(OPTIONS, classifiersConfiguration);
+                createClassifierOptionsDatabaseModel(optionsJson, classifiersConfiguration);
         return classifierOptionsDatabaseModelRepository.save(classifierOptionsDatabaseModel);
     }
 

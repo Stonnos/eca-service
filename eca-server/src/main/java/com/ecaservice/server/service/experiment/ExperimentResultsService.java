@@ -9,7 +9,7 @@ import com.ecaservice.server.model.entity.ExperimentResultsRequest;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.server.repository.ExperimentResultsRequestRepository;
-import com.ecaservice.server.service.classifiers.ClassifierOptionsProcessor;
+import com.ecaservice.server.service.classifiers.ClassifierOptionsInfoProcessor;
 import com.ecaservice.server.service.ers.ErsService;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.ErsReportStatus;
@@ -44,21 +44,21 @@ import static com.ecaservice.server.util.Utils.buildEvaluationResultsDto;
 public class ExperimentResultsService {
 
     private final ErsService ersService;
-    private final ClassifierOptionsProcessor classifierOptionsProcessor;
+    private final ClassifierOptionsInfoProcessor classifierOptionsInfoProcessor;
     private final ExperimentResultsMapper experimentResultsMapper;
     private final ClassifierOptionsAdapter classifierOptionsAdapter;
     private final ExperimentResultsEntityRepository experimentResultsEntityRepository;
     private final ExperimentResultsRequestRepository experimentResultsRequestRepository;
 
     /**
-     * Saves experiments results that should be sent to ERS.
+     * Saves experiments results.
      *
      * @param experiment        - experiment entity
      * @param experimentHistory - experiment history
      * @return experiment results entities list
      */
-    public List<ExperimentResultsEntity> saveExperimentResultsToErsSent(Experiment experiment,
-                                                                        AbstractExperiment<?> experimentHistory) {
+    public List<ExperimentResultsEntity> saveExperimentResults(Experiment experiment,
+                                                               AbstractExperiment<?> experimentHistory) {
         log.info("Starting to save experiment [{}] results to ERS sent", experiment.getRequestId());
         List<EvaluationResults> evaluationResultsList = experimentHistory.getHistory();
         List<ExperimentResultsEntity> experimentResultsEntities =
@@ -90,7 +90,7 @@ public class ExperimentResultsService {
         ExperimentResultsDetailsDto experimentResultsDetailsDto =
                 experimentResultsMapper.mapDetails(experimentResultsEntity);
         experimentResultsDetailsDto.setClassifierInfo(
-                classifierOptionsProcessor.processClassifierInfo(experimentResultsEntity.getClassifierInfo()));
+                classifierOptionsInfoProcessor.processClassifierInfo(experimentResultsEntity.getClassifierInfo()));
         experimentResultsDetailsDto.setEvaluationResultsDto(getEvaluationResults(experimentResultsEntity));
         log.info("Experiment [{}] result details [{}] has been fetched",
                 experimentResultsEntity.getExperiment().getRequestId(), experimentResultsEntity.getId());
@@ -113,10 +113,15 @@ public class ExperimentResultsService {
             //Gets experiment results list
             var experimentResultsEntityList =
                     experimentResultsEntityRepository.findByExperimentOrderByResultsIndex(experiment);
-            var experimentResultsDtoList = mapToExperimentResultsDtoList(experimentResultsEntityList);
-            experimentErsReportDto.setExperimentResults(experimentResultsDtoList);
-            populateSentFlag(experimentErsReportDto, experimentResultsEntityList);
-            populateErsReportStatusForFinishedExperiment(experiment, experimentErsReportDto);
+            if (CollectionUtils.isEmpty(experimentResultsEntityList)) {
+                log.warn("Experiment [{}] results list not found for ERS report", experiment.getRequestId());
+                setErsReportStatus(experimentErsReportDto, ErsReportStatus.EXPERIMENT_RESULTS_NOT_FOUND);
+            } else {
+                var experimentResultsDtoList
+                        = mapToExperimentResultsDtoList(experimentResultsEntityList);
+                experimentErsReportDto.setExperimentResults(experimentResultsDtoList);
+                setErsReportStatus(experimentErsReportDto, ErsReportStatus.FETCHED);
+            }
         }
         log.info("Experiment [{}] ERS report has been fetched with status [{}]", experiment.getRequestId(),
                 experimentErsReportDto.getErsReportStatus().getValue());
@@ -129,7 +134,7 @@ public class ExperimentResultsService {
                 .stream()
                 .map(experimentResultsEntity -> {
                     var experimentResultsDto = experimentResultsMapper.map(experimentResultsEntity);
-                    var classifierInfoDto = classifierOptionsProcessor.processClassifierInfo(
+                    var classifierInfoDto = classifierOptionsInfoProcessor.processClassifierInfo(
                             experimentResultsEntity.getClassifierInfo());
                     experimentResultsDto.setClassifierInfo(classifierInfoDto);
                     return experimentResultsDto;
@@ -137,50 +142,18 @@ public class ExperimentResultsService {
                 .collect(Collectors.toList());
     }
 
-    private void populateSentFlag(ExperimentErsReportDto experimentErsReportDto,
-                                  List<ExperimentResultsEntity> experimentResultsEntityList) {
-        if (!CollectionUtils.isEmpty(experimentResultsEntityList)) {
-            experimentErsReportDto.setClassifiersCount(experimentResultsEntityList.size());
-            List<Long> experimentResultsIds = experimentResultsEntityList
-                    .stream()
-                    .map(ExperimentResultsEntity::getId)
-                    .collect(Collectors.toList());
-            List<Long> sentResultsIds =
-                    experimentResultsEntityRepository.findSentResultsIds(experimentResultsIds);
-            experimentErsReportDto.setSentClassifiersCount(sentResultsIds.size());
-            //Set sent flag for each experiment results
-            experimentErsReportDto.getExperimentResults().forEach(experimentResultsDto ->
-                    experimentResultsDto.setSent(sentResultsIds.contains(experimentResultsDto.getId()))
-            );
-        }
-    }
-
-    private void populateErsReportStatusForFinishedExperiment(Experiment experiment,
-                                                              ExperimentErsReportDto experimentErsReportDto) {
-        ErsReportStatus ersReportStatus;
-        if (experimentErsReportDto.getClassifiersCount() == 0L) {
-            ersReportStatus = ErsReportStatus.EXPERIMENT_RESULTS_NOT_FOUND;
-        } else if (experimentErsReportDto.getSentClassifiersCount() == experimentErsReportDto.getClassifiersCount()) {
-            ersReportStatus = ErsReportStatus.SUCCESS_SENT;
-        } else if (experiment.getDeletedDate() != null) {
-            ersReportStatus = ErsReportStatus.EXPERIMENT_DELETED;
-        } else {
-            ersReportStatus = ErsReportStatus.NOT_SENT;
-        }
-        experimentErsReportDto.setErsReportStatus(
-                new EnumDto(ersReportStatus.name(), ersReportStatus.getDescription()));
-    }
-
     private void populateErsReportStatusForNotFinishedExperiment(Experiment experiment,
                                                                  ExperimentErsReportDto experimentErsReportDto) {
-        ErsReportStatus ersReportStatus;
         if (RequestStatus.NEW.equals(experiment.getRequestStatus())) {
-            ersReportStatus = ErsReportStatus.EXPERIMENT_NEW;
+            setErsReportStatus(experimentErsReportDto, ErsReportStatus.EXPERIMENT_NEW);
         } else if (RequestStatus.IN_PROGRESS.equals(experiment.getRequestStatus())) {
-            ersReportStatus = ErsReportStatus.EXPERIMENT_IN_PROGRESS;
+            setErsReportStatus(experimentErsReportDto, ErsReportStatus.EXPERIMENT_IN_PROGRESS);
         } else {
-            ersReportStatus = ErsReportStatus.EXPERIMENT_ERROR;
+            setErsReportStatus(experimentErsReportDto, ErsReportStatus.EXPERIMENT_ERROR);
         }
+    }
+
+    private void setErsReportStatus(ExperimentErsReportDto experimentErsReportDto, ErsReportStatus ersReportStatus) {
         experimentErsReportDto.setErsReportStatus(
                 new EnumDto(ersReportStatus.name(), ersReportStatus.getDescription()));
     }

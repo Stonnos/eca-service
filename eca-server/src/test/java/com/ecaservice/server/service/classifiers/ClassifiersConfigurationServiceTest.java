@@ -5,6 +5,7 @@ import com.ecaservice.common.web.exception.InvalidOperationException;
 import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.lock.config.CoreLockAutoConfiguration;
 import com.ecaservice.core.lock.metrics.LockMeterService;
+import com.ecaservice.core.message.template.service.MessageTemplateProcessor;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.mapping.ClassifierOptionsDatabaseModelMapperImpl;
@@ -20,12 +21,12 @@ import com.ecaservice.server.repository.ClassifiersConfigurationHistoryRepositor
 import com.ecaservice.server.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.UserService;
-import com.ecaservice.server.service.message.template.MessageTemplateProcessor;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.FormTemplateDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import com.ecaservice.web.dto.model.UpdateClassifiersConfigurationDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -91,7 +92,7 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
     @MockBean
     private LockMeterService lockMeterService;
     @MockBean
-    private ClassifiersTemplateProvider classifiersTemplateProvider;
+    private ClassifiersFormTemplateProvider classifiersFormTemplateProvider;
     @MockBean
     private MessageTemplateProcessor messageTemplateProcessor;
 
@@ -100,7 +101,7 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
         when(userService.getCurrentUser()).thenReturn(USER_NAME);
         var formTemplate = new FormTemplateDto();
         formTemplate.setTemplateTitle(TEMPLATE_TITLE);
-        when(classifiersTemplateProvider.getClassifierTemplateByClass(anyString())).thenReturn(formTemplate);
+        when(classifiersFormTemplateProvider.getClassifierTemplateByClass(anyString())).thenReturn(formTemplate);
         when(messageTemplateProcessor.process(anyString(), anyMap())).thenReturn(MESSAGE);
     }
 
@@ -282,8 +283,9 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
         ClassifiersConfiguration secondConfiguration = saveConfiguration(false, false);
         classifierOptionsDatabaseModelRepository.save(
                 TestHelperUtils.createClassifierOptionsDatabaseModel(TEST_CONFIG, secondConfiguration));
-        PageRequestDto pageRequestDto =
-                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, CREATION_DATE, false, null, Collections.emptyList());
+        PageRequestDto pageRequestDto = new PageRequestDto(PAGE_NUMBER, PAGE_SIZE,
+                Collections.singletonList(new SortFieldRequestDto(CREATION_DATE, false)), null,
+                Collections.emptyList());
         PageDto<ClassifiersConfigurationDto> configurationsPage =
                 classifiersConfigurationService.getClassifiersConfigurations(pageRequestDto);
         assertThat(configurationsPage).isNotNull();

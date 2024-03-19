@@ -25,12 +25,13 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.ecaservice.report.data.util.RangeUtils.formatDateRange;
 import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * Abstract data fetcher for base report.
  *
+ * @param <E> - entity generic type
+ * @param <B> - report bean generic type
  * @author Roman Batygin
  */
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
@@ -107,8 +108,9 @@ public abstract class AbstractBaseReportDataFetcher<E, B> {
                         if (filterFieldDto != null) {
                             FilterBean filterBean = new FilterBean();
                             filterBean.setDescription(filterFieldDto.getDescription());
-                            String filterData = getFilterValuesAsString(filterRequestDto, values, filterFieldDto);
-                            filterBean.setFilterData(filterData);
+                            filterBean.setMatchMode(filterRequestDto.getMatchMode().name());
+                            filterBean.setFilterFieldType(filterFieldDto.getFilterFieldType().name());
+                            setFilterValues(filterBean, filterRequestDto, values, filterFieldDto);
                             filterBeans.add(filterBean);
                         }
                     }
@@ -118,27 +120,37 @@ public abstract class AbstractBaseReportDataFetcher<E, B> {
         return filterBeans;
     }
 
-    private String getFilterValuesAsString(FilterRequestDto filterRequestDto, List<String> values,
-                                           FilterFieldDto filterFieldDto) {
+    private void setFilterValues(FilterBean filterBean,
+                                 FilterRequestDto filterRequestDto,
+                                 List<String> values,
+                                 FilterFieldDto filterFieldDto) {
         var filterValueReportCustomizer = getFilterValueReportCustomizer(filterRequestDto);
         if (filterValueReportCustomizer != null) {
-            return filterValueReportCustomizer.getFilterValuesAsString(values);
+            var value = filterValueReportCustomizer.getFilterValuesAsString(values);
+            filterBean.setValue1(value);
         } else {
             if (FilterFieldType.DATE.equals(filterFieldDto.getFilterFieldType())
                     && MatchMode.RANGE.equals(filterRequestDto.getMatchMode())) {
-                return getDateRangeAsString(values);
+                String from = values.get(0);
+                String to = values.size() > 1 ? values.get(1) : null;
+                filterBean.setValue1(from);
+                filterBean.setValue2(to);
             } else if (FilterFieldType.REFERENCE.equals(filterFieldDto.getFilterFieldType())
                     && Optional.ofNullable(filterFieldDto.getDictionary())
                     .map(FilterDictionaryDto::getValues).isPresent()) {
-                return getValuesFromDictionary(values, filterFieldDto.getDictionary());
+                var value = getValuesFromDictionary(values, filterFieldDto.getDictionary());
+                filterBean.setValue1(value);
+            } else {
+                var value = StringUtils.join(values, VALUES_SEPARATOR);
+                filterBean.setValue1(value);
             }
-            return StringUtils.join(values, VALUES_SEPARATOR);
         }
     }
 
     private FilterValueReportCustomizer getFilterValueReportCustomizer(FilterRequestDto filterRequestDto) {
         return filterValueReportCustomizers.stream()
-                .filter(filterValueReportCustomizer -> filterValueReportCustomizer.getFilterField().equals(filterRequestDto.getName()))
+                .filter(filterValueReportCustomizer -> filterValueReportCustomizer.getFilterField().equals(
+                        filterRequestDto.getName()))
                 .findFirst()
                 .orElse(null);
     }
@@ -160,11 +172,5 @@ public abstract class AbstractBaseReportDataFetcher<E, B> {
                 .map(FilterDictionaryValueDto::getLabel)
                 .collect(Collectors.toList());
         return StringUtils.join(resultValues, VALUES_SEPARATOR);
-    }
-
-    private String getDateRangeAsString(List<String> values) {
-        String lowerBound = values.get(0);
-        String upperBound = values.size() > 1 ? values.get(1) : null;
-        return formatDateRange(lowerBound, upperBound);
     }
 }

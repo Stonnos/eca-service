@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from "../dashboard/dashboard.component";
-import { ClassifierOptionsRequestsComponent } from "../classifier-options-requests/components/classifier-options-requests.component";
 import { LoginComponent } from "../auth/components/login.component";
 import { ExperimentTabsComponent } from "../experiments-tabs/components/experiment-tabs.component";
 import { EvaluationLogDetailsComponent } from "../evaluation-log-details/components/evaluation-log-details.component";
@@ -10,16 +9,15 @@ import { ExperimentResultsDetailsComponent } from "../experiment-results-details
 import { UsersListComponent } from "../users/components/users-list.component";
 import { ResetPasswordComponent } from "../change-password/components/reset-password/reset-password.component";
 import { InstancesListComponent } from "../instances/components/instances-list.component";
-import { UserProfileComponent } from "../user-profile/components/user-profile.component";
-import { ConfirmChangePasswordComponent } from "../change-password/components/confirm-change-password/confirm-change-password.component";
 import { AccessDeniedComponent } from "../access-denied/components/access-denied.component";
 import { AuditLogsComponent } from "../audit-logs/components/audit-logs.component";
-import { ConfirmChangeEmailComponent } from "../update-user-email/components/confirm-change-email/confirm-change-email.component";
 import { TemplatesListComponent } from "../email-templates/components/templates-list/templates-list.component";
-import { InstancesDetailsComponent } from "../instances-details/components/instances-details.component";
 import { CreateResetPasswordRequestComponent } from "../change-password/components/create-reset-password-request/create-reset-password-request.component";
 import { ClassifiersConfigurationFullDetailsComponent } from "../classifiers-configuration-full-details/components/classifiers-configuration-full-details.component";
 import { ClassifiersTabsComponent } from "../classifiers-tabs/components/classifiers-tabs.component";
+import { EvaluationResultsHistoryComponent } from "../evaluation-results-history/components/evaluation-results-history.component";
+import { UserProfileTabsComponent } from "../user-profile-tabs/components/user-profile-tabs.component";
+import { InstancesDetailsTabsComponent } from "../instances-details-tabs/components/instances-details-tabs.component";
 
 const routes: Routes = [
   {
@@ -35,8 +33,8 @@ const routes: Routes = [
         component: ExperimentTabsComponent
       },
       {
-        path: 'classifiers-options-requests',
-        component: ClassifierOptionsRequestsComponent
+        path: 'evaluation-results-history',
+        component: EvaluationResultsHistoryComponent
       },
       {
         path: 'instances',
@@ -44,7 +42,7 @@ const routes: Routes = [
       },
       {
         path: 'instances/details/:id',
-        component: InstancesDetailsComponent
+        component: InstancesDetailsTabsComponent
       },
       {
         path: 'users',
@@ -76,7 +74,7 @@ const routes: Routes = [
       },
       {
         path: 'profile',
-        component: UserProfileComponent
+        component: UserProfileTabsComponent
       },
     ]
   },
@@ -91,14 +89,6 @@ const routes: Routes = [
   {
     path: 'reset-password',
     component: ResetPasswordComponent
-  },
-  {
-    path: 'change-password',
-    component: ConfirmChangePasswordComponent
-  },
-  {
-    path: 'change-email',
-    component: ConfirmChangeEmailComponent
   },
   {
     path: 'access-denied',

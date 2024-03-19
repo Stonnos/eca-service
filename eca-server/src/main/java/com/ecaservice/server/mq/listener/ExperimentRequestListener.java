@@ -15,6 +15,8 @@ import org.springframework.stereotype.Component;
 import javax.validation.Valid;
 import java.util.UUID;
 
+import static com.ecaservice.server.config.rabbit.RabbitConfiguration.ECA_RABBIT_LISTENER_CONTAINER_FACTORY;
+
 /**
  * Rabbit MQ listener for experiment request messages.
  *
@@ -34,7 +36,8 @@ public class ExperimentRequestListener {
      *
      * @param experimentRequest - experiment request
      */
-    @RabbitListener(queues = "${queue.experimentRequestQueue}")
+    @RabbitListener(containerFactory = ECA_RABBIT_LISTENER_CONTAINER_FACTORY,
+            queues = "${queue.experimentRequestQueue}")
     public void handleMessage(@Valid @Payload ExperimentRequest experimentRequest, Message inboundMessage) {
         MessageProperties inboundMessageProperties = inboundMessage.getMessageProperties();
         log.info("Received experiment [{}] request with correlation id [{}]",

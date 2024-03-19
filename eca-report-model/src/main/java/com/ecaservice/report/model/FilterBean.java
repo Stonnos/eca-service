@@ -16,7 +16,22 @@ public class FilterBean {
     private String description;
 
     /**
-     * Filter field data as string
+     * Match mode
      */
-    private String filterData;
+    private String matchMode;
+
+    /**
+     * Filter field type
+     */
+    private String filterFieldType;
+
+    /**
+     * Filter field value1 as string
+     */
+    private String value1;
+
+    /**
+     * Filter field value2 as string (used for filter field with {@code MatchMode#RANGE})
+     */
+    private String value2;
 }

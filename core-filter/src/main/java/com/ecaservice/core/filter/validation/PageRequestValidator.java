@@ -5,7 +5,6 @@ import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
 
 import javax.validation.ConstraintValidator;
@@ -25,7 +24,7 @@ public class PageRequestValidator implements ConstraintValidator<ValidPageReques
     private static final String INVALID_FILTER_REQUEST_FIELD_NAME_TEMPLATE = "{invalid.filter.request.field.name}";
 
     private static final String INVALID_SORT_FIELD_TEMPLATE = "{invalid.sort.field.name}";
-    private static final String SORT_FIELD = "sortField";
+    private static final String SORT_FIELD = "sortField[%d].sortField";
 
     private String filterTemplateName;
 
@@ -39,7 +38,7 @@ public class PageRequestValidator implements ConstraintValidator<ValidPageReques
     @Override
     public boolean isValid(PageRequestDto pageRequestDto, ConstraintValidatorContext context) {
         boolean validFilters = validateFilterFields(pageRequestDto, context);
-        boolean validSortField = validateSortField(pageRequestDto, context);
+        boolean validSortField = validateSortFields(pageRequestDto, context);
         return validFilters && validSortField;
     }
 
@@ -52,31 +51,33 @@ public class PageRequestValidator implements ConstraintValidator<ValidPageReques
                 if (filterFields.stream().noneMatch(
                         filterFieldDto -> filterFieldDto.getFieldName().equals(filterRequestDto.getName()))) {
                     valid = false;
-                    buildConstraintViolationWithTemplate(context, INVALID_FILTER_REQUEST_FIELD_NAME_TEMPLATE,
-                            String.format(FILTERS_NODE_FORMAT, i));
+                    context.disableDefaultConstraintViolation();
+                    context.buildConstraintViolationWithTemplate(INVALID_FILTER_REQUEST_FIELD_NAME_TEMPLATE)
+                            .addPropertyNode(String.format(FILTERS_NODE_FORMAT, i))
+                            .addConstraintViolation();
                 }
             }
         }
         return valid;
     }
 
-    private boolean validateSortField(PageRequestDto pageRequestDto, ConstraintValidatorContext context) {
-        if (StringUtils.isNotBlank(pageRequestDto.getSortField())) {
+    private boolean validateSortFields(PageRequestDto pageRequestDto, ConstraintValidatorContext context) {
+        if (CollectionUtils.isEmpty(pageRequestDto.getSortFields())) {
+            return true;
+        } else {
+            boolean valid = true;
             var sortFields = filterTemplateService.getSortFields(filterTemplateName);
-            if (!sortFields.contains(pageRequestDto.getSortField())) {
-                buildConstraintViolationWithTemplate(context, INVALID_SORT_FIELD_TEMPLATE, SORT_FIELD);
-                return false;
+            for (int i = 0; i < pageRequestDto.getSortFields().size(); i++) {
+                var sortField = pageRequestDto.getSortFields().get(i);
+                if (sortFields.stream().noneMatch(field -> field.equals(sortField.getSortField()))) {
+                    valid = false;
+                    context.disableDefaultConstraintViolation();
+                    context.buildConstraintViolationWithTemplate(INVALID_SORT_FIELD_TEMPLATE)
+                            .addPropertyNode(String.format(SORT_FIELD, i))
+                            .addConstraintViolation();
+                }
             }
+            return valid;
         }
-        return true;
-    }
-
-    private void buildConstraintViolationWithTemplate(ConstraintValidatorContext context,
-                                                      String template,
-                                                      String node) {
-        context.disableDefaultConstraintViolation();
-        context.buildConstraintViolationWithTemplate(template)
-                .addPropertyNode(node)
-                .addConstraintViolation();
     }
 }

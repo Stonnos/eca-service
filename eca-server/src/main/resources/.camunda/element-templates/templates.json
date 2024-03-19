@@ -91,6 +91,10 @@
           {
             "name": "Обработка ошибки при получении оптимальных настроек классификатора",
             "value": "OPTIMAL_CLASSIFIER_OPTIONS_ERROR_HANDLER"
+          },
+          {
+            "name": "Получение настроек профиля пользователя",
+            "value": "GET_USER_PROFILE_OPTIONS"
           }
         ],
         "binding": {
@@ -422,6 +426,52 @@
         "binding": {
           "type": "camunda:inputParameter",
           "name": "requestStatus"
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "candidateUsers": false,
+      "candidateGroups": false,
+      "property": true,
+      "class": false,
+      "implementation": false,
+      "delegate": false,
+      "asyncBefore": false,
+      "asyncAfter": true
+    }
+  },
+  {
+    "name": "Получение настроек профиля пользователя",
+    "id": "GetUserProfileOptions",
+    "isDefault": false,
+    "appliesTo": [
+      "bpmn:ServiceTask"
+    ],
+    "properties": [
+      {
+        "type": "Hidden",
+        "value": "com.ecaservice.server.bpm.listeners.TaskExecutionListener",
+        "binding": {
+          "type": "property",
+          "name": "camunda:class"
+        }
+      },
+      {
+        "type": "Hidden",
+        "value": "GET_USER_PROFILE_OPTIONS",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "taskType"
+        }
+      },
+      {
+        "label": "Expression для получения логина пользователя",
+        "type": "String",
+        "value": "${evaluationRequestData.createdBy}",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "userLogin"
         }
       }
     ],

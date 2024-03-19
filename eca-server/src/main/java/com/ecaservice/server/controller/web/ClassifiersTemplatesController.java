@@ -1,7 +1,7 @@
 package com.ecaservice.server.controller.web;
 
 import com.ecaservice.server.dto.ClassifierGroupTemplatesType;
-import com.ecaservice.server.service.classifiers.ClassifiersTemplateProvider;
+import com.ecaservice.server.service.classifiers.ClassifiersFormTemplateProvider;
 import com.ecaservice.web.dto.model.FormTemplateGroupDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -40,7 +40,7 @@ import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
 @RequiredArgsConstructor
 public class ClassifiersTemplatesController {
 
-    private final ClassifiersTemplateProvider classifiersTemplateProvider;
+    private final ClassifiersFormTemplateProvider classifiersFormTemplateProvider;
 
     /**
      * Gets classifiers form templates.
@@ -84,6 +84,6 @@ public class ClassifiersTemplatesController {
             @Parameter(description = "Classifiers group templates type", required = true)
             @RequestParam ClassifierGroupTemplatesType classifierGroupTemplatesType) {
         log.info("Request classifiers group templates [{}]", classifierGroupTemplatesType);
-        return classifiersTemplateProvider.getClassifiersTemplates(classifierGroupTemplatesType);
+        return classifiersFormTemplateProvider.getClassifiersTemplates(classifierGroupTemplatesType);
     }
 }

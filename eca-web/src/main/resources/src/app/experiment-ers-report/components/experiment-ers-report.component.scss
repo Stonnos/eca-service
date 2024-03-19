@@ -6,20 +6,12 @@
       width: 50px;
       font-weight: bold;
     }
-
-    &:nth-child(3) {
-      width: 120px;
-    }
   }
 
   .ui-table-thead > tr > th {
 
     &:first-child {
       width: 50px;
-    }
-
-    &:nth-child(3) {
-      width: 120px;
     }
   }
 }

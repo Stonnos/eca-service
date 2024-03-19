@@ -64,8 +64,6 @@ app:
   pageSize: 10
   modelDownloadUrlExpirationDays: 7
   shortLifeUrlExpirationMinutes: 5
-  push:
-    enabled: false
 
 ## Queues properties
 queue:
@@ -127,7 +125,7 @@ experiment:
     numIterations: 25
     numBestClassifiers: 4
     multiThreadModeEnabled: true
-    numThreads:
+    numThreads: 10
     numFoldsForStacking: 10
 
 ers:

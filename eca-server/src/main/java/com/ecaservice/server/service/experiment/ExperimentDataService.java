@@ -94,7 +94,7 @@ public class ExperimentDataService {
     public Page<Experiment> getNextPage(
             @ValidPageRequest(filterTemplateName = EXPERIMENT) PageRequestDto pageRequestDto) {
         log.info("Gets experiments next page: {}", pageRequestDto);
-        Sort sort = buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
+        Sort sort = buildSort(pageRequestDto.getSortFields(), CREATION_DATE, true);
         List<String> globalFilterFields = filterTemplateService.getGlobalFilterFields(EXPERIMENT);
         ExperimentFilter filter =
                 new ExperimentFilter(pageRequestDto.getSearchQuery(), globalFilterFields, pageRequestDto.getFilters());

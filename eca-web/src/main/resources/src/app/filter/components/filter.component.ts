@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, TemplateRef } from '@angular/core';
 import { Filter } from "../model/filter.model";
 import { AutocompleteItemModel } from "../model/autocomplete-item.model";
 
@@ -11,10 +11,14 @@ export class FilterComponent {
 
   public now: Date = new Date();
 
-  public selectedAutocompleteField: string;
-
   @Input()
   public filters: Filter[];
+
+  @Input()
+  public autoCompleteItemTemplate: TemplateRef<HTMLElement>;
+
+  @Input()
+  public autoCompleteAfterElementTemplate: TemplateRef<HTMLElement>;
 
   @Output()
   public apply: EventEmitter<void> = new EventEmitter();
@@ -35,7 +39,6 @@ export class FilterComponent {
   }
 
   public onAutocompleteItem(fieldName: string, event): void {
-    this.selectedAutocompleteField = fieldName;
     this.autocompleteField.emit(new AutocompleteItemModel(fieldName, event.query));
   }
 }

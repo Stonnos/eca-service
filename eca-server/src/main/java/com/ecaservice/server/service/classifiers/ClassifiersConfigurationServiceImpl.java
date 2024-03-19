@@ -57,7 +57,7 @@ public class ClassifiersConfigurationServiceImpl implements ClassifiersConfigura
     private final ClassifiersConfigurationMapper classifiersConfigurationMapper;
     private final ClassifierOptionsDatabaseModelMapper classifierOptionsDatabaseModelMapper;
     private final ClassifiersConfigurationHistoryService classifiersConfigurationHistoryService;
-    private final ClassifiersTemplateProvider classifiersTemplateProvider;
+    private final ClassifiersFormTemplateProvider classifiersFormTemplateProvider;
     private final ClassifiersConfigurationRepository classifiersConfigurationRepository;
     private final ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;
 
@@ -154,7 +154,7 @@ public class ClassifiersConfigurationServiceImpl implements ClassifiersConfigura
     @Override
     public Page<ClassifiersConfiguration> getNextPage(PageRequestDto pageRequestDto) {
         log.info("Gets classifiers configurations next page: {}", pageRequestDto);
-        var sort = buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
+        var sort = buildSort(pageRequestDto.getSortFields(), CREATION_DATE, true);
         var globalFilterFields =
                 filterTemplateService.getGlobalFilterFields(CLASSIFIERS_CONFIGURATION);
         var filter = new ClassifiersConfigurationFilter(pageRequestDto.getSearchQuery(),
@@ -253,7 +253,7 @@ public class ClassifiersConfigurationServiceImpl implements ClassifiersConfigura
     private ClassifierOptionsBean internalPopulateClassifierOptionsBean(
             ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel) {
         var classifierOptionsBean = classifierOptionsDatabaseModelMapper.mapToBean(classifierOptionsDatabaseModel);
-        var classifierFormTemplate = classifiersTemplateProvider.getClassifierTemplateByClass(
+        var classifierFormTemplate = classifiersFormTemplateProvider.getClassifierTemplateByClass(
                 classifierOptionsDatabaseModel.getOptionsName());
         classifierOptionsBean.setOptionsName(classifierFormTemplate.getTemplateTitle());
         return classifierOptionsBean;

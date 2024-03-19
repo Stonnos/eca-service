@@ -18,6 +18,11 @@ public class AppProperties {
     private Integer batchSize;
 
     /**
+     * Date format for date attributes
+     */
+    private String dateFormat;
+
+    /**
      * Instances object expiration time in days
      */
     private Integer instancesExpireDays;

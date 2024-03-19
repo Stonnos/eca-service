@@ -41,14 +41,9 @@ public class TemplateVariablesDictionary {
     public static final String TFA_CODE = "tfaCode";
 
     /**
-     * Change password url variable
+     * Confirmation code variable
      */
-    public static final String CHANGE_PASSWORD_URL_KEY = "changePasswordUrl";
-
-    /**
-     * Change email url variable
-     */
-    public static final String CHANGE_EMAIL_URL_KEY = "changeEmailUrl";
+    public static final String CONFIRMATION_CODE_KEY = "confirmationCode";
 
     /**
      * New email

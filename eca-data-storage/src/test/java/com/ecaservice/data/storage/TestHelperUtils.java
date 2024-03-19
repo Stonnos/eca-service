@@ -35,8 +35,13 @@ import java.util.stream.IntStream;
 @UtilityClass
 public class TestHelperUtils {
 
+    public static final String CREDIT_DATA_PATH = "german_credit.xls";
+
+    public static final String IONOSPHERE_DATA_PATH = "ionosphere.xlsx";
+
+    public static final String GLASS_DATA_PATH = "glass.xlsx";
+
     private static final String TITLE = "title";
-    private static final String DATA_PATH = "german_credit.xls";
     private static final String TABLE_NAME = "table";
     private static final String CREATED_BY = "user";
     private static final int NUM_INSTANCES = 100;
@@ -72,7 +77,7 @@ public class TestHelperUtils {
      * @return page request dto
      */
     public static PageRequestDto createPageRequestDto() {
-        return new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, null, true, null, Collections.emptyList());
+        return new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, Collections.emptyList(), null, Collections.emptyList());
     }
 
     /**
@@ -82,9 +87,20 @@ public class TestHelperUtils {
      */
     @SneakyThrows
     public static Instances loadInstances() {
+        return loadInstances(CREDIT_DATA_PATH);
+    }
+
+    /**
+     * Loads test data set.
+     *
+     * @param path - file path
+     * @return created training data
+     */
+    @SneakyThrows
+    public static Instances loadInstances(String path) {
         ClassLoader classLoader = ClassLoader.getSystemClassLoader();
         XLSLoader dataLoader = new XLSLoader();
-        dataLoader.setSource(new FileResource(new File(classLoader.getResource(DATA_PATH).getFile())));
+        dataLoader.setSource(new FileResource(new File(classLoader.getResource(path).getFile())));
         return dataLoader.loadInstances();
     }
 
@@ -209,5 +225,18 @@ public class TestHelperUtils {
         exportInstancesObjectEntity.setMd5Hash(MD_5_HASH);
         exportInstancesObjectEntity.setCreated(LocalDateTime.now());
         return exportInstancesObjectEntity;
+    }
+
+    /**
+     * Calculate num attributes with specified type.
+     *
+     * @param instances - instances
+     * @param type      - attribute type
+     * @return num attributes
+     */
+    public static int numAttributes(Instances instances, int type) {
+        return (int) IntStream.range(0, instances.numAttributes())
+                .filter(i -> instances.attribute(i).type() == type)
+                .count();
     }
 }

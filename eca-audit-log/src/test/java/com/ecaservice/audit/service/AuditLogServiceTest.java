@@ -12,6 +12,7 @@ import com.ecaservice.core.lock.metrics.LockMeterService;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -115,8 +116,8 @@ class AuditLogServiceTest extends AbstractJpaTest {
     @Test
     void testGlobalFilter() {
         saveAuditLogs();
-        PageRequestDto pageRequestDto =
-                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, EVENT_DATE, false, "XGroup3", newArrayList());
+        PageRequestDto pageRequestDto = new PageRequestDto(PAGE_NUMBER, PAGE_SIZE,
+                Collections.singletonList(new SortFieldRequestDto(EVENT_DATE, false)), "XGroup3", newArrayList());
         when(filterTemplateService.getGlobalFilterFields(AUDIT_LOG_TEMPLATE)).thenReturn(
                 Arrays.asList(EVENT_ID, GROUP_CODE, CODE));
         Page<AuditLogEntity> auditLogsPage = auditLogService.getNextPage(pageRequestDto);
@@ -130,8 +131,7 @@ class AuditLogServiceTest extends AbstractJpaTest {
     @Test
     void testFilterByAuditCode() {
         saveAuditLogs();
-        PageRequestDto pageRequestDto =
-                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, EVENT_DATE, false, null, newArrayList());
+        PageRequestDto pageRequestDto = new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, Collections.singletonList(new SortFieldRequestDto(EVENT_DATE, false)), null, newArrayList());
         when(filterTemplateService.getGlobalFilterFields(AUDIT_LOG_TEMPLATE)).thenReturn(Collections.emptyList());
         pageRequestDto.getFilters().add(
                 new FilterRequestDto(CODE, Collections.singletonList("Code2"), MatchMode.EQUALS));
@@ -143,8 +143,7 @@ class AuditLogServiceTest extends AbstractJpaTest {
     @Test
     void testFilterShouldThrowFieldNotFoundException() {
         saveAuditLogs();
-        PageRequestDto pageRequestDto =
-                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, EVENT_DATE, false, null, newArrayList());
+        PageRequestDto pageRequestDto = new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, Collections.singletonList(new SortFieldRequestDto(EVENT_DATE, false)), null, newArrayList());
         when(filterTemplateService.getGlobalFilterFields(AUDIT_LOG_TEMPLATE)).thenReturn(Collections.emptyList());
         pageRequestDto.getFilters().add(
                 new FilterRequestDto(INVALID_FIELD_NAME, Collections.singletonList("Value"), MatchMode.EQUALS));

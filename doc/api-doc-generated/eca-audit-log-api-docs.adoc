@@ -19,9 +19,7 @@ API provides operations with audit events
 |*oauth2*
 |Oauth2 authentication
 
-*Client credentials location:* __header__
 
-*Bearer format:* __Authorization: Bearer <access token>__
 a|
 
 *Flow*
@@ -87,8 +85,10 @@ a|
 {
   "page" : 0,
   "size" : 25,
-  "sortField" : "eventDate",
-  "ascending" : false,
+  "sortFields" : [ {
+    "sortField" : "eventDate",
+    "ascending" : false
+  } ],
   "searchQuery" : "",
   "filters" : [ {
     "name" : "groupCode",
@@ -227,8 +227,10 @@ a|
 {
   "page" : 0,
   "size" : 25,
-  "sortField" : "eventDate",
-  "ascending" : false,
+  "sortFields" : [ {
+    "sortField" : "eventDate",
+    "ascending" : false
+  } ],
   "searchQuery" : "",
   "filters" : [ {
     "name" : "groupCode",
@@ -497,14 +499,16 @@ a|
   "fieldOrder" : 0,
   "filterFieldType" : "TEXT",
   "matchMode" : "LIKE",
-  "multiple" : false
+  "multiple" : false,
+  "dictionary" : null
 }, {
   "fieldName" : "correlationId",
   "description" : "ID корреляции",
   "fieldOrder" : 1,
   "filterFieldType" : "TEXT",
   "matchMode" : "EQUALS",
-  "multiple" : false
+  "multiple" : false,
+  "dictionary" : null
 }, {
   "fieldName" : "groupCode",
   "description" : "Группа событий",
@@ -523,6 +527,12 @@ a|
     }, {
       "label" : "Действия с обучающими выборками",
       "value" : "DATA_STORAGE_ACTIONS"
+    }, {
+      "label" : "Действия с заявками на построение моделей",
+      "value" : "EVALUATION_REQUESTS_ACTIONS"
+    }, {
+      "label" : "Действия с историей результатов классификации",
+      "value" : "EVALUATION_RESULTS_HISTORY_ACTIONS"
     } ]
   }
 }, {
@@ -530,15 +540,17 @@ a|
   "description" : "Инициатор события",
   "fieldOrder" : 3,
   "filterFieldType" : "LAZY_REFERENCE",
-  "matchMode" : "LIKE",
-  "multiple" : false
+  "matchMode" : "EQUALS",
+  "multiple" : false,
+  "dictionary" : null
 }, {
   "fieldName" : "eventDate",
   "description" : "Дата события",
   "fieldOrder" : 4,
   "filterFieldType" : "DATE",
   "matchMode" : "RANGE",
-  "multiple" : true
+  "multiple" : true,
+  "dictionary" : null
 } ]
 ----
 |401
@@ -591,6 +603,7 @@ a|
 [source,json]
 ----
 [ {
+  "fieldName" : null,
   "code" : "DataNotFound",
   "errorMessage" : "Entity with search key [1] not found!"
 } ]
@@ -786,15 +799,12 @@ __(int32)__
 
 
 
-|*sortField*
-|Sort field
+|*sortFields*
+|Sort fields
 a|
-__string__
-
-
-*Min. length*: 0
-
-*Max. length*: 255
+__array__
+<<<SortFieldRequestDto>>
+>
 
 
 
@@ -803,23 +813,9 @@ __string__
 
 
 
+*Min. items*: 0
 
-
-|*ascending*
-|Is ascending sort?
-a|
-__boolean__
-
-
-
-
-
-
-
-
-
-
-
+*Max. items*: 50
 
 
 
@@ -860,6 +856,51 @@ __array__
 *Min. items*: 0
 
 *Max. items*: 50
+
+
+
+
+|===
+=== SortFieldRequestDto
+:table-caption: Table
+.Sort field request model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*sortField**
+|Sort field
+a|
+__string__
+
+
+*Min. length*: 1
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*ascending*
+|Is ascending sort?
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
 
 
 

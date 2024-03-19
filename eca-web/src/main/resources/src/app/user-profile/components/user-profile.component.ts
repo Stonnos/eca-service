@@ -6,7 +6,7 @@ import {
   UserDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { UsersService } from "../../users/services/users.service";
-import { MenuItem, Message, MessageService } from "primeng/api";
+import { MenuItem, MessageService } from "primeng/api";
 import { UserFields } from "../../common/util/field-names";
 import { Utils } from "../../common/util/utils";
 import { FieldService } from "../../common/services/field.service";
@@ -17,8 +17,6 @@ import { ChangePasswordRequest } from "../../change-password/model/change-passwo
 import { UpdateUserInfoModel } from "../../users/model/update-user-info.model";
 import { ChangeEmailService } from "../../update-user-email/services/change-email.service";
 import { ChangePasswordService } from "../../change-password/services/change-password.service";
-import { EventService } from "../../common/event/event.service";
-import { EventType } from "../../common/event/event.type";
 
 @Component({
   selector: 'app-user-profile',
@@ -30,8 +28,6 @@ export class UserProfileComponent implements OnInit {
   public user: UserDto;
 
   public tfaEnabled: boolean = false;
-
-  public pushEnabled: boolean = false;
 
   public commonFields: any[] = [];
 
@@ -50,9 +46,6 @@ export class UserProfileComponent implements OnInit {
   public changeEmailRequestStatusDto: ChangeEmailRequestStatusDto;
   public changePasswordRequestStatusDto: ChangePasswordRequestStatusDto;
 
-  private readonly changePasswordRequestCreatedMessage: string =
-    'На ваш email отправлено письмо с подтверждением смены пароля';
-
   public uploadPhotoErrorHeader: string = 'Не удалось загрузить фото';
 
   public invalidPersonNameErrorMessages: string[] = [
@@ -63,9 +56,6 @@ export class UserProfileComponent implements OnInit {
   public personNameRegex: string = Utils.PERSON_NAME_REGEX;
   public personNameMaxLength: number = Utils.PERSON_NAME_MAX_LENGTH;
 
-  public confirmDialogVisibility: boolean = false;
-  public confirmDialogMessage: string;
-
   //Max file size: 10MB
   public maxFileSize: number = 10000000;
   public invalidFileSizeMessageSummary: string = 'Недопустимый размер файла,';
@@ -73,8 +63,9 @@ export class UserProfileComponent implements OnInit {
   public invalidFileTypeMessageSummary: string = 'Некорректный тип файла,';
   public invalidFileTypeMessageDetail: string = 'допускаются только файлы графических форматов.';
 
-  public activeChangeEmailStatusMessage: Message[] = [];
-  public activeChangePasswordStatusMessage: Message[] = [];
+  public changePasswordStep = 'change-password';
+
+  public changeEmailStep = 'change-email';
 
   private photo: Blob;
 
@@ -86,8 +77,7 @@ export class UserProfileComponent implements OnInit {
                      private sanitizer: DomSanitizer,
                      private messageService: MessageService,
                      private changeEmailService: ChangeEmailService,
-                     private changePasswordService: ChangePasswordService,
-                     private eventService: EventService) {
+                     private changePasswordService: ChangePasswordService) {
     this.initCommonFields();
   }
 
@@ -147,62 +137,32 @@ export class UserProfileComponent implements OnInit {
     });
   }
 
-  public changedPushEnabledSwitch(event): void {
-    this.loading = true;
-    this.usersService.setPushEnabled(event.checked)
-      .pipe(
-        finalize(() => {
-          this.loading = false;
-        })
-      ).subscribe({
-        next: () => {
-          this.getUser(false);
-          if (event.checked) {
-            this.eventService.publishEvent(EventType.INIT_PUSH);
-          } else {
-            this.eventService.publishEvent(EventType.CLOSE_PUSH);
-          }
-        },
-        error: (error) => {
-          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-        }
-    });
-  }
-
   public hideUploadPhotoErrorModal(): void {
     this.fileUpload.msgs = [];
   }
 
   public showChangePasswordRequestDialog(): void {
+    this.changePasswordStep = 'change-password';
     this.changePasswordDialogVisibility = true;
   }
 
   public onChangePasswordDialogVisibility(visible): void {
     this.changePasswordDialogVisibility = visible;
-  }
-
-  public onCreateChangePasswordRequest(): void {
-    this.confirmDialogMessage = this.changePasswordRequestCreatedMessage;
-    this.confirmDialogVisibility = true;
     this.getChangePasswordRequestStatus();
   }
 
-  public hideConfirmDialog(): void {
-    this.confirmDialogVisibility = false;
-  }
-
   public showChangeEmailDialog(): void {
+    this.changeEmailStep = 'change-email';
     this.changeEmailDialogVisibility = true;
   }
 
   public onChangeEmailDialogVisibility(visible): void {
     this.changeEmailDialogVisibility = visible;
+    this.getChangeEmailRequestStatus();
   }
 
   public onChangeEmail(newEmail: string): void {
-    this.confirmDialogMessage = `На текущий email адрес отправлено письмо со ссылкой для подтверждения изменения email адреса на ${newEmail}`;
-    this.confirmDialogVisibility = true;
-    this.getChangeEmailRequestStatus();
+    this.getUser(false);
   }
 
   public updateFirstName(value: string): void {
@@ -218,6 +178,16 @@ export class UserProfileComponent implements OnInit {
   public updateMiddleName(value: string): void {
     const updateUserInfoModel: UpdateUserInfoModel = new UpdateUserInfoModel(this.user.firstName, this.user.lastName, value);
     this.updateUserInfo(updateUserInfoModel);
+  }
+
+  public confirmChangePassword(): void {
+    this.changePasswordStep = 'confirm-change-password';
+    this.changePasswordDialogVisibility = true;
+  }
+
+  public confirmChangeEmail(): void {
+    this.changeEmailStep = 'confirm-change-email';
+    this.changeEmailDialogVisibility = true;
   }
 
   private updateUserInfo(updateUserInfo: UpdateUserInfoModel): void {
@@ -243,7 +213,6 @@ export class UserProfileComponent implements OnInit {
       next: (user: UserDto) => {
         this.user = user;
         this.tfaEnabled = user.tfaEnabled;
-        this.pushEnabled = user.pushEnabled;
         if (downloadPhoto) {
           this.updatePhoto();
         }
@@ -321,16 +290,6 @@ export class UserProfileComponent implements OnInit {
       .subscribe({
         next: (statusDto: ChangeEmailRequestStatusDto) => {
           this.changeEmailRequestStatusDto = statusDto;
-          if (this.changeEmailRequestStatusDto.active) {
-            this.activeChangeEmailStatusMessage = [
-              {
-                severity: 'info',
-                detail: `Вы запросили смену текущего email адреса на адрес ${this.changeEmailRequestStatusDto.newEmail}. На ваш текущий email было отправлено письмо со ссылкой для подтверждения`
-              }
-            ];
-          } else {
-            this.activeChangeEmailStatusMessage = [];
-          }
         },
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
@@ -343,16 +302,6 @@ export class UserProfileComponent implements OnInit {
       .subscribe({
         next: (statusDto: ChangePasswordRequestStatusDto) => {
           this.changePasswordRequestStatusDto = statusDto;
-          if (this.changePasswordRequestStatusDto.active) {
-            this.activeChangePasswordStatusMessage = [
-              {
-                severity: 'info',
-                detail: `Вы запросили смену пароля. На ваш текущий email было отправлено письмо со ссылкой для подтверждения`
-              }
-            ];
-          } else {
-            this.activeChangePasswordStatusMessage = [];
-          }
         },
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });

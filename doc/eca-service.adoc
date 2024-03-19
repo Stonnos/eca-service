@@ -434,7 +434,6 @@ image::./images/eca-oauth-db-schema.png[alt=Схема базы данных eca
 |last_name               |varchar(255)     |-|+|-                              |Фамилия пользователя
 |middle_name             |varchar(255)     |-|+|-                              |Отчество пользователя
 |tfa_enabled             |boolean          |-|-|-                              |Вкл./выкл. двухфакторную аутентификацию
-|push_enabled            |boolean          |-|-|-                              |Вкл./выкл. пуш уведомлений
 |locked                  |boolean          |-|-|-                              |Вкл./выкл. блокировку пользователя
 |password_change_date    |timestamp        |-|-|-                              |Дата последнего изменения пароля
 |force_change_password   |boolean          |-|-|-                              |Флаг принудительной смены временного пароля
@@ -470,6 +469,35 @@ image::./images/eca-oauth-db-schema.png[alt=Схема базы данных eca
 |user_id                 |bigint           |-|+|fk_user_photo_user_id          |Внешний ключ пользователя
 |===
 
+==== Таблица 3.{counter:db-table-id} - 'user_profile_options' - содержит данные о настройказ профилей пользователей
+[cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
+|===
+|Название колонки|Тип|Unique|Not NULL|Индекс|Описание
+|id                      |bigint           |+|+|+                                |Идентификатор записи (первичный ключ)
+|email_enabled           |boolean          |-|-|-                                |Вкл./выкл. уведомлений по email
+|web_push_enabled        |boolean          |-|-|-                                |Вкл./выкл. пуш уведомлений
+|created                 |timestamp        |-|+|-                                |Дата создания
+|user_id                 |bigint           |-|+|fk_user_profile_options_user_id  |Внешний ключ пользователя
+|version                 |integer          |-|+|-                                |Версия настроек
+|===
+
+Таблица также содержит уникальный индекс *user_profile_options_user_id_unique_idx* на поле user_id
+
+==== Таблица 3.{counter:db-table-id} - 'user_notification_event_options' - содержит данные о настройказ профилей пользователей
+[cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
+|===
+|Название колонки|Тип|Unique|Not NULL|Индекс|Описание
+|id                      |bigint           |+|+|+                                                           |Идентификатор записи (первичный ключ)
+|event_type              |varchar(255)     |-|+|-                                                           |Тип события
+|email_enabled           |boolean          |-|-|-                                                           |Вкл./выкл. уведомлений по email
+|web_push_enabled        |boolean          |-|-|-                                                           |Вкл./выкл. пуш уведомлений
+|email_supported         |boolean          |-|-|-                                                           |Вкл./выкл. поддержка уведомлений по email
+|web_push_supported      |boolean          |-|-|-                                                           |Вкл./выкл. поддержка пуш уведомлений
+|user_profile_options_id |bigint           |-|+|fk_user_notification_event_options_user_profile_options_id  |Внешний ключ user_profile_options
+|===
+
+Таблица также содержит уникальный индекс *user_profile_options_id_event_type_unique_idx* на поля user_profile_options_id, event_type
+
 ==== Таблица 3.{counter:db-table-id} - 'reset_password_request' - содержит данные о запросах на восстановление пароля
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
@@ -487,6 +515,7 @@ image::./images/eca-oauth-db-schema.png[alt=Схема базы данных eca
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                      |bigint           |+|+|+                                          |Идентификатор записи (первичный ключ)
 |token                   |varchar(255)     |+|+|change_password_request_token_unique_index |Короткоживущий токен для смены пароля
+|confirmation_code       |varchar(255)     |+|-|-                                          |Код подтверждения из письма для смены пароля
 |expire_date             |timestamp        |-|+|-                                          |Дата истечения срока действия токена
 |confirmation_date       |timestamp        |-|-|-                                          |Дата подтверждения смены пароля
 |new_password            |varchar(255)     |-|+|-                                          |Хеш пароля для изменения
@@ -500,6 +529,7 @@ image::./images/eca-oauth-db-schema.png[alt=Схема базы данных eca
 |id                      |bigint           |+|+|+                                          |Идентификатор записи (первичный ключ)
 |token                   |varchar(255)     |+|+|change_email_request_token_unique_index    |Короткоживущий токен для изменения Email
 |expire_date             |timestamp        |-|+|-                                          |Дата истечения срока действия токена
+|confirmation_code       |varchar(255)     |+|-|-                                          |Код подтверждения из письма для смены email
 |confirmation_date       |timestamp        |-|-|-                                          |Дата подтверждения изменения Email
 |new_email               |varchar(255)     |-|+|-                                          |Новый Email
 |user_id                 |bigint           |-|+|fk_change_email_request_user_id            |Внешний ключ пользователя
@@ -926,12 +956,13 @@ image::./images/data-loader-db-schema.png[alt=Схема базы данных e
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
-|id                      |bigint           |+|+|+                             |Идентификатор записи (первичный ключ)
-|template_name           |varchar(255)     |+|+|form_template_name_unique_idx |Уникальный код шаблона
-|object_class            |varchar(255)     |-|-|-                             |Название класса ассоциированного с шаблоном
-|object_type             |varchar(255)     |-|-|-                             |Тип объекта ассоциированного с шаблоном. Можно использовать как дискриминатор для опредения класса наследника.
-|template_title          |varchar(255)     |-|+|-                             |Описание шаблона
-|group_id                |bigint           |-|+|fk_form_template_group_id     |Внешний ключ, ID группы
+|id                       |bigint           |+|+|+                             |Идентификатор записи (первичный ключ)
+|template_name            |varchar(255)     |+|+|form_template_name_unique_idx |Уникальный код шаблона
+|object_class             |varchar(255)     |-|-|-                             |Название класса ассоциированного с шаблоном
+|object_type              |varchar(255)     |-|-|-                             |Тип объекта ассоциированного с шаблоном. Можно использовать как дискриминатор для опредения класса наследника.
+|template_title           |varchar(255)     |-|+|-                             |Описание шаблона
+|template_title_field_ref |varchar(255)     |-|-|-                             |Описание шаблона на основе значения из заданного поля шаблона
+|group_id                 |bigint           |-|+|fk_form_template_group_id     |Внешний ключ, ID группы
 |===
 
 ==== Таблица 3.{counter:db-table-id} - 'form_field_dictionary' - содержит данные словарей
@@ -1021,7 +1052,7 @@ image::./images/data-loader-db-schema.png[alt=Схема базы данных e
 |id                      |bigint           |+|+|+                                 |Идентификатор записи (первичный ключ)
 |template_name           |varchar(255)     |-|+|-                                 |Название шаблона
 |template_type           |varchar(255)     |-|+|filter_template_type_unique_idx   |Тип шаблона
-|created                 |timestamp        |-|+|-                                 |Дата создания шаблона
+|created                 |timestamp        |-|-|-                                 |Дата создания шаблона
 |===
 
 ==== Таблица 3.{counter:db-table-id} - 'filter_dictionary' - содержит данные словарей
@@ -1055,4 +1086,18 @@ image::./images/data-loader-db-schema.png[alt=Схема базы данных e
 |multiple                   |boolean          |-|-|-                                 |Допускается фильтрация по нескольким значениям поля
 |filter_dictionary_id       |bigint           |-|-|fk_filter_field_dictionary_id     |Внешний ключ, ID словаря (заполняется для полей типа REFERENCE)
 |filter_template_id         |bigint           |-|+|fk_filter_template_id             |Внешний ключ, ID шаблона
+|===
+
+=== 3.21 Описание служебных таблиц user-profile-options
+
+Таблица 3.{counter:db-table-id} - 'user_profile_options_data' - содержит данные о настройках профилей пользователей
+[cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
+|===
+|Название колонки|Тип|Unique|Not NULL|Индекс|Описание
+|id                               |bigint           |+|+|+                                           |Идентификатор записи (первичный ключ)
+|_user                            |varchar(255)     |-|+|user_profile_options_data_user_unique_idx   |Логин пользователя
+|created                          |timestamp        |-|+|-                                           |Дата создания
+|updated                          |timestamp        |-|+|-                                           |Дата обновления
+|version                          |integer          |-|+|-                                           |Версия настроек
+|options_json                     |varchar(4096)    |-|+|-                                           |Настройки профиля в формате json
 |===

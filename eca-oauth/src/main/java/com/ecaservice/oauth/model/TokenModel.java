@@ -13,9 +13,14 @@ import lombok.Data;
 public class TokenModel {
 
     /**
-     * Token value
+     * Unique token value
      */
     private String token;
+
+    /**
+     * Confirmation code
+     */
+    private String confirmationCode;
 
     /**
      * User login

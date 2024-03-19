@@ -3,7 +3,6 @@ package com.ecaservice.common.web;
 import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.common.web.exception.ValidationErrorException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -49,8 +48,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<List<ValidationErrorDto>> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
         log.error("Method argument not valid error: {}", ex.getMessage());
         var response = ExceptionResponseHandler.handleMethodArgumentNotValid(ex);
-        log.error("Method argument not valid errors: {}", response.getBody());
-        return response;
+        log.error("Method argument not valid errors: {}", response);
+        return ResponseEntity.badRequest().body(response);
     }
 
     /**
@@ -63,8 +62,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<List<ValidationErrorDto>> handleConstraintViolation(ConstraintViolationException ex) {
         log.error("Constraint violation error: {}", ex.getMessage());
         var response = ExceptionResponseHandler.handleConstraintViolation(ex);
-        log.error("Constraint violation errors: {}", response.getBody());
-        return response;
+        log.error("Constraint violation errors: {}", response);
+        return ResponseEntity.badRequest().body(response);
     }
 
     /**
@@ -77,8 +76,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<List<ValidationErrorDto>> handleValidationError(ValidationErrorException ex) {
         log.error("Validation error [{}]: {}", ex.getErrorDetails(), ex.getMessage());
         var response = ExceptionResponseHandler.handleValidationErrorException(ex);
-        log.error("Validation errors: {}", response.getBody());
-        return response;
+        log.error("Validation errors: {}", response);
+        return ResponseEntity.badRequest().body(response);
     }
 
     /**
@@ -92,8 +91,8 @@ public class GlobalExceptionHandler {
             HttpMessageNotReadableException ex) {
         log.error("Http message not readable error: {}", ex.getMessage());
         var response = ExceptionResponseHandler.handleHttpMessageNotReadable(ex);
-        log.error("Http message not readable errors: {}", response.getBody());
-        return response;
+        log.error("Http message not readable errors: {}", response);
+        return ResponseEntity.badRequest().body(response);
     }
 
     /**
@@ -106,8 +105,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<List<ValidationErrorDto>> handleBindException(BindException ex) {
         log.error("Bind error: {}", ex.getMessage());
         var response = ExceptionResponseHandler.handleBindException(ex);
-        log.error("Bind errors: {}", response.getBody());
-        return response;
+        log.error("Bind errors: {}", response);
+        return ResponseEntity.badRequest().body(response);
     }
 
     /**
@@ -121,8 +120,8 @@ public class GlobalExceptionHandler {
             MethodArgumentTypeMismatchException ex) {
         log.error("Method argument type mismatch error: {}", ex.getMessage());
         var response = ExceptionResponseHandler.handleMethodArgumentTypeMismatchException(ex);
-        log.error("Method argument type mismatch errors: {}", response.getBody());
-        return response;
+        log.error("Method argument type mismatch errors: {}", response);
+        return ResponseEntity.badRequest().body(response);
     }
 
     /**
@@ -134,7 +133,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<List<ValidationErrorDto>> handleError(MaxUploadSizeExceededException ex) {
         log.error("Max upload size error: {}", ex.getMessage());
         var response = ExceptionResponseHandler.handleMaxUploadSizeExceededException(ex);
-        log.error("Max upload size error response: {}", response.getBody());
-        return response;
+        log.error("Max upload size error response: {}", response);
+        return ResponseEntity.badRequest().body(response);
     }
 }

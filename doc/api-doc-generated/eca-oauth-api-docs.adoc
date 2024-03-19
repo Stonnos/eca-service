@@ -169,6 +169,127 @@ a|
 ----
 |===
 
+== Updates user profile notification options
+
+__PUT__ */user/profile/options/update-notifications* - Updates user profile notification options
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+*Request body*
+
+[width=100%]
+|===
+|*Content type*|*Required*|*Schema*|*Example*
+|*application/json*
+|true
+|
+<<UpdateUserNotificationOptionsDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "emailEnabled" : true,
+  "webPushEnabled" : true,
+  "notificationEventOptions" : [ {
+    "eventType" : "EXPERIMENT_STATUS_CHANGE",
+    "emailEnabled" : true,
+    "webPushEnabled" : true
+  }, {
+    "eventType" : "CLASSIFIER_STATUS_CHANGE",
+    "emailEnabled" : false,
+    "webPushEnabled" : true
+  }, {
+    "eventType" : "CLASSIFIER_CONFIGURATION_CHANGE",
+    "emailEnabled" : false,
+    "webPushEnabled" : true
+  } ]
+}
+----
+|===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*-*
+|-
+a|
+-
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|
+__array__
+<<<ValidationErrorDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "DuplicateNotificationEventToUpdate",
+  "errorMessage" : "Duplicate notification event [EXPERIMENT_STATUS_CHANGE] to update has been found in request body"
+} ]
+----
+|===
+
 == Uploads photo for current authenticated user
 
 __POST__ */users/upload-photo* - Uploads photo for current authenticated user
@@ -442,87 +563,6 @@ a|
 ----
 |===
 
-== Enable/disable push notifications for current authenticated user
-
-__POST__ */users/push-notifications/enabled* - Enable/disable push notifications for current authenticated user
-
-*Security requirement*
-
-[cols="^50%,^50%",options="header"]
-|===
-|*Name*|*Scopes*
-|
-<<EcaAuth>>
-a|
-
-* web
-
-|===
-
-
-*Request parameters*
-[width=100%]
-|===
-|*Name*|*Description*|*Location*|*Schema*
-|*enabled**
-|Push enabled flag
-|query
-a|
-__boolean__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|===
-
-*Api responses*
-[width=100%]
-|===
-|*Code*|*Description*|*Content type*|*Schema*|*Example*
-|200
-|OK
-|*-*
-|-
-a|
--
-|401
-|Not authorized
-|*application/json*
-|-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|400
-|Bad request
-|*application/json*
-|-
-a|
-[source,json]
-----
-[ {
-  "fieldName" : null,
-  "code" : "InvalidOperation",
-  "errorMessage" : "Push notifications is already enabled for user"
-} ]
-----
-|===
-
 == Logout current user and revokes access/refresh token pair
 
 __POST__ */users/logout* - Logout current user and revokes access/refresh token pair
@@ -769,18 +809,6 @@ a|
 {
   "error" : "unauthorized",
   "error_description" : "Full authentication is required to access this resource"
-}
-----
-|403
-|Permission denied
-|*application/json*
-|-
-a|
-[source,json]
-----
-{
-  "error" : "access_denied",
-  "error_description" : "Access is denied"
 }
 ----
 |400
@@ -1253,10 +1281,32 @@ a|
 |*Code*|*Description*|*Content type*|*Schema*|*Example*
 |200
 |OK
-|*-*
-|-
+|*application/json*
+|
+<<ChangePasswordRequestStatusDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 a|
--
+[source,json]
+----
+{
+  "token" : "1d2de514-3a87-4620-9b97-c260e24340de",
+  "active" : true
+}
+----
 |401
 |Not authorized
 |*application/json*
@@ -1299,7 +1349,7 @@ a|
   }, {
     "rule" : "SPECIAL_CHARACTER",
     "valid" : false,
-    "message" : "Специальные символы (!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~)"
+    "message" : "Специальные символы"
   }, {
     "rule" : "REPEAT_CHARACTERS",
     "valid" : true,
@@ -1321,6 +1371,26 @@ __POST__ */password/change/confirm* - Confirms change password request
 |*Name*|*Description*|*Location*|*Schema*
 |*token**
 |Token value
+|query
+a|
+__string__
+
+
+*Min. length*: 1
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*confirmationCode**
+|Confirmation code
 |query
 a|
 __string__
@@ -1446,10 +1516,33 @@ __string__
 |*Code*|*Description*|*Content type*|*Schema*|*Example*
 |200
 |OK
-|*-*
-|-
+|*application/json*
+|
+<<ChangeEmailRequestStatusDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 a|
--
+[source,json]
+----
+{
+  "token" : "1d2de514-3a87-4620-9b97-c260e24340de",
+  "newEmail" : "test@mail.ru",
+  "active" : true
+}
+----
 |401
 |Not authorized
 |*application/json*
@@ -1507,6 +1600,26 @@ __POST__ */email/change/confirm* - Confirms change email request
 |*Name*|*Description*|*Location*|*Schema*
 |*token**
 |Token value
+|query
+a|
+__string__
+
+
+*Min. length*: 1
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*confirmationCode**
+|Confirmation code
 |query
 a|
 __string__
@@ -1781,6 +1894,93 @@ a|
 ----
 |===
 
+== Gets user profile notification options
+
+__GET__ */user/profile/options/notifications* - Gets user profile notification options
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+<<UserProfileNotificationOptionsDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "emailEnabled" : true,
+  "webPushEnabled" : true,
+  "notificationEventOptions" : [ {
+    "eventType" : "EXPERIMENT_STATUS_CHANGE",
+    "eventDescription" : "Изменение статуса заявки на эксперимент",
+    "emailEnabled" : true,
+    "webPushEnabled" : true,
+    "emailSupported" : true,
+    "webPushSupported" : true
+  }, {
+    "eventType" : "CLASSIFIER_STATUS_CHANGE",
+    "eventDescription" : "Изменение статуса построения модели классификатора",
+    "emailEnabled" : false,
+    "webPushEnabled" : true,
+    "emailSupported" : false,
+    "webPushSupported" : true
+  }, {
+    "eventType" : "CLASSIFIER_CONFIGURATION_CHANGE",
+    "eventDescription" : "Изменение данных конфигурации классификаторов для экспериментов",
+    "emailEnabled" : false,
+    "webPushEnabled" : true,
+    "emailSupported" : false,
+    "webPushSupported" : true
+  } ]
+}
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|===
+
 == Gets change password request status
 
 __GET__ */password/change/request-status* - Gets change password request status
@@ -1828,6 +2028,7 @@ a|
 [source,json]
 ----
 {
+  "token" : "1d2de514-3a87-4620-9b97-c260e24340de",
   "active" : true
 }
 ----
@@ -1892,6 +2093,7 @@ a|
 [source,json]
 ----
 {
+  "token" : "1d2de514-3a87-4620-9b97-c260e24340de",
   "newEmail" : "test@mail.ru",
   "active" : true
 }
@@ -1989,6 +2191,117 @@ a|
   "middleName" : "Ivanovich",
   "fullName" : "Ivanov Ivan Ivanovich",
   "locked" : false
+}
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|===
+
+== Gets user profile options
+
+__GET__ */api/internal/user/options/details* - Gets user profile options
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+
+*Request parameters*
+[width=100%]
+|===
+|*Name*|*Description*|*Location*|*Schema*
+|*login**
+|User login
+|query
+a|
+__string__
+
+
+*Min. length*: 1
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+<<UserProfileOptionsDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "user" : "admin",
+  "version" : 0,
+  "emailEnabled" : true,
+  "webPushEnabled" : true,
+  "notificationEventOptions" : [ {
+    "eventType" : "EXPERIMENT_STATUS_CHANGE",
+    "emailEnabled" : true,
+    "webPushEnabled" : true,
+    "emailSupported" : true,
+    "webPushSupported" : true
+  }, {
+    "eventType" : "CLASSIFIER_STATUS_CHANGE",
+    "emailEnabled" : false,
+    "webPushEnabled" : true,
+    "emailSupported" : false,
+    "webPushSupported" : true
+  }, {
+    "eventType" : "CLASSIFIER_CONFIGURATION_CHANGE",
+    "emailEnabled" : false,
+    "webPushEnabled" : true,
+    "emailSupported" : false,
+    "webPushSupported" : true
+  } ]
 }
 ----
 |401
@@ -2206,6 +2519,143 @@ __string__
 
 
 *Pattern*: `^([A-Z][a-z]+)\|([А-Я][а-я]+)$`
+
+
+|===
+=== UpdateUserNotificationEventOptionsDto
+:table-caption: Table
+.Update user notification options model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*eventType**
+|Notification event type
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* EXPERIMENT_STATUS_CHANGE
+
+* CLASSIFIER_STATUS_CHANGE
+
+* CLASSIFIER_CONFIGURATION_CHANGE
+|*emailEnabled*
+|Email notifications enabled? (global flag)
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*webPushEnabled*
+|Web push notifications enabled? (global flag)
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== UpdateUserNotificationOptionsDto
+:table-caption: Table
+.Update user notification options model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*emailEnabled*
+|Email notifications enabled? (global flag)
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*webPushEnabled*
+|Web push notifications enabled? (global flag)
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*notificationEventOptions*
+|Notification event options list
+a|
+__array__
+<<<UpdateUserNotificationEventOptionsDto>>
+>
+
+
+
+
+
+
+
+
+*Min. items*: 0
+
+*Max. items*: 50
+
+
 
 
 |===
@@ -2534,25 +2984,6 @@ __boolean__
 
 
 
-|*pushEnabled*
-|Web pushes enabled
-a|
-__boolean__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 |===
 === UsersPageDto
 :table-caption: Table
@@ -2749,15 +3180,12 @@ __(int32)__
 
 
 
-|*sortField*
-|Sort field
+|*sortFields*
+|Sort fields
 a|
-__string__
-
-
-*Min. length*: 0
-
-*Max. length*: 255
+__array__
+<<<SortFieldRequestDto>>
+>
 
 
 
@@ -2766,23 +3194,9 @@ __string__
 
 
 
+*Min. items*: 0
 
-
-|*ascending*
-|Is ascending sort?
-a|
-__boolean__
-
-
-
-
-
-
-
-
-
-
-
+*Max. items*: 50
 
 
 
@@ -2823,6 +3237,51 @@ __array__
 *Min. items*: 0
 
 *Max. items*: 50
+
+
+
+
+|===
+=== SortFieldRequestDto
+:table-caption: Table
+.Sort field request model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*sortField**
+|Sort field
+a|
+__string__
+
+
+*Min. length*: 1
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*ascending*
+|Is ascending sort?
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3001,6 +3460,51 @@ __string__
 
 
 |===
+=== ChangePasswordRequestStatusDto
+:table-caption: Table
+.Change password request status
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*token*
+|Change password request token value
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*active*
+|Is request active (created and not expired and not confirmed)?
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
 === ChangePasswordRequest
 :table-caption: Table
 .Change password request model
@@ -3046,38 +3550,31 @@ __string__
 
 
 |===
-=== ChangePasswordRequestStatusDto
-:table-caption: Table
-.Change password request status
-[width=100%]
-|===
-|*Name*|*Description*|*Schema*
-|*active*
-|Is request active (created and not expired and not confirmed)?
-a|
-__boolean__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|===
 === ChangeEmailRequestStatusDto
 :table-caption: Table
 .Change email request status
 [width=100%]
 |===
 |*Name*|*Description*|*Schema*
+|*token*
+|Change email request token value
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
 |*newEmail*
 |New email
 a|
@@ -3101,6 +3598,193 @@ __string__
 |Is request active (created and not expired and not confirmed)?
 a|
 __boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== UserProfileNotificationEventOptionsDto
+:table-caption: Table
+.User notification event options
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*eventType*
+|Notification event type
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*eventDescription*
+|Notification event description
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*emailEnabled*
+|Email notifications enabled?
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*webPushEnabled*
+|Web push notifications enabled?
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*emailSupported*
+|Email notifications supported?
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*webPushSupported*
+|Web push notifications supported?
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== UserProfileNotificationOptionsDto
+:table-caption: Table
+.User profile notification options
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*emailEnabled*
+|Email notifications enabled? (global flag)
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*webPushEnabled*
+|Web push notifications enabled? (global flag)
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*notificationEventOptions*
+|Notification event options list
+a|
+__array__
+<<<UserProfileNotificationEventOptionsDto>>
+>
 
 
 
@@ -3241,6 +3925,222 @@ __string__
 |Account locked
 a|
 __boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== UserNotificationEventOptionsDto
+:table-caption: Table
+.User notification event options
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*eventType**
+|Notification event type
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* EXPERIMENT_STATUS_CHANGE
+
+* CLASSIFIER_STATUS_CHANGE
+
+* CLASSIFIER_CONFIGURATION_CHANGE
+|*emailEnabled*
+|Email notifications enabled?
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*webPushEnabled*
+|Web push notifications enabled?
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*emailSupported*
+|Email notifications supported?
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*webPushSupported*
+|Web push notifications supported?
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== UserProfileOptionsDto
+:table-caption: Table
+.User profile options
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*user**
+|User login
+a|
+__string__
+
+
+*Min. length*: 1
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*version**
+|User profile options version
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|*emailEnabled*
+|Email notifications enabled? (global flag)
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*webPushEnabled*
+|Web push notifications enabled? (global flag)
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*notificationEventOptions*
+|Notification event options list
+a|
+__array__
+<<<UserNotificationEventOptionsDto>>
+>
 
 
 

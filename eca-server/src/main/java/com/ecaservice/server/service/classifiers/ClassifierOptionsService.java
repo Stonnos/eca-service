@@ -4,6 +4,7 @@ import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
+import com.ecaservice.server.exception.EnsembleClassifierOptionsNotAllowedException;
 import com.ecaservice.server.mapping.ClassifierOptionsDatabaseModelMapper;
 import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.server.model.entity.ClassifiersConfiguration;
@@ -35,6 +36,7 @@ import static com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel_
 import static com.ecaservice.server.model.entity.FilterTemplateType.CLASSIFIER_OPTIONS;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.createClassifierOptionsDatabaseModel;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.isEnsembleClassifierOptions;
+import static com.ecaservice.server.util.ClassifierOptionsHelper.parseOptions;
 
 /**
  * Classifier options service.
@@ -48,8 +50,8 @@ import static com.ecaservice.server.util.ClassifierOptionsHelper.isEnsembleClass
 public class ClassifierOptionsService {
 
     private final UserService userService;
-    private final ClassifierOptionsProcessor classifierOptionsProcessor;
-    private final ClassifiersTemplateProvider classifiersTemplateProvider;
+    private final ClassifierOptionsInfoProcessor classifierOptionsInfoProcessor;
+    private final ClassifiersFormTemplateProvider classifiersFormTemplateProvider;
     private final ClassifierOptionsDatabaseModelMapper classifierOptionsDatabaseModelMapper;
     private final ClassifiersConfigurationHistoryService classifiersConfigurationHistoryService;
     private final ClassifiersConfigurationRepository classifiersConfigurationRepository;
@@ -68,7 +70,9 @@ public class ClassifierOptionsService {
         var classifiersConfiguration = getConfigurationById(configurationId);
         Assert.state(!classifiersConfiguration.isBuildIn(),
                 "Can't add classifier options to build in configuration!");
-        Assert.state(!isEnsembleClassifierOptions(classifierOptions), "Can't save ensemble classifier options!");
+        if (isEnsembleClassifierOptions(classifierOptions)) {
+            throw new EnsembleClassifierOptionsNotAllowedException();
+        }
         var classifierOptionsDatabaseModel =
                 createClassifierOptionsDatabaseModel(classifierOptions, classifiersConfiguration);
         classifierOptionsDatabaseModel.setCreatedBy(userService.getCurrentUser());
@@ -116,10 +120,10 @@ public class ClassifierOptionsService {
      */
     public PageDto<ClassifierOptionsDto> getNextPage(long configurationId,
                                                      @ValidPageRequest(filterTemplateName = CLASSIFIER_OPTIONS)
-                                                     PageRequestDto pageRequestDto) {
+                                                             PageRequestDto pageRequestDto) {
         log.info("Gets classifiers configuration [{}] options next page: {}", configurationId, pageRequestDto);
         var classifiersConfiguration = getConfigurationById(configurationId);
-        var sort = buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
+        var sort = buildSort(pageRequestDto.getSortFields(), CREATION_DATE, true);
         var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort);
         var classifierOptionsPage =
                 classifierOptionsDatabaseModelRepository.findAllByConfiguration(classifiersConfiguration, pageRequest);
@@ -199,10 +203,13 @@ public class ClassifierOptionsService {
     private ClassifierOptionsDto internalPopulateClassifierOptions(
             ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel) {
         var classifierOptionsDto = classifierOptionsDatabaseModelMapper.map(classifierOptionsDatabaseModel);
-        var inputOptions = classifierOptionsProcessor.processInputOptions(classifierOptionsDto.getConfig());
+        var classifierOptions = parseOptions(classifierOptionsDto.getConfig());
+        var inputOptions = classifierOptionsInfoProcessor.processInputOptions(classifierOptions);
         var classifierFormTemplate =
-                classifiersTemplateProvider.getClassifierTemplateByClass(classifierOptionsDto.getOptionsName());
-        classifierOptionsDto.setOptionsDescription(classifierFormTemplate.getTemplateTitle());
+                classifiersFormTemplateProvider.getClassifierTemplateByClass(classifierOptionsDto.getOptionsName());
+        String optionsDescription =
+                classifierOptionsInfoProcessor.processTemplateTitle(classifierFormTemplate, classifierOptions);
+        classifierOptionsDto.setOptionsDescription(optionsDescription);
         classifierOptionsDto.setInputOptions(inputOptions);
         return classifierOptionsDto;
     }

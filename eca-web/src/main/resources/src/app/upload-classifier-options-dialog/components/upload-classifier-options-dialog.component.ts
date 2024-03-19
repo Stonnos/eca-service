@@ -1,11 +1,15 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FileUpload } from "primeng/primeng";
-import { CreateClassifierOptionsResultDto } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
+import {
+  CreateClassifierOptionsResultDto,
+  ValidationErrorDto
+} from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
 import { forkJoin } from 'rxjs';
 import { MessageService } from "primeng/api";
 import { finalize } from "rxjs/internal/operators";
 import { ClassifierOptionsService } from "../../classifiers-configuration-details/services/classifier-options.service";
+import { ValidationErrorCode } from "../../common/model/validation-error-code";
 
 @Component({
   selector: 'app-upload-classifier-options-dialog',
@@ -22,6 +26,11 @@ export class UploadClassifierOptionsDialogComponent implements OnInit {
   public invalidFileSizeMessageDetail: string = 'максимальный допустимый размер: 10 kb.';
   public invalidFileTypeMessageSummary: string = 'Некорректный тип файла,';
   public invalidFileTypeMessageDetail: string = 'допускаются только файлы форматов: {0}.';
+
+  private readonly errorCodesMap = new Map<string, string>()
+    .set(ValidationErrorCode.INVALID_CLASSIFIER_OPTIONS_FORMAT, 'Неправильный формат настроек')
+    .set(ValidationErrorCode.ENSEMBLE_CLASSIFIER_OPTIONS_NOT_ALLOWED, 'Допускаются только индивидуальные классификаторы')
+    .set(ValidationErrorCode.INTERNAL_ERROR, 'Неизвестная ошибка');
 
   @Input()
   public visible: boolean = false;
@@ -78,6 +87,10 @@ export class UploadClassifierOptionsDialogComponent implements OnInit {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
         }
     });
+  }
+
+  public getErrorMessage(error: ValidationErrorDto): string {
+    return this.errorCodesMap.get(error.code);
   }
 
   public getSuccessfullyUploadedFilesCount(): number {

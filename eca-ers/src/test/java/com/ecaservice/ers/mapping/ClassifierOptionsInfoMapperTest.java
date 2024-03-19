@@ -8,8 +8,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
-import java.util.Collections;
-import java.util.Map;
 
 import static com.ecaservice.ers.TestHelperUtils.buildClassifierOptionsInfo;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,15 +21,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import(ClassifierOptionsInfoMapperImpl.class)
 class ClassifierOptionsInfoMapperTest {
 
-    private static final Map<String, String> INPUT_OPTIONS_MAP = Collections.singletonMap("D", "22");
-
     @Inject
     private ClassifierOptionsInfoMapper classifierOptionsInfoMapper;
 
     @Test
     void testMapClassifierOptionsInfo() {
-        ClassifierOptionsInfo classifierOptionsInfo =
-                buildClassifierOptionsInfo(INPUT_OPTIONS_MAP, Collections.emptyList());
+        ClassifierOptionsInfo classifierOptionsInfo = buildClassifierOptionsInfo();
         ClassifierReport classifierReport = classifierOptionsInfoMapper.map(classifierOptionsInfo);
         assertThat(classifierReport.getClassifierName()).isEqualTo(
                 classifierOptionsInfo.getClassifierName());

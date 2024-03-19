@@ -26,18 +26,26 @@ eureka:
     serviceUrl:
       defaultZone: http://discovery-server:8761/eureka
 
-app:
-  push:
-    enabled: true
-    async: true
-
 ## Swagger properties
 open-api:
   tokenBaseUrl: http://localhost:8080/eca-oauth
 
+user-profile:
+  client:
+    cache:
+      enabled: true
+      rabbit:
+        dataEventExchangeName: user-profile-options-exchange
+        dataEventQueue: eca-server-user-profile-options-data-event-queue
+
 mail:
   client:
     enabled: true
+
+web-push:
+  client:
+    enabled: true
+    async: true
 
 redelivery:
   enabled: true

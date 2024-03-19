@@ -7,6 +7,7 @@ import com.ecaservice.oauth.dto.ChangePasswordRequest;
 import com.ecaservice.oauth.entity.ChangePasswordRequestEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.exception.ChangePasswordRequestAlreadyExistsException;
+import com.ecaservice.oauth.exception.InvalidConfirmationCodeException;
 import com.ecaservice.oauth.exception.InvalidPasswordException;
 import com.ecaservice.oauth.exception.InvalidTokenException;
 import com.ecaservice.oauth.exception.NotSafePasswordException;
@@ -19,13 +20,14 @@ import com.ecaservice.web.dto.model.ChangePasswordRequestStatusDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.common.util.RandomValueStringGenerator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
-import static com.ecaservice.common.web.util.MaskUtils.mask;
-import static com.ecaservice.common.web.util.RandomUtils.generateToken;
 import static com.ecaservice.oauth.config.audit.AuditCodes.CONFIRM_CHANGE_PASSWORD_REQUEST;
 import static com.ecaservice.oauth.config.audit.AuditCodes.CREATE_CHANGE_PASSWORD_REQUEST;
 import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
@@ -44,8 +46,17 @@ public class ChangePasswordService {
     private final PasswordEncoder passwordEncoder;
     private final Oauth2TokenService oauth2TokenService;
     private final PasswordValidationService passwordValidationService;
+    private final RandomValueStringGenerator generator = new RandomValueStringGenerator();
     private final ChangePasswordRequestRepository changePasswordRequestRepository;
     private final UserEntityRepository userEntityRepository;
+
+    /**
+     * Initialization method.
+     */
+    @PostConstruct
+    public void initialize() {
+        this.generator.setLength(appProperties.getChangePassword().getConfirmationCodeLength());
+    }
 
     /**
      * Create change password request.
@@ -56,11 +67,9 @@ public class ChangePasswordService {
      */
     @Audit(CREATE_CHANGE_PASSWORD_REQUEST)
     public TokenModel createChangePasswordRequest(Long userId, ChangePasswordRequest changePasswordRequest) {
+        log.info("Starting to create change password request for user [{}]", userId);
         UserEntity userEntity = userEntityRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(UserEntity.class, userId));
-        if (userEntity.isLocked()) {
-            throw new UserLockedException(userEntity.getId());
-        }
         if (!isValidOldPassword(userEntity, changePasswordRequest)) {
             throw new InvalidPasswordException();
         }
@@ -79,12 +88,16 @@ public class ChangePasswordService {
         if (changePasswordRequestEntity != null) {
             throw new ChangePasswordRequestAlreadyExistsException(userId);
         }
-        String token = generateToken();
+        String confirmationCode = generator.generate();
         LocalDateTime expireDate = now.plusMinutes(appProperties.getChangePassword().getValidityMinutes());
-        changePasswordRequestEntity = saveChangePasswordRequest(changePasswordRequest, userEntity, token, expireDate);
+        changePasswordRequestEntity =
+                saveChangePasswordRequest(changePasswordRequest, userEntity, confirmationCode, expireDate);
+        log.info("Change password request [{}] has been created for user [{}]", changePasswordRequestEntity.getToken(),
+                userId);
         return TokenModel.builder()
-                .token(token)
+                .token(changePasswordRequestEntity.getToken())
                 .tokenId(changePasswordRequestEntity.getId())
+                .confirmationCode(confirmationCode)
                 .login(userEntity.getLogin())
                 .email(userEntity.getEmail())
                 .build();
@@ -93,28 +106,29 @@ public class ChangePasswordService {
     /**
      * Change user password.
      *
-     * @param token - token value
+     * @param token            - token value
+     * @param confirmationCode - confirmation code
      */
     @Audit(value = CONFIRM_CHANGE_PASSWORD_REQUEST)
     @Transactional
-    public ChangePasswordRequestEntity changePassword(String token) {
-        log.info("Starting to change password for token [{}]", mask(token));
-        String md5Hash = md5Hex(token);
+    public ChangePasswordRequestEntity confirmChangePassword(String token, String confirmationCode) {
+        log.info("Starting to change password for token [{}]", token);
         ChangePasswordRequestEntity changePasswordRequestEntity =
-                changePasswordRequestRepository.findByTokenAndExpireDateAfterAndConfirmationDateIsNull(md5Hash,
+                changePasswordRequestRepository.findByTokenAndExpireDateAfterAndConfirmationDateIsNull(token,
                         LocalDateTime.now()).orElseThrow(InvalidTokenException::new);
-        UserEntity userEntity = changePasswordRequestEntity.getUserEntity();
-        if (userEntity.isLocked()) {
-            throw new UserLockedException(userEntity.getId());
+        String confirmationCodeMd5Hash = md5Hex(confirmationCode);
+        if (!changePasswordRequestEntity.getConfirmationCode().equals(confirmationCodeMd5Hash)) {
+            throw new InvalidConfirmationCodeException();
         }
+        UserEntity userEntity = changePasswordRequestEntity.getUserEntity();
         userEntity.setPassword(changePasswordRequestEntity.getNewPassword());
         userEntity.setPasswordChangeDate(LocalDateTime.now());
         changePasswordRequestEntity.setConfirmationDate(LocalDateTime.now());
         userEntityRepository.save(userEntity);
         changePasswordRequestRepository.save(changePasswordRequestEntity);
         oauth2TokenService.revokeTokens(userEntity);
-        log.info("New password has been set for user [{}], change password request id [{}]", userEntity.getId(),
-                changePasswordRequestEntity.getId());
+        log.info("New password has been set for user [{}], change password request [{}]", userEntity.getId(),
+                changePasswordRequestEntity.getToken());
         return changePasswordRequestEntity;
     }
 
@@ -138,8 +152,9 @@ public class ChangePasswordService {
                     .build();
         } else {
             log.info("Active change password request [{}] has been found for user [{}]",
-                    changePasswordRequestEntity.getId(), userId);
+                    changePasswordRequestEntity.getToken(), userId);
             return ChangePasswordRequestStatusDto.builder()
+                    .token(changePasswordRequestEntity.getToken())
                     .active(true)
                     .build();
         }
@@ -155,10 +170,11 @@ public class ChangePasswordService {
 
     private ChangePasswordRequestEntity saveChangePasswordRequest(ChangePasswordRequest changePasswordRequest,
                                                                   UserEntity userEntity,
-                                                                  String token,
+                                                                  String confirmationCode,
                                                                   LocalDateTime expireDate) {
         var changePasswordRequestEntity = new ChangePasswordRequestEntity();
-        changePasswordRequestEntity.setToken(md5Hex(token));
+        changePasswordRequestEntity.setToken(UUID.randomUUID().toString());
+        changePasswordRequestEntity.setConfirmationCode(md5Hex(confirmationCode));
         changePasswordRequestEntity.setExpireDate(expireDate);
         String encodedPassword = passwordEncoder.encode(changePasswordRequest.getNewPassword().trim());
         changePasswordRequestEntity.setNewPassword(encodedPassword);

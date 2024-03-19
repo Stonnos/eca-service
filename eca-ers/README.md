@@ -34,6 +34,8 @@ Evaluation results service
 4) logging.mode - режим логирования
    * text - текстовый формат
    * json - логи в формате json
+5) audit.enabled - вкл./выкл. отправки событий аудита
+6) redelivery.enabled - вкл./выкл. библиотеки redelivery
 
 Инструкция по развертыванию
 ----------------------------------------

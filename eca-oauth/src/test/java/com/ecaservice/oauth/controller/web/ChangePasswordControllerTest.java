@@ -18,6 +18,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import javax.inject.Inject;
 
+import java.util.UUID;
+
 import static com.ecaservice.oauth.TestHelperUtils.createChangePasswordRequestEntity;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -39,7 +41,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ChangePasswordControllerTest extends AbstractControllerTest {
 
     private static final String TOKEN_PARAM = "token";
-    private static final String TOKEN_VALUE = "tokenValue";
+    private static final String CONFIRMATION_CODE_PARAM = "confirmationCode";
+    private static final String CONFIRMATION_CODE = "code";
+
+    private static final String TOKEN_VALUE = "token";
 
     private static final String BASE_URL = "/password/change";
     private static final String REQUEST_STATUS_URL = BASE_URL + "/request-status";
@@ -61,9 +66,9 @@ class ChangePasswordControllerTest extends AbstractControllerTest {
     void testCreateChangePasswordRequestWithEmptyOldPassword() throws Exception {
         ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest(StringUtils.EMPTY, PASSWORD);
         mockMvc.perform(post(REQUEST_URL)
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
-                .content(objectMapper.writeValueAsString(changePasswordRequest))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
+                        .content(objectMapper.writeValueAsString(changePasswordRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
@@ -71,9 +76,9 @@ class ChangePasswordControllerTest extends AbstractControllerTest {
     void testCreateChangePasswordRequestWithEmptyNewPassword() throws Exception {
         ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest(PASSWORD, StringUtils.EMPTY);
         mockMvc.perform(post(REQUEST_URL)
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
-                .content(objectMapper.writeValueAsString(changePasswordRequest))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
+                        .content(objectMapper.writeValueAsString(changePasswordRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
@@ -81,45 +86,69 @@ class ChangePasswordControllerTest extends AbstractControllerTest {
     void testCreateChangePasswordUnauthorized() throws Exception {
         ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest(PASSWORD, PASSWORD);
         mockMvc.perform(post(REQUEST_URL)
-                .content(objectMapper.writeValueAsString(changePasswordRequest))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(objectMapper.writeValueAsString(changePasswordRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     void testCreateChangePasswordRequestOk() throws Exception {
+        String token = UUID.randomUUID().toString();
         ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest(PASSWORD, PASSWORD);
         when(changePasswordService.createChangePasswordRequest(anyLong(), any(ChangePasswordRequest.class)))
-                .thenReturn(TokenModel.builder().build());
+                .thenReturn(
+                        TokenModel.builder()
+                                .token(token)
+                                .build()
+                );
+        var changePasswordRequestStatusDto = ChangePasswordRequestStatusDto.builder()
+                .token(token)
+                .active(true)
+                .build();
         mockMvc.perform(post(REQUEST_URL)
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
-                .content(objectMapper.writeValueAsString(changePasswordRequest))
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
+                        .content(objectMapper.writeValueAsString(changePasswordRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(objectMapper.writeValueAsString(changePasswordRequestStatusDto)));
     }
 
     @Test
     void testConfirmChangePasswordRequestUnauthorized() throws Exception {
         mockMvc.perform(post(CONFIRM_URL)
-                .param(TOKEN_PARAM, TOKEN_VALUE))
+                .param(TOKEN_PARAM, UUID.randomUUID().toString())
+                .param(CONFIRMATION_CODE_PARAM, CONFIRMATION_CODE))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     void testConfirmChangePasswordRequest() throws Exception {
-        var changePasswordRequestEntity = createChangePasswordRequestEntity(TOKEN_VALUE);
-        when(changePasswordService.changePassword(TOKEN_VALUE)).thenReturn(changePasswordRequestEntity);
+        var changePasswordRequestEntity = createChangePasswordRequestEntity(CONFIRMATION_CODE);
+        when(changePasswordService.confirmChangePassword(changePasswordRequestEntity.getToken(),
+                CONFIRMATION_CODE)).thenReturn(changePasswordRequestEntity);
         mockMvc.perform(post(CONFIRM_URL)
-                .param(TOKEN_PARAM, TOKEN_VALUE)
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                        .param(TOKEN_PARAM, changePasswordRequestEntity.getToken())
+                        .param(CONFIRMATION_CODE_PARAM, CONFIRMATION_CODE)
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk());
-        verify(changePasswordService, atLeastOnce()).changePassword(TOKEN_VALUE);
+        verify(changePasswordService, atLeastOnce()).confirmChangePassword(changePasswordRequestEntity.getToken(),
+                CONFIRMATION_CODE);
     }
 
     @Test
     void testConfirmChangePasswordRequestWithNullToken() throws Exception {
         mockMvc.perform(post(CONFIRM_URL)
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                        .param(CONFIRMATION_CODE_PARAM, CONFIRMATION_CODE)
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testConfirmChangePasswordRequestWithNullConfirmationCode() throws Exception {
+        mockMvc.perform(post(CONFIRM_URL)
+                        .param(TOKEN_PARAM, TOKEN_VALUE)
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isBadRequest());
     }
 
@@ -137,7 +166,7 @@ class ChangePasswordControllerTest extends AbstractControllerTest {
         when(changePasswordService.getChangePasswordRequestStatus(anyLong()))
                 .thenReturn(changePasswordRequestStatusDto);
         mockMvc.perform(get(REQUEST_STATUS_URL)
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(changePasswordRequestStatusDto)));

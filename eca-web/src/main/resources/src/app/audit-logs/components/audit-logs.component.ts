@@ -16,6 +16,7 @@ import { UsersService } from "../../users/services/users.service";
 import { UserInfoFilterValueTransformer } from "../../filter/autocomplete/transformer/user-info-filter-value-transformer";
 import { UserInfoAutocompleteHandler } from "../../filter/autocomplete/handler/user-info-autocomplete-handler";
 import { AuditLogFilterFields } from "../../common/util/filter-field-names";
+import { CurrentUserFilterService } from "../../filter/services/current-user-filter-service";
 
 @Component({
   selector: 'app-audit-logs',
@@ -25,6 +26,8 @@ import { AuditLogFilterFields } from "../../common/util/filter-field-names";
 export class AuditLogsComponent extends BaseListComponent<AuditLogDto> {
 
   private static readonly AUDIT_LOGS_REPORT_FILE_NAME = 'audit-logs-report.xlsx';
+
+  private currentUserFilterService: CurrentUserFilterService;
 
   public constructor(private injector: Injector,
                      private auditLogService: AuditLogService,
@@ -36,8 +39,9 @@ export class AuditLogsComponent extends BaseListComponent<AuditLogDto> {
   }
 
   public ngOnInit() {
-    this.addLazyReferenceTransformers(new UserInfoFilterValueTransformer(AuditLogFields.INITIATOR));
-    this.addAutoCompleteHandler(new UserInfoAutocompleteHandler(AuditLogFields.INITIATOR, this.usersService, this.messageService));
+    this.addLazyReferenceTransformers(new UserInfoFilterValueTransformer(AuditLogFilterFields.INITIATOR));
+    this.addAutoCompleteHandler(new UserInfoAutocompleteHandler(AuditLogFilterFields.INITIATOR, this.usersService, this.messageService));
+    this.currentUserFilterService = new CurrentUserFilterService(AuditLogFilterFields.INITIATOR, this.usersService, this.messageService);
     this.getFilterFields();
   }
 
@@ -60,6 +64,10 @@ export class AuditLogsComponent extends BaseListComponent<AuditLogDto> {
   public generateReport() {
     const observable = this.auditLogService.getAuditLogsBaseReport(this.pageRequestDto);
     this.downloadReport(observable, AuditLogsComponent.AUDIT_LOGS_REPORT_FILE_NAME);
+  }
+
+  public loadCurrentUserToFilter(): void {
+    this.currentUserFilterService.getCurrentUser(this.filters);
   }
 
   private initColumns() {

@@ -38,7 +38,9 @@
                   animationDuration=".5s">
                 </p-progressSpinner>
               </div>
-              <table *ngIf="!uploadProgress && !fileUpload.hasFiles() && uploadedFiles?.length > 0" class="table w-100">
+              <table id="uploadedClassifierOptionsTable"
+                     *ngIf="!uploadProgress && !fileUpload.hasFiles() && uploadedFiles?.length > 0"
+                     class="table w-100">
                 <thead>
                 <tr>
                   <th [colSpan]="2" scope="col" class="detail-header">
@@ -54,10 +56,18 @@
                     </div>
                   </td>
                   <td>
-                    <span [class.upload-status-error]="!uploadFile.success"
-                          [class.upload-status-success]="uploadFile.success">
-                      {{ uploadFile.success ? 'Успешно' : 'Ошибка' }}
-                    </span>
+                    <span *ngIf="uploadFile.success" class="upload-status-success">Успешно</span>
+                    <a *ngIf="!uploadFile.success" class="upload-status-error" [routerLink]="" (click)="infoPanel.toggle($event)">Ошибка</a>
+                    <p-overlayPanel #infoPanel [showCloseIcon]="true" class="error-details-panel" appendTo="uploadedClassifierOptionsTable">
+                      <div class="ui-g" *ngFor="let error of uploadFile.validationErrors">
+                        <span *ngIf="error.fieldName">
+                          <span class="text-bold">Значение {{ error.fieldName }}:</span> {{ error.errorMessage }}
+                        </span>
+                        <span *ngIf="!error.fieldName">
+                          {{ getErrorMessage(error) }}
+                        </span>
+                      </div>
+                    </p-overlayPanel>
                   </td>
                 </tr>
                 </tbody>

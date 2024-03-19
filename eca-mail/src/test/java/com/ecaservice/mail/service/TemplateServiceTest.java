@@ -7,6 +7,7 @@ import com.ecaservice.mail.model.TemplateEntity;
 import com.ecaservice.mail.model.TemplateEntity_;
 import com.ecaservice.mail.repository.TemplateRepository;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -66,7 +67,8 @@ class TemplateServiceTest extends AbstractJpaTest {
         var second = createTemplateEntity(TEMPLATE_CODE_2);
         templateRepository.saveAll(Arrays.asList(first, second));
         var pageRequestDto =
-                new PageRequestDto(PAGE, SIZE, CREATED, true, TEMPLATE_CODE_1, Collections.emptyList());
+                new PageRequestDto(PAGE, SIZE, Collections.singletonList(new SortFieldRequestDto(CREATED, true)),
+                        TEMPLATE_CODE_1, Collections.emptyList());
         Page<TemplateEntity> templatesPage = templateService.getNextPage(pageRequestDto);
         assertThat(templatesPage).isNotNull();
         assertThat(templatesPage.getContent()).hasSize(1);

@@ -24,7 +24,8 @@ import java.util.List;
  * @author Roman Batygin
  */
 @Component
-public class ExperimentsBaseReportDataFetcher extends AbstractBaseReportDataFetcher<Experiment, ExperimentBean> {
+public class ExperimentsBaseReportDataFetcher
+        extends AbstractBaseReportDataFetcher<Experiment, ExperimentBean> {
 
     private final ExperimentDataService experimentDataService;
     private final ExperimentMapper experimentMapper;
@@ -33,7 +34,7 @@ public class ExperimentsBaseReportDataFetcher extends AbstractBaseReportDataFetc
     /**
      * Constructor with spring dependency injection.
      *
-     * @param filterTemplateService           - filter service bean
+     * @param filterTemplateService   - filter service bean
      * @param instancesInfoRepository - instances info repository
      * @param experimentDataService   - experiments data service bean
      * @param experimentMapper        - experiment mapper bean

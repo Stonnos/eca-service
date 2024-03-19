@@ -1,0 +1,135 @@
+= Библиотека для кеширования настроек профиля пользователя
+:toc:
+:toc-title: Оглавление
+
+== Введение
+
+В данном документе приведена инструкция для подключения библиотеки user-profile-options-cache-client к spring boot приложению.
+
+== 1. Базовые настройки библиотеки
+
+Для начала, необходимо добавить зависимость в pom.xml
+
+[source,xml]
+----
+<dependency>
+    <groupId>eca.service</groupId>
+    <artifactId>user-profile-options-cache-client</artifactId>
+    <version>${project.version}</version>
+</dependency>
+----
+
+В файле application.yml добавить настройки библиотеки
+
+[source,yml]
+----
+spring:
+  ## настройки rabbitmq для получения обновлений настроек профиля пользователя
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: guest
+    password: guest
+
+user-profile:
+  client:
+    cache:
+      ## Вкл./выкл. использования библиотеки кеширования настроек профиля пользователя
+      enabled: true
+      ## настройки rabbitmq для получения обновлений настроек профиля пользователя
+      rabbit:
+        dataEventExchangeName: user-profile-options-exchange
+        dataEventQueue: your-queue-name
+----
+
+Добавить класс конфигурации
+
+[source,java]
+----
+// Если в вашем модуле есть JPA сущности, то указать путь для сканирования
+@EntityScan(basePackageClasses = MyEntity.class)
+// Если в вашем модуле есть JPA репозитории, то указать путь для сканирования
+@EnableJpaRepositories(basePackageClasses = MyEntityRepository.class)
+@Configuration
+public class AppConfiguration {
+}
+----
+
+В конфигурационный файл liquibase, добавить путь к файлу user-profile-options-cache-client-changelog.xml со скриптами для создания служебных таблиц.
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!-- your change sets -->
+    <include file="../user-profile-options-cache-client-changelog.xml" relativeToChangelogFile="true"/>
+</databaseChangeLog>
+----
+
+== 2. Настройка использования блокировок для кластерной среды на примере redis
+
+В pom.xml необходимо добавить зависимости для интеграции с redis
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.springframework.integration</groupId>
+    <artifactId>spring-integration-redis</artifactId>
+</dependency>
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-redis</artifactId>
+</dependency>
+----
+
+В файле application.yml добавить следующие настройки
+
+[source,yml]
+----
+lock:
+  ## Вкл./выкл. распределенных блокировок.
+  ## Используется для обновления кеша настроек профиля пользователя в многопоточной среде
+  enabled: true
+  registry-type: REDIS
+  redis:
+    registryKey: your-registry-key
+    ## Время действия блокировки в милисекундах.
+    expireAfter: 60000
+----
+
+== 3. Описание таблиц для хранения шаблонов аудита
+
+Таблица 3.1 - 'user_profile_options_data' - содержит данные о настройках профилей пользователей
+[cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
+|===
+|Название колонки|Тип|Unique|Not NULL|Индекс|Описание
+|id                               |bigint           |+|+|+                                           |Идентификатор записи (первичный ключ)
+|_user                            |varchar(255)     |-|+|user_profile_options_data_user_unique_idx   |Логин пользователя
+|created                          |timestamp        |-|+|-                                           |Дата создания
+|updated                          |timestamp        |-|+|-                                           |Дата обновления
+|version                          |integer          |-|+|-                                           |Версия настроек
+|options_json                     |varchar(4096)    |-|+|-                                           |Настройки профиля в формате json
+|===
+
+== 4. Примеры использования
+
+Ниже приведен пример использования основного класса UserProfileOptionsProvider для получения настроек профиля пользователя:
+
+[source,java]
+----
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class AppService {
+
+    private final UserProfileOptionsProvider userProfileOptionsProvider;
+
+    public UserProfileOptionsDto getUserProfileOptions(String user) {
+        return userProfileOptionsProvider.getUserProfileOptions(user);
+    }
+}
+----

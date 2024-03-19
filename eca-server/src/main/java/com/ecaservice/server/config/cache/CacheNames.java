@@ -16,11 +16,6 @@ public class CacheNames {
     public static final String EVALUATION_RESULTS_CACHE_NAME = "evaluation-results";
 
     /**
-     * Message templates cache name
-     */
-    public static final String MESSAGE_TEMPLATES_CACHE_NAME = "message-templates";
-
-    /**
      * Instances meta data cache name
      */
     public static final String INSTANCES_META_DATA_CACHE = "instances-meta-data";

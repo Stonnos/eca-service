@@ -26,4 +26,5 @@
     <include file="db/changelog/v19-update-experiment-templates.xml"/>
     <include file="../filter-template-changelog.xml" relativeToChangelogFile="true"/>
     <include file="db/changelog/v20-update-filter-templates.xml"/>
+    <include file="db/changelog/v21-insert-confirmation-code-template-parameter.xml"/>
 </databaseChangeLog>

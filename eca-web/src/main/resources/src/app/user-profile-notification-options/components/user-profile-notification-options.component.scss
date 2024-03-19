@@ -1,0 +1,13 @@
+.user-profile-notification-options-panel {
+  background: white;
+  border: 1px solid #d3d3d3;
+}
+
+.notification-events-table::ng-deep {
+
+  .ui-table-tbody > tr > td {
+    &:first-child {
+      font-weight: bold;
+    }
+  }
+}

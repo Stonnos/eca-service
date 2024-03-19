@@ -29,7 +29,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableGlobalExceptionHandler
 @EntityScan(basePackageClasses = UserEntity.class)
 @EnableJpaRepositories(basePackageClasses = UserEntityRepository.class)
-@EnableConfigurationProperties({AppProperties.class, PasswordConfig.class, TfaConfig.class})
+@EnableConfigurationProperties({AppProperties.class, PasswordConfig.class, TfaConfig.class, UserProfileProperties.class})
 public class EcaOauthConfiguration {
 
     /**
