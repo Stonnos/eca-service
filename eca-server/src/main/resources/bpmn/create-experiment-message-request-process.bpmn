@@ -61,7 +61,7 @@
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_09z09j8" sourceRef="Activity_1yc7la5" targetRef="Gateway_16viqd2" />
     <bpmn:sequenceFlow id="Flow_1smffwn" sourceRef="Gateway_16viqd2" targetRef="Activity_0os54gm">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${evaluationRequestData.email != null || evaluationRequestData.email != ''}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${evaluationRequestData.email != null &amp;&amp; evaluationRequestData.email != ''}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0j5an03" sourceRef="Gateway_16viqd2" targetRef="Event_0pe23xb" />
   </bpmn:process>

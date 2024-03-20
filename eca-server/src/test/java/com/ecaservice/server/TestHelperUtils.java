@@ -372,6 +372,7 @@ public class TestHelperUtils {
         experimentRequestModel.setDataUuid(UUID.randomUUID().toString());
         experimentRequestModel.setChannel(Channel.QUEUE.name());
         experimentRequestModel.setReplyTo(REPLY_TO);
+        experimentRequestModel.setEmail(TEST_MAIL_RU);
         experimentRequestModel.setCorrelationId(UUID.randomUUID().toString());
         return experimentRequestModel;
     }
