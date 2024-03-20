@@ -116,6 +116,7 @@
         <jedis-client.version>3.8.0</jedis-client.version>
         <maven-surefire-plugin.version>3.2.2</maven-surefire-plugin.version>
         <maven-failsafe-plugin.version>3.2.2</maven-failsafe-plugin.version>
+        <jdk17.options>--add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.math=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.util.concurrent=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.sql/java.sql=ALL-UNNAMED</jdk17.options>
     </properties>
 
     <dependencyManagement>
@@ -207,13 +208,7 @@
                         <version>${maven-surefire-plugin.version}</version>
                         <!-- Arg lines for compatibility with FST library -->
                         <configuration>
-                            <argLine>--add-opens=java.base/java.lang=ALL-UNNAMED
-                                --add-opens=java.base/java.math=ALL-UNNAMED
-                                --add-opens=java.base/java.util=ALL-UNNAMED
-                                --add-opens=java.base/java.util.concurrent=ALL-UNNAMED
-                                --add-opens=java.base/java.net=ALL-UNNAMED
-                                --add-opens=java.base/java.text=ALL-UNNAMED
-                                --add-opens=java.sql/java.sql=ALL-UNNAMED</argLine>
+                            <argLine>${jdk17.options}</argLine>
                         </configuration>
                     </plugin>
 
@@ -391,13 +386,7 @@
                 <version>${maven-surefire-plugin.version}</version>
                 <!-- Arg lines for compatibility with FST library -->
                 <configuration>
-                    <argLine>--add-opens=java.base/java.lang=ALL-UNNAMED
-                        --add-opens=java.base/java.math=ALL-UNNAMED
-                        --add-opens=java.base/java.util=ALL-UNNAMED
-                        --add-opens=java.base/java.util.concurrent=ALL-UNNAMED
-                        --add-opens=java.base/java.net=ALL-UNNAMED
-                        --add-opens=java.base/java.text=ALL-UNNAMED
-                        --add-opens=java.sql/java.sql=ALL-UNNAMED</argLine>
+                    <argLine>${jdk17.options}</argLine>
                 </configuration>
             </plugin>
 
