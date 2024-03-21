@@ -113,6 +113,7 @@ class TfaCodeServiceTest extends AbstractJpaTest {
         tfaCodeEntity.setCode(md5Hex(TEST_CODE));
         tfaCodeEntity.setAuthentication(AUTHENTICATION);
         tfaCodeEntity.setExpireDate(LocalDateTime.now().plusSeconds(tfaConfig.getCodeValiditySeconds()));
+        tfaCodeEntity.setCreated(LocalDateTime.now());
         tfaCodeRepository.save(tfaCodeEntity);
     }
 }

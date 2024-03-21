@@ -41,4 +41,5 @@
     <include file="db/changelog/v31-create-user-profile-options-table.xml"/>
     <include file="db/changelog/v32-drop-user-push-enabled-column.xml"/>
     <include file="db/changelog/v33-add-confirmation-code-to-change-password-request-table.xml"/>
+    <include file="db/changelog/v34-add-created-date-to-temporary-tables.xml"/>
 </databaseChangeLog>

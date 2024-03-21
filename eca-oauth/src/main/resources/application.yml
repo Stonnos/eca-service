@@ -64,8 +64,6 @@ tfa:
   codeValiditySeconds: 120
   codeLength: 6
   enabled: true
-  pageSize: 25
-  delaySeconds: 300
 
 userProfile:
   emailEnabled: true
@@ -88,6 +86,24 @@ userProfile:
       webPushSupported: true
   rabbit:
     exchangeName: user-profile-options-exchange
+
+table:
+  data:
+    clean:
+      enabled: true
+      tables:
+        - tableName: tfa_code
+          creationTimestampColumnName: created
+          storagePeriodInDays: 1
+        - tableName: reset_password_request
+          creationTimestampColumnName: created
+          storagePeriodInDays: 30
+        - tableName: change_password_request
+          creationTimestampColumnName: created
+          storagePeriodInDays: 30
+        - tableName: change_email_request
+          creationTimestampColumnName: created
+          storagePeriodInDays: 30
 
 ## Swagger properties
 open-api:

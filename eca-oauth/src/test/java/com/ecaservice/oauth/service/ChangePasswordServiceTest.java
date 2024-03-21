@@ -234,6 +234,7 @@ class ChangePasswordServiceTest extends AbstractJpaTest {
         changePasswordRequestEntity.setConfirmationDate(confirmationDate);
         changePasswordRequestEntity.setUserEntity(userEntity);
         changePasswordRequestEntity.setNewPassword(NEW_PASSWORD);
+        changePasswordRequestEntity.setCreated(LocalDateTime.now());
         return changePasswordRequestRepository.save(changePasswordRequestEntity);
     }
 
