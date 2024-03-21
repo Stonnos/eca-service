@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v34-add-created-date-to-temporary-tables.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="add_created_date_to_change_password_request_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="change_password_request"/>
+            <not>
+                <columnExists tableName="change_password_request" columnName="created"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="change_password_request">
+            <column name="created" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add_created_date_to_change_email_request_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="change_email_request"/>
+            <not>
+                <columnExists tableName="change_email_request" columnName="created"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="change_email_request">
+            <column name="created" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add_created_date_to_reset_password_request_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="reset_password_request"/>
+            <not>
+                <columnExists tableName="reset_password_request" columnName="created"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="reset_password_request">
+            <column name="created" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add_created_date_to_tfa_code_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="tfa_code"/>
+            <not>
+                <columnExists tableName="tfa_code" columnName="created"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="tfa_code">
+            <column name="created" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

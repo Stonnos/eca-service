@@ -30,6 +30,12 @@ public abstract class TokenEntity {
     private String token;
 
     /**
+     * Created date
+     */
+    @Column(nullable = false)
+    private LocalDateTime created;
+
+    /**
      * Token expire date
      */
     @Column(name = "expire_date", nullable = false)

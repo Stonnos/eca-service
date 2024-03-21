@@ -95,17 +95,6 @@ public class TfaCodeService {
         return authentication;
     }
 
-    /**
-     * Deletes expired 2fa codes.
-     */
-    @Transactional
-    public void deleteExpiredCodes() {
-        var deletedCount = tfaCodeRepository.deleteExpiredCodes(LocalDateTime.now());
-        if (deletedCount > 0) {
-            log.info("[{}] expired tfa codes has been removed", deletedCount);
-        }
-    }
-
     private void invalidatePreviousCodes(UserEntity userEntity) {
         var previousCodes = tfaCodeRepository.findActiveCodes(userEntity, LocalDateTime.now());
         if (!CollectionUtils.isEmpty(previousCodes)) {
@@ -123,6 +112,7 @@ public class TfaCodeService {
         tfaCodeEntity.setAuthentication(serializationHelper.serialize(authentication));
         tfaCodeEntity.setExpireDate(LocalDateTime.now().plusSeconds(tfaConfig.getCodeValiditySeconds()));
         tfaCodeEntity.setUserEntity(userEntity);
+        tfaCodeEntity.setCreated(LocalDateTime.now());
         tfaCodeRepository.save(tfaCodeEntity);
         log.info("New tfa code has been generated for user [{}]", userEntity.getId());
     }

@@ -179,6 +179,7 @@ public class ChangePasswordService {
         String encodedPassword = passwordEncoder.encode(changePasswordRequest.getNewPassword().trim());
         changePasswordRequestEntity.setNewPassword(encodedPassword);
         changePasswordRequestEntity.setUserEntity(userEntity);
+        changePasswordRequestEntity.setCreated(LocalDateTime.now());
         return changePasswordRequestRepository.save(changePasswordRequestEntity);
     }
 }

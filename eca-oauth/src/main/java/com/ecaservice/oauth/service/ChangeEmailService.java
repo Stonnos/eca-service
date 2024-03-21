@@ -165,6 +165,7 @@ public class ChangeEmailService {
         changeEmailRequestEntity.setExpireDate(expireDate);
         changeEmailRequestEntity.setNewEmail(newEmail);
         changeEmailRequestEntity.setUserEntity(userEntity);
+        changeEmailRequestEntity.setCreated(LocalDateTime.now());
         return changeEmailRequestRepository.save(changeEmailRequestEntity);
     }
 }

@@ -33,6 +33,7 @@
         <module>core-filter</module>
         <module>core-form-template</module>
         <module>core-message-template</module>
+        <module>core-data-cleaner</module>
         <module>swagger-core</module>
         <module>oauth2-core</module>
         <module>rabbit-core</module>

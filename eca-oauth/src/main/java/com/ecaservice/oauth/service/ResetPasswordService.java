@@ -73,6 +73,7 @@ public class ResetPasswordService {
         resetPasswordRequestEntity.setExpireDate(
                 now.plusMinutes(appProperties.getResetPassword().getValidityMinutes()));
         resetPasswordRequestEntity.setUserEntity(userEntity);
+        resetPasswordRequestEntity.setCreated(LocalDateTime.now());
         resetPasswordRequestRepository.save(resetPasswordRequestEntity);
         log.info("Reset password request [{}] has been created for user with email [{}]",
                 resetPasswordRequestEntity.getId(), maskEmail(createResetPasswordRequest.getEmail()));

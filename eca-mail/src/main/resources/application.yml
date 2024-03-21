@@ -81,6 +81,15 @@ mail-config:
     password: pa66word!
     salt: s@lt#
 
+table:
+  data:
+    clean:
+      enabled: true
+      tables:
+        - tableName: email
+          creationTimestampColumnName: save_date
+          storagePeriodInDays: 30
+
 management:
   metrics:
     tags:
