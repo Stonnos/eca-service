@@ -30,7 +30,7 @@ public class TableDataCleanerProperties {
     /**
      * Cron expression for scheduler
      */
-    private String cronExpression = "*/30 * * * * *";
+    private String cronExpression;
 
     /**
      * Tables properties
