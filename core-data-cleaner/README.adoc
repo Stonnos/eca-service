@@ -1,0 +1,41 @@
+= Библиотека core-data-cleaner
+:toc:
+:toc-title: Оглавление
+
+== Введение
+
+Библиотека реализует функционал для очистки временных таблиц в БД.
+
+== 1. Базовые настройки библиотеки
+
+Для начала, необходимо добавить зависимость в pom.xml
+
+[source,xml]
+----
+<dependency>
+    <groupId>eca.service</groupId>
+    <artifactId>core-data-cleaner</artifactId>
+    <version>${project.version}</version>
+</dependency>
+----
+
+В файле application.yml добавить настройки библиотеки
+
+[source,yml]
+----
+table:
+  data:
+    clean:
+      ## Вкл./выкл. очистки таблиц
+      enabled: true
+      ## Крон выражения для запуска scheduler очистки таблиц (по умолчанию каждый день в 0:00)
+      cronExpression: 0 0 0 * * *
+      ## Настройки таблиц для очистки
+      tables:
+          ## Имя таблицы в БД
+        - tableName: email
+          ## Название столбца с меткой времени о создании записи в таблице
+          creationTimestampColumnName: save_date
+          ## Время хранения записей в таблице (в днях)
+          storagePeriodInDays: 30
+----
