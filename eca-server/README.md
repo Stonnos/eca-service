@@ -19,7 +19,7 @@ ECA server
 * Openjdk 11
 * maven => 3.9.2
 * Rabbit MQ => 3.8.14
-* eca-core 6.9.7
+* eca-core 6.9.8
 * Postgres Database для хранения информации => 13.9
 
 Описание ключевой конфигурации модуля
