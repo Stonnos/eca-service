@@ -185,6 +185,7 @@ class ResetPasswordServiceTest extends AbstractJpaTest {
         resetPasswordRequestEntity.setExpireDate(expireDate);
         resetPasswordRequestEntity.setResetDate(resetDate);
         resetPasswordRequestEntity.setUserEntity(userEntity);
+        resetPasswordRequestEntity.setCreated(LocalDateTime.now());
         return resetPasswordRequestRepository.save(resetPasswordRequestEntity);
     }
 }

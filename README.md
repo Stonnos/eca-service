@@ -11,7 +11,7 @@
 * Openjdk 17
 * maven => 3.9.2
 * Rabbit MQ => 3.8.14
-* eca-core 6.9.7
+* eca-core 6.9.8
 * Postgres Database для хранения информации 13.9
 * Docker, Docker-compose
 
@@ -40,6 +40,7 @@
 * core-filter - общая библиотека для фильтрации и сортировки
 * core-form-template - общая библиотека для работы с шаблонами CRUD - форм
 * core-message-template - общая библиотека для работы с шаблонами текстовых сообщений
+* core-data-cleaner - общая библиотека для очистки данных из временных таблиц БД
 * swagger-core - модуль содержит конфигурационные классы для swagger
 * oauth2-core - модуль содержит конфигурационные классы для oauth2 resource server 
 * rabbit-core - модуль содержит конфигурационные классы для rabbit

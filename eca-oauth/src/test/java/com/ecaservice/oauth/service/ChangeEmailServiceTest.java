@@ -189,6 +189,7 @@ class ChangeEmailServiceTest extends AbstractJpaTest {
         changeEmailRequestEntity.setConfirmationDate(confirmationDate);
         changeEmailRequestEntity.setUserEntity(userEntity);
         changeEmailRequestEntity.setNewEmail(NEW_EMAIL);
+        changeEmailRequestEntity.setCreated(LocalDateTime.now());
         return changeEmailRequestRepository.save(changeEmailRequestEntity);
     }
 

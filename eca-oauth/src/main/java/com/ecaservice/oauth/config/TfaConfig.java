@@ -26,9 +26,4 @@ public class TfaConfig {
      * Tfa enabled global setting
      */
     private Boolean enabled;
-
-    /**
-     * Scheduler delay in seconds
-     */
-    private Integer delaySeconds;
 }
