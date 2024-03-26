@@ -58,7 +58,7 @@
 
 2. Запустить проект с помощью команды:
 
-    java -jar /target/eca-auto-tests.jar
+java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.math=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.util.concurrent=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.sql/java.sql=ALL-UNNAMED -jar target/eca-auto-tests.jar
          
 3. Страница с документацией swagger находится по адресу http://[host]:[port]/eca-auto-tests/swagger-ui.html, где host и port
 соответственно адрес машины и порт на котором развернуто приложение.
