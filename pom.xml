@@ -209,7 +209,7 @@
                         <version>${maven-surefire-plugin.version}</version>
                         <!-- Arg lines for compatibility with FST library -->
                         <configuration>
-                            <argLine>${jdk17.options}</argLine>
+                            <argLine>@{argLine} ${jdk17.options}</argLine>
                         </configuration>
                     </plugin>
 
@@ -387,7 +387,7 @@
                 <version>${maven-surefire-plugin.version}</version>
                 <!-- Arg lines for compatibility with FST library -->
                 <configuration>
-                    <argLine>${jdk17.options}</argLine>
+                    <argLine>@{argLine} ${jdk17.options}</argLine>
                 </configuration>
             </plugin>
 
@@ -420,7 +420,7 @@
                     </execution>
                     <execution>
                         <id>default-report</id>
-                        <phase>prepare-package</phase>
+                        <phase>test</phase>
                         <goals>
                             <goal>report</goal>
                         </goals>
