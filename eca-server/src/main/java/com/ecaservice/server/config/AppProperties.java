@@ -23,11 +23,6 @@ public class AppProperties {
     private Integer schedulerPoolSize;
 
     /**
-     * Web push properties
-     */
-    private WebPushProperties push = new WebPushProperties();
-
-    /**
      * Number of days for models storage
      */
     private Long numberOfDaysForStorage;
@@ -46,21 +41,4 @@ public class AppProperties {
      * Short life url expiration in minutes
      */
     private Integer shortLifeUrlExpirationMinutes;
-
-    /**
-     * Notification properties
-     */
-    @Data
-    public static class WebPushProperties {
-
-        /**
-         * Web pushes enabled?
-         */
-        private Boolean enabled;
-
-        /**
-         * Use async sending?
-         */
-        private Boolean async;
-    }
 }
