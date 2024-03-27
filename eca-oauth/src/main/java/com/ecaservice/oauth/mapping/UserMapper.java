@@ -5,6 +5,7 @@ import com.ecaservice.oauth.dto.UpdateUserInfoDto;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.user.dto.UserInfoDto;
 import com.ecaservice.user.model.UserDetailsImpl;
+import com.ecaservice.web.dto.model.UserDictionaryDto;
 import com.ecaservice.web.dto.model.UserDto;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
@@ -32,6 +33,14 @@ public interface UserMapper {
      * @return user dto
      */
     UserDto map(UserEntity userEntity);
+
+    /**
+     * Maps user entity to its dictionary dto model.
+     *
+     * @param userEntity - user entity
+     * @return user dictionary dto
+     */
+    UserDictionaryDto mapToDictionaryDto(UserEntity userEntity);
 
     /**
      * Maps create user dto to entity model
@@ -71,6 +80,14 @@ public interface UserMapper {
      * @return users dto list
      */
     List<UserDto> map(List<UserEntity> userEntityList);
+
+    /**
+     * Maps user entities to its dictionary dto model list.
+     *
+     * @param userEntityList - users entities
+     * @return users dictionary dto list
+     */
+    List<UserDictionaryDto> mapToDictionaryList(List<UserEntity> userEntityList);
 
     /**
      * Maps user info data to user entity.

@@ -180,6 +180,17 @@ class UserServiceTest extends AbstractJpaTest {
     }
 
     @Test
+    void testGetUsersDictionaryPage() {
+        UserEntity userEntity = createAndSaveUser();
+        PageRequestDto pageRequestDto =
+                new PageRequestDto(PAGE, SIZE, Collections.singletonList(new SortFieldRequestDto(CREATION_DATE, true)),
+                        userEntity.getLogin(), Collections.emptyList());
+        var dictionaryPage = userService.getUsersDictionaryPage(pageRequestDto);
+        assertThat(dictionaryPage).isNotNull();
+        assertThat(dictionaryPage.getContent()).hasSize(1);
+    }
+
+    @Test
     void testSortByFullName() {
         UserEntity first =
                 userService.createUser(createUserDto("user1", "test1@mail.ru", "Ivan", "Ivanov", "Ivanovich"),

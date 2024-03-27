@@ -2,7 +2,7 @@ import { AutocompleteHandler } from "./autocomplete-handler";
 import { Filter } from "../../model/filter.model";
 import {
   PageDto,
-  PageRequestDto, UserDto
+  PageRequestDto, UserDictionaryDto
 } from "../../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { UserFields } from "../../../common/util/field-names";
 import { AutocompleteItemModel}  from "../../model/autocomplete-item.model";
@@ -42,11 +42,11 @@ export class UserInfoAutocompleteHandler extends AutocompleteHandler {
   }
 
   private getUsersFilterValues(filters: Filter[], filterField: string, pageRequest: PageRequestDto): void {
-    this.usersService.getUsers(pageRequest)
+    this.usersService.getUsersDictionary(pageRequest)
       .subscribe({
-        next: (userInfoPage: PageDto<UserDto>) => {
+        next: (usersDictionaryPage: PageDto<UserDictionaryDto>) => {
           const filter = filters.filter((item: Filter) => item.name == filterField).pop();
-          filter.values = userInfoPage.content.map((item: UserDto) => {
+          filter.values = usersDictionaryPage.content.map((item: UserDictionaryDto) => {
             return {
               label: item.login,
               value: item

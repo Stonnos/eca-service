@@ -15,6 +15,7 @@ import com.ecaservice.oauth.service.UserService;
 import com.ecaservice.oauth2.test.controller.AbstractControllerTest;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.UserDictionaryDto;
 import com.ecaservice.web.dto.model.UserDto;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
@@ -64,6 +65,7 @@ class UserControllerTest extends AbstractControllerTest {
     private static final String BASE_URL = "/users";
     private static final String CREATE_URL = BASE_URL + "/create";
     private static final String LIST_URL = BASE_URL + "/list";
+    private static final String USERS_DICTIONARY_URL = BASE_URL + "/users-dictionary";
     private static final String DOWNLOAD_PHOTO_URL = BASE_URL + "/photo/{id}";
     private static final String LOCK_URL = BASE_URL + "/lock";
     private static final String UNLOCK_URL = BASE_URL + "/unlock";
@@ -107,8 +109,8 @@ class UserControllerTest extends AbstractControllerTest {
     void testCreateUserUnauthorized() throws Exception {
         CreateUserDto createUserDto = TestHelperUtils.createUserDto();
         mockMvc.perform(post(CREATE_URL)
-                .content(objectMapper.writeValueAsString(createUserDto))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(objectMapper.writeValueAsString(createUserDto))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -119,9 +121,9 @@ class UserControllerTest extends AbstractControllerTest {
         UserDto expected = userMapper.map(userEntity);
         when(userService.createUser(any(CreateUserDto.class), any())).thenReturn(userEntity);
         mockMvc.perform(post(CREATE_URL)
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
-                .content(objectMapper.writeValueAsString(createUserDto))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
+                        .content(objectMapper.writeValueAsString(createUserDto))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(expected)));
@@ -202,8 +204,8 @@ class UserControllerTest extends AbstractControllerTest {
     @Test
     void testGetUsersPageUnauthorized() throws Exception {
         mockMvc.perform(post(LIST_URL)
-                .content(objectMapper.writeValueAsString(createPageRequestDto()))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(objectMapper.writeValueAsString(createPageRequestDto()))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -213,9 +215,32 @@ class UserControllerTest extends AbstractControllerTest {
         PageDto<UserDto> expected = PageDto.of(userMapper.map(userEntityList), PAGE_NUMBER, TOTAL_ELEMENTS);
         when(userService.getUsersPage(any(PageRequestDto.class))).thenReturn(expected);
         mockMvc.perform(post(LIST_URL)
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
-                .content(objectMapper.writeValueAsString(createPageRequestDto()))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
+                        .content(objectMapper.writeValueAsString(createPageRequestDto()))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(objectMapper.writeValueAsString(expected)));
+    }
+
+    @Test
+    void testGetUsersDictionaryPageUnauthorized() throws Exception {
+        mockMvc.perform(post(USERS_DICTIONARY_URL)
+                        .content(objectMapper.writeValueAsString(createPageRequestDto()))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testGetUsersDictionaryPage() throws Exception {
+        List<UserEntity> userEntityList = Collections.singletonList(createUserEntity());
+        PageDto<UserDictionaryDto> expected =
+                PageDto.of(userMapper.mapToDictionaryList(userEntityList), PAGE_NUMBER, TOTAL_ELEMENTS);
+        when(userService.getUsersDictionaryPage(any(PageRequestDto.class))).thenReturn(expected);
+        mockMvc.perform(post(USERS_DICTIONARY_URL)
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
+                        .content(objectMapper.writeValueAsString(createPageRequestDto()))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(expected)));
@@ -231,7 +256,7 @@ class UserControllerTest extends AbstractControllerTest {
     void testDownloadUserPhotoNotFound() throws Exception {
         when(userPhotoRepository.findById(PHOTO_ID)).thenReturn(Optional.empty());
         mockMvc.perform(get(DOWNLOAD_PHOTO_URL, PHOTO_ID)
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isBadRequest());
     }
 
@@ -242,7 +267,7 @@ class UserControllerTest extends AbstractControllerTest {
         userPhoto.setPhoto(new byte[CONTENT_LENGTH]);
         when(userPhotoRepository.findById(PHOTO_ID)).thenReturn(Optional.of(userPhoto));
         mockMvc.perform(get(DOWNLOAD_PHOTO_URL, PHOTO_ID)
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk())
                 .andExpect(content().bytes(userPhoto.getPhoto()))
                 .andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM_VALUE));
@@ -251,30 +276,30 @@ class UserControllerTest extends AbstractControllerTest {
     @Test
     void testLockUserUnauthorized() throws Exception {
         mockMvc.perform(post(LOCK_URL)
-                .param(USER_ID_PARAM, String.valueOf(USER_ID)))
+                        .param(USER_ID_PARAM, String.valueOf(USER_ID)))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     void testLockUserWithNullUserIdParam() throws Exception {
         mockMvc.perform(post(LOCK_URL)
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void testLockYourself() throws Exception {
         mockMvc.perform(post(LOCK_URL)
-                .param(USER_ID_PARAM, String.valueOf(USER_ID))
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                        .param(USER_ID_PARAM, String.valueOf(USER_ID))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isForbidden());
     }
 
     @Test
     void testLockUser() throws Exception {
         mockMvc.perform(post(LOCK_URL)
-                .param(USER_ID_PARAM, String.valueOf(LOCK_USER_ID))
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                        .param(USER_ID_PARAM, String.valueOf(LOCK_USER_ID))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk());
         verify(userService, atLeastOnce()).lock(LOCK_USER_ID);
     }
@@ -282,22 +307,22 @@ class UserControllerTest extends AbstractControllerTest {
     @Test
     void testUnlockUserUnauthorized() throws Exception {
         mockMvc.perform(post(UNLOCK_URL)
-                .param(USER_ID_PARAM, String.valueOf(USER_ID)))
+                        .param(USER_ID_PARAM, String.valueOf(USER_ID)))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     void testUnlockUserWithNullUserIdParam() throws Exception {
         mockMvc.perform(post(UNLOCK_URL)
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void testUnlockUser() throws Exception {
         mockMvc.perform(post(UNLOCK_URL)
-                .param(USER_ID_PARAM, String.valueOf(USER_ID))
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                        .param(USER_ID_PARAM, String.valueOf(USER_ID))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk());
         verify(userService, atLeastOnce()).unlock(USER_ID);
     }
@@ -315,7 +340,7 @@ class UserControllerTest extends AbstractControllerTest {
         UserDto expected = userMapper.map(userEntity);
         when(userService.getUserInfo(USER_ID)).thenReturn(expected);
         mockMvc.perform(get(GET_USER_INFO_URL)
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(expected)));
@@ -330,22 +355,22 @@ class UserControllerTest extends AbstractControllerTest {
     @Test
     void testLogout() throws Exception {
         mockMvc.perform(post(LOGOUT_URL)
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk());
     }
 
     @Test
     void testTfaEnabledUnauthorized() throws Exception {
         mockMvc.perform(post(TFA_ENABLED_URL)
-                .param(TFA_ENABLED_PARAM, Boolean.TRUE.toString()))
+                        .param(TFA_ENABLED_PARAM, Boolean.TRUE.toString()))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     void testTfaEnabled() throws Exception {
         mockMvc.perform(post(TFA_ENABLED_URL)
-                .param(TFA_ENABLED_PARAM, Boolean.TRUE.toString())
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                        .param(TFA_ENABLED_PARAM, Boolean.TRUE.toString())
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk());
         verify(userService, atLeastOnce()).enableTfa(USER_ID);
     }
@@ -353,8 +378,8 @@ class UserControllerTest extends AbstractControllerTest {
     @Test
     void testTfaDisabled() throws Exception {
         mockMvc.perform(post(TFA_ENABLED_URL)
-                .param(TFA_ENABLED_PARAM, Boolean.FALSE.toString())
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                        .param(TFA_ENABLED_PARAM, Boolean.FALSE.toString())
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk());
         verify(userService, atLeastOnce()).disableTfa(USER_ID);
     }
@@ -363,8 +388,8 @@ class UserControllerTest extends AbstractControllerTest {
     void testUpdateUserInfoUnauthorized() throws Exception {
         var updateUserInfo = createUpdateUserInfoDto();
         mockMvc.perform(put(UPDATE_USER_INFO)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(updateUserInfo)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateUserInfo)))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -435,9 +460,9 @@ class UserControllerTest extends AbstractControllerTest {
     void testUpdateUserInfoOk() throws Exception {
         var updateUserInfo = createUpdateUserInfoDto();
         mockMvc.perform(put(UPDATE_USER_INFO)
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(updateUserInfo)))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateUserInfo)))
                 .andExpect(status().isOk());
         verify(userService, atLeastOnce()).updateUserInfo(USER_ID, updateUserInfo);
     }
@@ -451,7 +476,7 @@ class UserControllerTest extends AbstractControllerTest {
     @Test
     void testDeletePhoto() throws Exception {
         mockMvc.perform(delete(DELETE_PHOTO_URL)
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk());
         verify(userService, atLeastOnce()).deletePhoto(USER_ID);
     }
@@ -459,39 +484,39 @@ class UserControllerTest extends AbstractControllerTest {
     @Test
     void testUploadPhotoUnauthorized() throws Exception {
         mockMvc.perform(multipart(UPLOAD_PHOTO_URL)
-                .file(photoFile))
+                        .file(photoFile))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     void testUploadPhotoWithNullFile() throws Exception {
         mockMvc.perform(multipart(UPLOAD_PHOTO_URL)
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void testUploadPhotoOk() throws Exception {
         mockMvc.perform(multipart(UPLOAD_PHOTO_URL)
-                .file(photoFile)
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                        .file(photoFile)
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk());
         verify(userService, atLeastOnce()).updatePhoto(USER_ID, photoFile);
     }
 
     private void testCreateUserBadRequest(CreateUserDto createUserDto) throws Exception {
         mockMvc.perform(post(CREATE_URL)
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
-                .content(objectMapper.writeValueAsString(createUserDto))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
+                        .content(objectMapper.writeValueAsString(createUserDto))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
     private void testUpdateUserInfoBadRequest(UpdateUserInfoDto updateUserInfoDto) throws Exception {
         mockMvc.perform(put(UPDATE_USER_INFO)
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(updateUserInfoDto)))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateUserInfoDto)))
                 .andExpect(status().isBadRequest());
     }
 }
