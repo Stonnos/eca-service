@@ -5,7 +5,7 @@
     <parent>
         <artifactId>eca-service</artifactId>
         <groupId>eca.service</groupId>
-        <version>6.5.0</version>
+        <version>6.5.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -14,7 +14,7 @@
 
     <properties>
         <minio.version>8.2.1</minio.version>
-        <fst.version>2.57</fst.version>
+        <fst.version>3.0.4-jdk17</fst.version>
         <sonar.coverage.exclusions>
             **/config/**/*,
             **/model/**/*,

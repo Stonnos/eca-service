@@ -24,6 +24,7 @@ import com.ecaservice.oauth.repository.UserPhotoRepository;
 import com.ecaservice.user.dto.UserInfoDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.UserDictionaryDto;
 import com.ecaservice.web.dto.model.UserDto;
 import com.google.common.collect.Sets;
 import lombok.RequiredArgsConstructor;
@@ -110,6 +111,19 @@ public class UserService {
         var userDtoList = userMapper.map(usersPage.getContent());
         populateUsersPhotoIds(usersPage.getContent(), userDtoList);
         return PageDto.of(userDtoList, pageRequestDto.getPage(), usersPage.getTotalElements());
+    }
+
+    /**
+     * Gets users dictionary next page for specified page request.
+     *
+     * @param pageRequestDto - page request
+     * @return users dictionary dto page
+     */
+    public PageDto<UserDictionaryDto> getUsersDictionaryPage(
+            @ValidPageRequest(filterTemplateName = USERS_TEMPLATE) PageRequestDto pageRequestDto) {
+        var usersPage = getNextPage(pageRequestDto);
+        var userDictionaryDtoList = userMapper.mapToDictionaryList(usersPage.getContent());
+        return PageDto.of(userDictionaryDtoList, pageRequestDto.getPage(), usersPage.getTotalElements());
     }
 
     /**

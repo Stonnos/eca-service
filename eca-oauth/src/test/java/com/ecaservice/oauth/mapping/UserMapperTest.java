@@ -50,6 +50,15 @@ class UserMapperTest {
     }
 
     @Test
+    void testMapUserEntityToUserDictionaryDto() {
+        UserEntity userEntity = createUserEntity();
+        var userDictionaryDto = userMapper.mapToDictionaryDto(userEntity);
+        assertThat(userDictionaryDto).isNotNull();
+        assertThat(userDictionaryDto.getLogin()).isEqualTo(userEntity.getLogin());
+        assertThat(userDictionaryDto.getFullName()).isEqualTo(userEntity.getFullName());
+    }
+
+    @Test
     void testMapCreateUserDtoToUserEntity() {
         CreateUserDto createUserDto = createUserDto();
         UserEntity userEntity = userMapper.map(createUserDto);

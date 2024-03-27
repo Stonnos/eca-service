@@ -18,7 +18,9 @@ import com.ecaservice.oauth.service.UserService;
 import com.ecaservice.user.model.UserDetailsImpl;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.UserDictionaryDto;
 import com.ecaservice.web.dto.model.UserDto;
+import com.ecaservice.web.dto.model.UsersDictionaryPageDto;
 import com.ecaservice.web.dto.model.UsersPageDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -209,7 +211,7 @@ public class UserController {
      * @param pageRequestDto - page request dto
      * @return users page
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("#oauth2.hasScope('web') and hasRole('ROLE_SUPER_ADMIN')")
     @Operation(
             description = "Finds users with specified options",
             summary = "Finds users with specified options",
@@ -257,6 +259,17 @@ public class UserController {
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
                             )
+                    ),
+                    @ApiResponse(description = "Permission denied", responseCode = "403",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "AccessDeniedResponse",
+                                                    ref = "#/components/examples/AccessDeniedResponse"
+                                            ),
+                                    }
+                            )
                     )
             }
     )
@@ -264,6 +277,69 @@ public class UserController {
     public PageDto<UserDto> getUsers(@Valid @RequestBody PageRequestDto pageRequestDto) {
         log.info("Received users page request: {}", pageRequestDto);
         return userService.getUsersPage(pageRequestDto);
+    }
+
+    /**
+     * Finds users dictionary with specified options such as filter, sorting and paging.
+     *
+     * @param pageRequestDto - page request dto
+     * @return users dictionary page
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @Operation(
+            description = "Finds users dictionary with specified options such as filter, sorting and paging",
+            summary = "Finds users dictionary with specified options such as filter, sorting and paging",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
+                    @Content(examples = {
+                            @ExampleObject(
+                                    name = "PageRequest",
+                                    ref = "#/components/examples/PageRequest"
+                            )
+                    })
+            }),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "UsersDictionaryPageResponse",
+                                                    ref = "#/components/examples/UsersDictionaryPageResponse"
+                                            ),
+                                    },
+                                    schema = @Schema(implementation = UsersDictionaryPageDto.class)
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "BadPageRequestResponse",
+                                                    ref = "#/components/examples/BadPageRequestResponse"
+                                            ),
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
+                            )
+                    )
+            }
+    )
+    @PostMapping(value = "/users-dictionary")
+    public PageDto<UserDictionaryDto> getUsersDictionary(@Valid @RequestBody PageRequestDto pageRequestDto) {
+        log.info("Received users dictionary page request: {}", pageRequestDto);
+        return userService.getUsersDictionaryPage(pageRequestDto);
     }
 
     /**

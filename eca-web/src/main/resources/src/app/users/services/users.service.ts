@@ -3,7 +3,8 @@ import { Injectable } from '@angular/core';
 import {
   PageDto,
   PageRequestDto,
-  UserDto
+  UserDto,
+  UserDictionaryDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
 import { environment } from "../../../environments/environment";
@@ -26,6 +27,14 @@ export class UsersService {
     });
     return this.http.post<PageDto<UserDto>>(this.serviceUrl + '/list', pageRequest, { headers: headers });
   }
+
+  public getUsersDictionary(pageRequest: PageRequestDto): Observable<PageDto<UserDictionaryDto>> {
+      const headers = new HttpHeaders({
+        'Content-type': 'application/json; charset=utf-8',
+        'Authorization': Utils.getBearerTokenHeader()
+      });
+      return this.http.post<PageDto<UserDictionaryDto>>(this.serviceUrl + '/users-dictionary', pageRequest, { headers: headers });
+    }
 
   public getCurrentUser(): Observable<UserDto> {
     const headers = new HttpHeaders({
