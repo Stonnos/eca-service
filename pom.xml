@@ -6,7 +6,7 @@
 
     <groupId>eca.service</groupId>
     <artifactId>eca-service</artifactId>
-    <version>6.5.0</version>
+    <version>6.5.1</version>
     <modules>
         <module>core-test</module>
         <module>oauth2-test</module>
@@ -84,12 +84,12 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>11</java.version>
+        <java.version>17</java.version>
         <lombok.version>1.18.26</lombok.version>
         <inject.version>1</inject.version>
         <logback.version>1.2.12</logback.version>
         <slf4j.version>1.7.36</slf4j.version>
-        <eca.version>6.9.8</eca.version>
+        <eca.version>6.9.8-jdk17</eca.version>
         <h2.version>1.4.199</h2.version>
         <postresql.version>42.6.0</postresql.version>
         <liquibase.version>3.7.0</liquibase.version>
@@ -115,6 +115,9 @@
         <hibernate-validator.version>6.2.5.Final</hibernate-validator.version>
         <commons.csv.version>1.10.0</commons.csv.version>
         <jedis-client.version>3.8.0</jedis-client.version>
+        <maven-surefire-plugin.version>3.2.2</maven-surefire-plugin.version>
+        <maven-failsafe-plugin.version>3.2.2</maven-failsafe-plugin.version>
+        <jdk17.options>--add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.math=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.util.concurrent=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.sql/java.sql=ALL-UNNAMED</jdk17.options>
     </properties>
 
     <dependencyManagement>
@@ -203,11 +206,17 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${maven-surefire-plugin.version}</version>
+                        <!-- Arg lines for compatibility with FST library -->
+                        <configuration>
+                            <argLine>@{argLine} ${jdk17.options}</argLine>
+                        </configuration>
                     </plugin>
 
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>${maven-failsafe-plugin.version}</version>
                         <executions>
                             <execution>
                                 <id>default-integration-test</id>
@@ -372,6 +381,16 @@
                 </executions>
             </plugin>
 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+                <!-- Arg lines for compatibility with FST library -->
+                <configuration>
+                    <argLine>@{argLine} ${jdk17.options}</argLine>
+                </configuration>
+            </plugin>
+
             <!-- test coverage check with jococo -->
             <plugin>
                 <groupId>org.jacoco</groupId>
@@ -401,7 +420,7 @@
                     </execution>
                     <execution>
                         <id>default-report</id>
-                        <phase>prepare-package</phase>
+                        <phase>test</phase>
                         <goals>
                             <goal>report</goal>
                         </goals>
