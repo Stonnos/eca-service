@@ -60,6 +60,7 @@ class ClassifierDataCleanerTest extends AbstractJpaTest {
     @Override
     public void deleteAll() {
         evaluationLogRepository.deleteAll();
+        instancesInfoRepository.deleteAll();
     }
 
     @Test
