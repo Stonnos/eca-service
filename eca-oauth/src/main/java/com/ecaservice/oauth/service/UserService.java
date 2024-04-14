@@ -35,6 +35,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
@@ -135,7 +136,7 @@ public class UserService {
      * @return user entity
      */
     @Audit(CREATE_USER)
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public UserEntity createUser(CreateUserDto createUserDto, String password) {
         log.info("Starting to create user [{}] has been created", createUserDto.getLogin());
         UserEntity userEntity = userMapper.map(createUserDto);

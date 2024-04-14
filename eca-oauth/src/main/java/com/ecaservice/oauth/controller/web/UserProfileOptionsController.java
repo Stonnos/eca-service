@@ -141,5 +141,6 @@ public class UserProfileOptionsController {
         log.info("Received request to update user [{}] notification options", userDetails.getId());
         userProfileOptionsService.updateUserNotificationOptions(userDetails.getUsername(),
                 updateUserNotificationOptionsDto);
+        log.info("Request to update user [{}] notification options has been processed", userDetails.getId());
     }
 }

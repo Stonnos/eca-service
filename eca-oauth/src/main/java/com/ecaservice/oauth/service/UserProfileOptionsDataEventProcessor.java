@@ -45,7 +45,7 @@ public class UserProfileOptionsDataEventProcessor {
             var userProfileOptionsDto =
                     fromJson(userProfileOptionsDataEventEntity.getMessageBody(), UserProfileOptionsDto.class);
             userProfileOptionsDataEventSender.send(userProfileOptionsDto);
-            userProfileOptionsDataEventRepository.delete(userProfileOptionsDataEventEntity);
+            userProfileOptionsDataEventRepository.deleteEvent(userProfileOptionsDataEventEntity.getId());
             log.info("User profile options data event [{}] has been sent",
                     userProfileOptionsDataEventEntity.getRequestId());
         } catch (Exception ex) {

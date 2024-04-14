@@ -15,9 +15,10 @@ import com.ecaservice.user.profile.options.dto.UserNotificationEventType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import javax.transaction.Transactional;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -66,7 +67,7 @@ public class UserProfileOptionsDataService {
      * @param updateUserNotificationOptionsDto - notification options dto for update
      * @return user profile options entity
      */
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public UserProfileOptionsEntity updateUserNotificationOptions(String user,
                                                                   UpdateUserNotificationOptionsDto updateUserNotificationOptionsDto) {
         log.info("Starting to update user [{}] profile notification options: {}", user,
