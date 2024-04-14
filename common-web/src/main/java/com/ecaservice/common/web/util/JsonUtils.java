@@ -1,4 +1,4 @@
-package com.ecaservice.user.profile.options.cache.client.util;
+package com.ecaservice.common.web.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

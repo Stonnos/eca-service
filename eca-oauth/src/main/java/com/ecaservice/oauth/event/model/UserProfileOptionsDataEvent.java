@@ -1,7 +1,5 @@
 package com.ecaservice.oauth.event.model;
 
-import com.ecaservice.oauth.entity.UserEntity;
-import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 
 /**
@@ -11,18 +9,13 @@ import org.springframework.context.ApplicationEvent;
  */
 public class UserProfileOptionsDataEvent extends ApplicationEvent {
 
-    @Getter
-    private final UserEntity userEntity;
-
     /**
      * Create a new {@code UserProfileOptionsDataEvent}.
      *
-     * @param source     - the object on which the event initially occurred or with
-     *                   which the event is associated (never {@code null})
-     * @param userEntity - user entity
+     * @param source - the object on which the event initially occurred or with
+     *               which the event is associated (never {@code null})
      */
-    public UserProfileOptionsDataEvent(Object source, UserEntity userEntity) {
+    public UserProfileOptionsDataEvent(Object source) {
         super(source);
-        this.userEntity = userEntity;
     }
 }

@@ -12,7 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 
-import static com.ecaservice.user.profile.options.cache.client.util.JsonUtils.toJson;
+import static com.ecaservice.common.web.util.JsonUtils.toJson;
 
 /**
  * User profile options data service.

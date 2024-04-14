@@ -34,6 +34,7 @@ import static com.google.common.collect.Maps.newHashMap;
 public class UserProfileOptionsDataService {
 
     private final UserProfileOptionsConfigurationService userProfileOptionsConfigurationService;
+    private final UserProfileOptionsDataEventService userProfileOptionsDataEventService;
     private final UserEntityRepository userEntityRepository;
     private final UserProfileOptionsRepository userProfileOptionsRepository;
     private final UserNotificationEventOptionsRepository userNotificationEventOptionsRepository;
@@ -81,6 +82,7 @@ public class UserProfileOptionsDataService {
         userProfileOptions.setWebPushEnabled(updateUserNotificationOptionsDto.isWebPushEnabled());
         updateNotificationEvents(userProfileOptions, updateUserNotificationOptionsDto);
         userProfileOptionsRepository.save(userProfileOptions);
+        userProfileOptionsDataEventService.saveEvent(userProfileOptions);
         log.info("User [{}] profile notification options has been updated: {}", user,
                 updateUserNotificationOptionsDto);
         return userProfileOptions;

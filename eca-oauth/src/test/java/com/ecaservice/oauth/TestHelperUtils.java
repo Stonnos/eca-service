@@ -10,9 +10,11 @@ import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
 import com.ecaservice.oauth.entity.RoleEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.entity.UserNotificationEventOptionsEntity;
+import com.ecaservice.oauth.entity.UserProfileOptionsDataEventEntity;
 import com.ecaservice.oauth.entity.UserProfileOptionsEntity;
 import com.ecaservice.user.model.Role;
 import com.ecaservice.user.profile.options.dto.UserNotificationEventType;
+import com.ecaservice.user.profile.options.dto.UserProfileOptionsDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.google.common.collect.Sets;
 import lombok.experimental.UtilityClass;
@@ -21,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.UUID;
 
+import static com.ecaservice.common.web.util.JsonUtils.toJson;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 
@@ -248,5 +251,18 @@ public class TestHelperUtils {
         updateUserNotificationEventOptionsDto.setEmailEnabled(false);
         updateUserNotificationEventOptionsDto.setWebPushEnabled(false);
         return updateUserNotificationEventOptionsDto;
+    }
+
+    /**
+     * Creates user profile options data event entity.
+     *
+     * @return user profile options data event entity
+     */
+    public static UserProfileOptionsDataEventEntity createUserProfileOptionsDataEventEntity() {
+        var userProfileOptionsDataEventEntity = new UserProfileOptionsDataEventEntity();
+        userProfileOptionsDataEventEntity.setMessageBody(toJson(new UserProfileOptionsDto()));
+        userProfileOptionsDataEventEntity.setRequestId(UUID.randomUUID().toString());
+        userProfileOptionsDataEventEntity.setCreated(LocalDateTime.now());
+        return userProfileOptionsDataEventEntity;
     }
 }

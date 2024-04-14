@@ -2,7 +2,6 @@ package com.ecaservice.oauth.controller.web;
 
 import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.oauth.dto.UpdateUserNotificationOptionsDto;
-import com.ecaservice.oauth.event.model.UserProfileOptionsDataEvent;
 import com.ecaservice.oauth.service.UserProfileOptionsService;
 import com.ecaservice.user.model.UserDetailsImpl;
 import com.ecaservice.web.dto.model.UserProfileNotificationOptionsDto;
@@ -16,7 +15,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -46,7 +44,6 @@ import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
 public class UserProfileOptionsController {
 
     private final UserProfileOptionsService userProfileOptionsService;
-    private final ApplicationEventPublisher applicationEventPublisher;
 
     /**
      * Gets user profile notification options.
@@ -138,13 +135,11 @@ public class UserProfileOptionsController {
             }
     )
     @PutMapping(value = "/update-notifications")
-    public void updateUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                               @Valid @RequestBody UpdateUserNotificationOptionsDto updateUserNotificationOptionsDto) {
+    public void updateUserNotificationOptions(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                              @Valid @RequestBody
+                                              UpdateUserNotificationOptionsDto updateUserNotificationOptionsDto) {
         log.info("Received request to update user [{}] notification options", userDetails.getId());
-        var updatedUserProfileOptions =
-                userProfileOptionsService.updateUserNotificationOptions(userDetails.getUsername(),
-                        updateUserNotificationOptionsDto);
-        applicationEventPublisher.publishEvent(
-                new UserProfileOptionsDataEvent(this, updatedUserProfileOptions.getUserEntity()));
+        userProfileOptionsService.updateUserNotificationOptions(userDetails.getUsername(),
+                updateUserNotificationOptionsDto);
     }
 }

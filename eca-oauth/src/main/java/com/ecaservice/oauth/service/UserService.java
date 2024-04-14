@@ -75,6 +75,7 @@ public class UserService {
     private final UserMapper userMapper;
     private final Oauth2TokenService oauth2TokenService;
     private final UserProfileOptionsConfigurationService userProfileOptionsConfigurationService;
+    private final UserProfileOptionsDataEventService userProfileOptionsDataEventService;
     private final FilterTemplateService filterTemplateService;
     private final UserEntityRepository userEntityRepository;
     private final RoleRepository roleRepository;
@@ -144,7 +145,9 @@ public class UserService {
         userEntity.setCreationDate(LocalDateTime.now());
         userEntityRepository.save(userEntity);
         //Also creates user profile options with default settings
-        userProfileOptionsConfigurationService.createAndSaveDefaultProfileOptions(userEntity);
+        var userProfileOptionsEntity =
+                userProfileOptionsConfigurationService.createAndSaveDefaultProfileOptions(userEntity);
+        userProfileOptionsDataEventService.saveEvent(userProfileOptionsEntity);
         log.info("User {} has been created", userEntity.getId());
         return userEntity;
     }
