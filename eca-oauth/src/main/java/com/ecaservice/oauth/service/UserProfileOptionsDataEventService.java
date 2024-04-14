@@ -30,7 +30,8 @@ public class UserProfileOptionsDataEventService {
     private final UserProfileOptionsDataEventRepository userProfileOptionsDataEventRepository;
 
     /**
-     * Save user profile options event to sent.
+     * Save user profile options event to sent using transaction outbox mechanism.
+     * NOTE: Method must be called in transaction for the transaction outbox mechanism to work.
      *
      * @param userProfileOptionsEntity - user profile options entity
      */
@@ -44,6 +45,7 @@ public class UserProfileOptionsDataEventService {
         userProfileOptionsDataEventEntity.setMessageBody(toJson(userProfileOptionsDto));
         userProfileOptionsDataEventEntity.setCreated(LocalDateTime.now());
         userProfileOptionsDataEventRepository.save(userProfileOptionsDataEventEntity);
+        // Publish saved event to transaction committed listener
         applicationEventPublisher.publishEvent(new UserProfileOptionsDataEvent(this));
         log.info("User [{}] profile options data event [{}] has saved [{}]", userProfileOptionsDto.getUser(),
                 requestId, userProfileOptionsDto);

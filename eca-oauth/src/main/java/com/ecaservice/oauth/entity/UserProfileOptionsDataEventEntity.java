@@ -18,7 +18,7 @@ import static com.ecaservice.oauth.util.FieldConstraints.USER_PROFILE_OPTIONS_DA
  */
 @Data
 @Entity
-@Table(name = "user_profile_options_data_event_entity")
+@Table(name = "user_profile_options_data_event")
 public class UserProfileOptionsDataEventEntity {
 
     @Id

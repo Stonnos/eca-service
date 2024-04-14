@@ -21,7 +21,7 @@ public class UserProfileOptionsDataEventListener {
     private final UserProfileOptionsDataEventProcessor userProfileOptionsDataEventProcessor;
 
     /**
-     * Handles user profile options data event after transaction commited.
+     * Handles user profile options data event after transaction committed.
      *
      * @param userProfileOptionsDataEvent - user profile options data event
      */
