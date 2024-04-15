@@ -8,7 +8,6 @@ import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.entity.UserPhoto;
 import com.ecaservice.oauth.event.model.UserCreatedEmailEvent;
 import com.ecaservice.oauth.event.model.UserLockedEmailEvent;
-import com.ecaservice.oauth.event.model.UserProfileOptionsDataEvent;
 import com.ecaservice.oauth.event.model.UserUnLockedEmailEvent;
 import com.ecaservice.oauth.exception.UserLockNotAllowedException;
 import com.ecaservice.oauth.mapping.UserMapper;
@@ -414,7 +413,6 @@ public class UserController {
         String password = passwordService.generatePassword();
         UserEntity userEntity = userService.createUser(createUserDto, password);
         applicationEventPublisher.publishEvent(new UserCreatedEmailEvent(this, userEntity, password));
-        applicationEventPublisher.publishEvent(new UserProfileOptionsDataEvent(this, userEntity));
         return userMapper.map(userEntity);
     }
 

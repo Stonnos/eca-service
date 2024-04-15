@@ -46,6 +46,8 @@ class UserProfileOptionsServiceTest extends AbstractJpaTest {
 
     @MockBean
     private LockMeterService lockMeterService;
+    @MockBean
+    private UserProfileOptionsDataEventService userProfileOptionsDataEventService;
 
     @Inject
     private UserProfileProperties userProfileProperties;

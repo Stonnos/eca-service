@@ -35,6 +35,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
@@ -75,6 +76,7 @@ public class UserService {
     private final UserMapper userMapper;
     private final Oauth2TokenService oauth2TokenService;
     private final UserProfileOptionsConfigurationService userProfileOptionsConfigurationService;
+    private final UserProfileOptionsDataEventService userProfileOptionsDataEventService;
     private final FilterTemplateService filterTemplateService;
     private final UserEntityRepository userEntityRepository;
     private final RoleRepository roleRepository;
@@ -134,7 +136,7 @@ public class UserService {
      * @return user entity
      */
     @Audit(CREATE_USER)
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public UserEntity createUser(CreateUserDto createUserDto, String password) {
         log.info("Starting to create user [{}] has been created", createUserDto.getLogin());
         UserEntity userEntity = userMapper.map(createUserDto);
@@ -144,7 +146,9 @@ public class UserService {
         userEntity.setCreationDate(LocalDateTime.now());
         userEntityRepository.save(userEntity);
         //Also creates user profile options with default settings
-        userProfileOptionsConfigurationService.createAndSaveDefaultProfileOptions(userEntity);
+        var userProfileOptionsEntity =
+                userProfileOptionsConfigurationService.createAndSaveDefaultProfileOptions(userEntity);
+        userProfileOptionsDataEventService.saveEvent(userProfileOptionsEntity);
         log.info("User {} has been created", userEntity.getId());
         return userEntity;
     }

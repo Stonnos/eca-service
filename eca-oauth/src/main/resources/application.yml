@@ -84,6 +84,7 @@ userProfile:
       webPushEnabled: true
       emailSupported: false
       webPushSupported: true
+  dataEventRetryIntervalSeconds: 30
   rabbit:
     exchangeName: user-profile-options-exchange
 

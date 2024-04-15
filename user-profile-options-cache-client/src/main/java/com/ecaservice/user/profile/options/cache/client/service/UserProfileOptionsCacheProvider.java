@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
-import static com.ecaservice.user.profile.options.cache.client.util.JsonUtils.fromJson;
+import static com.ecaservice.common.web.util.JsonUtils.fromJson;
 
 /**
  * User profile options cache provider.
