@@ -3,8 +3,8 @@ package com.ecaservice.ers.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 import static com.ecaservice.ers.dto.Constraints.MAX_LENGTH_255;
 import static com.ecaservice.ers.dto.Constraints.MIN_1;

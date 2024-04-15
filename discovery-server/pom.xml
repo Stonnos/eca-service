@@ -13,6 +13,7 @@
     <packaging>jar</packaging>
 
     <properties>
+        <spring-cloud-starter-netflix-eureka-server.version>4.1.1</spring-cloud-starter-netflix-eureka-server.version>
         <sonar.coverage.exclusions>
             **/config/**/*,
             **/model/**/*,
@@ -56,11 +57,17 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+            <version>${spring-cloud-starter-netflix-eureka-server.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-sleuth</artifactId>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-tracing</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-tracing-bridge-brave</artifactId>
         </dependency>
 
         <dependency>

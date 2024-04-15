@@ -1,8 +1,9 @@
 package com.ecaservice.load.test.config;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.SecurityFilterChain;
 
 /**
  * Security configuration.
@@ -10,10 +11,16 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
  * @author Roman Batygin
  */
 @Configuration
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class SecurityConfiguration {
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().anyRequest().permitAll().and().csrf().disable();
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+                .anyRequest()
+                .permitAll()
+                .and()
+                .csrf()
+                .disable();
+        return http.build();
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.token.RemoteTokenServices;
+import org.springframework.security.web.SecurityFilterChain;
 
 /**
  * Resource server configuration.
@@ -31,11 +32,17 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
 
     @Override
     public void configure(final HttpSecurity http) throws Exception {
-        http.sessionManagement()
+        /*http.sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 .and()
                 .authorizeRequests()
                 .antMatchers(SOCKET_URL).authenticated()
+                .anyRequest().permitAll();*/
+        http.sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                .and()
+                .authorizeRequests()
+                .requestMatchers(SOCKET_URL).authenticated()
                 .anyRequest().permitAll();
     }
 
@@ -47,7 +54,7 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
     /**
      * Creates remote token service bean.
      *
-     * @return remote remote token service bean
+     * @return remote token service bean
      */
     @Primary
     @Bean

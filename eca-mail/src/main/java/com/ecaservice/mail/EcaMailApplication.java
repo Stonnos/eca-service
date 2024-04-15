@@ -2,7 +2,6 @@ package com.ecaservice.mail;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 
 /**
  * Eca mail application main class.
@@ -10,7 +9,6 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
  * @author Roman Batygin
  */
 @SpringBootApplication
-@EnableEurekaClient
 public class EcaMailApplication {
 
     /**

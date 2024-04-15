@@ -13,6 +13,7 @@
     <packaging>jar</packaging>
 
     <properties>
+        <spring-cloud-starter-gateway>4.1.1</spring-cloud-starter-gateway>
         <sonar.coverage.exclusions>**/*.*</sonar.coverage.exclusions>
     </properties>
 
@@ -27,11 +28,17 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-gateway</artifactId>
+            <version>${spring-cloud-starter-gateway}</version>
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-sleuth</artifactId>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-tracing</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-tracing-bridge-brave</artifactId>
         </dependency>
 
         <dependency>

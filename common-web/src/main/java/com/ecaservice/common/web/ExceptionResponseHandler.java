@@ -7,6 +7,8 @@ import com.ecaservice.common.web.exception.ValidationErrorException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.google.common.collect.Iterables;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.metadata.ConstraintDescriptor;
 import lombok.experimental.UtilityClass;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -16,8 +18,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
-import javax.validation.ConstraintViolationException;
-import javax.validation.metadata.ConstraintDescriptor;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collections;

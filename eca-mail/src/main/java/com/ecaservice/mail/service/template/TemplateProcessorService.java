@@ -2,7 +2,7 @@ package com.ecaservice.mail.service.template;
 
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 import java.util.Map;
 
 /**

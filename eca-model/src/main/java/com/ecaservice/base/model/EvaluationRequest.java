@@ -5,9 +5,9 @@ import com.ecaservice.classifier.options.model.ClassifierOptions;
 import eca.core.evaluation.EvaluationMethod;
 import lombok.Data;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * Evaluation request transport model.

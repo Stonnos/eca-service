@@ -4,15 +4,17 @@ import com.ecaservice.user.model.Role;
 import com.ecaservice.user.model.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 
 import java.util.Collections;
 
@@ -24,14 +26,14 @@ import java.util.Collections;
 @TestConfiguration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class Oauth2ServerSecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class Oauth2ServerSecurityConfiguration {
 
     private static final long USER_ID = 1L;
 
     private final Oauth2TestConfig oauth2TestConfig;
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    @Autowired
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(username -> {
             var userDetails = new UserDetailsImpl();
             userDetails.setId(USER_ID);
@@ -52,14 +54,19 @@ public class Oauth2ServerSecurityConfiguration extends WebSecurityConfigurerAdap
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
-    @Override
     @Bean
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().anyRequest().authenticated().and().csrf().disable();
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+                .anyRequest()
+                .authenticated()
+                .and()
+                .csrf()
+                .disable();
+        return http.build();
     }
 }

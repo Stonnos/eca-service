@@ -42,10 +42,6 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator</artifactId>
-        </dependency>
-        <dependency>
             <groupId>eca.service</groupId>
             <artifactId>core-test</artifactId>
             <version>${project.version}</version>
